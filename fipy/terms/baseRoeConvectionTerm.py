@@ -160,25 +160,10 @@ class _RoeVariable(FaceVariable):
         varUpUp = varDown + 2 * cellDistances * varUpGrad
         varDownDown = varUp - 2 * cellDistances * varDownGrad
 
-##        varDiff = numerix.concatenate(((varUp - varDown)[...,numerix.newaxis],
-##                                       (varDown - varDownDown)[...,numerix.newaxis],
-##                                       (varUpUp - varUp)[...,numerix.newaxis]), axis=-1)
-
-
-
         alpha = smv.invmatvec(R, varUp - varDown)
         alphaDown = smv.invmatvec(R, varDown - varDownDown)
         alphaUp = smv.invmatvec(R, varUpUp - varUp)
         
-        ##alpha = smv.invmul(R, varDiff[...,0][...,numerix.newaxis])
-        ##alphaDown = smv.invmul(R, varDiff[...,1][...,numerix.newaxis])
-        ##alphaUp = smv.invmul(R, varDiff[...,2][...,numerix.newaxis])
-
-##         alphas = smv.invmul(R, varDiff)
-##         alpha = alphas[...,0]
-##         alphaDown = alphas[...,1]
-##         alphaUp = alphas[...,2]
-
         alphaOther = numerix.where(eigenvalues > 0, alphaDown, alphaUp)
 
         theta = alphaOther / (alpha + 1e-20 * (alpha == 0))
