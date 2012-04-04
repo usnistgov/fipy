@@ -130,6 +130,7 @@ bulkVar = CellVariable(mesh = mesh, value = cinf)
 
 surfactantVar = SurfactantVariable(distanceVar = distanceVar)
 
+from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 bulkEqn = buildSurfactantBulkDiffusionEquation(bulkVar,
                                           distanceVar = distanceVar,
                                           surfactantVar = surfactantVar,

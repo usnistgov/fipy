@@ -273,6 +273,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     metalVar.constrain(metalConcentration, mesh.facesTop)
 
+    from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
     bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkCatalystVar,
         distanceVar = distanceVar,

@@ -368,8 +368,7 @@ at :math:`\phi = 0` is given by,
    
 The surfactant bulk diffusion equation is set up with the following commands.
 
-.. index:: buildSurfactantBulkDiffusionEquation
-
+>>> from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 >>> bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
 ...     bulkVar=bulkCatalystVar,
 ...     distanceVar=distanceVar,

@@ -211,6 +211,7 @@ can be obtained by running this example.
 __docformat__ = 'restructuredtext'
 
 from fipy import *
+from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 from gapFillMesh import TrenchMesh
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 
