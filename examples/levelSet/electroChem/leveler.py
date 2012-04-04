@@ -212,6 +212,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy import *
 from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
+from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 from gapFillMesh import TrenchMesh
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 

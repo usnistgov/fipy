@@ -161,6 +161,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy import *
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 def runSimpleTrenchSystem(faradaysConstant=9.6e4,
                           gasConstant=8.314,

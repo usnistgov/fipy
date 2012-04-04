@@ -99,6 +99,7 @@ Compare the analaytical and numerical results:
 __docformat__ = 'restructuredtext'
 
 from fipy import *
+from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 # parameter values
 

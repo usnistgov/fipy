@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-## 
+## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "test.py"
+ #  FILE: "interfaceFlagVariable.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -32,23 +32,35 @@
  # ###################################################################
  ##
 
-from fipy.tests.doctestPlus import _LateImportDocTestSuite
-import fipy.tests.testProgram
+__docformat__ = 'restructuredtext'
 
-def _suite():
-    return _LateImportDocTestSuite(docTestModuleNames = (
-            'howToWriteAScript',
-            'simpleTrenchSystem',
-            'gold',
-            'leveler',
-            'gapFillMesh',
-            'metalIonDiffusionEquation',
-            'lines',
-            'adsorbingSurfactantEquation',
-        ), base = __name__)
+from fipy.variables.cellVariable import CellVariable
+from fipy.tools.numerix import MA
+from fipy.tools import numerix
+
+class _InterfaceFlagVariable(CellVariable):
+    def __init__(self, distanceVar):
+        """
+        Creates an `_InterfaceFlagVariable` object.
+
+        :Parameters:
+          - `distanceVar` : A `DistanceVariable` object.
+
+        """
+        CellVariable.__init__(self, distanceVar.mesh, hasOld=False)
+        self.distanceVar = self._requires(distanceVar)
+
+    def _calcValue(self):
+        flag = MA.filled(numerix.take(self.distanceVar._interfaceFlag, self.mesh.cellFaceIDs), 0)
+        flag = numerix.sum(flag, axis=0)
+        return numerix.where(numerix.logical_and(self.distanceVar.value > 0, flag > 0), 1, 0)
+
+
     
-if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='_suite')
+
+
 
             
             
+        
+                

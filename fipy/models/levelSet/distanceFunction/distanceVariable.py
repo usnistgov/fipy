@@ -440,11 +440,8 @@ class DistanceVariable(CellVariable):
         True
 
         """
-        flag = MA.filled(numerix.take(self._interfaceFlag, self.mesh.cellFaceIDs), 0)
-
-        flag = numerix.sum(flag, axis=0)
-        
-        return numerix.where(numerix.logical_and(self._value > 0, flag > 0), 1, 0)
+        from fipy.models.levelSet.distanceFunction.interfaceFlagVariable import _InterfaceFlagVariable
+        return _InterfaceFlagVariable(self)
 
     @getsetDeprecated
     def _getCellValueOverFaces(self):

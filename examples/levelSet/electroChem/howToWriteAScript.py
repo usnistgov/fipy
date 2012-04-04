@@ -139,6 +139,7 @@ Build the mesh:
 
 >>> from fipy import *
 >>> from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+>>> from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 >>> from fipy import serial
 >>> mesh = Grid2D(dx=cellSize,

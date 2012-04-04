@@ -40,7 +40,6 @@ __all__ = []
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
 
-from fipy.tools import numerix
 from fipy.tools import vector
 
 from fipy.variables.faceVariable import FaceVariable
@@ -111,7 +110,6 @@ class _ConvectionCoeff(FaceVariable):
 
     def _calcValue(self):
 
-        Ncells = self.mesh.numberOfCells
         Nfaces = self.mesh.numberOfFaces
         M = self.mesh._maxFacesPerCell
         dim = self.mesh.dim

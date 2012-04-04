@@ -43,7 +43,6 @@ def _suite():
             'distanceFunction.distanceVariable',
             'surfactant.surfactantVariable',
             'distanceFunction.levelSetDiffusionVariable',
-            'surfactant.adsorbingSurfactantEquation',
             'surfactant.convectionCoeff',
         ), base = __name__)
 
