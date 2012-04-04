@@ -44,7 +44,7 @@ from fipy.tools import vector
 
 from fipy.variables.faceVariable import FaceVariable
 
-class _ConvectionCoeff(FaceVariable):
+class SurfactantConvectionCoeff(FaceVariable):
     """
     
     Convection coefficient for the `ConservativeSurfactantEquation`.
@@ -66,7 +66,7 @@ class _ConvectionCoeff(FaceVariable):
            >>> ## answer = numerix.zeros((2, mesh.numberOfFaces),'d')
            >>> answer = FaceVariable(mesh=mesh, rank=1, value=0.).globalValue
            >>> answer[0,7] = -1
-           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).globalValue, answer)
+           >>> print numerix.allclose(SurfactantConvectionCoeff(distanceVar).globalValue, answer)
            True
 
         Change the dimensions:
@@ -74,7 +74,7 @@ class _ConvectionCoeff(FaceVariable):
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .25)
            >>> distanceVar = DistanceVariable(mesh, value = (-.25, .25, .75))
            >>> answer[0,7] = -.5
-           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).globalValue, answer)
+           >>> print numerix.allclose(SurfactantConvectionCoeff(distanceVar).globalValue, answer)
            True
 
         Two dimensional example:
@@ -86,7 +86,7 @@ class _ConvectionCoeff(FaceVariable):
            >>> answer[1,3] = -1
            >>> answer[0,7] = -.5
            >>> answer[0,10] = -1
-           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).globalValue, answer)
+           >>> print numerix.allclose(SurfactantConvectionCoeff(distanceVar).globalValue, answer)
            True
 
         Larger grid:
@@ -100,7 +100,7 @@ class _ConvectionCoeff(FaceVariable):
            >>> answer[1,7] = -.25
            >>> answer[0,17] = .25
            >>> answer[0,18] = -.25
-           >>> print numerix.allclose(_ConvectionCoeff(distanceVar).globalValue, answer)
+           >>> print numerix.allclose(SurfactantConvectionCoeff(distanceVar).globalValue, answer)
            True
            
         """

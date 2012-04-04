@@ -57,9 +57,9 @@ The result can be tested with the following code:
 >>> surfactantBefore = numerix.sum(surfactantVariable * mesh.cellVolumes)
 >>> for step in range(steps):
 ...     distanceVariable.updateOld()
-...     surfactantEquation.solve(surfactantVariable)
+...     surfactantEquation.solve(surfactantVariable, dt=1.)
 ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
->>> surfactantEquation.solve(surfactantVariable)
+>>> surfactantEquation.solve(surfactantVariable, dt=1.)
 >>> surfactantAfter = numerix.sum(surfactantVariable * mesh.cellVolumes)
 >>> print surfactantBefore.allclose(surfactantAfter)
 1
@@ -109,8 +109,9 @@ surfactantVariable = SurfactantVariable(
 
 advectionEquation = TransientTerm() + AdvectionTerm(velocity)
 
-surfactantEquation = SurfactantEquation(
-    distanceVar = distanceVariable)
+from fipy.models.levelSet.surfactant.convectionCoeff import SurfactantConvectionCoeff
+surfactantEquation = TransientTerm() - \
+    ExplicitUpwindConvectionTerm(SurfactantConvectionCoeff(distanceVariable))
 
 if __name__ == '__main__':
     
@@ -124,11 +125,11 @@ if __name__ == '__main__':
     
     for step in range(steps):
         distanceVariable.updateOld()
-        surfactantEquation.solve(surfactantVariable)
+        surfactantEquation.solve(surfactantVariable, dt=1.)
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
         distanceViewer.plot()
         surfactantViewer.plot()
-    surfactantEquation.solve(surfactantVariable)
+    surfactantEquation.solve(surfactantVariable, dt=1.)
 
 
     print 'total surfactant after:', numerix.sum(surfactantVariable * mesh.cellVolumes)

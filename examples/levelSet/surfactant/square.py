@@ -43,7 +43,7 @@ Advect the interface and check the position.
    >>> initialSurfactant = numerix.sum(surfactantVariable)
    >>> for step in range(steps):
    ...     distanceVariable.updateOld()
-   ...     surfactantEquation.solve(surfactantVariable)
+   ...     surfactantEquation.solve(surfactantVariable, dt=1)
    ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration) #doctest: +LSMLIB
    >>> print numerix.allclose(initialSurfactant, numerix.sum(surfactantVariable)) #doctest: +LSMLIB
    1
@@ -89,8 +89,10 @@ surfactantVariable = SurfactantVariable(
     value = 1.
     )
 
-surfactantEquation = SurfactantEquation(
-    distanceVar = distanceVariable)
+
+from fipy.models.levelSet.surfactant.convectionCoeff import SurfactantConvectionCoeff
+surfactantEquation = TransientTerm() - \
+    ExplicitUpwindConvectionTerm(SurfactantConvectionCoeff(distanceVariable))
 
 advectionEquation = TransientTerm() + AdvectionTerm(velocity)
 
@@ -106,12 +108,12 @@ if __name__ == '__main__':
     for step in range(steps):
         print numerix.sum(surfactantVariable)
         distanceVariable.updateOld()
-        surfactantEquation.solve(surfactantVariable)
+        surfactantEquation.solve(surfactantVariable, dt=1)
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
         distanceViewer.plot()
         surfactantViewer.plot()
 
-    surfactantEquation.solve(surfactantVariable)
+    surfactantEquation.solve(surfactantVariable, dt=1)
 
     distanceViewer.plot()
     surfactantViewer.plot()

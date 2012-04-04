@@ -62,9 +62,9 @@ conservation of surfactant:
 ...     timeStepDuration = cfl * dx / velocity.max()
 ...     distanceVariable.updateOld()
 ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
-...     surfactantEquation.solve(surfactantVariable)
+...     surfactantEquation.solve(surfactantVariable, dt=1)
 ...     totalTime += timeStepDuration #doctest: +LSMLIB
->>> surfactantEquation.solve(surfactantVariable)
+>>> surfactantEquation.solve(surfactantVariable, dt=1)
 >>> surfactantAfter = numerix.sum(surfactantVariable * mesh.cellVolumes)
 >>> print surfactantBefore.allclose(surfactantAfter)
 1
@@ -125,8 +125,9 @@ velocity = CellVariable(
 
 advectionEquation = TransientTerm() + AdvectionTerm(velocity)
 
-surfactantEquation = SurfactantEquation(
-    distanceVar = distanceVariable)
+from fipy.models.levelSet.surfactant.convectionCoeff import SurfactantConvectionCoeff
+surfactantEquation = TransientTerm() - \
+    ExplicitUpwindConvectionTerm(SurfactantConvectionCoeff(distanceVariable))
 
 if __name__ == '__main__':
     
@@ -147,7 +148,7 @@ if __name__ == '__main__':
         timeStepDuration = cfl * dx / velocity.max()
         distanceVariable.updateOld()
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
-        surfactantEquation.solve(surfactantVariable)
+        surfactantEquation.solve(surfactantVariable, dt=1)
         
         totalTime += timeStepDuration
         

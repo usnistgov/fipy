@@ -35,12 +35,14 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.solvers import DefaultAsymmetricSolver, LinearPCGSolver
 from fipy.variables.variable import Variable
+from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
+from fipy.models.levelSet.surfactant.convectionCoeff import SurfactantConvectionCoeff
+from fipy.terms.transientTerm import TransientTerm
 
-class AdsorbingSurfactantEquation(SurfactantEquation):
+class AdsorbingSurfactantEquation():
     r"""
 
     The `AdsorbingSurfactantEquation` object solves the
@@ -262,8 +264,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
                              
         """
 
-
-        SurfactantEquation.__init__(self, distanceVar = distanceVar)
+        self.eq = TransientTerm(coeff = 1) - ExplicitUpwindConvectionTerm(SurfactantConvectionCoeff(distanceVar))
 
         self.dt = Variable(0.)
         mesh = distanceVar.mesh
@@ -320,8 +321,16 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
             else:
                 solver = LinearPCGSolver()
             
-        SurfactantEquation.solve(self, var, boundaryConditions=boundaryConditions, solver=solver, dt=dt)
-
+        if type(boundaryConditions) not in (type(()), type([])):
+            boundaryConditions = (boundaryConditions,)
+        
+        var.constrain(0, var.mesh.exteriorFaces)
+        
+        self.eq.solve(var,
+                      boundaryConditions=boundaryConditions,
+                      solver = solver,
+                      dt=1.)
+        
     def sweep(self, var, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `AdsorbingSurfactantEquation`'s linear
@@ -340,7 +349,13 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         self.dt.setValue(dt)
         if solver is None:
             solver = DefaultAsymmetricSolver()
-        return SurfactantEquation.sweep(self, var, solver=solver, boundaryConditions=boundaryConditions, dt=dt, underRelaxation=underRelaxation, residualFn=residualFn)
+        
+        if type(boundaryConditions) not in (type(()), type([])):
+            boundaryConditions = (boundaryConditions,)
+        
+        var.constrain(0, var.mesh.exteriorFaces)
+
+        return self.eq.sweep(var, solver=solver, boundaryConditions=boundaryConditions, underRelaxation=underRelaxation, residualFn=residualFn, dt=1.)
 
 def _test(): 
     import fipy.tests.doctestPlus
