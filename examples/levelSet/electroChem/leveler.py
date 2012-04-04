@@ -388,6 +388,7 @@ def runLeveler(kLeveler=0.018,
     totalTime = 0.0
 
     if displayViewers:
+        from mayaviSurfactantViewer import MayaviSurfactantViewer
         viewers = (
             MayaviSurfactantViewer(distanceVar, acceleratorVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'accelerator coverage'),
             MayaviSurfactantViewer(distanceVar, levelerVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'leveler coverage'))

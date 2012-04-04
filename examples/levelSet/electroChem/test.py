@@ -43,6 +43,7 @@ def _suite():
             'leveler',
             'gapFillMesh',
             'metalIonDiffusionEquation',
+            'lines'
         ), base = __name__)
     
 if __name__ == '__main__':

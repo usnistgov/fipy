@@ -286,6 +286,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     if displayViewers:
         try:
+            from mayaviSurfactantViewer import MayaviSurfactantViewer
             viewer = MayaviSurfactantViewer(distanceVar, catalystVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'catalyst coverage')
         except:
             viewer = MultiViewer(viewers=(

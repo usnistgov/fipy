@@ -385,6 +385,7 @@ If running interactively, create viewers.
    
 >>> if __name__ == '__main__':
 ...     try:
+...         from mayaviSurfactantViewer import MayaviSurfactantViewer
 ...         viewer = MayaviSurfactantViewer(distanceVar,
 ...                                         catalystVar.interfaceVar,
 ...                                         zoomFactor=1e6,
