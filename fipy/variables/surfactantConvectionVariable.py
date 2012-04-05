@@ -61,7 +61,7 @@ class SurfactantConvectionVariable(FaceVariable):
            >>> from fipy.variables.cellVariable import CellVariable
            >>> from fipy.meshes import Grid2D
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = 1., dy = 1.)
-           >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+           >>> from fipy.variables.distanceVariable import DistanceVariable
            >>> distanceVar = DistanceVariable(mesh, value = (-.5, .5, 1.5))
            >>> ## answer = numerix.zeros((2, mesh.numberOfFaces),'d')
            >>> answer = FaceVariable(mesh=mesh, rank=1, value=0.).globalValue

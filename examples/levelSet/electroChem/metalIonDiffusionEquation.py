@@ -99,7 +99,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> x, = mesh.cellCenters
     >>> from fipy.variables.cellVariable import CellVariable
     >>> ionVar = CellVariable(mesh = mesh, value = 1.)
-    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+    >>> from fipy.variables.distanceVariable \
     ...     import DistanceVariable
     >>> disVar = DistanceVariable(mesh = mesh, 
     ...                           value = (x - 0.5) - 0.99,
@@ -133,7 +133,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> from fipy.meshes import Grid2D
     >>> from fipy import numerix
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
-    >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+    >>> from fipy.variables.distanceVariable import DistanceVariable
     >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
     >>> ionVar = CellVariable(mesh = mesh, value = (1, 1, 1, 1))
     >>> depositionRate = CellVariable(mesh=mesh, value=(1, 1, 1, 1))

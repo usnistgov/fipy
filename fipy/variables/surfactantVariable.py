@@ -59,7 +59,7 @@ class SurfactantVariable(CellVariable):
 
         >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(dx = 1., nx = 4)
-        >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+        >>> from fipy.variables.distanceVariable import DistanceVariable
         >>> distanceVariable = DistanceVariable(mesh = mesh, 
         ...                                     value = (-1.5, -0.5, 0.5, 941.5))
         >>> surfactantVariable = SurfactantVariable(value = 1, 

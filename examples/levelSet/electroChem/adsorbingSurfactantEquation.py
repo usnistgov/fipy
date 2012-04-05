@@ -71,7 +71,7 @@ class AdsorbingSurfactantEquation():
 
     The following is a test case:
 
-    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+    >>> from fipy.variables.distanceVariable \
     ...     import DistanceVariable
     >>> from fipy import SurfactantVariable
     >>> from fipy.meshes import Grid2D
@@ -106,7 +106,7 @@ class AdsorbingSurfactantEquation():
     The following test case is for two surfactant variables. One has more
     surface affinity than the other.
 
-    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+    >>> from fipy.variables.distanceVariable \
     ...     import DistanceVariable
     >>> from fipy import SurfactantVariable
     >>> from fipy.meshes import Grid2D
