@@ -41,7 +41,6 @@ def _suite():
     theSuite = _LateImportDocTestSuite(
         docTestModuleNames = (
             'distanceFunction.distanceVariable',
-            'surfactant.surfactantVariable',
             'distanceFunction.levelSetDiffusionVariable',
         ), base = __name__)
 
