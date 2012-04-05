@@ -9,6 +9,7 @@ from fipy.variables.gammaNoiseVariable import *
 from fipy.variables.gaussianNoiseVariable import *
 from fipy.variables.uniformNoiseVariable import *
 from fipy.variables.histogramVariable import *
+from fipy.variables.surfactantVariable import *
 
 __all__ = []
 __all__.extend(variable.__all__)
@@ -22,3 +23,4 @@ __all__.extend(gammaNoiseVariable.__all__)
 __all__.extend(gaussianNoiseVariable.__all__)
 __all__.extend(uniformNoiseVariable.__all__)
 __all__.extend(histogramVariable.__all__)
+__all__.extend(surfactantVariable.__all__)

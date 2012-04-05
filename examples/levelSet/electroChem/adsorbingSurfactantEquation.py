@@ -73,8 +73,7 @@ class AdsorbingSurfactantEquation():
 
     >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
     ...     import DistanceVariable
-    >>> from fipy.models.levelSet.surfactant.surfactantVariable \
-    ...     import SurfactantVariable
+    >>> from fipy import SurfactantVariable
     >>> from fipy.meshes import Grid2D
     >>> from fipy.tools import numerix
     >>> from fipy.variables.cellVariable import CellVariable
@@ -109,8 +108,7 @@ class AdsorbingSurfactantEquation():
 
     >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
     ...     import DistanceVariable
-    >>> from fipy.models.levelSet.surfactant.surfactantVariable \
-    ...     import SurfactantVariable
+    >>> from fipy import SurfactantVariable
     >>> from fipy.meshes import Grid2D
     >>> dx = 0.5
     >>> dy = 2.73

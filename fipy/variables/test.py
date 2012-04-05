@@ -61,6 +61,7 @@ def _suite():
             'fipy.variables.gaussCellGradVariable',
             'fipy.variables.faceGradContributionsVariable',
             'fipy.variables.surfactantConvectionVariable',
+            'fipy.variables.surfactantVariable',
         ))
     
 if __name__ == '__main__':
