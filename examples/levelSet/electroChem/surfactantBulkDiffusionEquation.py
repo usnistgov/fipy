@@ -34,8 +34,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _buildLevelSetDiffusionEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
+from fipy.variables.levelSetDiffusionVariable import _LevelSetDiffusionVariable
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.diffusionTerm import DiffusionTermNoCorrection
 
 def buildSurfactantBulkDiffusionEquation(bulkVar = None,
                                          distanceVar = None,
@@ -90,10 +92,10 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
     bulkSpCoeff = spCoeff * bulkVar
     coeff = bulkSpCoeff * surfactantVar.interfaceVar
 
-    eq = _buildLevelSetDiffusionEquation(ionVar = bulkVar,
-                                         distanceVar = distanceVar,
-                                         diffusionCoeff = diffusionCoeff,
-                                         transientCoeff = transientCoeff)
+    diffusionCoeff = _LevelSetDiffusionVariable(distanceVar,
+                                                diffusionCoeff)
+
+    eq =  TransientTerm(transientCoeff) - DiffusionTermNoCorrection(diffusionCoeff)
 
     if otherSurfactantVar is not None:
         otherCoeff = bulkSpCoeff * otherSurfactantVar.interfaceVar

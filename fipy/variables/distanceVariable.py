@@ -321,7 +321,7 @@ class DistanceVariable(CellVariable):
         >>> print numerix.allclose(distanceVariable.cellInterfaceAreas.sum(), 1.57984690073)
         1
         """   
-        from fipy.models.levelSet.distanceFunction.interfaceAreaVariable import _InterfaceAreaVariable
+        from fipy.variables.interfaceAreaVariable import _InterfaceAreaVariable
         return _InterfaceAreaVariable(self)
 
     @getsetDeprecated
@@ -362,7 +362,7 @@ class DistanceVariable(CellVariable):
             interfaceNormals = self._interfaceNormals[...,cellFaceIDs]
         else:
             interfaceNormals = 0
-        from fipy.tools.numerix import MA
+
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
 
     @getsetDeprecated
@@ -440,7 +440,7 @@ class DistanceVariable(CellVariable):
         True
 
         """
-        from fipy.models.levelSet.distanceFunction.interfaceFlagVariable import _InterfaceFlagVariable
+        from fipy.variables.interfaceFlagVariable import _InterfaceFlagVariable
         return _InterfaceFlagVariable(self)
 
     @getsetDeprecated

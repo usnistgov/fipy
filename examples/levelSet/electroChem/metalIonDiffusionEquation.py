@@ -38,7 +38,9 @@ __docformat__ = 'restructuredtext'
 
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _buildLevelSetDiffusionEquation
+from fipy.variables.levelSetDiffusionVariable import _LevelSetDiffusionVariable
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.diffusionTerm import DiffusionTermNoCorrection
 
 def buildMetalIonDiffusionEquation(ionVar = None,
                                    distanceVar = None,
@@ -154,11 +156,11 @@ def buildMetalIonDiffusionEquation(ionVar = None,
 
     """
 
-    eq = _buildLevelSetDiffusionEquation(ionVar = ionVar,
-                                         distanceVar = distanceVar,
-                                         transientCoeff = transientCoeff,
-                                         diffusionCoeff = diffusionCoeff)
-    
+    diffusionCoeff = _LevelSetDiffusionVariable(distanceVar,
+                                                diffusionCoeff)
+
+    eq =  TransientTerm(transientCoeff) - DiffusionTermNoCorrection(diffusionCoeff)
+
     mesh = distanceVar.mesh
     coeff = depositionRate * distanceVar.cellInterfaceAreas / (mesh.cellVolumes * metalIonMolarVolume) / ionVar
 

@@ -41,7 +41,6 @@ def _suite():
     theSuite = _LateImportDocTestSuite(
         docTestModuleNames = (
             'distanceFunction.distanceVariable',
-            'distanceFunction.levelSetDiffusionVariable',
         ), base = __name__)
 
     return theSuite

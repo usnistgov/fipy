@@ -10,6 +10,7 @@ from fipy.variables.gaussianNoiseVariable import *
 from fipy.variables.uniformNoiseVariable import *
 from fipy.variables.histogramVariable import *
 from fipy.variables.surfactantVariable import *
+from fipy.variables.distanceVariable import *
 
 __all__ = []
 __all__.extend(variable.__all__)
@@ -24,3 +25,4 @@ __all__.extend(gaussianNoiseVariable.__all__)
 __all__.extend(uniformNoiseVariable.__all__)
 __all__.extend(histogramVariable.__all__)
 __all__.extend(surfactantVariable.__all__)
+__all__.extend(distanceVariable.__all__)
