@@ -125,9 +125,9 @@ velocity = CellVariable(
 
 advectionEquation = TransientTerm() + AdvectionTerm(velocity)
 
-from fipy.models.levelSet.surfactant.convectionCoeff import SurfactantConvectionCoeff
+from fipy.variables.surfactantConvectionVariable import SurfactantConvectionVariable
 surfactantEquation = TransientTerm() - \
-    ExplicitUpwindConvectionTerm(SurfactantConvectionCoeff(distanceVariable))
+    ExplicitUpwindConvectionTerm(SurfactantConvectionVariable(distanceVariable))
 
 if __name__ == '__main__':
     

@@ -39,7 +39,7 @@ from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.solvers import DefaultAsymmetricSolver, LinearPCGSolver
 from fipy.variables.variable import Variable
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
-from fipy.models.levelSet.surfactant.convectionCoeff import SurfactantConvectionCoeff
+from fipy.variables.surfactantConvectionVariable import SurfactantConvectionVariable
 from fipy.terms.transientTerm import TransientTerm
 
 class AdsorbingSurfactantEquation():
@@ -264,7 +264,7 @@ class AdsorbingSurfactantEquation():
                              
         """
 
-        self.eq = TransientTerm(coeff = 1) - ExplicitUpwindConvectionTerm(SurfactantConvectionCoeff(distanceVar))
+        self.eq = TransientTerm(coeff = 1) - ExplicitUpwindConvectionTerm(SurfactantConvectionVariable(distanceVar))
 
         self.dt = Variable(0.)
         mesh = distanceVar.mesh

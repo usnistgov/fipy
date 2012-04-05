@@ -397,6 +397,8 @@ If running interactively, create viewers.
 ...         viewer = MultiViewer(viewers=(
 ...             Viewer(distanceVar, datamin=-1e-9, datamax=1e-9),
 ...             Viewer(catalystVar.interfaceVar)))
+...         from fipy.models.levelSet.surfactant.matplotlibSurfactantViewer import MatplotlibSurfactantViewer 
+...         viewer = MatplotlibSurfactantViewer(catalystVar.interfaceVar)
 ... else:
 ...     viewer = None
 

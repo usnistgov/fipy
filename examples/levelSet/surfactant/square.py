@@ -90,9 +90,9 @@ surfactantVariable = SurfactantVariable(
     )
 
 
-from fipy.models.levelSet.surfactant.convectionCoeff import SurfactantConvectionCoeff
+from fipy.variables.surfactantConvectionVariable import SurfactantConvectionVariable
 surfactantEquation = TransientTerm() - \
-    ExplicitUpwindConvectionTerm(SurfactantConvectionCoeff(distanceVariable))
+    ExplicitUpwindConvectionTerm(SurfactantConvectionVariable(distanceVariable))
 
 advectionEquation = TransientTerm() + AdvectionTerm(velocity)
 

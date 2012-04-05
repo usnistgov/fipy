@@ -59,7 +59,8 @@ def _suite():
             'fipy.variables.cellToFaceVariable',
             'fipy.variables.faceGradVariable',
             'fipy.variables.gaussCellGradVariable',
-            'fipy.variables.faceGradContributionsVariable'
+            'fipy.variables.faceGradContributionsVariable',
+            'fipy.variables.surfactantConvectionVariable',
         ))
     
 if __name__ == '__main__':
