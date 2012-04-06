@@ -428,21 +428,30 @@ class POSFile(GmshFile):
         value = var.value
 
         vertexCoords = var.mesh.vertexCoords
-        cellFaceVertices = nx.take(var.mesh.faceVertexIDs, var.mesh.cellFaceIDs, axis=1)
-        faceOrder = nx.argsort(var.mesh._unsortedNodesPerFace, axis=0)[::-1]
-        faceOrientations = nx.take(var.mesh._rightHandOrientation, var.mesh.cellFaceIDs, axis=0)
-
-        for shape, writeShape in (("triangle", self._writeTriangle),
-                                  ("quadrangle", self._writeQuadrangle),
-                                  ("tetrahedron", self._writeTetrahedron),
-                                  ("hexahedron", self._writeHexahedron),
-                                  ("prism", self._writePrism),
-                                  ("pyramid", self._writePyramid)):
+        cellVertexIDs = var.mesh._orderedCellVertexIDs
+        
+        for shape in ("triangle", "quadrangle", "tetrahedron", "hexahedron", "prism", "pyramid"):
             for i in (cellTopology == t[shape]).nonzero()[0]:
-                writeShape(vertexCoords=vertexCoords, 
-                           cell=cellFaceVertices[..., faceOrder[..., i], i], 
-                           orientations=faceOrientations[faceOrder[..., i], i], 
-                           value=value[..., i])
+                nodes = cellVertexIDs[..., i]
+                self._writeNodesAndValues(vertexCoords=vertexCoords, 
+                                          nodes=nodes[~nodes.mask], 
+                                          value=value[..., i])
+        
+#         cellFaceVertices = nx.take(var.mesh.faceVertexIDs, var.mesh.cellFaceIDs, axis=1)
+#         faceOrder = nx.argsort(var.mesh._unsortedNodesPerFace, axis=0)[::-1]
+#         faceOrientations = nx.take(var.mesh._rightHandOrientation, var.mesh.cellFaceIDs, axis=0)
+# 
+#         for shape, writeShape in (("triangle", self._writeTriangle),
+#                                   ("quadrangle", self._writeQuadrangle),
+#                                   ("tetrahedron", self._writeTetrahedron),
+#                                   ("hexahedron", self._writeHexahedron),
+#                                   ("prism", self._writePrism),
+#                                   ("pyramid", self._writePyramid)):
+#             for i in (cellTopology == t[shape]).nonzero()[0]:
+#                 writeShape(vertexCoords=vertexCoords, 
+#                            cell=cellFaceVertices[..., faceOrder[..., i], i], 
+#                            orientations=faceOrientations[faceOrder[..., i], i], 
+#                            value=value[..., i])
                                     
         self.fileobj.write("$EndView\n")
         
