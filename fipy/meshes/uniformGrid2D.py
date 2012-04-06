@@ -557,14 +557,7 @@ class UniformGrid2D(UniformGrid):
         
     @property
     def _cellVertexIDs(self):
-        ids = numerix.zeros((4, self.nx, self.ny), 'l')
-        indices = numerix.indices((self.nx, self.ny))
-        ids[1] = indices[0] + (indices[1] + 1) * self.numberOfVerticalColumns
-        ids[0] = ids[1] + 1
-        ids[3] = indices[0] + indices[1] * self.numberOfVerticalColumns
-        ids[2] = ids[3] + 1
-        
-        return numerix.reshape(ids, (4, self.numberOfCells))
+        return self._orderedCellVertexIDs
     
     @property
     def faceVertexIDs(self):
@@ -583,8 +576,8 @@ class UniformGrid2D(UniformGrid):
                                                  order="FORTRAN")),
                                    axis=1)
 
-    @property
-    def _orderedCellVertexIDs(self):
+    def _calcOrderedCellVertexIDs(self):
+        """Correct ordering for VTK_PIXEL"""
         ids = numerix.zeros((4, self.nx, self.ny), 'l')
         indices = numerix.indices((self.nx, self.ny))
         ids[2] = indices[0] + (indices[1] + 1) * self.numberOfVerticalColumns

@@ -915,7 +915,8 @@ class MSHFile(GmshFile):
             
         parprint("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF, 
-                cellsData.idmap, ghostsData.idmap)
+                cellsData.idmap, ghostsData.idmap,
+                cellsToVertIDs)
                 
     def write(self, obj, time=0.0, timeindex=0):
         if not self.formatWritten:
@@ -1517,7 +1518,8 @@ class Gmsh2D(Mesh2D):
          faces,
          cells,
          self.cellGlobalIDs, 
-         self.gCellGlobalIDs) = self.mshFile.read()
+         self.gCellGlobalIDs,
+         self._orderedCellVertexIDs_data) = self.mshFile.read()
          
         self.mshFile.close()
 
@@ -1714,7 +1716,8 @@ class Gmsh3D(Mesh):
          faces,
          cells,
          self.cellGlobalIDs,
-         self.gCellGlobalIDs) = self.mshFile.read()
+         self.gCellGlobalIDs,
+         self._orderedCellVertexIDs_data) = self.mshFile.read()
          
         self.mshFile.close()
 

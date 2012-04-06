@@ -812,9 +812,15 @@ class AbstractMesh(object):
     def _cellVertexIDs(self):
         raise NotImplementedError
  
+    def _calcOrderedCellVertexIDs(self):
+        return self._cellVertexIDs
+        
     @property
     def _orderedCellVertexIDs(self):
-        return self._cellVertexIDs
+        if hasattr(self, "_orderedCellVertexID_data"):
+            return self._orderedCellVertexID_data
+        else:
+            return self._calcOrderedCellVertexIDs()
 
     @property
     def _cellDistanceNormals(self):

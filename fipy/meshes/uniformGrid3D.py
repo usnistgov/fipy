@@ -504,6 +504,14 @@ class UniformGrid3D(UniformGrid):
      
     @property
     def _cellVertexIDs(self):
+        return self._orderedCellVertexIDs
+
+    @property
+    def faceVertexIDs(self):
+       return _Grid3DBuilder.createFaces(self.nx, self.ny, self.nz)[1]
+
+    def _calcOrderedCellVertexIDs(self):
+        """Correct ordering for VTK_VOXEL"""
         ids = numerix.zeros((8, self.nx, self.ny, self.nz), 'l')
         indices = numerix.indices((self.nx, self.ny, self.nz))
         ids[1] = indices[0] + (indices[1] + (indices[2] + 1) * (self.ny + 1) + 1) * (self.nx + 1)
@@ -516,15 +524,6 @@ class UniformGrid3D(UniformGrid):
         ids[6] = ids[7] + 1
         
         return numerix.reshape(ids.swapaxes(1,3), (8, self.numberOfCells))
-
-    @property
-    def faceVertexIDs(self):
-       return _Grid3DBuilder.createFaces(self.nx, self.ny, self.nz)[1]
-
-    @property
-    def _orderedCellVertexIDs(self):
-        """Correct ordering for VTK_VOXEL"""
-        return self._cellVertexIDs     
         
 ##     scaling
     

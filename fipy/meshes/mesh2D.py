@@ -111,8 +111,7 @@ class Mesh2D(Mesh):
         newmesh = Mesh2D(newCoords, self.faceVertexIDs, self.cellFaceIDs)
         return newmesh
 
-    @property
-    def _orderedCellVertexIDs(self):
+    def _calcOrderedCellVertexIDs(self):
         from fipy.tools.numerix import take
         NFac = self._maxFacesPerCell
 
