@@ -913,6 +913,11 @@ class MSHFile(GmshFile):
             if self.namesPath is not None:
                 os.unlink(self.namesPath)
             
+        # convert lists of cell vertices to a properly oriented masked array
+        maxVerts = max([len(v) for v in cellsToVertIDs])
+        cellsToVertIDs = [nx.concatenate((v, [-1] * (maxVerts-len(v)))) for v in cellsToVertIDs]
+        cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0,1)
+                
         parprint("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF, 
                 cellsData.idmap, ghostsData.idmap,
