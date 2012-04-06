@@ -47,7 +47,7 @@ class _BasePeriodicGrid2D(Grid2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None, overlap=2, communicator=parallel):
         super(_BasePeriodicGrid2D, self).__init__(dx = dx, dy = dy, nx = nx, ny = ny, overlap=overlap, communicator=communicator)
         self._nonPeriodicCellVertexIDs = super(_BasePeriodicGrid2D, self)._cellVertexIDs
-        self._orderedCellVertexID_data = super(_BasePeriodicGrid2D, self)._orderedCellVertexIDs        
+        self._orderedCellVertexIDs_data = super(_BasePeriodicGrid2D, self)._orderedCellVertexIDs        
         self._nonPeriodicCellFaceIDs = numerix.array(super(_BasePeriodicGrid2D, self).cellFaceIDs)
         self._makePeriodic()
 

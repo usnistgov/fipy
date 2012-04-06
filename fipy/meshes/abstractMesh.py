@@ -817,8 +817,8 @@ class AbstractMesh(object):
         
     @property
     def _orderedCellVertexIDs(self):
-        if hasattr(self, "_orderedCellVertexID_data"):
-            return self._orderedCellVertexID_data
+        if hasattr(self, "_orderedCellVertexIDs_data"):
+            return self._orderedCellVertexIDs_data
         else:
             return self._calcOrderedCellVertexIDs()
 
