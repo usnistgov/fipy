@@ -38,11 +38,12 @@
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.mesh2D import Mesh2D
 from fipy.tools import parallel
 
+from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes.builders import _NonuniformGrid2DBuilder
-from fipy.meshes.gridlike import _Gridlike2D
+from fipy.meshes.representations.gridRepresentation import _Grid2DRepresentation
+from fipy.meshes.topologies.gridTopology import _Grid2DTopology
 
 __all__ = ["Grid2D"]
 
@@ -51,7 +52,8 @@ class Grid2D(Mesh2D):
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallel):
+    def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallel,
+                 _RepresentationClass=_Grid2DRepresentation, _TopologyClass=_Grid2DTopology):
 
         builder = _NonuniformGrid2DBuilder()
         
@@ -88,103 +90,10 @@ class Grid2D(Mesh2D):
          cells,
          [self.Xoffset, self.Yoffset]) = builder.gridData
          
-        Mesh2D.__init__(self, vertices, faces, cells, communicator=communicator)
+        Mesh2D.__init__(self, vertices, faces, cells, communicator=communicator, 
+                        _RepresentationClass=_RepresentationClass, _TopologyClass=_TopologyClass)
         
         self.scale = scale
-
-    def __getstate__(self):
-        return _Gridlike2D.__getstate__(self)
-
-    def __setstate__(self, dict):
-        return _Gridlike2D.__setstate__(self, dict)
-
-    def __repr__(self):
-        return _Gridlike2D.__repr__(self)
-
-    def _isOrthogonal(self):
-        return _Gridlike2D._isOrthogonal(self)
-
-    @property
-    def _concatenatedClass(self):
-        return _Gridlike2D._concatenatedClass
-                                                                
-    @property
-    def _globalNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Does not include the IDs of boundary cells.
-
-        E.g., would return [0, 1, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return _Gridlike2D._globalNonOverlappingCellIDs(self)
-
-    @property
-    def _globalOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return _Gridlike2D._globalOverlappingCellIDs(self)
-
-    @property
-    def _localNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Does not include the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 4 | 5 |
-        ------------------
-        | 0 | 1 || 1 | 2 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return _Gridlike2D._localNonOverlappingCellIDs(self)
-
-    @property
-    def _localOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 5 |   |
-        ------------------
-        | 0 | 1 || 2 |   |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return _Gridlike2D._localOverlappingCellIDs(self)
- 
-## pickling
 
     def _test(self):
         """

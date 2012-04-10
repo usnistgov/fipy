@@ -36,11 +36,10 @@ __docformat__ = 'restructuredtext'
  
 from fipy.tools import numerix
 from fipy.tools.numerix import random
-from fipy.tools.decorators import getsetDeprecated
+from fipy.tools.dimensions.physicalField import PhysicalField
+
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes import Grid2D
-from fipy.tools import vector
-from fipy.tools.dimensions.physicalField import PhysicalField
 
 __all__ = ["SkewedGrid2D"]
 
@@ -51,6 +50,14 @@ class SkewedGrid2D(Mesh2D):
     and `-rand`) in the X and Y directions.
     """
     def __init__(self, dx = 1., dy = 1., nx = None, ny = 1, rand = 0):
+        self.args = {
+            'dx': dx, 
+            'dy': dy, 
+            'nx': nx, 
+            'ny': ny, 
+            'rand': rand
+        }
+        
         self.nx = nx
         self.ny = ny
         
@@ -85,7 +92,8 @@ class SkewedGrid2D(Mesh2D):
         
         cells = self.grid.cellFaceIDs
 
-        Mesh2D.__init__(self, changedVertices, faces, cells)
+        Mesh2D.__init__(self, changedVertices, faces, cells,
+                        _RepresentationClass=_Grid2DRepresentation, _TopologyClass=_Grid2DTopology)
         
         self.scale = scale
         
@@ -103,16 +111,3 @@ class SkewedGrid2D(Mesh2D):
     def shape(self):
         return (self.nx, self.ny)
     
-## pickling
-
-    def __getstate__(self):
-        return {
-            'dx' : self.dx * self.scale['length'],
-            'dy' : self.dy * self.scale['length'],
-            'nx' : self.nx,
-            'ny' : self.ny
-        }
-
-    def __setstate__(self, dict):
-        self.__init__(**dict)
-

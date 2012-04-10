@@ -51,8 +51,10 @@ from fipy.tools import parallel
 from fipy.tools import serial
 from fipy.tools.decorators import getsetDeprecated
 from fipy.tests.doctestPlus import register_skipper
+
 from fipy.meshes.mesh import Mesh
 from fipy.meshes.mesh2D import Mesh2D
+from fipy.meshes.topologies.meshTopology import _MeshTopology
 
 __all__ = ["openMSHFile", "openPOSFile", 
            "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D", 
@@ -80,6 +82,9 @@ def parprint(str):
             print >> sys.stderr, str
 
 class GmshException(Exception):
+    pass
+    
+class MeshExportError(GmshException):
     pass
     
 def gmshVersion(communicator=parallel):
@@ -370,83 +375,30 @@ class POSFile(GmshFile):
         nb_scalar_pyramids2 = nb_vector_pyramids2 = nb_tensor_pyramids2 = 0
         nb_text2d = nb_text2d_chars = nb_text3d = nb_text3d_chars = 0
         
-        maxFacesPerCell = var.mesh.cellFaceIDs.shape[0]
-        if nx.MA.is_masked(var.mesh.cellFaceIDs):
-            facesPerCell = (~nx.MA.getmask(var.mesh.cellFaceIDs)).sum(axis=0)
-        else:
-            facesPerCell = nx.empty((var.mesh.numberOfCells,), dtype=int)
-            facesPerCell[:] = maxFacesPerCell
-            
-        cellFaceVertices = nx.take(var.mesh.faceVertexIDs, var.mesh.cellFaceIDs, axis=1)
-        # argsort does not work as documented:
-        #   Array of indices that sort a along the specified axis. In other words, a[index_array] yields a sorted a.
-        # No, it's not.
-        # We need both the sorted values and the sort order.
-        if nx.MA.is_masked(cellFaceVertices):
-            nodesPerFace = (~cellFaceVertices.mask).sum(axis=0)
-        else:
-            nodesPerFace = nx.empty(cellFaceVertices.shape[1:], dtype=int)
-            nodesPerFace[:] = var.mesh.faceVertexIDs.shape[0]
-        faceOrder = nx.argsort(nodesPerFace, axis=0)[::-1]
-        nodesPerFace = nx.sort(nodesPerFace, axis=0)[::-1]
+        cellTopology = var.mesh._cellTopology
+        t = var.mesh.topology._elementTopology
         
-        if dimensions == 2:
-            triangles = (facesPerCell == 3)
-            quadrangles = (facesPerCell == 4)
-            tetrahedra = nx.array([False])
-            hexahedra = nx.array([False])
-            prisms = nx.array([False])
-            pyramids = nx.array([False])
-            if var.rank == 0:
-                nb_scalar_triangles = triangles.sum()
-                nb_scalar_quadrangles = quadrangles.sum()
-            elif var.rank == 1:
-                nb_vector_triangles = triangles.sum()
-                nb_vector_quadrangles = quadrangles.sum()
-            elif var.rank == 2:
-                nb_tensor_triangles = triangles.sum()
-                nb_tensor_quadrangles = quadrangles.sum()
-            else:
-                raise ValueError("rank must be 0, 1, or 2")
-        elif dimensions == 3:
-            def faceNodeCount(counts):
-                counts = counts + [0] * (maxFacesPerCell - len(counts))
-                return nx.array(counts)[..., nx.newaxis]
-                
-            triangles = nx.array([False])
-            quadrangles = nx.array([False])
-            tetrahedra = ((facesPerCell == 4) 
-                          & (nodesPerFace == faceNodeCount([3, 3, 3, 3])).any(axis=0))
-            hexahedra = ((facesPerCell == 6) 
-                         & (nodesPerFace == faceNodeCount([4, 4, 4, 4, 4, 4])).any(axis=0))
-            prisms = ((facesPerCell == 5) 
-                      & (nodesPerFace == faceNodeCount([4, 4, 4, 3, 3])).any(axis=0))
-            pyramids = ((facesPerCell == 5) 
-                        & (nodesPerFace == faceNodeCount([4, 3, 3, 3, 3])).any(axis=0))
-        else:
-            raise ValueError("dimensions must be 2 or 3")
-            
         if var.rank == 0:
-            nb_scalar_triangles = triangles.sum()
-            nb_scalar_quadrangles = quadrangles.sum()
-            nb_scalar_tetrahedra = tetrahedra.sum()
-            nb_scalar_hexahedra = hexahedra.sum()
-            nb_scalar_prisms = prisms.sum()
-            nb_scalar_pyramids = pyramids.sum()
+            nb_scalar_triangles = (cellTopology == t["triangle"]).sum()
+            nb_scalar_quadrangles = (cellTopology == t["quadrangle"]).sum()
+            nb_scalar_tetrahedra = (cellTopology == t["tetrahedron"]).sum()
+            nb_scalar_hexahedra = (cellTopology == t["hexahedron"]).sum()
+            nb_scalar_prisms = (cellTopology == t["prism"]).sum()
+            nb_scalar_pyramids = (cellTopology == t["pyramid"]).sum()
         elif var.rank == 1:
-            nb_vector_triangles = triangles.sum()
-            nb_vector_quadrangles = quadrangles.sum()
-            nb_vector_tetrahedra = tetrahedra.sum()
-            nb_vector_hexahedra = hexahedra.sum()
-            nb_vector_prisms = prisms.sum()
-            nb_vector_pyramids = pyramids.sum()
+            nb_vector_triangles = (cellTopology == t["triangle"]).sum()
+            nb_vector_quadrangles = (cellTopology == t["quadrangle"]).sum()
+            nb_vector_tetrahedra = (cellTopology == t["tetrahedron"]).sum()
+            nb_vector_hexahedra = (cellTopology == t["hexahedron"]).sum()
+            nb_vector_prisms = (cellTopology == t["prism"]).sum()
+            nb_vector_pyramids = (cellTopology == t["pyramid"]).sum()
         elif var.rank == 2:
-            nb_tensor_triangles = triangles.sum()
-            nb_tensor_quadrangles = quadrangles.sum()
-            nb_tensor_tetrahedra = tetrahedra.sum()
-            nb_tensor_hexahedra = hexahedra.sum()
-            nb_tensor_prisms = prisms.sum()
-            nb_tensor_pyramids = pyramids.sum()
+            nb_tensor_triangles = (cellTopology == t["triangle"]).sum()
+            nb_tensor_quadrangles = (cellTopology == t["quadrangle"]).sum()
+            nb_tensor_tetrahedra = (cellTopology == t["tetrahedron"]).sum()
+            nb_tensor_hexahedra = (cellTopology == t["hexahedron"]).sum()
+            nb_tensor_prisms = (cellTopology == t["prism"]).sum()
+            nb_tensor_pyramids = (cellTopology == t["pyramid"]).sum()
         else:
             raise ValueError("rank must be 0, 1, or 2")
 
@@ -476,31 +428,31 @@ class POSFile(GmshFile):
         value = var.value
 
         vertexCoords = var.mesh.vertexCoords
+        cellVertexIDs = var.mesh._orderedCellVertexIDs
         
-        for i in triangles.nonzero()[0]:
-            triangle = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writeTriangle(vertexCoords=vertexCoords, triangle=triangle, value=value[..., i])
-                                
-        for i in quadrangles.nonzero()[0]:
-            quadrangle = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writeQuadrangle(vertexCoords=vertexCoords, quadrangle=quadrangle, value=value[..., i])
-
-        for i in tetrahedra.nonzero()[0]:
-            tetrahedron = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writeTetrahedron(vertexCoords=vertexCoords, tetrahedron=tetrahedron, value=value[..., i])
-
-        for i in hexahedra.nonzero()[0]:
-            hexahedron = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writeHexahedron(vertexCoords=vertexCoords, hexahedron=hexahedron, value=value[..., i])
-
-        for  i in prisms.nonzero()[0]:
-            prism = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writePrism(vertexCoords=vertexCoords, prism=prism, value=value[..., i])
-
-        for i in pyramids.nonzero()[0]:
-            pyramid = cellFaceVertices[..., faceOrder[..., i], i]
-            self._writePyramid(vertexCoords=vertexCoords, pyramid=pyramid, value=value[..., i])
-
+        for shape in ("triangle", "quadrangle", "tetrahedron", "hexahedron", "prism", "pyramid"):
+            for i in (cellTopology == t[shape]).nonzero()[0]:
+                nodes = cellVertexIDs[..., i]
+                self._writeNodesAndValues(vertexCoords=vertexCoords, 
+                                          nodes=nodes[~nodes.mask], 
+                                          value=value[..., i])
+        
+#         cellFaceVertices = nx.take(var.mesh.faceVertexIDs, var.mesh.cellFaceIDs, axis=1)
+#         faceOrder = nx.argsort(var.mesh._unsortedNodesPerFace, axis=0)[::-1]
+#         faceOrientations = nx.take(var.mesh._rightHandOrientation, var.mesh.cellFaceIDs, axis=0)
+# 
+#         for shape, writeShape in (("triangle", self._writeTriangle),
+#                                   ("quadrangle", self._writeQuadrangle),
+#                                   ("tetrahedron", self._writeTetrahedron),
+#                                   ("hexahedron", self._writeHexahedron),
+#                                   ("prism", self._writePrism),
+#                                   ("pyramid", self._writePyramid)):
+#             for i in (cellTopology == t[shape]).nonzero()[0]:
+#                 writeShape(vertexCoords=vertexCoords, 
+#                            cell=cellFaceVertices[..., faceOrder[..., i], i], 
+#                            orientations=faceOrientations[faceOrder[..., i], i], 
+#                            value=value[..., i])
+                                    
         self.fileobj.write("$EndView\n")
         
         
@@ -519,18 +471,18 @@ class POSFile(GmshFile):
     #           comp1-node2-time2 comp2-node2-time2 comp3-node2-time2
     #           comp1-node3-time2 comp2-node3-time2 comp3-node3-time2
     
-    def _writeTriangle(self, vertexCoords, triangle, value):
+    def _writeTriangle(self, vertexCoords, cell, orientations, value):
         # triangle is defined by one face and the remaining point 
         # from either of the other faces
-        nodes = triangle[..., 0]
-        nodes = nx.concatenate((nodes, triangle[~nx.in1d(triangle[..., 1], nodes), 1]))
+        nodes = cell[..., 0]
+        nodes = nx.concatenate((nodes, cell[~nx.in1d(cell[..., 1], nodes), 1]))
                         
         self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
 
-    def _writeQuadrangle(self, vertexCoords, quadrangle, value):
+    def _writeQuadrangle(self, vertexCoords, cell, orientations, value):
         # quadrangle is defined by one face and the opposite face
-        face0 = quadrangle[..., 0]
-        for face1 in quadrangle[..., 1:].swapaxes(0, 1):
+        face0 = cell[..., 0]
+        for face1 in cell[..., 1:].swapaxes(0, 1):
             if not nx.in1d(face1, face0).any():
                 break
                 
@@ -554,65 +506,47 @@ class POSFile(GmshFile):
          
         self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
         
-    def _writeTetrahedron(self, vertexCoords, tetrahedron, value):
+    def _writeTetrahedron(self, vertexCoords, cell, orientations, value):
         # tetrahedron is defined by one face and the remaining point 
         # from any of the other faces
-        nodes = tetrahedron[..., 0]
-        nodes = nx.concatenate((nodes, tetrahedron[~nx.in1d(tetrahedron[..., 1], nodes), 1]))
+        nodes = cell[..., 0][::orientations[0]]
+        nodes = nx.concatenate((nodes, cell[~nx.in1d(cell[..., 1], nodes), 1]))
                 
         self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
 
-    def _reorientFace(self, vertexCoords, face0, face1):
-        # need to ensure face1 is oriented same way as face0
-        cross01 = nx.cross((vertexCoords[..., face0[1]] 
-                            - vertexCoords[..., face0[0]]),
-                           (vertexCoords[..., face0[2]] 
-                            - vertexCoords[..., face0[0]]))
-                    
-        cross10 = nx.cross((vertexCoords[..., face1[1]] 
-                            - vertexCoords[..., face1[0]]),
-                           (vertexCoords[..., face1[2]] 
-                            - vertexCoords[..., face1[0]]))
-                            
-        if nx.dot(cross01, cross10) < 0:
-            face1 = face1[::-1]
-            
-        return face1
-
-    def _writeHexahedron(self, vertexCoords, hexahedron, value):
+    def _writeHexahedron(self, vertexCoords, cell, orientations, value):
         # hexahedron is defined by one face and the opposite face
-        face0 = hexahedron[..., 0]
-        for face1 in hexahedron[..., 1:].swapaxes(0, 1):
+        face0 = cell[..., 0][::orientations[0]]
+        for i, face1 in enumerate(cell[..., 1:].swapaxes(0, 1)):
             if not nx.any([node in face1 for node in face0]):
+                face1 = face1[::orientations[i+1]]
                 break
-
-        face1 = self._reorientFace(vertexCoords=vertexCoords, face0=face0, face1=face1)
 
         nodes = nx.concatenate((face0, face1))
 
         self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
 
-    def _writePrism(self, mesh, prism, value):
+    def _writePrism(self, vertexCoords, cell, orientations, value):
         # prism is defined by the two three-sided faces 
-        face0 = pyramid[..., 3]
-        face1 = pyramid[..., 4]
+        face0 = cell[..., 3][::orientations[3]]
+        face1 = cell[..., 4][::orientations[4]]
         
-        face1 = self._reorientFace(mesh=mesh, face0=face0, face1=face1)
-
         nodes = nx.concatenate((face0, face1))
 
-        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
 
 
-    def _writePyramid(self, mesh, pyramid, value):
+    def _writePyramid(self, vertexCoords, cell, orientations, value):
         # pyramid is defined by four-sided face and the remaining point 
         # from any of the other faces
-        nodes = pyramid[..., 0]
-        nodes = nx.concatenate((nodes, pyramid[~nx.in1d(pyramid[..., 1], nodes), 1]))
+        nodes = cell[..., 0][::orientations[0]]
+        nodes = nx.concatenate((nodes, cell[~nx.in1d(cell[..., 1], nodes), 1]))
                        
-        self._writeNodesAndValues(mesh=mesh, nodes=nodes, value=value)
+        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
         
     def _writeNodesAndValues(self, vertexCoords, nodes, value):
+        # strip out masked values
+        nodes = nodes[nodes != -1]
         numNodes = len(nodes)
         data = []
         dim = vertexCoords.shape[0]
@@ -722,8 +656,6 @@ class MSHFile(GmshFile):
         `facesToVertices` and `cellsToFaces`.
         """
 
-        def formatForFiPy(arr): return arr.swapaxes(0,1)[::-1]
-
         allShapes  = nx.unique(shapeTypes).tolist()
         maxFaces   = max([self.numFacesPerCell[x] for x in allShapes])
 
@@ -792,7 +724,7 @@ class MSHFile(GmshFile):
                
         facesToVertices = nx.array(uniqueFaces, dtype=int)
 
-        return formatForFiPy(facesToVertices), formatForFiPy(cellsToFaces), facesDict
+        return facesToVertices.swapaxes(0,1)[::-1], cellsToFaces.swapaxes(0,1), facesDict
 
     def _translateNodesToVertices(self, entitiesNodes, vertexMap):
         """Translates entitiesNodes from Gmsh node IDs to `vertexCoords` indices.
@@ -990,9 +922,15 @@ class MSHFile(GmshFile):
             if self.namesPath is not None:
                 os.unlink(self.namesPath)
             
+        # convert lists of cell vertices to a properly oriented masked array
+        maxVerts = max([len(v) for v in cellsToVertIDs])
+        cellsToVertIDs = [nx.concatenate((v, [-1] * (maxVerts-len(v)))) for v in cellsToVertIDs]
+        cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0,1)
+                
         parprint("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF, 
-                cellsData.idmap, ghostsData.idmap)
+                cellsData.idmap, ghostsData.idmap,
+                cellsToVertIDs)
                 
     def write(self, obj, time=0.0, timeindex=0):
         if not self.formatWritten:
@@ -1080,7 +1018,7 @@ class MSHFile(GmshFile):
                                          nx.float64]:
                     continue
                 for vertexNum in faceVertexIDs[..., faceNum]:
-                    if vertexNum not in vertexList:
+                    if vertexNum not in vertexList and vertexNum is not nx.MA.masked:
                         vertexList.append(vertexNum)
                         
             if dimensions == 2:
@@ -1314,22 +1252,39 @@ class MSHFile(GmshFile):
         
         >>> import os
         >>> import tempfile
+
+        >>> from fipy import Grid2D, Tri2D, Grid3D, CylindricalGrid2D, CellVariable, doctest_raw_input
+        >>> from fipy.meshes.uniformGrid2D import UniformGrid2D
         
         >>> dir = tempfile.mkdtemp()
         
-        >>> from fipy.meshes.grid2D import Grid2D
         >>> g = Grid2D(nx = 10, ny = 10)
+        >>> x, y = g.cellCenters
+        >>> gvar = CellVariable(mesh=g, name="f(x,y)", value=1. / (x+y))
         >>> f = openMSHFile(name=os.path.join(dir, "g.msh"), mode='w') # doctest: +GMSH
         >>> f.write(g) # doctest: +GMSH
+        >>> f.write(gvar)
         >>> f.close() # doctest: +GMSH
 
-        >>> from fipy.meshes.uniformGrid2D import UniformGrid2D
+        >>> if __name__ == "__main__":
+        ...     p = Popen(["gmsh", os.path.join(dir, "g.msh")]) # doctest: +GMSH
+        ...     doctest_raw_input("Grid2D... Press enter.")
+
+        >>> g_ref = GmshGrid2D(dx=1., dy=1., nx=10, ny=10, background=gvar)
+            
+        >>> f = openMSHFile(name=os.path.join(dir, "g_ref.msh"), mode='w') # doctest: +GMSH
+        >>> f.write(g_ref) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
+
+        >>> if __name__ == "__main__":
+        ...     p = Popen(["gmsh", os.path.join(dir, "g_ref.msh")]) # doctest: +GMSH
+        ...     doctest_raw_input("Refined Grid2D... Press enter.")
+            
         >>> ug = UniformGrid2D(nx = 10, ny = 10)
         >>> f = openMSHFile(name=os.path.join(dir, "ug.msh"), mode='w') # doctest: +GMSH
         >>> f.write(ug) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
 
-        >>> from fipy.meshes import Tri2D
         >>> t = Tri2D(nx = 10, ny = 10)
         >>> f = openMSHFile(name=os.path.join(dir, "t.msh"), mode='w') # doctest: +GMSH
         >>> f.write(t) # doctest: +GMSH
@@ -1340,11 +1295,27 @@ class MSHFile(GmshFile):
         >>> f.write(concat) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
 
-        >>> from fipy.meshes import Grid3D
+        >>> if __name__ == "__main__":
+        ...     p = Popen(["gmsh", os.path.join(dir, "concat.msh")]) # doctest: +GMSH
+        ...     doctest_raw_input("Tri2D + Grid2D... Press enter.")
+
         >>> g3d = Grid3D(nx=10, ny=10, nz=30)
         >>> f = openMSHFile(name=os.path.join(dir, "g3d.msh"), mode='w') # doctest: +GMSH
         >>> f.write(g3d) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
+
+        >>> if __name__ == "__main__":
+        ...     p = Popen(["gmsh", os.path.join(dir, "g3d.msh")]) # doctest: +GMSH
+        ...     doctest_raw_input("Grid3D... Press enter.")
+
+        >>> cyl = CylindricalGrid2D(nx=10, ny=10)
+        >>> f = openMSHFile(name=os.path.join(dir, "cyl.msh"), mode='w') # doctest: +GMSH
+        >>> f.write(cyl) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
+        
+        >>> if __name__ == "__main__":
+        ...     p = Popen(["gmsh", os.path.join(dir, "cyl.msh")]) # doctest: +GMSH
+        ...     doctest_raw_input("CylindricalGrid2D... Press enter.")
 
         >>> import shutil
         >>> shutil.rmtree(dir)
@@ -1376,6 +1347,88 @@ class _ElementData(object):
         self.physicalEntities.append(physicalEntity)
         self.geometricalEntities.append(geometricalEntity)
 
+class _GmshTopology(_MeshTopology):
+    
+    @property
+    def _globalNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Does not include the IDs of boundary cells.
+
+        E.g., would return [0, 1, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """ 
+        return nx.array(self.mesh.cellGlobalIDs)
+
+    @property
+    def _globalOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in the context of the
+        global parallel mesh. Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
+
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """ 
+        return nx.array(self.mesh.cellGlobalIDs + self.mesh.gCellGlobalIDs)
+
+    @property
+    def _localNonOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Does not include the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 4 | 5 |
+        ------------------
+        | 0 | 1 || 1 | 2 |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return nx.arange(len(self.mesh.cellGlobalIDs))
+
+    @property
+    def _localOverlappingCellIDs(self):
+        """
+        Return the IDs of the local mesh in isolation. 
+        Includes the IDs of boundary cells.
+        
+        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
+
+            A        B
+        ------------------
+        | 3 | 4 || 5 |   |
+        ------------------
+        | 0 | 1 || 2 |   |
+        ------------------
+        
+        .. note:: Trivial except for parallel meshes
+        """
+        return nx.arange(len(self.mesh.cellGlobalIDs) 
+                         + len(self.mesh.gCellGlobalIDs))
+                         
+
+    
+                   
 class Gmsh2D(Mesh2D):
     """Construct a 2D Mesh using Gmsh
     
@@ -1512,7 +1565,8 @@ class Gmsh2D(Mesh2D):
          faces,
          cells,
          self.cellGlobalIDs, 
-         self.gCellGlobalIDs) = self.mshFile.read()
+         self.gCellGlobalIDs,
+         self._orderedCellVertexIDs_data) = self.mshFile.read()
          
         self.mshFile.close()
 
@@ -1524,7 +1578,8 @@ class Gmsh2D(Mesh2D):
         Mesh2D.__init__(self, vertexCoords=verts,
                               faceVertexIDs=faces,
                               cellFaceIDs=cells,
-                              communicator=communicator)
+                              communicator=communicator,
+                              _TopologyClass=_GmshTopology)
                    
         (self.physicalCellMap,
          self.geometricalCellMap,
@@ -1537,106 +1592,13 @@ class Gmsh2D(Mesh2D):
         
         parprint("Exiting Gmsh2D")
 
-    def __setstate__(self, dict):
-        Mesh2D.__init__(self, **dict)
+    def __setstate__(self, state):
+        super(Gmsh2D, self).__setstate__(state)
         self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
         self.gCellGlobalIDs = []
         self.communicator = serial
         self.mshFile = None
     
-    @getsetDeprecated
-    def _getGlobalNonOverlappingCellIDs(self):
-        return self._globalNonOverlappingCellIDs
-
-    @property
-    def _globalNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Does not include the IDs of boundary cells.
-
-        E.g., would return [0, 1, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """ 
-        return nx.array(self.cellGlobalIDs)
-
-    @getsetDeprecated
-    def _getGlobalOverlappingCellIDs(self):
-        return self._globalOverlappingCellIDs
-
-    @property
-    def _globalOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """ 
-        return nx.array(self.cellGlobalIDs + self.gCellGlobalIDs)
-
-    @getsetDeprecated
-    def _getLocalNonOverlappingCellIDs(self):
-        return self._localNonOverlappingCellIDs
-
-    @property
-    def _localNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Does not include the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 4 | 5 |
-        ------------------
-        | 0 | 1 || 1 | 2 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return nx.arange(len(self.cellGlobalIDs))
-
-    @getsetDeprecated
-    def _getLocalOverlappingCellIDs(self):
-        return self._localOverlappingCellIDs
-
-    @property
-    def _localOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 5 |   |
-        ------------------
-        | 0 | 1 || 2 |   |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return nx.arange(len(self.cellGlobalIDs) 
-                         + len(self.gCellGlobalIDs))
-                         
     def _test(self):
         """
         First, we'll test Gmsh2D on a small circle with triangular
@@ -1714,6 +1676,18 @@ class Gmsh2D(Mesh2D):
         >>> print (pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all() 
         ... # doctest: +GMSH, +SERIAL
         True
+        
+        >>> (f, mshFile) = tempfile.mkstemp('.msh')
+        >>> f = openMSHFile(name=mshFile, mode='w') # doctest: +GMSH
+        >>> f.write(circle) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
+        
+        >>> from fipy import doctest_raw_input
+        >>> if __name__ == "__main__":
+        ...     p = Popen(["gmsh", mshFile]) # doctest: +GMSH
+        ...     doctest_raw_input("Circle... Press enter.")
+
+        >>> os.remove(mshFile)
 
         >>> cmd = "Point(1) = {0, 0, 0, 0.05};"
 
@@ -1801,14 +1775,16 @@ class Gmsh3D(Mesh):
          faces,
          cells,
          self.cellGlobalIDs,
-         self.gCellGlobalIDs) = self.mshFile.read()
+         self.gCellGlobalIDs,
+         self._orderedCellVertexIDs_data) = self.mshFile.read()
          
         self.mshFile.close()
 
         Mesh.__init__(self, vertexCoords=verts,
                             faceVertexIDs=faces,
                             cellFaceIDs=cells,
-                            communicator=communicator)
+                            communicator=communicator,
+                            _TopologyClass=_GmshTopology)
 
         if self.communicator.Nproc > 1:
             self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
@@ -1822,105 +1798,12 @@ class Gmsh3D(Mesh):
         
         del self.mshFile
 
-    def __setstate__(self, dict):
-        Mesh.__init__(self, **dict)
+    def __setstate__(self, state):
+        super(Gmsh3D, self).__setstate__(state)
         self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
         self.gCellGlobalIDs = []
         self.communicator = serial
         self.mshFile = None
-
-    @getsetDeprecated
-    def _getGlobalNonOverlappingCellIDs(self):
-        return self._globalNonOverlappingCellIDs
-
-    @property
-    def _globalNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Does not include the IDs of boundary cells.
-
-        E.g., would return [0, 1, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """ 
-        return nx.array(self.cellGlobalIDs)
-
-    @getsetDeprecated
-    def _getGlobalOverlappingCellIDs(self):
-        return self._globalOverlappingCellIDs
-
-    @property
-    def _globalOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in the context of the
-        global parallel mesh. Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
-
-            A        B
-        ------------------
-        | 4 | 5 || 6 | 7 |
-        ------------------
-        | 0 | 1 || 2 | 3 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """ 
-        return nx.array(self.cellGlobalIDs + self.gCellGlobalIDs)
-
-    @getsetDeprecated
-    def _getLocalNonOverlappingCellIDs(self):
-        return self._localNonOverlappingCellIDs
-
-    @property
-    def _localNonOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Does not include the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 4 | 5 |
-        ------------------
-        | 0 | 1 || 1 | 2 |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return nx.arange(len(self.cellGlobalIDs))
-
-    @getsetDeprecated
-    def _getLocalOverlappingCellIDs(self):
-        return self._localOverlappingCellIDs
-
-    @property
-    def _localOverlappingCellIDs(self):
-        """
-        Return the IDs of the local mesh in isolation. 
-        Includes the IDs of boundary cells.
-        
-        E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
-
-            A        B
-        ------------------
-        | 3 | 4 || 5 |   |
-        ------------------
-        | 0 | 1 || 2 |   |
-        ------------------
-        
-        .. note:: Trivial except for parallel meshes
-        """
-        return nx.arange(len(self.cellGlobalIDs) 
-                         + len(self.gCellGlobalIDs))
 
     def _test(self):
         """
@@ -2029,6 +1912,18 @@ class Gmsh3D(Mesh):
 
         >>> print nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3]) # doctest: +GMSH
         True
+        
+        Write tetrahedron, prism, and pyramid volumes out as a POS file
+        
+        >>> from fipy import CellVariable
+        >>> vol = CellVariable(mesh=tetPriPyr, value=tetPriPyr.cellVolumes, name="volume") # doctest: +GMSH
+        
+        >>> (f, posFile) = tempfile.mkstemp('.pos')
+        >>> f = openPOSFile(posFile, mode='w') # doctest: +GMSH
+        >>> f.write(vol) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
+
+        >>> os.remove(posFile)
         """
 
 class GmshGrid2D(Gmsh2D):
@@ -2230,103 +2125,3 @@ def _test():
 if __name__ == "__main__":
     _test()
     
-    from fipy.meshes import Grid2D
-    from fipy.meshes import Tri2D
-    from fipy.meshes import Grid3D
-    from fipy.meshes import CylindricalGrid2D
-    from fipy.meshes import Gmsh2D
-    from fipy.meshes import GmshGrid2D
-    from fipy.variables.cellVariable import CellVariable
-    
-    import tempfile
-    from subprocess import Popen, PIPE
-    
-    dir = tempfile.mkdtemp()
-
-    a = Grid2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10)
-    a2 = Grid2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10) + ([10], [0])
-    
-    x, y = a.cellCenters
-    avar = CellVariable(mesh=a, name="binky", value=1. / (x+y))
-    
-    f1 = openMSHFile(name=os.path.join(dir, "a.msh"), mode='w')
-    f1.write(a)
-    f1.write(avar)
-    f1.close()
-    
-    Popen(["gmsh", os.path.join(dir, "a.msh")])
-    raw_input("Grid2D... Press enter.")
-    
-    a_ref = GmshGrid2D(dx=1., dy=1., nx=10, ny=10, background=avar)
-    
-    f1 = openMSHFile(name=os.path.join(dir, "a_ref.msh"), mode='w')
-    f1.write(a_ref)
-    f1.close()
-
-    Popen(["gmsh", os.path.join(dir, "a_ref.msh")])
-    raw_input("Refined Grid2D... Press enter.")
-
-    b = Tri2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10)
-    
-    f2 = openMSHFile(name=os.path.join(dir, "b.msh"), mode='w')
-    f2.write(b)
-    f2.close()
-
-    c = Grid3D(dx = 1.0, dy = 1.0, nx = 20, ny = 20, nz = 40)
-    
-    f3 = openMSHFile(name=os.path.join(dir, "c.msh"), mode='w')
-    f3.write(c)
-    f3.close()
-
-    Popen(["gmsh", os.path.join(dir, "c.msh")])
-    raw_input("Grid3D... Press enter.")
-
-    d = a + a2
-    f4 = openMSHFile(name=os.path.join(dir, "d.msh"), mode='w')
-    f4.write(d)
-    f4.close()
-
-    Popen(["gmsh", os.path.join(dir, "d.msh")])
-    raw_input("Concatenated grid... Press enter.")
- 
-    e = a + (b + ([0], [10]))
-    f5 = openMSHFile(name=os.path.join(dir, "e.msh"), mode='w')
-    f5.write(e)
-    f5.close()
-
-    Popen(["gmsh", os.path.join(dir, "e.msh")])
-    raw_input("Tri2D + Grid2D... Press enter.")
-
-    cyl = CylindricalGrid2D(nx = 10, ny = 10)
-    f6 = openMSHFile(name=os.path.join(dir, "cyl.msh"), mode='w')
-    f6.write(cyl)
-    f6.close()
-    
-    Popen(["gmsh", os.path.join(dir, "cyl.msh")])
-    raw_input("CylindricalGrid2D... Press enter.")
-
-    circle = Gmsh2D('''
-         cellSize = 0.05;
-         radius = 1;
-         Point(1) = {0, 0, 0, cellSize};
-         Point(2) = {-radius, 0, 0, cellSize};
-         Point(3) = {0, radius, 0, cellSize};
-         Point(4) = {radius, 0, 0, cellSize};
-         Point(5) = {0, -radius, 0, cellSize};
-         Circle(6) = {2, 1, 3};
-         Circle(7) = {3, 1, 4};
-         Circle(8) = {4, 1, 5};
-         Circle(9) = {5, 1, 2};
-         Line Loop(10) = {6, 7, 8, 9};
-         Plane Surface(11) = {10};
-         Recombine Surface{11};
-    ''')   
-    f7 = openMSHFile(name=os.path.join(dir, "cir.msh"), mode='w')
-    f7.write(circle)
-    f7.close()
-    
-    Popen(["gmsh", os.path.join(dir, "cir.msh")])
-    raw_input("Circle... Press enter.")
-    
-    import shutil
-    shutil.rmtree(dir)

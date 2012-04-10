@@ -36,11 +36,12 @@
 __docformat__ = "restructuredtext"
 
 from fipy.tools import numerix
-
-from fipy.meshes.mesh2D import Mesh2D
 from fipy.tools import vector
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools.decorators import getsetDeprecated
+
+from fipy.meshes.mesh2D import Mesh2D
+from fipy.meshes.representations.gridRepresentation import _Grid2DRepresentation
+from fipy.meshes.topologies.meshTopology import _Mesh2DTopology
 
 __all__ = ["Tri2D"]
 
@@ -52,7 +53,8 @@ class Tri2D(Mesh2D):
     parts with the dividing lines being the diagonals.
     """
     
-    def __init__(self, dx = 1., dy = 1., nx = 1, ny = 1):
+    def __init__(self, dx = 1., dy = 1., nx = 1, ny = 1,
+                 _RepresentationClass=_Grid2DRepresentation, _TopologyClass=_Mesh2DTopology):
         """
         Creates a 2D triangular mesh with horizontal faces numbered first then
         vertical faces, then diagonal faces.  Vertices are numbered starting
@@ -70,6 +72,14 @@ class Tri2D(Mesh2D):
             The total number of boxes will be equal to `nx * ny`, and the total 
             number of cells will be equal to `4 * nx * ny`.
         """
+        
+        self.args = {
+            'dx': dx, 
+            'dy': dy, 
+            'nx': nx, 
+            'ny': ny
+        }
+
         self.nx = nx
         self.ny = ny
 
@@ -91,13 +101,16 @@ class Tri2D(Mesh2D):
         self.numberOfCenterVertices = self.nx * self.ny
         self.numberOfTotalVertices  = self.numberOfCornerVertices + self.numberOfCenterVertices
         
+        self.offset = (0, 0)
+        
         vertices = self._createVertices()
         faces    = self._createFaces()
 
         cells = self._createCells()
         cells = numerix.sort(cells, axis=0)
 
-        Mesh2D.__init__(self, vertices, faces, cells)
+        Mesh2D.__init__(self, vertices, faces, cells,
+                        _RepresentationClass=_RepresentationClass, _TopologyClass=_TopologyClass)
 
         self.scale = scale
 
@@ -187,23 +200,12 @@ class Tri2D(Mesh2D):
     def shape(self):
         return (self.nx, self.ny)
 
+    @property
     def _isOrthogonal(self):
         return True
     
 ## pickling
 
-    def __getstate__(self):
-        return {
-            'dx' : self.dx * self.scale['length'],
-            'dy' : self.dy * self.scale['length'],
-            'nx' : self.nx,
-            'ny' : self.ny
-        }
-
-    def __setstate__(self, dict):
-        self.__init__(**dict)
-
-        
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure

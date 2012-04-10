@@ -4,11 +4,12 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "diffusionTermCorrection.py"
+ #  FILE: "meshRepresentation.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -34,16 +35,26 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.abstractDiffusionTerm import _AbstractDiffusionTerm
-from fipy.tools import numerix
+__all__ = []
 
-__all__ = ["DiffusionTermCorrection"]
+from fipy.meshes.representations.abstractRepresentation import _AbstractRepresentation
+ 
+class _MeshRepresentation(_AbstractRepresentation):
 
-class DiffusionTermCorrection(_AbstractDiffusionTerm):
+    def getstate(self):
+        """Collect the necessary information to ``pickle`` the `Mesh` to persistent storage.
+        """
+        return dict(vertexCoords=self.mesh.vertexCoords *  self.mesh.scale['length'],            
+                    faceVertexIDs=self.mesh.faceVertexIDs,
+                    cellFaceIDs=self.mesh.cellFaceIDs,
+                    _RepresentationClass=self.__class__)
+                
+    @staticmethod
+    def setstate(mesh, state):
+        """Populate a new `Mesh` from ``pickled`` persistent storage.
+        """
+        from fipy.meshes.mesh import Mesh
+        Mesh.__init__(mesh, **state)
 
-    def _getNormals(self, mesh):
-        return mesh._faceCellToCellNormals
-
-    def _treatMeshAsOrthogonal(self, mesh):        
-        return mesh._isOrthogonal
-
+    def repr(self):
+        return "%s()" % self.mesh.__class__.__name__

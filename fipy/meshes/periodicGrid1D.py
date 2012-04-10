@@ -37,10 +37,12 @@ Peridoic 1D Mesh
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.meshes.grid1D import Grid1D
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
+
+from fipy.meshes.grid1D import Grid1D
 from fipy.meshes.builders import _PeriodicGrid1DBuilder
+from fipy.meshes.topologies.gridTopology import _PeriodicGrid1DTopology
 
 __all__ = ["PeriodicGrid1D"]
 
@@ -81,22 +83,15 @@ class PeriodicGrid1D(Grid1D):
     def __init__(self, dx = 1., nx = None, overlap=2):
 
         Grid1D.__init__(self, dx = dx, nx = nx, overlap=overlap,
-                        _BuilderClass=_PeriodicGrid1DBuilder)
-        self.nonPeriodicCellFaceIDs = numerix.array(super(Grid1D, self).cellFaceIDs)
+                        _BuilderClass=_PeriodicGrid1DBuilder,
+                        _TopologyClass=_PeriodicGrid1DTopology)
+        self._nonPeriodicCellFaceIDs = numerix.array(super(Grid1D, self).cellFaceIDs)
         self._makePeriodic()
 
     def _makePeriodic(self):
         if self.occupiedNodes == 1:
             self._connectFaces(numerix.nonzero(self.facesLeft),
                                numerix.nonzero(self.facesRight))
-
-    @getsetDeprecated
-    def _getGlobalOverlappingCellIDs(self):
-        return self._globalOverlappingCellIDs
-
-    @property
-    def _globalOverlappingCellIDs(self):
-        return super(PeriodicGrid1D, self)._globalOverlappingCellIDs % self.args['nx']
 
     @property
     def cellCenters(self):
@@ -120,7 +115,7 @@ class PeriodicGrid1D(Grid1D):
         newCoords = self.vertexCoords + vector
         newmesh = self.__class__(**self.args)
         from fipy.meshes.mesh1D import Mesh1D
-        Mesh1D.__init__(newmesh, newCoords, numerix.array(self.faceVertexIDs), self.nonPeriodicCellFaceIDs, communicator=self.communicator)
+        Mesh1D.__init__(newmesh, newCoords, numerix.array(self.faceVertexIDs), self._nonPeriodicCellFaceIDs, communicator=self.communicator)
         newmesh._makePeriodic()
         return newmesh
     

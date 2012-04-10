@@ -124,14 +124,14 @@ class GapFillMesh(Mesh2D):
         Mesh2D.__init__(self,dict['vertexCoords'], dict['faceVertexIDs'], dict['cellFaceIDs'])
 
     def __getstate__(self):
-        dict = Mesh2D.__getstate__(self)
-        dict['epsilon'] = self.epsilon
-        dict['actualDomainHeight'] = self.actualDomainHeight
-        dict['actualFineRegionHeight'] = self.actualFineRegionHeight
-        dict['cellSize'] = self.cellSize
-        dict['fineMesh'] = self.fineMesh
-        dict['faceVertexIDs'] = self.faceVertexIDs.filled()
-        return dict
+        state = super(GapFillMesh, self).__getstate__()
+        state['epsilon'] = self.epsilon
+        state['actualDomainHeight'] = self.actualDomainHeight
+        state['actualFineRegionHeight'] = self.actualFineRegionHeight
+        state['cellSize'] = self.cellSize
+        state['fineMesh'] = self.fineMesh
+        state['faceVertexIDs'] = self.faceVertexIDs.filled()
+        return state
             
     def __setstate__(self, dict):
         self.epsilon = dict['epsilon']
@@ -342,16 +342,16 @@ class TrenchMesh(GapFillMesh):
                                                          1)))
 
     def __getstate__(self):
-        dict = GapFillMesh.__getstate__(self)
-        dict['trenchDepth'] = self.trenchDepth
-        dict['heightBelowTrench'] = self.heightBelowTrench
-        dict['domainWidth'] = self.domainWidth
-        dict['trenchWidth'] = self.trenchWidth
-        dict['angle'] = self.angle
-        dict['bowWidth'] = self.bowWidth
-        dict['overBumpWidth'] = self.overBumpWidth
-        dict['overBumpRadius'] = self.overBumpRadius
-        return dict
+        state = super(TrenchMesh, self).__getstate__()
+        state['trenchDepth'] = self.trenchDepth
+        state['heightBelowTrench'] = self.heightBelowTrench
+        state['domainWidth'] = self.domainWidth
+        state['trenchWidth'] = self.trenchWidth
+        state['angle'] = self.angle
+        state['bowWidth'] = self.bowWidth
+        state['overBumpWidth'] = self.overBumpWidth
+        state['overBumpRadius'] = self.overBumpRadius
+        return state
             
     def __setstate__(self, dict):
         self.trenchDepth = dict['trenchDepth']

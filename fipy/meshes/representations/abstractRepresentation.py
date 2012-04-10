@@ -4,11 +4,12 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "diffusionTermCorrection.py"
+ #  FILE: "abstractRepresentation.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -34,16 +35,21 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.abstractDiffusionTerm import _AbstractDiffusionTerm
-from fipy.tools import numerix
+__all__ = []
 
-__all__ = ["DiffusionTermCorrection"]
+class _AbstractRepresentation(object):
+    def __init__(self, mesh):
+        self.mesh = mesh
 
-class DiffusionTermCorrection(_AbstractDiffusionTerm):
+    def getstate(self):
+        """Collect the necessary information to ``pickle`` the `Mesh` to persistent storage.
+        """
+        raise NotImplemented
 
-    def _getNormals(self, mesh):
-        return mesh._faceCellToCellNormals
-
-    def _treatMeshAsOrthogonal(self, mesh):        
-        return mesh._isOrthogonal
-
+    def setstate(self, state):
+        """Populate a new `Mesh` from ``pickled`` persistent storage.
+        """
+        raise NotImplemented
+        
+    def repr(self):
+        raise NotImplemented
