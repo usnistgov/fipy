@@ -1252,22 +1252,39 @@ class MSHFile(GmshFile):
         
         >>> import os
         >>> import tempfile
+
+        >>> from fipy import Grid2D, Tri2D, Grid3D, CylindricalGrid2D, CellVariable, doctest_raw_input
+        >>> from fipy.meshes.uniformGrid2D import UniformGrid2D
         
         >>> dir = tempfile.mkdtemp()
         
-        >>> from fipy.meshes.grid2D import Grid2D
         >>> g = Grid2D(nx = 10, ny = 10)
+        >>> x, y = g.cellCenters
+        >>> gvar = CellVariable(mesh=g, name="f(x,y)", value=1. / (x+y))
         >>> f = openMSHFile(name=os.path.join(dir, "g.msh"), mode='w') # doctest: +GMSH
         >>> f.write(g) # doctest: +GMSH
+        >>> f.write(gvar)
         >>> f.close() # doctest: +GMSH
 
-        >>> from fipy.meshes.uniformGrid2D import UniformGrid2D
+        >>> if __name__ == "__main__":
+        ...     p = Popen(["gmsh", os.path.join(dir, "g.msh")]) # doctest: +GMSH
+        ...     doctest_raw_input("Grid2D... Press enter.")
+
+        >>> g_ref = GmshGrid2D(dx=1., dy=1., nx=10, ny=10, background=gvar)
+            
+        >>> f = openMSHFile(name=os.path.join(dir, "g_ref.msh"), mode='w') # doctest: +GMSH
+        >>> f.write(g_ref) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
+
+        >>> if __name__ == "__main__":
+        ...     p = Popen(["gmsh", os.path.join(dir, "g_ref.msh")]) # doctest: +GMSH
+        ...     doctest_raw_input("Refined Grid2D... Press enter.")
+            
         >>> ug = UniformGrid2D(nx = 10, ny = 10)
         >>> f = openMSHFile(name=os.path.join(dir, "ug.msh"), mode='w') # doctest: +GMSH
         >>> f.write(ug) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
 
-        >>> from fipy.meshes import Tri2D
         >>> t = Tri2D(nx = 10, ny = 10)
         >>> f = openMSHFile(name=os.path.join(dir, "t.msh"), mode='w') # doctest: +GMSH
         >>> f.write(t) # doctest: +GMSH
@@ -1278,11 +1295,27 @@ class MSHFile(GmshFile):
         >>> f.write(concat) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
 
-        >>> from fipy.meshes import Grid3D
+        >>> if __name__ == "__main__":
+        ...     p = Popen(["gmsh", os.path.join(dir, "concat.msh")]) # doctest: +GMSH
+        ...     doctest_raw_input("Tri2D + Grid2D... Press enter.")
+
         >>> g3d = Grid3D(nx=10, ny=10, nz=30)
         >>> f = openMSHFile(name=os.path.join(dir, "g3d.msh"), mode='w') # doctest: +GMSH
         >>> f.write(g3d) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
+
+        >>> if __name__ == "__main__":
+        ...     p = Popen(["gmsh", os.path.join(dir, "g3d.msh")]) # doctest: +GMSH
+        ...     doctest_raw_input("Grid3D... Press enter.")
+
+        >>> cyl = CylindricalGrid2D(nx=10, ny=10)
+        >>> f = openMSHFile(name=os.path.join(dir, "cyl.msh"), mode='w') # doctest: +GMSH
+        >>> f.write(cyl) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
+        
+        >>> if __name__ == "__main__":
+        ...     p = Popen(["gmsh", os.path.join(dir, "cyl.msh")]) # doctest: +GMSH
+        ...     doctest_raw_input("CylindricalGrid2D... Press enter.")
 
         >>> import shutil
         >>> shutil.rmtree(dir)
@@ -1643,6 +1676,18 @@ class Gmsh2D(Mesh2D):
         >>> print (pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all() 
         ... # doctest: +GMSH, +SERIAL
         True
+        
+        >>> (f, mshFile) = tempfile.mkstemp('.msh')
+        >>> f = openMSHFile(name=mshFile, mode='w') # doctest: +GMSH
+        >>> f.write(circle) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
+        
+        >>> from fipy import doctest_raw_input
+        >>> if __name__ == "__main__":
+        ...     p = Popen(["gmsh", mshFile]) # doctest: +GMSH
+        ...     doctest_raw_input("Circle... Press enter.")
+
+        >>> os.remove(mshFile)
 
         >>> cmd = "Point(1) = {0, 0, 0, 0.05};"
 
@@ -1873,16 +1918,12 @@ class Gmsh3D(Mesh):
         >>> from fipy import CellVariable
         >>> vol = CellVariable(mesh=tetPriPyr, value=tetPriPyr.cellVolumes, name="volume") # doctest: +GMSH
         
-        >>> print tetPriPyr._cellTopology
-
         >>> (f, posFile) = tempfile.mkstemp('.pos')
-        >>> file = openPOSFile(posFile, mode='w') # doctest: +GMSH
-        >>> file.write(vol) # doctest: +GMSH
-        >>> file.close() # doctest: +GMSH
+        >>> f = openPOSFile(posFile, mode='w') # doctest: +GMSH
+        >>> f.write(vol) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
 
-        >>> print posFile
-
-        >>> # os.remove(posFile)
+        >>> os.remove(posFile)
         """
 
 class GmshGrid2D(Gmsh2D):
@@ -2084,103 +2125,3 @@ def _test():
 if __name__ == "__main__":
     _test()
     
-    from fipy.meshes import Grid2D
-    from fipy.meshes import Tri2D
-    from fipy.meshes import Grid3D
-    from fipy.meshes import CylindricalGrid2D
-    from fipy.meshes import Gmsh2D
-    from fipy.meshes import GmshGrid2D
-    from fipy.variables.cellVariable import CellVariable
-    
-    import tempfile
-    from subprocess import Popen, PIPE
-    
-    dir = tempfile.mkdtemp()
-
-    a = Grid2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10)
-    a2 = Grid2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10) + ([10], [0])
-    
-    x, y = a.cellCenters
-    avar = CellVariable(mesh=a, name="binky", value=1. / (x+y))
-    
-    f1 = openMSHFile(name=os.path.join(dir, "a.msh"), mode='w')
-    f1.write(a)
-    f1.write(avar)
-    f1.close()
-    
-    Popen(["gmsh", os.path.join(dir, "a.msh")])
-    raw_input("Grid2D... Press enter.")
-    
-    a_ref = GmshGrid2D(dx=1., dy=1., nx=10, ny=10, background=avar)
-    
-    f1 = openMSHFile(name=os.path.join(dir, "a_ref.msh"), mode='w')
-    f1.write(a_ref)
-    f1.close()
-
-    Popen(["gmsh", os.path.join(dir, "a_ref.msh")])
-    raw_input("Refined Grid2D... Press enter.")
-
-    b = Tri2D(dx = 1.0, dy = 1.0, nx = 10, ny = 10)
-    
-    f2 = openMSHFile(name=os.path.join(dir, "b.msh"), mode='w')
-    f2.write(b)
-    f2.close()
-
-    c = Grid3D(dx = 1.0, dy = 1.0, nx = 20, ny = 20, nz = 40)
-    
-    f3 = openMSHFile(name=os.path.join(dir, "c.msh"), mode='w')
-    f3.write(c)
-    f3.close()
-
-    Popen(["gmsh", os.path.join(dir, "c.msh")])
-    raw_input("Grid3D... Press enter.")
-
-    d = a + a2
-    f4 = openMSHFile(name=os.path.join(dir, "d.msh"), mode='w')
-    f4.write(d)
-    f4.close()
-
-    Popen(["gmsh", os.path.join(dir, "d.msh")])
-    raw_input("Concatenated grid... Press enter.")
- 
-    e = a + (b + ([0], [10]))
-    f5 = openMSHFile(name=os.path.join(dir, "e.msh"), mode='w')
-    f5.write(e)
-    f5.close()
-
-    Popen(["gmsh", os.path.join(dir, "e.msh")])
-    raw_input("Tri2D + Grid2D... Press enter.")
-
-    cyl = CylindricalGrid2D(nx = 10, ny = 10)
-    f6 = openMSHFile(name=os.path.join(dir, "cyl.msh"), mode='w')
-    f6.write(cyl)
-    f6.close()
-    
-    Popen(["gmsh", os.path.join(dir, "cyl.msh")])
-    raw_input("CylindricalGrid2D... Press enter.")
-
-    circle = Gmsh2D('''
-         cellSize = 0.05;
-         radius = 1;
-         Point(1) = {0, 0, 0, cellSize};
-         Point(2) = {-radius, 0, 0, cellSize};
-         Point(3) = {0, radius, 0, cellSize};
-         Point(4) = {radius, 0, 0, cellSize};
-         Point(5) = {0, -radius, 0, cellSize};
-         Circle(6) = {2, 1, 3};
-         Circle(7) = {3, 1, 4};
-         Circle(8) = {4, 1, 5};
-         Circle(9) = {5, 1, 2};
-         Line Loop(10) = {6, 7, 8, 9};
-         Plane Surface(11) = {10};
-         Recombine Surface{11};
-    ''')   
-    f7 = openMSHFile(name=os.path.join(dir, "cir.msh"), mode='w')
-    f7.write(circle)
-    f7.close()
-    
-    Popen(["gmsh", os.path.join(dir, "cir.msh")])
-    raw_input("Circle... Press enter.")
-    
-    import shutil
-    shutil.rmtree(dir)
