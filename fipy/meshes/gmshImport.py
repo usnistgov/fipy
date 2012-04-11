@@ -1012,10 +1012,7 @@ class MSHFile(GmshFile):
                 """For more complicated meshes, some cells may have fewer
                 faces than others. If this is the case, ignore the
                 '--' entries."""
-                if type(faceNum) not in [nx.int32, 
-                                         nx.int64,
-                                         nx.float32,
-                                         nx.float64]:
+                if faceNum is nx.MA.masked:
                     continue
                 for vertexNum in faceVertexIDs[..., faceNum]:
                     if vertexNum not in vertexList and vertexNum is not nx.MA.masked:
