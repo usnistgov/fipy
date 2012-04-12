@@ -724,7 +724,7 @@ class MSHFile(GmshFile):
                
         facesToVertices = nx.array(uniqueFaces, dtype=int)
 
-        return facesToVertices.swapaxes(0,1)[::-1], cellsToFaces.swapaxes(0,1), facesDict
+        return facesToVertices.swapaxes(0,1)[::-1], cellsToFaces.swapaxes(0,1).copy('C'), facesDict
 
     def _translateNodesToVertices(self, entitiesNodes, vertexMap):
         """Translates entitiesNodes from Gmsh node IDs to `vertexCoords` indices.
