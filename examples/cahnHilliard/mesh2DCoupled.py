@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "input2D.py"
+ #  FILE: "mesh2DCoupled.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -44,9 +44,9 @@ equation (also known as
 "conserved Ginsberg-Landau" or "model B" of Hohenberg & Halperin)
 
 .. math::
-   :label:CH
+
    \frac{\partial \phi}{\partial t}
-   = \nabla\cdot D \nabla\left( \frac{\partial f}{\partial \phi}   - \epsilon^2 \nabla^2 \phi\right).
+   = \nabla \cdot D \nabla \left( \frac{\partial f}{\partial \phi}   - \epsilon^2 \nabla^2 \phi \right).
 
 where :math:`\phi` is a conserved order parameter, possibly representing 
 alloy composition or spin.
@@ -87,8 +87,9 @@ We start the problem with random fluctuations about :math:`\phi = 1/2`
 >>> if __name__ == "__main__":
 ...     viewer = Viewer(vars=(phi, psi)) # , datamin=0., datamax=1.)
 
-We factor :eq:`CH` into two 2nd-order PDEs and place them in canonical form for 
-:term:`FiPy` to solve them as a coupled set of equations. 
+We factor the Cahn-Hilliard equation into two 2nd-order PDEs and place
+them in canonical form for :term:`FiPy` to solve them as a coupled set
+of equations.
 
 .. math::
     
