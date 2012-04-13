@@ -45,7 +45,7 @@ def _suite():
                                        'quaternary',
                                        'simple',
                                        'symmetry',
-                                       'binary-coupled'
+                                       'binaryCoupled'
                                    ), 
                                    base = __name__)
     
