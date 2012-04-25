@@ -40,11 +40,11 @@ from fipy.tools import numerix
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 
-from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
+from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["MatplotlibVectorViewer"]
 
-class MatplotlibVectorViewer(AbstractMatplotlibViewer):
+class MatplotlibVectorViewer(AbstractMatplotlib2DViewer):
     """Displays a vector plot of a 2D rank-1 `CellVariable` or
     `FaceVariable` object using Matplotlib_
 
@@ -52,7 +52,7 @@ class MatplotlibVectorViewer(AbstractMatplotlibViewer):
 
     """
     
-    __doc__ += AbstractMatplotlibViewer._test2Dvector(viewer="MatplotlibVectorViewer")
+    __doc__ += AbstractMatplotlib2DViewer._test2Dvector(viewer="MatplotlibVectorViewer")
     __doc__ += """
     
             >>> for sparsity in numerix.arange(5000, 0, -500):
@@ -61,9 +61,9 @@ class MatplotlibVectorViewer(AbstractMatplotlibViewer):
             >>> viewer._promptForOpinion()
         
     """
-    __doc__ += AbstractMatplotlibViewer._test2DvectorIrregular(viewer="MatplotlibVectorViewer")
+    __doc__ += AbstractMatplotlib2DViewer._test2DvectorIrregular(viewer="MatplotlibVectorViewer")
 
-    def __init__(self, vars, title=None, scale=None, sparsity=None, log=False, limits={}, axes=None, **kwlimits):
+    def __init__(self, vars, title=None, scale=None, sparsity=None, log=False, limits={}, axes=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DViewer`.
 
         :Parameters:
@@ -85,9 +85,13 @@ class MatplotlibVectorViewer(AbstractMatplotlibViewer):
             a (default) value of `None` will autoscale.
           axes
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
+          figaspect
+            desired aspect ratio of figure. If arg is a number, use that aspect
+            ratio. If arg is 'auto', the aspect ratio will be determined from
+            the Variable's mesh.
         """
         kwlimits.update(limits)
-        AbstractMatplotlibViewer.__init__(self, vars=vars, title=title, axes=axes, **kwlimits)
+        AbstractMatplotlib2DViewer.__init__(self, vars=vars, title=title, axes=axes, figaspect=figaspect, **kwlimits)
 
         self.quiver(sparsity=sparsity, scale=scale)
         self.log = log
@@ -129,7 +133,7 @@ class MatplotlibVectorViewer(AbstractMatplotlibViewer):
         from fipy.meshes.mesh2D import Mesh2D
         from fipy.meshes.uniformGrid2D import UniformGrid2D
 
-        vars = [var for var in AbstractMatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in AbstractMatplotlib2DViewer._getSuitableVars(self, vars) \
                 if ((isinstance(var.mesh, Mesh2D) 
                      or isinstance(var.mesh, UniformGrid2D))\
                     and (isinstance(var, FaceVariable) \

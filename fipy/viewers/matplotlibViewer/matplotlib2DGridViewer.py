@@ -38,20 +38,20 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools.decorators import getsetDeprecated
 
-from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer, _ColorBar
+from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["Matplotlib2DGridViewer"]
 
-class Matplotlib2DGridViewer(AbstractMatplotlibViewer):
+class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
     """
     Displays an image plot of a 2D `CellVariable` object using Matplotlib_.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
     
-    __doc__ += AbstractMatplotlibViewer._test2D(viewer="Matplotlib2DGridViewer")
+    __doc__ += AbstractMatplotlib2DViewer._test2D(viewer="Matplotlib2DGridViewer")
 
-    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
+    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, figaspect='auto', **kwlimits):
         """
         Creates a `Matplotlib2DGridViewer`.
         
@@ -71,11 +71,15 @@ class Matplotlib2DGridViewer(AbstractMatplotlibViewer):
             plot a colorbar in specified orientation if not `None`
           axes
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
+          figaspect
+            desired aspect ratio of figure. If arg is a number, use that aspect
+            ratio. If arg is 'auto', the aspect ratio will be determined from
+            the Variable's mesh.
         """
         kwlimits.update(limits)
-        AbstractMatplotlibViewer.__init__(self, vars=vars, title=title, 
-                                      cmap=cmap, colorbar=colorbar, axes=axes, 
-                                      **kwlimits)
+        AbstractMatplotlib2DViewer.__init__(self, vars=vars, title=title, 
+                                            cmap=cmap, colorbar=colorbar, axes=axes, figaspect=figaspect, 
+                                            **kwlimits)
 
         self.image = self.axes.imshow(self._data,
                                       extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
@@ -87,7 +91,7 @@ class Matplotlib2DGridViewer(AbstractMatplotlibViewer):
             self.axes.set_title(self.vars[0].name)
 
     def _getLimit(self, key, default=None):
-        limit = AbstractMatplotlibViewer._getLimit(self, key, default=default)
+        limit = AbstractMatplotlib2DViewer._getLimit(self, key, default=default)
         if limit is None:
             X, Y = self.vars[0].mesh.faceCenters
             if 'xmin' in key:
@@ -103,7 +107,7 @@ class Matplotlib2DGridViewer(AbstractMatplotlibViewer):
     def _getSuitableVars(self, vars):
         from fipy.meshes.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in AbstractMatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in AbstractMatplotlib2DViewer._getSuitableVars(self, vars) \
           if (isinstance(var.mesh, UniformGrid2D) and isinstance(var, CellVariable)
               and var.rank == 0)]
         if len(vars) == 0:

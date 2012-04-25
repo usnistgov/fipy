@@ -1397,6 +1397,24 @@ class AbstractMesh(object):
         else:
             return None
 
+    def _makePeriodic(self):
+        raise NotImplementedError
+        
+    @property
+    def aspect2D(self):
+        """The physical y:x aspect ratio of a 2D mesh
+        """
+        if self.dim != 2:
+            raise NotImplementedError
+        else:
+            vertexIDs = self._orderedCellVertexIDs
+
+            xCoords = numerix.take(self.vertexCoords[0], vertexIDs)
+            yCoords = numerix.take(self.vertexCoords[1], vertexIDs)
+
+            return float((yCoords.max() - yCoords.min()) / (xCoords.max() - xCoords.min()))
+
+     
 def _madmin(x):
     if len(x) == 0:
         return 0

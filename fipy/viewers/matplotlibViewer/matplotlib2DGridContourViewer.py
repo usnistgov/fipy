@@ -38,11 +38,11 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
+from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["Matplotlib2DGridContourViewer"]
 
-class Matplotlib2DGridContourViewer(AbstractMatplotlibViewer):
+class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
     """Displays a contour plot of a 2D `CellVariable` object.    
 
     The `Matplotlib2DGridContourViewer` plots a 2D `CellVariable` using Matplotlib_.
@@ -50,10 +50,10 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlibViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
     
-    __doc__ += AbstractMatplotlibViewer._test2D(viewer="Matplotlib2DGridContourViewer")
+    __doc__ += AbstractMatplotlib2DViewer._test2D(viewer="Matplotlib2DGridContourViewer")
 
 
-    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
+    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DViewer`.
         
         :Parameters:
@@ -72,11 +72,15 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlibViewer):
             plot a colorbar in specified orientation if not `None`
           axes
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
+          figaspect
+            desired aspect ratio of figure. If arg is a number, use that aspect
+            ratio. If arg is 'auto', the aspect ratio will be determined from
+            the Variable's mesh.
         """
         kwlimits.update(limits)
-        AbstractMatplotlibViewer.__init__(self, vars=vars, title=title, 
-                                      cmap=cmap, colorbar=colorbar, axes=axes, 
-                                      **kwlimits)
+        AbstractMatplotlib2DViewer.__init__(self, vars=vars, title=title, 
+                                            cmap=cmap, colorbar=colorbar, axes=axes, figaspect=figaspect,
+                                            **kwlimits)
         
         self._plot()
         
@@ -84,7 +88,7 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlibViewer):
         from fipy.meshes.grid2D import Grid2D
         from fipy.meshes.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in AbstractMatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in AbstractMatplotlib2DViewer._getSuitableVars(self, vars) \
           if ((isinstance(var.mesh, Grid2D) 
                or isinstance(var.mesh, UniformGrid2D))
               and isinstance(var, CellVariable))]
