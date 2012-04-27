@@ -361,7 +361,7 @@ Equations can now be coupled together so that the contributions from
 all the equations appear in a single system matrix. This results in
 tighter coupling for equations with spatial and temporal derivatives
 in more than one variable. The use of coupled equation is described in
-:mod:`examples.diffusin.coupled`. Other examples that demonstrate the
+:mod:`examples.diffusion.coupled`. Other examples that demonstrate the
 use of coupled equations are :mod:`examples.phase.binaryCoupled` and
 :mod:`examples.cahnHilliard.mesh2DCoupled`. As well as coupling
 equations, true vector equations can now be written in :term:`FiPy`
