@@ -46,7 +46,8 @@ def _suite():
                                        'simple',
                                        'symmetry',
                                        'binaryCoupled',
-                                       'polyxtal'
+                                       'polyxtal',
+                                       'polyxtalCoupled'
                                    ), 
                                    base = __name__)
     

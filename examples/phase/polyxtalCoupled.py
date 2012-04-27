@@ -88,10 +88,10 @@ equation, with a source due to the latent heat of solidification
 >>> DT = 2.25
 >>> q = Variable(0.)
 >>> T_0 = -0.1
->>> heatEq = (TransientTerm()
-...           == DiffusionTerm(DT)
-...           + (phase - phase.old) / dt
-...           + q * T_0 - ImplicitSourceTerm(q))
+>>> heatEq = (TransientTerm(var=dT)
+...           == DiffusionTerm(coeff=DT, var=dT)
+...           + TransientTerm(var=phase)
+...           + q * T_0 - ImplicitSourceTerm(coeff=q, var=dT))
 
 The governing equation for the phase field is
 
@@ -156,11 +156,12 @@ as
 >>> epsilon = 0.008
 >>> s = 0.01
 >>> thetaMag = theta.grad.mag
->>> phaseEq = (TransientTerm(tau_phase)
-...            == DiffusionTerm(D)
-...            + ImplicitSourceTerm((phase - 0.5 - kappa1 / numerix.pi * numerix.arctan(kappa2 * dT))
-...                                 * (1 - phase)
-...                                 - (2 * s + epsilon**2 * thetaMag) * thetaMag))
+>>> phaseEq = (TransientTerm(coeff=tau_phase, var=phase)
+...            == DiffusionTerm(coeff=D, var=phase)
+...            + ImplicitSourceTerm(coeff=((phase - 0.5 - kappa1 / numerix.pi * numerix.arctan(kappa2 * dT))
+...                                        * (1 - phase)
+...                                        - (2 * s + epsilon**2 * thetaMag) * thetaMag),
+...                                 var=phase))
 
 The governing equation for orientation is given by
 
@@ -203,9 +204,9 @@ The source term requires the evaluation of the face gradient without
 the modular operator. ``theta``:meth:`~fipy.variables.modularVariable.ModularVariable.getFaceGradNoMod`
 evaluates the gradient without modular arithmetic.
 
->>> thetaEq = (TransientTerm(tau_theta * phaseMod**2 * Pfunc) 
-...            == DiffusionTerm(D_theta)
-...            + (D_theta * (theta.faceGrad - theta.faceGradNoMod)).divergence)
+>>> thetaEq = (TransientTerm(coeff=tau_theta * phaseMod**2 * Pfunc, var=theta) 
+...            == DiffusionTerm(coeff=D_theta, var=theta)
+...            + PowerLawConvectionTerm(coeff=v_theta * (theta.faceGrad - theta.faceGradNoMod), var=phase))
 
 We seed a circular solidified region in the center
 
@@ -333,6 +334,8 @@ to adapt one of the existing viewers to create a specialized display:
 
 and iterate the solution in time, plotting as we go,
 
+>>> eq = thetaEq & phaseEq & heatEq
+
 >>> if __name__ == "__main__":
 ...     total_time = 2.
 ... else:
@@ -347,9 +350,7 @@ and iterate the solution in time, plotting as we go,
 ...     phase.updateOld()
 ...     dT.updateOld()
 ...     theta.updateOld()
-...     thetaEq.solve(theta, dt=dt)
-...     phaseEq.solve(phase, dt=dt)
-...     heatEq.solve(dT, dt=dt)
+...     eq.solve(dt=dt)
 ...     elapsed += dt
 ...     if __name__ == "__main__" and elapsed >= save_at:
 ...         timer.set_text("t = %.3f" % elapsed)
