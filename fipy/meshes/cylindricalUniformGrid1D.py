@@ -52,8 +52,8 @@ class CylindricalUniformGrid1D(UniformGrid1D):
         [[ 0.5  1.5  2.5]]
          
     """
-    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2, communicator=parallel):
-        UniformGrid1D.__init__(self, dx=dx, nx=nx, origin=origin, overlap=overlap, communicator=communicator)
+    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2, communicator=parallel, *args, **kwargs):
+        UniformGrid1D.__init__(self, dx=dx, nx=nx, origin=origin, overlap=overlap, communicator=communicator, *args, **kwargs)
     
     def _translate(self, vector):
         return CylindricalUniformGrid1D(dx=self.args['dx'],

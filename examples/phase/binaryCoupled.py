@@ -4,7 +4,7 @@
  # ########################################################################
  # FiPy - a finite volume PDE solver in Python
  # 
- # FILE: "binary.py"
+ # FILE: "binaryCoupled.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -344,7 +344,7 @@ we can associate the mobility :math:`M_C` with the intrinsic diffusivity :math:`
        \right] \nabla p(\phi)
        + \frac{W_B - W_A}{2} \nabla g(\phi)  
    \right\}
-   \right).
+   \right). \\
    &= \nabla\cdot\left( D_C \nabla C \right) \nonumber \\
    &\qquad + \nabla\cdot\left(
    \frac{D_C C (1 - C) V_m}{R T}
@@ -362,7 +362,7 @@ The first term is clearly a :class:`~fipy.terms.diffusionTerm.DiffusionTerm` in 
 
 .. math::
     
-   \D_\phi(C, \phi) =
+   D_{\phi}(C, \phi) =
    \frac{D_C C (1 - C) V_m}{R T}
    \left\{
        \left[

@@ -46,18 +46,14 @@ __all__ = ["PeriodicGrid2D", "PeriodicGrid2DLeftRight", "PeriodicGrid2DTopBottom
 class _BasePeriodicGrid2D(Grid2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None, overlap=2, communicator=parallel):
         super(_BasePeriodicGrid2D, self).__init__(dx = dx, dy = dy, nx = nx, ny = ny, overlap=overlap, communicator=communicator)
-        self.nonPeriodicCellVertexIDs = super(_BasePeriodicGrid2D, self)._cellVertexIDs
-        self.nonPeriodicOrderedCellVertexIDs = super(_BasePeriodicGrid2D, self)._orderedCellVertexIDs        
-        self.nonPeriodicCellFaceIDs = numerix.array(super(_BasePeriodicGrid2D, self).cellFaceIDs)
+        self._nonPeriodicCellVertexIDs = super(_BasePeriodicGrid2D, self)._cellVertexIDs
+        self._orderedCellVertexIDs_data = super(_BasePeriodicGrid2D, self)._orderedCellVertexIDs        
+        self._nonPeriodicCellFaceIDs = numerix.array(super(_BasePeriodicGrid2D, self).cellFaceIDs)
         self._makePeriodic()
 
     @property
     def _cellVertexIDs(self):
-        return self.nonPeriodicCellVertexIDs
-
-    @property
-    def _orderedCellVertexIDs(self):
-        return self.nonPeriodicOrderedCellVertexIDs
+        return self._nonPeriodicCellVertexIDs
 
     def _translate(self, vector):
         """
@@ -77,7 +73,7 @@ class _BasePeriodicGrid2D(Grid2D):
         newCoords = self.vertexCoords + vector
         newmesh = self.__class__(**self.args)
         from fipy.meshes.mesh2D import Mesh2D
-        Mesh2D.__init__(newmesh, newCoords, self.faceVertexIDs, self.nonPeriodicCellFaceIDs, communicator=self.communicator)
+        Mesh2D.__init__(newmesh, newCoords, self.faceVertexIDs, self._nonPeriodicCellFaceIDs, communicator=self.communicator)
         newmesh._makePeriodic()
         return newmesh
 

@@ -96,7 +96,7 @@ __all__.extend(sorted(["getUnit", "put", "reshape", "getShape",
                        "sqrtDot", "nearest", "allequal", "allclose", "all",
                        "isclose", "take", "indices", "empty", "loadtxt", 
                        "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"],
-                      cmp=lambda x,y: cmp(x.lower(), y.lower())))
+                      key=str.lower))
 
 def _isPhysical(arr):
     """
@@ -1174,14 +1174,29 @@ def _broadcastShapes(shape1, shape2):
     Determine if `shape1` and `shape2` can broadcast to each other, padding if
     necessary, and return their (padded) shapes and the broadcast shape. If the
     shapes cannot broadcast, return a broadcastshape of `None`.
+
+    Broadcasting zero lenght arrays must also be accounted for.
+
+    >>> _broadcastShapes((1,), (0,))[2]
+    (0,)
+    >>> _broadcastShapes((2, 0,), (1,))[2]
+    (2, 0)
+    
     """
+
     if len(shape1) > len(shape2):
         shape2 = (1,) * (len(shape1) - len(shape2)) + shape2
     elif len(shape1) < len(shape2):
         shape1 = (1,) * (len(shape2) - len(shape1)) + shape1
     
+    def maxzero(s, o):
+        if s == 0 or o == 0:
+            return 0
+        else:
+            return max(s,o)
+
     if logical_and.reduce([(s == o or s == 1 or o == 1) for s,o in zip(shape1, shape2)]):
-        broadcastshape = tuple([max(s,o) for s,o in zip(shape1, shape2)])
+        broadcastshape = tuple([maxzero(s,o) for s,o in zip(shape1, shape2)])
     else:
         broadcastshape = None
 

@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 
-## 
+## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "test.py"
+ #  FILE: "abstractRepresentation.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
+ #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
+ #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -30,27 +33,23 @@
  # ###################################################################
  ##
 
-from fipy.tests.doctestPlus import _LateImportDocTestSuite
-import fipy.tests.testProgram
+__docformat__ = 'restructuredtext'
 
-def _suite():
-    return _LateImportDocTestSuite(testModuleNames = (
-                                       'impingement.test',
-                                       'missOrientation.test',
-                                   ),
-                                   docTestModuleNames = (
-                                       'binary',
-                                       'anisotropyOLD',
-                                       'anisotropy',
-                                       'quaternary',
-                                       'simple',
-                                       'symmetry',
-                                       'binaryCoupled'
-                                   ), 
-                                   base = __name__)
-    
-if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='_suite')
+__all__ = []
 
-            
-            
+class _AbstractRepresentation(object):
+    def __init__(self, mesh):
+        self.mesh = mesh
+
+    def getstate(self):
+        """Collect the necessary information to ``pickle`` the `Mesh` to persistent storage.
+        """
+        raise NotImplemented
+
+    def setstate(self, state):
+        """Populate a new `Mesh` from ``pickled`` persistent storage.
+        """
+        raise NotImplemented
+        
+    def repr(self):
+        raise NotImplemented

@@ -264,6 +264,15 @@ class _MeshVariable(Variable):
         True
         >>> print numerix.allequal(var.faceGrad.shape, (2, 17)) # doctest: +PROCESSOR_0
         True
+
+        Have to account for zero length arrays
+
+        >>> from fipy import Grid1D
+        >>> m = Grid1D(nx=0)
+        >>> v = CellVariable(mesh=m, elementshape=(2,))
+        >>> (v * 1).shape
+        (2, 0)
+        
         """
         return (Variable._getShape(self)
                 or (self.elementshape + self._getShapeFromMesh(self.mesh)) 
@@ -405,7 +414,7 @@ class _MeshVariable(Variable):
                 nodeVal[:] = default
         else:
             nodeVal = fn(axis=axis)
-        
+
         return fnParallel(nodeVal)
 
     def max(self, axis=None):
@@ -421,10 +430,18 @@ class _MeshVariable(Variable):
             return Variable.max(self, axis=axis)
                                   
     def min(self, axis=None):
+        """
+        >>> from fipy import Grid2D, CellVariable
+        >>> mesh = Grid2D(nx=5, ny=5)
+        >>> x, y = mesh.cellCenters
+        >>> v = CellVariable(mesh=mesh, value=x*y)
+        >>> print v.min()
+        0.25
+        """
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def minParallel(a):
                 return self._maxminparallel_(a=a, axis=axis, default=numerix.inf, 
-                                             fn=a.min, fnParallel=self.mesh.communicator.epetra_comm.MinAll)
+                                             fn=a.min, fnParallel=self.mesh.communicator.MinAll)
                 
             return self._axisOperator(opname="minVar", 
                                       op=minParallel, 

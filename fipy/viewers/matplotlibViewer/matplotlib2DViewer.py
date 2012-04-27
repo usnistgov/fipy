@@ -42,7 +42,13 @@ from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibVie
 
 __all__ = ["Matplotlib2DViewer"]
 
-class Matplotlib2DViewer(AbstractMatplotlibViewer):
+class AbstractMatplotlib2DViewer(AbstractMatplotlibViewer):
+    def figaspect(self, figaspect):
+        if figaspect == 'auto':
+            figaspect = self.vars[0].mesh.aspect2D
+        return figaspect
+    
+class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
     """
     Displays a contour plot of a 2D `CellVariable` object.    
 
@@ -51,9 +57,9 @@ class Matplotlib2DViewer(AbstractMatplotlibViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """ 
     
-    __doc__ += AbstractMatplotlibViewer._test2Dirregular(viewer="Matplotlib2DViewer")
+    __doc__ += AbstractMatplotlib2DViewer._test2Dirregular(viewer="Matplotlib2DViewer")
 
-    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
+    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DViewer`.
         
 
@@ -73,11 +79,15 @@ class Matplotlib2DViewer(AbstractMatplotlibViewer):
             plot a colorbar in specified orientation if not `None`
           axes
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
+          figaspect
+            desired aspect ratio of figure. If arg is a number, use that aspect
+            ratio. If arg is 'auto', the aspect ratio will be determined from
+            the Variable's mesh.
         """
         kwlimits.update(limits)
-        AbstractMatplotlibViewer.__init__(self, vars=vars, title=title, figaspect=1. / 1.3, 
-                                      cmap=cmap, colorbar=colorbar, axes=axes, 
-                                      **kwlimits)
+        AbstractMatplotlib2DViewer.__init__(self, vars=vars, title=title, figaspect=figaspect, 
+                                            cmap=cmap, colorbar=colorbar, axes=axes, 
+                                            **kwlimits)
 
         self.mesh = self.vars[0].mesh
         
@@ -119,7 +129,7 @@ class Matplotlib2DViewer(AbstractMatplotlibViewer):
     def _getSuitableVars(self, vars):
         from fipy.meshes.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
-        vars = [var for var in AbstractMatplotlibViewer._getSuitableVars(self, vars) \
+        vars = [var for var in AbstractMatplotlib2DViewer._getSuitableVars(self, vars) \
           if ((isinstance(var.mesh, Mesh2D) and isinstance(var, CellVariable))
               and var.rank == 0)]
         if len(vars) == 0:

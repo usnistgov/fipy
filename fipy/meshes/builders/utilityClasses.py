@@ -139,7 +139,7 @@ class _NonuniformNumPts(_AbstractNumPts):
            PeriodicGrid1D(dx=1.0, nx=2)
         """
 
-        if type(d) in [int, float] or not hasattr(d, '__len__'):
+        if type(d) in [int, float] or numerix.shape(d) == ():
             n = int(n or 1)
         else:
             n = int(n or len(d))

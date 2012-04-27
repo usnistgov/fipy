@@ -106,6 +106,9 @@ class CommWrapper(object):
     def MaxAll(self, vec):
         return self.epetra_comm.MaxAll(numerix.array(vec))
         
+    def MinAll(self, vec):
+        return self.epetra_comm.MinAll(numerix.array(vec))
+
 class ParallelCommWrapper(CommWrapper):
     """MPI Communicator wrapper for parallel processes"""
     pass

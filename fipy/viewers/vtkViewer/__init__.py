@@ -3,7 +3,7 @@ __docformat__ = 'restructuredtext'
 from fipy.viewers.vtkViewer.vtkCellViewer import VTKCellViewer
 from fipy.viewers.vtkViewer.vtkFaceViewer import VTKFaceViewer
 
-__all__ = ["VTKFaceViewer"]
+__all__ = ["VTKViewer"]
 __all__.extend(vtkCellViewer.__all__)
 __all__.extend(vtkFaceViewer.__all__)
 

@@ -101,6 +101,34 @@ else:
         
     __all__.extend(['raw_input', 'raw_input_original'])
 
+_saved_stdout = sys.stdout
+
+def _serial_doctest_raw_input(prompt):
+    """Replacement for `raw_input()` that works in doctests
+    """
+    _saved_stdout.write("\n")
+    _saved_stdout.write(prompt)
+    _saved_stdout.flush()
+    return sys.stdin.readline()
+
+def doctest_raw_input(prompt):
+    """Replacement for `raw_input()` that works in doctests
+    
+    This routine attempts to be savvy about running in parallel.
+    """
+    try:
+        from fipy.tools import parallel
+        parallel.Barrier()
+        _saved_stdout.flush()
+        if parallel.procID == 0:
+            txt = _serial_doctest_raw_input(prompt)
+        else:
+            txt = ""
+        parallel.Barrier()
+    except ImportError:
+        txt = _serial_doctest_raw_input(prompt)
+#     return txt
+
 def test(*args):
     r"""
     Test `Fipy`. Equivalent to::

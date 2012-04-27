@@ -7,6 +7,7 @@ Diffusion Examples
    :template: example.rst
 
    examples.diffusion.mesh1D
+   examples.diffusion.coupled
    examples.diffusion.mesh20x20
    examples.diffusion.circle
    examples.diffusion.electrostatics

@@ -87,7 +87,7 @@ class AbstractMatplotlibViewer(AbstractViewer):
         pylab.ion()
 
         if axes is None:
-            w, h = pylab.figaspect(figaspect)
+            w, h = pylab.figaspect(self.figaspect(figaspect))
             fig = pylab.figure(figsize=(w, h))
             self.axes = pylab.gca()
         else:
@@ -113,6 +113,9 @@ class AbstractMatplotlibViewer(AbstractViewer):
 
         self.norm = None
         self.log = log 
+        
+    def figaspect(self, figaspect):
+        return figaspect
 
     def log():
         doc = "logarithmic data scaling"

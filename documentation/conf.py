@@ -32,7 +32,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
               'numpydoc',
-              'bibstuff.sphinxext.bibref']
+              'bibstuff.sphinxext.bibref',
+              'sphinxcontrib.traclinks']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -122,6 +123,8 @@ autosummary_generate = ['examples/diffusion/index.txt',
                         'examples/updating/index.txt']
                         
 autodoc_member_order = 'alphabetical'
+
+traclinks_base_url = 'http://matforge.org/fipy'
                         
 # -- Options for HTML output ---------------------------------------------------
 
