@@ -89,3 +89,24 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
         
         return oldArray1, oldArray2
 
+    def _test(self):
+        """
+        Test for ticket:441.
+
+        >>> from fipy import *
+        >>> m = Grid1D()
+        >>> c = CellVariable(mesh=m)
+        >>> e = VanLeerConvectionTerm(((1,),))
+        >>> e.solve(c)
+        Traceback (most recent call last):
+           ...    
+        TransientTermError: The equation requires a TransientTerm with explicit convection.
+    
+        """
+        
+def _test(): 
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
+
+if __name__ == "__main__":
+    _test()

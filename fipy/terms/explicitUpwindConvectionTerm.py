@@ -36,6 +36,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.abstractUpwindConvectionTerm import _AbstractUpwindConvectionTerm
 from fipy.tools import numerix
+from fipy.terms import TransientTermError
 
 __all__ = ["ExplicitUpwindConvectionTerm"]
 
@@ -54,6 +55,8 @@ class ExplicitUpwindConvectionTerm(_AbstractUpwindConvectionTerm):
     """
 
     def _getOldAdjacentValues(self, oldArray, id1, id2, dt):
+        if dt is None:
+            raise TransientTermError
         return numerix.take(oldArray, id1), numerix.take(oldArray, id2)
 
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):

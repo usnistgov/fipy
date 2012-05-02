@@ -56,7 +56,8 @@ def _suite():
             'unaryTerm',
             'nonDiffusionTerm',
             'asymmetricConvectionTerm',
-            'binaryTerm'
+            'binaryTerm',
+            'vanLeerConvectionTerm'
             ), base = __name__)
 
 if __name__ == '__main__':
