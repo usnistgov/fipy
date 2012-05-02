@@ -124,6 +124,13 @@ class _UnaryTerm(Term):
         else:
             return solver
 
+    def _checkVar(self, var):
+        if ((var is not None) 
+            and (numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float'])):
+            import warnings
+            warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
+                          UserWarning, stacklevel=4)    
+
     def _test(self):
         """
         Offset tests
