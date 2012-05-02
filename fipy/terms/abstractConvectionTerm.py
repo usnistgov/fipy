@@ -117,7 +117,7 @@ class _AbstractConvectionTerm(FaceTerm):
 
         if not isinstance(self.coeff, FaceVariable):
             shape = numerix.array(self.coeff).shape
-            # from ipdb import set_trace; set_trace()
+
             if shape != () and shape != (1,) and shape[-1] == 1:
                 shape = shape[:-1]
             
@@ -157,7 +157,6 @@ class _AbstractConvectionTerm(FaceTerm):
         if not (isinstance(self.coeff, FaceVariable) and self.coeff.rank == 1):
             coeffShape = numerix.getShape(self.coeff)
             if (coeffShape is ()) or (coeffShape[0] != var.mesh.dim):
-                # from ipdb import set_trace; set_trace()
                 raise VectorCoeffError
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
