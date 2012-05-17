@@ -1674,11 +1674,14 @@ class Gmsh2D(Mesh2D):
         ... # doctest: +GMSH, +SERIAL
         True
         
-        >>> (f, mshFile) = tempfile.mkstemp('.msh')
+        >>> (ftmp, mshFile) = tempfile.mkstemp('.msh')
         >>> f = openMSHFile(name=mshFile, mode='w') # doctest: +GMSH
         >>> f.write(circle) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
-        
+        >>> import sys
+        >>> if sys.platform == 'win32':
+        ...     os.close(ftmp)
+
         >>> from fipy import doctest_raw_input
         >>> if __name__ == "__main__":
         ...     p = Popen(["gmsh", mshFile]) # doctest: +GMSH
@@ -1915,10 +1918,13 @@ class Gmsh3D(Mesh):
         >>> from fipy import CellVariable
         >>> vol = CellVariable(mesh=tetPriPyr, value=tetPriPyr.cellVolumes, name="volume") # doctest: +GMSH
         
-        >>> (f, posFile) = tempfile.mkstemp('.pos')
+        >>> (ftmp, posFile) = tempfile.mkstemp('.pos')
         >>> f = openPOSFile(posFile, mode='w') # doctest: +GMSH
         >>> f.write(vol) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
+        >>> import sys
+        >>> if sys.platform == 'win32':
+        ...     os.close(ftmp)
 
         >>> os.remove(posFile)
         """
