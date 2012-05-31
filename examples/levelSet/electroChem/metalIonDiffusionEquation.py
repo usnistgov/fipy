@@ -131,8 +131,8 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     Testing the interface source term
 
     >>> from fipy.meshes import Grid2D
-    >>> from fipy import numerix
-    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
+    >>> from fipy import numerix, serial
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2, communicator=serial)
     >>> from fipy.variables.distanceVariable import DistanceVariable
     >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
     >>> ionVar = CellVariable(mesh = mesh, value = (1, 1, 1, 1))

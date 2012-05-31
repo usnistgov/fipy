@@ -218,12 +218,12 @@ def runGold(faradaysConstant=9.6e4,
 
         if step % levelSetUpdateFrequency == 0:
             
-            distanceVar.calcDistanceFunction(deleteIslands = True)
+            distanceVar.calcDistanceFunction()
             
         extensionVelocityVariable.setValue(numerix.array(depositionRateVariable))
         argmx = numerix.argmax(extensionVelocityVariable)
         dt = cflNumber * cellSize / extensionVelocityVariable[argmx]
-        distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
+        distanceVar.extendVariable(extensionVelocityVariable)
         
         advectionEquation.solve(distanceVar, dt = dt)
         catalystSurfactantEquation.solve(catalystVar, dt = dt)

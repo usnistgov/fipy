@@ -182,17 +182,15 @@ class DistanceVariable(CellVariable):
     def _calcValue(self):
         return self._value
         
-    def extendVariable(self, extensionVariable, deleteIslands = False, order=2):
+    def extendVariable(self, extensionVariable, order=2):
         """
         
-        Takes a `cellVariable` and extends the variable from the zero
-        to the region encapuslated by the `narrowBandWidth`.
+        Calculates the extension of `extensionVariable` from the zero
+        level set.
 
         :Parameters:
           - `extensionVariable`: The variable to extend from the zero
             level set.
-          - `deleteIslands`: Sets the temporary level set value to
-            zero in isolated cells.
 
         """
         
@@ -227,15 +225,13 @@ class DistanceVariable(CellVariable):
 
         extensionVariable[:] = extensionValue
 
-    def calcDistanceFunction(self, narrowBandWidth = None, deleteIslands = False, order=2):
+    def calcDistanceFunction(self, order=2):
         """
         Calculates the `distanceVariable` as a distance function.
 
         :Parameters:
-          - `narrowBandWidth`: The width of the region about the zero level set
-            within which the distance function is evaluated.
-          - `deleteIslands`: Sets the temporary level set value to
-            zero in isolated cells.
+          - `order`: The order of accuracy for the distance funtion
+            calculation, either 1 or 2.
 
         """
         from fipy.tools.lsmlib.pylsmlib import computeDistanceFunction2d

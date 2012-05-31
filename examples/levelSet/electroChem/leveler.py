@@ -402,7 +402,7 @@ def runLeveler(kLeveler=0.018,
                     viewer.plot()
             
         if step % levelSetUpdateFrequency == 0:
-            distanceVar.calcDistanceFunction(deleteIslands = True)
+            distanceVar.calcDistanceFunction()
 
         extensionVelocityVariable.setValue(depositionRateVariable)
 
@@ -414,8 +414,7 @@ def runLeveler(kLeveler=0.018,
 
         dt = cflNumber * cellSize / extOnInt.max()
 
-        id = numerix.nonzero(distanceVar._interfaceFlag)[0].max()
-        distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
+        distanceVar.extendVariable(extensionVelocityVariable)
 
         extensionVelocityVariable[mesh.fineMesh.numberOfCells:] = 0.
 
