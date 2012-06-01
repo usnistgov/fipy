@@ -98,11 +98,7 @@ class Term(object):
         raise NotImplementedError
         
     def _checkVar(self, var):
-        if ((var is not None) 
-            and (numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float'])):
-            import warnings
-            warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
-                          UserWarning, stacklevel=4)
+        raise NotImplementedError
 
     def _buildCache(self, matrix, RHSvector):
         if self._cacheMatrix:
@@ -214,7 +210,7 @@ class Term(object):
         
         solver._solve()
 
-    def sweep(self, var=None, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
+    def sweep(self, var=None, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None, cacheResidual=False, cacheError=False):
         r"""
         Builds and solves the `Term`'s linear system once. This method
         also recalculates and returns the residual as well as applying
@@ -228,14 +224,33 @@ class Term(object):
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
            - `residualFn`: A function that takes var, matrix, and RHSvector arguments, used to customize the residual calculation.
+           - `cacheResidual`: If `True`, calculate and store the residual vector 
+              :math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}` in the `residualVector` member of `Term`
+           - `cacheError`: If `True`, use the residual vector :math:`\vec{r}` 
+              to solve :math:`\mathsf{L}\vec{e}=\vec{r}` for the error vector :math:`\vec{e}` 
+              and store it in the `errorVector` member of `Term`
 
         """
         solver = self._prepareLinearSystem(var=var, solver=solver, boundaryConditions=boundaryConditions, dt=dt)
         solver._applyUnderRelaxation(underRelaxation=underRelaxation)
         residual = solver._calcResidual(residualFn=residualFn)
 
-        solver._solve()
+        if cacheResidual or cacheError:
+            self.residualVector = solver._calcResidualVector(residualFn=residualFn)
 
+        if cacheError:
+            self.errorVector = solver.var.copy()
+            var_tmp = solver.var
+            RHS_tmp = solver.RHSvector
+            solver._storeMatrix(var=self.errorVector, matrix=solver.matrix, RHSvector=self.residualVector)
+            solver._solve()
+            solver._storeMatrix(var=var_tmp, matrix=solver.matrix, RHSvector=RHS_tmp)
+            
+        if not cacheResidual:
+            self.residualVector = None
+
+        solver._solve()
+        
         return residual
 
     def justResidualVector(self, var=None, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
@@ -289,6 +304,40 @@ class Term(object):
         L2norm = numerix.L2norm(vector)
 
         return vector, L2norm
+        
+    def justErrorVector(self, var=None, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
+        r"""
+        Builds the `Term`'s linear system once. This method
+        also recalculates and returns the error as well as applying
+        under-relaxation.
+
+        :Parameters:
+
+           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
+           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
+           - `boundaryConditions`: A tuple of boundaryConditions.
+           - `dt`: The time step size.
+           - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
+           - `residualFn`: A function that takes var, matrix, and RHSvector arguments used to customize the residual calculation.
+
+        `justErrorVector` returns the overlapping local value in parallel (not the non-overlapping value).
+
+        >>> from fipy import *
+        >>> m = Grid1D(nx=10)
+        >>> v = CellVariable(mesh=m)
+        >>> len(DiffusionTerm().justErrorVector(v)) == m.numberOfCells
+        True
+
+        """
+        solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
+        solver._applyUnderRelaxation(underRelaxation)
+        residualVector = solver._calcResidualVector(residualFn=residualFn)
+        
+        errorVector = solver.var.copy()
+        solver._storeMatrix(var=errorVector, matrix=solver.matrix, RHSvector=residualVector)
+        solver._solve()
+
+        return errorVector
 
     def cacheMatrix(self):
         r"""

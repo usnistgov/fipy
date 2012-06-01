@@ -104,6 +104,10 @@ class _AbstractBinaryTerm(Term):
     def _diffusionVars(self):
         return self.term._diffusionVars + self.other._diffusionVars
 
+    def _checkVar(self, var):
+        self.term._checkVar(var)
+        self.other._checkVar(var)
+    
 
 from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 class __NonDiffusionTerm(_NonDiffusionTerm):

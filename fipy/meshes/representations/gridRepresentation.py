@@ -4,11 +4,12 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "diffusionTermCorrection.py"
+ #  FILE: "gridRepresentation.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
+ #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
@@ -34,16 +35,46 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.terms.abstractDiffusionTerm import _AbstractDiffusionTerm
-from fipy.tools import numerix
+__all__ = []
 
-__all__ = ["DiffusionTermCorrection"]
+from fipy.meshes.representations.abstractRepresentation import _AbstractRepresentation
+ 
+class _GridRepresentation(_AbstractRepresentation):
 
-class DiffusionTermCorrection(_AbstractDiffusionTerm):
+    def getstate(self):
+        """Collect the necessary information to ``pickle`` the `Grid` to persistent storage.
+        """
+        args = self.mesh.args.copy()
+        args["_RepresentationClass"] = self.__class__
+        return args
 
-    def _getNormals(self, mesh):
-        return mesh._faceCellToCellNormals
+    @staticmethod
+    def setstate(mesh, state):
+        """Create a new `Grid` from ``pickled`` persistent storage.
+        """
+        mesh.__init__(**state)
 
-    def _treatMeshAsOrthogonal(self, mesh):        
-        return mesh._isOrthogonal
+    def _repr(self, dns):
+        dnstr = []
+        for d, n in dns:
+            dnstr.append(d + "=" + str(self.mesh.args[d]))
+            if self.mesh.args[n] is not None:
+                dnstr.append(n + "=" + str(self.mesh.args[n]))
 
+        return "%s(%s)" % (self.mesh.__class__.__name__, ", ".join(dnstr))
+                               
+class _Grid1DRepresentation(_GridRepresentation):
+
+    def repr(self):
+        return self._repr(dns=[("dx", "nx")])
+
+class _Grid2DRepresentation(_GridRepresentation):
+
+    def repr(self):
+        return self._repr(dns=[("dx", "nx"), ("dy", "ny")])
+        
+class _Grid3DRepresentation(_GridRepresentation):
+ 
+    def repr(self):
+        return self._repr(dns=[("dx", "nx"), ("dy", "ny"), ("dz", "nz")])
+ 

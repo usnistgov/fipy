@@ -73,7 +73,12 @@ class _AbstractConvectionTerm(FaceTerm):
             >>> __ConvectionTerm(coeff = (1,))
             __ConvectionTerm(coeff=(1,))
             >>> ExplicitUpwindConvectionTerm(coeff = (0,)).solve(var=cv, solver=DummySolver())
-            >>> ExplicitUpwindConvectionTerm(coeff = 1).solve(var=cv, solver=DummySolver()) # doctest: +IGNORE_EXCEPTION_DETAIL
+            Traceback (most recent call last):
+                ...
+            TransientTermError: The equation requires a TransientTerm with explicit convection.
+            >>> (TransientTerm(0.) - ExplicitUpwindConvectionTerm(coeff = (0,))).solve(var=cv, solver=DummySolver(), dt=1.)
+
+            >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = 1)).solve(var=cv, solver=DummySolver(), dt=1.) # doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             VectorCoeffError: The coefficient must be a vector value.
@@ -87,8 +92,8 @@ class _AbstractConvectionTerm(FaceTerm):
             >>> __ConvectionTerm(coeff=vfv2)
             __ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
                    [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, nx=2, dy=1.0, ny=1)))
-            >>> ExplicitUpwindConvectionTerm(coeff = ((0,),(0,))).solve(var=cv2, solver=DummySolver())
-            >>> ExplicitUpwindConvectionTerm(coeff = (0,0)).solve(var=cv2, solver=DummySolver())
+            >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = ((0,),(0,)))).solve(var=cv2, solver=DummySolver(), dt=1.)
+            >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (0,0))).solve(var=cv2, solver=DummySolver(), dt=1.)
 
         
         :Parameters:
@@ -112,7 +117,8 @@ class _AbstractConvectionTerm(FaceTerm):
 
         if not isinstance(self.coeff, FaceVariable):
             shape = numerix.array(self.coeff).shape
-            if shape != () and shape[-1] == 1:
+
+            if shape != () and shape != (1,) and shape[-1] == 1:
                 shape = shape[:-1]
             
             self.coeff = FaceVariable(mesh=mesh, elementshape=shape, value=self.coeff)
@@ -147,11 +153,11 @@ class _AbstractConvectionTerm(FaceTerm):
         return self.stencil
 
     def _checkVar(self, var):
-        FaceTerm._checkVar(self, var)
-        
-        if not (isinstance(self.coeff, FaceVariable) and self.coeff.rank == 1) \
-        and numerix.getShape(self.coeff) != (var.mesh.dim,):
-            raise VectorCoeffError
+        FaceTerm._checkVar(self, var)  
+        if not (isinstance(self.coeff, FaceVariable) and self.coeff.rank == 1):
+            coeffShape = numerix.getShape(self.coeff)
+            if (coeffShape is ()) or (coeffShape[0] != var.mesh.dim):
+                raise VectorCoeffError
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         

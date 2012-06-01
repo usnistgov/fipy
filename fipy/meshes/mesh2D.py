@@ -48,8 +48,11 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.decorators import getsetDeprecated
+from fipy.tools import serial
 
 from fipy.meshes.mesh import Mesh
+from fipy.meshes.representations.meshRepresentation import _MeshRepresentation
+from fipy.meshes.topologies.meshTopology import _Mesh2DTopology
 
 def _orderVertices(vertexCoords, vertices):
     coordinates = numerix.take(vertexCoords, vertices)
@@ -66,7 +69,10 @@ def _orderVertices(vertexCoords, vertices):
 __all__ = ["Mesh2D"]
 
 class Mesh2D(Mesh):
-    
+    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serial, _RepresentationClass=_MeshRepresentation, _TopologyClass=_Mesh2DTopology):
+        super(Mesh2D, self).__init__(vertexCoords=vertexCoords, faceVertexIDs=faceVertexIDs, cellFaceIDs=cellFaceIDs, communicator=communicator, 
+                                     _RepresentationClass=_RepresentationClass, _TopologyClass=_TopologyClass)
+
     def _calcScaleArea(self):
         return self.scale['length']
 
@@ -105,16 +111,7 @@ class Mesh2D(Mesh):
         newmesh = Mesh2D(newCoords, self.faceVertexIDs, self.cellFaceIDs)
         return newmesh
 
-    @property
-    def _concatenatedClass(self):
-        return Mesh2D
-        
-    @getsetDeprecated
-    def _getOrderedCellVertexIDs(self):
-        return self._orderedCellVertexIDs
-
-    @property
-    def _orderedCellVertexIDs(self):
+    def _calcOrderedCellVertexIDs(self):
         from fipy.tools.numerix import take
         NFac = self._maxFacesPerCell
 
@@ -273,7 +270,7 @@ class Mesh2D(Mesh):
         except ImportError, e:
             from enthought.tvtk.api import tvtk
         return tvtk.Polygon().cell_type
-        
+    
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure

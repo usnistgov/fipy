@@ -65,7 +65,7 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 ...     diffCoeff = convCoeff * dx / peclet
 ...     eq = (TransientTerm(1e-4) 
 ...           == DiffusionTerm(coeff=diffCoeff)
-...           + PowerLawConvectionTerm(coeff=convCoeff))
+...           + PowerLawConvectionTerm(coeff=(convCoeff,)))
 ...     eq.solve(var=var, dt=1.)
 ...     x = mesh.cellCenters[0]
 ...     arg0 = -convCoeff * x / diffCoeff

@@ -26,6 +26,10 @@ class IncorrectSolutionVariable(Exception):
     def __init__(self, s='The solution variable is incorrect.'):
         Exception.__init__(self, s)
 
+class TransientTermError(Exception):
+    def __init__(self, s='The equation requires a TransientTerm with explicit convection.'):
+        Exception.__init__(self, s)
+
 from fipy.terms.transientTerm import *
 from fipy.terms.diffusionTerm import *
 from fipy.terms.explicitDiffusionTerm import *

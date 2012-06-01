@@ -72,12 +72,12 @@ class CylindricalGrid1D(Grid1D):
         True
         
     """
-    def __init__(self, dx=1., nx=None, origin=(0,), overlap=2, communicator=parallel):
+    def __init__(self, dx=1., nx=None, origin=(0,), overlap=2, communicator=parallel, *args, **kwargs):
         scale = PhysicalField(value=1, unit=PhysicalField(value=dx).unit)
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
     
-        Grid1D.__init__(self, dx=dx, nx=nx, overlap=overlap, communicator=communicator)
+        Grid1D.__init__(self, dx=dx, nx=nx, overlap=overlap, communicator=communicator, *args, **kwargs)
 
         self.vertexCoords += origin
         self.args['origin'] = origin

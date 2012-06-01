@@ -67,15 +67,15 @@ class _Grid2DBuilder(_AbstractGridBuilder):
         """
 
         # if the first entry in `ds` is non-scalar
-        if hasattr(self.ds[0], "__len__"):
+        if numerix.shape(self.ds[0]) != ():
             lenDs = len(self.ds[0])
 
             for d in self.ds[1:]:
-                if not hasattr(d, "__len__") or len(d) != lenDs:
+                if numerix.shape(d) == () or len(d) != lenDs:
                     return False
 
         # if any other entry in `ds` is non-scalar and first isn't
-        elif True in [hasattr(d, "__len__") for d in self.ds[1:]]:
+        elif True in [numerix.shape(d) != () for d in self.ds[1:]]:
             return False
 
         return True

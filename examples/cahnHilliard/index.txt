@@ -6,5 +6,5 @@ Cahn Hilliard Examples
    :toctree: generated
    :template: example.rst
 
-   examples.cahnHilliard.mesh2D
+   examples.cahnHilliard.mesh2DCoupled
    examples.cahnHilliard.sphere

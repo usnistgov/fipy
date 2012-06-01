@@ -548,7 +548,10 @@ where `exteriorFlux` is a rank 1
 How do I apply an outlet or inlet boundary condition?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This boundary condition is applied by default to convection terms.
+Convection terms default to a no flux boundary condition unless the
+exterior faces are associated with a constraint, in which case either
+an inlet or an outlet boundary condition is applied depending on the
+flow direction.
 
 How do I apply spatially varying boundary conditions?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

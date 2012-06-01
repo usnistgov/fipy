@@ -59,6 +59,7 @@ def _suite():
             'binaryTerm',
             'firstOrderAdvectionTerm',
             'advectionTerm',
+            'vanLeerConvectionTerm'
             ), base = __name__)
 
 if __name__ == '__main__':

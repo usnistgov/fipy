@@ -159,6 +159,9 @@ class _CoupledCellVariable(object):
 
     def ravel(self):
         return self.value.ravel()
+        
+    def copy(self):
+        return self.__class__(vars=[var.copy() for var in self.vars])
 
 def _test(): 
     import fipy.tests.doctestPlus

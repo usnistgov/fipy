@@ -52,13 +52,13 @@ class CylindricalGrid2D(Grid2D):
     first and then vertical faces.
     """
     def __init__(self, dx=1., dy=1., nx=None, ny=None, 
-                 origin=((0.,), (0.,)), overlap=2, communicator=parallel):
+                 origin=((0.,), (0.,)), overlap=2, communicator=parallel, *args, **kwargs):
         scale = PhysicalField(value=1, unit=PhysicalField(value=dx).unit)
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
 
         Grid2D.__init__(self, dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, 
-                        communicator=communicator)
+                        communicator=communicator, *args, **kwargs)
         
         self._faceAreas *= self.faceCenters[0]
 
