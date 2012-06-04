@@ -102,7 +102,7 @@ resemble the image below.
 __docformat__ = 'restructuredtext'
 
 from fipy import *
-from gapFillMesh import TrenchMesh
+from gapFillMesh import trenchMesh
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
@@ -127,15 +127,12 @@ def runGold(faradaysConstant=9.6e4,
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 20
     
-    mesh = TrenchMesh(cellSize = cellSize,
+    mesh = trenchMesh(cellSize = cellSize,
                       trenchSpacing = trenchSpacing,
                       trenchDepth = trenchDepth,
                       boundaryLayerDepth = boundaryLayerDepth,
                       aspectRatio = aspectRatio,
-                      angle = numerix.pi * taperAngle / 180.,
-                      bowWidth = 0.,
-                      overBumpRadius = 0.,
-                      overBumpWidth = 0.)
+                      angle = numerix.pi * taperAngle / 180.)
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
 

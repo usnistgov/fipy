@@ -213,7 +213,7 @@ __docformat__ = 'restructuredtext'
 from fipy import *
 from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
-from gapFillMesh import TrenchMesh
+from gapFillMesh import trenchMesh
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 
 def runLeveler(kLeveler=0.018, 
@@ -261,15 +261,12 @@ def runLeveler(kLeveler=0.018,
 
     etaPrime = faradaysConstant * overpotential / gasConstant / temperature
 
-    mesh = TrenchMesh(cellSize = cellSize,
+    mesh = trenchMesh(cellSize = cellSize,
                       trenchSpacing = trenchSpacing,
                       trenchDepth = trenchDepth,
                       boundaryLayerDepth = boundaryLayerDepth,
                       aspectRatio = aspectRatio,
-                      angle = numerix.pi * 4. / 180.,
-                      bowWidth = 0.,
-                      overBumpRadius = 0.,
-                      overBumpWidth = 0.)
+                      angle = numerix.pi * 4. / 180.)
 
     distanceVar = DistanceVariable(
         name = 'distance variable',
