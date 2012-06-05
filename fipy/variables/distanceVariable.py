@@ -208,18 +208,6 @@ class DistanceVariable(CellVariable):
         elif hasattr(self.mesh, 'nx'):
             tmp, extensionValue = computeExtensionFields2d(self._value, extensionValue, extension_mask=extension_mask, nx=self.mesh.nx,  ny=1, dx=self.mesh.dx, dy=1., order=order)
 
-        elif hasattr(self.mesh, 'fineMesh'):
-            fineMesh = self.mesh.fineMesh
-            tmp, tmpExtensionValue = computeExtensionFields2d(self._value,
-                                                              extensionValue[:,:fineMesh.numberOfCells],
-                                                              extension_mask=extension_mask[:fineMesh.numberOfCells],
-                                                              nx=fineMesh.nx,
-                                                              ny=fineMesh.ny,
-                                                              dx=fineMesh.dx,
-                                                              dy=fineMesh.dy,
-                                                              order=order)
-            extensionValue[:,:fineMesh.numberOfCells] = tmpExtensionValue
-
         else:
             raise Exception, "Mesh can not be used for solving the FMM."
 
@@ -245,15 +233,6 @@ class DistanceVariable(CellVariable):
         elif hasattr(self.mesh, 'nx'):
             self._value = computeDistanceFunction2d(self._value, nx=self.mesh.nx,  ny=1, dx=self.mesh.dx, dy=1, order=order)
 
-        elif hasattr(self.mesh, 'fineMesh'):
-            fineMesh = self.mesh.fineMesh
-            self._value[:fineMesh.numberOfCells] = \
-                computeDistanceFunction2d(self._value[:fineMesh.numberOfCells],
-                                          nx=fineMesh.nx,
-                                          ny=fineMesh.ny,
-                                          dx=fineMesh.dx,
-                                          dy=fineMesh.dy,
-                                          order=order)
 
         else:
             raise Exception, "Mesh can not be used for solving the FMM."

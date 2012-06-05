@@ -213,7 +213,8 @@ __docformat__ = 'restructuredtext'
 from fipy import *
 from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
-from gapFillMesh import trenchMesh
+from gapFillMesh import TrenchMesh
+from gapFillMesh import GapFillDistanceVariable
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 
 def runLeveler(kLeveler=0.018, 
@@ -224,7 +225,7 @@ def runLeveler(kLeveler=0.018,
                levelerDiffusionCoefficient=5e-10, 
                numberOfSteps=400, 
                displayRate=10, 
-               displayViewers=False):
+               displayViewers=True):
 
     
     kLevelerConsumption = 0.0005
@@ -261,14 +262,14 @@ def runLeveler(kLeveler=0.018,
 
     etaPrime = faradaysConstant * overpotential / gasConstant / temperature
 
-    mesh = trenchMesh(cellSize = cellSize,
+    mesh = TrenchMesh(cellSize = cellSize,
                       trenchSpacing = trenchSpacing,
                       trenchDepth = trenchDepth,
                       boundaryLayerDepth = boundaryLayerDepth,
                       aspectRatio = aspectRatio,
                       angle = numerix.pi * 4. / 180.)
 
-    distanceVar = DistanceVariable(
+    distanceVar = GapFillDistanceVariable(
         name = 'distance variable',
         mesh = mesh,
         value = -1.)
@@ -386,10 +387,23 @@ def runLeveler(kLeveler=0.018,
     totalTime = 0.0
 
     if displayViewers:
-        from mayaviSurfactantViewer import MayaviSurfactantViewer
-        viewers = (
-            MayaviSurfactantViewer(distanceVar, acceleratorVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'accelerator coverage'),
-            MayaviSurfactantViewer(distanceVar, levelerVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'leveler coverage'))
+        try:
+            from mayaviSurfactantViewer import MayaviSurfactantViewer
+            viewers = (
+                MayaviSurfactantViewer(distanceVar, acceleratorVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'accelerator coverage'),
+                MayaviSurfactantViewer(distanceVar, levelerVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'leveler coverage'))
+        except:
+            class PlotVariable(CellVariable):
+                def __init__(self, var = None, name = ''):
+                    CellVariable.__init__(self, mesh = mesh.fineMesh, name = name)
+                    self.var = self._requires(var)
+
+                def _calcValue(self):
+                    return numerix.array(self.var(self.mesh.cellCenters))
+
+            viewers = (Viewer(PlotVariable(var=acceleratorVar.interfaceVar)),
+                       Viewer(PlotVariable(var=levelerVar.interfaceVar)))
+
         
     for step in range(numberOfSteps):
 
@@ -412,8 +426,6 @@ def runLeveler(kLeveler=0.018,
         dt = cflNumber * cellSize / extOnInt.max()
 
         distanceVar.extendVariable(extensionVelocityVariable)
-
-        extensionVelocityVariable[mesh.fineMesh.numberOfCells:] = 0.
 
         for eqn, var, BCs, solver in eqnTuple:
             eqn.solve(var, boundaryConditions = BCs, dt = dt, solver=solver)

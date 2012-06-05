@@ -102,7 +102,8 @@ resemble the image below.
 __docformat__ = 'restructuredtext'
 
 from fipy import *
-from gapFillMesh import trenchMesh
+from gapFillMesh import TrenchMesh
+from gapFillMesh import GapFillDistanceVariable
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
@@ -127,7 +128,7 @@ def runGold(faradaysConstant=9.6e4,
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 20
     
-    mesh = trenchMesh(cellSize = cellSize,
+    mesh = TrenchMesh(cellSize = cellSize,
                       trenchSpacing = trenchSpacing,
                       trenchDepth = trenchDepth,
                       boundaryLayerDepth = boundaryLayerDepth,
@@ -136,7 +137,7 @@ def runGold(faradaysConstant=9.6e4,
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
 
-    distanceVar = DistanceVariable(
+    distanceVar = GapFillDistanceVariable(
        name = 'distance variable',
        mesh = mesh,
        value = -1.)
@@ -197,11 +198,11 @@ def runGold(faradaysConstant=9.6e4,
                     self.var = self._requires(var)
 
                 def _calcValue(self):
-                    return numerix.array(self.var[:self.mesh.numberOfCells])
+                    return numerix.array(self.var(self.mesh.cellCenters))
 
             viewer = MultiViewer(viewers=(
-                Viewer(PlotVariable(var = distanceVar), datamax=1e-9, datamin=-1e-9),
-                Viewer(PlotVariable(var = catalystVar.interfaceVar))))
+                    Viewer(PlotVariable(var = distanceVar), datamax=1e-9, datamin=-1e-9),
+                    Viewer(PlotVariable(var = catalystVar.interfaceVar))))
     else:
         viewer = None
 
