@@ -65,9 +65,7 @@ class GapFillMesh(Gmsh2D):
     ...                    desiredDomainWidth = 1.) # doctest: +GMSH
 
     >>> import fipy.tools.dump as dump
-    >>> (f, filename) = dump.write(mesh) # doctest: +GMSH
-    >>> mesh = dump.read(filename, f) # doctest: +GMSH
-    >>> mesh.numberOfCells # doctest: +GMSH
+    >>> mesh.globalNumberOfCells # doctest: +GMSH
     173
 
     >>> from fipy.variables.cellVariable import CellVariable
@@ -182,12 +180,8 @@ class TrenchMesh(GapFillMesh):
     ...                   boundaryLayerDepth = boundaryLayerDepth,
     ...                   aspectRatio = 1.) # doctest: +GMSH
 
-    >>> import fipy.tools.dump as dump
-    >>> (f, filename) = dump.write((mesh, mesh.electrolyteMask)) # doctest: +GMSH
-    >>> mesh, electrolyteMask = dump.read(filename, f) # doctest: +GMSH
-    >>> mesh.electrolyteMask = electrolyteMask
-    >>> mesh.numberOfCells - len(numerix.nonzero(mesh.electrolyteMask)[0]) # doctest: +GMSH
-    150
+    >>> print mesh.globalNumberOfCells
+    655
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh = mesh, value = 0.) # doctest: +GMSH

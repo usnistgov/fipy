@@ -173,7 +173,7 @@ def runGold(faradaysConstant=9.6e4,
         rateConstant = 0,
         consumptionCoeff = consumptionRateConstant * extensionVelocityVariable)
 
-    advectionEquation = TransientTerm() + AdvectionTerm(extensionVelocityVariable)
+    advectionEquation = TransientTerm() + FirstOrderAdvectionTerm(extensionVelocityVariable)
 
     metalEquation = buildMetalIonDiffusionEquation(
         ionVar = metalVar,
@@ -208,7 +208,7 @@ def runGold(faradaysConstant=9.6e4,
 
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
     step = 0
-    
+
     while step < numberOfSteps:
 
         if step % 10 == 0 and viewer is not None:
@@ -217,13 +217,14 @@ def runGold(faradaysConstant=9.6e4,
         if step % levelSetUpdateFrequency == 0:
             
             distanceVar.calcDistanceFunction()
-            
+
         extensionVelocityVariable.setValue(numerix.array(depositionRateVariable))
-        argmx = numerix.argmax(extensionVelocityVariable)
-        dt = cflNumber * cellSize / extensionVelocityVariable[argmx]
+
+        dt = cflNumber * cellSize / max(extensionVelocityVariable.globalValue)
         distanceVar.extendVariable(extensionVelocityVariable)
-        
+
         advectionEquation.solve(distanceVar, dt = dt)
+
         catalystSurfactantEquation.solve(catalystVar, dt = dt)
 
         metalEquation.solve(metalVar, dt = dt)

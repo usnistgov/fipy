@@ -344,7 +344,7 @@ def runLeveler(kLeveler=0.018,
         otherRateConstant = kLeveler,
         consumptionCoeff = accConsumptionCoeff)
 
-    advectionEquation = TransientTerm() + AdvectionTerm(extensionVelocityVariable)
+    advectionEquation = TransientTerm() + FirstOrderAdvectionTerm(extensionVelocityVariable)
 
     metalEquation = buildMetalIonDiffusionEquation(
         ionVar = metalVar,
@@ -388,6 +388,7 @@ def runLeveler(kLeveler=0.018,
 
     if displayViewers:
         try:
+            raise Exception
             from mayaviSurfactantViewer import MayaviSurfactantViewer
             viewers = (
                 MayaviSurfactantViewer(distanceVar, acceleratorVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'accelerator coverage'),
@@ -417,9 +418,9 @@ def runLeveler(kLeveler=0.018,
 
         extensionVelocityVariable.setValue(depositionRateVariable)
 
-        extOnInt = numerix.where(distanceVar > 0,
-                                 numerix.where(distanceVar < 2 * cellSize,
-                                               extensionVelocityVariable,
+        extOnInt = numerix.where(distanceVar.globalValue > 0,
+                                 numerix.where(distanceVar.globalValue < 2 * cellSize,
+                                               extensionVelocityVariable.globalValue,
                                                0),
                                  0)
 
