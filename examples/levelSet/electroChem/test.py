@@ -42,6 +42,7 @@ def _suite():
             'gold',
             'leveler',
             'gapFillMesh',
+            'trenchMesh',
             'metalIonDiffusionEquation',
             'lines',
             'adsorbingSurfactantEquation',

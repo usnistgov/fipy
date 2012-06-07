@@ -213,8 +213,8 @@ __docformat__ = 'restructuredtext'
 from fipy import *
 from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
-from gapFillMesh import TrenchMesh
-from gapFillMesh import GapFillDistanceVariable
+from trenchMesh import TrenchMesh
+from gapFillDistanceVariable import GapFillDistanceVariable
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 
 def runLeveler(kLeveler=0.018, 

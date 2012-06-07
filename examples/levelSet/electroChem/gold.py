@@ -102,8 +102,8 @@ resemble the image below.
 __docformat__ = 'restructuredtext'
 
 from fipy import *
-from gapFillMesh import TrenchMesh
-from gapFillMesh import GapFillDistanceVariable
+from trenchMesh import TrenchMesh
+from gapFillDistanceVariable  import GapFillDistanceVariable
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 

@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
  # 
- #  FILE: "setup.py"
+ #  FILE: "gapFillMesh.py"
  #
  #  Author: Jonathan Guyer   <guyer@nist.gov>
  #  Author: Daniel Wheeler   <daniel.wheeler@nist.gov>
@@ -49,11 +49,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.meshes import Gmsh2D
 from fipy.meshes import Grid2D
-from fipy.tools import numerix
 from fipy.tools import serial
-from fipy.variables.distanceVariable import DistanceVariable
-from fipy.variables.cellVariable import CellVariable
-from fipy.meshes.mesh2D import Mesh2D
 from fipy.tools import parallel
 
 class GapFillMesh(Gmsh2D):
@@ -91,6 +87,7 @@ class GapFillMesh(Gmsh2D):
     .. note:: the copy makes the array contiguous for inlining
 
     >>> localErrors = (centers - var)**2 / centers**2 # doctest: +GMSH 
+    >>> from fipy.tools import numerix
     >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.numberOfCells) # doctest: +GMSH 
     >>> argmax = numerix.argmax(localErrors) # doctest: +GMSH
 
@@ -170,145 +167,6 @@ class GapFillMesh(Gmsh2D):
         Extrude{0, boundaryLayerHeight, 0} {
             Line{100}; Layers{ numberOfBoundaryLayerCells }; Recombine;}
         """ % locals(), communicator=communicator)
-
-class TrenchMesh(GapFillMesh):
-
-    """
-    The following test case tests for diffusion across the domain.
-
-    >>> cellSize = 0.05e-6
-    >>> trenchDepth = 0.5e-6
-    >>> boundaryLayerDepth = 50e-6
-    >>> domainHeight = 10 * cellSize + trenchDepth + boundaryLayerDepth
-
-    >>> mesh = TrenchMesh(trenchSpacing = 1e-6,
-    ...                   cellSize = cellSize,
-    ...                   trenchDepth = trenchDepth,
-    ...                   boundaryLayerDepth = boundaryLayerDepth,
-    ...                   aspectRatio = 1.) # doctest: +GMSH
-
-    >>> import fipy.tools.dump as dump 
-    >>> (f, filename) = dump.write(mesh) # doctest: +GMSH 
-    >>> if parallel.Nproc == 1:
-    ...     mesh = dump.read(filename, f) # doctest: +GMSH 
-    >>> print mesh.globalNumberOfCells - len(numerix.nonzero(mesh.electrolyteMask)[0]) # doctest: +GMSH, +SERIAL
-    150
-    >>> print mesh.globalNumberOfCells
-    655
-
-    >>> from fipy.variables.cellVariable import CellVariable
-    >>> var = CellVariable(mesh = mesh, value = 0.) # doctest: +GMSH
-
-    >>> from fipy.terms.diffusionTerm import DiffusionTerm
-    >>> eq = DiffusionTerm() # doctest: +GMSH
-
-    >>> var.constrain(0., mesh.facesBottom) # doctest: +GMSH
-    >>> var.constrain(domainHeight, mesh.facesTop) # doctest: +GMSH
-
-    >>> eq.solve(var) # doctest: +GMSH
-
-    Evaluate the result:
-       
-    >>> centers = mesh.cellCenters[1].copy() # doctest: +GMSH
-
-    .. note:: the copy makes the array contiguous for inlining
-
-    >>> localErrors = (centers - var)**2 / centers**2 # doctest: +GMSH
-    >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.numberOfCells) # doctest: +GMSH
-    >>> argmax = numerix.argmax(localErrors) # doctest: +GMSH
-    >>> print numerix.sqrt(localErrors[argmax]) < 0.051 # doctest: +GMSH
-    1
-    >>> print globalError < 0.02 # doctest: +GMSH
-    1
-
-    """
-
-    def __init__(self,
-                 trenchDepth=None,
-                 trenchSpacing=None,
-                 boundaryLayerDepth=None,
-                 cellSize=None,
-                 aspectRatio=None,
-                 angle=0.,
-                 communicator=parallel):
-        """
-
-        `trenchDepth` - Depth of the trench.
-
-        `trenchSpacing` - The distance between the trenches.
-
-        `boundaryLayerDepth` - The depth of the hydrodynamic boundary
-        layer.
-
-        `cellSize` - The cell Size.
-
-        `aspectRatio` - trenchDepth / trenchWidth
-
-        `angle` - The angle for the taper of the trench.
-
-        The trench mesh takes the parameters generally used to define
-        a trench region and recasts then for the general
-        `GapFillMesh`.
-
-        """
-
-        heightBelowTrench = cellSize * 10.
-
-        heightAboveTrench = trenchDepth / 1.
-
-        fineRegionHeight = heightBelowTrench + trenchDepth + heightAboveTrench
-        transitionHeight = fineRegionHeight * 3.
-        domainWidth = trenchSpacing / 2.
-        domainHeight = heightBelowTrench + trenchDepth + boundaryLayerDepth
-
-        super(TrenchMesh, self).__init__(cellSize=cellSize,
-                                         desiredDomainWidth=domainWidth,
-                                         desiredDomainHeight=domainHeight,
-                                         desiredFineRegionHeight=fineRegionHeight,
-                                         transitionRegionHeight=transitionHeight,
-                                         communicator=parallel)
-
-        trenchWidth = trenchDepth / aspectRatio
-
-        x, y = self.cellCenters
-        Y = (y - (heightBelowTrench + trenchDepth / 2))
-        taper = numerix.tan(angle) * Y
-        self.electrolyteMask = numerix.where(y > trenchDepth + heightBelowTrench,
-                                             1,
-                                             numerix.where(y < heightBelowTrench,
-                                                           0,
-                                                           numerix.where(x > trenchWidth / 2 + taper,
-                                                                         0,
-                                                                         1)))
-    
-    def __getstate__(self):
-        dict = super(TrenchMesh, self).__getstate__()
-        dict['electrolyteMask'] = self.electrolyteMask
-        return dict
-
-    def __setstate__(self, dict):
-        self.electrolyteMask = dict['electrolyteMask']
-        del dict['electrolyteMask']
-        super(TrenchMesh, self).__setstate__(dict)
- 
-class GapFillDistanceVariable(DistanceVariable):
-    
-    def extendVariable(self, extensionVariable, order=2):
-        if not hasattr(self, 'fineDistanceVariable'):
-            self.fineDistanceVariable = DistanceVariable(mesh=self.mesh.fineMesh)
-        if not hasattr(self, 'fineExtensionVariable'):
-            self.fineExtensionVariable = CellVariable(mesh=self.mesh.fineMesh)
-        self.fineDistanceVariable[:] = self(self.mesh.fineMesh.cellCenters)
-        self.fineExtensionVariable[:] = extensionVariable(self.mesh.fineMesh.cellCenters)
-        self.fineDistanceVariable.extendVariable(self.fineExtensionVariable, order=order)
-        extensionVariable[:] = self.fineExtensionVariable(self.mesh.cellCenters)
-
-    def calcDistanceFunction(self, order=2):
-        if not hasattr(self, 'fineDistanceVariable'):
-            self.fineDistanceVariable = DistanceVariable(mesh=self.mesh.fineMesh)
-        self.fineDistanceVariable[:] = self(self.mesh.fineMesh.cellCenters)
-        self.fineDistanceVariable.calcDistanceFunction(order=order)
-        self[:] = self.fineDistanceVariable(self.mesh.cellCenters)
 
 def _test(): 
     import fipy.tests.doctestPlus
