@@ -53,6 +53,8 @@ from fipy.tools import numerix
 from fipy.tools import serial
 from fipy.variables.distanceVariable import DistanceVariable
 from fipy.variables.cellVariable import CellVariable
+from fipy.meshes.mesh2D import Mesh2D
+from fipy.tools import parallel
 
 class GapFillMesh(Gmsh2D):
     """
@@ -65,6 +67,9 @@ class GapFillMesh(Gmsh2D):
     ...                    desiredDomainWidth = 1.) # doctest: +GMSH
 
     >>> import fipy.tools.dump as dump
+    >>> (f, filename) = dump.write(mesh) # doctest: +GMSH 
+    >>> if parallel.Nproc == 1:
+    ...     mesh = dump.read(filename, f) # doctest: +GMSH 
     >>> mesh.globalNumberOfCells # doctest: +GMSH
     173
 
@@ -100,7 +105,8 @@ class GapFillMesh(Gmsh2D):
                  desiredDomainWidth=None,
                  desiredDomainHeight=None,
                  desiredFineRegionHeight=None,
-                 transitionRegionHeight=None):
+                 transitionRegionHeight=None,
+                 communicator=parallel):
 
         """
         Arguments:
@@ -117,6 +123,7 @@ class GapFillMesh(Gmsh2D):
 
         `transitionRegionHeight` - The height of the transition region.
         """
+
         # Calculate the fine region cell counts.
         nx = int(desiredDomainWidth / cellSize)
         ny = int(desiredFineRegionHeight / cellSize) 
@@ -162,7 +169,7 @@ class GapFillMesh(Gmsh2D):
         Line(100) = {12, 13};
         Extrude{0, boundaryLayerHeight, 0} {
             Line{100}; Layers{ numberOfBoundaryLayerCells }; Recombine;}
-        """ % locals())
+        """ % locals(), communicator=communicator)
 
 class TrenchMesh(GapFillMesh):
 
@@ -180,6 +187,12 @@ class TrenchMesh(GapFillMesh):
     ...                   boundaryLayerDepth = boundaryLayerDepth,
     ...                   aspectRatio = 1.) # doctest: +GMSH
 
+    >>> import fipy.tools.dump as dump 
+    >>> (f, filename) = dump.write(mesh) # doctest: +GMSH 
+    >>> if parallel.Nproc == 1:
+    ...     mesh = dump.read(filename, f) # doctest: +GMSH 
+    >>> print mesh.globalNumberOfCells - len(numerix.nonzero(mesh.electrolyteMask)[0]) # doctest: +GMSH, +SERIAL
+    150
     >>> print mesh.globalNumberOfCells
     655
 
@@ -216,7 +229,8 @@ class TrenchMesh(GapFillMesh):
                  boundaryLayerDepth=None,
                  cellSize=None,
                  aspectRatio=None,
-                 angle=0.):
+                 angle=0.,
+                 communicator=parallel):
         """
 
         `trenchDepth` - Depth of the trench.
@@ -237,6 +251,7 @@ class TrenchMesh(GapFillMesh):
         `GapFillMesh`.
 
         """
+
         heightBelowTrench = cellSize * 10.
 
         heightAboveTrench = trenchDepth / 1.
@@ -250,7 +265,8 @@ class TrenchMesh(GapFillMesh):
                                          desiredDomainWidth=domainWidth,
                                          desiredDomainHeight=domainHeight,
                                          desiredFineRegionHeight=fineRegionHeight,
-                                         transitionRegionHeight=transitionHeight)
+                                         transitionRegionHeight=transitionHeight,
+                                         communicator=parallel)
 
         trenchWidth = trenchDepth / aspectRatio
 
@@ -264,7 +280,17 @@ class TrenchMesh(GapFillMesh):
                                                            numerix.where(x > trenchWidth / 2 + taper,
                                                                          0,
                                                                          1)))
+    
+    def __getstate__(self):
+        dict = super(TrenchMesh, self).__getstate__()
+        dict['electrolyteMask'] = self.electrolyteMask
+        return dict
 
+    def __setstate__(self, dict):
+        self.electrolyteMask = dict['electrolyteMask']
+        del dict['electrolyteMask']
+        super(TrenchMesh, self).__setstate__(dict)
+ 
 class GapFillDistanceVariable(DistanceVariable):
     
     def extendVariable(self, extensionVariable, order=2):
