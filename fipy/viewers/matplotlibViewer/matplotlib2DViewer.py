@@ -130,7 +130,7 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
         from fipy.meshes.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in AbstractMatplotlib2DViewer._getSuitableVars(self, vars) \
-          if ((isinstance(var.mesh, Mesh2D) and isinstance(var, CellVariable))
+          if ((var.mesh.dim == 2 and isinstance(var, CellVariable))
               and var.rank == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
