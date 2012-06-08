@@ -196,7 +196,7 @@ class AdsorbingSurfactantEquation():
     >>> ny = 5
     >>> dx = 1.
     >>> dy = 1.
-    >>> mesh = Grid2D(dx=dx, dy=dy, nx = nx, ny = ny)
+    >>> mesh = Grid2D(dx=dx, dy=dy, nx = nx, ny = ny, communicator=serial)
     >>> x, y = mesh.cellCenters
 
     >>> disVar = DistanceVariable(mesh=mesh, value=1., hasOld=True)
