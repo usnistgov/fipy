@@ -352,8 +352,11 @@ class POSFile(GmshFile):
     def _writeValues(self, var, dimensions, time=0.0, timeindex=0):
         self.fileobj.write("$View\n")
               
+        name = var.name
+        if len(name) == 0:
+            name = var.__class__.__name__
         # view-name nb-time-steps
-        self.fileobj.write("%s %d\n" % (var.name.replace(" ", "_"), 1))
+        self.fileobj.write("%s %d\n" % (name.replace(" ", "_"), 1))
         
         # what a silly format
         
@@ -434,7 +437,7 @@ class POSFile(GmshFile):
             for i in (cellTopology == t[shape]).nonzero()[0]:
                 nodes = cellVertexIDs[..., i]
                 self._writeNodesAndValues(vertexCoords=vertexCoords, 
-                                          nodes=nodes[~nodes.mask], 
+                                          nodes=nodes.compressed(), 
                                           value=value[..., i])
         
 #         cellFaceVertices = nx.take(var.mesh.faceVertexIDs, var.mesh.cellFaceIDs, axis=1)
@@ -1576,7 +1579,7 @@ class Gmsh2D(Mesh2D):
     >>> std = []
     >>> bkg = None
     >>> for refine in range(4):
-    ...     square = Gmsh2D(geo) # doctest: +GMSH
+    ...     square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
     ...     x, y = square.cellCenters # doctest: +GMSH
     ...     bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
     ...     std.append(numerix.std(numerix.sqrt(2 * square.cellVolumes) / bkg)) # doctest: +GMSH
