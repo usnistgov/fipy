@@ -136,6 +136,8 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
         The file will be created if it doesn't exist when opened for writing; 
         it will be truncated when opened for writing.  
         Add a 'b' to the mode for binary files.
+      - `background`: a `CellVariable` that specifies the desired characteristic 
+        lengths of the mesh cells
     """
     
     if order > 1:
@@ -1611,6 +1613,13 @@ class Gmsh2D(Mesh2D):
     >>> print std1 > std2 # doctest: +GMSH
     True
 
+    :Parameters:
+      - `arg`: a string giving (i) the path to an MSH file, (ii) a path to a 
+         Gmsh geometry (".geo") file, or (iii) a Gmsh geometry script
+      - `coordDimensions`: an integer indicating dimension of shapes
+      - `order`: ???
+      - `background`: a `CellVariable` that specifies the desired characteristic 
+        lengths of the mesh cells
     """
     
     def __init__(self, 
@@ -1866,12 +1875,23 @@ class Gmsh2D(Mesh2D):
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
-    def __init__(self, arg, communicator=parallel, order=1):
+    """Create a topologically 2D Mesh in 3D coordinates using Gmsh
+    
+    :Parameters:
+      - `arg`: a string giving (i) the path to an MSH file, (ii) a path to a 
+         Gmsh geometry (".geo") file, or (iii) a Gmsh geometry script
+      - `coordDimensions`: an integer indicating dimension of shapes
+      - `order`: ???
+      - `background`: a `CellVariable` that specifies the desired characteristic 
+        lengths of the mesh cells
+    """
+    def __init__(self, arg, communicator=parallel, order=1, background=None):
         Gmsh2D.__init__(self, 
                         arg, 
                         coordDimensions=3, 
                         communicator=communicator,
-                        order=order)
+                        order=order,
+                        background=background)
 
     def _test(self):
         """
@@ -1931,6 +1951,15 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         pass
 
 class Gmsh3D(Mesh):
+    """Create a 3D Mesh using Gmsh
+
+    :Parameters:
+      - `arg`: a string giving (i) the path to an MSH file, (ii) a path to a 
+         Gmsh geometry (".geo") file, or (iii) a Gmsh geometry script
+      - `order`: ???
+      - `background`: a `CellVariable` that specifies the desired characteristic 
+        lengths of the mesh cells
+    """
     def __init__(self, arg, communicator=parallel, order=1, background=None):
         self.mshFile  = openMSHFile(arg, 
                                     dimensions=3, 
