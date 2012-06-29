@@ -1270,15 +1270,15 @@ class MSHFile(GmshFile):
         ...     p = Popen(["gmsh", os.path.join(dir, "g.msh")]) # doctest: +GMSH
         ...     doctest_raw_input("Grid2D... Press enter.")
 
-        >>> g_ref = GmshGrid2D(dx=1., dy=1., nx=10, ny=10, background=gvar)
+        >>> gg = GmshGrid2D(dx=1., dy=1., nx=10, ny=10)
             
-        >>> f = openMSHFile(name=os.path.join(dir, "g_ref.msh"), mode='w') # doctest: +GMSH
-        >>> f.write(g_ref) # doctest: +GMSH
+        >>> f = openMSHFile(name=os.path.join(dir, "gg.msh"), mode='w') # doctest: +GMSH
+        >>> f.write(gg) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
 
         >>> if __name__ == "__main__":
-        ...     p = Popen(["gmsh", os.path.join(dir, "g_ref.msh")]) # doctest: +GMSH
-        ...     doctest_raw_input("Refined Grid2D... Press enter.")
+        ...     p = Popen(["gmsh", os.path.join(dir, "gg.msh")]) # doctest: +GMSH
+        ...     doctest_raw_input("GmshGrid2D... Press enter.")
             
         >>> ug = UniformGrid2D(nx = 10, ny = 10)
         >>> f = openMSHFile(name=os.path.join(dir, "ug.msh"), mode='w') # doctest: +GMSH
@@ -2143,8 +2143,7 @@ class Gmsh3D(Mesh):
 class GmshGrid2D(Gmsh2D):
     """Should serve as a drop-in replacement for Grid2D."""
     def __init__(self, dx=1., dy=1., nx=1, ny=None, 
-                 coordDimensions=2, communicator=parallel, order=1,
-                 background=None):
+                 coordDimensions=2, communicator=parallel, order=1):
         self.dx = dx
         self.dy = dy or dx
         self.nx = nx
@@ -2152,7 +2151,7 @@ class GmshGrid2D(Gmsh2D):
 
         arg = self._makeGridGeo(self.dx, self.dy, self.nx, self.ny)
 
-        Gmsh2D.__init__(self, arg, coordDimensions, communicator, order, background)
+        Gmsh2D.__init__(self, arg, coordDimensions, communicator, order, background=None)
     
     @getsetDeprecated
     def _getMeshSpacing(self):
