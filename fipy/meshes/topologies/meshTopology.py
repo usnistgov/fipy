@@ -79,12 +79,19 @@ class _MeshTopology(_AbstractTopology):
         cellTopology = numerix.empty((self.mesh.numberOfCells,), dtype=numerix.ubyte)
         
         t = self._elementTopology
-        cellTopology[:] = t["unknown"]
         
-        cellTopology[faceCountsMatch([3, 3, 3, 3])] = t["tetrahedron"]
-        cellTopology[faceCountsMatch([4, 4, 4, 4, 4, 4])] = t["hexahedron"]
-        cellTopology[faceCountsMatch([4, 4, 4, 3, 3])] = t["prism"]
-        cellTopology[faceCountsMatch([4, 3, 3, 3, 3])] = t["pyramid"]
+        if self.mesh.dim == 1:
+            cellTopology[:] = t["line"]
+        elif self.mesh.dim == 2:
+            cellTopology[:] = t["polygon"]
+            cellTopology[faceCountsMatch([2, 2, 2])] = t["triangle"]
+            cellTopology[faceCountsMatch([2, 2, 2, 2])] = t["quadrangle"]
+        else:
+            cellTopology[:] = t["unknown"]
+            cellTopology[faceCountsMatch([3, 3, 3, 3])] = t["tetrahedron"]
+            cellTopology[faceCountsMatch([4, 4, 4, 4, 4, 4])] = t["hexahedron"]
+            cellTopology[faceCountsMatch([4, 4, 4, 3, 3])] = t["prism"]
+            cellTopology[faceCountsMatch([4, 3, 3, 3, 3])] = t["pyramid"]
         
         return cellTopology
 
