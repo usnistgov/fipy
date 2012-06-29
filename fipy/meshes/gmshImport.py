@@ -1541,6 +1541,73 @@ class Gmsh2D(Mesh2D):
 
     >>> print (NW == squaredCircle.physicalFaces["NW"]).all() # doctest: +GMSH
     True
+    
+    It is possible to direct Gmsh to give the mesh different densities in
+    different locations
+    
+    >>> geo = '''
+    ... // A mesh consisting of a square
+    ... 
+    ... // define the corners of the square
+    ... 
+    ... Point(1) = {1, 1, 0, 1};
+    ... Point(2) = {0, 1, 0, 1};
+    ... Point(3) = {0, 0, 0, 1};
+    ... Point(4) = {1, 0, 0, 1};
+    ... 
+    ... // define the square
+    ... 
+    ... Line(1) = {1, 2};
+    ... Line(2) = {2, 3};
+    ... Line(3) = {3, 4};
+    ... Line(4) = {4, 1};
+    ... 
+    ... // define the boundary
+    ... 
+    ... Line Loop(1) = {1, 2, 3, 4};
+    ... 
+    ... // define the domain
+    ... 
+    ... Plane Surface(1) = {1};
+    ... '''
+
+    >>> from fipy import CellVariable, numerix
+
+    >>> std = []
+    >>> bkg = None
+    >>> for refine in range(4):
+    ...     square = Gmsh2D(geo) # doctest: +GMSH
+    ...     x, y = square.cellCenters # doctest: +GMSH
+    ...     bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
+    ...     std.append(numerix.std(numerix.sqrt(2 * square.cellVolumes) / bkg)) # doctest: +GMSH
+
+    Check that the mesh is monotonically approaching the desired density
+    
+    >>> print numerix.greater(std[:-1], std[1:]).all() # doctest: +GMSH
+    True
+    
+    and that the final density is close enough to the desired density
+    
+    >>> print std[-1] < 0.2 # doctest: +GMSH
+    True
+    
+    The initial mesh doesn't have to be from Gmsh
+    
+    >>> from fipy import Tri2D
+
+    >>> trisquare = Tri2D(nx=1, ny=1)
+    >>> x, y = trisquare.cellCenters
+    >>> bkg = CellVariable(mesh=trisquare, value=abs(x / 4) + 0.01)
+    >>> std1 = numerix.std(numerix.sqrt(2 * trisquare.cellVolumes) / bkg)
+
+    >>> square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
+    >>> x, y = square.cellCenters # doctest: +GMSH
+    >>> bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
+    >>> std2 = numerix.std(numerix.sqrt(2 * square.cellVolumes) / bkg) # doctest: +GMSH
+
+    >>> print std1 > std2 # doctest: +GMSH
+    True
+
     """
     
     def __init__(self, 
@@ -1695,6 +1762,104 @@ class Gmsh2D(Mesh2D):
         Traceback (most recent call last):
             ...
         GmshException: Gmsh hasn't produced any cells! Check your Gmsh code.
+        
+        
+        
+        
+        
+        
+        
+        Load a mesh consisting of a triangle and square
+        
+        >>> (fmsh, mshFile) = tempfile.mkstemp('.msh')
+        >>> f = os.fdopen(fmsh, 'w')
+
+        We need to do a little fancy footwork to account for multiple processes
+        
+        >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallel.Nproc)]
+        >>> numtags = 2 + 1 + len(partitions)
+        >>> partitions = " ".join([str(i) for i in [parallel.Nproc] + partitions])
+
+        >>> output = f.write('''$MeshFormat
+        ... 2.2 0 8
+        ... $EndMeshFormat
+        ... $Nodes
+        ... 5                  
+        ... 1 0.0 0.0 0.0
+        ... 2 1.0 0.0 0.0
+        ... 3 2.0 0.0 0.0
+        ... 4 0.0 1.0 0.0
+        ... 5 1.0 1.0 0.0
+        ... $EndNodes
+        ... $Elements
+        ... 2
+        ... 1 3 %(numtags)s 99 2 %(partitions)s 1 2 5 4       
+        ... 2 2 %(numtags)s 98 2 %(partitions)s 2 3 5
+        ... $EndElements
+        ... ''' % locals())
+        >>> f.close() 
+
+        >>> sqrTri = Gmsh2D(mshFile) # doctest: +GMSH
+
+        >>> os.remove(mshFile)
+
+        >>> print nx.allclose(sqrTri.cellVolumes, [1., 0.5]) # doctest: +GMSH
+        True
+        
+        
+        Write square and triangle volumes out as a POS file
+        
+        >>> from fipy import CellVariable
+        >>> vol = CellVariable(mesh=sqrTri, value=sqrTri.cellVolumes) # doctest: +GMSH
+        
+        >>> (ftmp, posFile) = tempfile.mkstemp('.pos')
+        >>> f = openPOSFile(posFile, mode='w') # doctest: +GMSH
+        >>> f.write(vol) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
+        >>> import sys
+        >>> if sys.platform == 'win32':
+        ...     os.close(ftmp)
+
+        >>> f = open(posFile, mode='r')
+        >>> print "".join(f.readlines())
+        $PostFormat
+        1.4 0 8
+        $EndPostFormat
+        $View
+        CellVariable 1
+        0 0 0
+        0 0 0
+        1 0 0
+        1 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0 0
+        0
+        1.0 2.0 1.0
+        0.0 0.0 1.0
+        0.0 0.0 0.0
+        0.5 0.5 0.5
+        0.0 1.0 1.0 0.0
+        0.0 0.0 1.0 1.0
+        0.0 0.0 0.0 0.0
+        1.0 1.0 1.0 1.0
+        $EndView
+        <BLANKLINE>
+        
+        >>> f.close()
+        >>> if sys.platform == 'win32':
+        ...     os.close(ftmp)
+
+        >>> os.remove(posFile)
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
@@ -1874,8 +2039,8 @@ class Gmsh3D(Mesh):
         
         Load a mesh consisting of a tetrahedron, prism, and pyramid
         
-        >>> (f, mshFile) = tempfile.mkstemp('.msh')
-        >>> file = os.fdopen(f, 'w')
+        >>> (fmsh, mshFile) = tempfile.mkstemp('.msh')
+        >>> f = os.fdopen(fmsh, 'w')
 
         We need to do a little fancy footwork to account for multiple processes
         
@@ -1883,7 +2048,7 @@ class Gmsh3D(Mesh):
         >>> numtags = 2 + 1 + len(partitions)
         >>> partitions = " ".join([str(i) for i in [parallel.Nproc] + partitions])
 
-        >>> output = file.write('''$MeshFormat
+        >>> output = f.write('''$MeshFormat
         ... 2.2 0 8
         ... $EndMeshFormat
         ... $Nodes
@@ -1904,7 +2069,7 @@ class Gmsh3D(Mesh):
         ... 3 7 %(numtags)s 97 2 %(partitions)s 2 3 6 5 8
         ... $EndElements
         ... ''' % locals())
-        >>> file.close() 
+        >>> f.close() 
 
         >>> tetPriPyr = Gmsh3D(mshFile) # doctest: +GMSH
 
@@ -1923,6 +2088,49 @@ class Gmsh3D(Mesh):
         >>> f.write(vol) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
         >>> import sys
+        >>> if sys.platform == 'win32':
+        ...     os.close(ftmp)
+
+        >>> f = open(posFile, mode='r')
+        >>> print "".join(f.readlines())
+        $PostFormat
+        1.4 0 8
+        $EndPostFormat
+        $View
+        volume 1
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        1 0 0
+        0 0 0
+        1 0 0
+        1 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0 0
+        0
+        0.0 1.0 1.0 1.0
+        0.0 1.0 0.0 0.0
+        0.0 0.0 1.0 0.0
+        0.166666666667 0.166666666667 0.166666666667 0.166666666667
+        1.0 1.0 1.0 3.0 3.0 3.0
+        0.0 1.0 0.0 0.0 1.0 0.0
+        0.0 0.0 1.0 0.0 0.0 1.0
+        1.0 1.0 1.0 1.0 1.0 1.0
+        1.0 1.0 3.0 3.0 2.0
+        0.0 1.0 1.0 0.0 0.5
+        0.0 0.0 0.0 0.0 -1.0
+        0.666666666667 0.666666666667 0.666666666667 0.666666666667 0.666666666667
+        $EndView
+        <BLANKLINE>
+        
+        >>> f.close()
         >>> if sys.platform == 'win32':
         ...     os.close(ftmp)
 
