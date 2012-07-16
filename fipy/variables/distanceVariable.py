@@ -38,21 +38,22 @@ from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.decorators import getsetDeprecated
 from fipy.variables.cellVariable import CellVariable
-from fipy.tests.doctestPlus import register_skipper
+import fipy.tools.levelset
+##from fipy.tests.doctestPlus import register_skipper
 
 __all__ = ["DistanceVariable"]
 
-def _checkForLSMLIB():
-    hasLSMLIB = True
-    try:
-        import fipy.tools.lsmlib.pylsmlib 
-    except Exception:    
-        hasLSMLIB = False
-    return hasLSMLIB
+# def _checkForLSMLIB():
+#     hasLSMLIB = True
+#     try:
+#         import fipy.tools.lsmlib.pylsmlib 
+#     except Exception:    
+#         hasLSMLIB = False
+#     return hasLSMLIB
 
-register_skipper(flag="LSMLIB",
-                 test=_checkForLSMLIB,
-                 why="`lsmlib` cannot be found on the $PATH")
+# register_skipper(flag="LSMLIB",
+#                  test=_checkForLSMLIB,
+#                  why="`lsmlib` cannot be found on the $PATH")
 
 class DistanceVariable(CellVariable):
     r"""
@@ -73,9 +74,9 @@ class DistanceVariable(CellVariable):
     >>> mesh = Grid1D(dx = .5, nx = 8, communicator=serial)
     >>> from distanceVariable import DistanceVariable
     >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1., 1., 1., 1., 1.))
-    >>> var.calcDistanceFunction() #doctest: +LSMLIB
+    >>> var.calcDistanceFunction() #doctest: +LSM
     >>> answer = (-1.75, -1.25, -.75, -0.25, 0.25, 0.75, 1.25, 1.75)
-    >>> print var.allclose(answer) #doctest: +LSMLIB
+    >>> print var.allclose(answer) #doctest: +LSM
     1
 
     A 1D test case with very small dimensions.
@@ -83,9 +84,9 @@ class DistanceVariable(CellVariable):
     >>> dx = 1e-10
     >>> mesh = Grid1D(dx = dx, nx = 8, communicator=serial)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1., 1., 1., 1., 1.))
-    >>> var.calcDistanceFunction() #doctest: +LSMLIB
+    >>> var.calcDistanceFunction() #doctest: +LSM
     >>> answer = numerix.arange(8) * dx - 3.5 * dx
-    >>> print var.allclose(answer) #doctest: +LSMLIB
+    >>> print var.allclose(answer) #doctest: +LSM
     1
 
     A 2D test case to test `_calcTrialValue` for a pathological case.
@@ -96,7 +97,7 @@ class DistanceVariable(CellVariable):
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1., 1., -1., 1.))
 
-    >>> var.calcDistanceFunction() #doctest: +LSMLIB
+    >>> var.calcDistanceFunction() #doctest: +LSM
     >>> vbl = -dx * dy / numerix.sqrt(dx**2 + dy**2) / 2.
     >>> vbr = dx / 2
     >>> vml = dy / 2.
@@ -107,7 +108,7 @@ class DistanceVariable(CellVariable):
     >>> sqrt = numerix.sqrt(max(sqrt, 0))
     >>> vmr = (top + sqrt) / dsq
     >>> answer = (vbl, vbr, vml, vmr, vbl, vbr)
-    >>> print var.allclose(answer) #doctest: +LSMLIB
+    >>> print var.allclose(answer) #doctest: +LSM
     1
 
     The `extendVariable` method solves the following equation for a given
@@ -123,19 +124,19 @@ class DistanceVariable(CellVariable):
     >>> from fipy.variables.cellVariable import CellVariable
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2, communicator=serial)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1., 1.))
-    >>> var.calcDistanceFunction() #doctest: +LSMLIB
+    >>> var.calcDistanceFunction() #doctest: +LSM
     >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, 2, -1))
     >>> tmp = 1 / numerix.sqrt(2)
-    >>> print var.allclose((-tmp / 2, 0.5, 0.5, 0.5 + tmp)) #doctest: +LSMLIB
+    >>> print var.allclose((-tmp / 2, 0.5, 0.5, 0.5 + tmp)) #doctest: +LSM
     1
-    >>> var.extendVariable(extensionVar, order=1) #doctest: +LSMLIB
-    >>> print extensionVar.allclose((1.25, .5, 2, 1.25)) #doctest: +LSMLIB
+    >>> var.extendVariable(extensionVar, order=1) #doctest: +LSM
+    >>> print extensionVar.allclose((1.25, .5, 2, 1.25)) #doctest: +LSM
     1
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3, communicator=serial)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1.,
     ...                                               1., 1., 1.,
     ...                                               1., 1., 1.))
-    >>> var.calcDistanceFunction(order=1) #doctest: +LSMLIB
+    >>> var.calcDistanceFunction(order=1) #doctest: +LSM
     >>> extensionVar = CellVariable(mesh = mesh, value = (-1., .5, -1.,
     ...                                                    2., -1., -1.,
     ...                                                   -1., -1., -1.))
@@ -145,11 +146,11 @@ class DistanceVariable(CellVariable):
     >>> tmp1 = (v1 + v2) / 2 + numerix.sqrt(2. - (v1 - v2)**2) / 2
     >>> tmp2 = tmp1 + 1 / numerix.sqrt(2)
     >>> print var.allclose((-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp, 
-    ...                      tmp1, 1.5, tmp1, tmp2)) #doctest: +LSMLIB
+    ...                      tmp1, 1.5, tmp1, tmp2)) #doctest: +LSMORDER1
     1
     >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
-    >>> var.extendVariable(extensionVar, order=1) #doctest: +LSMLIB
-    >>> print extensionVar.allclose(answer, rtol = 1e-4) #doctest: +LSMLIB
+    >>> var.extendVariable(extensionVar, order=1) #doctest: +LSM
+    >>> print extensionVar.allclose(answer, rtol = 1e-4) #doctest: +LSM
     1
 
     Test case for a bug that occurs when initializing the distance
@@ -159,9 +160,24 @@ class DistanceVariable(CellVariable):
 
     >>> mesh = Grid1D(dx = 1., nx = 3)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., -1.))
-    >>> var.calcDistanceFunction() #doctest: +LSMLIB
-    >>> print var.allclose((-0.5, 0.5, -0.5)) #doctest: +LSMLIB
+    >>> var.calcDistanceFunction() #doctest: +LSM
+    >>> print var.allclose((-0.5, 0.5, -0.5)) #doctest: +LSM
     1
+
+    Testing second order. This example failed with Scikit-fmm.
+
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 4, ny = 4, communicator=serial)
+    >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., 1., 1.,
+    ...                                               -1., -1., 1., 1.,
+    ...                                               1., 1., 1., 1.,
+    ...                                               1, 1, 1, 1))
+    >>> var.calcDistanceFunction(order=2) #doctest: +LSM
+    >>> answer = [-1.30473785, -0.5, 0.5, 1.49923009,
+    ...           -0.5, -0.35355339, 0.5, 1.45118446,
+    ...            0.5, 0.5, 0.97140452, 1.76215286,
+    ...            1.49923009, 1.45118446, 1.76215286, 2.33721352]
+    >>> print numerix.allclose(var, answer, rtol=1e-9)
+    True
 
     """
     def __init__(self, mesh, name = '', value = 0., unit = None, hasOld = 0):
@@ -222,21 +238,9 @@ class DistanceVariable(CellVariable):
             calculation, either 1 or 2.
 
         """
-        from fipy.tools.lsmlib.pylsmlib import computeDistanceFunction2d
+        from fipy.tools.levelset import calcDistanceFunction
+        self._value = calcDistanceFunction(self._value, mesh=self.mesh, order=order)
 
-        if hasattr(self.mesh, 'nz'):
-            raise Exception, "3D meshes not yet implemented"
-
-        elif hasattr(self.mesh, 'ny'):
-            self._value = computeDistanceFunction2d(self._value, nx=self.mesh.nx,  ny=self.mesh.ny, dx=self.mesh.dx, dy=self.mesh.dy, order=order)
-
-        elif hasattr(self.mesh, 'nx'):
-            self._value = computeDistanceFunction2d(self._value, nx=self.mesh.nx,  ny=1, dx=self.mesh.dx, dy=1, order=order)
-
-
-        else:
-            raise Exception, "Mesh can not be used for solving the FMM."
-   
         self._markFresh()
 
     @getsetDeprecated
@@ -295,6 +299,8 @@ class DistanceVariable(CellVariable):
         >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
         >>> print numerix.allclose(distanceVariable.cellInterfaceAreas.sum(), 1.57984690073)
         1
+        
+
         """   
         from fipy.variables.interfaceAreaVariable import _InterfaceAreaVariable
         return _InterfaceAreaVariable(self)

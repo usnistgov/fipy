@@ -123,11 +123,13 @@ Build the mesh:
 
 .. index:: sqrt, exp
 
+>>> from fipy import *
+
 >>> if numberOfElements != -1:
 ...     pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
 ...     sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) \
 ...           / (2 * numberOfElements)
-...     cellSize = pos + sqrt(pos**2 + sqr)
+...     cellSize = pos + numerix.sqrt(pos**2 + sqr)
 ... else:
 ...     cellSize = 0.1e-7
 
@@ -137,7 +139,6 @@ Build the mesh:
 
 .. index:: Grid2D
 
->>> from fipy import *
 >>> from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 >>> from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
@@ -181,7 +182,7 @@ region will be negative.
 ...                                 | ((y > bottomHeight) 
 ...                                    & (x < xCells * cellSize - sideWidth)))
 
->>> distanceVar.calcDistanceFunction(order=1) #doctest: +LSMLIB
+>>> distanceVar.calcDistanceFunction(order=2) #doctest: +LSM
 
 The ``distanceVariable`` has now been created to mark the interface. Some other
 variables need to be created that govern the concentrations of various species.
@@ -421,17 +422,17 @@ is calculated with the CFL number and the maximum extension velocity.
 ...         viewer.plot()
 ...
 ...     if step % levelSetUpdateFrequency == 0:
-...         distanceVar.calcDistanceFunction(order=1)
+...         distanceVar.calcDistanceFunction(order=2)
 ...
 ...     extensionVelocityVariable.setValue(depositionRateVariable())
-...
+...     
 ...     distanceVar.updateOld()
-...     distanceVar.extendVariable(extensionVelocityVariable, order=1)
+...     distanceVar.extendVariable(extensionVelocityVariable, order=2)
 ...     dt = cflNumber * cellSize / extensionVelocityVariable.max()
 ...     advectionEquation.solve(distanceVar, dt=dt)
 ...     surfactantEquation.solve(catalystVar, dt=dt)
 ...     metalEquation.solve(var=metalVar, dt=dt)
-...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt, solver=GeneralSolver()) #doctest: +LSMLIB
+...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt, solver=GeneralSolver()) #doctest: +LSM
    
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
@@ -440,10 +441,11 @@ to tell if something has changed or been broken.
 .. index:: loadtxt
    
 >>> import os
->>> filepath = os.path.join(os.path.split(__file__)[0], 
-...                         "simpleTrenchSystem.gz")
 
->>> print catalystVar.allclose(numerix.loadtxt(filepath), rtol=1e-4) #doctest: +LSMLIB
+>>> filepath = os.path.join(os.path.split(__file__)[0],
+...                         "simpleTrenchSystem.gz")
+>>> ##numerix.savetxt(filepath, numerix.array(catalystVar))
+>>> print catalystVar.allclose(numerix.loadtxt(filepath), rtol=1e-4) #doctest: +LSM
 1
 
 >>> if __name__ == '__main__':

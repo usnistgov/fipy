@@ -73,7 +73,7 @@ Construct a `distanceVariable` object.
 >>> x, y = mesh.cellCenters
 >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
 
->>> var.calcDistanceFunction(order=1) #doctest: +LSMLIB
+>>> var.calcDistanceFunction(order=1) #doctest: +LSM
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var, datamin=-5., datamax=5.)
@@ -112,7 +112,7 @@ The result can be tested with the following commands.
 ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK), 'd'))
 
 >>> var[numerix.array(trialValues == MASK)] = MASK
->>> print numerix.allclose(var, trialValues) #doctest: +LSMLIB
+>>> print numerix.allclose(var, trialValues) #doctest: +LSMORDER1
 True
 """
 __docformat__ = 'restructuredtext'

@@ -49,7 +49,7 @@ given by:
 
 Do the tests:
 
->>> var.calcDistanceFunction(order=1) #doctest: +LSMLIB
+>>> var.calcDistanceFunction(order=1) #doctest: +LSM
 
 >>> def evalCell(phix, phiy, dx, dy):
 ...     aa = dy**2 + dx**2
@@ -68,7 +68,7 @@ Do the tests:
 ...     -3. * dx / 2., -dx / 2., v4              , -dx / 2., -3. * dx / 2.,
 ...     v1           , val     , -dy / 2.        , val     , v1           ,
 ...     v3           , v2      , -3. * dy / 2.   , v2      , v3           ))
->>> print var.allclose(arr) #doctest: +LSMLIB
+>>> print var.allclose(arr) #doctest: +LSM, +LSMORDER1
 1
 
 """

@@ -440,5 +440,5 @@ def runLeveler(kLeveler=0.018,
 __all__ = ["runLeveler"]
 
 if __name__ == '__main__':
-    runLeveler()
-    raw_input("finished")    
+    runLeveler(numberOfSteps=5, displayViewers=False)
+##    raw_input("finished")    

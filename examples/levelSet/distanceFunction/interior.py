@@ -47,7 +47,7 @@ given by:
     
 Do the tests:
 
->>> var.calcDistanceFunction(order=1) #doctest: +LSMLIB
+>>> var.calcDistanceFunction(order=1) #doctest: +LSM
 
 >>> dX = dx / 2.
 >>> dY = dy / 2.
@@ -65,7 +65,7 @@ Do the tests:
 ...                           dX  ,  -dX ,   -v1 ,  -dX ,   dX  ,
 ...                           dX  ,  -mm ,   -dY ,  -mm ,   dX  ,
 ...                           v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
->>> print var.allclose(values, atol = 1e-10) #doctest: +LSMLIB
+>>> print var.allclose(values, atol = 1e-10) #doctest: +LSM, +LSMORDER1
 1
 
 """

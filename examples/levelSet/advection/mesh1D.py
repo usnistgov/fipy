@@ -76,7 +76,7 @@ Construct a `distanceVariable` object.
 ...                        value=-1.,
 ...                        hasOld=1)
 >>> var.setValue(1., where=mesh.cellCenters[0] > interfacePosition)
->>> var.calcDistanceFunction() #doctest: +LSMLIB
+>>> var.calcDistanceFunction() #doctest: +LSM
    
 The `advectionEquation` is constructed.
 
@@ -102,7 +102,7 @@ The result can be tested with the following code:
 >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
 >>> answer = numerix.where(x < distanceTravelled, 
 ...                        x[0] - interfacePosition, answer)
->>> print var.allclose(answer) #doctest: +LSMLIB
+>>> print var.allclose(answer) #doctest: +LSM
 1
    
 """

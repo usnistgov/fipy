@@ -63,7 +63,7 @@ conservation of surfactant:
 ...     distanceVariable.updateOld()
 ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
 ...     surfactantEquation.solve(surfactantVariable, dt=1)
-...     totalTime += timeStepDuration #doctest: +LSMLIB
+...     totalTime += timeStepDuration #doctest: +LSM
 >>> surfactantEquation.solve(surfactantVariable, dt=1)
 >>> surfactantAfter = numerix.sum(surfactantVariable * mesh.cellVolumes)
 >>> print surfactantBefore.allclose(surfactantAfter)
@@ -84,7 +84,7 @@ Test for the correct position of the interface:
 >>> radius = numerix.sqrt((x - L / 2)**2 + (y - L / 2)**2)
 >>> solution = radius - distanceVariable
 >>> error = (solution / finalRadius - 1)**2 * (coverage > 1e-3)
->>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.02 #doctest: +LSMLIB
+>>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.02 #doctest: +LSM
 1
 
 """

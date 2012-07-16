@@ -49,7 +49,7 @@ number of time steps change the ``numberOfSteps`` argument as follows,
 
 .. index:: runSimpleTrenchSystem
 
->>> runSimpleTrenchSystem(numberOfSteps=2, displayViewers=False) #doctest: +LSMLIB
+>>> runSimpleTrenchSystem(numberOfSteps=2, displayViewers=False) #doctest: +LSM
 1
 
 Change the ``displayViewers`` argument to ``True`` if you wish to see the
@@ -61,7 +61,7 @@ encapsulated by functions.
 Any argument parameter can be changed. For example if the initial
 catalyst coverage is not 0, then it can be reset,
 
->>> runSimpleTrenchSystem(numberOfSteps=2, catalystCoverage=0.1, displayViewers=False) #doctest: +LSMLIB
+>>> runSimpleTrenchSystem(numberOfSteps=2, catalystCoverage=0.1, displayViewers=False)#doctest: +LSM
 0
 
 The following image shows a schematic of a trench geometry along with
@@ -220,7 +220,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     x, y = mesh.cellCenters
     distanceVar.setValue(1., where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
 
-    distanceVar.calcDistanceFunction(order=1)
+    distanceVar.calcDistanceFunction(order=2)
 
     catalystVar = SurfactantVariable(
         name = "catalyst variable",
@@ -305,13 +305,13 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
             viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
-            distanceVar.calcDistanceFunction(order=1)
+            distanceVar.calcDistanceFunction(order=2)
             
         extensionVelocityVariable.setValue(depositionRateVariable())
 
         distanceVar.updateOld()
 
-        distanceVar.extendVariable(extensionVelocityVariable, order=1)
+        distanceVar.extendVariable(extensionVelocityVariable, order=2)
         dt = cflNumber * cellSize / extensionVelocityVariable.max()
 
         advectionEquation.solve(distanceVar, dt = dt)
@@ -319,11 +319,11 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         metalEquation.solve(metalVar, dt = dt)
         bulkCatalystEquation.solve(bulkCatalystVar, dt = dt, solver=GeneralSolver(tolerance=1e-15, iterations=2000))
 
+
     try:
         import os
         filepath = os.path.splitext(__file__)[0] + '.gz'
         print catalystVar.allclose(numerix.loadtxt(filepath), rtol = 1e-4)
-
     except:
         return 0
 

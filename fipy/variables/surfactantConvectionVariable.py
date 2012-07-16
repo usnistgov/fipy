@@ -35,7 +35,7 @@
 
 __docformat__ = 'restructuredtext'
 
-__all__ = []
+__all__ = ['SurfactantConvectionVariable']
 
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
