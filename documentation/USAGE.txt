@@ -379,7 +379,7 @@ generated. The syntax for generating coupled equations has the form::
 
    >>> eqn0 = Term00(coeff=..., var=var0) + Term01(coeff..., var=var1) == source0
    >>> eqn1 = Term10(coeff=..., var=var0) + Term11(coeff..., var=var1) == source1
-   >>> coupledEqn = eqn1 & eqn2
+   >>> coupledEqn = eqn0 & eqn1
 
 and there is now no need to pass any variables when solving::
 
