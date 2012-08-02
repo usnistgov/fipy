@@ -420,6 +420,124 @@ use of coupled equations are :mod:`examples.phase.binaryCoupled`,
 equations, true vector equations can now be written in :term:`FiPy`
 (see :mod:`examples.diffusion.coupled` for more details).
 
+.. _BoundaryConditions:
+
+-------------------
+Boundary Conditions
+-------------------
+
+.. currentmodule:: fipy.variables.cellVariable
+
+Applying Fixed value (Dirichlet) boundary conditions
+====================================================
+
+To apply a fixed value boundary condition use the
+:meth:`~CellVariable.constrain` method. For example, to fix `var` to
+have a value of `2` along the upper surface of a domain, use
+
+>>> var.constrain(2., where=mesh.facesTop)
+
+.. note:: 
+
+   The old equivalent
+   :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary
+   condition is now deprecated.
+
+Applying Fixed gradient boundary conditions (Neumann)
+=====================================================
+
+To apply a fixed Gradient boundary condition use the
+:attr:`~.CellVariable.faceGrad`.\
+:meth:`~fipy.variables.variable.Variable.constrain` method. For
+example, to fix `var` to have a gradient of `(0,2)` along the upper
+surface of a 2D domain, use
+
+>>> var.faceGrad.constrain(((0,),(2,)), where=mesh.facesTop)
+
+Applying Fixed flux boundary conditions
+=======================================
+
+Generally these can be implemented with a judicious use of
+:attr:`~.CellVariable.faceGrad`.\
+:meth:`~fipy.variables.variable.Variable.constrain`.  Failing that, an
+exterior flux term can be added to the equation. Firstly, set the
+terms' coefficients to be zero on the exterior faces,
+
+>>> diffCoeff.constrain(0., mesh.exteriorFaces)
+>>> convCoeff.constrain(0., mesh.exteriorFaces)
+
+then create an equation with an extra term to account for the exterior flux,
+
+>>> eqn = (TransientTerm() + ConvectionTerm(convCoeff) 
+...        == DiffusionCoeff(diffCoeff)
+...        + (mesh.exteriorFaces * exteriorFlux).divergence)
+
+where `exteriorFlux` is a rank 1
+:class:`~fipy.variables.faceVariable.FaceVariable`.
+
+.. note:: 
+
+   The old equivalent :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux`
+   boundary condition is now deprecated.
+
+Applying outlet or inlet boundary conditions
+============================================
+
+Convection terms default to a no flux boundary condition unless the
+exterior faces are associated with a constraint, in which case either
+an inlet or an outlet boundary condition is applied depending on the
+flow direction.
+
+Applying spatially varying boundary conditions
+==============================================
+
+The use of spatial varying boundary conditions is best demonstrated with an
+example. Given a 2D equation in the domain :math:`0 < x < 1` and :math:`0 < y < 1` with
+boundary conditions,
+
+.. math::
+
+  \phi = \left\{
+            \begin{aligned} 
+                xy &\quad \text{on $x>1/2$ and $y>1/2$} \\
+                \vec{n} \cdot \vec{F} = 0 &\quad \text{elsewhere}
+            \end{aligned}
+        \right.
+
+where :math:`\vec{F}` represents the flux. The boundary conditions in :term:`FiPy` can
+be written with the following code,
+
+>>> x, y = mesh.faceCenters
+>>> mask =  ((x < 0.5) | (y < 0.5))
+>>> var.faceGrad.constrain(0, where=mesh.exteriorFaces & mask)
+>>> var.constrain(x * y, where=mesh.exteriorFaces & ~mask)
+
+then
+
+>>> eqn.solve(...)
+
+Further demonstrations of spatially varying boundary condition can be found
+in :mod:`examples.diffusion.mesh20x20`
+and :mod:`examples.diffusion.circle`
+
+.. %    http://thread.gmane.org/gmane.comp.python.fipy/726
+   %    http://thread.gmane.org/gmane.comp.python.fipy/846
+
+   %    \subsection{Fourth order boundary conditions}
+
+   %    http://thread.gmane.org/gmane.comp.python.fipy/923
+
+   %    \subsection{Periodic boundary conditions}
+
+   %    http://thread.gmane.org/gmane.comp.python.fipy/135
+
+   %    \subsection{Time dependent boundary conditions}
+
+   %    http://thread.gmane.org/gmane.comp.python.fipy/2
+
+   %    \subsection{Internal boundary conditions}
+
+
 ----------------------
 Running under Python 3     
 ----------------------
