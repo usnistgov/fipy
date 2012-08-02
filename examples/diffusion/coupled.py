@@ -33,29 +33,32 @@
  ##
 
 r"""
-FiPy has only first order time derivatives and so expressions such as the
-biharmonic wave equation
+:term:`FiPy` has only first order time derivatives so equations such
+as the biharmonic wave equation written as
 
 .. math::
     
    \frac{\partial^4 v}{\partial x^4} + \frac{\partial^2 v}{\partial t^2} &= 0
    
-cannot be represented as written. We can decompose this into two equations that are first order in time
+cannot be represented as a single equation. We need to decompose the
+biharmonic equation into two equations that are first order in time in
+the following way,
 
 .. math::
     
    \frac{\partial^2 v_0}{\partial x^2} + \frac{\partial v_1}{\partial t} &= 0 \\
    \frac{\partial^2 v_1}{\partial x^2} - \frac{\partial v_0}{\partial t} &= 0 
 
-Historically, FiPy required systems of coupled equations to be solved
-successively, "sweeping" the equations to convergence. For instance, let's solve the system
+Historically, :term:`FiPy` required systems of coupled equations to be
+solved successively, "sweeping" the equations to convergence. As a
+practical example, we use the following system
 
 .. math::
     
    \frac{\partial v_0}{\partial t} &= 0.01 \nabla^2 v_0 - \nabla^2 v_1 \\
    \frac{\partial v_1}{\partial t} &= \nabla^2 v_0 + 0.01 \nabla^2 v_1
    
-subject to the boundary conditions
+subject to the boundary conditions 
 
 .. math::
    :nowrap:
@@ -64,6 +67,11 @@ subject to the boundary conditions
    v_0|_{x=0} &= 0 & v_0|_{x=1} &= 1 \\
    v_1|_{x=0} &= 1 & v_1|_{x=1} &= 0
    \end{align*}
+
+This system closely resembles the pure biharmonic equation, but has an
+additional diffusion contribution to improve numerical stability.  The
+example system is solved with the following block of code using
+explicit coupling for the cross-coupled terms.
 
 >>> from fipy import Grid1D, CellVariable, TransientTerm, DiffusionTerm, Viewer
 
@@ -93,9 +101,10 @@ subject to the boundary conditions
 ...     if t % 10 == 0:
 ...         vi.plot()
 
-This uncoupled method still works, but it can be advantageous to solve the two
-equations simultaneously. In this case, by coupling the equations, we can
-eliminate the explicit sources and dramatically increase the time steps:
+The uncoupled method still works, but it can be advantageous to solve
+the two equations simultaneously. In this case, by coupling the
+equations, we can eliminate the explicit sources and dramatically
+increase the time steps:
 
 >>> v0.value = 0.5
 >>> v1.value = 0.5
