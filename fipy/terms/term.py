@@ -98,11 +98,7 @@ class Term(object):
         raise NotImplementedError
         
     def _checkVar(self, var):
-        if ((var is not None) 
-            and (numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float'])):
-            import warnings
-            warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
-                          UserWarning, stacklevel=4)
+        raise NotImplementedError
 
     def _buildCache(self, matrix, RHSvector):
         if self._cacheMatrix:

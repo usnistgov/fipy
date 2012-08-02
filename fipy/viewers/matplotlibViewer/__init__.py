@@ -10,7 +10,7 @@ __all__ = ["MatplotlibViewer"]
 __all__.extend(matplotlib1DViewer.__all__)
 __all__.extend(matplotlib2DGridViewer.__all__)
 __all__.extend(matplotlib2DGridContourViewer.__all__)
-__all__.extend(matplotlib1DViewer.__all__)
+__all__.extend(matplotlib2DViewer.__all__)
 __all__.extend(matplotlibVectorViewer.__all__)
 
 def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
