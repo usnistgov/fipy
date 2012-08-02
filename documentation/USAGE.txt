@@ -360,13 +360,65 @@ Coupled and Vector Equations
 Equations can now be coupled together so that the contributions from
 all the equations appear in a single system matrix. This results in
 tighter coupling for equations with spatial and temporal derivatives
-in more than one variable. The use of coupled equation is described in
+in more than one variable. In :term:`FiPy` equations are coupled
+together using the ``&`` syntax::
+
+   >>> eqn0 = ...
+   >>> eqn1 = ...
+   >>> coupledEqn = eqn0 & eqn1
+
+The ``coupledEqn`` will use a combined system matrix that includes
+four quadrants for each of the different variable and equation
+combinations. In previous versions of :term:`FiPy` there has been no
+need to specify which variable a given term acts on when generating
+equations. The variable is simply specified when calling ``solve`` or
+``sweep`` and this functionality has been maintained in the case of
+single equations. However, for coupled equations the variable that a
+given term operates on now needs to be specified when the equation is
+generated. The syntax for generating coupled equations has the form::
+
+   >>> eqn0 = Term00(coeff=..., var=var0) + Term01(coeff..., var=var1) == source0
+   >>> eqn1 = Term10(coeff=..., var=var0) + Term11(coeff..., var=var1) == source1
+   >>> coupledEqn = eqn1 & eqn2
+
+and there is now no need to pass any variables when solving::
+
+   >>> coupledEqn.solve(dt=..., solver=...)
+
+In this case the matrix system will have the form
+
+.. math::
+
+   \left(
+   \begin{array}{c|c}
+   \text{\ttfamily Term00} & \text{\ttfamily Term01} \\ \hline
+   \text{\ttfamily Term10} & \text{\ttfamily Term11}
+   \end{array} \right)
+   \left(
+   \begin{array}{c}
+   \text{\ttfamily var0}  \\ \hline
+   \text{\ttfamily var1} 
+   \end{array} \right)
+   =	       
+   \left(
+   \begin{array}{c}
+   \text{\ttfamily source0}  \\ \hline
+   \text{\ttfamily source1} 
+   \end{array} \right)
+   
+:term:`FiPy` tries to make sensible decisions regarding each term's
+location in the matrix and the ordering of the variable column
+array. For example, if ``Term01`` is a transient term then ``Term01``
+would appear in the upper left diagonal and the ordering of the
+variable column array would be reversed.
+
+The use of coupled equation is described in detail in
 :mod:`examples.diffusion.coupled`. Other examples that demonstrate the
 use of coupled equations are :mod:`examples.phase.binaryCoupled`,
 :mod:`examples.phase.polyxtalCoupled` and
-:mod:`examples.cahnHilliard.mesh2DCoupled`. As well as coupling equations,
-true vector equations can now be written in :term:`FiPy` (see
-:mod:`examples.diffusion.coupled` for more details).
+:mod:`examples.cahnHilliard.mesh2DCoupled`. As well as coupling
+equations, true vector equations can now be written in :term:`FiPy`
+(see :mod:`examples.diffusion.coupled` for more details).
 
 ----------------------
 Running under Python 3     
