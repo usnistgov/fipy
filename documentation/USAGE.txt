@@ -428,7 +428,7 @@ Boundary Conditions
 
 .. currentmodule:: fipy.variables.cellVariable
 
-Applying Fixed value (Dirichlet) boundary conditions
+Applying fixed value (Dirichlet) boundary conditions
 ====================================================
 
 To apply a fixed value boundary condition use the
@@ -443,7 +443,7 @@ have a value of `2` along the upper surface of a domain, use
    :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary
    condition is now deprecated.
 
-Applying Fixed gradient boundary conditions (Neumann)
+Applying fixed gradient boundary conditions (Neumann)
 =====================================================
 
 To apply a fixed Gradient boundary condition use the
@@ -454,7 +454,7 @@ surface of a 2D domain, use
 
 >>> var.faceGrad.constrain(((0,),(2,)), where=mesh.facesTop)
 
-Applying Fixed flux boundary conditions
+Applying fixed flux boundary conditions
 =======================================
 
 Generally these can be implemented with a judicious use of
@@ -519,6 +519,69 @@ then
 Further demonstrations of spatially varying boundary condition can be found
 in :mod:`examples.diffusion.mesh20x20`
 and :mod:`examples.diffusion.circle`
+
+Applying internal boundary conditions
+=====================================
+
+Applying internal boundary conditions can be achieved through the use
+of implicit and explicit sources. An equation of the form
+
+>>> eqn = TransientTerm() == DiffusionTerm()
+
+can be constrained to have a fixed internal ``value`` at a position
+given by ``mask`` with the following alterations
+
+>>> eqn = TransientTerm() == DiffusionTerm() - ImplicitSourceTerm(mask * largeValue) + mask * largeValue * value 
+
+The parameter ``largeValue`` must be chosen to be large enough to
+completely dominate the matrix diagonal and the RHS vector in cells
+that are masked. The ``mask`` variable would typically be a
+``CellVariable`` boolean constructed using the cell center values.
+
+One must be careful to distinguish between constraining internal cell
+values during the solve step and simply applying arbitrary constraints
+to a ``CellVariable``. Applying a constraint,
+
+>>> var.constrain(value, where=mask)
+
+simply fixes the returned value of ``var`` at ``mask`` to be
+``value``. It does not have any effect on the implicit value of ``var`` at the
+``mask`` location during the linear solve so it is not a substitute
+for the source term machinations described above. Future releases of
+:term:`FiPy` may implicitly deal with this discrepancy, but the current
+release does not. A simple example can be used to demonstrate this::
+
+>>> m = Grid1D(nx=2, dx=1.)
+>>> var = CellVariable(mesh=m)
+
+Apply a constraint to the faces for a right side boundary condition
+(which works).
+
+>>> var.constrain(1., where=m.facesRight)
+
+Create the equation with the source term constraint described above
+
+>>> mask = m.x < 1.
+>>> largeValue = 1e+10
+>>> value = 0.25
+>>> eqn = DiffusionTerm() - ImplicitSourceTerm(largeValue * mask) + largeValue * mask * value
+
+and the expected value is obtained.
+
+>>> eqn.solve(var)
+>>> print var
+[ 0.25  0.75]
+
+However, if a constraint is used without the source term constraint an
+unexpected value is obtained
+
+>>> var.constrain(0.25, where=mask)
+>>> eqn = DiffusionTerm()
+>>> eqn.solve(var)
+>>> print var
+[ 0.25  1.  ]
+
+although the left cell has the expected value as it is constrained.
 
 .. %    http://thread.gmane.org/gmane.comp.python.fipy/726
    %    http://thread.gmane.org/gmane.comp.python.fipy/846
