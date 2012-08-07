@@ -547,9 +547,9 @@ We verify that the bulk phases have shifted to the predicted solidus and
 liquidus compositions
 
 >>> X = mesh.faceCenters[0]
->>> print Cs.allclose(C.faceValue[X==0], atol=2e-4)
+>>> print Cs.allclose(C.faceValue[X.value==0], atol=2e-4)
 True
->>> print Cl.allclose(C.faceValue[X==L], atol=2e-4)
+>>> print Cl.allclose(C.faceValue[X.value==L], atol=2e-4)
 True
 
 and that the phase fraction remains unchanged

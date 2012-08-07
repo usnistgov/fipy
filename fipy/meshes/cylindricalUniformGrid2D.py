@@ -148,15 +148,15 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> print numerix.allequal(faceCellIds, mesh.faceCellIDs) # doctest: +PROCESSOR_0
             True
             
-            >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
-            ...                            dy, dy, dy, dy, dy, dy, dy, dy))
-            >>> faceAreas = faceAreas * mesh.faceCenters[0] # doctest: +PROCESSOR_0
-            >>> print numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
-            True
-            
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
-            >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
+            True
+
+            >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
+            ...                            dy, dy, dy, dy, dy, dy, dy, dy))
+            >>> faceAreas = faceAreas * faceCenters[0]
+            >>> print numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., 

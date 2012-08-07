@@ -297,7 +297,7 @@ class UniformGrid1D(UniformGrid):
     
     @property
     def vertexCoords(self):
-        return self.faceCenters
+        return numerix.array(self.faceCenters)
 
     @property
     def faceCellIDs(self):
