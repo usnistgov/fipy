@@ -261,8 +261,8 @@ class Tri2D(Mesh2D):
             
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
-            >>> numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
-            1
+            >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
+            True
 
             >>> xc = dy  / numerix.sqrt((dx * dx) + (dy * dy))
             >>> yc = dx  / numerix.sqrt((dx * dx) + (dy * dy))

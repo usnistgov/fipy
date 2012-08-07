@@ -117,7 +117,11 @@ class AbstractMesh(object):
 
     """Geometry properties"""
 
-    faceCenters = property(lambda s: s._faceCenters)
+    @property
+    def faceCenters(self):
+        from fipy.variables.faceVariable import FaceVariable
+        return FaceVariable(mesh=self, value=self._faceCenters,
+                            rank=1)
 
     cellToFaceDistanceVectors  = property(lambda s: s._cellToFaceDistanceVectors)
     cellDistanceVectors        = property(lambda s: s._cellDistanceVectors)
@@ -704,8 +708,7 @@ class AbstractMesh(object):
 
         """
         x = self.faceCenters[0]
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=x == _madmin(x))
+        return x == _madmin(x)
 
     @property
     def facesRight(self):
@@ -725,8 +728,7 @@ class AbstractMesh(object):
             
         """
         x = self.faceCenters[0]
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=x == _madmax(x))
+        return x == _madmax(x)
 
     @property
     def facesBottom(self):
@@ -746,8 +748,7 @@ class AbstractMesh(object):
             
         """
         y = self.faceCenters[1]
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=y == _madmin(y))
+        return y == _madmin(y)
 
     facesDown = facesBottom
 
@@ -769,8 +770,7 @@ class AbstractMesh(object):
             
         """
         y = self.faceCenters[1]
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=y == _madmax(y))
+        return y == _madmax(y)
 
     facesUp = facesTop
 
@@ -788,8 +788,7 @@ class AbstractMesh(object):
 
         """
         z = self.faceCenters[2] 
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=z == _madmax(z))
+        return z == _madmax(z)
 
     @property
     def facesFront(self):
@@ -805,8 +804,7 @@ class AbstractMesh(object):
 
         """
         z = self.faceCenters[2]
-        from fipy.variables.faceVariable import FaceVariable
-        return FaceVariable(mesh=self, value=z == _madmin(z))
+        return z == _madmin(z)
 
     @property
     def _cellVertexIDs(self):
@@ -1041,7 +1039,7 @@ class AbstractMesh(object):
             from enthought.tvtk.api import tvtk
         
         points = self.faceCenters
-        points = self._toVTK3D(points)
+        points = self._toVTK3D(numerix.array(points))
         ug = tvtk.UnstructuredGrid(points=points)
         
         num = len(points)
