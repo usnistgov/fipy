@@ -2121,10 +2121,10 @@ class Gmsh3D(Mesh):
         >>> if sys.platform == 'win32':
         ...     os.close(ftmp)
 
-        >>> f = open(posFile, mode='r')
-        >>> l = f.readlines()
-        >>> f.close()
-        >>> print "".join(l[:5])
+        >>> f = open(posFile, mode='r') # doctest: +GMSH
+        >>> l = f.readlines() # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
+        >>> print "".join(l[:5]) # doctest: +GMSH
         $PostFormat
         1.4 0 8
         $EndPostFormat
@@ -2132,7 +2132,7 @@ class Gmsh3D(Mesh):
         volume 1
         <BLANKLINE>
         
-        >>> print l[-1]
+        >>> print l[-1] # doctest: +GMSH
         $EndView
         <BLANKLINE>
         
@@ -2140,7 +2140,7 @@ class Gmsh3D(Mesh):
         
         >>> from fipy import numerix
         
-        >>> a1 = numerix.fromstring("".join(l[5:-1]), sep=" ")
+        >>> a1 = numerix.fromstring("".join(l[5:-1]), sep=" ") # doctest: +GMSH
         >>> a2 = numerix.fromstring('''
         ...  0 0 0
         ...  0 0 0
@@ -2172,7 +2172,7 @@ class Gmsh3D(Mesh):
         ...  0.0 0.0 0.0 0.0 -1.0
         ...  0.6666666666666666 0.6666666666666666 0.6666666666666666 0.6666666666666666 0.6666666666666666
         ...  ''', sep=" ")
-        >>> print numerix.allclose(a1, a2)
+        >>> print numerix.allclose(a1, a2) # doctest: +GMSH
         True
 
         >>> os.remove(posFile)
