@@ -999,6 +999,9 @@ class Variable(object):
 
             if resultShape == ():
                 argDict['result'] = numerix.reshape(argDict['result'], resultShape)
+                
+            if self.getsctype() == numerix.bool_:
+                argDict['result'] = numerix.asarray(argDict['result'], dtype=self.getsctype())
 
         return argDict['result']
 
