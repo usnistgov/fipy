@@ -97,7 +97,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
         >>> m = Grid1D()
         >>> c = CellVariable(mesh=m)
         >>> e = VanLeerConvectionTerm(((1,),))
-        >>> e.solve(c)
+        >>> e.solve(c) # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
            ...    
         TransientTermError: The equation requires a TransientTerm with explicit convection.
