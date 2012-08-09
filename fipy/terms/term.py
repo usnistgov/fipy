@@ -37,7 +37,7 @@ __docformat__ = 'restructuredtext'
 import os
 
 from fipy.tools import numerix
-from fipy.solvers import DefaultSolver
+from fipy.solvers import DefaultSolver, DummySolver
 from fipy.terms import AbstractBaseClassError
 from fipy.terms import SolutionVariableRequiredError
 from fipy.tools.decorators import getsetDeprecated
@@ -325,7 +325,7 @@ class Term(object):
         >>> from fipy import *
         >>> m = Grid1D(nx=10)
         >>> v = CellVariable(mesh=m)
-        >>> len(DiffusionTerm().justErrorVector(v)) == m.numberOfCells
+        >>> len(DiffusionTerm().justErrorVector(v, solver=DummySolver())) == m.numberOfCells
         True
 
         """

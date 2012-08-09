@@ -1868,8 +1868,6 @@ class Gmsh2D(Mesh2D):
         <BLANKLINE>
         
         >>> f.close()
-        >>> if sys.platform == 'win32':
-        ...     os.close(ftmp)
 
         >>> os.remove(posFile)
         """
@@ -2123,48 +2121,59 @@ class Gmsh3D(Mesh):
         >>> if sys.platform == 'win32':
         ...     os.close(ftmp)
 
-        >>> f = open(posFile, mode='r')
-        >>> print "".join(f.readlines())
+        >>> f = open(posFile, mode='r') # doctest: +GMSH
+        >>> l = f.readlines() # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
+        >>> print "".join(l[:5]) # doctest: +GMSH
         $PostFormat
         1.4 0 8
         $EndPostFormat
         $View
         volume 1
-        0 0 0
-        0 0 0
-        0 0 0
-        0 0 0
-        1 0 0
-        0 0 0
-        1 0 0
-        1 0 0
-        0 0 0
-        0 0 0
-        0 0 0
-        0 0 0
-        0 0 0
-        0 0 0
-        0 0 0
-        0 0 0 0
-        0
-        0.0 1.0 1.0 1.0
-        0.0 1.0 0.0 0.0
-        0.0 0.0 1.0 0.0
-        0.166666666667 0.166666666667 0.166666666667 0.166666666667
-        1.0 1.0 1.0 3.0 3.0 3.0
-        0.0 1.0 0.0 0.0 1.0 0.0
-        0.0 0.0 1.0 0.0 0.0 1.0
-        1.0 1.0 1.0 1.0 1.0 1.0
-        1.0 1.0 3.0 3.0 2.0
-        0.0 1.0 1.0 0.0 0.5
-        0.0 0.0 0.0 0.0 -1.0
-        0.666666666667 0.666666666667 0.666666666667 0.666666666667 0.666666666667
+        <BLANKLINE>
+        
+        >>> print l[-1] # doctest: +GMSH
         $EndView
         <BLANKLINE>
         
-        >>> f.close()
-        >>> if sys.platform == 'win32':
-        ...     os.close(ftmp)
+        Py3k writes the numbers at a different precision
+        
+        >>> from fipy import numerix
+        
+        >>> a1 = numerix.fromstring("".join(l[5:-1]), sep=" ") # doctest: +GMSH
+        >>> a2 = numerix.fromstring('''
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  1 0 0
+        ...  0 0 0
+        ...  1 0 0
+        ...  1 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0 0
+        ...  0
+        ...  0.0 1.0 1.0 1.0
+        ...  0.0 1.0 0.0 0.0
+        ...  0.0 0.0 1.0 0.0
+        ...  0.16666666666666663 0.16666666666666663 0.16666666666666663 0.16666666666666663
+        ...  1.0 1.0 1.0 3.0 3.0 3.0
+        ...  0.0 1.0 0.0 0.0 1.0 0.0
+        ...  0.0 0.0 1.0 0.0 0.0 1.0
+        ...  1.0 1.0 1.0 1.0 1.0 1.0
+        ...  1.0 1.0 3.0 3.0 2.0
+        ...  0.0 1.0 1.0 0.0 0.5
+        ...  0.0 0.0 0.0 0.0 -1.0
+        ...  0.6666666666666666 0.6666666666666666 0.6666666666666666 0.6666666666666666 0.6666666666666666
+        ...  ''', sep=" ")
+        >>> print numerix.allclose(a1, a2) # doctest: +GMSH
+        True
 
         >>> os.remove(posFile)
         """
