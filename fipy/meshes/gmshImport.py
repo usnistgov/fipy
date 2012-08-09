@@ -1868,8 +1868,6 @@ class Gmsh2D(Mesh2D):
         <BLANKLINE>
         
         >>> f.close()
-        >>> if sys.platform == 'win32':
-        ...     os.close(ftmp)
 
         >>> os.remove(posFile)
         """
@@ -2163,8 +2161,6 @@ class Gmsh3D(Mesh):
         <BLANKLINE>
         
         >>> f.close()
-        >>> if sys.platform == 'win32':
-        ...     os.close(ftmp)
 
         >>> os.remove(posFile)
         """
