@@ -1647,7 +1647,7 @@ class Gmsh2D(Mesh2D):
         self.mshFile.close()
 
         if communicator.Nproc > 1:
-            self.globalNumberOfCells = communicator.sumAll(len(self.cellGlobalIDs))
+            self.globalNumberOfCells = communicator.sum(len(self.cellGlobalIDs))
             parprint("  I'm solving with %d cells total." % self.globalNumberOfCells)
             parprint("  Got global number of cells")
 
@@ -1982,7 +1982,7 @@ class Gmsh3D(Mesh):
                             _TopologyClass=_GmshTopology)
 
         if self.communicator.Nproc > 1:
-            self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
+            self.globalNumberOfCells = self.communicator.sum(len(self.cellGlobalIDs))
    
         (self.physicalCellMap,
          self.geometricalCellMap,
