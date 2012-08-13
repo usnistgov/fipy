@@ -198,7 +198,7 @@ class Mesh2D(Mesh):
         ## should extrude cnahe self rather than creating a new mesh?
 
         ## the following allows the 2D mesh to be in 3D space, this can be the case for a
-        ## GmshImporter2DIn3DSpace which would then be extruded.
+        ## Gmsh2DIn3DSpace which would then be extruded.
         oldVertices = mesh.vertexCoords
         if oldVertices.shape[0] == 2:
             oldVertices = numerix.resize(oldVertices, (3, len(oldVertices[0])))

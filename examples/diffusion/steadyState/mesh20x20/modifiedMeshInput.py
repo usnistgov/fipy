@@ -39,7 +39,8 @@
 
 This input file again solves a 1D diffusion problem as in
 `./examples/diffusion/steadyState/mesh1D/input.py`. The difference
-being that it uses a triangular mesh loaded in using gmshImport.
+being that it uses a triangular mesh loaded in using the
+:class:`~fipy.meshes.gmshMesh.Gmsh2D` object.
 
 The result is again tested in the same way:
 

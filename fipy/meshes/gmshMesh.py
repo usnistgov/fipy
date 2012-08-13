@@ -4,7 +4,7 @@
 # ###################################################################
 #  FiPy - a finite volume PDE solver in Python
 #
-#  FILE: "gmshImport.py"
+#  FILE: "gmshMesh.py"
 #
 #  Author: James O'Beirne <james.obeirne@nist.gov>
 #  Author: Alexander Mont <alexander.mont@nist.gov>

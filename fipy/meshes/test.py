@@ -47,7 +47,7 @@ def _suite():
         'fipy.meshes.grid2D',
         'fipy.meshes.grid3D',
         'fipy.meshes.tri2D',
-        'fipy.meshes.gmshImport',
+        'fipy.meshes.gmshMesh',
         'fipy.meshes.periodicGrid1D',
         'fipy.meshes.periodicGrid2D',
         'fipy.meshes.uniformGrid1D',
