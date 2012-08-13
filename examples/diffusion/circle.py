@@ -50,7 +50,7 @@ for :term:`Gmsh`, see the `gmsh manual`_.
 .. _gmsh manual: http://www.geuz.org/gmsh/doc/texinfo/gmsh.html
 
 The mesh created by :term:`Gmsh` is then imported into :term:`FiPy` using the
-:class:`~fipy.meshes.gmshImport.Gmsh2D` object.
+:class:`~fipy.meshes.gmshMesh.Gmsh2D` object.
 
 >>> from fipy import *
 >>> mesh = Gmsh2D('''
