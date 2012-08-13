@@ -223,7 +223,7 @@ Solving in Parallel
 
 :term:`FiPy` can use :term:`Trilinos` to solve equations in
 parallel. Most mesh classes in :mod:`fipy.meshes` can solve in
-paralled. This includes all "``...Grid...``" and "``...Gmsh...``"
+parallel. This includes all "``...Grid...``" and "``...Gmsh...``"
 class meshes. Currently, the only remaining serial-only meshes are
 :class:`~fipy.meshes.tri2D.Tri2D` and
 :class:`~fipy.meshes.skewedGrid2D.SkewedGrid2D`.
@@ -359,7 +359,7 @@ Equations can now be coupled together so that the contributions from
 all the equations appear in a single system matrix. This results in
 tighter coupling for equations with spatial and temporal derivatives
 in more than one variable. In :term:`FiPy` equations are coupled
-together using the ``&`` syntax::
+together using the ``&`` operator::
 
    >>> eqn0 = ...
    >>> eqn1 = ...
@@ -505,10 +505,10 @@ boundary conditions,
 where :math:`\vec{F}` represents the flux. The boundary conditions in :term:`FiPy` can
 be written with the following code,
 
->>> x, y = mesh.faceCenters
->>> mask =  ((x < 0.5) | (y < 0.5))
+>>> X, Y = mesh.faceCenters
+>>> mask =  ((X < 0.5) | (Y < 0.5))
 >>> var.faceGrad.constrain(0, where=mesh.exteriorFaces & mask)
->>> var.constrain(x * y, where=mesh.exteriorFaces & ~mask)
+>>> var.constrain(X * Y, where=mesh.exteriorFaces & ~mask)
 
 then
 
