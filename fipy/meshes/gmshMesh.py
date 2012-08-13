@@ -449,7 +449,6 @@ class POSFile(GmshFile):
                 # write the elements in sequence to avoid pulling everything
                 # to one processor.
                 if proc == self.communicator.procID:
-#                     print self.communicator.procID, (cellTopology == t[shape]), (cellTopology == t[shape]) & nonOverlapping
                     for i in ((cellTopology == t[shape]) & nonOverlapping).nonzero()[0]:
                         nodes = cellVertexIDs[..., i]
                         self._writeNodesAndValues(vertexCoords=vertexCoords, 
@@ -458,7 +457,7 @@ class POSFile(GmshFile):
                 self.communicator.Barrier()
                 # need to synchronize all processes at the end of the file
                 # this is ridiculously difficult to achieve
-                self.fileobj.seek(self.communicator.MaxAll(self.fileobj.tell()))
+                self.fileobj.seek(self.communicator.bcast(self.fileobj.tell(), root=proc))
 
         self.fileobj.write("$EndView\n")
         
