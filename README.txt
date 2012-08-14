@@ -54,12 +54,24 @@ necessary.
 
 The significant changes since version 2.1 are:
 
-- Tests can now be run on a full install using `fipy.test()`.
-- Grid classes now take an `Lx` argument. 
+- :ref:`CoupledEquations` are now supported.
+- A more robust mechanism for specifying :ref:`BoundaryConditions` is now 
+  used.
+- Most :class:`~fipy.meshes.mesh.Mesh`\es can be partitioned by 
+  :ref:`MeshingWithGmsh`.
+- "getter" and "setter" methods have been pervasively changed to Python 
+  properties.
+- :ref:`PYAMG` and :ref:`SCIPY` have been added to the :ref:`SOLVERS`.
+- FiPy can :ref:`RunUnderPython3`.
 - The functions of the :mod:`~fipy.tools.numerix` module are no longer 
   included in the :mod:`fipy` namespace. See :mod:`examples.updating.update2_0to3_0` 
   for details.
-- Support for Python 3. Please see :ref:`RunningUnderPython3` for details.
+- The test suite now runs much faster.
+- Tests can now be run on a full install using `fipy.test()`.
+- Grid classes now take an `Lx` argument. 
+- Equations containing a :class:`~fipy.terms.transientTerm.TransientTerm`,
+  must specify the timestep by passing a ``dt=`` argument when calling
+  :meth:`~fipy.terms.term.Term.solve` or :meth:`~fipy.terms.term.Term.sweep`.
 
 Tickets fixed in this release::
 

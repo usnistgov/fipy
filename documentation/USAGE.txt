@@ -324,6 +324,8 @@ you need to do something with the entire solution, you can use
         Different solvers, different preconditioners, or a less restrictive
         tolerance may help.
 
+.. _MeshingWithGmsh:
+
 -----------------
 Meshing with Gmsh
 -----------------
@@ -600,11 +602,11 @@ although the left cell has the expected value as it is constrained.
 
    %    \subsection{Internal boundary conditions}
 
-.. _RunningUnderPython3:
+.. _RunUnderPython3:
 
-----------------------
-Running under Python 3     
-----------------------
+------------------
+Run under Python 3     
+------------------
 
 It is possible to run :term:`FiPy` scripts under :term:`Python 3`, but
 there is admittedly little advantage in doing so at this time. We still

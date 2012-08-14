@@ -168,10 +168,8 @@ If necessary, you can download_ and install it for your platform
 .. note::
 
    :term:`FiPy` requires at least version 2.4.x of :term:`Python`. See
-   :ref:`RunningUnderPython3` for instructions on how to run
-   :term:`FiPy` with `Python 3.x`_.
+   the specialized instructions if you wish to :ref:`RunUnderPython3`.
 
-.. _Python 3.x:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/py3k/
 .. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
 
 :term:`Python` along with many of :term:`FiPy`'s required and optional

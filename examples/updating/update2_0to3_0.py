@@ -90,7 +90,7 @@ to indicate that we may not maintain the old syntax indefinitely.
    :meth:`~fipy.variables.cellVariable.CellVariable.constrain` method than with
    the old :class:`~fipy.boundaryConditions.fixedValue.FixedValue` and
    :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux` classes. See
-   :ref:`_BoundaryConditions`.
+   :ref:`BoundaryConditions`.
   
  * Individual :class:`~fipy.meshes.mesh.Mesh` classes should be imported
    directly from :mod:`fipy.meshes` and not :mod:`fipy.meshes.numMesh`.
