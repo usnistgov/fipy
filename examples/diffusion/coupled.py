@@ -32,7 +32,8 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve the biharmonic equation as a coupled pair of diffusion equations.
+
 :term:`FiPy` has only first order time derivatives so equations such
 as the biharmonic wave equation written as
 
@@ -142,7 +143,7 @@ Whether you pose your problem in coupled or vector form should be dictated by
 the underlying physics. If :math:`v_0` and :math:`v_1` represent the
 concentrations of two conserved species, then it is natural to write two
 seperate governing equations and to couple them. If they represent two
-components of vector field, then the vector formulation is obviously more
+components of a vector field, then the vector formulation is obviously more
 natural. FiPy will solve the same matrix system either way.
 """
 __docformat__ = 'restructuredtext'

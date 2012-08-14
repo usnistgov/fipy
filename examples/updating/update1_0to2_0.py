@@ -55,21 +55,21 @@ The following items **must** be changed in your scripts
 
  * The dimension axis of a :class:`~fipy.variables.variable.Variable` is now first, not last
    
-   >>> x = mesh.cellCenters[0]
+   >>> x = mesh.getCellCenters()[0]
 
    instead of
    
-   >>> x = mesh.cellCenters[...,0]
+   >>> x = mesh.getCellCenters()[...,0]
        
    This seemingly arbitrary change simplifies a great many things in :term:`FiPy`, but
    the one most noticeable to the user is that you can now write
    
-   >>> x, y = mesh.cellCenters
+   >>> x, y = mesh.getCellCenters()
   
    instead of
    
-   >>> x = mesh.cellCenters[...,0]
-   >>> y = mesh.cellCenters[...,1]
+   >>> x = mesh.getCellCenters()[...,0]
+   >>> y = mesh.getCellCenters()[...,1]
 
    Unfortunately, we cannot reliably automate this conversion, but we find that
    searching for "``...,``" and "``:,``" finds almost everything. Please don't
@@ -110,12 +110,12 @@ The following items **must** be changed in your scripts
       Because vector fields are properly supported, use vector operations to
       manipulate them, such as
       
-      >>> phase.faceGrad.dot((( 0, 1),
+      >>> phase.getFaceGrad().dot((( 0, 1),
       ...                          (-1, 0)))
 
       instead of the hackish
       
-      >>> phase.faceGrad._take((1, 0), axis=1) * (-1, 1)
+      >>> phase.getFaceGrad()._take((1, 0), axis=1) * (-1, 1)
 
  * For internal reasons, :term:`FiPy` now supports 
    :class:`~fipy.variables.cellVariable.CellVariable` and 
@@ -137,13 +137,13 @@ The following items **must** be changed in your scripts
    :class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition` now takes a mask, 
    instead of a list of :class:`~fipy.meshes.face.Face` IDs. Now you write
    
-   >>> X, Y = mesh.faceCenters
-   >>> FixedValue(faces=mesh.exteriorFaces & (X**2 < 1e-6), value=...)
+   >>> X, Y = mesh.getFaaceCenters()
+   >>> FixedValue(faces=mesh.getExteriorFaces() & (X**2 < 1e-6), value=...)
        
    instead of
    
-   >>> exteriorFaces = mesh.exteriorFaces
-   >>> X = exteriorFaces.centers[...,0]
+   >>> exteriorFaces = mesh.getExteriorFaces()
+   >>> X = exteriorFaces.getCenters()[...,0]
    >>> FixedValue(faces=exteriorFaces.where(X**2 < 1e-6), value=...)
        
    With the old syntax, a different call to
@@ -152,11 +152,11 @@ The following items **must** be changed in your scripts
    difficult to specify boundary conditions that depended both on position in
    space and on the current values of any other :class:`~fipy.variables.variable.Variable`.
    
-   >>> FixedValue(faces=(mesh.exteriorFaces 
+   >>> FixedValue(faces=(mesh.getExteriorFaces() 
    ...                   & (((X**2 < 1e-6) 
    ...                       & (Y > 3.)) 
-   ...                      | (phi.arithmeticFaceValue 
-   ...                         < sin(gamma.arithmeticFaceValue)))), value=...)
+   ...                      | (phi.getArithmeticFaceValue()
+   ...                         < sin(gamma.getArithmeticFaceValue())))), value=...)
 
    although it probably could have been done with a rather convoluted (and
    slow!) ``filter`` function passed to ``where``. There no longer are any ``filter``
@@ -177,7 +177,7 @@ The following items **must** be changed in your scripts
    >>> for cell in positiveCells:
    ...     initialArray[cell.ID] = 1.
 
-   Although they still exist, we find very lille cause to ever call
+   Although they still exist, we find very little cause to ever call
    :meth:`~fipy.meshes.mesh.Mesh.getCells` 
    or :meth:`fipy.meshes.mesh.Mesh.getFaces`.
    

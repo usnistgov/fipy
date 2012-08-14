@@ -351,6 +351,8 @@ parallel including :class:`~fipy.meshes.gmshImport.Gmsh2D` and
     :term:`FiPy` solution accuracy can be compromised with highly
     non-orthogonal or non-conjunctional meshes.
 
+.. _CoupledEquations:
+
 ----------------------------
 Coupled and Vector Equations
 ----------------------------

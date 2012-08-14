@@ -30,7 +30,8 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve the dendritic growth of nuclei and subsequent grain impingement.
+
 To convert a liquid material to a solid,  it must be cooled to a 
 temperature below its melting point (known as "undercooling" or "supercooling"). The rate of 
 solidification is often assumed (and experimentally found) to be proportional to the

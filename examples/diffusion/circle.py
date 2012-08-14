@@ -32,7 +32,8 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve the diffusion equation in a circular domain meshed with triangles.
+
 This example demonstrates how to solve a simple diffusion problem on a
 non-standard mesh with varying boundary conditions. The :term:`Gmsh` package
 is used to create the mesh. Firstly, define some parameters for the
@@ -54,20 +55,20 @@ The mesh created by :term:`Gmsh` is then imported into :term:`FiPy` using the
 
 >>> from fipy import *
 >>> mesh = Gmsh2D('''
-...                       cellSize = %(cellSize)g;
-...                       radius = %(radius)g;
-...                       Point(1) = {0, 0, 0, cellSize};
-...                       Point(2) = {-radius, 0, 0, cellSize};
-...                       Point(3) = {0, radius, 0, cellSize};
-...                       Point(4) = {radius, 0, 0, cellSize};
-...                       Point(5) = {0, -radius, 0, cellSize};
-...                       Circle(6) = {2, 1, 3};
-...                       Circle(7) = {3, 1, 4};
-...                       Circle(8) = {4, 1, 5};
-...                       Circle(9) = {5, 1, 2};
-...                       Line Loop(10) = {6, 7, 8, 9};
-...                       Plane Surface(11) = {10};
-...                       ''' % locals()) # doctest: +GMSH
+...               cellSize = %(cellSize)g;
+...               radius = %(radius)g;
+...               Point(1) = {0, 0, 0, cellSize};
+...               Point(2) = {-radius, 0, 0, cellSize};
+...               Point(3) = {0, radius, 0, cellSize};
+...               Point(4) = {radius, 0, 0, cellSize};
+...               Point(5) = {0, -radius, 0, cellSize};
+...               Circle(6) = {2, 1, 3};
+...               Circle(7) = {3, 1, 4};
+...               Circle(8) = {4, 1, 5};
+...               Circle(9) = {5, 1, 2};
+...               Line Loop(10) = {6, 7, 8, 9};
+...               Plane Surface(11) = {10};
+...               ''' % locals()) # doctest: +GMSH
 
 Using this mesh, we can construct a solution variable
 

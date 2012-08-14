@@ -32,7 +32,7 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve for the impingement of two grains in one dimension.
 
 In this example we solve a coupled phase and orientation equation on a one
 dimensional grid. This is another aspect of the model of Warren, Kobayashi,

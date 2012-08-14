@@ -32,7 +32,7 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve an advection-diffusion equation with a Robin boundary condition.
 
 This example demonstrates how to apply a Robin boundary condition to
 an advection-diffusion equation. The equation we wish to solve is

@@ -31,7 +31,8 @@
  # ###################################################################
  ##
 
-r"""
+r"""Model electrochemical superfill using the CEAC mechanism.
+
 This input file
 is a demonstration of the use of :term:`FiPy`
 for modeling electrodeposition using the CEAC mechanism. The

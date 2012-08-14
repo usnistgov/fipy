@@ -24,7 +24,7 @@ The FVM can be thought of as a subset of the Finite Element Method
 system of equations fully equivalent to the FVM can be obtained with
 the FEM using as weighting functions the characteristic functions of
 FV cells, i.e., functions equal to unity [Mattiussi:1997]_. Analogously,
-the the discretization of equations with the FVM reduces to the FDM on
+the discretization of equations with the FVM reduces to the FDM on
 Cartesian grids.
 
 .. toctree::

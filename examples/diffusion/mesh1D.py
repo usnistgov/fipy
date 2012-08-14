@@ -32,7 +32,8 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve a one-dimensional diffusion equation under different conditions.
+
 To run this example from the base :term:`FiPy` directory, type::
     
     $ python examples/diffusion/mesh1D.py
@@ -57,7 +58,7 @@ parameter ``dx`` refers to the grid spacing (set to unity here).
 
 >>> nx = 50
 >>> dx = 1.
->>> mesh = Grid1D(nx = nx, dx = dx)
+>>> mesh = Grid1D(nx=nx, dx=dx)
 
 :term:`FiPy` solves all equations at the centers of the cells of the mesh. We
 thus need a :class:`~fipy.variables.cellVariable.CellVariable` object to hold the values of the
@@ -389,8 +390,8 @@ coefficient on the mesh faces
 .. index:: FaceVariable
 
 >>> D = FaceVariable(mesh=mesh, value=1.0)
->>> x = mesh.faceCenters[0]
->>> D.setValue(0.1, where=(L / 4. <= x) & (x < 3. * L / 4.))
+>>> X = mesh.faceCenters[0]
+>>> D.setValue(0.1, where=(L / 4. <= X) & (X < 3. * L / 4.))
 
 The boundary conditions are a fixed value of 
 

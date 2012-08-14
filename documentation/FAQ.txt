@@ -97,7 +97,7 @@ How do I represent a `...` term that *doesn't* involve the dependent variable?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is important to realize that, even though an expression may
-superficially resemble one of those shown above, if the dependent variable
+superficially resemble one of those shown in :ref:`section:discretization`, if the dependent variable
 *for that PDE* does not appear in the appropriate place, then that
 term should be treated as a source.
 
@@ -192,6 +192,12 @@ For :term:`FiPy`'s purposes, however, this term represents the convection of
 
 >>> eq = TransientTerm() == (DiffusionTerm(coeff=D1) 
 ...                          + <Specific>ConvectionTerm(coeff=D2 * xi.faceGrad))
+
+.. note::
+
+   With the advent of :ref:`CoupledEquations` in FiPy 3.x, it is now
+   possible to represent both terms with
+   :class:`~fipy.terms.diffusionTerm.DiffusionTerm`.
 
 What if the coefficient of a term depends on the variable that I'm solving for?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -298,7 +304,9 @@ package. The better option is to make a "subclass" of the :term:`FiPy`
 then override just the behavior you wan to change, while letting :term:`FiPy` do
 most of the heavy lifting. See :mod:`examples.phase.anisotropy` and
 :mod:`examples.phase.polyxtal` for examples of creating a custom
-:term:`Matplotlib` :class:`Viewer <viewer.AbstractViewer>` class.
+:term:`Matplotlib` :class:`Viewer <viewer.AbstractViewer>` class; see
+:mod:`examples.cahnHilliard.sphere` for an example of creating a custom
+:term:`Mayavi` :class:`Viewer <viewer.AbstractViewer>` class.
 
 .. _FAQ-IterationsTimestepsSweeps:
 
@@ -390,7 +398,7 @@ sweeps
   Sweeps are used to achieve better solutions in
   :mod:`examples.diffusion.mesh1D`, 
   :mod:`examples.phase.simple`, 
-  :mod:`examples.phase.binary`, and :mod:`examples.flow.stokesCavity`.
+  :mod:`examples.phase.binaryCoupled`, and :mod:`examples.flow.stokesCavity`.
 
 timesteps
   This outermost layer of repetition is of most practical interest to
@@ -436,7 +444,7 @@ timesteps
   chosen based on the expected interfacial velocity in
   :mod:`examples.phase.simple`. The timestep is gradually
   increased as the kinetics slow down in
-  :mod:`examples.cahnHilliard.mesh2D`.
+  :mod:`examples.cahnHilliard.mesh2DCoupled`.
 
 Finally, we can (and often do) combine all three layers of repetition:
 

@@ -32,7 +32,7 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve a two-dimensional diffusion problem in a square domain.
 
 This example solves a diffusion problem and demonstrates the use of
 applying boundary condition patches.
@@ -68,11 +68,11 @@ We apply Dirichlet boundary conditions
 to the top-left and bottom-right corners.  Neumann boundary conditions
 are automatically applied to the top-right and bottom-left corners.
 
->>> x, y = mesh.faceCenters
->>> facesTopLeft = ((mesh.facesLeft & (y > L / 2))
-...                 | (mesh.facesTop & (x < L / 2)))
->>> facesBottomRight = ((mesh.facesRight & (y < L / 2))
-...                     | (mesh.facesBottom & (x > L / 2)))
+>>> X, Y = mesh.faceCenters
+>>> facesTopLeft = ((mesh.facesLeft & (Y > L / 2))
+...                 | (mesh.facesTop & (X < L / 2)))
+>>> facesBottomRight = ((mesh.facesRight & (Y < L / 2))
+...                     | (mesh.facesBottom & (X > L / 2)))
 
 >>> phi.constrain(valueTopLeft, facesTopLeft)
 >>> phi.constrain(valueBottomRight, facesBottomRight)
