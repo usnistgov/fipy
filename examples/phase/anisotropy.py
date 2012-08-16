@@ -30,7 +30,8 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve a dendritic solidification problem.
+
 To convert a liquid material to a solid,  it must be cooled to a 
 temperature below its melting point (known as "undercooling" or "supercooling"). The rate of 
 solidification is often assumed (and experimentally found) to be proportional to the

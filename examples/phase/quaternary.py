@@ -32,7 +32,8 @@
  # ###################################################################
  ##
 
-r""" 
+r""" Solve a phase-field evolution and diffusion of four species in one-dimension.
+
 The same procedure used to construct the two-component phase field
 diffusion problem in :mod:`examples.phase.binary` can be used to build up a
 system of multiple components. Once again, we'll focus on 1D.

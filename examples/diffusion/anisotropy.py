@@ -32,10 +32,9 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve the diffusion equation with an anisotropic diffusion coefficient.
 
-This example demonstrates how to solve diffusion with an anisotropic
-coefficient.  We wish to solve the problem
+We wish to solve the problem
 
 .. math::
 
@@ -86,7 +85,7 @@ Import a mesh previously created using :term:`Gmsh`.
 >>> import os
 >>> mesh = Gmsh2D(os.path.splitext(__file__)[0] + '.msh', communicator=serial) # doctest: +GMSH
 
-Set the center most cell to have a value.
+Set the centermost cell to have a value.
 
 >>> var = CellVariable(mesh=mesh, hasOld=1) # doctest: +GMSH
 >>> x, y = mesh.cellCenters # doctest: +GMSH

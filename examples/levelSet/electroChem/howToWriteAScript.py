@@ -31,7 +31,7 @@
  # ###################################################################
  ##
 
-r"""
+r"""Tutorial for writing an electrochemical superfill script.
 
 This input file demonstrates how to
 create a new superfill script if the existing suite of scripts do

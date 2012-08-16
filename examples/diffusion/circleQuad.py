@@ -32,7 +32,8 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve the diffusion equation in a circular domain meshed with quadrangles.
+
 This example demonstrates how to solve a simple diffusion problem on a
 non-standard mesh with varying boundary conditions. The :term:`Gmsh` package
 is used to create the mesh. Firstly, define some parameters for the

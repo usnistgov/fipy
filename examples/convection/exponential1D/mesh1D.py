@@ -32,7 +32,7 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve the steady-state convection-diffusion equation in one dimension.
 
 This example solves the steady-state convection-diffusion equation
 given by
@@ -41,7 +41,7 @@ given by
 
    \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) = 0
 
-with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
+with coefficients :math:`D = 1` and :math:`\vec{u} = 10\hat{\i}`, or
 
 >>> diffCoeff = 1.
 >>> convCoeff = (10.,)
@@ -61,7 +61,7 @@ We define a 1D mesh
 
 The solution variable is initialized to ``valueLeft``:
 
->>> var = CellVariable(mesh=mesh, name = "variable")
+>>> var = CellVariable(mesh=mesh, name="variable")
 
 and impose the boundary conditions
 

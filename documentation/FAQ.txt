@@ -97,7 +97,7 @@ How do I represent a `...` term that *doesn't* involve the dependent variable?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is important to realize that, even though an expression may
-superficially resemble one of those shown above, if the dependent variable
+superficially resemble one of those shown in :ref:`section:discretization`, if the dependent variable
 *for that PDE* does not appear in the appropriate place, then that
 term should be treated as a source.
 
@@ -192,6 +192,12 @@ For :term:`FiPy`'s purposes, however, this term represents the convection of
 
 >>> eq = TransientTerm() == (DiffusionTerm(coeff=D1) 
 ...                          + <Specific>ConvectionTerm(coeff=D2 * xi.faceGrad))
+
+.. note::
+
+   With the advent of :ref:`CoupledEquations` in FiPy 3.x, it is now
+   possible to represent both terms with
+   :class:`~fipy.terms.diffusionTerm.DiffusionTerm`.
 
 What if the coefficient of a term depends on the variable that I'm solving for?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -296,9 +302,11 @@ want, and then issue supplemental commands for the underlying plotting
 package. The better option is to make a "subclass" of the :term:`FiPy`
 :class:`Viewer <viewer.AbstractViewer>` that comes closest to producing the image you want. You can
 then override just the behavior you wan to change, while letting :term:`FiPy` do
-most of the heavy lifting. See :mod:`examples.phase.anisotropy` for an
-example of creating a custom :term:`Matplotlib` :class:`Viewer 
-<viewer.AbstractViewer>` class.
+most of the heavy lifting. See :mod:`examples.phase.anisotropy` and
+:mod:`examples.phase.polyxtal` for examples of creating a custom
+:term:`Matplotlib` :class:`Viewer <viewer.AbstractViewer>` class; see
+:mod:`examples.cahnHilliard.sphere` for an example of creating a custom
+:term:`Mayavi` :class:`Viewer <viewer.AbstractViewer>` class.
 
 .. _FAQ-IterationsTimestepsSweeps:
 
@@ -390,7 +398,7 @@ sweeps
   Sweeps are used to achieve better solutions in
   :mod:`examples.diffusion.mesh1D`, 
   :mod:`examples.phase.simple`, 
-  :mod:`examples.phase.binary`, and :mod:`examples.flow.stokesCavity`.
+  :mod:`examples.phase.binaryCoupled`, and :mod:`examples.flow.stokesCavity`.
 
 timesteps
   This outermost layer of repetition is of most practical interest to
@@ -436,7 +444,7 @@ timesteps
   chosen based on the expected interfacial velocity in
   :mod:`examples.phase.simple`. The timestep is gradually
   increased as the kinetics slow down in
-  :mod:`examples.cahnHilliard.mesh2D`.
+  :mod:`examples.cahnHilliard.mesh2DCoupled`.
 
 Finally, we can (and often do) combine all three layers of repetition:
 
@@ -496,111 +504,7 @@ How do I represent boundary conditions?
 
 .. currentmodule:: fipy.variables.cellVariable
 
-How do I represent a fixed value (Dirichlet) boundary condition?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Use the :meth:`~CellVariable.constrain` method. For
-example, to fix `var` to have a value of `2` along the upper surface of a domain,
-use
-
->>> var.constrain(2., where=mesh.facesTop)
-
-.. note:: 
-
-   The old equivalent
-   :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary
-   condition is now deprecated.
-
-How do I apply a (Neumann) fixed gradient boundary condition?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Use the :attr:`~.CellVariable.faceGrad`.\ :meth:`~fipy.variables.variable.Variable.constrain`
-method. For example, to fix `var` to have a gradient of `(0,2)` along the upper
-surface of a 2D domain, use
-
->>> var.faceGrad.constrain(((0,),(2,)), where=mesh.facesTop)
-
-How do I apply a fixed flux boundary condition?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Generally this can be implemented with a judicious use of
-:attr:`~.CellVariable.faceGrad`.\ :meth:`~fipy.variables.variable.Variable.constrain`.
-Failing that, an exterior flux term can be added to the equation. Firstly,
-set the terms' coefficients to be zero on the exterior faces,
-
->>> diffCoeff.constrain(0., mesh.exteriorFaces)
->>> convCoeff.constrain(0., mesh.exteriorFaces)
-
-then create an equation with an extra term to account for the exterior flux,
-
->>> eqn = (TransientTerm() + ConvectionTerm(convCoeff) 
-...        == DiffusionCoeff(diffCoeff)
-...        + (mesh.exteriorFaces * exteriorFlux).divergence)
-
-where `exteriorFlux` is a rank 1
-:class:`~fipy.variables.faceVariable.FaceVariable`.
-
-.. note:: 
-
-   The old equivalent :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux`
-   boundary condition is now deprecated.
-
-How do I apply an outlet or inlet boundary condition?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Convection terms default to a no flux boundary condition unless the
-exterior faces are associated with a constraint, in which case either
-an inlet or an outlet boundary condition is applied depending on the
-flow direction.
-
-How do I apply spatially varying boundary conditions?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The use of spatial varying boundary conditions is best demonstrated with an
-example. Given a 2D equation in the domain :math:`0 < x < 1` and :math:`0 < y < 1` with
-boundary conditions,
-
-.. math::
-
-  \phi = \left\{
-            \begin{aligned} 
-                xy &\quad \text{on $x>1/2$ and $y>1/2$} \\
-                \vec{n} \cdot \vec{F} = 0 &\quad \text{elsewhere}
-            \end{aligned}
-        \right.
-
-where :math:`\vec{F}` represents the flux. The boundary conditions in :term:`FiPy` can
-be written with the following code,
-
->>> x, y = mesh.faceCenters
->>> mask =  ((x < 0.5) | (y < 0.5))
->>> var.faceGrad.constrain(0, where=mesh.exteriorFaces & mask)
->>> var.constrain(x * y, where=mesh.exteriorFaces & ~mask)
-
-then
-
->>> eqn.solve(...)
-
-Further demonstrations of spatially varying boundary condition can be found
-in :mod:`examples.diffusion.mesh20x20`
-and :mod:`examples.diffusion.circle`
-
-.. %    http://thread.gmane.org/gmane.comp.python.fipy/726
-   %    http://thread.gmane.org/gmane.comp.python.fipy/846
-
-   %    \subsection{Fourth order boundary conditions}
-
-   %    http://thread.gmane.org/gmane.comp.python.fipy/923
-
-   %    \subsection{Periodic boundary conditions}
-
-   %    http://thread.gmane.org/gmane.comp.python.fipy/135
-
-   %    \subsection{Time dependent boundary conditions}
-
-   %    http://thread.gmane.org/gmane.comp.python.fipy/2
-
-   %    \subsection{Internal boundary conditions}
+See the :ref:`BoundaryConditions` section for more details.
 
 What does this error message mean?
 ----------------------------------

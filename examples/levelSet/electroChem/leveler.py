@@ -31,7 +31,8 @@
  # ###################################################################
  ##
 
-r"""
+r"""Model electrochemical superfill of copper with leveler and accelerator additives.
+
 This input file is a demonstration of the use of :term:`FiPy` for
 modeling copper superfill with leveler and accelerator
 additives. The material properties and experimental parameters

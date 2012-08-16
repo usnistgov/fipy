@@ -32,7 +32,7 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve the steady-state convection-diffusion equation with a constant source.
 
 Like :mod:`examples.convection.exponential1D.mesh1D`
 this example solves a steady-state convection-diffusion equation, but adds a constant source, 

@@ -32,7 +32,7 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve the Navier-Stokes equation in the viscous limit.
 
 Many thanks to Benny Malengier <bm@cage.ugent.be> for reworking this example and
 actually making it work correctly...see changeset:3799

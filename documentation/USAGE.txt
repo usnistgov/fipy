@@ -223,7 +223,7 @@ Solving in Parallel
 
 :term:`FiPy` can use :term:`Trilinos` to solve equations in
 parallel. Most mesh classes in :mod:`fipy.meshes` can solve in
-paralled. This includes all "``...Grid...``" and "``...Gmsh...``"
+parallel. This includes all "``...Grid...``" and "``...Gmsh...``"
 class meshes. Currently, the only remaining serial-only meshes are
 :class:`~fipy.meshes.tri2D.Tri2D` and
 :class:`~fipy.meshes.skewedGrid2D.SkewedGrid2D`.
@@ -324,7 +324,7 @@ you need to do something with the entire solution, you can use
         Different solvers, different preconditioners, or a less restrictive
         tolerance may help.
 
-.. _RunningUnderPython3:
+.. _MeshingWithGmsh:
 
 -----------------
 Meshing with Gmsh
@@ -353,6 +353,8 @@ parallel including :class:`~fipy.meshes.gmshImport.Gmsh2D` and
     :term:`FiPy` solution accuracy can be compromised with highly
     non-orthogonal or non-conjunctional meshes.
 
+.. _CoupledEquations:
+
 ----------------------------
 Coupled and Vector Equations
 ----------------------------
@@ -360,12 +362,247 @@ Coupled and Vector Equations
 Equations can now be coupled together so that the contributions from
 all the equations appear in a single system matrix. This results in
 tighter coupling for equations with spatial and temporal derivatives
-in more than one variable. The use of coupled equation is described in
-:mod:`examples.diffusin.coupled`. Other examples that demonstrate the
-use of coupled equations are :mod:`examples.phase.binaryCoupled` and
+in more than one variable. In :term:`FiPy` equations are coupled
+together using the ``&`` operator::
+
+   >>> eqn0 = ...
+   >>> eqn1 = ...
+   >>> coupledEqn = eqn0 & eqn1
+
+The ``coupledEqn`` will use a combined system matrix that includes
+four quadrants for each of the different variable and equation
+combinations. In previous versions of :term:`FiPy` there has been no
+need to specify which variable a given term acts on when generating
+equations. The variable is simply specified when calling ``solve`` or
+``sweep`` and this functionality has been maintained in the case of
+single equations. However, for coupled equations the variable that a
+given term operates on now needs to be specified when the equation is
+generated. The syntax for generating coupled equations has the form::
+
+   >>> eqn0 = Term00(coeff=..., var=var0) + Term01(coeff..., var=var1) == source0
+   >>> eqn1 = Term10(coeff=..., var=var0) + Term11(coeff..., var=var1) == source1
+   >>> coupledEqn = eqn0 & eqn1
+
+and there is now no need to pass any variables when solving::
+
+   >>> coupledEqn.solve(dt=..., solver=...)
+
+In this case the matrix system will have the form
+
+.. math::
+
+   \left(
+   \begin{array}{c|c}
+   \text{\ttfamily Term00} & \text{\ttfamily Term01} \\ \hline
+   \text{\ttfamily Term10} & \text{\ttfamily Term11}
+   \end{array} \right)
+   \left(
+   \begin{array}{c}
+   \text{\ttfamily var0}  \\ \hline
+   \text{\ttfamily var1} 
+   \end{array} \right)
+   =	       
+   \left(
+   \begin{array}{c}
+   \text{\ttfamily source0}  \\ \hline
+   \text{\ttfamily source1} 
+   \end{array} \right)
+   
+:term:`FiPy` tries to make sensible decisions regarding each term's
+location in the matrix and the ordering of the variable column
+array. For example, if ``Term01`` is a transient term then ``Term01``
+would appear in the upper left diagonal and the ordering of the
+variable column array would be reversed.
+
+The use of coupled equation is described in detail in
+:mod:`examples.diffusion.coupled`. Other examples that demonstrate the
+use of coupled equations are :mod:`examples.phase.binaryCoupled`,
+:mod:`examples.phase.polyxtalCoupled` and
 :mod:`examples.cahnHilliard.mesh2DCoupled`. As well as coupling
 equations, true vector equations can now be written in :term:`FiPy`
 (see :mod:`examples.diffusion.coupled` for more details).
+
+.. _BoundaryConditions:
+
+-------------------
+Boundary Conditions
+-------------------
+
+.. currentmodule:: fipy.variables.cellVariable
+
+Applying fixed value (Dirichlet) boundary conditions
+====================================================
+
+To apply a fixed value boundary condition use the
+:meth:`~CellVariable.constrain` method. For example, to fix `var` to
+have a value of `2` along the upper surface of a domain, use
+
+>>> var.constrain(2., where=mesh.facesTop)
+
+.. note:: 
+
+   The old equivalent
+   :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary
+   condition is now deprecated.
+
+Applying fixed gradient boundary conditions (Neumann)
+=====================================================
+
+To apply a fixed Gradient boundary condition use the
+:attr:`~.CellVariable.faceGrad`.\
+:meth:`~fipy.variables.variable.Variable.constrain` method. For
+example, to fix `var` to have a gradient of `(0,2)` along the upper
+surface of a 2D domain, use
+
+>>> var.faceGrad.constrain(((0,),(2,)), where=mesh.facesTop)
+
+Applying fixed flux boundary conditions
+=======================================
+
+Generally these can be implemented with a judicious use of
+:attr:`~.CellVariable.faceGrad`.\
+:meth:`~fipy.variables.variable.Variable.constrain`.  Failing that, an
+exterior flux term can be added to the equation. Firstly, set the
+terms' coefficients to be zero on the exterior faces,
+
+>>> diffCoeff.constrain(0., mesh.exteriorFaces)
+>>> convCoeff.constrain(0., mesh.exteriorFaces)
+
+then create an equation with an extra term to account for the exterior flux,
+
+>>> eqn = (TransientTerm() + ConvectionTerm(convCoeff) 
+...        == DiffusionCoeff(diffCoeff)
+...        + (mesh.exteriorFaces * exteriorFlux).divergence)
+
+where `exteriorFlux` is a rank 1
+:class:`~fipy.variables.faceVariable.FaceVariable`.
+
+.. note:: 
+
+   The old equivalent :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux`
+   boundary condition is now deprecated.
+
+Applying outlet or inlet boundary conditions
+============================================
+
+Convection terms default to a no flux boundary condition unless the
+exterior faces are associated with a constraint, in which case either
+an inlet or an outlet boundary condition is applied depending on the
+flow direction.
+
+Applying spatially varying boundary conditions
+==============================================
+
+The use of spatial varying boundary conditions is best demonstrated with an
+example. Given a 2D equation in the domain :math:`0 < x < 1` and :math:`0 < y < 1` with
+boundary conditions,
+
+.. math::
+
+  \phi = \left\{
+            \begin{aligned} 
+                xy &\quad \text{on $x>1/2$ and $y>1/2$} \\
+                \vec{n} \cdot \vec{F} = 0 &\quad \text{elsewhere}
+            \end{aligned}
+        \right.
+
+where :math:`\vec{F}` represents the flux. The boundary conditions in :term:`FiPy` can
+be written with the following code,
+
+>>> X, Y = mesh.faceCenters
+>>> mask =  ((X < 0.5) | (Y < 0.5))
+>>> var.faceGrad.constrain(0, where=mesh.exteriorFaces & mask)
+>>> var.constrain(X * Y, where=mesh.exteriorFaces & ~mask)
+
+then
+
+>>> eqn.solve(...)
+
+Further demonstrations of spatially varying boundary condition can be found
+in :mod:`examples.diffusion.mesh20x20`
+and :mod:`examples.diffusion.circle`
+
+Applying internal boundary conditions
+=====================================
+
+Applying internal boundary conditions can be achieved through the use
+of implicit and explicit sources. An equation of the form
+
+>>> eqn = TransientTerm() == DiffusionTerm()
+
+can be constrained to have a fixed internal ``value`` at a position
+given by ``mask`` with the following alterations
+
+>>> eqn = TransientTerm() == DiffusionTerm() - ImplicitSourceTerm(mask * largeValue) + mask * largeValue * value 
+
+The parameter ``largeValue`` must be chosen to be large enough to
+completely dominate the matrix diagonal and the RHS vector in cells
+that are masked. The ``mask`` variable would typically be a
+``CellVariable`` boolean constructed using the cell center values.
+
+One must be careful to distinguish between constraining internal cell
+values during the solve step and simply applying arbitrary constraints
+to a ``CellVariable``. Applying a constraint,
+
+>>> var.constrain(value, where=mask)
+
+simply fixes the returned value of ``var`` at ``mask`` to be
+``value``. It does not have any effect on the implicit value of ``var`` at the
+``mask`` location during the linear solve so it is not a substitute
+for the source term machinations described above. Future releases of
+:term:`FiPy` may implicitly deal with this discrepancy, but the current
+release does not. A simple example can be used to demonstrate this::
+
+>>> m = Grid1D(nx=2, dx=1.)
+>>> var = CellVariable(mesh=m)
+
+Apply a constraint to the faces for a right side boundary condition
+(which works).
+
+>>> var.constrain(1., where=m.facesRight)
+
+Create the equation with the source term constraint described above
+
+>>> mask = m.x < 1.
+>>> largeValue = 1e+10
+>>> value = 0.25
+>>> eqn = DiffusionTerm() - ImplicitSourceTerm(largeValue * mask) + largeValue * mask * value
+
+and the expected value is obtained.
+
+>>> eqn.solve(var)
+>>> print var
+[ 0.25  0.75]
+
+However, if a constraint is used without the source term constraint an
+unexpected value is obtained
+
+>>> var.constrain(0.25, where=mask)
+>>> eqn = DiffusionTerm()
+>>> eqn.solve(var)
+>>> print var
+[ 0.25  1.  ]
+
+although the left cell has the expected value as it is constrained.
+
+.. %    http://thread.gmane.org/gmane.comp.python.fipy/726
+   %    http://thread.gmane.org/gmane.comp.python.fipy/846
+
+   %    \subsection{Fourth order boundary conditions}
+
+   %    http://thread.gmane.org/gmane.comp.python.fipy/923
+
+   %    \subsection{Periodic boundary conditions}
+
+   %    http://thread.gmane.org/gmane.comp.python.fipy/135
+
+   %    \subsection{Time dependent boundary conditions}
+
+   %    http://thread.gmane.org/gmane.comp.python.fipy/2
+
+   %    \subsection{Internal boundary conditions}
+
+.. _RunningUnderPython3:
 
 ----------------------
 Running under Python 3     
