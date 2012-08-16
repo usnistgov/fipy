@@ -63,12 +63,11 @@ The significant changes since version 2.1 are:
 - FiPy is capable of :ref:`RunningUnderPython3`.
 - "getter" and "setter" methods have been pervasively changed to Python 
   properties.
+- The test suite now runs much faster.
+- Tests can now be run on a full install using `fipy.test()`.
 - The functions of the :mod:`~fipy.tools.numerix` module are no longer 
   included in the :mod:`fipy` namespace. See :mod:`examples.updating.update2_0to3_0` 
   for details.
-- The test suite now runs much faster.
-- Tests can now be run on a full install using `fipy.test()`.
-- `Grid` meshes now take `Lx`, `Ly`, and `Lz` arguments. 
 - Equations containing a :class:`~fipy.terms.transientTerm.TransientTerm`,
   must specify the timestep by passing a ``dt=`` argument when calling
   :meth:`~fipy.terms.term.Term.solve` or :meth:`~fipy.terms.term.Term.sweep`.
