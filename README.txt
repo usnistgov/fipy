@@ -74,16 +74,71 @@ The significant changes since version 2.1 are:
 
 Tickets fixed in this release::
 
-    171	update the mayavi viewer to use  mayavi 2
-    286	'matplotlib: list index out of range' when no title given, but only sometimes
-    197	~binOp doesn't work on branches/version-2_0
-    194	`easy_install` instructions for MacOSX are broken
-    192	broken setuptools url with python 2.6
-    184	The FiPy webpage seems to be broken on Internet Explorer
-    168	Switch documentation to use `:math:` directive
-    198	FiPy2.0.2 LinearJORSolver.__init__  calls Solver rather than PysparseSolver
-    199	`gmshExport.exportAsMesh()` doesn't work
-    195	broken arithmetic face to cell distance calculations
+    45  Navier Stokes
+    85  CellVariable hasOld() should set self.old
+    101 Grids should take Lx, Ly, Lz arguments
+    145 tests should be run with fipy.tests()
+    177 remove ones and zeros from numerix.py
+    178 Default time steps should be infinite
+    291 term multiplication changes result
+    296 FAQ gives bad guidance for anisotropic diffusion
+    297 Use physical velocity in the manual/FAQ
+    298 mesh manipulation of periodic meshes leads to errors
+    299 Give helpfull error on - or / of meshes
+    301 wrong cell to cell normal in periodic meshes
+    302 gnuplot1d gives error on plot of facevariable
+    309 pypi is failing
+    312 Fresh FiPy gives ""ImportError: No viewers found"""
+    314 Absence of enthought.tvtk causes test failures
+    319 mesh in FiPy name space
+    324 --pysparse configuration should never attempt MPI imports
+    327 factoryMeshes.py not up to date with respect to keyword arguments
+    331 changed constraints don't propagate
+    332 anisotropic diffusion and constraints don't mix
+    333 `--Trilinos --no-pysparse` uses PySparse?!?
+    336 Profile and merge reconstrain branch
+    339 close out reconstrain branch
+    341 Fix fipy.terms._BinaryTerm test failure in parallel
+    343 diffusionTerm(var=var1).solver(var=var0) should fail sensibly
+    346 TeX is wrong in examples.phase.quaternary
+    348 Include Benny's improved interpolation patch
+    354 GmshExport is not tested and does not work
+    355 Introduce mesh.x as shorthand for mesh.cellCenters[0] etc
+    356 GmshImport should support all element types
+    357 GmshImport should read element colors
+    363 Reduce the run times for chemotaxis tests
+    366 tests take *too* long!!!
+    369 Make DiffusionTermNoCorrection the default
+    370 Epetra Norm2 failure in parallel
+    373 remove deprecated `steps=` from Solver
+    376 remove deprecated `diffusionTerm=` argument to ConvectionTerm
+    377 remove deprecated `NthOrderDiffusionTerm`
+    380 remove deprecated Variable.transpose()
+    381 remove deprecated viewers.make()
+    382 get running in Py3k
+    384 gmsh importer and gmsh tests don't clean up after themselves
+    385 `diffusionTerm._test()` requires PySparse
+    390 Improve test reporting to avoid inconsequential buildbot failures
+    391 efficiency_test chokes on liquidVapor2D.py
+    393 two `--scipy` failures
+    395 `--pysparse --inline` failures
+    417 Memory consumption growth with repeated meshing, especially with Gmsh
+    418 Viewers not working when plotting meshes with zero cells in parallel
+    419 examples/cahnHilliard/mesh2D.py broken with --trilinos
+    420 Epetra.PyComm() broken on Debian
+    421 cellVariable.min() broken in parallel
+    426 Add in parallel buildbot testing on more than 2 processors
+    427 Slow PyAMG solutions
+    434 Gmsh I/O
+    438 changes to gmshImport.py caused --inline problems
+    439 gmshImport tests fail on Windows due to shared file
+    441 Explicit convetion terms should fail when the equation has no TransientTerm (dt=None)
+    445 getFaceCenters() should return a FaceVariable
+    446 constraining values with ImplictSourceTerm not documented?
+    448 Gmsh2D does not respect background mesh
+    452 Gmsh background mesh doesn't work in parallel
+    453 faceValue as FaceCenters gives inline failures
+    454 Py3k and Windows test failures
 
 .. warning::
 
