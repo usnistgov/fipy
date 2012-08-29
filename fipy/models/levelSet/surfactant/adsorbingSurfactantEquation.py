@@ -39,7 +39,6 @@ from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
 from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.solvers import DefaultAsymmetricSolver, LinearPCGSolver
 
 __all__ = ["AdsorbingSurfactantEquation"]
 
@@ -368,6 +367,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
                 from fipy.solvers.pyAMG.linearGeneralSolver import LinearGeneralSolver
                 solver = LinearGeneralSolver(tolerance=1e-15, iterations=2000)
             else:
+                from fipy.solvers import LinearPCGSolver
                 solver = LinearPCGSolver()
             
         SurfactantEquation.solve(self, var, boundaryConditions=boundaryConditions, solver=solver, dt=dt)
@@ -390,6 +390,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
         for coeff in self.coeffs:
             coeff._updateDt(dt)
         if solver is None:
+            from fipy.solvers import DefaultAsymmetricSolver
             solver = DefaultAsymmetricSolver()
         return SurfactantEquation.sweep(self, var, solver=solver, boundaryConditions=boundaryConditions, dt=dt, underRelaxation=underRelaxation, residualFn=residualFn)
 

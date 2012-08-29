@@ -37,7 +37,7 @@ __docformat__ = 'restructuredtext'
 __all__ = []
 
 from fipy.terms.abstractConvectionTerm import _AbstractConvectionTerm
-from fipy.solvers import DefaultAsymmetricSolver
+
 
 class _AsymmetricConvectionTerm(_AbstractConvectionTerm):
 
@@ -51,6 +51,7 @@ class _AsymmetricConvectionTerm(_AbstractConvectionTerm):
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
+        from fipy.solvers import DefaultAsymmetricSolver
         return solver or DefaultAsymmetricSolver(*args, **kwargs)
     
 def _test(): 

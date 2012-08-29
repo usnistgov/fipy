@@ -37,7 +37,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.terms.transientTerm import TransientTerm
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
-from fipy.solvers import DefaultAsymmetricSolver
 
 from fipy.models.levelSet.surfactant.convectionCoeff import _ConvectionCoeff
 
@@ -83,6 +82,7 @@ class SurfactantEquation:
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
         if solver is None:
+            from fipy.solvers import DefaultAsymmetricSolver
             solver=DefaultAsymmetricSolver()
 
         var.constrain(0, var.mesh.exteriorFaces)
@@ -111,6 +111,7 @@ class SurfactantEquation:
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
         if solver is None:
+            from fipy.solvers import DefaultAsymmetricSolver
             solver=DefaultAsymmetricSolver()
         
         var.constrain(0, var.mesh.exteriorFaces)
