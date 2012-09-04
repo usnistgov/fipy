@@ -217,7 +217,7 @@ except IOError, e:
 #         },
 
 ##Hacked from numpy
-def svn_version():
+def getVersion():
     def _minimal_ext_cmd(cmd):
         # construct minimal environment
         env = {}
@@ -233,35 +233,23 @@ def svn_version():
         out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env).communicate()[0]
         return out
 
-    try:
-        out = _minimal_ext_cmd(['svn', 'info'])
-    except OSError:
-        print(" --- Could not run svn info --- ")
-        return ""
+    version = 'unknown'
 
-    import re
-    r = re.compile('Revision: ([0-9]+)')
-    svnver = ""
+    if os.path.exists('.git'):
+        try:
+            out = _minimal_ext_cmd(['git', 'describe', '--tags', '--match', 'version-*'])
+            version = out.strip().replace('version-', '').replace('_', '.').replace('-', '-dev', 1)
+        except OSError:
+            import warnings
+            warnings.warn("Could not run ``git describe``")
+    elif os.path.exists('FiPy.egg-info'):
+        from fipy import _getVersion
+        version = _getVersion()
 
-    out = str(out.decode())
-
-    for line in out.split('\n'):
-        m = r.match(line.strip())
-        if m:
-            svnver = m.group(1)
-
-    if not svnver:
-        print("Error while parsing svn version")
-
-    return svnver
-
-def getVersion(version, release=False):
-    if not release:
-        version += '-dev' + svn_version()
     return version
 
 dist = setup(	name = "FiPy",
-        version = getVersion(version='3.0', release=False), 
+        version = getVersion(), 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
