@@ -32,7 +32,7 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve a phase-field (Allen-Cahn) problem in one-dimension.
 
 To run this example from the base FiPy directory, type
 ``python examples/phase/simple/input.py`` at the command line.  A viewer

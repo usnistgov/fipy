@@ -32,10 +32,9 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve the level set equation in two dimensions for a circle. 
 
-Here we solve the level set equation in two dimensions for a circle. The 2D
-level set equation can be written,
+The 2D level set equation can be written,
 
 .. math::
 

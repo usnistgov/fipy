@@ -21,7 +21,7 @@ Examples of such systems are wide ranging, but include problems that
 exhibit a combination of diffusing and reacting species, as well as
 such diverse problems as determination of the electric potential in
 heart tissue, of fluid flow, stress evolution, and even the
-Schr\"odinger equation.
+Schroedinger equation.
 
 A general conservation equation, solved using :term:`FiPy`, can include any
 combination of the following terms,

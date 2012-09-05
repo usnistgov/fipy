@@ -87,11 +87,8 @@ class CommWrapper(object):
          
         return recvobj
                     
-    def sumAll(self, a):
-        return self.epetra_comm.SumAll(numerix.array(a))
-
     def sum(self, a, axis=None):
-        return self.epetra_comm.SumAll(numerix.array(a.sum(axis=axis)))
+        return self.epetra_comm.SumAll(numerix.array(a).sum(axis=axis))
         
     def __getstate__(self):
         return {'dummy': 0}

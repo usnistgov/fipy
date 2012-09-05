@@ -4,7 +4,7 @@
 # ###################################################################
 #  FiPy - a finite volume PDE solver in Python
 #
-#  FILE: "gmshImport.py"
+#  FILE: "gmshMesh.py"
 #
 #  Author: James O'Beirne <james.obeirne@nist.gov>
 #  Author: Alexander Mont <alexander.mont@nist.gov>
@@ -55,6 +55,8 @@ from fipy.tests.doctestPlus import register_skipper
 from fipy.meshes.mesh import Mesh
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes.topologies.meshTopology import _MeshTopology
+
+from fipy.tools.debug import PRINT
 
 __all__ = ["openMSHFile", "openPOSFile", 
            "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D", 
@@ -136,6 +138,8 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
         The file will be created if it doesn't exist when opened for writing; 
         it will be truncated when opened for writing.  
         Add a 'b' to the mode for binary files.
+      - `background`: a `CellVariable` that specifies the desired characteristic 
+        lengths of the mesh cells
     """
     
     if order > 1:
@@ -201,16 +205,20 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             
             gmshFlags += ["-format", "msh"]
             
-            if communicator.procID == 0:
-                if background is not None:
+            if background is not None:
+                if communicator.procID == 0:
                     f, bgmf = tempfile.mkstemp(suffix=".pos")
                     os.close(f)
-                    f = openPOSFile(name=bgmf, mode='w')
-                    f.write(background)
-                    f.close()
+                else:
+                    bgmf = None
+                bgmf = communicator.bcast(bgmf)
+                f = openPOSFile(name=bgmf, mode='w')
+                f.write(background)
+                f.close()
+                
+                gmshFlags += ["-bgm", bgmf]
 
-                    gmshFlags += ["-bgm", bgmf]
-
+            if communicator.procID == 0:
                 (f, mshFile) = tempfile.mkstemp('.msh')
                 os.close(f)
                 fileIsTemporary = True
@@ -352,8 +360,11 @@ class POSFile(GmshFile):
     def _writeValues(self, var, dimensions, time=0.0, timeindex=0):
         self.fileobj.write("$View\n")
               
+        name = var.name
+        if len(name) == 0:
+            name = var.__class__.__name__
         # view-name nb-time-steps
-        self.fileobj.write("%s %d\n" % (var.name.replace(" ", "_"), 1))
+        self.fileobj.write("%s %d\n" % (name.replace(" ", "_"), 1))
         
         # what a silly format
         
@@ -375,30 +386,33 @@ class POSFile(GmshFile):
         nb_scalar_pyramids2 = nb_vector_pyramids2 = nb_tensor_pyramids2 = 0
         nb_text2d = nb_text2d_chars = nb_text3d = nb_text3d_chars = 0
         
+        nonOverlapping = nx.zeros((var.mesh.numberOfCells,), dtype=bool)
+        nonOverlapping[..., var.mesh._localNonOverlappingCellIDs] = True
+        
         cellTopology = var.mesh._cellTopology
         t = var.mesh.topology._elementTopology
         
         if var.rank == 0:
-            nb_scalar_triangles = (cellTopology == t["triangle"]).sum()
-            nb_scalar_quadrangles = (cellTopology == t["quadrangle"]).sum()
-            nb_scalar_tetrahedra = (cellTopology == t["tetrahedron"]).sum()
-            nb_scalar_hexahedra = (cellTopology == t["hexahedron"]).sum()
-            nb_scalar_prisms = (cellTopology == t["prism"]).sum()
-            nb_scalar_pyramids = (cellTopology == t["pyramid"]).sum()
+            nb_scalar_triangles = self.communicator.sum((cellTopology == t["triangle"]) & nonOverlapping)
+            nb_scalar_quadrangles = self.communicator.sum((cellTopology == t["quadrangle"]) & nonOverlapping)
+            nb_scalar_tetrahedra = self.communicator.sum((cellTopology == t["tetrahedron"]) & nonOverlapping)
+            nb_scalar_hexahedra = self.communicator.sum((cellTopology == t["hexahedron"]) & nonOverlapping)
+            nb_scalar_prisms = self.communicator.sum((cellTopology == t["prism"]) & nonOverlapping)
+            nb_scalar_pyramids = self.communicator.sum((cellTopology == t["pyramid"]) & nonOverlapping)
         elif var.rank == 1:
-            nb_vector_triangles = (cellTopology == t["triangle"]).sum()
-            nb_vector_quadrangles = (cellTopology == t["quadrangle"]).sum()
-            nb_vector_tetrahedra = (cellTopology == t["tetrahedron"]).sum()
-            nb_vector_hexahedra = (cellTopology == t["hexahedron"]).sum()
-            nb_vector_prisms = (cellTopology == t["prism"]).sum()
-            nb_vector_pyramids = (cellTopology == t["pyramid"]).sum()
+            nb_vector_triangles = self.communicator.sum((cellTopology == t["triangle"]) & nonOverlapping)
+            nb_vector_quadrangles = self.communicator.sum((cellTopology == t["quadrangle"]) & nonOverlapping)
+            nb_vector_tetrahedra = self.communicator.sum((cellTopology == t["tetrahedron"]) & nonOverlapping)
+            nb_vector_hexahedra = self.communicator.sum((cellTopology == t["hexahedron"]) & nonOverlapping)
+            nb_vector_prisms = self.communicator.sum((cellTopology == t["prism"]) & nonOverlapping)
+            nb_vector_pyramids = self.communicator.sum((cellTopology == t["pyramid"]) & nonOverlapping)
         elif var.rank == 2:
-            nb_tensor_triangles = (cellTopology == t["triangle"]).sum()
-            nb_tensor_quadrangles = (cellTopology == t["quadrangle"]).sum()
-            nb_tensor_tetrahedra = (cellTopology == t["tetrahedron"]).sum()
-            nb_tensor_hexahedra = (cellTopology == t["hexahedron"]).sum()
-            nb_tensor_prisms = (cellTopology == t["prism"]).sum()
-            nb_tensor_pyramids = (cellTopology == t["pyramid"]).sum()
+            nb_tensor_triangles = self.communicator.sum((cellTopology == t["triangle"]) & nonOverlapping)
+            nb_tensor_quadrangles = self.communicator.sum((cellTopology == t["quadrangle"]) & nonOverlapping)
+            nb_tensor_tetrahedra = self.communicator.sum((cellTopology == t["tetrahedron"]) & nonOverlapping)
+            nb_tensor_hexahedra = self.communicator.sum((cellTopology == t["hexahedron"]) & nonOverlapping)
+            nb_tensor_prisms = self.communicator.sum((cellTopology == t["prism"]) & nonOverlapping)
+            nb_tensor_pyramids = self.communicator.sum((cellTopology == t["pyramid"]) & nonOverlapping)
         else:
             raise ValueError("rank must be 0, 1, or 2")
 
@@ -431,30 +445,21 @@ class POSFile(GmshFile):
         cellVertexIDs = var.mesh._orderedCellVertexIDs
         
         for shape in ("triangle", "quadrangle", "tetrahedron", "hexahedron", "prism", "pyramid"):
-            for i in (cellTopology == t[shape]).nonzero()[0]:
-                nodes = cellVertexIDs[..., i]
-                self._writeNodesAndValues(vertexCoords=vertexCoords, 
-                                          nodes=nodes[~nodes.mask], 
-                                          value=value[..., i])
-        
-#         cellFaceVertices = nx.take(var.mesh.faceVertexIDs, var.mesh.cellFaceIDs, axis=1)
-#         faceOrder = nx.argsort(var.mesh._unsortedNodesPerFace, axis=0)[::-1]
-#         faceOrientations = nx.take(var.mesh._rightHandOrientation, var.mesh.cellFaceIDs, axis=0)
-# 
-#         for shape, writeShape in (("triangle", self._writeTriangle),
-#                                   ("quadrangle", self._writeQuadrangle),
-#                                   ("tetrahedron", self._writeTetrahedron),
-#                                   ("hexahedron", self._writeHexahedron),
-#                                   ("prism", self._writePrism),
-#                                   ("pyramid", self._writePyramid)):
-#             for i in (cellTopology == t[shape]).nonzero()[0]:
-#                 writeShape(vertexCoords=vertexCoords, 
-#                            cell=cellFaceVertices[..., faceOrder[..., i], i], 
-#                            orientations=faceOrientations[faceOrder[..., i], i], 
-#                            value=value[..., i])
-                                    
+            for proc in range(self.communicator.Nproc):
+                # write the elements in sequence to avoid pulling everything
+                # to one processor.
+                if proc == self.communicator.procID:
+                    for i in ((cellTopology == t[shape]) & nonOverlapping).nonzero()[0]:
+                        nodes = cellVertexIDs[..., i]
+                        self._writeNodesAndValues(vertexCoords=vertexCoords, 
+                                                  nodes=nodes.compressed(), 
+                                                  value=value[..., i])
+                self.communicator.Barrier()
+                # need to synchronize all processes at the end of the file
+                # this is ridiculously difficult to achieve
+                self.fileobj.seek(self.communicator.bcast(self.fileobj.tell(), root=proc))
+
         self.fileobj.write("$EndView\n")
-        
         
     # lists of double precision numbers giving the node coordinates and the
     # values associated with the nodes of the nb-scalar-points scalar points,
@@ -471,86 +476,13 @@ class POSFile(GmshFile):
     #           comp1-node2-time2 comp2-node2-time2 comp3-node2-time2
     #           comp1-node3-time2 comp2-node3-time2 comp3-node3-time2
     
-    def _writeTriangle(self, vertexCoords, cell, orientations, value):
-        # triangle is defined by one face and the remaining point 
-        # from either of the other faces
-        nodes = cell[..., 0]
-        nodes = nx.concatenate((nodes, cell[~nx.in1d(cell[..., 1], nodes), 1]))
-                        
-        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
-
-    def _writeQuadrangle(self, vertexCoords, cell, orientations, value):
-        # quadrangle is defined by one face and the opposite face
-        face0 = cell[..., 0]
-        for face1 in cell[..., 1:].swapaxes(0, 1):
-            if not nx.in1d(face1, face0).any():
-                break
-                
-        # need to ensure face1 is oriented same way as face0
-        cross01 = nx.cross((vertexCoords[..., face1[0]] 
-                            - vertexCoords[..., face0[0]]),
-                           (vertexCoords[..., face1[1]] 
-                            - vertexCoords[..., face0[0]]))
-        
-        cross10 = nx.cross((vertexCoords[..., face0[0]] 
-                            - vertexCoords[..., face1[0]]),
-                           (vertexCoords[..., face0[1]] 
-                            - vertexCoords[..., face1[0]]))
-
-        dim = vertexCoords.shape[0]
-        if ((dim == 2 and cross01 * cross10 < 0)
-            or (dim == 3 and nx.dot(cross01, cross10) < 0)):
-            face1 = face1[::-1]
-                
-        nodes = nx.concatenate((face0, face1))
-         
-        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
-        
-    def _writeTetrahedron(self, vertexCoords, cell, orientations, value):
-        # tetrahedron is defined by one face and the remaining point 
-        # from any of the other faces
-        nodes = cell[..., 0][::orientations[0]]
-        nodes = nx.concatenate((nodes, cell[~nx.in1d(cell[..., 1], nodes), 1]))
-                
-        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
-
-    def _writeHexahedron(self, vertexCoords, cell, orientations, value):
-        # hexahedron is defined by one face and the opposite face
-        face0 = cell[..., 0][::orientations[0]]
-        for i, face1 in enumerate(cell[..., 1:].swapaxes(0, 1)):
-            if not nx.any([node in face1 for node in face0]):
-                face1 = face1[::orientations[i+1]]
-                break
-
-        nodes = nx.concatenate((face0, face1))
-
-        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
-
-    def _writePrism(self, vertexCoords, cell, orientations, value):
-        # prism is defined by the two three-sided faces 
-        face0 = cell[..., 3][::orientations[3]]
-        face1 = cell[..., 4][::orientations[4]]
-        
-        nodes = nx.concatenate((face0, face1))
-
-        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
-
-
-    def _writePyramid(self, vertexCoords, cell, orientations, value):
-        # pyramid is defined by four-sided face and the remaining point 
-        # from any of the other faces
-        nodes = cell[..., 0][::orientations[0]]
-        nodes = nx.concatenate((nodes, cell[~nx.in1d(cell[..., 1], nodes), 1]))
-                       
-        self._writeNodesAndValues(vertexCoords=vertexCoords, nodes=nodes, value=value)
-        
     def _writeNodesAndValues(self, vertexCoords, nodes, value):
         # strip out masked values
         nodes = nodes[nodes != -1]
         numNodes = len(nodes)
         data = []
         dim = vertexCoords.shape[0]
-        data = [[str(vertexCoords[..., j, nodes[i]]) for i in range(numNodes)] for j in range(dim)]
+        data = [[str(vertexCoords[..., j, node]) for node in nodes] for j in range(dim)]
         if dim == 2:
             data += [["0.0"] * numNodes]
         data += [[str(value)] * numNodes]
@@ -1267,15 +1199,15 @@ class MSHFile(GmshFile):
         ...     p = Popen(["gmsh", os.path.join(dir, "g.msh")]) # doctest: +GMSH
         ...     doctest_raw_input("Grid2D... Press enter.")
 
-        >>> g_ref = GmshGrid2D(dx=1., dy=1., nx=10, ny=10, background=gvar)
+        >>> gg = GmshGrid2D(dx=1., dy=1., nx=10, ny=10)
             
-        >>> f = openMSHFile(name=os.path.join(dir, "g_ref.msh"), mode='w') # doctest: +GMSH
-        >>> f.write(g_ref) # doctest: +GMSH
+        >>> f = openMSHFile(name=os.path.join(dir, "gg.msh"), mode='w') # doctest: +GMSH
+        >>> f.write(gg) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
 
         >>> if __name__ == "__main__":
-        ...     p = Popen(["gmsh", os.path.join(dir, "g_ref.msh")]) # doctest: +GMSH
-        ...     doctest_raw_input("Refined Grid2D... Press enter.")
+        ...     p = Popen(["gmsh", os.path.join(dir, "gg.msh")]) # doctest: +GMSH
+        ...     doctest_raw_input("GmshGrid2D... Press enter.")
             
         >>> ug = UniformGrid2D(nx = 10, ny = 10)
         >>> f = openMSHFile(name=os.path.join(dir, "ug.msh"), mode='w') # doctest: +GMSH
@@ -1541,6 +1473,80 @@ class Gmsh2D(Mesh2D):
 
     >>> print (NW == squaredCircle.physicalFaces["NW"]).all() # doctest: +GMSH
     True
+    
+    It is possible to direct Gmsh to give the mesh different densities in
+    different locations
+    
+    >>> geo = '''
+    ... // A mesh consisting of a square
+    ... 
+    ... // define the corners of the square
+    ... 
+    ... Point(1) = {1, 1, 0, 1};
+    ... Point(2) = {0, 1, 0, 1};
+    ... Point(3) = {0, 0, 0, 1};
+    ... Point(4) = {1, 0, 0, 1};
+    ... 
+    ... // define the square
+    ... 
+    ... Line(1) = {1, 2};
+    ... Line(2) = {2, 3};
+    ... Line(3) = {3, 4};
+    ... Line(4) = {4, 1};
+    ... 
+    ... // define the boundary
+    ... 
+    ... Line Loop(1) = {1, 2, 3, 4};
+    ... 
+    ... // define the domain
+    ... 
+    ... Plane Surface(1) = {1};
+    ... '''
+
+    >>> from fipy import CellVariable, numerix
+
+    >>> std = []
+    >>> bkg = None
+    >>> for refine in range(4):
+    ...     square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
+    ...     x, y = square.cellCenters # doctest: +GMSH
+    ...     bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
+    ...     std.append(numerix.std(numerix.sqrt(2 * square.cellVolumes) / bkg)) # doctest: +GMSH
+
+    Check that the mesh is monotonically approaching the desired density
+    
+    >>> print numerix.greater(std[:-1], std[1:]).all() # doctest: +GMSH
+    True
+    
+    and that the final density is close enough to the desired density
+    
+    >>> print std[-1] < 0.2 # doctest: +GMSH
+    True
+    
+    The initial mesh doesn't have to be from Gmsh
+    
+    >>> from fipy import Tri2D
+
+    >>> trisquare = Tri2D(nx=1, ny=1)
+    >>> x, y = trisquare.cellCenters
+    >>> bkg = CellVariable(mesh=trisquare, value=abs(x / 4) + 0.01)
+    >>> std1 = numerix.std(numerix.sqrt(2 * trisquare.cellVolumes) / bkg)
+
+    >>> square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
+    >>> x, y = square.cellCenters # doctest: +GMSH
+    >>> bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
+    >>> std2 = numerix.std(numerix.sqrt(2 * square.cellVolumes) / bkg) # doctest: +GMSH
+
+    >>> print std1 > std2 # doctest: +GMSH
+    True
+
+    :Parameters:
+      - `arg`: a string giving (i) the path to an MSH file, (ii) a path to a 
+         Gmsh geometry (".geo") file, or (iii) a Gmsh geometry script
+      - `coordDimensions`: an integer indicating dimension of shapes
+      - `order`: ???
+      - `background`: a `CellVariable` that specifies the desired characteristic 
+        lengths of the mesh cells
     """
     
     def __init__(self, 
@@ -1568,7 +1574,7 @@ class Gmsh2D(Mesh2D):
         self.mshFile.close()
 
         if communicator.Nproc > 1:
-            self.globalNumberOfCells = communicator.sumAll(len(self.cellGlobalIDs))
+            self.globalNumberOfCells = communicator.sum(len(self.cellGlobalIDs))
             parprint("  I'm solving with %d cells total." % self.globalNumberOfCells)
             parprint("  Got global number of cells")
 
@@ -1675,12 +1681,10 @@ class Gmsh2D(Mesh2D):
         True
         
         >>> (ftmp, mshFile) = tempfile.mkstemp('.msh')
+        >>> os.close(ftmp)
         >>> f = openMSHFile(name=mshFile, mode='w') # doctest: +GMSH
         >>> f.write(circle) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
-        >>> import sys
-        >>> if sys.platform == 'win32':
-        ...     os.close(ftmp)
 
         >>> from fipy import doctest_raw_input
         >>> if __name__ == "__main__":
@@ -1695,15 +1699,125 @@ class Gmsh2D(Mesh2D):
         Traceback (most recent call last):
             ...
         GmshException: Gmsh hasn't produced any cells! Check your Gmsh code.
+        
+        
+        
+        
+        
+        
+        
+        Load a mesh consisting of a triangle and square
+        
+        >>> (fmsh, mshFile) = tempfile.mkstemp('.msh')
+        >>> f = os.fdopen(fmsh, 'w')
+
+        We need to do a little fancy footwork to account for multiple processes
+        
+        >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallel.Nproc)]
+        >>> numtags = 2 + 1 + len(partitions)
+        >>> partitions = " ".join([str(i) for i in [parallel.Nproc] + partitions])
+
+        >>> output = f.write('''$MeshFormat
+        ... 2.2 0 8
+        ... $EndMeshFormat
+        ... $Nodes
+        ... 5                  
+        ... 1 0.0 0.0 0.0
+        ... 2 1.0 0.0 0.0
+        ... 3 2.0 0.0 0.0
+        ... 4 0.0 1.0 0.0
+        ... 5 1.0 1.0 0.0
+        ... $EndNodes
+        ... $Elements
+        ... 2
+        ... 1 3 %(numtags)s 99 2 %(partitions)s 1 2 5 4       
+        ... 2 2 %(numtags)s 98 2 %(partitions)s 2 3 5
+        ... $EndElements
+        ... ''' % locals())
+        >>> f.close() 
+
+        >>> sqrTri = Gmsh2D(mshFile) # doctest: +GMSH
+
+        >>> os.remove(mshFile)
+
+        >>> print nx.allclose(sqrTri.cellVolumes, [1., 0.5]) # doctest: +GMSH
+        True
+        
+        
+        Write square and triangle volumes out as a POS file
+        
+        >>> from fipy import CellVariable
+        >>> vol = CellVariable(mesh=sqrTri, value=sqrTri.cellVolumes) # doctest: +GMSH
+        
+        >>> if parallel.procID == 0:
+        ...     (ftmp, posFile) = tempfile.mkstemp('.pos')
+        ...     os.close(ftmp)
+        ... else:
+        ...     posFile = None
+        >>> posFile = parallel.bcast(posFile)
+        >>> f = openPOSFile(posFile, mode='w') # doctest: +GMSH
+        >>> f.write(vol) # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
+
+        >>> f = open(posFile, mode='r')
+        >>> print "".join(f.readlines())
+        $PostFormat
+        1.4 0 8
+        $EndPostFormat
+        $View
+        CellVariable 1
+        0 0 0
+        0 0 0
+        1 0 0
+        1 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0
+        0 0 0 0
+        0
+        1.0 2.0 1.0
+        0.0 0.0 1.0
+        0.0 0.0 0.0
+        0.5 0.5 0.5
+        0.0 1.0 1.0 0.0
+        0.0 0.0 1.0 1.0
+        0.0 0.0 0.0 0.0
+        1.0 1.0 1.0 1.0
+        $EndView
+        <BLANKLINE>
+        
+        >>> f.close()
+
+        >>> if parallel.procID == 0:
+        ...     os.remove(posFile)
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
-    def __init__(self, arg, communicator=parallel, order=1):
+    """Create a topologically 2D Mesh in 3D coordinates using Gmsh
+    
+    :Parameters:
+      - `arg`: a string giving (i) the path to an MSH file, (ii) a path to a 
+         Gmsh geometry (".geo") file, or (iii) a Gmsh geometry script
+      - `coordDimensions`: an integer indicating dimension of shapes
+      - `order`: ???
+      - `background`: a `CellVariable` that specifies the desired characteristic 
+        lengths of the mesh cells
+    """
+    def __init__(self, arg, communicator=parallel, order=1, background=None):
         Gmsh2D.__init__(self, 
                         arg, 
                         coordDimensions=3, 
                         communicator=communicator,
-                        order=order)
+                        order=order,
+                        background=background)
 
     def _test(self):
         """
@@ -1763,6 +1877,15 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         pass
 
 class Gmsh3D(Mesh):
+    """Create a 3D Mesh using Gmsh
+
+    :Parameters:
+      - `arg`: a string giving (i) the path to an MSH file, (ii) a path to a 
+         Gmsh geometry (".geo") file, or (iii) a Gmsh geometry script
+      - `order`: ???
+      - `background`: a `CellVariable` that specifies the desired characteristic 
+        lengths of the mesh cells
+    """
     def __init__(self, arg, communicator=parallel, order=1, background=None):
         self.mshFile  = openMSHFile(arg, 
                                     dimensions=3, 
@@ -1787,7 +1910,7 @@ class Gmsh3D(Mesh):
                             _TopologyClass=_GmshTopology)
 
         if self.communicator.Nproc > 1:
-            self.globalNumberOfCells = self.communicator.sumAll(len(self.cellGlobalIDs))
+            self.globalNumberOfCells = self.communicator.sum(len(self.cellGlobalIDs))
    
         (self.physicalCellMap,
          self.geometricalCellMap,
@@ -1874,8 +1997,8 @@ class Gmsh3D(Mesh):
         
         Load a mesh consisting of a tetrahedron, prism, and pyramid
         
-        >>> (f, mshFile) = tempfile.mkstemp('.msh')
-        >>> file = os.fdopen(f, 'w')
+        >>> (fmsh, mshFile) = tempfile.mkstemp('.msh')
+        >>> f = os.fdopen(fmsh, 'w')
 
         We need to do a little fancy footwork to account for multiple processes
         
@@ -1883,7 +2006,7 @@ class Gmsh3D(Mesh):
         >>> numtags = 2 + 1 + len(partitions)
         >>> partitions = " ".join([str(i) for i in [parallel.Nproc] + partitions])
 
-        >>> output = file.write('''$MeshFormat
+        >>> output = f.write('''$MeshFormat
         ... 2.2 0 8
         ... $EndMeshFormat
         ... $Nodes
@@ -1904,7 +2027,7 @@ class Gmsh3D(Mesh):
         ... 3 7 %(numtags)s 97 2 %(partitions)s 2 3 6 5 8
         ... $EndElements
         ... ''' % locals())
-        >>> file.close() 
+        >>> f.close() 
 
         >>> tetPriPyr = Gmsh3D(mshFile) # doctest: +GMSH
 
@@ -1918,22 +2041,78 @@ class Gmsh3D(Mesh):
         >>> from fipy import CellVariable
         >>> vol = CellVariable(mesh=tetPriPyr, value=tetPriPyr.cellVolumes, name="volume") # doctest: +GMSH
         
-        >>> (ftmp, posFile) = tempfile.mkstemp('.pos')
+        >>> if parallel.procID == 0:
+        ...     (ftmp, posFile) = tempfile.mkstemp('.pos')
+        ...     os.close(ftmp)
+        ... else:
+        ...     posFile = None
+        >>> posFile = parallel.bcast(posFile)
         >>> f = openPOSFile(posFile, mode='w') # doctest: +GMSH
         >>> f.write(vol) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
-        >>> import sys
-        >>> if sys.platform == 'win32':
-        ...     os.close(ftmp)
 
-        >>> os.remove(posFile)
+        >>> f = open(posFile, mode='r') # doctest: +GMSH
+        >>> l = f.readlines() # doctest: +GMSH
+        >>> f.close() # doctest: +GMSH
+        >>> print "".join(l[:5]) # doctest: +GMSH
+        $PostFormat
+        1.4 0 8
+        $EndPostFormat
+        $View
+        volume 1
+        <BLANKLINE>
+        
+        >>> print l[-1] # doctest: +GMSH
+        $EndView
+        <BLANKLINE>
+        
+        Py3k writes the numbers at a different precision
+        
+        >>> from fipy import numerix
+        
+        >>> a1 = numerix.fromstring("".join(l[5:-1]), sep=" ") # doctest: +GMSH
+        >>> a2 = numerix.fromstring('''
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  1 0 0
+        ...  0 0 0
+        ...  1 0 0
+        ...  1 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0
+        ...  0 0 0 0
+        ...  0
+        ...  0.0 1.0 1.0 1.0
+        ...  0.0 1.0 0.0 0.0
+        ...  0.0 0.0 1.0 0.0
+        ...  0.16666666666666663 0.16666666666666663 0.16666666666666663 0.16666666666666663
+        ...  1.0 1.0 1.0 3.0 3.0 3.0
+        ...  0.0 1.0 0.0 0.0 1.0 0.0
+        ...  0.0 0.0 1.0 0.0 0.0 1.0
+        ...  1.0 1.0 1.0 1.0 1.0 1.0
+        ...  1.0 1.0 3.0 3.0 2.0
+        ...  0.0 1.0 1.0 0.0 0.5
+        ...  0.0 0.0 0.0 0.0 -1.0
+        ...  0.6666666666666666 0.6666666666666666 0.6666666666666666 0.6666666666666666 0.6666666666666666
+        ...  ''', sep=" ")
+        >>> print numerix.allclose(a1, a2) # doctest: +GMSH
+        True
+
+        >>> if parallel.procID == 0:
+        ...     os.remove(posFile)
         """
 
 class GmshGrid2D(Gmsh2D):
     """Should serve as a drop-in replacement for Grid2D."""
     def __init__(self, dx=1., dy=1., nx=1, ny=None, 
-                 coordDimensions=2, communicator=parallel, order=1,
-                 background=None):
+                 coordDimensions=2, communicator=parallel, order=1):
         self.dx = dx
         self.dy = dy or dx
         self.nx = nx
@@ -1941,7 +2120,7 @@ class GmshGrid2D(Gmsh2D):
 
         arg = self._makeGridGeo(self.dx, self.dy, self.nx, self.ny)
 
-        Gmsh2D.__init__(self, arg, coordDimensions, communicator, order, background)
+        Gmsh2D.__init__(self, arg, coordDimensions, communicator, order, background=None)
     
     @getsetDeprecated
     def _getMeshSpacing(self):

@@ -32,9 +32,9 @@
  # ###################################################################
  ##
 
-r"""
+r"""Create a level set variable in one dimension. 
 
-Here we create a level set variable in one dimension. The level set
+The level set
 variable calculates its value over the domain to be the distance from
 the zero level set. This can be represented succinctly in the
 following equation with a boundary condition at the zero level set

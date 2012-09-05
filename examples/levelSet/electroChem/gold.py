@@ -31,7 +31,8 @@
  # ###################################################################
  ##
  
-r"""
+r"""Model electrochemical superfill of gold using the CEAC mechanism.
+
 This input file
 is a demonstration of the use of :term:`FiPy` for
 modeling gold superfill. The material properties and experimental

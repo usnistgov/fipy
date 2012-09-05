@@ -32,7 +32,7 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve a coupled set of diffusion equations in two dimensions.
 
 This example solves a diffusion problem and demonstrates the use of
 applying boundary condition patches.

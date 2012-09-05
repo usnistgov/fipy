@@ -31,7 +31,8 @@
  # ###################################################################
  ##
 
-r"""
+r"""Solve the Cahn-Hilliard problem in two dimensions.
+
 The spinodal decomposition phenomenon is a spontaneous separation of
 an initially homogenous mixture into two distinct regions of different
 properties (spin-up/spin-down, component A/component B). It is a
@@ -171,12 +172,16 @@ coefficient has to have a shape of `(2, 2)` while the explicit source
 has a shape `(2,)`
 
 >>> source = (- d2fdphi2 * v0 + dfdphi) * (0, 1)
->>> impCoeff = -d2fdphi2 * ((0, 0), (1., 0)) + ((0, 0), (0, -1.))
+>>> impCoeff = -d2fdphi2 * ((0, 0), 
+...                         (1., 0)) + ((0, 0), 
+...                                     (0, -1.))
 
 This is the same equation as the previous definition of `eq`, but now in
 a vector format.
 
->>> eq = TransientTerm(((1., 0.), (0., 0.))) == DiffusionTerm([((0., D), (-epsilon**2, 0.))]) + ImplicitSourceTerm(impCoeff) + source
+>>> eq = TransientTerm(((1., 0.), 
+...                     (0., 0.))) == DiffusionTerm([((0.,          D), 
+...                                                   (-epsilon**2, 0.))]) + ImplicitSourceTerm(impCoeff) + source
 
 >>> dexp = -5
 >>> elapsed = 0.

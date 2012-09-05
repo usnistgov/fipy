@@ -32,7 +32,8 @@
  # ###################################################################
  ##
 
-r""" 
+r""" Solve a phase-field evolution and diffusion of four species in one-dimension.
+
 The same procedure used to construct the two-component phase field
 diffusion problem in :mod:`examples.phase.binary` can be used to build up a
 system of multiple components. Once again, we'll focus on 1D.
@@ -411,9 +412,9 @@ We can confirm that the far-field phases have remained separated
 .. .. index:: allclose
 
 >>> X = mesh.faceCenters[0]
->>> print numerix.allclose(phase.faceValue[X==0], 1.0, rtol = 1e-5, atol = 1e-5)
+>>> print numerix.allclose(phase.faceValue[X.value==0], 1.0, rtol = 1e-5, atol = 1e-5)
 True
->>> print numerix.allclose(phase.faceValue[X==L], 0.0, rtol = 1e-5, atol = 1e-5)
+>>> print numerix.allclose(phase.faceValue[X.value==L], 0.0, rtol = 1e-5, atol = 1e-5)
 True
     
 and that the concentration fields have appropriately segregated into 
@@ -421,8 +422,8 @@ their equilibrium values in each phase
 
 >>> equilibrium = True
 >>> for Cj in interstitials + substitutionals:
-...     equilibrium &= numerix.allclose(Cj.faceValue[X==0], Cj.S, rtol = 3e-3, atol = 3e-3).value
-...     equilibrium &= numerix.allclose(Cj.faceValue[X==L], Cj.L, rtol = 3e-3, atol = 3e-3).value
+...     equilibrium &= numerix.allclose(Cj.faceValue[X.value==0], Cj.S, rtol = 3e-3, atol = 3e-3).value
+...     equilibrium &= numerix.allclose(Cj.faceValue[X.value==L], Cj.L, rtol = 3e-3, atol = 3e-3).value
 >>> print equilibrium
 True
 

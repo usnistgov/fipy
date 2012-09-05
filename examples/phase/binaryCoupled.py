@@ -32,7 +32,8 @@
  # ########################################################################
  ##
 
-r"""
+r"""Simultaneously solve a phase-field evolution and solute diffusion problem in one-dimension.
+
 It is straightforward to extend a phase field model to include binary alloys.
 As in :mod:`examples.phase.simple`, we will examine a 1D problem
 
@@ -558,9 +559,9 @@ We verify that the bulk phases have shifted to the predicted solidus and
 liquidus compositions
 
 >>> X = mesh.faceCenters[0]
->>> print Cs.allclose(C.faceValue[X==0], atol=1e-2)
+>>> print Cs.allclose(C.faceValue[X.value==0], atol=1e-2)
 True
->>> print Cl.allclose(C.faceValue[X==L], atol=1e-2)
+>>> print Cl.allclose(C.faceValue[X.value==L], atol=1e-2)
 True
 
 and that the phase fraction remains unchanged

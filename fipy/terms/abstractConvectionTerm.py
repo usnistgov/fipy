@@ -72,7 +72,7 @@ class _AbstractConvectionTerm(FaceTerm):
             __ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
             >>> __ConvectionTerm(coeff = (1,))
             __ConvectionTerm(coeff=(1,))
-            >>> ExplicitUpwindConvectionTerm(coeff = (0,)).solve(var=cv, solver=DummySolver())
+            >>> ExplicitUpwindConvectionTerm(coeff = (0,)).solve(var=cv, solver=DummySolver()) # doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             TransientTermError: The equation requires a TransientTerm with explicit convection.
