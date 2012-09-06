@@ -62,7 +62,7 @@ LSM_SOLVER = _parseLSMSolver()
 
 if LSM_SOLVER is None:
     try:
-        import fipy.tools.lsmlib.pylsmlib
+        import lsmlib
         LSM_SOLVER = 'lsmlib'
     except Exception:    
         try:
@@ -88,7 +88,7 @@ register_skipper(flag="LSMORDER1",
 def calcDistanceFunction(phi, mesh, order):
 
     if LSM_SOLVER == 'lsmlib':
-        from fipy.tools.lsmlib.pylsmlib import computeDistanceFunction2d
+        from lsmlib import computeDistanceFunction2d
         if hasattr(mesh, 'nz'):
             raise Exception, "3D meshes not yet implemented"
         elif hasattr(mesh, 'ny'):

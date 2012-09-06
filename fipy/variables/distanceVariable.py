@@ -39,21 +39,8 @@ from fipy.tools.numerix import MA
 from fipy.tools.decorators import getsetDeprecated
 from fipy.variables.cellVariable import CellVariable
 import fipy.tools.levelset
-##from fipy.tests.doctestPlus import register_skipper
 
 __all__ = ["DistanceVariable"]
-
-# def _checkForLSMLIB():
-#     hasLSMLIB = True
-#     try:
-#         import fipy.tools.lsmlib.pylsmlib 
-#     except Exception:    
-#         hasLSMLIB = False
-#     return hasLSMLIB
-
-# register_skipper(flag="LSMLIB",
-#                  test=_checkForLSMLIB,
-#                  why="`lsmlib` cannot be found on the $PATH")
 
 class DistanceVariable(CellVariable):
     r"""
@@ -210,7 +197,8 @@ class DistanceVariable(CellVariable):
 
         """
         
-        from fipy.tools.lsmlib.pylsmlib import computeExtensionFields2d
+#        from fipy.tools.lsmlib.pylsmlib import computeExtensionFields2d
+        from lsmlib import computeExtensionFields2d
 
         extensionValue = extensionVariable.value.reshape((1, self.mesh.numberOfCells))
         extension_mask = (self._value > 0) - 0.5
