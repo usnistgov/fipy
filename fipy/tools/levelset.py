@@ -62,7 +62,7 @@ LSM_SOLVER = _parseLSMSolver()
 
 if LSM_SOLVER is None:
     try:
-        import lsmlib
+        import pylsmlib
         LSM_SOLVER = 'lsmlib'
     except Exception:    
         try:
@@ -76,7 +76,7 @@ def _checkForLSMLIB():
 
 def _checkForLSM():
     return LSM_SOLVER != None
- 
+
 register_skipper(flag="LSM",
                  test=_checkForLSM,
                  why="Neither `lsmlib` nor `skfmm` can be found on the $PATH")
@@ -86,29 +86,25 @@ register_skipper(flag="LSMORDER1",
                  why="only `lsmlib` can perform first order level set calculations")
                      
 def calcDistanceFunction(phi, mesh, order):
+    
+    if hasattr(mesh, 'nz'):
+        raise Exception, "3D meshes not yet implemented"
+    elif hasattr(mesh, 'ny'):
+        dx = (mesh.dy, mesh.dx)
+        shape = (mesh.ny, mesh.nx)
+    elif hasattr(mesh, 'nx'):
+        dx = (mesh.dx,)
+        shape = mesh.shape
+    else:
+        raise Exception, "Non grid meshes can not be used for solving the FMM."
+    
+    phi = numerix.reshape(phi, shape)
 
     if LSM_SOLVER == 'lsmlib':
-        from lsmlib import computeDistanceFunction2d
-        if hasattr(mesh, 'nz'):
-            raise Exception, "3D meshes not yet implemented"
-        elif hasattr(mesh, 'ny'):
-            return computeDistanceFunction2d(phi, nx=mesh.nx, ny=mesh.ny, dx=mesh.dx, dy=mesh.dy, order=order)
-        elif hasattr(mesh, 'nx'):
-            return computeDistanceFunction2d(phi, nx=mesh.nx,  ny=1, dx=mesh.dx, dy=1, order=order)
-        else:
-            raise Exception, "Non grid meshes can not be used for solving the FMM."
+        from pylsmlib import computeDistanceFunction as distance
     elif LSM_SOLVER == 'skfmm':
-        if hasattr(mesh, 'nz'):
-            raise Exception, "3D meshes not yet implemented"
-        elif hasattr(mesh, 'ny'):
-            dx = (mesh.dy, mesh.dx)
-            shape = (mesh.ny, mesh.nx)
-        elif hasattr(mesh, 'nx'):
-            dx = (mesh.dx,)
-            shape = mesh.shape
-        else:
-            raise Exception, "Non grid meshes can not be used for solving the FMM."
         from skfmm import distance
-        return distance(numerix.reshape(phi, shape), dx).flatten()
     else:
         raise Exception, "Neither `lsmlib` nor `skfmm` can be found on the $PATH"
+
+    return distance(numerix.reshape(phi, shape), dx).flatten()
