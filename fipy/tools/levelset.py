@@ -101,7 +101,7 @@ def calcDistanceFunction(phi, mesh, order):
     phi = numerix.reshape(phi, shape)
 
     if LSM_SOLVER == 'lsmlib':
-        from pylsmlib import computeDistanceFunction as distance
+        from pylsmlib import distance
     elif LSM_SOLVER == 'skfmm':
         from skfmm import distance
     else:
