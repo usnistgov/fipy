@@ -197,8 +197,7 @@ class DistanceVariable(CellVariable):
 
         """
         
-#        from fipy.tools.lsmlib.pylsmlib import computeExtensionFields2d
-        from lsmlib import computeExtensionFields2d
+        from pylsmlib import computeExtensionFields2d_
 
         extensionValue = extensionVariable.value.reshape((1, self.mesh.numberOfCells))
         extension_mask = (self._value > 0) - 0.5
@@ -207,10 +206,10 @@ class DistanceVariable(CellVariable):
             raise Exception, "3D meshes not yet implemented"
 
         elif hasattr(self.mesh, 'ny'):
-            tmp, extensionValue = computeExtensionFields2d(self._value, extensionValue, extension_mask=extension_mask, nx=self.mesh.nx,  ny=self.mesh.ny, dx=self.mesh.dx, dy=self.mesh.dy, order=order)
+            tmp, extensionValue = computeExtensionFields2d_(self._value, extensionValue, extension_mask=extension_mask, nx=self.mesh.nx,  ny=self.mesh.ny, dx=self.mesh.dx, dy=self.mesh.dy, order=order)
 
         elif hasattr(self.mesh, 'nx'):
-            tmp, extensionValue = computeExtensionFields2d(self._value, extensionValue, extension_mask=extension_mask, nx=self.mesh.nx,  ny=1, dx=self.mesh.dx, dy=1., order=order)
+            tmp, extensionValue = computeExtensionFields2d_(self._value, extensionValue, extension_mask=extension_mask, nx=self.mesh.nx,  ny=1, dx=self.mesh.dx, dy=1., order=order)
 
         else:
             raise Exception, "Mesh can not be used for solving the FMM."

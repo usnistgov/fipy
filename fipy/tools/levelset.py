@@ -107,4 +107,4 @@ def calcDistanceFunction(phi, mesh, order):
     else:
         raise Exception, "Neither `lsmlib` nor `skfmm` can be found on the $PATH"
 
-    return distance(numerix.reshape(phi, shape), dx).flatten()
+    return distance(numerix.reshape(phi, shape), dx=dx, order=order).flatten()
