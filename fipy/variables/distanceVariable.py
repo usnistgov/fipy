@@ -38,7 +38,50 @@ from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.decorators import getsetDeprecated
 from fipy.variables.cellVariable import CellVariable
-import fipy.tools.levelset
+
+from fipy.tests.doctestPlus import register_skipper
+from fipy.tools import numerix
+import sys
+import os
+
+def _parseLSMSolver():
+    args = [s.lower() for s in sys.argv[1:]]
+    # any command-line specified solver takes precedence over environment variables
+    if '--lsmlib' in args:
+        return "lsmlib"
+    elif '--skfmm' in args:
+        return "skfmm"
+    elif 'FIPY_LSM' in os.environ:
+        return os.environ['FIPY_LSM'].lower()
+    else:
+        return None
+
+LSM_SOLVER = _parseLSMSolver()
+
+if LSM_SOLVER is None:
+    try:
+        import pylsmlib
+        LSM_SOLVER = 'lsmlib'
+    except Exception:    
+        try:
+            import skfmm
+            LSM_SOLVER = 'skfmm'
+        except Exception:
+            pass
+
+def _checkForLSMLIB():
+    return LSM_SOLVER == 'lsmlib'
+
+def _checkForLSM():
+    return LSM_SOLVER != None
+
+register_skipper(flag="LSM",
+                 test=_checkForLSM,
+                 why="Neither `lsmlib` nor `skfmm` can be found on the $PATH")
+
+register_skipper(flag="LSMORDER1",
+                 test=_checkForLSMLIB,
+                 why="only `lsmlib` can perform first order level set calculations")
 
 __all__ = ["DistanceVariable"]
 
@@ -225,9 +268,28 @@ class DistanceVariable(CellVariable):
             calculation, either 1 or 2.
 
         """
-        from fipy.tools.levelset import calcDistanceFunction
-        self._value = calcDistanceFunction(self._value, mesh=self.mesh, order=order)
+        
+        mesh = self.mesh
 
+        if hasattr(mesh, 'nz'):
+            raise Exception, "3D meshes not yet implemented"
+        elif hasattr(mesh, 'ny'):
+            dx = (mesh.dy, mesh.dx)
+            shape = (mesh.ny, mesh.nx)
+        elif hasattr(mesh, 'nx'):
+            dx = (mesh.dx,)
+            shape = mesh.shape
+        else:
+            raise Exception, "Non grid meshes can not be used for solving the FMM."
+
+        if LSM_SOLVER == 'lsmlib':
+            from pylsmlib import distance
+        elif LSM_SOLVER == 'skfmm':
+            from skfmm import distance
+        else:
+            raise Exception, "Neither `lsmlib` nor `skfmm` can be found on the $PATH"
+
+        self._value = distance(numerix.reshape(self._value, shape), dx=dx, order=order).flatten()
         self._markFresh()
 
     @getsetDeprecated
