@@ -239,36 +239,16 @@ class DistanceVariable(CellVariable):
             level set.
 
         """
-        
-        from pylsmlib import computeExtensionFields2d_
+    
+        from pylsmlib import computeExtensionFields
 
-        extensionValue = extensionVariable.value.reshape((1, self.mesh.numberOfCells))
-        extension_mask = (self._value > 0) - 0.5
+        dx, shape = self.getLSMshape()
+        extensionValue = numerix.reshape(extensionVariable, shape)
+        phi = numerix.reshape(self._value, shape)
+        tmp, extensionValue = computeExtensionFields(phi, extensionValue, extensionMask=(phi > 0) - 0.5, dx=dx, order=order)
+        extensionVariable[:] = extensionValue.flatten()
 
-        if hasattr(self.mesh, 'nz'):
-            raise Exception, "3D meshes not yet implemented"
-
-        elif hasattr(self.mesh, 'ny'):
-            tmp, extensionValue = computeExtensionFields2d_(self._value, extensionValue, extension_mask=extension_mask, nx=self.mesh.nx,  ny=self.mesh.ny, dx=self.mesh.dx, dy=self.mesh.dy, order=order)
-
-        elif hasattr(self.mesh, 'nx'):
-            tmp, extensionValue = computeExtensionFields2d_(self._value, extensionValue, extension_mask=extension_mask, nx=self.mesh.nx,  ny=1, dx=self.mesh.dx, dy=1., order=order)
-
-        else:
-            raise Exception, "Mesh can not be used for solving the FMM."
-
-        extensionVariable[:] = extensionValue
-
-    def calcDistanceFunction(self, order=2):
-        """
-        Calculates the `distanceVariable` as a distance function.
-
-        :Parameters:
-          - `order`: The order of accuracy for the distance funtion
-            calculation, either 1 or 2.
-
-        """
-        
+    def getLSMshape(self):
         mesh = self.mesh
 
         if hasattr(mesh, 'nz'):
@@ -281,6 +261,20 @@ class DistanceVariable(CellVariable):
             shape = mesh.shape
         else:
             raise Exception, "Non grid meshes can not be used for solving the FMM."
+
+        return dx, shape
+
+    def calcDistanceFunction(self, order=2):
+        """
+        Calculates the `distanceVariable` as a distance function.
+
+        :Parameters:
+          - `order`: The order of accuracy for the distance funtion
+            calculation, either 1 or 2.
+
+        """
+
+        dx, shape = self.getLSMshape()
 
         if LSM_SOLVER == 'lsmlib':
             from pylsmlib import distance
