@@ -245,7 +245,7 @@ class DistanceVariable(CellVariable):
         dx, shape = self.getLSMshape()
         extensionValue = numerix.reshape(extensionVariable, shape)
         phi = numerix.reshape(self._value, shape)
-        tmp, extensionValue = computeExtensionFields(phi, extensionValue, extensionMask=(phi > 0) - 0.5, dx=dx, order=order)
+        tmp, extensionValue = computeExtensionFields(phi, extensionValue, extensionMask=phi < 0., dx=dx, order=order)
         extensionVariable[:] = extensionValue.flatten()
 
     def getLSMshape(self):
