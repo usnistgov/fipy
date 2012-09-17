@@ -65,7 +65,7 @@ Do the tests:
 ...                           dX  ,  -dX ,   -v1 ,  -dX ,   dX  ,
 ...                           dX  ,  -mm ,   -dY ,  -mm ,   dX  ,
 ...                           v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
->>> print var.allclose(values, atol = 1e-10) #doctest: +LSM, +LSMORDER1
+>>> print var.allclose(values, atol = 1e-10) #doctest: +LSM
 1
 
 """

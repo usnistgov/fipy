@@ -40,7 +40,6 @@ from fipy.tools.decorators import getsetDeprecated
 from fipy.variables.cellVariable import CellVariable
 
 from fipy.tests.doctestPlus import register_skipper
-from fipy.tools import numerix
 import sys
 import os
 
@@ -78,10 +77,6 @@ def _checkForLSM():
 register_skipper(flag="LSM",
                  test=_checkForLSM,
                  why="Neither `lsmlib` nor `skfmm` can be found on the $PATH")
-
-register_skipper(flag="LSMORDER1",
-                 test=_checkForLSMLIB,
-                 why="only `lsmlib` can perform first order level set calculations")
 
 __all__ = ["DistanceVariable"]
 
@@ -176,7 +171,7 @@ class DistanceVariable(CellVariable):
     >>> tmp1 = (v1 + v2) / 2 + numerix.sqrt(2. - (v1 - v2)**2) / 2
     >>> tmp2 = tmp1 + 1 / numerix.sqrt(2)
     >>> print var.allclose((-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp, 
-    ...                      tmp1, 1.5, tmp1, tmp2)) #doctest: +LSMORDER1
+    ...                      tmp1, 1.5, tmp1, tmp2))
     1
     >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
     >>> var.extendVariable(extensionVar, order=1) #doctest: +LSM

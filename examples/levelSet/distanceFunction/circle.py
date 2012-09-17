@@ -111,7 +111,7 @@ The result can be tested with the following commands.
 ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK), 'd'))
 
 >>> var[numerix.array(trialValues == MASK)] = MASK
->>> print numerix.allclose(var, trialValues) #doctest: +LSMORDER1
+>>> print numerix.allclose(var, trialValues)
 True
 """
 __docformat__ = 'restructuredtext'
