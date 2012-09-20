@@ -330,7 +330,7 @@ to adapt one of the existing viewers to create a specialized display:
 ...                                       Viewer(vars=theta,
 ...                                              datamin=-numerix.pi,
 ...                                              datamax=numerix.pi)))
->>> viewer.plot()
+...     viewer.plot()
 
 and iterate the solution in time, plotting as we go,
 
