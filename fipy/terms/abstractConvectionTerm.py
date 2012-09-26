@@ -150,7 +150,7 @@ class _AbstractConvectionTerm(FaceTerm):
         ...  - ConvectionTerm(coeff=[[1]])
         ...  - ImplicitSourceTerm(coeff=m.x)).solve(v, dt=1.)
 
-        >>> print numerix.all(v == v0)
+        >>> print numerix.allclose(v, v0)
         True
         
         """
