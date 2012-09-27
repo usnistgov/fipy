@@ -38,16 +38,18 @@ This example solves the equation
 
 .. math::
 
-   \frac{\partial \phi}{\partial x} - \alpha \phi = 0
+   \frac{\partial \phi}{\partial x} + \alpha \phi = 0
    
-with :math:`\phi \left( 0 \right) = 1`
-at :math:`x = 0`.  The boundary condition at :math:`x = L` will require the
-implementation of an outflow boundary condition, which is not
-currently implemented in FiPy. An :class:`~fipy.terms.implicitSourceTerm.ImplicitSourceTerm` object
-will be used to represent this term. The derivative of :math:`\phi` can be
-represented by a :class:`~fipy.terms.ConvectionTerm` with a constant unitary velocity
-field from left to right. The following is an example code that includes
-a test against the analytical result.
+with :math:`\phi \left( 0 \right) = 1` at :math:`x = 0`. The boundary
+condition at :math:`x = L` is an outflow boundary condition requiring
+the use of an artificial constraint to be set on the right hand side
+faces. Exterior faces without constraints are considered to have zero
+outflow. An :class:`~fipy.terms.implicitSourceTerm.ImplicitSourceTerm`
+object will be used to represent this term. The derivative of
+:math:`\phi` can be represented by a
+:class:`~fipy.terms.ConvectionTerm` with a constant unitary velocity
+field from left to right. The following is an example code that
+includes a test against the analytical result.
 
 >>> from fipy import *
 
