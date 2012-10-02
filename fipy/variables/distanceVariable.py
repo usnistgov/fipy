@@ -76,7 +76,12 @@ def _checkForLSM():
 
 register_skipper(flag="LSM",
                  test=_checkForLSM,
-                 why="Neither `lsmlib` nor `skfmm` can be found on the $PATH")
+                 why="neither `lsmlib` nor `skfmm` can be found on the $PATH")
+
+register_skipper(flag="LSMLIB",
+                 test=_checkForLSMLIB,
+                 why="`lsmlib` must be used to run some tests")
+
 
 __all__ = ["DistanceVariable"]
 
@@ -235,14 +240,20 @@ class DistanceVariable(CellVariable):
 
         """
     
-        from pylsmlib import computeExtensionFields
-
         dx, shape = self.getLSMshape()
         extensionValue = numerix.reshape(extensionVariable, shape)
         phi = numerix.reshape(self._value, shape)
-        tmp, extensionValue = computeExtensionFields(phi, extensionValue, u0mask=phi < 0., dx=dx, order=order)
-        extensionVariable[:] = extensionValue.flatten()
 
+        if LSM_SOLVER == 'lsmlib':
+            from pylsmlib import computeExtensionFields as extension_velocities
+        elif LSM_SOLVER == 'skfmm':
+            from skfmm import extension_velocities
+        else:
+            raise Exception, "Neither `lsmlib` nor `skfmm` can be found on the $PATH"
+
+        tmp, extensionValue = extension_velocities(phi, extensionValue, ext_mask=phi < 0., dx=dx, order=order)
+        extensionVariable[:] = extensionValue.flatten()
+        
     def getLSMshape(self):
         mesh = self.mesh
 

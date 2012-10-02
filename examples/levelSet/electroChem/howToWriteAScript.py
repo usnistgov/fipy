@@ -445,7 +445,7 @@ to tell if something has changed or been broken.
 >>> filepath = os.path.join(os.path.split(__file__)[0],
 ...                         "simpleTrenchSystem.gz")
 >>> ##numerix.savetxt(filepath, numerix.array(catalystVar))
->>> print catalystVar.allclose(numerix.loadtxt(filepath), rtol=1e-4) #doctest: +LSM
+>>> print catalystVar.allclose(numerix.loadtxt(filepath), rtol=1e-4) #doctest: +LSMLIB
 1
 
 >>> if __name__ == '__main__':

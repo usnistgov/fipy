@@ -50,7 +50,7 @@ number of time steps change the ``numberOfSteps`` argument as follows,
 
 .. index:: runSimpleTrenchSystem
 
->>> runSimpleTrenchSystem(numberOfSteps=2, displayViewers=False) #doctest: +LSM
+>>> runSimpleTrenchSystem(numberOfSteps=2, displayViewers=False) #doctest: +LSMLIB
 1
 
 Change the ``displayViewers`` argument to ``True`` if you wish to see the
