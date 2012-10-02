@@ -71,6 +71,9 @@ if LSM_SOLVER is None:
 def _checkForLSMLIB():
     return LSM_SOLVER == 'lsmlib'
 
+def _checkForSKFMM():
+    return LSM_SOLVER == 'skfmm'
+
 def _checkForLSM():
     return LSM_SOLVER != None
 
@@ -82,6 +85,9 @@ register_skipper(flag="LSMLIB",
                  test=_checkForLSMLIB,
                  why="`lsmlib` must be used to run some tests")
 
+register_skipper(flag="SKFMM",
+                 test=_checkForSKFMM,
+                 why="`skfmm` must be used to run some tests")
 
 __all__ = ["DistanceVariable"]
 
@@ -209,6 +215,40 @@ class DistanceVariable(CellVariable):
     >>> print numerix.allclose(var, answer, rtol=1e-9)
     True
 
+    ** A test for a bug in both LSMLIB and Scikit-fmm **
+
+    The following test gives different result depending on whether
+    LSMLIB or Scikit-fmm is used. There is a deeper problem that is
+    related to this issue. When a value becomes "known" after
+    previously being a "trial" value it updates its neighbors'
+    values. In a second order scheme the neighbors one step away also
+    need to be updated (if the in between cell is "known" and the far
+    cell is a "trial" cell), but are not in either package.  By luck
+    (due to trial values having the same value), the values calculated
+    in Scikit-fmm for the following example are correct although an
+    example that didn't work for Scikit-fmm could also be constructed.
+
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 4, ny = 4, communicator=serial)
+    >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1.,
+    ...                                               1.,  1., -1., -1.,
+    ...                                               1.,  1., -1., -1.,
+    ...                                               1.,  1., -1., -1.))
+    >>> var.calcDistanceFunction(order=2)
+    >>> var.calcDistanceFunction(order=2)
+    >>> answer = [-0.5,        -0.58578644, -1.08578644, -1.85136395,
+    ...            0.5,         0.29289322, -0.58578644, -1.54389939,
+    ...            1.30473785,  0.5,        -0.5,        -1.5,
+    ...            1.49547948,  0.5,        -0.5,        -1.5]
+
+    The 3rd and 7th element are different for LSMLIB. This is because
+    the 15th element is not "known" when the "trial" value for the 7th
+    element is calculated. Scikit-fmm calculates the values in a
+    slightly different order so gets a seemingly better answer, but
+    this is just chance.
+
+    >>> print numerix.allclose(var, answer, rtol=1e-9) #doctest: +SKFMM
+    True
+    
     """
     def __init__(self, mesh, name = '', value = 0., unit = None, hasOld = 0):
         """
