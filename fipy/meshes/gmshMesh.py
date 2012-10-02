@@ -1068,8 +1068,11 @@ class MSHFile(GmshFile):
                 numTags = currLineInts[2]
                 tags    = currLineInts[3:(3+numTags)]
                 
-                physicalEntity = tags.pop(0)
-                geometricalEntity = tags.pop(0)
+                if len(tags) >= 2:
+                    physicalEntity = tags.pop(0)
+                    geometricalEntity = tags.pop(0)
+                else:
+                    physicalEntity = geometricalEntity = -1
 
                 if len(tags) > 0:
                     # next item is a count
@@ -1108,8 +1111,11 @@ class MSHFile(GmshFile):
                 # the partition tags for faces don't seem to always be present 
                 # and don't always make much sense when they are
                 
-                physicalEntity = tags.pop(0)
-                geometricalEntity = tags.pop(0)
+                if len(tags) >= 2:
+                    physicalEntity = tags.pop(0)
+                    geometricalEntity = tags.pop(0)
+                else:
+                    physicalEntity = geometricalEntity = -1
 
                 facesData.add(currLine=currLineInts, elType=elemType, 
                               physicalEntity=physicalEntity, 
