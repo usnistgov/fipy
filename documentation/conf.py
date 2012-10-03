@@ -279,7 +279,7 @@ latex_elements = {
     \definecolor{redish}{rgb}{0.894,0.122,0.122}
     \definecolor{bluish}{rgb}{0.216,0.188,0.533}
     
-    \authoraddress{Metallurgy Division \\
+    \authoraddress{Materials Science and Engineering Division \\
     and the Center for Theoretical and Computational Materials Science \\
     Material Measurement Laboratory}
     
