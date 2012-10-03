@@ -261,7 +261,7 @@ def getVersion(version, release=False):
     return version
 
 dist = setup(	name = "FiPy",
-        version = getVersion(version='3.0.1', release=True), 
+        version = getVersion(version='3.0.1', release=False), 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
