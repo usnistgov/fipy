@@ -1810,6 +1810,35 @@ class Gmsh2D(Mesh2D):
 
         >>> if parallel.procID == 0:
         ...     os.remove(posFile)
+
+        
+        
+        
+        Load a mesh with no tags
+        
+        >>> (fmsh, mshFile) = tempfile.mkstemp('.msh')
+        >>> f = os.fdopen(fmsh, 'w')
+
+        >>> output = f.write('''$MeshFormat
+        ... 2.2 0 8
+        ... $EndMeshFormat
+        ... $Nodes
+        ... 3
+        ... 1 0 0 0
+        ... 2 0 1 0
+        ... 3 1 1 0
+        ... $EndNodes
+        ... $Elements
+        ... 1
+        ... 1 2 0 1 3 2
+        ... $EndElements
+        ... ''' % locals())
+        >>> f.close() 
+
+        >>> noTag = Gmsh2D(mshFile) # doctest: +GMSH, +SERIAL
+
+        >>> os.remove(mshFile)
+
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
