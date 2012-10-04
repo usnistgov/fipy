@@ -4,3 +4,7 @@
 *~
 .DS_Store
 FiPy.egg-info
+dist/
+documentation/_build/
+documentation/tutorial/package/generated/
+examples/reactiveWetting/generated/
