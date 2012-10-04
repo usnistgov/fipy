@@ -1043,6 +1043,27 @@ class MSHFile(GmshFile):
         calculation is consolidated here: if we were ever to need to CALCULATE
         GHOST CELLS OURSELVES, the only code we'd have to change is in here.
         """
+        
+        def _parseTags(offset, currLineInts):
+            if offset == -1:
+                # if first valid shape
+                offset = currLineInts[0]
+
+            numTags = currLineInts[2]
+            tags    = currLineInts[3:(3+numTags)]
+            
+            # the partition tags for don't seem to always be present 
+            # and don't always make much sense when they are
+
+            if len(tags) >= 2:
+                physicalEntity = tags.pop(0)
+                geometricalEntity = tags.pop(0)
+            else:
+                physicalEntity = geometricalEntity = -1
+                
+            return offset, tags, physicalEntity, geometricalEntity
+            
+
         cellsData = _ElementData()
         ghostsData = _ElementData()
         facesData = _ElementData()
@@ -1060,19 +1081,13 @@ class MSHFile(GmshFile):
 
             if elemType in self.numFacesPerCell.keys():
                 # element is a cell
-                if cellOffset == -1:
-                    # if first valid shape
-                    cellOffset = currLineInts[0]
-                currLineInts[0] -= cellOffset
-
-                numTags = currLineInts[2]
-                tags    = currLineInts[3:(3+numTags)]
                 
-                if len(tags) >= 2:
-                    physicalEntity = tags.pop(0)
-                    geometricalEntity = tags.pop(0)
-                else:
-                    physicalEntity = geometricalEntity = -1
+                (cellOffset, 
+                 tags, 
+                 physicalEntity, 
+                 geometricalEntity) = _parseTags(offset=cellOffset, 
+                                                 currLineInts=currLineInts)
+                currLineInts[0] -= cellOffset
 
                 if len(tags) > 0:
                     # next item is a count
@@ -1100,22 +1115,13 @@ class MSHFile(GmshFile):
                                   geometricalEntity=geometricalEntity)
             elif elemType in self.numVertsPerFace.keys():
                 # element is a face
-                if faceOffset == -1:
-                    # if first valid shape
-                    faceOffset = currLineInts[0]
+                
+                (faceOffset, 
+                 tags, 
+                 physicalEntity, 
+                 geometricalEntity) = _parseTags(offset=faceOffset, 
+                                                 currLineInts=currLineInts)
                 currLineInts[0] -= faceOffset
-
-                numTags = currLineInts[2]
-                tags    = currLineInts[3:(3+numTags)]
-                
-                # the partition tags for faces don't seem to always be present 
-                # and don't always make much sense when they are
-                
-                if len(tags) >= 2:
-                    physicalEntity = tags.pop(0)
-                    geometricalEntity = tags.pop(0)
-                else:
-                    physicalEntity = geometricalEntity = -1
 
                 facesData.add(currLine=currLineInts, elType=elemType, 
                               physicalEntity=physicalEntity, 
