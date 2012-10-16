@@ -1,0 +1,6 @@
+*.pyc
+*.pyo
+.*~ 
+*~
+.DS_Store
+FiPy.egg-info
