@@ -160,6 +160,15 @@ environment variable:
    Forces the use of the :ref:`PYAMG` preconditioners in conjunction
    with the :ref:`SCIPY` solvers.
 
+.. cmdoption:: --lsmlib
+
+   Forces the use of the :ref:`LSMLIBDOC` level set solver.
+
+.. cmdoption:: --skfmm
+
+   Forces the use of the :ref:`SCIKITFMM` level set solver.
+
+
 Environment Variables
 =====================
 
