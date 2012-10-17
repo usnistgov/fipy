@@ -182,7 +182,7 @@ class DistanceVariable(CellVariable):
     >>> tmp1 = (v1 + v2) / 2 + numerix.sqrt(2. - (v1 - v2)**2) / 2
     >>> tmp2 = tmp1 + 1 / numerix.sqrt(2)
     >>> print var.allclose((-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp, 
-    ...                      tmp1, 1.5, tmp1, tmp2))
+    ...                      tmp1, 1.5, tmp1, tmp2)) #doctest: +LSM
     1
     >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
     >>> var.extendVariable(extensionVar, order=1) #doctest: +LSM
@@ -212,7 +212,7 @@ class DistanceVariable(CellVariable):
     ...           -0.5, -0.35355339, 0.5, 1.45118446,
     ...            0.5, 0.5, 0.97140452, 1.76215286,
     ...            1.49923009, 1.45118446, 1.76215286, 2.33721352]
-    >>> print numerix.allclose(var, answer, rtol=1e-9)
+    >>> print numerix.allclose(var, answer, rtol=1e-9) #doctest: +LSM
     True
 
     ** A test for a bug in both LSMLIB and Scikit-fmm **
@@ -233,8 +233,8 @@ class DistanceVariable(CellVariable):
     ...                                               1.,  1., -1., -1.,
     ...                                               1.,  1., -1., -1.,
     ...                                               1.,  1., -1., -1.))
-    >>> var.calcDistanceFunction(order=2)
-    >>> var.calcDistanceFunction(order=2)
+    >>> var.calcDistanceFunction(order=2) #doctest: +LSM
+    >>> var.calcDistanceFunction(order=2) #doctest: +LSM
     >>> answer = [-0.5,        -0.58578644, -1.08578644, -1.85136395,
     ...            0.5,         0.29289322, -0.58578644, -1.54389939,
     ...            1.30473785,  0.5,        -0.5,        -1.5,

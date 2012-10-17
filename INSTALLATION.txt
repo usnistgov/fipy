@@ -251,6 +251,44 @@ details), via the :mod:`scipy.weave` module.
     A handful of test cases use functions from the :term:`SciPy`
     library and will throw errors if it is missing.
 
+------------------
+Level Set Packages
+------------------
+
+To use the level set components of :ref:`FiPy` one of the following is
+required.
+
+.. _SCIKITFMM:
+
+Scikit-fmm
+==========
+
+http://packages.python.org/scikit-fmm/
+
+Scikit-fmm_ is a python extension module which implements the fast
+marching method.
+
+.. _Scikit-fmm: http://packages.python.org/scikit-fmm/
+
+.. _LSMLIBDOC:
+
+LSMLIB
+======
+
+http://ktchu.serendipityresearch.org/software/lsmlib/index.html
+
+The Level Set Method Library (LSMLIB_) provides support for the serial
+and parallel simulation of implicit surface and curve dynamics in two-
+and three-dimensions.
+
+Install LSMLIB_ as per the instructions on the website. Additionally
+PyLSMLIB_ is required. To install, follow the instructions on the
+website,
+https://github.com/ktchu/LSMLIB/tree/master/pylsmlib#pylsmlib.
+
+.. _PyLSMLIB: https://github.com/ktchu/LSMLIB/tree/master/pylsmlib#pylsmlib
+.. _LSMLIB: http://ktchu.serendipityresearch.org/software/lsmlib/index.html
+
 ------------------------------
 Platform-Specific Instructions
 ------------------------------
