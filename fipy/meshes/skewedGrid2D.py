@@ -49,7 +49,7 @@ class SkewedGrid2D(Mesh2D):
     vertical faces.  The points are skewed by a random amount (between `rand`
     and `-rand`) in the X and Y directions.
     """
-    def __init__(self, dx = 1., dy = 1., nx = None, ny = 1, rand = 0):
+    def __init__(self, dx = 1., dy = 1., nx = None, ny = 1, rand = 0, *args, **kwargs):
         self.args = {
             'dx': dx, 
             'dy': dy, 
@@ -92,8 +92,7 @@ class SkewedGrid2D(Mesh2D):
         
         cells = self.grid.cellFaceIDs
 
-        Mesh2D.__init__(self, changedVertices, faces, cells,
-                        _RepresentationClass=_Grid2DRepresentation, _TopologyClass=_Grid2DTopology)
+        Mesh2D.__init__(self, changedVertices, faces, cells, *args, **kwargs)
         
         self.scale = scale
         
