@@ -80,11 +80,11 @@ class PeriodicGrid1D(Grid1D):
         ...                        [0, 1, 0]]) # doctest: +PROCESSOR_0
         True
     """
-    def __init__(self, dx = 1., nx = None, overlap=2):
+    def __init__(self, dx = 1., nx = None, overlap=2, *args, **kwargs):
 
         Grid1D.__init__(self, dx = dx, nx = nx, overlap=overlap,
                         _BuilderClass=_PeriodicGrid1DBuilder,
-                        _TopologyClass=_PeriodicGrid1DTopology)
+                        _TopologyClass=_PeriodicGrid1DTopology, *args, **kwargs)
         self._nonPeriodicCellFaceIDs = numerix.array(super(Grid1D, self).cellFaceIDs)
         self._makePeriodic()
 
