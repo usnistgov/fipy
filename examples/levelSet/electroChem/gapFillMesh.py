@@ -65,10 +65,15 @@ class GapFillMesh(Gmsh2D):
     >>> import fipy.tools.dump as dump
     >>> (f, filename) = dump.write(mesh) # doctest: +GMSH 
     >>> if parallel.Nproc == 1:
-    ...     mesh = dump.read(filename, f) # doctest: +GMSH 
-    >>> print 185 <= mesh.globalNumberOfCells <= 202 # doctest: +GMSH
+    ...     mesh = dump.read(filename, f) # doctest: +GMSH
+    
+    >>> from fipy.meshes.gmshMesh import _gmshVersion
+    >>> if  _gmshVersion() <= 2.5: # doctest: +GMSH
+    ...     print mesh.globalNumberOfCells == 202
+    ... else:
+    ...     print mesh.globalNumberOfCells == 185
     True
-
+    
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh = mesh) # doctest: +GMSH
 

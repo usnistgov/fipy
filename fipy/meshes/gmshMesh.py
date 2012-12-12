@@ -117,7 +117,7 @@ def gmshVersion(communicator=parallel):
 
     return communicator.bcast(verStr)
 
-def _gmshVersion(communicator):
+def _gmshVersion(communicator=parallel):
     import re
     version = gmshVersion(communicator)
     if version:
