@@ -50,7 +50,7 @@ the ``numberOfSteps`` argument as follows,
 
 .. index:: runLeveler
 
->>> runLeveler(numberOfSteps=10, displayViewers=False, cellSize=0.25e-7) # doctest: +GMSH
+>>> runLeveler(numberOfSteps=10, displayViewers=False, cellSize=0.25e-7) # doctest: +GMSH, +LSM
 1
 
 Change the ``displayViewers`` argument to ``True`` if you wish to see the
