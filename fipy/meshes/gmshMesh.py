@@ -89,13 +89,6 @@ class GmshException(Exception):
 class MeshExportError(GmshException):
     pass
     
-def gmshPopen(cmd, stderr=None, stdout=None, shell=True):
-    cmd = ['gmsh'] + cmd
-    if shell:
-        cmd = ' '.join(cmd)
-    return Popen(cmd, stderr=stderr, stdout=stdout, shell=shell)
-
-
 def gmshVersion(communicator=parallel):
     """Determine the version of Gmsh.
     
@@ -105,7 +98,7 @@ def gmshVersion(communicator=parallel):
     if communicator.procID == 0:
         while True:
             try:
-                p = gmshPopen(["--version"], stderr=PIPE)
+                p = Popen(["gmsh", "--version"], stderr=PIPE)
             except OSError, e:
                 verStr = None
                 break
@@ -231,7 +224,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                 fileIsTemporary = True
                 
                 while True:
-                    p = gmshPopen([geoFile] + gmshFlags + ["-o", mshFile],
+                    p = Popen(["gmsh", geoFile] + gmshFlags + ["-o", mshFile],
                               stdout=PIPE)
                     
                     try:
@@ -1215,7 +1208,7 @@ class MSHFile(GmshFile):
         >>> f.close() # doctest: +GMSH
 
         >>> if __name__ == "__main__":
-        ...     p = gmshPopen([os.path.join(dir, "g.msh")]) # doctest: +GMSH
+        ...     p = Popen(["gmsh", os.path.join(dir, "g.msh")]) # doctest: +GMSH
         ...     doctest_raw_input("Grid2D... Press enter.")
 
         >>> gg = GmshGrid2D(dx=1., dy=1., nx=10, ny=10)
@@ -1225,7 +1218,7 @@ class MSHFile(GmshFile):
         >>> f.close() # doctest: +GMSH
 
         >>> if __name__ == "__main__":
-        ...     p = gmshPopen([os.path.join(dir, "gg.msh")]) # doctest: +GMSH
+        ...     p = Popen(["gmsh", os.path.join(dir, "gg.msh")]) # doctest: +GMSH
         ...     doctest_raw_input("GmshGrid2D... Press enter.")
             
         >>> ug = UniformGrid2D(nx = 10, ny = 10)
@@ -1244,7 +1237,7 @@ class MSHFile(GmshFile):
         >>> f.close() # doctest: +GMSH
 
         >>> if __name__ == "__main__":
-        ...     p = gmshPopen([os.path.join(dir, "concat.msh")]) # doctest: +GMSH
+        ...     p = Popen(["gmsh", os.path.join(dir, "concat.msh")]) # doctest: +GMSH
         ...     doctest_raw_input("Tri2D + Grid2D... Press enter.")
 
         >>> g3d = Grid3D(nx=10, ny=10, nz=30)
@@ -1253,7 +1246,7 @@ class MSHFile(GmshFile):
         >>> f.close() # doctest: +GMSH
 
         >>> if __name__ == "__main__":
-        ...     p = gmshPopen([os.path.join(dir, "g3d.msh")]) # doctest: +GMSH
+        ...     p = Popen(["gmsh", os.path.join(dir, "g3d.msh")]) # doctest: +GMSH
         ...     doctest_raw_input("Grid3D... Press enter.")
 
         >>> cyl = CylindricalGrid2D(nx=10, ny=10)
@@ -1262,7 +1255,7 @@ class MSHFile(GmshFile):
         >>> f.close() # doctest: +GMSH
         
         >>> if __name__ == "__main__":
-        ...     p = gmshPopen([os.path.join(dir, "cyl.msh")]) # doctest: +GMSH
+        ...     p = Popen(["gmsh", os.path.join(dir, "cyl.msh")]) # doctest: +GMSH
         ...     doctest_raw_input("CylindricalGrid2D... Press enter.")
 
         >>> import shutil
@@ -1707,7 +1700,7 @@ class Gmsh2D(Mesh2D):
 
         >>> from fipy import doctest_raw_input
         >>> if __name__ == "__main__":
-        ...     p = gmshPopen([mshFile]) # doctest: +GMSH
+        ...     p = Popen(["gmsh", mshFile]) # doctest: +GMSH
         ...     doctest_raw_input("Circle... Press enter.")
 
         >>> os.remove(mshFile)
