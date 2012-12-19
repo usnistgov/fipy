@@ -58,7 +58,8 @@ def _suite():
         'fipy.meshes.cylindricalGrid1D',
         'fipy.meshes.cylindricalGrid2D',
         'fipy.meshes.factoryMeshes',
-        'fipy.meshes.abstractMesh'))
+        'fipy.meshes.abstractMesh',
+        'fipy.meshes.representations.gridRepresentation'))
     
 if __name__ == '__main__':
     fipy.tests.testProgram.main(defaultTest='_suite')
