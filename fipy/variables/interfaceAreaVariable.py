@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-## 
+## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "test.py"
+ #  FILE: "interfaceAreaVariable.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -32,28 +32,35 @@
  # ###################################################################
  ##
 
-__all__ = []
+__docformat__ = 'restructuredtext'
 
-from fipy.tests.doctestPlus import _LateImportDocTestSuite
-import fipy.tests.testProgram
+from fipy.variables.cellVariable import CellVariable
+from fipy.tools.numerix import MA
+from fipy.tools import numerix
 
-def _suite():
-    theSuite = _LateImportDocTestSuite(
-        testModuleNames = (
-            'electroChem.test',
-        ),
-        docTestModuleNames = (
-            'advection.advectionTerm',
-            'advection.higherOrderAdvectionTerm',
-            'distanceFunction.distanceVariable',
-            'surfactant.surfactantVariable',
-            'distanceFunction.levelSetDiffusionVariable',
-            'surfactant.adsorbingSurfactantEquation',
-            'surfactant.convectionCoeff',
-            'surfactant.lines'
-        ), base = __name__)
+class _InterfaceAreaVariable(CellVariable):
+    def __init__(self, distanceVar):
+        """
+        Creates an `_InterfaceAreaVariable` object.
 
-    return theSuite
+        :Parameters:
+          - `distanceVar` : A `DistanceVariable` object.
+
+        """
+        CellVariable.__init__(self, distanceVar.mesh, hasOld=False)
+        self.distanceVar = self._requires(distanceVar)
+
+    def _calcValue(self):
+        normals = numerix.array(MA.filled(self.distanceVar._cellInterfaceNormals, 0))
+        areas = numerix.array(MA.filled(self.mesh._cellAreaProjections, 0))
+        return numerix.sum(abs(numerix.dot(normals, areas)), axis=0)
+
+
     
-if __name__ == '__main__':
-    fipy.tests.testProgram.main(defaultTest='_suite')
+
+
+
+            
+            
+        
+                

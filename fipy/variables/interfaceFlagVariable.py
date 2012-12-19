@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "higherOrderAdvectionEquation.py"
+ #  FILE: "interfaceFlagVariable.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -17,7 +17,7 @@
  # and Technology by employees of the Federal Government in the course
  # of their official duties.  Pursuant to title 17 Section 105 of the
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  PFM is an experimental
+ # protection and is in the public domain.  FiPy is an experimental
  # system.  NIST assumes no responsibility whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
@@ -34,24 +34,33 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.models.levelSet.advection.higherOrderAdvectionTerm import _HigherOrderAdvectionTerm
-from fipy.models.levelSet.advection.advectionEquation import buildAdvectionEquation
+from fipy.variables.cellVariable import CellVariable
+from fipy.tools.numerix import MA
+from fipy.tools import numerix
 
-__all__ = ["buildHigherOrderAdvectionEquation"]
+class _InterfaceFlagVariable(CellVariable):
+    def __init__(self, distanceVar):
+        """
+        Creates an `_InterfaceFlagVariable` object.
 
-def buildHigherOrderAdvectionEquation(advectionCoeff = None):
-    r"""
+        :Parameters:
+          - `distanceVar` : A `DistanceVariable` object.
 
-    The `buildHigherOrderAdvectionEquation` function returns an
-    advection equation that uses the `_HigherOrderAdvectionTerm`. The
-    advection equation is given by,
+        """
+        CellVariable.__init__(self, distanceVar.mesh, hasOld=False)
+        self.distanceVar = self._requires(distanceVar)
 
-    .. math::
+    def _calcValue(self):
+        flag = MA.filled(numerix.take(self.distanceVar._interfaceFlag, self.mesh.cellFaceIDs), 0)
+        flag = numerix.sum(flag, axis=0)
+        return numerix.where(numerix.logical_and(self.distanceVar.value > 0, flag > 0), 1, 0)
 
-       \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0.
 
-    :Parameters:
-      - `advectionCoeff`: The `coeff` to pass to the `_HigherOrderAdvectionTerm`
+    
 
-    """
-    return buildAdvectionEquation(advectionCoeff = advectionCoeff, advectionTerm = _HigherOrderAdvectionTerm)
+
+
+            
+            
+        
+                

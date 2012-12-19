@@ -41,6 +41,11 @@ def _suite():
             'simpleTrenchSystem',
             'gold',
             'leveler',
+            'gapFillMesh',
+            'trenchMesh',
+            'metalIonDiffusionEquation',
+            'lines',
+            'adsorbingSurfactantEquation',
         ), base = __name__)
     
 if __name__ == '__main__':

@@ -47,9 +47,10 @@ The variable is advected with,
    \frac{ \partial \phi } { \partial t } + \vec{u} \cdot \nabla \phi = 0
 
 The scheme used in the
-:class:`~fipy.models.levelSet.advection.advectionTerm._AdvectionTerm` preserves
-the ``var`` as a distance function. The solution to this problem will be
-demonstrated in the following script. Firstly, setup the parameters.
+:class:`~fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm`
+preserves the ``var`` as a distance function. The solution to this
+problem will be demonstrated in the following script. Firstly, setup
+the parameters.
 
 >>> from fipy import *
 
@@ -84,8 +85,7 @@ Initialise the `distanceVariable` to be a circular distance function.
 
 The advection equation is constructed.
    
->>> advEqn = buildAdvectionEquation(
-...     advectionCoeff=velocity)
+>>> advEqn = TransientTerm() + FirstOrderAdvectionTerm(velocity)
 
 The problem can then be solved by executing a serious of time steps.
 
@@ -111,12 +111,11 @@ The result can be tested with the following commands.
 1
 
 If the advection equation is built with the
-:func:`~fipy.models.levelSet.advection.higherOrderAdvectionTerm.buildHigherOrderAdvectionEquation`
+:func:`~fipy.terms.advectionTerm.AdvectionTerm`
 the result is more accurate,
 
 >>> var.setValue(initialArray)
->>> advEqn = buildHigherOrderAdvectionEquation(
-...     advectionCoeff = velocity)
+>>> advEqn = TransientTerm() + AdvectionTerm(velocity)
 >>> for step in range(steps):
 ...     var.updateOld()
 ...     advEqn.solve(var, dt=timeStepDuration)

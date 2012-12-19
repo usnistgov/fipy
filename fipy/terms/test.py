@@ -57,6 +57,8 @@ def _suite():
             'nonDiffusionTerm',
             'asymmetricConvectionTerm',
             'binaryTerm',
+            'firstOrderAdvectionTerm',
+            'advectionTerm',
             'vanLeerConvectionTerm'
             ), base = __name__)
 

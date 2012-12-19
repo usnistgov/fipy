@@ -62,9 +62,9 @@ conservation of surfactant:
 ...     timeStepDuration = cfl * dx / velocity.max()
 ...     distanceVariable.updateOld()
 ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
-...     surfactantEquation.solve(surfactantVariable)
-...     totalTime += timeStepDuration
->>> surfactantEquation.solve(surfactantVariable)
+...     surfactantEquation.solve(surfactantVariable, dt=1)
+...     totalTime += timeStepDuration #doctest: +LSM
+>>> surfactantEquation.solve(surfactantVariable, dt=1)
 >>> surfactantAfter = numerix.sum(surfactantVariable * mesh.cellVolumes)
 >>> print surfactantBefore.allclose(surfactantAfter)
 1
@@ -84,7 +84,7 @@ Test for the correct position of the interface:
 >>> radius = numerix.sqrt((x - L / 2)**2 + (y - L / 2)**2)
 >>> solution = radius - distanceVariable
 >>> error = (solution / finalRadius - 1)**2 * (coverage > 1e-3)
->>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.02
+>>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.02 #doctest: +LSM
 1
 
 """
@@ -123,11 +123,11 @@ velocity = CellVariable(
     value = 1.,
     )
 
-advectionEquation = buildHigherOrderAdvectionEquation(
-    advectionCoeff = velocity)
+advectionEquation = TransientTerm() + AdvectionTerm(velocity)
 
-surfactantEquation = SurfactantEquation(
-    distanceVar = distanceVariable)
+from fipy.variables.surfactantConvectionVariable import SurfactantConvectionVariable
+surfactantEquation = TransientTerm() - \
+    ExplicitUpwindConvectionTerm(SurfactantConvectionVariable(distanceVariable))
 
 if __name__ == '__main__':
     
@@ -148,7 +148,7 @@ if __name__ == '__main__':
         timeStepDuration = cfl * dx / velocity.max()
         distanceVariable.updateOld()
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
-        surfactantEquation.solve(surfactantVariable)
+        surfactantEquation.solve(surfactantVariable, dt=1)
         
         totalTime += timeStepDuration
         

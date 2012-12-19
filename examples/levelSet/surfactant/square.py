@@ -39,13 +39,13 @@ The example checks for global conservation of surfactant.
 
 Advect the interface and check the position.
 
-   >>> distanceVariable.calcDistanceFunction()
+   >>> distanceVariable.calcDistanceFunction() #doctest: +LSM
    >>> initialSurfactant = numerix.sum(surfactantVariable)
    >>> for step in range(steps):
    ...     distanceVariable.updateOld()
-   ...     surfactantEquation.solve(surfactantVariable)
-   ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
-   >>> print numerix.allclose(initialSurfactant, numerix.sum(surfactantVariable))
+   ...     surfactantEquation.solve(surfactantVariable, dt=1)
+   ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration) #doctest: +LSM
+   >>> print numerix.allclose(initialSurfactant, numerix.sum(surfactantVariable)) #doctest: +LSM
    1
  
 
@@ -89,12 +89,12 @@ surfactantVariable = SurfactantVariable(
     value = 1.
     )
 
-surfactantEquation = SurfactantEquation(
-    distanceVar = distanceVariable)
 
+from fipy.variables.surfactantConvectionVariable import SurfactantConvectionVariable
+surfactantEquation = TransientTerm() - \
+    ExplicitUpwindConvectionTerm(SurfactantConvectionVariable(distanceVariable))
 
-advectionEquation = buildHigherOrderAdvectionEquation(
-    advectionCoeff = velocity)
+advectionEquation = TransientTerm() + AdvectionTerm(velocity)
 
 if __name__ == '__main__':
     distanceViewer = Viewer(vars=distanceVariable, 
@@ -108,12 +108,12 @@ if __name__ == '__main__':
     for step in range(steps):
         print numerix.sum(surfactantVariable)
         distanceVariable.updateOld()
-        surfactantEquation.solve(surfactantVariable)
+        surfactantEquation.solve(surfactantVariable, dt=1)
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
         distanceViewer.plot()
         surfactantViewer.plot()
 
-    surfactantEquation.solve(surfactantVariable)
+    surfactantEquation.solve(surfactantVariable, dt=1)
 
     distanceViewer.plot()
     surfactantViewer.plot()

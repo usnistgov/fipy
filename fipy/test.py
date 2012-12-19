@@ -40,13 +40,12 @@ import fipy.tests.testProgram
 def _suite():
     return _LateImportTestSuite(testModuleNames = (
         'solvers.test',
-        'models.test',
         'terms.test',
         'tools.test',
         'matrices.test',
         'meshes.test',
         'variables.test',
-        'viewers.test',
+#        'viewers.test',
 	'boundaryConditions.test',
     ), base = __name__)
     

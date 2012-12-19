@@ -117,7 +117,7 @@ def gmshVersion(communicator=parallel):
 
     return communicator.bcast(verStr)
 
-def _gmshVersion(communicator):
+def _gmshVersion(communicator=parallel):
     import re
     version = gmshVersion(communicator)
     if version:
@@ -1204,14 +1204,14 @@ class MSHFile(GmshFile):
         >>> gvar = CellVariable(mesh=g, name="f(x,y)", value=1. / (x+y))
         >>> f = openMSHFile(name=os.path.join(dir, "g.msh"), mode='w') # doctest: +GMSH
         >>> f.write(g) # doctest: +GMSH
-        >>> f.write(gvar)
+        >>> f.write(gvar) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
 
         >>> if __name__ == "__main__":
         ...     p = Popen(["gmsh", os.path.join(dir, "g.msh")]) # doctest: +GMSH
         ...     doctest_raw_input("Grid2D... Press enter.")
 
-        >>> gg = GmshGrid2D(dx=1., dy=1., nx=10, ny=10)
+        >>> gg = GmshGrid2D(dx=1., dy=1., nx=10, ny=10) # doctest: +GMSH
             
         >>> f = openMSHFile(name=os.path.join(dir, "gg.msh"), mode='w') # doctest: +GMSH
         >>> f.write(gg) # doctest: +GMSH
@@ -1772,7 +1772,7 @@ class Gmsh2D(Mesh2D):
         >>> f.close() # doctest: +GMSH
 
         >>> f = open(posFile, mode='r')
-        >>> print "".join(f.readlines())
+        >>> print "".join(f.readlines()) # doctest: +GMSH
         $PostFormat
         1.4 0 8
         $EndPostFormat
