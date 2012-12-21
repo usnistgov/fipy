@@ -43,51 +43,56 @@ from fipy.tests.doctestPlus import register_skipper
 import sys
 import os
 
+def module_exists(module_name):
+    try:
+        __import__(module_name)
+    except ImportError:
+        return False
+    else:
+        return True
+    
+def _checkForLSMLIB():
+    return module_exists('pylsmlib')
+
+def _checkForSKFMM():
+    return module_exists('skfmm')
+
 def _parseLSMSolver():
     args = [s.lower() for s in sys.argv[1:]]
     # any command-line specified solver takes precedence over environment variables
     if '--lsmlib' in args:
-        return "lsmlib"
+        if _checkForLSMLIB():
+            return "lsmlib"
+        else:
+            return None
     elif '--skfmm' in args:
-        return "skfmm"
+        if _checkForSKFMM():
+            return "skfmm"
+        else:
+            return None
     elif 'FIPY_LSM' in os.environ:
         return os.environ['FIPY_LSM'].lower()
+    elif _checkForLSMLIB():
+        return 'lsmlib'
+    elif _checkForSKFMM():
+        return 'skfmm'
     else:
         return None
-
+    
 LSM_SOLVER = _parseLSMSolver()
 
-if LSM_SOLVER is None:
-    try:
-        import pylsmlib
-        LSM_SOLVER = 'lsmlib'
-    except Exception:    
-        try:
-            import skfmm
-            LSM_SOLVER = 'skfmm'
-        except Exception:
-            pass
-
-def _checkForLSMLIB():
-    return LSM_SOLVER == 'lsmlib'
-
-def _checkForSKFMM():
-    return LSM_SOLVER == 'skfmm'
-
-def _checkForLSM():
-    return LSM_SOLVER != None
-
 register_skipper(flag="LSM",
-                 test=_checkForLSM,
+                 test=lambda : LSM_SOLVER is not None,
                  why="neither `lsmlib` nor `skfmm` can be found on the $PATH")
 
 register_skipper(flag="LSMLIB",
-                 test=_checkForLSMLIB,
+                 test=lambda : LSM_SOLVER == 'lsmlib',
                  why="`lsmlib` must be used to run some tests")
 
 register_skipper(flag="SKFMM",
-                 test=_checkForSKFMM,
+                 test=lambda : LSM_SOLVER == 'skfmm',
                  why="`skfmm` must be used to run some tests")
+
 
 __all__ = ["DistanceVariable"]
 
