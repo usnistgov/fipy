@@ -388,6 +388,18 @@ class Grid3D(Mesh):
 
             >>> Grid3D(nx=2, ny=2, nz=2, dx=(1., 2.), dy=(1., 2.), dz=(1., 2.))
             Grid3D(dx=(1.0, 2.0), nx=2, dy=(1.0, 2.0), ny=2, dz=(1.0, 2.0), nz=2)
+
+        Test for http://matforge.org/fipy/ticket/490.
+            
+            >>> from fipy.meshes.grid3D import Grid3D
+            >>> m = Grid3D(nx=1, ny=1, nz=9, overlap=1)
+            >>> print min(m.z) == 0.5 # doctest: +SERIAL
+            True
+            >>> print min(m.z) == 3.5 # doctest: +PROCESSOR_1_OF_2
+            True
+            >>> print min(m.z) == 5.5 # doctest: +PROCESSOR_2_OF_3
+            True
+
         """
 
 def _test():

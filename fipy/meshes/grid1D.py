@@ -118,6 +118,17 @@ class Grid1D(Mesh1D):
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var, solver=DummySolver())
 
+        Test for ticket http://matforge.org/fipy/ticket/490.
+
+            >>> from fipy.meshes.grid1D import Grid1D
+            >>> m = Grid1D(nx=9, overlap=1)
+            >>> print min(m.x) == 0.5 # doctest: +SERIAL
+            True
+            >>> print min(m.x) == 3.5 # doctest: +PROCESSOR_1_OF_2
+            True
+            >>> print min(m.x) == 5.5 # doctest: +PROCESSOR_2_OF_3
+            True
+            
         """
 
 def _test():

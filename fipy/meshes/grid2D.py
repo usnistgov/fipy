@@ -265,6 +265,18 @@ class Grid2D(Mesh2D):
 
             >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.cellCenters)
             True
+
+        Test for http://matforge.org/fipy/ticket/490.
+            
+            >>> from fipy.meshes.grid2D import Grid2D
+            >>> m = Grid2D(nx=1, ny=9, overlap=1)
+            >>> print min(m.y) == 0.5 # doctest: +SERIAL
+            True
+            >>> print min(m.y) == 3.5 # doctest: +PROCESSOR_1_OF_2
+            True
+            >>> print min(m.y) == 5.5 # doctest: +PROCESSOR_2_OF_3
+            True
+            
         """
 
 def _test():
