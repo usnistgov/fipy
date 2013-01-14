@@ -200,8 +200,8 @@ class AbstractMesh(object):
         `faces2` are not altered, they still remain as members of
         exterior faces.
 
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
+           >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
+           >>> mesh = NonUniformGrid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
            >>> print (mesh.cellFaceIDs == [[0, 1, 2, 3],
            ...                             [7, 8, 10, 11],

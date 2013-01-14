@@ -38,15 +38,13 @@ Peridoic 1D Mesh
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
-
-from fipy.meshes.grid1D import Grid1D
+from fipy.meshes.nonUniformGrid1D import NonUniformGrid1D
 from fipy.meshes.builders import _PeriodicGrid1DBuilder
 from fipy.meshes.topologies.gridTopology import _PeriodicGrid1DTopology
 
 __all__ = ["PeriodicGrid1D"]
 
-class PeriodicGrid1D(Grid1D):
+class PeriodicGrid1D(NonUniformGrid1D):
     """
     
     Creates a Periodic grid mesh.
@@ -82,10 +80,10 @@ class PeriodicGrid1D(Grid1D):
     """
     def __init__(self, dx = 1., nx = None, overlap=2, *args, **kwargs):
 
-        Grid1D.__init__(self, dx = dx, nx = nx, overlap=overlap,
-                        _BuilderClass=_PeriodicGrid1DBuilder,
-                        _TopologyClass=_PeriodicGrid1DTopology, *args, **kwargs)
-        self._nonPeriodicCellFaceIDs = numerix.array(super(Grid1D, self).cellFaceIDs)
+        super(PeriodicGrid1D, self).__init__(dx = dx, nx = nx, overlap=overlap,
+                                             _BuilderClass=_PeriodicGrid1DBuilder,
+                                             _TopologyClass=_PeriodicGrid1DTopology, *args, **kwargs)
+        self._nonPeriodicCellFaceIDs = numerix.array(super(PeriodicGrid1D, self).cellFaceIDs)
         self._makePeriodic()
 
     def _makePeriodic(self):

@@ -83,9 +83,9 @@ def Grid3D(dx=1., dy=1., dz=1.,
            Lx=None, Ly=None, Lz=None,
            overlap=2, communicator=parallel):
     
-    r""" Factory function to select between UniformGrid3D and Grid3D.
-    If `Lx` is specified the length of the domain is always `Lx`
-    regardless of `dx`.
+    r""" Factory function to select between UniformGrid3D and
+    NonUniformGrid3D.  If `Lx` is specified the length of the domain
+    is always `Lx` regardless of `dx`.
 
     :Parameters:
 
@@ -107,8 +107,6 @@ def Grid3D(dx=1., dy=1., dz=1.,
         purposes.
     
     """
-    from fipy.meshes import uniformGrid3D
-    from fipy.meshes import grid3D
 
     if numerix.getShape(dx) == () \
       and numerix.getShape(dy) == () \
@@ -117,18 +115,19 @@ def Grid3D(dx=1., dy=1., dz=1.,
         dx, nx = _dnl(dx, nx, Lx)
         dy, ny = _dnl(dy, ny, Ly)
         dz, nz = _dnl(dz, nz, Lz)
-
-        return uniformGrid3D.UniformGrid3D(dx = dx, dy = dy, dz = dz,
-                                           nx = nx or 1, ny = ny or 1, nz = nz or 1,
-                                           overlap=overlap, communicator=communicator)
+        from fipy.meshes.uniformGrid3D import UniformGrid3D
+        return UniformGrid3D(dx = dx, dy = dy, dz = dz,
+                             nx = nx or 1, ny = ny or 1, nz = nz or 1,
+                             overlap=overlap, communicator=communicator)
     else:
-        return grid3D.Grid3D(dx = dx, dy = dy, dz = dz, nx = nx, ny = ny, nz = nz,
-                             overlap=overlap, communicator=communicator) 
+        from fipy.meshes.nonUniformGrid3D import NonUniformGrid3D
+        return NonUniformGrid3D(dx = dx, dy = dy, dz = dz, nx = nx, ny = ny, nz = nz,
+                                overlap=overlap, communicator=communicator) 
 
 def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communicator=parallel):
-    r""" Factory function to select between UniformGrid2D and Grid2D.
-    If `Lx` is specified the length of the domain is always `Lx`
-    regardless of `dx`.
+    r""" Factory function to select between UniformGrid2D and
+    NonUniformGrid2D.  If `Lx` is specified the length of the domain
+    is always `Lx` regardless of `dx`.
 
     :Parameters:
 
@@ -151,25 +150,24 @@ def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communic
 
     """
 
-    from fipy.meshes import uniformGrid2D
-    from fipy.meshes import grid2D
-
     if numerix.getShape(dx) == () and numerix.getShape(dy) == ():
 
         dx, nx = _dnl(dx, nx, Lx)
         dy, ny = _dnl(dy, ny, Ly)
-
-        return uniformGrid2D.UniformGrid2D(dx=dx, dy=dy, 
-                                           nx=nx, ny=ny,
-                                           overlap=overlap,
-                                           communicator=communicator)
+        
+        from fipy.meshes.uniformGrid2D import UniformGrid2D
+        return UniformGrid2D(dx=dx, dy=dy, 
+                             nx=nx, ny=ny,
+                             overlap=overlap,
+                             communicator=communicator)
     else:
-        return grid2D.Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)
+        from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
+        return NonUniformGrid2D(dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)
 
 def Grid1D(dx=1., nx=None, Lx=None, overlap=2, communicator=parallel):
-    r""" Factory function to select between UniformGrid1D and Grid1D.
-    If `Lx` is specified the length of the domain is always `Lx`
-    regardless of `dx`.
+    r""" Factory function to select between UniformGrid1D and
+    NonUniformGrid1D.  If `Lx` is specified the length of the domain
+    is always `Lx` regardless of `dx`.
 
     :Parameters:
 
@@ -186,17 +184,13 @@ def Grid1D(dx=1., nx=None, Lx=None, overlap=2, communicator=parallel):
     
     """
 
-
-    from fipy.meshes import uniformGrid1D
-    from fipy.meshes import grid1D
-    
     if numerix.getShape(dx) == ():
-
         dx, nx = _dnl(dx, nx, Lx)
-
-        return uniformGrid1D.UniformGrid1D(dx=dx, nx=nx, overlap=overlap, communicator=communicator)
+        from fipy.meshes.uniformGrid1D import UniformGrid1D
+        return UniformGrid1D(dx=dx, nx=nx, overlap=overlap, communicator=communicator)
     else:
-        return grid1D.Grid1D(dx=dx, nx=nx, overlap=overlap, communicator=communicator)
+        from fipy.meshes.nonUniformGrid1D import NonUniformGrid1D
+        return NonUniformGrid1D(dx=dx, nx=nx, overlap=overlap, communicator=communicator)
 
 def CylindricalGrid2D(dr=None, dz=None, 
                       nr=None, nz=None, 
@@ -208,9 +202,9 @@ def CylindricalGrid2D(dr=None, dz=None,
                       overlap=2,
                       communicator=parallel):
 
-    r""" Factory function to select between CylindricalUniformGrid2D
-    and CylindricalGrid2D. If `Lx` is specified the length of the
-    domain is always `Lx` regardless of `dx`.
+    r""" Factory function to select between CylindricalUniformGrid2D and
+    CylindricalNonUniformGrid2D. If `Lx` is specified the length of
+    the domain is always `Lx` regardless of `dx`.
 
     :Parameters:
 
@@ -231,8 +225,8 @@ def CylindricalGrid2D(dr=None, dz=None,
     
     """
 
-    from fipy.meshes import cylindricalUniformGrid2D
-    from fipy.meshes import cylindricalGrid2D
+
+
 
     if dr is not None:
         dx = dr
@@ -251,18 +245,19 @@ def CylindricalGrid2D(dr=None, dz=None,
 
         dx, nx = _dnl(dx, nx, Lx)
         dy, ny = _dnl(dy, ny, Ly)
-
-        return cylindricalUniformGrid2D.CylindricalUniformGrid2D(dx=dx, dy=dy, nx=nx or 1, ny=ny or 1, origin=origin, overlap=overlap, communicator=communicator)
+        from fipy.meshes.cylindricalUniformGrid2D import CylindricalUniformGrid2D
+        return CylindricalUniformGrid2D(dx=dx, dy=dy, nx=nx or 1, ny=ny or 1, origin=origin, overlap=overlap, communicator=communicator)
     else:
-        return cylindricalGrid2D.CylindricalGrid2D(dx=dx, dy=dy, nx=nx, ny=ny, origin=origin, overlap=overlap, communicator=communicator)
+        from fipy.meshes.cylindricalNonUniformGrid2D import CylindricalNonUniformGrid2D
+        return CylindricalNonUniformGrid2D(dx=dx, dy=dy, nx=nx, ny=ny, origin=origin, overlap=overlap, communicator=communicator)
 
 def CylindricalGrid1D(dr=None, nr=None, Lr=None,
                       dx=1., nx=None, Lx=None,
                       origin=(0,), overlap=2, communicator=parallel):
 
-    r""" Factory function to select between CylindricalUniformGrid1D
-    and CylindricalGrid1D. If `Lx` is specified the length of the
-    domain is always `Lx` regardless of `dx`.
+    r""" Factory function to select between CylindricalUniformGrid1D and
+    CylindricalNonUniformGrid1D. If `Lx` is specified the length of
+    the domain is always `Lx` regardless of `dx`.
 
     :Parameters:
 
@@ -280,9 +275,6 @@ def CylindricalGrid1D(dr=None, nr=None, Lr=None,
     
     """
 
-    from fipy.meshes import cylindricalUniformGrid1D
-    from fipy.meshes import cylindricalGrid1D
-
     if dr is not None:
         dx = dr
 
@@ -291,9 +283,11 @@ def CylindricalGrid1D(dr=None, nr=None, Lr=None,
 
     if numerix.getShape(dx) == ():
         dx, nx = _dnl(dx, nx, Lx)
-        return cylindricalUniformGrid1D.CylindricalUniformGrid1D(dx=dx, nx=nx or 1, origin=origin, overlap=overlap, communicator=parallel)
+        from fipy.meshes.cylindricalUniformGrid1D import CylindricalUniformGrid1D
+        return CylindricalUniformGrid1D(dx=dx, nx=nx or 1, origin=origin, overlap=overlap, communicator=parallel)
     else:
-        return cylindricalGrid1D.CylindricalGrid1D(dx=dx, nx=nx, origin=origin, overlap=overlap, communicator=parallel)
+        from fipy.meshes.cylindricalNonUniformGrid1D import CylindricalNonUniformGrid1D
+        return CylindricalNonUniformGrid1D(dx=dx, nx=nx, origin=origin, overlap=overlap, communicator=parallel)
 
 def _test():
     import fipy.tests.doctestPlus
