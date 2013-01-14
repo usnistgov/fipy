@@ -42,7 +42,7 @@ from fipy.tools import numerix
 
 from fipy.meshes.grid2D import Grid2D
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 
 __all__ = ["CylindricalGrid2D"]
 
@@ -52,7 +52,7 @@ class CylindricalGrid2D(Grid2D):
     first and then vertical faces.
     """
     def __init__(self, dx=1., dy=1., nx=None, ny=None, 
-                 origin=((0.,), (0.,)), overlap=2, communicator=parallel, *args, **kwargs):
+                 origin=((0.,), (0.,)), overlap=2, communicator=parallelComm, *args, **kwargs):
         scale = PhysicalField(value=1, unit=PhysicalField(value=dx).unit)
         self.origin = PhysicalField(value=origin)
         self.origin /= scale

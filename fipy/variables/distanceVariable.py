@@ -111,8 +111,8 @@ class DistanceVariable(CellVariable):
     Here we will define a few test cases. Firstly a 1D test case
 
     >>> from fipy.meshes import Grid1D
-    >>> from fipy.tools import serial
-    >>> mesh = Grid1D(dx = .5, nx = 8, communicator=serial)
+    >>> from fipy.tools import serialComm
+    >>> mesh = Grid1D(dx = .5, nx = 8, communicator=serialComm)
     >>> from distanceVariable import DistanceVariable
     >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1., 1., 1., 1., 1.))
     >>> var.calcDistanceFunction() #doctest: +LSM
@@ -123,7 +123,7 @@ class DistanceVariable(CellVariable):
     A 1D test case with very small dimensions.
 
     >>> dx = 1e-10
-    >>> mesh = Grid1D(dx = dx, nx = 8, communicator=serial)
+    >>> mesh = Grid1D(dx = dx, nx = 8, communicator=serialComm)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1., 1., 1., 1., 1.))
     >>> var.calcDistanceFunction() #doctest: +LSM
     >>> answer = numerix.arange(8) * dx - 3.5 * dx
@@ -163,7 +163,7 @@ class DistanceVariable(CellVariable):
     the zero level set.
 
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2, communicator=serial)
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2, communicator=serialComm)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1., 1.))
     >>> var.calcDistanceFunction() #doctest: +LSM
     >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, 2, -1))
@@ -173,7 +173,7 @@ class DistanceVariable(CellVariable):
     >>> var.extendVariable(extensionVar, order=1) #doctest: +LSM
     >>> print extensionVar.allclose((1.25, .5, 2, 1.25)) #doctest: +LSM
     1
-    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3, communicator=serial)
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3, communicator=serialComm)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1.,
     ...                                               1., 1., 1.,
     ...                                               1., 1., 1.))
@@ -207,7 +207,7 @@ class DistanceVariable(CellVariable):
 
     Testing second order. This example failed with Scikit-fmm.
 
-    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 4, ny = 4, communicator=serial)
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 4, ny = 4, communicator=serialComm)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., 1., 1.,
     ...                                               -1., -1., 1., 1.,
     ...                                               1., 1., 1., 1.,
@@ -233,7 +233,7 @@ class DistanceVariable(CellVariable):
     in Scikit-fmm for the following example are correct although an
     example that didn't work for Scikit-fmm could also be constructed.
 
-    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 4, ny = 4, communicator=serial)
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 4, ny = 4, communicator=serialComm)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1.,
     ...                                               1.,  1., -1., -1.,
     ...                                               1.,  1., -1., -1.,

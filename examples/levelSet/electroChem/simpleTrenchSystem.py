@@ -198,12 +198,12 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     xCells = int(trenchSpacing / 2 / cellSize)
 
-    from fipy.tools import serial
+    from fipy.tools import serialComm
     mesh = Grid2D(dx = cellSize,
                   dy = cellSize,
                   nx = xCells,
                   ny = yCells,
-                  communicator=serial)
+                  communicator=serialComm)
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
 

@@ -39,7 +39,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.meshes.uniformGrid1D import UniformGrid1D
 from fipy.tools import numerix
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 
 __all__ = ["CylindricalUniformGrid1D"]
 
@@ -52,7 +52,7 @@ class CylindricalUniformGrid1D(UniformGrid1D):
         [[ 0.5  1.5  2.5]]
          
     """
-    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2, communicator=parallel, *args, **kwargs):
+    def __init__(self, dx=1., nx=1, origin=(0,), overlap=2, communicator=parallelComm, *args, **kwargs):
         UniformGrid1D.__init__(self, dx=dx, nx=nx, origin=origin, overlap=overlap, communicator=communicator, *args, **kwargs)
     
     def _translate(self, vector):

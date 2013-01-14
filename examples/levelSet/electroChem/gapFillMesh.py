@@ -49,8 +49,8 @@ __docformat__ = 'restructuredtext'
 
 from fipy.meshes import Gmsh2D
 from fipy.meshes import Grid2D
-from fipy.tools import serial
-from fipy.tools import parallel
+from fipy.tools import serialComm
+from fipy.tools import parallelComm
 
 class GapFillMesh(Gmsh2D):
     """
@@ -64,7 +64,7 @@ class GapFillMesh(Gmsh2D):
 
     >>> import fipy.tools.dump as dump
     >>> (f, filename) = dump.write(mesh) # doctest: +GMSH 
-    >>> if parallel.Nproc == 1:
+    >>> if parallelComm.Nproc == 1:
     ...     mesh = dump.read(filename, f) # doctest: +GMSH
 
     >>> print 136 < mesh.globalNumberOfCells < 300 # doctest: +GMSH
@@ -104,7 +104,7 @@ class GapFillMesh(Gmsh2D):
                  desiredDomainHeight=None,
                  desiredFineRegionHeight=None,
                  transitionRegionHeight=None,
-                 communicator=parallel):
+                 communicator=parallelComm):
 
         """
         Arguments:
@@ -133,7 +133,7 @@ class GapFillMesh(Gmsh2D):
         numberOfBoundaryLayerCells = int(boundaryLayerHeight / actualDomainWidth)
 
         # Build the fine region mesh.
-        self.fineMesh = Grid2D(nx=nx, ny=ny, dx=cellSize, dy=cellSize, communicator=serial)
+        self.fineMesh = Grid2D(nx=nx, ny=ny, dx=cellSize, dy=cellSize, communicator=serialComm)
 
         eps = cellSize / nx / 10
 

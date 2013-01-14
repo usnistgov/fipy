@@ -40,7 +40,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 
 from fipy.meshes.uniformGrid import UniformGrid
 from fipy.meshes.builders import _UniformGrid1DBuilder
@@ -60,7 +60,7 @@ class UniformGrid1D(UniformGrid):
          
     """
     def __init__(self, dx=1., nx=1, origin=(0,), overlap=2,
-                 communicator=parallel, 
+                 communicator=parallelComm, 
                  _RepresentationClass=_Grid1DRepresentation,
                  _TopologyClass=_Grid1DTopology):
                            

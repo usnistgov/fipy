@@ -37,7 +37,7 @@ from PyTrilinos import Epetra
 from PyTrilinos import NOX
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 
 class _NOXInterface(NOX.Epetra.Interface.Required, NOX.Epetra.Interface.Jacobian):
     def __init__(self, solver):
@@ -140,7 +140,7 @@ class TrilinosNonlinearSolver(TrilinosSolver):
         self.equation = equation
         self.jacobian = jacobian
         
-        self.nlParams = NOX.Epetra.defaultNonlinearParameters(parallel.epetra_comm, 2)
+        self.nlParams = NOX.Epetra.defaultNonlinearParameters(parallelComm.epetra_comm, 2)
         self.nlParams["Printing"] = printingOptions or {
             'Output Precision': 3, 
             'MyPID': 0, 

@@ -11,13 +11,13 @@ epcomm = Epetra.PyComm()
 trilinos_info = "PyTrilinos: processor %d of %d" % (epcomm.MyPID(),
                                                     epcomm.NumProc())
 
-from fipy import parallel, Grid1D
+from fipy import parallelComm, Grid1D
 
 mesh = Grid1D(nx=10)
 
 fipy_info = "FiPy: %d cells on processor %d of %d" % (mesh.numberOfCells,
-                                                      parallel.procID,
-                                                      parallel.Nproc)
+                                                      parallelComm.procID,
+                                                      parallelComm.Nproc)
                                                       
 print " :: ".join((mpi4py_info, trilinos_info, fipy_info))
 
