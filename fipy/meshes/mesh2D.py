@@ -176,8 +176,8 @@ class Mesh2D(Mesh):
           - `extrudeFunc`: function that takes the vertex coordinates and returns the displaced values
           - `layers`: the number of layers in the extruded mesh (number of times extrudeFunc will be called)
 
-        >>> from fipy.meshes.grid2D import Grid2D
-        >>> print Grid2D(nx=2,ny=2).extrude(layers=2).cellCenters
+        >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
+        >>> print NonUniformGrid2D(nx=2,ny=2).extrude(layers=2).cellCenters
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]
          [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]]

@@ -461,13 +461,13 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _concatenableMesh(self):
-        from fipy.meshes.grid2D import Grid2D
+        from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
         args = self.args.copy()
         origin = args['origin']
         from fipy.tools import serial
         args['communicator'] = serial
         del args['origin']
-        return Grid2D(**args) + origin
+        return NonUniformGrid2D(**args) + origin
 
     @property
     def _cellFaceIDs(self):
