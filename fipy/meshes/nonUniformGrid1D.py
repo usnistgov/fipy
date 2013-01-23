@@ -38,7 +38,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 
 from fipy.meshes.mesh1D import Mesh1D
 from fipy.meshes.builders import _NonuniformGrid1DBuilder
@@ -66,7 +66,7 @@ class NonUniformGrid1D(Mesh1D):
 
     """
     def __init__(self, dx=1., nx=None, overlap=2, 
-                 communicator=parallel,
+                 communicator=parallelComm,
                  _BuilderClass=_NonuniformGrid1DBuilder,
                  _RepresentationClass=_Grid1DRepresentation,
                  _TopologyClass=_Grid1DTopology):

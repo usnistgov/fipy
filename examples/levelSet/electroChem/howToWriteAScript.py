@@ -142,12 +142,12 @@ Build the mesh:
 >>> from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 >>> from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
->>> from fipy import serial
+>>> from fipy import serialComm
 >>> mesh = Grid2D(dx=cellSize,
 ...               dy=cellSize,
 ...               nx=xCells,
 ...               ny=yCells,
-...               communicator=serial)
+...               communicator=serialComm)
 
 A ``distanceVariable`` object,
 :math:`\phi`, is  required to store  the  position of the interface.

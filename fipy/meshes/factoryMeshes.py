@@ -39,7 +39,7 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 from fipy.tools import numerix
 
 __all__ = ["Grid3D", "Grid2D", "Grid1D", "CylindricalGrid2D", "CylindricalGrid1D"]
@@ -81,7 +81,7 @@ def _dnl(dx, nx, Lx):
 def Grid3D(dx=1., dy=1., dz=1.,
            nx=None, ny=None, nz=None,
            Lx=None, Ly=None, Lz=None,
-           overlap=2, communicator=parallel):
+           overlap=2, communicator=parallelComm):
     
     r""" Factory function to select between UniformGrid3D and
     NonUniformGrid3D.  If `Lx` is specified the length of the domain
@@ -101,8 +101,8 @@ def Grid3D(dx=1., dy=1., dz=1.,
       - `overlap`: the number of overlapping cells for parallel
         simulations. Generally 2 is adequate. Higher order equations or
         discretizations require more.
-      - `communicator`: either `fipy.tools.parallel` or
-        `fipy.tools.serial`. Select `fipy.tools.serial` to create a
+      - `communicator`: either `fipy.tools.parallelComm` or
+        `fipy.tools.serialComm`. Select `fipy.tools.serialComm` to create a
         serial mesh when running in parallel. Mostly used for test
         purposes.
     
@@ -124,7 +124,7 @@ def Grid3D(dx=1., dy=1., dz=1.,
         return NonUniformGrid3D(dx = dx, dy = dy, dz = dz, nx = nx, ny = ny, nz = nz,
                                 overlap=overlap, communicator=communicator) 
 
-def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communicator=parallel):
+def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communicator=parallelComm):
     r""" Factory function to select between UniformGrid2D and
     NonUniformGrid2D.  If `Lx` is specified the length of the domain
     is always `Lx` regardless of `dx`.
@@ -140,8 +140,8 @@ def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communic
         - `overlap`: the number of overlapping cells for parallel
           simulations. Generally 2 is adequate. Higher order equations or
           discretizations require more.
-        - `communicator`: either `fipy.tools.parallel` or
-          `fipy.tools.serial`. Select `fipy.tools.serial` to create a
+        - `communicator`: either `fipy.tools.parallelComm` or
+          `fipy.tools.serialComm`. Select `fipy.tools.serialComm` to create a
           serial mesh when running in parallel. Mostly used for test
           purposes.
     
@@ -164,7 +164,7 @@ def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communic
         from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
         return NonUniformGrid2D(dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, communicator=communicator)
 
-def Grid1D(dx=1., nx=None, Lx=None, overlap=2, communicator=parallel):
+def Grid1D(dx=1., nx=None, Lx=None, overlap=2, communicator=parallelComm):
     r""" Factory function to select between UniformGrid1D and
     NonUniformGrid1D.  If `Lx` is specified the length of the domain
     is always `Lx` regardless of `dx`.
@@ -177,8 +177,8 @@ def Grid1D(dx=1., nx=None, Lx=None, overlap=2, communicator=parallel):
       - `overlap`: the number of overlapping cells for parallel
         simulations. Generally 2 is adequate. Higher order equations or
         discretizations require more.
-      - `communicator`: either `fipy.tools.parallel` or
-        `fipy.tools.serial`. Select `fipy.tools.serial` to create a
+      - `communicator`: either `fipy.tools.parallelComm` or
+        `fipy.tools.serialComm`. Select `fipy.tools.serialComm` to create a
         serial mesh when running in parallel. Mostly used for test
         purposes.
     
@@ -200,7 +200,7 @@ def CylindricalGrid2D(dr=None, dz=None,
                       Lx=None, Ly=None,
                       origin=((0,),(0,)),
                       overlap=2,
-                      communicator=parallel):
+                      communicator=parallelComm):
 
     r""" Factory function to select between CylindricalUniformGrid2D and
     CylindricalNonUniformGrid2D. If `Lx` is specified the length of
@@ -218,8 +218,8 @@ def CylindricalGrid2D(dr=None, dz=None,
       - `overlap`: the number of overlapping cells for parallel
         simulations. Generally 2 is adequate. Higher order equations or
         discretizations require more.
-      - `communicator`: either `fipy.tools.parallel` or
-        `fipy.tools.serial`. Select `fipy.tools.serial` to create a
+      - `communicator`: either `fipy.tools.parallelComm` or
+        `fipy.tools.serialComm`. Select `fipy.tools.serialComm` to create a
         serial mesh when running in parallel. Mostly used for test
         purposes.
     
@@ -253,7 +253,7 @@ def CylindricalGrid2D(dr=None, dz=None,
 
 def CylindricalGrid1D(dr=None, nr=None, Lr=None,
                       dx=1., nx=None, Lx=None,
-                      origin=(0,), overlap=2, communicator=parallel):
+                      origin=(0,), overlap=2, communicator=parallelComm):
 
     r""" Factory function to select between CylindricalUniformGrid1D and
     CylindricalNonUniformGrid1D. If `Lx` is specified the length of
@@ -268,8 +268,8 @@ def CylindricalGrid1D(dr=None, nr=None, Lr=None,
       - `overlap`: the number of overlapping cells for parallel
         simulations. Generally 2 is adequate. Higher order equations or
         discretizations require more.
-      - `communicator`: either `fipy.tools.parallel` or
-        `fipy.tools.serial`. Select `fipy.tools.serial` to create a
+      - `communicator`: either `fipy.tools.parallelComm` or
+        `fipy.tools.serialComm`. Select `fipy.tools.serialComm` to create a
         serial mesh when running in parallel. Mostly used for test
         purposes.
     
@@ -284,10 +284,10 @@ def CylindricalGrid1D(dr=None, nr=None, Lr=None,
     if numerix.getShape(dx) == ():
         dx, nx = _dnl(dx, nx, Lx)
         from fipy.meshes.cylindricalUniformGrid1D import CylindricalUniformGrid1D
-        return CylindricalUniformGrid1D(dx=dx, nx=nx or 1, origin=origin, overlap=overlap, communicator=parallel)
+        return CylindricalUniformGrid1D(dx=dx, nx=nx or 1, origin=origin, overlap=overlap, communicator=parallelComm)
     else:
         from fipy.meshes.cylindricalNonUniformGrid1D import CylindricalNonUniformGrid1D
-        return CylindricalNonUniformGrid1D(dx=dx, nx=nx, origin=origin, overlap=overlap, communicator=parallel)
+        return CylindricalNonUniformGrid1D(dx=dx, nx=nx, origin=origin, overlap=overlap, communicator=parallelComm)
 
 def _test():
     import fipy.tests.doctestPlus

@@ -36,7 +36,7 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 
 from fipy.meshes.mesh import Mesh
 from fipy.meshes.builders import _NonuniformGrid3DBuilder
@@ -61,7 +61,7 @@ class NonUniformGrid3D(Mesh):
 
     Faces: XY faces numbered first, then XZ faces, then YZ faces. Within each subcategory, it is numbered in the usual way.
     """
-    def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallel,
+    def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallelComm,
                  _RepresentationClass=_Grid3DRepresentation, _TopologyClass=_Grid3DTopology):
 
         builder = _NonuniformGrid3DBuilder()

@@ -38,7 +38,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes.builders import _NonuniformGrid2DBuilder
@@ -52,7 +52,7 @@ class NonUniformGrid2D(Mesh2D):
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallel,
+    def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallelComm,
                  _RepresentationClass=_Grid2DRepresentation, _TopologyClass=_Grid2DTopology):
 
         builder = _NonuniformGrid2DBuilder()

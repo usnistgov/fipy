@@ -38,6 +38,7 @@ Peridoic 1D Mesh
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
+
 from fipy.meshes.nonUniformGrid1D import NonUniformGrid1D
 from fipy.meshes.builders import _PeriodicGrid1DBuilder
 from fipy.meshes.topologies.gridTopology import _PeriodicGrid1DTopology

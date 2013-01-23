@@ -85,8 +85,8 @@ class AdsorbingSurfactantEquation():
     >>> c = 0.2
     
     >>> from fipy.meshes import Grid2D
-    >>> from fipy import serial
-    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1, communicator=serial)
+    >>> from fipy import serialComm
+    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1, communicator=serialComm)
     >>> distanceVar = DistanceVariable(mesh = mesh, 
     ...                                value = (-dx*3/2, -dx/2, dx/2, 
     ...                                          3*dx/2,  5*dx/2),
@@ -121,7 +121,7 @@ class AdsorbingSurfactantEquation():
     >>> c0 = 1.
     >>> c1 = 1.
     >>> totalSteps = 10
-    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1, communicator=serial)
+    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1, communicator=serialComm)
     >>> distanceVar = DistanceVariable(mesh = mesh, 
     ...                                value = dx * (numerix.arange(5) - 1.5),
     ...                                hasOld = 1)
@@ -196,7 +196,7 @@ class AdsorbingSurfactantEquation():
     >>> ny = 5
     >>> dx = 1.
     >>> dy = 1.
-    >>> mesh = Grid2D(dx=dx, dy=dy, nx = nx, ny = ny, communicator=serial)
+    >>> mesh = Grid2D(dx=dx, dy=dy, nx = nx, ny = ny, communicator=serialComm)
     >>> x, y = mesh.cellCenters
 
     >>> disVar = DistanceVariable(mesh=mesh, value=1., hasOld=True)

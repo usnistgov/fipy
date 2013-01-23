@@ -83,7 +83,7 @@ mass.
 Import a mesh previously created using :term:`Gmsh`.
 
 >>> import os
->>> mesh = Gmsh2D(os.path.splitext(__file__)[0] + '.msh', communicator=serial) # doctest: +GMSH
+>>> mesh = Gmsh2D(os.path.splitext(__file__)[0] + '.msh', communicator=serialComm) # doctest: +GMSH
 
 Set the centermost cell to have a value.
 

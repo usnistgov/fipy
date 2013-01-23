@@ -37,7 +37,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 from gapFillMesh import GapFillMesh
 
 class TrenchMesh(GapFillMesh):
@@ -58,7 +58,7 @@ class TrenchMesh(GapFillMesh):
 
     >>> import fipy.tools.dump as dump 
     >>> (f, filename) = dump.write(mesh) # doctest: +GMSH 
-    >>> if parallel.Nproc == 1:
+    >>> if parallelComm.Nproc == 1:
     ...     mesh = dump.read(filename, f) # doctest: +GMSH 
     >>> print mesh.globalNumberOfCells - len(numerix.nonzero(mesh.electrolyteMask)[0]) # doctest: +GMSH, +SERIAL
     150
@@ -99,7 +99,7 @@ class TrenchMesh(GapFillMesh):
                  cellSize=None,
                  aspectRatio=None,
                  angle=0.,
-                 communicator=parallel):
+                 communicator=parallelComm):
         """
 
         `trenchDepth` - Depth of the trench.
@@ -135,7 +135,7 @@ class TrenchMesh(GapFillMesh):
                                          desiredDomainHeight=domainHeight,
                                          desiredFineRegionHeight=fineRegionHeight,
                                          transitionRegionHeight=transitionHeight,
-                                         communicator=parallel)
+                                         communicator=parallelComm)
 
         trenchWidth = trenchDepth / aspectRatio
 

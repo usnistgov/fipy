@@ -41,7 +41,7 @@ from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
-from fipy.tools import numerix, parallel
+from fipy.tools import numerix, parallelComm
 from fipy.tools.decorators import getsetDeprecated
 
 # Current inadequacies of the matrix class:
@@ -112,8 +112,8 @@ class _TrilinosMatrix(_SparseMatrix):
     def __str__(self):
         self.fillComplete()
 
-        from fipy.tools import parallel
-        return ''.join(parallel.allgather(_SparseMatrix.__str__(self)))
+        from fipy.tools import parallelComm
+        return ''.join(parallelComm.allgather(_SparseMatrix.__str__(self)))
 
     @property
     def _range(self):
@@ -476,22 +476,22 @@ class _TrilinosMatrix(_SparseMatrix):
         import tempfile
         import os
         from scipy.io import mmio
-        from fipy.tools import parallel
+        from fipy.tools import parallelComm
         
-        if parallel.procID == 0:
+        if parallelComm.procID == 0:
             (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
         else:
             mtxName = None
 
-        mtxName = parallel.bcast(mtxName)
+        mtxName = parallelComm.bcast(mtxName)
 
         self.exportMmf(mtxName)
 
-        parallel.Barrier()
+        parallelComm.Barrier()
         mtx = mmio.mmread(mtxName)
-        parallel.Barrier()
+        parallelComm.Barrier()
         
-        if parallel.procID == 0:
+        if parallelComm.procID == 0:
             os.remove(mtxName)
 
         coo = mtx.tocoo()
@@ -980,7 +980,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         >>> print numerix.allequal(LNOR, [2, 3, 4, 7, 8, 9]) # doctest: +PROCESSOR_1_OF_2
         True
         
-        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5, communicator=serial), numberOfVariables=3, numberOfEquations=2)
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5, communicator=serialComm), numberOfVariables=3, numberOfEquations=2)
         >>> GOC = matrix._globalOverlappingColIDs
         >>> GNOC = matrix._globalNonOverlappingColIDs
         >>> LNOC = matrix._localNonOverlappingColIDs

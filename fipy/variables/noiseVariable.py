@@ -85,12 +85,12 @@ class NoiseVariable(CellVariable):
             return None
         
     def _calcValue(self):
-        from fipy.tools import parallel
+        from fipy.tools import parallelComm
 
         rnd = self.parallelRandom()
         
-        if parallel.Nproc > 1:
-            rnd = parallel.bcast(rnd, root=0)
+        if parallelComm.Nproc > 1:
+            rnd = parallelComm.bcast(rnd, root=0)
             
             return rnd[self.mesh._globalOverlappingCellIDs]
         else:

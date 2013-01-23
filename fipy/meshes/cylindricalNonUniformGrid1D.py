@@ -39,7 +39,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 
 from fipy.meshes.nonUniformGrid1D import NonUniformGrid1D
 
@@ -72,7 +72,7 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
         True
         
     """
-    def __init__(self, dx=1., nx=None, origin=(0,), overlap=2, communicator=parallel, *args, **kwargs):
+    def __init__(self, dx=1., nx=None, origin=(0,), overlap=2, communicator=parallelComm, *args, **kwargs):
         scale = PhysicalField(value=1, unit=PhysicalField(value=dx).unit)
         self.origin = PhysicalField(value=origin)
         self.origin /= scale

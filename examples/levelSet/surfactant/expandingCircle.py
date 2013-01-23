@@ -100,8 +100,8 @@ k = 1
 dx = L / nx
 steps = 20
 
-from fipy.tools import serial
-mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx, communicator=serial)
+from fipy.tools import serialComm
+mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx, communicator=serialComm)
 
 x, y = mesh.cellCenters
 distanceVariable = DistanceVariable(

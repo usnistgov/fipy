@@ -56,8 +56,8 @@ This example creates a trench with the following zero level set:
 >>> timeStepDuration = cfl * dx / velocity
 >>> steps = 200
 
->>> from fipy.tools import serial
->>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny, communicator=serial)
+>>> from fipy.tools import serialComm
+>>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny, communicator=serialComm)
 
 >>> var = DistanceVariable(name = 'level set variable',
 ...                        mesh = mesh,

@@ -37,7 +37,7 @@ __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractMesh"]
 
-from fipy.tools import serial
+from fipy.tools import serialComm
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
 from fipy.tools.numerix import MA
