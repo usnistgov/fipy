@@ -601,6 +601,140 @@ can just solve for it directly
 
 ------
 
+Fully implicit solutions are not without their pitfalls, particularly in steady
+state. Consider a localized block of material diffusing in a closed box.
+
+>>> phi = CellVariable(mesh=mesh, name=r"$\phi$")
+
+>>> phi.value = 0.
+>>> phi.setValue(1., where=(x > L/2. - L/10.) & (x < L/2. + L/10.))
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=phi, datamin=-0.1, datamax=1.1)
+
+.. image:: mesh1D-noflux_initial.*
+   :width: 90%
+   :align: center
+   :alt: initial condition for no-flux boundary conditions
+
+We assign no explicit boundary conditions, leaving the default no-flux boundary
+conditions, and solve 
+
+.. math::
+
+   \partial\phi/\partial t = \nabla\cdot(D\nabla\phi)
+
+>>> D = 1.
+>>> eq = TransientTerm() == DiffusionTerm(D)
+
+>>> dt = 10. * dx**2 / (2 * D)
+>>> steps = 200
+
+>>> for step in range(steps):
+...     eq.solve(var=phi, dt=dt)
+...     if __name__ == '__main__':
+...         viewer.plot()
+>>> if __name__ == '__main__':
+...     raw_input("No-flux - transient. \
+... Press <return> to proceed...")
+
+.. image:: mesh1D-noflux_transient.*
+   :width: 90%
+   :align: center
+   :alt: long-time solution for no-flux boundary conditions
+
+and see that :math:`\phi` dissipates to the expected average value of 0.2 with
+reasonable accuracy.
+
+>>> print numerix.allclose(phi, 0.2, atol=1e-5)
+True
+
+If we reset the initial condition
+
+>>> phi.value = 0.
+>>> phi.setValue(1., where=(x > L/2. - L/10.) & (x < L/2. + L/10.))
+>>> if __name__ == '__main__':
+...     viewer.plot()
+
+and solve the steady-state problem
+
+>>> DiffusionTerm(coeff=D).solve(var=phi)
+>>> if __name__ == '__main__':
+...     viewer.plot()
+>>> if __name__ == '__main__':
+...     raw_input("No-flux - stead-state failure. \
+... Press <return> to proceed...")
+
+>>> print numerix.allclose(phi, 0.0)
+True
+
+.. image:: mesh1D-noflux_steady_fail.*
+   :width: 90%
+   :align: center
+   :alt: (failed) steady-state solution for no-flux boundary conditions
+
+we find that the value is uniformly zero! What happened to our no-flux boundary
+conditions?
+
+The problem is that in the implicit discretization of :math:`\nabla\cdot(D\nabla\phi) = 0`,
+
+.. math::
+    
+   \begin{vmatrix}
+   \frac{D}{{\Delta x}^2} & -\frac{D}{{\Delta x}^2} & & & & & \\\\[1em]
+   \ddots & \ddots & \ddots & & & & \\[1em]
+   & -\frac{D}{{\Delta x}^2} & \frac{2 D}{{\Delta x}^2} & -\frac{D}{{\Delta x}^2} & & & \\\\[1em]
+   & & -\frac{D}{{\Delta x}^2} & \frac{2 D}{{\Delta x}^2} & -\frac{D}{{\Delta x}^2} & & \\\\[1em]
+   & & & -\frac{D}{{\Delta x}^2} & \frac{2 D}{{\Delta x}^2} & -\frac{D}{{\Delta x}^2} & \\\\[1em]
+   & & & & \ddots & \ddots & \ddots \\\\[1em]
+   & & & & & -\frac{D}{{\Delta x}^2} & \frac{D}{{\Delta x}^2} \\\\[1em]
+   \end{vmatrix}
+   \begin{vmatrix}
+   \phi^\text{new}_{0} \\\\[1em]
+   \vdots \\[1em]
+   \phi^\text{new}_{j-1} \\\\[1em]
+   \phi^\text{new}_{j} \\\\[1em]
+   \phi^\text{new}_{j+1} \\\\[1em]
+   \vdots \\\\[1em]
+   \phi^\text{new}_{N-1}
+   \end{vmatrix}
+   =
+   \begin{vmatrix}
+   0 \\\\[1em]
+   \vdots \\\\[1em]
+   0 \\\\[1em]
+   0 \\\\[1em]
+   0 \\\\[1em]
+   \vdots \\\\[1em]
+   0
+   \end{vmatrix}
+
+the initial condition :math:`\phi^\text{old}` no longer appears and 
+:math:`\phi = 0` is a perfectly legitimate solution to this matrix equation.
+
+The solution is to run the transient problem and to take one enormous time step
+
+>>> phi.value = 0.
+>>> phi.setValue(1., where=(x > L/2. - L/10.) & (x < L/2. + L/10.))
+>>> if __name__ == '__main__':
+...     viewer.plot()
+
+>>> (TransientTerm() == DiffusionTerm(D)).solve(var=phi, dt=1e6*dt)
+>>> if __name__ == '__main__':
+...     viewer.plot()
+>>> if __name__ == '__main__':
+...     raw_input("No-flux - steady-state. \
+... Press <return> to proceed...")
+
+>>> print numerix.allclose(phi, 0.2, atol=1e-5)
+True
+
+.. image:: mesh1D-noflux_steady.*
+   :width: 90%
+   :align: center
+   :alt: steady-state solution for no-flux boundary conditions
+
+------
+
 If this example had been written primarily as a script, instead of as
 documentation, we would delete every line that does not begin with
 either "``>>>``" or "``...``", and then delete those prefixes from the
