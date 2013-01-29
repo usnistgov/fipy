@@ -657,14 +657,14 @@ If we reset the initial condition
 
 and solve the steady-state problem
 
->>> DiffusionTerm(coeff=D).solve(var=phi)
+>>> DiffusionTerm(coeff=D).solve(var=phi) #doctest: +PYSPARSE_SOLVER
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 >>> if __name__ == '__main__':
 ...     raw_input("No-flux - stead-state failure. \
 ... Press <return> to proceed...")
 
->>> print numerix.allclose(phi, 0.0)
+>>> print numerix.allclose(phi, 0.0) #doctest: +PYSPARSE_SOLVER
 True
 
 .. image:: mesh1D-noflux_steady_fail.*
