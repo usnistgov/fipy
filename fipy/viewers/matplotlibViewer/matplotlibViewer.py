@@ -172,6 +172,8 @@ class AbstractMatplotlibViewer(AbstractViewer):
         
     def _repr_png_(self):
         """Render as a PNG for IPython notebook, per display_protocol.ipynb
+        
+        Invoke with `display(myViewer)`
         """
         from IPython.core.pylabtools import print_figure
         
