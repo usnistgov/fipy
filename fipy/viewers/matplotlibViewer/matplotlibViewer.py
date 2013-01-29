@@ -170,6 +170,13 @@ class AbstractMatplotlibViewer(AbstractViewer):
 #         filetypes = pylab.figure(self.id).canvas.filetypes
 #         return [".%s" % key for key in filetypes.keys()]
         
+    def _repr_png_(self):
+        """Render as a PNG for IPython notebook, per display_protocol.ipynb
+        """
+        from IPython.core.pylabtools import print_figure
+        
+        self.plot()
+        return print_figure(self.axes.get_figure(), "png")
 
 class _ColorBar(object):
     def __init__(self, viewer, vmin=-1, vmax=1, orientation="vertical"):
