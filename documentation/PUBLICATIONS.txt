@@ -12,11 +12,21 @@ Publications
 Other publications that have used FiPy. Please contact us to add your work 
 to this list.
 
-.. * D. Josell, C. R. Beauchamp, B. Hamadani, S. Jung, J. E. Guyer, C. Hangarter, 
-   N. Gergel-Hackett, H. Xu, N. Zhitenev,
-   "Three-Dimensionally Structured Thin Film Heterojunction Photovoltaics 
-   on Interdigitated Back-Contacts,"
-   *Electrochemical Society Transactions* (2010) *(submitted)*.
+.. 
+
+* C. P. Simon, E. M. Vaughan, W. M. Bement & L. Edelstein-Keshet,
+  "Pattern formation of Rho GTPases in single cell wound healing"
+  *Molecular Biology of the Cell* **24** (3) pp. 421-432 (2012),
+  `doi:10.1091/mbc.E12-08-0634
+  <http://dx.doi.org/10.1091/mbc.E12-08-0634>`_.
+
+
+
+* D. Josell, C. R. Beauchamp, B. Hamadani, S. Jung, J. E. Guyer, C. Hangarter, 
+  N. Gergel-Hackett, H. Xu, N. Zhitenev,
+  "Three-Dimensionally Structured Thin Film Heterojunction Photovoltaics 
+  on Interdigitated Back-Contacts,"
+  *Electrochemical Society Transactions* (2010) *(submitted)*.
 
 * D. Wheeler,  and J. A. Warren & W. J. Boettinger,
   "Modeling the early stages of reactive wetting"
