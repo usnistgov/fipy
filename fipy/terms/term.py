@@ -178,7 +178,10 @@ class Term(object):
             if var is None:
                 name = ""
             else:
-                name = var.name
+                if not hasattr(var, "name"):
+                    name = ""
+                else:
+                    name = var.name
             self._viewer.title = r"%s %s" % (name, repr(self))
             from fipy.variables.coupledCellVariable import _CoupledCellVariable
             if isinstance(solver.RHSvector, _CoupledCellVariable):

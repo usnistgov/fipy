@@ -36,6 +36,8 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
+import os
+
 from fipy.tools import numerix
 from fipy.terms.term import Term
 
@@ -89,22 +91,32 @@ class _UnaryTerm(Term):
         """
 
         if var is self.var or self.var is None:
-            return self._buildMatrix(var,
-                                     SparseMatrix,
-                                     boundaryConditions=boundaryConditions,
-                                     dt=dt,
-                                     transientGeomCoeff=transientGeomCoeff,
-                                     diffusionGeomCoeff=diffusionGeomCoeff)
-        elif buildExplicitIfOther:
-            tmp, matrix, RHSvector = self._buildMatrix(self.var,
+            var, matrix, RHSvector = self._buildMatrix(var,
                                                        SparseMatrix,
                                                        boundaryConditions=boundaryConditions,
                                                        dt=dt,
                                                        transientGeomCoeff=transientGeomCoeff,
                                                        diffusionGeomCoeff=diffusionGeomCoeff)
-            return var, SparseMatrix(mesh=var.mesh), RHSvector - matrix * self.var.value
+        elif buildExplicitIfOther:
+            _, matrix, RHSvector = self._buildMatrix(self.var,
+                                                     SparseMatrix,
+                                                     boundaryConditions=boundaryConditions,
+                                                     dt=dt,
+                                                     transientGeomCoeff=transientGeomCoeff,
+                                                     diffusionGeomCoeff=diffusionGeomCoeff)
+            RHSvector = RHSvector - matrix * self.var.value
+            matrix = SparseMatrix(mesh=var.mesh)
         else:
-            return var, SparseMatrix(mesh=var.mesh), numerix.zeros(len(var.ravel()),'d')
+            RHSvector = numerix.zeros(len(var.ravel()),'d')
+            matrix = SparseMatrix(mesh=var.mesh)
+            
+        if ('FIPY_DISPLAY_MATRIX' in os.environ
+             and "terms" in os.environ['FIPY_DISPLAY_MATRIX'].lower().split()): 
+             self._viewer.title = "%s %s" % (var.name, repr(self))
+             self._viewer.plot(matrix=matrix, RHSvector=RHSvector) 
+             raw_input()
+             
+        return (var, matrix, RHSvector)
 
     def _reshapeIDs(self, var, ids):
         shape = (self._vectorSize(var), self._vectorSize(var), ids.shape[-1])
