@@ -856,7 +856,8 @@ class MSHFile(GmshFile):
             
         # convert lists of cell vertices to a properly oriented masked array
         maxVerts = max([len(v) for v in cellsToVertIDs])
-        cellsToVertIDs = [nx.concatenate((v, [-1] * (maxVerts-len(v)))) for v in cellsToVertIDs]
+        # ticket:539 - NumPy 1.7 casts to array before concatenation and empty array defaults to float
+        cellsToVertIDs = [nx.concatenate((v, nx.array([-1] * (maxVerts-len(v)), dtype=int))) for v in cellsToVertIDs]
         cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0,1)
                 
         parprint("Done with cells and faces.")
