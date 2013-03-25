@@ -180,9 +180,9 @@ class CylindricalUniformGrid2D(UniformGrid2D):
 
             >>> testCellVolumes = mesh.cellCenters[0].globalValue * numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
 
-            >>> type(mesh.cellVolumes)
-            <type 'numpy.ndarray'>
-
+            >>> print isinstance(mesh.cellVolumes, numerix.ndarray)
+            True
+            
             >>> globalValue = fp.CellVariable(mesh=mesh,value=mesh.cellVolumes).globalValue
             >>> print numerix.allclose(testCellVolumes, globalValue, atol = 1e-10, rtol = 1e-10)
             True
@@ -316,10 +316,15 @@ class CylindricalUniformGrid2D(UniformGrid2D):
         volumes were being returned as binOps rather than arrays.
 
             >>> m = CylindricalUniformGrid2D(dx=1., dy=1, nx=4, ny=4)
-            >>> print type(m.cellVolumes)
-            <type 'numpy.ndarray'>
-            >>> print type(m._faceAreas)
-            <type 'numpy.ndarray'>
+            >>> print isinstance(m.cellVolumes, numerix.ndarray)
+            True
+            >>> print isinstance(m._faceAreas, numerix.ndarray)
+            True
+
+        If the above types aren't correct, the divergence operator's value can be a binOp
+
+            >>> print isinstance(CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
+            True
             
         """
 

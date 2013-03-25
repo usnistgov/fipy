@@ -183,8 +183,8 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
                                                
            >>> testCellVolumes = mesh.cellCenters[0].globalValue * numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
             
-            >>> type(mesh.cellVolumes)
-            <type 'numpy.ndarray'>
+            >>> print isinstance(mesh.cellVolumes, numerix.ndarray)
+            True
 
             >>> globalValue = fp.CellVariable(mesh=mesh, value=mesh.cellVolumes).globalValue
             >>> print numerix.allclose(testCellVolumes, globalValue, atol = 1e-10, rtol = 1e-10)
@@ -301,15 +301,15 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
         volumes were being returned as binOps rather than arrays.
 
             >>> m = CylindricalNonUniformGrid2D(dx=(1., 2.), dy=(1., 2.))
-            >>> print type(m.cellVolumes)
-            <type 'numpy.ndarray'>
-            >>> print type(m._faceAreas)
-            <class 'numpy.ma.core.MaskedArray'>
+            >>> print isinstance(m.cellVolumes, numerix.ndarray)
+            True
+            >>> print isinstance(m._faceAreas, numerix.ndarray)
+            True
 
         If the above types aren't correct, the divergence operator's value can be a binOp
 
-            >>> print type(fp.CellVariable(mesh=m).arithmeticFaceValue.divergence.value)
-            <type 'numpy.ndarray'>
+            >>> print isinstance(fp.CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
+            True
             
             
         """

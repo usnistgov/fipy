@@ -100,15 +100,15 @@ class CylindricalUniformGrid1D(UniformGrid1D):
         volumes were being returned as binOps rather than arrays.
 
             >>> m = CylindricalUniformGrid1D(dx=1., nx=4)
-            >>> print type(m.cellVolumes)
-            <type 'numpy.ndarray'>
-            >>> print type(m._faceAreas)
-            <type 'numpy.ndarray'>
+            >>> print isinstance(m.cellVolumes, numerix.ndarray)
+            True
+            >>> print isinstance(m._faceAreas, numerix.ndarray)
+            True
 
         If the above types aren't correct, the divergence operator's value can be a binOp
 
-            >>> print type(CellVariable(mesh=m).arithmeticFaceValue.divergence.value)
-            <type 'numpy.ndarray'>
+            >>> print isinstance(CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
+            True
             
         """
 
