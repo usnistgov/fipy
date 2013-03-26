@@ -87,7 +87,7 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
     @property
     def cellVolumes(self):
         return super(CylindricalNonUniformGrid2D, self).cellVolumes \
-          * self.cellCenters[0]
+          * self.cellCenters[0].value
   
     def _translate(self, vector):
         return CylindricalNonUniformGrid2D(dx=self.args['dx'], nx=self.args['nx'], 
@@ -109,6 +109,8 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
         These tests are not useful as documentation, but are here to ensure
         everything works as expected.
 
+            >>> import fipy as fp
+        
             >>> dx = 0.5
             >>> dy = 2.
             >>> nx = 3
@@ -181,10 +183,11 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
                                                
            >>> testCellVolumes = mesh.cellCenters[0].globalValue * numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
             
-            >>> type(mesh.cellVolumes)
-            <class 'fipy.variables.binaryOperatorVariable.binOp'>
-             
-            >>> print numerix.allclose(testCellVolumes, mesh.cellVolumes.globalValue, atol = 1e-10, rtol = 1e-10)
+            >>> print isinstance(mesh.cellVolumes, numerix.ndarray)
+            True
+
+            >>> globalValue = fp.CellVariable(mesh=mesh, value=mesh.cellVolumes).globalValue
+            >>> print numerix.allclose(testCellVolumes, globalValue, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2.),
@@ -291,9 +294,23 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             >>> print mesh.cellCenters
             [[ 1.5  3. ]
              [ 0.5  0.5]]
-            >>> print mesh.cellVolumes
+            >>> print fp.CellVariable(mesh=mesh, value=mesh.cellVolumes).globalValue
             [ 1.5  6. ]
 
+        This test is for http://matforge.org/fipy/ticket/513. Cell
+        volumes were being returned as binOps rather than arrays.
+
+            >>> m = CylindricalNonUniformGrid2D(dx=(1., 2.), dy=(1., 2.))
+            >>> print isinstance(m.cellVolumes, numerix.ndarray)
+            True
+            >>> print isinstance(m._faceAreas, numerix.ndarray)
+            True
+
+        If the above types aren't correct, the divergence operator's value can be a binOp
+
+            >>> print isinstance(fp.CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
+            True
+            
             
         """
 

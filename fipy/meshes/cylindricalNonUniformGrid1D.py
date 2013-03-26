@@ -118,6 +118,20 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var)
 
+        This test is for http://matforge.org/fipy/ticket/513. Cell
+        volumes were being returned as binOps rather than arrays.
+
+            >>> m = CylindricalNonUniformGrid1D(dx=(1., 2., 3., 4.), nx=4)
+            >>> print isinstance(m.cellVolumes, numerix.ndarray)
+            True
+            >>> print isinstance(m._faceAreas, numerix.ndarray)
+            True
+
+        If the above types aren't correct, the divergence operator's value can be a binOp
+
+            >>> print isinstance(CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
+            True
+            
         """
 
 def _test():

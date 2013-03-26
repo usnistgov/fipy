@@ -39,6 +39,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.meshes.uniformGrid1D import UniformGrid1D
 from fipy.tools import numerix
+from fipy.tools.numerix import MA
 from fipy.tools import parallelComm
 
 __all__ = ["CylindricalUniformGrid1D"]
@@ -63,7 +64,7 @@ class CylindricalUniformGrid1D(UniformGrid1D):
                  
     @property
     def _faceAreas(self):
-        return self.faceCenters[0]
+        return self.faceCenters[0].value
 
     @property
     def _cellAreas(self):
@@ -83,7 +84,7 @@ class CylindricalUniformGrid1D(UniformGrid1D):
  
     @property
     def cellVolumes(self):
-        return self.dx * self.cellCenters[0]
+        return self.dx * self.cellCenters[0].value
 
     def _test(self):
         """
@@ -95,6 +96,20 @@ class CylindricalUniformGrid1D(UniformGrid1D):
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var)
 
+        This test is for http://matforge.org/fipy/ticket/513. Cell
+        volumes were being returned as binOps rather than arrays.
+
+            >>> m = CylindricalUniformGrid1D(dx=1., nx=4)
+            >>> print isinstance(m.cellVolumes, numerix.ndarray)
+            True
+            >>> print isinstance(m._faceAreas, numerix.ndarray)
+            True
+
+        If the above types aren't correct, the divergence operator's value can be a binOp
+
+            >>> print isinstance(CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
+            True
+            
         """
 
 def _test():
