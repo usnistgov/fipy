@@ -2,7 +2,7 @@
 SVN practices
 =============
 
-Refer to :ref:`documentation:SVN` for the current tagging conventions.
+Refer to :ref:`documentation:GIT` for the current tagging conventions.
 
 --------
 Branches

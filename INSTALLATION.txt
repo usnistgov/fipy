@@ -77,8 +77,8 @@ Obtaining FiPy
 :term:`FiPy` is freely available for download via Subversion_ or as a
 compressed archive from
 <http://www.ctcms.nist.gov/fipy/download>. Please see
-:ref:`documentation:SVN` for instructions on obtaining :term:`FiPy`
-with Subversion_.
+:ref:`documentation:GIT` for instructions on obtaining :term:`FiPy`
+with Git_.
 
 .. warning::
 
@@ -87,7 +87,7 @@ with Subversion_.
    to :term:`FiPy` become available (upgrades via Subversion_ will handle
    this issue automatically).
 
-.. _Subversion:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
+.. _Git:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browserfipy
 .. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
 
 ---------------
@@ -431,6 +431,6 @@ privileges.
 
 .. _Virtualenvwrapper: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.doughellmann.com/projects/virtualenvwrapper
 
-.. _documentation:SVN:
+.. _documentation:GIT:
 
-.. include:: documentation/SVN.txt
+.. include:: documentation/GIT.txt
