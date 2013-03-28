@@ -1,10 +1,10 @@
 ---------
-SVN usage
+Git usage
 ---------
 
-All stages of :term:`FiPy` development are archived in a Subversion (SVN)
+All stages of :term:`FiPy` development are archived in a Git
 repository at MatForge_. You can browse through the code at
-http://matforge.org/fipy/browser and, using an `SVN client`_, you can
+http://matforge.org/fipy/browser/fipy and, using an `Git client`_, you can
 download various tagged revisions of :term:`FiPy` depending on your needs. 
 
 .. attention:: 
@@ -12,65 +12,66 @@ download various tagged revisions of :term:`FiPy` depending on your needs.
    Be sure to follow :ref:`INSTALLATION` to obtain all the prerequisites for
    :term:`FiPy`.
    
-SVN client
+Git client
 ==========
 
-An ``svn`` client application is needed in order to fetch files from our
+A ``git`` client application is needed in order to fetch files from our
 repository. This is provided on many operating systems (try executing
-``which svn``) but needs to be installed on many others. The sources to
-build Subversion, as well as links to various pre-built binaries for
-different platforms, can be obtained from http://subversion.tigris.org.
+``which git``) but needs to be installed on many others. The sources to
+build Git, as well as links to various pre-built binaries for
+different platforms, can be obtained from http://git-scm.com/.
 
-SVN tags
-========
+Git branches
+============
 
 In general, most users will not want to download the very latest state of
 :term:`FiPy`, as these files are subject to active development and may not behave
 as desired. Most users will not be interested in particular version numbers
-either, but instead with the degree of code stability. Different "tracking
-tags" are used to indicate different stages of :term:`FiPy` development. You will
+either, but instead with the degree of code stability. Different branches are 
+used to indicate different stages of :term:`FiPy` development. For the 
+most part, we follow `a successful Git branching model`_. You will
 need to decide on your own risk tolerance when deciding which stage of
 development to track.
 
-A fresh copy of :term:`FiPy` that is designated by a
-particular ``<label>`` can be obtained with::
+A fresh copy of the :term:`FiPy` source code  can be obtained with::
 
-   $ svn checkout http://matforge.org/svn/fipy/<label>
+   $ git clone git://code.matforge.org/nist/fipy.git
 
-An existing SVN checkout of FiPy can be shifted to a different state of
+An existing Git checkout of FiPy can be shifted to a different `<branch>` of
 development by issuing the command::
 
-   $ svn switch http://matforge.org/svn/fipy/<label> .
+   $ git checkout <branch>
 
-in the base directory of the working copy. The main tags (``<label>``)
-for FiPy are:
+in the base directory of the working copy. The main branches for FiPy are:
 
-``tags/version-x_y``
-    designates a released version x.y. Any released
+``master``
+    designates the (ready to) release state of FiPy. This code is stable
+    and should pass all of the tests (or should be documented that it does
+    not).
+
+``develop``
+    designates the latest state of code destined for the next release. This
+    code should be stable and pass all tests, but may be awaiting new
+    features or bug fixes before merging to ``master`` and formal release.
+
+Past releases of FiPy are tagged as 
+
+``version-x_y_z``
+    which designates a released version x.y.z. Any released
     version of FiPy will be designated with a fixed tag: The current
     version of FiPy is |version|.
 
-``branches/version-x_y``
-    designates a line of development based on a previously released version
-    (i.e., if current development work is being spent on version 0.2, but a
-    bug is found and fixed in version 0.1, that fix will be tagged as
-    ``tags/version-0_1_1``, and can be obtained from the tip of
-    ``branches/version-0_1``).
+Tagged releases can be found with::
 
-In addition:
+   $ git tag --list
 
-``trunk``
-    designates the latest revision of any file present in the
-    repository.  FiPy is not guaranteed to pass its tests or to be in a
-    consistent state when checked out under this tag.     
-
-Any other tags will not generally be of interest to most users.
+Any other branches will not generally be of interest to most users.
 
 .. note::
 
    For some time now, we have done all significant development work on
-   branches, only merged back to ``trunk`` when the tests pass
-   successfully. Although we cannot guarantee that ``trunk`` will never be
+   branches, only merged back to ``develop`` when the tests pass
+   successfully. Although we cannot guarantee that ``develop`` will never be
    broken, you can always check our build status page 
 
        http://build.cmi.kent.edu:8010
@@ -78,10 +79,14 @@ Any other tags will not generally be of interest to most users.
    to find the most recent revision that it is running acceptably.
 
 
-For those who are interested in learning more about Subversion, the
-canonical manual is the `online Subversion Red Bean book`_ 
-[SubversionRedBean]_.
+For those who are interested in learning more about Git, a wide variety of 
+online sources are available, starting with the `official Git website`_. 
+The `Pro Git book`_ [ProGit]_ is particularly instructive.
 
-.. _online Subversion Red Bean book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://svnbook.red-bean.com
+.. _official Git website: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://git-scm.com/
+
+.. _Pro Git book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://git-scm.com/book
 
 .. _MatForge: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy
+
+.. _a successful Git branching model: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://nvie.com/posts/a-successful-git-branching-model/
