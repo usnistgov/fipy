@@ -89,7 +89,8 @@ exclude_patterns = ['fipy/generated/modules.txt',
                     'documentation/tutorial/package/generated/modules.txt',
                     'documentation/sphinxext',
                     'documentation/sphinxext/bibtex/bibstuff/examples/*.txt',
-                    '**/.svn']
+                    '**/.svn',
+                    '**/.git']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None

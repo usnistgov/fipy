@@ -25,5 +25,5 @@ FiPy Contents
    CODESPEED
    BUILDBOT
    GUIDELINES
-   SVN
+   GIT
 
