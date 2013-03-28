@@ -35,67 +35,14 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-from fipy.variables.cellVariable import CellVariable
-from fipy.models.levelSet.surfactant.surfactantEquation import SurfactantEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.solvers import DefaultAsymmetricSolver, LinearPCGSolver
+from fipy.variables.variable import Variable
+from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
+from fipy.variables.surfactantConvectionVariable import SurfactantConvectionVariable
+from fipy.terms.transientTerm import TransientTerm
 
-__all__ = ["AdsorbingSurfactantEquation"]
-
-class _AdsorptionCoeff(CellVariable):
-    def __init__(self, distanceVar, bulkVar, rateConstant):
-        CellVariable.__init__(self, mesh = distanceVar.mesh)
-
-        self.distanceVar = self._requires(distanceVar)
-        self.bulkVar = self._requires(bulkVar)
-        self.rateConstant = rateConstant
-        self.dt = 0
-
-        
-    def _calcValue(self):
-        return numerix.array(self.dt * self.bulkVar
-                             * self.rateConstant * self._multiplier())
-
-    def _updateDt(self, dt):
-        self.dt = dt
-        self._markStale()
-
-class _AdsorptionCoeffInterfaceFlag(_AdsorptionCoeff):
-    def _multiplier(self):
-        return self.distanceVar._cellInterfaceFlag
-    
-class _AdsorptionCoeffAreaOverVolume(_AdsorptionCoeff):
-    def _multiplier(self):
-        return self.distanceVar.cellInterfaceAreas / self.mesh.cellVolumes
-
-class _MaxCoeff(CellVariable):
-    def __init__(self, distanceVar, vars = ()):
-        CellVariable.__init__(self, mesh = distanceVar.mesh)
-        self.vars = vars
-        for var in self.vars:
-            self._requires(var)
-        self.distanceVar = self._requires(distanceVar)
-
-    def _calcMax(self):
-        total = 0
-        for var in self.vars:
-            total += numerix.array(var.interfaceVar)
-        return numerix.array(total > 1) * self.distanceVar._cellInterfaceFlag
-
-class _SpMaxCoeff(_MaxCoeff):
-    def _calcValue(self):
-        return 1e20 * self._calcMax()
-
-class _ScMaxCoeff(_MaxCoeff):
-    def _calcValue(self):
-        val = self.distanceVar.cellInterfaceAreas / self.mesh.cellVolumes
-        for var in self.vars[1:]:
-            val -= self.distanceVar._cellInterfaceFlag * numerix.array(var)
-
-        return 1e20 * self._calcMax() * numerix.where(val < 0, 0, val)
-
-class AdsorbingSurfactantEquation(SurfactantEquation):
+class AdsorbingSurfactantEquation():
     r"""
 
     The `AdsorbingSurfactantEquation` object solves the
@@ -124,11 +71,12 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
     The following is a test case:
 
-    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+    >>> from fipy.variables.distanceVariable \
     ...     import DistanceVariable
-    >>> from fipy.models.levelSet.surfactant.surfactantVariable \
-    ...     import SurfactantVariable
+    >>> from fipy import SurfactantVariable
     >>> from fipy.meshes import Grid2D
+    >>> from fipy.tools import numerix
+    >>> from fipy.variables.cellVariable import CellVariable
     >>> dx = .5
     >>> dy = 2.3
     >>> dt = 0.25
@@ -137,7 +85,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> c = 0.2
     
     >>> from fipy.meshes import Grid2D
-    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
+    >>> from fipy import serialComm
+    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1, communicator=serialComm)
     >>> distanceVar = DistanceVariable(mesh = mesh, 
     ...                                value = (-dx*3/2, -dx/2, dx/2, 
     ...                                          3*dx/2,  5*dx/2),
@@ -158,10 +107,9 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     The following test case is for two surfactant variables. One has more
     surface affinity than the other.
 
-    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+    >>> from fipy.variables.distanceVariable \
     ...     import DistanceVariable
-    >>> from fipy.models.levelSet.surfactant.surfactantVariable \
-    ...     import SurfactantVariable
+    >>> from fipy import SurfactantVariable
     >>> from fipy.meshes import Grid2D
     >>> dx = 0.5
     >>> dy = 2.73
@@ -173,7 +121,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> c0 = 1.
     >>> c1 = 1.
     >>> totalSteps = 10
-    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1)
+    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1, communicator=serialComm)
     >>> distanceVar = DistanceVariable(mesh = mesh, 
     ...                                value = dx * (numerix.arange(5) - 1.5),
     ...                                hasOld = 1)
@@ -248,13 +196,13 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     >>> ny = 5
     >>> dx = 1.
     >>> dy = 1.
-    >>> mesh = Grid2D(dx=dx, dy=dy, nx = nx, ny = ny)
+    >>> mesh = Grid2D(dx=dx, dy=dy, nx = nx, ny = ny, communicator=serialComm)
     >>> x, y = mesh.cellCenters
 
     >>> disVar = DistanceVariable(mesh=mesh, value=1., hasOld=True)
     >>> disVar[y < dy] = -1
     >>> disVar[x < dx] = -1
-    >>> disVar.calcDistanceFunction()
+    >>> disVar.calcDistanceFunction() #doctest: +LSM
 
     >>> levVar = SurfactantVariable(value = 0.5, distanceVar = disVar)
     >>> accVar = SurfactantVariable(value = 0.5, distanceVar = disVar)
@@ -274,9 +222,8 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
 
     >>> extVar = CellVariable(mesh = mesh, value = accVar.interfaceVar)
 
-    >>> from fipy.models.levelSet.advection.higherOrderAdvectionEquation \
-    ...     import buildHigherOrderAdvectionEquation
-    >>> advEq = buildHigherOrderAdvectionEquation(advectionCoeff = extVar)
+    >>> from fipy import TransientTerm, AdvectionTerm
+    >>> advEq = TransientTerm() + AdvectionTerm(extVar)
 
     >>> dt = 0.1
 
@@ -287,7 +234,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
     ...     disVar.updateOld()
     ...     advEq.solve(disVar, dt = dt)
     ...     levEq.solve(levVar, dt = dt)
-    ...     accEq.solve(accVar, dt = dt)
+    ...     accEq.solve(accVar, dt = dt) #doctest: +LSM
 
     >>> print (accVar >= -1e-10).all()
     True
@@ -316,33 +263,38 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
                              
         """
 
-          
+        self.eq = TransientTerm(coeff = 1) - ExplicitUpwindConvectionTerm(SurfactantConvectionVariable(distanceVar))
 
-        SurfactantEquation.__init__(self, distanceVar = distanceVar)
-
-        spCoeff = _AdsorptionCoeffInterfaceFlag(distanceVar, bulkVar, rateConstant)
-        scCoeff = _AdsorptionCoeffAreaOverVolume(distanceVar, bulkVar, rateConstant)
+        self.dt = Variable(0.)
+        mesh = distanceVar.mesh
+        adsorptionCoeff = self.dt * bulkVar * rateConstant
+        spCoeff = adsorptionCoeff * distanceVar._cellInterfaceFlag
+        scCoeff = adsorptionCoeff * distanceVar.cellInterfaceAreas / mesh.cellVolumes
 
         self.eq += ImplicitSourceTerm(spCoeff) - scCoeff
 
-        self.coeffs = (scCoeff, spCoeff)
-
         if otherVar is not None:
-            otherSpCoeff = _AdsorptionCoeffInterfaceFlag(distanceVar, otherBulkVar, otherRateConstant)
-            otherScCoeff = _AdsorptionCoeffAreaOverVolume(distanceVar, -bulkVar * otherVar.interfaceVar, rateConstant)
+            otherSpCoeff = self.dt * otherBulkVar * otherRateConstant * distanceVar._cellInterfaceFlag
+            otherScCoeff = -otherVar.interfaceVar * scCoeff
 
             self.eq += ImplicitSourceTerm(otherSpCoeff) - otherScCoeff
-
-            self.coeffs += (otherScCoeff,)
-            self.coeffs += (otherSpCoeff,)
 
             vars = (surfactantVar, otherVar)
         else:
             vars = (surfactantVar,)
 
-        spMaxCoeff = _SpMaxCoeff(distanceVar, vars)
-        scMaxCoeff = _ScMaxCoeff(distanceVar, vars)
+        total = 0
+        for var in vars:
+            total += var.interfaceVar
+        maxVar = (total > 1) * distanceVar._cellInterfaceFlag
 
+        val = distanceVar.cellInterfaceAreas / mesh.cellVolumes
+        for var in vars[1:]:
+            val -= distanceVar._cellInterfaceFlag * var
+        
+        spMaxCoeff = 1e20 * maxVar
+        scMaxCoeff = spMaxCoeff * val * (val > 0)
+            
         self.eq += ImplicitSourceTerm(spMaxCoeff) - scMaxCoeff - 1e-40
 
         if consumptionCoeff is not None:
@@ -359,9 +311,7 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
            - `dt`: The time step size.
            
 	"""
-
-        for coeff in self.coeffs:
-            coeff._updateDt(dt)
+        self.dt.setValue(dt)
         if solver is None:
             import fipy.solvers.solver
             if fipy.solvers.solver == 'pyamg':
@@ -370,8 +320,16 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
             else:
                 solver = LinearPCGSolver()
             
-        SurfactantEquation.solve(self, var, boundaryConditions=boundaryConditions, solver=solver, dt=dt)
-
+        if type(boundaryConditions) not in (type(()), type([])):
+            boundaryConditions = (boundaryConditions,)
+        
+        var.constrain(0, var.mesh.exteriorFaces)
+        
+        self.eq.solve(var,
+                      boundaryConditions=boundaryConditions,
+                      solver = solver,
+                      dt=1.)
+        
     def sweep(self, var, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `AdsorbingSurfactantEquation`'s linear
@@ -387,11 +345,16 @@ class AdsorbingSurfactantEquation(SurfactantEquation):
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
 
 	"""
-        for coeff in self.coeffs:
-            coeff._updateDt(dt)
+        self.dt.setValue(dt)
         if solver is None:
             solver = DefaultAsymmetricSolver()
-        return SurfactantEquation.sweep(self, var, solver=solver, boundaryConditions=boundaryConditions, dt=dt, underRelaxation=underRelaxation, residualFn=residualFn)
+        
+        if type(boundaryConditions) not in (type(()), type([])):
+            boundaryConditions = (boundaryConditions,)
+        
+        var.constrain(0, var.mesh.exteriorFaces)
+
+        return self.eq.sweep(var, solver=solver, boundaryConditions=boundaryConditions, underRelaxation=underRelaxation, residualFn=residualFn, dt=1.)
 
 def _test(): 
     import fipy.tests.doctestPlus

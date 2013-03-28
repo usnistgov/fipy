@@ -48,7 +48,7 @@ The variable is then advected with,
 
    \frac{ \partial \phi } { \partial t} + \vec{u} \cdot \nabla \phi = 0
 
-The scheme used in the `AdvectionTerm` preserves the `var` as a distance function.
+The scheme used in the `FirstOrderAdvectionTerm` preserves the `var` as a distance function.
 
 The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
@@ -67,8 +67,8 @@ Construct the mesh.
 
 .. index:: Grid1D
 
->>> from fipy.tools import serial
->>> mesh = Grid1D(dx=dx, nx=nx, communicator=serial)
+>>> from fipy.tools import serialComm
+>>> mesh = Grid1D(dx=dx, nx=nx, communicator=serialComm)
 
 Construct a `distanceVariable` object.
 
@@ -77,11 +77,11 @@ Construct a `distanceVariable` object.
 ...                        value=-1.,
 ...                        hasOld=1)
 >>> var.setValue(1., where=mesh.cellCenters[0] > interfacePosition)
->>> var.calcDistanceFunction()
+>>> var.calcDistanceFunction() #doctest: +LSM
    
 The `advectionEquation` is constructed.
 
->>> advEqn = buildAdvectionEquation(advectionCoeff=velocity)
+>>> advEqn = TransientTerm() + FirstOrderAdvectionTerm(velocity)
 
 The problem can then be solved by executing a serious of time steps.
 
@@ -103,7 +103,7 @@ The result can be tested with the following code:
 >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
 >>> answer = numerix.where(x < distanceTravelled, 
 ...                        x[0] - interfacePosition, answer)
->>> print var.allclose(answer)
+>>> print var.allclose(answer) #doctest: +LSM
 1
    
 """

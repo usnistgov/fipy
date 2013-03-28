@@ -56,8 +56,8 @@ This example creates a trench with the following zero level set:
 >>> timeStepDuration = cfl * dx / velocity
 >>> steps = 200
 
->>> from fipy.tools import serial
->>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny, communicator=serial)
+>>> from fipy.tools import serialComm
+>>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny, communicator=serialComm)
 
 >>> var = DistanceVariable(name = 'level set variable',
 ...                        mesh = mesh,
@@ -68,9 +68,9 @@ This example creates a trench with the following zero level set:
 >>> x, y = mesh.cellCenters
 >>> var.setValue(1, where=(y > 0.6 * Ly) | ((y > 0.2 * Ly) & (x > 0.5 * Lx)))
 
->>> var.calcDistanceFunction()
+>>> var.calcDistanceFunction() #doctest: +LSM
 
->>> advEqn = buildAdvectionEquation(velocity)
+>>> advEqn = TransientTerm() + FirstOrderAdvectionTerm(velocity)
 
 The trench is then advected with a unit velocity. The following test can be made
 for the initial position of the interface:
@@ -83,7 +83,7 @@ for the initial position of the interface:
 >>> d[:,2] = numerix.where(numerix.logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
 >>> argmins = numerix.argmin(numerix.absolute(d), axis = 1)
 >>> answer = numerix.take(d.ravel(), numerix.arange(len(argmins))*3 + argmins)
->>> print var.allclose(answer, atol = 1e-1)
+>>> print var.allclose(answer, atol = 1e-1) #doctest: +LSM
 1
 
 Advect the interface and check the position.
@@ -103,7 +103,7 @@ Advect the interface and check the position.
 >>> answer = answer - distanceMoved
 >>> answer = numerix.where(answer < 0., 0., answer)
 >>> var.setValue(numerix.where(var < 0., 0., var))
->>> print var.allclose(answer, atol = 1e-1)
+>>> print var.allclose(answer, atol = 1e-1) #doctest: +LSM
 1
 
 """

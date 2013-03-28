@@ -35,9 +35,7 @@
 __docformat__ = 'restructuredtext'
 
 import os
-import sys
 
-from pysparse import itsolvers
 from pysparse import superlu
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver

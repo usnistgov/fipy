@@ -187,14 +187,14 @@ class AbstractViewer(object):
         This routine attempts to be savvy about running in parallel.
         """
         try:
-            from fipy.tools import parallel
-            parallel.Barrier()
+            from fipy.tools import parallelComm
+            parallelComm.Barrier()
             AbstractViewer._saved_stdout.flush()
-            if parallel.procID == 0:
+            if parallelComm.procID == 0:
                 txt = AbstractViewer._serial_doctest_raw_input(prompt)
             else:
                 txt = ""
-            parallel.Barrier()
+            parallelComm.Barrier()
         except ImportError:
             txt = AbstractViewer._serial_doctest_raw_input(prompt)
         return txt

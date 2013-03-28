@@ -15,6 +15,11 @@
 
 /* -- page layout ----------------------------------------------------------- */
 
+#body-dummy {
+    margin: -8px;
+    padding: 0px;
+}
+
 div.bodywrapper {
     margin: 0 240px 0 0;
     border-right: 1px solid #ccc;

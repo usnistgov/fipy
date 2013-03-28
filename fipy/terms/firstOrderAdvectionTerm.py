@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "advectionTerm.py"
+ #  FILE: "firstOrderAdvectionTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,17 +34,17 @@
 
 __docformat__ = 'restructuredtext'
 
-__all__ = []
+__all__ = ['FirstOrderAdvectionTerm']
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.terms import TransientTermError
+
 from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 
-class _AdvectionTerm(_NonDiffusionTerm):
+class FirstOrderAdvectionTerm(_NonDiffusionTerm):
     r"""
 
-    The `_AdvectionTerm` object constructs the b vector contribution
+    The `FirstOrderAdvectionTerm` object constructs the b vector contribution
     for the advection term given by
 
     .. math::
@@ -68,7 +68,6 @@ class _AdvectionTerm(_NonDiffusionTerm):
 
     >>> from fipy.meshes import Grid1D
     >>> from fipy.solvers import *
-    >>> from fipy import TransientTerm
     >>> SparseMatrix = LinearLUSolver()._matrixClass
     >>> mesh = Grid1D(dx = 1., nx = 3) 
     >>> from fipy.variables.cellVariable import CellVariable
@@ -76,21 +75,21 @@ class _AdvectionTerm(_NonDiffusionTerm):
     Trivial test:
 
     >>> var = CellVariable(value = numerix.zeros(3, 'd'), mesh = mesh)
-    >>> v, L, b = _AdvectionTerm(0.)._buildMatrix(var, SparseMatrix, dt=1.)
+    >>> v, L, b = FirstOrderAdvectionTerm(0.)._buildMatrix(var, SparseMatrix)
     >>> print numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10) # doctest: +PROCESSOR_0
     True
        
     Less trivial test:
 
     >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
-    >>> v, L, b = _AdvectionTerm(1.)._buildMatrix(var, SparseMatrix, dt=1.)
+    >>> v, L, b = FirstOrderAdvectionTerm(1.)._buildMatrix(var, SparseMatrix)
     >>> print numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
     Even less trivial
 
     >>> var = CellVariable(value = numerix.arange(3), mesh = mesh)
-    >>> v, L, b = _AdvectionTerm(-1.)._buildMatrix(var, SparseMatrix, dt=1.)
+    >>> v, L, b = FirstOrderAdvectionTerm(-1.)._buildMatrix(var, SparseMatrix)
     >>> print numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
@@ -99,7 +98,7 @@ class _AdvectionTerm(_NonDiffusionTerm):
 
     >>> vel = numerix.array((-1, 2, -3))
     >>> var = CellVariable(value = numerix.array((4,6,1)), mesh = mesh)
-    >>> v, L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix, dt=1.)
+    >>> v, L, b = FirstOrderAdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
     >>> print numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
@@ -109,7 +108,7 @@ class _AdvectionTerm(_NonDiffusionTerm):
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
     >>> vel = numerix.array((3, -5, -6, -3))
     >>> var = CellVariable(value = numerix.array((3 , 1, 6, 7)), mesh = mesh)
-    >>> v, L, b = _AdvectionTerm(vel)._buildMatrix(var, SparseMatrix, dt=1.)
+    >>> v, L, b = FirstOrderAdvectionTerm(vel)._buildMatrix(var, SparseMatrix)
     >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
     >>> print numerix.allclose(b, answer, atol = 1e-10) # doctest: +PROCESSOR_0
     True
@@ -120,8 +119,6 @@ class _AdvectionTerm(_NonDiffusionTerm):
         self.geomCoeff = coeff
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, equation=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        if dt is None:
-            raise TransientTermError
 
         oldArray = var.old
 
@@ -157,7 +154,7 @@ class _AdvectionTerm(_NonDiffusionTerm):
         return (adjacentValues - cellValues) / mesh._cellToCellDistances
         
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
-        solver = solver or super(_AdvectionTerm, self)._getDefaultSolver(var, solver, *args, **kwargs)
+        solver = solver or super(FirstOrderAdvectionTerm, self)._getDefaultSolver(var, solver, *args, **kwargs)
         
         if solver and not solver._canSolveAsymmetric():
             import warnings

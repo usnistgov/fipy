@@ -407,8 +407,8 @@ class _ScipyIdentityMeshMatrix(_ScipyIdentityMatrix):
         Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
         
             >>> from fipy import Grid1D
-            >>> from fipy.tools import serial
-            >>> mesh = Grid1D(nx=3, communicator=serial)
+            >>> from fipy.tools import serialComm
+            >>> mesh = Grid1D(nx=3, communicator=serialComm)
             >>> print _ScipyIdentityMeshMatrix(mesh=mesh)
              1.000000      ---        ---    
                 ---     1.000000      ---    

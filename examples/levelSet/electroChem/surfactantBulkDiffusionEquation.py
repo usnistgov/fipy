@@ -34,34 +34,10 @@
 
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
-
-from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _buildLevelSetDiffusionEquation
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.variables.cellVariable import CellVariable
-
-__all__ = ["buildSurfactantBulkDiffusionEquation"]
-
-class _AdsorptionCoeff(CellVariable):
-    def __init__(self, rateConstant = None, distanceVar = None):
-        CellVariable.__init__(self, mesh = distanceVar.mesh)
-        self.distanceVar = self._requires(distanceVar)
-        self.rateConstant = rateConstant
-
-    def _calcValue(self):
-        return self.rateConstant * self.distanceVar.cellInterfaceAreas / self.mesh.cellVolumes
-
-class _ScAdsorptionCoeff(_AdsorptionCoeff):
-    def __init__(self, bulkVar = None, surfactantVar = None, rateConstant = None, distanceVar = None):
-        _AdsorptionCoeff.__init__(self, rateConstant = rateConstant, distanceVar = distanceVar)
-        self.bulkVar = self._requires(bulkVar)
-        self.surfactantVar = self._requires(surfactantVar)
-    
-    def _calcValue(self):
-        value = _AdsorptionCoeff._calcValue(self)
-        bulk = numerix.array(self.bulkVar)
-        val = numerix.array(value)
-        return val * bulk * numerix.array(self.surfactantVar.interfaceVar)
+from fipy.variables.levelSetDiffusionVariable import _LevelSetDiffusionVariable
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.diffusionTerm import DiffusionTermNoCorrection
 
 def buildSurfactantBulkDiffusionEquation(bulkVar = None,
                                          distanceVar = None,
@@ -109,25 +85,20 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
       - `rateConstant`: The adsorption coefficient.
 
     """
-        
-    spSourceTerm = ImplicitSourceTerm(_AdsorptionCoeff(rateConstant = rateConstant,
-                                                      distanceVar = distanceVar))
 
-    coeff = _ScAdsorptionCoeff(bulkVar = bulkVar,
-                              surfactantVar = surfactantVar,
-                              rateConstant = rateConstant,
-                              distanceVar = distanceVar)
-                                  
-    eq = _buildLevelSetDiffusionEquation(ionVar = bulkVar,
-                                         distanceVar = distanceVar,
-                                         diffusionCoeff = diffusionCoeff,
-                                         transientCoeff = transientCoeff)
+    spCoeff = rateConstant * distanceVar.cellInterfaceAreas / bulkVar.mesh.cellVolumes
+    spSourceTerm = ImplicitSourceTerm(spCoeff)
+
+    bulkSpCoeff = spCoeff * bulkVar
+    coeff = bulkSpCoeff * surfactantVar.interfaceVar
+
+    diffusionCoeff = _LevelSetDiffusionVariable(distanceVar,
+                                                diffusionCoeff)
+
+    eq =  TransientTerm(transientCoeff) - DiffusionTermNoCorrection(diffusionCoeff)
 
     if otherSurfactantVar is not None:
-        otherCoeff = _ScAdsorptionCoeff(bulkVar = bulkVar,
-                                       surfactantVar = otherSurfactantVar,
-                                       rateConstant = rateConstant,
-                                       distanceVar = distanceVar)
+        otherCoeff = bulkSpCoeff * otherSurfactantVar.interfaceVar
     else:
         otherCoeff = 0
             

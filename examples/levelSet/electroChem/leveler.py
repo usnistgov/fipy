@@ -50,7 +50,7 @@ the ``numberOfSteps`` argument as follows,
 
 .. index:: runLeveler
 
->>> runLeveler(numberOfSteps=10, displayViewers=False, cellSize=0.25e-7) # doctest: +GMSH
+>>> runLeveler(numberOfSteps=10, displayViewers=False, cellSize=0.25e-7) # doctest: +GMSH, +LSM
 1
 
 Change the ``displayViewers`` argument to ``True`` if you wish to see the
@@ -212,6 +212,11 @@ can be obtained by running this example.
 __docformat__ = 'restructuredtext'
 
 from fipy import *
+from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
+from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from trenchMesh import TrenchMesh
+from gapFillDistanceVariable import GapFillDistanceVariable
+from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 
 def runLeveler(kLeveler=0.018, 
                bulkLevelerConcentration=0.02, 
@@ -221,7 +226,7 @@ def runLeveler(kLeveler=0.018,
                levelerDiffusionCoefficient=5e-10, 
                numberOfSteps=400, 
                displayRate=10, 
-               displayViewers=False):
+               displayViewers=True):
 
     
     kLevelerConsumption = 0.0005
@@ -239,7 +244,6 @@ def runLeveler(kLeveler=0.018,
     bulkAcceleratorConcentration = 50.0e-3
     initialLevelerCoverage = 0.
     cflNumber = 0.2
-    numberOfCellsInNarrowBand = 20
     cellsBelowTrench = 10
     trenchDepth = 0.4e-6
     trenchSpacing = 0.6e-6
@@ -264,21 +268,16 @@ def runLeveler(kLeveler=0.018,
                       trenchDepth = trenchDepth,
                       boundaryLayerDepth = boundaryLayerDepth,
                       aspectRatio = aspectRatio,
-                      angle = numerix.pi * 4. / 180.,
-                      bowWidth = 0.,
-                      overBumpRadius = 0.,
-                      overBumpWidth = 0.)
+                      angle = numerix.pi * 4. / 180.)
 
-    narrowBandWidth = numberOfCellsInNarrowBand * cellSize
-    distanceVar = DistanceVariable(
+    distanceVar = GapFillDistanceVariable(
         name = 'distance variable',
         mesh = mesh,
-        value = -1.,
-        narrowBandWidth = narrowBandWidth)
+        value = -1.)
 
     distanceVar.setValue(1., where=mesh.electrolyteMask)
     
-    distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
+    distanceVar.calcDistanceFunction()
     levelerVar = SurfactantVariable(
         name = "leveler variable",
         value = initialLevelerCoverage,
@@ -346,8 +345,7 @@ def runLeveler(kLeveler=0.018,
         otherRateConstant = kLeveler,
         consumptionCoeff = accConsumptionCoeff)
 
-    advectionEquation = buildHigherOrderAdvectionEquation(
-        advectionCoeff = extensionVelocityVariable)
+    advectionEquation = TransientTerm() + FirstOrderAdvectionTerm(extensionVelocityVariable)
 
     metalEquation = buildMetalIonDiffusionEquation(
         ionVar = metalVar,
@@ -384,14 +382,30 @@ def runLeveler(kLeveler=0.018,
                  (bulkAcceleratorEquation, bulkAcceleratorVar, (), GeneralSolver()),
                  (bulkLevelerEquation, bulkLevelerVar, (), GeneralSolver()))
 
+    narrowBandWidth = 20 * cellSize
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
 
     totalTime = 0.0
 
     if displayViewers:
-        viewers = (
-            MayaviSurfactantViewer(distanceVar, acceleratorVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'accelerator coverage'),
-            MayaviSurfactantViewer(distanceVar, levelerVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'leveler coverage'))
+        try:
+            raise Exception
+            from mayaviSurfactantViewer import MayaviSurfactantViewer
+            viewers = (
+                MayaviSurfactantViewer(distanceVar, acceleratorVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'accelerator coverage'),
+                MayaviSurfactantViewer(distanceVar, levelerVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'leveler coverage'))
+        except:
+            class PlotVariable(CellVariable):
+                def __init__(self, var = None, name = ''):
+                    CellVariable.__init__(self, mesh = mesh.fineMesh, name = name)
+                    self.var = self._requires(var)
+
+                def _calcValue(self):
+                    return numerix.array(self.var(self.mesh.cellCenters))
+
+            viewers = (Viewer(PlotVariable(var=acceleratorVar.interfaceVar)),
+                       Viewer(PlotVariable(var=levelerVar.interfaceVar)))
+
         
     for step in range(numberOfSteps):
 
@@ -401,22 +415,19 @@ def runLeveler(kLeveler=0.018,
                     viewer.plot()
             
         if step % levelSetUpdateFrequency == 0:
-            distanceVar.calcDistanceFunction(deleteIslands = True)
+            distanceVar.calcDistanceFunction()
 
         extensionVelocityVariable.setValue(depositionRateVariable)
 
-        extOnInt = numerix.where(distanceVar > 0,
-                                 numerix.where(distanceVar < 2 * cellSize,
-                                               extensionVelocityVariable,
+        extOnInt = numerix.where(distanceVar.globalValue > 0,
+                                 numerix.where(distanceVar.globalValue < 2 * cellSize,
+                                               extensionVelocityVariable.globalValue,
                                                0),
                                  0)
 
         dt = cflNumber * cellSize / extOnInt.max()
 
-        id = numerix.nonzero(distanceVar._interfaceFlag)[0].max()
-        distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
-
-        extensionVelocityVariable[mesh.fineMesh.numberOfCells:] = 0.
+        distanceVar.extendVariable(extensionVelocityVariable)
 
         for eqn, var, BCs, solver in eqnTuple:
             eqn.solve(var, boundaryConditions = BCs, dt = dt, solver=solver)
@@ -430,5 +441,5 @@ def runLeveler(kLeveler=0.018,
 __all__ = ["runLeveler"]
 
 if __name__ == '__main__':
-    runLeveler()
-    raw_input("finished")    
+    runLeveler(numberOfSteps=5, displayViewers=False)
+##    raw_input("finished")    

@@ -50,7 +50,7 @@ the ``numberOfSteps`` argument as follows,
 
 .. index:: runGold
 
->>> runGold(numberOfSteps=10, displayViewers=False) # doctest: +GMSH
+>>> runGold(numberOfSteps=10, displayViewers=False) # doctest: +GMSH, +LSM
 1
     
 Change the ``displayViewers`` argument to ``True`` if you wish to see the
@@ -103,6 +103,10 @@ resemble the image below.
 __docformat__ = 'restructuredtext'
 
 from fipy import *
+from trenchMesh import TrenchMesh
+from gapFillDistanceVariable  import GapFillDistanceVariable
+from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 def runGold(faradaysConstant=9.6e4,
             consumptionRateConstant=2.6e+6,
@@ -124,28 +128,23 @@ def runGold(faradaysConstant=9.6e4,
     
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 20
-    cellsBelowTrench = 10
     
     mesh = TrenchMesh(cellSize = cellSize,
                       trenchSpacing = trenchSpacing,
                       trenchDepth = trenchDepth,
                       boundaryLayerDepth = boundaryLayerDepth,
                       aspectRatio = aspectRatio,
-                      angle = numerix.pi * taperAngle / 180.,
-                      bowWidth = 0.,
-                      overBumpRadius = 0.,
-                      overBumpWidth = 0.)
+                      angle = numerix.pi * taperAngle / 180.)
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
 
-    distanceVar = DistanceVariable(
+    distanceVar = GapFillDistanceVariable(
        name = 'distance variable',
        mesh = mesh,
-       value = -1.,
-       narrowBandWidth = narrowBandWidth)
+       value = -1.)
 
     distanceVar.setValue(1., where=mesh.electrolyteMask)
-    distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
+    distanceVar.calcDistanceFunction()
 
     catalystVar = SurfactantVariable(
         name = "catalyst variable",
@@ -175,8 +174,7 @@ def runGold(faradaysConstant=9.6e4,
         rateConstant = 0,
         consumptionCoeff = consumptionRateConstant * extensionVelocityVariable)
 
-    advectionEquation = buildHigherOrderAdvectionEquation(
-        advectionCoeff = extensionVelocityVariable)
+    advectionEquation = TransientTerm() + FirstOrderAdvectionTerm(extensionVelocityVariable)
 
     metalEquation = buildMetalIonDiffusionEquation(
         ionVar = metalVar,
@@ -190,7 +188,7 @@ def runGold(faradaysConstant=9.6e4,
     if displayViewers:
 
         try:
-            
+            from mayaviSurfactantViewer import MayaviSurfactantViewer
             viewer = MayaviSurfactantViewer(distanceVar, catalystVar.interfaceVar, zoomFactor = 1e6, datamax=1.0, datamin=0.0, smooth = 1, title = 'catalyst coverage', animate=True)
             
         except:
@@ -201,17 +199,17 @@ def runGold(faradaysConstant=9.6e4,
                     self.var = self._requires(var)
 
                 def _calcValue(self):
-                    return numerix.array(self.var[:self.mesh.numberOfCells])
+                    return numerix.array(self.var(self.mesh.cellCenters))
 
             viewer = MultiViewer(viewers=(
-                Viewer(PlotVariable(var = distanceVar), datamax=1e-9, datamin=-1e-9),
-                Viewer(PlotVariable(var = catalystVar.interfaceVar))))
+                    Viewer(PlotVariable(var = distanceVar), datamax=1e-9, datamin=-1e-9),
+                    Viewer(PlotVariable(var = catalystVar.interfaceVar))))
     else:
         viewer = None
 
     levelSetUpdateFrequency = int(0.7 * narrowBandWidth / cellSize / cflNumber / 2)
     step = 0
-    
+
     while step < numberOfSteps:
 
         if step % 10 == 0 and viewer is not None:
@@ -219,14 +217,15 @@ def runGold(faradaysConstant=9.6e4,
 
         if step % levelSetUpdateFrequency == 0:
             
-            distanceVar.calcDistanceFunction(deleteIslands = True)
-            
+            distanceVar.calcDistanceFunction()
+
         extensionVelocityVariable.setValue(numerix.array(depositionRateVariable))
-        argmx = numerix.argmax(extensionVelocityVariable)
-        dt = cflNumber * cellSize / extensionVelocityVariable[argmx]
-        distanceVar.extendVariable(extensionVelocityVariable, deleteIslands = True)
-        
+
+        dt = cflNumber * cellSize / max(extensionVelocityVariable.globalValue)
+        distanceVar.extendVariable(extensionVelocityVariable)
+
         advectionEquation.solve(distanceVar, dt = dt)
+
         catalystSurfactantEquation.solve(catalystVar, dt = dt)
 
         metalEquation.solve(metalVar, dt = dt)

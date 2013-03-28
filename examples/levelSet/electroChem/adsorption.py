@@ -99,6 +99,7 @@ Compare the analaytical and numerical results:
 __docformat__ = 'restructuredtext'
 
 from fipy import *
+from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 # parameter values
 
@@ -114,8 +115,8 @@ dt = 0.001
 ## build the mesh
 
 dx = L / (nx - 1.5)
-from fipy.tools import serial
-mesh = Grid1D(nx = nx, dx = dx, communicator=serial)
+from fipy.tools import serialComm
+mesh = Grid1D(nx = nx, dx = dx, communicator=serialComm)
 
 ## build the distance variable
 
@@ -130,6 +131,7 @@ bulkVar = CellVariable(mesh = mesh, value = cinf)
 
 surfactantVar = SurfactantVariable(distanceVar = distanceVar)
 
+from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 bulkEqn = buildSurfactantBulkDiffusionEquation(bulkVar,
                                           distanceVar = distanceVar,
                                           surfactantVar = surfactantVar,

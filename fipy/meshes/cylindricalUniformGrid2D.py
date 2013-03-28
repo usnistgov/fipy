@@ -39,7 +39,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.meshes.uniformGrid2D import UniformGrid2D
 from fipy.tools import numerix
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 
 __all__ = ["CylindricalUniformGrid2D"]
 
@@ -49,7 +49,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
     appropriate for axial symmetry.
     """
     def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), 
-                 overlap=2, communicator=parallel, *args, **kwargs):
+                 overlap=2, communicator=parallelComm, *args, **kwargs):
         super(CylindricalUniformGrid2D, self).__init__(dx=dx, dy=dy, nx=nx, ny=ny, 
                                                        origin=origin, overlap=overlap, 
                                                        communicator=communicator, 
@@ -91,13 +91,15 @@ class CylindricalUniformGrid2D(UniformGrid2D):
  
     @property
     def cellVolumes(self):
-        return self._cellVolumes * self.cellCenters[0]
+        return self._cellVolumes * self.cellCenters[0].value
 
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure
         everything works as expected.
 
+            >>> import fipy as fp
+            
             >>> dx = 0.5
             >>> dy = 2.
             >>> nx = 3
@@ -178,10 +180,11 @@ class CylindricalUniformGrid2D(UniformGrid2D):
 
             >>> testCellVolumes = mesh.cellCenters[0].globalValue * numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
 
-            >>> type(mesh.cellVolumes)
-            <class 'fipy.variables.binaryOperatorVariable.binOp'>
-
-            >>> print numerix.allclose(testCellVolumes, mesh.cellVolumes.globalValue, atol = 1e-10, rtol = 1e-10)
+            >>> print isinstance(mesh.cellVolumes, numerix.ndarray)
+            True
+            
+            >>> globalValue = fp.CellVariable(mesh=mesh,value=mesh.cellVolumes).globalValue
+            >>> print numerix.allclose(testCellVolumes, globalValue, atol = 1e-10, rtol = 1e-10)
             True
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2.,    dx/2., 3.*dx/2., 5.*dx/2.),
@@ -309,6 +312,20 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var, solver=DummySolver())
 
+        This test is for http://matforge.org/fipy/ticket/513. Cell
+        volumes were being returned as binOps rather than arrays.
+
+            >>> m = CylindricalUniformGrid2D(dx=1., dy=1, nx=4, ny=4)
+            >>> print isinstance(m.cellVolumes, numerix.ndarray)
+            True
+            >>> print isinstance(m._faceAreas, numerix.ndarray)
+            True
+
+        If the above types aren't correct, the divergence operator's value can be a binOp
+
+            >>> print isinstance(CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
+            True
+            
         """
 
 def _test():

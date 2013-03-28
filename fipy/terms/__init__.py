@@ -43,6 +43,8 @@ from fipy.terms.hybridConvectionTerm import *
 from fipy.terms.powerLawConvectionTerm import *
 from fipy.terms.upwindConvectionTerm import *
 from fipy.terms.vanLeerConvectionTerm import *
+from fipy.terms.firstOrderAdvectionTerm import *
+from fipy.terms.advectionTerm import *
 ConvectionTerm = PowerLawConvectionTerm
 
 __all__ = ["ExplicitVariableError",
@@ -52,7 +54,9 @@ __all__ = ["ExplicitVariableError",
            "SolutionVariableNumberError",
            "SolutionVariableRequiredError",
            "IncorrectSolutionVariable",
-           "ConvectionTerm"]
+           "ConvectionTerm",
+           "FirstOrderAdvectionTerm",
+           "AdvectionTerm"]
            
 __all__.extend(transientTerm.__all__)
 __all__.extend(diffusionTerm.__all__)
@@ -69,3 +73,5 @@ __all__.extend(hybridConvectionTerm.__all__)
 __all__.extend(powerLawConvectionTerm.__all__)
 __all__.extend(upwindConvectionTerm.__all__)
 __all__.extend(vanLeerConvectionTerm.__all__)
+__all__.extend(firstOrderAdvectionTerm.__all__)
+__all__.extend(advectionTerm.__all__)

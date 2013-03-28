@@ -1,5 +1,5 @@
 from fipy.tools.parser import _parseSolver
-from fipy.tools  import parallel as _parallel
+from fipy.tools  import parallelComm as _parallelComm
 
 from fipy.solvers.solver import *
 __all__ = list(solver.__all__)
@@ -15,7 +15,7 @@ def _envSolver(solver):
 solver = _envSolver(solver)
 
 if solver == "pysparse":
-    if _parallel.Nproc > 1:
+    if _parallelComm.Nproc > 1:
         raise  Exception('pysparse solvers do not run in parallel')
     from fipy.solvers.pysparse import *
     __all__.extend(pysparse.__all__)
@@ -34,7 +34,7 @@ elif solver == "trilinos":
         _MeshMatrix =  _TrilinosMeshMatrix
 
 elif solver == "scipy":
-    if _parallel.Nproc > 1:
+    if _parallelComm.Nproc > 1:
         raise  Exception('scipy solvers do not run in parallel')
     from fipy.solvers.scipy import *
     __all__.extend(scipy.__all__)
@@ -42,7 +42,7 @@ elif solver == "scipy":
     _MeshMatrix = _ScipyMeshMatrix
     
 elif solver == "pyamg":
-    if _parallel.Nproc > 1:
+    if _parallelComm.Nproc > 1:
         raise  Exception('pyamg solvers do not run in parallel')
     from fipy.solvers.pyAMG import *
     __all__.extend(pyAMG.__all__)
@@ -62,7 +62,7 @@ elif solver is None:
     
    
     try:
-        if _parallel.Nproc > 1:
+        if _parallelComm.Nproc > 1:
             raise  Exception('pysparse solvers do not run in parallel')
         from fipy.solvers.pysparse import *
         __all__.extend(pysparse.__all__)
@@ -83,7 +83,7 @@ elif solver is None:
                 _MeshMatrix =  _TrilinosMeshMatrix
         except:
             try:
-                if _parallel.Nproc > 1:
+                if _parallelComm.Nproc > 1:
                     raise  Exception('pyamg solvers do not run in parallel')
                 from fipy.solvers.pyAMG import *
                 __all__.extend(pyAMG.__all__)
@@ -92,7 +92,7 @@ elif solver is None:
                 _MeshMatrix = _ScipyMeshMatrix
             except:
                 try:
-                    if _parallel.Nproc > 1:
+                    if _parallelComm.Nproc > 1:
                         raise  Exception('scipy solvers do not run in parallel')
                     from fipy.solvers.scipy import *
                     __all__.extend(scipy.__all__)
@@ -103,4 +103,12 @@ elif solver is None:
                     raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 
 else:
     raise ImportError, 'Unknown solver package %s' % solver
+
+
+from fipy.tests.doctestPlus import register_skipper
+
+register_skipper(flag='PYSPARSE_SOLVER',
+                 test=lambda: solver == 'pysparse',
+                 why="the PySparse solvers are not being used.",
+                 skipWarning=True)
 

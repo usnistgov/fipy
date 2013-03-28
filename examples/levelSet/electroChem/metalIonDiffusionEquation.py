@@ -38,10 +38,9 @@ __docformat__ = 'restructuredtext'
 
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.models.levelSet.distanceFunction.levelSetDiffusionEquation import _buildLevelSetDiffusionEquation
-from fipy.models.levelSet.electroChem.metalIonSourceVariable import _MetalIonSourceVariable
-
-__all__ = ["buildMetalIonDiffusionEquation"]
+from fipy.variables.levelSetDiffusionVariable import _LevelSetDiffusionVariable
+from fipy.terms.transientTerm import TransientTerm
+from fipy.terms.diffusionTerm import DiffusionTermNoCorrection
 
 def buildMetalIonDiffusionEquation(ionVar = None,
                                    distanceVar = None,
@@ -95,12 +94,12 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> from fipy.meshes import Grid1D
     >>> nx = 11
     >>> dx = 1.
-    >>> from fipy.tools import serial
-    >>> mesh = Grid1D(nx = nx, dx = dx, communicator=serial)
+    >>> from fipy.tools import serialComm
+    >>> mesh = Grid1D(nx = nx, dx = dx, communicator=serialComm)
     >>> x, = mesh.cellCenters
     >>> from fipy.variables.cellVariable import CellVariable
     >>> ionVar = CellVariable(mesh = mesh, value = 1.)
-    >>> from fipy.models.levelSet.distanceFunction.distanceVariable \
+    >>> from fipy.variables.distanceVariable \
     ...     import DistanceVariable
     >>> disVar = DistanceVariable(mesh = mesh, 
     ...                           value = (x - 0.5) - 0.99,
@@ -129,6 +128,24 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> print ionVar.allclose(answer)
     1
 
+    Testing the interface source term
+
+    >>> from fipy.meshes import Grid2D
+    >>> from fipy import numerix, serialComm
+    >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2, communicator=serialComm)
+    >>> from fipy.variables.distanceVariable import DistanceVariable
+    >>> distance = DistanceVariable(mesh = mesh, value = (-.5, .5, .5, 1.5))
+    >>> ionVar = CellVariable(mesh = mesh, value = (1, 1, 1, 1))
+    >>> depositionRate = CellVariable(mesh=mesh, value=(1, 1, 1, 1))
+    >>> source = depositionRate * distance.cellInterfaceAreas / mesh.cellVolumes / ionVar
+    >>> sqrt = numerix.sqrt(2)
+    >>> ans = CellVariable(mesh=mesh, value=(0, 1 / sqrt, 1 / sqrt, 0))
+    >>> print numerix.allclose(source, ans)
+    True
+    >>> distance[:] = (-1.5, -0.5, -0.5, 0.5)
+    >>> print numerix.allclose(source, (0, 0, 0, sqrt))
+    True
+
     :Parameters:
       - `ionVar`: The metal ion concentration variable.
       - `distanceVar`: A `DistanceVariable` object.
@@ -139,15 +156,13 @@ def buildMetalIonDiffusionEquation(ionVar = None,
 
     """
 
-    eq = _buildLevelSetDiffusionEquation(ionVar = ionVar,
-                                         distanceVar = distanceVar,
-                                         transientCoeff = transientCoeff,
-                                         diffusionCoeff = diffusionCoeff)
-    
-    coeff = _MetalIonSourceVariable(ionVar = ionVar,
-                                    distanceVar = distanceVar,
-                                    depositionRate = depositionRate,
-                                    metalIonMolarVolume = metalIonMolarVolume)
+    diffusionCoeff = _LevelSetDiffusionVariable(distanceVar,
+                                                diffusionCoeff)
+
+    eq =  TransientTerm(transientCoeff) - DiffusionTermNoCorrection(diffusionCoeff)
+
+    mesh = distanceVar.mesh
+    coeff = depositionRate * distanceVar.cellInterfaceAreas / (mesh.cellVolumes * metalIonMolarVolume) / ionVar
 
     return eq + ImplicitSourceTerm(coeff)
 

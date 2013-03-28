@@ -59,7 +59,7 @@ class SurfactantVariable(CellVariable):
 
         >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(dx = 1., nx = 4)
-        >>> from fipy.models.levelSet.distanceFunction.distanceVariable import DistanceVariable
+        >>> from fipy.variables.distanceVariable import DistanceVariable
         >>> distanceVariable = DistanceVariable(mesh = mesh, 
         ...                                     value = (-1.5, -0.5, 0.5, 941.5))
         >>> surfactantVariable = SurfactantVariable(value = 1, 
@@ -102,7 +102,7 @@ class SurfactantVariable(CellVariable):
         CellVariable.__init__(self, mesh = distanceVar.mesh, name = name, hasOld=False)
 
         self.distanceVar = self._requires(distanceVar)
-        self._value = distanceVar.cellInterfaceAreas * value / self.mesh.cellVolumes
+        self._value = numerix.array(distanceVar.cellInterfaceAreas) * value / self.mesh.cellVolumes
 
         if hasOld:
             self._old = self.copy()
@@ -150,7 +150,7 @@ class _InterfaceSurfactantVariable(CellVariable):
         self.surfactantVar = self._requires(surfactantVar)
 
     def _calcValue(self):
-        areas = self.surfactantVar.distanceVar.cellInterfaceAreas        
+        areas = numerix.array(self.surfactantVar.distanceVar.cellInterfaceAreas)
         areas = numerix.where(areas > 1e-20, areas, 1)
         return numerix.array(self.surfactantVar) * self.mesh.cellVolumes / areas
 

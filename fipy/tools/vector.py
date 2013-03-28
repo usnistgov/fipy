@@ -39,7 +39,7 @@ from fipy.tools import inline, numerix
 
 __all__ = ["putAdd", "prune"]
 
-# Factored out for fipy.models.levelSet.surfactant.convectionCoeff._ConvectionCoeff
+# Factored out for fipy.variables.surfactantConvectionVariable._ConvectionCoeff
 # for some reason
 def _putAdd(vector, ids, additionVector, mask=False):
     """This is a temporary replacement for Numeric.put as it was not doing

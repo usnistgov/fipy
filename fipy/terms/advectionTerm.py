@@ -34,17 +34,17 @@
  
 __docformat__ = 'restructuredtext'
 
-__all__ = []
+__all__ = ["AdvectionTerm"]
 
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
 
-from fipy.models.levelSet.advection.advectionTerm import _AdvectionTerm
+from fipy.terms.firstOrderAdvectionTerm import FirstOrderAdvectionTerm
 
-class _HigherOrderAdvectionTerm(_AdvectionTerm):
+class AdvectionTerm(FirstOrderAdvectionTerm):
     r"""
 
-    The `_HigherOrderAdvectionTerm` object constructs the `b` vector contribution for
+    The `AdvectionTerm` object constructs the `b` vector contribution for
     the advection term given by
 
     .. math::
@@ -58,7 +58,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
        \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0
 
     The construction of the gradient magnitude term requires upwinding as in the standard
-    `_AdvectionTerm`. The higher order terms are incorperated as follows.
+    `FirstOrderAdvectionTerm`. The higher order terms are incorperated as follows.
     The formula used here is given by:
 
     .. math::
@@ -97,21 +97,21 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
     >>> from fipy.variables.cellVariable import CellVariable
     >>> coeff = CellVariable(mesh = mesh, value = numerix.zeros(3, 'd'))
-    >>> v, L, b = _HigherOrderAdvectionTerm(0.)._buildMatrix(coeff, SparseMatrix, dt=1.)
+    >>> v, L, b = AdvectionTerm(0.)._buildMatrix(coeff, SparseMatrix)
     >>> print numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10) # doctest: +PROCESSOR_0
     True
    
     Less trivial test:
 
     >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3))
-    >>> v, L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix, dt=1.)
+    >>> v, L, b = AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
     >>> print numerix.allclose(b, numerix.array((0., -1., -1.)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
     Even less trivial
 
     >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3)) 
-    >>> v, L, b = _HigherOrderAdvectionTerm(-1.)._buildMatrix(coeff, SparseMatrix, dt=1.)
+    >>> v, L, b = AdvectionTerm(-1.)._buildMatrix(coeff, SparseMatrix)
     >>> print numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
@@ -120,7 +120,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
     >>> vel = numerix.array((-1, 2, -3))
     >>> coeff = CellVariable(mesh = mesh, value = numerix.array((4,6,1))) 
-    >>> v, L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix, dt=1.)
+    >>> v, L, b = AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
     >>> print numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
@@ -130,13 +130,13 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
     >>> vel = numerix.array((3, -5, -6, -3))
     >>> coeff = CellVariable(mesh = mesh, value = numerix.array((3 , 1, 6, 7)))
-    >>> v, L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix, dt=1.)
+    >>> v, L, b = AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
     >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
     >>> print numerix.allclose(b, answer, atol = 1e-10) # doctest: +PROCESSOR_0
     True
 
-    For the above test cases the `_HigherOrderAdvectionTerm` gives the
-    same result as the `_AdvectionTerm`. The following test imposes a quadratic
+    For the above test cases the `AdvectionTerm` gives the
+    same result as the `AdvectionTerm`. The following test imposes a quadratic
     field. The higher order term can resolve this field correctly.
 
     .. math::
@@ -154,7 +154,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     >>> mesh = Grid1D(dx = 1., nx = 5)
     >>> vel = 1.
     >>> coeff = CellVariable(mesh = mesh, value = mesh.cellCenters[0]**2)
-    >>> v, L, b = __AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix, dt=1.)
+    >>> v, L, b = __AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
        
     The first order term is not accurate. The first and last element are ignored because they
     don't have any neighbors for higher order evaluation
@@ -165,12 +165,12 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
     The higher order term is spot on.
 
-    >>> v, L, b = _HigherOrderAdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix, dt=1.)
+    >>> v, L, b = AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
     >>> print numerix.allclose(CellVariable(mesh=mesh,
     ... value=b).globalValue[1:-1], -2 * mesh.cellCenters.globalValue[0][1:-1])
     True
 
-    The `_HigherOrderAdvectionTerm` will also resolve a circular field with
+    The `AdvectionTerm` will also resolve a circular field with
     more accuracy,
 
     .. math::
@@ -184,7 +184,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
     >>> x, y = mesh.cellCenters
     >>> r = numerix.sqrt(x**2 + y**2)
     >>> coeff = CellVariable(mesh = mesh, value = r)
-    >>> v, L, b = __AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix, dt=1.)
+    >>> v, L, b = __AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
     >>> error = CellVariable(mesh=mesh, value=b + 1)
     >>> ans = CellVariable(mesh=mesh, value=b + 1)
     >>> ans[(x > 2) & (x < 8) & (y > 2) & (y < 8)] = 0.123105625618
@@ -193,7 +193,7 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
 
     The maximum error is large (about 12 %) for the first order advection.
 
-    >>> v, L, b = _HigherOrderAdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix, dt=1.)
+    >>> v, L, b = AdvectionTerm(1.)._buildMatrix(coeff, SparseMatrix)
     >>> error = CellVariable(mesh=mesh, value=b + 1)
     >>> ans = CellVariable(mesh=mesh, value=b + 1)
     >>> ans[(x > 2) & (x < 8) & (y > 2) & (y < 8)] = 0.0201715476598
@@ -231,9 +231,9 @@ class _HigherOrderAdvectionTerm(_AdvectionTerm):
                                          adjacentLaplacian,
                                          cellLaplacian))
         
-        return _AdvectionTerm._getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh) -  mm * dAP / 2.
+        return FirstOrderAdvectionTerm._getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh) -  mm * dAP / 2.
 
-class __AdvectionTerm(_AdvectionTerm):
+class __AdvectionTerm(FirstOrderAdvectionTerm):
     """
     Dummy subclass for tests
     """
