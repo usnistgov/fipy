@@ -1,189 +1,185 @@
 =============
-SVN practices
+Git practices
 =============
 
-Refer to :ref:`documentation:GIT` for the current tagging conventions.
+Refer to :ref:`documentation:GIT` for the current branching conventions.
 
 --------
 Branches
 --------
 
-Break off for radical refactoring::
+Whether fixing a bug or adding a feature, all work on FiPy should be based 
+on a reported `Trac ticket`_. Assuming ticket number 12345, branch the code::
 
-    $ cd trunk    
-    $ BRANCH=refactoring_etc
-    $ FIPYROOT=svn+ssh://username@matforge.org/usr/local/svn-fipy-repos
-    $ svn copy $FIPYROOT/trunk $FIPYROOT/branches/$BRANCH -m "creating branch for $BRANCH"
-    $ cd ..
-    $ svn co $FIPYROOT/branches/$BRANCH
+    $ BRANCH=ticket12345-Summary_of_what_branch_addresses
+    $ git checkout -b $BRANCH develop
 
 Edit and add to branch::
 
-    $ cd $BRANCH
     $ emacs ...
-    $ svn ci -m "refactoring_stage_A"
+    $ git commit -m "refactoring_stage_A"
     $ emacs ...
-    $ svn ci -m "refactoring_stage_B"
+    $ git commit -m "refactoring_stage_B"
 
-Merging changes from trunk to the branch
-----------------------------------------
+Merging changes from develop to the branch
+------------------------------------------
 
-Find the initial (IRN) and latest (LRN) revision numbers from the last 
-merge from trunk::
+Make sure ``develop`` is up to date::
 
-    $ cd ../trunk
-    $ svn update
-    $ svn diff
+    $ git fetch origin
 
-Set ``$LRN`` based on the updated revision of trunk::
+Merge updated state of ``develop`` to the branch::
 
-    $ LRN=...
+    $ git diff develop
+    $ git merge develop
 
-    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
-    
-Look for ":samp:`merged trunk changes r{IRN}:{LRN} to {BRANCH}`" or
-":samp:`merged log:trunk@{IRN}:{LRN} to source:branches/{BRANCH}`" and set
-``IRN`` to :samp:`{LRN}` from the log message, otherwise to the revision at
-which the branch was created::
-
-    $ IRN=...
-
-Go to the branch::
-
-    $ cd ../$BRANCH
-   
-Check that it is up to date::
-
-    $ svn update
-    $ svn diff
-
-Merge updated state of trunk to the branch::
-
-    $ svn merge -r${IRN}:${LRN} $FIPYROOT/trunk
-    $ svn diff
-
-Resolve any conflicts::
+Resolve any conflicts and test::
 
     $ python setup.py test
-    $ svn ci -m "merged log:trunk@${IRN}:${LRN} to source:branches/${BRANCH}@${LRN}"
+
+Submit branch for code review
+-----------------------------
+
+.. attention::
+
+   **Administrators Only!**
+
+   Push the code to matforge for automated testing::
+
+       $ git push origin $BRANCH
+
+   Check the Buildbot_ status. Fix (or, if absolutely necessary, document)
+   any failures.
+
+Paste the result of::
+
+    $ git request-pull develop origin
+
+(or whatever is appropriate for your branch and clone) into a comment on
+the ticket this branch addresses. You can send a message to the mailing
+list about it if you like, but the FiPy developers should see the pull
+request via RSS feed.
+
+.. note::
+
+   A ``request-pull`` requires that your repository be publicly accessible.
+   If that's not possible, then alternatively, you can do a::
+
+       $ git format-patch
+
+   and then attach the :file:`*.patch` files to the ticket.
     
-Refactoring complete: merge branch to the trunk
------------------------------------------------
+Refactoring complete: merge branch to develop
+---------------------------------------------
 
-First, follow the instructions for 
-`Merging changes from trunk to the branch`_.
+.. attention::
 
-Find the ``HEAD`` revision number::
+   **Administrators Only!**
 
-    $ cd trunk
-    $ svn diff
-    $ svn update
-    $ HRN=...
+   First, follow the instructions for 
+   `Merging changes from develop to the branch`_.
 
-Merge the branch ``HEAD`` to trunk::
+   Merge the branch to ``develop``::
 
-    $ svn merge ${FIPYROOT}/trunk@${HRN} \
-                ${FIPYROOT}/branches/${BRANCH}@${HRN}
-    $ svn diff
+       $ git checkout develop
+       $ git diff $BRANCH
+       $ git merge $BRANCH
 
-Resolve any conflicts::
+   Resolve any conflicts and test::
 
-    $ python setup.py test
-    $ svn ci -m "merged source:branches/${BRANCH}@${HRN} to source:trunk@${HRN}"
+       $ python setup.py test
 
-When completely done with the branch::
+   Push the code to matforge for automated testing::
 
-    $ svn delete -m "Refactoring complete. Merged source:branches/${BRANCH} to source:trunk" \
-        ${FIPYROOT}/branches/${BRANCH}
+       $ git push origin develop
 
---------
-Versions
---------
+   When completely done with the branch::
 
-At point of version release x.y, *on main trunk*::
-
-    $ svn copy $FIPYROOT/trunk $FIPYROOT/tags/version-x_y -m "tagging version x.y"
+       $ git branch -D $BRANCH
+       $ git push origin :$BRANCH
 
 ---------
 Bug fixes
 ---------
 
-At the point some fix is made to an old version n.m::
+.. note::
 
-    $ BRANCH=version-n_m
-    $ svn copy $FIPYROOT/tags/version-n_m  $FIPYROOT/branches/$BRANCH -m "making branch for version n.m"
-    $ svn co $FIPYROOT/branches/$BRANCH
+   This is not well thought out. By and large, we don't do this.
 
-Fix the code::
+At the point some fix is made to an old version n.m *that is not at the tip
+of ``master``*, make a branch from that old release (this step not
+necessary if the branch already exists due to a previous fix)::
 
-    $ cd $BRANCH
-    $ svn ci -m "fix n.m.q"
-    $ svn copy $FIPYROOT/branches/$BRANCH $FIPYROOT/tags/version-n_m_q
+    $ git branch version-n_m refs/tags/version-n_m
 
-Find the initial revision number for the branch (``IRN``) and the latest 
-revision number (``LRN``)::
+Proceed as with other Branches_, but instead branching from ``develop``, 
+do development work off of the historical branch::
 
-    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
-    $ IRN=..
-    $ LRN=...
+    $ BRANCH=ticket12345-Summary_of_what_branch_addresses
+    $ git checkout -b $BRANCH version-n_m
 
-Now merge n.m.q changes back to main trunk::
+Edit and commit as usual.
 
-    $ cd ../trunk
-    $ svn merge -r${IRN}:${LRN} $FIPYROOT/branches/$BRANCH
-    $ svn ci -m "merged version n.m.q, source:branches/${BRANCH}@${IRN}:${LRN} to source:trunk@${LRN}"
+If appropriate, after successful code review and merger to the 
+``version-n_m`` branch, the changes should also be merged to ``develop``::
 
-Make new fix q+1 to n.m::
+    $ git checkout develop
+    $ git merge version-n_m
 
-    $ cd ../$BRANCH 
-    
-Fix the code::
+.. attention::
 
-    $ svn ci -m "fix version n.m.q+1"
-
-Find the previous revision number for the branch (``PRN``) and the latest 
-revision number (``LRN``)::
-
-    $ svn log $FIPYROOT/branches/$BRANCH --stop-on-copy
-    $ PRN=..
-    $ LRN=...
-
-Again, merge n.m.q+1 changes back to main trunk::
-
-    $ cd ../trunk
-    $ svn merge -r${PRN}:${LRN} $FIPYROOT/branches/$BRANCH
-    $ svn ci -m "merged version n.m.q+1, log:branches/${BRANCH}@${PRN}:${LRN} to source:trunk@${LRN}"
-
---------------------------
-Miscellaneous svn commands
---------------------------
-
-Revising svn log comments.
-
-    $ REV=...
-    $ svn propedit --revprop -r ${REV} svn:log
+   When complete, the ``version-n_m`` branch is not merged to ``master``.
 
 ================
 Making a Release
 ================
 
+.. attention::
+
+   **Administrators Only!**
+
 ------
 Source
 ------
 
-Change the version number in :file:`setup.py`
+Make sure ``develop`` is ready for release::
 
-Check items in the tickets_.
+   $ git checkout develop
 
-Check out a clean copy of the desired release::
+Change the version number in :file:`setup.py`::
 
-    $ svn co $FIPYROOT/trunk CLEAN
-    $ cd CLEAN
+   $ git commit setup.py -m "REL: bump the version number to n.m"
+
+Check items in the tickets_ and update the :file:`README.txt`::
+
+   $ git commit README.txt -m "REL: update new features for release"
 
 .. attention::
 
-   If Bitten_ doesn't show all green boxes for this release, make sure to
+   If Buildbot_ doesn't show all green boxes for this release, make sure to
    add appropriate notes in :file:`README.txt` or :file:`INSTALLATION.txt`!
+
+-------------------
+Release from master
+-------------------
+
+::
+
+    $ git checkout master
+    $ git merge develop
+
+Resolve any conflicts and push to ``master``::
+
+    $ git tag --annotate version-x_y master
+    $ git push --tags origin master
+
+Clean the working copy::
+
+    $ git clean -fd
+
+.. note::
+
+   Alternatively, clone into a clean repository.
 
 Build the documentation and the web pages::
 
@@ -235,7 +231,7 @@ Combine the windows installer and examples into one archive::
 Debian
 ------
 
-Make sure stdeb_ and debhelper_ are installed.
+Make sure stdeb_ and debhelper_ are installed::
 
     $ cd CLEAN
     $ python setup.py --command-packages=stdeb.command bdist_deb
@@ -274,146 +270,11 @@ Make an announcement to `fipy@nist.gov`_
 Build (``python setup.py bdist --formats=wininst``) a Windows `PyVTK`_
 executable and upload to download page.
 
+.. _Trac ticket: http://matforge.org/fipy/newticket
 .. _tickets: http://matforge.org/fipy/report
-.. _Bitten: http://matforge.org/fipy/build
+.. _Buildbot: http://build.cmi.kent.edu:8010/tgrid
 .. _fipy@nist.gov: mailto:fipy@nist.gov
 .. _PyVTK: http://cens.ioc.ee/projects/pyvtk/
 .. _stdeb: http://github.com/astraw/stdeb
 .. _debhelper: http://kitenet.net/~joey/code/debhelper/
 
-==========================================
-Making a Windows Distribution for Pysparse
-==========================================
-
-Make sure of the following:
-
-   - mingw is installed
-   - libpython.a is in c:\pythonXX\libs
-   - libblas.a is in c:\mingw\lib
-   - liblapack.a is in c:\mingw\lib
-   - Numeric is installed
-
-If the above is not satisfied implement the Pysparse INSTALL instructions.
-
-Set the PATH to use MINGW's tools.
-
-   set PATH=C:\mingw\bin
-
-Build the distribution.
-
-   C:\pythonXX\python setup.py build --compiler=mingw32 bdist --format=wininst
-
-===============================
-Converting a CVS Project to SVN
-===============================
-
-Obtain cvs2svn_
-
-.. _cvs2svn: http://cvs2svn.tigris.org/
-
-.. note::
-
-   `cvs2svn-1.3.0/www/faq.html` covers this, but if you follow its directions 
-   exactly, you will get the rather ridiculous::
-
-       REPOSITORY
-          |
-          |---> ${PROJECT}
-          |         |
-          |         |---> trunk
-          |         |        |
-          |         |        |---> ${PROJECT}
-          |         |
-          |         |---> branches
-          |         |        |
-          |         |        |---> BRANCH1
-          |         |        |       |
-          |         |        |       |---> ${PROJECT}
-          |         |        |
-          |         |        |---> BRANCH2
-          |         |                |
-          |         |                |---> ${PROJECT}
-          |         |
-          |         |---> tags
-          |                  |
-          |                  |---> TAG1
-          |                  |       |
-          |                  |       |---> ${PROJECT}
-          |                  |
-          |                  |---> TAG2
-          |                          |
-          |                          |---> ${PROJECT}
-          |
-          |---> SOME_OTHER_PROJECT1
-          |
-          |---> SOME_OTHER_PROJECT2
-
-   instead of the more desirable::
-
-       REPOSITORY
-          |
-          |---> ${PROJECT}
-          |         |
-          |         |---> trunk
-          |         |
-          |         |---> branches
-          |         |        |
-          |         |        |---> BRANCH1
-          |         |        |
-          |         |        |---> BRANCH2
-          |         |
-          |         |---> tags
-          |                  |
-          |                  |---> TAG1
-          |                  |
-          |                  |---> TAG2
-          |
-          |---> SOME_OTHER_PROJECT1
-          |
-          |---> SOME_OTHER_PROJECT2
-
-
-Make a copy of the portion of the CVS repository governing the project in 
-question::
-
-    $ PROJECT=MyProjectInCVS
-    $ mkdir cvs2svnSandbox
-    $ cd cvs2svnSandbox
-    $ cp -r /path/to/cvs/repository/${PROJECT} ${PROJECT}
-
-Convert the CVS project repository copy into an SVN repository dump file::
-
-    $ mkdir ${PROJECT}/CVSROOT
-    $ cvs2svn --dump-only ${PROJECT}
-
-You should now have a file :file:`cvs2svn-dump` in your working directory.
-
-If necessary, create an SVN repository::
-
-    $ svnadmin create --fs-type fsfs /path/to/svn/repos
-
-.. note:: An FSFS repository has fewer permissions problems than a Berkeley-DB 
-   repository.
-
-Make sure that the new repository has appropriate group permissions (this is
-still a bit fuzzy for me)::
-
-    $ chgrp -R $GROUP /path/to/svn/repos
-    $ chmod -R g+w /path/to/svn/repos
-
-Add a stub for the new project::
-
-    $ svn mkdir file:///path/to/svn/repos/${PROJECT} -m "added ${PROJECT} directory"
-
-Import the converted project repository into SVN::
-
-    $ svnadmin --parent-dir $PROJECT load /path/to/svn/repos < cvs2svn-dump
-
-You can now test a checkout::
-
-   $ svn checkout svn+ssh://MACHINE.IP.ADDR/path/to/svn/repos/${PROJECT}/trunk SVNTEST
-
-At this point, you can get rid of all of the conversion materials::
-
-    $ cd ..
-    $ rm -rf cvs2svnSandbox
