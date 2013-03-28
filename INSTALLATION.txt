@@ -74,7 +74,7 @@ given in the respective packages' :file:`README` and
 Obtaining FiPy
 --------------
 
-:term:`FiPy` is freely available for download via Subversion_ or as a
+:term:`FiPy` is freely available for download via Git_ or as a
 compressed archive from
 <http://www.ctcms.nist.gov/fipy/download>. Please see
 :ref:`documentation:GIT` for instructions on obtaining :term:`FiPy`
@@ -84,7 +84,7 @@ with Git_.
 
    Keep in mind that if you choose to download the `compressed
    archive`_ you will then need to preserve your changes when upgrades
-   to :term:`FiPy` become available (upgrades via Subversion_ will handle
+   to :term:`FiPy` become available (upgrades via Git_ will handle
    this issue automatically).
 
 .. _Git:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browserfipy
