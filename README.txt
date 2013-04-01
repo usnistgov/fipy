@@ -252,7 +252,6 @@ or a
 .. _CTCMS:                http://www.ctcms.nist.gov/
 .. _MSED:                 http://www.nist.gov/mml/msed/
 .. _NIST:                 http://www.nist.gov/
-.. _Subversion:           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browser
 .. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.tar.gz
 .. _tracking system:      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/report
 .. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
