@@ -183,6 +183,7 @@ Clean the working copy::
 
 Build the documentation and the web pages::
 
+    $ python setup.py bdist_egg
     $ python setup.py build_docs --pdf --html --cathartic
 
 Build the compressed distribution::
@@ -248,7 +249,7 @@ the web site to CTCMS ::
 
     $ export FIPY_WWWHOST=bunter:/u/WWW/wd15/fipy
     $ export FIPY_WWWACTIVATE=updatewww
-    $ python setup.py upload --pdf --html --tarball --winzip
+    $ python setup.py upload_products --pdf --html --tarball --winzip
 
 .. note::
 
