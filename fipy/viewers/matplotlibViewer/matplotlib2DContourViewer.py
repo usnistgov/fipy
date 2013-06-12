@@ -118,17 +118,8 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
         x, y = mesh.cellCenters
         z = self.vars[0].value
         
-        vertexIDs = mesh._orderedCellVertexIDs
-
-        vertexCoords = mesh.getVertexCoords()
-
-        X = numerix.take(vertexCoords[0], vertexIDs)
-        Y = numerix.take(vertexCoords[1], vertexIDs)
-
-        xmin = X.min()
-        xmax = X.max()
-        ymin = Y.min()
-        ymax = Y.max()
+        xmin, ymin = mesh.extents['min']
+        xmax, ymax = mesh.extents['max']
 
         from matplotlib.mlab import griddata
         

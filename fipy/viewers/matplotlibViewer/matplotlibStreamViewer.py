@@ -128,17 +128,8 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
         var = self.vars[0]
         mesh = var.mesh
 
-        vertexIDs = mesh._orderedCellVertexIDs
-
-        vertexCoords = mesh.getVertexCoords()
-
-        X = numerix.take(vertexCoords[0], vertexIDs)
-        Y = numerix.take(vertexCoords[1], vertexIDs)
-
-        xmin = X.min()
-        xmax = X.max()
-        ymin = Y.min()
-        ymax = Y.max()
+        xmin, ymin = mesh.extents['min']
+        xmax, ymax = mesh.extents['max']
         
         N = 100
         X = numerix.linspace(xmin, xmax, N)
