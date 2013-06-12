@@ -93,42 +93,10 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
         kwlimits.update(limits)
         AbstractMatplotlib2DViewer.__init__(self, vars=vars, title=title, axes=axes, figaspect=figaspect, **kwlimits)
 
-#         self.quiver(sparsity=sparsity, scale=scale)
         self.log = log
         
         self._plot()
         
-    def quiver(self, sparsity=None, scale=None):
-        var = self.vars[0]
-        mesh = var.mesh
-
-        if isinstance(var, FaceVariable):
-            N = mesh.numberOfFaces 
-            X, Y = mesh.faceCenters
-
-        elif isinstance(var, CellVariable):
-            N = mesh.numberOfCells 
-            X, Y = mesh.cellCenters
-            
-        if sparsity is not None and N > sparsity:
-            XYrand = numerix.random.random((2, sparsity))
-            XYrand = numerix.array([[min(X)], 
-                                    [min(Y)]]) + XYrand * numerix.array([[max(X) - min(X)],
-                                                                         [max(Y) - min(Y)]])
-            self.indices = numerix.nearest(numerix.array([X, Y]), XYrand)
-        else:
-            self.indices = numerix.arange(N)
-
-        X = numerix.take(X, self.indices)
-        Y = numerix.take(Y, self.indices)
-        
-        U = V = numerix.ones(X.shape, 'l')
-        
-        if hasattr(self, "_quiver"):
-            self._quiver.remove()
-        
-        self._quiver = self.axes.quiver(X, Y, U, V, scale=scale, pivot='middle')
-
     def _getSuitableVars(self, vars):
         from fipy.meshes.mesh2D import Mesh2D
         from fipy.meshes.uniformGrid2D import UniformGrid2D
@@ -145,6 +113,7 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
         return [vars[0]]
                 
     def _plot(self):
+        from scipy.interpolate import griddata
 
         var = self.vars[0]
         mesh = var.mesh
@@ -165,7 +134,15 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
         X = numerix.linspace(xmin, xmax, N)
         Y = numerix.linspace(ymin, ymax, N)
                                 
-        U, V = var(numerix.mgrid[xmin:xmax:N*1j, ymin:ymax:N*1j])
+        grid_x, grid_y = numerix.mgrid[xmin:xmax:N*1j, ymin:ymax:N*1j]
+        
+        U = griddata(mesh.cellCenters.value.swapaxes(0,1), 
+                     var.value[0], (grid_x, grid_y), method='cubic')
+        V = griddata(mesh.cellCenters.value.swapaxes(0,1), 
+                     var.value[1], (grid_x, grid_y), method='cubic')
+                     
+        U = U.swapaxes(0,1)
+        V = V.swapaxes(0,1)
 
 #         U = numerix.take(U, self.indices)
 #         V = numerix.take(V, self.indices)
@@ -187,9 +164,8 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
 #         U = mag * numerix.cos(ang)
 #         V = mag * numerix.sin(ang)
 
+        self.axes.cla()
         self.axes.streamplot(X, Y, U, V)
-        
-#         self._quiver.set_UVC(U, V)
         
         self.axes.set_xlim(xmin=self._getLimit('xmin'),
                            xmax=self._getLimit('xmax'))
