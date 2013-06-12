@@ -137,10 +137,15 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
                                 
         grid_x, grid_y = numerix.mgrid[xmin:xmax:N*1j, ymin:ymax:N*1j]
         
-        U = griddata(mesh.cellCenters.value.T,
-                     var.value[0], (grid_x, grid_y), method='cubic')
-        V = griddata(mesh.cellCenters.value.T, 
-                     var.value[1], (grid_x, grid_y), method='cubic')
+        if isinstance(var, FaceVariable):
+            C = mesh.faceCenters
+        elif isinstance(var, CellVariable):
+            C = mesh.cellCenters
+            
+        U = griddata(C.value.T, var.value[0], 
+                     (grid_x, grid_y), method='cubic')
+        V = griddata(C.value.T, var.value[1], 
+                     (grid_x, grid_y), method='cubic')
                      
         U = U.T
         V = V.T
