@@ -48,6 +48,10 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
     """Displays a stream plot of a 2D rank-1 `CellVariable` or
     `FaceVariable` object using Matplotlib_
 
+    One issue is that this `Viewer` relies on `scipy.interpolate.griddata`,
+    which interpolates on the convex hull of the data. The results is that
+    streams are plotted across any concavities in the mesh.
+    
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
     """
