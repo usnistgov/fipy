@@ -52,6 +52,10 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
     which interpolates on the convex hull of the data. The results is that
     streams are plotted across any concavities in the mesh.
     
+    Another issue is that it does not seem possible to remove the streams
+    without calling `cla()`, which means that different set of streams cannot be
+    overlaid.
+    
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
     """
