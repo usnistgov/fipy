@@ -63,8 +63,11 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
     __doc__ += AbstractMatplotlib2DViewer._test2Dvector(viewer="MatplotlibStreamViewer")
     __doc__ += AbstractMatplotlib2DViewer._test2DvectorIrregular(viewer="MatplotlibStreamViewer")
 
-    def __init__(self, vars, title=None, log=False, limits={}, axes=None, figaspect='auto', **kwlimits):
-        """Creates a `Matplotlib2DViewer`.
+    def __init__(self, vars, title=None, log=False, limits={}, axes=None, figaspect='auto', 
+                 density=1, linewidth=None, color=None, cmap=None, norm=None, arrowsize=1, 
+                 arrowstyle='-|>', minlength=0.1, 
+                 **kwlimits):
+        """Creates a `MatplotlibStreamViewer`.
 
         :Parameters:
           vars
@@ -84,11 +87,40 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
             desired aspect ratio of figure. If arg is a number, use that aspect
             ratio. If arg is 'auto', the aspect ratio will be determined from
             the Variable's mesh.
+          *density* : float or 2-tuple
+              Controls the closeness of streamlines. When `density = 1`, the domain
+              is divided into a 25x25 grid---*density* linearly scales this grid.
+              Each cell in the grid can have, at most, one traversing streamline.
+              For different densities in each direction, use [density_x, density_y].
+          linewidth : Numeric or rank-0 `MeshVariable`
+            vary linewidth when given a `CellVariable` or `FaceVariable` of same
+            type as vars.
+          *color* : matplotlib color code, or rank-0 `MeshVariable`
+              Streamline color. When given an array with the type as vars, 
+              *color* values are converted to colors using *cmap*.
+          *cmap* : :class:`~matplotlib.colors.Colormap`
+              Colormap used to plot streamlines and arrows. Only necessary when using
+              an `MeshVariable` input for *color*.
+          *norm* : :class:`~matplotlib.colors.Normalize`
+              Normalize object used to scale luminance data to 0, 1. If None, stretch
+              (min, max) to (0, 1). Only necessary when *color* is an `MeshVariable`.
+          *arrowsize* : float
+              Factor scale arrow size.
+          *arrowstyle* : str
+              Arrow style specification.
+              See :class:`~matplotlib.patches.FancyArrowPatch`.
+          *minlength* : float
+              Minimum length of streamline in axes coordinates.
+
         """
         kwlimits.update(limits)
         AbstractMatplotlib2DViewer.__init__(self, vars=vars, title=title, axes=axes, figaspect=figaspect, **kwlimits)
 
         self.log = log
+        self.kwargs = dict(density=density, cmap=cmap, norm=norm, arrowsize=arrowsize, 
+                           arrowstyle=arrowstyle, minlength=minlength)
+        self.linewidth = linewidth
+        self.color = color
         
         self._stream = None
         
@@ -134,6 +166,16 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
         V = griddata(C.value.T, var.value[1], 
                      (grid_x, grid_y), method='cubic')
                      
+        lw = self.linewidth
+        if isinstance(lw, (FaceVariable, CellVariable)):
+            lw = griddata(C.value.T, lw.value, 
+                          (grid_x, grid_y), method='cubic')
+                     
+        color = self.color
+        if isinstance(color, (FaceVariable, CellVariable)):
+            color = griddata(C.value.T, color.value, 
+                             (grid_x, grid_y), method='cubic', fill_value=color.min())
+                             
         U = U.T
         V = V.T
 
@@ -159,7 +201,7 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
 #             self._stream.lines.remove()
 
         self.axes.cla()
-        self._stream = self.axes.streamplot(X, Y, U, V)
+        self._stream = self.axes.streamplot(X, Y, U, V, linewidth=lw, color=color, **self.kwargs)
         
         self.axes.set_xlim(xmin=self._getLimit('xmin'),
                            xmax=self._getLimit('xmax'))
