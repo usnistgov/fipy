@@ -148,25 +148,21 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
         U = U.T
         V = V.T
 
-#         U = numerix.take(U, self.indices)
-#         V = numerix.take(V, self.indices)
+        ang = numerix.arctan2(V, U)
+        mag = numerix.sqrt(U**2 + V**2)
         
-#         ang = numerix.arctan2(V, U)
-#         mag = numerix.sqrt(U**2 + V**2)
-#         
-#         datamin, datamax = self._autoscale(vars=(mag,),
-#                                            datamin=self._getLimit('datamin'),
-#                                            datamax=self._getLimit('datamax'))
-#         
-#         mag = numerix.where(mag > datamax, datamax, mag)
-#         mag = numerix.ma.masked_array(mag, mag < datamin)
-#         
-#         if self.log:
-#             mag = numerix.log10(mag)
-#             mag = numerix.ma.masked_array(mag, numerix.isnan(mag))
-#             
-#         U = mag * numerix.cos(ang)
-#         V = mag * numerix.sin(ang)
+        datamin, datamax = self._autoscale(vars=(mag,),
+                                           datamin=self._getLimit('datamin'),
+                                           datamax=self._getLimit('datamax'))
+        
+        mag = numerix.where(mag > datamax, numerix.nan, mag)
+        mag = numerix.where(mag < datamin, numerix.nan, mag)
+        
+        if self.log:
+            mag = numerix.log10(mag)
+            
+        U = mag * numerix.cos(ang)
+        V = mag * numerix.sin(ang)
 
         self.axes.cla()
         self.axes.streamplot(X, Y, U, V)
