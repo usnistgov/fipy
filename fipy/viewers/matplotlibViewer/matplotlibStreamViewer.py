@@ -99,6 +99,8 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
 
         self.log = log
         
+        self._stream = None
+        
         self._plot()
         
     def _getSuitableVars(self, vars):
@@ -164,8 +166,13 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
         U = mag * numerix.cos(ang)
         V = mag * numerix.sin(ang)
 
+#         if self._stream is not None:
+#             # the following doesn't work, nor does it help to `add_collection` first
+#             # self._stream.arrows.remove()
+#             self._stream.lines.remove()
+
         self.axes.cla()
-        self.axes.streamplot(X, Y, U, V)
+        self._stream = self.axes.streamplot(X, Y, U, V)
         
         self.axes.set_xlim(xmin=self._getLimit('xmin'),
                            xmax=self._getLimit('xmax'))
