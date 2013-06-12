@@ -60,18 +60,10 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
 
     """
     
-#     __doc__ += AbstractMatplotlib2DViewer._test2Dvector(viewer="MatplotlibStreamViewer")
-#     __doc__XXX += """
-#     
-#            >>> for sparsity in numerix.arange(5000, 0, -500):
-#            ...     viewer.stream(sparsity=sparsity)
-#            ...     viewer.plot()
-#            >>> viewer._promptForOpinion()
-#         
-#     """
+    __doc__ += AbstractMatplotlib2DViewer._test2Dvector(viewer="MatplotlibStreamViewer")
     __doc__ += AbstractMatplotlib2DViewer._test2DvectorIrregular(viewer="MatplotlibStreamViewer")
 
-    def __init__(self, vars, title=None, scale=None, sparsity=None, log=False, limits={}, axes=None, figaspect='auto', **kwlimits):
+    def __init__(self, vars, title=None, log=False, limits={}, axes=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DViewer`.
 
         :Parameters:
@@ -79,11 +71,6 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
             a rank-1 `CellVariable` or `FaceVariable` object.
           title
             displayed at the top of the `Viewer` window
-          scale
-            if not `None`, scale all arrow lengths by this value
-          sparsity
-            if not `None`, then this number of arrows will be
-            randomly chosen (weighted by the cell volume or face area)
           log
             if `True`, arrow length goes at the base-10 logarithm of the magnitude
           limits : dict
