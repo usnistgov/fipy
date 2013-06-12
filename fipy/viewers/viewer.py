@@ -156,13 +156,13 @@ class AbstractViewer(object):
         if datamin is None:
             datamin = 1e300
             for var in vars:
-                datamin = min(datamin, min(var))
+                datamin = min(datamin, numerix.nanmin(var))
 
         if datamax is None:
             from fipy.tools import numerix
             datamax = -1e300
             for var in vars:
-                datamax = max(datamax, max(var))
+                datamax = max(datamax, numerix.nanmax(var))
                 
         return datamin, datamax
         
