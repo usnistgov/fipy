@@ -61,6 +61,8 @@ def _parseSolver():
         return 'scipy'
     elif '--pyamgx' in args:
         return 'pyamgx'
+    elif '--petsc' in args:
+        return 'petsc'
     elif 'FIPY_SOLVERS' in os.environ:
         return os.environ['FIPY_SOLVERS'].lower()
     else:
