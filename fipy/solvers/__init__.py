@@ -29,6 +29,13 @@ if solver == "pysparse":
     from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
     _MeshMatrix =  _PysparseMeshMatrix
 
+elif solver == "petsc":
+    from fipy.solvers.petsc import *
+    __all__.extend(petsc.__all__)
+
+    from fipy.matrices.petscMatrix import _PETScMeshMatrix
+    _MeshMatrix =  _PETScMeshMatrix
+
 elif solver == "trilinos":
     from fipy.solvers.trilinos import *
     __all__.extend(trilinos.__all__)
