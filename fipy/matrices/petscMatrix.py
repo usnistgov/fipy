@@ -250,11 +250,12 @@ class _PETScMatrix(_SparseMatrix):
         i = numerix.asarray(i)
         j = numerix.asarray(j)
         v = numerix.asarray(v)
-        N = self._shape[1]
+        start_row, end_row = self.matrix.getOwnershipRange()
         
         ix = numerix.lexsort([i, j])
         cols = i[ix]
-        row_ptr = numerix.searchsorted(j[ix], numerix.arange(N + 1))
+        row_ptr = numerix.searchsorted(j[ix], 
+                                       numerix.arange(start_row, end_row + 1))
         vals = v[ix]
         # note: PETSc (at least via pip) only seems to handle 32 bit addressing
         return row_ptr.astype('int32'), cols.astype('int32'), vals
