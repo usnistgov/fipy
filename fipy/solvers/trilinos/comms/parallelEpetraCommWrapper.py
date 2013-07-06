@@ -1,39 +1,37 @@
 from __future__ import unicode_literals
-from fipy.tools.comms.commWrapper import CommWrapper
-from fipy.tools import numerix
+from mpi4py import MPI
 
-__all__ = ["Mpi4pyCommWrapper"]
+from fipy.tools import numerix
+from fipy.solvers.trilinos.comms.epetraCommWrapper import EpetraCommWrapper
+
+__all__ = ["ParallelEpetraCommWrapper"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class Mpi4pyCommWrapper(CommWrapper):
+class ParallelEpetraCommWrapper(EpetraCommWrapper):
     """MPI Communicator wrapper
 
     Encapsulates capabilities needed for both Epetra and mpi4py.
-
     """
-
-    def __init__(self, Epetra, MPI):
-        self.MPI = MPI
-        self.mpi4py_comm = self.MPI.COMM_WORLD
-        CommWrapper.__init__(self, Epetra)
-
+    
+    def __init__(self):
+        self.mpi4py_comm = MPI.COMM_WORLD
+        super(ParallelEpetraCommWrapper, self).__init__()
+        
     def __setstate__(self, dict):
-        from PyTrilinos import Epetra
-        from mpi4py import MPI
-        self.__init__(Epetra=Epetra, MPI=MPI)
-
+        self.__init__()
+        
     def all(self, a, axis=None):
-        return self.mpi4py_comm.allreduce(a.all(axis=axis), op=self.MPI.LAND)
+        return self.mpi4py_comm.allreduce(a.all(axis=axis), op=MPI.LAND)
 
     def any(self, a, axis=None):
-        return self.mpi4py_comm.allreduce(a.any(axis=axis), op=self.MPI.LOR)
+        return self.mpi4py_comm.allreduce(a.any(axis=axis), op=MPI.LOR)
 
     def allclose(self, a, b, rtol=1.e-5, atol=1.e-8):
-        return self.mpi4py_comm.allreduce(numerix.allclose(a, b, rtol=rtol, atol=atol), op=self.MPI.LAND)
+        return self.mpi4py_comm.allreduce(numerix.allclose(a, b, rtol=rtol, atol=atol), op=MPI.LAND)
 
     def allequal(self, a, b):
-        return self.mpi4py_comm.allreduce(numerix.allequal(a, b), op=self.MPI.LAND)
+        return self.mpi4py_comm.allreduce(numerix.allequal(a, b), op=MPI.LAND)
 
     def bcast(self, obj, root=0):
         return self.mpi4py_comm.bcast(obj=obj, root=root)
@@ -51,3 +49,13 @@ class Mpi4pyCommWrapper(CommWrapper):
 
         """
         return self.mpi4py_comm.allgather(sendobj=obj)
+
+    def MaxAll(self, obj):
+        """return max across all processes
+        """
+        return self.mpi4py_comm.allreduce(sendobj=obj, op=max)
+
+    def MinAll(self, obj):
+        """return min across all processes
+        """
+        return self.mpi4py_comm.allreduce(sendobj=obj, op=min)
