@@ -14,12 +14,3 @@ class DummyComm(AbstractCommWrapper):
     @property
     def Nproc(self):
         return 1
-        
-    def sum(self, a, axis=None):
-        return a.sum(axis=axis)
-
-    def MaxAll(self, vec):
-        return max(numerix.array(vec))
-
-    def MinAll(self, vec):
-        return min(numerix.array(vec))

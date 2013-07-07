@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "serialEpetraCommWrapper.py"
+ #  FILE: "serialPETScCommWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,12 +34,11 @@
  # ###################################################################
  ##
 
-from fipy.tools import numerix
-from fipy.solvers.trilinos.comms.epetraCommWrapper import EpetraCommWrapper
+from fipy.solvers.petsc.comms.petscCommWrapper import PETScCommWrapper
 
-__all__ = ["SerialEpetraCommWrapper"]
+__all__ = ["SerialPETScCommWrapper"]
 
-class SerialEpetraCommWrapper(EpetraCommWrapper):
+class SerialPETScCommWrapper(PETScCommWrapper):
     @property
     def procID(self):
         return 0
@@ -47,7 +46,4 @@ class SerialEpetraCommWrapper(EpetraCommWrapper):
     @property
     def Nproc(self):
         return 1
-       
-    def Norm2(self, vec):
-        return numerix.L2norm(vec)
 

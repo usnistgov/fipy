@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "epetraCommWrapper.py"
+ #  FILE: "petscCommWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -36,53 +36,17 @@
 
 __docformat__ = 'restructuredtext'
 
-from PyTrilinos import Epetra
-
 from fipy.tools import numerix
 from fipy.tools.comms.abstractCommWrapper import AbstractCommWrapper
 
-__all__ = ["EpetraCommWrapper"]
+__all__ = ["PETScCommWrapper"]
 
-class EpetraCommWrapper(AbstractCommWrapper):
+class PETScCommWrapper(AbstractCommWrapper):
     """MPI Communicator wrapper
     
-    Encapsulates capabilities needed for Epetra. 
+    Encapsulates capabilities needed for PETSc. 
     Some capabilities are not parallel.
     """
     
-    def __init__(self):
-        self.epetra_comm = Epetra.PyComm()
-        super(EpetraCommWrapper, self).__init__() 
-        
-    @property
-    def procID(self):
-        return self.epetra_comm.MyPID()
-        
-    @property
-    def Nproc(self):
-        return self.epetra_comm.NumProc()
-        
-    def Barrier(self):
-        self.epetra_comm.Barrier()
-
-    def sum(self, a, axis=None):
-        summed = numerix.array(a).sum(axis=axis)
-        shape = summed.shape
-        if shape == ():
-            summed = summed.reshape((1,))
-        parallelSummed = self.epetra_comm.SumAll(summed)
-        if shape == ():
-            parallelSummed = parallelSummed.reshape(())
-        return parallelSummed
-
-    def __setstate__(self, dict):
-        self.__init__()
-        
     def Norm2(self, vec):
-        return vec.Norm2()
-        
-    def MaxAll(self, vec):
-        return self.epetra_comm.MaxAll(numerix.array(vec))
-        
-    def MinAll(self, vec):
-        return self.epetra_comm.MinAll(numerix.array(vec))
+        return vec.norm(norm_type=1)

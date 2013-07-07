@@ -46,10 +46,17 @@ if solver is None and _desired_solver in ["pysparse", None]:
 
 if solver is None and _desired_solver in ["petsc", None]:
     try:
-        if _Nproc > 1:
-            raise  SerialSolverError('petsc')
         from fipy.solvers.petsc import *
         __all__.extend(petsc.__all__)
+
+        from fipy.solvers.petsc.comms.serialPETScCommWrapper import SerialPETScCommWrapper
+        serialComm = SerialPETScCommWrapper()
+
+        if _Nproc > 1:
+            from fipy.solvers.petsc.comms.parallelPETScCommWrapper import ParallelPETScCommWrapper
+            parallelComm = ParallelPETScCommWrapper()
+        else:
+            parallelComm = SerialPETScCommWrapper()
 
         from fipy.matrices.petscMatrix import _PETScMeshMatrix
         _MeshMatrix =  _PETScMeshMatrix

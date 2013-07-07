@@ -48,7 +48,7 @@ class AbstractCommWrapper(object):
         return obj
 
     def sum(self, a, axis=None):
-        raise NotImplementedError
+        return a.sum(axis=axis)
 
     def __getstate__(self):
         return {'dummy': 0}
@@ -57,10 +57,10 @@ class AbstractCommWrapper(object):
         self.__init__()
         
     def Norm2(self, vec):
-        raise NotImplementedError
+        return numerix.L2norm(vec)
 
     def MaxAll(self, vec):
-        raise NotImplementedError
+        return max(numerix.array(vec))
         
     def MinAll(self, vec):
-        raise NotImplementedError
+        return min(numerix.array(vec))

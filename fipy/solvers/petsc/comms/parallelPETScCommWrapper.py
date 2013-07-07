@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "parallelEpetraCommWrapper.py"
+ #  FILE: "parallelPETScCommWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -34,27 +34,36 @@
  # ###################################################################
  ##
 
-from PyTrilinos import Epetra
+from petsc4py import PETSc
 from mpi4py import MPI
 
 from fipy.tools import numerix
-from fipy.solvers.trilinos.comms.epetraCommWrapper import EpetraCommWrapper
+from fipy.solvers.petsc.comms.petscCommWrapper import PETScCommWrapper
 
-__all__ = ["ParallelEpetraCommWrapper"]
+__all__ = ["ParallelPETScCommWrapper"]
 
-class ParallelEpetraCommWrapper(EpetraCommWrapper):
+class ParallelPETScCommWrapper(PETScCommWrapper):
     """MPI Communicator wrapper
     
-    Encapsulates capabilities needed for both Epetra and mpi4py.
+    Encapsulates capabilities needed for PETSc.
     """
     
     def __init__(self):
-        self.mpi4py_comm = MPI.COMM_WORLD
-        super(ParallelEpetraCommWrapper, self).__init__()
+        self.petsc4py_comm = PETSc.COMM_WORLD
+        self.mpi4py_comm = PETSc.COMM_WORLD.tompi4py()
+        super(ParallelPETScCommWrapper, self).__init__()
         
-    def __setstate__(self, dict):
-        self.__init__()
+    @property
+    def procID(self):
+        return self.petsc4py_comm.rank
         
+    @property
+    def Nproc(self):
+        return self.petsc4py_comm.size
+        
+    def Barrier(self):
+        self.petsc4py_comm.Barrier()
+
     def all(self, a, axis=None):
         return self.mpi4py_comm.allreduce(a.all(axis=axis), op=MPI.LAND)
 
@@ -72,3 +81,12 @@ class ParallelEpetraCommWrapper(EpetraCommWrapper):
 
     def allgather(self, sendobj=None, recvobj=None):
         return self.mpi4py_comm.allgather(sendobj=sendobj, recvobj=recvobj)
+
+    def sum(self, a, axis=None):
+        return self.mpi4py_comm.allreduce(numerix.array(a).sum(axis=axis), op=MPI.SUM)
+
+    def MaxAll(self, vec):
+        return self.mpi4py_comm.allreduce(max(vec), op=MPI.MAX)
+        
+    def MinAll(self, vec):
+        return self.mpi4py_comm.allreduce(min(vec), op=MPI.MIN)
