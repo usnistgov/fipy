@@ -179,6 +179,17 @@ class AbstractMesh(object):
             return self.cellCenters[2]
         else:
             raise AttributeError, '1D and 2D meshes do not have a "z" attribute.'
+            
+    @property
+    def extents(self):
+        ext = dict(min=[], max=[])
+        
+        for d in range(self.dim):
+            X = numerix.take(self.vertexCoords[d], self._orderedCellVertexIDs)
+            ext['min'].append(X.min())
+            ext['max'].append(X.max())
+
+        return ext
 
     """scaled geometery properties
     
