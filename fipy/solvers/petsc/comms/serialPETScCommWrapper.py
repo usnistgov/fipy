@@ -34,11 +34,16 @@
  # ###################################################################
  ##
 
+from petsc4py import PETSc
+
 from fipy.solvers.petsc.comms.petscCommWrapper import PETScCommWrapper
 
 __all__ = ["SerialPETScCommWrapper"]
 
 class SerialPETScCommWrapper(PETScCommWrapper):
+    def __init__(self):
+        super(SerialPETScCommWrapper, self).__init__(petsc4py_comm=PETSc.COMM_SELF)
+        
     @property
     def procID(self):
         return 0

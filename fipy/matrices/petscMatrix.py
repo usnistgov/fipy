@@ -9,7 +9,8 @@ from fipy.matrices.sparseMatrix import _SparseMatrix
 
 class _PETScMatrix(_SparseMatrix):
     
-    def __init__(self, matrix):
+    def __init__(self, matrix,
+                 rowMap=None, colMap=None):
         """Creates a wrapper for a PETSc matrix
 
         Allows basic python operations __add__, __sub__ etc.
@@ -19,6 +20,12 @@ class _PETScMatrix(_SparseMatrix):
           - `matrix`: The starting `PETSc.Mat` 
         """
         self.matrix = matrix
+        
+        self.rowMap = rowMap
+        self.colMap = colMap
+        
+        if self.rowMap is not None:
+            self.matrix.setLGMap(rmap=rowMap, cmap=colMap)
    
     def getCoupledClass(self):
         return _CoupledPETScMeshMatrix
@@ -34,6 +41,12 @@ class _PETScMatrix(_SparseMatrix):
             return m
         else:
             return _PETScMatrix(matrix=m)
+    
+    def __str__(self):
+        self.matrix.assemble()
+
+        from fipy.tools import parallelComm
+        return ''.join(parallelComm.allgather(_SparseMatrix.__str__(self)))
 
     def __iadd__(self, other):
         if other != 0:
@@ -144,14 +157,17 @@ class _PETScMatrix(_SparseMatrix):
             shape = numerix.shape(other)
             if shape == ():
                 return _PETScMatrix(matrix=self.matrix * other)
-            elif shape == (N,):
+            else: # elif shape == (N,):
                 x = PETSc.Vec().createMPI(N, comm=PETSc.COMM_WORLD)
+                if self.colMap is not None:
+                    x.setLGMap(self.colMap)
                 y = x.duplicate()
-                x[:] = other
+                localNonOverlappingColIDs = self._localNonOverlappingColIDs
+                x.setValuesLocal(localNonOverlappingColIDs.astype('int32'), other[localNonOverlappingColIDs])
                 self.matrix.mult(x, y)
-                return numerix.asarray(y)
-            else:
-                raise TypeError
+                return y[self._globalOverlappingColIDs.astype('int32')]
+#             else:
+#                 raise TypeError
             
     def __rmul__(self, other):
         if type(numerix.ones(1, 'l')) == type(other):
@@ -166,7 +182,7 @@ class _PETScMatrix(_SparseMatrix):
             
     @property
     def _shape(self):
-        return self.matrix.size
+        return self.matrix.sizes[0][0], self.matrix.sizes[1][1]
 
     @property
     def _range(self):
@@ -213,16 +229,43 @@ class _PETScMatrix(_SparseMatrix):
         val : array_like
             non-zero values
         """
+#         from fipy.tools.debug import PRINT
+#         PRINT("i:", i)
+#         PRINT("j:", j)
+#         PRINT("v:", v)
+        
         i = numerix.asarray(i)
         j = numerix.asarray(j)
         v = numerix.asarray(v)
         start_row, end_row = self.matrix.getOwnershipRange()
-        
+#         PRINT("start_row:", start_row)
+#         PRINT("end_row:", end_row)
+
         ix = numerix.lexsort([i, j])
+        ix = ix[(j[ix] >= start_row) & (j[ix] < end_row)]
         cols = i[ix]
         row_ptr = numerix.searchsorted(j[ix], 
+#                                        numerix.arange(0, self._shape[1]+1))
                                        numerix.arange(start_row, end_row + 1))
         vals = v[ix]
+        
+#         PRINT("i[ix]:", i[ix])
+#         PRINT("j[ix]:", j[ix])
+#         PRINT("v[ix]:", v[ix])
+
+        
+        
+#         PRINT("size:", self._shape)
+#         PRINT("shape:", self._shape[0])
+#         
+#         PRINT("row_ptr:", row_ptr)
+#         PRINT("cols:", cols)
+#         PRINT("vals:", vals)
+#         
+#         PRINT("size:", self.matrix.sizes)
+#         PRINT("owns-rows:", self.matrix.getOwnershipRange())
+#         PRINT("owns-cols:", self.matrix.getOwnershipRangesColumn())
+        
         # note: PETSc (at least via pip) only seems to handle 32 bit addressing
         return row_ptr.astype('int32'), cols.astype('int32'), vals
 
@@ -309,7 +352,8 @@ class _PETScMatrix(_SparseMatrix):
     
 class _PETScMatrixFromShape(_PETScMatrix):
     
-    def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None):
+    def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None,
+                 rowMap=None, colMap=None):
         """Instantiates and wraps a PETSc `Mat` matrix
 
         :Parameters:
@@ -318,6 +362,8 @@ class _PETScMatrixFromShape(_PETScMatrix):
           - `bandwidth`: The proposed band width of the matrix.
           - `sizeHint`: estimate of the number of non-zeros
           - `matrix`: pre-assembled `ll_mat` to use for storage
+          - `rowMap`: the map for the rows that this processor holds
+          - `colMap`: the map for the colums that ???
           
         """
         bandwidth = bandwidth 
@@ -325,12 +371,21 @@ class _PETScMatrixFromShape(_PETScMatrix):
             bandwidth = sizeHint / max(rows, cols)
         if matrix is None:
             matrix = PETSc.Mat()
-            matrix.create(PETSc.COMM_WORLD)
-            matrix.setSizes([rows, cols])
+            if rowMap is None:
+                if colMap is None:
+                    comm = PETSc.COMM_WORLD
+                else:
+                    comm = colMap.comm
+            else:
+                comm = rowMap.comm
+            matrix.create(comm)
+            # rows are owned per process
+            # cols are owned by everyone
+            matrix.setSizes([[rows, None], [cols, None]])
             matrix.setType('aij') # sparse
             matrix.setPreallocationNNZ(None) # FIXME: ??? #bandwidth)
                 
-        _PETScMatrix.__init__(self, matrix=matrix)
+        _PETScMatrix.__init__(self, matrix=matrix, rowMap=rowMap, colMap=colMap)
 
 class _PETScMeshMatrix(_PETScMatrixFromShape):
     def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, numberOfVariables=1, numberOfEquations=1):
@@ -348,10 +403,103 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
         self.numberOfEquations = numberOfEquations
-        rows = numberOfEquations * self.mesh.numberOfCells
-        cols = numberOfVariables * self.mesh.numberOfCells
-        _PETScMatrixFromShape.__init__(self, rows=rows, cols=cols, bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix)
 
+        comm = mesh.communicator.petsc4py_comm
+        rowMap = PETSc.LGMap().create(self._globalNonOverlappingRowIDs.astype('int32'), comm=comm)
+        colMap = PETSc.LGMap().create(self._globalOverlappingColIDs.astype('int32'), comm=comm)
+        
+        _PETScMatrixFromShape.__init__(self, 
+                                       rows=numberOfEquations * len(self.mesh._localNonOverlappingCellIDs), 
+                                       cols=numberOfVariables * self.mesh.globalNumberOfCells, 
+                                       bandwidth=bandwidth, 
+                                       sizeHint=sizeHint, 
+                                       matrix=matrix,
+                                       rowMap=rowMap,
+                                       colMap=colMap)
+
+    def _cellIDsToGlobalRowIDs(self, IDs):
+         N = len(IDs)
+         M = self.numberOfEquations
+         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.globalNumberOfCells).flatten()
+
+    def _cellIDsToGlobalColIDs(self, IDs):
+         N = len(IDs)
+         M = self.numberOfVariables
+         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.globalNumberOfCells).flatten()
+
+    def _cellIDsToLocalRowIDs(self, IDs):
+         M = self.numberOfEquations
+         N = len(IDs)
+         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.numberOfCells).flatten()
+
+    def _cellIDsToLocalColIDs(self, IDs):
+         M = self.numberOfVariables
+         N = len(IDs)
+         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.numberOfCells).flatten()
+
+    @property
+    def _globalNonOverlappingRowIDs(self):
+        return self._cellIDsToGlobalRowIDs(self.mesh._globalNonOverlappingCellIDs)
+
+    @property
+    def _globalNonOverlappingColIDs(self):
+        return self._cellIDsToGlobalColIDs(self.mesh._globalNonOverlappingCellIDs)
+
+    @property
+    def _globalOverlappingRowIDs(self):
+        return self._cellIDsToGlobalRowIDs(self.mesh._globalOverlappingCellIDs)
+
+    @property
+    def _globalCommonColIDs(self):
+        return range(0, self.numberOfVariables, self.mesh.globalNumberOfCells)
+                     
+    @property
+    def _globalOverlappingColIDs(self):
+        return self._cellIDsToGlobalColIDs(self.mesh._globalOverlappingCellIDs)
+
+    @property
+    def _localNonOverlappingRowIDs(self):
+        return self._cellIDsToLocalRowIDs(self.mesh._localNonOverlappingCellIDs)
+
+    @property
+    def _localNonOverlappingColIDs(self):
+        return self._cellIDsToLocalColIDs(self.mesh._localNonOverlappingCellIDs)
+
+    def _getStencil(self, id1, id2):
+        id1 = self._globalOverlappingRowIDs[id1]
+        id2 = self._globalOverlappingColIDs[id2]
+            
+        mask = numerix.in1d(id1, self._globalNonOverlappingRowIDs) 
+        id1 = id1[mask]
+        id2 = id2[mask]
+        
+        return id1, id2, mask
+
+    def _globalNonOverlapping(self, vector, id1, id2):
+        """Transforms and subsets local overlapping values and coordinates to global non-overlapping
+        
+        :Parameters:
+          - `vector`: The overlapping values to insert.
+          - `id1`: The local overlapping row indices.
+          - `id2`: The local overlapping column indices.
+          
+        :Returns: 
+          Tuple of (non-overlapping vector, 
+                    global non-overlapping row indices, 
+                    global non-overlapping column indices)
+        """
+        id1, id2, mask = self._getStencil(id1, id2)
+        vector = vector[mask]
+        return (vector, id1, id2)
+
+    def put(self, vector, id1, id2):
+        vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
+        _PETScMatrixFromShape.put(self, vector=vector, id1=id1, id2=id2)
+
+    def addAt(self, vector, id1, id2):
+        vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
+        _PETScMatrixFromShape.addAt(self, vector=vector, id1=id1, id2=id2)
+        
     def __mul__(self, other):
         if isinstance(other, _PETScMeshMatrix):
             self.matrix.assemblyBegin()
