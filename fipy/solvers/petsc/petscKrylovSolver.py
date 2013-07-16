@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  # 
- #  FILE: "trilinosAztecOOSolver.py"
+ #  FILE: "petscKrylovSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -70,14 +70,8 @@ class PETScKrylovSolver(PETScSolver):
         if self.preconditioner is not None:
             ksp.getPC().setType(self.preconditioner)
         ksp.setTolerances(rtol=self.tolerance, max_it=self.iterations)
-        # obtain sol & rhs vectors
-        xVec, bVec = L.matrix.getVecs()
-        xVec[:] = x
-        bVec[:] = b
-        L.matrix.assemblyBegin()
-        L.matrix.assemblyEnd()
-        # and next solve
-        ksp.setOperators(L.matrix)
+        L.assemblyBegin()
+        L.assemblyEnd()
+        ksp.setOperators(L)
         ksp.setFromOptions()
-        ksp.solve(bVec, xVec)
-        x[:] = xVec.array
+        ksp.solve(b, x)
