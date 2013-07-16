@@ -36,6 +36,8 @@
 
 __docformat__ = 'restructuredtext'
 
+from petsc4py import PETSc
+
 from fipy.tools import numerix
 from fipy.tools.comms.abstractCommWrapper import AbstractCommWrapper
 
@@ -47,6 +49,10 @@ class PETScCommWrapper(AbstractCommWrapper):
     Encapsulates capabilities needed for PETSc. 
     Some capabilities are not parallel.
     """
+    
+    def __init__(self):
+        self.petsc4py_comm = PETSc.COMM_WORLD
+        super(PETScCommWrapper, self).__init__()
     
     def Norm2(self, vec):
         return vec.norm(norm_type=1)

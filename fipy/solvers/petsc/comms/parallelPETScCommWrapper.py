@@ -49,7 +49,6 @@ class ParallelPETScCommWrapper(PETScCommWrapper):
     """
     
     def __init__(self):
-        self.petsc4py_comm = PETSc.COMM_WORLD
         self.mpi4py_comm = PETSc.COMM_WORLD.tompi4py()
         super(ParallelPETScCommWrapper, self).__init__()
         
