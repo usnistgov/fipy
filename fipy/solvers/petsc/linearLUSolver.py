@@ -88,7 +88,6 @@ class LinearLUSolver(PETScSolver):
             xError = x.copy()
 
             ksp.solve(errorVector, xError)
-            print xError.norm()
             x -= xError
             
         if 'FIPY_VERBOSE_SOLVER' in os.environ:
