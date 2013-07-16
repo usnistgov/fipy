@@ -66,18 +66,33 @@ class LinearLUSolver(PETScSolver):
         ksp.create(PETSc.COMM_WORLD)
         ksp.setType("preonly")
         ksp.getPC().setType(self.preconditioner)
-        ksp.setTolerances(rtol=self.tolerance, max_it=self.iterations)
         # TODO: SuperLU invoked with PCFactorSetMatSolverPackage(pc, MATSOLVERSUPERLU)
         #       see: http://www.mcs.anl.gov/petsc/petsc-dev/src/ksp/ksp/examples/tutorials/ex52.c.html
+        # PETSc.PC().setFactorSolverPackage("superlu")
         
-        # obtain sol & rhs vectors
-        xVec, bVec = L.matrix.getVecs()
-        xVec[:] = x
-        bVec[:] = b
-        L.matrix.assemblyBegin()
-        L.matrix.assemblyEnd()
-        # and next solve
-        ksp.setOperators(L.matrix)
+        L.assemblyBegin()
+        L.assemblyEnd()
+        ksp.setOperators(L)
         ksp.setFromOptions()
-        ksp.solve(bVec, xVec)
-        x[:] = xVec.array
+        
+        for iteration in range(self.iterations):
+            errorVector = L * x - b
+            tol = errorVector.norm()
+            
+            if iteration == 0:
+                tol0 = tol
+                
+            if (tol / tol0) <= self.tolerance:
+                break
+                
+            xError = x.copy()
+
+            ksp.solve(errorVector, xError)
+            print xError.norm()
+            x -= xError
+            
+        if 'FIPY_VERBOSE_SOLVER' in os.environ:
+            from fipy.tools.debug import PRINT        
+            PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
+            PRINT('residual:', errorVector.narm(1))
+
