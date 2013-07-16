@@ -16,12 +16,13 @@ The result is again tested in the same way:
 >>> valueLeft = 0.
 >>> valueRight = 1.
 
+>>> Lx = 20
 >>> mesh = Gmsh2D('''
 ...     cellSize = 0.5;
 ...     Point(2) = {0, 0, 0, cellSize};
-...     Point(3) = {20, 0, 0, cellSize};
-...     Point(4) = {20, 20, 0, cellSize};
-...     Point(5) = {0, 20, 0, cellSize};
+...     Point(3) = {%(Lx)g, 0, 0, cellSize};
+...     Point(4) = {%(Lx)g, %(Lx)g, 0, cellSize};
+...     Point(5) = {0, %(Lx)g, 0, cellSize};
 ...
 ...     Line(6) = {2, 3};
 ...     Line(7) = {3, 4};
@@ -31,7 +32,7 @@ The result is again tested in the same way:
 ...     Line Loop(10) = {6, 7, 8, 9};
 ...
 ...     Plane Surface(11) = {10};
-...     ''') # doctest: +GMSH
+...     ''' % locals()) # doctest: +GMSH
 
 >>> var = CellVariable(name = "solution variable",
 ...               mesh = mesh,
@@ -43,38 +44,31 @@ The result is again tested in the same way:
 >>> DiffusionTerm().solve(var) # doctest: +GMSH
 
 >>> from fipy import input
->>> if __name__ == '__main__':
-...     viewer = Viewer(vars = var)
-...     viewer.plot()
-...     varArray = numerix.array(var)
-...     x = mesh.cellCenters[0]
-...     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
-...     errorArray = varArray - analyticalArray
-...     errorVar = CellVariable(name = "absolute error",
-...                    mesh = mesh,
-...                    value = abs(errorArray))
-...     errorViewer = Viewer(vars = errorVar)
-...     errorViewer.plot()
-... 
-...     NonOrthoVar = CellVariable(name = "non-orthogonality",
-...                           mesh = mesh,
-...                           value = mesh._nonOrthogonality)
-...     NOViewer = Viewer(vars = NonOrthoVar)
-... 
-... 
-...     NOViewer.plot()
-...     input("finished")
-... else:
-...     Lx = 20
-...     x = mesh.cellCenters[0] # doctest: +GMSH
-...     analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx # doctest: +GMSH
-...     print(var.allclose(analyticalArray, atol = 0.025)) # doctest: +GMSH
-1
-
->>> max(mesh._nonOrthogonality) < 0.51 # doctest: +GMSH
+>>> x = mesh.cellCenters[0] # doctest: +GMSH
+>>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx # doctest: +GMSH
+>>> print var.allclose(analyticalArray, atol=0.025) # doctest: +GMSH
 True
 
+>>> errorVar = abs(var - analyticalArray)
+>>> errorVar.name = "absolute error"
 
+>>> NonOrthoVar = CellVariable(name="non-orthogonality",
+...                            mesh=mesh,
+...                            value=mesh._nonOrthogonality)
+>>> print max(NonOrthoVar) < 0.51 # doctest: +GMSH
+True
+
+>>> if __name__ == '__main__':
+...     viewer = Viewer(vars=var)
+...     viewer.plot()
+...     
+...     errorViewer = Viewer(vars=errorVar)
+...     errorViewer.plot()
+...
+...     NOViewer = Viewer(vars=NonOrthoVar)
+...     NOViewer.plot()
+...     
+...     raw_input("finished")
 
 Note that this test case will only work if you run it by running the
 main FiPy test suite. If you run it directly from the directory it is
