@@ -3,10 +3,11 @@ from fipy.solvers.petsc.linearPCGSolver import *
 from fipy.solvers.petsc.linearGMRESSolver import *
 from fipy.solvers.petsc.linearBicgSolver import *
 from fipy.solvers.petsc.linearCGSSolver import *
+from fipy.solvers.petsc.dummySolver import *
 
 DefaultSolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearGMRESSolver
-DummySolver = DefaultSolver
+DummySolver = DummySolver
 GeneralSolver = DefaultSolver
 
 __all__ = ["DefaultSolver",
