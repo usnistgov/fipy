@@ -39,29 +39,29 @@ class _GridRepresentation(_AbstractRepresentation):
 
         >>> m = fp.PeriodicGrid2DLeftRight(nx=10, ny=10)
         >>> v = fp.CellVariable(mesh=m, value=m.x)
-        >>> fp.dump.write(v, filename='dump.gz')
-        >>> v0 = fp.dump.read(filename='dump.gz')
+        >>> (f, filename) = fp.dump.write(v, extension='.gz')
+        >>> v0 = fp.dump.read(filename, f)
         >>> print((v == v0.mesh.x).all())
         True
 
         >>> m = fp.PeriodicGrid1D(nx=10)
         >>> v = fp.CellVariable(mesh=m, value=m.x)
-        >>> fp.dump.write(v, filename='dump.gz')
-        >>> v0 = fp.dump.read(filename='dump.gz')
+        >>> (f, filename) = fp.dump.write(v, extension='.gz')
+        >>> v0 = fp.dump.read(filename, f)
         >>> print((v == v0.mesh.x).all())
         True
 
         >>> m = fp.Tri2D(nx=10, ny=10)
         >>> v = fp.CellVariable(mesh=m, value=m.x)
-        >>> fp.dump.write(v, filename='dump.gz')
-        >>> v0 = fp.dump.read(filename='dump.gz')
+        >>> (f, filename) = fp.dump.write(v, extension='.gz')
+        >>> v0 = fp.dump.read(filename, f)
         >>> print((v == v0.mesh.x).all())
         True
 
         >>> m = fp.SkewedGrid2D(nx=10, ny=10)
         >>> v = fp.CellVariable(mesh=m, value=m.x)
-        >>> fp.dump.write(v, filename='dump.gz')
-        >>> v0 = fp.dump.read(filename='dump.gz')
+        >>> (f, filename) = fp.dump.write(v, extension='.gz')
+        >>> v0 = fp.dump.read(filename, f)
         >>> print((v == v0.mesh.x).all())
         True
 

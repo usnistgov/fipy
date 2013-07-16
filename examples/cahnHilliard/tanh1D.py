@@ -139,10 +139,10 @@ we update the display and output data about the progression of the solution
 ...     if __name__ == '__main__':
 ...         diff = abs(answer - numerix.array(var))
 ...         maxarg = numerix.argmax(diff)
-...         print('maximum error:', diff[maxarg])
+...         print('maximum error: {}'.format(diff[maxarg]))
 ...         print('element id:', maxarg)
-...         print('value at element ', maxarg, ' is ', var[maxarg])
-...         print('solution value', answer[maxarg])
+...         print('value at element {} is {}'.format(maxarg, var[maxarg]))
+...         print('solution value: {}'.format(answer[maxarg]))
 ... 
 ...         viewer.plot()
 
