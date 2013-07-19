@@ -58,11 +58,11 @@ The only requirement to run VKML is to register (registration is 100% free)
 in the nanoHUB_.
 
 
-.. _Prof. R. Edwin Garcia:                    http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://bicephalous.ecn.purdue.edu/~edwin
-.. _Purdue University:                        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.purdue.edu
-.. _Polycrystalline Growth and Coarsening:    http://www.nist.gov/cgi-bin/exit_nist.cgi?url=https://www.nanohub.org/tools/vkmlpsgg/
-.. _Dendritic Growth:                         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=https://www.nanohub.org/tools/vkmlggs/
-.. _Two-Dimensional Spinodal Decomposition:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=https://www.nanohub.org/tools/vkmlsd/
-.. _Three-Dimensional Spinodal Decomposition: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=https://www.nanohub.org/tools/vkmlsd3d/
+.. _Prof. R. Edwin Garcia:                    http://bicephalous.ecn.purdue.edu/~edwin
+.. _Purdue University:                        http://www.purdue.edu
+.. _Polycrystalline Growth and Coarsening:    https://www.nanohub.org/tools/vkmlpsgg/
+.. _Dendritic Growth:                         https://www.nanohub.org/tools/vkmlggs/
+.. _Two-Dimensional Spinodal Decomposition:   https://www.nanohub.org/tools/vkmlsd/
+.. _Three-Dimensional Spinodal Decomposition: https://www.nanohub.org/tools/vkmlsd3d/
 
-.. _nanoHUB:                                  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.nanoHUB.org
+.. _nanoHUB:                                  http://www.nanoHUB.org

@@ -80,7 +80,7 @@ Presentations
 
 We were honored to be invited to deliver a keynote presentation on
 "`Modeling of Materials with Python
-<http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.archive.org/details/scipy09_day2_02-Jonathan_Guyer>`_"
+<http://www.archive.org/details/scipy09_day2_02-Jonathan_Guyer>`_"
 at the `2009 Python for Scientific Computing Conference`_ at Caltech, 
 August 2009.
 
@@ -120,9 +120,9 @@ Other invited talks about FiPy:
 .. * "`A Finite Volume PDE Solver Using Python (FiPy)`_" 
    by J. E. Guyer at PyCon2004_.
 
-.. _A Finite Volume PDE Solver Using Python (FiPy) : http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/pycon/dc2004/papers/28/fipy.pdf
-.. _PyCon2004:      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/pycon/dc2004/
-.. _2009 Python for Scientific Computing Conference: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://conference.scipy.org/SciPy2009/
+.. _A Finite Volume PDE Solver Using Python (FiPy) : http://www.python.org/pycon/dc2004/papers/28/fipy.pdf
+.. _PyCon2004:      http://www.python.org/pycon/dc2004/
+.. _2009 Python for Scientific Computing Conference: http://conference.scipy.org/SciPy2009/
 
 .. |Granasy| unicode:: Gr U+00E1 n U+00E1 sy
 .. |Kornyei| unicode:: K U+00F6 rnyei

@@ -39,9 +39,9 @@ installing packages:
 
  * Use the operating system package manager, if possible.
  * Use the 
-   `pip installs python <http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.pip-installer.org/>`_ 
+   `pip installs python <http://www.pip-installer.org/>`_ 
    (:term:`pip`) tool to obtain software from the 
-   `Python Package Index <http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://pypi.python.org/pypi>`_ 
+   `Python Package Index <http://pypi.python.org/pypi>`_ 
    (:term:`PyPI`) repository::
 
      $ pip install package
@@ -87,7 +87,7 @@ with Git_.
    to :term:`FiPy` become available (upgrades via Git_ will handle
    this issue automatically).
 
-.. _Git:       http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/browserfipy
+.. _Git:       http://matforge.org/fipy/browserfipy
 .. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
 
 ---------------
@@ -170,7 +170,7 @@ If necessary, you can download_ and install it for your platform
    :term:`FiPy` requires at least version 2.4.x of :term:`Python`. See
    the specialized instructions if you wish to :ref:`RunUnderPython3`.
 
-.. _download: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/download/
+.. _download: http://www.python.org/download/
 
 :term:`Python` along with many of :term:`FiPy`'s required and optional
 packages is available with one of the following distributions.
@@ -335,9 +335,9 @@ We presently find that the combination of Homebrew_ and :term:`pip` is a
 pretty straightforward way to get most of :term:`FiPy`'s prerequesites. 
 See the `Miscellaneous Build Recipes`_ for up-to-date directions.
 
-.. _Fink: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.finkproject.org/
-.. _MacPorts: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.macports.org/
-.. _Homebrew: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mxcl.github.com/homebrew/
+.. _Fink: http://www.finkproject.org/
+.. _MacPorts: http://www.macports.org/
+.. _Homebrew: http://mxcl.github.com/homebrew/
 
 Windows Installation
 ====================
@@ -362,15 +362,15 @@ downloaded from <http://www.ctcms.nist.gov/fipy/download>. Simply run::
 to install. The `.deb` includes dependencies for all of the
 :ref:`REQUIREDPACKAGES` and :ref:`OPTIONALPACKAGES`.
 
-.. _tested regularly: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/build
-.. _Mac OS X: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.apple.com/macosx/
-.. _Debian Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.debian.org/
-.. _RedHat Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.redhat.com/
-.. _OpenSUSE Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.opensuse.org/
-.. _Ubuntu Linux: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.ubuntu.com/
-.. _Solaris: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://oracle.com/solaris
-.. _Windows: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windows/
-.. _Windows XP: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.microsoft.com/windowsxp/
+.. _tested regularly: http://matforge.org/fipy/build
+.. _Mac OS X: http://www.apple.com/macosx/
+.. _Debian Linux: http://www.debian.org/
+.. _RedHat Linux: http://www.redhat.com/
+.. _OpenSUSE Linux: http://www.opensuse.org/
+.. _Ubuntu Linux: http://www.ubuntu.com/
+.. _Solaris: http://oracle.com/solaris
+.. _Windows: http://www.microsoft.com/windows/
+.. _Windows XP: http://www.microsoft.com/windowsxp/
 
 Miscellaneous Build Recipes
 ===========================
@@ -387,11 +387,11 @@ We often post miscellaneous installation instructions on the
     We encourange you to contribute your own build recipes on the wiki_
     if they are significantly different.
 
-.. _Installing FiPy on Mac OS X using Homebrew: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/wiki/InstallFiPy/MacOSX/HomeBrew
-.. _Building a 64-bit scientific python environment for FiPy from source: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/wiki/InstallFiPy/MacOSX/SnowLeopard
-.. _Installing FiPy with pip: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/wiki/InstallFiPy/PipInstallsPython
-.. _wiki: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy
-.. _blog: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/blog
+.. _Installing FiPy on Mac OS X using Homebrew: http://matforge.org/fipy/wiki/InstallFiPy/MacOSX/HomeBrew
+.. _Building a 64-bit scientific python environment for FiPy from source: http://matforge.org/fipy/wiki/InstallFiPy/MacOSX/SnowLeopard
+.. _Installing FiPy with pip: http://matforge.org/fipy/wiki/InstallFiPy/PipInstallsPython
+.. _wiki: http://matforge.org/fipy
+.. _blog: http://matforge.org/fipy/blog
 
 .. _ENVIRONMENT:
 
@@ -436,9 +436,9 @@ variable.  See the `Alternate Installation`_ section of the
 in which you should use :option:`--prefix` instead of
 :option:`--home`.
 
-.. _Alternate Installation: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/alt-install-windows.html
+.. _Alternate Installation: http://docs.python.org/inst/alt-install-windows.html
 
-.. _Installing Python Modules: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/inst/
+.. _Installing Python Modules: http://docs.python.org/inst/
 
 An alternative to setting the :envvar:`PYTHONPATH` is to employ one of the
 utilities that manage packages and their dependencies independently of
@@ -467,7 +467,7 @@ requires admin privileges, but thereafter, creating new virtual
 environments and installing packages into them does not require admin
 privileges.
 
-.. _Virtualenvwrapper: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.doughellmann.com/projects/virtualenvwrapper
+.. _Virtualenvwrapper: http://www.doughellmann.com/projects/virtualenvwrapper
 
 .. _documentation:GIT:
 

@@ -99,7 +99,7 @@ class build_docs(Command):
                     + apidoc_args + ['documentation/tutorial/package'])
 
         if self.html:
-            sphinx.main(['sphinx-build', '-b', 'html'] + sphinx_args + ['documentation/_build/html/'])
+            sphinx.main(['sphinx-build', '-b', 'redirecting_html'] + sphinx_args + ['documentation/_build/html/'])
 
         if self.pdf:
             sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])

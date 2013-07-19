@@ -62,13 +62,13 @@ James O'Beirne
 .. _National Institute of Standards and Technology:                http://www.nist.gov/
 .. _SURF:                                                          http://www.surf.nist.gov/surf2.htm
 
-.. _Montgomery Blair High School:                                  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.mbhs.edu/
-.. _Smith College:                                                 http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.smith.edu/
-.. _Harvey Mudd College:                                           http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.hmc.edu/
+.. _Montgomery Blair High School:                                  http://www.mbhs.edu/
+.. _Smith College:                                                 http://www.smith.edu/
+.. _Harvey Mudd College:                                           http://www.hmc.edu/
 .. _University of Maine:                                           
-.. _University of Maryland:                                        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.maryland.edu/
+.. _University of Maryland:                                        http://www.maryland.edu/
 
 .. _Jon Guyer:      http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Jonathan+Guyer
 .. _Daniel Wheeler: http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Daniel+Wheeler
 .. _Jim Warren:     http://www.ctcms.nist.gov/~jwarren/
-.. _Andrew Reeve:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.geology.um.maine.edu/HTML-ERS/People/PeopleFSAndyReeve.htm
+.. _Andrew Reeve:   http://www.geology.um.maine.edu/HTML-ERS/People/PeopleFSAndyReeve.htm

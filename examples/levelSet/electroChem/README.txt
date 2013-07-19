@@ -76,7 +76,7 @@ of high surfactant concentration have an increased deposition rate.
    :align: left
    :alt: FiPy simulation contours of superfill
 
-.. _Mayavi:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
+.. _Mayavi:   http://mayavi.sourceforge.net
 
 .. |latexSimpleTrenchSystem| raw:: latex
 

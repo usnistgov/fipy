@@ -45,7 +45,7 @@ argument. In the absence of :ref:`FlagsAndEnvironmentVariables`,
 solver suite for generic solvers is :ref:`PYSPARSE` followed by
 :ref:`TRILINOS`, :ref:`PYAMG` and :ref:`SCIPY`.
 
-.. _Python 3.x:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://docs.python.org/py3k/
+.. _Python 3.x:   http://docs.python.org/py3k/
 
 .. _PYSPARSE:
 
