@@ -253,11 +253,11 @@ or a
 .. _MSED:                 http://www.nist.gov/mml/msed/
 .. _NIST:                 http://www.nist.gov/
 .. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.tar.gz
-.. _tracking system:      http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy/report
+.. _tracking system:      http://matforge.org/fipy/report
 .. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
-.. _Sourceforge:          http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.sourceforge.net/projects/fipy
-.. _Materials Digital Library Pathway: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matdl.org
-.. _MatForge:             http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/
+.. _Sourceforge:          http://www.sourceforge.net/projects/fipy
+.. _Materials Digital Library Pathway: http://matdl.org
+.. _MatForge:             http://matforge.org/
 
 .. bibmissing:: /documentation/refs.bib
     :sort:

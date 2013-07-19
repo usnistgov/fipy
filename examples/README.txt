@@ -70,6 +70,6 @@ please `contact us`_.
    updating/index
 
 
-.. _Python:         http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/
-.. _doctest:        http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/doc/current/lib/module-doctest.html
+.. _Python:         http://www.python.org/
+.. _doctest:        http://www.python.org/doc/current/lib/module-doctest.html
 .. _contact us:     mailto:fipy@nist.gov

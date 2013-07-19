@@ -83,10 +83,10 @@ For those who are interested in learning more about Git, a wide variety of
 online sources are available, starting with the `official Git website`_. 
 The `Pro Git book`_ [ProGit]_ is particularly instructive.
 
-.. _official Git website: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://git-scm.com/
+.. _official Git website: http://git-scm.com/
 
-.. _Pro Git book: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://git-scm.com/book
+.. _Pro Git book: http://git-scm.com/book
 
-.. _MatForge: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://matforge.org/fipy
+.. _MatForge: http://matforge.org/fipy
 
-.. _a successful Git branching model: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://nvie.com/posts/a-successful-git-branching-model/
+.. _a successful Git branching model: http://nvie.com/posts/a-successful-git-branching-model/
