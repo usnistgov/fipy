@@ -73,21 +73,12 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
         self.vertexCoords += self.origin
         self.args['origin'] = self.origin
  
-    @property
-    def cellCenters(self):
-        from fipy.variables.cellVariable import CellVariable
-        return CellVariable(mesh=self, 
-                            value=self._scaledCellCenters + self.origin,
-                            rank=1)
-                            
-    @property
-    def faceCenters(self):
+    def _calcFaceCenters(self):
         return super(CylindricalNonUniformGrid2D, self)._calcFaceCenters() + self.origin
          
-    @property
-    def cellVolumes(self):
-        return super(CylindricalNonUniformGrid2D, self).cellVolumes \
-          * self.cellCenters[0].value
+    def _calcCellVolumes(self):
+        return super(CylindricalNonUniformGrid2D, self)._calcCellVolumes() \
+          * self._calcCellCenters()[0]
   
     def _translate(self, vector):
         return CylindricalNonUniformGrid2D(dx=self.args['dx'], nx=self.args['nx'], 
