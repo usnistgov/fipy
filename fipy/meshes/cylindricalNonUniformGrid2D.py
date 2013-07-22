@@ -311,6 +311,12 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             >>> print isinstance(fp.CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
             True
             
+        Test for http://matforge.org/fipy/ticket/650. exteriorFaces were
+        ndarrays rather than FaceVariables.
+        
+            >>> print isinstance(m.facesTop, fp.FaceVariable)
+            True
+            
             
         """
 
