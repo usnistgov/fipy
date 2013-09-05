@@ -34,8 +34,8 @@ http://dir.gmane.org/gmane.comp.python.fipy
 The mailing list archive_ is hosted by GMANE_. Any mail sent to
 fipy@nist.gov will appear in this publicly available archive_.
 
-.. _GMANE:    http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://gmane.org/
+.. _GMANE:    http://gmane.org/
 
-.. _archive: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://dir.gmane.org/gmane.comp.python.fipy
+.. _archive: http://dir.gmane.org/gmane.comp.python.fipy
 
 

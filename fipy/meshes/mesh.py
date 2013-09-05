@@ -46,7 +46,7 @@ from fipy.meshes.topologies.meshTopology import _MeshTopology
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools import serial
+from fipy.tools import serialComm
 
 __all__ = ["MeshAdditionError", "Mesh"]
 
@@ -61,7 +61,7 @@ class Mesh(AbstractMesh):
         This is built for a non-mixed element mesh.
     """
 
-    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serial, _RepresentationClass=_MeshRepresentation, _TopologyClass=_MeshTopology):
+    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serialComm, _RepresentationClass=_MeshRepresentation, _TopologyClass=_MeshTopology):
         super(Mesh, self).__init__(communicator=communicator,
                                    _RepresentationClass=_RepresentationClass,
                                    _TopologyClass=_TopologyClass)

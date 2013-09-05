@@ -128,23 +128,50 @@ class _AbstractConvectionTerm(FaceTerm):
         return projectedCoefficients.sum(0)
         
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        r"""
+        Testing that the sign of the equation is taken into account
+        when evaluation upwind direction.
 
+        >>> from fipy import Grid1D, CellVariable
+        >>> from fipy import TransientTerm, ConvectionTerm, ImplicitSourceTerm
+
+        >>> m = Grid1D(nx=3, dx=0.5)
+        >>> v = CellVariable(mesh=m)
+        >>> v.constrain(1, m.facesLeft)
+        >>> v.constrain(0, m.facesRight)
+
+        >>> (-TransientTerm(coeff=1 / m.x) ==
+        ...  ConvectionTerm(coeff=[[1]])
+        ...  + ImplicitSourceTerm(coeff=m.x)).solve(v, dt=1.)
+
+        >>> v0 = v.copy()
+        >>> v[:] = 0
+        >>> (TransientTerm(coeff=1 / m.x) ==
+        ...  - ConvectionTerm(coeff=[[1]])
+        ...  - ImplicitSourceTerm(coeff=m.x)).solve(v, dt=1.)
+
+        >>> print numerix.allclose(v, v0)
+        True
+        
+        """
+                
         if self.stencil is None:
 
-            small = -1e-20
+            geomCoeff = self._getGeomCoeff(var)
+            large = 1e+20
+            pecletLarge = large - (geomCoeff < 0) * (2 * large)
+            if numerix.all(self._getDiagonalSign(transientGeomCoeff, diffusionGeomCoeff) < 0):
+                pecletLarge = -pecletLarge
 
-            if diffusionGeomCoeff is None:
-                diffCoeff = small
+            if diffusionGeomCoeff is None or diffusionGeomCoeff[0] is None:
+                peclet = pecletLarge
             else:
-                diffCoeff = diffusionGeomCoeff[0]
-                if diffCoeff is None:
-                    diffCoeff = small
-                else:
-                    diffCoeff = diffCoeff.numericValue
-                    diffCoeff = (diffCoeff == 0) * small + diffCoeff
+                diffCoeff = diffusionGeomCoeff[0].numericValue
+                diffCoeff = diffCoeff - (diffCoeff == 0) * geomCoeff / pecletLarge
+                peclet = -geomCoeff / diffCoeff
+                    
+            alpha = self._alpha(peclet)
 
-            alpha = self._alpha(-self._getGeomCoeff(var) / diffCoeff)
-            
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
                                           'cell 1 offdiag' : (1-alpha),
                                           'cell 2 diag'    : -(1-alpha),

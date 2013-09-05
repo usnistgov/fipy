@@ -40,7 +40,7 @@ from fipy.tools import numerix
 
 def _BinaryOperatorVariable(operatorClass=None):
     """
-    Test BinOp pickeling
+    Test BinOp pickling
 
         >>> from fipy import Grid1D, FaceVariable, CellVariable, dump, Variable
         >>> import os, sys
@@ -97,18 +97,6 @@ def _BinaryOperatorVariable(operatorClass=None):
             else:
                 return "(" + operatorClass._getRepresentation(self, style=style, argDict=argDict, id=id, freshen=freshen) + ")"
 
-        def __reduce__(self):
-            """
-            Allows binOps to be pickled
-            """
-            state =  self.__getstate__()
-            if 'mesh' in state.keys():
-                args = (state['mesh'],)
-            else:
-                args = ()
-                        
-            return (self._variableClass, args, self.__getstate__())
-            
     return binOp
 
 def _test(): 

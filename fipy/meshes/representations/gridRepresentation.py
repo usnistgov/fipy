@@ -62,7 +62,44 @@ class _GridRepresentation(_AbstractRepresentation):
                 dnstr.append(n + "=" + str(self.mesh.args[n]))
 
         return "%s(%s)" % (self.mesh.__class__.__name__, ", ".join(dnstr))
-                               
+
+    def _test(self):
+        """
+
+        Check that the following grid classes can be pickled and unpickled.
+
+        >>> import fipy as fp
+
+        >>> m = fp.PeriodicGrid2DLeftRight(nx=10, ny=10)
+        >>> v = fp.CellVariable(mesh=m, value=m.x)
+        >>> fp.dump.write(v, filename='dump.gz')
+        >>> v0 = fp.dump.read(filename='dump.gz')
+        >>> print (v == v0.mesh.x).all()
+        True
+        
+        >>> m = fp.PeriodicGrid1D(nx=10)
+        >>> v = fp.CellVariable(mesh=m, value=m.x)
+        >>> fp.dump.write(v, filename='dump.gz')
+        >>> v0 = fp.dump.read(filename='dump.gz')
+        >>> print (v == v0.mesh.x).all()
+        True
+        
+        >>> m = fp.Tri2D(nx=10, ny=10)
+        >>> v = fp.CellVariable(mesh=m, value=m.x)
+        >>> fp.dump.write(v, filename='dump.gz')
+        >>> v0 = fp.dump.read(filename='dump.gz')
+        >>> print (v == v0.mesh.x).all()
+        True
+        
+        >>> m = fp.SkewedGrid2D(nx=10, ny=10)
+        >>> v = fp.CellVariable(mesh=m, value=m.x)
+        >>> fp.dump.write(v, filename='dump.gz')
+        >>> v0 = fp.dump.read(filename='dump.gz')
+        >>> print (v == v0.mesh.x).all()
+        True
+        
+        """
+        
 class _Grid1DRepresentation(_GridRepresentation):
 
     def repr(self):
@@ -78,3 +115,9 @@ class _Grid3DRepresentation(_GridRepresentation):
     def repr(self):
         return self._repr(dns=[("dx", "nx"), ("dy", "ny"), ("dz", "nz")])
  
+def _test():
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
+
+if __name__ == "__main__":
+    _test()

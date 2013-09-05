@@ -86,6 +86,20 @@ class _NonDiffusionTerm(_UnaryTerm):
     def _diffusionVars(self):
         return []
 
+    def _getDiagonalSign(self, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        if transientGeomCoeff is not None and diffusionGeomCoeff is not None:
+            diagonalSign = numerix.where(numerix.array(numerix.all(transientGeomCoeff == 0, axis=-1)),
+                                         numerix.array(2 * numerix.all(diffusionGeomCoeff[0] <= 0, axis=-1) - 1),
+                                         numerix.array(2 * numerix.all(transientGeomCoeff >= 0, axis=-1) - 1))
+        elif transientGeomCoeff is not None:
+            diagonalSign = 2 * numerix.all(transientGeomCoeff >= 0, axis=-1) - 1
+        elif diffusionGeomCoeff is not None:
+            diagonalSign = 2 * numerix.all(diffusionGeomCoeff[0] <= 0, axis=-1) - 1
+        else:
+            diagonalSign = 1
+			
+        return diagonalSign
+    
     def _test(self):
         r"""
         Test stuff.

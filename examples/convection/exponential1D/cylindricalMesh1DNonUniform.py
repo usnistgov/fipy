@@ -44,7 +44,7 @@ given by
 with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 
 >>> diffCoeff = 1.
->>> convCoeff = ((10.,), (0.,))
+>>> convCoeff = ((10.,),)
     
 We define a 1D cylindrical mesh representing an anulus. The mesh has a
 non-constant cell spacing.
@@ -56,7 +56,7 @@ non-constant cell spacing.
 >>> nr = 100
 >>> Rratio = (r1 / r0)**(1 / float(nr))
 >>> dr = r0 * (Rratio - 1) * Rratio**numerix.arange(nr)
->>> mesh = CylindricalGrid2D(dr=dr) + ((r0,),)
+>>> mesh = CylindricalGrid1D(dr=dr) + ((r0,),)
 
 >>> valueLeft = 0.
 >>> valueRight = 1.

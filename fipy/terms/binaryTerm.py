@@ -72,12 +72,6 @@ class _BinaryTerm(_AbstractBinaryTerm):
 
             term._buildCache(tmpMatrix, tmpRHSvector)
 
-        if ('FIPY_DISPLAY_MATRIX' in os.environ
-             and os.environ['FIPY_DISPLAY_MATRIX'].lower() == "terms"): 
-             self._viewer.title = "%s %s" % (var.name, repr(self))
-             self._viewer.plot(matrix=matrix, RHSvector=RHSvector) 
-             raw_input()
-             
         return (var, matrix, RHSvector)
     
     def _getDefaultSolver(self, var, solver, *args, **kwargs):

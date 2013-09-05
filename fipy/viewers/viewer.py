@@ -156,13 +156,13 @@ class AbstractViewer(object):
         if datamin is None:
             datamin = 1e300
             for var in vars:
-                datamin = min(datamin, min(var))
+                datamin = min(datamin, numerix.nanmin(var))
 
         if datamax is None:
             from fipy.tools import numerix
             datamax = -1e300
             for var in vars:
-                datamax = max(datamax, max(var))
+                datamax = max(datamax, numerix.nanmax(var))
                 
         return datamin, datamax
         
@@ -187,14 +187,14 @@ class AbstractViewer(object):
         This routine attempts to be savvy about running in parallel.
         """
         try:
-            from fipy.tools import parallel
-            parallel.Barrier()
+            from fipy.tools import parallelComm
+            parallelComm.Barrier()
             AbstractViewer._saved_stdout.flush()
-            if parallel.procID == 0:
+            if parallelComm.procID == 0:
                 txt = AbstractViewer._serial_doctest_raw_input(prompt)
             else:
                 txt = ""
-            parallel.Barrier()
+            parallelComm.Barrier()
         except ImportError:
             txt = AbstractViewer._serial_doctest_raw_input(prompt)
         return txt

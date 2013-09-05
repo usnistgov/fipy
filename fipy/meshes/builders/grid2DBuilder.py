@@ -42,7 +42,6 @@ from fipy.meshes.builders.abstractGridBuilder import _AbstractGridBuilder
 from fipy.tools import inline  
 from fipy.tools import numerix
 from fipy.tools import vector
-from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.meshes.builders.utilityClasses import (_UniformNumPts,
                                                  _DOffsets,
                                                  _UniformOrigin,

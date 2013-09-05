@@ -99,7 +99,7 @@ class build_docs(Command):
                     + apidoc_args + ['documentation/tutorial/package'])
 
         if self.html:
-            sphinx.main(['sphinx-build', '-b', 'html'] + sphinx_args + ['documentation/_build/html/'])
+            sphinx.main(['sphinx-build', '-b', 'redirecting_html'] + sphinx_args + ['documentation/_build/html/'])
 
         if self.pdf:
             sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
@@ -238,6 +238,9 @@ def getVersion():
     if os.path.exists('.git'):
         try:
             out = _minimal_ext_cmd(['git', 'describe', '--tags', '--match', 'version-*'])
+            # ticket:475 - fix for bytecode received in Py3k
+            # http://jeetworks.org/node/67
+            out = out.decode("utf-8")
             version = out.strip().replace('version-', '').replace('_', '.').replace('-', '-dev', 1)
         except OSError:
             import warnings

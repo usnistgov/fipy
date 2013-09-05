@@ -34,9 +34,7 @@
 
 __docformat__ = 'restructuredtext'
 
-
 from fipy.terms.abstractUpwindConvectionTerm import _AbstractUpwindConvectionTerm
-from fipy.variables.faceVariable import FaceVariable
 
 __all__ = ["UpwindConvectionTerm"]
 
@@ -70,6 +68,7 @@ class UpwindConvectionTerm(_AbstractUpwindConvectionTerm):
             >>> mesh = Grid1D(nx=nx, dx=L / nx)
             >>> var = CellVariable(mesh=mesh)
 
+            >>> from fipy.variables.faceVariable import FaceVariable
             >>> convCoeff = FaceVariable(mesh=mesh, rank=1)
             >>> diffCoeff = FaceVariable(mesh=mesh, value=1e-20)
             >>> x = mesh.faceCenters[0]

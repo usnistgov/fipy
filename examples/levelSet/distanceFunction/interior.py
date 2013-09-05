@@ -47,6 +47,8 @@ given by:
     
 Do the tests:
 
+>>> var.calcDistanceFunction(order=1) #doctest: +LSM
+
 >>> dX = dx / 2.
 >>> dY = dy / 2.
 >>> mm = dX * dY / numerix.sqrt(dX**2 + dY**2) 
@@ -63,7 +65,7 @@ Do the tests:
 ...                           dX  ,  -dX ,   -v1 ,  -dX ,   dX  ,
 ...                           dX  ,  -mm ,   -dY ,  -mm ,   dX  ,
 ...                           v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
->>> print var.allclose(values, atol = 1e-10)
+>>> print var.allclose(values, atol = 1e-10) #doctest: +LSM
 1
 
 """
@@ -79,13 +81,13 @@ ny = 5
 Lx = nx * dx
 Ly = ny * dy
 
-from fipy.tools import serial
-mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny, communicator=serial)
+from fipy.tools import serialComm
+mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny, communicator=serialComm)
 
 var = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = -1,
+    value = -1.,
     hasOld = 1
     )
 
@@ -93,9 +95,8 @@ x, y = mesh.cellCenters
 var.setValue(1, where=((x < dx) | (x > (Lx - dx))
                        | (y < dy) | (y > (Ly - dy))))
              
-var.calcDistanceFunction()
-
 if __name__ == '__main__':
+    var.calcDistanceFunction(order=1)
     viewer = Viewer(vars=var, datamin=-5., datamax=5.)
     viewer.plot()
     raw_input('finished')

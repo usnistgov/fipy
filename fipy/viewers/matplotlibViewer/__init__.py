@@ -5,6 +5,7 @@ from fipy.viewers.matplotlibViewer.matplotlib2DGridViewer import *
 from fipy.viewers.matplotlibViewer.matplotlib2DGridContourViewer import *
 from fipy.viewers.matplotlibViewer.matplotlib2DViewer import *
 from fipy.viewers.matplotlibViewer.matplotlibVectorViewer import *
+from fipy.viewers.matplotlibViewer.matplotlibStreamViewer import *
 
 __all__ = ["MatplotlibViewer"]
 __all__.extend(matplotlib1DViewer.__all__)
@@ -12,6 +13,7 @@ __all__.extend(matplotlib2DGridViewer.__all__)
 __all__.extend(matplotlib2DGridContourViewer.__all__)
 __all__.extend(matplotlib2DViewer.__all__)
 __all__.extend(matplotlibVectorViewer.__all__)
+__all__.extend(matplotlibStreamViewer.__all__)
 
 def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
     """Generic function for creating a `MatplotlibViewer`. 

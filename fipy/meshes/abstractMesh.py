@@ -37,7 +37,7 @@ __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractMesh"]
 
-from fipy.tools import serial
+from fipy.tools import serialComm
 from fipy.tools import numerix
 from fipy.tools.decorators import getsetDeprecated
 from fipy.tools.numerix import MA
@@ -179,6 +179,17 @@ class AbstractMesh(object):
             return self.cellCenters[2]
         else:
             raise AttributeError, '1D and 2D meshes do not have a "z" attribute.'
+            
+    @property
+    def extents(self):
+        ext = dict(min=[], max=[])
+        
+        for d in range(self.dim):
+            X = numerix.take(self.vertexCoords[d], self._orderedCellVertexIDs)
+            ext['min'].append(X.min())
+            ext['max'].append(X.max())
+
+        return ext
 
     """scaled geometery properties
     
@@ -200,8 +211,8 @@ class AbstractMesh(object):
         `faces2` are not altered, they still remain as members of
         exterior faces.
 
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
+           >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
+           >>> mesh = NonUniformGrid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
            >>> print (mesh.cellFaceIDs == [[0, 1, 2, 3],
            ...                             [7, 8, 10, 11],

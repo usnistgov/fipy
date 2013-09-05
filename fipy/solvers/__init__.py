@@ -1,5 +1,5 @@
 from fipy.tools.parser import _parseSolver
-from fipy.tools  import parallel as _parallel
+from fipy.tools  import parallelComm as _parallelComm
 
 from fipy.solvers.solver import *
 __all__ = list(solver.__all__)
@@ -19,7 +19,7 @@ class SerialSolverError(Exception):
         super(SerialSolverError, self).__init__(solver + ' does not run in parallel')
 
 if solver == "pysparse":
-    if _parallel.Nproc > 1:
+    if _parallelComm.Nproc > 1:
         raise SerialSolverError('pysparse')
     from fipy.solvers.pysparse import *
     __all__.extend(pysparse.__all__)
@@ -38,7 +38,7 @@ elif solver == "trilinos":
         _MeshMatrix =  _TrilinosMeshMatrix
 
 elif solver == "scipy":
-    if _parallel.Nproc > 1:
+    if _parallelComm.Nproc > 1:
         raise SerialSolverError('scipy')
     from fipy.solvers.scipy import *
     __all__.extend(scipy.__all__)
@@ -46,7 +46,7 @@ elif solver == "scipy":
     _MeshMatrix = _ScipyMeshMatrix
     
 elif solver == "pyamg":
-    if _parallel.Nproc > 1:
+    if _parallelComm.Nproc > 1:
         raise SerialSolverError('pyamg')
     from fipy.solvers.pyAMG import *
     __all__.extend(pyAMG.__all__)
@@ -66,8 +66,8 @@ elif solver is None:
     exceptions = []
 
     try:
-        if _parallel.Nproc > 1:
-            raise SerialSolverError('pysparse solvers do not run in parallel')
+        if _parallelComm.Nproc > 1:
+            raise SerialSolverError('pysparse')
         from fipy.solvers.pysparse import *
         __all__.extend(pysparse.__all__)
         solver = "pysparse"
@@ -92,7 +92,7 @@ elif solver is None:
             exceptions.append(inst)
 
             try:
-                if _parallel.Nproc > 1:
+                if _parallelComm.Nproc > 1:
                     raise SerialSolverError('pyamg')
                 from fipy.solvers.pyAMG import *
                 __all__.extend(pyAMG.__all__)
@@ -103,7 +103,7 @@ elif solver is None:
                 exceptions.append(inst)
 
                 try:
-                    if _parallel.Nproc > 1:
+                    if _parallelComm.Nproc > 1:
                         raise SerialSolverError('scipy')
                     from fipy.solvers.scipy import *
                     __all__.extend(scipy.__all__)
@@ -120,4 +120,12 @@ elif solver is None:
 
 else:
     raise ImportError, 'Unknown solver package %s' % solver
+
+
+from fipy.tests.doctestPlus import register_skipper
+
+register_skipper(flag='PYSPARSE_SOLVER',
+                 test=lambda: solver == 'pysparse',
+                 why="the PySparse solvers are not being used.",
+                 skipWarning=True)
 

@@ -99,6 +99,10 @@ are needed to run the test:
   ``PROCESSOR_2_OF_3``
     The test will only be run on processor ID 2 of a three processor job.
 
+  ``LSMLIB``
+    The :mod:`lsmlib` package must be importable.
+
+
 Further directives can be defined using
 :func:`~fipy.tests.doctestPlus.register_skipper`. These definitions should
 be placed in the file to which they pertain, e.g., ``GMSH`` is defined in

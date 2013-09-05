@@ -177,7 +177,10 @@ class Term(object):
             if var is None:
                 name = ""
             else:
-                name = var.name
+                if not hasattr(var, "name"):
+                    name = ""
+                else:
+                    name = var.name
             self._viewer.title = r"%s %s" % (name, repr(self))
             from fipy.variables.coupledCellVariable import _CoupledCellVariable
             if isinstance(solver.RHSvector, _CoupledCellVariable):
@@ -321,6 +324,7 @@ class Term(object):
 
         `justErrorVector` returns the overlapping local value in parallel (not the non-overlapping value).
 
+        >>> from fipy.solvers import DummySolver
         >>> from fipy import *
         >>> m = Grid1D(nx=10)
         >>> v = CellVariable(mesh=m)
@@ -466,7 +470,10 @@ class Term(object):
         
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
-
+        
+    def _getDiagonalSign(self, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        raise NotImplementedError
+    
     def _getDiffusionGeomCoeff(self, var):
         return None
 
@@ -668,6 +675,7 @@ class Term(object):
         >>> print numerix.allequal(solver.RHSvector, [-10, -10, -10])  # doctest: +PROCESSOR_0
         True
 
+        >>> from fipy.solvers import DummySolver
         >>> eq.solve(var=B, solver=DummySolver())
 
         >>> m = Grid1D(nx=2)
