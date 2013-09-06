@@ -259,6 +259,3 @@ or a
 .. _Materials Digital Library Pathway: http://matdl.org
 .. _MatForge:             http://matforge.org/
 
-.. bibmissing:: /documentation/refs.bib
-    :sort:
-

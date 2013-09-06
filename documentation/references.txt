@@ -1,0 +1,7 @@
+==========
+References
+==========
+
+.. bibmissing:: /documentation/refs.bib
+    :sort:
+
