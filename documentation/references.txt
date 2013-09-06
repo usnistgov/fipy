@@ -2,6 +2,9 @@
 References
 ==========
 
-.. bibmissing:: /documentation/refs.bib
+.. bibliography:: /documentation/refs.bib
+   :all:
+
+.. .. bibmissing:: /documentation/refs.bib
     :sort:
 

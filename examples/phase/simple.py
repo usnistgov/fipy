@@ -374,7 +374,7 @@ and thus must redeclare :math:`\phi` on the new mesh
 >>> phase.setValue(0., where=x > L/2)
 
 We choose the parameter values appropriate for nickel, given in
-[Warren:1995]_
+:cite:`Warren:1995`
 
 .. index:: Variable
 

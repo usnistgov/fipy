@@ -81,7 +81,7 @@ Any other branches will not generally be of interest to most users.
 
 For those who are interested in learning more about Git, a wide variety of 
 online sources are available, starting with the `official Git website`_. 
-The `Pro Git book`_ [ProGit]_ is particularly instructive.
+The `Pro Git book`_ :cite:`ProGit` is particularly instructive.
 
 .. _official Git website: http://git-scm.com/
 

@@ -114,7 +114,7 @@ We consider a very simplified model that has partial molar volumes
 :math:`\bar{V}_{M+1} = \cdots = \bar{V}_{N} = 1` for the "substitutionals".
 This approximation has been used in a number of models where density
 effects are ignored, including the treatment of electrons in
-electrodeposition processes [ElPhFI]_ [ElPhFII]_. Under these
+electrodeposition processes :cite:`ElPhFI` :cite:`ElPhFII`. Under these
 constraints
 
 .. math::
