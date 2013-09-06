@@ -36,7 +36,6 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
-from fipy.solvers import DefaultAsymmetricSolver, LinearPCGSolver
 from fipy.variables.variable import Variable
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.variables.surfactantConvectionVariable import SurfactantConvectionVariable
@@ -318,6 +317,7 @@ class AdsorbingSurfactantEquation():
                 from fipy.solvers.pyAMG.linearGeneralSolver import LinearGeneralSolver
                 solver = LinearGeneralSolver(tolerance=1e-15, iterations=2000)
             else:
+                from fipy.solvers import LinearPCGSolver
                 solver = LinearPCGSolver()
             
         if type(boundaryConditions) not in (type(()), type([])):
@@ -347,6 +347,7 @@ class AdsorbingSurfactantEquation():
 	"""
         self.dt.setValue(dt)
         if solver is None:
+            from fipy.solvers import DefaultAsymmetricSolver
             solver = DefaultAsymmetricSolver()
         
         if type(boundaryConditions) not in (type(()), type([])):

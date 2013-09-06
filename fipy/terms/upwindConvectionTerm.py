@@ -35,7 +35,6 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.abstractUpwindConvectionTerm import _AbstractUpwindConvectionTerm
-from fipy.solvers import DefaultAsymmetricSolver
 
 __all__ = ["UpwindConvectionTerm"]
 
@@ -58,6 +57,7 @@ class UpwindConvectionTerm(_AbstractUpwindConvectionTerm):
         if solver and not solver._canSolveAsymmetric():
             import warnings
             warnings.warn("%s cannot solve assymetric matrices" % solver)
+        from fipy.solvers import DefaultAsymmetricSolver
         return solver or DefaultAsymmetricSolver(*args, **kwargs)
     
     def _testPecletSign(self):

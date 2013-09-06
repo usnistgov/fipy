@@ -37,7 +37,6 @@ __docformat__ = 'restructuredtext'
 import os
 
 from fipy.tools import numerix
-from fipy.solvers import DefaultSolver
 from fipy.terms import AbstractBaseClassError
 from fipy.terms import SolutionVariableRequiredError
 from fipy.tools.decorators import getsetDeprecated
@@ -401,6 +400,7 @@ class Term(object):
         return NotImplementedError
         
     def getDefaultSolver(self, var=None, solver=None, *args, **kwargs):
+        from fipy.solvers import DefaultSolver
         return solver or self._getDefaultSolver(var, solver, *args, **kwargs) or DefaultSolver(*args, **kwargs)
                          
     def __add__(self, other):

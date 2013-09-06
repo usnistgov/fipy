@@ -254,7 +254,7 @@ or a
 .. _NIST:                 http://www.nist.gov/
 .. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.tar.gz
 .. _tracking system:      http://matforge.org/fipy/report
-.. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
+.. _mailing list:         http://www.ctcms.nist.gov/fipy/documentation/MAIL.html
 .. _Sourceforge:          http://www.sourceforge.net/projects/fipy
 .. _Materials Digital Library Pathway: http://matdl.org
 .. _MatForge:             http://matforge.org/
