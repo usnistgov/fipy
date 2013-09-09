@@ -164,7 +164,8 @@ Support
 You can communicate with the :term:`FiPy` developers and with other
 users via our `mailing list`_ and we welcome you to use the `tracking
 system`_ for bugs, support requests, feature requests and patch
-submissions <http://matforge.org/fipy/report>. We welcome
+submissions <http://matforge.org/fipy/report>. We also monitor 
+StackOverflow_ for questions tagged with "fipy". We welcome
 collaborative efforts on this project.
 
 :term:`FiPy` is a member of MatForge_, a project of the `Materials
@@ -258,6 +259,7 @@ or a
 .. _Sourceforge:          http://www.sourceforge.net/projects/fipy
 .. _Materials Digital Library Pathway: http://matdl.org
 .. _MatForge:             http://matforge.org/
+.. _StackOverflow:        http://stackoverflow.com/questions/tagged/fipy
 
 .. bibmissing:: /documentation/refs.bib
     :sort:
