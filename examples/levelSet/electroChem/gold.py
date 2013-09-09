@@ -37,7 +37,7 @@ This input file
 is a demonstration of the use of :term:`FiPy` for
 modeling gold superfill. The material properties and experimental
 parameters used are roughly those that have been previously
-published [NIST:damascene:2005]_.
+published :cite:`NIST:damascene:2005`.
 
 To run this example from the base fipy directory type::
     

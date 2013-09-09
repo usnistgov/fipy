@@ -7,5 +7,4 @@ FiPy Manual
    introduction
    ../examples/README
    API
-   references
-
+   references-latex
