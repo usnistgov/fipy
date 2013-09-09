@@ -2,6 +2,6 @@
 References
 ==========
 
-.. bibmissing:: /documentation/refs.bib
+.. bibmissing:: refs.bib
     :sort:
 
