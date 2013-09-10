@@ -70,7 +70,7 @@ class PeriodicGrid1D(NonUniformGrid1D):
         ...                         [ 1.5,  2.5,  2. ]]) # doctest: +PROCESSOR_0
         True
         
-        >>> print numerix.allclose(mesh._faceNormals,
+        >>> print numerix.allclose(mesh.faceNormals,
         ...                        [[ 1.,  1.,  1.,  1.]]) # doctest: +PROCESSOR_0
         True
 

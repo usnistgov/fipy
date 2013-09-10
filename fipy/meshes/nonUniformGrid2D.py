@@ -156,7 +156,7 @@ class NonUniformGrid2D(Mesh2D):
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.),
             ...                              (-1., -1., -1., 1., 1., 1., 1., 1., 1., 0., 0., 0., 0., 0., 0., 0., 0.)))
-            >>> print numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print numerix.allclose(faceNormals, mesh.faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> cellToFaceOrientations = numerix.array(((1,  1,  1, -1, -1, -1),

@@ -277,7 +277,7 @@ class UniformGrid2D(UniformGrid):
                               Nhor = self.numberOfHorizontalFaces,
                               areaProjections = areaProjections,
                               ni = self.numberOfFaces,
-                              faceNormals = self._faceNormals,
+                              faceNormals = self.faceNormals,
                               faceAreas = self._faceAreas)
             
             return areaProjections
@@ -285,7 +285,7 @@ class UniformGrid2D(UniformGrid):
     else:
         @property
         def _areaProjections(self):
-            return self._faceNormals * self._faceAreas
+            return self.faceNormals * self._faceAreas
                  
     @property
     def _faceAspectRatios(self):
@@ -299,7 +299,7 @@ class UniformGrid2D(UniformGrid):
         return faceAreas
 
     @property
-    def _faceNormals(self):
+    def faceNormals(self):
         normals = numerix.zeros((2, self.numberOfFaces), 'd')
 
         normals[1, :self.numberOfHorizontalFaces] = 1
@@ -687,7 +687,7 @@ class UniformGrid2D(UniformGrid):
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.),
             ...                              (-1., -1., -1., 1., 1., 1., 1., 1., 1., 0., 0., 0., 0., 0., 0., 0., 0.)))
-            >>> print numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print numerix.allclose(faceNormals, mesh.faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> cellToFaceOrientations = numerix.array(((1,  1,  1, -1, -1, -1),

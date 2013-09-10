@@ -80,7 +80,7 @@ class CylindricalUniformGrid1D(UniformGrid1D):
     
     @property
     def _areaProjections(self):
-        return self._faceNormals * self._faceAreas
+        return self.faceNormals * self._faceAreas
  
     @property
     def cellVolumes(self):

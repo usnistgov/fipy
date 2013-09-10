@@ -205,7 +205,7 @@ class UniformGrid3D(UniformGrid):
                                     numerix.repeat((self.dy * self.dz,), self.numberOfYZFaces)))
 
     @property
-    def _faceNormals(self):
+    def faceNormals(self):
         XYnor = numerix.zeros((3, self.nx, self.ny, self.nz + 1), 'l')
         XYnor[0,      ...] =  1
         XYnor[0,  ...,  0] = -1
@@ -280,7 +280,7 @@ class UniformGrid3D(UniformGrid):
     
     @property
     def _orientedFaceNormals(self):
-        return self._faceNormals
+        return self.faceNormals
 
     @property
     def _faceTangents1(self):
@@ -391,7 +391,7 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def _areaProjections(self):
-        return self._faceNormals * self._faceAreas
+        return self.faceNormals * self._faceAreas
      
     @property
     def _faceAspectRatios(self):
@@ -646,7 +646,7 @@ class UniformGrid3D(UniformGrid):
             >>> faceNormals = numerix.array((( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1, 1, 1, 1,-1, 1, 1, 1),
             ...                              ( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1,-1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),
             ...                              (-1,-1,-1,-1,-1,-1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
-            >>> print numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print numerix.allclose(faceNormals, mesh.faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> cellToFaceOrientations = numerix.array((( 1,-1,-1, 1,-1,-1),
