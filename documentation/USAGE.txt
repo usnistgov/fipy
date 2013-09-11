@@ -34,8 +34,8 @@ examples.
 
 In order to customize the examples, or to develop your own scripts, some
 knowledge of Python syntax is required.  We recommend you familiarize
-yourself with the excellent `Python tutorial`_ [PythonTutorial]_ 
-or with `Dive Into Python`_ [DiveIntoPython]_.
+yourself with the excellent `Python tutorial`_ :cite:`PythonTutorial` 
+or with `Dive Into Python`_ :cite:`DiveIntoPython`.
 
 .. _Python tutorial: http://docs.python.org/tut/tut.html
 .. _Dive Into Python: http://diveintopython.org
@@ -654,6 +654,8 @@ command in the base directory::
    This mechanism is intended primarily for the developers. At a minimum, 
    you will need at least version 1.1.2 of `Sphinx
    <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites.
+
+   You will also need to `pip install sphinxcontrib-bibtex`.
 
 .. _download the latest manual:  http://matforge.org/fipy/wiki/FiPyManual
 

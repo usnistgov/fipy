@@ -35,7 +35,7 @@
 r"""Solve a single-component, liquid-vapor, van der Waals system.
 
 This example solves a single-component, liquid-vapor, van der Waals system as
-described by Wheeler et *al.* [PhysRevE.82.051601]_. The free energy for this
+described by Wheeler et *al.* :cite:`PhysRevE.82.051601`. The free energy for this
 system takes the form,
 
 .. math:: :label: eq:reactiveWetting:liquidVapor1D:freeEnergy

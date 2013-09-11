@@ -432,7 +432,7 @@ your home directory).  You will then need to append
 :file:`{dir}/lib/python` to your :envvar:`PYTHONPATH` environment
 variable.  See the `Alternate Installation`_ section of the
 :term:`Python` document "`Installing Python Modules`_"
-[InstallingPythonModules]_ for more information, such as circumstances
+:cite:`InstallingPythonModules` for more information, such as circumstances
 in which you should use :option:`--prefix` instead of
 :option:`--home`.
 
