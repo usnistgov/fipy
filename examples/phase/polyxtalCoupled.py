@@ -38,7 +38,7 @@ solidification is often assumed (and experimentally found) to be proportional to
 undercooling. Under the right circumstances, the
 solidification front can become unstable, leading to dendritic
 patterns. 
-Warren, Kobayashi, Lobkovsky and Carter [WarrenPolycrystal]_
+Warren, Kobayashi, Lobkovsky and Carter :cite:`WarrenPolycrystal`
 have described a phase field model ("Allen-Cahn", "non-conserved
 Ginsberg-Landau", or "model A" of Hohenberg & Halperin) of such a system,
 including the effects of discrete crystalline orientations (anisotropy).

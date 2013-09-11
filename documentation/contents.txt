@@ -18,6 +18,7 @@ FiPy Contents
    VKML
    ../DISCLAIMER
    manual
+   references
 
 .. toctree::
    :hidden:
