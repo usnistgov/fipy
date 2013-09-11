@@ -256,7 +256,7 @@ We again reset the problem
 
 and apply the Crank-Nicholson scheme until the end, when we apply one step
 of the fully implicit scheme to drive down the error
-(see, *e.g.*, section 19.2 of [NumericalRecipes]_).
+(see, *e.g.*, section 19.2 of :cite:`NumericalRecipes`).
 
 >>> for step in range(steps - 1):
 ...     eqCN.solve(var=phi,
