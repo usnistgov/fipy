@@ -97,7 +97,7 @@ class Mesh2D(Mesh):
 
     def _calcFaceTangents(self):
         # copy required to get internal memory ordering correct for inlining.
-        faceTangents1 = numerix.array((-self._faceNormals[1], self._faceNormals[0])).copy()
+        faceTangents1 = numerix.array((-self.faceNormals[1], self.faceNormals[0])).copy()
         faceTangents2 = numerix.zeros(faceTangents1.shape, 'd')
         return faceTangents1, faceTangents2
 
@@ -151,8 +151,8 @@ class Mesh2D(Mesh):
 
         faceDisplacementVectors = faceDisplacementVectors.swapaxes(0,1)
 
-        faceCrossProducts = (faceDisplacementVectors[0, :] * self._faceNormals[1,:]) \
-          - (faceDisplacementVectors[1, :] * self._faceNormals[0, :])
+        faceCrossProducts = (faceDisplacementVectors[0, :] * self.faceNormals[1,:]) \
+          - (faceDisplacementVectors[1, :] * self.faceNormals[0, :])
 
         faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[0, :] ** 2) \
           + (faceDisplacementVectors[1, :] ** 2)) ** 0.5, 1.e-100)
@@ -337,7 +337,7 @@ class Mesh2D(Mesh):
             ...                               -dx / numerix.sqrt(dx**2 + dy**2), 
             ...                               1., 
             ...                               dx / numerix.sqrt(dx**2 + dy**2))))
-            >>> numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceNormals, mesh.faceNormals, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellToFaceOrientations = MA.masked_values(((1,  1,  1, -1, -1, -1,  1, -1),

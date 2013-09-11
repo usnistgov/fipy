@@ -87,7 +87,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
     """
  
     def _calcAreaProjections(self):
-        return self._faceNormals * self._faceAreas
+        return self.faceNormals * self._faceAreas
  
     @property
     def cellVolumes(self):
@@ -165,7 +165,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             ...                               -1., 1., 1., 1., -1., 1., 1., 1.),
             ...                              (-1., -1., -1., 1., 1., 1., 1., 1., 
             ...                               1., 0, 0, 0, 0, 0, 0, 0, 0)))
-            >>> print numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print numerix.allclose(faceNormals, mesh.faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> cellToFaceOrientations = numerix.array(((1,  1,  1, -1, -1, -1), 

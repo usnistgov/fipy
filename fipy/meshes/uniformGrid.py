@@ -67,11 +67,11 @@ class UniformGrid(AbstractMesh):
     """Geometry properties common to 1D, 2D, 3D"""
     @property
     def _orientedFaceNormals(self):
-        return self._faceNormals
+        return self.faceNormals
 
     @property
     def _faceCellToCellNormals(self):
-        return self._faceNormals
+        return self.faceNormals
  
     def _getFaceToCellDistances(self):
         return self._internalFaceToCellDistances

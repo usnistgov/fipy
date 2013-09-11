@@ -465,6 +465,11 @@ surface of a 2D domain, use
 
 >>> var.faceGrad.constrain(((0,),(2,)), where=mesh.facesTop)
 
+If the gradient normal to the boundary (*e.g.*,
+:math:`\hat{n}\cdot\nabla\phi`) is to be set to a scalar value of `2`, use
+
+>>> var.faceGrad.constrain(2 * mesh.faceNormals, where=mesh.exteriorFaces)
+
 Applying fixed flux boundary conditions
 =======================================
 

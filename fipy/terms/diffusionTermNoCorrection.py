@@ -40,7 +40,7 @@ __all__ = ["DiffusionTermNoCorrection"]
 
 class DiffusionTermNoCorrection(_AbstractDiffusionTerm):
     def _getNormals(self, mesh):
-        return mesh._faceNormals
+        return mesh.faceNormals
 
     def _treatMeshAsOrthogonal(self, mesh):
         return True

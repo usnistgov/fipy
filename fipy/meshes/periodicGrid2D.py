@@ -117,7 +117,7 @@ class PeriodicGrid2D(_BasePeriodicGrid2D):
         >>> normals = [[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
         ...            [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]]
 
-        >>> print numerix.allclose(mesh._faceNormals, normals) # doctest: +PROCESSOR_0
+        >>> print numerix.allclose(mesh.faceNormals, normals) # doctest: +PROCESSOR_0
         True
 
         >>> print numerix.allclose(mesh._cellVertexIDs,

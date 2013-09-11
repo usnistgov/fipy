@@ -186,7 +186,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                     if mesh.dim != shape[0] or mesh.dim != shape[1]:
                         raise IndexError, 'diffusion coefficent tensor is not an appropriate shape for this mesh'          
                     
-                faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh._faceNormals)
+                faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh.faceNormals)
                 rotationTensor = self.__getRotationTensor(mesh)
                 rotationTensor[:,0] = rotationTensor[:,0] / mesh._cellDistances
 

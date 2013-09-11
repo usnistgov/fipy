@@ -175,7 +175,7 @@ class UniformGrid1D(UniformGrid):
         return numerix.arange(self.numberOfFaces)[numerix.NewAxis, ...] * self.dx + self.origin
 
     @property
-    def _faceNormals(self):
+    def faceNormals(self):
         faceNormals = numerix.ones((1, self.numberOfFaces), 'd')
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
@@ -185,7 +185,7 @@ class UniformGrid1D(UniformGrid):
 
     @property
     def _orientedFaceNormals(self):
-        return self._faceNormals
+        return self.faceNormals
 
     @property
     def _cellVolumes(self):
@@ -257,7 +257,7 @@ class UniformGrid1D(UniformGrid):
 
     @property
     def _areaProjections(self):
-        return self._faceNormals
+        return self.faceNormals
         
     @property
     def _orientedAreaProjections(self):

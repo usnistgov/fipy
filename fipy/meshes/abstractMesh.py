@@ -39,7 +39,7 @@ __all__ = ["AbstractMesh"]
 
 from fipy.tools import serialComm
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
+from fipy.tools.decorators import getsetDeprecated, deprecate
 from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -126,6 +126,11 @@ class AbstractMesh(object):
     cellToFaceDistanceVectors  = property(lambda s: s._cellToFaceDistanceVectors)
     cellDistanceVectors        = property(lambda s: s._cellDistanceVectors)
     cellVolumes                = property(lambda s: s._scaledCellVolumes)
+    
+    @property
+    @deprecate(new_name="faceNormals", version=3.1)
+    def _faceNormals(self):
+        return self.faceNormals
 
     @property
     def cellCenters(self):
@@ -267,9 +272,9 @@ class AbstractMesh(object):
 
         ## change the direction of the face normals for faces0
         for dim in range(self.dim):
-            faceNormals = self._faceNormals[dim].copy()
+            faceNormals = self.faceNormals[dim].copy()
             numerix.put(faceNormals, faces0, MA.take(faceNormals, faces1))
-            self._faceNormals[dim] = faceNormals
+            self.faceNormals[dim] = faceNormals
 
         ## Cells that are adjacent to faces1 are changed to point at faces0
         ## get the cells adjacent to faces1
@@ -1258,7 +1263,7 @@ class AbstractMesh(object):
 
     @getsetDeprecated
     def _getFaceNormals(self):
-        return self._faceNormals
+        return self.faceNormals
 
     @getsetDeprecated
     def _getFaceCellToCellNormals(self):
