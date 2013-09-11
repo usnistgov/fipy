@@ -337,8 +337,14 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
             return _formatFloat(arr, format='%%1.%df' % precision)
 
     elif isInt(arr):
-        from numpy.core.arrayprint import _formatInteger
-        return _formatInteger(arr, format='%d')
+        try:
+            ## this is for numpy 1.7 and above
+            ## why has the interface changed again?
+            from numpy.core.arrayprint import IntegerFormat
+            return IntegerFormat(NUMERIX.array((arr,)))(arr).strip()       
+        except:
+            from numpy.core.arrayprint import _formatInteger
+            return _formatInteger(arr, format='%d')
     else:        
         raise TypeError, 'cannot convert ' + str(arr) + ' to string'
         

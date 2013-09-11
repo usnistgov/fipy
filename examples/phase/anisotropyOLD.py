@@ -41,7 +41,7 @@ r"""
 
 In this example we solve a coupled phase and temperature equation to model
 solidification, and eventually dendritic growth, based on the work of
-Warren, Kobayashi, Lobkovsky and Carter [WarrenPolycrystal]_.
+Warren, Kobayashi, Lobkovsky and Carter :cite:`WarrenPolycrystal`.
    
 We start from a circular seed in a 2D mesh:
 
