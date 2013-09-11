@@ -34,8 +34,8 @@ examples.
 
 In order to customize the examples, or to develop your own scripts, some
 knowledge of Python syntax is required.  We recommend you familiarize
-yourself with the excellent `Python tutorial`_ [PythonTutorial]_ 
-or with `Dive Into Python`_ [DiveIntoPython]_.
+yourself with the excellent `Python tutorial`_ :cite:`PythonTutorial` 
+or with `Dive Into Python`_ :cite:`DiveIntoPython`.
 
 .. _Python tutorial: http://docs.python.org/tut/tut.html
 .. _Dive Into Python: http://diveintopython.org
@@ -653,9 +653,32 @@ command in the base directory::
 
    This mechanism is intended primarily for the developers. At a minimum, 
    you will need at least version 1.1.2 of `Sphinx
-   <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites.
+   <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites, 
+   although we build the documentation witih the latest development code 
+   (you will need hg_ installed)::
+
+   $ pip install --upgrade -e hg+https://bitbucket.org/birkenfeld/sphinx#egg=sphinx
+
+   We use several contributed Sphinx plugins::
+
+   $ hg clone https://bitbucket.org/birkenfeld/sphinx-contrib/
+
+   $ cd sphinx-contrib/traclinks
+   $ python setup.py install
+
+   Bibliographic citations require the `sphinxcontrib-bibtex` package. For 
+   the moment, the development versions of several packages are required 
+   to properly render our bibliography (you will need both bzr_ and git_ 
+   installed)::
+
+   $ pip install -e bzr+lp:~pybtex-devs/pybtex/trunk
+   $ pip install -e git+git@github.com:mcmtroffaes/pybtex-docutils.git#egg=pybtex-docutils
+   $ pip install -e git+git@github.com:mcmtroffaes/sphinxcontrib-bibtex.git#egg=sphinxcontrib-bibtex
 
 .. _download the latest manual:  http://matforge.org/fipy/wiki/FiPyManual
+.. _hg: http://mercurial.selenic.com
+.. _bzr: http://bazaar.canonical.com
+.. _git: http://git-scm.com
 
 
 

@@ -25,12 +25,12 @@ Overview
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
 combinations of coupled elliptic, hyperbolic and parabolic PDEs. Currently
-implemented models include phase field [BoettingerReview:2002]_
-[ChenReview:2002]_ [McFaddenReview:2002]_ treatments of polycrystalline,
+implemented models include phase field :cite:`BoettingerReview:2002`
+:cite:`ChenReview:2002` :cite:`McFaddenReview:2002` treatments of polycrystalline,
 dendritic, and electrochemical phase transformations, as well as drug
-eluting stents [Saylor:2011p2794]_, reactive wetting [PhysRevE.82.051601]_,
-photovoltaics [Hangarter:2011p2795]_ and a level set treatment of the
-electrodeposition process [NIST:damascene:2001]_.
+eluting stents :cite:`Saylor:2011p2794`, reactive wetting :cite:`PhysRevE.82.051601`,
+photovoltaics :cite:`Hangarter:2011p2795` and a level set treatment of the
+electrodeposition process :cite:`NIST:damascene:2001`.
 
 .. only:: latex
   
@@ -164,7 +164,8 @@ Support
 You can communicate with the :term:`FiPy` developers and with other
 users via our `mailing list`_ and we welcome you to use the `tracking
 system`_ for bugs, support requests, feature requests and patch
-submissions <http://matforge.org/fipy/report>. We welcome
+submissions <http://matforge.org/fipy/report>. We also monitor 
+StackOverflow_ for questions tagged with "fipy". We welcome
 collaborative efforts on this project.
 
 :term:`FiPy` is a member of MatForge_, a project of the `Materials
@@ -258,7 +259,5 @@ or a
 .. _Sourceforge:          http://www.sourceforge.net/projects/fipy
 .. _Materials Digital Library Pathway: http://matdl.org
 .. _MatForge:             http://matforge.org/
-
-.. bibmissing:: /documentation/refs.bib
-    :sort:
+.. _StackOverflow:        http://stackoverflow.com/questions/tagged/fipy
 
