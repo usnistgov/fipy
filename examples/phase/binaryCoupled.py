@@ -385,7 +385,7 @@ or
 
 >>> Dl = Variable(value=1e-5) # cm**2 / s
 >>> Ds = Variable(value=1e-9) # cm**2 / s
->>> Dc = (Dl - Ds) * phase.arithmeticFaceValue + Dl
+>>> Dc = (Ds - Dl) * phase.arithmeticFaceValue + Dl
 
 >>> Dphi = ((Dc * C.harmonicFaceValue * (1 - C.harmonicFaceValue) * Vm / (R * T))
 ...         * ((enthalpyB - enthalpyA) * pPrime(phase.arithmeticFaceValue)
@@ -517,7 +517,7 @@ Because the phase field interface will not move, and because we've seen in
 earlier examples that the diffusion problem is unconditionally stable, we
 need take only one very large timestep to reach equilibrium
 
->>> dt = 1.e2
+>>> dt = 1.e5
 
 Because the phase field equation is coupled to the composition through
 ``enthalpy`` and ``W`` and the diffusion equation is coupled to the phase
@@ -587,7 +587,7 @@ Because this lower temperature will induce the phase interface to move
 (solidify), we will need to take much smaller timesteps (the time scales of
 diffusion and of phase transformation compete with each other).
 
->>> dt = 1.e-6
+>>> dt = 1.e-5
 
 >>> if __name__ == '__main__': 
 ...     timesteps = 100
