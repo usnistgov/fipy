@@ -107,7 +107,7 @@ are the free energy densities of the pure components. There are a
 variety of choices for the interpolation function :math:`p(\phi)` and the
 barrier function :math:`g(\phi)`, 
    
-such as those shown in mod:`examples.phase.simple`
+such as those shown in :mod:`examples.phase.simple`
 
 >>> def p(phi):
 ...     return phi**3 * (6 * phi**2 - 15 * phi + 10)
