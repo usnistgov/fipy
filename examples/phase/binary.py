@@ -575,6 +575,34 @@ Because this lower temperature will induce the phase interface to move
 (solidify), we will need to take much smaller timesteps (the time scales of
 diffusion and of phase transformation compete with each other).
 
+The `CFL limit`_ requires that no interface should advect more than one grid
+spacing in a timestep. We can get a rough idea for the maximum timestep we can
+take by looking at the velocity of convection induced by phase transformation in
+Eq. :eq:`eq:phase:binary:diffusion:canonical`. If we assume that the phase changes from 1 to 0 in a single grid spacing,
+that the diffusivity is `Dl` at the interface, and that the term due to the difference in
+barrier heights is negligible:
+    
+.. math::
+
+   \vec{u}_\phi &= \frac{D_\phi}{C} \nabla \phi
+   \\
+   &\approx
+   \frac{Dl \frac{1}{2} V_m}{R T}
+   \left[
+       \frac{L_B\left(T - T_M^B\right)}{T_M^B} 
+       - \frac{L_A\left(T - T_M^A\right)}{T_M^A}
+   \right] \frac{1}{\Delta x}
+   \\
+   &\approx
+   \frac{Dl \frac{1}{2} V_m}{R T}
+   \left(L_B + L_A\right) \frac{T_M^A - T_M^B}{T_M^A + T_M^B} 
+   \frac{1}{\Delta x}
+   \\
+   &\approx \unit{0.28}{\centi\meter\per\second}
+
+To get a :math:`\text{CFL} = \vec{u}_\phi \Delta t / \Delta x < 1`, we need a
+time step of about :math:`\unit{10^{-5}}{\second}`.
+
 >>> dt = 1.e-5
 
 >>> if __name__ == '__main__':
@@ -618,8 +646,7 @@ expected values.
    examine different temperatures in this example, so we declare :math:`T` 
    as a :class:`~fipy.variables.variable.Variable`
 
-.. .. bibmissing:: /documentation/refs.bib
-    :sort:
+.. _CFL limit: http://en.wikipedia.org/wiki/Courant-Friedrichs-Lewy_condition
 """
 
 __docformat__ = 'restructuredtext'
