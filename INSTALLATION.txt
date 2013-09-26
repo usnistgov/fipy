@@ -357,7 +357,10 @@ Ubuntu/Debian Installation
 :term:`FiPy` now has a `.deb` for Ubuntu/Debian systems that can be
 downloaded from <http://www.ctcms.nist.gov/fipy/download>. Simply run::
 
-  $ dpkg -i python-fipy_x.y.z-1_all.deb
+  $ VERSION=x.y-z  # choose the version you want
+  $ apt-get install gmsh libsuperlu3 python-central python-sparse
+  $ curl -O http://www.ctcms.nist.gov/fipy/download/python-fipy_${VERSION}_all.deb
+  $ dpkg -i python-fipy_${VERSION}_all.deb
 
 to install. The `.deb` includes dependencies for all of the
 :ref:`REQUIREDPACKAGES` and :ref:`OPTIONALPACKAGES`.
