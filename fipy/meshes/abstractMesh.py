@@ -423,7 +423,7 @@ class AbstractMesh(object):
                                            
         # map other's Vertex IDs to new Vertex IDs, 
         # accounting for overlaps with self's Vertex IDs
-        vertex_map = numerix.empty(otherNumVertices, dtype=int)
+        vertex_map = numerix.empty(otherNumVertices, dtype=numerix.INT_DTYPE)
         verticesToAdd = numerix.delete(numerix.arange(otherNumVertices), vertexCorrelates[1])
         vertex_map[verticesToAdd] = numerix.arange(otherNumVertices - len(vertexCorrelates[1])) + selfNumVertices
         vertex_map[vertexCorrelates[1]] = vertexCorrelates[0]
@@ -473,7 +473,7 @@ class AbstractMesh(object):
 
         # map other's Face IDs to new Face IDs, 
         # accounting for overlaps with self's Face IDs
-        face_map = numerix.empty(otherNumFaces, dtype=int)
+        face_map = numerix.empty(otherNumFaces, dtype=numerix.INT_DTYPE)
         facesToAdd = numerix.delete(numerix.arange(otherNumFaces), faceCorrelates[1])
         face_map[facesToAdd] = numerix.arange(otherNumFaces - len(faceCorrelates[1])) + selfNumFaces
         face_map[faceCorrelates[1]] = faceCorrelates[0]
@@ -1099,7 +1099,7 @@ class AbstractMesh(object):
         if numerix.MA.is_masked(self.cellFaceIDs):
             facesPerCell = (~numerix.MA.getmask(self.cellFaceIDs)).sum(axis=0)
         else:
-            facesPerCell = numerix.empty((self.numberOfCells,), dtype=int)
+            facesPerCell = numerix.empty((self.numberOfCells,), dtype=numerix.INT_DTYPE)
             facesPerCell[:] = self._maxFacesPerCell
         return facesPerCell
 
@@ -1113,7 +1113,7 @@ class AbstractMesh(object):
         if numerix.MA.is_masked(cellFaceVertices):
             nodesPerFace = (~cellFaceVertices.mask).sum(axis=0)
         else:
-            nodesPerFace = numerix.empty(cellFaceVertices.shape[1:], dtype=int)
+            nodesPerFace = numerix.empty(cellFaceVertices.shape[1:], dtype=numerix.INT_DTYPE)
             nodesPerFace[:] = self.faceVertexIDs.shape[0]
             
         return nodesPerFace

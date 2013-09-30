@@ -61,7 +61,7 @@ class _MeshTopology(_AbstractTopology):
         def faceCountsMatch(targetCounts):
             if len(targetCounts) > nodesPerFace.shape[0]:
                 # pad nodesPerFace with zeros
-                paddedNodesPerFace = numerix.zeros((len(targetCounts), nodesPerFace.shape[1]), dtype=int)
+                paddedNodesPerFace = numerix.zeros((len(targetCounts), nodesPerFace.shape[1]), dtype=numerix.INT_DTYPE)
                 paddedNodesPerFace[:nodesPerFace.shape[0], :] = nodesPerFace
                 
                 paddedTargetCounts = numerix.array(targetCounts)[..., numerix.newaxis]
