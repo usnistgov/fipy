@@ -654,7 +654,7 @@ class MSHFile(GmshFile):
         maxFaceLen = max([len(f) for f in uniqueFaces])
         uniqueFaces = [[-1] * (maxFaceLen - len(f)) + f for f in uniqueFaces]
                
-        facesToVertices = nx.array(uniqueFaces, dtype=int)
+        facesToVertices = nx.array(uniqueFaces, dtype=nx.INT_DTYPE)
 
         return facesToVertices.swapaxes(0,1)[::-1], cellsToFaces.swapaxes(0,1).copy('C'), facesDict
 
@@ -857,7 +857,7 @@ class MSHFile(GmshFile):
         # convert lists of cell vertices to a properly oriented masked array
         maxVerts = max([len(v) for v in cellsToVertIDs])
         # ticket:539 - NumPy 1.7 casts to array before concatenation and empty array defaults to float
-        cellsToVertIDs = [nx.concatenate((v, nx.array([-1] * (maxVerts-len(v)), dtype=int))) for v in cellsToVertIDs]
+        cellsToVertIDs = [nx.concatenate((v, nx.array([-1] * (maxVerts-len(v)), dtype=nx.INT_DTYPE))) for v in cellsToVertIDs]
         cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0,1)
                 
         parprint("Done with cells and faces.")
@@ -1001,7 +1001,7 @@ class MSHFile(GmshFile):
         because we want to avoid loading the entire msh file into memory.
         """
         allVerts     = [v for c in cellsToGmshVerts for v in c] # flatten
-        allVerts     = nx.unique(nx.array(allVerts, dtype=int)) # remove dups
+        allVerts     = nx.unique(nx.array(allVerts, dtype=nx.INT_DTYPE)) # remove dups
         allVerts     = nx.sort(allVerts)
         maxVertIdx   = allVerts[-1] + 1 # add one to offset zero
         vertGIDtoIdx = nx.ones(maxVertIdx, 'l') * -1 # gmsh ID -> vertexCoords idx

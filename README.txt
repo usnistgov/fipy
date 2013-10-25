@@ -48,104 +48,86 @@ as :mod:`examples.diffusion.mesh1D`.
 What's new in version |release|?
 --------------------------------
 
-The bump in major version number reflects more on the substantial increase
-in capabilities and ease of use than it does on a break in compatibility
-with FiPy 2.x. Few, if any, changes to your existing scripts should be
-necessary.
+The significant changes since version 3.0 are:
 
-The significant changes since version 2.1 are:
-
-- :ref:`CoupledEquations` are now supported.
-- A more robust mechanism for specifying :ref:`BoundaryConditions` is now 
-  used.
-- Most :class:`~fipy.meshes.mesh.Mesh`\es can be partitioned by 
-  :ref:`MeshingWithGmsh`.
-- :ref:`PYAMG` and :ref:`SCIPY` have been added to the :ref:`SOLVERS`.
-- FiPy is capable of :ref:`RunningUnderPython3`.
-- "getter" and "setter" methods have been pervasively changed to Python 
-  properties.
-- The test suite now runs much faster.
-- Tests can now be run on a full install using `fipy.test()`.
-- The functions of the :mod:`~fipy.tools.numerix` module are no longer 
-  included in the :mod:`fipy` namespace. See :mod:`examples.updating.update2_0to3_0` 
-  for details.
-- Equations containing a :class:`~fipy.terms.transientTerm.TransientTerm`,
-  must specify the timestep by passing a ``dt=`` argument when calling
-  :meth:`~fipy.terms.term.Term.solve` or :meth:`~fipy.terms.term.Term.sweep`.
+- Level sets are now handled by :ref:`LSMLIBDOC` or :ref:`SCIKITFMM` 
+  solver libraries. These libraries are orders of magnitude faster than the 
+  original, :term:`Python`-only prototype.
+- The :term:`Matplotlib` :func:`streamplot()` function can be used to display 
+  vector fields.
+- Version control was switched to the Git_ distributed version control 
+  system. This system should make it much easier for :term:`FiPy` users to 
+  participate in development.
 
 Tickets fixed in this release::
-
-    45  Navier Stokes
-    85  CellVariable hasOld() should set self.old
-    101 Grids should take Lx, Ly, Lz arguments
-    145 tests should be run with fipy.tests()
-    177 remove ones and zeros from numerix.py
-    178 Default time steps should be infinite
-    291 term multiplication changes result
-    296 FAQ gives bad guidance for anisotropic diffusion
-    297 Use physical velocity in the manual/FAQ
-    298 mesh manipulation of periodic meshes leads to errors
-    299 Give helpfull error on - or / of meshes
-    301 wrong cell to cell normal in periodic meshes
-    302 gnuplot1d gives error on plot of facevariable
-    309 pypi is failing
-    312 Fresh FiPy gives ""ImportError: No viewers found"""
-    314 Absence of enthought.tvtk causes test failures
-    319 mesh in FiPy name space
+    
+    62  "Move 'ImplicitDiffusionTerm().solve(var) == 0' ""failure"" from examples.phase.simple to examples.diffusion.mesh1D?"
+    118 subscriber()._markStale() AttributeError
+    138 `numerix.dot` doesn't support tensors
+    143 "Trying to ""solve"" an integer `CellVariable` should raise an error"
+    195 broken arithmetic face to cell distance calculations
+    197 ~binOp doesn't work on branches/version-2_0
+    305 add rhie chow correction term in stokes cavity example
+    321 Windows interactive plotting mostly broken
     324 --pysparse configuration should never attempt MPI imports
-    327 factoryMeshes.py not up to date with respect to keyword arguments
-    331 changed constraints don't propagate
-    332 anisotropic diffusion and constraints don't mix
-    333 `--Trilinos --no-pysparse` uses PySparse?!?
-    336 Profile and merge reconstrain branch
-    339 close out reconstrain branch
     341 Fix fipy.terms._BinaryTerm test failure in parallel
-    343 diffusionTerm(var=var1).solver(var=var0) should fail sensibly
-    346 TeX is wrong in examples.phase.quaternary
-    348 Include Benny's improved interpolation patch
-    354 GmshExport is not tested and does not work
-    355 Introduce mesh.x as shorthand for mesh.cellCenters[0] etc
-    356 GmshImport should support all element types
-    357 GmshImport should read element colors
-    363 Reduce the run times for chemotaxis tests
-    366 tests take *too* long!!!
-    369 Make DiffusionTermNoCorrection the default
+    365 Rename GridXD
+    368 Error adding meshes
     370 Epetra Norm2 failure in parallel
-    373 remove deprecated `steps=` from Solver
-    376 remove deprecated `diffusionTerm=` argument to ConvectionTerm
-    377 remove deprecated `NthOrderDiffusionTerm`
-    380 remove deprecated Variable.transpose()
-    381 remove deprecated viewers.make()
-    382 get running in Py3k
-    384 gmsh importer and gmsh tests don't clean up after themselves
+    383 move FiPy to distributed version control
     385 `diffusionTerm._test()` requires PySparse
-    390 Improve test reporting to avoid inconsequential buildbot failures
     391 efficiency_test chokes on liquidVapor2D.py
-    393 two `--scipy` failures
-    395 `--pysparse --inline` failures
-    417 Memory consumption growth with repeated meshing, especially with Gmsh
-    418 Viewers not working when plotting meshes with zero cells in parallel
-    419 examples/cahnHilliard/mesh2D.py broken with --trilinos
-    420 Epetra.PyComm() broken on Debian
-    421 cellVariable.min() broken in parallel
-    426 Add in parallel buildbot testing on more than 2 processors
-    427 Slow PyAMG solutions
-    434 Gmsh I/O
-    438 changes to gmshImport.py caused --inline problems
-    439 gmshImport tests fail on Windows due to shared file
+    432 LSMLIB refactor
     441 Explicit convetion terms should fail when the equation has no TransientTerm (dt=None)
     445 getFaceCenters() should return a FaceVariable
-    446 constraining values with ImplictSourceTerm not documented?
     448 Gmsh2D does not respect background mesh
     452 Gmsh background mesh doesn't work in parallel
     453 faceValue as FaceCenters gives inline failures
-    454 Py3k and Windows test failures
+    454 Assorted errors
+    456 Web page links seem to be broken
+    457 Make the citation links go to the DOI links
+    460 Clean up interaction between dependencies and installation process
+    461 SvnToGit clean up
+    462 Fix for test failures on loki
+    465 sign issues for equation with transient, convection and implicit terms
+    466 "multiplying equation by ""x"" changes the solution"
+    469 text in source:trunk/examples/convection/source.py is out of date
+    470 Include mailing list activity frame on front page
+    473 Gmsh importer can't read mesh elements with no tags
+    475 getVersion() fails on Py3k
+    477 Update Ohloh to point at git repo
+    480 link to mailing list is wrong
+    481 constrain should return a handle to the constraint for later deletion
+    484 NIST CSS changed
+    486 Using `Popen('gmsh ...', shell=True)` rather than `shell=False` security danger
+    490 Parallel bug in non-uniform grids and conflicting mesh class and factory function names
+    491 Rename communicator instances
+    492 unOps can't be pickled
+    493 Change documentation to promote use of stackoverflow
+    494 Viewers don't inline well in IPython notebook
+    496 FIPY_DISPLAY_MATRIX is broken
+    497 examples/phase/binary.py has problems
+    513 convection problem with cylindrical grid
+    539 Bug with numpy 1.7.0
+    557 NumPy 1.7.0 doesn't have _formatInteger
+    564 VanLeerConvectionTerm MinMod slope limiter is broken
+    638 numpy 1.7.1 test failures with physicalField.py
+    639 Neumann boundary conditions not clearly documented
+    641 Add support for Matplotlib streamplot
+    648 Peclet inequalities have the wrong sign
+    650 CylindricalNonUniformGrid2D doesn't make a FaceVariable for exteriorFaces
+    652 Documentation change for Ubuntu install
+    653 enable google analytics
+    654 Switch to sphinxcontrib-bibtex
+    655 Home page needs out-of-NIST redirects
 
 .. warning::
 
    :term:`FiPy` 3 brought unavoidable syntax changes from :term:`FiPy` 2.
    Please see :mod:`examples.updating.update2_0to3_0` for guidance on the
    changes that you will need to make to your :term:`FiPy` 2.x scripts.
+
+.. _Git: http://git-scm.com/ 
 
 -------------------------
 Download and Installation

@@ -146,10 +146,6 @@ Make sure ``develop`` is ready for release::
 
    $ git checkout develop
 
-Change the version number in :file:`setup.py`::
-
-   $ git commit setup.py -m "REL: bump the version number to n.m"
-
 Check items in the tickets_ and update the :file:`README.txt`::
 
    $ git commit README.txt -m "REL: update new features for release"
