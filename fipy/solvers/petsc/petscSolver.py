@@ -68,7 +68,8 @@ class PETScSolver(Solver):
             else:
                 s = (localNonOverlappingCellIDs,)
                 
-            nonOverlappingVector = PETSc.Vec().createWithArray(self.var[s].ravel(), comm=PETSc.COMM_WORLD)
+            comm = self.var.mesh.communicator.petsc4py_comm
+            nonOverlappingVector = PETSc.Vec().createWithArray(self.var[s].ravel(), comm=comm)
             
             from fipy.variables.coupledCellVariable import _CoupledCellVariable
 

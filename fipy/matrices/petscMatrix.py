@@ -405,7 +405,14 @@ class _PETScMatrixFromShape(_PETScMatrix):
             bandwidth = sizeHint / max(rows, cols)
         if matrix is None:
             matrix = PETSc.Mat()
-            matrix.create(PETSc.COMM_WORLD)
+            if rowMap is None:
+                if colMap is None:
+                    comm = PETSc.COMM_WORLD
+                else:
+                    comm = colMap.comm
+            else:
+                comm = rowMap.comm
+            matrix.create(comm)
             matrix.setSizes([rows, cols])
             matrix.setType('aij') # sparse
             matrix.setPreallocationNNZ(None) # FIXME: ??? #bandwidth)

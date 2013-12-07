@@ -50,8 +50,8 @@ class PETScCommWrapper(AbstractCommWrapper):
     Some capabilities are not parallel.
     """
     
-    def __init__(self):
-        self.petsc4py_comm = PETSc.COMM_WORLD
+    def __init__(self, petsc4py_comm=PETSc.COMM_WORLD):
+        self.petsc4py_comm = petsc4py_comm
         super(PETScCommWrapper, self).__init__()
     
     def Norm2(self, vec):
