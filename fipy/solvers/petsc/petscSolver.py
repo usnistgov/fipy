@@ -113,8 +113,8 @@ class PETScSolver(Solver):
 # #         with nonOverlappingVector.localForm() as overlappingVector:
 # #             self.var.value = numerix.reshape(overlappingVector.array, self.var.shape)
 
-        fr = PETSc.IS().createGeneral(self.matrix.rowMap.getIndices(), PETSc.COMM_WORLD)
-        to = PETSc.IS().createGeneral(self.matrix.colMap.getIndices(), PETSc.COMM_SELF)
+        fr = PETSc.IS().createGeneral(self.var.mesh._globalOverlappingCellIDs.astype('int32'), PETSc.COMM_SELF)
+        to = PETSc.IS().createGeneral(self.var.mesh._localOverlappingCellIDs.astype('int32'), PETSc.COMM_SELF)
         scatter = PETSc.Scatter().create(nonOverlappingVector, fr, overlappingVector, to)
         scatter.scatter(nonOverlappingVector, overlappingVector) #, mode='reverse')
         self.var.value = numerix.reshape(numerix.array(overlappingVector), self.var.shape)
