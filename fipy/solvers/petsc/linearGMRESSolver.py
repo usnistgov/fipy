@@ -7,7 +7,7 @@ __all__ = ["LinearGMRESSolver"]
 class LinearGMRESSolver(PETScKrylovSolver):
 
     """
-    The `LinearGMRESSolver` is an interface to the gmres solver in PETSc,
+    The `LinearGMRESSolver` is an interface to the GMRES solver in PETSc,
     using no preconditioner by default.
 
     """

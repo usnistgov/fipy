@@ -11,6 +11,10 @@ Change Log
 Version |release|
 -----------------
 
+-----------
+Version 3.3
+-----------
+
 This release brings support for Python 2 and Python 3 from the same source,
 without any translation.  Thanks to `@pya <https://github.com/pya>`_ and
 `@woodscn <https://github.com/woodscn>`_ for getting things started.
@@ -574,7 +578,7 @@ The significant changes since version 2.1 are:
 - Most :class:`~fipy.meshes.mesh.Mesh`\es can be partitioned by 
   :ref:`MeshingWithGmsh`.
 - :ref:`PYAMG` and :ref:`SCIPY` have been added to the :ref:`SOLVERS`.
-- FiPy is capable of :ref:`RunningUnderPython3`.
+- FiPy is capable of running under :term:`Python 3`.
 - "getter" and "setter" methods have been pervasively changed to Python 
   properties.
 - The test suite now runs much faster.

@@ -32,8 +32,8 @@ _reason = {1: "KSP_CONVERGED_RTOL_NORMAL",
 class PETScKrylovSolver(PETScSolver):
 
     """
-    .. attention:: This class is abstract, always create on of its subclasses.
-    It provides the code to call all Krylov solvers from the PETSc package.
+    .. attention:: This class is abstract, always create one of its subclasses.
+       It provides the code to call all Krylov solvers from the PETSc package.
 
     """
       

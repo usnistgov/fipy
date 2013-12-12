@@ -337,7 +337,7 @@ class _PETScMatrix(_SparseMatrix):
 
     @property
     def _scipy_csr(self):
-        """Return the petsc-ordered CSR matrix
+        """Return the PETSc-ordered CSR matrix
         """
         from scipy import sparse
         mpi4pycomm = self.matrix.comm.tompi4py()
@@ -388,14 +388,12 @@ class _PETScMatrix(_SparseMatrix):
         return self._scipy_coo.toarray()
                 
     def matvec(self, x):
-        """
-        This method is required for scipy solvers.
+        """This method is required for scipy solvers.
         """
         return self * x
 
     def exportMmf(self, filename):
-        """
-        Exports the matrix to a Matrix Market file of the given filename.
+        """Exports the matrix to a Matrix Market file of the given `filename`.
         """
         from scipy.io import mmio
 
@@ -439,8 +437,8 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
           - `bandwidth`: The proposed band width of the matrix.
           - `sizeHint`: estimate of the number of non-zeros
           - `matrix`: pre-assembled `ll_mat` to use for storage
-          - `numberOfVariables`: The columns of the matrix is determined by numberOfVariables * self.mesh.numberOfCells.
-          - `numberOfEquations`: The rows of the matrix is determined by numberOfEquations * self.mesh.numberOfCells.
+          - `numberOfVariables`: The columns of the matrix is determined by `numberOfVariables * self.mesh.numberOfCells`.
+          - `numberOfEquations`: The rows of the matrix is determined by `numberOfEquations * self.mesh.numberOfCells`.
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
@@ -461,7 +459,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         
         FiPy naturally blocks matrix rows, one set of Equations (or Variables) at a time.
         PETSc requires that all rows pertaining to a particular MPI node be contiguous.
-        This PETSc AO (Application Ordering) object converts between them.
+        This PETSc `AO` (Application Ordering) object converts between them.
         
         Only needed for FiPy to PETSc. We can efficiently slice from PETSc to
         FiPy, but PETSc requires us to know the row IDs. 
@@ -598,26 +596,30 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         return self._ghosts_
         
     def _fipy2petscGhost(self, var):
-        """Convert a FiPy Variable to a PETSc GhostVec
+        """Convert a FiPy Variable to a PETSc `GhostVec`
         
         Moves the ghosts to the end, as necessary. 
-        var may be coupled/vector and so moving the ghosts is a bit subtle
+        `var` may be coupled/vector and so moving the ghosts is a bit subtle.
         
-        Given a (2x4) vector variable vij
+        Given a (2x4) vector variable `vij`
         
+        ```
         v00  v01 (v02)        processor 0
         v10  v11 (v12)
         
             (v01) v02 v03     processor 1
             (v11) v12 v13
+        ```
             
         where i is the vector index and j is the global index.
         Elements in () are ghosted
         
-        We end up with the GhostVec
+        We end up with the `GhostVec`
         
+        ```
         v00 v01 v10 v11 (v02) (v12)   [4, 6]  processor 0
         v02 v03 v12 v13 (v01) (v11)   [1, 3]  processor 1
+        ```
         
         where the [a, b] are the global ghost indices
         """
@@ -634,27 +636,31 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
 
         
     def _petsc2fipyGhost(self, vec):
-        """Convert a PETSc GhostVec to a FiPy Variable (form)
+        """Convert a PETSc `GhostVec` to a FiPy Variable (form)
         
         Moves the ghosts from the end, as necessary. 
-        var may be coupled/vector and so moving the ghosts is a bit subtle
+        The return Variable may be coupled/vector and so moving the ghosts
+        is a bit subtle.
         
-        Given an 8-element GhostVec vj
+        Given an 8-element `GhostVec` `vj`
         
+        ```
         v0 v1 v2 v3 (v4) (v6)   [4, 6]  processor 0
         v4 v5 v6 v7 (v1) (v3)   [1, 3]  processor 1
+        ```
         
-        where j is the global index and the [a, b] are the global ghost indices.
-        Elements in () are ghosted
+        where j is the global index and the `[a, b]` are the global ghost
+        indices. Elements in () are ghosted
 
         We end up with the (2x4) FiPy Variable
         
+        ```
         v0  v1 (v4)        processor 0
         v2  v3 (v6)
         
            (v1) v4 v4      processor 1
            (v3) v6 v7
-            
+        ```
         """
         N = len(self.mesh._globalOverlappingCellIDs)
         M = self.numberOfEquations
@@ -673,8 +679,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         return var.flatten()
 
     def __mul__(self, other):
-        """
-        Multiply a sparse matrix by another sparse matrix
+        """Multiply a sparse matrix by another sparse matrix
         
             >>> L1 = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
             >>> L1.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
@@ -738,16 +743,14 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         return self._petsc2fipyGhost(vec=y)
 
     def flush(self):
-        """
-        Deletes the copy of the PETSc matrix held.
+        """Deletes the copy of the PETSc matrix held.
         """
     
         if not getattr(self, 'cache', False):
             del self.matrix
 
     def _test(self):
-        """
-        Tests
+        """Tests
         
         >>> m = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=1)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
@@ -767,11 +770,10 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         pass
         
 class _PETScIdentityMatrix(_PETScMatrixFromShape):
-    """
-    Represents a sparse identity matrix for pysparse.
+    """Represents a sparse identity matrix for pysparse.
     """
     def __init__(self, size, bandwidth=1, comm=PETSc.COMM_SELF):
-        """Create a sparse matrix with '1' in the diagonal
+        """Create a sparse matrix with `1` in the diagonal
         
             >>> print(_PETScIdentityMatrix(size=3))
              1.000000      ---        ---    
@@ -784,7 +786,7 @@ class _PETScIdentityMatrix(_PETScMatrixFromShape):
         
 class _PETScIdentityMeshMatrix(_PETScIdentityMatrix):
     def __init__(self, mesh, bandwidth=1):
-        """Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
+        """Create a sparse matrix associated with a `Mesh` with `1` in the diagonal
         
             >>> from fipy import Grid1D
             >>> from fipy.tools import serialComm

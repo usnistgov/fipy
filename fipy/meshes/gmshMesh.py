@@ -117,7 +117,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
         The number of overlapping cells for parallel
         simulations. Generally 1 is adequate. Higher order equations or
         discretizations require more. If `overlap` is greater than one,
-        commumication reverts to serial, as Gmsh only provides one layer
+        communication reverts to serial, as Gmsh only provides one layer
         of ghost cells.
     mode : str
         Beginning with `r` for reading and `w` for writing.
@@ -1579,7 +1579,7 @@ class Gmsh2D(Mesh2D):
         The number of overlapping cells for parallel
         simulations. Generally 1 is adequate. Higher order equations or
         discretizations require more. If `overlap` is greater than one,
-        commumication reverts to serial, as Gmsh only provides one layer
+        communication reverts to serial, as Gmsh only provides one layer
         of ghost cells.
     background : ~fipy.variables.cellVariable.CellVariable
         Specifies the desired characteristic lengths of the mesh cells
@@ -1886,7 +1886,7 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         The number of overlapping cells for parallel
         simulations. Generally 1 is adequate. Higher order equations or
         discretizations require more. If `overlap` is greater than one,
-        commumication reverts to serial, as Gmsh only provides one layer
+        communication reverts to serial, as Gmsh only provides one layer
         of ghost cells.
     background : ~fipy.variables.cellVariable.CellVariable
         Specifies the desired characteristic lengths of the mesh cells
@@ -1968,7 +1968,7 @@ class Gmsh3D(Mesh):
         The number of overlapping cells for parallel
         simulations. Generally 1 is adequate. Higher order equations or
         discretizations require more. If `overlap` is greater than one,
-        commumication reverts to serial, as Gmsh only provides one layer
+        communication reverts to serial, as Gmsh only provides one layer
         of ghost cells.
     background : ~fipy.variables.cellVariable.CellVariable
         Specifies the desired characteristic lengths of the mesh cells
