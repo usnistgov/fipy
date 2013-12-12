@@ -248,6 +248,13 @@ Upload the web site to CTCMS ::
     $ export FIPY_WWWACTIVATE=updatewww
     $ python setup.py upload_products --html
 
+.. note::
+
+   If appropriate (probably not), update the links to current files:
+
+     * http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit
+     * http://matforge.org/fipy/wiki/FiPyManual?action=edit
+
 .. warning:: Some versions of ``rsync`` on Mac OS X have caused problems
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
