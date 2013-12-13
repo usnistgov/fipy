@@ -166,31 +166,27 @@ class upload_products(Command):
             print "uploading web pages..."
             # The -t flag (implicit in -a) is suddenly causing problems
             # os.system('rsync -aLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
-            os.system('rsync -rlpgoDLC -e ssh %s %s'%('documentation/_build/html/', os.environ['FIPY_WWWHOST']))
-
-            print "activating web pages..."
-            os.system(os.environ['FIPY_WWWACTIVATE'])
+            os.system('rsync -rlpgoDLC -e ssh %s %s' % ('documentation/_build/html/', os.environ['FIPY_WWWHOST']))
 
         if self.tarball:
             file = 'dist/FiPy-%s.tar.gz' % self.distribution.metadata.get_version()
             print "setting permissions for %s ..." % file
             os.system('chmod -R g+w %s' % file)
 
+            print "uploading tarball..."
+            os.system('rsync -pgoDLC -e ssh %s %s/download/' % (file, os.environ['FIPY_WWWHOST']))
+
         if self.winzip:
             file = 'dist/FiPy-%s.win32.zip' % self.distribution.metadata.get_version()
             print "setting permissions for %s ..." % file
             os.system('chmod -R g+w %s' % file)
+            
+            print "uploading winzip..."
+            os.system('rsync -pgoDLC -e ssh %s %s/download/' % (file, os.environ['FIPY_WWWHOST']))
 
         if self.pdf or self.tarball or self.winzip:
-            print "build products in `dist/` must be manually uploaded to MatForge"
-            import webbrowser
-            webbrowser.open("http://matforge.org/fipy/admin/general/downloader", autoraise=False)
-            
-            print "please update the current links, as appropriate"
-            if self.tarball or self.winzip:
-                webbrowser.open("http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit", autoraise=False)
-            if self.pdf:
-                webbrowser.open("http://matforge.org/fipy/wiki/FiPyManual?action=edit", autoraise=False)
+            print "activating web pages..."
+            os.system(os.environ['FIPY_WWWACTIVATE'])
 
 try:            
     f = open('README.txt', 'r')

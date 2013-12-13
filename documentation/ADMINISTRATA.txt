@@ -238,7 +238,11 @@ Make sure stdeb_ and debhelper_ are installed::
 Upload
 ------
 
-Tag the repository as appropriate (see `SVN practices`_ above).
+Tag the repository as appropriate (see `Git practices`_ above).
+
+Upload the build products to PyPI
+
+    $ python setup.py sdist upload
 
 Upload the build products and documentation from :file:`dist/` to MatForge and 
 the web site to CTCMS ::
@@ -249,11 +253,7 @@ the web site to CTCMS ::
 
 .. note::
 
-   You will need to manually upload the files
-
-     * http://matforge.org/fipy/admin/general/downloader
-
-   and, if appropriate, update the links to current files:
+   If appropriate (probably not), update the links to current files:
 
      * http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit
      * http://matforge.org/fipy/wiki/FiPyManual?action=edit
