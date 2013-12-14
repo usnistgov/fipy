@@ -187,17 +187,22 @@ class _PETScMatrix(_SparseMatrix):
             other.matrix.assemblyBegin()
             other.matrix.assemblyEnd()
             return _PETScMatrix(matrix=self.matrix.matMult(other.matrix))
+        elif isinstance(other, PETSc.Vec):
+            y = other.duplicate()
+            self.matrix.mult(other, y)
+            return y
         else:
             shape = numerix.shape(other)
             if shape == ():
-                return _PETScMatrix(matrix=self.matrix * other)
+                result = self.copy()
+                result.matrix = self.matrix * other
             else: # elif shape == (N,):
                 x = PETSc.Vec().createMPI(N, comm=PETSc.COMM_WORLD)
                 if self.colMap is not None:
                     x.setLGMap(self.colMap)
                 y = x.duplicate()
-                localNonOverlappingColIDs = self._localNonOverlappingColIDs
-                x.setValuesLocal(localNonOverlappingColIDs.astype('int32'), other[localNonOverlappingColIDs])
+                localNonOverlappingColIDs = self._localNonOverlappingColIDs.astype('int32')
+                x.setValuesLocal(localNonOverlappingColIDs, other[localNonOverlappingColIDs])
                 self.matrix.mult(x, y)
                 return y[self._globalOverlappingColIDs.astype('int32')]
 #             else:
@@ -532,17 +537,6 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
         _PETScMatrixFromShape.addAt(self, vector=vector, id1=id1, id2=id2)
         
-    def __mul__(self, other):
-        if isinstance(other, _PETScMeshMatrix):
-            self.matrix.assemblyBegin()
-            self.matrix.assemblyEnd()
-            other.matrix.assemblyBegin()
-            other.matrix.assemblyEnd()
-            return _PETScMeshMatrix(mesh=self.mesh, 
-                                    matrix=self.matrix.matMult(other.matrix))
-        else:
-            return _PETScMatrixFromShape.__mul__(self, other)
-
     @property
     def numpyArray(self):
         return super(_PETScMeshMatrix, self).numpyArray
