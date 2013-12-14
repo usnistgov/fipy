@@ -244,7 +244,7 @@ class Term(object):
         >>> from fipy import *
         >>> m = Grid1D(nx=10)
         >>> v = CellVariable(mesh=m)
-        >>> len(DiffusionTerm().justResidualVector(v)) == m.numberOfCells
+        >>> len(numerix.asarray(DiffusionTerm().justResidualVector(v))) == m.numberOfCells
         True
 
         Parameters
