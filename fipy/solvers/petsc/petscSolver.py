@@ -127,3 +127,34 @@ class PETScSolver(Solver):
     def _matrixClass(self):
         from fipy.solvers import _MeshMatrix
         return _MeshMatrix
+
+    def _calcResidualVector(self, residualFn=None):
+        if residualFn is not None:
+            return residualFn(self.var, self.matrix, self.RHSvector)
+        else:
+            residual, globalMatrix = self._calcResidualVectorNonOverlapping_()
+            
+            overlappingResidual = PETSc.Vec().createWithArray(self.var.value, comm=PETSc.COMM_SELF)
+            
+            fr = PETSc.IS().createGeneral(self.var.mesh._globalOverlappingCellIDs.astype('int32'), PETSc.COMM_SELF)
+            to = PETSc.IS().createGeneral(self.var.mesh._localOverlappingCellIDs.astype('int32'), PETSc.COMM_SELF)
+            scatter = PETSc.Scatter().create(residual, fr, overlappingResidual, to)
+            scatter.scatter(residual, overlappingResidual) #, mode='reverse')
+
+            return overlappingResidual
+
+    def _calcResidualVectorNonOverlapping_(self):
+        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
+        residual = globalMatrix * nonOverlappingVector - nonOverlappingRHSvector
+        return residual, globalMatrix
+
+    def _calcResidual(self, residualFn=None):
+        if residualFn is not None:
+            return residualFn(self.var, self.matrix, self.RHSvector)
+        else:
+            comm = self.var.mesh.communicator
+            residual, globalMatrix = self._calcResidualVectorNonOverlapping_()
+            return comm.Norm2(residual)
+        
+    def _calcRHSNorm(self):
+        return self.nonOverlappingRHSvector.Norm2()
