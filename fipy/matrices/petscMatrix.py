@@ -418,7 +418,9 @@ class _PETScMatrixFromShape(_PETScMatrix):
             else:
                 comm = rowMap.comm
             matrix.create(comm)
-            matrix.setSizes([rows, cols])
+            # rows are owned per process
+            # cols are owned by everyone
+            matrix.setSizes([[rows, None], cols)
             matrix.setType('aij') # sparse
             matrix.setPreallocationNNZ(None) # FIXME: ??? #bandwidth)
                 
@@ -446,7 +448,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         colMap = PETSc.LGMap().create(self._globalOverlappingColIDs.astype('int32'), comm)
         
         _PETScMatrixFromShape.__init__(self, 
-                                       rows=numberOfEquations * self.mesh.globalNumberOfCells, 
+                                       rows=numberOfEquations * len(self.mesh._localNonOverlappingCellIDs), 
                                        cols=numberOfVariables * self.mesh.globalNumberOfCells, 
                                        bandwidth=bandwidth, 
                                        sizeHint=sizeHint, 
