@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  #
- #  FILE: "periodicGrid2D.py"
+ #  FILE: "periodicGrid3D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -33,22 +33,22 @@
  ##
 
 """
-2D periodic rectangular Mesh
+3D periodic rectangular Mesh
 """
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools import parallelComm
-from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
+from fipy.meshes.nonUniformGrid3D import NonUniformGrid3D
 
-__all__ = ["PeriodicGrid2D", "PeriodicGrid2DLeftRight", "PeriodicGrid2DTopBottom"]
+__all__ = ["PeriodicGrid3D", "PeriodicGrid3DLeftRight", "PeriodicGrid3DTopBottom", "PeriodicGrid3DFrontBack"]
 
-class _BasePeriodicGrid2D(NonUniformGrid2D):
-    def __init__(self, dx = 1., dy = 1., nx = None, ny = None, overlap=2, communicator=parallelComm, *args, **kwargs):
-        super(_BasePeriodicGrid2D, self).__init__(dx = dx, dy = dy, nx = nx, ny = ny, overlap=overlap, communicator=communicator, *args, **kwargs)
-        self._nonPeriodicCellVertexIDs = super(_BasePeriodicGrid2D, self)._cellVertexIDs
-        self._orderedCellVertexIDs_data = super(_BasePeriodicGrid2D, self)._orderedCellVertexIDs        
-        self._nonPeriodicCellFaceIDs = numerix.array(super(_BasePeriodicGrid2D, self).cellFaceIDs)
+class _BasePeriodicGrid3D(NonUniformGrid3D):
+    def __init__(self, dx=1., dy=1., dz=1., nx=None, ny=None, nz=None, overlap=2, communicator=parallelComm, *args, **kwargs):
+        super(_BasePeriodicGrid3D, self).__init__(dx=dx, dy=dy, dz=dz, nx=nx, ny=ny, overlap=overlap, communicator=communicator, *args, **kwargs)
+        self._nonPeriodicCellVertexIDs = super(_BasePeriodicGrid3D, self)._cellVertexIDs
+        self._orderedCellVertexIDs_data = super(_BasePeriodicGrid3D, self)._orderedCellVertexIDs        
+        self._nonPeriodicCellFaceIDs = numerix.array(super(_BasePeriodicGrid3D, self).cellFaceIDs)
         self._makePeriodic()
 
     @property
@@ -60,68 +60,84 @@ class _BasePeriodicGrid2D(NonUniformGrid2D):
         Test for ticket:298.
 
         >>> from fipy import *
-        >>> m = PeriodicGrid2DLeftRight(nx=2, ny=2) + [[-1], [0]]
-        >>> orderedCellVertexIDs = [[1, 2, 4, 5],
+        >>> m = PeriodicGrid3DLeftRight(nx=2, ny=2, nz=1) + [[-1], [0], [0]]
+        >>> orderedCellVertexIDs = [[13, 14, 16, 17],
+        ...                         [12, 13, 15, 16],
+        ...                         [10, 11, 13, 14],
+        ...                         [9, 10, 12, 13],
         ...                         [4, 5, 7, 8],
         ...                         [3, 4, 6, 7],
+        ...                         [1, 2, 4, 5],
         ...                         [0, 1, 3, 4]]
         >>> print numerix.allclose(m._orderedCellVertexIDs, orderedCellVertexIDs)  # doctest: +PROCESSOR_0
-	True
+        True
         >>> print CellVariable(mesh=m, value=m.cellCenters[0])
         [-0.5  0.5 -0.5  0.5]
         """
         newCoords = self.vertexCoords + vector
         newmesh = self.__class__(**self.args)
-        from fipy.meshes.mesh2D import Mesh2D
-        Mesh2D.__init__(newmesh, newCoords, self.faceVertexIDs, self._nonPeriodicCellFaceIDs, communicator=self.communicator)
+        from fipy.meshes.mesh import Mesh
+        Mesh.__init__(newmesh, newCoords, self.faceVertexIDs, self._nonPeriodicCellFaceIDs, communicator=self.communicator)
         newmesh._makePeriodic()
         return newmesh
 
-class PeriodicGrid2D(_BasePeriodicGrid2D):
+class PeriodicGrid3D(_BasePeriodicGrid3D):
     """
-    Creates a periodic2D grid mesh with horizontal faces numbered
+    Creates a periodic3D grid mesh with horizontal faces numbered
     first and then vertical faces. Vertices and cells are numbered 
     in the usual way.
 
         >>> from fipy import numerix
 
-        >>> mesh = PeriodicGrid2D(dx = 1., dy = 0.5, nx = 2, ny = 2)
-        
+        >>> mesh = PeriodicGrid3D(dx=1., dy=0.5, dz=2., nx=2, ny=2, nz=1)
         >>> print numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0],
-        ...                        [ 4,  5,  8, 11])  # doctest: +PROCESSOR_0
+        ...                        [4, 5, 6, 7, 12, 13, 16, 19])  # doctest: +PROCESSOR_0
         True
 
         >>> print numerix.allclose(mesh.faceCellIDs.filled(-1),
-        ...                        [[2, 3, 0, 1, 2, 3, 1, 0, 1, 3, 2, 3],
-        ...                         [0, 1, 2, 3, -1, -1, 0, 1, -1, 2, 3, -1]]) # doctest: +PROCESSOR_0
+        ...                        [[0, 1, 2, 3, 0, 1, 2, 3, 2, 3, 
+        ...                          0, 1, 2, 3, 1, 0, 1, 3, 2, 3],
+        ...                         [0, 1, 2, 3, -1, -1, -1, -1, 0, 1, 
+        ...                          2, 3, -1, -1, 0, 1, -1, 2, 3, -1]]) # doctest: +PROCESSOR_0
         True
 
+
         >>> print numerix.allclose(mesh._cellDistances,
-        ...                        [ 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 1., 1., 0.5, 1., 1., 0.5]) # doctest: +PROCESSOR_0
+        ...                        [2., 2., 2., 2., 1., 1., 1., 1., 0.5, 0.5,
+        ...                         0.5, 0.5, 0.25, 0.25, 1., 1., 0.5, 1., 1., 0.5]) # doctest: +PROCESSOR_0
         True
- 
+
         >>> print numerix.allclose(mesh.cellFaceIDs,
-        ...                        [[0, 1, 2, 3],
-        ...                         [7, 6, 10, 9],
-        ...                         [2, 3, 0, 1],
-        ...                         [6, 7, 9, 10]]) # doctest: +PROCESSOR_0
+        ...                        [[14,15,17,18],
+        ...                         [15, 14, 18,17],
+        ...                         [8, 9, 10, 11],
+        ...                         [10, 11, 8, 9],
+        ...                         [0, 1, 2, 3],
+        ...                         [0, 1, 2, 3]]) # doctest: +PROCESSOR_0
         True
 
         >>> print numerix.allclose(mesh._cellToCellDistances,
-        ...                        [[ 0.5, 0.5, 0.5, 0.5],
-        ...                         [ 1., 1., 1., 1. ],
-        ...                         [ 0.5, 0.5, 0.5, 0.5],
-        ...                         [ 1., 1., 1., 1. ]]) # doctest: +PROCESSOR_0
+        ...                        [[1., 1., 1., 1.],
+        ...                         [1., 1., 1., 1.],        
+        ...                         [0.5, 0.5, 0.5, 0.5],
+        ...                         [0.5, 0.5, 0.5, 0.5],
+        ...                         [2., 2., 2., 2.],        
+        ...                         [2., 2., 2., 2.]]) # doctest: +PROCESSOR_0
         True
 
-        >>> normals = [[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-        ...            [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]]
+        >>> normals = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+        ...            [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0],
+        ...            [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
         >>> print numerix.allclose(mesh.faceNormals, normals) # doctest: +PROCESSOR_0
         True
 
         >>> print numerix.allclose(mesh._cellVertexIDs,
-        ...                        [[4, 5, 7, 8],
+        ...                        [[13, 14, 16, 17],
+        ...                         [12, 13, 15, 16],
+        ...                         [10, 11, 13, 14],
+        ...                         [9, 10, 12, 13],
+        ...                         [4, 5, 7, 8],
         ...                         [3, 4, 6, 7],
         ...                         [1, 2, 4, 5],
         ...                         [0, 1, 3, 4]]) # doctest: +PROCESSOR_0
@@ -133,16 +149,25 @@ class PeriodicGrid2D(_BasePeriodicGrid2D):
                            numerix.nonzero(self.facesRight))
         self._connectFaces(numerix.nonzero(self.facesBottom), 
                            numerix.nonzero(self.facesTop))
+        self._connectFaces(numerix.nonzero(self.facesFront), 
+                           numerix.nonzero(self.facesBack))
 
-class PeriodicGrid2DLeftRight(_BasePeriodicGrid2D):
+class PeriodicGrid3DLeftRight(_BasePeriodicGrid3D):
     def _makePeriodic(self):
         self._connectFaces(numerix.nonzero(self.facesLeft),
                            numerix.nonzero(self.facesRight))
 
-class PeriodicGrid2DTopBottom(_BasePeriodicGrid2D):
+class PeriodicGrid3DTopBottom(_BasePeriodicGrid3D):
     def _makePeriodic(self):
         self._connectFaces(numerix.nonzero(self.facesBottom),
                            numerix.nonzero(self.facesTop))
+
+class PeriodicGrid3DFrontBack(_BasePeriodicGrid3D):
+    def _makePeriodic(self):
+        self._connectFaces(numerix.nonzero(self.facesFront),
+                           numerix.nonzero(self.facesBack))
+
+
         
 def _test():
     import fipy.tests.doctestPlus
