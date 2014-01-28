@@ -45,7 +45,7 @@ __all__ = ["PeriodicGrid3D", "PeriodicGrid3DLeftRight", "PeriodicGrid3DTopBottom
 
 class _BasePeriodicGrid3D(NonUniformGrid3D):
     def __init__(self, dx=1., dy=1., dz=1., nx=None, ny=None, nz=None, overlap=2, communicator=parallelComm, *args, **kwargs):
-        super(_BasePeriodicGrid3D, self).__init__(dx=dx, dy=dy, dz=dz, nx=nx, ny=ny, overlap=overlap, communicator=communicator, *args, **kwargs)
+        super(_BasePeriodicGrid3D, self).__init__(dx=dx, dy=dy, dz=dz, nx=nx, ny=ny, nz=nz, overlap=overlap, communicator=communicator, *args, **kwargs)
         self._nonPeriodicCellVertexIDs = super(_BasePeriodicGrid3D, self)._cellVertexIDs
         self._orderedCellVertexIDs_data = super(_BasePeriodicGrid3D, self)._orderedCellVertexIDs        
         self._nonPeriodicCellFaceIDs = numerix.array(super(_BasePeriodicGrid3D, self).cellFaceIDs)
@@ -151,6 +151,23 @@ class PeriodicGrid3D(_BasePeriodicGrid3D):
                            numerix.nonzero(self.facesTop))
         self._connectFaces(numerix.nonzero(self.facesFront), 
                            numerix.nonzero(self.facesBack))
+
+    def _test(self):
+        """
+        Test to check that diffusion works correctly by checking that
+        the elements one step away for element 0 on the diagonal are
+        equal. They wouldn't be equal for a non-periodic grid.
+
+        >>> import fipy as fp
+        >>> m = fp.PeriodicGrid3D(nx=3, ny=3, nz=3)
+        >>> v = fp.CellVariable(mesh=m)
+        >>> v[0] = 1.
+        >>> (fp.TransientTerm() == fp.DiffusionTerm()).solve(v, dt=1.)
+        >>> assert numerix.allclose(v[13], v[26])
+        
+        """
+
+        pass
 
 class PeriodicGrid3DLeftRight(_BasePeriodicGrid3D):
     def _makePeriodic(self):
