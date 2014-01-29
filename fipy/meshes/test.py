@@ -50,6 +50,7 @@ def _suite():
         'fipy.meshes.gmshMesh',
         'fipy.meshes.periodicGrid1D',
         'fipy.meshes.periodicGrid2D',
+        'fipy.meshes.periodicGrid3D',
         'fipy.meshes.uniformGrid1D',
         'fipy.meshes.uniformGrid2D',
         'fipy.meshes.uniformGrid3D',
