@@ -62,8 +62,7 @@ class NonUniformGrid2D(Mesh2D):
             'dy': dy, 
             'nx': nx, 
             'ny': ny, 
-            'overlap': overlap,
-            'communicator': communicator
+            'overlap': overlap
         }
         
         builder.buildGridData([dx, dy], [nx, ny], overlap, communicator)

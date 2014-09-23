@@ -83,8 +83,7 @@ class UniformGrid3D(UniformGrid):
             'ny': ny,
             'nz': nz,
             'origin': origin,
-            'overlap': overlap,
-            'communicator': communicator
+            'overlap': overlap
         }
         
         builder.buildGridData([dx, dy, dz], [nx, ny, nz], overlap, 

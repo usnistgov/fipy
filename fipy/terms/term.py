@@ -799,6 +799,16 @@ class Term(object):
         ...                                      [0, 0, 2, -2]])
         ... # doctest: +PROCESSOR_0
         True
+
+        Test for ticket:658, the test should run without an error.
+
+        >>> m = Grid1D(nx=3)
+        >>> v = CellVariable(mesh=m, elementshape=(2,))
+        >>> v.constrain([[0], [1]], m.facesLeft)
+        >>> v.constrain([[1], [0]], m.facesRight)
+        >>> eqn = TransientTerm() == DiffusionTerm([[[0.01, -1],[1, 0.01]]]) 
+        >>> res = eqn.sweep(var=v, dt=1.)
+        
         """ 
 
 class __Term(Term): 
