@@ -92,7 +92,7 @@ class _DOffsets(object):
                 if len(offset) == 1:
                     offsetList.append(d * offset[0])
                 else:
-                    offsetList.append(0)
+                    offsetList.append(d * offset[i])
 
                 newDs.append(d)
 

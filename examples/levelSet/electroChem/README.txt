@@ -36,7 +36,7 @@ The CEAC Mechanism
 This process has been demonstrated to depend critically on the
 inclusion of additives in the electrolyte.  Recent publications
 propose Curvature Enhanced Accelerator Coverage (CEAC) as the
-mechanism behind the superfilling process [NIST:damascene:2001]_.  In this
+mechanism behind the superfilling process :cite:`NIST:damascene:2001`.  In this
 mechanism, molecules that accelerate local metal deposition displace
 molecules that inhibit local metal deposition on the metal/electrolyte
 interface. For electrolytes that yield superconformal filling of fine
@@ -47,7 +47,7 @@ the increased rate of metal deposition along the bottom of the filling
 trench is the concurrent local increase of the accelerator coverage
 due to decreasing local surface area, which scales with the local
 curvature (hence the name of the mechanism). A good overview of this
-mechanism can be found in [moffatInterface:2004]_.
+mechanism can be found in :cite:`moffatInterface:2004`.
 
 Using FiPy to model Superfill
 -----------------------------
@@ -76,7 +76,7 @@ of high surfactant concentration have an increased deposition rate.
    :align: left
    :alt: FiPy simulation contours of superfill
 
-.. _Mayavi:   http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://mayavi.sourceforge.net
+.. _Mayavi:   http://mayavi.sourceforge.net
 
 .. |latexSimpleTrenchSystem| raw:: latex
 

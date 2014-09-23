@@ -48,7 +48,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.decorators import getsetDeprecated
-from fipy.tools import serial
+from fipy.tools import serialComm
 
 from fipy.meshes.mesh import Mesh
 from fipy.meshes.representations.meshRepresentation import _MeshRepresentation
@@ -69,7 +69,7 @@ def _orderVertices(vertexCoords, vertices):
 __all__ = ["Mesh2D"]
 
 class Mesh2D(Mesh):
-    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serial, _RepresentationClass=_MeshRepresentation, _TopologyClass=_Mesh2DTopology):
+    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serialComm, _RepresentationClass=_MeshRepresentation, _TopologyClass=_Mesh2DTopology):
         super(Mesh2D, self).__init__(vertexCoords=vertexCoords, faceVertexIDs=faceVertexIDs, cellFaceIDs=cellFaceIDs, communicator=communicator, 
                                      _RepresentationClass=_RepresentationClass, _TopologyClass=_TopologyClass)
 
@@ -97,7 +97,7 @@ class Mesh2D(Mesh):
 
     def _calcFaceTangents(self):
         # copy required to get internal memory ordering correct for inlining.
-        faceTangents1 = numerix.array((-self._faceNormals[1], self._faceNormals[0])).copy()
+        faceTangents1 = numerix.array((-self.faceNormals[1], self.faceNormals[0])).copy()
         faceTangents2 = numerix.zeros(faceTangents1.shape, 'd')
         return faceTangents1, faceTangents2
 
@@ -151,8 +151,8 @@ class Mesh2D(Mesh):
 
         faceDisplacementVectors = faceDisplacementVectors.swapaxes(0,1)
 
-        faceCrossProducts = (faceDisplacementVectors[0, :] * self._faceNormals[1,:]) \
-          - (faceDisplacementVectors[1, :] * self._faceNormals[0, :])
+        faceCrossProducts = (faceDisplacementVectors[0, :] * self.faceNormals[1,:]) \
+          - (faceDisplacementVectors[1, :] * self.faceNormals[0, :])
 
         faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[0, :] ** 2) \
           + (faceDisplacementVectors[1, :] ** 2)) ** 0.5, 1.e-100)
@@ -176,8 +176,8 @@ class Mesh2D(Mesh):
           - `extrudeFunc`: function that takes the vertex coordinates and returns the displaced values
           - `layers`: the number of layers in the extruded mesh (number of times extrudeFunc will be called)
 
-        >>> from fipy.meshes.grid2D import Grid2D
-        >>> print Grid2D(nx=2,ny=2).extrude(layers=2).cellCenters
+        >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
+        >>> print NonUniformGrid2D(nx=2,ny=2).extrude(layers=2).cellCenters
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]
          [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]]
@@ -337,7 +337,7 @@ class Mesh2D(Mesh):
             ...                               -dx / numerix.sqrt(dx**2 + dy**2), 
             ...                               1., 
             ...                               dx / numerix.sqrt(dx**2 + dy**2))))
-            >>> numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceNormals, mesh.faceNormals, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellToFaceOrientations = MA.masked_values(((1,  1,  1, -1, -1, -1,  1, -1),

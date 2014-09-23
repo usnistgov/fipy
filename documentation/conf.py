@@ -32,8 +32,9 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
               'numpydoc',
-              'bibstuff.sphinxext.bibref',
-              'sphinxcontrib.traclinks']
+              'sphinxcontrib.traclinks',
+              'redirecting_html',
+              'sphinxcontrib.bibtex']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -89,7 +90,8 @@ exclude_patterns = ['fipy/generated/modules.txt',
                     'documentation/tutorial/package/generated/modules.txt',
                     'documentation/sphinxext',
                     'documentation/sphinxext/bibtex/bibstuff/examples/*.txt',
-                    '**/.svn']
+                    '**/.svn',
+                    '**/.git']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -279,7 +281,7 @@ latex_elements = {
     \definecolor{redish}{rgb}{0.894,0.122,0.122}
     \definecolor{bluish}{rgb}{0.216,0.188,0.533}
     
-    \authoraddress{Metallurgy Division \\
+    \authoraddress{Materials Science and Engineering Division \\
     and the Center for Theoretical and Computational Materials Science \\
     Material Measurement Laboratory}
     

@@ -38,14 +38,14 @@
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from fipy.tools import parallel
-from fipy.meshes.grid2D import Grid2D
+from fipy.tools import parallelComm
+from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
 
 __all__ = ["PeriodicGrid2D", "PeriodicGrid2DLeftRight", "PeriodicGrid2DTopBottom"]
 
-class _BasePeriodicGrid2D(Grid2D):
-    def __init__(self, dx = 1., dy = 1., nx = None, ny = None, overlap=2, communicator=parallel):
-        super(_BasePeriodicGrid2D, self).__init__(dx = dx, dy = dy, nx = nx, ny = ny, overlap=overlap, communicator=communicator)
+class _BasePeriodicGrid2D(NonUniformGrid2D):
+    def __init__(self, dx = 1., dy = 1., nx = None, ny = None, overlap=2, communicator=parallelComm, *args, **kwargs):
+        super(_BasePeriodicGrid2D, self).__init__(dx = dx, dy = dy, nx = nx, ny = ny, overlap=overlap, communicator=communicator, *args, **kwargs)
         self._nonPeriodicCellVertexIDs = super(_BasePeriodicGrid2D, self)._cellVertexIDs
         self._orderedCellVertexIDs_data = super(_BasePeriodicGrid2D, self)._orderedCellVertexIDs        
         self._nonPeriodicCellFaceIDs = numerix.array(super(_BasePeriodicGrid2D, self).cellFaceIDs)
@@ -117,7 +117,7 @@ class PeriodicGrid2D(_BasePeriodicGrid2D):
         >>> normals = [[0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
         ...            [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]]
 
-        >>> print numerix.allclose(mesh._faceNormals, normals) # doctest: +PROCESSOR_0
+        >>> print numerix.allclose(mesh.faceNormals, normals) # doctest: +PROCESSOR_0
         True
 
         >>> print numerix.allclose(mesh._cellVertexIDs,

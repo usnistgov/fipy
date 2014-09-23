@@ -46,7 +46,7 @@ from fipy.meshes.topologies.meshTopology import _MeshTopology
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
-from fipy.tools import serial
+from fipy.tools import serialComm
 
 __all__ = ["MeshAdditionError", "Mesh"]
 
@@ -61,7 +61,7 @@ class Mesh(AbstractMesh):
         This is built for a non-mixed element mesh.
     """
 
-    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serial, _RepresentationClass=_MeshRepresentation, _TopologyClass=_MeshTopology):
+    def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serialComm, _RepresentationClass=_MeshRepresentation, _TopologyClass=_MeshTopology):
         super(Mesh, self).__init__(communicator=communicator,
                                    _RepresentationClass=_RepresentationClass,
                                    _TopologyClass=_TopologyClass)
@@ -162,7 +162,7 @@ class Mesh(AbstractMesh):
          self._cellToFaceDistanceVectors) = self._calcFaceToCellDistAndVec()
         (self._internalCellDistances,
          self._cellDistanceVectors) = self._calcCellDistAndVec()
-        self._faceNormals = self._calcFaceNormals()
+        self.faceNormals = self._calcFaceNormals()
         self._orientedFaceNormals = self._calcOrientedFaceNormals()
         self._cellVolumes = self._calcCellVolumes()
         self._faceCellToCellNormals = self._calcFaceCellToCellNormals()
@@ -250,14 +250,14 @@ class Mesh(AbstractMesh):
         mag = numerix.sqrt(numerix.sum(diff**2))
         faceCellToCellNormals = diff / numerix.resize(mag, (self.dim, len(mag)))
 
-        orientation = 1 - 2 * (numerix.dot(self._faceNormals, faceCellToCellNormals) < 0)
+        orientation = 1 - 2 * (numerix.dot(self.faceNormals, faceCellToCellNormals) < 0)
         return faceCellToCellNormals * orientation
 
     def _calcOrientedFaceNormals(self):
-        return self._faceNormals
+        return self.faceNormals
         
     def _calcCellVolumes(self):
-        tmp = self._faceCenters[0] * self._faceAreas * self._faceNormals[0]
+        tmp = self._faceCenters[0] * self._faceAreas * self.faceNormals[0]
         tmp = numerix.take(tmp, self.cellFaceIDs) * self._cellToFaceOrientations
         return MA.filled(MA.sum(tmp, 0))
 
@@ -288,7 +288,7 @@ class Mesh(AbstractMesh):
                                                      axis=1))
         tmp = self._faceCenters - faceVertexCoord
         faceTangents1 = tmp / numerix.sqrtDot(tmp, tmp)
-        tmp = numerix.cross(faceTangents1, self._faceNormals, axis=0)
+        tmp = numerix.cross(faceTangents1, self.faceNormals, axis=0)
         faceTangents2 = tmp / numerix.sqrtDot(tmp, tmp)
         return faceTangents1, faceTangents2
         
@@ -300,7 +300,7 @@ class Mesh(AbstractMesh):
         return take(self._faceAreas, self.cellFaceIDs)
     
     def _calcCellNormals(self):
-        cellNormals = numerix.take(self._faceNormals, self.cellFaceIDs, axis=1)
+        cellNormals = numerix.take(self.faceNormals, self.cellFaceIDs, axis=1)
         cellFaceCellIDs = numerix.take(self.faceCellIDs[0], self.cellFaceIDs)
         cellIDs = numerix.repeat(numerix.arange(self.numberOfCells)[numerix.newaxis,...], 
                                  self._maxFacesPerCell,
@@ -380,7 +380,7 @@ class Mesh(AbstractMesh):
         return self.scale['length']**3  
  
     def _calcAreaProjections(self):
-        return self._faceNormals * self._faceAreas
+        return self.faceNormals * self._faceAreas
         
     def _calcOrientedAreaProjections(self):
         return self._areaProjections
@@ -445,11 +445,11 @@ class Mesh(AbstractMesh):
 
     def _handleFaceConnection(self):
         """
-        The _faceCellToCellNormals were added to ensure _faceNormals == _faceCellToCellNormals for periodic grids.
+        The _faceCellToCellNormals were added to ensure faceNormals == _faceCellToCellNormals for periodic grids.
         
         >>> from fipy import *
         >>> m = PeriodicGrid2DLeftRight(nx=2, ny=2)
-        >>> (m._faceNormals == m._faceCellToCellNormals).all()
+        >>> (m.faceNormals == m._faceCellToCellNormals).all()
         True
         
         """
@@ -641,7 +641,7 @@ class Mesh(AbstractMesh):
             >>> faceNormals = numerix.array((( 0., 0., -1., 1.,  0., 0.,  0., 0.,  0., dy / numerix.sqrt(dy**2 + dx**2)),
             ...                              ( 0., 0.,  0., 0., -1., 1.,  0., 0., -1., dx / numerix.sqrt(dy**2 + dx**2)),
             ...                              (-1., 1.,  0., 0.,  0., 0., -1., 1.,  0., 0.)))
-            >>> numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10)
+            >>> numerix.allclose(faceNormals, mesh.faceNormals, atol = 1e-10, rtol = 1e-10)
             1
 
             >>> cellToFaceOrientations = MA.masked_values(((1, -1),

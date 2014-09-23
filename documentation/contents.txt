@@ -18,6 +18,7 @@ FiPy Contents
    VKML
    ../DISCLAIMER
    manual
+   references
 
 .. toctree::
    :hidden:
@@ -25,5 +26,5 @@ FiPy Contents
    CODESPEED
    BUILDBOT
    GUIDELINES
-   SVN
+   GIT
 

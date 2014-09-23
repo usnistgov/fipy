@@ -1,10 +1,10 @@
 """
 :term:`FiPy` is an object oriented, partial differential equation (PDE) solver,
-written in :term:`Python`, based on a standard finite volume (FV)
-approach.  The framework has been developed in the `Metallurgy Division`_
-and Center for Theoretical and Computational Materials Science (CTCMS_), in
-the Material Measurement Laboratory (MML_) at the National
-Institute of Standards and Technology (NIST_).
+written in :term:`Python`, based on a standard finite volume (FV) approach. The
+framework has been developed in the Materials Science and Engineering Division
+(MSED_) and Center for Theoretical and Computational Materials Science (CTCMS_),
+in the Material Measurement Laboratory (MML_) at the National Institute of
+Standards and Technology (NIST_).
 
 The solution of coupled sets of PDEs is ubiquitous to the numerical
 simulation of science problems.  Numerous PDE solvers exist, using a
@@ -25,7 +25,7 @@ treatment of the electrodeposition process |citeCEAC|.
 
 .. _MML:                  http://www.nist.gov/mml/
 .. _CTCMS:                http://www.ctcms.nist.gov/
-.. _Metallurgy Division:  http://www.metallurgy.nist.gov/
+.. _MSED:                 http://www.nist.gov/mml/msed/
 .. _NIST:                 http://www.nist.gov/
 """
 __docformat__ = 'restructuredtext'
@@ -50,7 +50,6 @@ from fipy.terms import *
 from fipy.tools import *
 from fipy.variables import *
 from fipy.viewers import *
-from fipy.models import *
 
 __all__ = []
 __all__.extend(boundaryConditions.__all__)
@@ -61,7 +60,6 @@ __all__.extend(terms.__all__)
 __all__.extend(tools.__all__)
 __all__.extend(variables.__all__)
 __all__.extend(viewers.__all__)
-__all__.extend(models.__all__)
 
 # fipy needs to export raw_input whether or not parallel
 
@@ -70,11 +68,11 @@ if sys.version_info >= (3, 0):
     input = input
     input_original = input
 
-    if parallel.Nproc > 1:
+    if parallelComm.Nproc > 1:
         def mpi_input(prompt=""):
-            parallel.Barrier()
+            parallelComm.Barrier()
             sys.stdout.flush() 
-            if parallel.procID == 0:
+            if parallelComm.procID == 0:
                 sys.stdout.write(prompt)
                 sys.stdout.flush()
                 return sys.stdin.readline()
@@ -87,11 +85,11 @@ else:
     raw_input = raw_input
     raw_input_original = raw_input
 
-    if parallel.Nproc > 1:
+    if parallelComm.Nproc > 1:
         def mpi_raw_input(prompt=""):
-            parallel.Barrier()
+            parallelComm.Barrier()
             sys.stdout.flush()
-            if parallel.procID == 0:
+            if parallelComm.procID == 0:
                 sys.stdout.write(prompt)
                 sys.stdout.flush()
                 return sys.stdin.readline()
@@ -117,14 +115,14 @@ def doctest_raw_input(prompt):
     This routine attempts to be savvy about running in parallel.
     """
     try:
-        from fipy.tools import parallel
-        parallel.Barrier()
+        from fipy.tools import parallelComm
+        parallelComm.Barrier()
         _saved_stdout.flush()
-        if parallel.procID == 0:
+        if parallelComm.procID == 0:
             txt = _serial_doctest_raw_input(prompt)
         else:
             txt = ""
-        parallel.Barrier()
+        parallelComm.Barrier()
     except ImportError:
         txt = _serial_doctest_raw_input(prompt)
 #     return txt

@@ -37,7 +37,6 @@ __docformat__ = 'restructuredtext'
 import os
 
 from fipy.tools import numerix
-from fipy.solvers import DefaultSolver, DummySolver
 from fipy.terms import AbstractBaseClassError
 from fipy.terms import SolutionVariableRequiredError
 from fipy.tools.decorators import getsetDeprecated
@@ -178,7 +177,10 @@ class Term(object):
             if var is None:
                 name = ""
             else:
-                name = var.name
+                if not hasattr(var, "name"):
+                    name = ""
+                else:
+                    name = var.name
             self._viewer.title = r"%s %s" % (name, repr(self))
             from fipy.variables.coupledCellVariable import _CoupledCellVariable
             if isinstance(solver.RHSvector, _CoupledCellVariable):
@@ -322,6 +324,7 @@ class Term(object):
 
         `justErrorVector` returns the overlapping local value in parallel (not the non-overlapping value).
 
+        >>> from fipy.solvers import DummySolver
         >>> from fipy import *
         >>> m = Grid1D(nx=10)
         >>> v = CellVariable(mesh=m)
@@ -397,6 +400,7 @@ class Term(object):
         return NotImplementedError
         
     def getDefaultSolver(self, var=None, solver=None, *args, **kwargs):
+        from fipy.solvers import DefaultSolver
         return solver or self._getDefaultSolver(var, solver, *args, **kwargs) or DefaultSolver(*args, **kwargs)
                          
     def __add__(self, other):
@@ -466,7 +470,10 @@ class Term(object):
         
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         raise NotImplementedError
-
+        
+    def _getDiagonalSign(self, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        raise NotImplementedError
+    
     def _getDiffusionGeomCoeff(self, var):
         return None
 
@@ -668,6 +675,7 @@ class Term(object):
         >>> print numerix.allequal(solver.RHSvector, [-10, -10, -10])  # doctest: +PROCESSOR_0
         True
 
+        >>> from fipy.solvers import DummySolver
         >>> eq.solve(var=B, solver=DummySolver())
 
         >>> m = Grid1D(nx=2)
@@ -791,6 +799,16 @@ class Term(object):
         ...                                      [0, 0, 2, -2]])
         ... # doctest: +PROCESSOR_0
         True
+
+        Test for ticket:658, the test should run without an error.
+
+        >>> m = Grid1D(nx=3)
+        >>> v = CellVariable(mesh=m, elementshape=(2,))
+        >>> v.constrain([[0], [1]], m.facesLeft)
+        >>> v.constrain([[1], [0]], m.facesRight)
+        >>> eqn = TransientTerm() == DiffusionTerm([[[0.01, -1],[1, 0.01]]]) 
+        >>> res = eqn.sweep(var=v, dt=1.)
+        
         """ 
 
 class __Term(Term): 

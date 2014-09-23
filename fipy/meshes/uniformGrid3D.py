@@ -36,7 +36,7 @@
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.decorators import getsetDeprecated
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 
 from fipy.meshes.uniformGrid import UniformGrid
 from fipy.meshes.builders import _UniformGrid3DBuilder
@@ -65,7 +65,7 @@ class UniformGrid3D(UniformGrid):
     Faces: XY faces numbered first, then XZ faces, then YZ faces. Within each subcategory, it is numbered in the usual way.
     """
     def __init__(self, dx = 1., dy = 1., dz = 1., nx = 1, ny = 1, nz = 1, 
-                 origin = [[0], [0], [0]], overlap=2, communicator=parallel,
+                 origin = [[0], [0], [0]], overlap=2, communicator=parallelComm,
                  _RepresentationClass=_Grid3DRepresentation,
                  _TopologyClass=_Grid3DTopology):
 
@@ -205,7 +205,7 @@ class UniformGrid3D(UniformGrid):
                                     numerix.repeat((self.dy * self.dz,), self.numberOfYZFaces)))
 
     @property
-    def _faceNormals(self):
+    def faceNormals(self):
         XYnor = numerix.zeros((3, self.nx, self.ny, self.nz + 1), 'l')
         XYnor[0,      ...] =  1
         XYnor[0,  ...,  0] = -1
@@ -280,7 +280,7 @@ class UniformGrid3D(UniformGrid):
     
     @property
     def _orientedFaceNormals(self):
-        return self._faceNormals
+        return self.faceNormals
 
     @property
     def _faceTangents1(self):
@@ -391,7 +391,7 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def _areaProjections(self):
-        return self._faceNormals * self._faceAreas
+        return self.faceNormals * self._faceAreas
      
     @property
     def _faceAspectRatios(self):
@@ -411,13 +411,13 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def _concatenableMesh(self):
-        from fipy.meshes.grid3D import Grid3D
+        from fipy.meshes.nonUniformGrid3D import NonUniformGrid3D
         args = self.args.copy()
         origin = args['origin']
-        from fipy.tools import serial
-        args['communicator'] = serial
+        from fipy.tools import serialComm
+        args['communicator'] = serialComm
         del args['origin']
-        return Grid3D(**args) + origin
+        return NonUniformGrid3D(**args) + origin
 
     @property
     def _cellFaceIDs(self):
@@ -646,7 +646,7 @@ class UniformGrid3D(UniformGrid):
             >>> faceNormals = numerix.array((( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1, 1, 1, 1,-1, 1, 1, 1),
             ...                              ( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1,-1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),
             ...                              (-1,-1,-1,-1,-1,-1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
-            >>> print numerix.allclose(faceNormals, mesh._faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print numerix.allclose(faceNormals, mesh.faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
             >>> cellToFaceOrientations = numerix.array((( 1,-1,-1, 1,-1,-1),

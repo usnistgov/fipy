@@ -123,11 +123,13 @@ Build the mesh:
 
 .. index:: sqrt, exp
 
+>>> from fipy import *
+
 >>> if numberOfElements != -1:
 ...     pos = trenchSpacing * cellsBelowTrench / 4 / numberOfElements
 ...     sqr = trenchSpacing * (trenchDepth + boundaryLayerDepth) \
 ...           / (2 * numberOfElements)
-...     cellSize = pos + sqrt(pos**2 + sqr)
+...     cellSize = pos + numerix.sqrt(pos**2 + sqr)
 ... else:
 ...     cellSize = 0.1e-7
 
@@ -137,13 +139,15 @@ Build the mesh:
 
 .. index:: Grid2D
 
->>> from fipy import *
->>> from fipy import serial
+>>> from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+>>> from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+
+>>> from fipy import serialComm
 >>> mesh = Grid2D(dx=cellSize,
 ...               dy=cellSize,
 ...               nx=xCells,
 ...               ny=yCells,
-...               communicator=serial)
+...               communicator=serialComm)
 
 A ``distanceVariable`` object,
 :math:`\phi`, is  required to store  the  position of the interface.
@@ -163,7 +167,6 @@ Create an initial variable,
 ...    name='distance variable',
 ...    mesh= mesh,
 ...    value=-1.,
-...    narrowBandWidth=narrowBandWidth,
 ...    hasOld=1)
 
 The electrolyte region will be the positive region of the domain while the metal
@@ -179,7 +182,7 @@ region will be negative.
 ...                                 | ((y > bottomHeight) 
 ...                                    & (x < xCells * cellSize - sideWidth)))
 
->>> distanceVar.calcDistanceFunction(narrowBandWidth=1e10)
+>>> distanceVar.calcDistanceFunction(order=2) #doctest: +LSM
 
 The ``distanceVariable`` has now been created to mark the interface. Some other
 variables need to be created that govern the concentrations of various species.
@@ -299,10 +302,9 @@ The variable :math:`\phi` is advected by the
    
 and is set up with the following commands:
     
-.. index:: buildHigherOrderAdvectionEquation
+.. index:: AdvectionTerm
 
->>> advectionEquation = buildHigherOrderAdvectionEquation(
-...     advectionCoeff=extensionVelocityVariable)
+>>> advectionEquation = TransientTerm() + AdvectionTerm(extensionVelocityVariable)
 
 The diffusion of metal ions from the far field to the interface is
 governed by,
@@ -327,8 +329,6 @@ The following boundary condition applies at :math:`\phi = 0`,
    D \hat{n} \cdot \nabla c = \frac{v}{\Omega}.
    
 The metal ion diffusion equation is set up with the following commands.
-
-.. index:: buildMetalIonDiffusionEquation
 
 >>> metalEquation = buildMetalIonDiffusionEquation(
 ...     ionVar=metalVar,
@@ -370,8 +370,7 @@ at :math:`\phi = 0` is given by,
    
 The surfactant bulk diffusion equation is set up with the following commands.
 
-.. index:: buildSurfactantBulkDiffusionEquation
-
+>>> from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 >>> bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
 ...     bulkVar=bulkCatalystVar,
 ...     distanceVar=distanceVar,
@@ -388,6 +387,7 @@ If running interactively, create viewers.
    
 >>> if __name__ == '__main__':
 ...     try:
+...         from mayaviSurfactantViewer import MayaviSurfactantViewer
 ...         viewer = MayaviSurfactantViewer(distanceVar,
 ...                                         catalystVar.interfaceVar,
 ...                                         zoomFactor=1e6,
@@ -398,6 +398,8 @@ If running interactively, create viewers.
 ...         viewer = MultiViewer(viewers=(
 ...             Viewer(distanceVar, datamin=-1e-9, datamax=1e-9),
 ...             Viewer(catalystVar.interfaceVar)))
+...         from fipy.models.levelSet.surfactant.matplotlibSurfactantViewer import MatplotlibSurfactantViewer 
+...         viewer = MatplotlibSurfactantViewer(catalystVar.interfaceVar)
 ... else:
 ...     viewer = None
 
@@ -420,17 +422,17 @@ is calculated with the CFL number and the maximum extension velocity.
 ...         viewer.plot()
 ...
 ...     if step % levelSetUpdateFrequency == 0:
-...         distanceVar.calcDistanceFunction()
+...         distanceVar.calcDistanceFunction(order=2)
 ...
 ...     extensionVelocityVariable.setValue(depositionRateVariable())
-...
+...     
 ...     distanceVar.updateOld()
-...     distanceVar.extendVariable(extensionVelocityVariable)
+...     distanceVar.extendVariable(extensionVelocityVariable, order=2)
 ...     dt = cflNumber * cellSize / extensionVelocityVariable.max()
 ...     advectionEquation.solve(distanceVar, dt=dt)
 ...     surfactantEquation.solve(catalystVar, dt=dt)
 ...     metalEquation.solve(var=metalVar, dt=dt)
-...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt, solver=GeneralSolver())
+...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt, solver=GeneralSolver()) #doctest: +LSM
    
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
@@ -439,10 +441,11 @@ to tell if something has changed or been broken.
 .. index:: loadtxt
    
 >>> import os
->>> filepath = os.path.join(os.path.split(__file__)[0], 
-...                         "simpleTrenchSystem.gz")
 
->>> print catalystVar.allclose(numerix.loadtxt(filepath), rtol=1e-4)
+>>> filepath = os.path.join(os.path.split(__file__)[0],
+...                         "simpleTrenchSystem.gz")
+>>> ##numerix.savetxt(filepath, numerix.array(catalystVar))
+>>> print catalystVar.allclose(numerix.loadtxt(filepath), rtol=1e-4) #doctest: +LSMLIB
 1
 
 >>> if __name__ == '__main__':

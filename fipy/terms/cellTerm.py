@@ -38,7 +38,6 @@ from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 from fipy.tools import inline
 from fipy.tools import numerix
 from fipy.terms import AbstractBaseClassError
-from fipy.matrices.sparseMatrix import _SparseMatrix
 from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
 

@@ -41,13 +41,13 @@ import os
 import sys
 import gzip
 
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 
 __all__ = ["write", "read"]
 
 # TODO: add test to show that round trip pickle of mesh doesn't work properly
 # FIXME: pickle fails to work properly on numpy 1.1 (run gapFillMesh.py)
-def write(data, filename = None, extension = '', communicator=parallel):
+def write(data, filename = None, extension = '', communicator=parallelComm):
     """
     Pickle an object and write it to a file. Wrapper for
     `cPickle.dump()`.
@@ -86,7 +86,7 @@ def write(data, filename = None, extension = '', communicator=parallel):
     if filename is None:
         return (f, _filename)
 
-def read(filename, fileobject=None, communicator=parallel, mesh_unmangle=False):
+def read(filename, fileobject=None, communicator=parallelComm, mesh_unmangle=False):
     """
     Read a pickled object from a file. Returns the unpickled object.
     Wrapper for `cPickle.load()`.

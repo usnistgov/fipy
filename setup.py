@@ -99,7 +99,7 @@ class build_docs(Command):
                     + apidoc_args + ['documentation/tutorial/package'])
 
         if self.html:
-            sphinx.main(['sphinx-build', '-b', 'html'] + sphinx_args + ['documentation/_build/html/'])
+            sphinx.main(['sphinx-build', '-b', 'redirecting_html'] + sphinx_args + ['documentation/_build/html/'])
 
         if self.pdf:
             sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
@@ -166,31 +166,27 @@ class upload_products(Command):
             print "uploading web pages..."
             # The -t flag (implicit in -a) is suddenly causing problems
             # os.system('rsync -aLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
-            os.system('rsync -rlpgoDLC -e ssh %s %s'%('documentation/_build/html/', os.environ['FIPY_WWWHOST']))
-
-            print "activating web pages..."
-            os.system(os.environ['FIPY_WWWACTIVATE'])
+            os.system('rsync -rlpgoDLC -e ssh %s %s' % ('documentation/_build/html/', os.environ['FIPY_WWWHOST']))
 
         if self.tarball:
             file = 'dist/FiPy-%s.tar.gz' % self.distribution.metadata.get_version()
             print "setting permissions for %s ..." % file
             os.system('chmod -R g+w %s' % file)
 
+            print "uploading tarball..."
+            os.system('rsync -pgoDLC -e ssh %s %s/download/' % (file, os.environ['FIPY_WWWHOST']))
+
         if self.winzip:
             file = 'dist/FiPy-%s.win32.zip' % self.distribution.metadata.get_version()
             print "setting permissions for %s ..." % file
             os.system('chmod -R g+w %s' % file)
+            
+            print "uploading winzip..."
+            os.system('rsync -pgoDLC -e ssh %s %s/download/' % (file, os.environ['FIPY_WWWHOST']))
 
         if self.pdf or self.tarball or self.winzip:
-            print "build products in `dist/` must be manually uploaded to MatForge"
-            import webbrowser
-            webbrowser.open("http://matforge.org/fipy/admin/general/downloader", autoraise=False)
-            
-            print "please update the current links, as appropriate"
-            if self.tarball or self.winzip:
-                webbrowser.open("http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit", autoraise=False)
-            if self.pdf:
-                webbrowser.open("http://matforge.org/fipy/wiki/FiPyManual?action=edit", autoraise=False)
+            print "activating web pages..."
+            os.system(os.environ['FIPY_WWWACTIVATE'])
 
 try:            
     f = open('README.txt', 'r')
@@ -217,7 +213,7 @@ except IOError, e:
 #         },
 
 ##Hacked from numpy
-def svn_version():
+def getVersion():
     def _minimal_ext_cmd(cmd):
         # construct minimal environment
         env = {}
@@ -233,35 +229,26 @@ def svn_version():
         out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env).communicate()[0]
         return out
 
-    try:
-        out = _minimal_ext_cmd(['svn', 'info'])
-    except OSError:
-        print(" --- Could not run svn info --- ")
-        return ""
+    version = 'unknown'
 
-    import re
-    r = re.compile('Revision: ([0-9]+)')
-    svnver = ""
+    if os.path.exists('.git'):
+        try:
+            out = _minimal_ext_cmd(['git', 'describe', '--tags', '--match', 'version-*'])
+            # ticket:475 - fix for bytecode received in Py3k
+            # http://jeetworks.org/node/67
+            out = out.decode("utf-8")
+            version = out.strip().replace('version-', '').replace('_', '.').replace('-', '-dev', 1)
+        except OSError:
+            import warnings
+            warnings.warn("Could not run ``git describe``")
+    elif os.path.exists('FiPy.egg-info'):
+        from fipy import _getVersion
+        version = _getVersion()
 
-    out = str(out.decode())
-
-    for line in out.split('\n'):
-        m = r.match(line.strip())
-        if m:
-            svnver = m.group(1)
-
-    if not svnver:
-        print("Error while parsing svn version")
-
-    return svnver
-
-def getVersion(version, release=False):
-    if not release:
-        version += '-dev' + svn_version()
     return version
 
 dist = setup(	name = "FiPy",
-        version = getVersion(version='3.0', release=False), 
+        version = getVersion(), 
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",

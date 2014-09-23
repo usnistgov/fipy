@@ -74,6 +74,24 @@ Take the tangent of an array.
 __docformat__ = 'restructuredtext'
 
 import numpy as NUMERIX
+
+# On all platforms except Win64, int will be either 32 bit 
+# or 64 bit depending on the platform and the Python;
+# however, on Win64 (and python 64-bit), int will always be
+# 32-bit. This is a known issue, and StackOverflow has many
+# questions and answers.  However, we still need to do 
+# something about it, so instead of relying on the default 
+# mapping, we'll be explicit:
+
+import platform
+arch=platform.architecture()[0]
+if arch == '32bit':
+    INT_DTYPE=NUMERIX.int32
+elif arch == '64bit':
+    INT_DTYPE=NUMERIX.int64
+else:
+    raise Exception('Cannot set integer dtype because architecture is unknown.')
+
 from numpy.core import umath
 from numpy import newaxis as NewAxis
 from numpy import *
@@ -337,8 +355,14 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
             return _formatFloat(arr, format='%%1.%df' % precision)
 
     elif isInt(arr):
-        from numpy.core.arrayprint import _formatInteger
-        return _formatInteger(arr, format='%d')
+        try:
+            ## this is for numpy 1.7 and above
+            ## why has the interface changed again?
+            from numpy.core.arrayprint import IntegerFormat
+            return IntegerFormat(NUMERIX.array((arr,)))(arr).strip()       
+        except:
+            from numpy.core.arrayprint import _formatInteger
+            return _formatInteger(arr, format='%d')
     else:        
         raise TypeError, 'cannot convert ' + str(arr) + ' to string'
         
@@ -494,7 +518,7 @@ def nearest(data, points, max_mem=1e8):
     
     numChunks = int(round(D * N * data.itemsize * M / max_mem + 0.5))
 
-    nearestIndices = empty((M,), dtype=int)
+    nearestIndices = empty((M,), dtype=INT_DTYPE)
     for chunk in array_split(arange(points.shape[-1]), numChunks):
         # last chunk can be empty, but numpy (1.5.0.dev8716, anyway)
         # returns array([], dtype=float64), which can't be used for indexing

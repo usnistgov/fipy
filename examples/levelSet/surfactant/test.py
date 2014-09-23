@@ -40,7 +40,6 @@ def _suite():
             'circle',
             'square',
             'expandingCircle',
-            'adsorption',
         ), base = __name__)
 
 if __name__ == '__main__':

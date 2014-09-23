@@ -59,20 +59,20 @@ Construct the mesh.
 
 .. index:: Grid2D
 
->>> from fipy.tools import serial
->>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, communicator=serial)
+>>> from fipy.tools import serialComm
+>>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, communicator=serialComm)
 
 Construct a `distanceVariable` object.
 
 >>> var = DistanceVariable(name='level set variable',
 ...                        mesh=mesh,
-...                        value=-1,
+...                        value=-1.,
 ...                        hasOld=1)
 
 >>> x, y = mesh.cellCenters
 >>> var.setValue(1, where=(x - Lx / 2.)**2 + (y - Ly / 2.)**2 < (Lx / 4.)**2)
 
->>> var.calcDistanceFunction()
+>>> var.calcDistanceFunction(order=1) #doctest: +LSM
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var, datamin=-5., datamax=5.)
@@ -111,7 +111,7 @@ The result can be tested with the following commands.
 ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK), 'd'))
 
 >>> var[numerix.array(trialValues == MASK)] = MASK
->>> print numerix.allclose(var, trialValues)
+>>> print numerix.allclose(var, trialValues) #doctest: +LSM
 True
 """
 __docformat__ = 'restructuredtext'

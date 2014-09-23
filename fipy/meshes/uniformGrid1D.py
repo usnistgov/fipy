@@ -40,7 +40,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools import parallel
+from fipy.tools import parallelComm
 
 from fipy.meshes.uniformGrid import UniformGrid
 from fipy.meshes.builders import _UniformGrid1DBuilder
@@ -60,7 +60,7 @@ class UniformGrid1D(UniformGrid):
          
     """
     def __init__(self, dx=1., nx=1, origin=(0,), overlap=2,
-                 communicator=parallel, 
+                 communicator=parallelComm, 
                  _RepresentationClass=_Grid1DRepresentation,
                  _TopologyClass=_Grid1DTopology):
                            
@@ -175,7 +175,7 @@ class UniformGrid1D(UniformGrid):
         return numerix.arange(self.numberOfFaces)[numerix.NewAxis, ...] * self.dx + self.origin
 
     @property
-    def _faceNormals(self):
+    def faceNormals(self):
         faceNormals = numerix.ones((1, self.numberOfFaces), 'd')
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
@@ -185,7 +185,7 @@ class UniformGrid1D(UniformGrid):
 
     @property
     def _orientedFaceNormals(self):
-        return self._faceNormals
+        return self.faceNormals
 
     @property
     def _cellVolumes(self):
@@ -257,7 +257,7 @@ class UniformGrid1D(UniformGrid):
 
     @property
     def _areaProjections(self):
-        return self._faceNormals
+        return self.faceNormals
         
     @property
     def _orientedAreaProjections(self):

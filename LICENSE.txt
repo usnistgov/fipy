@@ -20,4 +20,4 @@ they have been modified.
 
 .. _National Institute of Standards and Technology: http://www.nist.gov/
 .. _NIST:                 http://www.nist.gov/
-.. _title 17 section 105: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://uscode.house.gov/uscode-cgi/fastweb.exe?getdoc+uscview+t17t20+9+0++
+.. _title 17 section 105: http://uscode.house.gov/uscode-cgi/fastweb.exe?getdoc+uscview+t17t20+9+0++

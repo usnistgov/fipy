@@ -57,7 +57,7 @@ of unit dimensions with a moving lid of unit speed.  This example
 uses the SIMPLE algorithm with Rhie-Chow interpolation for collocated grids to solve
 the pressure-momentum coupling. Some of the details of the
 algorithm will be highlighted below but a good reference for this
-material is Ferziger and Peric [ferziger]_ and Rossow [rossow:2003]_. The 
+material is Ferziger and Peric :cite:`ferziger` and Rossow :cite:`rossow:2003`. The 
 solution has a high degree of error close to the corners of the
 domain for the pressure but does a reasonable job of predicting
 the velocities away from the boundaries. A number of aspects of

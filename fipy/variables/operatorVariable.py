@@ -212,6 +212,18 @@ def _OperatorVariableClass(baseClass=object):
                 
         def __repr__(self):
             return self._getRepresentation()
+            
+        def __reduce__(self):
+            """
+            Allows _OperatorVariables to be pickled
+            """
+            state =  self.__getstate__()
+            if 'mesh' in state.keys():
+                args = (state['mesh'],)
+            else:
+                args = ()
+                        
+            return (self._variableClass, args, self.__getstate__())
 
         @getsetDeprecated
         def getName(self):

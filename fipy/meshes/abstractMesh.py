@@ -37,9 +37,9 @@ __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractMesh"]
 
-from fipy.tools import serial
+from fipy.tools import serialComm
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
+from fipy.tools.decorators import getsetDeprecated, deprecate
 from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 
@@ -126,6 +126,11 @@ class AbstractMesh(object):
     cellToFaceDistanceVectors  = property(lambda s: s._cellToFaceDistanceVectors)
     cellDistanceVectors        = property(lambda s: s._cellDistanceVectors)
     cellVolumes                = property(lambda s: s._scaledCellVolumes)
+    
+    @property
+    @deprecate(new_name="faceNormals", version=3.1)
+    def _faceNormals(self):
+        return self.faceNormals
 
     @property
     def cellCenters(self):
@@ -179,6 +184,17 @@ class AbstractMesh(object):
             return self.cellCenters[2]
         else:
             raise AttributeError, '1D and 2D meshes do not have a "z" attribute.'
+            
+    @property
+    def extents(self):
+        ext = dict(min=[], max=[])
+        
+        for d in range(self.dim):
+            X = numerix.take(self.vertexCoords[d], self._orderedCellVertexIDs)
+            ext['min'].append(X.min())
+            ext['max'].append(X.max())
+
+        return ext
 
     """scaled geometery properties
     
@@ -200,8 +216,8 @@ class AbstractMesh(object):
         `faces2` are not altered, they still remain as members of
         exterior faces.
 
-           >>> from fipy.meshes.grid2D import Grid2D
-           >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
+           >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
+           >>> mesh = NonUniformGrid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
            >>> print (mesh.cellFaceIDs == [[0, 1, 2, 3],
            ...                             [7, 8, 10, 11],
@@ -256,9 +272,9 @@ class AbstractMesh(object):
 
         ## change the direction of the face normals for faces0
         for dim in range(self.dim):
-            faceNormals = self._faceNormals[dim].copy()
+            faceNormals = self.faceNormals[dim].copy()
             numerix.put(faceNormals, faces0, MA.take(faceNormals, faces1))
-            self._faceNormals[dim] = faceNormals
+            self.faceNormals[dim] = faceNormals
 
         ## Cells that are adjacent to faces1 are changed to point at faces0
         ## get the cells adjacent to faces1
@@ -407,7 +423,7 @@ class AbstractMesh(object):
                                            
         # map other's Vertex IDs to new Vertex IDs, 
         # accounting for overlaps with self's Vertex IDs
-        vertex_map = numerix.empty(otherNumVertices, dtype=int)
+        vertex_map = numerix.empty(otherNumVertices, dtype=numerix.INT_DTYPE)
         verticesToAdd = numerix.delete(numerix.arange(otherNumVertices), vertexCorrelates[1])
         vertex_map[verticesToAdd] = numerix.arange(otherNumVertices - len(vertexCorrelates[1])) + selfNumVertices
         vertex_map[vertexCorrelates[1]] = vertexCorrelates[0]
@@ -457,7 +473,7 @@ class AbstractMesh(object):
 
         # map other's Face IDs to new Face IDs, 
         # accounting for overlaps with self's Face IDs
-        face_map = numerix.empty(otherNumFaces, dtype=int)
+        face_map = numerix.empty(otherNumFaces, dtype=numerix.INT_DTYPE)
         facesToAdd = numerix.delete(numerix.arange(otherNumFaces), faceCorrelates[1])
         face_map[facesToAdd] = numerix.arange(otherNumFaces - len(faceCorrelates[1])) + selfNumFaces
         face_map[faceCorrelates[1]] = faceCorrelates[0]
@@ -1083,7 +1099,7 @@ class AbstractMesh(object):
         if numerix.MA.is_masked(self.cellFaceIDs):
             facesPerCell = (~numerix.MA.getmask(self.cellFaceIDs)).sum(axis=0)
         else:
-            facesPerCell = numerix.empty((self.numberOfCells,), dtype=int)
+            facesPerCell = numerix.empty((self.numberOfCells,), dtype=numerix.INT_DTYPE)
             facesPerCell[:] = self._maxFacesPerCell
         return facesPerCell
 
@@ -1097,7 +1113,7 @@ class AbstractMesh(object):
         if numerix.MA.is_masked(cellFaceVertices):
             nodesPerFace = (~cellFaceVertices.mask).sum(axis=0)
         else:
-            nodesPerFace = numerix.empty(cellFaceVertices.shape[1:], dtype=int)
+            nodesPerFace = numerix.empty(cellFaceVertices.shape[1:], dtype=numerix.INT_DTYPE)
             nodesPerFace[:] = self.faceVertexIDs.shape[0]
             
         return nodesPerFace
@@ -1247,7 +1263,7 @@ class AbstractMesh(object):
 
     @getsetDeprecated
     def _getFaceNormals(self):
-        return self._faceNormals
+        return self.faceNormals
 
     @getsetDeprecated
     def _getFaceCellToCellNormals(self):

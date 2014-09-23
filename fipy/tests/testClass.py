@@ -57,6 +57,8 @@ def _TestClass(base):
             ('cache', None, "run FiPy with Variable caching"),
             ('no-cache', None, "run FiPy without Variable caching"),
             ('timetests=', None, "file in which to put time spent on each test"),
+            ('skfmm', None, "run FiPy using the Scikit-fmm level set solver (default)"),
+            ('lsmlib', None, "run FiPy using the LSMLIB level set solver (default)"),
            ]
 
 
@@ -81,7 +83,9 @@ def _TestClass(base):
             self.pyamg = False
             self.scipy = False
             self.timetests = None
-            
+            self.skfmm = False
+            self.lsmlib = False
+
         def finalize_options(self):
             noSuiteOrModule = (self.test_suite is None 
                                and self.test_module is None)

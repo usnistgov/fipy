@@ -70,7 +70,7 @@ class Object(Base):
           - `arg3`: this argument may be omitted, in which case it will be
             assigned a default value of ``'string'``.
         
-        .. _`Python Reference Manual: Special Method Names`: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.python.org/doc/ref/specialnames.html
+        .. _`Python Reference Manual: Special Method Names`: http://www.python.org/doc/ref/specialnames.html
         """
         pass
         

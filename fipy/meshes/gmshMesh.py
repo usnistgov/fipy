@@ -47,8 +47,8 @@ from textwrap import dedent
 import warnings
 
 from fipy.tools import numerix as nx
-from fipy.tools import parallel
-from fipy.tools import serial
+from fipy.tools import parallelComm
+from fipy.tools import serialComm
 from fipy.tools.decorators import getsetDeprecated
 from fipy.tests.doctestPlus import register_skipper
 
@@ -68,7 +68,7 @@ DEBUG = False
 def _checkForGmsh():
     hasGmsh = True
     try:
-        version = _gmshVersion(communicator=parallel)
+        version = _gmshVersion(communicator=parallelComm)
         hasGmsh = version >= 2.0
     except Exception:
         hasGmsh = False
@@ -80,7 +80,7 @@ register_skipper(flag="GMSH",
 
 def parprint(str):
     if DEBUG:
-        if parallel.procID == 0:
+        if parallelComm.procID == 0:
             print >> sys.stderr, str
 
 class GmshException(Exception):
@@ -89,7 +89,7 @@ class GmshException(Exception):
 class MeshExportError(GmshException):
     pass
     
-def gmshVersion(communicator=parallel):
+def gmshVersion(communicator=parallelComm):
     """Determine the version of Gmsh.
     
     We can't trust the generated msh file for the correct version number, so
@@ -117,7 +117,7 @@ def gmshVersion(communicator=parallel):
 
     return communicator.bcast(verStr)
 
-def _gmshVersion(communicator):
+def _gmshVersion(communicator=parallelComm):
     import re
     version = gmshVersion(communicator)
     if version:
@@ -126,7 +126,7 @@ def _gmshVersion(communicator):
     else:
         return 0
     
-def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parallel, order=1, mode='r', background=None):
+def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parallelComm, order=1, mode='r', background=None):
     """Open a Gmsh MSH file
 
     :Parameters:
@@ -143,7 +143,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
     """
     
     if order > 1:
-        communicator = serial
+        communicator = serialComm
 
     # Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
     gmshVersion = _gmshVersion(communicator=communicator)
@@ -194,7 +194,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                     warnstr = "Cannot partition with Gmsh version < 2.5. " \
                                + "Reverting to serial."
                     warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
-                    communicator = serial
+                    communicator = serialComm
                     
                     dimensions = dimensions or coordDimensions
                     
@@ -265,7 +265,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                    mode=mode,
                    fileIsTemporary=fileIsTemporary)
     
-def openPOSFile(name, communicator=parallel, mode='w'):
+def openPOSFile(name, communicator=parallelComm, mode='w'):
     """Open a Gmsh POS post-processing file
     """
     if not mode.startswith('w'):
@@ -493,7 +493,7 @@ class MSHFile(GmshFile):
     Class responsible for parsing a Gmsh file and then readying
     its contents for use by a `Mesh` constructor. 
     
-    Can handle a partitioned mesh based on `parallel.Nproc`. If partitioning,
+    Can handle a partitioned mesh based on `parallelComm.Nproc`. If partitioning,
     the msh file must either be previously partitioned with the number of
     partitions matching `Nproc`, or the mesh must be specified with a geo file
     or multiline string.
@@ -506,7 +506,7 @@ class MSHFile(GmshFile):
     def __init__(self, filename, 
                        dimensions, 
                        coordDimensions=None,
-                       communicator=parallel,
+                       communicator=parallelComm,
                        gmshOutput="",
                        mode='r',
                        fileIsTemporary=False):
@@ -654,7 +654,7 @@ class MSHFile(GmshFile):
         maxFaceLen = max([len(f) for f in uniqueFaces])
         uniqueFaces = [[-1] * (maxFaceLen - len(f)) + f for f in uniqueFaces]
                
-        facesToVertices = nx.array(uniqueFaces, dtype=int)
+        facesToVertices = nx.array(uniqueFaces, dtype=nx.INT_DTYPE)
 
         return facesToVertices.swapaxes(0,1)[::-1], cellsToFaces.swapaxes(0,1).copy('C'), facesDict
 
@@ -856,7 +856,8 @@ class MSHFile(GmshFile):
             
         # convert lists of cell vertices to a properly oriented masked array
         maxVerts = max([len(v) for v in cellsToVertIDs])
-        cellsToVertIDs = [nx.concatenate((v, [-1] * (maxVerts-len(v)))) for v in cellsToVertIDs]
+        # ticket:539 - NumPy 1.7 casts to array before concatenation and empty array defaults to float
+        cellsToVertIDs = [nx.concatenate((v, nx.array([-1] * (maxVerts-len(v)), dtype=nx.INT_DTYPE))) for v in cellsToVertIDs]
         cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0,1)
                 
         parprint("Done with cells and faces.")
@@ -1000,7 +1001,7 @@ class MSHFile(GmshFile):
         because we want to avoid loading the entire msh file into memory.
         """
         allVerts     = [v for c in cellsToGmshVerts for v in c] # flatten
-        allVerts     = nx.unique(nx.array(allVerts, dtype=int)) # remove dups
+        allVerts     = nx.unique(nx.array(allVerts, dtype=nx.INT_DTYPE)) # remove dups
         allVerts     = nx.sort(allVerts)
         maxVertIdx   = allVerts[-1] + 1 # add one to offset zero
         vertGIDtoIdx = nx.ones(maxVertIdx, 'l') * -1 # gmsh ID -> vertexCoords idx
@@ -1043,6 +1044,27 @@ class MSHFile(GmshFile):
         calculation is consolidated here: if we were ever to need to CALCULATE
         GHOST CELLS OURSELVES, the only code we'd have to change is in here.
         """
+        
+        def _parseTags(offset, currLineInts):
+            if offset == -1:
+                # if first valid shape
+                offset = currLineInts[0]
+
+            numTags = currLineInts[2]
+            tags    = currLineInts[3:(3+numTags)]
+            
+            # the partition tags for don't seem to always be present 
+            # and don't always make much sense when they are
+
+            if len(tags) >= 2:
+                physicalEntity = tags.pop(0)
+                geometricalEntity = tags.pop(0)
+            else:
+                physicalEntity = geometricalEntity = -1
+                
+            return offset, tags, physicalEntity, geometricalEntity
+            
+
         cellsData = _ElementData()
         ghostsData = _ElementData()
         facesData = _ElementData()
@@ -1060,16 +1082,13 @@ class MSHFile(GmshFile):
 
             if elemType in self.numFacesPerCell.keys():
                 # element is a cell
-                if cellOffset == -1:
-                    # if first valid shape
-                    cellOffset = currLineInts[0]
-                currLineInts[0] -= cellOffset
-
-                numTags = currLineInts[2]
-                tags    = currLineInts[3:(3+numTags)]
                 
-                physicalEntity = tags.pop(0)
-                geometricalEntity = tags.pop(0)
+                (cellOffset, 
+                 tags, 
+                 physicalEntity, 
+                 geometricalEntity) = _parseTags(offset=cellOffset, 
+                                                 currLineInts=currLineInts)
+                currLineInts[0] -= cellOffset
 
                 if len(tags) > 0:
                     # next item is a count
@@ -1097,19 +1116,13 @@ class MSHFile(GmshFile):
                                   geometricalEntity=geometricalEntity)
             elif elemType in self.numVertsPerFace.keys():
                 # element is a face
-                if faceOffset == -1:
-                    # if first valid shape
-                    faceOffset = currLineInts[0]
+                
+                (faceOffset, 
+                 tags, 
+                 physicalEntity, 
+                 geometricalEntity) = _parseTags(offset=faceOffset, 
+                                                 currLineInts=currLineInts)
                 currLineInts[0] -= faceOffset
-
-                numTags = currLineInts[2]
-                tags    = currLineInts[3:(3+numTags)]
-                
-                # the partition tags for faces don't seem to always be present 
-                # and don't always make much sense when they are
-                
-                physicalEntity = tags.pop(0)
-                geometricalEntity = tags.pop(0)
 
                 facesData.add(currLine=currLineInts, elType=elemType, 
                               physicalEntity=physicalEntity, 
@@ -1192,14 +1205,14 @@ class MSHFile(GmshFile):
         >>> gvar = CellVariable(mesh=g, name="f(x,y)", value=1. / (x+y))
         >>> f = openMSHFile(name=os.path.join(dir, "g.msh"), mode='w') # doctest: +GMSH
         >>> f.write(g) # doctest: +GMSH
-        >>> f.write(gvar)
+        >>> f.write(gvar) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
 
         >>> if __name__ == "__main__":
         ...     p = Popen(["gmsh", os.path.join(dir, "g.msh")]) # doctest: +GMSH
         ...     doctest_raw_input("Grid2D... Press enter.")
 
-        >>> gg = GmshGrid2D(dx=1., dy=1., nx=10, ny=10)
+        >>> gg = GmshGrid2D(dx=1., dy=1., nx=10, ny=10) # doctest: +GMSH
             
         >>> f = openMSHFile(name=os.path.join(dir, "gg.msh"), mode='w') # doctest: +GMSH
         >>> f.write(gg) # doctest: +GMSH
@@ -1552,7 +1565,7 @@ class Gmsh2D(Mesh2D):
     def __init__(self, 
                  arg, 
                  coordDimensions=2, 
-                 communicator=parallel, 
+                 communicator=parallelComm, 
                  order=1,
                  background=None):
                      
@@ -1599,7 +1612,7 @@ class Gmsh2D(Mesh2D):
         super(Gmsh2D, self).__setstate__(state)
         self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
         self.gCellGlobalIDs = []
-        self.communicator = serial
+        self.communicator = serialComm
         self.mshFile = None
     
     def _test(self):
@@ -1713,9 +1726,9 @@ class Gmsh2D(Mesh2D):
 
         We need to do a little fancy footwork to account for multiple processes
         
-        >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallel.Nproc)]
+        >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallelComm.Nproc)]
         >>> numtags = 2 + 1 + len(partitions)
-        >>> partitions = " ".join([str(i) for i in [parallel.Nproc] + partitions])
+        >>> partitions = " ".join([str(i) for i in [parallelComm.Nproc] + partitions])
 
         >>> output = f.write('''$MeshFormat
         ... 2.2 0 8
@@ -1749,18 +1762,18 @@ class Gmsh2D(Mesh2D):
         >>> from fipy import CellVariable
         >>> vol = CellVariable(mesh=sqrTri, value=sqrTri.cellVolumes) # doctest: +GMSH
         
-        >>> if parallel.procID == 0:
+        >>> if parallelComm.procID == 0:
         ...     (ftmp, posFile) = tempfile.mkstemp('.pos')
         ...     os.close(ftmp)
         ... else:
         ...     posFile = None
-        >>> posFile = parallel.bcast(posFile)
+        >>> posFile = parallelComm.bcast(posFile)
         >>> f = openPOSFile(posFile, mode='w') # doctest: +GMSH
         >>> f.write(vol) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
 
         >>> f = open(posFile, mode='r')
-        >>> print "".join(f.readlines())
+        >>> print "".join(f.readlines()) # doctest: +GMSH
         $PostFormat
         1.4 0 8
         $EndPostFormat
@@ -1796,8 +1809,37 @@ class Gmsh2D(Mesh2D):
         
         >>> f.close()
 
-        >>> if parallel.procID == 0:
+        >>> if parallelComm.procID == 0:
         ...     os.remove(posFile)
+
+        
+        
+        
+        Load a mesh with no tags
+        
+        >>> (fmsh, mshFile) = tempfile.mkstemp('.msh')
+        >>> f = os.fdopen(fmsh, 'w')
+
+        >>> output = f.write('''$MeshFormat
+        ... 2.2 0 8
+        ... $EndMeshFormat
+        ... $Nodes
+        ... 3
+        ... 1 0 0 0
+        ... 2 0 1 0
+        ... 3 1 1 0
+        ... $EndNodes
+        ... $Elements
+        ... 1
+        ... 1 2 0 1 3 2
+        ... $EndElements
+        ... ''' % locals())
+        >>> f.close() 
+
+        >>> noTag = Gmsh2D(mshFile) # doctest: +GMSH, +SERIAL
+
+        >>> os.remove(mshFile)
+
         """
 
 class Gmsh2DIn3DSpace(Gmsh2D):
@@ -1811,7 +1853,7 @@ class Gmsh2DIn3DSpace(Gmsh2D):
       - `background`: a `CellVariable` that specifies the desired characteristic 
         lengths of the mesh cells
     """
-    def __init__(self, arg, communicator=parallel, order=1, background=None):
+    def __init__(self, arg, communicator=parallelComm, order=1, background=None):
         Gmsh2D.__init__(self, 
                         arg, 
                         coordDimensions=3, 
@@ -1886,7 +1928,7 @@ class Gmsh3D(Mesh):
       - `background`: a `CellVariable` that specifies the desired characteristic 
         lengths of the mesh cells
     """
-    def __init__(self, arg, communicator=parallel, order=1, background=None):
+    def __init__(self, arg, communicator=parallelComm, order=1, background=None):
         self.mshFile  = openMSHFile(arg, 
                                     dimensions=3, 
                                     communicator=communicator,
@@ -1925,7 +1967,7 @@ class Gmsh3D(Mesh):
         super(Gmsh3D, self).__setstate__(state)
         self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
         self.gCellGlobalIDs = []
-        self.communicator = serial
+        self.communicator = serialComm
         self.mshFile = None
 
     def _test(self):
@@ -2002,9 +2044,9 @@ class Gmsh3D(Mesh):
 
         We need to do a little fancy footwork to account for multiple processes
         
-        >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallel.Nproc)]
+        >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallelComm.Nproc)]
         >>> numtags = 2 + 1 + len(partitions)
-        >>> partitions = " ".join([str(i) for i in [parallel.Nproc] + partitions])
+        >>> partitions = " ".join([str(i) for i in [parallelComm.Nproc] + partitions])
 
         >>> output = f.write('''$MeshFormat
         ... 2.2 0 8
@@ -2041,12 +2083,12 @@ class Gmsh3D(Mesh):
         >>> from fipy import CellVariable
         >>> vol = CellVariable(mesh=tetPriPyr, value=tetPriPyr.cellVolumes, name="volume") # doctest: +GMSH
         
-        >>> if parallel.procID == 0:
+        >>> if parallelComm.procID == 0:
         ...     (ftmp, posFile) = tempfile.mkstemp('.pos')
         ...     os.close(ftmp)
         ... else:
         ...     posFile = None
-        >>> posFile = parallel.bcast(posFile)
+        >>> posFile = parallelComm.bcast(posFile)
         >>> f = openPOSFile(posFile, mode='w') # doctest: +GMSH
         >>> f.write(vol) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
@@ -2105,14 +2147,14 @@ class Gmsh3D(Mesh):
         >>> print numerix.allclose(a1, a2) # doctest: +GMSH
         True
 
-        >>> if parallel.procID == 0:
+        >>> if parallelComm.procID == 0:
         ...     os.remove(posFile)
         """
 
 class GmshGrid2D(Gmsh2D):
     """Should serve as a drop-in replacement for Grid2D."""
     def __init__(self, dx=1., dy=1., nx=1, ny=None, 
-                 coordDimensions=2, communicator=parallel, order=1):
+                 coordDimensions=2, communicator=parallelComm, order=1):
         self.dx = dx
         self.dy = dy or dx
         self.nx = nx
@@ -2160,9 +2202,9 @@ class GmshGrid2D(Gmsh2D):
 
         >>> from fipy import *
 
-        >>> yogmsh = GmshGrid2D(dx=5, dy=5, nx=5, ny=5, communicator=serial) # doctest: +GMSH
+        >>> yogmsh = GmshGrid2D(dx=5, dy=5, nx=5, ny=5, communicator=serialComm) # doctest: +GMSH
 
-        >>> yogrid = Grid2D(dx=5, dy=5, nx=5, ny=5, communicator=serial)
+        >>> yogrid = Grid2D(dx=5, dy=5, nx=5, ny=5, communicator=serialComm)
 
         >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas) # doctest: +GMSH
         True
@@ -2182,7 +2224,7 @@ class GmshGrid2D(Gmsh2D):
 class GmshGrid3D(Gmsh3D):
     """Should serve as a drop-in replacement for Grid3D."""
     def __init__(self, dx=1., dy=1., dz=1., nx=1, ny=None, nz=None,
-                 communicator=parallel, order=1):
+                 communicator=parallelComm, order=1):
         self.dx = dx
         self.dy = dy or dx
         self.dz = dz or dx
@@ -2240,10 +2282,10 @@ class GmshGrid3D(Gmsh3D):
         >>> from fipy.tools import numerix as nx
 
         >>> yogmsh = GmshGrid3D(dx=5, dy=5, dz=5, nx=5, ny=5, nz=5,
-        ...                     communicator=serial) # doctest: +GMSH
+        ...                     communicator=serialComm) # doctest: +GMSH
 
         >>> yogrid = Grid3D(dx=5, dy=5, dz=5, nx=5, ny=5, nz=5,
-        ...                 communicator=serial)
+        ...                 communicator=serialComm)
 
         >>> yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size # doctest: +GMSH
         True

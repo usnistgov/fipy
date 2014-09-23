@@ -58,14 +58,14 @@ Construct the mesh.
 
 .. index:: Grid2D
 
->>> from fipy.tools import serial
->>> mesh = Grid1D(dx=dx, nx=nx, communicator=serial)
+>>> from fipy.tools import serialComm
+>>> mesh = Grid1D(dx=dx, nx=nx, communicator=serialComm)
 
 Construct a `distanceVariable` object.
 
 >>> var = DistanceVariable(name='level set variable',
 ...                        mesh=mesh,
-...                        value=-1,
+...                        value=-1.,
 ...                        hasOld=1)
 >>> x = mesh.cellCenters[0]
 >>> var.setValue(1, where=x > dx * nx / 2)
@@ -74,7 +74,7 @@ Once the initial positive and negative regions have been initialized
 the `calcDistanceFunction()` method can be used to recalculate `var`
 as a distance function from the zero level set.
    
->>> var.calcDistanceFunction()
+>>> var.calcDistanceFunction() #doctest: +LSM
    
 The problem can then be solved by executing the :meth:`~fipy.terms.term.Term.solve`
 method of the equation.
@@ -85,7 +85,7 @@ method of the equation.
 
 The result can be tested with the following commands.
 
->>> print numerix.allclose(var, x - dx * nx / 2)
+>>> print numerix.allclose(var, x - dx * nx / 2) #doctest: +LSM
 1
 
 """

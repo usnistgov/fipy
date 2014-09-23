@@ -7,6 +7,7 @@
 <script type="text/javascript" src="http://www.nist.gov/js/spry/SpryDOMUtils.js"></script>
 <script type="text/javascript" src="http://www.nist.gov/js/spry/SpryMenuBar.js"></script>
 <script type="text/javascript" src="http://www.nist.gov/js/spry/menu_bar.js"></script>
+<script language="JavaScript" id="_fed_an_js_tag" src="/js/federated-analytics.all.min.js?agency=NIST&subagency=ctcms&pua=UA-37115410-17&yt=true"></script>
 {{ super() }}
 {% endblock %}
 {% set reldelim1 = ' &gt;' %}
@@ -176,16 +177,11 @@ return windowparams;}
                             
             </div>
     </div>
-    </div>
-    <div class="mml">
 {{ super() }}
-    </div>
 {% endblock %}
 {% block relbar2 %}{% endblock %}
 {% block document %}
-    <div class="mml">
     {{ super() }}
-    </div>
 {% endblock %}
 {% block sidebarlogo %}
 <!-- AddThis Button BEGIN -->
@@ -197,21 +193,22 @@ Version {{ release }}
 {% endblock %}
 {% block footer %}
     <div class="footer mml">
-    <p>The National Institute of Standards and Technology (NIST) is an agency of the U.S. Commerce Department.</p>
+    <p>The National Institute of Standards and Technology (NIST) is an agency of the <a href="http://www.commerce.gov"> U.S. Department of Commerce</a>
     <p>
-    <a href="http://www.nist.gov/public_affairs/privacy.cfm">Privacy policy / security notice / accessibility statement</a> / 
+    <a href="http://www.nist.gov/public_affairs/privacy.cfm">Privacy Policy / Security Notice / Accessibility Statement</a> / 
     <a href="http://www.nist.gov/public_affairs/disclaim.cfm">Disclaimer</a> / 
-    <a href="http://www.nist.gov/admin/foia/">Freedom of Information Act (FOIA)</a> / 
+    <a href="http://www.nist.gov/admin/foia/">Freedom of Information Act (FOIA)</a> / <br />
+    <a href="http://www.nist.gov/public_affairs/envpolicy.cfm">Environmental Policy Statement</a> /
+    
     <a href="http://www.nist.gov/director/civil/nofearpolicy.cfm">No Fear Act Policy</a> /
-    <br />
-
-    <a href="http://www.ExpectMore.gov">ExpectMore.gov (performance of federal programs)</a> / 
-    <a href="http://www.nist.gov/director/quality_standards.cfm">NIST Information Quality Standards</a>
+    <a href="http://www.nist.gov/director/quality_standards.cfm">NIST Information Quality Standards</a> / <br />
+    <a href="http://www.nist.gov/director/scientific_integrity_summary.cfm">Scientific Integrity Summary</a>
     </p>
     <p>
     Last updated: {{ last_updated|e }} |
     Contact: <a href="mailto:webmaster@ctcms.nist.gov" class="bold"> <span class="all-caps">Ctcms</span> Webmaster</a>
     </p>
     </div>
+    </div> <!-- id="base-template-wrapper" class="mml" --> 
 </div>
 {% endblock %}

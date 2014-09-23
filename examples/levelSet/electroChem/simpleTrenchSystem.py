@@ -38,7 +38,7 @@ is a demonstration of the use of :term:`FiPy`
 for modeling electrodeposition using the CEAC mechanism. The
 material properties and experimental parameters used are roughly
 those that have been previously
-published [NIST:damascene:2003]_.
+published :cite:`NIST:damascene:2003]`.
 
 To run this example from the base fipy directory type::
     
@@ -50,7 +50,7 @@ number of time steps change the ``numberOfSteps`` argument as follows,
 
 .. index:: runSimpleTrenchSystem
 
->>> runSimpleTrenchSystem(numberOfSteps=2, displayViewers=False)
+>>> runSimpleTrenchSystem(numberOfSteps=2, displayViewers=False) #doctest: +LSMLIB
 1
 
 Change the ``displayViewers`` argument to ``True`` if you wish to see the
@@ -62,7 +62,7 @@ encapsulated by functions.
 Any argument parameter can be changed. For example if the initial
 catalyst coverage is not 0, then it can be reset,
 
->>> runSimpleTrenchSystem(numberOfSteps=2, catalystCoverage=0.1, displayViewers=False)
+>>> runSimpleTrenchSystem(numberOfSteps=2, catalystCoverage=0.1, displayViewers=False)#doctest: +LSM
 0
 
 The following image shows a schematic of a trench geometry along with
@@ -161,6 +161,8 @@ resemble the image below.
 __docformat__ = 'restructuredtext'
 
 from fipy import *
+from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 def runSimpleTrenchSystem(faradaysConstant=9.6e4,
                           gasConstant=8.314,
@@ -196,12 +198,12 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     xCells = int(trenchSpacing / 2 / cellSize)
 
-    from fipy.tools import serial
+    from fipy.tools import serialComm
     mesh = Grid2D(dx = cellSize,
                   dy = cellSize,
                   nx = xCells,
                   ny = yCells,
-                  communicator=serial)
+                  communicator=serialComm)
 
     narrowBandWidth = numberOfCellsInNarrowBand * cellSize
 
@@ -209,7 +211,6 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         name = 'distance variable',
         mesh = mesh,
         value = -1.,
-        narrowBandWidth = narrowBandWidth,
         hasOld = 1)
 
     bottomHeight = cellsBelowTrench * cellSize
@@ -220,7 +221,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     x, y = mesh.cellCenters
     distanceVar.setValue(1., where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
 
-    distanceVar.calcDistanceFunction(narrowBandWidth = 1e10)
+    distanceVar.calcDistanceFunction(order=2)
 
     catalystVar = SurfactantVariable(
         name = "catalyst variable",
@@ -262,8 +263,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         bulkVar = bulkCatalystVar,
         rateConstant = rateConstant0 + rateConstant3 * overpotential**3)
 
-    advectionEquation = buildHigherOrderAdvectionEquation(
-        advectionCoeff = extensionVelocityVariable)
+    advectionEquation = TransientTerm() + AdvectionTerm(extensionVelocityVariable)
 
     metalEquation = buildMetalIonDiffusionEquation(
         ionVar = metalVar,
@@ -275,6 +275,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     metalVar.constrain(metalConcentration, mesh.facesTop)
 
+    from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
     bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkCatalystVar,
         distanceVar = distanceVar,
@@ -287,6 +288,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     if displayViewers:
         try:
+            from mayaviSurfactantViewer import MayaviSurfactantViewer
             viewer = MayaviSurfactantViewer(distanceVar, catalystVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'catalyst coverage')
         except:
             viewer = MultiViewer(viewers=(
@@ -304,13 +306,13 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
             viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
-            distanceVar.calcDistanceFunction()
+            distanceVar.calcDistanceFunction(order=2)
             
         extensionVelocityVariable.setValue(depositionRateVariable())
 
         distanceVar.updateOld()
 
-        distanceVar.extendVariable(extensionVelocityVariable)
+        distanceVar.extendVariable(extensionVelocityVariable, order=2)
         dt = cflNumber * cellSize / extensionVelocityVariable.max()
 
         advectionEquation.solve(distanceVar, dt = dt)
@@ -318,11 +320,11 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         metalEquation.solve(metalVar, dt = dt)
         bulkCatalystEquation.solve(bulkCatalystVar, dt = dt, solver=GeneralSolver(tolerance=1e-15, iterations=2000))
 
+
     try:
         import os
         filepath = os.path.splitext(__file__)[0] + '.gz'
         print catalystVar.allclose(numerix.loadtxt(filepath), rtol = 1e-4)
-
     except:
         return 0
 

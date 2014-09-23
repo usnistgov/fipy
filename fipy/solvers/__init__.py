@@ -1,5 +1,5 @@
 from fipy.tools.parser import _parseSolver
-from fipy.tools  import parallel as _parallel
+from fipy.tools  import parallelComm as _parallelComm
 
 from fipy.solvers.solver import *
 __all__ = list(solver.__all__)
@@ -14,9 +14,13 @@ def _envSolver(solver):
     
 solver = _envSolver(solver)
 
+class SerialSolverError(Exception):
+    def __init__(self, solver):
+        super(SerialSolverError, self).__init__(solver + ' does not run in parallel')
+
 if solver == "pysparse":
-    if _parallel.Nproc > 1:
-        raise  Exception('pysparse solvers do not run in parallel')
+    if _parallelComm.Nproc > 1:
+        raise SerialSolverError('pysparse')
     from fipy.solvers.pysparse import *
     __all__.extend(pysparse.__all__)
     from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
@@ -34,16 +38,16 @@ elif solver == "trilinos":
         _MeshMatrix =  _TrilinosMeshMatrix
 
 elif solver == "scipy":
-    if _parallel.Nproc > 1:
-        raise  Exception('scipy solvers do not run in parallel')
+    if _parallelComm.Nproc > 1:
+        raise SerialSolverError('scipy')
     from fipy.solvers.scipy import *
     __all__.extend(scipy.__all__)
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
     _MeshMatrix = _ScipyMeshMatrix
     
 elif solver == "pyamg":
-    if _parallel.Nproc > 1:
-        raise  Exception('pyamg solvers do not run in parallel')
+    if _parallelComm.Nproc > 1:
+        raise SerialSolverError('pyamg')
     from fipy.solvers.pyAMG import *
     __all__.extend(pyAMG.__all__)
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
@@ -58,18 +62,21 @@ elif solver == "no-pysparse":
 elif solver is None:
     # If no argument or environment variable, try importing them and seeing
     # what works
-
     
-   
+    exceptions = []
+
     try:
-        if _parallel.Nproc > 1:
-            raise  Exception('pysparse solvers do not run in parallel')
+        if _parallelComm.Nproc > 1:
+            raise SerialSolverError('pysparse')
         from fipy.solvers.pysparse import *
         __all__.extend(pysparse.__all__)
         solver = "pysparse"
         from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
         _MeshMatrix =  _PysparseMeshMatrix
-    except:
+
+    except (ImportError, SerialSolverError) as inst:
+        exceptions.append(inst)
+
         try:
             from fipy.solvers.trilinos import *
             __all__.extend(trilinos.__all__)
@@ -81,26 +88,44 @@ elif solver is None:
                 solver = "no-pysparse"
                 from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
                 _MeshMatrix =  _TrilinosMeshMatrix
-        except:
+        except ImportError as inst:
+            exceptions.append(inst)
+
             try:
-                if _parallel.Nproc > 1:
-                    raise  Exception('pyamg solvers do not run in parallel')
+                if _parallelComm.Nproc > 1:
+                    raise SerialSolverError('pyamg')
                 from fipy.solvers.pyAMG import *
                 __all__.extend(pyAMG.__all__)
                 solver = "pyamg"
                 from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
                 _MeshMatrix = _ScipyMeshMatrix
-            except:
+            except (ImportError, SerialSolverError) as inst:
+                exceptions.append(inst)
+
                 try:
-                    if _parallel.Nproc > 1:
-                        raise  Exception('scipy solvers do not run in parallel')
+                    if _parallelComm.Nproc > 1:
+                        raise SerialSolverError('scipy')
                     from fipy.solvers.scipy import *
                     __all__.extend(scipy.__all__)
                     solver = "scipy"
                     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
                     _MeshMatrix = _ScipyMeshMatrix
-                except:
-                    raise ImportError, "Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK." 
+                except (ImportError, SerialSolverError) as inst:
+                    exceptions.append(inst)
+                    import warnings
+                    warnings.warn("Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK.") 
+                    for inst in exceptions:
+                        warnings.warn(inst.__class__.__name__ + ': ' + inst.message)
+                        
+
 else:
     raise ImportError, 'Unknown solver package %s' % solver
+
+
+from fipy.tests.doctestPlus import register_skipper
+
+register_skipper(flag='PYSPARSE_SOLVER',
+                 test=lambda: solver == 'pysparse',
+                 why="the PySparse solvers are not being used.",
+                 skipWarning=True)
 
