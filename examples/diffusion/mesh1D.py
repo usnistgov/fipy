@@ -456,7 +456,7 @@ the correct form of the equation. For example, for heat transfer with
 :math:`\phi` representing the temperature,
 
 .. math::
-    \frac{\partial \rho \hat{C}_p \phi}{\partial t} = \nabla \cdot [ k \nabla \phi ].
+    \frac{\partial}{\partial t} \left(\rho \hat{C}_p \phi\right) = \nabla \cdot [ k \nabla \phi ].
 
 With constant and uniform density :math:`\rho`, heat capacity :math:`\hat{C}_p`
 and thermal conductivity :math:`k`, this is often written like Eq.
