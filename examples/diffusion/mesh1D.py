@@ -450,6 +450,86 @@ And finally, we can plot the result
 
 ------
 
+Note that for problems involving heat transfer and other similar
+conservation equations, it is important to ensure that we begin with
+the correct form of the equation. For example, for heat transfer with
+:math:`\phi` representing the temperature,
+
+.. math::
+    \frac{\partial \rho \hat{C}_p \phi}{\partial t} = \nabla \cdot [ k \nabla \phi ].
+
+With constant and uniform density :math:`\rho`, heat capacity :math:`\hat{C}_p`
+and thermal conductivity :math:`k`, this is often written like Eq.
+:eq:`eq:diffusion:mesh1D:constantD`, but replacing :math:`D` with :math:`\alpha =
+\frac{k}{\rho \hat{C}_p}`. However, when these parameters vary either in position
+or time, it is important to be careful with the form of the equation used. For
+example, if :math:`k = 1` and
+
+.. math::
+   \rho \hat{C}_p = \begin{cases}
+   1& \text{for \( 0 < x < L / 4 \),} \\
+   10& \text{for \( L / 4 \le x < 3 L / 4 \),} \\
+   1& \text{for \( 3 L / 4 \le x < L \),}
+   \end{cases},
+
+then we have
+
+.. math::
+   \alpha = \begin{cases}
+   1& \text{for \( 0 < x < L / 4 \),} \\
+   0.1& \text{for \( L / 4 \le x < 3 L / 4 \),} \\
+   1& \text{for \( 3 L / 4 \le x < L \),}
+   \end{cases}.
+
+However, using a ``DiffusionTerm`` with the same coefficient as that in the
+section above is incorrect, as the steady state governing equation reduces to
+:math:`0 = \nabla^2\phi`, which results in a linear profile in 1D, unlike that
+for the case above with spatially varying diffusivity. Similar care must be
+taken if there is time dependence in the parameters in transient problems.
+
+We can illustrate the differences with an example. We define field
+variables for the correct and incorrect solution
+
+>>> phiT = CellVariable(name="correct", mesh=mesh)
+>>> phiF = CellVariable(name="incorrect", mesh=mesh)
+>>> phiT.faceGrad.constrain([fluxRight], mesh.facesRight)
+>>> phiF.faceGrad.constrain([fluxRight], mesh.facesRight)
+>>> phiT.constrain(valueLeft, mesh.facesLeft)
+>>> phiF.constrain(valueLeft, mesh.facesLeft)
+>>> phiT.setValue(0)
+>>> phiF.setValue(0)
+
+The relevant parameters are
+
+>>> k = 1.
+>>> alpha_false = FaceVariable(mesh=mesh, value=1.0)
+>>> X = mesh.faceCenters[0]
+>>> alpha_false.setValue(0.1, where=(L / 4. <= X) & (X < 3. * L / 4.))
+>>> eqF = 0 == DiffusionTerm(coeff=alpha_false)
+>>> eqT = 0 == DiffusionTerm(coeff=k)
+>>> eqF.solve(var=phiF)
+>>> eqT.solve(var=phiT)
+
+Comparing to the correct analytical solution, :math:`\phi = x`
+
+>>> x = mesh.cellCenters[0]
+>>> phiAnalytical.setValue(x)
+>>> print phiT.allclose(phiAnalytical, atol = 1e-8, rtol = 1e-8) # doctest: +SCIPY
+1
+
+and finally, plot
+
+>>> if __name__ == '__main__':
+...     Viewer(vars=(phiT, phiF)).plot()
+...     raw_input("Non-uniform thermal conductivity. Press <return> to proceed...")
+
+.. image:: mesh1Dalpha.*
+   :width: 90%
+   :align: center
+   :alt: representation of difference between non-uniform alpha and D
+
+------
+
 Often, the diffusivity is not only non-uniform, but also depends on
 the value of the variable, such that
 
