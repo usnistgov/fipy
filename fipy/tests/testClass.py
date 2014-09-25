@@ -116,7 +116,7 @@ def _TestClass(base):
                 self.test_args.append("fipy.viewers.testinteractive._suite")
 
             if self.modules:
-                self.test_args.append("fipy.test._suite")
+                self.test_args.append("fipy.testFiPy._suite")
             
             if self.examples:
                 self.test_args.append("examples.test._suite")

@@ -263,7 +263,7 @@ dist = setup(	name = "FiPy",
             'copy_script': Copy_script,
             'efficiency_test': Efficiency_test
         },
-        test_suite="fipy.test._suite",
+        test_suite="fipy.testFiPy._suite",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
         entry_points="""
             [fipy.viewers]
