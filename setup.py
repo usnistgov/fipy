@@ -102,7 +102,10 @@ class build_docs(Command):
             sphinx.main(['sphinx-build', '-b', 'redirecting_html'] + sphinx_args + ['documentation/_build/html/'])
 
         if self.pdf:
-            sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
+            try:
+                sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
+            except SystemExit:
+                pass
             
             outdir = os.path.join('documentation', '_build', 'latex')
             
