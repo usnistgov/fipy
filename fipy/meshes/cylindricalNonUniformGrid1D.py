@@ -118,7 +118,7 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var)
 
-        This test is for http://matforge.org/fipy/ticket/513. Cell
+        This test is for https://github.com/usnistgov/fipy/issues/372. Cell
         volumes were being returned as binOps rather than arrays.
 
             >>> m = CylindricalNonUniformGrid1D(dx=(1., 2., 3., 4.), nx=4)

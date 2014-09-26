@@ -87,7 +87,7 @@ with Git_.
    to :term:`FiPy` become available (upgrades via Git_ will handle
    this issue automatically).
 
-.. _Git:       http://matforge.org/fipy/browserfipy
+.. _Git:       https://github.com/usnistgov/fipy
 .. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
 
 ---------------

@@ -873,7 +873,7 @@ class Variable(object):
                 ## vagaries of garbage collection and the possibility that 
                 ## later subscribedVariables were removed, changing the 
                 ## dependencies of this subscriber. 
-                ## See <https://www.matforge.org/fipy/ticket/118> for more explanation.
+                ## See <https://github.com/usnistgov/fipy/issues/103> for more explanation.
                 subscriber()._markStale()
                 
     def _markFresh(self):

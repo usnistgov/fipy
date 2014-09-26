@@ -86,13 +86,12 @@ We have a few known, intermittent failures:
     have an effect on actual simulations.
 
 Although the test suite may show warnings, there should be no other errors.
-Any errors should be investigated or reported on the `tracking
-system`_. Users can see if there are any known problems for the latest
-:term:`FiPy` distribution by checking `FiPy's automated test
-display`_.
+Any errors should be investigated or reported on the `issue tracker`_.
+Users can see if there are any known problems for the latest :term:`FiPy`
+distribution by checking `FiPy's automated test display`_.
 
 .. _FiPy's automated test display: http://build.cmi.kent.edu:8010/console
-.. _tracking system: http://matforge.org/fipy/newticket
+.. _issue tracker: https://github.com/usnistgov/fipy/issues/new
 
 Below are a number of common `Command-line Flags`_ for testing various
 :term:`FiPy` configurations.
@@ -648,7 +647,7 @@ Manual
 
 You can view the manual online at <http://www.ctcms.nist.gov/fipy> or you 
 can `download the latest manual`_ from 
-<http://matforge.org/fipy/wiki/FiPyManual>. Alternatively,
+<http://www.ctcms.nist.gov/fipy/download/>. Alternatively,
 it may be possible to build a fresh copy by issuing the following
 command in the base directory::
 
@@ -680,7 +679,7 @@ command in the base directory::
    $ pip install -e git+git@github.com:mcmtroffaes/pybtex-docutils.git#egg=pybtex-docutils
    $ pip install -e git+git@github.com:mcmtroffaes/sphinxcontrib-bibtex.git#egg=sphinxcontrib-bibtex
 
-.. _download the latest manual:  http://matforge.org/fipy/wiki/FiPyManual
+.. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
 .. _hg: http://mercurial.selenic.com
 .. _bzr: http://bazaar.canonical.com
 .. _git: http://git-scm.com

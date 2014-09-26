@@ -312,7 +312,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var, solver=DummySolver())
 
-        This test is for http://matforge.org/fipy/ticket/513. Cell
+        This test is for https://github.com/usnistgov/fipy/issues/372. Cell
         volumes were being returned as binOps rather than arrays.
 
             >>> m = CylindricalUniformGrid2D(dx=1., dy=1, nx=4, ny=4)
