@@ -40,7 +40,7 @@ extensions = ['sphinx.ext.autodoc',
 templates_path = ['_templates']
 
 # The suffix of source filenames.
-source_suffix = '.txt'
+source_suffix = '.rst'
 
 # The encoding of source files.
 #source_encoding = 'utf-8'
@@ -81,15 +81,15 @@ unused_docs = ['documentation/RESOURCES',
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_patterns = ['fipy/generated/modules.txt',
-                    'fipy/generated/__init__.txt',
+exclude_patterns = ['fipy/generated/modules.rst',
+                    'fipy/generated/__init__.rst',
                     'build', 
                     'dist',
                     'FiPy.egg-info', 
                     'documentation/_build', 
-                    'documentation/tutorial/package/generated/modules.txt',
+                    'documentation/tutorial/package/generated/modules.rst',
                     'documentation/sphinxext',
-                    'documentation/sphinxext/bibtex/bibstuff/examples/*.txt',
+                    'documentation/sphinxext/bibtex/bibstuff/examples/*.rst',
                     '**/.svn',
                     '**/.git']
 
@@ -115,14 +115,14 @@ pygments_style = 'sphinx'
 
 autoclass_content = "both"
 
-autosummary_generate = ['examples/diffusion/index.txt',
-                        'examples/convection/index.txt',
-                        'examples/phase/index.txt',
-                        'examples/levelSet/index.txt',
-                        'examples/cahnHilliard/index.txt',
-                        'examples/flow/index.txt',
-                        'examples/reactiveWetting/index.txt',
-                        'examples/updating/index.txt']
+autosummary_generate = ['examples/diffusion/index.rst',
+                        'examples/convection/index.rst',
+                        'examples/phase/index.rst',
+                        'examples/levelSet/index.rst',
+                        'examples/cahnHilliard/index.rst',
+                        'examples/flow/index.rst',
+                        'examples/reactiveWetting/index.rst',
+                        'examples/updating/index.rst']
                         
 autodoc_member_order = 'alphabetical'
 
