@@ -266,7 +266,7 @@ class NonUniformGrid2D(Mesh2D):
             >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.cellCenters)
             True
 
-        Test for http://matforge.org/fipy/ticket/490.
+        Test for https://github.com/usnistgov/fipy/issues/364.
             
             >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
             >>> m = NonUniformGrid2D(nx=1, ny=9, overlap=1)
