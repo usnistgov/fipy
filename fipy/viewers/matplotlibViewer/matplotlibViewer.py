@@ -192,7 +192,9 @@ class _ColorBar(object):
         # standalone colorbar.  There are many more kwargs, but the
         # following gives a basic continuous colorbar with ticks
         # and labels.
-        self._cb = matplotlib.colorbar.ColorbarBase(cbax, cmap=viewer.cmap,
+        import matplotlib.colors as colors
+        norm = colors.Normalize(vmin=vmin, vmax=vmax)
+        self._cb = matplotlib.colorbar.ColorbarBase(cbax, norm=norm, cmap=viewer.cmap,
                                                     orientation=orientation)
         self._cb.set_label(viewer.vars[0].name)
         
