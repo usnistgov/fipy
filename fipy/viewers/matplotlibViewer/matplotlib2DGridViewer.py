@@ -81,12 +81,20 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
                                             cmap=cmap, colorbar=colorbar, axes=axes, figaspect=figaspect, 
                                             **kwlimits)
 
+        xmin, ymin = self.vars[0].mesh.extents['min']
+        xmax, ymax = self.vars[0].mesh.extents['max']
+
         self.image = self.axes.imshow(self._data,
-                                      extent=(self._getLimit('xmin'), self._getLimit('xmax'), 
-                                              self._getLimit('ymin'), self._getLimit('ymax')),
+                                      extent=(xmin, xmax, ymin, ymax),
                                       vmin=0, vmax=1,
                                       cmap=self.cmap)
-                   
+
+        self.axes.set_xlim(xmin=self._getLimit('xmin'),
+                           xmax=self._getLimit('xmax'))
+
+        self.axes.set_ylim(ymin=self._getLimit('ymin'),
+                           ymax=self._getLimit('ymax'))
+        
         if title is None:                          
             self.axes.set_title(self.vars[0].name)
 
