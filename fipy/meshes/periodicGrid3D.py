@@ -41,7 +41,9 @@ from fipy.tools import numerix
 from fipy.tools import parallelComm
 from fipy.meshes.nonUniformGrid3D import NonUniformGrid3D
 
-__all__ = ["PeriodicGrid3D", "PeriodicGrid3DLeftRight", "PeriodicGrid3DTopBottom", "PeriodicGrid3DFrontBack"]
+__all__ = ["PeriodicGrid3D", "PeriodicGrid3DLeftRight", "PeriodicGrid3DTopBottom",
+           "PeriodicGrid3DFrontBack", "PeriodicGrid3DLeftRightTopBottom",
+           "PeriodicGrid3DLeftRightFrontBack", "PeriodicGrid3DTopBottomFrontBack"]
 
 class _BasePeriodicGrid3D(NonUniformGrid3D):
     def __init__(self, dx=1., dy=1., dz=1., nx=None, ny=None, nz=None, overlap=2, communicator=parallelComm, *args, **kwargs):
@@ -174,10 +176,31 @@ class PeriodicGrid3DLeftRight(_BasePeriodicGrid3D):
         self._connectFaces(numerix.nonzero(self.facesLeft),
                            numerix.nonzero(self.facesRight))
 
+class PeriodicGrid3DLeftRightTopBottom(_BasePeriodicGrid3D):
+    def _makePeriodic(self):
+        self._connectFaces(numerix.nonzero(self.facesLeft),
+                           numerix.nonzero(self.facesRight))
+        self._connectFaces(numerix.nonzero(self.facesBottom),
+                           numerix.nonzero(self.facesTop))
+
+class PeriodicGrid3DLeftRightFrontBack(_BasePeriodicGrid3D):
+    def _makePeriodic(self):
+        self._connectFaces(numerix.nonzero(self.facesLeft),
+                           numerix.nonzero(self.facesRight))
+        self._connectFaces(numerix.nonzero(self.facesFront),
+                           numerix.nonzero(self.facesBack))
+
 class PeriodicGrid3DTopBottom(_BasePeriodicGrid3D):
     def _makePeriodic(self):
         self._connectFaces(numerix.nonzero(self.facesBottom),
                            numerix.nonzero(self.facesTop))
+
+class PeriodicGrid3DTopBottomFrontBack(_BasePeriodicGrid3D):
+    def _makePeriodic(self):
+        self._connectFaces(numerix.nonzero(self.facesBottom),
+                           numerix.nonzero(self.facesTop))
+        self._connectFaces(numerix.nonzero(self.facesFront),
+                           numerix.nonzero(self.facesBack))
 
 class PeriodicGrid3DFrontBack(_BasePeriodicGrid3D):
     def _makePeriodic(self):
