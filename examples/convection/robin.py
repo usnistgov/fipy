@@ -50,17 +50,22 @@ The analytical solution for this equation is given by,
 .. math::
 
    C \left( x \right) =
-   \frac{ 2 P \exp{\left(\frac{P x}{2}\right)}
-          \left[ \left(P + A \right) \exp{\left(\frac{A}{2} \left(x - 1\right)\right)} -
-                 \left(P - A \right) \exp{\left(-\frac{A}{2} \left(x - 1\right)\right)} \right]}
-        { \left(P + A \right)^2 \exp{\left(\frac{A}{2}\right)} -
-          \left(P - A \right)^2 \exp{\left(-\frac{A}{2}\right)}}
+   \frac{P}{2 B} \Big[
+          &\left(P^3 + PD\left( \exp{\left(A\right)} + 3 \right) +
+          A\left(P^2 - D\left(\exp{\left(A\right)} - 1\right)\right)\right)
+          \exp{\left(\frac{x}{2}(P - A)\right)} + \\
+          &\left(P^3 + PD\left( \exp{\left(-A\right)} + 3 \right) -
+          A\left(P^2 - D\left(\exp{\left(-A\right)} - 1\right)\right)\right)
+          \exp{\left(\frac{x}{2}(P + A)\right)}
+          \Big]
 
 where
 
 .. math::
     
-   A = \sqrt{P + 4D^2}
+   A &= \sqrt{P^2 + 4D} \\
+   B &= P^4 + 4DP^2 - D^2*\left(
+          \exp{\left(-A\right)} + \exp{\left(A\right)} - 2 \right)
    
 ..
 
@@ -81,12 +86,14 @@ where
 ...      DiffusionTerm() - ImplicitSourceTerm(D)
 
 >>> A = numerix.sqrt(P**2 + 4 * D)
+>>> B = P**4 + 4 * D * P**2 - D**2 * (numerix.exp(-A) + numerix.exp(A) - 2)
 
 >>> x = mesh.cellCenters[0]
 >>> CAnalytical = CellVariable(mesh=mesh)
->>> CAnalytical.setValue(2 * P * numerix.exp(P * x / 2) * ((P + A) * numerix.exp(A / 2 * (1 - x))
-...             - (P - A) * numerix.exp(-A / 2 *(1 - x)))/
-...             ((P + A)**2*numerix.exp(A / 2)- (P - A)**2 * numerix.exp(-A / 2)))
+>>> CAnalytical.setValue(P / (2 * B) * ((P**3 + P * D * (numerix.exp(A) + 3) + A * (P**2 - D *
+...             (numerix.exp(A) - 1))) * numerix.exp(x / 2. * (P - A)) +
+...             (P**3 + P * D * (numerix.exp(-A) + 3) - A * (P**2 - D * (numerix.exp(-A) - 1))) *
+...             numerix.exp(x / 2. * (P + A)) ))
 
 >>> if __name__ == '__main__':
 ...     C.name = 'C'
