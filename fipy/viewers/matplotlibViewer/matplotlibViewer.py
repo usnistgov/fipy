@@ -154,6 +154,8 @@ class AbstractMatplotlibViewer(AbstractViewer):
             pass
         
         pylab.ion()
+        
+        pylab.show(block=False)
 
         if filename is not None:
             pylab.savefig(filename)
