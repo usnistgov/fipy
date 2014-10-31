@@ -60,7 +60,7 @@ where
 
 .. math::
     
-   A = \sqrt{P + 4D^2}
+   A = \sqrt{P^2 + 4D}
    
 ..
 
