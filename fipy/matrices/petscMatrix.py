@@ -420,7 +420,7 @@ class _PETScMatrixFromShape(_PETScMatrix):
             matrix.create(comm)
             # rows are owned per process
             # cols are owned by everyone
-            matrix.setSizes([[rows, None], cols)
+            matrix.setSizes([[rows, None]], cols)
             matrix.setType('aij') # sparse
             matrix.setPreallocationNNZ(None) # FIXME: ??? #bandwidth)
                 
