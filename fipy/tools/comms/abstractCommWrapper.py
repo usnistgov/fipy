@@ -59,8 +59,15 @@ class AbstractCommWrapper(object):
     def Norm2(self, vec):
         return numerix.L2norm(vec)
 
+    @staticmethod
+    def _tolist(vec):
+        try:
+            return list(vec)
+        except TypeError:
+            return [vec]
+
     def MaxAll(self, vec):
-        return max(numerix.array(vec))
+        return max(self._tolist(vec))
         
     def MinAll(self, vec):
-        return min(numerix.array(vec))
+        return min(self._tolist(vec))

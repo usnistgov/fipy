@@ -1,24 +1,75 @@
 from __future__ import print_function
 from __future__ import unicode_literals
-from mpi4py import MPI
 
-m4comm = MPI.COMM_WORLD
-mpi4py_info = "mpi4py: processor %d of %d" % (m4comm.Get_rank(),
-                                              m4comm.Get_size())
+from fipy import parallelComm
 
-from PyTrilinos import Epetra
+titles = []
+results = []
 
-epcomm = Epetra.PyComm()
+titles.append("mpi4py")
 
-trilinos_info = "PyTrilinos: processor %d of %d" % (epcomm.MyPID(),
-                                                    epcomm.NumProc())
+try:
+    from mpi4py import MPI
 
-from fipy import parallelComm, Grid1D
+    m4comm = MPI.COMM_WORLD
+    results.append("processor %d of %d" % (m4comm.Get_rank(),
+                                           m4comm.Get_size()))
 
-mesh = Grid1D(nx=10)
+except Exception as e:
+    results.append(str(e))
 
-fipy_info = "FiPy: %d cells on processor %d of %d" % (mesh.numberOfCells,
-                                                      parallelComm.procID,
-                                                      parallelComm.Nproc)
+    
+    
+titles.append("PyTrilinos")
+   
+try:
+    from PyTrilinos import Epetra
+
+    epcomm = Epetra.PyComm()
+
+    results.append("processor %d of %d" % (epcomm.MyPID(),
+                                           epcomm.NumProc()))
+except Exception as e:
+    results.append(str(e))
+
+    
+titles.append("petsc4py")
+   
+try:
+    from petsc4py import PETSc
+
+    pecomm = PETSc.COMM_WORLD
+
+    results.append("processor %d of %d" % (pecomm.rank,
+                                           pecomm.size))
+except Exception as e:
+    results.append(str(e))
+
+    
+titles.append("FiPy")
+
+try:
+    from fipy import Grid1D
+
+    mesh = Grid1D(nx=10)
+
+    results.append("%d cells on processor %d of %d" % (mesh.numberOfCells,
+                                                       parallelComm.procID,
+                                                       parallelComm.Nproc))
+except Exception as e:
+    results.append(str(e))
+
+    
+    
+lengths = [parallelComm.MaxAll(len(s)) for s in results]
+formats = ["{{{0}:^{1}}}".format(i, l) for i, l in enumerate(lengths)]
+
+if parallelComm.procID == 0:
+    print "    ".join(formats).format(*titles)
+    
+parallelComm.Barrier()
+
+print " :: ".join(formats).format(*results)
+
 
 print(" :: ".join((mpi4py_info, trilinos_info, fipy_info)))
