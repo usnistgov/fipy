@@ -383,7 +383,10 @@ class _PETScMatrix(_SparseMatrix):
         """
         Exports the matrix to a Matrix Market file of the given filename.
         """
-        self.matrix.export_mtx(filename)
+        viewer = PETSc.Viewer().createASCII(name=filename, mode='w', 
+                                            format=PETSc.Viewer.Format.ASCII_MATRIXMARKET)
+        viewer.view(obj=self.matrix)
+        viewer.destroy()
     
 class _PETScMatrixFromShape(_PETScMatrix):
     
