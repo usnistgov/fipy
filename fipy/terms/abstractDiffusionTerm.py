@@ -373,7 +373,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             del higherOrderBCs
             del mm
 
-            b = L * lowerOrderb + b
+            b = numerix.asarray(L * lowerOrderb) + b
             del lowerOrderb
 
             L = L * lowerOrderL
