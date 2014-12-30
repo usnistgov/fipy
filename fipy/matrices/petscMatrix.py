@@ -196,17 +196,13 @@ class _PETScMatrix(_SparseMatrix):
             if shape == ():
                 result = self.copy()
                 result.matrix = self.matrix * other
-            else: # elif shape == (N,):
-                x = PETSc.Vec().createMPI(N, comm=PETSc.COMM_WORLD)
-                if self.colMap is not None:
-                    x.setLGMap(self.colMap)
-                y = x.duplicate()
-                localNonOverlappingColIDs = self._localNonOverlappingColIDs.astype('int32')
-                x.setValuesLocal(localNonOverlappingColIDs, other[localNonOverlappingColIDs])
-                self.matrix.mult(x, y)
-                return y[self._globalOverlappingColIDs.astype('int32')]
-#             else:
-#                 raise TypeError
+            elif shape == (N,):
+                y = PETSc.Vec().createWithArray(other, comm=PETSc.COMM_WORLD)
+                result = y.duplicate()
+                self.matrix.mult(y, result)
+                return result
+            else:
+                raise TypeError
             
     def __rmul__(self, other):
         if type(numerix.ones(1, 'l')) == type(other):
@@ -538,6 +534,60 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
     def addAt(self, vector, id1, id2):
         vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
         _PETScMatrixFromShape.addAt(self, vector=vector, id1=id1, id2=id2)
+    
+    def __mul__(self, other):
+        """
+        Multiply a sparse matrix by another sparse matrix
+        
+            >>> L1 = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
+            >>> L1.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+            >>> L2 = _PETScIdentityMatrix(size=3, bandwidth=3)
+            >>> L2.put([4.38], [2], [1])
+            >>> L2.put([4.38,12357.2,1.1], [2,1,0], [1,0,2])
+            
+            >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
+            ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
+            ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
+
+            >>> numerix.allclose((L1 * L2).numpyArray, tmp)
+            1
+
+        or a sparse matrix by a vector
+
+            >>> tmp = numerix.array((29., 6.28318531, 2.5))       
+            >>> numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
+            1
+            
+        or a vector by a sparse matrix
+
+            >>> tmp = numerix.array((7.5, 16.28318531,  3.))  
+            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) ## The multiplication is broken. Numpy is calling __rmul__ for every element instead of with  the whole array.
+            1
+
+            
+        """
+        N = self._shape[1]
+
+        self.matrix.assemblyBegin()
+        self.matrix.assemblyEnd()
+        
+        if isinstance(other, _PETScMatrix):
+            return _PETScMatrixFromShape.__mul__(self, other=other)
+        else:
+            shape = numerix.shape(other)
+
+            if shape == ():
+                result = self.copy()
+                result.matrix = self.matrix * other
+            else:
+                x = PETSc.Vec().createMPI(N, comm=PETSc.COMM_WORLD)
+                if self.colMap is not None:
+                    x.setLGMap(self.colMap)
+                y = x.duplicate()
+                localNonOverlappingColIDs = self._localNonOverlappingColIDs.astype('int32')
+                x.setValuesLocal(localNonOverlappingColIDs, other[localNonOverlappingColIDs])
+                self.matrix.mult(x, y)
+                return y
         
     @property
     def numpyArray(self):
@@ -607,4 +657,4 @@ def _test():
     return fipy.tests.doctestPlus.testmod()
     
 if __name__ == "__main__": 
-    _test() 
+    _test()
