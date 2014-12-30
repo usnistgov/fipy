@@ -186,7 +186,9 @@ class _PETScMatrix(_SparseMatrix):
         if isinstance(other, _PETScMatrix):
             other.matrix.assemblyBegin()
             other.matrix.assemblyEnd()
-            return _PETScMatrix(matrix=self.matrix.matMult(other.matrix))
+            copy = self.copy()
+            copy.matrix = self.matrix.matMult(other.matrix)
+            return copy
         elif isinstance(other, PETSc.Vec):
             y = other.duplicate()
             self.matrix.mult(other, y)
@@ -502,6 +504,12 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
     @property
     def _localNonOverlappingColIDs(self):
         return self._cellIDsToLocalColIDs(self.mesh._localNonOverlappingCellIDs)
+
+    def copy(self):
+        tmp = _PETScMatrixFromShape.copy(self)
+        copy = self.__class__(mesh=self.mesh) # FIXME: ??? , bandwidth=self.bandwidth)
+        copy.matrix = tmp.matrix
+        return copy
 
     def _getStencil(self, id1, id2):
         id1 = self._globalOverlappingRowIDs[id1]
