@@ -469,6 +469,10 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         return self._cellIDsToLocalRowIDs(self.mesh._localNonOverlappingCellIDs)
 
     @property
+    def _localOverlappingColIDs(self):
+        return self._cellIDsToLocalColIDs(self.mesh._localOverlappingCellIDs)
+
+    @property
     def _localNonOverlappingColIDs(self):
         return self._cellIDsToLocalColIDs(self.mesh._localNonOverlappingCellIDs)
 

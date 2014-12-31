@@ -57,6 +57,19 @@ class PETScSolver(Solver):
     def _deleteGlobalMatrixAndVectors(self):
         self.matrix.flush()
         del self.globalVectors
+        
+    @property
+    def global2local(self):
+        if not hasattr(self, "_global2local"):
+            globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
+            
+            fr = PETSc.IS().createGeneral(globalMatrix._globalOverlappingColIDs.astype('int32'), PETSc.COMM_SELF)
+            to = PETSc.IS().createGeneral(globalMatrix._localOverlappingColIDs.astype('int32'), PETSc.COMM_SELF)
+            self._global2local = PETSc.Scatter().create(nonOverlappingVector, fr, overlappingVector, to)
+            fr.destroy()
+            to.destroy()
+        
+        return self._global2local
 
     def _solve(self):
         from fipy.terms import SolutionVariableNumberError
@@ -73,10 +86,7 @@ class PETScSolver(Solver):
                      nonOverlappingVector, 
                      nonOverlappingRHSvector)
 
-        fr = PETSc.IS().createGeneral(self.var.mesh._globalOverlappingCellIDs.astype('int32'), PETSc.COMM_SELF)
-        to = PETSc.IS().createGeneral(self.var.mesh._localOverlappingCellIDs.astype('int32'), PETSc.COMM_SELF)
-        scatter = PETSc.Scatter().create(nonOverlappingVector, fr, overlappingVector, to)
-        scatter.scatter(nonOverlappingVector, overlappingVector)
+        self.global2local.scatter(nonOverlappingVector, overlappingVector)
         self.var.value = numerix.reshape(numerix.array(overlappingVector), self.var.shape)
         
         self._deleteGlobalMatrixAndVectors()
@@ -96,10 +106,7 @@ class PETScSolver(Solver):
             
             overlappingResidual = PETSc.Vec().createWithArray(self.var.value, comm=PETSc.COMM_SELF)
             
-            fr = PETSc.IS().createGeneral(self.var.mesh._globalOverlappingCellIDs.astype('int32'), PETSc.COMM_SELF)
-            to = PETSc.IS().createGeneral(self.var.mesh._localOverlappingCellIDs.astype('int32'), PETSc.COMM_SELF)
-            scatter = PETSc.Scatter().create(residual, fr, overlappingResidual, to)
-            scatter.scatter(residual, overlappingResidual) #, mode='reverse')
+            self.global2local.scatter(residual, overlappingResidual)
 
             return overlappingResidual
 
