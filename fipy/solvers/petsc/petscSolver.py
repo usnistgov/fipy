@@ -108,15 +108,10 @@ class PETScSolver(Solver):
                      nonOverlappingVector, 
                      nonOverlappingRHSvector)
 
-#         globalOverlappingCellIDs = self.var.mesh._globalOverlappingCellIDs
-#         self.var.value = numerix.reshape(nonOverlappingVector[globalOverlappingCellIDs.astype('int32')], self.var.shape)
-# #         with nonOverlappingVector.localForm() as overlappingVector:
-# #             self.var.value = numerix.reshape(overlappingVector.array, self.var.shape)
-
         fr = PETSc.IS().createGeneral(self.matrix._globalOverlappingColIDs.astype('int32'), PETSc.COMM_SELF)
         to = PETSc.IS().createGeneral(self.matrix._localOverlappingColIDs.astype('int32'), PETSc.COMM_SELF)
         scatter = PETSc.Scatter().create(nonOverlappingVector, fr, overlappingVector, to)
-        scatter.scatter(nonOverlappingVector, overlappingVector) #, mode='reverse')
+        scatter.scatter(nonOverlappingVector, overlappingVector)
         self.var.value = numerix.reshape(numerix.array(overlappingVector), self.var.shape)
         
         self._deleteGlobalMatrixAndVectors()
@@ -139,7 +134,7 @@ class PETScSolver(Solver):
             fr = PETSc.IS().createGeneral(self.matrix._globalOverlappingColIDs.astype('int32'), PETSc.COMM_SELF)
             to = PETSc.IS().createGeneral(self.matrix._localOverlappingColIDs.astype('int32'), PETSc.COMM_SELF)
             scatter = PETSc.Scatter().create(residual, fr, overlappingResidual, to)
-            scatter.scatter(residual, overlappingResidual) #, mode='reverse')
+            scatter.scatter(residual, overlappingResidual)
 
             return overlappingResidual
 
