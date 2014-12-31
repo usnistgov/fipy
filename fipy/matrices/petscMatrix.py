@@ -613,7 +613,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         Deletes the copy of the PETSc matrix held.
         """
     
-        if (not hasattr(self, 'cache')) or (self.cache is False):
+        if not getattr(self, 'cache', False):
             del self.matrix
 
     def _test(self):
