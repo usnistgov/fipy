@@ -24,8 +24,10 @@ except ImportError:
 _exceptions = []
 
 class SerialSolverError(Exception):
-    def __init__(self, solver):
-        super(SerialSolverError, self).__init__(solver + ' does not run in parallel')
+    def __init__(self):
+        super(SerialSolverError, self).__init__('solver does not run in parallel')
+
+_exceptions = {}
 
 solver = None
 
@@ -35,14 +37,14 @@ serialComm, parallelComm = DummyComm(), DummyComm()
 if solver is None and _desired_solver in ["pysparse", None]:
     try:
         if _Nproc > 1:
-            raise SerialSolverError('pysparse')
+            raise SerialSolverError()
         from fipy.solvers.pysparse import *
         __all__.extend(pysparse.__all__)
         from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
         _MeshMatrix =  _PysparseMeshMatrix
         solver = "pysparse"
     except Exception as inst:
-        _exceptions.append("%s: %s" % ("pysparse", inst))
+        _exceptions["pysparse"] = inst
 
 if solver is None and _desired_solver in ["petsc", None]:
     try:
@@ -62,7 +64,7 @@ if solver is None and _desired_solver in ["petsc", None]:
         _MeshMatrix =  _PETScMeshMatrix
         solver = "petsc"
     except Exception as inst:
-        _exceptions.append("%s: %s" % ("petsc", inst))
+        _exceptions["petsc"] = inst
 
 if solver is None and _desired_solver in ["trilinos", "no-pysparse", None]:
     try:
@@ -92,31 +94,31 @@ if solver is None and _desired_solver in ["trilinos", "no-pysparse", None]:
             _MeshMatrix =  _TrilinosMeshMatrix
             solver = "no-pysparse"
     except Exception as inst:
-        _exceptions.append("%s: %s" % ("trilinos", inst))
+        _exceptions["trilinos"] = inst
 
 if solver is None and _desired_solver in ["scipy", None]:
     try:
         if _Nproc > 1:
-            raise  SerialSolverError('scipy')
+            raise SerialSolverError()
         from fipy.solvers.scipy import *
         __all__.extend(scipy.__all__)
         from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
         _MeshMatrix = _ScipyMeshMatrix
         solver = "scipy"
     except Exception as inst:
-        _exceptions.append("%s: %s" % ("scipy", inst))
+        _exceptions["scipy"] = inst
 
 if solver is None and _desired_solver in ["pyamg", None]:
     try:
         if _Nproc > 1:
-            raise  SerialSolverError('pyamg')
+            raise SerialSolverError()
         from fipy.solvers.pyAMG import *
         __all__.extend(pyAMG.__all__)
         from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
         _MeshMatrix = _ScipyMeshMatrix
         solver = "pyamg"
     except Exception as inst:
-        _exceptions.append("%s: %s" % ("pyamg", inst))
+        _exceptions["pyamg"] = inst
 
 if solver is None and _desired_solver in ["pyamgx", None]:
     try:
@@ -128,14 +130,14 @@ if solver is None and _desired_solver in ["pyamgx", None]:
         _MeshMatrix = _ScipyMeshMatrix
         solver = "pyamgx"
     except Exception as inst:
-        _exceptions.append("%s: %s" % ("pyamgx", inst))
+        _exceptions["pyamgx"] = inst
 
 if solver is None:
     if _desired_solver is None:
-        raise ImportError('Unable to load a solver: %s' % [str(e) for e in _exceptions])
+        raise ImportError('Unable to load a solver: %s' % str(_exceptions))
     else:
         if len(_exceptions) > 0:
-            raise ImportError('Unable to load solver %s: %s' % (_desired_solver, [str(e) for e in _exceptions]))
+            raise ImportError('Unable to load solver %s: %s' % (_desired_solver, _exceptions[_desired_solver]))
         else:
             raise ImportError('Unknown solver package %s' % _desired_solver)
 
