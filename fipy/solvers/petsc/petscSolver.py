@@ -83,7 +83,11 @@ class PETScSolver(Solver):
 
             del RHSvector
             
-            overlappingVector = PETSc.Vec().createWithArray(self.var.value, comm=PETSc.COMM_SELF)
+            # PETSc requires that ghosts be at the end
+            corporeals = numerix.in1d(mesh._globalOverlappingCellIDs, mesh._globalNonOverlappingCellIDs)
+            ghosts = mesh._localOverlappingCellIDs[~corporeals]
+            ids = numerix.concatenate([mesh._localOverlappingCellIDs[corporeals], ghosts])
+            overlappingVector = PETSc.Vec().createGhostWithArray(ghosts=ghosts.astype('int32'), array=numerix.asarray(self.var[..., ids]), comm=PETSc.COMM_SELF)
 
             self.globalVectors = (globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector)
 
@@ -122,7 +126,9 @@ class PETScSolver(Solver):
                      nonOverlappingRHSvector)
 
         self.global2local.scatter(nonOverlappingVector, overlappingVector)
-        self.var.value = numerix.reshape(numerix.array(overlappingVector), self.var.shape)
+        
+        with overlappingVector.localForm() as lf:
+            self.var.value = numerix.reshape(numerix.array(lf), self.var.shape)
         
         self._deleteGlobalMatrixAndVectors()
         del self.var
@@ -139,7 +145,12 @@ class PETScSolver(Solver):
         else:
             residual, globalMatrix = self._calcResidualVectorNonOverlapping_()
             
-            overlappingResidual = PETSc.Vec().createWithArray(self.var.value, comm=PETSc.COMM_SELF)
+            mesh = self.var.mesh
+            
+            corporeals = numerix.in1d(mesh._globalOverlappingCellIDs, mesh._globalNonOverlappingCellIDs)
+            ghosts = mesh._localOverlappingCellIDs[~corporeals]
+            ids = numerix.concatenate([mesh._localOverlappingCellIDs[corporeals], ghosts])
+            overlappingResidual = PETSc.Vec().createGhostWithArray(ghosts=ghosts.astype('int32'), array=numerix.asarray(self.var[..., ids]), comm=PETSc.COMM_SELF)
             
             self.global2local.scatter(residual, overlappingResidual)
 

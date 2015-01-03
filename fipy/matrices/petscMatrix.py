@@ -450,7 +450,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         
         _PETScMatrixFromShape.__init__(self, 
                                        rows=numberOfEquations * len(self.mesh._localNonOverlappingCellIDs), 
-                                       cols=numberOfVariables * self.mesh.globalNumberOfCells, 
+                                       cols=numberOfVariables * len(self.mesh._localNonOverlappingCellIDs), # self.mesh.globalNumberOfCells, # , # 
                                        bandwidth=bandwidth, 
                                        sizeHint=sizeHint, 
                                        matrix=matrix,
@@ -595,13 +595,22 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                 result = self.copy()
                 result.matrix = self.matrix * other
             else:
-                x = PETSc.Vec().createMPI(N, comm=PETSc.COMM_WORLD)
-                if self.colMap is not None:
-                    x.setLGMap(self.colMap)
+                corporeals = numerix.in1d(self.mesh._globalOverlappingCellIDs, self.mesh._globalNonOverlappingCellIDs)
+                ghosts = self.mesh._localOverlappingCellIDs[~corporeals]
+                ids = numerix.concatenate([self.mesh._localOverlappingCellIDs[corporeals], ghosts])
+                print ids
+                x = PETSc.Vec().createGhostWithArray(ghosts=ghosts.astype('int32'), array=numerix.asarray(other[..., ids]), comm=PETSc.COMM_WORLD)
+#                 y = PETSc.Vec().createMPI(N, comm=PETSc.COMM_WORLD)
+#                 y = PETSc.Vec().createWithArray(array=numerix.asarray(other[..., self.mesh._localNonOverlappingCellIDs]), comm=PETSc.COMM_WORLD)
                 y = x.duplicate()
-                localNonOverlappingColIDs = self._localNonOverlappingColIDs.astype('int32')
-                x.setValuesLocal(localNonOverlappingColIDs, other[localNonOverlappingColIDs])
+                print "x:", x.getSizes()
+                print "y:", y.getSizes()
+                print "m:", self.matrix.getSizes()
                 self.matrix.mult(x, y)
+                with y.localForm() as lf:
+                    print "lf:", lf.getSizes()
+                    y = numerix.asarray(lf)
+                print y.shape
                 return y
         
     @property
