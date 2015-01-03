@@ -166,7 +166,7 @@ class _PETScMatrix(_SparseMatrix):
                 result.matrix = self.matrix * other
                 return result
             elif shape == (N,):
-                y = PETSc.Vec().createWithArray(other, comm=PETSc.COMM_WORLD)
+                y = PETSc.Vec().createWithArray(other, comm=self.matrix.comm)
                 result = y.duplicate()
                 self.matrix.mult(y, result)
                 return result
@@ -176,7 +176,7 @@ class _PETScMatrix(_SparseMatrix):
     def __rmul__(self, other):
         if type(numerix.ones(1, 'l')) == type(other):
             N = self._shape[1]
-            x = PETSc.Vec().createMPI(N, comm=PETSc.COMM_WORLD)
+            x = PETSc.Vec().createMPI(N, comm=self.matrix.comm)
             y = x.duplicate()
             x[:] = other
             self.matrix.multTranspose(x, y)
@@ -417,7 +417,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         
         _PETScMatrixFromShape.__init__(self, 
                                        rows=numberOfEquations * len(self.mesh._localNonOverlappingCellIDs), 
-                                       cols=numberOfVariables * self.mesh.globalNumberOfCells, 
+                                       cols=numberOfVariables * len(self.mesh._localNonOverlappingCellIDs), # self.mesh.globalNumberOfCells, # , # 
                                        bandwidth=bandwidth, 
                                        sizeHint=sizeHint, 
                                        matrix=matrix,
@@ -517,6 +517,99 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
         _PETScMatrixFromShape.addAt(self, vector=vector, id1=id1, id2=id2)
     
+    @property
+    def _bodies(self):
+        if not hasattr(self, "_bodies_"):
+            self._bodies_ = numerix.in1d(self.mesh._globalOverlappingCellIDs, 
+                                         self.mesh._globalNonOverlappingCellIDs)
+        return self._bodies_
+        
+    @property
+    def _ghosts(self):
+        if not hasattr(self, "_ghosts_"):
+            from fipy.tools.debug import PRINT
+            ghosts = self.mesh._globalOverlappingCellIDs[~self._bodies]
+            PRINT("ghosts-A:", ghosts)
+            self._ghosts_ = self._cellIDsToGlobalRowIDs(ghosts)
+            PRINT("_ghosts_:", self._ghosts_)
+            
+        return self._ghosts_
+        
+    def _fipy2petscGhost(self, var):
+        """Convert a FiPy Variable to a PETSc GhostVec
+        
+        Moves the ghosts to the end, as necessary. 
+        var may be coupled/vector and so moving the ghosts is a bit subtle
+        
+        Given a (2x4) vector variable vij
+        
+        v00  v01 (v02)        processor 0
+        v10  v11 (v12)
+        
+            (v01) v02 v03     processor 1
+            (v11) v12 v13
+            
+        where i is the vector index and j is the global index.
+        Elements in () are ghosted
+        
+        We end up with the GhostVec
+        
+        v00 v01 v10 v11 (v02) (v12)   [4, 6]  processor 0
+        v02 v03 v12 v13 (v01) (v11)   [1, 3]  processor 1
+        
+        where the [a, b] are the global ghost indices
+        """
+        corporeal = numerix.asarray(var[..., self._bodies]).ravel()
+        incorporeal = numerix.asarray(var[..., ~self._bodies]).ravel()
+        array = numerix.concatenate([corporeal, incorporeal])
+
+        comm = self.mesh.communicator.petsc4py_comm
+        vec = PETSc.Vec().createGhostWithArray(ghosts=self._ghosts.astype('int32'),
+                                               array=array,
+                                               comm=comm)
+                                               
+        return vec
+
+        
+    def _petsc2fipyGhost(self, vec):
+        """Convert a PETSc GhostVec to a FiPy Variable (form)
+        
+        Moves the ghosts from the end, as necessary. 
+        var may be coupled/vector and so moving the ghosts is a bit subtle
+        
+        Given an 8-element GhostVec vj
+        
+        v0 v1 v2 v3 (v4) (v6)   [4, 6]  processor 0
+        v4 v5 v6 v7 (v1) (v3)   [1, 3]  processor 1
+        
+        where j is the global index and the [a, b] are the global ghost indices.
+        Elements in () are ghosted
+
+        We end up with the (2x4) FiPy Variable
+        
+        v0  v1 (v4)        processor 0
+        v2  v3 (v6)
+        
+           (v1) v4 v4      processor 1
+           (v3) v6 v7
+            
+        """
+        N = len(self.mesh._globalOverlappingCellIDs)
+        M = self.numberOfEquations
+        var = numerix.empty((M, N))
+        bodies = numerix.array(vec)
+        if M > 1:
+            bodies = numerix.reshape(bodies, (M, -1))
+        var[..., self._bodies] = bodies
+        vec.ghostUpdate()
+        with vec.localForm() as lf:
+            if len(self._ghosts) > 0:
+                ids = numerix.arange(-len(self._ghosts), 0)
+                ghosts = numerix.reshape(numerix.array(lf)[ids], (M, -1))
+                var[..., ~self._bodies] = ghosts
+
+        return var.flatten()
+
     def __mul__(self, other):
         """
         Multiply a sparse matrix by another sparse matrix
@@ -563,14 +656,14 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                 result.matrix = self.matrix * other
                 return result
             else:
-                x = PETSc.Vec().createMPI(N, comm=PETSc.COMM_WORLD)
-                if self.colMap is not None:
-                    x.setLGMap(self.colMap)
-                y = x.duplicate()
-                localNonOverlappingColIDs = self._localNonOverlappingColIDs.astype('int32')
-                x.setValuesLocal(localNonOverlappingColIDs, other[localNonOverlappingColIDs])
+                x = other[self._localNonOverlappingColIDs]
+                x = PETSc.Vec().createWithArray(x, comm=self.matrix.comm)
+
+                y = PETSc.Vec().createGhost(ghosts=self._ghosts.astype('int32'),
+                                            size=(len(self._localNonOverlappingColIDs), None),
+                                            comm=self.matrix.comm)
                 self.matrix.mult(x, y)
-                return y
+                return self._petsc2fipyGhost(vec=y)
         
     @property
     def numpyArray(self):
