@@ -550,6 +550,55 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
         _PETScMatrixFromShape.addAt(self, vector=vector, id1=id1, id2=id2)
     
+    @property
+    def _bodies(self):
+        if not hasattr(self, "_bodies_"):
+            self._bodies_ = numerix.in1d(self.mesh._globalOverlappingCellIDs, 
+                                         self.mesh._globalNonOverlappingCellIDs)
+        return self._bodies_
+        
+    @property
+    def _ghosts(self):
+        if not hasattr(self, "_ghosts_"):
+            self._ghosts_ = self.mesh._globalOverlappingCellIDs[~self._bodies]
+            
+        return self._ghosts_
+        
+    @property
+    def _petscGhostIDs(self):
+        if not hasattr(self, "_petscGhostIDs_"):
+            ids = self.mesh._localOverlappingCellIDs
+            # PETSc requires that ghosts be at the end, FiPy doesn't care
+            self._petscGhostIDs_ = numerix.concatenate([ids[self._bodies], 
+                                                        ids[~self._bodies]])
+                                                        
+        return self._petscGhostIDs_
+
+    def _ghostSlice(self, var):
+        ## The following conditional is required because empty indexing is not altogether functional.
+        ## This numpy.empty((0,))[[]] and this numpy.empty((0,))[...,[]] both work, but this
+        ## numpy.empty((3, 0))[...,[]] is broken.
+        if var.shape[-1] != 0:
+            _ghostSlice = (Ellipsis, self._petscGhostIDs)
+        else:
+            _ghostSlice = (self._petscGhostIDs,)
+
+
+        # g                 g
+        # 0 1 2 3 4 5 6 7 8 9  FiPy
+        
+        #                 g g
+        # 1 2 3 4 5 6 7 8 0 9  PETSc
+        
+        # 8 0 1 2 3 4 5 6 7 9
+        return _ghostSlice
+        
+    def _ghostTake(self, var):
+        return var[self._ghostSlice(var)]
+        
+    def _ghostPut(self, var, value):
+        var[self._ghostSlice(var)] = value
+
     def __mul__(self, other):
         """
         Multiply a sparse matrix by another sparse matrix
@@ -595,17 +644,16 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                 result = self.copy()
                 result.matrix = self.matrix * other
             else:
-                bodies = numerix.in1d(self.mesh._globalOverlappingCellIDs, self.mesh._globalNonOverlappingCellIDs)
-                ghosts = self.mesh._globalOverlappingCellIDs[~bodies]
-                ids = numerix.concatenate([self.mesh._localOverlappingCellIDs[bodies], 
-                                           self.mesh._localOverlappingCellIDs[~bodies]])
-                x = PETSc.Vec().createGhostWithArray(ghosts=ghosts.astype('int32'), array=numerix.asarray(other)[..., ids], comm=PETSc.COMM_WORLD)
+                other = numerix.asarray(other)
+                x = PETSc.Vec().createGhostWithArray(ghosts=self._ghosts.astype('int32'), 
+                                                     array=self._ghostTake(other), 
+                                                     comm=PETSc.COMM_WORLD)
                 y = x.duplicate()
                 self.matrix.mult(x, y)
                 y.ghostUpdate()
                 with y.localForm() as lf:
                     y = other.copy()
-                    y[..., ids] = numerix.asarray(lf)
+                    self._ghostPut(y, numerix.asarray(lf))
                 return y
         
     @property
