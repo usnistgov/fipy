@@ -53,43 +53,62 @@ class PETScSolver(Solver):
             Solver.__init__(self, *args, **kwargs)
 
     @property
-    def _globalMatrixAndVectors(self):
-        if not hasattr(self, 'globalVectors'):
-            globalMatrix = self.matrix
-
+    def _bodies(self):
+        if not hasattr(self, "_bodies_"):
             mesh = self.var.mesh
-            localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
+            self._bodies_ = numerix.in1d(mesh._globalOverlappingCellIDs, 
+                                         mesh._globalNonOverlappingCellIDs)
+        return self._bodies_
+        
+    @property
+    def _ghosts(self):
+        if not hasattr(self, "_ghosts_"):
+            mesh = self.var.mesh
+            self._ghosts_ = mesh._globalOverlappingCellIDs[~self._bodies]
+            
+        return self._ghosts_
+
+    @property
+    def _ghostSlice(self):
+        if not hasattr(self, "_ghostSlice_"):
+            mesh = self.var.mesh
+            
+            # PETSc requires that ghosts be at the end, FiPy doesn't care
+            ids = numerix.concatenate([mesh._localOverlappingCellIDs[self._bodies], 
+                                       mesh._localOverlappingCellIDs[~self._bodies]])
             
             ## The following conditional is required because empty indexing is not altogether functional.
             ## This numpy.empty((0,))[[]] and this numpy.empty((0,))[...,[]] both work, but this
             ## numpy.empty((3, 0))[...,[]] is broken.
             if self.var.shape[-1] != 0:
-                s = (Ellipsis, localNonOverlappingCellIDs)
+                self._ghostSlice_ = (Ellipsis, ids)
             else:
-                s = (localNonOverlappingCellIDs,)
-                
-            comm = self.var.mesh.communicator.petsc4py_comm
-            nonOverlappingVector = PETSc.Vec().createWithArray(self.var[s].ravel(), comm=comm)
+                self._ghostSlice_ = (ids,)
+
+
+            # g                 g
+            # 0 1 2 3 4 5 6 7 8 9  FiPy
             
-            from fipy.variables.coupledCellVariable import _CoupledCellVariable
-
-            if isinstance(self.RHSvector, _CoupledCellVariable):
-                RHSvector = self.RHSvector[localNonOverlappingCellIDs]
-            else:
-                RHSvector = numerix.reshape(numerix.array(self.RHSvector), self.var.shape)[s].ravel()
-                
-                    
-            nonOverlappingRHSvector = PETSc.Vec().createWithArray(RHSvector)
-
-            del RHSvector
+            #                 g g
+            # 1 2 3 4 5 6 7 8 0 9  PETSc
             
-            # PETSc requires that ghosts be at the end
-            corporeals = numerix.in1d(mesh._globalOverlappingCellIDs, mesh._globalNonOverlappingCellIDs)
-            ghosts = mesh._localOverlappingCellIDs[~corporeals]
-            ids = numerix.concatenate([mesh._localOverlappingCellIDs[corporeals], ghosts])
-            overlappingVector = PETSc.Vec().createGhostWithArray(ghosts=ghosts.astype('int32'), array=numerix.asarray(self.var[..., ids]), comm=PETSc.COMM_SELF)
+            # 8 0 1 2 3 4 5 6 7 9
+        return self._ghostSlice_
 
-            self.globalVectors = (globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector)
+    @property
+    def _globalMatrixAndVectors(self):
+        if not hasattr(self, 'globalVectors'):
+            globalMatrix = self.matrix
+
+            overlappingVector = PETSc.Vec().createGhostWithArray(ghosts=self._ghosts.astype('int32'), 
+                                                                 array=numerix.asarray(self.var[self._ghostSlice]).ravel(), 
+                                                                 comm=PETSc.COMM_WORLD)
+
+            overlappingRHSvector = PETSc.Vec().createGhostWithArray(ghosts=self._ghosts.astype('int32'), 
+                                                                    array=numerix.asarray(self.RHSvector[self._ghostSlice]).ravel(), 
+                                                                    comm=PETSc.COMM_WORLD)
+
+            self.globalVectors = (globalMatrix, overlappingVector, overlappingRHSvector)
 
         return self.globalVectors
 
@@ -97,38 +116,24 @@ class PETScSolver(Solver):
         self.matrix.flush()
         del self.globalVectors
         
-    @property
-    def global2local(self):
-        if not hasattr(self, "_global2local"):
-            globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
-            
-            fr = PETSc.IS().createGeneral(globalMatrix._globalOverlappingColIDs.astype('int32'), PETSc.COMM_SELF)
-            to = PETSc.IS().createGeneral(globalMatrix._localOverlappingColIDs.astype('int32'), PETSc.COMM_SELF)
-            self._global2local = PETSc.Scatter().create(nonOverlappingVector, fr, overlappingVector, to)
-            fr.destroy()
-            to.destroy()
-        
-        return self._global2local
-
     def _solve(self):
         from fipy.terms import SolutionVariableNumberError
         
-        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
+        globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
 
         if ((self.matrix == 0)
             or (self.matrix.matrix.sizes[0][1] != self.matrix.matrix.sizes[1][1])
-            or (self.matrix.matrix.sizes[0][1] != nonOverlappingVector.size)):
+            or (self.matrix.matrix.sizes[0][1] != overlappingVector.size)):
 
             raise SolutionVariableNumberError
 
         self._solve_(globalMatrix.matrix, 
-                     nonOverlappingVector, 
-                     nonOverlappingRHSvector)
+                     overlappingVector, 
+                     overlappingRHSvector)
 
-        self.global2local.scatter(nonOverlappingVector, overlappingVector)
-        
+        overlappingVector.ghostUpdate()
         with overlappingVector.localForm() as lf:
-            self.var.value = numerix.reshape(numerix.array(lf), self.var.shape)
+            self.var.value[self._ghostSlice] = numerix.reshape(numerix.array(lf), self.var.shape)
         
         self._deleteGlobalMatrixAndVectors()
         del self.var
@@ -145,20 +150,16 @@ class PETScSolver(Solver):
         else:
             residual, globalMatrix = self._calcResidualVectorNonOverlapping_()
             
-            mesh = self.var.mesh
-            
-            corporeals = numerix.in1d(mesh._globalOverlappingCellIDs, mesh._globalNonOverlappingCellIDs)
-            ghosts = mesh._localOverlappingCellIDs[~corporeals]
-            ids = numerix.concatenate([mesh._localOverlappingCellIDs[corporeals], ghosts])
-            overlappingResidual = PETSc.Vec().createGhostWithArray(ghosts=ghosts.astype('int32'), array=numerix.asarray(self.var[..., ids]), comm=PETSc.COMM_SELF)
-            
-            self.global2local.scatter(residual, overlappingResidual)
+            residual.ghostUpdate()
+            with residual.localForm() as lf:
+                overlappingResidual = self.var.copy()
+                overlappingResidual[self._ghostSlice] = numerix.reshape(numerix.array(lf), self.var.shape)
 
             return overlappingResidual
 
     def _calcResidualVectorNonOverlapping_(self):
-        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
-        residual = globalMatrix * nonOverlappingVector - nonOverlappingRHSvector
+        globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
+        residual = globalMatrix * overlappingVector - overlappingRHSvector
         return residual, globalMatrix
 
     def _calcResidual(self, residualFn=None):

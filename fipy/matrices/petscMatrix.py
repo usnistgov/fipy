@@ -595,22 +595,17 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                 result = self.copy()
                 result.matrix = self.matrix * other
             else:
-                corporeals = numerix.in1d(self.mesh._globalOverlappingCellIDs, self.mesh._globalNonOverlappingCellIDs)
-                ghosts = self.mesh._localOverlappingCellIDs[~corporeals]
-                ids = numerix.concatenate([self.mesh._localOverlappingCellIDs[corporeals], ghosts])
-                print ids
-                x = PETSc.Vec().createGhostWithArray(ghosts=ghosts.astype('int32'), array=numerix.asarray(other[..., ids]), comm=PETSc.COMM_WORLD)
-#                 y = PETSc.Vec().createMPI(N, comm=PETSc.COMM_WORLD)
-#                 y = PETSc.Vec().createWithArray(array=numerix.asarray(other[..., self.mesh._localNonOverlappingCellIDs]), comm=PETSc.COMM_WORLD)
+                bodies = numerix.in1d(self.mesh._globalOverlappingCellIDs, self.mesh._globalNonOverlappingCellIDs)
+                ghosts = self.mesh._globalOverlappingCellIDs[~bodies]
+                ids = numerix.concatenate([self.mesh._localOverlappingCellIDs[bodies], 
+                                           self.mesh._localOverlappingCellIDs[~bodies]])
+                x = PETSc.Vec().createGhostWithArray(ghosts=ghosts.astype('int32'), array=numerix.asarray(other)[..., ids], comm=PETSc.COMM_WORLD)
                 y = x.duplicate()
-                print "x:", x.getSizes()
-                print "y:", y.getSizes()
-                print "m:", self.matrix.getSizes()
                 self.matrix.mult(x, y)
+                y.ghostUpdate()
                 with y.localForm() as lf:
-                    print "lf:", lf.getSizes()
-                    y = numerix.asarray(lf)
-                print y.shape
+                    y = other.copy()
+                    y[..., ids] = numerix.asarray(lf)
                 return y
         
     @property
