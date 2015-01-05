@@ -635,7 +635,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         self.matrix.assemblyBegin()
         self.matrix.assemblyEnd()
         
-        if isinstance(other, _PETScMatrix):
+        if isinstance(other, (_PETScMatrix, PETSc.Vec)):
             return _PETScMatrixFromShape.__mul__(self, other=other)
         else:
             shape = numerix.shape(other)
