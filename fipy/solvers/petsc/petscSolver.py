@@ -62,7 +62,14 @@ class PETScSolver(Solver):
                                                                  array=var.ravel(), 
                                                                  comm=PETSc.COMM_WORLD)
 
-            RHSvector = numerix.asarray(self.matrix._ghostTake(self.RHSvector))
+
+            from fipy.variables.coupledCellVariable import _CoupledCellVariable
+            if isinstance(self.RHSvector, _CoupledCellVariable):
+                RHSvector = self.RHSvector
+            else:
+                RHSvector = numerix.reshape(numerix.asarray(self.RHSvector), self.var.shape)
+                
+            RHSvector = numerix.asarray(self.matrix._ghostTake(RHSvector))
             overlappingRHSvector = PETSc.Vec().createGhostWithArray(ghosts=self.matrix._ghosts.astype('int32'), 
                                                                     array=RHSvector.ravel(), 
                                                                     comm=PETSc.COMM_WORLD)
@@ -93,7 +100,7 @@ class PETScSolver(Solver):
         overlappingVector.ghostUpdate()
         with overlappingVector.localForm() as lf:
             value = numerix.reshape(numerix.array(lf), self.var.shape)
-            self.matrix._ghostPut(self.var.value, value)
+            self.matrix._ghostPut(self.var, value)
         
         self._deleteGlobalMatrixAndVectors()
         del self.var
