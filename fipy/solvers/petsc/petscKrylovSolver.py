@@ -65,7 +65,7 @@ class PETScKrylovSolver(PETScSolver):
 
     def _solve_(self, L, x, b):
         ksp = PETSc.KSP()
-        ksp.create(PETSc.COMM_WORLD)
+        ksp.create(L.comm)
         ksp.setType(self.solver)
         if self.preconditioner is not None:
             ksp.getPC().setType(self.preconditioner)

@@ -199,7 +199,7 @@ class _PETScMatrix(_SparseMatrix):
                 result = self.copy()
                 result.matrix = self.matrix * other
             elif shape == (N,):
-                y = PETSc.Vec().createWithArray(other, comm=PETSc.COMM_WORLD)
+                y = PETSc.Vec().createWithArray(other, comm=self.matrix.comm)
                 result = y.duplicate()
                 self.matrix.mult(y, result)
                 return result
@@ -209,7 +209,7 @@ class _PETScMatrix(_SparseMatrix):
     def __rmul__(self, other):
         if type(numerix.ones(1, 'l')) == type(other):
             N = self._shape[1]
-            x = PETSc.Vec().createMPI(N, comm=PETSc.COMM_WORLD)
+            x = PETSc.Vec().createMPI(N, comm=self.matrix.comm)
             y = x.duplicate()
             x[:] = other
             self.matrix.multTranspose(x, y)
@@ -645,9 +645,10 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                 result.matrix = self.matrix * other
             else:
                 other = numerix.asarray(other)
+                comm = self.mesh.communicator.petsc4py_comm
                 x = PETSc.Vec().createGhostWithArray(ghosts=self._ghosts.astype('int32'), 
                                                      array=self._ghostTake(other), 
-                                                     comm=PETSc.COMM_WORLD)
+                                                     comm=comm)
                 y = x.duplicate()
                 self.matrix.mult(x, y)
                 y.ghostUpdate()

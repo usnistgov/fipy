@@ -58,9 +58,10 @@ class PETScSolver(Solver):
             globalMatrix = self.matrix
 
             var = numerix.asarray(self.matrix._ghostTake(self.var))
+            comm = self.var.mesh.communicator.petsc4py_comm
             overlappingVector = PETSc.Vec().createGhostWithArray(ghosts=self.matrix._ghosts.astype('int32'), 
                                                                  array=var.ravel(), 
-                                                                 comm=PETSc.COMM_WORLD)
+                                                                 comm=comm)
 
 
             from fipy.variables.coupledCellVariable import _CoupledCellVariable
@@ -72,7 +73,7 @@ class PETScSolver(Solver):
             RHSvector = numerix.asarray(self.matrix._ghostTake(RHSvector))
             overlappingRHSvector = PETSc.Vec().createGhostWithArray(ghosts=self.matrix._ghosts.astype('int32'), 
                                                                     array=RHSvector.ravel(), 
-                                                                    comm=PETSc.COMM_WORLD)
+                                                                    comm=comm)
 
             self.globalVectors = (globalMatrix, overlappingVector, overlappingRHSvector)
 
