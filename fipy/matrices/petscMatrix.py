@@ -564,40 +564,88 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
             
         return self._ghosts_
         
-    @property
-    def _petscGhostIDs(self):
-        if not hasattr(self, "_petscGhostIDs_"):
-            ids = self.mesh._localOverlappingCellIDs
-            # PETSc requires that ghosts be at the end, FiPy doesn't care
-            self._petscGhostIDs_ = numerix.concatenate([ids[self._bodies], 
-                                                        ids[~self._bodies]])
-                                                        
-        return self._petscGhostIDs_
-
-    def _ghostSlice(self, var):
+    def _emptySlice(self, var, ids):
         ## The following conditional is required because empty indexing is not altogether functional.
         ## This numpy.empty((0,))[[]] and this numpy.empty((0,))[...,[]] both work, but this
         ## numpy.empty((3, 0))[...,[]] is broken.
-        if var.shape[-1] != 0:
-            _ghostSlice = (Ellipsis, self._petscGhostIDs)
+        if var.shape[-1] == 0:
+            _emptySlice = (ids,)
         else:
-            _ghostSlice = (self._petscGhostIDs,)
+            _emptySlice = (Ellipsis, ids)
 
+        return _emptySlice
 
-        # g                 g
-        # 0 1 2 3 4 5 6 7 8 9  FiPy
+    def _fipy2petscGhost(self, var):
+        """Convert a FiPy Variable to a PETSc GhostVec
         
-        #                 g g
-        # 1 2 3 4 5 6 7 8 0 9  PETSc
+        Moves the ghosts to the end, as necessary. 
+        var may be coupled/vector and so moving the ghosts is a bit subtle
         
-        # 8 0 1 2 3 4 5 6 7 9
-        return _ghostSlice
+        Given a (2x4) vector variable vij
         
-    def _ghostTake(self, var):
-        return var[self._ghostSlice(var)]
+        v00  v01 (v02)        processor 0
+        v10  v11 (v12)
         
-    def _ghostPut(self, var, value):
-        var[self._ghostSlice(var)] = value
+            (v01) v02 v03     processor 1
+            (v11) v12 v13
+            
+        where i is the vector index and j is the global index.
+        Elements in () are ghosted
+        
+        We end up with the GhostVec
+        
+        v00 v01 v10 v11 (v02) (v12)   [4, 6]  processor 0
+        v02 v03 v12 v13 (v01) (v11)   [1, 3]  processor 1
+        
+        where the [a, b] are the global ghost indices
+        """
+        corporeal = numerix.asarray(var[self._emptySlice(var, self._bodies)]).ravel()
+        incorporeal = numerix.asarray(var[self._emptySlice(var, self._ghosts)]).ravel()
+        array = numerix.concatenate([corporeal, incorporeal])
+        ghosts = self._cellIDsToGlobalRowIDs(self._ghosts)
+        
+        comm = self.mesh.communicator.petsc4py_comm
+        vec = PETSc.Vec().createGhostWithArray(ghosts=ghosts.astype('int32'),
+                                               array=array,
+                                               comm=comm)
+                                               
+        return vec
+
+        
+    def _petsc2fipyGhost(self, vec):
+        """Convert a PETSc GhostVec to a FiPy Variable (form)
+        
+        Moves the ghosts from the end, as necessary. 
+        var may be coupled/vector and so moving the ghosts is a bit subtle
+        
+        Given an 8-element GhostVec vj
+        
+        v0 v1 v2 v3 (v4) (v6)   [4, 6]  processor 0
+        v4 v5 v6 v7 (v1) (v3)   [1, 3]  processor 1
+        
+        where j is the global index and the [a, b] are the global ghost indices.
+        Elements in () are ghosted
+
+        We end up with the (2x4) FiPy Variable
+        
+        v0  v1 (v4)        processor 0
+        v2  v3 (v6)
+        
+           (v1) v4 v4      processor 1
+           (v3) v6 v7
+            
+        """
+        N = len(self.mesh._globalOverlappingCellIDs)
+        M = self.numberOfEquations
+        var = numerix.empty((M, N))
+        bodies = numerix.reshape(numerix.array(vec), (M, -1))
+        var[self._emptySlice(var, self._bodies)] = bodies
+        vec.ghostUpdate()
+        with vec.localForm() as lf:
+            ghosts = numerix.reshape(numerix.array(lf)[-numerix.arange(len(self._ghosts)*M)], (M, -1))
+            var[self._emptySlice(var, self._ghosts)] = ghosts
+
+        return var
 
     def __mul__(self, other):
         """
@@ -644,18 +692,12 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                 result = self.copy()
                 result.matrix = self.matrix * other
             else:
-                other = numerix.asarray(other)
-                comm = self.mesh.communicator.petsc4py_comm
-                x = PETSc.Vec().createGhostWithArray(ghosts=self._ghosts.astype('int32'), 
-                                                     array=self._ghostTake(other), 
-                                                     comm=comm)
+                x = self._fipy2petscGhost(var=other)
                 y = x.duplicate()
                 self.matrix.mult(x, y)
-                y.ghostUpdate()
-                with y.localForm() as lf:
-                    y = other.copy()
-                    self._ghostPut(y, numerix.asarray(lf))
-                return y
+                var = other.copy()
+                var[:] = self._petsc2fipyGhost(vec=y)
+                return var
         
     @property
     def numpyArray(self):
