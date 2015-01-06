@@ -117,13 +117,7 @@ class PETScSolver(Solver):
         else:
             residual, globalMatrix = self._calcResidualVectorNonOverlapping_()
             
-            residual.ghostUpdate()
-            with residual.localForm() as lf:
-                overlappingResidual = self.var.copy()
-                value = numerix.reshape(numerix.array(lf), self.var.shape)
-                self.matrix._ghostPut(overlappingResidual, value)
-
-            return overlappingResidual
+            return residual
 
     def _calcResidualVectorNonOverlapping_(self):
         globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
