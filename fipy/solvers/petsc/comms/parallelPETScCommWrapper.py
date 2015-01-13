@@ -49,9 +49,8 @@ class ParallelPETScCommWrapper(PETScCommWrapper):
     """
     
     def __init__(self):
-        self.mpi4py_comm = PETSc.COMM_WORLD.tompi4py()
         super(ParallelPETScCommWrapper, self).__init__(petsc4py_comm=PETSc.COMM_WORLD)
-        
+     
     @property
     def procID(self):
         return self.petsc4py_comm.rank
