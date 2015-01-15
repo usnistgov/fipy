@@ -91,8 +91,7 @@ class PETScSolver(Solver):
                      overlappingRHSvector)
 
         value = self.matrix._petsc2fipyGhost(vec=overlappingVector)
-        value = numerix.reshape(value, self.var.shape)
-        self.var[:] = value
+        self.var.value = numerix.reshape(value, self.var.shape)
         
         self._deleteGlobalMatrixAndVectors()
         del self.var

@@ -646,7 +646,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                 ghosts = numerix.reshape(numerix.array(lf)[-numerix.arange(len(self._ghosts)*M)], (M, -1))
                 var[self._emptySlice(var, self._ghosts)] = ghosts
 
-        return var
+        return var.flatten()
 
     def __mul__(self, other):
         """
@@ -696,9 +696,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                 x = self._fipy2petscGhost(var=other)
                 y = x.duplicate()
                 self.matrix.mult(x, y)
-                var = other.copy()
-                var[:] = self._petsc2fipyGhost(vec=y)
-                return var
+                return self._petsc2fipyGhost(vec=y)
         
     @property
     def numpyArray(self):
