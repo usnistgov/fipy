@@ -560,7 +560,11 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
     @property
     def _ghosts(self):
         if not hasattr(self, "_ghosts_"):
-            self._ghosts_ = self.mesh._globalOverlappingCellIDs[~self._bodies]
+            from fipy.tools.debug import PRINT
+            ghosts = self.mesh._globalOverlappingCellIDs[~self._bodies]
+            PRINT("ghosts-A:", ghosts)
+            self._ghosts_ = self._cellIDsToGlobalRowIDs(ghosts)
+            PRINT("_ghosts_:", self._ghosts_)
             
         return self._ghosts_
         
@@ -600,12 +604,11 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         where the [a, b] are the global ghost indices
         """
         corporeal = numerix.asarray(var[self._emptySlice(var, self._bodies)]).ravel()
-        incorporeal = numerix.asarray(var[self._emptySlice(var, self._ghosts)]).ravel()
+        incorporeal = numerix.asarray(var[self._emptySlice(var, ~self._bodies)]).ravel()
         array = numerix.concatenate([corporeal, incorporeal])
-        ghosts = self._cellIDsToGlobalRowIDs(self._ghosts)
         
         comm = self.mesh.communicator.petsc4py_comm
-        vec = PETSc.Vec().createGhostWithArray(ghosts=ghosts.astype('int32'),
+        vec = PETSc.Vec().createGhostWithArray(ghosts=self._ghosts.astype('int32'),
                                                array=array,
                                                comm=comm)
                                                
@@ -644,7 +647,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         with vec.localForm() as lf:
             if len(self._ghosts) > 0:
                 ghosts = numerix.reshape(numerix.array(lf)[-numerix.arange(len(self._ghosts)*M)], (M, -1))
-                var[self._emptySlice(var, self._ghosts)] = ghosts
+                var[self._emptySlice(var, ~self._bodies)] = ghosts
 
         return var.flatten()
 
