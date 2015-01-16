@@ -307,8 +307,10 @@ class _PETScMatrix(_SparseMatrix):
         return vector
 
     def takeDiagonal(self):
-        ids = numerix.arange(self._shape[0])
-        return self.take(ids, ids)
+        self.matrix.assemblyBegin()
+        self.matrix.assemblyEnd()
+
+        return self.matrix.getDiagonal().array
 
     def addAt(self, vector, id1, id2):
         """
@@ -334,13 +336,39 @@ class _PETScMatrix(_SparseMatrix):
         else:
             ids = numerix.arange(len(vector))
             self.addAt(vector, ids, ids)
+            
+    def _petsc2app(self, ids):
+        return ids
 
     @property
     def numpyArray(self):
-        shape = self._shape
-        indices = numerix.indices(shape)
-        numMatrix = self.take(indices[0].ravel(), indices[1].ravel())
-        return numerix.reshape(numMatrix, shape)
+        import tempfile
+        import os
+        from scipy.io import mmio
+        from fipy.tools import parallelComm
+
+        if parallelComm.procID == 0:
+            (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
+        else:
+            mtxName = None
+
+        mtxName = parallelComm.bcast(mtxName)
+
+        self.exportMmf(mtxName)
+
+        parallelComm.Barrier()
+        mtx = mmio.mmread(mtxName)
+        parallelComm.Barrier()
+
+        if parallelComm.procID == 0:
+            os.remove(mtxName)
+
+        coo = mtx.tocoo()
+        (rows, globalRows), (cols, globalCols) = self.matrix.getSizes()
+        numpyArray = numerix.zeros((globalRows, globalCols), 'd')
+        numpyArray[self._petsc2app(coo.row), 
+                   self._petsc2app(coo.col)] = coo.data
+        return numpyArray
                 
     def matvec(self, x):
         """
@@ -354,6 +382,8 @@ class _PETScMatrix(_SparseMatrix):
         """
         viewer = PETSc.Viewer().createASCII(name=filename, mode='w', 
                                             format=PETSc.Viewer.Format.ASCII_MATRIXMARKET)
+        self.matrix.assemblyBegin()
+        self.matrix.assemblyEnd()
         viewer.view(obj=self.matrix)
         viewer.destroy()
     
@@ -423,6 +453,40 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                                        matrix=matrix,
                                        rowMap=rowMap,
                                        colMap=colMap)
+                                       
+    
+    @property
+    def _ao(self):
+        """Application Ordering to relate FiPy matrix rows to PETSc matrix rows
+        
+        FiPy naturally blocks matrix rows, one set of Equations (or Variables) at a time.
+        PETSc requires that all rows pertaining to a particular MPI node be contiguous.
+        This PETSc AO (Application Ordering) object converts between them.
+        
+        Only needed for FiPy to PETSc. We can efficiently slice from PETSc to
+        FiPy, but PETSc requires us to know the row IDs. 
+        """ 
+        if not hasattr(self, "_ao_"): 
+            comm = self.mesh.communicator
+            
+            from mpi4py import MPI
+
+            fipyIDs = self._globalNonOverlappingColIDs
+            N = len(fipyIDs)
+
+            count = numerix.zeros((comm.Nproc,), dtype=int)
+            count[comm.procID] = N
+            comm.mpi4py_comm.Allreduce(sendbuf=MPI.IN_PLACE, recvbuf=count, op=MPI.MAX)
+            
+            petscIDs = numerix.arange(N) + numerix.sum(count[:comm.procID])
+            
+            self._ao_ = PETSc.AO().createBasic(petsc=petscIDs.astype('int32'), 
+                                               app=fipyIDs.astype('int32'), 
+                                               comm=comm.petsc4py_comm)
+        return self._ao_
+        
+    def _petsc2app(self, ids):
+        return self._ao.petsc2app(ids)
 
     def _cellIDsToGlobalRowIDs(self, IDs):
          N = len(IDs)
@@ -487,8 +551,8 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         id2 = self._globalOverlappingColIDs[id2]
             
         mask = numerix.in1d(id1, self._globalNonOverlappingRowIDs) 
-        id1 = id1[mask]
-        id2 = id2[mask]
+        id1 = self._ao.app2petsc(id1[mask].astype('int32'))
+        id2 = self._ao.app2petsc(id2[mask].astype('int32'))
         
         return id1, id2, mask
 
@@ -527,11 +591,9 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
     @property
     def _ghosts(self):
         if not hasattr(self, "_ghosts_"):
-            from fipy.tools.debug import PRINT
-            ghosts = self.mesh._globalOverlappingCellIDs[~self._bodies]
-            PRINT("ghosts-A:", ghosts)
-            self._ghosts_ = self._cellIDsToGlobalRowIDs(ghosts)
-            PRINT("_ghosts_:", self._ghosts_)
+            self._ghosts_ = self.mesh._globalOverlappingCellIDs[~self._bodies]
+            self._ghosts_ = self._cellIDsToGlobalRowIDs(self._ghosts_)
+            self._ghosts_ = self._ao.app2petsc(self._ghosts_.astype('int32'))
             
         return self._ghosts_
         
@@ -664,10 +726,16 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                                             comm=self.matrix.comm)
                 self.matrix.mult(x, y)
                 return self._petsc2fipyGhost(vec=y)
-        
-    @property
-    def numpyArray(self):
-        return super(_PETScMeshMatrix, self).numpyArray
+
+    def takeDiagonal(self):
+        self.matrix.assemblyBegin()
+        self.matrix.assemblyEnd()
+
+        y = PETSc.Vec().createGhost(ghosts=self._ghosts.astype('int32'),
+                                    size=(len(self._localNonOverlappingColIDs), None),
+                                    comm=self.matrix.comm)
+        self.matrix.getDiagonal(result=y)
+        return self._petsc2fipyGhost(vec=y)
 
     def flush(self):
         """
