@@ -635,7 +635,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         corporeal = numerix.asarray(var[self._emptySlice(var, self._bodies)]).ravel()
         incorporeal = numerix.asarray(var[self._emptySlice(var, ~self._bodies)]).ravel()
         array = numerix.concatenate([corporeal, incorporeal])
-        
+
         comm = self.mesh.communicator.petsc4py_comm
         vec = PETSc.Vec().createGhostWithArray(ghosts=self._ghosts.astype('int32'),
                                                array=array,
@@ -726,7 +726,8 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                 result = self.copy()
                 result.matrix = self.matrix * other
             else:
-                x = self._fipy2petscGhost(var=other)
+                x = other[self._localNonOverlappingColIDs]
+                x = PETSc.Vec().createWithArray(x, comm=self.matrix.comm)
                 y = x.duplicate()
                 self.matrix.mult(x, y)
                 return self._petsc2fipyGhost(vec=y)
