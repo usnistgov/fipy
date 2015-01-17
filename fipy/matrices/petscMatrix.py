@@ -670,7 +670,9 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         N = len(self.mesh._globalOverlappingCellIDs)
         M = self.numberOfEquations
         var = numerix.empty((M, N))
-        bodies = numerix.reshape(numerix.array(vec), (M, -1))
+        bodies = numerix.array(vec)
+        if M > 1:
+            bodies = numerix.reshape(bodies, (M, -1))
         var[self._emptySlice(var, self._bodies)] = bodies
         vec.ghostUpdate()
         with vec.localForm() as lf:
