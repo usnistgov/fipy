@@ -728,7 +728,9 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
             else:
                 x = other[self._localNonOverlappingColIDs]
                 x = PETSc.Vec().createWithArray(x, comm=self.matrix.comm)
-                y = x.duplicate()
+                y = PETSc.Vec().createGhost(ghosts=self._ghosts.astype('int32'),
+                                            size=(len(other), None),
+                                            comm=self.matrix.comm)
                 self.matrix.mult(x, y)
                 return self._petsc2fipyGhost(vec=y)
         
