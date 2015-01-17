@@ -677,7 +677,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         vec.ghostUpdate()
         with vec.localForm() as lf:
             if len(self._ghosts) > 0:
-                ids = numerix.arange(-len(self._ghosts)*M, 0)
+                ids = numerix.arange(-len(self._ghosts), 0)
                 ghosts = numerix.reshape(numerix.array(lf)[ids], (M, -1))
                 var[self._emptySlice(var, ~self._bodies)] = ghosts
 
