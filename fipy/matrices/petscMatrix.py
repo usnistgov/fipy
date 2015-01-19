@@ -370,10 +370,33 @@ class _PETScMatrix(_SparseMatrix):
 
     @property
     def numpyArray(self):
-        shape = self._shape
-        indices = numerix.indices(shape)
-        numMatrix = self.take(indices[0].ravel(), indices[1].ravel())
-        return numerix.reshape(numMatrix, shape)
+        import tempfile
+        import os
+        from scipy.io import mmio
+        from fipy.tools import parallelComm
+
+        if parallelComm.procID == 0:
+            (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
+        else:
+            mtxName = None
+
+        mtxName = parallelComm.bcast(mtxName)
+
+        self.exportMmf(mtxName)
+
+        parallelComm.Barrier()
+        mtx = mmio.mmread(mtxName)
+        parallelComm.Barrier()
+
+        if parallelComm.procID == 0:
+            os.remove(mtxName)
+
+        coo = mtx.tocoo()
+        (rows, globalRows), (cols, globalCols) = self.matrix.getSizes()
+        numpyArray = numerix.zeros((globalRows, globalCols), 'd')
+        numpyArray[self._ao.petsc2app(coo.row), 
+                   self._ao.petsc2app(coo.col)] = coo.data
+        return numpyArray
                 
     def matvec(self, x):
         """
@@ -387,6 +410,8 @@ class _PETScMatrix(_SparseMatrix):
         """
         viewer = PETSc.Viewer().createASCII(name=filename, mode='w', 
                                             format=PETSc.Viewer.Format.ASCII_MATRIXMARKET)
+        self.matrix.assemblyBegin()
+        self.matrix.assemblyEnd()
         viewer.view(obj=self.matrix)
         viewer.destroy()
     
@@ -736,10 +761,6 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                 self.matrix.mult(x, y)
                 return self._petsc2fipyGhost(vec=y)
         
-    @property
-    def numpyArray(self):
-        return super(_PETScMeshMatrix, self).numpyArray
-
     def flush(self):
         """
         Deletes the copy of the PETSc matrix held.
