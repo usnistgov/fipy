@@ -367,6 +367,9 @@ class _PETScMatrix(_SparseMatrix):
         else:
             ids = numerix.arange(len(vector))
             self.addAt(vector, ids, ids)
+            
+    def _petsc2app(self, ids):
+        return ids
 
     @property
     def numpyArray(self):
@@ -394,8 +397,8 @@ class _PETScMatrix(_SparseMatrix):
         coo = mtx.tocoo()
         (rows, globalRows), (cols, globalCols) = self.matrix.getSizes()
         numpyArray = numerix.zeros((globalRows, globalCols), 'd')
-        numpyArray[self._ao.petsc2app(coo.row), 
-                   self._ao.petsc2app(coo.col)] = coo.data
+        numpyArray[self._petsc2app(coo.row), 
+                   self._petsc2app(coo.col)] = coo.data
         return numpyArray
                 
     def matvec(self, x):
@@ -512,6 +515,9 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                                                app=fipyIDs.astype('int32'), 
                                                comm=comm.petsc4py_comm)
         return self._ao_
+        
+    def _petsc2app(self, ids):
+        return self._ao.petsc2app(ids)
 
     def _cellIDsToGlobalRowIDs(self, IDs):
          N = len(IDs)
