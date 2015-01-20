@@ -106,11 +106,14 @@ class PETScSolver(Solver):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
-            residual, globalMatrix = self._calcResidualVectorNonOverlapping_()
+            residual, globalMatrix = self._calcResidualVector_()
             
+            residual.ghostUpdate()
+            with residual.localForm() as lf:
+                residual = numerix.asarray(lf)
             return residual
 
-    def _calcResidualVectorNonOverlapping_(self):
+    def _calcResidualVector_(self):
         globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
         residual = globalMatrix * overlappingVector - overlappingRHSvector
         return residual, globalMatrix
@@ -120,7 +123,7 @@ class PETScSolver(Solver):
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
             comm = self.var.mesh.communicator
-            residual, globalMatrix = self._calcResidualVectorNonOverlapping_()
+            residual, globalMatrix = self._calcResidualVector_()
             return comm.Norm2(residual)
         
     def _calcRHSNorm(self):
