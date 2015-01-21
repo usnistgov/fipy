@@ -43,8 +43,7 @@ from fipy.matrices.sparseMatrix import _SparseMatrix
 
 class _PETScMatrix(_SparseMatrix):
     
-    def __init__(self, matrix,
-                 rowMap=None, colMap=None):
+    def __init__(self, matrix):
         """Creates a wrapper for a PETSc matrix
 
         Allows basic python operations __add__, __sub__ etc.
@@ -55,12 +54,6 @@ class _PETScMatrix(_SparseMatrix):
         """
         self.matrix = matrix
         
-        self.rowMap = rowMap
-        self.colMap = colMap
-        
-        if self.rowMap is not None:
-            self.matrix.setLGMap(rmap=rowMap, cmap=colMap)
-   
     def getCoupledClass(self):
         return _CoupledPETScMeshMatrix
     
@@ -79,13 +72,12 @@ class _PETScMatrix(_SparseMatrix):
     def __str__(self):
         self.matrix.assemble()
 
-        from fipy.tools import parallelComm
-        return ''.join(parallelComm.allgather(_SparseMatrix.__str__(self)))
+        return _SparseMatrix.__str__(self)
 
     def __iadd__(self, other):
+        self.matrix.assemblyBegin()
+        self.matrix.assemblyEnd()
         if other != 0:
-            self.matrix.assemblyBegin()
-            self.matrix.assemblyEnd()
             other.matrix.assemblyBegin()
             other.matrix.assemblyEnd()
             self.matrix = self.matrix + other.matrix
@@ -420,8 +412,7 @@ class _PETScMatrix(_SparseMatrix):
     
 class _PETScMatrixFromShape(_PETScMatrix):
     
-    def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None,
-                 rowMap=None, colMap=None):
+    def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None, comm=PETSc.COMM_SELF):
         """Instantiates and wraps a PETSc `Mat` matrix
 
         :Parameters:
@@ -430,8 +421,7 @@ class _PETScMatrixFromShape(_PETScMatrix):
           - `bandwidth`: The proposed band width of the matrix.
           - `sizeHint`: estimate of the number of non-zeros
           - `matrix`: pre-assembled `ll_mat` to use for storage
-          - `rowMap`: the map for the rows that this processor holds
-          - `colMap`: the map for the colums that ???
+          - `comm`: communicator
           
         """
         bandwidth = bandwidth 
@@ -439,13 +429,6 @@ class _PETScMatrixFromShape(_PETScMatrix):
             bandwidth = sizeHint / max(rows, cols)
         if matrix is None:
             matrix = PETSc.Mat()
-            if rowMap is None:
-                if colMap is None:
-                    comm = PETSc.COMM_WORLD
-                else:
-                    comm = colMap.comm
-            else:
-                comm = rowMap.comm
             matrix.create(comm)
             # rows are owned per process
             # cols are owned by everyone
@@ -453,7 +436,7 @@ class _PETScMatrixFromShape(_PETScMatrix):
             matrix.setType('aij') # sparse
             matrix.setPreallocationNNZ(None) # FIXME: ??? #bandwidth)
                 
-        _PETScMatrix.__init__(self, matrix=matrix, rowMap=rowMap, colMap=colMap)
+        _PETScMatrix.__init__(self, matrix=matrix)
 
 class _PETScMeshMatrix(_PETScMatrixFromShape):
     def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, numberOfVariables=1, numberOfEquations=1):
@@ -472,18 +455,13 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         self.numberOfVariables = numberOfVariables
         self.numberOfEquations = numberOfEquations
 
-        comm = mesh.communicator.petsc4py_comm
-        rowMap = PETSc.LGMap().create(self._globalNonOverlappingRowIDs.astype('int32'), comm=comm)
-        colMap = PETSc.LGMap().create(self._globalOverlappingColIDs.astype('int32'), comm=comm)
-        
         _PETScMatrixFromShape.__init__(self, 
                                        rows=numberOfEquations * len(self.mesh._localNonOverlappingCellIDs), 
                                        cols=numberOfVariables * len(self.mesh._localNonOverlappingCellIDs), # self.mesh.globalNumberOfCells, # , # 
                                        bandwidth=bandwidth, 
                                        sizeHint=sizeHint, 
                                        matrix=matrix,
-                                       rowMap=rowMap,
-                                       colMap=colMap)
+                                       comm=mesh.communicator.petsc4py_comm)
                                        
     
     @property
@@ -801,7 +779,7 @@ class _PETScIdentityMatrix(_PETScMatrixFromShape):
     """
     Represents a sparse identity matrix for pysparse.
     """
-    def __init__(self, size, bandwidth=1):
+    def __init__(self, size, bandwidth=1, comm=PETSc.COMM_SELF):
         """Create a sparse matrix with '1' in the diagonal
         
             >>> print _PETScIdentityMatrix(size=3)
@@ -809,7 +787,7 @@ class _PETScIdentityMatrix(_PETScMatrixFromShape):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PETScMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth=bandwidth)
+        _PETScMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth=bandwidth, comm=comm)
         ids = numerix.arange(size)
         self.put(numerix.ones(size, 'd'), ids, ids)
         
@@ -825,7 +803,8 @@ class _PETScIdentityMeshMatrix(_PETScIdentityMatrix):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PETScIdentityMatrix.__init__(self, size=mesh.numberOfCells, bandwidth=bandwidth)
+        _PETScIdentityMatrix.__init__(self, size=mesh.numberOfCells, bandwidth=bandwidth, 
+                                      comm=mesh.communicator.petsc4py_comm)
 
 def _test(): 
     import fipy.tests.doctestPlus
