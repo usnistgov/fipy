@@ -606,17 +606,6 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
             
         return self._ghosts_
         
-    def _emptySlice(self, var, ids):
-        ## The following conditional is required because empty indexing is not altogether functional.
-        ## This numpy.empty((0,))[[]] and this numpy.empty((0,))[...,[]] both work, but this
-        ## numpy.empty((3, 0))[...,[]] is broken.
-        if var.shape[-1] == 0:
-            _emptySlice = (ids,)
-        else:
-            _emptySlice = (Ellipsis, ids)
-
-        return _emptySlice
-
     def _fipy2petscGhost(self, var):
         """Convert a FiPy Variable to a PETSc GhostVec
         
@@ -641,8 +630,8 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         
         where the [a, b] are the global ghost indices
         """
-        corporeal = numerix.asarray(var[self._emptySlice(var, self._bodies)]).ravel()
-        incorporeal = numerix.asarray(var[self._emptySlice(var, ~self._bodies)]).ravel()
+        corporeal = numerix.asarray(var[..., self._bodies]).ravel()
+        incorporeal = numerix.asarray(var[..., ~self._bodies]).ravel()
         array = numerix.concatenate([corporeal, incorporeal])
 
         comm = self.mesh.communicator.petsc4py_comm
@@ -682,13 +671,13 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         bodies = numerix.array(vec)
         if M > 1:
             bodies = numerix.reshape(bodies, (M, -1))
-        var[self._emptySlice(var, self._bodies)] = bodies
+        var[..., self._bodies] = bodies
         vec.ghostUpdate()
         with vec.localForm() as lf:
             if len(self._ghosts) > 0:
                 ids = numerix.arange(-len(self._ghosts), 0)
                 ghosts = numerix.reshape(numerix.array(lf)[ids], (M, -1))
-                var[self._emptySlice(var, ~self._bodies)] = ghosts
+                var[..., ~self._bodies] = ghosts
 
         return var.flatten()
 
