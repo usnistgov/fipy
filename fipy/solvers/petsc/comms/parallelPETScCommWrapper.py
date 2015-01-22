@@ -84,7 +84,7 @@ class ParallelPETScCommWrapper(PETScCommWrapper):
         return self.mpi4py_comm.allreduce(numerix.array(a).sum(axis=axis), op=MPI.SUM)
 
     def MaxAll(self, vec):
-        return self.mpi4py_comm.allreduce(max(vec), op=MPI.MAX)
+        return self.mpi4py_comm.allreduce(vec, op=MPI.MAX)
         
     def MinAll(self, vec):
-        return self.mpi4py_comm.allreduce(min(vec), op=MPI.MIN)
+        return self.mpi4py_comm.allreduce(vec, op=MPI.MIN)
