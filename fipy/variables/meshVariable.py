@@ -533,10 +533,10 @@ class _MeshVariable(Variable):
         >>> savedFilters = list(warnings.filters)
         >>> warnings.resetwarnings()
         >>> warnings.simplefilter("error", UserWarning, append=True)
-        >>> C = CellVariable(mesh=mesh) * (A * B)
+        >>> C = (A * B) * CellVariable(mesh=mesh)
         Traceback (most recent call last):
           ...
-        UserWarning: The expression `(multiply([0 1 2 3 4], Variable(value=array(1.0))))` has been cast to a constant `CellVariable`
+        UserWarning: The expression `(Variable(value=array(1.0)) * [0 1 2 3 4])` has been cast to a constant `CellVariable`
         >>> warnings.filters = savedFilters
         """
         otherShape = numerix.getShape(other)
