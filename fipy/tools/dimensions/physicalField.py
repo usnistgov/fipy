@@ -624,11 +624,8 @@ class PhysicalField(object):
         >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0], unit="m"))
         <class 'fipy.tools.dimensions.physicalField.PhysicalField'>
 
-        For not very intelligible reasons, the `PhysicalField`\ness gets cast 
-        away if there are no units. Probably not harmful, so not worth investigating
-        
-        >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0])) is type(numerix.array(1))
-        1
+        >>> print type(numerix.array([1.0, 2.0]) * PhysicalField([1.0, 2.0]))
+        <class 'fipy.tools.dimensions.physicalField.PhysicalField'>
 
         >>> from scipy.special import gamma as Gamma # doctest: +SCIPY
         >>> print type(Gamma(PhysicalField([1.0, 2.0]))) is type(numerix.array(1)) # doctest: +SCIPY
