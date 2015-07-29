@@ -65,11 +65,16 @@ __all__ = ["openMSHFile", "openPOSFile",
 
 DEBUG = False
 
+# Split gmsh version string into tuple for piecewise comparison
+def versionTuple(v):
+    return tuple(map(int, (v.split("."))))
+
+
 def _checkForGmsh():
     hasGmsh = True
     try:
         version = _gmshVersion(communicator=parallelComm)
-        hasGmsh = version >= 2.0
+        hasGmsh = version >= versionTuple("2.0")
     except Exception:
         hasGmsh = False
     return hasGmsh
@@ -118,13 +123,11 @@ def gmshVersion(communicator=parallelComm):
     return communicator.bcast(verStr)
 
 def _gmshVersion(communicator=parallelComm):
-    import re
     version = gmshVersion(communicator)
     if version:
-        m = re.search(r'\d+.\d+', version)
-        return float(m.group(0))
+        return versionTuple(version)
     else:
-        return 0
+        return versionTuple(None)
     
 def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parallelComm, order=1, mode='r', background=None):
     """Open a Gmsh MSH file
@@ -147,7 +150,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
 
     # Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
     gmshVersion = _gmshVersion(communicator=communicator)
-    if gmshVersion < 2.0:
+    if gmshVersion < versionTuple("2.0"):
         raise EnvironmentError("Gmsh version must be >= 2.0.")
 
     # If we're being passed a .msh file, leave it be. Otherwise,
@@ -190,7 +193,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             gmshFlags = ["-%d" % dimensions, "-nopopup"]
             
             if communicator.Nproc > 1:
-                if gmshVersion < 2.5:
+                if gmshVersion < versionTuple("2.5"):
                     warnstr = "Cannot partition with Gmsh version < 2.5. " \
                                + "Reverting to serial."
                     warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
