@@ -142,8 +142,8 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
         communicator = serialComm
 
     # Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
-    gmshVersion = _gmshVersion(communicator=communicator)
-    if gmshVersion < StrictVersion("2.0"):
+    version = _gmshVersion(communicator=communicator)
+    if version < StrictVersion("2.0"):
         raise EnvironmentError("Gmsh version must be >= 2.0.")
 
     # If we're being passed a .msh file, leave it be. Otherwise,
@@ -186,7 +186,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             gmshFlags = ["-%d" % dimensions, "-nopopup"]
             
             if communicator.Nproc > 1:
-                if gmshVersion < StrictVersion("2.5"):
+                if version < StrictVersion("2.5"):
                     warnstr = "Cannot partition with Gmsh version < 2.5. " \
                                + "Reverting to serial."
                     warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
