@@ -12,10 +12,8 @@ class SphereDaemon(MayaviDaemon):
     def view_data(self):
         """Sets up the mayavi pipeline for the visualization.
         """
-        var = mlab.pipeline.set_active_attribute(self.cellsource, cell_scalars=r"$\phi$")
-        
         if hasattr(mlab.pipeline, "data_set_clipper"):
-            clip = mlab.pipeline.data_set_clipper(var)
+            clip = mlab.pipeline.data_set_clipper(self.cellsource)
 
             clip.widget.widget_mode = 'Box'
             clip.widget.widget.place_factor = 1.
