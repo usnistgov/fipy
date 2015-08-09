@@ -114,6 +114,15 @@ class AbstractMatplotlibViewer(AbstractViewer):
         self.norm = None
         self.log = log 
         
+        try:
+            # Plotting needs to work differently for inline 
+            # integration in the IPython notebook.
+            # (test is from http://stackoverflow.com/a/15346737/2019542)
+            backend = pylab.get_backend()
+            self.IPYinline = __IPYTHON__ and ("inline" in backend)
+        except NameError:
+            self.IPYinline = False
+        
     def figaspect(self, figaspect):
         return figaspect
 
@@ -143,19 +152,26 @@ class AbstractMatplotlibViewer(AbstractViewer):
 
         fig = pylab.figure(self.id)
 
-        pylab.ioff()
-        
-        self._plot()
-        pylab.draw()
+        if self.IPYinline:
+            from IPython.display import clear_output, display_png
+            
+            clear_output(wait=True)
+            display_png(self)
+        else:
+            pylab.ioff()
+            
+            self._plot()
+            
+            pylab.draw()
 
-        try:
-            fig.canvas.flush_events()
-        except NotImplementedError:
-            pass
-        
-        pylab.ion()
-        
-        pylab.show(block=False)
+            try:
+                fig.canvas.flush_events()
+            except NotImplementedError:
+                pass
+                
+            pylab.ion()
+            
+            pylab.show(block=False)
 
         if filename is not None:
             pylab.savefig(filename)
@@ -179,8 +195,8 @@ class AbstractMatplotlibViewer(AbstractViewer):
         """
         from IPython.core.pylabtools import print_figure
         
-        self.plot()
-        return print_figure(self.axes.get_figure(), "png")
+        self._plot()
+        return print_figure(fig=self.axes.get_figure(), fmt="png")
 
 class _ColorBar(object):
     def __init__(self, viewer, vmin=-1, vmax=1, orientation="vertical"):
