@@ -196,7 +196,7 @@ existing viewers to create a specialized display:
 ...                 z = self.phase.value
 ...                 x, y, z = [a.reshape(shape, order="FORTRAN") for a in (x, y, z)]
 ...                 
-...                 self.contour = pylab.contour(x, y, z, (0.5,))
+...                 self.contour = self.axes.contour(x, y, z, (0.5,))
 ...                 
 ...         viewer = DendriteViewer(phase=phase, dT=dT,
 ...                                 title=r"%s & %s" % (phase.name, dT.name),
