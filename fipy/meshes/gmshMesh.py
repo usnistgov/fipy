@@ -45,6 +45,7 @@ import sys
 import tempfile
 from textwrap import dedent
 import warnings
+from distutils.version import StrictVersion
 
 from fipy.tools import numerix as nx
 from fipy.tools import parallelComm
@@ -69,7 +70,7 @@ def _checkForGmsh():
     hasGmsh = True
     try:
         version = _gmshVersion(communicator=parallelComm)
-        hasGmsh = version >= 2.0
+        hasGmsh = version >= StrictVersion("2.0")
     except Exception:
         hasGmsh = False
     return hasGmsh
@@ -118,13 +119,8 @@ def gmshVersion(communicator=parallelComm):
     return communicator.bcast(verStr)
 
 def _gmshVersion(communicator=parallelComm):
-    import re
-    version = gmshVersion(communicator)
-    if version:
-        m = re.search(r'\d+.\d+', version)
-        return float(m.group(0))
-    else:
-        return 0
+    version = gmshVersion(communicator) or "0.0"
+    return StrictVersion(version)
     
 def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parallelComm, order=1, mode='r', background=None):
     """Open a Gmsh MSH file
@@ -146,8 +142,8 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
         communicator = serialComm
 
     # Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
-    gmshVersion = _gmshVersion(communicator=communicator)
-    if gmshVersion < 2.0:
+    version = _gmshVersion(communicator=communicator)
+    if version < StrictVersion("2.0"):
         raise EnvironmentError("Gmsh version must be >= 2.0.")
 
     # If we're being passed a .msh file, leave it be. Otherwise,
@@ -190,7 +186,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             gmshFlags = ["-%d" % dimensions, "-nopopup"]
             
             if communicator.Nproc > 1:
-                if gmshVersion < 2.5:
+                if version < StrictVersion("2.5"):
                     warnstr = "Cannot partition with Gmsh version < 2.5. " \
                                + "Reverting to serial."
                     warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
