@@ -61,8 +61,7 @@ from fipy.tools.debug import PRINT
 
 __all__ = ["openMSHFile", "openPOSFile", 
            "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D", 
-           "GmshGrid2D", "GmshGrid3D",
-           "GmshImporter2D", "GmshImporter2DIn3DSpace", "GmshImporter3D"]
+           "GmshGrid2D", "GmshGrid3D"]
 
 DEBUG = False
 
@@ -2319,25 +2318,6 @@ class GmshGrid3D(Gmsh3D):
         True
         """
  
-def deprecation(old, new):
-    warnings.warn("%s has been replaced by %s." % (old, new), 
-                  DeprecationWarning, stacklevel=3)
-
-class GmshImporter2D(Gmsh2D):
-    def __init__(self, arg, coordDimensions=2):
-        deprecation("GmshImporter2D", "Gmsh2D")
-        Gmsh2D.__init__(self, arg, coordDimensions=coordDimensions)
-
-class GmshImporter2DIn3DSpace(Gmsh2DIn3DSpace):
-    def __init__(self, arg):
-        deprecation("GmshImporter2DIn3DSpace", "Gmsh2DIn3DSpace")
-        Gmsh2DIn3DSpace.__init__(self, arg)
-
-class GmshImporter3D(Gmsh3D):
-    def __init__(self, arg):
-        deprecation("GmshImporter3D", "Gmsh3D")
-        Gmsh3D.__init__(self, arg)
-    
 def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
