@@ -124,10 +124,6 @@ class Mesh2D(Mesh):
         cellVertexIDs = numerix.reshape(cellVertexIDs, (NFac, -1))
         return cellVertexIDs
     
-    @getsetDeprecated
-    def _getNonOrthogonality(self):
-        return self._nonOrthogonality
-
     @property
     def _nonOrthogonality(self):
         

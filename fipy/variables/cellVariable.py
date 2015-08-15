@@ -221,10 +221,6 @@ class CellVariable(_MeshVariable):
         else:
             return _MeshVariable.__call__(self)
         
-    @getsetDeprecated
-    def getCellVolumeAverage(self):
-        return self.cellVolumeAverage
-
     @property
     def cellVolumeAverage(self):
         r"""
@@ -250,20 +246,12 @@ class CellVariable(_MeshVariable):
         
         return self.volumeAverage
 
-    @getsetDeprecated
-    def getGrad(self):
-        return self.grad
-
     @property
     def grad(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `CellVariable` (first-order
         gradient).
         """
-        return self.gaussGrad
-
-    @getsetDeprecated
-    def getGaussGrad(self):
         return self.gaussGrad
 
     @property
@@ -278,10 +266,6 @@ class CellVariable(_MeshVariable):
             self._gaussGrad = _GaussCellGradVariable(var = self, name = "%s_gauss_grad" % self.name)
         
         return self._gaussGrad
-
-    @getsetDeprecated
-    def getLeastSquaresGrad(self):
-        return self.leastSquaresGrad
 
     @property
     def leastSquaresGrad(self):
@@ -325,11 +309,6 @@ class CellVariable(_MeshVariable):
         
         return self._leastSquaresGrad
 
-
-    @getsetDeprecated
-    def getArithmeticFaceValue(self):
-        return self.arithmeticFaceValue
-
     @property
     def arithmeticFaceValue(self):
         r"""
@@ -371,12 +350,7 @@ class CellVariable(_MeshVariable):
 
         return self._arithmeticFaceValue
 
-    getFaceValue = getArithmeticFaceValue
     faceValue = arithmeticFaceValue
-
-    @getsetDeprecated
-    def getMinmodFaceValue(self):
-        return self.minmodFaceValue
 
     @property
     def minmodFaceValue(self):
@@ -406,10 +380,6 @@ class CellVariable(_MeshVariable):
             self._minmodFaceValue = _MinmodCellToFaceVariable(self)
 
         return self._minmodFaceValue
-
-    @getsetDeprecated
-    def getHarmonicFaceValue(self):
-        return self.harmonicFaceValue
 
     @property
     def harmonicFaceValue(self):
@@ -452,10 +422,6 @@ class CellVariable(_MeshVariable):
 
         return self._harmonicFaceValue
 
-    @getsetDeprecated
-    def getFaceGrad(self):
-        return self.faceGrad
-
     @property
     def faceGrad(self):
         r"""
@@ -468,10 +434,6 @@ class CellVariable(_MeshVariable):
 
         return self._faceGrad
 
-    @getsetDeprecated
-    def getFaceGradAverage(self):
-        return self.faceGradAverage
-
     @property
     def faceGradAverage(self):
         r"""
@@ -480,10 +442,6 @@ class CellVariable(_MeshVariable):
         """
         return self.grad.arithmeticFaceValue
 
-    @getsetDeprecated
-    def getOld(self):
-        return self.old
-        
     @property
     def old(self):
         """

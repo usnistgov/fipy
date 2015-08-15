@@ -101,14 +101,6 @@ class VTKViewer(AbstractViewer):
     def _makeDataSet(self, mesh):
         pass
         
-    @getsetDeprecated
-    def _getData(self):
-        return self._data
-        
-    @getsetDeprecated
-    def _getVariableClass(self):
-        return self._variableClass
-
     @staticmethod
     def _nameRankValue(var):
         name = var.name or "%s #%d" % (var.__class__.__name__, id(var))

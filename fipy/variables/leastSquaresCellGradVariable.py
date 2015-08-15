@@ -50,10 +50,6 @@ class _LeastSquaresCellGradVariable(CellVariable):
         CellVariable.__init__(self, mesh=var.mesh, name=name, rank=var.rank + 1)
         self.var = self._requires(var)
 
-    @getsetDeprecated
-    def _getNeighborValue(self):
-        return self._neighborValue
-
     @property
     def _neighborValue(self):
         return numerix.take(numerix.array(self.var), self.mesh._cellToCellIDs)

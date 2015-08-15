@@ -124,10 +124,6 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
         # this viewer can only display one variable
         return [vars[0]]
         
-    @getsetDeprecated
-    def _getData(self):
-        return self._data
-
     @property
     def _data(self):
         from fipy.tools.numerix import array, reshape

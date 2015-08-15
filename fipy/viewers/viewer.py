@@ -75,15 +75,6 @@ class AbstractViewer(object):
 
         self.title = title
 
-    @getsetDeprecated
-    def getVars(self):
-        """Get the Variables
-        
-        .. deprecated::
-           Use :attr:`fipy.viewers.viewer.AbstractViewer.vars` instead
-        """
-        return self.vars
-        
     def _getSuitableVars(self, vars):
         if type(vars) not in [type([]), type(())]:
             vars = [vars]

@@ -56,18 +56,6 @@ class _SparseMatrix(object):
 
     __array_priority__ = 100.0    
 
-    @getsetDeprecated(new_name="matrix")
-    def _getMatrix(self):
-        return self.matrix
-     
-    @getsetDeprecated
-    def _getShape(self):
-        return self._shape
-    
-    @getsetDeprecated
-    def getNumpyArray(self):
-        return self.numpyArray
-                                       
     def __array_wrap(self, arr, context=None):
         if context is None:
             return arr

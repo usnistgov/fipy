@@ -120,10 +120,6 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
 
     log = property(**log())
 
-    @getsetDeprecated
-    def _getData(self):
-        return self._data
-
     @property
     def _data(self):
         from fipy.tools.numerix import array

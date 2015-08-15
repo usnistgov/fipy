@@ -162,10 +162,6 @@ class ModularVariable(CellVariable):
 
         return self._faceGrad
 
-    @getsetDeprecated
-    def getFaceGradNoMod(self):
-        return self.faceGradNoMod
-
     @property
     def faceGradNoMod(self):
         r"""

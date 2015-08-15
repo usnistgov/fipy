@@ -225,10 +225,6 @@ def _OperatorVariableClass(baseClass=object):
                         
             return (self._variableClass, args, self.__getstate__())
 
-        @getsetDeprecated
-        def getName(self):
-            return self.name
-
         def _getName(self):
             name = baseClass._getName(self)
             if len(name) == 0:

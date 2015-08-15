@@ -173,7 +173,3 @@ class Solver(object):
     def _canSolveAsymmetric(self):
         return True
 
-    @getsetDeprecated
-    def _getMatrixClass(self):
-        return self._matrixClass
-        

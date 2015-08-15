@@ -75,10 +75,6 @@ class FaceVariable(_MeshVariable):
     def setValue(self, value, unit = None, where = None):
         _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
 
-    @getsetDeprecated
-    def getDivergence(self):
-        return self.divergence
-
     @property
     def divergence(self):
         """

@@ -2160,10 +2160,6 @@ class GmshGrid2D(Gmsh2D):
 
         Gmsh2D.__init__(self, arg, coordDimensions, communicator, order, background=None)
     
-    @getsetDeprecated
-    def _getMeshSpacing(self):
-        return self._meshSpacing
-
     @property
     def _meshSpacing(self):
         return nx.array((self.dx,self.dy))[...,nx.newaxis]
@@ -2234,10 +2230,6 @@ class GmshGrid3D(Gmsh3D):
 
         Gmsh3D.__init__(self, arg, communicator=communicator, order=order)
     
-    @getsetDeprecated
-    def _getMeshSpacing(self):
-        return self._meshSpacing
-
     @property
     def _meshSpacing(self):
         return nx.array((self.dx,self.dy,self.dz))[...,nx.newaxis]

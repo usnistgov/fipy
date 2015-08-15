@@ -62,10 +62,6 @@ class TrilinosSolver(Solver):
             self.matrix = matrix
         self.RHSvector = RHSvector
         
-    @getsetDeprecated
-    def _getGlobalMatrixAndVectors(self):
-        return self._globalMatrixAndVectors
-
     @property
     def _globalMatrixAndVectors(self):
         if not hasattr(self, 'globalVectors'):
@@ -132,10 +128,6 @@ class TrilinosSolver(Solver):
         del self.var
         del self.RHSvector
             
-    @getsetDeprecated
-    def _getMatrixClass(self):
-        return self._matrixClass
-
     @property
     def _matrixClass(self):
         from fipy.solvers import _MeshMatrix

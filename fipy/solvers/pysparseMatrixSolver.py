@@ -60,10 +60,6 @@ class _PysparseMatrixSolver(Solver):
 
     solveFnc = None
 
-    @getsetDeprecated
-    def _getMatrixClass(self):
-        return self._matrixClass
-
     @property
     def _matrixClass(self):
         return _PysparseMeshMatrix

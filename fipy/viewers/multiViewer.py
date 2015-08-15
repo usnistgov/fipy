@@ -60,6 +60,3 @@ class MultiViewer(AbstractViewer):
         for viewer in self.viewers:
             viewer.plot()
             
-    @getsetDeprecated
-    def getViewers(self):
-        return self.viewers

@@ -428,27 +428,15 @@ class UniformGrid3D(UniformGrid):
                                                    self.numberOfXZFaces,
                                                    self.numberOfYZFaces))
 
-    @getsetDeprecated
-    def _getXYFaceIDs(self):
-        return self._XYFaceIDs
-
     @property
     def _XYFaceIDs(self):
         ids = numerix.arange(0, self.numberOfXYFaces)
         return ids.reshape((self.nz + 1, self.ny, self.nx)).swapaxes(0,2)
 
-    @getsetDeprecated
-    def _getXZFaceIDs(self):
-        return self._XZFaceIDs
-
     @property
     def _XZFaceIDs(self):
         ids = numerix.arange(self.numberOfXYFaces, self.numberOfXYFaces + self.numberOfXZFaces)
         return ids.reshape((self.nz, self.ny + 1, self.nx)).swapaxes(0,2)
-
-    @getsetDeprecated
-    def _getYZFaceIDs(self):
-        return self._YZFaceIDs
 
     @property
     def _YZFaceIDs(self):

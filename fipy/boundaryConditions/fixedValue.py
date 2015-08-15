@@ -102,9 +102,3 @@ class FixedValue(BoundaryCondition):
         
         return (LL, bb)
         
-    @getsetDeprecated(new_name="value")
-    def _getValue(self):
-        return self.value
-
-
-
