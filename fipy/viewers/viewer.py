@@ -40,8 +40,6 @@ __all__ = ["AbstractViewer"]
 
 import sys
 
-from fipy.tools.decorators import getsetDeprecated
-
 class AbstractViewer(object):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.

@@ -42,7 +42,6 @@ from PyTrilinos import EpetraExt
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
 from fipy.tools import numerix, parallelComm
-from fipy.tools.decorators import getsetDeprecated
 
 # Current inadequacies of the matrix class:
 

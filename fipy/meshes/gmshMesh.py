@@ -50,7 +50,6 @@ from distutils.version import StrictVersion
 from fipy.tools import numerix as nx
 from fipy.tools import parallelComm
 from fipy.tools import serialComm
-from fipy.tools.decorators import getsetDeprecated
 from fipy.tests.doctestPlus import register_skipper
 
 from fipy.meshes.mesh import Mesh

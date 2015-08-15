@@ -38,7 +38,6 @@ import sys
 
 from fipy.variables.variable import Variable
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
 
 def _OperatorVariableClass(baseClass=object):
     class _OperatorVariable(baseClass):

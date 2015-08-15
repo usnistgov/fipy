@@ -40,7 +40,6 @@ from PyTrilinos import EpetraExt
 
 from fipy.solvers.solver import Solver
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
 
 class TrilinosSolver(Solver):
 

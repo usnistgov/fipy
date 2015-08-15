@@ -47,7 +47,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools.decorators import getsetDeprecated
 from fipy.tools import serialComm
 
 from fipy.meshes.mesh import Mesh

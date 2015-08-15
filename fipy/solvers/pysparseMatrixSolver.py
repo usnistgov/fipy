@@ -40,8 +40,6 @@ __all__ = []
 from fipy.solvers.solver import Solver
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 
-from fipy.tools.decorators import getsetDeprecated
- 
 class _PysparseMatrixSolver(Solver):
 
     """

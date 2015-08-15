@@ -39,7 +39,6 @@ __all__ = []
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
 
 class _MeshVariable(Variable):
     """

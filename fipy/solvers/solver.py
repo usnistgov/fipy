@@ -49,7 +49,6 @@ can abort whenever it has problems with::
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
 
 __all__ = ["SolverConvergenceWarning", "MaximumIterationWarning", 
            "PreconditionerWarning", "IllConditionedPreconditionerWarning", 

@@ -39,7 +39,7 @@ __all__ = ["AbstractMesh"]
 
 from fipy.tools import serialComm
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated, deprecate
+from fipy.tools.decorators import deprecate
 from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 

@@ -36,8 +36,6 @@
  
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.decorators import getsetDeprecated
-
 from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
 
 __all__ = ["Matplotlib1DViewer"]

@@ -41,7 +41,6 @@ __docformat__ = 'restructuredtext'
 __all__ = ["VTKViewer"]
 
 from fipy.viewers.viewer import AbstractViewer
-from fipy.tools.decorators import getsetDeprecated
 from fipy.tests.doctestPlus import register_skipper
 
 def _checkForTVTK():

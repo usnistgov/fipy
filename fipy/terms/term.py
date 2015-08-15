@@ -39,7 +39,6 @@ import os
 from fipy.tools import numerix
 from fipy.terms import AbstractBaseClassError
 from fipy.terms import SolutionVariableRequiredError
-from fipy.tools.decorators import getsetDeprecated
 
 __all__ = ["Term"]
 

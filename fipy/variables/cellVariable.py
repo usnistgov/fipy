@@ -38,7 +38,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
 
 __all__ = ["CellVariable"]
 

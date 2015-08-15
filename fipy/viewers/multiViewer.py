@@ -31,7 +31,6 @@
  ##
 
 from fipy.viewers.viewer import AbstractViewer
-from fipy.tools.decorators import getsetDeprecated
 
 __all__ = ["MultiViewer"]
 

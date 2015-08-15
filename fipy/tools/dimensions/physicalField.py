@@ -100,7 +100,6 @@ import re
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.numerix import umath
-from fipy.tools.decorators import getsetDeprecated
 
 from fipy.tools.dimensions.NumberDict import _NumberDict
 

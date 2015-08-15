@@ -36,7 +36,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools.decorators import getsetDeprecated
 from fipy.variables.cellVariable import CellVariable
 
 from fipy.tests.doctestPlus import register_skipper

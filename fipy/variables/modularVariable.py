@@ -37,7 +37,6 @@
 __docformat__ = 'restructuredtext'
  
 from fipy.variables.cellVariable import CellVariable
-from fipy.tools.decorators import getsetDeprecated
 
 __all__ = ["ModularVariable"]
 
