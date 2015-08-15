@@ -40,7 +40,7 @@ from fipy.tools.dimensions import physicalField
 from fipy.tools import numerix
 from fipy.tools import parser
 from fipy.tools import inline
-from fipy.tools.decorators import getsetDeprecated, mathMethodDeprecated
+from fipy.tools.decorators import getsetDeprecated
 
 __all__ = ["Variable"]
 
@@ -1400,101 +1400,6 @@ class Variable(object):
                                            opShape=(),
                                            canInline=False)
 
-    @mathMethodDeprecated
-    def arccos(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.arccos(a))
-
-    @mathMethodDeprecated
-    def arccosh(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.arccosh(a))
-
-    @mathMethodDeprecated
-    def arcsin(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.arcsin(a))
-
-    @mathMethodDeprecated
-    def arcsinh(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.arcsinh(a))
-
-    @mathMethodDeprecated
-    def sqrt(self):
-        """
-        
-            >>> from fipy.meshes import Grid1D
-            >>> mesh= Grid1D(nx=3)
-
-            >>> from fipy.variables.cellVariable import CellVariable
-            >>> var = CellVariable(mesh=mesh, value=((0., 2., 3.),), rank=1)
-            >>> print (var.dot(var)).sqrt()
-            [ 0.  2.  3.]
-            
-        """
-        return self._UnaryOperatorVariable(lambda a: numerix.sqrt(a))
-        
-    @mathMethodDeprecated
-    def tan(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.tan(a))
-
-    @mathMethodDeprecated
-    def tanh(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.tanh(a))
-
-    @mathMethodDeprecated
-    def arctan(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.arctan(a))
-
-    @mathMethodDeprecated
-    def arctanh(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.arctanh(a))
-            
-    @mathMethodDeprecated
-    def exp(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.exp(a))
-
-    @mathMethodDeprecated
-    def log(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.log(a))
-
-    @mathMethodDeprecated
-    def log10(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.log10(a))
-
-    @mathMethodDeprecated
-    def sin(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.sin(a))
-                
-    @mathMethodDeprecated
-    def sinh(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.sinh(a))
-
-    @mathMethodDeprecated
-    def cos(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.cos(a))
-        
-    @mathMethodDeprecated
-    def cosh(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.cosh(a))
-
-    @mathMethodDeprecated
-    def floor(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.floor(a))
-
-    @mathMethodDeprecated
-    def ceil(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.ceil(a))
-
-    @mathMethodDeprecated
-    def sign(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.sign(a), canInline=False)
-        
-    @mathMethodDeprecated
-    def conjugate(self):
-        return self._UnaryOperatorVariable(lambda a: numerix.conjugate(a), canInline=False)
-
-    @mathMethodDeprecated
-    def arctan2(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: numerix.arctan2(a,b), other)
-        
     def dot(self, other, opShape=None, operatorClass=None, axis=0):
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
@@ -1507,10 +1412,6 @@ class Variable(object):
                                             operatorClass=operatorClass,
                                             canInline=False)
         
-    @mathMethodDeprecated
-    def reshape(self, shape):
-        return self._BinaryOperatorVariable(lambda a,b: numerix.reshape(a,b), shape, opShape=shape, canInline=False)
-
     def ravel(self):
         return self.value.ravel()
         

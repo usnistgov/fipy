@@ -71,7 +71,7 @@ import re
 import sys
 import warnings
 
-__all__ = ["getsetDeprecated", "mathMethodDeprecated"]
+__all__ = ["getsetDeprecated"]
 
 # Stolen from `numpy.lib.utils`
 if sys.version_info < (2, 4):
@@ -264,51 +264,6 @@ def getsetDeprecated(*args, **kwargs):
     else:
         return _GetSetDeprecated(*args, **kwargs)
         
-class _MathMethodDeprecated(_Deprecate):
-    def __init__(self, version="3.0", *args, **kwargs):
-         _Deprecate.__init__(self, *args, version=version, **kwargs)
-
-    def new_name_old_name(self, old_name):
-        new_name = self.new_name
-        if new_name is None:
-            new_name = "numerix.%s() <numpy.%s>" % (old_name, old_name)
-        return new_name
-
-def mathMethodDeprecated(*args, **kwargs):
-    """Issues a `DeprecationWarning` to use the appropriate ufunc from
-    `numerix`, rather than the method of the same name
-    
-    This function may also be used as a decorator.
-
-    Parameters
-    ----------
-    func : function
-        The function to be deprecated.
-    old_name : str, optional
-        The name of the function to be deprecated. Default is None, in which
-        case the name of `func` is used.
-    new_name : str, optional
-        The new name for the function. Default is None, in which case
-        the deprecation message is that `old_name` is deprecated. If given,
-        the deprecation message is that `old_name` is deprecated and `new_name`
-        should be used instead.
-    message : str, optional
-        Additional explanation of the deprecation.  Displayed in the docstring
-        after the warning.
-
-    Returns
-    -------
-    old_func : function
-        The deprecated function.
-    """
-    if args:
-        fn = args[0]
-        args = args[1:]
-
-        return _MathMethodDeprecated(*args, **kwargs)(fn)
-    else:
-        return _MathMethodDeprecated(*args, **kwargs)
-
 def _test(): 
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
