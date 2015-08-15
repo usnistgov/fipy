@@ -205,16 +205,6 @@ def deprecate(*args, **kwargs):
     else:
         return _Deprecate(*args, **kwargs)
 
-def deprecateGist(version="3.0", *args, **kwargs):
-    return deprecate(*args, 
-                     message="Support for Pygist <http://hifweb.lbl.gov/public/software/gist/> will be discontinued.",  
-                     version=version, **kwargs)
-
-def deprecateGnuplot(version="3.0", *args, **kwargs):
-    return deprecate(*args, 
-                     message="Support for Gnuplot.py <http://gnuplot-py.sourceforge.net/> will be discontinued.",  
-                     version=version, **kwargs)
-
 class _GetSetDeprecated(_Deprecate):
     def __init__(self, old_name=None, new_name=None, message=None, version="3.0"):
         _Deprecate.__init__(self, old_name=old_name, new_name=new_name, message=message,
