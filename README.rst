@@ -144,17 +144,16 @@ Support
 -------
 
 You can communicate with the :term:`FiPy` developers and with other
-users via our `mailing list`_ and we welcome you to use the `tracking
-system`_ for bugs, support requests, feature requests and patch
-submissions <http://matforge.org/fipy/report>. We also monitor 
+users via our `mailing list`_ and we welcome you to use the `issue
+tracker`_ for bugs, support requests, feature requests and patch
+submissions <https://github.com/usnistgov/fipy/issues>. We also monitor 
 StackOverflow_ for questions tagged with "fipy". We welcome
 collaborative efforts on this project.
 
 :term:`FiPy` is a member of MatForge_, a project of the `Materials
 Digital Library Pathway`_. This National Science Foundation funded
-service provides management of our public source code repository, our
-bug tracking system, and a "wiki" space for public contributions of
-code snippets, discussions, and tutorials.
+service provides a "wiki" space for public contributions of
+code snippets, discussions, and tutorials and hosts our testing framework.
 
 .. toctree::
 
@@ -236,7 +235,7 @@ or a
 .. _MSED:                 http://www.nist.gov/mml/msed/
 .. _NIST:                 http://www.nist.gov/
 .. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.tar.gz
-.. _tracking system:      http://matforge.org/fipy/report
+.. _issue tracker:        https://github.com/usnistgov/fipy/issues
 .. _mailing list:         http://www.ctcms.nist.gov/fipy/documentation/MAIL.html
 .. _Sourceforge:          http://www.sourceforge.net/projects/fipy
 .. _Materials Digital Library Pathway: http://matdl.org

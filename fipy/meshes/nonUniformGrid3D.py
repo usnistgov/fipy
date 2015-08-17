@@ -389,7 +389,7 @@ class NonUniformGrid3D(Mesh):
             >>> NonUniformGrid3D(nx=2, ny=2, nz=2, dx=(1., 2.), dy=(1., 2.), dz=(1., 2.))
             NonUniformGrid3D(dx=(1.0, 2.0), nx=2, dy=(1.0, 2.0), ny=2, dz=(1.0, 2.0), nz=2)
 
-        Test for http://matforge.org/fipy/ticket/490.
+        Test for https://github.com/usnistgov/fipy/issues/364.
             
             >>> from fipy.meshes.nonUniformGrid3D import NonUniformGrid3D
             >>> m = NonUniformGrid3D(nx=1, ny=1, nz=9, overlap=1)

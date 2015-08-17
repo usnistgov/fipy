@@ -96,7 +96,7 @@ class CylindricalUniformGrid1D(UniformGrid1D):
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var)
 
-        This test is for http://matforge.org/fipy/ticket/513. Cell
+        This test is for https://github.com/usnistgov/fipy/issues/372. Cell
         volumes were being returned as binOps rather than arrays.
 
             >>> m = CylindricalUniformGrid1D(dx=1., nx=4)

@@ -1,10 +1,10 @@
-include *.txt
+include *.rst
 
-recursive-include examples *.py *.msh *.gz *.txt
+recursive-include examples *.py *.msh *.gz *.rst
 recursive-include fipy *.msh
 include FiPy-*.win32.exe
 
-recursive-include documentation/ *.txt
+recursive-include documentation/ *.rst
 recursive-exclude examples *.png *.pdf
 recursive-exclude fipy *.png *.pdf
 

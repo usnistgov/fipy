@@ -93,23 +93,26 @@ class build_docs(Command):
             sphinx_args = ['-a', '-E'] + sphinx_args
             apidoc_args = ['--force'] + apidoc_args
             
-        apidoc.main(['sphinx-apidoc', '--output-dir=fipy/generated', '--suffix=txt'] 
+        apidoc.main(['sphinx-apidoc', '--output-dir=fipy/generated', '--suffix=rst'] 
                     + apidoc_args + ['fipy'])
-        apidoc.main(['sphinx-apidoc', '--output-dir=documentation/tutorial/package/generated', '--suffix=txt'] 
+        apidoc.main(['sphinx-apidoc', '--output-dir=documentation/tutorial/package/generated', '--suffix=rst'] 
                     + apidoc_args + ['documentation/tutorial/package'])
 
         if self.html:
             sphinx.main(['sphinx-build', '-b', 'redirecting_html'] + sphinx_args + ['documentation/_build/html/'])
 
         if self.pdf:
-            sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
+            try:
+                sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
+            except SystemExit:
+                pass
             
             outdir = os.path.join('documentation', '_build', 'latex')
             
             from docutils.core import publish_file
 
             for xtra in ("LICENSE", "DISCLAIMER"):
-                publish_file(source_path="%s.txt" % xtra,
+                publish_file(source_path="%s.rst" % xtra,
                              destination_path=os.path.join(outdir, "%s.tex" % xtra),
                              reader_name='standalone',
                              parser_name='restructuredtext',
@@ -189,14 +192,14 @@ class upload_products(Command):
             os.system(os.environ['FIPY_WWWACTIVATE'])
 
 try:            
-    f = open('README.txt', 'r')
+    f = open('README.rst', 'r')
     long_description = '\n' + f.read() + '\n'
     f.close()
 except IOError, e:
     long_description = ''
         
 try:
-    f = open('LICENSE.txt', 'r') 
+    f = open('LICENSE.rst', 'r') 
     license = '\n' + ''.join([' '*8 + l for l in f])
     f.close()
 except IOError, e:

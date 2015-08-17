@@ -288,7 +288,7 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             >>> print fp.CellVariable(mesh=mesh, value=mesh.cellVolumes).globalValue
             [ 1.5  6. ]
 
-        This test is for http://matforge.org/fipy/ticket/513. Cell
+        This test is for https://github.com/usnistgov/fipy/issues/372. Cell
         volumes were being returned as binOps rather than arrays.
 
             >>> m = CylindricalNonUniformGrid2D(dx=(1., 2.), dy=(1., 2.))
@@ -302,7 +302,7 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             >>> print isinstance(fp.CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
             True
             
-        Test for http://matforge.org/fipy/ticket/650. exteriorFaces were
+        Test for https://github.com/usnistgov/fipy/issues/393. exteriorFaces were
         ndarrays rather than FaceVariables.
         
             >>> print isinstance(m.facesTop, fp.FaceVariable)
