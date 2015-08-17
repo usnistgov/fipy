@@ -9,9 +9,9 @@ Branches
 --------
 
 Whether fixing a bug or adding a feature, all work on FiPy should be based 
-on a reported `Trac ticket`_. Assuming ticket number 12345, branch the code::
+on a reported `GitHub issue`_. Assuming issue number 12345, branch the code::
 
-    $ BRANCH=ticket12345-Summary_of_what_branch_addresses
+    $ BRANCH=issue12345-Summary_of_what_branch_addresses
     $ git checkout -b $BRANCH develop
 
 Edit and add to branch::
@@ -44,7 +44,7 @@ Submit branch for code review
 
    **Administrators Only!**
 
-   Push the code to matforge for automated testing::
+   Push the code to GitHub for automated testing::
 
        $ git push origin $BRANCH
 
@@ -89,7 +89,7 @@ Refactoring complete: merge branch to develop
 
        $ python setup.py test
 
-   Push the code to matforge for automated testing::
+   Push the code to GitHub for automated testing::
 
        $ git push origin develop
 
@@ -146,7 +146,7 @@ Make sure ``develop`` is ready for release::
 
    $ git checkout develop
 
-Check items in the tickets_ and update the :file:`README.txt`::
+Check items in the issues_ and update the :file:`README.txt`::
 
    $ git commit README.txt -m "REL: update new features for release"
 
@@ -244,19 +244,12 @@ Upload the build products to PyPI
 
     $ python setup.py sdist upload
 
-Upload the build products and documentation from :file:`dist/` to MatForge and 
+Upload the build products and documentation from :file:`dist/` and 
 the web site to CTCMS ::
 
     $ export FIPY_WWWHOST=bunter:/u/WWW/wd15/fipy
     $ export FIPY_WWWACTIVATE=updatewww
     $ python setup.py upload_products --pdf --html --tarball --winzip
-
-.. note::
-
-   If appropriate (probably not), update the links to current files:
-
-     * http://matforge.org/fipy/wiki/FiPyDownloadCurrent?action=edit
-     * http://matforge.org/fipy/wiki/FiPyManual?action=edit
 
 .. warning:: Some versions of ``rsync`` on Mac OS X have caused problems
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
@@ -267,8 +260,8 @@ Make an announcement to `fipy@nist.gov`_
 Build (``python setup.py bdist --formats=wininst``) a Windows `PyVTK`_
 executable and upload to download page.
 
-.. _Trac ticket: http://matforge.org/fipy/newticket
-.. _tickets: http://matforge.org/fipy/report
+.. _GitHub issue: https://github.com/usnistgov/fipy/issues/new
+.. _issues: https://github.com/usnistgov/fipy/issues
 .. _Buildbot: http://build.cmi.kent.edu:8010/tgrid
 .. _fipy@nist.gov: mailto:fipy@nist.gov
 .. _PyVTK: http://cens.ioc.ee/projects/pyvtk/

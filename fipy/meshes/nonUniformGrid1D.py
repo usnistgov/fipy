@@ -118,7 +118,7 @@ class NonUniformGrid1D(Mesh1D):
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var, solver=DummySolver())
 
-        Test for ticket http://matforge.org/fipy/ticket/490.
+        Test for ticket https://github.com/usnistgov/fipy/issues/364.
 
             >>> from fipy.meshes.nonUniformGrid1D import NonUniformGrid1D
             >>> m = NonUniformGrid1D(nx=9, overlap=1)

@@ -1,7 +1,7 @@
-include *.txt
-# include MANIFEST MANIFEST.in *.txt
+include *.rst
+# include MANIFEST MANIFEST.in *.rst
 
-recursive-include documentation *.txt
+recursive-include documentation *.rst
 recursive-exclude examples *.png *.pdf
 recursive-exclude fipy *.png *.pdf
 

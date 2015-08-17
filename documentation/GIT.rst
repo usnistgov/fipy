@@ -3,8 +3,8 @@ Git usage
 ---------
 
 All stages of :term:`FiPy` development are archived in a Git
-repository at MatForge_. You can browse through the code at
-http://matforge.org/fipy/browser/fipy and, using a `Git client`_, you can
+repository at GitHub_. You can browse through the code at
+https://github.com/usnistgov/fipy and, using a `Git client`_, you can
 download various tagged revisions of :term:`FiPy` depending on your needs. 
 
 .. attention:: 
@@ -35,7 +35,7 @@ development to track.
 
 A fresh copy of the :term:`FiPy` source code  can be obtained with::
 
-   $ git clone git://code.matforge.org/nist/fipy.git
+   $ git clone https://github.com/usnistgov/fipy.git
 
 An existing Git checkout of FiPy can be shifted to a different `<branch>` of
 development by issuing the command::
@@ -87,6 +87,6 @@ The `Pro Git book`_ :cite:`ProGit` is particularly instructive.
 
 .. _Pro Git book: http://git-scm.com/book
 
-.. _MatForge: http://matforge.org/fipy
+.. _GitHub: https://github.com/usnistgov/fipy
 
 .. _a successful Git branching model: http://nvie.com/posts/a-successful-git-branching-model/
