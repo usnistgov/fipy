@@ -71,8 +71,6 @@ import re
 import sys
 import warnings
 
-__all__ = ["mathMethodDeprecated"]
-
 # Stolen from `numpy.lib.utils`
 if sys.version_info < (2, 4):
     # Can't set __name__ in 2.3
@@ -204,16 +202,6 @@ def deprecate(*args, **kwargs):
         return _Deprecate(*args, **kwargs)(fn)
     else:
         return _Deprecate(*args, **kwargs)
-
-def deprecateGist(version="3.0", *args, **kwargs):
-    return deprecate(*args, 
-                     message="Support for Pygist <http://hifweb.lbl.gov/public/software/gist/> will be discontinued.",  
-                     version=version, **kwargs)
-
-def deprecateGnuplot(version="3.0", *args, **kwargs):
-    return deprecate(*args, 
-                     message="Support for Gnuplot.py <http://gnuplot-py.sourceforge.net/> will be discontinued.",  
-                     version=version, **kwargs)
 
 class _MathMethodDeprecated(_Deprecate):
     def __init__(self, version="3.0", *args, **kwargs):
