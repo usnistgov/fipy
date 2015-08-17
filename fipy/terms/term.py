@@ -39,7 +39,6 @@ import os
 from fipy.tools import numerix
 from fipy.terms import AbstractBaseClassError
 from fipy.terms import SolutionVariableRequiredError
-from fipy.tools.decorators import getsetDeprecated
 
 __all__ = ["Term"]
 
@@ -69,24 +68,12 @@ class Term(object):
         self._RHSvector = None
         self.var = var
         
-    @getsetDeprecated
-    def _getVars(self):
-        return self._vars
-
     def _calcVars(self):
         raise NotImplementedError
 
     def _checkCoeff(self, var):
         raise NotImplementedError
 
-    @getsetDeprecated
-    def _getTransientVars(self):
-        return self._transientVars
-
-    @getsetDeprecated
-    def _getDiffusionVars(self):
-        return self._diffusionVars
-                
     def copy(self):
         return self.__class__(self.coeff, var=self.var)
         
@@ -349,10 +336,6 @@ class Term(object):
         """
         self._cacheMatrix = True
 
-    @getsetDeprecated
-    def getMatrix(self):
-        return self.matrix
-
     @property
     def matrix(self):
         r"""
@@ -375,10 +358,6 @@ class Term(object):
         vector so that `getRHSvector()` can return it.
         """
         self._cacheRHSvector = True
-
-    @getsetDeprecated
-    def getRHSvector(self):
-        return self.RHSvector
 
     @property
     def RHSvector(self):
@@ -450,10 +429,6 @@ class Term(object):
             
     __rand__ = __and__
 
-    @getsetDeprecated
-    def _getUncoupledTerms(self):
-        return self._uncoupledTerms
-    
     def __repr__(self):
         raise NotImplementedError
 

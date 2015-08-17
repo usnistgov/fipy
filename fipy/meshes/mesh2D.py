@@ -47,7 +47,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools.decorators import getsetDeprecated
 from fipy.tools import serialComm
 
 from fipy.meshes.mesh import Mesh
@@ -124,10 +123,6 @@ class Mesh2D(Mesh):
         cellVertexIDs = numerix.reshape(cellVertexIDs, (NFac, -1))
         return cellVertexIDs
     
-    @getsetDeprecated
-    def _getNonOrthogonality(self):
-        return self._nonOrthogonality
-
     @property
     def _nonOrthogonality(self):
         

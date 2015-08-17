@@ -50,7 +50,6 @@ from distutils.version import StrictVersion
 from fipy.tools import numerix as nx
 from fipy.tools import parallelComm
 from fipy.tools import serialComm
-from fipy.tools.decorators import getsetDeprecated
 from fipy.tests.doctestPlus import register_skipper
 
 from fipy.meshes.mesh import Mesh
@@ -2160,10 +2159,6 @@ class GmshGrid2D(Gmsh2D):
 
         Gmsh2D.__init__(self, arg, coordDimensions, communicator, order, background=None)
     
-    @getsetDeprecated
-    def _getMeshSpacing(self):
-        return self._meshSpacing
-
     @property
     def _meshSpacing(self):
         return nx.array((self.dx,self.dy))[...,nx.newaxis]
@@ -2234,10 +2229,6 @@ class GmshGrid3D(Gmsh3D):
 
         Gmsh3D.__init__(self, arg, communicator=communicator, order=order)
     
-    @getsetDeprecated
-    def _getMeshSpacing(self):
-        return self._meshSpacing
-
     @property
     def _meshSpacing(self):
         return nx.array((self.dx,self.dy,self.dz))[...,nx.newaxis]

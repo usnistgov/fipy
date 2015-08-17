@@ -36,7 +36,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
 
 __all__ = ["SurfactantVariable"]
 
@@ -111,10 +110,6 @@ class SurfactantVariable(CellVariable):
 
         self.interfaceSurfactantVariable = None
 
-    @getsetDeprecated
-    def getInterfaceVar(self):
-        return self.interfaceVar
-
     @property
     def interfaceVar(self):
         """
@@ -130,10 +125,6 @@ class SurfactantVariable(CellVariable):
 
         return self.interfaceSurfactantVariable
 
-    @getsetDeprecated(new_name="distanceVar")
-    def _getDistanceVar(self):
-        return self.distanceVar
-   
     def _calcValue(self):
         return self._value
 

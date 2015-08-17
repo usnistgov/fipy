@@ -40,8 +40,6 @@ __all__ = ["AbstractViewer"]
 
 import sys
 
-from fipy.tools.decorators import getsetDeprecated
-
 class AbstractViewer(object):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -75,15 +73,6 @@ class AbstractViewer(object):
 
         self.title = title
 
-    @getsetDeprecated
-    def getVars(self):
-        """Get the Variables
-        
-        .. deprecated::
-           Use :attr:`fipy.viewers.viewer.AbstractViewer.vars` instead
-        """
-        return self.vars
-        
     def _getSuitableVars(self, vars):
         if type(vars) not in [type([]), type(())]:
             vars = [vars]

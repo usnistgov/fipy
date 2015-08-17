@@ -40,7 +40,7 @@ from fipy.tools.dimensions import physicalField
 from fipy.tools import numerix
 from fipy.tools import parser
 from fipy.tools import inline
-from fipy.tools.decorators import getsetDeprecated, mathMethodDeprecated
+from fipy.tools.decorators import mathMethodDeprecated
 
 __all__ = ["Variable"]
 
@@ -222,11 +222,6 @@ class Variable(object):
         """
         return self._getArithmeticBaseClass()(value=self)
 
-
-    @getsetDeprecated
-    def _getUnitAsOne(self):
-        return self._unitAsOne
-
     @property
     def _unitAsOne(self):
         unit = self.unit
@@ -241,10 +236,6 @@ class Variable(object):
         else:
             return physicalField._unity 
 
-    @getsetDeprecated
-    def getUnit(self):
-        return self.unit
-
     def _getUnit(self):
         """
         Return the unit object of `self`.
@@ -254,10 +245,6 @@ class Variable(object):
         """
         return self._extractUnit(self.value)
         
-    @getsetDeprecated
-    def setUnit(self, unit):
-        self.unit = unit
-
     def _setUnit(self, unit):
         """
         Change the unit object of `self` to `unit`
@@ -341,14 +328,6 @@ class Variable(object):
 ##         """
 ##         return (self.value)[index]
                             
-    @getsetDeprecated
-    def getName(self):
-        return self.name
-        
-    @getsetDeprecated
-    def setName(self, name):
-        self.name = name
-
     def _getName(self):
         return self._name
 
@@ -513,10 +492,6 @@ class Variable(object):
             >>> b()
             7
         """
-        return self.value
-
-    @getsetDeprecated
-    def getValue(self):
         return self.value
 
     def _getValue(self):
@@ -766,10 +741,6 @@ class Variable(object):
         else:
             self._value = value
         
-    @getsetDeprecated
-    def _getArray(self):
-        return self._array
-
     @property
     def _array(self):
         if isinstance(self._value, physicalField.PhysicalField):
@@ -777,10 +748,6 @@ class Variable(object):
         else:
             return self._value
             
-    @getsetDeprecated
-    def getNumericValue(self):
-        return self.numericValue
-
     @property
     def numericValue(self):
         value = self.value
@@ -789,10 +756,6 @@ class Variable(object):
         else:
             return value
             
-    @getsetDeprecated
-    def getShape(self):
-        return self.shape
-
     def _getShape(self):
         """
         Tuple of array dimensions.
@@ -850,10 +813,6 @@ class Variable(object):
     def _calcValueInline(self):
         raise NotImplementedError
     
-    @getsetDeprecated
-    def getSubscribedVariables(self):
-        return self.subscribedVariables
-
     def _getSubscribedVariables(self):
         self._subscribedVariables = [sub for sub in self._subscribedVariables if sub() is not None]
         
@@ -904,10 +863,6 @@ class Variable(object):
         import weakref
         self.subscribedVariables.append(weakref.ref(var))
         
-    @getsetDeprecated
-    def _getVariableClass(self):
-        return self._variableClass
-
     @property
     def _variableClass(self):
         return Variable
@@ -1610,10 +1565,6 @@ class Variable(object):
                                             opShape=(),
                                             canInline=False)
 
-    @getsetDeprecated
-    def getMag(self):
-        return self.mag
-    
     @property
     def mag(self):
         if not hasattr(self, "_mag"):

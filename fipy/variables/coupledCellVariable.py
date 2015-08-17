@@ -37,7 +37,6 @@ __docformat__ = 'restructuredtext'
 __all__ = []
 
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
 
 class _CoupledCellVariable(object):
     def __init__(self, vars):
@@ -54,10 +53,6 @@ class _CoupledCellVariable(object):
     def __repr__(self):
         return "(" + ", ".join([repr(var) for var in self.vars]) + ")"
         
-    @getsetDeprecated
-    def getMesh(self):
-        return self.mesh
-
     @property
     def mesh(self):
         meshes = list(set([var.mesh for var in self.vars]))
@@ -80,14 +75,6 @@ class _CoupledCellVariable(object):
             else:
                 var[index] = value[i * N:(i + 1) * N]
 
-    @getsetDeprecated
-    def getValue(self):
-        return self.value
-    
-    @getsetDeprecated
-    def setValue(self, value):
-        self.value = value
-
     def _getValue(self):
         return numerix.concatenate([numerix.array(var.value) for var in self.vars])
 
@@ -96,26 +83,14 @@ class _CoupledCellVariable(object):
 
     value = property(_getValue, _setValue)
       
-    @getsetDeprecated
-    def getGlobalValue(self):
-        return self.globalValue
-
     @property
     def globalValue(self):
         return numerix.concatenate([numerix.array(var.globalValue) for var in self.vars])
-
-    @getsetDeprecated
-    def getNumericValue(self):
-        return self.numericValue
 
     @property
     def numericValue(self):
         return numerix.concatenate([var.numericValue for var in self.vars])
   
-    @getsetDeprecated
-    def getUnit(self):
-        return self.unit
-
     @property
     def unit(self):
         from fipy.tools.dimensions import physicalField

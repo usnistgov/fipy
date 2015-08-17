@@ -42,7 +42,6 @@ from PyTrilinos import EpetraExt
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
 from fipy.tools import numerix, parallelComm
-from fipy.tools.decorators import getsetDeprecated
 
 # Current inadequacies of the matrix class:
 
@@ -623,10 +622,6 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
          N = len(IDs)
          return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.numberOfCells).flatten()
 
-    @getsetDeprecated
-    def _getGlobalNonOverlappingRowIDs(self):
-        return self._globalNonOverlappingRowIDs
-
     @property
     def _globalNonOverlappingRowIDs(self):
         return self._cellIDsToGlobalRowIDs(self.mesh._globalNonOverlappingCellIDs)
@@ -634,10 +629,6 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
     @property
     def _globalNonOverlappingColIDs(self):
         return self._cellIDsToGlobalColIDs(self.mesh._globalNonOverlappingCellIDs)
-
-    @getsetDeprecated
-    def _getGlobalOverlappingRowIDs(self):
-        return self._globalOverlappingRowIDs
 
     @property
     def _globalOverlappingRowIDs(self):
@@ -650,10 +641,6 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
     @property
     def _globalOverlappingColIDs(self):
         return self._cellIDsToGlobalColIDs(self.mesh._globalOverlappingCellIDs)
-
-    @getsetDeprecated
-    def _getLocalNonOverlappingRowIDs(self):
-        return self._localNonOverlappingRowIDs
 
     @property
     def _localNonOverlappingRowIDs(self):

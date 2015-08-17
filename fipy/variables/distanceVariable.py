@@ -36,7 +36,6 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
-from fipy.tools.decorators import getsetDeprecated
 from fipy.variables.cellVariable import CellVariable
 
 from fipy.tests.doctestPlus import register_skipper
@@ -337,10 +336,6 @@ class DistanceVariable(CellVariable):
         self._value = distance(numerix.reshape(self._value, shape), dx=dx, order=order).flatten()
         self._markFresh()
 
-    @getsetDeprecated
-    def getCellInterfaceAreas(self):
-        return self.cellInterfaceAreas
-
     @property
     def cellInterfaceAreas(self):
         """
@@ -399,10 +394,6 @@ class DistanceVariable(CellVariable):
         from fipy.variables.interfaceAreaVariable import _InterfaceAreaVariable
         return _InterfaceAreaVariable(self)
 
-    @getsetDeprecated
-    def _getCellInterfaceNormals(self):
-        return self._cellInterfaceNormals
-    
     @property
     def _cellInterfaceNormals(self):
         """
@@ -440,10 +431,6 @@ class DistanceVariable(CellVariable):
 
         return MA.where(valueOverFaces < 0, 0, interfaceNormals)
 
-    @getsetDeprecated
-    def _getInterfaceNormals(self):
-        return self._interfaceNormals
-
     @property
     def _interfaceNormals(self):
         """
@@ -468,10 +455,6 @@ class DistanceVariable(CellVariable):
         interfaceFlag = numerix.repeat(self._interfaceFlag[numerix.newaxis, ...], M, axis=0)
         return numerix.where(interfaceFlag, self._levelSetNormals, 0)
 
-    @getsetDeprecated
-    def _getInterfaceFlag(self):
-        return self._interfaceFlag
-
     @property
     def _interfaceFlag(self):
         """
@@ -495,10 +478,6 @@ class DistanceVariable(CellVariable):
         
         return numerix.where(val1 * val0 < 0, 1, 0)
 
-    @getsetDeprecated
-    def _getCellInterfaceFlag(self):
-        return self._cellInterfaceFlag
-
     @property
     def _cellInterfaceFlag(self):
         """
@@ -517,10 +496,6 @@ class DistanceVariable(CellVariable):
         """
         from fipy.variables.interfaceFlagVariable import _InterfaceFlagVariable
         return _InterfaceFlagVariable(self)
-
-    @getsetDeprecated
-    def _getCellValueOverFaces(self):
-        return self._cellValueOverFaces
 
     @property
     def _cellValueOverFaces(self):
@@ -546,10 +521,6 @@ class DistanceVariable(CellVariable):
         M = self.mesh._maxFacesPerCell
         N = self.mesh.numberOfCells
         return numerix.reshape(numerix.repeat(numerix.array(self._value)[numerix.newaxis, ...], M, axis=0), (M, N))
-
-    @getsetDeprecated
-    def _getLevelSetNormals(self):
-        return self._levelSetNormals
 
     @property
     def _levelSetNormals(self):

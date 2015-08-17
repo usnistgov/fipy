@@ -37,7 +37,6 @@
 __docformat__ = 'restructuredtext'
  
 from fipy.variables.cellVariable import CellVariable
-from fipy.tools.decorators import getsetDeprecated
 
 __all__ = ["ModularVariable"]
 
@@ -161,10 +160,6 @@ class ModularVariable(CellVariable):
             self._faceGrad = _ModFaceGradVariable(self, self._modIn)
 
         return self._faceGrad
-
-    @getsetDeprecated
-    def getFaceGradNoMod(self):
-        return self.faceGradNoMod
 
     @property
     def faceGradNoMod(self):

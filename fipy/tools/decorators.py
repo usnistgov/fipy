@@ -71,7 +71,7 @@ import re
 import sys
 import warnings
 
-__all__ = ["getsetDeprecated", "mathMethodDeprecated"]
+__all__ = ["mathMethodDeprecated"]
 
 # Stolen from `numpy.lib.utils`
 if sys.version_info < (2, 4):
@@ -215,55 +215,6 @@ def deprecateGnuplot(version="3.0", *args, **kwargs):
                      message="Support for Gnuplot.py <http://gnuplot-py.sourceforge.net/> will be discontinued.",  
                      version=version, **kwargs)
 
-class _GetSetDeprecated(_Deprecate):
-    def __init__(self, old_name=None, new_name=None, message=None, version="3.0"):
-        _Deprecate.__init__(self, old_name=old_name, new_name=new_name, message=message,
-                            old_string=":func:`%s` is deprecated",
-                            new_string="use the :attr:`%s` property instead",
-                            version=version)
-    
-    def new_name_old_name(self, old_name):
-        new_name = self.new_name
-        if new_name is None:
-            RE = re.search("(_*)(get|set)(.)(.*)", old_name)
-            if RE is not None:
-                new_name = RE.group(1) + RE.group(3).lower() + RE.group(4)
-        return new_name
-
-def getsetDeprecated(*args, **kwargs):
-    """Issues a `DeprecationWarning` to use the appropriate property, rather than the get/set method of the same name
-
-    This function may also be used as a decorator.
-
-    Parameters
-    ----------
-    func : function
-        The function to be deprecated.
-    old_name : str, optional
-        The name of the function to be deprecated. Default is None, in which
-        case the name of `func` is used.
-    new_name : str, optional
-        The new name for the function. Default is None, in which case
-        the deprecation message is that `old_name` is deprecated. If given,
-        the deprecation message is that `old_name` is deprecated and `new_name`
-        should be used instead.
-    message : str, optional
-        Additional explanation of the deprecation.  Displayed in the docstring
-        after the warning.
-
-    Returns
-    -------
-    old_func : function
-        The deprecated function.
-    """
-    if args:
-        fn = args[0]
-        args = args[1:]
-
-        return _GetSetDeprecated(*args, **kwargs)(fn)
-    else:
-        return _GetSetDeprecated(*args, **kwargs)
-        
 class _MathMethodDeprecated(_Deprecate):
     def __init__(self, version="3.0", *args, **kwargs):
          _Deprecate.__init__(self, *args, version=version, **kwargs)

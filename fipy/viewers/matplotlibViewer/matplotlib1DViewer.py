@@ -36,8 +36,6 @@
  
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.decorators import getsetDeprecated
-
 from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
 
 __all__ = ["Matplotlib1DViewer"]
@@ -119,10 +117,6 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
         return locals()
 
     log = property(**log())
-
-    @getsetDeprecated
-    def _getData(self):
-        return self._data
 
     @property
     def _data(self):
