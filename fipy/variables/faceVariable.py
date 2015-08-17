@@ -36,7 +36,6 @@
 
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
 
 __all__ = ["FaceVariable"]
 
@@ -74,10 +73,6 @@ class FaceVariable(_MeshVariable):
 
     def setValue(self, value, unit = None, where = None):
         _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
-
-    @getsetDeprecated
-    def getDivergence(self):
-        return self.divergence
 
     @property
     def divergence(self):

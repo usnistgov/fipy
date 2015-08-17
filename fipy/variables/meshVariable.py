@@ -39,7 +39,6 @@ __all__ = []
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
 
 class _MeshVariable(Variable):
     """
@@ -145,24 +144,6 @@ class _MeshVariable(Variable):
             value = value.value
         return value
         
-    @getsetDeprecated
-    def _getGlobalNumberOfElements(self):
-        return self._globalNumberOfElements
-
-    @getsetDeprecated
-    def _getGlobalOverlappingIDs(self):
-        return self._globalOverlappingIDs
-
-    @getsetDeprecated
-    def _getLocalNonOverlappingIDs(self):
-        return self._localNonOverlappingIDs
-        
-    @getsetDeprecated
-    def getGlobalValue(self):
-        """Concatenate and return values from all processors
-        """
-        return self.globalValue
-
     def _getGlobalValue(self, localIDs, globalIDs):
         localValue = self.value
         if self.mesh.communicator.Nproc > 1:
@@ -178,11 +159,6 @@ class _MeshVariable(Variable):
         else:
             return localValue
 
-                            
-    @getsetDeprecated
-    def getMesh(self):
-        return self.mesh
-        
     def __str__(self):
         return str(self.globalValue)
         
@@ -583,20 +559,12 @@ class _MeshVariable(Variable):
                                    elementshape=elementshape,
                                    *args, **kwargs)
                                  
-            @getsetDeprecated
-            def getRank(self):
-                return self.rank
-
             @property
             def rank(self):
                 return len(self.opShape) - 1
                 
         return _MeshOperatorVariable
                           
-    @getsetDeprecated
-    def getRank(self):
-        return self.rank
-
     @property
     def rank(self):
         return len(self.shape) - 1

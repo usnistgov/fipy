@@ -100,7 +100,6 @@ import re
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools.numerix import umath
-from fipy.tools.decorators import getsetDeprecated
 
 from fipy.tools.dimensions.NumberDict import _NumberDict
 
@@ -689,10 +688,6 @@ class PhysicalField(object):
 #         else:
 #             raise TypeError, 'Numeric array value must be dimensionless'
         
-    @getsetDeprecated
-    def _getArray(self):
-        return self._array
-
     @property
     def _array(self):
         if self.unit.isDimensionlessOrAngle():
@@ -936,10 +931,6 @@ class PhysicalField(object):
         
         return self.typecode
 
-    @getsetDeprecated
-    def getUnit(self):
-        return self.unit
-
     def _getUnit(self):
         """
         Return the unit object of `self`.
@@ -949,10 +940,6 @@ class PhysicalField(object):
         """
         return self._unit
         
-    @getsetDeprecated
-    def setUnit(self, unit):
-        self.unit = unit
-
     def _setUnit(self, unit):
         """
         Change the unit object of `self` to `unit`
@@ -966,10 +953,6 @@ class PhysicalField(object):
 
     unit = property(_getUnit, _setUnit)
         
-    @getsetDeprecated
-    def getNumericValue(self):
-        return self.numericValue
-
     @property
     def numericValue(self):
         """
@@ -1369,10 +1352,6 @@ class PhysicalField(object):
         """
         numerix.put(self.value, indices, self._inMyUnits(values).value)
       
-    @getsetDeprecated
-    def getShape(self):
-        return self.shape
-
     @property
     def shape(self):
         """Tuple of array dimensions."""

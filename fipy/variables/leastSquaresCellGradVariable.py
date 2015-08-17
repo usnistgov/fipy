@@ -40,7 +40,6 @@ __all__ = []
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
-from fipy.tools.decorators import getsetDeprecated
 
 class _LeastSquaresCellGradVariable(CellVariable):
     """
@@ -49,10 +48,6 @@ class _LeastSquaresCellGradVariable(CellVariable):
     def __init__(self, var, name = ''):
         CellVariable.__init__(self, mesh=var.mesh, name=name, rank=var.rank + 1)
         self.var = self._requires(var)
-
-    @getsetDeprecated
-    def _getNeighborValue(self):
-        return self._neighborValue
 
     @property
     def _neighborValue(self):

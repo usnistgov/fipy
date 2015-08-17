@@ -45,7 +45,6 @@ from fipy.boundaryConditions.boundaryCondition import BoundaryCondition
 from fipy.tools import numerix
 from fipy.tools import vector
 from fipy.variables.variable import Variable
-from fipy.tools.decorators import getsetDeprecated
 
 __all__ = ["FixedValue"]
 
@@ -102,9 +101,3 @@ class FixedValue(BoundaryCondition):
         
         return (LL, bb)
         
-    @getsetDeprecated(new_name="value")
-    def _getValue(self):
-        return self.value
-
-
-
