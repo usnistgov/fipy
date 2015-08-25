@@ -270,7 +270,6 @@ dist = setup(	name = "FiPy",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
         entry_points="""
             [fipy.viewers]
-            gnuplot = fipy.viewers.gnuplotViewer:GnuplotViewer
             matplotlib = fipy.viewers.matplotlibViewer:MatplotlibViewer
             mayavi = fipy.viewers.mayaviViewer:MayaviClient
         """,
