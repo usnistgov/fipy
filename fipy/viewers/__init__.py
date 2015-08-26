@@ -3,18 +3,6 @@ __docformat__ = 'restructuredtext'
 __all__ = []
 
 try:
-    from fipy.viewers.gistViewer import *
-    __all__.extend(gistViewer.__all__)
-except:
-    pass
-
-try:
-    from fipy.viewers.gnuplotViewer import *
-    __all__.extend(gnuplotViewer.__all__)
-except:
-    pass
-
-try:
     from fipy.viewers.matplotlibViewer import *
     __all__.extend(matplotlibViewer.__all__)
 except:
@@ -49,8 +37,8 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
     
     The `Viewer` factory will search the module tree and return an instance of
     the first `Viewer` it finds that supports the dimensions of `vars`. Setting
-    the '`FIPY_VIEWER`' environment variable to either '`gist`', '`gnuplot`',
-    '`matplotlib`', '`tsv`', or '`vtk`' will specify the viewer.
+    the '`FIPY_VIEWER`' environment variable to either '`matplotlib`', '`mayavi`',
+    '`tsv`', or '`vtk`' will specify the viewer.
        
     The `kwlimits` or `limits` parameters can be used to constrain the view. For example::
             

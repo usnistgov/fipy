@@ -40,8 +40,6 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(testModuleNames = (
-        'gistViewer.test',
-        'gnuplotViewer.test',
         'matplotlibViewer.test',
         'mayaviViewer.test',
         ), base = __name__)
