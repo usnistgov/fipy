@@ -127,7 +127,7 @@ def _TestClass(base):
 
         def printPackageInfo(self):
             
-            for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'gist', 'mpi4py']:
+            for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'mpi4py']:
                 
                 try:
                     mod = __import__(pkg)

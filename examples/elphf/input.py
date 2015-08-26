@@ -246,7 +246,7 @@ If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
     ...     phaseViewer = Viewer(vars=phase, datamin=0, datamax=1)
-    ...     concViewer = Gist1DViewer(vars = [solvent] + substitutionals + interstitials, ylog = 1)
+    ...     concViewer = Viewer(vars=[solvent] + substitutionals + interstitials, ylog=True)
     ...     potentialViewer = Viewer(vars = potential)
     ...     phaseViewer.plot()
     ...     concViewer.plot()

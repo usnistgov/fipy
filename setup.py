@@ -270,8 +270,6 @@ dist = setup(	name = "FiPy",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
         entry_points="""
             [fipy.viewers]
-            gist = fipy.viewers.gistViewer:GistViewer
-            gnuplot = fipy.viewers.gnuplotViewer:GnuplotViewer
             matplotlib = fipy.viewers.matplotlibViewer:MatplotlibViewer
             mayavi = fipy.viewers.mayaviViewer:MayaviClient
         """,
@@ -307,7 +305,7 @@ if 'install' in dist.commands:
 
     opt = []
     
-    for pkg in ['scipy', 'matplotlib', 'gist', 'mayavi']:
+    for pkg in ['scipy', 'matplotlib', 'mayavi']:
         try:
             __import__(pkg)
         except ImportError, exc:
