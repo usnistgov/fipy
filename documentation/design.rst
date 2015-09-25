@@ -190,13 +190,11 @@ is more palatable to the computer than to the programmer.  Thus
 code first and then dealing with the issue of user interaction,
 initially implements most modules in high-level scripting language and
 only translates to low-level compiled code those portions that prove
-inefficient. 
+inefficient [#]_. 
 
-.. A discussion of efficiency issues can be found in
-   :ref:`chap:Efficiency`.
 
-:term:`Python` Programming Language
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Python Programming Language
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Acknowledging that several scripting languages offer a number, if not
 all, of the features described above, we have selected :term:`Python` for
@@ -316,3 +314,6 @@ the examples, along with illustrations of their instantiation and use.
 .. rubric:: Footnotes
 
 .. [#] ... neglecting such common optimizations as byte-code interpreters.
+
+.. [#] A discussion of efficiency issues can be found in
+   :ref:`chap:Efficiency`.
