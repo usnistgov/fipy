@@ -51,8 +51,8 @@ The analytical solution for this equation is given by,
 
    C \left( x \right) =
    \frac{ 2 P \exp{\left(\frac{P x}{2}\right)}
-          \left[ \left(P + A \right) \exp{\left(\frac{A}{2} \left(x - 1\right)\right)} -
-                 \left(P - A \right) \exp{\left(-\frac{A}{2} \left(x - 1\right)\right)} \right]}
+          \left[ \left(P + A \right) \exp{\left(\frac{A}{2} \left(1 - x\right)\right)} -
+                 \left(P - A \right) \exp{\left(-\frac{A}{2} \left(1 - x\right)\right)} \right]}
         { \left(P + A \right)^2 \exp{\left(\frac{A}{2}\right)} -
           \left(P - A \right)^2 \exp{\left(-\frac{A}{2}\right)}}
 
