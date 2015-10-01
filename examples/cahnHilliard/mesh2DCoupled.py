@@ -86,7 +86,7 @@ We start the problem with random fluctuations about :math:`\phi = 1/2`
 :term:`FiPy` doesn't plot or output anything unless you tell it to:
 
 >>> if __name__ == "__main__":
-...     viewer = Viewer(vars=(phi, psi)) # , datamin=0., datamax=1.)
+...     viewer = Viewer(vars=(phi, psi), datamin=0., datamax=1.)
 
 We factor the Cahn-Hilliard equation into two 2nd-order PDEs and place
 them in canonical form for :term:`FiPy` to solve them as a coupled set
@@ -114,7 +114,7 @@ manually.
 >>> d2fdphi2 = a**2 * 2 * (1 - 6 * phi * (1 - phi))
 >>> eq1 = (TransientTerm(var=phi) == DiffusionTerm(coeff=D, var=psi))
 >>> eq2 = (ImplicitSourceTerm(coeff=1., var=psi) 
-...        == ImplicitSourceTerm(coeff=-d2fdphi2, var=phi) - d2fdphi2 * phi + dfdphi 
+...        == ImplicitSourceTerm(coeff=d2fdphi2, var=phi) - d2fdphi2 * phi + dfdphi 
 ...        - DiffusionTerm(coeff=epsilon**2, var=phi))
 >>> eq3 = (ImplicitSourceTerm(coeff=1., var=psi) 
 ...        == ImplicitSourceTerm(coeff=dfdphi_, var=phi)
@@ -130,7 +130,7 @@ evolution of their problem.
 >>> dexp = -5
 >>> elapsed = 0.
 >>> if __name__ == "__main__":
-...     duration = .5e-1
+...     duration = 100.
 ... else:
 ...     duration = .5e-1
 
@@ -159,7 +159,7 @@ a single variable
 >>> var[0] = noise
 
 >>> if __name__ == "__main__":
-...     viewer = Viewer(vars=(var[0], var[1]))
+...     viewer = Viewer(vars=(var[0], var[1]), datamin=0., datamax=1.)
 
 >>> D = a = epsilon = 1.
 >>> v0 = var[0]
@@ -172,9 +172,9 @@ coefficient has to have a shape of `(2, 2)` while the explicit source
 has a shape `(2,)`
 
 >>> source = (- d2fdphi2 * v0 + dfdphi) * (0, 1)
->>> impCoeff = -d2fdphi2 * ((0, 0), 
-...                         (1., 0)) + ((0, 0), 
-...                                     (0, -1.))
+>>> impCoeff = d2fdphi2 * ((0, 0), 
+...                        (1., 0)) + ((0, 0), 
+...                                    (0, -1.))
 
 This is the same equation as the previous definition of `eq`, but now in
 a vector format.
