@@ -44,7 +44,8 @@ if __name__ == '__main__':
     import sys
     import os
 
-    from fipy import *
+    from fipy import SkewedGrid2D, CellVariable, DiffusionTerm, Viewer
+    from fipy.tools import numerix
 
     valueLeft = 0.
     valueRight = 1.
@@ -66,13 +67,13 @@ if __name__ == '__main__':
 
         DiffusionTerm().solve(var)
 
-        varArray = array(var)
+        varArray = numerix.array(var)
         x = mesh.cellCenters[0]
         analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
         errorArray = varArray - analyticalArray
         nonOrthoArray = mesh._nonOrthogonality
-        RMSError = (add.reduce(errorArray * errorArray) / len(errorArray)) ** 0.5
-        RMSNonOrtho = (add.reduce(nonOrthoArray * nonOrthoArray) / len(nonOrthoArray)) ** 0.5
+        RMSError = (numerix.add.reduce(errorArray * errorArray) / len(errorArray)) ** 0.5
+        RMSNonOrtho = (numerix.add.reduce(nonOrthoArray * nonOrthoArray) / len(nonOrthoArray)) ** 0.5
 
         RMSNonOrthoList += [RMSNonOrtho]
         RMSErrorList += [RMSError]

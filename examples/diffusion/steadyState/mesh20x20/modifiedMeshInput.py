@@ -44,7 +44,8 @@ being that it uses a triangular mesh loaded in using the
 
 The result is again tested in the same way:
 
->>> from fipy import *
+>>> from fipy import Gmsh2D, CellVariable, DiffusionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> valueLeft = 0.
 >>> valueRight = 1.
