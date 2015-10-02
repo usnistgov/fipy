@@ -109,9 +109,9 @@ We need to perform the partial derivatives
 manually.
 
 >>> D = a = epsilon = 1.
->>> dfdphi = a**2 * 2 * phi * (1 - phi) * (1 - 2 * phi)
->>> dfdphi_ = a**2 * 2 * (1 - phi) * (1 - 2 * phi)
->>> d2fdphi2 = a**2 * 2 * (1 - 6 * phi * (1 - phi))
+>>> dfdphi = a**2 * phi * (1 - phi) * (1 - 2 * phi)
+>>> dfdphi_ = a**2 * (1 - phi) * (1 - 2 * phi)
+>>> d2fdphi2 = a**2 * (1 - 6 * phi * (1 - phi))
 >>> eq1 = (TransientTerm(var=phi) == DiffusionTerm(coeff=D, var=psi))
 >>> eq2 = (ImplicitSourceTerm(coeff=1., var=psi) 
 ...        == ImplicitSourceTerm(coeff=d2fdphi2, var=phi) - d2fdphi2 * phi + dfdphi 
@@ -163,9 +163,9 @@ a single variable
 
 >>> D = a = epsilon = 1.
 >>> v0 = var[0]
->>> dfdphi = a**2 * 2 * v0 * (1 - v0) * (1 - 2 * v0)
->>> dfdphi_ = a**2 * 2 * (1 - v0) * (1 - 2 * v0)
->>> d2fdphi2 = a**2 * 2 * (1 - 6 * v0 * (1 - v0))
+>>> dfdphi = a**2 * v0 * (1 - v0) * (1 - 2 * v0)
+>>> dfdphi_ = a**2 * (1 - v0) * (1 - 2 * v0)
+>>> d2fdphi2 = a**2 * (1 - 6 * v0 * (1 - v0))
 
 The source terms have to be shaped correctly for a vector. The implicit source
 coefficient has to have a shape of `(2, 2)` while the explicit source
