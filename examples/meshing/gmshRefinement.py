@@ -1,5 +1,5 @@
-from fipy import *
-
+from fipy import CellVariable, Gmsh2D, DiffusionTerm, Viewer
+from fipy.tools import numerix
 from matplotlib import cm
 
 monitor = None
@@ -69,7 +69,7 @@ for refinement in range(10):
     
     res = eq.justResidualVector(var=potential)
     
-    res1 = L2norm(res)
+    res1 = numerix.L2norm(res)
     res1a = CellVariable(mesh=mesh, value=abs(res))
     
     res = CellVariable(mesh=mesh, name="residual", value=abs(res) / mesh.cellVolumes**(1./mesh.dim) / 1e-3)
@@ -86,7 +86,7 @@ for refinement in range(10):
 #     resviewer = Viewer(vars=res1a, log=True, datamin=1e-6, datamax=1e-2, cmap=cm.gray)
 #     monviewer = Viewer(vars=monitor, log=True, datamin=1e-3, datamax=1)
  
-    raw_input("refinement %d, res0: %g, res: %g:%g, N: %d, min: %g, max: %g, avg: %g" 
-              % (refinement, res0, res1, res1a.cellVolumeAverage, mesh.numberOfCells, sqrt(min(mesh.cellVolumes)), sqrt(max(mesh.cellVolumes)), mean(sqrt(mesh.cellVolumes))))
+    raw_input("refinement %d, res0: %g, res: %g:%g, N: %d, min: %g, max: %g, avg: %g. Press <return> to proceed..." \
+              % (refinement, res0, res1, res1a.cellVolumeAverage, mesh.numberOfCells, numerix.sqrt(min(mesh.cellVolumes)), numerix.sqrt(max(mesh.cellVolumes)), numerix.mean(numerix.sqrt(mesh.cellVolumes))))
     
     

@@ -38,7 +38,8 @@ is embedded in 3D space, such as diffusion on the surface of a sphere
 (with nothing either inside or outside the sphere). This example
 demonstrates how to create the required mesh.
 
-    >>> from fipy import *
+    >>> from fipy import Gmsh2DIn3DSpace, CellVariable, MayaviClient
+    >>> from fipy.tools import numerix
 
     >>> mesh = Gmsh2DIn3DSpace('''
     ...     radius = 5.0;
