@@ -49,7 +49,8 @@ with the boundary condition, :math:`\phi = 0` at :math:`x = L / 2`.
 The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, DistanceVariable, TransientTerm, FirstOrderAdvectionTerm, AdvectionTerm, Viewer
+>>> from fipy.tools import numerix, serialComm
 
 >>> dx = 0.5
 >>> nx = 10
@@ -58,7 +59,6 @@ Construct the mesh.
 
 .. index:: Grid2D
 
->>> from fipy.tools import serialComm
 >>> mesh = Grid1D(dx=dx, nx=nx, communicator=serialComm)
 
 Construct a `distanceVariable` object.

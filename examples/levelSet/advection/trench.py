@@ -42,7 +42,8 @@ This example creates a trench with the following zero level set:
    \phi \left( x, y \right) = 0 & \text{when $L_y / 5 \le y \le 3 Ly / 5$ and $x = L_x / 2$$} \\
    \phi \left( x, y \right) = 0 & \text{when $y = 3 Ly / 5$ and $x \le L_x / 2$}
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, DistanceVariable, TransientTerm, FirstOrderAdvectionTerm, AdvectionTerm, Viewer
+>>> from fipy.tools import numerix, serialComm
 
 >>> height = 0.5
 >>> Lx = 0.4
@@ -56,7 +57,6 @@ This example creates a trench with the following zero level set:
 >>> timeStepDuration = cfl * dx / velocity
 >>> steps = 200
 
->>> from fipy.tools import serialComm
 >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny, communicator=serialComm)
 
 >>> var = DistanceVariable(name = 'level set variable',

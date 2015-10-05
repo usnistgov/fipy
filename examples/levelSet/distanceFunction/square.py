@@ -74,7 +74,7 @@ Do the tests:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import Grid2D, DistanceVariable, Viewer
 
 dx = 0.5
 dy = 2.
