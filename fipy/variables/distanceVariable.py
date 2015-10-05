@@ -285,7 +285,7 @@ class DistanceVariable(CellVariable):
         """
     
         dx, shape = self.getLSMshape()
-        extensionValue = numerix.reshape(extensionVariable, shape)
+        extensionValue = numerix.reshape(extensionVariable.value, shape)
         phi = numerix.reshape(self._value, shape)
 
         if LSM_SOLVER == 'lsmlib':
