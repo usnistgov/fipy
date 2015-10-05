@@ -45,7 +45,8 @@ A 2D version of the 1D example.
 >>> liquidDensity = 7354.3402662299995
 >>> vaporDensity = 82.855803327810008
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, TransientTerm, VanLeerConvectionTerm, DiffusionTerm, ImplicitSourceTerm, ConvectionTerm, CentralDifferenceConvectionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> def f(rho):
 ...     return ee * rho**2 / molarWeight**2 + gasConstant * temperature * rho / molarWeight * \
@@ -198,7 +199,7 @@ A 2D version of the 1D example.
 ...         sweep += 1
 ...
 ...     if __name__ == '__main__' and timestep % 1 == 0:
-...         print 'timestep: %i, dt: %1.5e, free energy: %1.5e' % (timestep, dt, freeEnergy)
+...         print 'timestep: %e / %e, dt: %1.5e, free energy: %1.5e' % (timestep, totalSteps, dt, freeEnergy)
 ...         for viewer in viewers:
 ...             viewer.plot()
 ...
