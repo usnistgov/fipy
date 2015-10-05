@@ -38,7 +38,8 @@ This example combines a phase field problem, as given in
 described in the ternary example :mod:`examples.elphf.diffusion.input1D`, on a
 1D mesh
 
->>> from fipy import *
+>>> from fipy import CellVariable, FaceVariable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, PowerLawConvectionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> nx = 400
 >>> dx = 0.01

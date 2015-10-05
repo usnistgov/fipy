@@ -40,7 +40,8 @@ but we demonstrate FiPy's facility to use dimensional quantities.
     >>> import warnings
     >>> warnings.warn("\n\n\tSupport for physical dimensions is incomplete.\n\tIt is not possible to solve dimensional equations.\n")
 
-    >>> from fipy import *
+    >>> from fipy import CellVariable, FaceVariable, PhysicalField, Grid1D, TransientTerm, DiffusionTerm, PowerLawConvectionTerm, LinearLUSolver, Viewer
+    >>> from fipy.tools import numerix
 
 We solve the problem on a 40 mm long 1D mesh
 
