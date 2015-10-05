@@ -45,7 +45,8 @@ including the effects of discrete crystalline orientations (anisotropy).
 
 We start with a regular 2D Cartesian mesh
 
->>> from fipy import *
+>>> from fipy import Variable, CellVariable, Grid2D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer, Matplotlib2DGridViewer
+>>> from fipy.tools import numerix
 >>> dx = dy = 0.025
 >>> if __name__ == '__main__':
 ...     nx = ny = 500
