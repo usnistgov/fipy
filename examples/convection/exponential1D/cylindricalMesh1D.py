@@ -50,7 +50,8 @@ We define a 1D cylindrical mesh representing an anulus
 
 .. index:: Grid1D
 
->>> from fipy import *
+>>> from fipy import CellVariable, CylindricalGrid1D, DiffusionTerm, ExponentialConvectionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> r0 = 1.
 >>> r1 = 2.

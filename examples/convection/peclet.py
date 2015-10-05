@@ -39,7 +39,8 @@ This test case has been introduced because :class:`~fipy.solvers.pysparse.linear
 working with Peclet numbers over 1. :class:`~fipy.solvers.pysparse.linearLUSolver.LinearLUSolver` is now the default
 for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :class:`~fipy.solvers.pysparse.linearGMRESSolver.LinearGMRESSolver` does not work.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, TransientTerm, DiffusionTerm, PowerLawConvectionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> L = 1.
 >>> nx = 1000

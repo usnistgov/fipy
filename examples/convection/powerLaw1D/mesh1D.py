@@ -39,7 +39,8 @@ described in :mod:`examples.diffusion.convection.exponential1D.mesh1D` but
 uses the :class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` rather than the
 :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm`.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, DiffusionTerm, PowerLawConvectionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> L = 10.
 >>> nx = 1000
