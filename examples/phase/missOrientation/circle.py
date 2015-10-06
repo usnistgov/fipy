@@ -90,6 +90,7 @@ data and compares it with the ``phase`` variable.
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, ModularVariable, Grid2D, TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, Viewer
+from fipy.tools import numerix
 
 if __name__ == '__main__':
     steps = 100

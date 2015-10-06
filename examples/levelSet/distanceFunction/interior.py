@@ -72,7 +72,7 @@ Do the tests:
 __docformat__ = 'restructuredtext'
 
 from fipy import Grid2D, DistanceVariable, Viewer
-from fipy.tools import serialComm
+from fipy.tools import numerix, serialComm
 
 dx = 1.
 dy = 1.

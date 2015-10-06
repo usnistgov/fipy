@@ -88,6 +88,7 @@ data and compares it with the ``theta`` variable.
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, ModularVariable, Grid1D, TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, Viewer
+from fipy.tools import numerix
 
 steps = 100
 timeStepDuration = 0.02
