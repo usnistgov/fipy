@@ -99,10 +99,9 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
                                               name=FIPY_VIEWER):
         enpts.append((ep.name,ep))
 
-    for testep in sorted(enpts):
-        ep = testep[1]
+    for name, ep in sorted(enpts):
                                                   
-        attempts.append(ep.name)
+        attempts.append(name)
         
         try:
             ViewerClass = ep.load()
@@ -117,7 +116,7 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
                 
             break
         except Exception, s:
-            errors.append("%s: %s" % (ep.name, s))
+            errors.append("%s: %s" % (name, s))
 
     if len(attempts) == 0:
         if FIPY_VIEWER is not None:
