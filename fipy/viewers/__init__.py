@@ -93,9 +93,14 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
     if len(emptyvars):
         viewers.append(DummyViewer(vars=emptyvars))
     
+    enpts = []
     import pkg_resources
     for ep in pkg_resources.iter_entry_points(group='fipy.viewers', 
                                               name=FIPY_VIEWER):
+        enpts.append((ep.name,ep))
+
+    for testep in sorted(enpts):
+        ep = testep[1]
                                                   
         attempts.append(ep.name)
         
