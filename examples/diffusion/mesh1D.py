@@ -54,7 +54,8 @@ The first step is to define a one dimensional domain with 50 solution
 points. The :class:`~fipy.meshes.grid1D.Grid1D` object represents a linear structured grid. The
 parameter ``dx`` refers to the grid spacing (set to unity here).
 
->>> from fipy import *
+>>> from fipy import Variable, FaceVariable, CellVariable, Grid1D, ExplicitDiffusionTerm, TransientTerm, DiffusionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> nx = 50
 >>> dx = 1.

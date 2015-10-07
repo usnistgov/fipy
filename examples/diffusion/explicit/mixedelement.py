@@ -66,7 +66,8 @@ The result is again tested in the same way:
     1
 
 """
-from fipy import *
+from fipy import CellVariable, Grid2D, Tri2D, TransientTerm, ExplicitDiffusionTerm, Viewer
+from fipy.tools import numerix
 
 dx = 1.
 dy = 1.
@@ -85,7 +86,8 @@ bigMesh = gridMesh + triMesh
 var = CellVariable(
     name = "concentration",
     mesh = bigMesh,
-    value = valueLeft)
+    value = valueLeft,
+    hasOld = True)
 
 eqn = TransientTerm() == ExplicitDiffusionTerm()
 
@@ -120,7 +122,7 @@ if __name__ == '__main__':
         if(not (step % 100)):
             print (step / 100)
     print var
-    theMask = array([[10, 1, 20, 2]])
+    theMask = numerix.array([[10, 1, 20, 2]])
     viewer.plot()
 ##     viewer.plot(mask = theMask, graphwidth = 15, graphheight = 3)
     raw_input('finished')

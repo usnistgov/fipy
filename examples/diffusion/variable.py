@@ -51,7 +51,8 @@ A simple analytical answer can be used to test the result:
 
 """
 
-from fipy import *
+from fipy import FaceVariable, Tri2D, CellVariable, DiffusionTerm, Viewer
+from fipy.tools import numerix
 
 nx = 10
 ny = 1

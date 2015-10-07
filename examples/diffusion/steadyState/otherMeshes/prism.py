@@ -40,7 +40,7 @@ being that it uses a triangular mesh loaded in using the Gmsh.
 
 The result is again tested in the same way:
 
-    >>> from fipy import *
+    >>> from fipy import CellVariable, GmshGrid3D, DiffusionTerm
 
     >>> valueLeft = 0.
     >>> valueRight = 1.

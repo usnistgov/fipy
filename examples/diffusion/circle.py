@@ -53,7 +53,9 @@ for :term:`Gmsh`, see the `gmsh manual`_.
 The mesh created by :term:`Gmsh` is then imported into :term:`FiPy` using the
 :class:`~fipy.meshes.gmshMesh.Gmsh2D` object.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Gmsh2D, TransientTerm, DiffusionTerm, Viewer
+>>> from fipy.tools import numerix
+
 >>> mesh = Gmsh2D('''
 ...               cellSize = %(cellSize)g;
 ...               radius = %(radius)g;

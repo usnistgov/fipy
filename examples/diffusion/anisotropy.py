@@ -78,7 +78,8 @@ solution is given by,
 where :math:`\left(X, Y \right)^T = R \left(x, y \right)^T` and :math:`Q` is the initial
 mass.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Gmsh2D, Viewer, TransientTerm, DiffusionTermCorrection
+>>> from fipy.tools import serialComm, numerix
 
 Import a mesh previously created using :term:`Gmsh`.
 

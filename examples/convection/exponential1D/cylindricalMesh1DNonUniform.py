@@ -49,7 +49,8 @@ with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 We define a 1D cylindrical mesh representing an anulus. The mesh has a
 non-constant cell spacing.
 
->>> from fipy import *
+>>> from fipy import CellVariable, CylindricalGrid1D, DiffusionTerm, ExponentialConvectionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> r0 = 1.
 >>> r1 = 2.

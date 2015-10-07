@@ -102,7 +102,8 @@ resemble the image below.
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, SurfactantVariable, TransientTerm, FirstOrderAdvectionTerm, MultiViewer, Viewer
+from fipy.tools import numerix
 from trenchMesh import TrenchMesh
 from gapFillDistanceVariable  import GapFillDistanceVariable
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
@@ -239,6 +240,6 @@ def runGold(faradaysConstant=9.6e4,
 __all__ = ["runGold"]
 
 if __name__ == '__main__':
-    runGold(numberOfSteps = 300, cellSize = 0.05e-7)
+    runGold(numberOfSteps = 300, cellSize = 0.05e-7, displayViewers=False)
     raw_input("finished")
     

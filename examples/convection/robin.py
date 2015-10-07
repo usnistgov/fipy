@@ -64,7 +64,8 @@ where
    
 ..
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, DiffusionTerm, PowerLawConvectionTerm, ImplicitSourceTerm, Viewer
+>>> from fipy.tools import numerix
 >>> nx = 100
 >>> dx = 1.0 / nx
 

@@ -54,7 +54,8 @@ We wish to create 4 symmetric regions such that
     
 We create a square domain
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, Viewer
+>>> from fipy.tools import numerix
 
 >>> N = 20
 >>> L = 1.

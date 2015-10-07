@@ -39,7 +39,8 @@ As in :mod:`examples.phase.simple`, we will examine a 1D problem
 
 .. index:: Grid1D
 
->>> from fipy import *
+>>> from fipy import CellVariable, Variable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer
+>>> from fipy.tools import numerix
 
 >>> nx = 400
 >>> dx = 5e-6 # cm
@@ -549,7 +550,7 @@ require the residual.
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("stationary phase field")
+...     raw_input("Stationary phase field. Press <return> to proceed...")
 
 .. image:: binary/stationary.*
    :width: 90%
@@ -634,7 +635,7 @@ time step of about :math:`\unit{10^{-5}}{\second}`.
 ...         viewer.plot()
 
 >>> if __name__ == '__main__': 
-...     raw_input("moving phase field")
+...     raw_input("Moving phase field. Press <return> to proceed...")
 
 .. image:: binary/moving.*
    :width: 90%

@@ -39,7 +39,7 @@ One can then solve the same problem as in
 mesh and no boundary conditions. The periodic mesh is used to simulate
 periodic boundary conditions.
 
->>> from fipy import *
+>>> from fipy import PeriodicGrid1D, CellVariable, TransientTerm, DiffusionTerm, Viewer
 
 >>> nx = 50
 >>> dx = 1.

@@ -64,7 +64,8 @@ should do better than this.
 
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, Grid1D, PeriodicGrid1D, TransientTerm, VanLeerConvectionTerm, DefaultAsymmetricSolver, Viewer
+from fipy.tools import numerix
      
 L = 20.
 nx = 40

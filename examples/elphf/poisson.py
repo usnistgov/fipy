@@ -35,7 +35,8 @@
 r"""
 A simple 1D example to test the setup of the Poisson equation.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, DiffusionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> nx = 200
 >>> dx = 0.01

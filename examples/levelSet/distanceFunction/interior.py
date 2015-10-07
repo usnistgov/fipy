@@ -71,7 +71,8 @@ Do the tests:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import Grid2D, DistanceVariable, Viewer
+from fipy.tools import numerix, serialComm
 
 dx = 1.
 dy = 1.
@@ -81,7 +82,6 @@ ny = 5
 Lx = nx * dx
 Ly = ny * dy
 
-from fipy.tools import serialComm
 mesh = Grid2D(dx = dx, dy = dy, nx = nx, ny = ny, communicator=serialComm)
 
 var = DistanceVariable(

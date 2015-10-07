@@ -63,7 +63,8 @@ We solve the problem on a 1D mesh
 
 .. index:: Grid2D
    
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, NthOrderBoundaryCondition, DiffusionTerm, TransientTerm, LinearLUSolver, DefaultSolver, Viewer
+>>> from fipy.tools import numerix
 
 >>> L = 40.
 >>> nx = 1000
@@ -168,8 +169,8 @@ we update the display and output data about the progression of the solution
 ...     dexp += 0.5
 ...     eqch.solve(var=var, boundaryConditions=BCs, solver=solver, dt=dt)
 ...     if __name__ == '__main__':
-...         diff = abs(answer - array(var))
-...         maxarg = argmax(diff)
+...         diff = abs(answer - numerix.array(var))
+...         maxarg = numerix.argmax(diff)
 ...         print 'maximum error:',diff[maxarg]
 ...         print 'element id:',maxarg
 ...         print 'value at element ',maxarg,' is ',var[maxarg]

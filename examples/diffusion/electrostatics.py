@@ -37,7 +37,7 @@ r"""Solve the Poisson equation in one dimension.
 The Poisson equation is a particular example of the steady-state diffusion
 equation. We examine a few cases in one dimension.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, Viewer, DiffusionTerm
 
 >>> nx = 200
 >>> dx = 0.01

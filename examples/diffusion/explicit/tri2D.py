@@ -64,7 +64,8 @@ The result is again tested in the same way:
 
 """
 
-from fipy import *
+from fipy import CellVariable, Tri2D, TransientTerm, ExplicitDiffusionTerm, DefaultSolver, Viewer
+from fipy.tools import numerix
 
 dx = 1.
 dy = 1.

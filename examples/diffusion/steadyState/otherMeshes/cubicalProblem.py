@@ -40,7 +40,7 @@ Test case for the Grid3D. Diffusion problem with boundary conditions: 0 on front
    
 """
 
-from fipy import *
+from fipy import CellVariable, Grid3D, Viewer
 
 nx = 10
 ny = 10
