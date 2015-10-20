@@ -51,6 +51,6 @@ class SmoothedAggregationSolver(PyAMGSolver):
         self.solveOptionsDict = {"maxiter": self.iterations,
                                  "tol": self.tolerance}
 
-    def _canSolveAssymetric(self):
+    def _canSolveAsymmetric(self):
         return True
 

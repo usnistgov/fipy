@@ -158,7 +158,7 @@ class FirstOrderAdvectionTerm(_NonDiffusionTerm):
         
         if solver and not solver._canSolveAsymmetric():
             import warnings
-            warnings.warn("%s cannot solve assymetric matrices" % solver)
+            warnings.warn("%s cannot solve asymmetric matrices" % solver)
 
         import fipy.solvers.solver
         if fipy.solvers.solver == 'trilinos' or fipy.solvers.solver == 'no-pysparse':
