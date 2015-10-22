@@ -144,11 +144,11 @@ class FirstOrderAdvectionTerm(_NonDiffusionTerm):
 
             coeff = numerix.array(self._getGeomCoeff(var))
 
-            coeffXdiffereneces = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
+            coeffXdifferences = coeff * ((coeff > 0.) * minsq + (coeff < 0.) * maxsq)
         else:
-            coeffXdiffereneces = 0.
+            coeffXdifferences = 0.
 
-        return (var, SparseMatrix(mesh=var.mesh), -coeffXdiffereneces * mesh.cellVolumes)
+        return (var, SparseMatrix(mesh=var.mesh), -coeffXdifferences * mesh.cellVolumes)
 
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
         return (adjacentValues - cellValues) / mesh._cellToCellDistances
@@ -158,7 +158,7 @@ class FirstOrderAdvectionTerm(_NonDiffusionTerm):
         
         if solver and not solver._canSolveAsymmetric():
             import warnings
-            warnings.warn("%s cannot solve assymetric matrices" % solver)
+            warnings.warn("%s cannot solve asymmetric matrices" % solver)
 
         import fipy.solvers.solver
         if fipy.solvers.solver == 'trilinos' or fipy.solvers.solver == 'no-pysparse':

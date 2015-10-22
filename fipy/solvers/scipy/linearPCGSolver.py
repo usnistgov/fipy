@@ -57,5 +57,5 @@ class LinearPCGSolver(_ScipyKrylovSolver):
         super(LinearPCGSolver, self).__init__(tolerance=tolerance, iterations=iterations, precon=precon)
         self.solveFnc = cg
 
-    def _canSolveAssymetric(self):
+    def _canSolveAsymmetric(self):
         return False

@@ -129,7 +129,7 @@ class _UnaryTerm(Term):
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
         if solver and not solver._canSolveAsymmetric():
             import warnings
-            warnings.warn("%s cannot solve assymetric matrices" % solver)        
+            warnings.warn("%s cannot solve asymmetric matrices" % solver)
         if self._vectorSize(var) > 1:
             from fipy.solvers import DefaultAsymmetricSolver
             return solver or DefaultAsymmetricSolver(*args, **kwargs)
