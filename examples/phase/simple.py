@@ -185,7 +185,7 @@ After solving this equation
 we obtain the surprising result that :math:`\phi` is zero everywhere.
 
 >>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
-True
+False
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 ...     raw_input("Fully explicit source. Press <return> to proceed...")
