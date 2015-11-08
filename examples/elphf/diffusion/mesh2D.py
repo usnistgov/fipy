@@ -189,6 +189,7 @@ and verify that the correct uniform concentrations are achieved
 
 
 """
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -204,5 +205,5 @@ if __name__ == '__main__':
     
     # profile.stop()
 	    
-    input("finished")
+    eval(input("finished"))
 

@@ -32,6 +32,7 @@
 
 from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals
 from builtins import str
 from past.utils import old_div
 import os

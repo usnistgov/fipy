@@ -106,6 +106,7 @@ evolution of their problem.
    :align: center
    :alt: snapshot of Cahn-Hilliard phase separation in 3D with cutaway
 """
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -113,6 +114,6 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
     
-    input('finished')
+    eval(input('finished'))
 
 

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from builtins import input
 #!/usr/bin/env python
 
@@ -100,6 +101,6 @@ class TrilinosMLTest(TrilinosSolver):
         Prec.ComputePreconditioner()
 
         Prec.TestSmoothers()
-        input("Results of preconditioner tests shown above. Currently, the first tests in the 'Gauss-Seidel (sym)','Aztec preconditioner', and 'Aztec as solver' sections indicate the expected performance of the MultilevelSGSPreconditioner, MultilevelDDPreconditioner, and MultilevelSolverSmootherPreconditioner classes, respectively.\n\nPress enter to quit.")
+        eval(input("Results of preconditioner tests shown above. Currently, the first tests in the 'Gauss-Seidel (sym)','Aztec preconditioner', and 'Aztec as solver' sections indicate the expected performance of the MultilevelSGSPreconditioner, MultilevelDDPreconditioner, and MultilevelSolverSmootherPreconditioner classes, respectively.\n\nPress enter to quit."))
         import sys
         sys.exit(0)

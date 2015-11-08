@@ -34,6 +34,7 @@
  # ###################################################################
  ##
 
+from __future__ import unicode_literals
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
 

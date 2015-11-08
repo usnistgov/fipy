@@ -32,6 +32,7 @@
  # ###################################################################
  ##
  
+from __future__ import unicode_literals
 from fipy.solvers.scipy.scipySolver import _ScipySolver
 from pyamg import solve
 import os

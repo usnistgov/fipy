@@ -1,9 +1,10 @@
 #!/usr/bin/env python
+# encoding: utf-8
 
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "fixedFlux.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -12,7 +13,7 @@
  #  Author: James Warren <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -23,16 +24,17 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -50,38 +52,38 @@ class FixedFlux(BoundaryCondition):
     fixed flux (Neumann condition), to the equation's RHS vector.  The
     contribution, given by `value`, is only added to entries corresponding to
     the specified `faces`, and is weighted by the face areas.
-       
+
     """
-    
+
     def __init__(self,faces,value):
         """
         Creates a `FixedFlux` object.
-        
+
         :Parameters:
             - `faces`: A `list` or `tuple` of `Face` objects to which this condition applies.
             - `value`: The value to impose.
-            
+
         """
         BoundaryCondition.__init__(self,faces,value)
         ## The extra index [self.faces.value] makes self.contribution the same length as self.adjacentCellIDs
         self.contribution = (self.value * self.faces.mesh._faceAreas)[self.faces.value]
-        
+
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Leave **L** unchanged and add gradient to **b**
-        
+
         :Parameters:
           - `SparseMatrix`: *unused* (empty matrix)
           - `Ncells`:       Size of **b**-vector
           - `MaxFaces`:     *unused*
           - `coeff`:        *unused*
         """
-        
+
         bb = numerix.zeros((Ncells,),'d')
 
         if not self.boundaryConditionApplied:
             vector.putAdd(bb, self.adjacentCellIDs, -self.contribution)
             self.boundaryConditionApplied = True
-         
+
         return (0, bb)
 
     def _getDerivative(self, order):
@@ -106,9 +108,9 @@ class FixedFlux(BoundaryCondition):
            True
         """
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     _test()

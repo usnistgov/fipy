@@ -1,8 +1,10 @@
+from __future__ import unicode_literals
 from fipy.tools.parser import _parseSolver
 from fipy.tools  import parallelComm as _parallelComm
 
 from fipy.solvers.solver import *
 __all__ = list(solver.__all__)
+
 
 solver = _parseSolver()
 
@@ -11,7 +13,7 @@ def _envSolver(solver):
     if solver is None and 'FIPY_SOLVERS' in os.environ:
         solver = os.environ['FIPY_SOLVERS'].lower()
     return solver
-    
+
 solver = _envSolver(solver)
 
 class SerialSolverError(Exception):
@@ -44,7 +46,7 @@ elif solver == "scipy":
     __all__.extend(scipy.__all__)
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
     _MeshMatrix = _ScipyMeshMatrix
-    
+
 elif solver == "pyamg":
     if _parallelComm.Nproc > 1:
         raise SerialSolverError('pyamg')
@@ -52,17 +54,17 @@ elif solver == "pyamg":
     __all__.extend(pyAMG.__all__)
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
     _MeshMatrix = _ScipyMeshMatrix
-    
+
 elif solver == "no-pysparse":
     from fipy.solvers.trilinos import *
     __all__.extend(trilinos.__all__)
     from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
-    _MeshMatrix =  _TrilinosMeshMatrix 
+    _MeshMatrix =  _TrilinosMeshMatrix
 
 elif solver is None:
     # If no argument or environment variable, try importing them and seeing
     # what works
-    
+
     exceptions = []
 
     try:
@@ -113,10 +115,10 @@ elif solver is None:
                 except (ImportError, SerialSolverError) as inst:
                     exceptions.append(inst)
                     import warnings
-                    warnings.warn("Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK.") 
+                    warnings.warn("Could not import any solver package. If you are using Trilinos, make sure you have all of the necessary Trilinos packages installed - Epetra, EpetraExt, AztecOO, Amesos, ML, and IFPACK.")
                     for inst in exceptions:
                         warnings.warn(inst.__class__.__name__ + ': ' + inst.message)
-                        
+
 
 else:
     raise ImportError('Unknown solver package %s' % solver)
@@ -129,3 +131,4 @@ register_skipper(flag='PYSPARSE_SOLVER',
                  why="the PySparse solvers are not being used.",
                  skipWarning=True)
 
+__all__ = [str(entry) for entry in __all__]

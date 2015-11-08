@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python

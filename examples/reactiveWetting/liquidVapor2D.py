@@ -208,6 +208,7 @@ A 2D version of the 1D example.
 ...     raw_input('finished')
 
 """
+from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

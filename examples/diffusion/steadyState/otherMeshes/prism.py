@@ -66,6 +66,7 @@ The result is again tested in the same way:
     1
 
 """
+from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

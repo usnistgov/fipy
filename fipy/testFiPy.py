@@ -32,6 +32,7 @@
  # ###################################################################
  ##
 
+from __future__ import unicode_literals
 __all__ = []
 
 from fipy.tests.lateImportTest import _LateImportTestSuite

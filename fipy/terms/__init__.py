@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 class ExplicitVariableError(Exception):
     def __init__(self, s='Terms with explicit Variables cannot mix with Terms with implicit Variables.'):
         Exception.__init__(self, s)
@@ -57,7 +58,7 @@ __all__ = ["ExplicitVariableError",
            "ConvectionTerm",
            "FirstOrderAdvectionTerm",
            "AdvectionTerm"]
-           
+
 __all__.extend(transientTerm.__all__)
 __all__.extend(diffusionTerm.__all__)
 __all__.extend(diffusionTermCorrection.__all__)
@@ -75,3 +76,5 @@ __all__.extend(upwindConvectionTerm.__all__)
 __all__.extend(vanLeerConvectionTerm.__all__)
 __all__.extend(firstOrderAdvectionTerm.__all__)
 __all__.extend(advectionTerm.__all__)
+
+__all__ = [str(entry) for entry in __all__]

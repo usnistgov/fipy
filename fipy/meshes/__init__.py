@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from fipy.meshes.factoryMeshes import *
 from fipy.meshes.periodicGrid1D import *
 from fipy.meshes.periodicGrid2D import *
@@ -15,3 +16,4 @@ __all__.extend(skewedGrid2D.__all__)
 __all__.extend(tri2D.__all__)
 __all__.extend(gmshMesh.__all__)
 
+__all__ = [str(entry) for entry in __all__]

@@ -34,6 +34,7 @@
  ##
 
 from __future__ import division
+from __future__ import unicode_literals
 from builtins import str
 from builtins import range
 from past.utils import old_div

@@ -64,6 +64,7 @@ The result is again tested in the same way:
 
 """
 from __future__ import print_function
+from __future__ import unicode_literals
 from builtins import input
 from builtins import range
 
@@ -110,5 +111,5 @@ if __name__ == '__main__':
     print(var)
     viewer = Viewer(vars = var)
     viewer.plot()
-    input('finished')
+    eval(input('finished'))
 

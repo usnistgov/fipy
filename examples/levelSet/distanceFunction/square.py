@@ -73,6 +73,7 @@ Do the tests:
 
 """
 from __future__ import division
+from __future__ import unicode_literals
 from builtins import input
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
@@ -103,4 +104,4 @@ if __name__ == '__main__':
     var.calcDistanceFunction(order=1)
     viewer = Viewer(vars=var, maxval=-5., minval=5.)
     viewer.plot()
-    input('finished')
+    eval(input('finished'))

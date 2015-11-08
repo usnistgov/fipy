@@ -32,6 +32,7 @@
  # ###################################################################
  ##
 
+from __future__ import unicode_literals
 from fipy.solvers.scipy.linearCGSSolver import LinearCGSSolver as ScipyLinearCGSSolver
 from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
     

@@ -41,6 +41,7 @@ True
 """
 from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals
 from builtins import input
 from builtins import range
 from past.utils import old_div
@@ -73,7 +74,7 @@ if  __name__ == '__main__':
     from fipy import MatplotlibViewer as Viewer
     vi = Viewer((q[0], q[1]))
     vi.plot()
-    input('press key')
+    eval(input('press key'))
     
 for step in range(500):
     eqn.solve(q, dt=cfl * dx)
@@ -85,4 +86,4 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    input('finished')
+    eval(input('finished'))

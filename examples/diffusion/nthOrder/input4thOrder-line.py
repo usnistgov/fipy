@@ -48,6 +48,7 @@
 """
 from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals
 from builtins import input
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
@@ -80,4 +81,4 @@ if __name__ == '__main__':
     viewer.plot()
 
     print(var.allclose(mesh.cellCenters[0], atol = 10))
-    input("finished")
+    eval(input("finished"))

@@ -201,6 +201,7 @@ Display the results if run as a script.
    :align: center
    :alt: steady-state solution to diffusion on a circular mesh
 """
+from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from fipy.solvers.pysparse.linearCGSSolver import *
 from fipy.solvers.pysparse.linearPCGSolver import *
 from fipy.solvers.pysparse.linearGMRESSolver import *

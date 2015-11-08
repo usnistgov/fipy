@@ -1,4 +1,5 @@
 from __future__ import division
+from __future__ import unicode_literals
 from builtins import input
 from builtins import range
 from past.utils import old_div
@@ -90,7 +91,7 @@ for refinement in range(10):
 #     resviewer = Viewer(vars=res1a, log=True, datamin=1e-6, datamax=1e-2, cmap=cm.gray)
 #     monviewer = Viewer(vars=monitor, log=True, datamin=1e-3, datamax=1)
  
-    input("refinement %d, res0: %g, res: %g:%g, N: %d, min: %g, max: %g, avg: %g" 
-              % (refinement, res0, res1, res1a.cellVolumeAverage, mesh.numberOfCells, sqrt(min(mesh.cellVolumes)), sqrt(max(mesh.cellVolumes)), mean(sqrt(mesh.cellVolumes))))
+    eval(input("refinement %d, res0: %g, res: %g:%g, N: %d, min: %g, max: %g, avg: %g" 
+              % (refinement, res0, res1, res1a.cellVolumeAverage, mesh.numberOfCells, sqrt(min(mesh.cellVolumes)), sqrt(max(mesh.cellVolumes)), mean(sqrt(mesh.cellVolumes)))))
     
     

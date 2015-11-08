@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from fipy.solvers.trilinos.preconditioners.multilevelDDPreconditioner import *
 from fipy.solvers.trilinos.preconditioners.multilevelSAPreconditioner import *
 from fipy.solvers.trilinos.preconditioners.multilevelDDMLPreconditioner import *

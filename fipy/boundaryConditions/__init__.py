@@ -1,3 +1,7 @@
+# coding: utf-8
+
+from __future__ import unicode_literals
+
 from fipy.boundaryConditions.constraint import *
 from fipy.boundaryConditions.fixedFlux import *
 from fipy.boundaryConditions.fixedValue import *
@@ -8,3 +12,5 @@ __all__.extend(constraint.__all__)
 __all__.extend(fixedFlux.__all__)
 __all__.extend(fixedValue.__all__)
 __all__.extend(nthOrderBoundaryCondition.__all__)
+
+__all__ = [str(entry) for entry in __all__]

@@ -36,6 +36,7 @@
 Input file for parameters
 
 """
+from __future__ import unicode_literals
 
 parameters = { 'case 1' : { 'P3'             : 0.21967,
                             'P2'             : 0.47202,

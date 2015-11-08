@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from builtins import input
 #!/usr/bin/env python
 
@@ -87,7 +88,7 @@ class FaceTerm(_NonDiffusionTerm):
                 self._viewer.title = r"%s %s" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
                 self._viewer.plot(matrix=LL, RHSvector=bb)
                 from fipy import raw_input
-                input()
+                eval(input())
                     
             L += LL
             b += bb

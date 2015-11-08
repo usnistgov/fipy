@@ -33,6 +33,7 @@
  ##
 
 from __future__ import division
+from __future__ import unicode_literals
 from builtins import input
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
@@ -276,7 +277,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 self._viewer.title = r"%s %s" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
                 self._viewer.plot(matrix=LL, RHSvector=bb)
                 from fipy import raw_input
-                input()
+                eval(input())
             self.__bcAdd(coefficientMatrix, boundaryB, LL, bb) 
             
         return coefficientMatrix, boundaryB

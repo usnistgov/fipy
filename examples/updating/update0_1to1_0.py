@@ -318,6 +318,7 @@ appropriate for the supplied `Variable` object(s):
 Please do not hesitate to contact us if this example does not help you
 convert your existing scripts to :term:`FiPy` 1.0.
 """
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -327,4 +328,4 @@ def _test():
     
 if __name__ == "__main__": 
     _test() 
-    input('finished')
+    eval(input('finished'))

@@ -866,6 +866,7 @@ mixture of plain scripts and doctest documentation/tests.
 .. .. bibmissing:: /documentation/refs.bib
     :sort:
 """
+from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

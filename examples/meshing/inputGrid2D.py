@@ -83,6 +83,7 @@ One can view the mesh with the following code,
    ...     viewer.plot()
    
 """
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -92,4 +93,4 @@ def _run():
     
 if __name__ == '__main__':
     _run()
-    input("finished")
+    eval(input("finished"))

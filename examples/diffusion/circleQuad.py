@@ -198,6 +198,7 @@ Display the results if run as a script.
    :width: 90%
    :align: center
 """
+from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

@@ -34,6 +34,7 @@
  # ###################################################################
  ##
 
+from __future__ import unicode_literals
 __all__ = []
 
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable

@@ -34,6 +34,7 @@
  # ###################################################################
  ##
 
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random

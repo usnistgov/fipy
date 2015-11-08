@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from builtins import range
 from builtins import object
 93#!/usr/bin/env python

@@ -50,6 +50,7 @@ The result is again tested in the same way:
     1
 
 """
+from __future__ import unicode_literals
 from builtins import input
 
 __docformat__ = 'restructuredtext'
@@ -78,4 +79,4 @@ if __name__ == '__main__':
     
     viewer = Viewer(vars=var, datamin=0., datamax=1.)
     viewer.plot()
-    input("finished")
+    eval(input("finished"))

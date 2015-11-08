@@ -33,6 +33,7 @@
  ##
 
 from __future__ import division
+from __future__ import unicode_literals
 from builtins import input
 from builtins import object
 from past.utils import old_div
@@ -180,7 +181,7 @@ class Term(object):
                 RHSvector = solver.RHSvector
             self._viewer.plot(matrix=solver.matrix, RHSvector=RHSvector)
             from fipy import raw_input            
-            input()
+            eval(input())
             
         return solver
     

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from fipy.variables.variable import *
 from fipy.variables.cellVariable import *
 from fipy.variables.faceVariable import *
@@ -28,3 +29,5 @@ __all__.extend(histogramVariable.__all__)
 __all__.extend(surfactantVariable.__all__)
 __all__.extend(surfactantConvectionVariable.__all__)
 __all__.extend(distanceVariable.__all__)
+
+__all__ = [str(entry) for entry in __all__]

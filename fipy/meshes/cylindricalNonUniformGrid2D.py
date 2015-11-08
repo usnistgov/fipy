@@ -35,6 +35,7 @@
 """
 2D rectangular Mesh
 """
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 

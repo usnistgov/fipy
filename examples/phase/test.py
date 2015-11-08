@@ -30,6 +30,7 @@
  # ###################################################################
  ##
 
+from __future__ import unicode_literals
 from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
 

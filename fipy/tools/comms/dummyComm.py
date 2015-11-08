@@ -34,6 +34,7 @@
  # ###################################################################
  ##
 
+from __future__ import unicode_literals
 from fipy.tools import numerix
 from fipy.tools.comms.serialCommWrapper import SerialCommWrapper
 

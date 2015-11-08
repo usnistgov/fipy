@@ -35,6 +35,7 @@
 """
 Peridoic 1D Mesh
 """
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix

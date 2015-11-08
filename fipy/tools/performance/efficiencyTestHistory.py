@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import unicode_literals
 ##This script runs on using "file", which is created with the command $svn log --xml --incremental > file
 ##Update file if there is a new revision to /trunk/examples. Otherwise you may ignore this.
 

@@ -34,6 +34,7 @@
  # ###################################################################
  ##
 
+from __future__ import unicode_literals
 from fipy.tools.comms.commWrapper import CommWrapper
 from fipy.tools import numerix
 

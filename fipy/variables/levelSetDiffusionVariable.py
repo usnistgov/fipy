@@ -32,6 +32,7 @@
  # ###################################################################
  ##
 
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = []

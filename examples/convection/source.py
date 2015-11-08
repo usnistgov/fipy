@@ -83,6 +83,7 @@ True
 
 
 """
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

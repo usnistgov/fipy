@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 def _dealWithTrilinosImportPathologies():
     ## The import scipy statement is added to allow PyTrilinos to run
     ## without throwing a segmentation fault. This is caused by weird

@@ -99,6 +99,7 @@ Compare the analaytical and numerical results:
 from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from builtins import input
 from builtins import range
 from past.utils import old_div
@@ -188,4 +189,4 @@ if __name__ == "__main__":
         bulkEqn.solve(bulkVar, dt = dt)
         currentTime += dt
 
-    input("finished")
+    eval(input("finished"))

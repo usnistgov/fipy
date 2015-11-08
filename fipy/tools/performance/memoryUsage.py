@@ -37,6 +37,7 @@ This python script is ripped from
 http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/286222/index_txt
 
 """
+from __future__ import unicode_literals
 
 __all__ = []
 

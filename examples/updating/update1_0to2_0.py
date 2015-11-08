@@ -314,5 +314,6 @@ to indicate that we may not maintain the old syntax indefinitely.
    
 .. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
 """
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 

@@ -161,6 +161,7 @@ resemble the image below.
 from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from builtins import input
 from builtins import range
 from past.utils import old_div
@@ -338,4 +339,4 @@ __all__ = ["runSimpleTrenchSystem"]
 
 if __name__ == '__main__':
     runSimpleTrenchSystem(numberOfSteps = 800, cellSize = 0.05e-7)
-    input("finished")
+    eval(input("finished"))

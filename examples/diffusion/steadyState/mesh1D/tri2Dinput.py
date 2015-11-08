@@ -67,6 +67,7 @@ tolerance of `1e-10`.
 
 """
 from __future__ import print_function
+from __future__ import unicode_literals
 from builtins import input
 
 __docformat__ = 'restructuredtext'
@@ -93,4 +94,4 @@ if __name__ == '__main__':
     Lx = nx * dx
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     print(var.allclose(analyticalArray))
-    input("finished")
+    eval(input("finished"))
