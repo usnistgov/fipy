@@ -32,6 +32,9 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -182,7 +185,7 @@ class _PysparseMatrix(_SparseMatrix):
 
     @property
     def _range(self):
-        return range(self._shape[1]), range(self._shape[0])
+        return list(range(self._shape[1])), list(range(self._shape[0]))
         
     def put(self, vector, id1, id2):
         """
@@ -341,7 +344,7 @@ class _PysparseMeshMatrix(_PysparseMatrixFromShape):
             if A.shape[0] == 0:
                 bandwidth = 0
             else:
-                bandwidth = int(numerix.ceil(float(len(values)) / float(A.shape[0])))
+                bandwidth = int(numerix.ceil(old_div(float(len(values)), float(A.shape[0]))))
             bandwidth = 1
             from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrixKeepStencil
             self.trilinosMatrix = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth, 

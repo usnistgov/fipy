@@ -87,6 +87,10 @@ data and compares it with the ``phase`` variable.
 1
 
 """
+from __future__ import division
+from builtins import input
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import *
@@ -106,8 +110,8 @@ epsilon = 0.008
 s = 0.01
 alpha = 0.015
       
-dx = L / nx
-dy = L / ny
+dx = old_div(L, nx)
+dy = old_div(L, ny)
 
 mesh = Grid2D(dx, dy, nx, ny)
 
@@ -115,7 +119,7 @@ phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 1.)
 x, y = mesh.cellCenters
-theta.setValue(0., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2)
+theta.setValue(0., where=(x - old_div(L, 2.))**2 + (y - old_div(L, 2.))**2 < (old_div(L, 4.))**2)
 
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 thetaMag = theta.old.grad.mag
@@ -134,4 +138,4 @@ if __name__ == '__main__':
     for step in range(steps):
         phaseEq.solve(phase, dt = timeStepDuration)
         phaseViewer.plot()
-    raw_input('finished')
+    input('finished')

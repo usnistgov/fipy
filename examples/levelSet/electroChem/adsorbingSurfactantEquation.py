@@ -33,6 +33,9 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from builtins import object
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
@@ -41,7 +44,7 @@ from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.variables.surfactantConvectionVariable import SurfactantConvectionVariable
 from fipy.terms.transientTerm import TransientTerm
 
-class AdsorbingSurfactantEquation():
+class AdsorbingSurfactantEquation(object):
     r"""
 
     The `AdsorbingSurfactantEquation` object solves the
@@ -287,7 +290,7 @@ class AdsorbingSurfactantEquation():
             total += var.interfaceVar
         maxVar = (total > 1) * distanceVar._cellInterfaceFlag
 
-        val = distanceVar.cellInterfaceAreas / mesh.cellVolumes
+        val = old_div(distanceVar.cellInterfaceAreas, mesh.cellVolumes)
         for var in vars[1:]:
             val -= distanceVar._cellInterfaceFlag * var
         

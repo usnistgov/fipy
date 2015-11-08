@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import str
 #!/usr/bin/env python
 
 ## -*-Pyth-*-
@@ -105,13 +107,13 @@ def _TestClass(base):
             
                 
             if self.viewers:
-                print "*" * 60
-                print "*" + "".center(58) + "*"
-                print "*" + "ATTENTION".center(58) + "*"
-                print "*" + "".center(58) + "*"
-                print "*" + "Some of the following tests require user interaction".center(58) + "*"
-                print "*" + "".center(58) + "*"
-                print "*" * 60
+                print("*" * 60)
+                print("*" + "".center(58) + "*")
+                print("*" + "ATTENTION".center(58) + "*")
+                print("*" + "".center(58) + "*")
+                print("*" + "Some of the following tests require user interaction".center(58) + "*")
+                print("*" + "".center(58) + "*")
+                print("*" * 60)
                 
                 self.test_args.append("fipy.viewers.testinteractive._suite")
 
@@ -133,50 +135,50 @@ def _TestClass(base):
                     mod = __import__(pkg)
                     
                     if hasattr(mod, '__version__'):
-                        print pkg,'version',mod.__version__
+                        print(pkg,'version',mod.__version__)
                     else:
-                        print pkg,'version not available'
+                        print(pkg,'version not available')
                         
-                except ImportError, e:
-                    print pkg,'is not installed'
+                except ImportError as e:
+                    print(pkg,'is not installed')
                     
-                except Exception, e:
-                    print pkg, 'version check failed:', e
+                except Exception as e:
+                    print(pkg, 'version check failed:', e)
 
             ## PyTrilinos
             try:
                 import PyTrilinos
-                print PyTrilinos.version()
-            except ImportError, e:
-                print pkg,'is not installed'
-            except Exception, e:
-                print pkg, 'version check failed:', e
+                print(PyTrilinos.version())
+            except ImportError as e:
+                print(pkg,'is not installed')
+            except Exception as e:
+                print(pkg, 'version check failed:', e)
 
             ## Mayavi uses a non-standard approach for storing its version nummber.
             try:
                 from mayavi.__version__ import __version__ as mayaviversion
-                print 'mayavi version', mayaviversion
-            except ImportError, e:
+                print('mayavi version', mayaviversion)
+            except ImportError as e:
                 try:
                     from enthought.mayavi.__version__ import __version__ as mayaviversion
-                    print 'enthought.mayavi version', mayaviversion
-                except ImportError, e:
-                    print 'enthought.mayavi is not installed'       
-                except Exception, e:
-                    print 'enthought.mayavi version check failed:', e
-            except Exception, e:
-                print 'mayavi version check failed:', e
+                    print('enthought.mayavi version', mayaviversion)
+                except ImportError as e:
+                    print('enthought.mayavi is not installed')       
+                except Exception as e:
+                    print('enthought.mayavi version check failed:', e)
+            except Exception as e:
+                print('mayavi version check failed:', e)
 
             ## Gmsh version
             try:
                 from fipy.meshes.gmshMesh import gmshVersion
                 gmshversion = gmshVersion()
                 if gmshversion is None:
-                    print 'gmsh is not installed'
+                    print('gmsh is not installed')
                 else:
-                    print 'gmsh version',gmshversion
-            except Exception, e:
-                print 'gmsh version check failed:', e
+                    print('gmsh version',gmshversion)
+            except Exception as e:
+                print('gmsh version check failed:', e)
 
         def run_tests(self):
             import sys
@@ -192,15 +194,15 @@ def _TestClass(base):
                     except:
                         pass
                     import PyTrilinos
-                except ImportError, a:
-                    print >>sys.stderr, "!!! Trilinos library is not installed"
+                except ImportError as a:
+                    print("!!! Trilinos library is not installed", file=sys.stderr)
                     return
 
             if self.inline:
                 try:
                     from scipy import weave
-                except ImportError, a:
-                    print >>sys.stderr, "!!! weave library is not installed"
+                except ImportError as a:
+                    print("!!! weave library is not installed", file=sys.stderr)
                     return
                     
             if self.pythoncompiled is not None:
@@ -219,7 +221,7 @@ def _TestClass(base):
                     None, None, [unittest.__file__]+self.test_args,
                     testLoader = loader_class()
                     )
-            except SystemExit, exitErr:
+            except SystemExit as exitErr:
                 # unittest.main(..., exit=...) not available until Python 2.7
                 from fipy.tests.doctestPlus import report_skips
                 report_skips()

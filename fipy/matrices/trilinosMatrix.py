@@ -33,6 +33,10 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from builtins import str
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -116,7 +120,7 @@ class _TrilinosMatrix(_SparseMatrix):
 
     @property
     def _range(self):
-        return (range(self.rowMap.NumGlobalElements()), self.rowMap.MyGlobalElements())
+        return (list(range(self.rowMap.NumGlobalElements())), self.rowMap.MyGlobalElements())
 
     def __setitem__(self, index, value):
         self.matrix[index] = value
@@ -141,8 +145,7 @@ class _TrilinosMatrix(_SparseMatrix):
             # Depending on which one is more filled, pick the order of operations 
             if self.matrix.Filled() and other.matrix.NumGlobalNonzeros() \
                                             > self.matrix.NumGlobalNonzeros():
-                tempBandwidth = other.matrix.NumGlobalNonzeros() \
-                                 /self.matrix.NumGlobalRows()+1
+                tempBandwidth = old_div(other.matrix.NumGlobalNonzeros(),self.matrix.NumGlobalRows())+1
 
                 tempMatrix = Epetra.CrsMatrix(Epetra.Copy, self.rowMap, tempBandwidth)
                 
@@ -542,7 +545,7 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
         """
         size = max(rows, cols)
         if sizeHint is not None and bandwidth == 0:
-            bandwidth = (sizeHint + size - 1) / (size or 1) 
+            bandwidth = old_div((sizeHint + size - 1), (size or 1)) 
         else:
             bandwidth = bandwidth
             
@@ -552,12 +555,12 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
             # Matrix building gets done on one processor - it gets the map for
             # all the rows
             if comm.MyPID() == 0:
-                rowMap = Epetra.Map(rows, range(0, rows), 0, comm)
+                rowMap = Epetra.Map(rows, list(range(0, rows)), 0, comm)
             else: 
                 rowMap = Epetra.Map(rows, [], 0, comm)
 
         if colMap is None:
-           colMap = Epetra.Map(cols, range(0, cols), 0, comm)
+           colMap = Epetra.Map(cols, list(range(0, cols)), 0, comm)
 
         matrix = Epetra.CrsMatrix(Epetra.Copy, rowMap, (bandwidth*3)//2)
 
@@ -636,7 +639,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
     @property
     def _globalCommonColIDs(self):
-        return range(0, self.numberOfVariables, self.mesh.globalNumberOfCells)
+        return list(range(0, self.numberOfVariables, self.mesh.globalNumberOfCells))
                      
     @property
     def _globalOverlappingColIDs(self):

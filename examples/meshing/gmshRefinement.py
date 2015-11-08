@@ -1,3 +1,7 @@
+from __future__ import division
+from builtins import input
+from builtins import range
+from past.utils import old_div
 from fipy import *
 
 from matplotlib import cm
@@ -72,12 +76,12 @@ for refinement in range(10):
     res1 = L2norm(res)
     res1a = CellVariable(mesh=mesh, value=abs(res))
     
-    res = CellVariable(mesh=mesh, name="residual", value=abs(res) / mesh.cellVolumes**(1./mesh.dim) / 1e-3)
+    res = CellVariable(mesh=mesh, name="residual", value=abs(res) / mesh.cellVolumes**(old_div(1.,mesh.dim)) / 1e-3)
     
     # want cells no bigger than 1 and no smaller than 0.001
     maxSize = 1.
     minSize = 0.001
-    monitor = CellVariable(mesh=mesh, name="monitor", value= 1. / (res + maxSize) +  minSize)
+    monitor = CellVariable(mesh=mesh, name="monitor", value= old_div(1., (res + maxSize)) +  minSize)
 
     viewer = Viewer(vars=potential, xmin=3.5, xmax=4.5, ymin=3.5, ymax=4.5)
 #     viewer = Viewer(vars=(potential, charge))
@@ -86,7 +90,7 @@ for refinement in range(10):
 #     resviewer = Viewer(vars=res1a, log=True, datamin=1e-6, datamax=1e-2, cmap=cm.gray)
 #     monviewer = Viewer(vars=monitor, log=True, datamin=1e-3, datamax=1)
  
-    raw_input("refinement %d, res0: %g, res: %g:%g, N: %d, min: %g, max: %g, avg: %g" 
+    input("refinement %d, res0: %g, res: %g:%g, N: %d, min: %g, max: %g, avg: %g" 
               % (refinement, res0, res1, res1a.cellVolumeAverage, mesh.numberOfCells, sqrt(min(mesh.cellVolumes)), sqrt(max(mesh.cellVolumes)), mean(sqrt(mesh.cellVolumes))))
     
     

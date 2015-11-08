@@ -39,6 +39,11 @@ Test
 True
 
 """
+from __future__ import division
+from __future__ import print_function
+from builtins import input
+from builtins import range
+from past.utils import old_div
 
 __docformat__ = 'restructuredtext'
 
@@ -51,7 +56,7 @@ cfl = 0.1
 K = 4.
 rho = 1.
 
-dx = L / nx
+dx = old_div(L, nx)
 m = Grid1D(nx=nx, dx=dx) + X0
 x, = m.cellCenters
 
@@ -60,7 +65,7 @@ q = CellVariable(mesh=m, rank=1, elementshape=(2,))
 q[0,:] = numerix.exp(-50 * (x - 0.3)**2) * numerix.cos(20 * (x - 0.3))
 q[0, x > 0.3] = 0.
 
-Ax = FaceVariable(mesh=m, rank=3, value=[((0, K), (1 / rho, 0))], elementshape=(1, 2, 2))
+Ax = FaceVariable(mesh=m, rank=3, value=[((0, K), (old_div(1, rho), 0))], elementshape=(1, 2, 2))
 
 eqn = TransientTerm() + CentralDifferenceConvectionTerm(Ax) == 0
 
@@ -68,16 +73,16 @@ if  __name__ == '__main__':
     from fipy import MatplotlibViewer as Viewer
     vi = Viewer((q[0], q[1]))
     vi.plot()
-    raw_input('press key')
+    input('press key')
     
 for step in range(500):
     eqn.solve(q, dt=cfl * dx)
     if step % 10 ==  0 and  __name__ == '__main__':
-        print 'step',step
+        print('step',step)
         vi.plot()
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')

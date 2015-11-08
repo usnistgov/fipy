@@ -47,6 +47,7 @@ The result is again tested in the same way:
     1
 
 """
+from builtins import input
 
 from fipy import *
 
@@ -71,4 +72,4 @@ if __name__ == '__main__':
     DiffusionTerm().solve(var)
     viewer = Viewer(vars = var)
     viewer.plot()
-    raw_input("finished")
+    input("finished")

@@ -1,3 +1,4 @@
+from builtins import zip
 #!/usr/bin/env python
 
 ## -*-Pyth-*-
@@ -130,7 +131,7 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
             vars = [var for var in vars if var.mesh is vars[0].mesh]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "Can only plot 1D data"
+            raise MeshDimensionError("Can only plot 1D data")
         return vars
 
     def _plot(self):

@@ -35,6 +35,8 @@
 """
 2D cylindrical rectangular Mesh with constant spacing in x and constant spacing in y
 """
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.uniformGrid2D import UniformGrid2D
@@ -76,9 +78,9 @@ class CylindricalUniformGrid2D(UniformGrid2D):
     def _cellAreas(self):
         areas = numerix.ones((4, self.numberOfCells), 'd')
         areas[0] = self.dx * self._cellCenters[0]
-        areas[1] = self.dy * (self._cellCenters[0] + self.dx / 2)
+        areas[1] = self.dy * (self._cellCenters[0] + old_div(self.dx, 2))
         areas[2] = self.dx * self._cellCenters[0]
-        areas[3] = self.dy * (self._cellCenters[0] - self.dx / 2)
+        areas[3] = self.dy * (self._cellCenters[0] - old_div(self.dx, 2))
         return areas
  
     """

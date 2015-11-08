@@ -33,6 +33,8 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = ['SurfactantConvectionVariable']
@@ -125,7 +127,7 @@ class SurfactantConvectionVariable(FaceVariable):
 
         alphasum = numerix.sum(alpha, axis=0)
         alphasum += (alphasum < 1e-100) * 1.0
-        alpha = alpha / alphasum
+        alpha = old_div(alpha, alphasum)
 
         phi = numerix.repeat(self.distanceVar[numerix.newaxis, ...], M, axis=0)
         alpha = numerix.where(phi > 0., 0, alpha)
@@ -139,7 +141,7 @@ class SurfactantConvectionVariable(FaceVariable):
 
 ##         value = numerix.reshape(value, (dim, Nfaces, dim))
 
-        return -value / self.mesh._faceAreas
+        return old_div(-value, self.mesh._faceAreas)
 
 def _test(): 
     import fipy.tests.doctestPlus

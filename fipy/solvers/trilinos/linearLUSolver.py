@@ -33,6 +33,9 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 import os
@@ -88,7 +91,7 @@ class LinearLUSolver(TrilinosSolver):
              if iteration == 0:
                  tol0 = tol
                  
-             if (tol / tol0) <= self.tolerance: 
+             if (old_div(tol, tol0)) <= self.tolerance: 
                  break
 
              xError = Epetra.Vector(L.RowMap())

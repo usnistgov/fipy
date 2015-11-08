@@ -197,6 +197,7 @@ If we are running interactively, we plot the error
    :align: center
    :alt: error in solution to steady-state phase field equation
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
@@ -211,5 +212,5 @@ if __name__ == '__main__':
 
 ##     profile.stop()
 	    
-    raw_input("finished")
+    input("finished")
 

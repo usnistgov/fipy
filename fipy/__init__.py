@@ -162,7 +162,7 @@ def test(*args):
               script_args = ['egg_info', '--egg-base=' + tmpDir,
                              'test', '--modules'] + list(args),
               cmdclass={'test': _TestClass(_test)})
-    except SystemExit, exitErr:
+    except SystemExit as exitErr:
         import shutil
         shutil.rmtree(tmpDir)
         raise exitErr

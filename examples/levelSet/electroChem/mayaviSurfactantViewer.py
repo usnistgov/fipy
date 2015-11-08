@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from builtins import range
 #!/usr/bin/env python
 
 ## -*-Pyth-*-
@@ -143,9 +145,9 @@ class MayaviSurfactantViewer(AbstractViewer):
         shiftedCoords[:,0] = -coordinates[:,0] ##+ (maxX - minX)
         coordinates = numerix.concatenate((coordinates, shiftedCoords))
 
-        from lines import _getOrderedLines
+        from .lines import _getOrderedLines
 
-        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.mesh._cellDistances.min() * 10)
+        lines = _getOrderedLines(list(range(2 * len(IDs))), coordinates, thresholdDistance = self.distanceVar.mesh._cellDistances.min() * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
 
@@ -188,10 +190,10 @@ class MayaviSurfactantViewer(AbstractViewer):
         ## making lists as pyvtk doesn't know what to do with numpy arrays
 
         coords = list(coords)
-        coords = map(lambda coord: [float(coord[0]),float(coord[1]), float(coord[2])], coords)
+        coords = [[float(coord[0]),float(coord[1]), float(coord[2])] for coord in coords]
 
         data = list(data)
-        data = map(lambda item: float(item), data)
+        data = [float(item) for item in data]
 
         return (pyvtk.UnstructuredGrid(points = coords,
                                        poly_line = lines),

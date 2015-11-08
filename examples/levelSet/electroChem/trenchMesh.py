@@ -33,12 +33,15 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from __future__ import absolute_import
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import parallelComm
-from gapFillMesh import GapFillMesh
+from .gapFillMesh import GapFillMesh
 
 class TrenchMesh(GapFillMesh):
 
@@ -123,11 +126,11 @@ class TrenchMesh(GapFillMesh):
 
         heightBelowTrench = cellSize * 10.
 
-        heightAboveTrench = trenchDepth / 1.
+        heightAboveTrench = old_div(trenchDepth, 1.)
 
         fineRegionHeight = heightBelowTrench + trenchDepth + heightAboveTrench
         transitionHeight = fineRegionHeight * 3.
-        domainWidth = trenchSpacing / 2.
+        domainWidth = old_div(trenchSpacing, 2.)
         domainHeight = heightBelowTrench + trenchDepth + boundaryLayerDepth
 
         super(TrenchMesh, self).__init__(cellSize=cellSize,
@@ -137,16 +140,16 @@ class TrenchMesh(GapFillMesh):
                                          transitionRegionHeight=transitionHeight,
                                          communicator=parallelComm)
 
-        trenchWidth = trenchDepth / aspectRatio
+        trenchWidth = old_div(trenchDepth, aspectRatio)
 
         x, y = self.cellCenters
-        Y = (y - (heightBelowTrench + trenchDepth / 2))
+        Y = (y - (heightBelowTrench + old_div(trenchDepth, 2)))
         taper = numerix.tan(angle) * Y
         self.electrolyteMask = numerix.where(y > trenchDepth + heightBelowTrench,
                                              1,
                                              numerix.where(y < heightBelowTrench,
                                                            0,
-                                                           numerix.where(x > trenchWidth / 2 + taper,
+                                                           numerix.where(x > old_div(trenchWidth, 2) + taper,
                                                                          0,
                                                                          1)))
     

@@ -66,6 +66,11 @@ The result is again tested in the same way:
     1
 
 """
+from __future__ import division
+from __future__ import print_function
+from builtins import input
+from builtins import range
+from past.utils import old_div
 from fipy import *
 
 dx = 1.
@@ -118,10 +123,10 @@ if __name__ == '__main__':
         var.updateOld()        
         eqn.solve(var, dt=timeStepDuration)
         if(not (step % 100)):
-            print (step / 100)
-    print var
+            print (old_div(step, 100))
+    print(var)
     theMask = array([[10, 1, 20, 2]])
     viewer.plot()
 ##     viewer.plot(mask = theMask, graphwidth = 15, graphheight = 3)
-    raw_input('finished')
+    input('finished')
 

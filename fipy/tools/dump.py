@@ -1,3 +1,5 @@
+from future import standard_library
+standard_library.install_aliases()
 #!/usr/bin/env python
 
 ## -*-Pyth-*-
@@ -36,7 +38,7 @@
 
 __docformat__ = 'restructuredtext'
 
-import cPickle
+import pickle
 import os
 import sys
 import gzip
@@ -80,7 +82,7 @@ def write(data, filename = None, extension = '', communicator=parallelComm):
         fileStream = open(os.devnull, mode='w')
         (f, _filename) = (None, os.devnull)
         
-    cPickle.dump(data, fileStream, 0)
+    pickle.dump(data, fileStream, 0)
     fileStream.close()
         
     if filename is None:
@@ -112,13 +114,13 @@ def read(filename, fileobject=None, communicator=parallelComm, mesh_unmangle=Fal
         data = communicator.bcast(data, root=0)
 
     if sys.version_info < (3,0):
-        import StringIO
-        f = StringIO.StringIO(data)
+        import io
+        f = io.StringIO(data)
     else:
         import io
         f = io.BytesIO(data)
         
-    unpickler = cPickle.Unpickler(f)
+    unpickler = pickle.Unpickler(f)
     
     if mesh_unmangle:
         def find_class(module, name):
@@ -129,7 +131,7 @@ def read(filename, fileobject=None, communicator=parallelComm, mesh_unmangle=Fal
             from fipy import meshes
             import types
             
-            if isinstance(klass, types.ClassType) and issubclass(klass, meshes.mesh.Mesh):
+            if isinstance(klass, type) and issubclass(klass, meshes.mesh.Mesh):
                 class UnmangledMesh(klass):
                     def __setstate__(self, dict):
                         if ('cellFaceIDs' in dict 

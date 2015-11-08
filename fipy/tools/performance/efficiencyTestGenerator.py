@@ -34,6 +34,11 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from __future__ import print_function
+from builtins import str
+from builtins import range
+from past.utils import old_div
 __all__ = []
 
 import os
@@ -49,7 +54,7 @@ def run(cases, elements):
     for i in range(len(cases)):
         if os.path.exists(toScripts[i]):
             os.remove(toScripts[i])
-        print 'Running on file', cases[i]
+        print('Running on file', cases[i])
         
         DocProg = Copy_script(dummyCommand)
         DocProg.From = cases[i]
@@ -93,11 +98,11 @@ def run(cases, elements):
                 elements = str(elements)
                 linelist = line.split('=')
                 dimensions = len(linelist)-1
-                root_elements = str(int(float(elements) ** (float(1)/dimensions)))
+                root_elements = str(int(float(elements) ** (old_div(float(1),dimensions))))
                 linelist.insert((len(linelist)-1), root_elements)
                 del linelist[len(linelist)-1]
                 newvalue = whitespaces * ' ' + '='.join(linelist) + '\n'
-                print 'newvalue:', newvalue
+                print('newvalue:', newvalue)
                 flist.insert(index, newvalue)
                 del flist[index+1]
             elif ('steps =' in line) or ('totalSteps =' in line):

@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 ## -*-Pyth-*-
  # ########################################################################
  # FiPy - a finite volume PDE solver in Python
@@ -74,18 +76,18 @@ class PIDStepper(Stepper):
                 for var, eqn, bcs in self.vardata:
                     var.setValue(var.old)
 
-                factor = min(1. / self.error[2], 0.8)
+                factor = min(old_div(1., self.error[2]), 0.8)
                 
                 dt = self._lowerBound(factor * dt)
                 
-                dtPrev = dt**2 / dtPrev
+                dtPrev = old_div(dt**2, dtPrev)
             else:
                 # step succeeded
                 break
                 
-        dtNext = dtPrev * ((self.error[1] / self.error[2])**self.proportional 
-                           * (1. / self.error[2])**self.integral 
-                           * (self.error[1]**2 / (self.error[2] * self.error[0]))**self.derivative) 
+        dtNext = dtPrev * ((old_div(self.error[1], self.error[2]))**self.proportional 
+                           * (old_div(1., self.error[2]))**self.integral 
+                           * (old_div(self.error[1]**2, (self.error[2] * self.error[0])))**self.derivative) 
               
         self.error[0] = self.error[1]
         self.error[1] = self.error[2]

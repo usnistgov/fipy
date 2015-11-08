@@ -33,6 +33,8 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -62,7 +64,7 @@ class _CellVolumeAverageVariable(Variable):
     def _calcValue(self):
         mesh = self.var.mesh
         volumes = CellVariable(mesh=mesh, value=mesh.cellVolumes)
-        return (self.var * volumes).sum() / volumes.sum()
+        return old_div((self.var * volumes).sum(), volumes.sum())
 
 def _test(): 
     import fipy.tests.doctestPlus

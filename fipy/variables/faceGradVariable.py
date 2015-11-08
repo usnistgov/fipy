@@ -34,6 +34,8 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -155,7 +157,7 @@ class _FaceGradVariable(FaceVariable):
 
         N2[s] = self.var.faceValue[s]
 
-        N = (N2 - numerix.take(self.var,id1, axis=-1)) / dAP
+        N = old_div((N2 - numerix.take(self.var,id1, axis=-1)), dAP)
 
         normals = self.mesh._orientedFaceNormals
 
@@ -172,8 +174,8 @@ class _FaceGradVariable(FaceVariable):
         t2grad1 = numerix.sum(tangents2[s] * grad1, 0)
         t2grad2 = numerix.sum(tangents2[s] * grad2, 0)
 
-        T1 = (t1grad1 + t1grad2) / 2.
-        T2 = (t2grad1 + t2grad2) / 2.
+        T1 = old_div((t1grad1 + t1grad2), 2.)
+        T2 = old_div((t2grad1 + t2grad2), 2.)
 
         return normals[s] * N[numerix.newaxis] + tangents1[s] * T1[numerix.newaxis] + tangents2[s] * T2[numerix.newaxis]
 

@@ -1,3 +1,9 @@
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
 #!/usr/bin/env python
 
 import os
@@ -37,7 +43,7 @@ class MemoryHighWaterThread(threading.Thread):
         
         return self.maxMem
         
-class MemoryLogger:
+class MemoryLogger(object):
     def __init__(self, sampleTime = 1):
         self.pid = os.getpid()
 
@@ -98,14 +104,14 @@ class MemoryLogger:
 
         
 if __name__ == "__main__":
-    print "MemoryHighWaterThread"
+    print("MemoryHighWaterThread")
     for attempt in range(10):
         thread = MemoryHighWaterThread(pid=os.getpid(), sampleTime=1)
         thread.start()
-        print thread.stop()
+        print(thread.stop())
 
-    print "MemoryLogger"
+    print("MemoryLogger")
     logger = MemoryLogger(sampleTime=1)
     for attempt in range(10):
         logger.start()
-        print logger.stop()
+        print(logger.stop())

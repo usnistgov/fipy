@@ -1,3 +1,4 @@
+from __future__ import print_function
 ##This script runs on using "file", which is created with the command $svn log --xml --incremental > file
 ##Update file if there is a new revision to /trunk/examples. Otherwise you may ignore this.
 
@@ -62,9 +63,9 @@ def run(startRev):
     os.chdir("../../../trunk/examples")
     for k in revisions[index:3511]:
         revisionNumber = pysvn.Client().update(".", revision=pysvn.Revision(pysvn.opt_revision_kind.number, k))
-        print "pysvn.Client().info('.')['revision'].number: ", pysvn.Client().info('.')['revision'].number
+        print("pysvn.Client().info('.')['revision'].number: ", pysvn.Client().info('.')['revision'].number)
         os.chdir("../../efficiency_test")
-        print 'hello'
+        print('hello')
         test.run()
         os.wait()
         os.chdir("../trunk/examples")

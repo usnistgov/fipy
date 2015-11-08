@@ -71,6 +71,11 @@ The result can be tested with the following code:
 0.00813776069241
 
 """
+from __future__ import division
+from __future__ import print_function
+from builtins import input
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import *
@@ -80,10 +85,10 @@ nx = 50
 velocity = 1.
 cfl = 0.1
 velocity = 1.
-distanceToTravel = L / 10.
-initialRadius = L / 4.
+distanceToTravel = old_div(L, 10.)
+initialRadius = old_div(L, 4.)
 
-dx = L / nx
+dx = old_div(L, nx)
 timeStepDuration = cfl * dx / velocity
 steps = int(distanceToTravel / dx / cfl)
 
@@ -97,7 +102,7 @@ distanceVariable = DistanceVariable(
     )
 
 x, y = mesh.cellCenters
-cellRadius = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2)
+cellRadius = numerix.sqrt((x - old_div(L, 2.))**2 + (y - old_div(L, 2.))**2)
 distanceVariable.setValue(cellRadius - initialRadius)
 
 initialSurfactantValue =  1.
@@ -121,7 +126,7 @@ if __name__ == '__main__':
     distanceViewer.plot()
     surfactantViewer.plot()
 
-    print 'total surfactant before:', numerix.sum(surfactantVariable * mesh.cellVolumes)
+    print('total surfactant before:', numerix.sum(surfactantVariable * mesh.cellVolumes))
     
     for step in range(steps):
         distanceVariable.updateOld()
@@ -132,7 +137,7 @@ if __name__ == '__main__':
     surfactantEquation.solve(surfactantVariable, dt=1.)
 
 
-    print 'total surfactant after:', numerix.sum(surfactantVariable * mesh.cellVolumes)
+    print('total surfactant after:', numerix.sum(surfactantVariable * mesh.cellVolumes))
 
     areas = (distanceVariable.cellInterfaceAreas < 1e-6) * 1e+10 + distanceVariable.cellInterfaceAreas
     answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
@@ -142,11 +147,11 @@ if __name__ == '__main__':
     size = 0
     for i in range(len(coverage)):
         if coverage[i] > 1e-3:
-            error += (coverage[i] / answer - 1.)**2
+            error += (old_div(coverage[i], answer) - 1.)**2
             size += 1
             
-    error = numerix.sqrt(error / size)
+    error = numerix.sqrt(old_div(error, size))
     
-    print 'error:', error
+    print('error:', error)
     
-    raw_input('finished')
+    input('finished')

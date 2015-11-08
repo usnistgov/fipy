@@ -30,6 +30,10 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from __future__ import print_function
+from builtins import str
+from past.utils import old_div
 import os
 import sys
 import re
@@ -134,18 +138,18 @@ p = Popen(("python", path) + args, stdout=PIPE)
 rsz, vsz, cpu = monitor(p)
 
 for l in p.stdout:
-    print l.rstrip()
+    print(l.rstrip())
 
-print "-" * 79
+print("-" * 79)
 
 if steps == 0:
-    print "           cpu time: %.9f s / step / cell" % cpu
-    print "max resident memory: %.2f B / cell" % float(rsz)
-    print " max virtual memory: %.2f B / cell" % float(vsz)
+    print("           cpu time: %.9f s / step / cell" % cpu)
+    print("max resident memory: %.2f B / cell" % float(rsz))
+    print(" max virtual memory: %.2f B / cell" % float(vsz))
 else:
-    print "           cpu time: %.9f s / step / cell" % ((cpu - cpu0) / steps / N**2)
-    print "max resident memory: %.2f B / cell" % (float(rsz) / N**2)
-    print " max virtual memory: %.2f B / cell" % (float(vsz) / N**2)
+    print("           cpu time: %.9f s / step / cell" % ((cpu - cpu0) / steps / N**2))
+    print("max resident memory: %.2f B / cell" % (old_div(float(rsz), N**2)))
+    print(" max virtual memory: %.2f B / cell" % (old_div(float(vsz), N**2)))
 
 os.remove(path)
 

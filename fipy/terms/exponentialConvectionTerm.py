@@ -34,6 +34,8 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -66,9 +68,9 @@ class _ExponentialConvectionTermAlpha(FaceVariable):
         P  = self.P.numericValue
 
         P = numerix.where(abs(P) < eps, eps, P)
-        alpha = numerix.where(P > largeValue, (P - 1) / P, 0.5)
+        alpha = numerix.where(P > largeValue, old_div((P - 1), P), 0.5)
         Pmin = numerix.where(P > largeValue + 1, largeValue + 1, P)
-        alpha = numerix.where((abs(Pmin) > eps) & (Pmin <= largeValue), ((Pmin - 1) * numerix.exp(Pmin) + 1) / (Pmin * (numerix.exp(Pmin) - 1)), alpha)
+        alpha = numerix.where((abs(Pmin) > eps) & (Pmin <= largeValue), old_div(((Pmin - 1) * numerix.exp(Pmin) + 1), (Pmin * (numerix.exp(Pmin) - 1))), alpha)
 
         return alpha
 

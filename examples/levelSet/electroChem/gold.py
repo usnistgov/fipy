@@ -100,13 +100,17 @@ resemble the image below.
 .. .. bibmissing:: /documentation/refs.bib
     :sort:
 """
+from __future__ import division
+from __future__ import absolute_import
+from builtins import input
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import *
-from trenchMesh import TrenchMesh
-from gapFillDistanceVariable  import GapFillDistanceVariable
-from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
-from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from .trenchMesh import TrenchMesh
+from .gapFillDistanceVariable  import GapFillDistanceVariable
+from .metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+from .adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 def runGold(faradaysConstant=9.6e4,
             consumptionRateConstant=2.6e+6,
@@ -188,7 +192,7 @@ def runGold(faradaysConstant=9.6e4,
     if displayViewers:
 
         try:
-            from mayaviSurfactantViewer import MayaviSurfactantViewer
+            from .mayaviSurfactantViewer import MayaviSurfactantViewer
             viewer = MayaviSurfactantViewer(distanceVar, catalystVar.interfaceVar, zoomFactor = 1e6, datamax=1.0, datamin=0.0, smooth = 1, title = 'catalyst coverage', animate=True)
             
         except:
@@ -234,11 +238,11 @@ def runGold(faradaysConstant=9.6e4,
 
     point = ((5e-09,), (1.15e-07,))
     value = 1.45346701e-09
-    return abs(float(distanceVar(point, order=1)) - value) < cellSize / 10.0
+    return abs(float(distanceVar(point, order=1)) - value) < old_div(cellSize, 10.0)
     
 __all__ = ["runGold"]
 
 if __name__ == '__main__':
     runGold(numberOfSteps = 300, cellSize = 0.05e-7)
-    raw_input("finished")
+    input("finished")
     

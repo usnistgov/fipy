@@ -209,14 +209,18 @@ can be obtained by running this example.
 .. .. bibmissing:: /documentation/refs.bib
     :sort:
 """
+from __future__ import division
+from __future__ import absolute_import
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import *
-from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
-from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
-from trenchMesh import TrenchMesh
-from gapFillDistanceVariable import GapFillDistanceVariable
-from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+from .surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
+from .adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from .trenchMesh import TrenchMesh
+from .gapFillDistanceVariable import GapFillDistanceVariable
+from .metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 
 def runLeveler(kLeveler=0.018, 
                bulkLevelerConcentration=0.02, 
@@ -321,7 +325,7 @@ def runLeveler(kLeveler=0.018,
         value = depositionRateVariable)   
 
     kAccelerator = rateConstant * numerix.exp(-alphaAdsorption * etaPrime)
-    kAcceleratorConsumption =  Bd + A / (numerix.exp(Ba * (overpotential + Vd)) + numerix.exp(Bb * (overpotential + Vd)))
+    kAcceleratorConsumption =  Bd + old_div(A, (numerix.exp(Ba * (overpotential + Vd)) + numerix.exp(Bb * (overpotential + Vd))))
     q = m * overpotential + b
 
     levelerSurfactantEquation = AdsorbingSurfactantEquation(
@@ -390,7 +394,7 @@ def runLeveler(kLeveler=0.018,
     if displayViewers:
         try:
             raise Exception
-            from mayaviSurfactantViewer import MayaviSurfactantViewer
+            from .mayaviSurfactantViewer import MayaviSurfactantViewer
             viewers = (
                 MayaviSurfactantViewer(distanceVar, acceleratorVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'accelerator coverage'),
                 MayaviSurfactantViewer(distanceVar, levelerVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'leveler coverage'))
@@ -436,7 +440,7 @@ def runLeveler(kLeveler=0.018,
 
     point = ((1.25e-08,), (3.125e-07,))
     value = 2.02815779e-08
-    return abs(float(distanceVar(point, order=1)) - value) < cellSize / 10.0
+    return abs(float(distanceVar(point, order=1)) - value) < old_div(cellSize, 10.0)
     
 __all__ = ["runLeveler"]
 

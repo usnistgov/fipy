@@ -153,6 +153,7 @@ True
 >>> print substitutionals[1].allclose(0.45, rtol = 1e-7, atol = 1e-7)
 True
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
@@ -167,5 +168,5 @@ if __name__ == '__main__':
     
     # profile.stop()
 	    
-    raw_input("finished")
+    input("finished")
 

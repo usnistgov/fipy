@@ -34,6 +34,8 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import ML
@@ -60,7 +62,7 @@ class MultilevelDDPreconditioner(Preconditioner):
                                     "increasing or decreasing" : "increasing",
                                     "aggregation: type" : "METIS",
                                     "aggregation: local aggregates" : 1,
-                                    "aggregation: damping factor" : 4. / 3.,
+                                    "aggregation: damping factor" : old_div(4., 3.),
                                     "eigen-analysis: type" : "power-method",
                                     "eigen-analysis: iterations" : 20,
                                     "smoother: sweeps" : 1,

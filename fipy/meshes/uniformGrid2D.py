@@ -36,6 +36,8 @@
 """
 2D rectangular Mesh with constant spacing in x and constant spacing in y
 """
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -289,7 +291,7 @@ class UniformGrid2D(UniformGrid):
                  
     @property
     def _faceAspectRatios(self):
-        return self._faceAreas / self._cellDistances  
+        return old_div(self._faceAreas, self._cellDistances)  
    
     @property
     def _faceAreas(self):
@@ -330,14 +332,14 @@ class UniformGrid2D(UniformGrid):
         Hdis = numerix.repeat((self.dy,), self.numberOfHorizontalFaces)
         Hdis = numerix.reshape(Hdis, (self.nx, self.numberOfHorizontalRows))
         if self.numberOfHorizontalRows > 0:
-            Hdis[...,0] = self.dy / 2.
-            Hdis[...,-1] = self.dy / 2.
+            Hdis[...,0] = old_div(self.dy, 2.)
+            Hdis[...,-1] = old_div(self.dy, 2.)
         
         Vdis = numerix.repeat((self.dx,), self.numberOfFaces - self.numberOfHorizontalFaces)
         Vdis = numerix.reshape(Vdis, (self.numberOfVerticalColumns, self.ny))
         if self.numberOfVerticalColumns > 0:
-            Vdis[0,...] = self.dx / 2.
-            Vdis[-1,...] = self.dx / 2.
+            Vdis[0,...] = old_div(self.dx, 2.)
+            Vdis[-1,...] = old_div(self.dx, 2.)
 
         return numerix.concatenate((numerix.reshape(numerix.swapaxes(Hdis,0,1), (self.numberOfHorizontalFaces,)), 
                                     numerix.reshape(numerix.swapaxes(Vdis,0,1), (self.numberOfFaces - self.numberOfHorizontalFaces,))))
@@ -397,11 +399,11 @@ class UniformGrid2D(UniformGrid):
         distances[3] = self.dx
         
         if self.ny > 0:
-            distances[0,..., 0] = self.dy / 2.
-            distances[2,...,-1] = self.dy / 2.
+            distances[0,..., 0] = old_div(self.dy, 2.)
+            distances[2,...,-1] = old_div(self.dy, 2.)
         if self.nx > 0:
-            distances[3, 0,...] = self.dx / 2.
-            distances[1,-1,...] = self.dx / 2.
+            distances[3, 0,...] = old_div(self.dx, 2.)
+            distances[1,-1,...] = old_div(self.dx, 2.)
         
         return distances.reshape((4, self.numberOfCells), order="FORTRAN")
 
@@ -614,11 +616,11 @@ class UniformGrid2D(UniformGrid):
         xi, yi = points
         dx, dy = self.dx, self.dy
         
-        i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
+        i = numerix.array(numerix.rint((old_div((xi - x0), dx))), 'l')
         i[i < 0] = 0
         i[i > nx - 1] = nx - 1
 
-        j = numerix.array(numerix.rint(((yi - y0) / dy)), 'l')
+        j = numerix.array(numerix.rint((old_div((yi - y0), dy))), 'l')
         j[j < 0] = 0
         j[j > ny - 1]  = ny - 1
 

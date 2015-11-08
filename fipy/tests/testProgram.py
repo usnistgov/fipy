@@ -73,7 +73,7 @@ class _TestProgram(unittest.TestProgram):
 ##              argv[1:] = ['--inline']
 ##            if numMesh:
 ##                argv[1:] = ['--numMesh']
-        except getopt.error, msg:
+        except getopt.error as msg:
             self.usageExit(msg)
 
 main = _TestProgram

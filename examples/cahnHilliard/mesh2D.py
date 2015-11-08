@@ -140,12 +140,13 @@ True
    :alt: evolution of Cahn-Hilliard phase separation at t = 30, 100 and 1000
 
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
     
-    raw_input('finished')
+    input('finished')
 
 

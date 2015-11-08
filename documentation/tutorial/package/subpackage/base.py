@@ -48,9 +48,10 @@ in which case you refer to it by its full name of :mod:`package.subpackage.base`
     
 in which case you can refer simply to :mod:`~package.subpackage.base`.
 """
+from builtins import object
 __docformat__ = 'restructuredtext'
 
-class Base:
+class Base(object):
     """
     With very few exceptions, the name of a class will be the capitalized
     form of the module it resides in.  Depending on how you imported the

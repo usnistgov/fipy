@@ -38,6 +38,9 @@ This test file generates lots of different SkewedGrid2D meshes, each with a diff
 and runs a 1D diffusion problem on them all. It ocmputes the RMS non-orthogonality and the RMS error
 for each mesh and displays them in a graph, allowing the relationship of error to non-orthogonality to be investigated.
 """
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 
 if __name__ == '__main__':
     
@@ -71,8 +74,8 @@ if __name__ == '__main__':
         analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
         errorArray = varArray - analyticalArray
         nonOrthoArray = mesh._nonOrthogonality
-        RMSError = (add.reduce(errorArray * errorArray) / len(errorArray)) ** 0.5
-        RMSNonOrtho = (add.reduce(nonOrthoArray * nonOrthoArray) / len(nonOrthoArray)) ** 0.5
+        RMSError = (old_div(add.reduce(errorArray * errorArray), len(errorArray))) ** 0.5
+        RMSNonOrtho = (old_div(add.reduce(nonOrthoArray * nonOrthoArray), len(nonOrthoArray))) ** 0.5
 
         RMSNonOrthoList += [RMSNonOrtho]
         RMSErrorList += [RMSError]

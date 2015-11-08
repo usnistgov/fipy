@@ -43,6 +43,7 @@ the non-orthogonality error, this uses a SkewedGrid2D, which is a
 Grid2D with each interior vertex moved in a random direction.
 
 """
+from builtins import input
 
 if __name__ == '__main__':
     import sys
@@ -82,5 +83,5 @@ if __name__ == '__main__':
     viewer.plot()
     NOViewer.plot()
 
-    raw_input("finished")
+    input("finished")
 

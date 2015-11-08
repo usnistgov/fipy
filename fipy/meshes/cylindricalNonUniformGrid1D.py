@@ -35,6 +35,8 @@
 """
 1D Mesh
 """
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -95,7 +97,7 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
         return self._calcFaceCenters()[0]
 
     def _calcCellVolumes(self):
-        return super(CylindricalNonUniformGrid1D, self)._calcCellVolumes() / 2.   
+        return old_div(super(CylindricalNonUniformGrid1D, self)._calcCellVolumes(), 2.)   
 
     def _translate(self, vector):
         return CylindricalNonUniformGrid1D(dx=self.args['dx'], nx=self.args['nx'], 

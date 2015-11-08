@@ -32,6 +32,10 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from builtins import input
+from builtins import object
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 import os
@@ -176,7 +180,7 @@ class Term(object):
                 RHSvector = solver.RHSvector
             self._viewer.plot(matrix=solver.matrix, RHSvector=RHSvector)
             from fipy import raw_input            
-            raw_input()
+            input()
             
         return solver
     
@@ -414,7 +418,7 @@ class Term(object):
     __rmul__ = __mul__
 
     def __truediv__(self, other):
-        return (1 / other) * self
+        return (old_div(1, other)) * self
 
     __div__ = __truediv__
     
@@ -425,7 +429,7 @@ class Term(object):
         elif other == 0:
             return self
         else:
-            raise Exception, "Can only couple Term objects."
+            raise Exception("Can only couple Term objects.")
             
     __rand__ = __and__
 

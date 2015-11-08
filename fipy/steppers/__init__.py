@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 ## -*-Pyth-*-
  # ########################################################################
  # FiPy - a finite volume PDE solver in Python
@@ -77,7 +79,7 @@ def error(var, matrix, RHSvector, norm):
     """
     from fipy.tools.numerix import L1norm
     denom = L1norm(var.old)
-    return L1norm(var - var.old) / (denom + (denom == 0))
+    return old_div(L1norm(var - var.old), (denom + (denom == 0)))
 
 def L1error(var, matrix, RHSvector):
     r"""

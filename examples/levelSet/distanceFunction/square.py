@@ -72,6 +72,9 @@ Do the tests:
 1
 
 """
+from __future__ import division
+from builtins import input
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import *
@@ -94,10 +97,10 @@ var = DistanceVariable(
     )
 
 x, y = mesh.cellCenters
-var.setValue(1, where=((Lx / 3. < x) & (x < 2. * Lx / 3.)) & ((Ly / 3. < y) & (y < 2. * Ly / 3)))
+var.setValue(1, where=((old_div(Lx, 3.) < x) & (x < 2. * Lx / 3.)) & ((old_div(Ly, 3.) < y) & (y < 2. * Ly / 3)))
 
 if __name__ == '__main__':
     var.calcDistanceFunction(order=1)
     viewer = Viewer(vars=var, maxval=-5., minval=5.)
     viewer.plot()
-    raw_input('finished')
+    input('finished')

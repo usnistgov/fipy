@@ -96,10 +96,16 @@ Compare the analaytical and numerical results:
 
 
 """
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import input
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import *
-from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from .adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 # parameter values
 
@@ -114,7 +120,7 @@ dt = 0.001
 
 ## build the mesh
 
-dx = L / (nx - 1.5)
+dx = old_div(L, (nx - 1.5))
 from fipy.tools import serialComm
 mesh = Grid1D(nx = nx, dx = dx, communicator=serialComm)
 
@@ -131,7 +137,7 @@ bulkVar = CellVariable(mesh = mesh, value = cinf)
 
 surfactantVar = SurfactantVariable(distanceVar = distanceVar)
 
-from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
+from .surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 bulkEqn = buildSurfactantBulkDiffusionEquation(bulkVar,
                                           distanceVar = distanceVar,
                                           surfactantVar = surfactantVar,
@@ -175,11 +181,11 @@ if __name__ == "__main__":
         ## evaluate the analytical and numerical solution and plot
 
         theta = surfactantVar.interfaceVar[1]
-        print "theta:",theta
+        print("theta:",theta)
 
         ## do a time step
         surfEqn.solve(surfactantVar, dt = dt)
         bulkEqn.solve(bulkVar, dt = dt)
         currentTime += dt
 
-    raw_input("finished")
+    input("finished")

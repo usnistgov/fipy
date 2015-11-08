@@ -37,6 +37,13 @@
 # ###################################################################
 ##
 
+from __future__ import division
+from __future__ import print_function
+from builtins import zip
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 import os
@@ -80,7 +87,7 @@ register_skipper(flag="GMSH",
 def parprint(str):
     if DEBUG:
         if parallelComm.procID == 0:
-            print >> sys.stderr, str
+            print(str, file=sys.stderr)
 
 class GmshException(Exception):
     pass
@@ -98,7 +105,7 @@ def gmshVersion(communicator=parallelComm):
         while True:
             try:
                 p = Popen(["gmsh", "--version"], stderr=PIPE)
-            except OSError, e:
+            except OSError as e:
                 verStr = None
                 break
 
@@ -269,7 +276,7 @@ def openPOSFile(name, communicator=parallelComm, mode='w'):
                    communicator=communicator, 
                    mode=mode)
     
-class GmshFile:
+class GmshFile(object):
     def __init__(self, filename, communicator, mode, fileIsTemporary=False):
         self.filename = filename
         self.communicator = communicator
@@ -301,18 +308,18 @@ class GmshFile:
         elif (vertices == 5 and dimensions == 3):
             return 7 ## pyramid
         else:
-            raise MeshExportError, "Element type unsupported by Gmsh"
+            raise MeshExportError("Element type unsupported by Gmsh")
     
     def _orderVertices(self, vertexCoords, vertices):
         coordinates = nx.take(vertexCoords, vertices, axis=1)
-        centroid = nx.add.reduce(coordinates, axis=1) / coordinates.shape[1]
+        centroid = old_div(nx.add.reduce(coordinates, axis=1), coordinates.shape[1])
         coordinates = coordinates - centroid[..., nx.newaxis]
 
         # to prevent div by zero
         coordinates = nx.where(coordinates == 0, 1.e-10, coordinates)
 
         # angles go from -pi / 2 to 3*pi / 2
-        angles = nx.arctan(coordinates[1] / coordinates[0]) \
+        angles = nx.arctan(old_div(coordinates[1], coordinates[0])) \
                 + nx.where(coordinates[0] < 0, nx.pi, 0) 
         sortorder = nx.argsort(angles)
         return nx.take(vertices, sortorder)
@@ -545,7 +552,7 @@ class MSHFile(GmshFile):
         newF = os.fdopen(newF, 'w')
         try:
             self._seekForHeader(title)
-        except Exception, e:
+        except Exception as e:
             newF.close()
             os.unlink(newPath)
             raise
@@ -714,7 +721,7 @@ class MSHFile(GmshFile):
         self.elemsPath = self._isolateData("Elements")
         try:
             self.namesPath = self._isolateData("PhysicalNames")
-        except EOFError, e:
+        except EOFError as e:
             self.namesPath = None
             
         try:
@@ -834,7 +841,7 @@ class MSHFile(GmshFile):
                 
             self.physicalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
             self.geometricalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
-            for face in facesDict.keys():
+            for face in list(facesDict.keys()):
                 # not all faces are necessarily tagged
                 if face in faceEntitiesDict:
                     self.physicalFaceMap[facesDict[face]] = faceEntitiesDict[face][0]
@@ -919,7 +926,7 @@ class MSHFile(GmshFile):
                 self.fileobj.write(str(coords[2, i]))
                 self.fileobj.write (" \n")
             else:
-                raise MeshExportError, "Mesh has fewer than 2 or more than 3 dimensions" 
+                raise MeshExportError("Mesh has fewer than 2 or more than 3 dimensions") 
 
         self.fileobj.write("$EndNodes\n")
 
@@ -1074,7 +1081,7 @@ class MSHFile(GmshFile):
             currLineInts = [int(x) for x in el.split()]
             elemType     = currLineInts[1]
 
-            if elemType in self.numFacesPerCell.keys():
+            if elemType in list(self.numFacesPerCell.keys()):
                 # element is a cell
                 
                 (cellOffset, 
@@ -1108,7 +1115,7 @@ class MSHFile(GmshFile):
                     cellsData.add(currLine=currLineInts, elType=elemType, 
                                   physicalEntity=physicalEntity, 
                                   geometricalEntity=geometricalEntity)
-            elif elemType in self.numVertsPerFace.keys():
+            elif elemType in list(self.numVertsPerFace.keys()):
                 # element is a face
                 
                 (faceOffset, 
@@ -1168,11 +1175,11 @@ class MSHFile(GmshFile):
         self.geometricalFaceMap = FaceVariable(mesh=mesh, value=self.geometricalFaceMap)
 
         physicalCells = dict()
-        for name in self.physicalNames[self.dimensions].keys():
+        for name in list(self.physicalNames[self.dimensions].keys()):
             physicalCells[name] = (self.physicalCellMap == self.physicalNames[self.dimensions][name])
             
         physicalFaces = dict()
-        for name in self.physicalNames[self.dimensions-1].keys():
+        for name in list(self.physicalNames[self.dimensions-1].keys()):
             physicalFaces[name] = (self.physicalFaceMap == self.physicalNames[self.dimensions-1][name])
             
         return (self.physicalCellMap,
@@ -2165,10 +2172,10 @@ class GmshGrid2D(Gmsh2D):
     def _makeGridGeo(self, dx, dy, nx, ny):
         height = ny * dy
         width  = nx * dx
-        numLayers = int(ny / float(dy))
+        numLayers = int(old_div(ny, float(dy)))
 
         # kludge: must offset cellSize by `eps` to work properly
-        eps = float(dx)/(nx * 10) 
+        eps = old_div(float(dx),(nx * 10)) 
 
         return """
             ny       = %(ny)g;
@@ -2237,7 +2244,7 @@ class GmshGrid3D(Gmsh3D):
         width  = nx * dx
         depth  = nz * dz
 
-        eps = float(dx)/(nx * 10)
+        eps = old_div(float(dx),(nx * 10))
         
         return """
             ny       = %(ny)g;

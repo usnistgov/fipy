@@ -32,6 +32,10 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from __future__ import print_function
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 import os
@@ -81,21 +85,21 @@ class LinearLUSolver(PysparseSolver):
         diag = L.takeDiagonal()
         maxdiag = max(numerix.absolute(diag))
 
-        L = L * (1 / maxdiag)
-        b = b * (1 / maxdiag)
+        L = L * (old_div(1, maxdiag))
+        b = b * (old_div(1, maxdiag))
 
         LU = superlu.factorize(L.matrix.to_csr())
 
         if DEBUG:
             import sys
-            print >> sys.stderr, L.matrix
+            print(L.matrix, file=sys.stderr)
 
         error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
 
         for iteration in range(self.iterations):
             errorVector = L * x - b
 
-            if (numerix.sqrt(numerix.sum(errorVector**2)) / error0)  <= self.tolerance:
+            if (old_div(numerix.sqrt(numerix.sum(errorVector**2)), error0))  <= self.tolerance:
                 break
 
             xError = numerix.zeros(len(b),'d')

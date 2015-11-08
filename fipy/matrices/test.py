@@ -47,7 +47,7 @@ elif solver == 'scipy' or solver == 'pyamg':
 elif solver == 'pysparse':
     docTestModuleNames = ('pysparseMatrix',)
 else:
-    raise ImportError, 'Unknown solver package %s' % solver
+    raise ImportError('Unknown solver package %s' % solver)
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames=docTestModuleNames, base=__name__)

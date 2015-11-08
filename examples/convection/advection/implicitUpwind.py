@@ -36,6 +36,10 @@
 This example shows the failure of advecting a square pulse with a first
 order implicit upwind scheme.
 """
+from __future__ import division
+from builtins import input
+from builtins import range
+from past.utils import old_div
 
 from fipy import *
 
@@ -43,7 +47,7 @@ valueLeft = 0.
 valueRight = 0.
 L = 10.
 nx = 400
-dx = L / nx
+dx = old_div(L, nx)
 cfl = 0.01
 velocity = 1.
 timeStepDuration = cfl * dx / abs(velocity)
@@ -68,11 +72,11 @@ if __name__ == '__main__':
     
     viewer = Viewer(vars=(var,))
     viewer.plot()
-    raw_input("press key to continue")
+    input("press key to continue")
     for step in range(steps):
         eq.solve(var,
                  dt = timeStepDuration,
                  solver = LinearLUSolver(tolerance = 1.e-15))
         viewer.plot()
     viewer.plot()
-    raw_input('finished')
+    input('finished')

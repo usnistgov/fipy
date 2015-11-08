@@ -158,11 +158,17 @@ resemble the image below.
 .. .. bibmissing:: /documentation/refs.bib
     :sort:
 """
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+from builtins import input
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import *
-from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
-from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from .metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+from .adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 def runSimpleTrenchSystem(faradaysConstant=9.6e4,
                           gasConstant=8.314,
@@ -194,7 +200,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     cellsBelowTrench = 10
     
     yCells = cellsBelowTrench \
-             + int((trenchDepth + boundaryLayerDepth) / cellSize)
+             + int(old_div((trenchDepth + boundaryLayerDepth), cellSize))
 
     xCells = int(trenchSpacing / 2 / cellSize)
 
@@ -215,8 +221,8 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     bottomHeight = cellsBelowTrench * cellSize
     trenchHeight = bottomHeight + trenchDepth
-    trenchWidth = trenchDepth / aspectRatio
-    sideWidth = (trenchSpacing - trenchWidth) / 2
+    trenchWidth = old_div(trenchDepth, aspectRatio)
+    sideWidth = old_div((trenchSpacing - trenchWidth), 2)
 
     x, y = mesh.cellCenters
     distanceVar.setValue(1., where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
@@ -275,7 +281,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     metalVar.constrain(metalConcentration, mesh.facesTop)
 
-    from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
+    from .surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
     bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkCatalystVar,
         distanceVar = distanceVar,
@@ -288,7 +294,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     if displayViewers:
         try:
-            from mayaviSurfactantViewer import MayaviSurfactantViewer
+            from .mayaviSurfactantViewer import MayaviSurfactantViewer
             viewer = MayaviSurfactantViewer(distanceVar, catalystVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'catalyst coverage')
         except:
             viewer = MultiViewer(viewers=(
@@ -324,7 +330,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     try:
         import os
         filepath = os.path.splitext(__file__)[0] + '.gz'
-        print catalystVar.allclose(numerix.loadtxt(filepath), rtol = 1e-4)
+        print(catalystVar.allclose(numerix.loadtxt(filepath), rtol = 1e-4))
     except:
         return 0
 
@@ -332,4 +338,4 @@ __all__ = ["runSimpleTrenchSystem"]
 
 if __name__ == '__main__':
     runSimpleTrenchSystem(numberOfSteps = 800, cellSize = 0.05e-7)
-    raw_input("finished")
+    input("finished")

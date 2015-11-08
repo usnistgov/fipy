@@ -32,6 +32,8 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -293,7 +295,7 @@ class DistanceVariable(CellVariable):
         elif LSM_SOLVER == 'skfmm':
             from skfmm import extension_velocities
         else:
-            raise Exception, "Neither `lsmlib` nor `skfmm` can be found on the $PATH"
+            raise Exception("Neither `lsmlib` nor `skfmm` can be found on the $PATH")
 
         tmp, extensionValue = extension_velocities(phi, extensionValue, ext_mask=phi < 0., dx=dx, order=order)
         extensionVariable[:] = extensionValue.flatten()
@@ -302,7 +304,7 @@ class DistanceVariable(CellVariable):
         mesh = self.mesh
 
         if hasattr(mesh, 'nz'):
-            raise Exception, "3D meshes not yet implemented"
+            raise Exception("3D meshes not yet implemented")
         elif hasattr(mesh, 'ny'):
             dx = (mesh.dy, mesh.dx)
             shape = (mesh.ny, mesh.nx)
@@ -310,7 +312,7 @@ class DistanceVariable(CellVariable):
             dx = (mesh.dx,)
             shape = mesh.shape
         else:
-            raise Exception, "Non grid meshes can not be used for solving the FMM."
+            raise Exception("Non grid meshes can not be used for solving the FMM.")
 
         return dx, shape
 
@@ -331,7 +333,7 @@ class DistanceVariable(CellVariable):
         elif LSM_SOLVER == 'skfmm':
             from skfmm import distance
         else:
-            raise Exception, "Neither `lsmlib` nor `skfmm` can be found on the $PATH"
+            raise Exception("Neither `lsmlib` nor `skfmm` can be found on the $PATH")
 
         self._value = distance(numerix.reshape(self._value, shape), dx=dx, order=order).flatten()
         self._markFresh()
@@ -553,7 +555,7 @@ class DistanceVariable(CellVariable):
         if len(exteriorFaces.value) > 0:
             faceGrad[..., exteriorFaces.value] = 0.
         
-        return faceGrad / faceGradMag 
+        return old_div(faceGrad, faceGradMag) 
 
 def _test(): 
     import fipy.tests.doctestPlus

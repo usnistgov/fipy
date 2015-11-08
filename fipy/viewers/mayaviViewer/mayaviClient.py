@@ -35,6 +35,10 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from __future__ import print_function
+from builtins import str
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 import os
@@ -178,11 +182,11 @@ class MayaviClient(AbstractViewer):
                 lock.close()
                 plotted = True
                 
-            if (time.time() - start > 30. / self.fps) and not plotted:
-                print "viewer: NOT READY"
+            if (time.time() - start > old_div(30., self.fps)) and not plotted:
+                print("viewer: NOT READY")
                 start = time.time()
         if not plotted:
-            print "viewer: SKIPPED"
+            print("viewer: SKIPPED")
     
     def _validFileExtensions(self):
         return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]

@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import range
 #!/usr/bin/env python
 
 ## 
@@ -57,7 +59,7 @@ p = Popen(["python", benchmarker] + args
 
 cpu0, rsz0, vsz0 = monitor(p)
 
-print "step\tcpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)"
+print("step\tcpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)")
 
 for block in range(blocks):
     p = Popen(["python", benchmarker, 
@@ -68,6 +70,6 @@ for block in range(blocks):
 
     cpu, rsz, vsz = monitor(p)
 
-    print "%d\t%g\t%g\t%g" % (block * steps, cpu, rsz, vsz)
+    print("%d\t%g\t%g\t%g" % (block * steps, cpu, rsz, vsz))
 
 

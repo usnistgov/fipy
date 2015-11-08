@@ -1,3 +1,4 @@
+from builtins import str
 # Dictionary containing numbers
 #
 # These objects are meant to be used like arrays with generalized
@@ -43,9 +44,9 @@ class _NumberDict(DictWithDefault._DictWithDefault):
 
     def __add__(self, other):
         sum = _NumberDict()
-        for key in self.keys():
+        for key in list(self.keys()):
             sum[key] = self[key]
-        for key in other.keys():
+        for key in list(other.keys()):
             sum[key] = sum[key] + other[key]
         return sum
 
@@ -53,9 +54,9 @@ class _NumberDict(DictWithDefault._DictWithDefault):
 
     def __sub__(self, other):
         sum = _NumberDict()
-        for key in self.keys():
+        for key in list(self.keys()):
             sum[key] = self[key]
-        for key in other.keys():
+        for key in list(other.keys()):
             sum[key] = sum[key] - other[key]
         return sum
 
@@ -70,7 +71,7 @@ class _NumberDict(DictWithDefault._DictWithDefault):
 
     def __mul__(self, other):
         new = _NumberDict()
-        for key in self.keys():
+        for key in list(self.keys()):
             new[key] = other*self[key]
         return new
 
@@ -78,7 +79,7 @@ class _NumberDict(DictWithDefault._DictWithDefault):
 
     def __floordiv__(self, other):
         new = _NumberDict()
-        for key in self.keys():
+        for key in list(self.keys()):
             new[key] = self[key]//other
         return new
 

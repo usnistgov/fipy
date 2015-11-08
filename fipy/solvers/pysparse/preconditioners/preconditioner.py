@@ -1,3 +1,4 @@
+from builtins import object
 #!/usr/bin/env python
 
 ## -*-Pyth-*-
@@ -35,7 +36,7 @@
  
 __all__ = ["Preconditioner"]
 
-class Preconditioner:
+class Preconditioner(object):
     """
     Base preconditioner class
 
@@ -47,8 +48,7 @@ class Preconditioner:
         Create a `Preconditioner` object.
         """
         if self.__class__ is Preconditioner:
-            raise NotImplementedError, \
-                  "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
     def _applyToMatrix(self, matrix):
         """

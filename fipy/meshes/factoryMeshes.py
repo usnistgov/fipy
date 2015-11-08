@@ -37,6 +37,8 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import parallelComm
@@ -73,8 +75,8 @@ def _dnl(dx, nx, Lx):
             nx = 1
     else:
         if nx is None:
-            nx = int(Lx / dx) or 1
-        dx = Lx / int(nx)
+            nx = int(old_div(Lx, dx)) or 1
+        dx = old_div(Lx, int(nx))
 
     return dx, int(nx)
 

@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import range
 __all__ = ["PRINT"]
 
 def PRINT(label, arg="", stall=True):
@@ -7,7 +9,7 @@ def PRINT(label, arg="", stall=True):
     
     for procID in range(parallelComm.Nproc):
         if procID == parallelComm.procID:
-            print >>sys.stderr, parallelComm.procID, label, arg
+            print(parallelComm.procID, label, arg, file=sys.stderr)
         sys.stderr.flush()
         if stall:
             time.sleep(0.1)

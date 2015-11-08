@@ -42,6 +42,8 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import ML
@@ -68,7 +70,7 @@ class MultilevelDDMLPreconditioner(Preconditioner):
                                     "aggregation: type" : "METIS",
                                     "aggregation: nodes per aggregate" : 512,
                                     "aggregation: next-level aggregates per process" : 128,
-                                    "aggregation: damping factor" : 4. / 3.,
+                                    "aggregation: damping factor" : old_div(4., 3.),
                                     "eigen-analysis: type" : "power-method",
                                     "eigen-analysis: iterations" : 20,
                                     "smoother: sweeps" : 1,

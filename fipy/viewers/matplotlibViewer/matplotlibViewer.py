@@ -1,3 +1,4 @@
+from builtins import object
 #!/usr/bin/env python
 
 ## -*-Pyth-*-
@@ -78,7 +79,7 @@ class AbstractMatplotlibViewer(AbstractViewer):
             whether to logarithmically scale the data
         """
         if self.__class__ is AbstractMatplotlibViewer:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
             
         AbstractViewer.__init__(self, vars=vars, title=title, **kwlimits)
 

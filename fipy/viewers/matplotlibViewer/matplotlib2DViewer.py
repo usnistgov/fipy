@@ -1,3 +1,4 @@
+from builtins import zip
 #!/usr/bin/env python
 
 ## -*-Pyth-*-
@@ -105,7 +106,7 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
                 x = x.compressed()
             if hasattr(y, 'mask'):
                 y = y.compressed()
-            polys.append(zip(x,y))
+            polys.append(list(zip(x,y)))
 
         from matplotlib.collections import PolyCollection
         self.collection = PolyCollection(polys)
@@ -134,7 +135,7 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
               and var.rank == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "Matplotlib2DViewer can only display a rank-0, 2D CellVariable"
+            raise MeshDimensionError("Matplotlib2DViewer can only display a rank-0, 2D CellVariable")
         # this viewer can only display one variable
         return [vars[0]]
         

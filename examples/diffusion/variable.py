@@ -50,6 +50,9 @@ A simple analytical answer can be used to test the result:
    1
 
 """
+from __future__ import division
+from builtins import input
+from past.utils import old_div
 
 from fipy import *
 
@@ -62,7 +65,7 @@ timeStepDuration = 1.
 
 L = 10.
 
-dx = L / nx
+dx = old_div(L, nx)
 dy = 1.
 
 mesh = Tri2D(dx, dy, nx, ny)
@@ -75,7 +78,7 @@ var = CellVariable(
 diffCoeff = FaceVariable(mesh = mesh, value = 1.0)
 
 x = mesh.faceCenters[0]
-diffCoeff.setValue(0.1, where=(L/4. <= x) & (x < 3. * L / 4.))
+diffCoeff.setValue(0.1, where=(old_div(L,4.) <= x) & (x < 3. * L / 4.))
 
 var.faceGrad.constrain([[1.], [0.]], mesh.facesRight)
 
@@ -84,4 +87,4 @@ var.constrain(valueLeft, mesh.facesLeft)
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    raw_input('finished')
+    input('finished')

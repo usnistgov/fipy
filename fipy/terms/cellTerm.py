@@ -32,6 +32,8 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
@@ -58,7 +60,7 @@ class CellTerm(_NonDiffusionTerm):
             coeff = _Constant(value=coeff)
 
         if isinstance(coeff, FaceVariable):
-             raise TypeError, "The coefficient can not be a FaceVariable."
+             raise TypeError("The coefficient can not be a FaceVariable.")
 
         _NonDiffusionTerm.__init__(self, coeff=coeff, var=var)
         self.coeffVectors = None
@@ -82,18 +84,18 @@ class CellTerm(_NonDiffusionTerm):
 
         if var.rank == 0:
             if shape != ():
-                raise TypeError, "The coefficient must be rank 0 for a rank 0 solution variable."
+                raise TypeError("The coefficient must be rank 0 for a rank 0 solution variable.")
 
         if shape != () and len(shape) != 2 and shape[0] != shape[1]:
-            raise TypeError, "The coefficient must be a rank-0 or rank-2 vector or a scalar value."
+            raise TypeError("The coefficient must be a rank-0 or rank-2 vector or a scalar value.")
 
         if var.rank == 1:
             if shape == ():
                 pass
             elif len(shape) != 2:
-                raise TypeError, "The coefficient must be rank 2 or rank 0 for a rank 1 solution variable."
+                raise TypeError("The coefficient must be rank 2 or rank 0 for a rank 1 solution variable.")
             elif var.shape[0] != shape[0]:
-                raise TypeError, "The coefficient (N , N) shape must match the the solution variable (N,) shape."
+                raise TypeError("The coefficient (N , N) shape must match the the solution variable (N,) shape.")
         
     def _calcCoeffVectors_(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         coeff = self._getGeomCoeff(var)
@@ -143,9 +145,9 @@ class CellTerm(_NonDiffusionTerm):
 
     def _buildMatrixNoInline_(self, L, oldArray, b, dt, coeffVectors):            
         ids = self._reshapeIDs(oldArray, numerix.arange(oldArray.shape[-1]))
-        b += (oldArray.value[numerix.newaxis] * coeffVectors['old value']).sum(-2).ravel() / dt
+        b += old_div((oldArray.value[numerix.newaxis] * coeffVectors['old value']).sum(-2).ravel(), dt)
         b += coeffVectors['b vector'][numerix.newaxis].sum(-2).ravel()
-        L.addAt(coeffVectors['new value'].ravel() / dt, ids.ravel(), ids.swapaxes(0,1).ravel())
+        L.addAt(old_div(coeffVectors['new value'].ravel(), dt), ids.ravel(), ids.swapaxes(0,1).ravel())
         L.addAt(coeffVectors['diagonal'].ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
             
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):

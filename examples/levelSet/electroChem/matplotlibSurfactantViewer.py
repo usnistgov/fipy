@@ -39,6 +39,9 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from builtins import zip
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -162,14 +165,14 @@ class MatplotlibSurfactantViewer(AbstractMatplotlibViewer):
         verts = numerix.array(zc.get_verts())
         IDs = numerix.array([mesh._getNearestCellID(vert[...,numerix.newaxis]) for vert in verts])
 
-        colors = pylab.cm.jet(( self.surfactantVar[IDs] - zmin) / (zmax - zmin))
-        segments = zip(verts[:-1], verts[1:])
+        colors = pylab.cm.jet(old_div(( self.surfactantVar[IDs] - zmin), (zmax - zmin)))
+        segments = list(zip(verts[:-1], verts[1:]))
         LC = matplotlib.collections.LineCollection(segments, colors=colors)
         
 #         CS.ax.add_collection(LC)
 
         verts = numerix.array((-verts[...,0], verts[..., 1])).swapaxes(0,1)
-        segments = zip(verts[:-1], verts[1:])
+        segments = list(zip(verts[:-1], verts[1:]))
         LC = matplotlib.collections.LineCollection(segments, colors=colors)
         
 #         CS.ax.add_collection(LC)

@@ -364,6 +364,7 @@ their respective phases
     >>> allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
     1
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 ## def _test(): 
@@ -386,5 +387,5 @@ if __name__ == '__main__':
 
     # profile.stop()
             
-    raw_input("finished")
+    input("finished")
 

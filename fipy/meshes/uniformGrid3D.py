@@ -33,6 +33,8 @@
  # ########################################################################
  ##
 
+from __future__ import division
+from past.utils import old_div
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools import parallelComm
@@ -239,18 +241,18 @@ class UniformGrid3D(UniformGrid):
     def _cellDistances(self):
         XYdis = numerix.zeros((self.nz + 1, self.ny, self.nx),'d')
         XYdis[:] = self.dz
-        XYdis[ 0,...] = self.dz / 2.
-        XYdis[-1,...] = self.dz / 2.
+        XYdis[ 0,...] = old_div(self.dz, 2.)
+        XYdis[-1,...] = old_div(self.dz, 2.)
 
         XZdis = numerix.zeros((self.nz, self.ny + 1, self.nx),'d')
         XZdis[:] = self.dy
-        XZdis[..., 0,...] = self.dy / 2.
-        XZdis[...,-1,...] = self.dy / 2.
+        XZdis[..., 0,...] = old_div(self.dy, 2.)
+        XZdis[...,-1,...] = old_div(self.dy, 2.)
 
         YZdis = numerix.zeros((self.nz, self.ny, self.nx + 1),'d')
         YZdis[:] = self.dx
-        YZdis[..., 0] = self.dx / 2.
-        YZdis[...,-1] = self.dx / 2.
+        YZdis[..., 0] = old_div(self.dx, 2.)
+        YZdis[...,-1] = old_div(self.dx, 2.)
 
         return numerix.concatenate((numerix.ravel(XYdis),
                                     numerix.ravel(XZdis),
@@ -321,12 +323,12 @@ class UniformGrid3D(UniformGrid):
         distances[4] = self.dz
         distances[5] = self.dz
 
-        distances[0,  0,...    ] = self.dx / 2.
-        distances[1, -1,...    ] = self.dx / 2.
-        distances[2,...,  0,...] = self.dy / 2.
-        distances[3,..., -1,...] = self.dy / 2.
-        distances[4,...,      0] = self.dz / 2.
-        distances[5,...,     -1] = self.dz / 2.
+        distances[0,  0,...    ] = old_div(self.dx, 2.)
+        distances[1, -1,...    ] = old_div(self.dx, 2.)
+        distances[2,...,  0,...] = old_div(self.dy, 2.)
+        distances[3,..., -1,...] = old_div(self.dy, 2.)
+        distances[4,...,      0] = old_div(self.dz, 2.)
+        distances[5,...,     -1] = old_div(self.dz, 2.)
 
         return numerix.reshape(distances.swapaxes(1,3), (self.numberOfCells, 6))
 
@@ -394,7 +396,7 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def _faceAspectRatios(self):
-        return self._faceAreas / self._cellDistances
+        return old_div(self._faceAreas, self._cellDistances)
 
     def _translate(self, vector):
         return self.__class__(dx = self.args['dx'], nx = self.args['nx'],
@@ -524,15 +526,15 @@ class UniformGrid3D(UniformGrid):
         nx, ny, nz = self.shape
         dx, dy, dz = self.dx, self.dy, self.dz
 
-        i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
+        i = numerix.array(numerix.rint((old_div((xi - x0), dx))), 'l')
         i[i < 0] = 0
         i[i > nx - 1] = nx - 1
 
-        j = numerix.array(numerix.rint(((yi - y0) / dy)), 'l')
+        j = numerix.array(numerix.rint((old_div((yi - y0), dy))), 'l')
         j[j < 0] = 0
         j[j > ny - 1]  = ny - 1
 
-        k = numerix.array(numerix.rint(((zi - z0) / dz)), 'l')
+        k = numerix.array(numerix.rint((old_div((zi - z0), dz))), 'l')
         k[k < 0] = 0
         k[k > nz - 1]  = nz - 1
 

@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import object
 #!/usr/bin/env python
 
 ## -*-Pyth-*-
@@ -59,7 +61,7 @@ class AbstractViewer(object):
             (default) value of `None` will autoscale.
         """
         if self.__class__ is AbstractViewer:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
             
         self.vars = self._getSuitableVars(vars)
 
@@ -201,7 +203,7 @@ class AbstractViewer(object):
                 extensions = " (%s)" % extensions
             snapshot = self._doctest_raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions).strip()
             self.plot(snapshot)
-            print opinion
+            print(opinion)
               
         
     def _test1D(**kwargs):

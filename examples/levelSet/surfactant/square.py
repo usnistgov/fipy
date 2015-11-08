@@ -51,6 +51,11 @@ Advect the interface and check the position.
 
    
 """
+from __future__ import division
+from __future__ import print_function
+from builtins import input
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import *
@@ -59,11 +64,11 @@ L = 1.
 dx = 0.1
 velocity = 1.
 cfl = 0.1
-distanceToTravel = L / 5.
+distanceToTravel = old_div(L, 5.)
 boxSize = .2
 
-nx = int(L / dx)
-ny = int(L / dx)
+nx = int(old_div(L, dx))
+ny = int(old_div(L, dx))
 
 steps = int(distanceToTravel / dx / cfl)
 
@@ -71,8 +76,8 @@ timeStepDuration = cfl * dx / velocity
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
 
-x0 = (L - boxSize) / 2
-x1 = (L + boxSize) / 2
+x0 = old_div((L - boxSize), 2)
+x1 = old_div((L + boxSize), 2)
 
 distanceVariable = DistanceVariable(
     mesh = mesh,
@@ -106,7 +111,7 @@ if __name__ == '__main__':
     distanceVariable.calcDistanceFunction()
 
     for step in range(steps):
-        print numerix.sum(surfactantVariable)
+        print(numerix.sum(surfactantVariable))
         distanceVariable.updateOld()
         surfactantEquation.solve(surfactantVariable, dt=1)
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
@@ -117,5 +122,5 @@ if __name__ == '__main__':
 
     distanceViewer.plot()
     surfactantViewer.plot()
-    print surfactantVariable
-    raw_input('finished')
+    print(surfactantVariable)
+    input('finished')

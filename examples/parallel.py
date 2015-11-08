@@ -1,3 +1,4 @@
+from __future__ import print_function
 from mpi4py import MPI
 
 m4comm = MPI.COMM_WORLD
@@ -19,5 +20,5 @@ fipy_info = "FiPy: %d cells on processor %d of %d" % (mesh.numberOfCells,
                                                       parallelComm.procID,
                                                       parallelComm.Nproc)
                                                       
-print " :: ".join((mpi4py_info, trilinos_info, fipy_info))
+print(" :: ".join((mpi4py_info, trilinos_info, fipy_info)))
 

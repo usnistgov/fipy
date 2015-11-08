@@ -39,6 +39,7 @@
 Test case for the Grid3D. Diffusion problem with boundary conditions: 0 on front, 10 on back, and 5 on all other sides.
    
 """
+from builtins import input
 
 from fipy import *
 
@@ -89,4 +90,4 @@ if __name__ == '__main__':
     ##viewer7.plot(resolution = 0.2, xlabel = "X values (Z value = 7)", minval = valueFront, maxval = valueBack)
     ##raw_input("press enter to continue")
     ##viewer9.plot(resolution = 0.2, xlabel = "X values (Z value = 9)", minval = valueFront, maxval = valueBack)
-    raw_input("finished")
+    input("finished")

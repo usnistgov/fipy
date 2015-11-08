@@ -1,3 +1,4 @@
+from builtins import object
 #!/usr/bin/env python
 
 ## 
@@ -38,7 +39,7 @@ __docformat__ = 'restructuredtext'
 
 __all__ = ["Preconditioner"]
 
-class Preconditioner:
+class Preconditioner(object):
     """
     The base Preconditioner class.
     
@@ -50,7 +51,7 @@ class Preconditioner:
         Create a `Preconditioner` object.
         """
         if self.__class__ is Preconditioner:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 	
     def _applyToSolver(self, solver, matrix):
         raise NotImplementedError

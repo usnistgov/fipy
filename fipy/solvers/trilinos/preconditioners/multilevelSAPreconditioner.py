@@ -42,6 +42,8 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import ML
@@ -68,7 +70,7 @@ class MultilevelSAPreconditioner(Preconditioner):
                                     "prec type" : "MGV",
                                     "increasing or decreasing" : "increasing",
                                     "aggregation: type" : "Uncoupled-MIS",
-                                    "aggregation: damping factor" : 4. / 3.,
+                                    "aggregation: damping factor" : old_div(4., 3.),
 ##                                    "energy minimization: enable" : False,
 ##                                    "smoother: type" : "Aztec",
 ##                                    "smoother: type" : "symmetric Gauss-Seidel",

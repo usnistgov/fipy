@@ -85,6 +85,10 @@ data and compares it with the ``theta`` variable.
 >>> print phase.allclose(testData)
 1
 """
+from __future__ import division
+from builtins import input
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import *
@@ -100,14 +104,14 @@ s = 0.01
 alpha = 0.015
 temperature = 1.
 
-dx = L / nx
+dx = old_div(L, nx)
 
 mesh = Grid1D(dx = dx, nx = nx)
 
 phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 1.)
-theta.setValue(0., where=mesh.cellCenters[0] > L / 2.)
+theta.setValue(0., where=mesh.cellCenters[0] > old_div(L, 2.))
 
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 thetaMag = theta.old.grad.mag
@@ -126,4 +130,4 @@ if __name__ == '__main__':
    for step in range(steps):
       phaseEq.solve(phase, dt = timeStepDuration)
       phaseViewer.plot()
-   raw_input('finished')
+   input('finished')

@@ -32,6 +32,9 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
  
 from fipy.tools import numerix
@@ -80,7 +83,7 @@ class SkewedGrid2D(Mesh2D):
         changedVertices = numerix.zeros(vertices.shape, 'd')
 
         for i in range(len(vertices[0])):
-            if((i % (nx+1)) != 0 and (i % (nx+1)) != nx and (i / nx+1) != 0 and (i / nx+1) != ny):
+            if((i % (nx+1)) != 0 and (i % (nx+1)) != nx and (old_div(i, nx)+1) != 0 and (old_div(i, nx)+1) != ny):
                 changedVertices[0, i] = vertices[0, i] + (rand * ((random.random() * 2) - 1))
                 changedVertices[1, i] = vertices[1, i] + (rand * ((random.random() * 2) - 1))
             else:

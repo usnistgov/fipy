@@ -30,6 +30,7 @@
  # ###################################################################
  ##
 
+from __future__ import print_function
 import os
 import re
 import shutil
@@ -111,11 +112,11 @@ try:
                       
             cpu, rsz, vsz = monitor(p)
             
-            print entry.revision.number, cpu, rsz, vsz
+            print(entry.revision.number, cpu, rsz, vsz)
             
-        except Exception, e:
-            print entry.revision.number, e
-except Exception, e:
-    print e
+        except Exception as e:
+            print(entry.revision.number, e)
+except Exception as e:
+    print(e)
     
 shutil.rmtree(dir)

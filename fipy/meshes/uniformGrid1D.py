@@ -36,6 +36,8 @@
 """
 1D Mesh
 """
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -202,8 +204,8 @@ class UniformGrid1D(UniformGrid):
         distances = numerix.ones(self.numberOfFaces, 'd')
         distances *= self.dx
         if len(distances) > 0:
-            distances[0] = self.dx / 2.
-            distances[-1] = self.dx / 2.
+            distances[0] = old_div(self.dx, 2.)
+            distances[-1] = old_div(self.dx, 2.)
         return distances
 
     @property
@@ -219,8 +221,8 @@ class UniformGrid1D(UniformGrid):
         distances = MA.zeros((2, self.numberOfCells), 'd')
         distances[:] = self.dx
         if self.numberOfCells > 0:
-            distances[0,0] = self.dx / 2.
-            distances[1,-1] = self.dx / 2.
+            distances[0,0] = old_div(self.dx, 2.)
+            distances[1,-1] = old_div(self.dx, 2.)
         return distances
 
     @property
@@ -265,7 +267,7 @@ class UniformGrid1D(UniformGrid):
         
     @property
     def _getFaceAspectRatios(self):
-        return 1. / self._cellDistances
+        return old_div(1., self._cellDistances)
 
 
     def _translate(self, vector):
@@ -339,7 +341,7 @@ class UniformGrid1D(UniformGrid):
         xi, = points
         dx = self.dx
         
-        i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
+        i = numerix.array(numerix.rint((old_div((xi - x0), dx))), 'l')
         i[i < 0] = 0
         i[i > nx - 1] = nx - 1
 

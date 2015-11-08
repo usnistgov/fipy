@@ -88,6 +88,11 @@ Test for the correct position of the interface:
 1
 
 """
+from __future__ import division
+from __future__ import print_function
+from builtins import input
+from builtins import range
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import *
@@ -95,9 +100,9 @@ from fipy import *
 L = 1.
 nx = 50
 cfl = 0.1
-initialRadius = L / 4.
+initialRadius = old_div(L, 4.)
 k = 1
-dx = L / nx
+dx = old_div(L, nx)
 steps = 20
 
 from fipy.tools import serialComm
@@ -107,7 +112,7 @@ x, y = mesh.cellCenters
 distanceVariable = DistanceVariable(
     name = 'level set variable',
     mesh = mesh,
-    value = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - initialRadius,
+    value = numerix.sqrt((x - old_div(L, 2.))**2 + (y - old_div(L, 2.))**2) - initialRadius,
     hasOld = 1)
 
 initialSurfactantValue =  1.
@@ -142,7 +147,7 @@ if __name__ == '__main__':
     totalTime = 0
 
     for step in range(steps):
-        print 'step',step
+        print('step',step)
         velocity.setValue(surfactantVariable.interfaceVar * k)
         distanceVariable.extendVariable(velocity)
         timeStepDuration = cfl * dx / velocity.max()
@@ -159,10 +164,10 @@ if __name__ == '__main__':
         finalRadius = numerix.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
         answer = initialSurfactantValue * initialRadius / finalRadius
         coverage = surfactantVariable.interfaceVar
-        error = (coverage / answer - 1)**2 * (coverage > 1e-3)
-        print 'error', numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0))
+        error = (old_div(coverage, answer) - 1)**2 * (coverage > 1e-3)
+        print('error', numerix.sqrt(old_div(numerix.sum(error), numerix.sum(error > 0))))
 
 
         
 
-    raw_input('finished')
+    input('finished')

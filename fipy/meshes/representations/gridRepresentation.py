@@ -1,3 +1,4 @@
+from builtins import str
 #!/usr/bin/env python
 
 ## -*-Pyth-*-

@@ -32,6 +32,9 @@
  # ###################################################################
  ##
 
+from __future__ import division
+from builtins import input
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -125,7 +128,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
                 rotationTensor[0, 1] = 1
                 rotationTensor[:, 1] = numerix.where(flag,
-                                                     rotationTensor[:,0].dot((((0, 1, 0), (-1, 0, 0), (0, 0, 0)))) / div,
+                                                     old_div(rotationTensor[:,0].dot((((0, 1, 0), (-1, 0, 0), (0, 0, 0)))), div),
                                                      rotationTensor[:, 1])
 
 
@@ -167,7 +170,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             elif var.rank == 1:
                 anisotropicRank = rank - 2
             else:
-                raise IndexError, 'the solution variable has the wrong rank'
+                raise IndexError('the solution variable has the wrong rank')
                 
             if anisotropicRank == 0 and self._treatMeshAsOrthogonal(mesh):
                 
@@ -184,11 +187,11 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 if anisotropicRank > 0:
                     shape = numerix.getShape(coeff)
                     if mesh.dim != shape[0] or mesh.dim != shape[1]:
-                        raise IndexError, 'diffusion coefficent tensor is not an appropriate shape for this mesh'          
+                        raise IndexError('diffusion coefficent tensor is not an appropriate shape for this mesh')          
                     
                 faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh.faceNormals)
                 rotationTensor = self.__getRotationTensor(mesh)
-                rotationTensor[:,0] = rotationTensor[:,0] / mesh._cellDistances
+                rotationTensor[:,0] = old_div(rotationTensor[:,0], mesh._cellDistances)
 
                 tmpBop = faceNormals.dot(coeff).dot(rotationTensor) * mesh._faceAreas
 
@@ -273,7 +276,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 self._viewer.title = r"%s %s" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
                 self._viewer.plot(matrix=LL, RHSvector=bb)
                 from fipy import raw_input
-                raw_input()
+                input()
             self.__bcAdd(coefficientMatrix, boundaryB, LL, bb) 
             
         return coefficientMatrix, boundaryB
@@ -371,10 +374,10 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                                                                                       diffusionGeomCoeff=diffusionGeomCoeff)
             del lowerOrderBCs
             
-            lowerOrderb = lowerOrderb / mesh.cellVolumes
+            lowerOrderb = old_div(lowerOrderb, mesh.cellVolumes)
             volMatrix = SparseMatrix(mesh=var.mesh, bandwidth = 1)
             
-            volMatrix.addAtDiagonal(1. / mesh.cellVolumes)
+            volMatrix.addAtDiagonal(old_div(1., mesh.cellVolumes))
             lowerOrderL = volMatrix * lowerOrderL
             del volMatrix
 

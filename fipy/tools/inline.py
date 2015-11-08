@@ -1,3 +1,4 @@
+from builtins import range
 __all__ = ["doInline"]
 
 import inspect
@@ -65,7 +66,7 @@ def _operatorVariableComment(canInline=True, level=3):
         return ""
 
 def _runInline(code_in, converters=None, verbose=0, comment=None, **args):
-    argsKeys = args.keys()
+    argsKeys = list(args.keys())
     dimList = ['i', 'j', 'k']
           
     if 'ni' in argsKeys:
@@ -97,12 +98,12 @@ def _runInline(code_in, converters=None, verbose=0, comment=None, **args):
     
     from scipy import weave
 
-    for key in args.keys():
+    for key in list(args.keys()):
         if hasattr(args[key], 'dtype') and args[key].dtype.char == '?':
             args[key] = args[key].astype('B')
 
     weave.inline(code,
-                 args.keys(),
+                 list(args.keys()),
                  local_dict=args,
                  type_converters=None, #weave.converters.blitz,
                  compiler = 'gcc',
@@ -148,12 +149,12 @@ for(i=0; i < ni; i++) {
 
     from scipy import weave
 
-    for key in args.keys():
+    for key in list(args.keys()):
         if hasattr(args[key], 'dtype') and args[key].dtype.char == '?':
             args[key] = args[key].astype('B')
             
     weave.inline(code,
-                 args.keys(),
+                 list(args.keys()),
                  local_dict=args,
                  type_converters=None, #weave.converters.blitz,
                  compiler = 'gcc',
