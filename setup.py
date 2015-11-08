@@ -1,12 +1,9 @@
-from __future__ import print_function
-from __future__ import unicode_literals
-from builtins import str
 #!/usr/bin/env python
 
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
- # 
+ #
  #  FILE: "setup.py"
  #
  #  Author: Jonathan Guyer   <guyer@nist.gov>
@@ -15,7 +12,7 @@ from builtins import str
  #  Author: Andrew Acquaviva <andrewa@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This document was prepared at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -26,15 +23,18 @@ from builtins import str
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
  # We would appreciate acknowledgement if the document is used.
- # 
+ #
  # This document can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
+
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import os
 
@@ -53,11 +53,11 @@ from setuptools import setup, find_packages
 
 from setuptools.command.test import test as _test
 
-            
+
 test = _TestClass(_test)
 
 try:
-    # we only need "unittest" if bitten is installed 
+    # we only need "unittest" if bitten is installed
     # (and we're running as a bitten.slave)
     from bitten.util.testrunner import unittest as _unittest
     unittest = _TestClass(_unittest)
@@ -88,17 +88,17 @@ class build_docs(Command):
     def run (self):
         import sphinx
         from sphinx import apidoc
-        
+
         sphinx_args = ['-P', '-n', '-c', 'documentation/', '.']
         apidoc_args = []
-        
+
         if self.cathartic:
             sphinx_args = ['-a', '-E'] + sphinx_args
             apidoc_args = ['--force'] + apidoc_args
-            
-        apidoc.main(['sphinx-apidoc', '--output-dir=fipy/generated', '--suffix=rst'] 
+
+        apidoc.main(['sphinx-apidoc', '--output-dir=fipy/generated', '--suffix=rst']
                     + apidoc_args + ['fipy'])
-        apidoc.main(['sphinx-apidoc', '--output-dir=documentation/tutorial/package/generated', '--suffix=rst'] 
+        apidoc.main(['sphinx-apidoc', '--output-dir=documentation/tutorial/package/generated', '--suffix=rst']
                     + apidoc_args + ['documentation/tutorial/package'])
 
         if self.html:
@@ -109,9 +109,9 @@ class build_docs(Command):
                 sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
             except SystemExit:
                 pass
-            
+
             outdir = os.path.join('documentation', '_build', 'latex')
-            
+
             from docutils.core import publish_file
 
             for xtra in ("LICENSE", "DISCLAIMER"):
@@ -125,9 +125,9 @@ class build_docs(Command):
                              })
 
             savedir = os.getcwd()
-            
+
             os.chdir(outdir)
-                
+
             os.system("pdflatex fipy")
             os.system("pdflatex fipy")
             os.system("pdflatex fipy")
@@ -135,12 +135,12 @@ class build_docs(Command):
             os.system("makeindex -s python.ist modfipy")
             os.system("pdflatex fipy")
             os.system("pdflatex fipy")
-                
+
             os.chdir(savedir)
-            
+
 class upload_products(Command):
     description = "upload FiPy compressed archives to website(s)"
-    
+
     user_options = [('pdf', None, "upload the PDF variant of the documentation"),
                     ('html', None, "upload the HTML variant of the documentation"),
                     ('tarball', None, "upload the .tar.gz source distribution"),
@@ -160,15 +160,15 @@ class upload_products(Command):
         if self.pdf:
             print("setting permissions of manual...")
             os.system('chmod -R g+w documentation/_build/latex/fipy.pdf')
-            
+
             print("linking manual to `dist/`...")
             os.system('mkdir dist/')
             os.system('ln -f documentation/_build/latex/fipy.pdf dist/fipy-%s.pdf'%self.distribution.metadata.get_version())
-            
+
         if self.html:
             print("setting group and ownership of web pages...")
             os.system('chmod -R g+w documentation/_build/html/')
-            
+
             print("uploading web pages...")
             # The -t flag (implicit in -a) is suddenly causing problems
             # os.system('rsync -aLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
@@ -186,7 +186,7 @@ class upload_products(Command):
             file = 'dist/FiPy-%s.win32.zip' % self.distribution.metadata.get_version()
             print("setting permissions for %s ..." % file)
             os.system('chmod -R g+w %s' % file)
-            
+
             print("uploading winzip...")
             os.system('rsync -pgoDLC -e ssh %s %s/download/' % (file, os.environ['FIPY_WWWHOST']))
 
@@ -194,27 +194,27 @@ class upload_products(Command):
             print("activating web pages...")
             os.system(os.environ['FIPY_WWWACTIVATE'])
 
-try:            
+try:
     f = open('README.rst', 'r')
     long_description = '\n' + f.read() + '\n'
     f.close()
 except IOError as e:
     long_description = ''
-        
+
 try:
-    f = open('LICENSE.rst', 'r') 
+    f = open('LICENSE.rst', 'r')
     license = '\n' + ''.join([' '*8 + l for l in f])
     f.close()
 except IOError as e:
-    license = ''    
+    license = ''
 # The following doesn't work reliably, because it requires fipy
-# to already be installed (or at least egged), which is kind of 
+# to already be installed (or at least egged), which is kind of
 # obnoxious. We use cmdclass instead.
-# 
+#
 #         entry_points = {
 #             'distutils.commands': [
 #                 'test = fipy.tests.testRunner:test',
-#                 'unittest = fipy.tests.testRunner:unittest', 
+#                 'unittest = fipy.tests.testRunner:unittest',
 #             ],
 #         },
 
@@ -253,8 +253,12 @@ def getVersion():
 
     return version
 
+with open('requirements.txt') as fobj:
+    required = fobj.read().splitlines()
+
+
 dist = setup(	name = "FiPy",
-        version = getVersion(), 
+        version = getVersion(),
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
@@ -269,6 +273,7 @@ dist = setup(	name = "FiPy",
             'copy_script': Copy_script,
             'efficiency_test': Efficiency_test
         },
+        iinstall_requires=required,
         test_suite="fipy.testFiPy._suite",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
         entry_points="""
@@ -294,26 +299,26 @@ dist = setup(	name = "FiPy",
 
 if 'install' in dist.commands:
     req = []
-    
+
     for pkg in ['numpy', 'pysparse']:
         try:
             __import__(pkg)
         except ImportError as exc:
             req.append(pkg)
-            
+
     if len(req) > 0:
         print("!!!!!!")
         print("The required module(s) " + str(req) + " cannot be loaded.")
         print("FiPy will not work properly until these modules are installed.")
 
     opt = []
-    
+
     for pkg in ['scipy', 'matplotlib', 'mayavi']:
         try:
             __import__(pkg)
         except ImportError as exc:
             opt.append(pkg)
-        
+
     if len(opt) > 0:
         print("------")
         print("The optional module(s) " + str(opt) + " cannot be loaded.")
