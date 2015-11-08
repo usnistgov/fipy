@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "liquidVapor1D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -120,7 +120,7 @@ A 2D version of the 1D example.
 ...                  - DiffusionTerm(coeff=epsilon * temperature, var=density)
 
 >>> potentialNC.faceGrad.constrain(value=[[0], [0]], where=mesh.exteriorFaces)
-                 
+
 >>> coupledEqn = massEqn & momentumXEqn & momentumYEqn & potentialNCEqn
 
 >>> numerix.random.seed(2012)
@@ -149,12 +149,12 @@ A 2D version of the 1D example.
 ...     totalSweeps = 1
 
 >>> while timestep < totalSteps:
-... 
+...
 ...     sweep = 0
 ...     dt *= 1.1
 ...     residual = 1.
 ...     initialResidual = None
-...     
+...
 ...     density.updateOld()
 ...     velocityX.updateOld()
 ...     velocityY.updateOld()
@@ -170,7 +170,7 @@ A 2D version of the 1D example.
 ...         velocityVector[1] = velocityY
 ...
 ...         dt = min(dt, dx / max(abs(velocityVector.mag)) * cfl)
-...         
+...
 ...         coupledEqn.cacheMatrix()
 ...         residual = coupledEqn.sweep(dt=dt)
 ...
@@ -186,7 +186,7 @@ A 2D version of the 1D example.
 ...             matrixDiagonal[:] = matrixDiagonal.old
 ...             dt = dt / 10.
 ...             if __name__ == '__main__':
-...                 print 'Recalculate the time step'
+...                 print('Recalculate the time step')
 ...             timestep -= 1
 ...             break
 ...         else:
@@ -198,7 +198,7 @@ A 2D version of the 1D example.
 ...         sweep += 1
 ...
 ...     if __name__ == '__main__' and timestep % 1 == 0:
-...         print 'timestep: %i, dt: %1.5e, free energy: %1.5e' % (timestep, dt, freeEnergy)
+...         print('timestep: %i, dt: %1.5e, free energy: %1.5e' % (timestep, dt, freeEnergy))
 ...         for viewer in viewers:
 ...             viewer.plot()
 ...
@@ -208,6 +208,8 @@ A 2D version of the 1D example.
 ...     raw_input('finished')
 
 """
+
+from __future__ import print_function
 from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'

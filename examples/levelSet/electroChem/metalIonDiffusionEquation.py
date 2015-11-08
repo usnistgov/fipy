@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "metalIonDiffusionEquation.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,18 +22,18 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
 
-
+from __future__ import print_function
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
@@ -102,7 +102,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> ionVar = CellVariable(mesh = mesh, value = 1.)
     >>> from fipy.variables.distanceVariable \
     ...     import DistanceVariable
-    >>> disVar = DistanceVariable(mesh = mesh, 
+    >>> disVar = DistanceVariable(mesh = mesh,
     ...                           value = (x - 0.5) - 0.99,
     ...                           hasOld = 1)
 
@@ -118,7 +118,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     ...                                      metalIonMolarVolume = omega)
 
     >>> ionVar.constrain(cinf, mesh.facesRight)
-    
+
     >>> for i in range(10):
     ...     eqn.solve(ionVar, dt = 1000)
 
@@ -126,8 +126,8 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> gradient = cinf / (omega * diffusion / v + L)
     >>> answer = gradient * (x - L - dx * 3 / 2) + cinf
     >>> answer[x < dx] = 1
-    >>> print ionVar.allclose(answer)
-    1
+    >>> print(ionVar.allclose(answer))
+    True
 
     Testing the interface source term
 
@@ -141,10 +141,10 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> source = depositionRate * distance.cellInterfaceAreas / mesh.cellVolumes / ionVar
     >>> sqrt = numerix.sqrt(2)
     >>> ans = CellVariable(mesh=mesh, value=(0, 1 / sqrt, 1 / sqrt, 0))
-    >>> print numerix.allclose(source, ans)
+    >>> print(numerix.allclose(source, ans))
     True
     >>> distance[:] = (-1.5, -0.5, -0.5, 0.5)
-    >>> print numerix.allclose(source, (0, 0, 0, sqrt))
+    >>> print(numerix.allclose(source, (0, 0, 0, sqrt)))
     True
 
     :Parameters:
@@ -167,9 +167,9 @@ def buildMetalIonDiffusionEquation(ionVar = None,
 
     return eq + ImplicitSourceTerm(coeff)
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()

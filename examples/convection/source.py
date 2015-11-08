@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "source.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -39,7 +39,7 @@ This example solves the equation
 .. math::
 
    \frac{\partial \phi}{\partial x} + \alpha \phi = 0
-   
+
 with :math:`\phi \left( 0 \right) = 1` at :math:`x = 0`. The boundary
 condition at :math:`x = L` is an outflow boundary condition requiring
 the use of an artificial constraint to be set on the right hand side
@@ -73,16 +73,18 @@ includes a test against the analytical result.
 
 >>> eq = PowerLawConvectionTerm((1,)) + ImplicitSourceTerm(alpha)
 >>> eq.solve(phi)
->>> print numerix.allclose(phi, phi0 * numerix.exp(-alpha * mesh.cellCenters[0]), atol=1e-3)
+>>> print(numerix.allclose(phi, phi0 * numerix.exp(-alpha * mesh.cellCenters[0]), atol=1e-3))
 True
 
 >>> if __name__ == "__main__":
 ...     viewer = Viewer(vars=(phi, solution))
 ...     viewer.plot()
-...     raw_input("finished")    
+...     raw_input("finished")
 
 
 """
+
+from __future__ import print_function
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 

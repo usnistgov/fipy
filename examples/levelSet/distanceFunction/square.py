@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "square.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -41,9 +41,9 @@ given by:
 
    \abs{\nabla \phi} &= 1 \\
    \phi &= 0 \qquad \text{at} \qquad \begin{cases}
-       x = \left( L / 3, 2 L / 3 \right) 
+       x = \left( L / 3, 2 L / 3 \right)
        & \text{for $L / 3 \le y \le 2 L / 3$} \\
-       y = \left( L / 3, 2 L / 3 \right) 
+       y = \left( L / 3, 2 L / 3 \right)
        & \text{for $L / 3 \le x \le 2 L / 3$}
    \end{cases}
 
@@ -68,10 +68,12 @@ Do the tests:
 ...     -3. * dx / 2., -dx / 2., v4              , -dx / 2., -3. * dx / 2.,
 ...     v1           , val     , -dy / 2.        , val     , v1           ,
 ...     v3           , v2      , -3. * dy / 2.   , v2      , v3           ))
->>> print var.allclose(arr) #doctest: +LSM
-1
+>>> print(var.allclose(arr)) #doctest: +LSM
+True
 
 """
+
+from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
 from builtins import input

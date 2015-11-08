@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "peclet.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -63,7 +63,7 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 >>> while peclet < 1e4:
 ...     var[:] = valueLeft
 ...     diffCoeff = convCoeff * dx / peclet
-...     eq = (TransientTerm(1e-4) 
+...     eq = (TransientTerm(1e-4)
 ...           == DiffusionTerm(coeff=diffCoeff)
 ...           + PowerLawConvectionTerm(coeff=(convCoeff,)))
 ...     eq.solve(var=var, dt=1.)
@@ -71,7 +71,7 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 ...     arg0 = -convCoeff * x / diffCoeff
 ...     arg0 = numerix.where(arg0 < -200, -200, arg0)
 ...     arg1 = -convCoeff * L / diffCoeff
-...     arg1 = (arg1 >= -200) * (arg1 + 200) - 200  
+...     arg1 = (arg1 >= -200) * (arg1 + 200) - 200
 ...     CC = 1. - numerix.exp(arg0)
 ...     DD = 1. - numerix.exp(arg1)
 ...     analyticalArray = CC / DD
@@ -81,10 +81,12 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 ...         raw_input("Peclet number: " + str(peclet) + ", press key")
 ...     peclet *= 10
 
->>> print allcloseList
+>>> print(allcloseList)
 [True, True, True, True, True, True, True]
-    
+
 """
+
+from __future__ import print_function
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 

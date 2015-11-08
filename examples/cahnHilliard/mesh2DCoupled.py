@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mesh2DCoupled.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -21,13 +21,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -49,15 +49,15 @@ equation (also known as
    \frac{\partial \phi}{\partial t}
    = \nabla \cdot D \nabla \left( \frac{\partial f}{\partial \phi}   - \epsilon^2 \nabla^2 \phi \right).
 
-where :math:`\phi` is a conserved order parameter, possibly representing 
+where :math:`\phi` is a conserved order parameter, possibly representing
 alloy composition or spin.
-The double-well free energy function :math:`f = (a^2/2) \phi^2 (1 - \phi)^2` 
+The double-well free energy function :math:`f = (a^2/2) \phi^2 (1 - \phi)^2`
 penalizes states with intermediate values of :math:`\phi`
-between 0 and 1. The gradient energy term :math:`\epsilon^2 \nabla^2\phi`, 
+between 0 and 1. The gradient energy term :math:`\epsilon^2 \nabla^2\phi`,
 on the other hand, penalizes sharp changes of :math:`\phi`.
 These two competing effects result in the segregation
 of :math:`\phi` into domains of 0 and 1, separated by abrupt, but
-smooth, transitions. The parameters :math:`a` and :math:`\epsilon` determine the relative 
+smooth, transitions. The parameters :math:`a` and :math:`\epsilon` determine the relative
 weighting of the two effects and :math:`D` is a rate constant.
 
 We can simulate this process in :term:`FiPy` with a simple script:
@@ -93,16 +93,16 @@ them in canonical form for :term:`FiPy` to solve them as a coupled set
 of equations.
 
 .. math::
-    
+
    \frac{\partial \phi}{\partial t} &= \nabla\cdot D \nabla \psi \\
-   \psi &= \frac{\partial^2 f}{\partial \phi^2} (\phi - \phi^\text{old}) 
-           + \frac{\partial f}{\partial \phi} 
+   \psi &= \frac{\partial^2 f}{\partial \phi^2} (\phi - \phi^\text{old})
+           + \frac{\partial f}{\partial \phi}
            - \epsilon^2 \nabla^2 \phi
 
 We need to perform the partial derivatives
 
 .. math::
-    
+
    \frac{\partial f}{\partial \phi} &= (a^2/2) 2 \phi (1 - \phi) (1 - 2 \phi) \\
    \frac{\partial^2 f}{\partial \phi^2} &= (a^2/2) 2 \left[1 - 6 \phi(1 - \phi)\right]
 
@@ -113,10 +113,10 @@ manually.
 >>> dfdphi_ = a**2 * 2 * (1 - phi) * (1 - 2 * phi)
 >>> d2fdphi2 = a**2 * 2 * (1 - 6 * phi * (1 - phi))
 >>> eq1 = (TransientTerm(var=phi) == DiffusionTerm(coeff=D, var=psi))
->>> eq2 = (ImplicitSourceTerm(coeff=1., var=psi) 
-...        == ImplicitSourceTerm(coeff=-d2fdphi2, var=phi) - d2fdphi2 * phi + dfdphi 
+>>> eq2 = (ImplicitSourceTerm(coeff=1., var=psi)
+...        == ImplicitSourceTerm(coeff=-d2fdphi2, var=phi) - d2fdphi2 * phi + dfdphi
 ...        - DiffusionTerm(coeff=epsilon**2, var=phi))
->>> eq3 = (ImplicitSourceTerm(coeff=1., var=psi) 
+>>> eq3 = (ImplicitSourceTerm(coeff=1., var=psi)
 ...        == ImplicitSourceTerm(coeff=dfdphi_, var=phi)
 ...        - DiffusionTerm(coeff=epsilon**2, var=phi))
 
@@ -172,15 +172,15 @@ coefficient has to have a shape of `(2, 2)` while the explicit source
 has a shape `(2,)`
 
 >>> source = (- d2fdphi2 * v0 + dfdphi) * (0, 1)
->>> impCoeff = -d2fdphi2 * ((0, 0), 
-...                         (1., 0)) + ((0, 0), 
+>>> impCoeff = -d2fdphi2 * ((0, 0),
+...                         (1., 0)) + ((0, 0),
 ...                                     (0, -1.))
 
 This is the same equation as the previous definition of `eq`, but now in
 a vector format.
 
->>> eq = TransientTerm(((1., 0.), 
-...                     (0., 0.))) == DiffusionTerm([((0.,          D), 
+>>> eq = TransientTerm(((1., 0.),
+...                     (0., 0.))) == DiffusionTerm([((0.,          D),
 ...                                                   (-epsilon**2, 0.))]) + ImplicitSourceTerm(impCoeff) + source
 
 >>> dexp = -5
@@ -194,10 +194,12 @@ a vector format.
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
->>> print numerix.allclose(var, (phi, psi))
+>>> print(numerix.allclose(var, (phi, psi)))
 True
 
 """
+
+from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
@@ -205,7 +207,7 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    
+
     eval(input('finished'))
 
 

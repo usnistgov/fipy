@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "circle.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,26 +22,26 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
 r"""
 
 In this example, a phase equation is solved in one dimension with a
-missorientation between two solid domains. 
+missorientation between two solid domains.
 The phase equation is given by:
 
 .. math::
 
-   \tau_{\phi} \frac{\partial \phi}{\partial t} 
-   = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T) 
+   \tau_{\phi} \frac{\partial \phi}{\partial t}
+   = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T)
    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2
 
 where
@@ -60,15 +60,15 @@ The initial conditions are:
    0 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 \le (L / 4)^2$}
    \end{cases} \\
    T &= 1 \qquad \forall x
-    
+
 and boundary conditions
 :math:`\phi = 1` for :math:`x = 0` and :math:`x = L`.
 
 .. Further details of the numerical method for this problem can be found in
    "Extending Phase Field Models of Solidification to Polycrystalline
    Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
-   6035-6058.  
-   
+   6035-6058.
+
 Here the phase equation is solved with an explicit technique.
 
 The solution is allowed to evolve for ``steps = 100`` time steps.
@@ -83,10 +83,12 @@ data and compares it with the ``phase`` variable.
 
 >>> import os
 >>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
->>> print phase.allclose(testData)
-1
+>>> print(phase.allclose(testData))
+True
 
 """
+
+from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
 from builtins import input
@@ -110,7 +112,7 @@ phaseTransientCoeff = 0.1
 epsilon = 0.008
 s = 0.01
 alpha = 0.015
-      
+
 dx = old_div(L, nx)
 dy = old_div(L, ny)
 
@@ -134,7 +136,7 @@ phaseEq = TransientTerm(phaseTransientCoeff) == \
 
 if __name__ == '__main__':
 
-    phaseViewer = Viewer(vars = phase) 
+    phaseViewer = Viewer(vars = phase)
     phaseViewer.plot()
     for step in range(steps):
         phaseEq.solve(phase, dt = timeStepDuration)

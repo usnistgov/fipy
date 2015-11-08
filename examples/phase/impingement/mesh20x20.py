@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mesh20x20.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -38,7 +38,7 @@ In the following examples, we solve the same set of equations as in
 :mod:`examples.phase.impingement.mesh40x1`
 with different initial conditions and a 2D mesh:
 
-.. index:: 
+.. index::
    module: fipy.tools.parser
 
 >>> from fipy.tools.parser import parse
@@ -62,7 +62,7 @@ The initial conditions are given by
 :math:`\phi = 1` and
 
 .. math::
-    
+
    \theta = \begin{cases}
    \frac{2 \pi}{3} & \text{for $x^2 - y^2 < L / 2$,} \\
    \frac{-2 \pi}{3} & \text{for $(x-L)^2 - y^2 < L / 2$,} \\
@@ -90,7 +90,7 @@ The parameters for this example are
 The system is held isothermal at
 
 >>> temperature = 10.
-    
+
 and is initialized to liquid everywhere
 
 .. index:: CellVariable
@@ -113,9 +113,9 @@ Four different solid circular domains are created at each corner of
 the domain with appropriate orientations
 
 >>> x, y = mesh.cellCenters
->>> for a, b, thetaValue in ((0., 0.,  2. * numerix.pi / 3.), 
-...                          (L, 0., -2. * numerix.pi / 3.), 
-...                          (0., L, -2. * numerix.pi / 3. + 0.3), 
+>>> for a, b, thetaValue in ((0., 0.,  2. * numerix.pi / 3.),
+...                          (L, 0., -2. * numerix.pi / 3.),
+...                          (0., L, -2. * numerix.pi / 3. + 0.3),
 ...                          (L, L,  2. * numerix.pi / 3.)):
 ...     segment = (x - a)**2 + (y - b)**2 < (L / 2.)**2
 ...     phase.setValue(1., where=segment)
@@ -210,21 +210,21 @@ We step the solution in time, plotting as we go if running interactively,
 ...     if __name__ == '__main__':
 ...         phaseViewer.plot()
 ...         thetaProductViewer.plot()
-    
+
 The solution is compared against Ryo Kobayashi's test data
 
->>> print theta.allclose(testData, rtol=1e-7, atol=1e-7)
-1
-    
+>>> print(theta.allclose(testData, rtol=1e-7, atol=1e-7))
+True
+
 The following code shows how to restart a simulation from some saved
 data. First, reset the variables to their original values.
 
 >>> phase.setValue(0)
 >>> theta.setValue(-numerix.pi + 0.0001)
 >>> x, y = mesh.cellCenters
->>> for a, b, thetaValue in ((0., 0.,  2. * numerix.pi / 3.), 
-...                          (L, 0., -2. * numerix.pi / 3.), 
-...                          (0., L, -2. * numerix.pi / 3. + 0.3), 
+>>> for a, b, thetaValue in ((0., 0.,  2. * numerix.pi / 3.),
+...                          (L, 0., -2. * numerix.pi / 3.),
+...                          (0., L, -2. * numerix.pi / 3. + 0.3),
 ...                          (L, L,  2. * numerix.pi / 3.)):
 ...     segment = (x - a)**2 + (y - b)**2 < (L / 2.)**2
 ...     phase.setValue(1., where=segment)
@@ -237,11 +237,11 @@ Step through half the time steps.
 ...     thetaEq.solve(theta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
 ...     phaseEq.solve(phase, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
 
-We confirm that the solution has not yet converged to that given by 
+We confirm that the solution has not yet converged to that given by
 Ryo Kobayashi's FORTRAN code:
 
->>> print theta.allclose(testData)
-0
+>>> print(theta.allclose(testData))
+False
 
 We save the variables to disk.
 
@@ -249,7 +249,7 @@ We save the variables to disk.
    module: fipy.tools.dump
 
 >>> (f, filename) = dump.write({'phase' : phase, 'theta' : theta}, extension = '.gz')
-    
+
 and then recall them to test the data pickling mechanism
 
 >>> data = dump.read(filename, f)
@@ -267,9 +267,11 @@ and finish the iterations,
 
 The solution is compared against Ryo Kobayashi's test data
 
->>> print newTheta.allclose(testData, rtol=1e-7)
-1
+>>> print(newTheta.allclose(testData, rtol=1e-7))
+True
 """
+
+from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
@@ -277,6 +279,6 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    
+
     eval(input('finished'))
 

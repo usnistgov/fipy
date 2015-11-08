@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "input.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -42,10 +42,11 @@
    example, multigrid preconditioners such as those provided by Trilinos allow
    a more accurate solution.
 
-   >>> print var.allclose(mesh.cellCenters[0], atol = 10)
-   1
+   >>> print(var.allclose(mesh.cellCenters[0], atol = 10))
+   True
 
 """
+
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -76,7 +77,7 @@ if __name__ == '__main__':
     eq.solve(var,
              boundaryConditions = BCs,
              solver = solver)
-    
+
     viewer = Viewer(var)
     viewer.plot()
 

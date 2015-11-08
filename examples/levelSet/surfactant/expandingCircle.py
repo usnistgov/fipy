@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "expandingCircle.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -49,7 +49,7 @@ The solution for these set of equations is given by:
 
    r &= \sqrt{2 k r_0 \theta_0 t + r_0^2} \\
    \theta &= \frac{r_0 \theta_0}{\sqrt{2 k r_0 \theta_0 t + r_0^2}}
-    
+
 The following tests can be performed. First test for global
 conservation of surfactant:
 
@@ -66,17 +66,17 @@ conservation of surfactant:
 ...     totalTime += timeStepDuration #doctest: +LSM
 >>> surfactantEquation.solve(surfactantVariable, dt=1)
 >>> surfactantAfter = numerix.sum(surfactantVariable * mesh.cellVolumes)
->>> print surfactantBefore.allclose(surfactantAfter)
-1
+>>> print(surfactantBefore.allclose(surfactantAfter))
+True
 
-Next test for the correct local value of surfactant: 
+Next test for the correct local value of surfactant:
 
 >>> finalRadius = numerix.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
 >>> answer = initialSurfactantValue * initialRadius / finalRadius
 >>> coverage = surfactantVariable.interfaceVar
 >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
->>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.04
-1
+>>> print(numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.04)
+True
 
 Test for the correct position of the interface:
 
@@ -84,8 +84,8 @@ Test for the correct position of the interface:
 >>> radius = numerix.sqrt((x - L / 2)**2 + (y - L / 2)**2)
 >>> solution = radius - distanceVariable
 >>> error = (solution / finalRadius - 1)**2 * (coverage > 1e-3)
->>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.02 #doctest: +LSM
-1
+>>> print(numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.02) #doctest: +LSM
+True
 
 """
 from __future__ import division
@@ -136,8 +136,8 @@ surfactantEquation = TransientTerm() - \
     ExplicitUpwindConvectionTerm(SurfactantConvectionVariable(distanceVariable))
 
 if __name__ == '__main__':
-    
-    distanceViewer = Viewer(vars=distanceVariable, 
+
+    distanceViewer = Viewer(vars=distanceVariable,
                             datamin=-initialRadius, datamax=initialRadius)
     surfactantViewer = Viewer(vars=surfactantVariable, datamin=0., datamax=100.)
     velocityViewer = Viewer(vars=velocity, datamin=0., datamax=200.)
@@ -155,9 +155,9 @@ if __name__ == '__main__':
         distanceVariable.updateOld()
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
         surfactantEquation.solve(surfactantVariable, dt=1)
-        
+
         totalTime += timeStepDuration
-        
+
         velocityViewer.plot()
         distanceViewer.plot()
         surfactantViewer.plot()
@@ -169,6 +169,6 @@ if __name__ == '__main__':
         print('error', numerix.sqrt(old_div(numerix.sum(error), numerix.sum(error > 0))))
 
 
-        
+
 
     eval(input('finished'))

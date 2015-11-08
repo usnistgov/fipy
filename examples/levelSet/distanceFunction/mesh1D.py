@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mesh1D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -22,17 +22,17 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
-r"""Create a level set variable in one dimension. 
+r"""Create a level set variable in one dimension.
 
 The level set
 variable calculates its value over the domain to be the distance from
@@ -69,13 +69,13 @@ Construct a `distanceVariable` object.
 ...                        hasOld=1)
 >>> x = mesh.cellCenters[0]
 >>> var.setValue(1, where=x > dx * nx / 2)
- 
+
 Once the initial positive and negative regions have been initialized
 the `calcDistanceFunction()` method can be used to recalculate `var`
 as a distance function from the zero level set.
-   
+
 >>> var.calcDistanceFunction() #doctest: +LSM
-   
+
 The problem can then be solved by executing the :meth:`~fipy.terms.term.Term.solve`
 method of the equation.
 
@@ -85,10 +85,12 @@ method of the equation.
 
 The result can be tested with the following commands.
 
->>> print numerix.allclose(var, x - dx * nx / 2) #doctest: +LSM
-1
+>>> print(numerix.allclose(var, x - dx * nx / 2)) #doctest: +LSM
+True
 
 """
+
+from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "input.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -46,10 +46,12 @@ A simple analytical answer can be used to test the result:
    >>> x = mesh.cellCenters[0]
    >>> values = numerix.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
    >>> values = numerix.where(x < L / 4., x, values)
-   >>> print var.allclose(values, atol = 1e-8, rtol = 1e-8)
-   1
+   >>> print(var.allclose(values, atol = 1e-8, rtol = 1e-8))
+   True
 
 """
+
+from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
 from builtins import input
@@ -62,7 +64,7 @@ ny = 1
 
 valueLeft = 0.
 fluxRight = 1.
-timeStepDuration = 1. 
+timeStepDuration = 1.
 
 L = 10.
 
@@ -70,7 +72,7 @@ dx = old_div(L, nx)
 dy = 1.
 
 mesh = Tri2D(dx, dy, nx, ny)
-    
+
 var = CellVariable(
     name = "solution variable",
     mesh = mesh,

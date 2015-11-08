@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "cylindricalMesh2D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -45,7 +45,7 @@ with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 
 >>> diffCoeff = 1.
 >>> convCoeff = ((10.,),(0.,))
-    
+
 We define a 2D cylindrical mesh representing an anulus. The mesh is a
 pseudo 1D mesh, but is a good test case for the :class:`~fipy.meshes.cylindricalGrid2D.CylindricalGrid2D`
 mesh.
@@ -84,7 +84,7 @@ The equation is created with the :class:`~fipy.terms.diffusionTerm.DiffusionTerm
 
 >>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
-   
+
 More details of the benefits and drawbacks of each type of convection
 term can be found in :ref:`sec:NumericalSchemes}`.
 Essentially, the :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm` and :class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` will
@@ -94,13 +94,13 @@ both handle most types of convection-diffusion cases, with the
 We solve the equation
 
 >>> eq.solve(var=var)
-   
+
 and test the solution against the analytical result
 
 .. math::
 
    \phi = \exp{\frac{u}{D} \left(r_1 - r\right)} \left( \frac{ \ei{\frac{u r_0}{D}} - \ei{\frac{u r}{D}} }{ \ei{\frac{u r_0}{D}} - \ei{\frac{u r_1}{D}} } \right)
-   
+
 or
 
 .. index:: exp
@@ -115,11 +115,11 @@ or
 ...     CC = expi(U * r0 / diffCoeff) - expi(U * r1 / diffCoeff) # doctest: +SCIPY
 ...     analyticalArray = AA * BB / CC # doctest: +SCIPY
 ... except ImportError:
-...     print "The SciPy library is unavailable. It is required for testing purposes."
+...     print("The SciPy library is unavailable. It is required for testing purposes.")
 
->>> print var.allclose(analyticalArray, atol=1e-3) # doctest: +SCIPY
-1
-   
+>>> print(var.allclose(analyticalArray, atol=1e-3)) # doctest: +SCIPY
+True
+
 If the problem is run interactively, we can view the result:
 
 .. index::
@@ -129,12 +129,14 @@ If the problem is run interactively, we can view the result:
 ...     viewer = Viewer(vars=var)
 ...     viewer.plot()
 """
+
+from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
-     
+
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    
+
     eval(input('finished'))

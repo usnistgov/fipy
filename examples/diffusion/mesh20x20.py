@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mesh20x20.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -49,13 +49,13 @@ applying boundary condition patches.
 >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
 
 We create a :class:`~fipy.variables.cellVariable.CellVariable` and initialize it to zero:
-    
+
 >>> phi = CellVariable(name = "solution variable",
 ...                    mesh = mesh,
 ...                    value = 0.)
 
 and then create a diffusion equation.  This is solved by default with an
-iterative conjugate gradient solver.  
+iterative conjugate gradient solver.
 
 >>> D = 1.
 >>> eq = TransientTerm() == DiffusionTerm(coeff=D)
@@ -103,11 +103,11 @@ and solve the equation by repeatedly looping in time:
 
 We can test the value of the bottom-right corner cell.
 
->>> print numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2)
-1
+>>> print( numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2))
+True
 
 >>> if __name__ == '__main__':
-...     raw_input("Implicit transient diffusion. Press <return> to proceed...")
+...     input("Implicit transient diffusion. Press <return> to proceed...")
 
 -----
 
@@ -124,13 +124,19 @@ We can also solve the steady-state problem directly
 
 and test the value of the bottom-right corner cell.
 
->>> print numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2)
-1
+>>> print(numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2))
+True
 
 >>> if __name__ == '__main__':
-...     raw_input("Implicit steady-state diffusion. Press <return> to proceed...")
+...     input("Implicit steady-state diffusion. Press <return> to proceed...")
 """
+
+from __future__ import print_function
 from __future__ import unicode_literals
+
+import sys
+if sys.version_info.major < 3:
+    input = raw_input
 
 __docformat__ = 'restructuredtext'
 

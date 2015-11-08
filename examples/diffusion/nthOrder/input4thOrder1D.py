@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "input.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -43,7 +43,7 @@ This example uses the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` class to 
 on a 1D mesh of length
 
 >>> L = 1000.
-    
+
 We create an appropriate mesh
 
 .. index:: Grid1D
@@ -59,7 +59,7 @@ and initialize the solution variable to 0
 .. index:: CellVariable
 
 >>> var = CellVariable(mesh=mesh, name='solution variable')
-    
+
 For this problem, we impose the boundary conditions:
 
 .. math::
@@ -68,14 +68,14 @@ For this problem, we impose the boundary conditions:
    \frac{\partial \phi}{\partial x} &= \alpha_2 \quad \text{at $x = L$} \\
    \frac{\partial^2 \phi}{\partial x^2} &= \alpha_3 \quad \text{at $x = 0$} \\
    \frac{\partial^3 \phi}{\partial x^3} &= \alpha_4 \quad \text{at $x = L$.}
-    
+
 or
 
 >>> alpha1 = 2.
 >>> alpha2 = 1.
 >>> alpha3 = 4.
 >>> alpha4 = -3.
-    
+
 .. index:: NthOrderBoundaryCondition
 
 >>> BCs = (NthOrderBoundaryCondition(faces=mesh.facesLeft, value=alpha3, order=2),
@@ -84,10 +84,10 @@ or
 >>> var.constrain(alpha1, mesh.facesLeft)
 
 We initialize the steady-state equation
-    
+
 >>> eq = DiffusionTerm(coeff=(1, 1)) == 0
-    
-and use the :class:`~fipy.solvers.pysparse.linearLUSolver.LinearLUSolver` for stability. 
+
+and use the :class:`~fipy.solvers.pysparse.linearLUSolver.LinearLUSolver` for stability.
 
 We perform one implicit timestep to achieve steady state
 
@@ -99,7 +99,7 @@ The analytical solution is:
 
 .. math::
 
-   \phi = \frac{ \alpha_4 }{6} x^3 + \frac{ \alpha_3 }{2} x^2 
+   \phi = \frac{ \alpha_4 }{6} x^3 + \frac{ \alpha_3 }{2} x^2
    + \left( \alpha_2 - \frac{ \alpha_4 }{2} L^2  - \alpha_3 L \right) x + \alpha_1
 
 or
@@ -109,11 +109,11 @@ or
 >>> analytical.setValue(alpha4 / 6. * x**3 + alpha3 / 2. * x**2 + \
 ...                     (alpha2 - alpha4 / 2. * L**2 - alpha3 * L) * x + alpha1)
 
->>> print var.allclose(analytical, rtol=1e-4)
-1
+>>> print(var.allclose(analytical, rtol=1e-4))
+True
 
 If the problem is run interactively, we can view the result:
-    
+
 .. index::
    module: fipy.viewers
 
@@ -127,6 +127,8 @@ If the problem is run interactively, we can view the result:
    :alt: solution to biharmonic equation
 
 """
+
+from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'

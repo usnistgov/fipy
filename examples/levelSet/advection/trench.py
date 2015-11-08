@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "trench.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -83,14 +83,14 @@ for the initial position of the interface:
 >>> d[:,2] = numerix.where(numerix.logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
 >>> argmins = numerix.argmin(numerix.absolute(d), axis = 1)
 >>> answer = numerix.take(d.ravel(), numerix.arange(len(argmins))*3 + argmins)
->>> print var.allclose(answer, atol = 1e-1) #doctest: +LSM
-1
+>>> print(var.allclose(answer, atol = 1e-1)) #doctest: +LSM
+True
 
 Advect the interface and check the position.
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var, datamin=-0.1, datamax=0.1)
-...     
+...
 ...     viewer.plot()
 
 >>> for step in range(steps):
@@ -103,10 +103,12 @@ Advect the interface and check the position.
 >>> answer = answer - distanceMoved
 >>> answer = numerix.where(answer < 0., 0., answer)
 >>> var.setValue(numerix.where(var < 0., 0., var))
->>> print var.allclose(answer, atol = 1e-1) #doctest: +LSM
-1
+>>> print(var.allclose(answer, atol = 1e-1)) #doctest: +LSM
+True
 
 """
+
+from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
