@@ -258,6 +258,11 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def _faceToCellDistanceRatio(self):
+        """how far face is from first to second cell
+        
+        distance from center of face to center of first cell divided by distance
+        between cell centers
+        """
         XYdis = numerix.zeros((self.nx, self.ny, self.nz + 1),'d')
         XYdis[:] = 0.5
         XYdis[..., 0] = 1

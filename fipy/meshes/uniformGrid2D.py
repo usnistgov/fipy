@@ -344,6 +344,11 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _faceToCellDistanceRatio(self):
+        """how far face is from first to second cell
+        
+        distance from center of face to center of first cell divided by distance
+        between cell centers
+        """
         faceToCellDistanceRatios = numerix.zeros(self.numberOfFaces, 'd')
         faceToCellDistanceRatios[:] = 0.5
         faceToCellDistanceRatios[:self.nx] = 1.
