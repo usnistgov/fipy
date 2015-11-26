@@ -86,7 +86,7 @@ We start the problem with random fluctuations about :math:`\phi = 1/2`
 :term:`FiPy` doesn't plot or output anything unless you tell it to:
 
 >>> if __name__ == "__main__":
-...     viewer = Viewer(vars=(phi, psi), datamin=0., datamax=1.)
+...     viewer = Viewer(vars=(phi,), datamin=0., datamax=1.)
 
 We factor the Cahn-Hilliard equation into two 2nd-order PDEs and place
 them in canonical form for :term:`FiPy` to solve them as a coupled set
@@ -95,10 +95,12 @@ of equations.
 .. math::
     
    \frac{\partial \phi}{\partial t} &= \nabla\cdot D \nabla \psi \\
-   \psi &= \frac{\partial^2 f}{\partial \phi^2} (\phi - \phi^\text{old}) 
-           + \frac{\partial f}{\partial \phi} 
-           - \epsilon^2 \nabla^2 \phi
+   \psi &= \left(\frac{\partial f}{\partial \phi} - \frac{\partial^2 f}{\partial \phi^2}\phi\right)_{\text{old}} 
+           + \frac{\partial^2 f}{\partial \phi^2}\phi - \epsilon^2 \nabla^2 \phi
 
+The source term in :math:`\psi`, :math:`\frac{\partial f}{\partial \phi}`, is
+expressed in linearized form after Taylor expansion at :math:`\phi=\phi_{\text{old}}`,
+for the same reasons discussed in :mod:`examples.phase.simple`.
 We need to perform the partial derivatives
 
 .. math::
@@ -145,7 +147,7 @@ evolution of their problem.
 >>> if __name__ == '__main__':
 ...     raw_input("Coupled equations. Press <return> to proceed...")
 
-.. image:: mesh2D.*
+.. image:: mesh2DCoupled.*
    :width: 90%
    :align: center
 
@@ -159,7 +161,7 @@ a single variable
 >>> var[0] = noise
 
 >>> if __name__ == "__main__":
-...     viewer = Viewer(vars=(var[0], var[1]), datamin=0., datamax=1.)
+...     viewer = Viewer(name=r"$\phi$", vars=var[0,], datamin=0., datamax=1.)
 
 >>> D = a = epsilon = 1.
 >>> v0 = var[0]
@@ -179,9 +181,10 @@ has a shape `(2,)`
 This is the same equation as the previous definition of `eq`, but now in
 a vector format.
 
->>> eq = TransientTerm(((1., 0.), 
+>>> eq = (TransientTerm(((1., 0.), 
 ...                     (0., 0.))) == DiffusionTerm([((0.,          D), 
-...                                                   (-epsilon**2, 0.))]) + ImplicitSourceTerm(impCoeff) + source
+...                                                   (-epsilon**2, 0.))])
+...                                   + ImplicitSourceTerm(impCoeff) + source)
 
 >>> dexp = -5
 >>> elapsed = 0.
