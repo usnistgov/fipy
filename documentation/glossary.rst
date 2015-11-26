@@ -54,6 +54,10 @@ Glossary
       facilities. See
       http://www.scipy.org/NumPy.
 
+   pandas
+      "Python Data Analysis Library" provides high-performance data structures
+      for flexible, extensible analysis. See http://pandas.pydata.org.
+
    pip
       "pip installs python" is a tool for installing and managing Python
       packages, such as those found in :term:`PyPI`.
