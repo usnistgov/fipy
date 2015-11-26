@@ -93,11 +93,15 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
     if len(emptyvars):
         viewers.append(DummyViewer(vars=emptyvars))
     
+    enpts = []
     import pkg_resources
     for ep in pkg_resources.iter_entry_points(group='fipy.viewers', 
                                               name=FIPY_VIEWER):
+        enpts.append((ep.name,ep))
+
+    for name, ep in sorted(enpts):
                                                   
-        attempts.append(ep.name)
+        attempts.append(name)
         
         try:
             ViewerClass = ep.load()
@@ -112,7 +116,7 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
                 
             break
         except Exception, s:
-            errors.append("%s: %s" % (ep.name, s))
+            errors.append("%s: %s" % (name, s))
 
     if len(attempts) == 0:
         if FIPY_VIEWER is not None:
