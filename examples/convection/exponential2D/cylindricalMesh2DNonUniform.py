@@ -50,7 +50,8 @@ We define a 2D cylindrical mesh representing an anulus. The mesh is a
 suedo 1D mesh, but is a good test case for the :class:`~fipy.meshes.cylindricalGrid2D.CylindricalGrid2D`
 mesh. The mesh has a non-constant cell spacing.
 
->>> from fipy import *
+>>> from fipy import CellVariable, CylindricalGrid2D, DiffusionTerm, ExponentialConvectionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> r0 = 1.
 >>> r1 = 2.

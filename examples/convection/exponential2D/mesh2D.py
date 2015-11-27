@@ -38,7 +38,8 @@ This example solves the steady-state convection-diffusion equation as
 described in :mod:`examples.diffusion.convection.exponential1D.mesh1D` on a 2D
 mesh with ``nx = 10`` and ``ny = 10``:
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, DiffusionTerm, ExponentialConvectionTerm, DefaultAsymmetricSolver, Viewer
+>>> from fipy.tools import numerix
 
 >>> L = 10.
 >>> nx = 10

@@ -34,7 +34,8 @@
 r"""
 Solves the Cahn-Hilliard problem in a 3D cube
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid3D, Viewer, GaussianNoiseVariable, TransientTerm, DiffusionTerm, DefaultSolver
+>>> from fipy.tools import numerix
 
 The only difference from :mod:`examples.cahnHilliard.mesh2D` is the
 declaration of ``mesh``.

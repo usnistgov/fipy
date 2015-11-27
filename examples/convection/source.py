@@ -51,7 +51,8 @@ object will be used to represent this term. The derivative of
 field from left to right. The following is an example code that
 includes a test against the analytical result.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, DiffusionTerm, PowerLawConvectionTerm, ImplicitSourceTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> L = 10.
 >>> nx = 5000

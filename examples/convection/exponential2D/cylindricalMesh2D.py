@@ -52,7 +52,8 @@ mesh.
 
 .. index:: Grid1D
 
->>> from fipy import *
+>>> from fipy import CellVariable, CylindricalGrid2D, DiffusionTerm, ExponentialConvectionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> r0 = 1.
 >>> r1 = 2.

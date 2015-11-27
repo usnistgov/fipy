@@ -48,7 +48,7 @@ We create an appropriate mesh
 
 .. index:: Grid1D
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, NthOrderBoundaryCondition, DiffusionTerm, Viewer, GeneralSolver
 
 >>> nx = 500
 >>> dx = L / nx

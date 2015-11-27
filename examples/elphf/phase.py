@@ -74,7 +74,8 @@ coefficient, and :math:`W` is the phase field barrier energy.
    
 We solve the problem on a 1D mesh
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> nx = 400
 >>> dx = 0.01

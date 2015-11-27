@@ -50,7 +50,8 @@ with different initial conditions and a 2D mesh:
 
 .. index:: sqrt, Grid2D
 
->>> from fipy import *
+>>> from fipy import CellVariable, ModularVariable, Grid2D, TransientTerm, DiffusionTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, GeneralSolver, Viewer
+>>> from fipy.tools import numerix, dump
 
 >>> steps = numberOfSteps
 >>> N = int(numerix.sqrt(numberOfElements))

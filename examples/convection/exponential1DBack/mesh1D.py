@@ -38,7 +38,8 @@ This example solves the steady-state convection-diffusion equation as described 
 :mod:`examples.diffusion.convection.exponential1D.input` but with
 :math:`\vec{u} = (-10,)`.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, DiffusionTerm, ExponentialConvectionTerm, DefaultAsymmetricSolver, Viewer
+>>> from fipy.tools import numerix
 
 >>> L = 10.
 >>> nx = 1000

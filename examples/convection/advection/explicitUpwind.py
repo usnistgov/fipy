@@ -37,7 +37,8 @@ This example shows the failure of advecting a square pulse with a first
 order explicit upwind scheme.
 """
 
-from fipy import *
+from fipy import CellVariable, Grid1D, TransientTerm, ExplicitUpwindConvectionTerm, LinearLUSolver, Viewer
+from fipy.tools import numerix
 
 valueLeft = 0.
 valueRight = 0.
@@ -51,7 +52,7 @@ steps = 1000
 
 mesh = Grid1D(dx = dx, nx = nx)
 
-startingArray = zeros(nx, 'd')
+startingArray = numerix.zeros(nx, 'd')
 startingArray[50:90] = 1. 
 
 var = CellVariable(

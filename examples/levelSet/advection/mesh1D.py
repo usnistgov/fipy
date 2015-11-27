@@ -53,7 +53,8 @@ The scheme used in the `FirstOrderAdvectionTerm` preserves the `var` as a distan
 The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, DistanceVariable, TransientTerm, FirstOrderAdvectionTerm, AdvectionTerm, Viewer
+>>> from fipy.tools import numerix, serialComm
 
 >>> velocity = 1.
 >>> dx = 1.
@@ -67,7 +68,6 @@ Construct the mesh.
 
 .. index:: Grid1D
 
->>> from fipy.tools import serialComm
 >>> mesh = Grid1D(dx=dx, nx=nx, communicator=serialComm)
 
 Construct a `distanceVariable` object.

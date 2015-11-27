@@ -91,8 +91,8 @@ and :term:`FiPy` are identical.
 
 To start, some parameters are declared.
 
->>> from fipy import *
->>> #from fipy.meshes.grid2D import Grid2D
+>>> from fipy import CellVariable, FaceVariable, Grid2D, DiffusionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> L = 1.0
 >>> N = 50

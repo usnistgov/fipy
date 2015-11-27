@@ -62,7 +62,8 @@ weighting of the two effects and :math:`D` is a rate constant.
 
 We can simulate this process in :term:`FiPy` with a simple script:
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, GaussianNoiseVariable, DiffusionTerm, TransientTerm, ImplicitSourceTerm, Viewer
+>>> from fipy.tools import numerix
 
 (Note that all of the functionality of NumPy is imported along with :term:`FiPy`, although
 much is augmented for :term:`FiPy`\'s needs.)

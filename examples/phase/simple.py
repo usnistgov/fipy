@@ -74,7 +74,8 @@ and for the interpolation function is
 
 We create a 1D solution mesh
 
->>> from fipy import *
+>>> from fipy import CellVariable, Variable, Grid1D, DiffusionTerm, TransientTerm, ImplicitSourceTerm, DummySolver, Viewer
+>>> from fipy.tools import numerix
 
 >>> L = 1.
 >>> nx = 400

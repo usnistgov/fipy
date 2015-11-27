@@ -40,7 +40,8 @@ system of multiple components. Once again, we'll focus on 1D.
 
 .. index:: Grid1D
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, PowerLawConvectionTerm, DefaultAsymmetricSolver, Viewer
+>>> from fipy.tools import numerix
 
 >>> nx = 400
 >>> dx = 0.01

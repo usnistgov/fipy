@@ -58,7 +58,7 @@ We solve the problem on a 1D mesh
 >>> dx = 0.01
 >>> L = nx * dx
 
->>> from fipy import *
+>>> from fipy import CellVariable, FaceVariable, Grid1D, TransientTerm, DiffusionTerm, PowerLawConvectionTerm, DefaultAsymmetricSolver, Viewer
 >>> mesh = Grid1D(dx = dx, nx = nx)
 
 One component in this ternary system will be designated the "solvent"

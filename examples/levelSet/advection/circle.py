@@ -52,7 +52,8 @@ preserves the ``var`` as a distance function. The solution to this
 problem will be demonstrated in the following script. Firstly, setup
 the parameters.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, DistanceVariable, TransientTerm, FirstOrderAdvectionTerm, AdvectionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> L = 1.
 >>> N = 25

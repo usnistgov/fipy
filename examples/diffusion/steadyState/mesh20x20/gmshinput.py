@@ -48,7 +48,8 @@ if __name__ == '__main__':
     import sys
     import os
 
-    from fipy import *
+    from fipy import SkewedGrid2D, CellVariable, Viewer, DiffusionTerm
+    from fipy.tools import numerix
 
     valueLeft = 0.
     valueRight = 1.
@@ -66,7 +67,7 @@ if __name__ == '__main__':
 
     DiffusionTerm().solve(var)
 
-    varArray = array(var)
+    varArray = numerix.array(var)
     x = mesh.cellCenters[0]
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
     errorArray = varArray - analyticalArray

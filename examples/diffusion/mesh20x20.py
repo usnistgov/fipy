@@ -39,7 +39,8 @@ applying boundary condition patches.
 
 .. index:: Grid2D
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, Viewer, TransientTerm, DiffusionTerm
+>>> from fipy.tools import numerix
 
 >>> nx = 20
 >>> ny = nx
