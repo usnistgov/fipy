@@ -40,7 +40,8 @@ the difference being that this transient example is solved explicitly.
 
 We create a 1D mesh:
     
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, TransientTerm, ExplicitDiffusionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> nx = 100
 >>> dx = 1.

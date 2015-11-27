@@ -46,7 +46,8 @@ and the boundary condition for a circle is given by, :math:`\phi = 0` at
 The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, DistanceVariable, TransientTerm, FirstOrderAdvectionTerm, AdvectionTerm, Viewer
+>>> from fipy.tools import numerix, serialComm
 
 >>> dx = 1.
 >>> dy = 1.
@@ -59,7 +60,6 @@ Construct the mesh.
 
 .. index:: Grid2D
 
->>> from fipy.tools import serialComm
 >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, communicator=serialComm)
 
 Construct a `distanceVariable` object.

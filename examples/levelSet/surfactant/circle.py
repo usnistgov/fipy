@@ -73,7 +73,8 @@ The result can be tested with the following code:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
+from fipy.tools import numerix
 
 L = 1.
 nx = 50

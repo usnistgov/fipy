@@ -53,7 +53,7 @@ The result is again tested in the same way:
 
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, Grid2D, DiffusionTerm, Viewer
 
 nx = 50
 ny = 50

@@ -211,7 +211,8 @@ can be obtained by running this example.
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, SurfactantVariable, TransientTerm, FirstOrderAdvectionTerm, GeneralSolver, Viewer 
+from fipy.tools import numerix
 from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 from trenchMesh import TrenchMesh

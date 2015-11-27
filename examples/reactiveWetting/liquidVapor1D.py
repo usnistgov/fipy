@@ -93,7 +93,8 @@ Eqs. :eq:`eq:reactiveWetting:liquidVapor1D:freeEnergy`,
 :eq:`eq:reactiveWetting:liquidVapor1D:chemicalPotential` and
 :eq:`eq:reactiveWetting:liquidVapor1D:pressure` are defined as python functions,
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, TransientTerm, VanLeerConvectionTerm, DiffusionTerm, ImplicitSourceTerm, ConvectionTerm, CentralDifferenceConvectionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> def f(rho):
 ...     return ee * rho**2 / molarWeight**2 + gasConstant * temperature * rho / molarWeight * \
@@ -283,7 +284,7 @@ Viewers are also defined.
 ...     viewers = Viewer(density), Viewer(velocity), Viewer(potentialNC)
 ...     for viewer in viewers:
 ...         viewer.plot()
-...     raw_input('arrange viewers')
+...     raw_input('Arrange viewers, then press <return> to proceed...')
 ...     for viewer in viewers:
 ...         viewer.plot()
 
@@ -352,7 +353,7 @@ equation. This currently doesn't work properly in :term:`FiPy`.
 ...         sweep += 1
 ...
 ...     if __name__ == '__main__' and timestep % 10 == 0:
-...         print 'timestep: %i, dt: %1.5e, free energy: %1.5e' % (timestep, dt, freeEnergy)
+...         print 'timestep: %e / %e, dt: %1.5e, free energy: %1.5e' % (timestep, totalSteps, dt, freeEnergy)
 ...         for viewer in viewers:
 ...             viewer.plot()
 ...

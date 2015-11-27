@@ -48,7 +48,7 @@
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, Grid1D, LinearLUSolver, NthOrderBoundaryCondition, DiffusionTerm, Viewer
 
 Lx = 1.
 nx = 100000

@@ -38,7 +38,8 @@ This example solves the steady-state convection-diffusion equation as described 
 mod:`examples.diffusion.convection.exponential1D.mesh1D` but uses the
 :class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` rather than the :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm` instatiator.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, DiffusionTerm, PowerLawConvectionTerm, DefaultAsymmetricSolver, Viewer
+>>> from fipy.tools import numerix
 
 >>> L = 10.
 >>> nx = 1000

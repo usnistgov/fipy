@@ -50,7 +50,8 @@ We define a 1D mesh
 
 .. index:: Grid1D
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, DiffusionTerm, ExponentialConvectionTerm, DefaultAsymmetricSolver, Viewer
+>>> from fipy.tools import numerix
 
 >>> nx = 1000
 >>> L = 10.

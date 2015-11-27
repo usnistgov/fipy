@@ -40,7 +40,8 @@ Lobkovsky and Carter :cite:`WarrenPolycrystal`
 
 .. index:: Grid1D
 
->>> from fipy import *
+>>> from fipy import CellVariable, ModularVariable, Grid1D, TransientTerm, DiffusionTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, GeneralSolver, Viewer
+>>> from fipy.tools import numerix
 
 >>> nx = 40
 >>> Lx = 2.5 * nx / 100.
@@ -207,7 +208,7 @@ and orientation variables.
 >>> if __name__ == '__main__':
 ...     phaseViewer = Viewer(vars=phase, datamin=0., datamax=1.)
 ...     thetaProductViewer = Viewer(vars=theta,
-...                                 datamin=-pi, datamax=pi)
+...                                 datamin=-numerix.pi, datamax=numerix.pi)
 ...     phaseViewer.plot()
 ...     thetaProductViewer.plot()
 

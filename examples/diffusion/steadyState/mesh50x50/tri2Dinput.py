@@ -55,7 +55,7 @@ The result is again tested in the same way:
 
 """
 
-from fipy import *
+from fipy import CellVariable, Tri2D, DiffusionTerm, Viewer
 
 nx = 50
 ny = 50

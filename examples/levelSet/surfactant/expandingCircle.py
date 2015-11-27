@@ -90,7 +90,8 @@ Test for the correct position of the interface:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
+from fipy.tools import numerix
 
 L = 1.
 nx = 50

@@ -42,7 +42,8 @@ True
 
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, FaceVariable, Grid1D, TransientTerm, CentralDifferenceConvectionTerm
+from fipy.tools import numerix
 
 L = 2.
 X0 = -1.
@@ -68,12 +69,10 @@ if  __name__ == '__main__':
     from fipy import MatplotlibViewer as Viewer
     vi = Viewer((q[0], q[1]))
     vi.plot()
-    raw_input('press key')
     
 for step in range(500):
     eqn.solve(q, dt=cfl * dx)
     if step % 10 ==  0 and  __name__ == '__main__':
-        print 'step',step
         vi.plot()
 
 if __name__ == '__main__':

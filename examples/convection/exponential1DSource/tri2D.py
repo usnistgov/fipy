@@ -48,7 +48,8 @@ Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 
    \vec{u} = (0, 10)
 
->>> from fipy import *
+>>> from fipy import CellVariable, Tri2D, DiffusionTerm, ExponentialConvectionTerm, DefaultAsymmetricSolver, Viewer
+>>> from fipy.tools import numerix
 
 >>> L = 10.
 >>> nx = 1

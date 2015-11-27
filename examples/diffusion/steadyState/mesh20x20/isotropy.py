@@ -38,7 +38,7 @@ This input file solves a steady-state 1D diffusion problem as in
 `./examples/diffusion/mesh1D.py`. The difference being that it uses a tensor for
 the diffusion coefficient, even though the coefficient is isotropic.
 
->>> from fipy import *
+>>> from fipy import Grid2D, CellVariable, DiffusionTerm, Viewer
 
 >>> Lx = 20
 >>> mesh = Grid2D(nx=20, ny=20)

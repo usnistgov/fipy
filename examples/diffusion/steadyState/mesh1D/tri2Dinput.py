@@ -69,7 +69,7 @@ tolerance of `1e-10`.
 
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import Tri2D, CellVariable, DiffusionTerm, Viewer
 
 nx = 50
 dx = 1.

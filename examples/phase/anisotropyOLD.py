@@ -47,7 +47,8 @@ We start from a circular seed in a 2D mesh:
 
 .. index:: Grid2D
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, TransientTerm, DiffusionTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> numberOfCells = 40
 >>> Length = numberOfCells * 2.5 / 100.

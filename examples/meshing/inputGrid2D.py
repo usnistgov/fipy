@@ -48,9 +48,10 @@ elements on the mesh. Firstly parse the command line argument for
     
 A `Grid2D` object is invoked in the following way,
 
-   >>> from fipy import *
+   >>> from fipy import Grid2D, CellVariable, Viewer
+   >>> from fipy.tools import numerix
 
-   >>> nx = int(sqrt(numberOfElements))
+   >>> nx = int(numerix.sqrt(numberOfElements))
    >>> ny = nx
    >>> dx = 1.
    >>> dy = 1.
@@ -61,13 +62,13 @@ obtained.  For example the mesh volumes can be obtained with the
 `getCellVolumes()` method.
 
    >>> vols = mesh.cellVolumes
-   >>> allclose(dx * dy * ones(nx * ny), vols)
+   >>> numerix.allclose(dx * dy * numerix.ones(nx * ny), vols)
    1
 
 Obtain the number of cells in the mesh
 
    >>> N = mesh.numberOfCells
-   >>> allclose(N, numberOfElements)
+   >>> numerix.allclose(N, numberOfElements)
    1
 
 Obtain all the left exterior faces, this is equal to `ny`.
