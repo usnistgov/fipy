@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "SkewedGrid2D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,18 +22,18 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
- 
+
 from fipy.tools import numerix
 from fipy.tools.numerix import random
 from fipy.tools.dimensions.physicalField import PhysicalField
@@ -51,20 +51,20 @@ class SkewedGrid2D(Mesh2D):
     """
     def __init__(self, dx = 1., dy = 1., nx = None, ny = 1, rand = 0, *args, **kwargs):
         self.args = {
-            'dx': dx, 
-            'dy': dy, 
-            'nx': nx, 
-            'ny': ny, 
+            'dx': dx,
+            'dy': dy,
+            'nx': nx,
+            'ny': ny,
             'rand': rand
         }
-        
+
         self.nx = nx
         self.ny = ny
-        
+
         self.dx = PhysicalField(value = dx)
         scale = PhysicalField(value = 1, unit = self.dx.unit)
         self.dx /= scale
-        
+
         self.dy = PhysicalField(value = dy)
         if self.dy.unit.isDimensionless():
             self.dy = dy
@@ -74,7 +74,7 @@ class SkewedGrid2D(Mesh2D):
         self.grid = Grid2D(nx=nx, ny=ny, dx=dx, dy=dy)
 
         self.numberOfVertices = self.grid._numberOfVertices
-        
+
         vertices = self.grid.vertexCoords
 
         changedVertices = numerix.zeros(vertices.shape, 'd')
@@ -89,13 +89,13 @@ class SkewedGrid2D(Mesh2D):
 
 
         faces = self.grid.faceVertexIDs
-        
+
         cells = self.grid.cellFaceIDs
 
         Mesh2D.__init__(self, changedVertices, faces, cells, *args, **kwargs)
-        
+
         self.scale = scale
-        
+
     @property
     def physicalShape(self):
         """Return physical dimensions of Grid2D.
@@ -105,8 +105,7 @@ class SkewedGrid2D(Mesh2D):
     @property
     def _meshSpacing(self):
         return numerix.array((self.dx,self.dy))[...,numerix.newaxis]
-    
+
     @property
     def shape(self):
         return (self.nx, self.ny)
-    

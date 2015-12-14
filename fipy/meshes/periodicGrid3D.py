@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -49,7 +49,7 @@ class _BasePeriodicGrid3D(NonUniformGrid3D):
     def __init__(self, dx=1., dy=1., dz=1., nx=None, ny=None, nz=None, overlap=2, communicator=parallelComm, *args, **kwargs):
         super(_BasePeriodicGrid3D, self).__init__(dx=dx, dy=dy, dz=dz, nx=nx, ny=ny, nz=nz, overlap=overlap, communicator=communicator, *args, **kwargs)
         self._nonPeriodicCellVertexIDs = super(_BasePeriodicGrid3D, self)._cellVertexIDs
-        self._orderedCellVertexIDs_data = super(_BasePeriodicGrid3D, self)._orderedCellVertexIDs        
+        self._orderedCellVertexIDs_data = super(_BasePeriodicGrid3D, self)._orderedCellVertexIDs
         self._nonPeriodicCellFaceIDs = numerix.array(super(_BasePeriodicGrid3D, self).cellFaceIDs)
         self._makePeriodic()
 
@@ -86,7 +86,7 @@ class _BasePeriodicGrid3D(NonUniformGrid3D):
 class PeriodicGrid3D(_BasePeriodicGrid3D):
     """
     Creates a periodic3D grid mesh with horizontal faces numbered
-    first and then vertical faces. Vertices and cells are numbered 
+    first and then vertical faces. Vertices and cells are numbered
     in the usual way.
 
         >>> from fipy import numerix
@@ -97,9 +97,9 @@ class PeriodicGrid3D(_BasePeriodicGrid3D):
         True
 
         >>> print numerix.allclose(mesh.faceCellIDs.filled(-1),
-        ...                        [[0, 1, 2, 3, 0, 1, 2, 3, 2, 3, 
+        ...                        [[0, 1, 2, 3, 0, 1, 2, 3, 2, 3,
         ...                          0, 1, 2, 3, 1, 0, 1, 3, 2, 3],
-        ...                         [0, 1, 2, 3, -1, -1, -1, -1, 0, 1, 
+        ...                         [0, 1, 2, 3, -1, -1, -1, -1, 0, 1,
         ...                          2, 3, -1, -1, 0, 1, -1, 2, 3, -1]]) # doctest: +PROCESSOR_0
         True
 
@@ -120,10 +120,10 @@ class PeriodicGrid3D(_BasePeriodicGrid3D):
 
         >>> print numerix.allclose(mesh._cellToCellDistances,
         ...                        [[1., 1., 1., 1.],
-        ...                         [1., 1., 1., 1.],        
+        ...                         [1., 1., 1., 1.],
         ...                         [0.5, 0.5, 0.5, 0.5],
         ...                         [0.5, 0.5, 0.5, 0.5],
-        ...                         [2., 2., 2., 2.],        
+        ...                         [2., 2., 2., 2.],
         ...                         [2., 2., 2., 2.]]) # doctest: +PROCESSOR_0
         True
 
@@ -147,11 +147,11 @@ class PeriodicGrid3D(_BasePeriodicGrid3D):
     """
 
     def _makePeriodic(self):
-        self._connectFaces(numerix.nonzero(self.facesLeft), 
+        self._connectFaces(numerix.nonzero(self.facesLeft),
                            numerix.nonzero(self.facesRight))
-        self._connectFaces(numerix.nonzero(self.facesBottom), 
+        self._connectFaces(numerix.nonzero(self.facesBottom),
                            numerix.nonzero(self.facesTop))
-        self._connectFaces(numerix.nonzero(self.facesFront), 
+        self._connectFaces(numerix.nonzero(self.facesFront),
                            numerix.nonzero(self.facesBack))
 
     def _test(self):
@@ -166,7 +166,7 @@ class PeriodicGrid3D(_BasePeriodicGrid3D):
         >>> v[0] = 1.
         >>> (fp.TransientTerm() == fp.DiffusionTerm()).solve(v, dt=1.)
         >>> assert numerix.allclose(v[13], v[26])
-        
+
         """
 
         pass
@@ -208,7 +208,7 @@ class PeriodicGrid3DFrontBack(_BasePeriodicGrid3D):
                            numerix.nonzero(self.facesBack))
 
 
-        
+
 def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()

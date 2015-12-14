@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -20,24 +20,24 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
 r"""Simultaneously solve the dendritic growth of nuclei and subsequent grain impingement.
 
-To convert a liquid material to a solid,  it must be cooled to a 
-temperature below its melting point (known as "undercooling" or "supercooling"). The rate of 
+To convert a liquid material to a solid,  it must be cooled to a
+temperature below its melting point (known as "undercooling" or "supercooling"). The rate of
 solidification is often assumed (and experimentally found) to be proportional to the
 undercooling. Under the right circumstances, the
 solidification front can become unstable, leading to dendritic
-patterns. 
+patterns.
 Warren, Kobayashi, Lobkovsky and Carter :cite:`WarrenPolycrystal`
 have described a phase field model ("Allen-Cahn", "non-conserved
 Ginsberg-Landau", or "model A" of Hohenberg & Halperin) of such a system,
@@ -63,7 +63,7 @@ We consider the simultaneous evolution of a "phase field" variable
 
 >>> phase = CellVariable(name=r'$\phi$', mesh=mesh, hasOld=True)
 
-a dimensionless undercooling 
+a dimensionless undercooling
 :math:`\Delta T` (:math:`\Delta T = 0` at the melting point)
 
 >>> dT = CellVariable(name=r'$\Delta T$', mesh=mesh, hasOld=True)
@@ -81,9 +81,9 @@ The governing equation for the temperature field is the heat flux
 equation, with a source due to the latent heat of solidification
 
 .. math::
-   
-   \frac{\partial \Delta T}{\partial t} 
-   = D_T \nabla^2 \Delta T 
+
+   \frac{\partial \Delta T}{\partial t}
+   = D_T \nabla^2 \Delta T
    + \frac{\partial \phi}{\partial t}
    + c\left(T_0 - T\right)
 
@@ -98,22 +98,22 @@ equation, with a source due to the latent heat of solidification
 The governing equation for the phase field is
 
 .. math::
-    
-   \tau_{\phi} \frac{\partial \phi}{\partial t} 
+
+   \tau_{\phi} \frac{\partial \phi}{\partial t}
    = \nabla \cdot \mathsf{D} \nabla \phi
    +   \phi ( 1 - \phi ) m ( \phi , \Delta T)
    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2
-   
+
 where
 
 .. math::
 
-   m(\phi, \Delta T) 
-   = \phi - \frac{1}{2} 
+   m(\phi, \Delta T)
+   = \phi - \frac{1}{2}
    - \frac{ \kappa_1 }{ \pi } \arctan \left( \kappa_2 \Delta T \right)
-   
-represents a source of anisotropy. The coefficient 
-:math:`\mathsf{D}` 
+
+represents a source of anisotropy. The coefficient
+:math:`\mathsf{D}`
 is an anisotropic diffusion tensor in two dimensions
 
 .. math::
@@ -125,18 +125,18 @@ is an anisotropic diffusion tensor in two dimensions
        c \frac{\partial \beta}{\partial \psi} & 1 + c \beta
    \end{matrix}
    \right]
-   
+
 where :math:`\beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2}`,
-:math:`\Phi = \tan \left( \frac{ N } { 2 } \psi \right)`, 
-:math:`\psi = \theta 
-+ \arctan \frac{\partial \phi / \partial y}{\partial \phi / \partial x}`, 
+:math:`\Phi = \tan \left( \frac{ N } { 2 } \psi \right)`,
+:math:`\psi = \theta
++ \arctan \frac{\partial \phi / \partial y}{\partial \phi / \partial x}`,
 :math:`\theta` is the orientation, and :math:`N` is the symmetry.
 
 >>> alpha = 0.015
 >>> c = 0.02
 >>> N = 4.
 
->>> psi = theta.arithmeticFaceValue + numerix.arctan2(phase.faceGrad[1], 
+>>> psi = theta.arithmeticFaceValue + numerix.arctan2(phase.faceGrad[1],
 ...                                                   phase.faceGrad[0])
 >>> Phi = numerix.tan(N * psi / 2)
 >>> PhiSq = Phi**2
@@ -169,9 +169,9 @@ The governing equation for orientation is given by
 
 .. math::
 
-   P(\epsilon | \nabla \theta |) \tau_{\theta} \phi^2 
-   \frac{\partial \theta}{\partial t} 
-   = \nabla \cdot \left[ \phi^2 \left( \frac{s}{| \nabla \theta |} 
+   P(\epsilon | \nabla \theta |) \tau_{\theta} \phi^2
+   \frac{\partial \theta}{\partial t}
+   = \nabla \cdot \left[ \phi^2 \left( \frac{s}{| \nabla \theta |}
    + \epsilon^2 \right) \nabla \theta \right]
 
 where
@@ -179,7 +179,7 @@ where
 .. math::
 
    P(w) = 1 - \exp{(-\beta w)} + \frac{\mu}{\epsilon} \exp{(-\beta w)}
-   
+
 The ``theta`` equation is built in the following way. The details for
 this equation are fairly involved, see J.A. Warren *et al.*. The main
 detail is that a source must be added to correct for the
@@ -206,7 +206,7 @@ The source term requires the evaluation of the face gradient without
 the modular operator. ``theta``:meth:`~fipy.variables.modularVariable.ModularVariable.getFaceGradNoMod`
 evaluates the gradient without modular arithmetic.
 
->>> thetaEq = (TransientTerm(coeff=tau_theta * phaseMod**2 * Pfunc, var=theta) 
+>>> thetaEq = (TransientTerm(coeff=tau_theta * phaseMod**2 * Pfunc, var=theta)
 ...            == DiffusionTerm(coeff=D_theta, var=theta)
 ...            + PowerLawConvectionTerm(coeff=v_theta * (theta.faceGrad - theta.faceGradNoMod), var=phase))
 
@@ -228,7 +228,7 @@ and quench the entire simulation domain below the melting point
 In a real solidification process, dendritic branching is induced by small thermal
 fluctuations along an otherwise smooth surface, but the granularity of the
 :class:`~fipy.meshes.mesh.Mesh` is enough "noise" in this case, so we don't need to explicitly
-introduce randomness, the way we did in the Cahn-Hilliard problem.  
+introduce randomness, the way we did in the Cahn-Hilliard problem.
 
 FiPy's viewers are utilitarian, striving to let the user see *something*,
 regardless of their operating system or installed packages, so you the default
@@ -243,7 +243,7 @@ to adapt one of the existing viewers to create a specialized display:
 ...                 self.phase = phase
 ...                 Matplotlib2DGridViewer.__init__(self, vars=(orientation,), title=title,
 ...                                                 limits=limits, colorbar=None, **kwlimits)
-...                                         
+...
 ...                 # make room for non-existent colorbar
 ...                 # stolen from matplotlib.colorbar.make_axes
 ...                 # https://github.com/matplotlib/matplotlib/blob
@@ -257,11 +257,11 @@ to adapt one of the existing viewers to create a specialized display:
 ...                 panchor = (1.0, 0.5)
 ...                 self.axes.set_position(pb1)
 ...                 self.axes.set_anchor(panchor)
-...         
+...
 ...                 # make the gnomon
 ...                 fig = self.axes.get_figure()
-...                 self.gnomon = fig.add_axes([0.85, 0.425, 0.15, 0.15], polar=True) 
-...                 self.gnomon.set_thetagrids([180, 270, 0, 90], 
+...                 self.gnomon = fig.add_axes([0.85, 0.425, 0.15, 0.15], polar=True)
+...                 self.gnomon.set_thetagrids([180, 270, 0, 90],
 ...                                            [r"$\pm\pi$", r"$-\frac{\pi}{2}$", "$0$", r"$+\frac{\pi}{2}$"],
 ...                                            frac=1.3)
 ...                 self.gnomon.set_theta_zero_location("N")
@@ -275,56 +275,56 @@ to adapt one of the existing viewers to create a specialized display:
 ...                 for c, t, bar in zip(colors[0], theta, bars):
 ...                     bar.set_facecolor(c)
 ...                     bar.set_edgecolor(c)
-...              
+...
 ...             def _reshape(self, var):
 ...                 '''return values of var in an 2D array'''
-...                 return numerix.reshape(numerix.array(var), 
+...                 return numerix.reshape(numerix.array(var),
 ...                                        var.mesh.shape[::-1])[::-1]
-...     
+...
 ...             @staticmethod
 ...             def _orientation_and_phase_to_rgb(orientation, phase):
 ...                 from matplotlib import colors
-...         
+...
 ...                 hsv = numerix.empty(orientation.shape + (3,))
 ...                 hsv[..., 0] = (orientation / numerix.pi + 1) / 2.
 ...                 hsv[..., 1] = 1.
 ...                 hsv[..., 2] = phase
-...                 
+...
 ...                 return colors.hsv_to_rgb(hsv)
-...                 
+...
 ...             @property
 ...             def _data(self):
 ...                 '''convert phase and orientation to rgb image array
-...                 
+...
 ...                 orientation (-pi, pi) -> hue (0, 1)
 ...                 phase (0, 1) -> value (0, 1)
 ...                 '''
 ...                 orientation = self._reshape(self.vars[0])
 ...                 phase = self._reshape(self.phase)
-...                 
+...
 ...                 return self._orientation_and_phase_to_rgb(orientation, phase)
-...                                         
+...
 ...             def _plot(self):
 ...                 self.image.set_data(self._data)
-...                 
+...
 ...         from matplotlib import pyplot
 ...         pyplot.ion()
 ...         w, h = pyplot.figaspect(1.)
 ...         fig = pyplot.figure(figsize=(2*w, h))
 ...         timer = fig.text(0.1, 0.9, "t = %.3f" % 0, fontsize=18)
-...         
+...
 ...         viewer = MultiViewer(viewers=(MatplotlibViewer(vars=dT,
 ...                                                        cmap=pyplot.cm.hot,
-...                                                        datamin=-0.5, 
+...                                                        datamin=-0.5,
 ...                                                        datamax=0.5,
 ...                                                        axes=fig.add_subplot(121)),
-...                                       OrientationViewer(phase=phase, 
-...                                                         orientation=theta, 
-...                                                         title=theta.name, 
+...                                       OrientationViewer(phase=phase,
+...                                                         orientation=theta,
+...                                                         title=theta.name,
 ...                                                         axes=fig.add_subplot(122))))
 ...     except ImportError:
 ...         viewer = MultiViewer(viewers=(Viewer(vars=dT,
-...                                              datamin=-0.5, 
+...                                              datamin=-0.5,
 ...                                              datamax=0.5),
 ...                                       Viewer(vars=phase,
 ...                                              datamin=0.,
@@ -364,8 +364,8 @@ and iterate the solution in time, plotting as we go,
    :align: center
    :alt: undercooling and grain orientation during solidification of a collection of anisotropic seeds
 
-The non-uniform temperature results from the release of latent 
-heat at the solidifying interface. The dendrite arms grow fastest 
+The non-uniform temperature results from the release of latent
+heat at the solidifying interface. The dendrite arms grow fastest
 where the temperature gradient is steepest.
 """
 __docformat__ = 'restructuredtext'
@@ -375,4 +375,3 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
-

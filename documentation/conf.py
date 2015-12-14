@@ -23,12 +23,12 @@ sys.path.append(os.path.abspath('tutorial'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 
-              'sphinx.ext.doctest', 
-              'sphinx.ext.intersphinx', 
-              'sphinx.ext.todo', 
-              'sphinx.ext.coverage', 
-              'sphinx.ext.pngmath', 
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.doctest',
+              'sphinx.ext.intersphinx',
+              'sphinx.ext.todo',
+              'sphinx.ext.coverage',
+              'sphinx.ext.pngmath',
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
               'numpydoc',
@@ -76,17 +76,17 @@ release = fipy.__version__
 
 # List of documents that shouldn't be included in the build.
 unused_docs = ['documentation/RESOURCES',
-               'documentation/TODOLIST', 
+               'documentation/TODOLIST',
                'documentation/VERSION']
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
 exclude_patterns = ['fipy/generated/modules.rst',
                     'fipy/generated/__init__.rst',
-                    'build', 
+                    'build',
                     'dist',
-                    'FiPy.egg-info', 
-                    'documentation/_build', 
+                    'FiPy.egg-info',
+                    'documentation/_build',
                     'documentation/tutorial/package/generated/modules.rst',
                     'documentation/sphinxext',
                     'documentation/sphinxext/bibtex/bibstuff/examples/*.rst',
@@ -123,11 +123,11 @@ autosummary_generate = ['examples/diffusion/index.rst',
                         'examples/flow/index.rst',
                         'examples/reactiveWetting/index.rst',
                         'examples/updating/index.rst']
-                        
+
 autodoc_member_order = 'alphabetical'
 
 traclinks_base_url = 'http://matforge.org/fipy'
-                        
+
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
@@ -280,15 +280,15 @@ latex_elements = {
 
     \definecolor{redish}{rgb}{0.894,0.122,0.122}
     \definecolor{bluish}{rgb}{0.216,0.188,0.533}
-    
+
     \authoraddress{Materials Science and Engineering Division \\
     and the Center for Theoretical and Computational Materials Science \\
     Material Measurement Laboratory}
-    
+
     \newcommand{\fipylogo}{\scalebox{10}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}}
-    
-    \ChNameVar{\fontsize{14}{16}\usefont{OT1}{phv}{m}{n}\selectfont} 
-    \ChNumVar{\fontsize{60}{62}\usefont{OT1}{ptm}{m}{n}\selectfont} 
+
+    \ChNameVar{\fontsize{14}{16}\usefont{OT1}{phv}{m}{n}\selectfont}
+    \ChNumVar{\fontsize{60}{62}\usefont{OT1}{ptm}{m}{n}\selectfont}
     \ChTitleVar{\Huge\bfseries\rm}
     \ChRuleWidth{1pt}
     """
@@ -338,17 +338,14 @@ intersphinx_mapping = {
 
 def skip_numpy_not_numerix(app, what, name, obj, skip, options):
     import types
-    if ((type(obj) in [types.FunctionType, 
+    if ((type(obj) in [types.FunctionType,
                        types.BuiltinFunctionType,
-                       types.ClassType, 
-                       types.TypeType]) 
+                       types.ClassType,
+                       types.TypeType])
         and not (obj.__module__.startswith("fipy")
                  or obj.__module__.startswith("package"))):
             skip = True
     return skip
-    
+
 def setup(app):
     app.connect('autodoc-skip-member', skip_numpy_not_numerix)
-
-    
-    

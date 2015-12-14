@@ -14,7 +14,7 @@ considerable resources repeatedly developing limited tools for
 specific problems.  Our approach, combining the FV method and Python_,
 provides a tool that is extensible, powerful and freely available. A
 significant advantage to Python_ is the existing suite of tools for
-array calculations, sparse matrices and data rendering. 
+array calculations, sparse matrices and data rendering.
 
 The :term:`FiPy` framework includes terms for transient diffusion, convection and
 standard sources, enabling the solution of arbitrary combinations of
@@ -37,9 +37,9 @@ def _getVersion():
         version = get_distribution(__name__).version
     except DistributionNotFound:
         version = "unknown, try running `python setup.py egg_info`"
-        
+
     return version
-    
+
 __version__ = _getVersion()
 
 from fipy.boundaryConditions import *
@@ -71,7 +71,7 @@ if sys.version_info >= (3, 0):
     if parallelComm.Nproc > 1:
         def mpi_input(prompt=""):
             parallelComm.Barrier()
-            sys.stdout.flush() 
+            sys.stdout.flush()
             if parallelComm.procID == 0:
                 sys.stdout.write(prompt)
                 sys.stdout.flush()
@@ -79,7 +79,7 @@ if sys.version_info >= (3, 0):
             else:
                 return ""
         input = mpi_input
-        
+
     __all__.extend(['input', 'input_original'])
 else:
     raw_input = raw_input
@@ -96,7 +96,7 @@ else:
             else:
                 return ""
         raw_input = mpi_raw_input
-        
+
     __all__.extend(['raw_input', 'raw_input_original'])
 
 _saved_stdout = sys.stdout
@@ -111,7 +111,7 @@ def _serial_doctest_raw_input(prompt):
 
 def doctest_raw_input(prompt):
     """Replacement for `raw_input()` that works in doctests
-    
+
     This routine attempts to be savvy about running in parallel.
     """
     try:
@@ -130,7 +130,7 @@ def doctest_raw_input(prompt):
 def test(*args):
     r"""
     Test `Fipy`. Equivalent to::
-    
+
     $ python setup.py test --modules
 
     Use

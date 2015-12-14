@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "linearJORSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -41,7 +41,7 @@ __all__ = ["LinearJORSolver"]
 
 class LinearJORSolver(PysparseSolver):
     """
-    
+
     The `LinearJORSolver` solves a linear system of equations using
     Jacobi over-relaxation. This method solves systems with a general
     non-symmetric coefficient matrix.
@@ -55,12 +55,12 @@ class LinearJORSolver(PysparseSolver):
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
           - `relaxation`: The relaxation.
-          
+
         """
-        super(LinearJORSolver, self).__init__(tolerance=tolerance, 
+        super(LinearJORSolver, self).__init__(tolerance=tolerance,
                                               iterations=iterations)
         self.relaxation = relaxation
-        
+
     def _solve_(self, L, x, b):
 
         d = L.takeDiagonal()
@@ -74,15 +74,14 @@ class LinearJORSolver(PysparseSolver):
         for iteration in range(self.iterations):
             if tol <= self.tolerance:
                 break
-                
+
             residual = L * x - b
 
             xold[:] = x
             x[:] = (-(LU) * x + b) / d
 
-            x[:] = xold + self.relaxation * (x - xold)  
+            x[:] = xold + self.relaxation * (x - xold)
 
             tol = max(abs(residual))
 
             print iteration,tol
-

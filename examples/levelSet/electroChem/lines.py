@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mayaviLines.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -56,7 +56,7 @@ class _Vertex:
 
     def getID(self):
         return self.ID
-             
+
     def setCloseVertices(self, vertices):
         self.closeVertices = vertices
 
@@ -74,7 +74,7 @@ class _Vertex:
 
     def getInLine(self):
         return self.inLine
-        
+
     def setUp(self, vertex):
         self.setInLineTrue()
         self.up = vertex
@@ -99,7 +99,7 @@ class _Line:
                     if vertex in v.getCloseVertices():
                         if v.getDown() is None:
                             if vertex.getUp() is None:
-                                if vertex.getDown() is not v:                            
+                                if vertex.getDown() is not v:
                                     vertex.setUp(v)
                                     v.setDown(vertex)
 
@@ -107,7 +107,7 @@ class _Line:
             vertex = vertex.getUp()
 
 
-        
+
         self.startVertex = seedVertex
         vertex = seedVertex
         while vertex is not None and vertex.getDown() is None:
@@ -167,7 +167,7 @@ def _getOrderedLines(IDs, coordinates, thresholdDistance = 0.0):
        >>> _getOrderedLines(range(7), ((-7, 0), (-6, 0), (-5, 0), (0, 0), (5, 0), (6, 0), (7, 0)), thresholdDistance = 5.5)
        [[0, 1, 2, 3, 4, 5, 6]]
     """
-    
+
     from fipy.tools import numerix
     coordinates = numerix.array(coordinates)
     closeIDs = numerix.zeros((len(IDs), len(IDs)), 'l')
@@ -186,20 +186,20 @@ def _getOrderedLines(IDs, coordinates, thresholdDistance = 0.0):
         while i < 3 or vertices[ID].distance(vertices[closeIDs[ID,i]]) < thresholdDistance:
             closeVertices.append(vertices[closeIDs[ID, i]])
             i += 1
-            
+
         vertices[ID].setCloseVertices(closeVertices)
 
     listOfVertexLists = []
 
     for vertex in vertices:
-        if not vertex.getInLine():            
+        if not vertex.getInLine():
             listOfVertexLists.append(_Line(vertex).getVertexListIDs())
 
     return listOfVertexLists
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()

@@ -1,4 +1,4 @@
-.. _part:modules: 
+.. _part:modules:
 
 =================================
 :mod:`fipy` Package Documentation

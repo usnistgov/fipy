@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "vtkViewer.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -12,7 +12,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -23,7 +23,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -31,7 +31,7 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -49,7 +49,7 @@ class VTKCellViewer(VTKViewer):
     """
     def _makeDataSet(self, mesh):
         return mesh.VTKCellDataSet
-        
+
     @property
     def _data(self):
         return self.dataset.cell_data
@@ -57,7 +57,7 @@ class VTKCellViewer(VTKViewer):
     @property
     def _variableClass(self):
         return CellVariable
-        
+
     def _test(self):
         """
         >>> import os
@@ -88,7 +88,7 @@ class VTKCellViewer(VTKViewer):
         >>> numerix.allclose(c.get_array("x*x").to_array(),
         ...                  v1.value) # doctest: +TVTK, +SERIAL
         True
-        >>> numerix.allclose(c.scalars.to_array(), 
+        >>> numerix.allclose(c.scalars.to_array(),
         ...                  v2.value) # doctest: +TVTK, +SERIAL
         True
         >>> numerix.allclose(c.get_array("v1.grad").to_array().swapaxes(0,1)[0],
@@ -111,7 +111,7 @@ class VTKCellViewer(VTKViewer):
         >>> numerix.allclose(c.get_array("x*y").to_array(),
         ...                  v1.value) # doctest: +TVTK, +SERIAL
         True
-        >>> numerix.allclose(c.scalars.to_array(), 
+        >>> numerix.allclose(c.scalars.to_array(),
         ...                  v2.value) # doctest: +TVTK, +SERIAL
         True
         >>> numerix.allclose(c.get_array("v1.grad").to_array().swapaxes(0,1)[0:2],
@@ -136,7 +136,7 @@ class VTKCellViewer(VTKViewer):
         >>> numerix.allclose(c.get_array("x*y").to_array(),
         ...                  v1.value) # doctest: +TVTK, +SERIAL
         True
-        >>> numerix.allclose(c.scalars.to_array(), 
+        >>> numerix.allclose(c.scalars.to_array(),
         ...                  v2.value) # doctest: +TVTK, +SERIAL
         True
         >>> numerix.allclose(c.get_array("v1.grad").to_array().swapaxes(0,1)[0:2],
@@ -159,7 +159,7 @@ class VTKCellViewer(VTKViewer):
         >>> numerix.allclose(c.get_array("x*y*z").to_array(),
         ...                  v1.value) # doctest: +TVTK, +SERIAL
         True
-        >>> numerix.allclose(c.scalars.to_array(), 
+        >>> numerix.allclose(c.scalars.to_array(),
         ...                  v2.value) # doctest: +TVTK, +SERIAL
         True
         >>> numerix.allclose(c.get_array("v1.grad").to_array().swapaxes(0,1),

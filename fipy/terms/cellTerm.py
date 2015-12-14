@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "cellTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -50,7 +50,7 @@ class CellTerm(_NonDiffusionTerm):
     def __init__(self, coeff=1., var=None):
         if self.__class__ is CellTerm:
             raise AbstractBaseClassError
-            
+
         from fipy.variables.variable import Variable
 
         if not isinstance(coeff, Variable):
@@ -94,7 +94,7 @@ class CellTerm(_NonDiffusionTerm):
                 raise TypeError, "The coefficient must be rank 2 or rank 0 for a rank 1 solution variable."
             elif var.shape[0] != shape[0]:
                 raise TypeError, "The coefficient (N , N) shape must match the the solution variable (N,) shape."
-        
+
     def _calcCoeffVectors_(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         coeff = self._getGeomCoeff(var)
         weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
@@ -141,34 +141,34 @@ class CellTerm(_NonDiffusionTerm):
 
         L.addAtDiagonal(updatePyArray)
 
-    def _buildMatrixNoInline_(self, L, oldArray, b, dt, coeffVectors):            
+    def _buildMatrixNoInline_(self, L, oldArray, b, dt, coeffVectors):
         ids = self._reshapeIDs(oldArray, numerix.arange(oldArray.shape[-1]))
         b += (oldArray.value[numerix.newaxis] * coeffVectors['old value']).sum(-2).ravel() / dt
         b += coeffVectors['b vector'][numerix.newaxis].sum(-2).ravel()
         L.addAt(coeffVectors['new value'].ravel() / dt, ids.ravel(), ids.swapaxes(0,1).ravel())
         L.addAt(coeffVectors['diagonal'].ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
-            
+
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
         b = numerix.zeros(var.shape,'d').ravel()
         L = SparseMatrix(mesh=var.mesh)
-        
+
         coeffVectors = self._getCoeffVectors_(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
         dt = self._checkDt(dt)
 
-        if inline.doInline and var.rank == 0:                    
+        if inline.doInline and var.rank == 0:
             self._buildMatrixInline_(L=L, oldArray=var.old, b=b, dt=dt, coeffVectors=coeffVectors)
         else:
             self._buildMatrixNoInline_(L=L, oldArray=var.old, b=b, dt=dt, coeffVectors=coeffVectors)
-        
+
         return (var, L, b)
-        
+
     def _test(self):
         """
         The following tests demonstrate how the `CellVariable` objects
         interact with other types of `Variable` objects.
-        
+
             >>> from fipy.meshes import Grid1D
             >>> from fipy.variables.cellVariable import CellVariable
             >>> from fipy.variables.faceVariable import FaceVariable
@@ -207,10 +207,10 @@ class __CellTerm(CellTerm):
     """
     Dummy subclass for tests
     """
-    pass 
-    
+    pass
 
-def _test(): 
+
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
 

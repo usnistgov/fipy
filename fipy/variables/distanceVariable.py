@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "distanceVariable.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -49,7 +49,7 @@ def module_exists(module_name):
         return False
     else:
         return True
-    
+
 def _checkForLSMLIB():
     return module_exists('pylsmlib')
 
@@ -77,7 +77,7 @@ def _parseLSMSolver():
         return 'skfmm'
     else:
         return None
-    
+
 LSM_SOLVER = _parseLSMSolver()
 
 register_skipper(flag="LSM",
@@ -100,7 +100,7 @@ class DistanceVariable(CellVariable):
     A `DistanceVariable` object calculates :math:`\phi` so it satisfies,
 
     .. math::
-        
+
        \abs{\nabla \phi} = 1
 
     using the fast marching method with an initial condition defined
@@ -185,7 +185,7 @@ class DistanceVariable(CellVariable):
     >>> v2 = 1.5
     >>> tmp1 = (v1 + v2) / 2 + numerix.sqrt(2. - (v1 - v2)**2) / 2
     >>> tmp2 = tmp1 + 1 / numerix.sqrt(2)
-    >>> print var.allclose((-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp, 
+    >>> print var.allclose((-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp,
     ...                      tmp1, 1.5, tmp1, tmp2)) #doctest: +LSM
     1
     >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
@@ -252,7 +252,7 @@ class DistanceVariable(CellVariable):
 
     >>> print numerix.allclose(var, answer, rtol=1e-9) #doctest: +SKFMM
     True
-    
+
     """
     def __init__(self, mesh, name = '', value = 0., unit = None, hasOld = 0):
         """
@@ -271,10 +271,10 @@ class DistanceVariable(CellVariable):
 
     def _calcValue(self):
         return self._value
-        
+
     def extendVariable(self, extensionVariable, order=2):
         """
-        
+
         Calculates the extension of `extensionVariable` from the zero
         level set.
 
@@ -283,7 +283,7 @@ class DistanceVariable(CellVariable):
             level set.
 
         """
-    
+
         dx, shape = self.getLSMshape()
         extensionValue = numerix.reshape(extensionVariable.value, shape)
         phi = numerix.reshape(self._value, shape)
@@ -297,7 +297,7 @@ class DistanceVariable(CellVariable):
 
         tmp, extensionValue = extension_velocities(phi, extensionValue, ext_mask=phi < 0., dx=dx, order=order)
         extensionVariable[:] = extensionValue.flatten()
-        
+
     def getLSMshape(self):
         mesh = self.mesh
 
@@ -345,19 +345,19 @@ class DistanceVariable(CellVariable):
 
         >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(dx = 1., nx = 4)
-        >>> distanceVariable = DistanceVariable(mesh = mesh, 
+        >>> distanceVariable = DistanceVariable(mesh = mesh,
         ...                                     value = (-1.5, -0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh, value=(0, 0., 1., 0))
-        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas, 
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas,
         ...                        answer)
         True
 
         A 2D test case:
-        
+
         >>> from fipy.meshes import Grid2D
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
-        >>> distanceVariable = DistanceVariable(mesh = mesh, 
+        >>> distanceVariable = DistanceVariable(mesh = mesh,
         ...                                     value = (1.5, 0.5, 1.5,
         ...                                              0.5,-0.5, 0.5,
         ...                                              1.5, 0.5, 1.5))
@@ -370,17 +370,17 @@ class DistanceVariable(CellVariable):
 
         >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
         >>> from fipy.variables.cellVariable import CellVariable
-        >>> distanceVariable = DistanceVariable(mesh = mesh, 
+        >>> distanceVariable = DistanceVariable(mesh = mesh,
         ...                                     value = (-0.5, 0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh,
         ...                       value=(0, numerix.sqrt(2) / 4,  numerix.sqrt(2) / 4, 0))
-        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas, 
+        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas,
         ...                        answer)
         True
 
-        Test to check that the circumfrence of a circle is, in fact, 
+        Test to check that the circumfrence of a circle is, in fact,
         :math:`2\pi r`.
-	
+
         >>> mesh = Grid2D(dx = 0.05, dy = 0.05, nx = 20, ny = 20)
         >>> r = 0.25
         >>> x, y = mesh.cellCenters
@@ -388,22 +388,22 @@ class DistanceVariable(CellVariable):
         >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
         >>> print numerix.allclose(distanceVariable.cellInterfaceAreas.sum(), 1.57984690073)
         1
-        
 
-        """   
+
+        """
         from fipy.variables.interfaceAreaVariable import _InterfaceAreaVariable
         return _InterfaceAreaVariable(self)
 
     @property
     def _cellInterfaceNormals(self):
         """
-        
+
         Returns the interface normals over the cells.
 
            >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.cellVariable import CellVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
+           >>> distanceVariable = DistanceVariable(mesh = mesh,
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
            >>> v = 1 / numerix.sqrt(2)
            >>> answer = CellVariable(mesh=mesh,
@@ -417,7 +417,7 @@ class DistanceVariable(CellVariable):
            ...                               (0, v, 0, 0))))
            >>> print numerix.allclose(distanceVariable._cellInterfaceNormals, answer)
            True
-           
+
         """
 
         dim = self.mesh.dim
@@ -440,7 +440,7 @@ class DistanceVariable(CellVariable):
            >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.faceVariable import FaceVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
+           >>> distanceVariable = DistanceVariable(mesh = mesh,
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
            >>> v = 1 / numerix.sqrt(2)
            >>> answer = FaceVariable(mesh=mesh,
@@ -448,9 +448,9 @@ class DistanceVariable(CellVariable):
            ...                              (0, 0, v, 0, 0, 0, 0, v, 0, 0, 0, 0)))
            >>> print numerix.allclose(distanceVariable._interfaceNormals, answer)
            True
-           
+
         """
-        
+
         M = self.mesh.dim
         interfaceFlag = numerix.repeat(self._interfaceFlag[numerix.newaxis, ...], M, axis=0)
         return numerix.where(interfaceFlag, self._levelSetNormals, 0)
@@ -464,18 +464,18 @@ class DistanceVariable(CellVariable):
            >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.faceVariable import FaceVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
+           >>> distanceVariable = DistanceVariable(mesh = mesh,
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
            >>> answer = FaceVariable(mesh=mesh,
            ...                       value=(0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0))
            >>> print numerix.allclose(distanceVariable._interfaceFlag, answer)
            True
-           
+
         """
         adjacentCellIDs = self.mesh._adjacentCellIDs
         val0 = numerix.take(numerix.array(self._value), adjacentCellIDs[0])
         val1 = numerix.take(numerix.array(self._value), adjacentCellIDs[1])
-        
+
         return numerix.where(val1 * val0 < 0, 1, 0)
 
     @property
@@ -487,7 +487,7 @@ class DistanceVariable(CellVariable):
         >>> from fipy.meshes import Grid2D
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-        >>> distanceVariable = DistanceVariable(mesh = mesh, 
+        >>> distanceVariable = DistanceVariable(mesh = mesh,
         ...                                     value = (-0.5, 0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh, value=(0, 1, 1, 0))
         >>> print numerix.allclose(distanceVariable._cellInterfaceFlag, answer)
@@ -506,7 +506,7 @@ class DistanceVariable(CellVariable):
            >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.cellVariable import CellVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
+           >>> distanceVariable = DistanceVariable(mesh = mesh,
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
            >>> answer = CellVariable(mesh=mesh,
            ...                       value=((-.5, .5, .5, 1.5),
@@ -517,7 +517,7 @@ class DistanceVariable(CellVariable):
            True
 
         """
-        
+
         M = self.mesh._maxFacesPerCell
         N = self.mesh.numberOfCells
         return numerix.reshape(numerix.repeat(numerix.array(self._value)[numerix.newaxis, ...], M, axis=0), (M, N))
@@ -531,7 +531,7 @@ class DistanceVariable(CellVariable):
            >>> from fipy.meshes import Grid2D
            >>> from fipy.variables.faceVariable import FaceVariable
            >>> mesh = Grid2D(dx = .5, dy = .5, nx = 2, ny = 2)
-           >>> distanceVariable = DistanceVariable(mesh = mesh, 
+           >>> distanceVariable = DistanceVariable(mesh = mesh,
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
            >>> v = 1 / numerix.sqrt(2)
            >>> answer = FaceVariable(mesh=mesh,
@@ -552,20 +552,12 @@ class DistanceVariable(CellVariable):
         exteriorFaces = self.mesh.exteriorFaces
         if len(exteriorFaces.value) > 0:
             faceGrad[..., exteriorFaces.value] = 0.
-        
-        return faceGrad / faceGradMag 
 
-def _test(): 
+        return faceGrad / faceGradMag
+
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test()         
-    
 
-
-
-            
-            
-        
-                
+if __name__ == "__main__":
+    _test()

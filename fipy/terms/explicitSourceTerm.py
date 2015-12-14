@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "explicitSourceTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -45,21 +45,20 @@ class _ExplicitSourceTerm(SourceTerm):
 
     .. math::
 
-       \int_V S \,dV \simeq S_P V_P 
-       
+       \int_V S \,dV \simeq S_P V_P
+
     where :math:`S` is the `coeff` value. This source is added to the RHS vector and
     does not contribute to the solution matrix.
 
     """
-        
+
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         return {
-            'b vector': -1, 
-            'new value': 0, 
-            'old value': 0, 
+            'b vector': -1,
+            'new value': 0,
+            'old value': 0,
             'diagonal' : 0
         }
-        
+
     def __repr__(self):
         return repr(self.coeff)
-

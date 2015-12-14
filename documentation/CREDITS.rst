@@ -2,12 +2,12 @@
 Contributors
 ============
 
-`Jon Guyer`_ 
+`Jon Guyer`_
     is a member of the research staff of |MSED| in
     |MML| at |NIST|.  Jon's computational interests are in object-oriented
     design and in phase field modeling of electrochemistry.
 
-`Daniel Wheeler`_ 
+`Daniel Wheeler`_
     is a guest researcher in |MSED| in
     |MML| at |NIST|.  Daniel's interests are in numerical modeling, finite
     volume techniques, and level set treatments.
@@ -24,16 +24,16 @@ Alex Mont
     modules while he was a student at `Montgomery Blair High School`_.
 
 Katie Travis
-    developed the automated 
-    :option:`--inline` optimization code for ``Variable`` objects 
+    developed the automated
+    :option:`--inline` optimization code for ``Variable`` objects
     while she was a SURF_ student from `Smith College`_.
-  
+
 Max Gibiansky
     added support for the :term:`Trilinos` solvers while he was a SURF_ student
     from `Harvey Mudd College`_
 
 `Andrew Reeve`_
-    added support for anistropic diffusion coefficients while he was on 
+    added support for anistropic diffusion coefficients while he was on
     sabbatical from the `University of Maine`_.
 
 Olivia Buzek
@@ -65,7 +65,7 @@ James O'Beirne
 .. _Montgomery Blair High School:                                  http://www.mbhs.edu/
 .. _Smith College:                                                 http://www.smith.edu/
 .. _Harvey Mudd College:                                           http://www.hmc.edu/
-.. _University of Maine:                                           
+.. _University of Maine:
 .. _University of Maryland:                                        http://www.maryland.edu/
 
 .. _Jon Guyer:      http://www.nist.gov/cgi-bin/wwwph/cso.nist.gov?Query=Jonathan+Guyer

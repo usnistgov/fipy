@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "liquidVapor1D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -39,7 +39,7 @@ described by Wheeler et *al.* :cite:`PhysRevE.82.051601`. The free energy for th
 system takes the form,
 
 .. math:: :label: eq:reactiveWetting:liquidVapor1D:freeEnergy
-   
+
    f = - \frac{e \rho^2}{m^2} + \frac{R T}{m} \left( \ln \frac{\rho}{m - \bar{v} \rho} \right)
 
 where :math:`\rho` is the density. This free energy supports a two phase
@@ -49,14 +49,14 @@ the following system of equations,
 
 .. math::
    :label: eq:reactiveWetting:liquidVapor1D:pressureEquilibrium
-   
+
    P \left( \rho^l \right) = P \left( \rho^v \right)
 
 and
 
 .. math::
    :label: eq:reactiveWetting:liquidVapor1D:chemicalPotentialEquilibrium
-   
+
    \mu \left( \rho^l \right) = \mu \left( \rho^v \right)
 
 where :math:`\mu` is the chemical potential,
@@ -120,7 +120,7 @@ True
 In order to derive governing equations, the free energy functional is defined.
 
 .. math::
-   
+
    F = \int \left[ f + \frac{\epsilon T}{2} \left( \partial_j \rho \right)^2 \right] dV
 
 Using standard dissipation laws, we write the governing equations for mass and
@@ -128,14 +128,14 @@ momentum conservation,
 
 .. math::
    :label: eq:reactiveWetting:liquidVapor1D:mass
-   
+
    \frac{\partial \rho}{\partial t} + \partial_j \left(\rho u_j \right) = 0
 
 and
 
 .. math::
    :label: eq:reactiveWetting:liquidVapor1D:momentum
-   
+
    \frac{\partial \left( \rho u_i\right) }{\partial t} + \partial_j\left( \rho
    u_iu_j \right) = \partial_j\left( \nu \left[ \partial_j u_i + \partial_i u_j
    \right] \right) - \rho \partial_i \mu^{NC}
@@ -146,7 +146,7 @@ where the non-classical potential, :math:`\mu^{NC}`, is given by,
   :label: eq:reactiveWetting:liquidVapor1D:nonClassicalPotential
 
    \mu^{NC} = \frac{\delta F}{\delta \rho} = \mu - \epsilon T \partial_j^2 \rho
-   
+
 As usual, to proceed, we define a mesh
 
 >>> Lx = 1e-6
@@ -177,7 +177,7 @@ occuring,
 
 .. math::
    :label: eq:reactiveWetting:liquidVapor1D:correction
-   
+
    u_{i,f}^c = \frac{A_f d_f}{\overline{d}_f} \left( \overline{ \rho \partial_i
    \mu^{NC} }_f - \overline{\rho}_f \partial_{i,f} \mu^{NC} \right)
 
@@ -191,7 +191,7 @@ Eq. :eq:`eq:reactiveWetting:liquidVapor1D:mass` such that,
 
 .. math::
    :label: eq:reactiveWetting:liquidVapor1D:massCorrected
-   
+
    \frac{\partial \rho}{\partial t} + \partial_j \left(\rho \left[u_j + u_i^c
    \right] \right) = 0
 
@@ -310,12 +310,12 @@ elegantly by calling ``cacheMatrix()`` only on the necessary part of the
 equation. This currently doesn't work properly in :term:`FiPy`.
 
 >>> while timestep < totalSteps:
-... 
+...
 ...     sweep = 0
 ...     dt *= 1.1
 ...     residual = 1.
 ...     initialResidual = None
-...     
+...
 ...     density.updateOld()
 ...     velocity.updateOld()
 ...     matrixDiagonal.updateOld()
@@ -327,7 +327,7 @@ equation. This currently doesn't work properly in :term:`FiPy`.
 ...         previousResidual = residual
 ...
 ...         dt = min(dt, dx / max(abs(velocity)) * cfl)
-...         
+...
 ...         coupledEqn.cacheMatrix()
 ...         residual = coupledEqn.sweep(dt=dt)
 ...

@@ -86,17 +86,17 @@ class FiPyExample(Directive):
         else:
             include_lines = statemachine.string2lines(include_text,
                                                       convert_whitespace=1)
-                                                      
+
             self.state_machine.insert_input(include_lines, path)
             self.state_machine.insert_input("-" * len(path), path)
             self.state_machine.insert_input(path, path)
             return []
-            
+
 def exampletree_directive(name, arguments, options, content, lineno,
                           content_offset, block_text, state, state_machine):
-                              
+
     print "exampletree_directive"
-    
+
     env = state.document.settings.env
     suffix = env.config.source_suffix
     dirname = posixpath.dirname(env.docname)
@@ -112,7 +112,7 @@ def exampletree_directive(name, arguments, options, content, lineno,
     for entry in content:
         if not entry:
             continue
-            
+
         if not glob:
             # look for explicit titles and documents ("Some Title <document>").
             m = caption_ref_re.match(entry)
@@ -142,18 +142,18 @@ def exampletree_directive(name, arguments, options, content, lineno,
                     'toctree glob pattern %r didn\'t match any documents' % entry,
                     line=lineno))
     subnode['includefiles'] = includefiles
-    
+
     print "exampletree:", subnode
 
     subnode['includetitles'] = includetitles
     subnode['maxdepth'] = options.get('maxdepth', -1)
     subnode['glob'] = glob
     ret.append(subnode)
-    
+
     print "exampletree:", subnode
 
     return ret
-    
+
 class ExampleTree(Directive):
     """
     Directive to notify Sphinx about the hierarchical structure of the docs,
@@ -241,26 +241,26 @@ def process_missing_example(app, env, node, contnode):
     print "env:", env
     print "node:", node
     print "contnode:", contnode
-    
+
     return None
-    
+
 def doctree_read(app, doctree):
     print "doctree:", doctree.attributes['source']
-    
+
 def autodoc_process_docstring(app, what, name, obj, options, lines):
     if name.startswith("examples."):
         title = "Module :mod:`%s`" % name
         lines.insert(0, title)
         lines.insert(1, "-" * len(title))
-    
+
 def source_read(app, docname, source):
     print "source-read:", docname
-        
+
 def setup(app):
     app.add_directive('fipyexample', FiPyExample)
     app.add_directive('exampletree', ExampleTree)
-#     app.add_directive('exampletree', exampletree_directive, 
-#                       content=1, 
+#     app.add_directive('exampletree', exampletree_directive,
+#                       content=1,
 #                       arguments=(0, 0, 0),
 #                       maxdepth=int,
 #                       glob=directives.flag)
@@ -268,4 +268,3 @@ def setup(app):
     app.connect('autodoc-process-docstring', autodoc_process_docstring)
     app.connect('doctree-read', doctree_read)
     app.connect('source-read', source_read)
-

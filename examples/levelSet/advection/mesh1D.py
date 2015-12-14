@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mesh1D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -78,7 +78,7 @@ Construct a `distanceVariable` object.
 ...                        hasOld=1)
 >>> var.setValue(1., where=mesh.cellCenters[0] > interfacePosition)
 >>> var.calcDistanceFunction() #doctest: +LSM
-   
+
 The `advectionEquation` is constructed.
 
 >>> advEqn = TransientTerm() + FirstOrderAdvectionTerm(velocity)
@@ -101,11 +101,11 @@ The result can be tested with the following code:
 >>> x = mesh.cellCenters[0]
 >>> distanceTravelled = timeStepDuration * steps * velocity
 >>> answer = x - interfacePosition - timeStepDuration * steps * velocity
->>> answer = numerix.where(x < distanceTravelled, 
+>>> answer = numerix.where(x < distanceTravelled,
 ...                        x[0] - interfacePosition, answer)
 >>> print var.allclose(answer) #doctest: +LSM
 1
-   
+
 """
 __docformat__ = 'restructuredtext'
 

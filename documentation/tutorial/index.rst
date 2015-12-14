@@ -15,4 +15,3 @@ for their containing package.
    :maxdepth: 4
 
    package/generated/package.subpackage
-

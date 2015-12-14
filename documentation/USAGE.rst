@@ -34,7 +34,7 @@ examples.
 
 In order to customize the examples, or to develop your own scripts, some
 knowledge of Python syntax is required.  We recommend you familiarize
-yourself with the excellent `Python tutorial`_ :cite:`PythonTutorial` 
+yourself with the excellent `Python tutorial`_ :cite:`PythonTutorial`
 or with `Dive Into Python`_ :cite:`DiveIntoPython`.
 
 .. _Python tutorial: http://docs.python.org/tut/tut.html
@@ -60,7 +60,7 @@ examples <part:examples>`. To run the test cases in both :ref:`modules
 
 in an unpacked :term:`FiPy` archive. The test suite can be run with a
 number of different configurations depending on which solver suite is
-available and other factors. See :ref:`FlagsAndEnvironmentVariables` 
+available and other factors. See :ref:`FlagsAndEnvironmentVariables`
 for more details.
 
 :term:`FiPy` will skip tests that depend on :ref:`OPTIONALPACKAGES` that
@@ -75,8 +75,8 @@ are not installed, :term:`FiPy` will warn::
 We have a few known, intermittent failures:
 
  :trac:`#425`
-    The test suite can freeze, usually in :mod:`examples.chemotaxis`, 
-    when running on multiple processors. This has never affected us in an 
+    The test suite can freeze, usually in :mod:`examples.chemotaxis`,
+    when running on multiple processors. This has never affected us in an
     actual parallel simulation, only in the test suite.
 
  :trac:`#430`
@@ -95,17 +95,17 @@ distribution by checking `FiPy's automated test display`_.
 
 Below are a number of common `Command-line Flags`_ for testing various
 :term:`FiPy` configurations.
- 
+
 Parallel Tests
 ==============
 
-If :term:`FiPy` is configured for :ref:`PARALLEL`, you can run the tests 
+If :term:`FiPy` is configured for :ref:`PARALLEL`, you can run the tests
 on multiple processor cores with::
 
     $ mpirun -np {# of processors} python setup.py test --trilinos
 
 or::
- 
+
     $ mpirun -np {# of processors} python -c "import fipy; fipy.test('--trilinos')"
 
 .. _FlagsAndEnvironmentVariables:
@@ -138,10 +138,10 @@ environment variable:
 
 .. cmdoption:: --pysparse
 
-   Forces the use of the :ref:`PYSPARSE` solvers. 
+   Forces the use of the :ref:`PYSPARSE` solvers.
 
 .. cmdoption:: --trilinos
- 
+
    Forces the use of the :ref:`TRILINOS` solvers, but uses
    :ref:`PYSPARSE` to construct the matrices.
 
@@ -183,7 +183,7 @@ package.
    .. currentmodule:: fipy.terms.term
 
    If present, causes the graphical display of the solution matrix of each
-   equation at each call of :meth:`~Term.solve` or :meth:`~Term.sweep`. 
+   equation at each call of :meth:`~Term.solve` or :meth:`~Term.sweep`.
    Setting the value to "``terms``," causes the display of the matrix for each
    :class:`Term` that composes the equation. Requires the :term:`Matplotlib`
    package.
@@ -204,7 +204,7 @@ package.
    Forces the use of the specified suite of linear solvers. Valid
    (case-insensitive) choices are "``pysparse``", "``trilinos``",
    "``no-pysparse``", "``scipy``" and "``pyamg``".
-    
+
 .. envvar:: FIPY_VERBOSE_SOLVER
 
    If present, causes the linear solvers to print a variety of diagnostic
@@ -266,7 +266,7 @@ to solve in parallel, the easiest way to tell is to run one of the
 examples, e.g.,::
 
     $ mpirun -np 2 examples/diffusion/mesh1D.py
-   
+
 You should see two viewers open with half the simulation running in one of
 them and half in the other. If this does not look right (e.g., you get two
 viewers, both showing the entire simultion), or if you just want to be
@@ -306,7 +306,7 @@ up into separate sub-domains and solves them (somewhat) independently.
 you need to do something with the entire solution, you can use
 ``var.``:attr:`~fipy.variables.cellVariable.CellVariable.globalValue`.
 
-.. note:: 
+.. note::
 
     :term:`Trilinos` solvers frequently give intermediate output that
     :term:`FiPy` cannot suppress. The most commonly encountered
@@ -407,15 +407,15 @@ In this case the matrix system will have the form
    \left(
    \begin{array}{c}
    \text{\ttfamily var0}  \\ \hline
-   \text{\ttfamily var1} 
+   \text{\ttfamily var1}
    \end{array} \right)
-   =	       
+   =
    \left(
    \begin{array}{c}
    \text{\ttfamily source0}  \\ \hline
-   \text{\ttfamily source1} 
+   \text{\ttfamily source1}
    \end{array} \right)
-   
+
 :term:`FiPy` tries to make sensible decisions regarding each term's
 location in the matrix and the ordering of the variable column
 array. For example, if ``Term01`` is a transient term then ``Term01``
@@ -447,7 +447,7 @@ have a value of `2` along the upper surface of a domain, use
 
 >>> var.constrain(2., where=mesh.facesTop)
 
-.. note:: 
+.. note::
 
    The old equivalent
    :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary
@@ -483,14 +483,14 @@ terms' coefficients to be zero on the exterior faces,
 
 then create an equation with an extra term to account for the exterior flux,
 
->>> eqn = (TransientTerm() + ConvectionTerm(convCoeff) 
+>>> eqn = (TransientTerm() + ConvectionTerm(convCoeff)
 ...        == DiffusionCoeff(diffCoeff)
 ...        + (mesh.exteriorFaces * exteriorFlux).divergence)
 
 where `exteriorFlux` is a rank 1
 :class:`~fipy.variables.faceVariable.FaceVariable`.
 
-.. note:: 
+.. note::
 
    The old equivalent :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux`
    boundary condition is now deprecated.
@@ -513,7 +513,7 @@ boundary conditions,
 .. math::
 
   \phi = \left\{
-            \begin{aligned} 
+            \begin{aligned}
                 xy &\quad \text{on $x>1/2$ and $y>1/2$} \\
                 \vec{n} \cdot \vec{F} = 0 &\quad \text{elsewhere}
             \end{aligned}
@@ -546,7 +546,7 @@ of implicit and explicit sources. An equation of the form
 can be constrained to have a fixed internal ``value`` at a position
 given by ``mask`` with the following alterations
 
->>> eqn = TransientTerm() == DiffusionTerm() - ImplicitSourceTerm(mask * largeValue) + mask * largeValue * value 
+>>> eqn = TransientTerm() == DiffusionTerm() - ImplicitSourceTerm(mask * largeValue) + mask * largeValue * value
 
 The parameter ``largeValue`` must be chosen to be large enough to
 completely dominate the matrix diagonal and the RHS vector in cells
@@ -618,7 +618,7 @@ although the left cell has the expected value as it is constrained.
 .. _RunningUnderPython3:
 
 ----------------------
-Running under Python 3     
+Running under Python 3
 ----------------------
 
 It is possible to run :term:`FiPy` scripts under :term:`Python 3`, but
@@ -645,8 +645,8 @@ The minimal prerequisites are:
 Manual
 ------
 
-You can view the manual online at <http://www.ctcms.nist.gov/fipy> or you 
-can `download the latest manual`_ from 
+You can view the manual online at <http://www.ctcms.nist.gov/fipy> or you
+can `download the latest manual`_ from
 <http://www.ctcms.nist.gov/fipy/download/>. Alternatively,
 it may be possible to build a fresh copy by issuing the following
 command in the base directory::
@@ -655,10 +655,10 @@ command in the base directory::
 
 .. note::
 
-   This mechanism is intended primarily for the developers. At a minimum, 
+   This mechanism is intended primarily for the developers. At a minimum,
    you will need at least version 1.1.2 of `Sphinx
-   <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites, 
-   although we build the documentation witih the latest development code 
+   <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites,
+   although we build the documentation witih the latest development code
    (you will need hg_ installed)::
 
    $ pip install --upgrade -e hg+https://bitbucket.org/birkenfeld/sphinx#egg=sphinx
@@ -670,9 +670,9 @@ command in the base directory::
    $ cd sphinx-contrib/traclinks
    $ python setup.py install
 
-   Bibliographic citations require the `sphinxcontrib-bibtex` package. For 
-   the moment, the development versions of several packages are required 
-   to properly render our bibliography (you will need both bzr_ and git_ 
+   Bibliographic citations require the `sphinxcontrib-bibtex` package. For
+   the moment, the development versions of several packages are required
+   to properly render our bibliography (you will need both bzr_ and git_
    installed)::
 
    $ pip install -e bzr+lp:~pybtex-devs/pybtex/trunk
@@ -683,8 +683,3 @@ command in the base directory::
 .. _hg: http://mercurial.selenic.com
 .. _bzr: http://bazaar.canonical.com
 .. _git: http://git-scm.com
-
-
-
-
-

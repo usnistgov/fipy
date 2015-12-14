@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mayaviClient.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -12,7 +12,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -23,7 +23,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -31,7 +31,7 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -57,11 +57,11 @@ class MayaviClient(AbstractViewer):
     __doc__ += AbstractViewer._test2D(viewer="MayaviClient")
     __doc__ += AbstractViewer._test2Dirregular(viewer="MayaviClient")
     __doc__ += AbstractViewer._test3D(viewer="MayaviClient")
-    
+
     def __init__(self, vars, title=None, daemon_file=None, fps=1.0, **kwlimits):
         """
         Create a `MayaviClient`.
-        
+
         :Parameters:
           vars
             a `CellVariable` or tuple of `CellVariable` objects to plot
@@ -79,7 +79,7 @@ class MayaviClient(AbstractViewer):
             frames per second to attempt to display
         """
         self.fps = fps
-        
+
         self.vtkdir = tempfile.mkdtemp()
         self.vtkcellfname = os.path.join(self.vtkdir, "cell.vtk")
         self.vtkfacefname = os.path.join(self.vtkdir, "face.vtk")
@@ -102,15 +102,15 @@ class MayaviClient(AbstractViewer):
             face_vars = []
 
         AbstractViewer.__init__(self, vars=cell_vars + face_vars, title=title, **kwlimits)
-        
+
         self.plot()
 
         from pkg_resources import Requirement, resource_filename
-        daemon_file = (daemon_file 
-                       or resource_filename(Requirement.parse("FiPy"), 
+        daemon_file = (daemon_file
+                       or resource_filename(Requirement.parse("FiPy"),
                                             "fipy/viewers/mayaviViewer/mayaviDaemon.py"))
-        
-        cmd = ["python", 
+
+        cmd = ["python",
                daemon_file,
                "--lock",
                self.vtklockfname,
@@ -119,11 +119,11 @@ class MayaviClient(AbstractViewer):
 
         if self.vtkCellViewer is not None:
             cmd += ["--cell", self.vtkcellfname]
-            
+
         if self.vtkFaceViewer is not None:
             cmd += ["--face", self.vtkfacefname]
-            
-                
+
+
         cmd += self._getLimit('xmin')
         cmd += self._getLimit('xmax')
         cmd += self._getLimit('ymin')
@@ -134,26 +134,26 @@ class MayaviClient(AbstractViewer):
         cmd += self._getLimit('datamax')
 
         self.daemon = subprocess.Popen(cmd)
-        
+
     def __del__(self):
         for fname in [self.vtkcellfname, self.vtkfacefname, self.vtklockfname]:
             if fname and os.path.isfile(fname):
                 os.unlink(fname)
         os.rmdir(self.vtkdir)
-        
+
     def _getLimit(self, key, default=None):
         """
         Return the limit associated with the key
-        
+
         .. Note::
-           
-           `MayaviClient` does not need the generality of multiple keys 
+
+           `MayaviClient` does not need the generality of multiple keys
            because it is always 3D
-        
+
         :Parameters:
           key
             a key string that identifies the limit of interest
-            
+
         :Returns:
           the value of the limit or `None`
         """
@@ -177,18 +177,16 @@ class MayaviClient(AbstractViewer):
                     lock.write(filename)
                 lock.close()
                 plotted = True
-                
+
             if (time.time() - start > 30. / self.fps) and not plotted:
                 print "viewer: NOT READY"
                 start = time.time()
         if not plotted:
             print "viewer: SKIPPED"
-    
+
     def _validFileExtensions(self):
         return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]
-        
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     import fipy.tests.doctestPlus
     fipy.tests.doctestPlus.execButNoTest()
-
-        

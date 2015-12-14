@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "boundaryCondition.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -42,11 +42,11 @@ __all__ = ["BoundaryCondition"]
 
 class BoundaryCondition(object):
     """
-    Generic boundary condition base class. 
-    
+    Generic boundary condition base class.
+
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    
+
     def __init__(self,faces,value):
         """
         :Parameters:
@@ -55,36 +55,36 @@ class BoundaryCondition(object):
         """
         if self.__class__ is BoundaryCondition:
             raise NotImplementedError, "can't instantiate abstract base class"
-        
+
         self.faces = faces
         if not (isinstance(value, PhysicalField) or isinstance(value, Variable)):
             value = PhysicalField(value)
         self.value = value
-        
-        if not (self.faces | self.faces.mesh.exteriorFaces 
+
+        if not (self.faces | self.faces.mesh.exteriorFaces
                 == self.faces.mesh.exteriorFaces).value.all():
             raise IndexError, 'Face list has interior faces'
-        
+
         self.adjacentCellIDs = self.faces.mesh._adjacentCellIDs[0][self.faces.value]
         self.boundaryConditionApplied = False
-        
+
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Return the effect of this boundary condition on the equation
         solution matrices.
-    
+
         `_buildMatrix()` is called by each `Term` of each `Equation`.
-        
+
         :Parameters:
           - `SparseMatrix`: Sparse matrix class to use
           - `Ncells`:       Number of cells (to build **L** and **b**)
           - `MaxFaces`:     Maximum number of faces per cell (to build **L**)
           - `coeff`:        Contribution due to this face
-        
-        A `tuple` of (`LL`, `bb`) is calculated, to be added to the Term's 
+
+        A `tuple` of (`LL`, `bb`) is calculated, to be added to the Term's
         (**L**, **b**) matrices.
-        """ 
+        """
         raise NotImplementedError
-    
+
     def _getDerivative(self, order):
         """Return a tuple of the boundary conditions to apply
         to the term and to the derivative of the term
@@ -99,7 +99,7 @@ class BoundaryCondition(object):
 
     def _resetBoundaryConditionApplied(self):
         self.boundaryConditionApplied = False
-        
+
     def _test(self):
         """
         The `BoundaryCondition` class should raise an error when
@@ -119,15 +119,15 @@ class BoundaryCondition(object):
         """
         pass
 
-class __BoundaryCondition(BoundaryCondition): 
+class __BoundaryCondition(BoundaryCondition):
     """
     Dummy subclass for tests
     """
-    pass 
+    pass
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     _test()

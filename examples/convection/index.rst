@@ -10,4 +10,3 @@ Convection Examples
    examples.convection.exponential1DSource.mesh1D
    examples.convection.robin
    examples.convection.source
-
