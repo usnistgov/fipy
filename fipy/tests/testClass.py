@@ -89,11 +89,17 @@ def _TestClass(base):
         def finalize_options(self):
             noSuiteOrModule = (self.test_suite is None 
                                and self.test_module is None)
+
+            if noSuiteOrModule:
+                # keep base.finalize_options() from adding things we don't want
+                self.test_suite = "dummy"
                 
             base.finalize_options(self)
             
             if noSuiteOrModule:
-                self.test_args.remove(self.distribution.test_suite)
+                # setuptools completely changed how it uses test_suite and test_args with v. 18.0
+                # we do our best to keep it confused
+                self.test_suite = None
                 
             if not (self.examples or self.modules or self.viewers):
                 self.all = True
@@ -102,7 +108,21 @@ def _TestClass(base):
                 self.modules = True
             if self.really_all:
                 self.viewers = True
+
+            self.test_args = list(self._test_args())
+
+            if noSuiteOrModule:
+                # setuptools completely changed how it uses test_suite and test_args with v. 18.0
+                # we do our best to keep it confused
+                self.test_suite = "dummy"
+
+        def _test_args(self):
+            # can't seem to delegate a generator until Python 3.3
             
+            if self.verbose:
+                yield '--verbose'
+            if self.test_suite:
+                yield self.test_suite
                 
             if self.viewers:
                 print "*" * 60
@@ -113,17 +133,11 @@ def _TestClass(base):
                 print "*" + "".center(58) + "*"
                 print "*" * 60
                 
-                self.test_args.append("fipy.viewers.testinteractive._suite")
-
+                yield "fipy.viewers.testinteractive._suite"
             if self.modules:
-                self.test_args.append("fipy.test._suite")
-            
+                yield "fipy.testFiPy._suite"
             if self.examples:
-                self.test_args.append("examples.test._suite")
-
-            if self.test_args and noSuiteOrModule:
-                self.test_suite = "dummy"
-
+                yield "examples.test._suite"
 
         def printPackageInfo(self):
             
