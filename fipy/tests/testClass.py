@@ -109,6 +109,8 @@ def _TestClass(base):
             if self.really_all:
                 self.viewers = True
 
+            # If we drop setuptools < 18.0, the remaining lines can probably be removed
+            
             self.test_args = list(self._test_args())
 
             if noSuiteOrModule:
