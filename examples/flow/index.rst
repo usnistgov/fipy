@@ -7,4 +7,3 @@ Fluid Flow Examples
    :template: example.rst
 
    examples.flow.stokesCavity
-

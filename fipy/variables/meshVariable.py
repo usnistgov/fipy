@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # #############################################################################
  # FiPy - a finite volume PDE solver in Python
- # 
+ #
  # FILE: "meshVariable.py"
  #
  # Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  # Author: James Warren   <jwarren@nist.gov>
  #   mail: NIST
  #    www: <http://www.ctcms.nist.gov/fipy/>
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are 
+ # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- # 
+ #
  # #############################################################################
  ##
 
@@ -43,17 +43,17 @@ from fipy.tools import numerix
 class _MeshVariable(Variable):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
-    
+
     Abstract base class for a `Variable` that is defined on a mesh
     """
-    def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, 
+    def __init__(self, mesh, name='', value=0., rank=None, elementshape=None,
                  unit=None, cached=1):
         """
         :Parameters:
           - `mesh`: the mesh that defines the geometry of this `Variable`
           - `name`: the user-readable name of the `Variable`
           - `value`: the initial value
-          - `rank`: the rank (number of dimensions) of each element of this 
+          - `rank`: the rank (number of dimensions) of each element of this
             `Variable`. Default: 0
           - `elementshape`: the shape of each element of this variable
              Default: `rank * (mesh.dim,)`
@@ -61,7 +61,7 @@ class _MeshVariable(Variable):
         """
         if isinstance(value, (list, tuple)):
             value = numerix.array(value)
-            
+
         if isinstance(value, _MeshVariable):
             if mesh is None:
                 mesh = value.mesh
@@ -70,7 +70,7 @@ class _MeshVariable(Variable):
 
         self.mesh = mesh
         value = self._globalToLocalValue(value)
-        
+
         if value is None:
             array = None
         elif not isinstance(value, _Constant) and isinstance(value, Variable):
@@ -78,7 +78,7 @@ class _MeshVariable(Variable):
             unit = None
             if isinstance(value, _MeshVariable):
                 if not isinstance(value, self._variableClass):
-                    raise TypeError, "A '%s' cannot be cast to a '%s'" % (value._variableClass.__name__, 
+                    raise TypeError, "A '%s' cannot be cast to a '%s'" % (value._variableClass.__name__,
                                                                           self._variableClass.__name__)
                 if elementshape is not None and elementshape != value.shape[:-1]:
                     raise ValueError, "'elementshape' != shape of elements of 'value'"
@@ -110,9 +110,9 @@ class _MeshVariable(Variable):
             elementshape = rank * (mesh.dim,)
         elif len(elementshape) != rank:
             raise ValueError, 'len(elementshape) != rank'
-                
+
         self.elementshape = elementshape
-        
+
         if not "array" in locals():
             if numerix._isPhysical(value):
                 dtype = numerix.obj2sctype(value.value)
@@ -120,17 +120,17 @@ class _MeshVariable(Variable):
                 dtype = numerix.obj2sctype(value)
             #print "meshvariable elshape: ",self.elementshape
             #print "meshvariable _getShapeFromMesh: ",self._getShapeFromMesh(mesh)
-            array = numerix.zeros(self.elementshape 
+            array = numerix.zeros(self.elementshape
                                   + self._getShapeFromMesh(mesh),
                                   dtype)
             if numerix._broadcastShape(array.shape, numerix.shape(value)) is None:
                 if not isinstance(value, Variable):
                     value = _Constant(value)
                 value = value[..., numerix.newaxis]
-                                  
-        Variable.__init__(self, name=name, value=value, unit=unit, 
+
+        Variable.__init__(self, name=name, value=value, unit=unit,
                           array=array, cached=cached)
-                  
+
     def _globalToLocalValue(self, value):
         if value is not None:
             if not isinstance(value, Variable):
@@ -140,28 +140,28 @@ class _MeshVariable(Variable):
                 if valueShape[-1] != 0:
                     # workaround for NumPy:ticket:1171
                     value = value[..., self._globalOverlappingIDs]
-                    
+
             value = value.value
         return value
-        
+
     def _getGlobalValue(self, localIDs, globalIDs):
         localValue = self.value
         if self.mesh.communicator.Nproc > 1:
             if localValue.shape[-1] != 0:
                 localValue = localValue[..., localIDs]
             globalIDs = numerix.concatenate(self.mesh.communicator.allgather(globalIDs))
-            
-            globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,), 
+
+            globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,),
                                         dtype=numerix.obj2sctype(localValue))
             globalValue[..., globalIDs] = numerix.concatenate(self.mesh.communicator.allgather(localValue), axis=-1)
-            
+
             return globalValue
         else:
             return localValue
 
     def __str__(self):
         return str(self.globalValue)
-        
+
     def __repr__(self):
         if hasattr(self, 'name') and len(self.name) > 0:
             return self.name
@@ -204,7 +204,7 @@ class _MeshVariable(Variable):
         [ True False False  True]
         >>> print v1
         [ 1.  0.  0.  3.]
-        
+
         """
         if not hasattr(self, '_constraintMask'):
             from fipy.variables.constraintMask import _ConstraintMask
@@ -248,18 +248,18 @@ class _MeshVariable(Variable):
         >>> v = CellVariable(mesh=m, elementshape=(2,))
         >>> (v * 1).shape
         (2, 0)
-        
+
         """
         return (Variable._getShape(self)
-                or (self.elementshape + self._getShapeFromMesh(self.mesh)) 
+                or (self.elementshape + self._getShapeFromMesh(self.mesh))
                 or ())
 
     def _dot(a, b, index):
         """
         Workhorse method to calculate the scalar product
-        
+
         .. math::
-        
+
            \mathsf{a} \cdot \mathsf{b}
 
         for all but the last index of `a` and `b`. Both `a` and `b` can be of
@@ -280,11 +280,11 @@ class _MeshVariable(Variable):
         Workhorse method to return a `_BinaryOperatorVariable` that will
         dynamically perform the mesh-element--by--mesh-element (cell-by-cell,
         face-by-face, etc.) scalar product
-        
+
         .. math::
-        
+
            \mathsf{A} \cdot \mathsf{B}
-           
+
         Both `A` and `B` can be of arbitrary rank, but at this point, both must
         be appropriately broadcast `_MeshVariable` objects.
 
@@ -293,7 +293,7 @@ class _MeshVariable(Variable):
         >>> from fipy import *
         >>> m = Grid2D(nx=2, ny=2)
         >>> v = FaceVariable(mesh=m, rank=1, value=m._orientedFaceNormals)
-        
+
         >>> print len(v.dot(1.).shape)
         2
         >>> print v.dot(1.).globalValue.shape
@@ -301,11 +301,11 @@ class _MeshVariable(Variable):
         >>> tmp = m._cellDistances * v.dot(1.)
         >>> print tmp.globalValue.shape
         (2, 12)
-        
+
         The value shouldn't change shape the second time it's
         evaluated. The second time is inline and the inline code does
         not have the correct shape.
-        
+
         >>> print tmp.globalValue.shape
         (2, 12)
 
@@ -317,20 +317,20 @@ class _MeshVariable(Variable):
         2
         >>> print v0.dot(m.faceCenters[0]).globalValue.shape
         (2, 24)
-        
+
         """
         rankA = len(A.shape) - 1
         rankB = len(B.shape) - 1
-        
-        index = (numerix.index_exp[...] + (numerix.newaxis,) * (rankB - 1) 
+
+        index = (numerix.index_exp[...] + (numerix.newaxis,) * (rankB - 1)
                  + numerix.index_exp[:])
         opShape = numerix._broadcastShape(A[index].shape, B.shape)
 
         if rankA > 0 and rankB > (rankA - 1):
             opShape = opShape[:rankA-1] + opShape[rankA:]
 
-        return A._BinaryOperatorVariable(lambda a,b: _MeshVariable._dot(a, b, index), 
-                                         B, 
+        return A._BinaryOperatorVariable(lambda a,b: _MeshVariable._dot(a, b, index),
+                                         B,
                                          opShape=opShape,
                                          operatorClass=operatorClass,
                                          canInline=False)
@@ -340,11 +340,11 @@ class _MeshVariable(Variable):
         """
         Return the mesh-element--by--mesh-element (cell-by-cell, face-by-face,
         etc.) scalar product
-        
+
         .. math::
-        
+
            \text{self} \cdot \text{other}
-           
+
         Both `self` and `other` can be of arbitrary rank, and `other` does not
         need to be a `_MeshVariable`.
         """
@@ -359,11 +359,11 @@ class _MeshVariable(Variable):
         """
         Return the mesh-element--by--mesh-element (cell-by-cell, face-by-face,
         etc.) scalar product
-        
+
         .. math::
-            
+
            \text{other} \cdot \text{self}
-           
+
         Both `self` and `other` can be of arbitrary rank, and `other` does not
         need to be a `_MeshVariable`.
         """
@@ -371,18 +371,18 @@ class _MeshVariable(Variable):
             from fipy.variables.constant import _Constant
             other = _Constant(value=other)
         opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
-        
+
         return self.__dot(other, self, self._OperatorVariableClass(baseClass))
 
     def _maxminparallel_(self, a, axis, default, fn, fnParallel):
         a = a[..., self._localNonOverlappingIDs]
-        
+
         if numerix.multiply.reduce(a.shape) == 0:
             if axis is None:
                 opShape = ()
             else:
                 opShape=self.shape[:axis] + self.shape[axis+1:]
-                
+
             if len(opShape) == 0:
                 nodeVal = default
             else:
@@ -396,15 +396,15 @@ class _MeshVariable(Variable):
     def max(self, axis=None):
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def maxParallel(a):
-                return self._maxminparallel_(a=a, axis=axis, default=-numerix.inf, 
+                return self._maxminparallel_(a=a, axis=axis, default=-numerix.inf,
                                              fn=a.max, fnParallel=self.mesh.communicator.MaxAll)
-                
-            return self._axisOperator(opname="maxVar", 
-                                      op=maxParallel, 
+
+            return self._axisOperator(opname="maxVar",
+                                      op=maxParallel,
                                       axis=axis)
         else:
             return Variable.max(self, axis=axis)
-                                  
+
     def min(self, axis=None):
         """
         >>> from fipy import Grid2D, CellVariable
@@ -416,11 +416,11 @@ class _MeshVariable(Variable):
         """
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def minParallel(a):
-                return self._maxminparallel_(a=a, axis=axis, default=numerix.inf, 
+                return self._maxminparallel_(a=a, axis=axis, default=numerix.inf,
                                              fn=a.min, fnParallel=self.mesh.communicator.MinAll)
-                
-            return self._axisOperator(opname="minVar", 
-                                      op=minParallel, 
+
+            return self._axisOperator(opname="minVar",
+                                      op=minParallel,
                                       axis=axis)
         else:
             return Variable.min(self, axis=axis)
@@ -430,9 +430,9 @@ class _MeshVariable(Variable):
             def allParallel(a):
                 a = a[..., self._localNonOverlappingIDs]
                 return self.mesh.communicator.all(a, axis=axis)
-                
-            return self._axisOperator(opname="allVar", 
-                                      op=allParallel, 
+
+            return self._axisOperator(opname="allVar",
+                                      op=allParallel,
                                       axis=axis)
         else:
             return Variable.all(self, axis=axis)
@@ -442,9 +442,9 @@ class _MeshVariable(Variable):
             def anyParallel(a):
                 a = a[..., self._localNonOverlappingIDs]
                 return self.mesh.communicator.any(a, axis=axis)
-                
-            return self._axisOperator(opname="anyVar", 
-                                      op=anyParallel, 
+
+            return self._axisOperator(opname="anyVar",
+                                      op=anyParallel,
                                       axis=axis)
         else:
             return Variable.any(self, axis=axis)
@@ -454,9 +454,9 @@ class _MeshVariable(Variable):
             def sumParallel(a):
                 a = a[..., self._localNonOverlappingIDs]
                 return self.mesh.communicator.sum(a, axis=axis)
-                
-            return self._axisOperator(opname="sumVar", 
-                                      op=sumParallel, 
+
+            return self._axisOperator(opname="sumVar",
+                                      op=sumParallel,
                                       axis=axis)
         else:
             return Variable.sum(self, axis=axis)
@@ -468,10 +468,10 @@ class _MeshVariable(Variable):
 
              operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
              return self._BinaryOperatorVariable(allcloseParallel,
-                                                 other, 
+                                                 other,
                                                  operatorClass=operatorClass,
                                                  opShape=(),
-                                                 canInline=False)            
+                                                 canInline=False)
          else:
              return Variable.allclose(self, other, rtol=rtol, atol=atol)
 
@@ -482,10 +482,10 @@ class _MeshVariable(Variable):
 
              operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
              return self._BinaryOperatorVariable(allequalParallel,
-                                                 other, 
+                                                 other,
                                                  operatorClass=operatorClass,
                                                  opShape=(),
-                                                 canInline=False)            
+                                                 canInline=False)
          else:
              return Variable.allequal(self, other)
 
@@ -495,12 +495,12 @@ class _MeshVariable(Variable):
         Determine the shape of the result, the base class of the result, and (if
         necessary) a modified form of `other` that is suitable for the
         operation.
-        
+
         By default, returns the result of the generic
         `Variable._shapeClassAndOther()`, but if that fails, and if each
         dimension of `other` is exactly the `Mesh` dimension, do what the user
         probably "meant" and project `other` onto the `Mesh`.
-        
+
         >>> from fipy import *
         >>> mesh = Grid1D(nx=5)
         >>> A = numerix.arange(5)
@@ -516,18 +516,18 @@ class _MeshVariable(Variable):
         >>> warnings.filters = savedFilters
         """
         otherShape = numerix.getShape(other)
-        if (not isinstance(other, _MeshVariable) 
-            and otherShape is not () 
+        if (not isinstance(other, _MeshVariable)
+            and otherShape is not ()
             and otherShape[-1] == self._globalNumberOfElements):
             if (isinstance(other, Variable) and len(other.requiredVariables) > 0):
                 import warnings
-                warnings.warn("The expression `%s` has been cast to a constant `%s`" 
-                              % (repr(other), self._variableClass.__name__), 
+                warnings.warn("The expression `%s` has been cast to a constant `%s`"
+                              % (repr(other), self._variableClass.__name__),
                               UserWarning, stacklevel=4)
             other = self._variableClass(value=other, mesh=self.mesh)
 
         newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other)
-        
+
         if ((newOpShape is None or baseClass is None)
             and numerix.alltrue(numerix.array(numerix.getShape(other)) == self.mesh.dim)):
                 newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other[..., numerix.newaxis])
@@ -536,39 +536,39 @@ class _MeshVariable(Variable):
 
     def _OperatorVariableClass(self, baseClass=None):
         baseClass = Variable._OperatorVariableClass(self, baseClass=baseClass)
-                                     
+
         class _MeshOperatorVariable(baseClass):
             def __init__(self, op, var, opShape=None, canInline=True,
                          *args, **kwargs):
-                mesh = reduce(lambda a, b: a or b, 
+                mesh = reduce(lambda a, b: a or b,
                               [getattr(v, "mesh", None) for v in var])
                 for shape in [opShape] + [getattr(v, "opShape", None) for v in var]:
                     if shape is not None:
                         opShape = shape
                         break
-##                 opShape = reduce(lambda a, b: a or b, 
+##                 opShape = reduce(lambda a, b: a or b,
 ##                                  [opShape] + [getattr(v, "opShape", None) for v in var])
                 if opShape is not None:
                     elementshape = opShape[:-1]
                 else:
-                    elementshape = reduce(lambda a, b: a or b, 
+                    elementshape = reduce(lambda a, b: a or b,
                                           [getattr(v, "elementshape", None) for v in var])
 
-                baseClass.__init__(self, mesh=mesh, op=op, var=var, 
+                baseClass.__init__(self, mesh=mesh, op=op, var=var,
                                    opShape=opShape, canInline=canInline,
                                    elementshape=elementshape,
                                    *args, **kwargs)
-                                 
+
             @property
             def rank(self):
                 return len(self.opShape) - 1
-                
+
         return _MeshOperatorVariable
-                          
+
     @property
     def rank(self):
         return len(self.shape) - 1
-        
+
     def setValue(self, value, unit = None, where = None):
         if where is not None:
             shape = numerix.getShape(where)
@@ -576,7 +576,7 @@ class _MeshVariable(Variable):
               and shape == self._getShapeFromMesh(mesh=self.mesh):
                 for dim in self.elementshape:
                     where = numerix.repeat(where[numerix.newaxis, ...], repeats=dim, axis=0)
-        
+
         return Variable.setValue(self, value=value, unit=unit, where=where)
 
     def _axisClass(self, axis):
@@ -603,10 +603,10 @@ class _MeshVariable(Variable):
             return self._OperatorVariableClass()
         else:
             return Variable._OperatorVariableClass(self, baseClass=Variable)
-        
+
     def __getstate__(self):
         """
-        Used internally to collect the necessary information to ``pickle`` the 
+        Used internally to collect the necessary information to ``pickle`` the
         `_MeshVariable` to persistent storage.
         """
         return {
@@ -625,24 +625,24 @@ def _testDot(self):
     >>> s1 = CellVariable(mesh=mesh, value=2)
     >>> s2 = CellVariable(mesh=mesh, value=3)
 
-    >>> v1 = CellVariable(mesh=mesh, rank=1, 
+    >>> v1 = CellVariable(mesh=mesh, rank=1,
     ...                   value=numerix.array([2,3])[..., numerix.newaxis])
-    >>> v2 = CellVariable(mesh=mesh, rank=1, 
+    >>> v2 = CellVariable(mesh=mesh, rank=1,
     ...                   value=numerix.array([3,4])[..., numerix.newaxis])
-    
-    >>> t21 = CellVariable(mesh=mesh, rank=2, 
+
+    >>> t21 = CellVariable(mesh=mesh, rank=2,
     ...                    value=numerix.array([[2, 3],
     ...                                         [4, 5]])[..., numerix.newaxis])
-    >>> t22 = CellVariable(mesh=mesh, rank=2, 
+    >>> t22 = CellVariable(mesh=mesh, rank=2,
     ...                    value=numerix.array([[3, 4],
     ...                                         [5, 6]])[..., numerix.newaxis])
 
-    >>> t31 = CellVariable(mesh=mesh, rank=3, 
+    >>> t31 = CellVariable(mesh=mesh, rank=3,
     ...                    value=numerix.array([[[3, 4],
     ...                                         [5, 6]],
     ...                                        [[5, 6],
     ...                                         [7, 8]]])[..., numerix.newaxis])
-    >>> t32 = CellVariable(mesh=mesh, rank=3, 
+    >>> t32 = CellVariable(mesh=mesh, rank=3,
     ...                    value=numerix.array([[[2, 3],
     ...                                         [4, 5]],
     ...                                        [[4, 5],
@@ -651,7 +651,7 @@ def _testDot(self):
     >>> def P(a):
     ...     a = a.globalValue
     ...     print a[...,0], a.shape
-    
+
     >>> P(v1.dot(v2))
     18 (6,)
     >>> P(v1.dot(t22))
@@ -659,7 +659,7 @@ def _testDot(self):
     >>> P(v1.dot(t31))
     [[21 26]
      [31 36]] (2, 2, 6)
-    
+
     >>> P(t21.dot(v1))
     [13 23] (2, 6)
     >>> P(t21.dot(t22))
@@ -671,7 +671,7 @@ def _testDot(self):
     <BLANKLINE>
      [[37 46]
       [55 64]]] (2, 2, 2, 6)
-      
+
     >>> P(t31.dot(v1))
     [[18 28]
      [28 38]] (2, 2, 6)
@@ -698,9 +698,9 @@ def _testDot(self):
     """
     pass
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()

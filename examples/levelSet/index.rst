@@ -23,5 +23,3 @@ Level Set Examples
    examples.levelSet.electroChem.gold
    examples.levelSet.electroChem.leveler
    examples.levelSet.electroChem.howToWriteAScript
-
-

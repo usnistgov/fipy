@@ -24,7 +24,7 @@ class _NumberDict(DictWithDefault._DictWithDefault):
     and subtraction with other _NumberDict instances, and multiplication
     and division by scalars.
     """
-    
+
     def __init__(self):
         DictWithDefault._DictWithDefault.__init__(self, 0)
 

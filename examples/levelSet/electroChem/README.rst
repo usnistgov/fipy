@@ -97,5 +97,3 @@ of high surfactant concentration have an increased deposition rate.
    <a href="download/fipy.pdf">2</a>
 
 .. |howToWriteAScript| replace:: |htmlHowToWriteAScript| |latexHowToWriteAScript|
-
-

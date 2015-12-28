@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
- # 
+ #
  #  FILE: "gapFillMesh.py"
  #
  #  Author: Jonathan Guyer   <guyer@nist.gov>
@@ -12,7 +12,7 @@
  #  Author: Andrew Acquaviva <andrewa@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This document was prepared at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -23,13 +23,13 @@
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
  # We would appreciate acknowledgement if the document is used.
- # 
+ #
  # This document can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -55,7 +55,7 @@ from fipy.tools import parallelComm
 class GapFillMesh(Gmsh2D):
     """
     The following test case tests for diffusion across the domain.
-    >>> domainHeight = 5.        
+    >>> domainHeight = 5.
     >>> mesh = GapFillMesh(transitionRegionHeight = 2.,
     ...                    cellSize = 0.1,
     ...                    desiredFineRegionHeight = 1.,
@@ -63,13 +63,13 @@ class GapFillMesh(Gmsh2D):
     ...                    desiredDomainWidth = 1.) # doctest: +GMSH
 
     >>> import fipy.tools.dump as dump
-    >>> (f, filename) = dump.write(mesh) # doctest: +GMSH 
+    >>> (f, filename) = dump.write(mesh) # doctest: +GMSH
     >>> if parallelComm.Nproc == 1:
     ...     mesh = dump.read(filename, f) # doctest: +GMSH
 
     >>> print 136 < mesh.globalNumberOfCells < 300 # doctest: +GMSH
     True
-        
+
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh = mesh) # doctest: +GMSH
 
@@ -83,13 +83,13 @@ class GapFillMesh(Gmsh2D):
 
     Evaluate the result:
 
-    >>> centers = mesh.cellCenters[1].copy() # doctest: +GMSH 
+    >>> centers = mesh.cellCenters[1].copy() # doctest: +GMSH
 
     .. note:: the copy makes the array contiguous for inlining
 
-    >>> localErrors = (centers - var)**2 / centers**2 # doctest: +GMSH 
+    >>> localErrors = (centers - var)**2 / centers**2 # doctest: +GMSH
     >>> from fipy.tools import numerix
-    >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.numberOfCells) # doctest: +GMSH 
+    >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.numberOfCells) # doctest: +GMSH
     >>> argmax = numerix.argmax(localErrors) # doctest: +GMSH
 
     >>> print numerix.sqrt(localErrors[argmax]) < 0.1 # doctest: +GMSH
@@ -124,7 +124,7 @@ class GapFillMesh(Gmsh2D):
 
         # Calculate the fine region cell counts.
         nx = int(desiredDomainWidth / cellSize)
-        ny = int(desiredFineRegionHeight / cellSize) 
+        ny = int(desiredFineRegionHeight / cellSize)
 
         # Calculate the actual mesh dimensions
         actualFineRegionHeight = ny * cellSize
@@ -169,10 +169,9 @@ class GapFillMesh(Gmsh2D):
             Line{100}; Layers{ numberOfBoundaryLayerCells }; Recombine;}
         """ % locals(), communicator=communicator)
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
 
+if __name__ == "__main__":
+    _test()

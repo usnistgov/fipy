@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "harmonicCellToFaceVariable.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,7 +22,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -30,7 +30,7 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -61,7 +61,7 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
                 }
             """,
             var = self.var.numericValue,
-            val = val, 
+            val = val,
             alpha = alpha,
             id1 = id1, id2 = id2,
             shape=numerix.array(numerix.shape(val)),
@@ -80,4 +80,3 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
             value = (cell1Xcell2 >= 0.) * value
 
             return value
-        

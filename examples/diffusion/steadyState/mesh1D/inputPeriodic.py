@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "input.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -60,11 +60,11 @@ The variable is initially a line varying form `valueLeft` to `valueRight`.
 ...     viewer = Viewer(vars=var, datamin=0., datamax=1.)
 ...     viewer.plot()
 ...     raw_input("press key to continue")
-    
+
 
 A `TransientTerm` is used to provide some fixed point, otherwise the
 solver has no fixed value and can become unstable.
-    
+
 >>> eq = TransientTerm(coeff=1e-8) - DiffusionTerm()
 >>> eq.solve(var=var, dt=1.)
 
@@ -75,7 +75,7 @@ The result of the calculation will be the average value over the domain.
 
 >>> print var.allclose((valueLeft + valueRight) / 2., rtol = 1e-5)
 1
-   
+
 """
 
 __docformat__ = 'restructuredtext'

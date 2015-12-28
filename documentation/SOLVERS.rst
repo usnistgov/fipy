@@ -14,7 +14,7 @@ in parallel <PARALLEL>`. Although less efficient than :term:`PySparse`
 and less capable than :term:`Trilinos`, :term:`SciPy` is a very
 popular package, widely available and easy to install. For this
 reason, :term:`SciPy` may be the best linear solver choice when first
-installing and testing :term:`FiPy` (and it is the only viable solver 
+installing and testing :term:`FiPy` (and it is the only viable solver
 under `Python 3.x`_).
 
 :term:`FiPy` chooses the solver suite based on system availability or based
@@ -23,14 +23,14 @@ passing ``--no-pysparse``::
 
     $ python -c "from fipy import *; print DefaultSolver" --no-pysparse
     <class 'fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver'>
-    
+
 uses a :ref:`TRILINOS` solver. Setting :envvar:`FIPY_SOLVERS`
 to ``scipy``::
 
     $ FIPY_SOLVERS=scipy
     $ python -c "from fipy import *; print DefaultSolver"
     <class 'fipy.solvers.scipy.linearLUSolver.LinearLUSolver'>
-    
+
 uses a :ref:`SCIPY` solver. Suite-specific solver classes can also
 be imported and instantiated overriding any other directives. For
 example::
@@ -38,9 +38,9 @@ example::
     $ python -c "from fipy.solvers.scipy import DefaultSolver; \
     >   print DefaultSolver" --no-pysparse
     <class 'fipy.solvers.scipy.linearLUSolver.LinearLUSolver'>
-    
+
 uses a :ref:`SCIPY` solver regardless of the command line
-argument. In the absence of :ref:`FlagsAndEnvironmentVariables`, 
+argument. In the absence of :ref:`FlagsAndEnvironmentVariables`,
 :term:`FiPy`'s order of precedence when choosing the
 solver suite for generic solvers is :ref:`PYSPARSE` followed by
 :ref:`TRILINOS`, :ref:`PYAMG` and :ref:`SCIPY`.
@@ -112,21 +112,21 @@ solutions to some difficult problems that :term:`PySparse` and
    :term:`FiPy` runs more efficiently when :term:`PySparse` is
    installed alongside :term:`Trilinos`.
 
-.. attention:: 
-    
+.. attention::
+
    :term:`Trilinos` is a large software suite with its own set of
    prerequisites, and can be difficult to set up. It is not necessary
    for most problems, and is **not** recommended for a basic install
    of :term:`FiPy`.
 
 :term:`Trilinos` requires `cmake <http://www.cmake.org/>`_, :term:`NumPy`,
-and `swig <http://www.swig.org/>`_. The following are the minimal steps to 
-build and install :term:`Trilinos` (with :term:`PyTrilinos`) for 
+and `swig <http://www.swig.org/>`_. The following are the minimal steps to
+build and install :term:`Trilinos` (with :term:`PyTrilinos`) for
 :term:`FiPy`::
 
     $ cd trilinos-X.Y/
     $ SOURCE_DIR=`pwd`
-    $ mkdir BUILD_DIR    
+    $ mkdir BUILD_DIR
     $ cd BUILD_DIR
     $ cmake \
     >   -D CMAKE_BUILD_TYPE:STRING=RELEASE \
@@ -146,14 +146,14 @@ http://trilinos.sandia.gov/documentation.html, or
 http://trilinos.sandia.gov/packages/pytrilinos/faq.html for more
 in-depth documentation.
 
-.. note:: 
- 
+.. note::
+
     Trilinos can be installed in a non-standard location by adding the
     :samp:`-D CMAKE_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` and
     :samp:`-D PyTrilinos_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` flags
     to the configure step. If :term:`Trilinos` is installed in a
     non-standard location, the path to the :term:`PyTrilinos`
-    site-packages directory should be added to the :envvar:`PYTHONPATH` 
+    site-packages directory should be added to the :envvar:`PYTHONPATH`
     environment variable; this should be of the form
     :file:`${{INSTALL_DIR}}/lib/${{PYTHON_VERSION}}/site-packages/`. Also,
     the path to the :term:`Trilinos` ``lib`` directory should be added to
@@ -170,4 +170,3 @@ http://mpi4py.scipy.org/
 
 For :ref:`PARALLEL`, :term:`FiPy` requires ``mpi4py``, in addition to
 :term:`Trilinos`.
-

@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "efficiency_test.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -12,7 +12,7 @@
  #  Author: Andrew Acquaviva <andrewa@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -23,7 +23,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -31,7 +31,7 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -55,7 +55,7 @@ class Efficiency_test(Command):
                      ('otherExample=', None, 'designate examples other than the default ones to benchmark'),
                      ('newElements=', None, 'alter the number of elements. NB: will not work on all examples'),
                      ('revisionNumber=', None, 'generate history of example(s) from given revision number')]
-    
+
     def initialize_options(self):
         self.factor = 10
         self.inline = 0
@@ -70,7 +70,7 @@ class Efficiency_test(Command):
                           'examples/reactiveWetting/liquidVapor2D.py']
         self.uploadToCodespeed = False
         self.revisionNumber = None
-    
+
     def finalize_options(self):
         self.factor = int(self.factor)
         self.maximumelements = int(self.maximumelements)
@@ -93,17 +93,17 @@ class Efficiency_test(Command):
 
         for case in newCases:
             print "case: %s" % case
-            
+
             if self.path is None:
                 testPath = os.path.split(case)[0]
             else:
                 testPath = self.path
-                
+
             if not os.access(testPath, os.F_OK):
                 os.makedirs(testPath)
-            
+
             testPath = os.path.join(testPath, '%s.dat' % os.path.split(case)[1])
-            
+
             if not os.path.isfile(testPath):
                 f = open(testPath, 'w')
 
@@ -113,7 +113,7 @@ class Efficiency_test(Command):
                 f.flush()
             else:
                 f = open(testPath, 'a')
-            
+
             numberOfElements = self.minimumelements
 
             print "Running example:"
@@ -123,7 +123,7 @@ class Efficiency_test(Command):
                                     (time.ctime()).center(25), str(numberOfElements).center(10)])
             print 'cmd',cmd
             w, r = os.popen2(cmd)
-            
+
             outputlist= r.read().split()
             print outputlist
             init_time = outputlist[outputlist.index('Initialization-time:')+1]
@@ -135,23 +135,23 @@ class Efficiency_test(Command):
             r.close()
             w.close()
 
-            if numberOfElements == self.maximumelements:    
+            if numberOfElements == self.maximumelements:
                 f.write(output + '\n' + "-"*100 + '\n')
                 f.flush()
             else:
                 f.write(output + '\n')
                 f.flush()
- 
+
             if self.uploadToCodespeed:
                 import urllib, urllib2
-                import time 
+                import time
                 import pysvn
                 from datetime import datetime
-                
+
                 CODESPEED_URL = 'http://build.cmi.kent.edu/codespeed/'
 
                 revnum = pysvn.Client().info('.')['revision'].number
-                revdate  = pysvn.Client().info('.')['commit_time']                   
+                revdate  = pysvn.Client().info('.')['commit_time']
                 print 'revdate: ', datetime.fromtimestamp(revdate)
 
                 def add(data):
@@ -167,8 +167,8 @@ class Efficiency_test(Command):
                         return
                     response = f.read()
                     f.close()
-                    print "Server (%s) response: %s\n" % (CODESPEED_URL, response) 
- 
+                    print "Server (%s) response: %s\n" % (CODESPEED_URL, response)
+
                 benchmarks = ['Initialization', 'First timestep',\
                                   'Average of remaining timesteps', 'Total Runtime']
                 results = [init_time, frst_timestp, avg_timestp, runtime]
@@ -183,7 +183,7 @@ class Efficiency_test(Command):
                         'environment': 'Sandbox A201590', ##"Debian A203166",
                         'result_value': results[i],
                         'result_date': datetime.fromtimestamp(revdate)
-                        }    
+                        }
                     print datetime.fromtimestamp(revdate)
                     add(data)
             numberOfElements *= self.factor
@@ -191,4 +191,3 @@ class Efficiency_test(Command):
             os.remove(case)
             os.remove("%s.dat" % case)
             print "Deleted temporary file ", case
-            

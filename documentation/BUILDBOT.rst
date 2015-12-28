@@ -65,11 +65,11 @@ done with just::
     c['builders'].extend(make_builders(name="SlaveType",
                                        slaves=[newslave]))
 
-where `"SlaveType"` should be a generic description of the slave, e.g., it's 
-OS, rather than the slave's name. 
+where `"SlaveType"` should be a generic description of the slave, e.g., it's
+OS, rather than the slave's name.
 
-If you need to customize the tests (perhaps because the slave is missing 
-some prerequisites for the standard tests), define customized versions of 
+If you need to customize the tests (perhaps because the slave is missing
+some prerequisites for the standard tests), define customized versions of
 :class:`QuickFactory` and :class:`FullFactory` and then call::
 
     c['builders'].extend(make_builders(name="SlaveType",
@@ -90,7 +90,7 @@ this is ("quick", "full", "docs", etc.). `buildFactory` should be a
 :class:`~buildbot.process.buildsteps.BuildStep`\s to take.
 
 Push `master.cfg` and make sure buildbot reconfigures successfully::
-    
+
     $ git add master.cfg
     $ git commit -m "added buildslave 'newSlaveName'"
     $ git push origin master
@@ -114,7 +114,7 @@ Ask `buildslave` to create the slave::
 
     slave$ buildslave create-slave [newDir] build.cmi.kent.edu:9989 \
                                    [slaveName] [slavePasswd]
-                                   
+
 Modify admin and host information::
 
     slave$ uname -a > newDir/info/host
@@ -139,11 +139,11 @@ Setting up a Python 3 build slave is a little tricky because buildbot
 doesn't install under Python 3 (at least [http://twistedmatrix.com twistd]
 doesn't).
 
-What worked for me was to set up a `virtualenv` using Python 2.x to 
-install `buildbot-slave` (as well as everything needed for a Python 2.x 
-FiPy tester). Then I set up another `virtualenv` using `python3` and 
-installed :term:`FiPy`\'s Py3k prerequisites there (`numpy` and `scipy` for now). 
-Then I added `${Python2xVirtualEnv}/bin:${Python3xVirtualEnv}/bin` to the 
+What worked for me was to set up a `virtualenv` using Python 2.x to
+install `buildbot-slave` (as well as everything needed for a Python 2.x
+FiPy tester). Then I set up another `virtualenv` using `python3` and
+installed :term:`FiPy`\'s Py3k prerequisites there (`numpy` and `scipy` for now).
+Then I added `${Python2xVirtualEnv}/bin:${Python3xVirtualEnv}/bin` to the
 $PATH used by `buildslave`.
 
 Mac OS X
@@ -189,10 +189,9 @@ the top of the file like so::
 Push `master.cfg` and ensure that buildbot reconfigured correctly by checking
 the website.
 
-You can also test a branch without adding it (or test before committing) 
+You can also test a branch without adding it (or test before committing)
 by using `buildbot try`.
 
 .. attention::
-   `buildbot try` is broken in Buildbot v0.8.3p1.  
+   `buildbot try` is broken in Buildbot v0.8.3p1.
    `build.cmi.kent.edu` needs to be upgraded.
-

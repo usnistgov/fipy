@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "fixedValue.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -12,7 +12,7 @@
  #  Author: James Warren <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -23,13 +23,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -62,22 +62,22 @@ class FixedValue(BoundaryCondition):
     specified faces.
     """
 
-    
+
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Set boundary equal to value.
-        
-        A `tuple` of (`LL`, `bb`) is calculated, to be added to the 
+
+        A `tuple` of (`LL`, `bb`) is calculated, to be added to the
         Term's (:math:`\mathsf{L}`, :math:`\mathsf{b}`) matrices.
-        
+
         :Parameters:
           - `SparseMatrix`: Sparse matrix class to use
           - `Ncells`:       Size of matrices
           - `MaxFaces`:     bandwidth of :math:`\mathsf{L}`
-          - `coeff`:        contribution to adjacent cell diagonal and 
+          - `coeff`:        contribution to adjacent cell diagonal and
             :math:`\mathsf{b}`-vector by this exterior face
         """
         faces = self.faces.value
-        
+
         LL = SparseMatrix(mesh=self.faces.mesh, sizeHint=len(self.faces), bandwidth=1)
         LL.addAt(coeff['cell 1 diag'][faces], self.adjacentCellIDs, self.adjacentCellIDs)
 
@@ -88,7 +88,7 @@ class FixedValue(BoundaryCondition):
         ## if not hasattr(self, 'minusCoeff'):
         ##     self.minusCoeff = -coeff['cell 1 offdiag']
         ##     self.minusCoeff.dontCacheMe()
-        
+
         bb = numerix.zeros((Ncells,),'d')
 
         value = self.value
@@ -96,8 +96,7 @@ class FixedValue(BoundaryCondition):
             value = value.value
         if value.shape == faces.shape:
             value = value[faces]
-            
+
         vector.putAdd(bb, self.adjacentCellIDs, -coeff['cell 1 offdiag'].value[faces] * value)
-        
+
         return (LL, bb)
-        

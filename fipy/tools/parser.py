@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "parser.py"
  #
  # Stolen from:
@@ -11,7 +11,7 @@
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -51,13 +51,13 @@ def parse(larg, action = None, type = None, default = None):
       - `action`: `store` or `store_true` are possibilities
       - `type`: Type of the argument. `int` or `float` are possibilities.
       - `default`: Default value.
-        
+
     """
     sarg = None
     tmpparser = optparse.OptionParser(option_list = [
         optparse.make_option(sarg, larg, action = action, type = type, dest = 'dest', default = default)],
                                       conflict_handler = 'resolve')
-    
+
 ##    optparse.make_option('-e', '--numberOfElements', action = 'store', type = 'int', dest = 'Nele', default = numberOfElements),
 ##    optparse.make_option('-n', '--numberOfSteps', action = 'store', type = 'int', dest = 'steps', default = numberOfSteps),
 ##    optparse.make_option('-p', '--quiet', action = 'store_true', dest = 'quiet', default = False),
@@ -82,12 +82,10 @@ def _parseSolver():
     elif '--pysparse' in args:
         return "pysparse"
     elif '--pyamg' in args:
-        return 'pyamg'             
+        return 'pyamg'
     elif '--scipy' in args:
         return 'scipy'
     elif 'FIPY_SOLVERS' in os.environ:
         return os.environ['FIPY_SOLVERS'].lower()
     else:
         return None
-
-    

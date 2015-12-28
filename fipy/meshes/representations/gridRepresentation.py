@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "gridRepresentation.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -12,7 +12,7 @@
  #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -23,13 +23,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -38,7 +38,7 @@ __docformat__ = 'restructuredtext'
 __all__ = []
 
 from fipy.meshes.representations.abstractRepresentation import _AbstractRepresentation
- 
+
 class _GridRepresentation(_AbstractRepresentation):
 
     def getstate(self):
@@ -76,30 +76,30 @@ class _GridRepresentation(_AbstractRepresentation):
         >>> v0 = fp.dump.read(filename='dump.gz')
         >>> print (v == v0.mesh.x).all()
         True
-        
+
         >>> m = fp.PeriodicGrid1D(nx=10)
         >>> v = fp.CellVariable(mesh=m, value=m.x)
         >>> fp.dump.write(v, filename='dump.gz')
         >>> v0 = fp.dump.read(filename='dump.gz')
         >>> print (v == v0.mesh.x).all()
         True
-        
+
         >>> m = fp.Tri2D(nx=10, ny=10)
         >>> v = fp.CellVariable(mesh=m, value=m.x)
         >>> fp.dump.write(v, filename='dump.gz')
         >>> v0 = fp.dump.read(filename='dump.gz')
         >>> print (v == v0.mesh.x).all()
         True
-        
+
         >>> m = fp.SkewedGrid2D(nx=10, ny=10)
         >>> v = fp.CellVariable(mesh=m, value=m.x)
         >>> fp.dump.write(v, filename='dump.gz')
         >>> v0 = fp.dump.read(filename='dump.gz')
         >>> print (v == v0.mesh.x).all()
         True
-        
+
         """
-        
+
 class _Grid1DRepresentation(_GridRepresentation):
 
     def repr(self):
@@ -109,12 +109,12 @@ class _Grid2DRepresentation(_GridRepresentation):
 
     def repr(self):
         return self._repr(dns=[("dx", "nx"), ("dy", "ny")])
-        
+
 class _Grid3DRepresentation(_GridRepresentation):
- 
+
     def repr(self):
         return self._repr(dns=[("dx", "nx"), ("dy", "ny"), ("dz", "nz")])
- 
+
 def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()

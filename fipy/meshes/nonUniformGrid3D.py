@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "nonUniformGrid3D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -12,7 +12,7 @@
  #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -23,13 +23,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -65,21 +65,21 @@ class NonUniformGrid3D(Mesh):
                  _RepresentationClass=_Grid3DRepresentation, _TopologyClass=_Grid3DTopology):
 
         builder = _NonuniformGrid3DBuilder()
-        
+
         self.args = {
-            'dx': dx, 
+            'dx': dx,
             'dy': dy,
             'dz' :dz,
-            'nx': nx, 
+            'nx': nx,
             'ny': ny,
             'nz': nz,
             'overlap': overlap,
             'communicator': communicator
         }
-        
-        builder.buildGridData([dx, dy, dz], [nx, ny, nz], overlap, 
+
+        builder.buildGridData([dx, dy, dz], [nx, ny, nz], overlap,
                               communicator)
-                                                                      
+
         ([self.dx, self.dy, self.dz],
          [self.nx, self.ny, self.nz],
          self.dim,
@@ -104,17 +104,17 @@ class NonUniformGrid3D(Mesh):
          faces,
          cells,
          self.Xoffset, self.Yoffset, self.Zoffset) = builder.gridData
-        
-        Mesh.__init__(self, vertices, faces, cells, communicator=communicator, 
+
+        Mesh.__init__(self, vertices, faces, cells, communicator=communicator,
                       _RepresentationClass=_RepresentationClass, _TopologyClass=_TopologyClass)
-        
+
         self._setScale(scaleLength = scale)
-         
+
     def _calcScaleArea(self):
         return self.scale['length']**2
 
     def _calcScaleVolume(self):
-        return self.scale['length']**3  
+        return self.scale['length']**3
 
     def _calcFaceNormals(self):
         XYFaceNormals = numerix.zeros((3, self.numberOfXYFaces), 'l')
@@ -129,11 +129,11 @@ class NonUniformGrid3D(Mesh):
         YZFaceNormals = numerix.zeros((3, self.numberOfYZFaces), 'l')
         YZFaceNormals[0, :] = 1
         YZFaceNormals[0, ::self.nx + 1] = -1
-        return numerix.concatenate((XYFaceNormals, 
-                                    XZFaceNormals, 
-                                    YZFaceNormals), 
+        return numerix.concatenate((XYFaceNormals,
+                                    XZFaceNormals,
+                                    YZFaceNormals),
                                    axis=-1)
-        
+
     def _calcFaceTangents(self):
         ## need to see whether order matters.
         faceTangents1 = numerix.zeros((3, self.numberOfFaces), 'd')
@@ -147,7 +147,7 @@ class NonUniformGrid3D(Mesh):
         ## YZ faces
         faceTangents1[1, self.numberOfXYFaces + self.numberOfXZFaces:] = 1.
         faceTangents2[2, self.numberOfXYFaces + self.numberOfXZFaces:] = 1.
-        return faceTangents1, faceTangents2                                     
+        return faceTangents1, faceTangents2
 
 ## The following method is broken when dx, dy or dz are not scalar. Simpler to use the generic
 ## _calcFaceAreas rather than do the required type checking, resizing and outer product.
@@ -156,7 +156,7 @@ class NonUniformGrid3D(Mesh):
 ##         XYFaceAreas = numerix.ones(self.numberOfXYFaces)
 ##         XYFaceAreas = XYFaceAreas * self.dx * self.dy
 ##         XZFaceAreas = numerix.ones(self.numberOfXZFaces)
-##         XZFaceAreas = XZFaceAreas * self.dx * self.dz        
+##         XZFaceAreas = XZFaceAreas * self.dx * self.dz
 ##         YZFaceAreas = numerix.ones(self.numberOfYZFaces)
 ##         YZFaceAreas = YZFaceAreas * self.dy * self.dz
 ##         self.faceAreas =  numerix.concatenate((XYFaceAreas, XZFaceAreas, YZFaceAreas))
@@ -165,14 +165,14 @@ class NonUniformGrid3D(Mesh):
         """
         These tests are not useful as documentation, but are here to ensure
         everything works as expected.
-        
+
             >>> dx = 0.5
             >>> dy = 2.
             >>> dz = 4.
             >>> nx = 3
             >>> ny = 2
             >>> nz = 1
-            
+
             >>> mesh = NonUniformGrid3D(nx = nx, ny = ny, nz = nz, dx = dx, dy = dy, dz = dz)
 
             >>> adjacentCellIDs = (numerix.array([0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 0,
@@ -182,17 +182,17 @@ class NonUniformGrid3D(Mesh):
             >>> print numerix.allequal(mesh._adjacentCellIDs, adjacentCellIDs) # doctest: +PROCESSOR_0
             True
 
-            >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3., 
+            >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3.,
             ...                            0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3.),
             ...                           (0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2.,
             ...                            0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2.),
             ...                           (0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
             ...                            1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.)))
             >>> vertices *= numerix.array([[dx], [dy], [dz]])
-            
+
             >>> print numerix.allequal(vertices, mesh.vertexCoords) # doctest: +PROCESSOR_0
             True
-        
+
             >>> faces = numerix.array(((0, 1, 2, 4,  5,  6, 12, 13, 14, 16, 17, 18,  0,  1,  2,  4,  5,  6,  8,  9, 10,  0,  1,  2,  3,  4,  5,  6,  7),
             ...                        (1, 2, 3, 5,  6,  7, 13, 14, 15, 17, 18, 19,  1,  2,  3,  5,  6,  7,  9, 10, 11,  4,  5,  6,  7,  8,  9, 10, 11),
             ...                        (5, 6, 7, 9, 10, 11, 17, 18, 19, 21, 22, 23, 13, 14, 15, 17, 18, 19, 21, 22, 23, 16, 17, 18, 19, 20, 21, 22, 23),
@@ -210,12 +210,12 @@ class NonUniformGrid3D(Mesh):
             True
 
             >>> externalFaces = numerix.array((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 24, 25, 28))
-            >>> print numerix.allequal(externalFaces, 
+            >>> print numerix.allequal(externalFaces,
             ...                        numerix.nonzero(mesh.exteriorFaces)) # doctest: +PROCESSOR_0
             True
 
             >>> internalFaces = numerix.array((15, 16, 17, 22, 23, 26, 27))
-            >>> print numerix.allequal(internalFaces, 
+            >>> print numerix.allequal(internalFaces,
             ...                        numerix.nonzero(mesh.interiorFaces)) # doctest: +PROCESSOR_0
             True
 
@@ -224,7 +224,7 @@ class NonUniformGrid3D(Mesh):
             ...                                 (-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  3, 4, 5, -1, -1, -1, -1, 1, 2, -1, -1, 4, 5, -1)), -1)
             >>> print numerix.allequal(faceCellIds, mesh.faceCellIDs) # doctest: +PROCESSOR_0
             True
-            
+
             >>> xy = dx * dy
             >>> xz = dx * dz
             >>> yz = dy * dz
@@ -233,7 +233,7 @@ class NonUniformGrid3D(Mesh):
             ...                            yz, yz, yz, yz, yz, yz, yz, yz))
             >>> print numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
-            
+
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:] + faceCoords[...,2,:] + faceCoords[...,3,:]) / 4.
             >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
@@ -253,7 +253,7 @@ class NonUniformGrid3D(Mesh):
             ...                                         (1, 1, 1, 1, 1, 1)))
             >>> print numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations) # doctest: +PROCESSOR_0
             True
-                                             
+
             >>> cellVolumes = numerix.array((dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz, dx*dy*dz))
             >>> print numerix.allclose(cellVolumes, mesh.cellVolumes, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
@@ -263,18 +263,18 @@ class NonUniformGrid3D(Mesh):
             ...                              (dz/2.,    dz/2.,    dz/2.,    dz/2.,    dz/2.,    dz/2.)))
             >>> print numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10)
             True
-                                              
+
             >>> faceToCellDistances = MA.masked_values(((dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dy/2, dx/2, dx/2, dx/2, dx/2, dx/2, dx/2, dx/2, dx/2),
-            ...                                         (  -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1, dy/2, dy/2, dy/2,   -1,   -1,   -1,   -1, dx/2, dx/2,   -1,   -1, dx/2,   -1)), -1) 
+            ...                                         (  -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1, dy/2, dy/2, dy/2,   -1,   -1,   -1,   -1, dx/2, dx/2,   -1,   -1, dx/2,   -1)), -1)
             >>> print numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             1
-                                              
+
             >>> cellDistances = numerix.array((dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2, dz/2,
             ...                                dy/2, dy/2, dy/2, dy, dy, dy, dy/2, dy/2, dy/2,
             ...                                dx/2, dx, dx, dx/2, dx/2, dx, dx, dx/2))
             >>> print numerix.allclose(cellDistances, mesh._cellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
-            
+
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
             >>> print numerix.allclose(faceToCellDistanceRatios, mesh._faceToCellDistanceRatio, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
@@ -309,7 +309,7 @@ class NonUniformGrid3D(Mesh):
             ...                                      (0, 1, 2, 0, 1, 2),
             ...                                      (3, 4, 5, 3, 4, 5),
             ...                                      (0, 1, 2, 3, 4, 5),
-            ...                                      (0, 1, 2, 3, 4, 5)))            
+            ...                                      (0, 1, 2, 3, 4, 5)))
             >>> print numerix.allequal(mesh._cellToCellIDsFilled, cellToCellIDsFilled) # doctest: +PROCESSOR_0
             True
 
@@ -377,7 +377,7 @@ class NonUniformGrid3D(Mesh):
             True
 
             >>> from fipy.tools import dump
-            >>> (f, filename) = dump.write(mesh, extension = '.gz')            
+            >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
             >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.cellCenters)
@@ -390,7 +390,7 @@ class NonUniformGrid3D(Mesh):
             NonUniformGrid3D(dx=(1.0, 2.0), nx=2, dy=(1.0, 2.0), ny=2, dz=(1.0, 2.0), nz=2)
 
         Test for https://github.com/usnistgov/fipy/issues/364.
-            
+
             >>> from fipy.meshes.nonUniformGrid3D import NonUniformGrid3D
             >>> m = NonUniformGrid3D(nx=1, ny=1, nz=9, overlap=1)
             >>> print min(m.z) == 0.5 # doctest: +SERIAL

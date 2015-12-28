@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "__init__.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,7 +22,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -30,7 +30,7 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -79,9 +79,9 @@ def _getComms():
     else:
         from fipy.tools.comms.dummyComm import DummyComm
         serialComm, parallelComm = DummyComm(), DummyComm()
-        
+
     return serialComm, parallelComm
-    
+
 serial, parallel = serialComm, parallelComm = _getComms()
 
 
@@ -125,7 +125,7 @@ __all__ = ["serialComm",
            "Vitals",
            "serial",
            "parallel"]
-           
+
 import os
 if 'FIPY_INCLUDE_NUMERIX_ALL' in os.environ:
     import warnings
@@ -134,7 +134,7 @@ if 'FIPY_INCLUDE_NUMERIX_ALL' in os.environ:
     warnings.warn("""
 The ability to include `numerix` functions in the `fipy` namespace
 with the FIPY_INCLUDE_NUMERIX_ALL environment variable will
-likely be removed in the future. If needed, the same effect can be 
+likely be removed in the future. If needed, the same effect can be
 accomplished with `from fipy.tools.numerix import *`
 """, FutureWarning)
     __all__.extend(numerix.__all__)

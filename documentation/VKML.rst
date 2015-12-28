@@ -4,11 +4,11 @@ Virtual Kinetics of Materials Laboratory
 
 The VKML is a set of simple :term:`FiPy` examples that
 simulate basic aspects of kinetics of materials through an interactive
-Graphical User Interface. The seminal development by Michael Waters and 
+Graphical User Interface. The seminal development by Michael Waters and
 `Prof. R. Edwin Garcia`_ of `Purdue University`_ includes four examples:
 
  `Polycrystalline Growth and Coarsening`_
- 
+
    simulates the growth, impingement, and coarsening of a random
    distribution of crystallographically oriented nuclei. The user can
    control every aspect of the model such as the nuclei radius, the size of
@@ -16,7 +16,7 @@ Graphical User Interface. The seminal development by Michael Waters and
    or only on one wall of the simulation.
 
  `Dendritic Growth`_
- 
+
    simulates the anisotropic solidification of a single solid seed with an
    N-fold axis of crystallographic symmetry embedded in an undercooled
    liquid. The user can specify many material aspects of the solidification
@@ -25,14 +25,14 @@ Graphical User Interface. The seminal development by Michael Waters and
    model is based on the phase field method and an example shown in the
    :term:`FiPy` manual.
 
- `Two-Dimensional Spinodal Decomposition`_ 
- 
+ `Two-Dimensional Spinodal Decomposition`_
+
    simulates the time-dependent segregation of two chemical components and
    its subsequent coarsening, as presented by John Cahn. The default values
    are physical but arbitrary.
 
  `Three-Dimensional Spinodal Decomposition`_
- 
+
    has the same functionality as the 2D version, but has an interactive
    Three-Dimensional viewer.
 

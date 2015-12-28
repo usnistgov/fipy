@@ -18,6 +18,5 @@ mesh = Grid1D(nx=10)
 fipy_info = "FiPy: %d cells on processor %d of %d" % (mesh.numberOfCells,
                                                       parallelComm.procID,
                                                       parallelComm.Nproc)
-                                                      
-print " :: ".join((mpi4py_info, trilinos_info, fipy_info))
 
+print " :: ".join((mpi4py_info, trilinos_info, fipy_info))
