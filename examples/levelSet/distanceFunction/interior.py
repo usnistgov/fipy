@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "interior.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -44,14 +44,14 @@ given by:
     \text{x = \left( d, L - d \right)$ for $d \le y \le L - d$} \\
     \text{y = \left( d, L - d \right)$ for $d \le x \le L - d$}
     \end{cases}
-    
+
 Do the tests:
 
 >>> var.calcDistanceFunction(order=1) #doctest: +LSM
 
 >>> dX = dx / 2.
 >>> dY = dy / 2.
->>> mm = dX * dY / numerix.sqrt(dX**2 + dY**2) 
+>>> mm = dX * dY / numerix.sqrt(dX**2 + dY**2)
 >>> def evalCell(phix, phiy, dx, dy):
 ...     aa = dy**2 + dx**2
 ...     bb = -2 * ( phix * dy**2 + phiy * dx**2)
@@ -59,7 +59,7 @@ Do the tests:
 ...     sqr = numerix.sqrt(bb**2 - 4. * aa * cc)
 ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
 >>> v1 = evalCell(dY, dX, dx, dy)[1]
->>> v2 = max(-dY*3, -dX*3)   
+>>> v2 = max(-dY*3, -dX*3)
 >>> values = numerix.array((  v1  ,   dY  ,   dY  ,  dY  ,  v1  ,
 ...                           dX  ,  -mm ,   -dY ,  -mm ,   dX  ,
 ...                           dX  ,  -dX ,   -v1 ,  -dX ,   dX  ,
@@ -94,7 +94,7 @@ var = DistanceVariable(
 x, y = mesh.cellCenters
 var.setValue(1, where=((x < dx) | (x > (Lx - dx))
                        | (y < dy) | (y > (Ly - dy))))
-             
+
 if __name__ == '__main__':
     var.calcDistanceFunction(order=1)
     viewer = Viewer(vars=var, datamin=-5., datamax=5.)

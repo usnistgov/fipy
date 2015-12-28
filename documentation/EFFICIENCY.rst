@@ -99,4 +99,4 @@ for the overhead costs. This depends greatly on the specifics of
 the problem, but is most likely in the cases when the problem is
 larrge and when Pysparse cannot solve the problem with an iterative
 solver and must use an LU solver, while Trilinos can still have
-success with an iterative method. 
+success with an iterative method.

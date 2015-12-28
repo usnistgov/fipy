@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "circleQuad.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -125,7 +125,7 @@ We first step through the transient problem
 .. image:: circleTransient.*
    :width: 90%
    :align: center
-   
+
 -----
 
 If we wanted to plot or analyze the results of this calculation with
@@ -135,15 +135,15 @@ another application, we could export tab-separated-values with
    object: fipy.viewers.tsvViewer.TSVViewer
 
 ::
-    
+
    TSVViewer(vars=(phi, phi.grad)).plot(filename="myTSV.tsv")
 
 .. literalinclude:: myTSV.tsv
-   
+
 The values are listed at the :class:`~fipy.meshes.cell.Cell` centers.
 Particularly for irregular meshes, no specific ordering should be relied upon.
 Vector quantities are listed in multiple columns, one for each mesh dimension.
-            
+
 -----
 
 This problem again has an analytical solution that depends on the error
@@ -157,7 +157,7 @@ vertical positions
 >>> phiAnalytical = CellVariable(name="analytical value",
 ...                              mesh=mesh) # doctest: +GMSH
 
-.. index:: 
+.. index::
     module: scipy
     single: sqrt; arcsin; cos
 
@@ -166,7 +166,7 @@ vertical positions
 ...     from scipy.special import erf # doctest: +SCIPY
 ...     ## This function can sometimes throw nans on OS X
 ...     ## see http://projects.scipy.org/scipy/scipy/ticket/325
-...     phiAnalytical.setValue(x0 * (erf((x0+x) / (2 * numerix.sqrt(D * t))) 
+...     phiAnalytical.setValue(x0 * (erf((x0+x) / (2 * numerix.sqrt(D * t)))
 ...                                  - erf((x0-x) / (2 * numerix.sqrt(D * t))))) # doctest: +GMSH, +SCIPY
 ... except ImportError:
 ...     print "The SciPy library is not available to test the solution to \
@@ -184,7 +184,7 @@ As in the earlier examples, we can also directly solve the steady-state
 diffusion problem.
 
 >>> DiffusionTerm(coeff=D).solve(var=phi) # doctest: +GMSH
-                                                    
+
 The values at the elements should be equal to their `x` coordinate
 
 >>> print phi.allclose(x, atol = 0.035) # doctest: +GMSH
@@ -206,4 +206,3 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-

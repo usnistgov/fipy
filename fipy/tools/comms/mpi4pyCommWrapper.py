@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mpi4pyCommWrapper.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,7 +22,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -30,7 +30,7 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -41,21 +41,21 @@ __all__ = ["Mpi4pyCommWrapper"]
 
 class Mpi4pyCommWrapper(CommWrapper):
     """MPI Communicator wrapper
-    
+
     Encapsulates capabilities needed for both Epetra and mpi4py.
-    
+
     """
-    
+
     def __init__(self, Epetra, MPI):
         self.MPI = MPI
         self.mpi4py_comm = self.MPI.COMM_WORLD
         CommWrapper.__init__(self, Epetra)
-        
+
     def __setstate__(self, dict):
         from PyTrilinos import Epetra
         from mpi4py import MPI
         self.__init__(Epetra=Epetra, MPI=MPI)
-        
+
     def all(self, a, axis=None):
         return self.mpi4py_comm.allreduce(a.all(axis=axis), op=self.MPI.LAND)
 

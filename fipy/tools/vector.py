@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "tools.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -68,7 +68,7 @@ def _putAdd(vector, ids, additionVector, mask=False):
                 vector.flat[id] += value
 
 if inline.doInline:
-    ## FIXME: inline version doesn't account for all of the conditions that Python 
+    ## FIXME: inline version doesn't account for all of the conditions that Python
     ## version does.
     def putAdd(vector, ids, additionVector):
         """ This is a temporary replacement for Numeric.put as it was not doing
@@ -78,8 +78,8 @@ if inline.doInline:
                               int ID = ids[i];
                               vector[ID] += additionVector[i];
                           """,
-                          vector=vector, 
-                          ids=ids, 
+                          vector=vector,
+                          ids=ids,
                           additionVector=numerix.array(additionVector),
         ni = len(ids.flat))
 else:
@@ -108,9 +108,9 @@ def prune(array, shift, start=0, axis=0):
     takeArray = numerix.nonzero(numerix.arange(array.shape[-1]) % shift != start)[0]
     return numerix.take(array, takeArray, axis=axis)
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
+
 if __name__ == "__main__":
-    _test() 
+    _test()

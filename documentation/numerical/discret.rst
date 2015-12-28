@@ -107,7 +107,7 @@ The discretization for the convection term is given by
 .. math::
    :label: num:con
 
-   \int_V \nabla \cdot (\vec{u} \phi)\,dV &= 
+   \int_V \nabla \cdot (\vec{u} \phi)\,dV &=
    \int_S (\vec{n} \cdot \vec{u})\phi\,dS \\
    &\simeq \sum_{f} (\vec{n} \cdot \vec{u})_f \phi_f A_f
 
@@ -133,19 +133,19 @@ This term is represented in :term:`FiPy` as
 .. currentmodule:: fipy.terms
 
 >>> <SpecificConvectionTerm>(coeff=u)
-    
-where :samp:`{<SpecificConvectionTerm>}` can be any of 
+
+where :samp:`{<SpecificConvectionTerm>}` can be any of
 :class:`~centralDiffConvectionTerm.CentralDifferenceConvectionTerm`,
-:class:`~exponentialConvectionTerm.ExponentialConvectionTerm`, 
-:class:`~hybridConvectionTerm.HybridConvectionTerm`, 
+:class:`~exponentialConvectionTerm.ExponentialConvectionTerm`,
+:class:`~hybridConvectionTerm.HybridConvectionTerm`,
 :class:`~powerLawConvectionTerm.PowerLawConvectionTerm`,
-:class:`~upwindConvectionTerm.UpwindConvectionTerm`, 
-:class:`~explicitUpwindConvectionTerm.ExplicitUpwindConvectionTerm`, or 
+:class:`~upwindConvectionTerm.UpwindConvectionTerm`,
+:class:`~explicitUpwindConvectionTerm.ExplicitUpwindConvectionTerm`, or
 :class:`~vanLeerConvectionTerm.VanLeerConvectionTerm`.
 The differences between these convection schemes are described
-in Section :ref:`sec:NumericalSchemes`. The velocity coefficient 
-``u`` must be a rank-1 :class:`~fipy.variables.faceVariable.FaceVariable`, or a 
-constant vector in the form of a :term:`Python` list or 
+in Section :ref:`sec:NumericalSchemes`. The velocity coefficient
+``u`` must be a rank-1 :class:`~fipy.variables.faceVariable.FaceVariable`, or a
+constant vector in the form of a :term:`Python` list or
 tuple, *e.g.* ``((1,), (2,))`` for a vector in 2D.
 
 Diffusion Term :math:`\nabla \cdot \left( \Gamma_1 \nabla \phi \right)`
@@ -156,12 +156,12 @@ The discretization for the diffusion term is given by
 .. math::
    :label: num:dif
 
-   \int_V \nabla \cdot (\Gamma\nabla\{\ldots\}) dV 
+   \int_V \nabla \cdot (\Gamma\nabla\{\ldots\}) dV
    &= \int_S \Gamma (\vec{n} \cdot \nabla\{\ldots\}) dS \\
    &\simeq \sum_f \Gamma_f (\vec{n} \cdot \nabla\{\ldots\})_f A_f
 
-:math:`\{\ldots\}` indicates recursive application of the specified 
-operation on :math:`\phi`, depending on 
+:math:`\{\ldots\}` indicates recursive application of the specified
+operation on :math:`\phi`, depending on
 the order of the diffusion term.
 The estimation for the flux, :math:`(\vec{n} \cdot \nabla\{\ldots\})_f`, is
 obtained via
@@ -182,12 +182,12 @@ This term is represented in :term:`FiPy` as
 
 >>> DiffusionTerm(coeff=Gamma1)
 
-or 
+or
 
 >>> ExplicitDiffusionTerm(coeff=Gamma1)
 
 :class:`~explicitDiffusionTerm.ExplicitDiffusionTerm` is provided primarily for
-illustrative purposes, although :mod:`examples.diffusion.mesh1D` 
+illustrative purposes, although :mod:`examples.diffusion.mesh1D`
 demonstrates its use in Crank-Nicolson time stepping.
 :class:`~implicitDiffusionTerm.ImplicitDiffusionTerm` is almost always
 preferred (:class:`~diffusionTerm.DiffusionTerm` is a synonym for
@@ -201,11 +201,11 @@ preference). One can also create an explicit diffusion term with
 Higher order diffusion
 ''''''''''''''''''''''
 
-Higher order diffusion expressions, such as :math:`\nabla^4 \phi` or 
-:math:`\nabla \cdot \left( \Gamma_1 \nabla \left( \nabla\cdot\left(  
-\Gamma_2 \nabla \phi\right) \right) \right)` for  Cahn-Hilliard are 
+Higher order diffusion expressions, such as :math:`\nabla^4 \phi` or
+:math:`\nabla \cdot \left( \Gamma_1 \nabla \left( \nabla\cdot\left(
+\Gamma_2 \nabla \phi\right) \right) \right)` for  Cahn-Hilliard are
 represented as
- 
+
 >>> DiffusionTerm(coeff=(Gamma1, Gamma2))
 
 The number of elements supplied for ``coeff`` determines the
@@ -235,7 +235,7 @@ where :math:`S_0` is the source which is independent of :math:`\phi` and
 :math:`S_1` is the coeficient of the source which is linearly dependent
 on :math:`\phi`.
 
-A source term is represented in :term:`FiPy` essentially as it appears in 
+A source term is represented in :term:`FiPy` essentially as it appears in
 mathematical form, *e.g.*, :math:`3\kappa^2 + b \sin
 \theta` would be written
 
@@ -268,7 +268,7 @@ equation to a set of discrete linear equations that can then be solved
 to obtain the value of the dependent variable at each CV center. This
 results in a sparse linear system that requires an efficient iterative
 scheme to solve. The iterative schemes available to :term:`FiPy` are
-currently encapsulated in the :term:`PySparse` and :term:`PyTrilinos` 
+currently encapsulated in the :term:`PySparse` and :term:`PyTrilinos`
 suites of solvers and include most common solvers such as the conjugate
 gradient method and LU decomposition.
 
@@ -282,12 +282,12 @@ each CV as
 
    \frac{\rho_{P}(\phi_{P} - \phi_P^\text{old}) V_P}{\Delta t}
    + &
-   \sum_{f} (\vec{n} \cdot \vec{u})_f A_f 
+   \sum_{f} (\vec{n} \cdot \vec{u})_f A_f
    \left[\alpha_f \phi_P +\left(1-\alpha_f\right)\phi_A\right]
    \nonumber \\
    = &
    \sum_f \Gamma_f A_f \frac{(\phi_A-\phi_P)}{d_{AP}}
-   + 
+   +
    V_P ( S_0 + S_1 \phi_P ).
 
 
@@ -316,16 +316,3 @@ and diffusive conductance respectively, and are given by
 
    F_f &= A_f ( \vec{u} \cdot \vec{n} )_f, \\
    D_f &= \frac{A_f \Gamma_f}{d_{AP}}.
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-## 
+##
  # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "multilevelDDMLPreconditioner.py"
  #                                    created: 06/25/07
  #                                last update: 11/8/11 {4:09:08 PM}
@@ -14,7 +14,7 @@
  #  Author: Maxsim Gibiansky <maxsim.gibiansky@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -25,17 +25,17 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
- #  Description: 
- # 
+ #
+ #  Description:
+ #
  #  History
- # 
+ #
  #  modified   by  rev reason
  #  ---------- --- --- -----------
  #  2007-06-25 MLG 1.0 original
@@ -58,7 +58,7 @@ class MultilevelDDMLPreconditioner(Preconditioner):
     def _applyToSolver(self, solver, matrix):
         if matrix.NumGlobalNonzeros() <= matrix.NumGlobalRows():
             return
-        
+
         self.Prec = ML.MultiLevelPreconditioner(matrix, False)
 
         self.Prec.SetParameterList({"output": 0,
@@ -80,8 +80,5 @@ class MultilevelDDMLPreconditioner(Preconditioner):
                                     })
 
         self.Prec.ComputePreconditioner()
-        
-        solver.SetPrecOperator(self.Prec)
-        
 
-        
+        solver.SetPrecOperator(self.Prec)

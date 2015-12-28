@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "inputGrid2D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,20 +22,20 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
 r"""
 
 To run this example from the base FiPy directory, type::
-    
+
     $ python examples/meshing/inputGrid2D.py --numberOfElements=X
 
 This example demonstrates how to build a 1D mesh and obtain basic mesh
@@ -45,7 +45,7 @@ elements on the mesh. Firstly parse the command line argument for
 
    >>> from fipy.tools.parser import parse
    >>> numberOfElements = parse('--numberOfElements', action = 'store', type = 'int', default = 100)
-    
+
 A `Grid2D` object is invoked in the following way,
 
    >>> from fipy import Grid2D, CellVariable, Viewer
@@ -82,14 +82,14 @@ One can view the mesh with the following code,
    >>> if __name__ == '__main__':
    ...     viewer = Viewer(CellVariable(value = 0, mesh = mesh))
    ...     viewer.plot()
-   
+
 """
 __docformat__ = 'restructuredtext'
 
 def _run():
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript(__name__))
-    
+
 if __name__ == '__main__':
     _run()
     raw_input("finished")

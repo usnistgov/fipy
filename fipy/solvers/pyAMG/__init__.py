@@ -13,7 +13,7 @@ __all__ = ["DefaultSolver",
            "DummySolver",
            "DefaultAsymmetricSolver",
            "GeneralSolver"]
-           
+
 __all__.extend(linearGMRESSolver.__all__)
 __all__.extend(linearCGSSolver.__all__)
 __all__.extend(linearPCGSolver.__all__)

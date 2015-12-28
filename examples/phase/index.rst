@@ -14,4 +14,3 @@ Phase Field Examples
    examples.phase.impingement.mesh20x20
    examples.phase.polyxtal
    examples.phase.polyxtalCoupled
-

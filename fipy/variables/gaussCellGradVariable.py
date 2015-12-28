@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "gaussCellGradVariable.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,7 +22,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -30,10 +30,10 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
- 
+
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -68,9 +68,9 @@ class _GaussCellGradVariable(CellVariable):
     True
     >>> print (v2.grad.globalValue == v.grad.globalValue[:,2]).all()
     True
-        
+
     """
-    
+
     def __init__(self, var, name=''):
         CellVariable.__init__(self, mesh=var.mesh, name=name, elementshape=(var.mesh.dim,) + var.shape[:-1])
         self.var = self._requires(var)
@@ -97,7 +97,7 @@ class _GaussCellGradVariable(CellVariable):
             areaProj = numerix.array(self.mesh._areaProjections),
             faceValues = numerix.array(self.var.arithmeticFaceValue),
             M = M,
-            ni = N, 
+            ni = N,
             shape=numerix.array(numerix.shape(val)))
 
         return self._makeValue(value = val)
@@ -109,22 +109,22 @@ class _GaussCellGradVariable(CellVariable):
 
     def _calcValue(self):
         if inline.doInline and self.var.rank == 0:
-            return self._calcValueInline(N=self.mesh.numberOfCells, 
-                                         M=self.mesh._maxFacesPerCell, 
-                                         ids=self.mesh.cellFaceIDs, 
-                                         orientations=self.mesh._cellToFaceOrientations, 
+            return self._calcValueInline(N=self.mesh.numberOfCells,
+                                         M=self.mesh._maxFacesPerCell,
+                                         ids=self.mesh.cellFaceIDs,
+                                         orientations=self.mesh._cellToFaceOrientations,
                                          volumes=self.mesh.cellVolumes)
         else:
-            return self._calcValueNoInline(N=self.mesh.numberOfCells, 
-                                           M=self.mesh._maxFacesPerCell, 
-                                           ids=self.mesh.cellFaceIDs, 
-                                           orientations=self.mesh._cellToFaceOrientations, 
+            return self._calcValueNoInline(N=self.mesh.numberOfCells,
+                                           M=self.mesh._maxFacesPerCell,
+                                           ids=self.mesh.cellFaceIDs,
+                                           orientations=self.mesh._cellToFaceOrientations,
                                            volumes=self.mesh.cellVolumes)
-        
 
-def _test(): 
+
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()

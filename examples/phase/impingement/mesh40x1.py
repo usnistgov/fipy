@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mesh40x1.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -47,29 +47,29 @@ Lobkovsky and Carter :cite:`WarrenPolycrystal`
 >>> Lx = 2.5 * nx / 100.
 >>> dx = Lx / nx
 >>> mesh = Grid1D(dx=dx, nx=nx)
-        
-This problem simulates the wet boundary that forms between grains of different 
+
+This problem simulates the wet boundary that forms between grains of different
 orientations. The phase equation is given by
 
 .. math::
-    
-   \tau_{\phi} \frac{\partial \phi}{\partial t} 
-   = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T) 
+
+   \tau_{\phi} \frac{\partial \phi}{\partial t}
+   = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T)
    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2
 
 where
 
 .. math::
-    
+
    m_1(\phi, T) = \phi - \frac{1}{2} - T \phi ( 1 - \phi )
 
 and the orientation equation is given by
 
 .. math::
 
-   P(\epsilon | \nabla \theta |) \tau_{\theta} \phi^2 
-   \frac{\partial \theta}{\partial t} 
-   = \nabla \cdot \left[ \phi^2 \left( \frac{s}{| \nabla \theta |} 
+   P(\epsilon | \nabla \theta |) \tau_{\theta} \phi^2
+   \frac{\partial \theta}{\partial t}
+   = \nabla \cdot \left[ \phi^2 \left( \frac{s}{| \nabla \theta |}
    + \epsilon^2 \right) \nabla \theta \right]
 
 where
@@ -79,10 +79,10 @@ where
    P(w) = 1 - \exp{(-\beta w)} + \frac{\mu}{\epsilon} \exp{(-\beta w)}
 
 The initial conditions for this problem are set such that
-:math:`\phi = 1` for :math:`0 \le x \le L_x` and 
-   
+:math:`\phi = 1` for :math:`0 \le x \le L_x` and
+
 .. math::
-    
+
    \theta = \begin{cases}
    1 & \text{for $0 \le x < L_x / 2$,} \\
    0 & \text{for $L_x / 2 \le x \le L_x$.}
@@ -91,7 +91,7 @@ The initial conditions for this problem are set such that
 .. Further details of the numerical method for this problem can be found in
    "Extending Phase Field Models of Solidification to Polycrystalline
    Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
-   6035-6058.  
+   6035-6058.
 
 Here the phase and orientation equations are solved with an
 explicit and implicit technique respectively.
@@ -140,7 +140,7 @@ subtraction operator between two angles.
 ...     )
 
 The left and right halves of the domain are given different orientations.
-    
+
 >>> theta.setValue(0., where=mesh.cellCenters[0] > Lx / 2.)
 
 The ``phase`` equation is built in the following way.
@@ -202,7 +202,7 @@ and orientation variables.
 
 .. index::
    module: fipy.viewers
-   
+
 .. index:: :math:`\pi`, pi
 
 >>> if __name__ == '__main__':

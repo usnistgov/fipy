@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-## 
+##
  # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "pysparseSolver.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -13,7 +13,7 @@
  #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -24,13 +24,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -45,18 +45,17 @@ from fipy.tools import numerix
 class _ScipySolver(Solver):
     """
     The base `ScipySolver` class.
-    
+
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    
+
     @property
     def _matrixClass(self):
         return _ScipyMeshMatrix
-                                   
+
     def _solve(self):
 
          if self.var.mesh.communicator.Nproc > 1:
              raise Exception("SciPy solvers cannot be used with multiple processors")
-        
-         self.var[:] = numerix.reshape(self._solve_(self.matrix, self.var.ravel(), numerix.array(self.RHSvector)), self.var.shape)   
 
+         self.var[:] = numerix.reshape(self._solve_(self.matrix, self.var.ravel(), numerix.array(self.RHSvector)), self.var.shape)

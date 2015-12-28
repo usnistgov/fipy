@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "unaryTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -50,15 +50,15 @@ class _UnaryTerm(Term):
     @property
     def _transientVars(self):
         return []
-                
+
     @property
     def _uncoupledTerms(self):
         return [self]
-    
+
     def __repr__(self):
         """
         The representation of a `Term` object is given by,
-        
+
            >>> print __UnaryTerm(123.456)
            __UnaryTerm(coeff=123.456)
 
@@ -87,7 +87,7 @@ class _UnaryTerm(Term):
         >>> v1 = CellVariable(mesh=m)
         >>> (TransientTerm(var=v0) - DiffusionTerm(var=v0)).solve(var=v1, dt=1., solver=DummySolver())
         >>> DiffusionTerm(var=v0).solve(var=v1, dt=1.0, solver=DummySolver())
-        
+
         """
 
         if var is self.var or self.var is None:
@@ -109,13 +109,13 @@ class _UnaryTerm(Term):
         else:
             RHSvector = numerix.zeros(len(var.ravel()),'d')
             matrix = SparseMatrix(mesh=var.mesh)
-            
+
         if ('FIPY_DISPLAY_MATRIX' in os.environ
-             and "terms" in os.environ['FIPY_DISPLAY_MATRIX'].lower().split()): 
+             and "terms" in os.environ['FIPY_DISPLAY_MATRIX'].lower().split()):
              self._viewer.title = "%s %s" % (var.name, repr(self))
-             self._viewer.plot(matrix=matrix, RHSvector=RHSvector) 
+             self._viewer.plot(matrix=matrix, RHSvector=RHSvector)
              raw_input()
-             
+
         return (var, matrix, RHSvector)
 
     def _reshapeIDs(self, var, ids):
@@ -137,11 +137,11 @@ class _UnaryTerm(Term):
             return solver
 
     def _checkVar(self, var):
-        if ((var is not None) 
+        if ((var is not None)
             and (numerix.sctype2char(var.getsctype()) not in numerix.typecodes['Float'])):
             import warnings
             warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
-                          UserWarning, stacklevel=4)    
+                          UserWarning, stacklevel=4)
 
     def _test(self):
         """
@@ -168,11 +168,11 @@ class _UnaryTerm(Term):
 
         >>> m = Grid1D(nx=6)
         >>> v0 = CellVariable(mesh=m, value=0.)
-        >>> v1 = CellVariable(mesh=m, value=1.)        
+        >>> v1 = CellVariable(mesh=m, value=1.)
         >>> eq0 = DiffusionTerm(coeff=1., var=v0)
-        >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
+        >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1)
         >>> eq = eq0 & eq1
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
         >>> print var.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue
@@ -191,7 +191,7 @@ class _UnaryTerm(Term):
         ...                         [ 0,  0,  0, -3,  6, -3,  0,  0,  0, -4,  9, -4],
         ...                         [ 0,  0,  0,  0, -3,  3,  0,  0,  0,  0, -4,  5]])
         True
-        
+
         >>> m = Grid1D(nx=3)
         >>> v0 = CellVariable(mesh=m, value=0.)
         >>> v1 = CellVariable(mesh=m, value=1.)
@@ -211,18 +211,18 @@ class _UnaryTerm(Term):
         ...                         [ 0,  0,  0,  0,  0,  0]])
         True
         >>> ## This currectly returns None because we lost the handle to the DiffusionTerm when it's negated.
-        >>> print diffTerm.matrix 
+        >>> print diffTerm.matrix
         None
 
         """
-        
-class __UnaryTerm(_UnaryTerm): 
+
+class __UnaryTerm(_UnaryTerm):
     """
     Dummy subclass for tests
     """
-    pass 
+    pass
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
 

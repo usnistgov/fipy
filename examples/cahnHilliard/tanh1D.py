@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "inputTanh1D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -21,13 +21,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -37,8 +37,8 @@ This example solves the Cahn-Hilliard equation given by,
 
 .. math::
 
-   \frac{\partial \phi}{\partial t} = \nabla \cdot D 
-    \nabla \left( \frac{\partial f}{\partial \phi} 
+   \frac{\partial \phi}{\partial t} = \nabla \cdot D
+    \nabla \left( \frac{\partial f}{\partial \phi}
         - \epsilon^2 \nabla^2 \phi \right)
 
 where the free energy functional is given by,
@@ -51,18 +51,18 @@ The Cahn-Hilliard equation can be rewritten in the following form,
 
 .. math::
 
-   \frac{\partial \phi}{\partial t} = \nabla \cdot D 
-    \left( \frac{\partial^2 f}{\partial \phi^2} \nabla \phi 
+   \frac{\partial \phi}{\partial t} = \nabla \cdot D
+    \left( \frac{\partial^2 f}{\partial \phi^2} \nabla \phi
         - \epsilon^2 \nabla^3 \phi \right)
 
 The above form of the equation makes the non-linearity part of the
 diffusion coefficient for the first term on the RHS. This is the correct
 way to express the equation to :term:`FiPy`.
-    
+
 We solve the problem on a 1D mesh
 
 .. index:: Grid2D
-   
+
 >>> from fipy import CellVariable, Grid1D, NthOrderBoundaryCondition, DiffusionTerm, TransientTerm, LinearLUSolver, DefaultSolver, Viewer
 >>> from fipy.tools import numerix
 
@@ -74,7 +74,7 @@ We solve the problem on a 1D mesh
 and create the solution variable
 
 .. index:: CellVariable
-   
+
 >>> var = CellVariable(
 ...     name="phase field",
 ...     mesh=mesh,
@@ -94,18 +94,18 @@ The boundary conditions for this problem are
 and
 
 .. math::
-    
+
    \left.
        \begin{aligned}
 	   \phi &= 1 \\
 	   \frac{\partial^2 \phi}{\partial x^2} &= 0
        \end{aligned}
    \right\} \qquad \text{on $x = L$}
-   
+
 or
 
 .. index:: NthOrderBoundaryCondition
-      
+
 >>> BCs = (
 ...     NthOrderBoundaryCondition(faces=mesh.facesLeft, value=0, order=2),
 ...     NthOrderBoundaryCondition(faces=mesh.facesRight, value=0, order=2))
@@ -130,7 +130,7 @@ we create the Cahn-Hilliard equation:
 >>> eqch = TransientTerm() == diffTerm2 - diffTerm4
 
 .. index:: LinearLUSolver, DefaultSolver
-   
+
 >>> import fipy.solvers.solver
 >>> if fipy.solvers.solver == 'pysparse':
 ...     solver = LinearLUSolver(tolerance=1e-15, iterations=100)
@@ -146,7 +146,7 @@ The solution to this 1D problem over an infinite domain is given by,
 or
 
 .. index:: sqrt, exp
-      
+
 >>> a = numerix.sqrt(asq)
 >>> answer = 1 / (1 + numerix.exp(-a * (mesh.cellCenters[0]) / epsilon))
 
@@ -154,12 +154,12 @@ If we are running interactively, we create a viewer to see the results
 
 .. index::
    module: fipy.viewers
-   
+
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var, datamin=0., datamax=1.0)
 ...     viewer.plot()
 
-We iterate the solution to equilibrium and, if we are running interactively, 
+We iterate the solution to equilibrium and, if we are running interactively,
 we update the display and output data about the progression of the solution
 
 >>> dexp=-5
@@ -175,7 +175,7 @@ we update the display and output data about the progression of the solution
 ...         print 'element id:',maxarg
 ...         print 'value at element ',maxarg,' is ',var[maxarg]
 ...         print 'solution value',answer[maxarg]
-... 
+...
 ...         viewer.plot()
 
 We compare the analytical solution with the numerical result,
@@ -189,7 +189,5 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    
+
     raw_input('finished')
-
-

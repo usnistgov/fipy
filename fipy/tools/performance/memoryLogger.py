@@ -15,9 +15,9 @@ class MemoryHighWaterThread(threading.Thread):
         self.sampleTime = sampleTime
         self.actionDone = threading.Event()
         self.setDaemon(True)
-        
+
         self.maxMem = 0
-        
+
     def run(self):
         self.maxMem = 0
 
@@ -25,39 +25,39 @@ class MemoryHighWaterThread(threading.Thread):
             ff = os.popen('ps -p %i -o vsz' % self.pid)
             ff.readline() # skip a line
             s = ff.readline()
-            
+
             ff.close()
-            
+
             self.maxMem = max(self.maxMem, int(s))
             time.sleep(self.sampleTime)
-            
+
     def stop(self):
         self.actionDone.set()
         self.join()
-        
+
         return self.maxMem
-        
+
 class MemoryLogger:
     def __init__(self, sampleTime = 1):
         self.pid = os.getpid()
 
         self.r, self.w = os.pipe()
         self.forkID = os.fork()
-        
+
         if self.forkID == 0:
             os.close(self.r)
-            
+
             self.thread = None
 
             def startHandler(signum, frame):
                 if self.thread is not None:
                     self.stop()
-                    
+
                 self.thread = MemoryHighWaterThread(pid=self.pid, sampleTime=sampleTime)
                 self.thread.start()
 ##                 print "start"
 
-                
+
             def stopHandler(signum, frame):
                 if self.thread is not None:
                     maxMem = self.thread.stop()
@@ -73,13 +73,13 @@ class MemoryLogger:
             signal.signal(signal.SIGUSR1, startHandler)
             signal.signal(signal.SIGUSR2, stopHandler)
             signal.signal(signal.SIGHUP, hupHandler)
-            
+
             while 1:
                 time.sleep(10000000)
-            
+
         else:
             os.close(self.w)
-            
+
     def __del__(self):
         import signal
         os.kill(self.forkID, signal.SIGHUP)
@@ -96,7 +96,7 @@ class MemoryLogger:
             maxMem = -8888
         return maxMem
 
-        
+
 if __name__ == "__main__":
     print "MemoryHighWaterThread"
     for attempt in range(10):

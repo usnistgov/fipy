@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
- # 
+ #
  #  FILE: "gapFillDistanceVariable.py"
  #
  #  Author: Jonathan Guyer   <guyer@nist.gov>
@@ -12,7 +12,7 @@
  #  Author: Andrew Acquaviva <andrewa@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This document was prepared at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -23,13 +23,13 @@
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
  # We would appreciate acknowledgement if the document is used.
- # 
+ #
  # This document can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -39,7 +39,7 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.variables.distanceVariable import DistanceVariable
 
 class GapFillDistanceVariable(DistanceVariable):
-    
+
     def extendVariable(self, extensionVariable, order=2):
         if not hasattr(self, 'fineDistanceVariable'):
             self.fineDistanceVariable = DistanceVariable(mesh=self.mesh.fineMesh)
@@ -57,10 +57,9 @@ class GapFillDistanceVariable(DistanceVariable):
         self.fineDistanceVariable.calcDistanceFunction(order=order)
         self[:] = self.fineDistanceVariable(self.mesh.cellCenters)
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
 
+if __name__ == "__main__":
+    _test()

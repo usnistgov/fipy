@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "generator.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: Andrew Acquaviva <andrewa@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,7 +22,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -30,7 +30,7 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -40,7 +40,7 @@ import os
 from fipy.tools.copy_script import Copy_script
 from setuptools import setup
 
-def run(cases, elements): 
+def run(cases, elements):
     toScripts = []
     for i in cases:
         deconstruct = i.split('/')
@@ -50,7 +50,7 @@ def run(cases, elements):
         if os.path.exists(toScripts[i]):
             os.remove(toScripts[i])
         print 'Running on file', cases[i]
-        
+
         DocProg = Copy_script(dummyCommand)
         DocProg.From = cases[i]
         DocProg.To = toScripts[i]
@@ -58,7 +58,7 @@ def run(cases, elements):
         DocProg.run()
         f = open(toScripts[i],'r+w')
         flist = f.readlines()
-        
+
         for index, line in enumerate(flist):
             whitespaces = len(line) - len(line.lstrip())
             if 'from fipy import *' in line:
@@ -107,9 +107,9 @@ def run(cases, elements):
                 newvalue = whitespaces * ' ' + '='.join(linelist) + '\n'
                 flist.insert(index, newvalue)
                 del flist[index+1]
-                                
-                
-                
+
+
+
         flist.append('\ntimes.append(time.time())\n')
         flist.append('\nInitialization_time = times[1]-times[0]')
         flist.append('\nFirst_timestep = times[2]-times[1]')
@@ -118,10 +118,10 @@ def run(cases, elements):
         flist.append("\nprint 'Initialization-time:', Initialization_time")
         flist.append("\nprint 'First-timestep:', First_timestep")
         flist.append("\nprint 'Average-timestep:', avg_timesteps")
-        flist.append("\nprint 'Runtime:', runtime") 
+        flist.append("\nprint 'Runtime:', runtime")
         f.close()
         os.remove(toScripts[i])
-            
+
         g=open(toScripts[i], 'w')
         g.write("".join(flist))
         g.close()
@@ -131,4 +131,3 @@ def run(cases, elements):
 if __name__ == "__main__":
     Scripts = run(['examples/cahnHilliard/mesh2D.py', 'examples/phase/anisotropy.py',\
                            'examples/reactiveWetting/liquidVapor2D.py'],None)
- 
