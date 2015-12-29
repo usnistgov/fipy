@@ -93,8 +93,10 @@ def _TestClass(base):
             base.finalize_options(self)
 
             if noSuiteOrModule:
-                self.test_args.remove(self.distribution.test_suite)
-
+                # setuptools completely changed how it uses test_suite and test_args with v. 18.0
+                # we do our best to keep it confused
+                self.test_suite = None
+                
             if not (self.examples or self.modules or self.viewers):
                 self.all = True
             if self.all or self.really_all:
@@ -103,7 +105,23 @@ def _TestClass(base):
             if self.really_all:
                 self.viewers = True
 
+            # If we drop setuptools < 18.0, the remaining lines can probably be removed
+            
+            self.test_args = list(self._test_args())
 
+            if noSuiteOrModule:
+                # setuptools completely changed how it uses test_suite and test_args with v. 18.0
+                # we do our best to keep it confused
+                self.test_suite = "dummy"
+
+        def _test_args(self):
+            # can't seem to delegate a generator until Python 3.3
+            
+            if self.verbose:
+                yield '--verbose'
+            if self.test_suite:
+                yield self.test_suite
+                
             if self.viewers:
                 print "*" * 60
                 print "*" + "".center(58) + "*"
@@ -112,21 +130,15 @@ def _TestClass(base):
                 print "*" + "Some of the following tests require user interaction".center(58) + "*"
                 print "*" + "".center(58) + "*"
                 print "*" * 60
-
-                self.test_args.append("fipy.viewers.testinteractive._suite")
-
+                
+                yield "fipy.viewers.testinteractive._suite"
             if self.modules:
-                self.test_args.append("fipy.testFiPy._suite")
-
+                yield "fipy.testFiPy._suite"
             if self.examples:
-                self.test_args.append("examples.test._suite")
-
-            if self.test_args and noSuiteOrModule:
-                self.test_suite = "dummy"
-
+                yield "examples.test._suite"
 
         def printPackageInfo(self):
-
+            
             for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'mpi4py']:
 
                 try:
