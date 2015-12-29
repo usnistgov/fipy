@@ -13,4 +13,3 @@ Diffusion Examples
    examples.diffusion.electrostatics
    examples.diffusion.nthOrder.input4thOrder1D
    examples.diffusion.anisotropy
-

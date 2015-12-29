@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
-## 
+##
  # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
  #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,7 +22,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -30,7 +30,7 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -106,7 +106,7 @@ class _AbstractNumPts(object):
     @staticmethod
     def calcNs(ns, ds):
         raise NotImplementedError
- 
+
 class _NonuniformNumPts(_AbstractNumPts):
     """
     For use by non-uniform grid builders.
@@ -128,7 +128,7 @@ class _NonuniformNumPts(_AbstractNumPts):
         Calculate the number of cells along the specified axis, based
         on either the specified number or on the number elements in the
         cell  `d` spacings.
-        
+
         Used by the `Grid` meshes.
 
         This tests a bug that was occuring with PeriodicGrid1D when
@@ -145,14 +145,14 @@ class _NonuniformNumPts(_AbstractNumPts):
             n = int(n or len(d))
             if n != len(d) and len(d) != 1:
                 raise IndexError, "n%s != len(d%s)" % (axis, axis)
-                
+
         return n
 
 class _UniformNumPts(_AbstractNumPts):
     """
     For use by uniform grid builders.
     """
- 
+
     @staticmethod
     def calcNs(ns, ds):
         return map(lambda x: int(x), ns)

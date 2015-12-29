@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "implicitSourceTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -46,9 +46,9 @@ class ImplicitSourceTerm(SourceTerm):
 
     .. math::
 
-       \int_V \phi S \,dV \simeq \phi_P S_P V_P 
-       
-    where :math:`S` is the `coeff` value.       
+       \int_V \phi S \,dV \simeq \phi_P S_P V_P
+
+    where :math:`S` is the `coeff` value.
     """
 
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
@@ -67,21 +67,21 @@ class ImplicitSourceTerm(SourceTerm):
             >>> eq.solve(v, dt=1.)
             >>> print v
             [-0.5]
-            
+
         """
 
         coeff = self._getGeomCoeff(var)
         diagonalSign = self._getDiagonalSign(transientGeomCoeff, diffusionGeomCoeff)
         combinedSign = numerix.array(diagonalSign)[...,numerix.newaxis] * numerix.sign(coeff)
-        
+
         return {'diagonal' : (combinedSign >= 0),
                 'old value' : numerix.zeros(var.shape, 'd'),
                 'b vector' :  -var * (combinedSign < 0),
                 'new value' : numerix.zeros(var.shape, 'd')}
-    
-def _test(): 
+
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()

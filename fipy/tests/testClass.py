@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
- # 
+ #
  #  FILE: "testClass.py"
  #
  #  Author: Jonathan Guyer   <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren     <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This document was prepared at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
  # We would appreciate acknowledgement if the document is used.
- # 
+ #
  # This document can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -64,13 +64,13 @@ def _TestClass(base):
 
         def initialize_options(self):
             base.initialize_options(self)
-            
+
             self.all = False
             self.really_all = False
             self.examples = False
             self.modules = False
             self.viewers = False
-            
+
             self.inline = False
             self.pythoncompiled = None
             self.cache = False
@@ -87,14 +87,14 @@ def _TestClass(base):
             self.lsmlib = False
 
         def finalize_options(self):
-            noSuiteOrModule = (self.test_suite is None 
+            noSuiteOrModule = (self.test_suite is None
                                and self.test_module is None)
-                
+
             base.finalize_options(self)
-            
+
             if noSuiteOrModule:
                 self.test_args.remove(self.distribution.test_suite)
-                
+
             if not (self.examples or self.modules or self.viewers):
                 self.all = True
             if self.all or self.really_all:
@@ -102,8 +102,8 @@ def _TestClass(base):
                 self.modules = True
             if self.really_all:
                 self.viewers = True
-            
-                
+
+
             if self.viewers:
                 print "*" * 60
                 print "*" + "".center(58) + "*"
@@ -112,12 +112,12 @@ def _TestClass(base):
                 print "*" + "Some of the following tests require user interaction".center(58) + "*"
                 print "*" + "".center(58) + "*"
                 print "*" * 60
-                
+
                 self.test_args.append("fipy.viewers.testinteractive._suite")
 
             if self.modules:
                 self.test_args.append("fipy.testFiPy._suite")
-            
+
             if self.examples:
                 self.test_args.append("examples.test._suite")
 
@@ -126,20 +126,20 @@ def _TestClass(base):
 
 
         def printPackageInfo(self):
-            
+
             for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'mpi4py']:
-                
+
                 try:
                     mod = __import__(pkg)
-                    
+
                     if hasattr(mod, '__version__'):
                         print pkg,'version',mod.__version__
                     else:
                         print pkg,'version not available'
-                        
+
                 except ImportError, e:
                     print pkg,'is not installed'
-                    
+
                 except Exception, e:
                     print pkg, 'version check failed:', e
 
@@ -161,7 +161,7 @@ def _TestClass(base):
                     from enthought.mayavi.__version__ import __version__ as mayaviversion
                     print 'enthought.mayavi version', mayaviversion
                 except ImportError, e:
-                    print 'enthought.mayavi is not installed'       
+                    print 'enthought.mayavi is not installed'
                 except Exception, e:
                     print 'enthought.mayavi version check failed:', e
             except Exception, e:
@@ -202,18 +202,18 @@ def _TestClass(base):
                 except ImportError, a:
                     print >>sys.stderr, "!!! weave library is not installed"
                     return
-                    
+
             if self.pythoncompiled is not None:
                 import os
                 os.environ['PYTHONCOMPILED'] = self.pythoncompiled
 
             self.printPackageInfo()
-            
+
             from pkg_resources import EntryPoint
             import unittest
             loader_ep = EntryPoint.parse("x="+self.test_loader)
             loader_class = loader_ep.load(require=False)
-            
+
             try:
                 unittest.main(
                     None, None, [unittest.__file__]+self.test_args,
@@ -234,6 +234,6 @@ def _TestClass(base):
                 _DocTestTimes = numpy.rec.fromrecords(_DocTestTimes, formats='f8,S255', names='time,test')
                 _DocTestTimes.sort(order=('time', 'test'))
                 numpy.savetxt(self.timetests, _DocTestTimes[::-1], fmt="%8.4f\t%s")
-                
+
             raise exitErr
-    return _test                    
+    return _test

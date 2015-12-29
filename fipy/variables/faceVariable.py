@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "faceVariable.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,7 +22,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -30,7 +30,7 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -50,7 +50,7 @@ class FaceVariable(_MeshVariable):
         """
         return (mesh.numberOfFaces,)
     _getShapeFromMesh = staticmethod(_getShapeFromMesh)
-        
+
     def _getArithmeticBaseClass(self, other = None):
         """
         Given `self` and `other`, return the desired base class for an operation
@@ -58,17 +58,17 @@ class FaceVariable(_MeshVariable):
         """
         if other is None:
             return FaceVariable
-            
+
         return _MeshVariable._getArithmeticBaseClass(self, other)
 
     def copy(self):
-        return self._getArithmeticBaseClass()(mesh=self.mesh, 
-                                              name=self.name + "_copy", 
+        return self._getArithmeticBaseClass()(mesh=self.mesh,
+                                              name=self.name + "_copy",
                                               value=self.value)
 
     @property
     def globalValue(self):
-        return self._getGlobalValue(self.mesh._localNonOverlappingFaceIDs, 
+        return self._getGlobalValue(self.mesh._localNonOverlappingFaceIDs,
                                     self.mesh._globalNonOverlappingFaceIDs)
 
     def setValue(self, value, unit = None, where = None):
@@ -83,7 +83,7 @@ class FaceVariable(_MeshVariable):
             >>> var = CellVariable(mesh=mesh, value=range(3*2))
             >>> print var.faceGrad.divergence
             [ 4.  3.  2. -2. -3. -4.]
-            
+
         """
         if not hasattr(self, '_divergence'):
             from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
@@ -96,19 +96,18 @@ class FaceVariable(_MeshVariable):
     @property
     def _globalNumberOfElements(self):
         return self.mesh.globalNumberOfFaces
-        
+
     @property
     def _globalOverlappingIDs(self):
         return self.mesh._globalOverlappingFaceIDs
-        
+
     @property
     def _localNonOverlappingIDs(self):
         return self.mesh._localNonOverlappingFaceIDs
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
 
+if __name__ == "__main__":
+    _test()

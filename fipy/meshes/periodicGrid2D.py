@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -47,7 +47,7 @@ class _BasePeriodicGrid2D(NonUniformGrid2D):
     def __init__(self, dx = 1., dy = 1., nx = None, ny = None, overlap=2, communicator=parallelComm, *args, **kwargs):
         super(_BasePeriodicGrid2D, self).__init__(dx = dx, dy = dy, nx = nx, ny = ny, overlap=overlap, communicator=communicator, *args, **kwargs)
         self._nonPeriodicCellVertexIDs = super(_BasePeriodicGrid2D, self)._cellVertexIDs
-        self._orderedCellVertexIDs_data = super(_BasePeriodicGrid2D, self)._orderedCellVertexIDs        
+        self._orderedCellVertexIDs_data = super(_BasePeriodicGrid2D, self)._orderedCellVertexIDs
         self._nonPeriodicCellFaceIDs = numerix.array(super(_BasePeriodicGrid2D, self).cellFaceIDs)
         self._makePeriodic()
 
@@ -80,13 +80,13 @@ class _BasePeriodicGrid2D(NonUniformGrid2D):
 class PeriodicGrid2D(_BasePeriodicGrid2D):
     """
     Creates a periodic2D grid mesh with horizontal faces numbered
-    first and then vertical faces. Vertices and cells are numbered 
+    first and then vertical faces. Vertices and cells are numbered
     in the usual way.
 
         >>> from fipy import numerix
 
         >>> mesh = PeriodicGrid2D(dx = 1., dy = 0.5, nx = 2, ny = 2)
-        
+
         >>> print numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0],
         ...                        [ 4,  5,  8, 11])  # doctest: +PROCESSOR_0
         True
@@ -99,7 +99,7 @@ class PeriodicGrid2D(_BasePeriodicGrid2D):
         >>> print numerix.allclose(mesh._cellDistances,
         ...                        [ 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 1., 1., 0.5, 1., 1., 0.5]) # doctest: +PROCESSOR_0
         True
- 
+
         >>> print numerix.allclose(mesh.cellFaceIDs,
         ...                        [[0, 1, 2, 3],
         ...                         [7, 6, 10, 9],
@@ -129,9 +129,9 @@ class PeriodicGrid2D(_BasePeriodicGrid2D):
     """
 
     def _makePeriodic(self):
-        self._connectFaces(numerix.nonzero(self.facesLeft), 
+        self._connectFaces(numerix.nonzero(self.facesLeft),
                            numerix.nonzero(self.facesRight))
-        self._connectFaces(numerix.nonzero(self.facesBottom), 
+        self._connectFaces(numerix.nonzero(self.facesBottom),
                            numerix.nonzero(self.facesTop))
 
 class PeriodicGrid2DLeftRight(_BasePeriodicGrid2D):
@@ -143,7 +143,7 @@ class PeriodicGrid2DTopBottom(_BasePeriodicGrid2D):
     def _makePeriodic(self):
         self._connectFaces(numerix.nonzero(self.facesBottom),
                            numerix.nonzero(self.facesTop))
-        
+
 def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()

@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "modularVariable.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,7 +22,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -30,12 +30,12 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
- 
+
 from fipy.variables.cellVariable import CellVariable
 
 __all__ = ["ModularVariable"]
@@ -71,14 +71,14 @@ class ModularVariable(CellVariable):
 
     >>> print numerix.allclose(v1.faceGrad, ((0, 2*pi/3, 0),))
     1
-        
+
     Obtaining the gradient at the faces but without modular
     arithmetic.
 
     >>> print numerix.allclose(v1.faceGradNoMod, ((0, -4*pi/3, 0),))
     1
-    """    
-        
+    """
+
     _modIn = """
     # define pi 3.141592653589793
     # define mod(x) (fmod(x + 3. * pi, 2. * pi) - pi)
@@ -100,7 +100,7 @@ class ModularVariable(CellVariable):
         value = self._makeValue(value=value, unit=unit, array=array)
         from fipy.variables.modPhysicalField import _ModPhysicalField
         self._value = _ModPhysicalField(value=value, unit=unit, array=array)
-        
+
     def updateOld(self):
         """
         Set the values of the previous solution sweep to the current values.
@@ -136,9 +136,9 @@ class ModularVariable(CellVariable):
         r"""
         Returns a `FaceVariable` whose value corresponds to the arithmetic interpolation
         of the adjacent cells:
-            
+
         .. math::
-        
+
            \phi_f = (\phi_1 - \phi_2) \frac{d_{f2}}{d_{12}} + \phi_2
 
         Adjusted for a `ModularVariable`
@@ -167,13 +167,13 @@ class ModularVariable(CellVariable):
         Return :math:`\nabla \phi` as a rank-1 `FaceVariable` (second-order
         gradient). Not adjusted for a `ModularVariable`
         """
-        
+
         if not hasattr(self, '_faceGradNoMod'):
             class NonModularTheta(CellVariable):
                 def __init__(self, modVar):
                     CellVariable.__init__(self, mesh = modVar.mesh)
                     self.modVar = self._requires(modVar)
-                    
+
                 def _calcValue(self):
                     return self.modVar.value
 
@@ -187,7 +187,7 @@ class ModularVariable(CellVariable):
             return -other + self
         else:
             return self._BinaryOperatorVariable(lambda a,b: a-b, other, canInline=False)
-        
+
     def __rsub__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: b-a, other, canInline=False)
 
@@ -198,13 +198,13 @@ class ModularVariable(CellVariable):
         """
         if other is None:
             return ModularVariable
-            
+
         return CellVariable._getArithmeticBaseClass(self, other)
 
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()

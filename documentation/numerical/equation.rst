@@ -36,7 +36,7 @@ combination of the following terms,
    \underbrace{
      \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
      \nabla \cdot \left( \vec{u} \phi \right)
-   }_{\text{convection}}  
+   }_{\text{convection}}
    =
    \underbrace{
      \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
@@ -64,6 +64,3 @@ or a phase field crystal term [*i.e.*, :math:`\nabla \cdot (\Gamma_1 \nabla
 ] )` :cite:`Elder:2011p2811`] when :math:`n = 3`, although spectral methods are probably a
 better approach. Higher order terms (:math:`n > 3`) are also possible, but
 the matrix condition number becomes quite poor.
-
-
-

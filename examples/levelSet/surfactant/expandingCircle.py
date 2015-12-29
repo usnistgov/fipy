@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "expandingCircle.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -49,7 +49,7 @@ The solution for these set of equations is given by:
 
    r &= \sqrt{2 k r_0 \theta_0 t + r_0^2} \\
    \theta &= \frac{r_0 \theta_0}{\sqrt{2 k r_0 \theta_0 t + r_0^2}}
-    
+
 The following tests can be performed. First test for global
 conservation of surfactant:
 
@@ -69,7 +69,7 @@ conservation of surfactant:
 >>> print surfactantBefore.allclose(surfactantAfter)
 1
 
-Next test for the correct local value of surfactant: 
+Next test for the correct local value of surfactant:
 
 >>> finalRadius = numerix.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
 >>> answer = initialSurfactantValue * initialRadius / finalRadius
@@ -90,7 +90,8 @@ Test for the correct position of the interface:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
+from fipy.tools import numerix
 
 L = 1.
 nx = 50
@@ -130,8 +131,8 @@ surfactantEquation = TransientTerm() - \
     ExplicitUpwindConvectionTerm(SurfactantConvectionVariable(distanceVariable))
 
 if __name__ == '__main__':
-    
-    distanceViewer = Viewer(vars=distanceVariable, 
+
+    distanceViewer = Viewer(vars=distanceVariable,
                             datamin=-initialRadius, datamax=initialRadius)
     surfactantViewer = Viewer(vars=surfactantVariable, datamin=0., datamax=100.)
     velocityViewer = Viewer(vars=velocity, datamin=0., datamax=200.)
@@ -149,9 +150,9 @@ if __name__ == '__main__':
         distanceVariable.updateOld()
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
         surfactantEquation.solve(surfactantVariable, dt=1)
-        
+
         totalTime += timeStepDuration
-        
+
         velocityViewer.plot()
         distanceViewer.plot()
         surfactantViewer.plot()
@@ -163,6 +164,6 @@ if __name__ == '__main__':
         print 'error', numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0))
 
 
-        
+
 
     raw_input('finished')

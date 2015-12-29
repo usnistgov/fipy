@@ -57,7 +57,7 @@ __all__ = ["ExplicitVariableError",
            "ConvectionTerm",
            "FirstOrderAdvectionTerm",
            "AdvectionTerm"]
-           
+
 __all__.extend(transientTerm.__all__)
 __all__.extend(diffusionTerm.__all__)
 __all__.extend(diffusionTermCorrection.__all__)

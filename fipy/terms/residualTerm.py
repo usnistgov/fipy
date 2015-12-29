@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "explicitSourceTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -48,24 +48,22 @@ class ResidualTerm(_ExplicitSourceTerm):
     def __init__(self, equation, underRelaxation=1.):
         self.equation = equation
         self.underRelaxation = underRelaxation
-        
+
         _ExplicitSourceTerm.__init__(self, var=None)
-        
+
     def __repr__(self):
         return r"$\Delta$[" + repr(self.equation) + "]"
 
     def _getGeomCoeff(self, var):
         return self.coeff
-        
+
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        vec = self.equation.justResidualVector(var=None, 
+        vec = self.equation.justResidualVector(var=None,
                                                boundaryConditions=boundaryConditions,
                                                dt=dt)
 
         self.coeff = CellVariable(mesh=var.mesh, value=vec * self.underRelaxation)
         self.geomCoeff = None
         self.coeffVectors = None
-        
+
         return _ExplicitSourceTerm._buildMatrix(self, var=var, SparseMatrix=SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
-
-

@@ -4,7 +4,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "efficiencyTestHistory.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -12,7 +12,7 @@
  #  Author: Andrew Acquaviva <andrewa@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -23,7 +23,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -31,14 +31,14 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
 __docformat__ = 'restructuredtext'
 
 __all__ = []
- 
+
 from datetime import datetime
 import os
 import pysvn
@@ -57,7 +57,7 @@ def run(startRev):
     revisions = [int(line.lstrip('   revision="').rstrip('">\n')) for line in datafilelist if 'revision="' in line]
     revisions.sort()
     while(startRev not in revisions):
-        startRev += 1 
+        startRev += 1
     index = revisions.index(startRev)
     os.chdir("../../../trunk/examples")
     for k in revisions[index:3511]:
@@ -71,5 +71,3 @@ def run(startRev):
 
 if __name__ == '__main__':
     run(3000)
-
-

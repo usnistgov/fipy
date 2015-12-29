@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
- # 
+ #
  #  FILE: "trenchMesh.py"
  #
  #  Author: Jonathan Guyer   <guyer@nist.gov>
@@ -12,7 +12,7 @@
  #  Author: Andrew Acquaviva <andrewa@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This document was prepared at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -23,13 +23,13 @@
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
  # We would appreciate acknowledgement if the document is used.
- # 
+ #
  # This document can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -56,15 +56,15 @@ class TrenchMesh(GapFillMesh):
     ...                   boundaryLayerDepth = boundaryLayerDepth,
     ...                   aspectRatio = 1.) # doctest: +GMSH
 
-    >>> import fipy.tools.dump as dump 
-    >>> (f, filename) = dump.write(mesh) # doctest: +GMSH 
+    >>> import fipy.tools.dump as dump
+    >>> (f, filename) = dump.write(mesh) # doctest: +GMSH
     >>> if parallelComm.Nproc == 1:
-    ...     mesh = dump.read(filename, f) # doctest: +GMSH 
+    ...     mesh = dump.read(filename, f) # doctest: +GMSH
     >>> print mesh.globalNumberOfCells - len(numerix.nonzero(mesh.electrolyteMask)[0]) # doctest: +GMSH, +SERIAL
     150
     >>> print 400 < mesh.globalNumberOfCells < 800 # doctest: +GMSH
     True
-    
+
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh = mesh, value = 0.) # doctest: +GMSH
 
@@ -77,7 +77,7 @@ class TrenchMesh(GapFillMesh):
     >>> eq.solve(var) # doctest: +GMSH
 
     Evaluate the result:
-       
+
     >>> centers = mesh.cellCenters[1].copy() # doctest: +GMSH
 
     .. note:: the copy makes the array contiguous for inlining
@@ -149,7 +149,7 @@ class TrenchMesh(GapFillMesh):
                                                            numerix.where(x > trenchWidth / 2 + taper,
                                                                          0,
                                                                          1)))
-    
+
     def __getstate__(self):
         dict = super(TrenchMesh, self).__getstate__()
         dict['electrolyteMask'] = self.electrolyteMask
@@ -159,11 +159,10 @@ class TrenchMesh(GapFillMesh):
         self.electrolyteMask = dict['electrolyteMask']
         del dict['electrolyteMask']
         super(TrenchMesh, self).__setstate__(dict)
- 
-def _test(): 
+
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
 
+if __name__ == "__main__":
+    _test()

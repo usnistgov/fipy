@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "modCircle.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -39,8 +39,8 @@ missorientation present. The phase equation is given by:
 
 .. math::
 
-   \tau_{\phi} \frac{\partial \phi}{\partial t} 
-   = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T) 
+   \tau_{\phi} \frac{\partial \phi}{\partial t}
+   = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T)
    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2
 
 where
@@ -58,7 +58,7 @@ The initial conditions are:
    2 \pi / 3 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 > (L / 4)^2$} \\
    -2 \pi / 3 & \text{for $(x - L / 2)^2 + (y - L / 2)^2 \le (L / 4)^2$}
    \end{cases} \\
-   T &= 1 \qquad \forall x 
+   T &= 1 \qquad \forall x
 
 and boundary conditions
 :math:`\phi = 1` for :math:`x = 0` and :math:`x = L`.
@@ -66,8 +66,8 @@ and boundary conditions
 .. Further details of the numerical method for this problem can be found in
    "Extending Phase Field Models of Solidification to Polycrystalline
    Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
-   6035-6058.  
-   
+   6035-6058.
+
 Here the phase equation is solved with an explicit technique.
 
 The solution is allowed to evolve for ``steps = 100`` time steps.
@@ -89,13 +89,14 @@ data and compares it with the ``phase`` variable.
 __docformat__ = 'restructuredtext'
 
 
-from fipy import *
+from fipy import CellVariable, ModularVariable, Grid2D, TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, Viewer
+from fipy.tools import numerix
 
 if __name__ == '__main__':
     steps = 100
 else:
     steps = 10
-    
+
 timeStepDuration = 0.02
 L = 1.5
 nx = 100
@@ -115,7 +116,7 @@ phase = CellVariable(name = 'PhaseField', mesh = mesh, value = 1.)
 
 theta = ModularVariable(name = 'Theta', mesh = mesh, value = 2. * numerix.pi / 3.)
 x, y = mesh.cellCenters
-theta.setValue(-2. * numerix.pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2) 
+theta.setValue(-2. * numerix.pi / 3., where=(x - L / 2.)**2 + (y - L / 2.)**2 < (L / 4.)**2)
 
 mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 thetaMag = theta.old.grad.mag

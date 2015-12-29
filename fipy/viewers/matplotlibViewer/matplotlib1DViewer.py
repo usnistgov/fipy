@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "matplotlib1DViewer.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,7 +22,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -30,10 +30,10 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
- 
+
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
@@ -44,15 +44,15 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
     """
     Displays a y vs.  x plot of one or more 1D `CellVariable` objects using
     Matplotlib_.
-    
+
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
-    
+
     __doc__ += AbstractMatplotlibViewer._test1D(viewer="Matplotlib1DViewer")
-    
+
     def __init__(self, vars, title=None, xlog=False, ylog=False, limits={}, legend='upper left', axes=None, **kwlimits):
         """
-        
+
         :Parameters:
           vars
             a `CellVariable` or tuple of `CellVariable` objects to plot
@@ -65,7 +65,7 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
           limits : dict
             a (deprecated) alternative to limit keyword arguments
           xmin, xmax, datamin, datamax
-            displayed range of data. Any limit set to 
+            displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
             (*ymin* and *ymax* are synonyms for *datamin* and *datamax*).
           legend
@@ -75,9 +75,9 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
         """
         kwlimits.update(limits)
         AbstractMatplotlibViewer.__init__(self, vars=vars, title=title, axes=axes, **kwlimits)
-    
+
         import pylab
-        
+
         if xlog and ylog:
             self.lines = [self.axes.loglog(*datum) for datum in self._data]
         elif xlog:
@@ -103,17 +103,17 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
 
     def log():
         doc = "logarithmic data scaling"
-        
+
         def fget(self):
             return self.axes.get_yscale() == 'log'
-          
+
         def fset(self, value):
             ax = self.axes.get_yaxis()
             if value:
                 ax = self.axes.set_yscale('log')
             else:
                 ax = self.axes.set_yscale('linear')
-                
+
         return locals()
 
     log = property(**log())
@@ -122,7 +122,7 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
     def _data(self):
         from fipy.tools.numerix import array
         return [[array(var.mesh.cellCenters[0]), array(var)] for var in self.vars]
-            
+
     def _getSuitableVars(self, vars):
         vars = [var for var in AbstractMatplotlibViewer._getSuitableVars(self, vars) if var.mesh.dim == 1]
 
@@ -134,8 +134,8 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
         return vars
 
     def _plot(self):
-        ymin, ymax = self._autoscale(vars=self.vars, 
-                                     datamin=self._getLimit(('datamin', 'ymin')), 
+        ymin, ymax = self._autoscale(vars=self.vars,
+                                     datamin=self._getLimit(('datamin', 'ymin')),
                                      datamax=self._getLimit(('datamax', 'ymax')))
 
         self.axes.set_ylim(ymin=ymin, ymax=ymax)
@@ -143,7 +143,7 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
         for line, datum in zip(self.lines, self._data):
             line[0].set_xdata(datum[0])
             line[0].set_ydata(datum[1])
-            
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     import fipy.tests.doctestPlus
     fipy.tests.doctestPlus.execButNoTest()

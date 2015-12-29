@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "input2D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -21,13 +21,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -48,20 +48,21 @@ equation (also known as
    \frac{\partial \phi}{\partial t}
    = \nabla\cdot D \nabla\left( \frac{\partial f}{\partial \phi}   - \epsilon^2 \nabla^2 \phi\right).
 
-where :math:`\phi` is a conserved order parameter, possibly representing 
+where :math:`\phi` is a conserved order parameter, possibly representing
 alloy composition or spin.
-The double-well free energy function :math:`f = (a^2/2) \phi^2 (1 - \phi)^2` 
+The double-well free energy function :math:`f = (a^2/2) \phi^2 (1 - \phi)^2`
 penalizes states with intermediate values of :math:`\phi`
-between 0 and 1. The gradient energy term :math:`\epsilon^2 \nabla^2\phi`, 
+between 0 and 1. The gradient energy term :math:`\epsilon^2 \nabla^2\phi`,
 on the other hand, penalizes sharp changes of :math:`\phi`.
 These two competing effects result in the segregation
 of :math:`\phi` into domains of 0 and 1, separated by abrupt, but
-smooth, transitions. The parameters :math:`a` and :math:`\epsilon` determine the relative 
+smooth, transitions. The parameters :math:`a` and :math:`\epsilon` determine the relative
 weighting of the two effects and :math:`D` is a rate constant.
 
 We can simulate this process in :term:`FiPy` with a simple script:
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, GaussianNoiseVariable, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer
+>>> from fipy.tools import numerix
 
 (Note that all of the functionality of NumPy is imported along with :term:`FiPy`, although
 much is augmented for :term:`FiPy`\'s needs.)
@@ -84,12 +85,12 @@ We start the problem with random fluctuations about :math:`\phi = 1/2`
 >>> if __name__ == "__main__":
 ...     viewer = Viewer(vars=(phi,), datamin=0., datamax=1.)
 
-For :term:`FiPy`, we need to perform the partial derivative 
-:math:`\partial f/\partial \phi`    
+For :term:`FiPy`, we need to perform the partial derivative
+:math:`\partial f/\partial \phi`
 manually and then put the equation in the canonical
 form by decomposing the spatial derivatives
 so that each :class:`~fipy.terms.term.Term` is of a single, even order:
-    
+
 .. math::
 
    \frac{\partial \phi}{\partial t}
@@ -145,7 +146,5 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    
+
     raw_input('finished')
-
-

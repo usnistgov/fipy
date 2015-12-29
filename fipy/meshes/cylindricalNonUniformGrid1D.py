@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "cylindricalNonUniformGrid1D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -48,18 +48,18 @@ __all__ = ["CylindricalNonUniformGrid1D"]
 class CylindricalNonUniformGrid1D(NonUniformGrid1D):
     """
     Creates a 1D cylindrical grid mesh.
-    
+
         >>> mesh = CylindricalNonUniformGrid1D(nx = 3)
         >>> print mesh.cellCenters
         [[ 0.5  1.5  2.5]]
-         
+
         >>> mesh = CylindricalNonUniformGrid1D(dx = (1, 2, 3))
         >>> print mesh.cellCenters
         [[ 0.5  2.   4.5]]
 
         >>> print numerix.allclose(mesh.cellVolumes, (0.5, 4., 13.5)) # doctest: +PROCESSOR_0
         True
-         
+
         >>> mesh = CylindricalNonUniformGrid1D(nx = 2, dx = (1, 2, 3))
         Traceback (most recent call last):
         ...
@@ -70,13 +70,13 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
         [[ 1.5  3. ]]
         >>> print numerix.allclose(mesh.cellVolumes, (1.5, 6)) # doctest: +PROCESSOR_0
         True
-        
+
     """
     def __init__(self, dx=1., nx=None, origin=(0,), overlap=2, communicator=parallelComm, *args, **kwargs):
         scale = PhysicalField(value=1, unit=PhysicalField(value=dx).unit)
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
-    
+
         super(CylindricalNonUniformGrid1D, self).__init__(dx=dx,
                                                           nx=nx,
                                                           overlap=overlap,
@@ -90,20 +90,20 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
     def _calcFaceCenters(self):
         faceCenters = super(CylindricalNonUniformGrid1D, self)._calcFaceCenters()
         return faceCenters + self.origin
-    
+
     def _calcFaceAreas(self):
         return self._calcFaceCenters()[0]
 
     def _calcCellVolumes(self):
-        return super(CylindricalNonUniformGrid1D, self)._calcCellVolumes() / 2.   
+        return super(CylindricalNonUniformGrid1D, self)._calcCellVolumes() / 2.
 
     def _translate(self, vector):
-        return CylindricalNonUniformGrid1D(dx=self.args['dx'], nx=self.args['nx'], 
+        return CylindricalNonUniformGrid1D(dx=self.args['dx'], nx=self.args['nx'],
                                            origin=numerix.array(self.args['origin']) + vector,
                                            overlap=self.args['overlap'])
-                                     
+
     def __mul__(self, factor):
-        return CylindricalNonUniformGrid1D(dx=self.args['dx'] * factor, nx=self.args['nx'], 
+        return CylindricalNonUniformGrid1D(dx=self.args['dx'] * factor, nx=self.args['nx'],
                                            origin=numerix.array(self.args['origin']) * factor,
                                            overlap=self.args['overlap'])
 
@@ -131,7 +131,7 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
 
             >>> print isinstance(CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
             True
-            
+
         """
 
 def _test():

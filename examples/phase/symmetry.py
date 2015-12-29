@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "input.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -40,7 +40,7 @@ values:
 
 .. math::
 
-   \phi(x, y) = x y, 
+   \phi(x, y) = x y,
    0 \le x \le L,
    0 \le y \le L
 
@@ -51,10 +51,11 @@ We wish to create 4 symmetric regions such that
    \phi(x, y) = \phi(L - x, y) = \phi(L - x, y) = \phi(L - x, L - y),
    0 \le x \le L / 2,
    0 \le y \le L / 2
-    
+
 We create a square domain
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, Viewer
+>>> from fipy.tools import numerix
 
 >>> N = 20
 >>> L = 1.
@@ -68,7 +69,7 @@ We create a square domain
 ...    ny = N)
 
 >>> var = CellVariable(name = "test", mesh = mesh)
-  
+
 First set the values as given in the above equation:
 
 >>> x, y = mesh.cellCenters
@@ -117,8 +118,3 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
     raw_input("finished")
-
-    
-
-
-

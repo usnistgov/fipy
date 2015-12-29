@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
- # 
+ #
  #  FILE: "binaryTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This document was prepared at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,14 +22,14 @@
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
  # We would appreciate acknowledgement if the document is used.
- # 
+ #
  # This document can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -51,14 +51,14 @@ class _BinaryTerm(_AbstractBinaryTerm):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
-        
+
         """
 
         matrix = SparseMatrix(mesh=var.mesh)
         RHSvector = 0
 
         for term in (self.term, self.other):
-            
+
             tmpVar, tmpMatrix, tmpRHSvector = term._buildAndAddMatrices(var,
                                                                         SparseMatrix,
                                                                         boundaryConditions=boundaryConditions,
@@ -73,15 +73,15 @@ class _BinaryTerm(_AbstractBinaryTerm):
             term._buildCache(tmpMatrix, tmpRHSvector)
 
         return (var, matrix, RHSvector)
-    
+
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
         for term in (self.term, self.other):
             defaultSolver = term._getDefaultSolver(var, solver, *args, **kwargs)
             if defaultSolver is not None:
                 solver = defaultSolver
-                
+
         return solver
-        
+
     def __repr__(self):
         return '(' + repr(self.term) + ' + ' + repr(self.other) + ')'
 
@@ -96,7 +96,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         return self._addNone(self.term._getTransientGeomCoeff(var), self.other._getTransientGeomCoeff(var))
 
     def _getDiffusionGeomCoeff(self, var):
-        return self._addNone(self.term._getDiffusionGeomCoeff(var), self.other._getDiffusionGeomCoeff(var)) 
+        return self._addNone(self.term._getDiffusionGeomCoeff(var), self.other._getDiffusionGeomCoeff(var))
 
     __rmul__ = __mul__
 
@@ -110,7 +110,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
         >>> print var
         [ 0.  0.  0.]
-        >>> print CellVariable(mesh=m, value=RHSvector) 
+        >>> print CellVariable(mesh=m, value=RHSvector)
         [ 0.  0.  0.]
         >>> print numerix.allequal(matrix.numpyArray, [[ 2, -1,  0],
         ...                                            [-1,  3, -1],
@@ -127,12 +127,12 @@ class _BinaryTerm(_AbstractBinaryTerm):
         True
         >>> print CellVariable(mesh=m, value=eq.justResidualVector(dt=1.))
         [ 0.  0.  0.]
-        
+
         >>> m = Grid1D(nx=6)
         >>> v0 = CellVariable(mesh=m, value=1.)
         >>> v1 = CellVariable(mesh=m, value=0.)
         >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass, dt=1.) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
         >>> print var
         [ 1.  1.  1.  1.  1.  1.]
         >>> print CellVariable(mesh=m, value=RHSvector)
@@ -144,7 +144,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         ...                                            [ 0, 0, 0,-1, 3,-1.],
         ...                                            [ 0, 0, 0, 0,-1, 2.]])
         True
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass, dt=1.) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
         >>> print var
         [ 0.  0.  0.  0.  0.  0.]
         >>> print CellVariable(mesh=m, value=RHSvector)
@@ -181,7 +181,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         ...                                                [ 0, -2,  2]])
         True
         >>> ## This currectly returns None because we lost the handle to the DiffusionTerm when it's negated.
-        >>> print diffTerm.matrix 
+        >>> print diffTerm.matrix
         None
 
         Testing solution for one variable in a multi-variable equation.
@@ -295,13 +295,13 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
         >>> print numerix.allclose(LHS, RHS)
         True
-        
+
 
         >>> X = m.faceCenters[0]
         >>> v[0] = 1
         >>> v[1] = 2
         >>> coeff[0,0,1] = numerix.sign(X - 3)
-        >>> coeff[0,1,0] = -2 * numerix.sign(X - 3)        
+        >>> coeff[0,1,0] = -2 * numerix.sign(X - 3)
         >>> eqn = TransientTerm() + UpwindConvectionTerm(coeff=coeff)
         >>> eqn.cacheMatrix()
         >>> eqn.cacheRHSvector()
@@ -328,7 +328,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         """
 
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
 

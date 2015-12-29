@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "decorators.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -12,7 +12,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -23,7 +23,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -36,23 +36,23 @@
  #
  # Copyright (c) 2005-2010, NumPy Developers.
  # All rights reserved.
- # 
+ #
  # Redistribution and use in source and binary forms, with or without
  # modification, are permitted provided that the following conditions are
  # met:
- # 
+ #
  #     * Redistributions of source code must retain the above copyright
  #        notice, this list of conditions and the following disclaimer.
- # 
+ #
  #     * Redistributions in binary form must reproduce the above
  #        copyright notice, this list of conditions and the following
  #        disclaimer in the documentation and/or other materials provided
  #        with the distribution.
- # 
+ #
  #     * Neither the name of the NumPy Developers nor the names of any
  #        contributors may be used to endorse or promote products derived
  #        from this software without specific prior written permission.
- # 
+ #
  # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -93,13 +93,13 @@ class _Deprecate(object):
     Refer to `deprecate` for details.
 
     Stolen from `numpy.lib.utils`
-    
+
     See Also
     --------
     numerix.deprecate
 
     """
-    def __init__(self, old_name=None, new_name=None, message=None, 
+    def __init__(self, old_name=None, new_name=None, message=None,
                  old_string=":func:`%s` is deprecated",
                  new_string="use :func:`%s` instead",
                  version="UNKNOWN"):
@@ -121,7 +121,7 @@ class _Deprecate(object):
 
     def new_name_old_name(self, old_name):
         return self.new_name
-        
+
     def __call__(self, func, *args, **kwargs):
         """
         Decorator call.  Refer to ``decorate``.
@@ -132,7 +132,7 @@ class _Deprecate(object):
 
         old_name = self.old_name_from_func(func=func)
         new_name = self.new_name_old_name(old_name=old_name)
-        
+
         if new_name is None:
             depwarn = (self.old_string + "!") % old_name
             depdoc = ""
@@ -151,9 +151,9 @@ class _Deprecate(object):
             return func(*args, **kwds)
 
         newfunc = _set_function_name(newfunc, old_name)
-        
-        depdoc = (["", "", ".. deprecated:: %s" % self.version] 
-                  + ["   " + s for s in depdoc.split('\n')] 
+
+        depdoc = (["", "", ".. deprecated:: %s" % self.version]
+                  + ["   " + s for s in depdoc.split('\n')]
                   + ["", ""])
         doc = func.__doc__
         if doc is None:
@@ -205,9 +205,9 @@ def deprecate(*args, **kwargs):
     else:
         return _Deprecate(*args, **kwargs)
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()

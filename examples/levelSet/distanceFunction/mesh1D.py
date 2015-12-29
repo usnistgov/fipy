@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mesh1D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -22,17 +22,17 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
-r"""Create a level set variable in one dimension. 
+r"""Create a level set variable in one dimension.
 
 The level set
 variable calculates its value over the domain to be the distance from
@@ -49,7 +49,8 @@ with the boundary condition, :math:`\phi = 0` at :math:`x = L / 2`.
 The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid1D, DistanceVariable, TransientTerm, FirstOrderAdvectionTerm, AdvectionTerm, Viewer
+>>> from fipy.tools import numerix, serialComm
 
 >>> dx = 0.5
 >>> nx = 10
@@ -58,7 +59,6 @@ Construct the mesh.
 
 .. index:: Grid2D
 
->>> from fipy.tools import serialComm
 >>> mesh = Grid1D(dx=dx, nx=nx, communicator=serialComm)
 
 Construct a `distanceVariable` object.
@@ -69,13 +69,13 @@ Construct a `distanceVariable` object.
 ...                        hasOld=1)
 >>> x = mesh.cellCenters[0]
 >>> var.setValue(1, where=x > dx * nx / 2)
- 
+
 Once the initial positive and negative regions have been initialized
 the `calcDistanceFunction()` method can be used to recalculate `var`
 as a distance function from the zero level set.
-   
+
 >>> var.calcDistanceFunction() #doctest: +LSM
-   
+
 The problem can then be solved by executing the :meth:`~fipy.terms.term.Term.solve`
 method of the equation.
 

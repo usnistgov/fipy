@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "baseDiffusionTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -49,7 +49,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
     def __init__(self, coeff = (1.,), var=None):
         if self.__class__ is _AbstractDiffusionTerm:
             raise AbstractBaseClassError
-        
+
         if type(coeff) not in (type(()), type([])):
             coeff = [coeff]
 
@@ -71,19 +71,19 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             self.nthCoeff = None
 
         _UnaryTerm.__init__(self, coeff=coeff, var=var)
-        
+
         if self.order > 0:
             self.lowerOrderDiffusionTerm = self.__class__(coeff = coeff[1:])
 
     def __mul__(self, other):
         if isinstance(other, (int, float)):
-            self.coeff[0] = other * self.coeff[0] 
+            self.coeff[0] = other * self.coeff[0]
             return self.__class__(coeff=self.coeff, var=self.var)
         else:
             raise TermMultiplyError
 
     __rmul__ = __mul__
-    
+
     def __neg__(self):
         negatedCoeff = list(self.coeff)
 
@@ -94,7 +94,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             negatedCoeff[0] = -negatedCoeff[0]
 
         return self.__class__(coeff=negatedCoeff, var=self.var)
-            
+
     def __getBoundaryConditions(self, boundaryConditions):
         higherOrderBCs = []
         lowerOrderBCs = []
@@ -105,14 +105,14 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 higherOrderBCs.append(bcDeriv)
             else:
                 lowerOrderBCs.append(bc)
-                
+
         return higherOrderBCs, lowerOrderBCs
 
     def __getRotationTensor(self, mesh):
         if not hasattr(self, 'rotationTensor'):
 
             rotationTensor = FaceVariable(mesh=mesh, rank=2)
-            
+
             rotationTensor[:, 0] = self._getNormals(mesh)
 
             if mesh.dim == 2:
@@ -134,7 +134,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                                                      rotationTensor[:,0] * rotationTensor[2,0] / div,
                                                      rotationTensor[:, 2])
                 rotationTensor[2, 2] = -div
-                
+
             self.rotationTensor = rotationTensor
 
         return self.rotationTensor
@@ -152,7 +152,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
         mesh = var.mesh
         if self.nthCoeff is not None:
-          
+
             coeff = self.nthCoeff
 
             shape = numerix.getShape(coeff)
@@ -168,9 +168,9 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 anisotropicRank = rank - 2
             else:
                 raise IndexError, 'the solution variable has the wrong rank'
-                
+
             if anisotropicRank == 0 and self._treatMeshAsOrthogonal(mesh):
-                
+
                 if coeff.shape != () and not isinstance(coeff, FaceVariable):
                     coeff = coeff[...,numerix.newaxis]
 
@@ -180,12 +180,12 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
                 if anisotropicRank == 1 or anisotropicRank == 0:
                     coeff = coeff * numerix.identity(mesh.dim)
-                
+
                 if anisotropicRank > 0:
                     shape = numerix.getShape(coeff)
                     if mesh.dim != shape[0] or mesh.dim != shape[1]:
-                        raise IndexError, 'diffusion coefficent tensor is not an appropriate shape for this mesh'          
-                    
+                        raise IndexError, 'diffusion coefficent tensor is not an appropriate shape for this mesh'
+
                 faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh.faceNormals)
                 rotationTensor = self.__getRotationTensor(mesh)
                 rotationTensor[:,0] = rotationTensor[:,0] / mesh._cellDistances
@@ -210,7 +210,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
         id1, id2 = mesh._adjacentCellIDs
         interiorFaces = numerix.nonzero(mesh.interiorFaces)[0]
-    
+
         id1 = numerix.take(id1, interiorFaces)
         id2 = numerix.take(id2, interiorFaces)
 
@@ -231,7 +231,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 ##         raw_input('stopped')
 
 ##         interiorCoeff = numerix.array(coeff)
-        
+
 ##         interiorCoeff[...,mesh.exteriorFaces.value] = 0
 ##         print 'interiorCoeff',interiorCoeff
 ##         interiorCoeff = numerix.take(interiorCoeff, mesh.cellFaceIDs, axis=-1)
@@ -255,17 +255,17 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 ##         interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
 
 ##         print 'interiorCoeff',interiorCoeff
-##         raw_input('stopped')        
+##         raw_input('stopped')
 ##         coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[0], interiorFaceCellIDs[1])
 ##         interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
 ##         coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[1], interiorFaceCellIDs[0])
-        
+
         return coefficientMatrix
-        
+
     def __bcAdd(self, coefficientMatrix, boundaryB, LL, bb):
         coefficientMatrix += LL
         boundaryB += bb
-        
+
     def __doBCs(self, SparseMatrix, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
         for boundaryCondition in higherOrderBCs:
             LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffs)
@@ -274,8 +274,8 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 self._viewer.plot(matrix=LL, RHSvector=bb)
                 from fipy import raw_input
                 raw_input()
-            self.__bcAdd(coefficientMatrix, boundaryB, LL, bb) 
-            
+            self.__bcAdd(coefficientMatrix, boundaryB, LL, bb)
+
         return coefficientMatrix, boundaryB
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
@@ -289,13 +289,13 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         >>> v.constrain(c0, where=m.facesLeft)
 
         Diffusion will only be in the y-direction
-        
+
         >>> coeff = Variable([[0. , 0.], [0. , 1.]])
         >>> eq = DiffusionTerm(coeff)
         >>> eq.solve(v, solver=DummySolver())
         >>> print v
         [ 0.  0.  0.  0.]
-        
+
         Change the coefficient.
 
         >>> coeff[0, 0] = 1.
@@ -312,16 +312,16 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         >>> eq.solve(v)
         >>> print v
         [ 2.25  2.75  2.25  2.75]
-        
+
         """
 
         var, L, b = self.__higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
         mesh = var.mesh
-        
+
         if self.order == 2:
-            
+
             if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
-            
+
                 normals = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
 
                 if len(var.shape) == 1 and len(self.nthCoeff.shape) > 1:
@@ -333,7 +333,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                         coeff = self.nthCoeff[...,numerix.newaxis]
                     else:
                         coeff = self.nthCoeff
-                    
+
                     nthCoeffFaceGrad = coeff[numerix.newaxis] * var.faceGrad[:,numerix.newaxis]
                     s = (slice(0,None,None),) + (numerix.newaxis,) * (len(coeff.shape) - 1) + (slice(0,None,None),)
                     normalsNthCoeff = coeff[numerix.newaxis] * normals[s]
@@ -348,32 +348,32 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
 
                 self.constraintL = -constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
-                
+
             ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
             L.addAt(self.constraintL.ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
             b += numerix.reshape(self.constraintB.ravel(), ids.shape).sum(-2).ravel()
-            
+
         return (var, L, b)
-        
+
     def __higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         mesh = var.mesh
-        
+
         N = mesh.numberOfCells
         M = mesh._maxFacesPerCell
 
         if self.order > 2:
 
             higherOrderBCs, lowerOrderBCs = self.__getBoundaryConditions(boundaryConditions)
-    
+
             var, lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, SparseMatrix=SparseMatrix,
                                                                                       boundaryConditions = lowerOrderBCs,
                                                                                       dt = dt, transientGeomCoeff=transientGeomCoeff,
                                                                                       diffusionGeomCoeff=diffusionGeomCoeff)
             del lowerOrderBCs
-            
+
             lowerOrderb = lowerOrderb / mesh.cellVolumes
             volMatrix = SparseMatrix(mesh=var.mesh, bandwidth = 1)
-            
+
             volMatrix.addAtDiagonal(1. / mesh.cellVolumes)
             lowerOrderL = volMatrix * lowerOrderL
             del volMatrix
@@ -382,7 +382,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
                 coeff = self._getGeomCoeff(var)[0]
                 minusCoeff = -coeff
-                
+
                 coeff.dontCacheMe()
                 minusCoeff.dontCacheMe()
 
@@ -398,9 +398,9 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
 
             mm = self.__getCoefficientMatrix(SparseMatrix, var, self.coeffDict['cell 1 diag'])
-            L, b = self.__doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict, 
+            L, b = self.__doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict,
                                mm, numerix.zeros(len(var.ravel()),'d'))
-                               
+
             del higherOrderBCs
             del mm
 
@@ -432,25 +432,25 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
                 del coeff
                 del minusCoeff
-                
+
             higherOrderBCs, lowerOrderBCs = self.__getBoundaryConditions(boundaryConditions)
             del lowerOrderBCs
 
-            L, b = self.__doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict, 
+            L, b = self.__doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict,
                                self.__getCoefficientMatrix(SparseMatrix, var, self.coeffDict['cell 1 diag']), numerix.zeros(len(var.ravel()),'d'))
 
             if hasattr(self, 'anisotropySource'):
                 b -= self.anisotropySource
-                               
+
             del higherOrderBCs
 
 
         else:
-            
+
             L = SparseMatrix(mesh=mesh)
             L.addAtDiagonal(mesh.cellVolumes)
             b = numerix.zeros(len(var.ravel()),'d')
-            
+
         return (var, L, b)
 
     def _getDiffusionGeomCoeff(self, var):
@@ -462,14 +462,13 @@ class _AbstractDiffusionTerm(_UnaryTerm):
     @property
     def _diffusionVars(self):
         return self._vars
-        
+
     def _treatMeshAsOrthogonal(self, mesh):
         raise NotImplementedError
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()
-    

@@ -3,14 +3,14 @@
 ##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "inputSimpleTrenchSystem.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -21,13 +21,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -41,7 +41,7 @@ those that have been previously
 published :cite:`NIST:damascene:2003]`.
 
 To run this example from the base fipy directory type::
-    
+
     $ python examples/levelSet/electroChem/simpleTrenchSystem.py
 
 at the command line. The results of the simulation will be displayed and the word
@@ -160,7 +160,8 @@ resemble the image below.
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, DistanceVariable, SurfactantVariable, Grid2D, TransientTerm, AdvectionTerm, GeneralSolver, Viewer, MultiViewer
+from fipy.tools import numerix
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
@@ -192,7 +193,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 10
     cellsBelowTrench = 10
-    
+
     yCells = cellsBelowTrench \
              + int((trenchDepth + boundaryLayerDepth) / cellSize)
 
@@ -227,7 +228,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         name = "catalyst variable",
         value = catalystCoverage,
         distanceVar = distanceVar)
-    
+
     bulkCatalystVar = CellVariable(
         name = 'bulk catalyst variable',
         mesh = mesh,
@@ -237,10 +238,10 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         name = 'metal variable',
         mesh = mesh,
         value = metalConcentration)
-    
+
     expoConstant = -transferCoefficient * faradaysConstant \
                    / (gasConstant * temperature)
-    
+
     tmp = currentDensity1 * catalystVar.interfaceVar
 
     exchangeCurrentDensity = currentDensity0 + tmp
@@ -255,7 +256,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     extensionVelocityVariable = CellVariable(
         name = 'extension velocity',
         mesh = mesh,
-        value = depositionRateVariable)   
+        value = depositionRateVariable)
 
     surfactantEquation = AdsorbingSurfactantEquation(
         surfactantVar = catalystVar,
@@ -302,12 +303,12 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     for step in range(numberOfSteps):
 
-        if step % 5 == 0 and viewer is not None:
+        if step>5 and step % 5 == 0 and viewer is not None:
             viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
             distanceVar.calcDistanceFunction(order=2)
-            
+
         extensionVelocityVariable.setValue(depositionRateVariable())
 
         distanceVar.updateOld()

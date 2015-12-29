@@ -10,10 +10,10 @@ def _dealWithTrilinosImportPathologies():
         pass
 
     # The fact that I have to do the following manipulation with the current
-    # directory is really, really bad. 
+    # directory is really, really bad.
     import os
     current_working_directory_path = os.getcwd()
-    from PyTrilinos import ML # Gets around strange Trilinos import-order bugs. 
+    from PyTrilinos import ML # Gets around strange Trilinos import-order bugs.
     os.chdir(current_working_directory_path)
     # When run in MPI mode, the first Trilinos import makes the "current directory"
     # be the directory with the executable file that's being run.  As best I can
@@ -45,7 +45,7 @@ __all__ = ["DefaultSolver",
            "DummySolver",
            "DefaultAsymmetricSolver",
            "GeneralSolver"]
-           
+
 __all__.extend(linearCGSSolver.__all__)
 __all__.extend(linearPCGSolver.__all__)
 __all__.extend(linearGMRESSolver.__all__)

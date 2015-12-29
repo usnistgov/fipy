@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "cellToFaceVariable.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,7 +22,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -30,7 +30,7 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -47,12 +47,12 @@ class _CellToFaceVariable(FaceVariable):
     def _calcValue(self):
         alpha = self.mesh._faceToCellDistanceRatio
         id1, id2 = self.mesh._adjacentCellIDs
-        
+
         return self._calcValue_(alpha=alpha, id1=id1, id2=id2)
 
     def release(self, constraint):
         """Remove `constraint` from `self`
-        
+
         >>> from fipy import *
         >>> m = Grid1D(nx=3)
         >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
@@ -80,7 +80,7 @@ class _CellToFaceVariable(FaceVariable):
             faceConstraints = self.var.faceConstraints
         else:
             faceConstraints = []
-        
+
         return super(_CellToFaceVariable, self).constraints + faceConstraints
 
     @property
@@ -91,16 +91,16 @@ class _CellToFaceVariable(FaceVariable):
                     self._constraintMask._requires(constraint.where)
 
         return super(_CellToFaceVariable, self).constraintMask
-            
+
     def __getstate__(self):
         return dict(var=self.var)
-        
+
     def __setstate__(self, dict):
         self.__init__(**dict)
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()

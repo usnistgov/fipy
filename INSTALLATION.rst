@@ -168,46 +168,95 @@ If necessary, you can download_ and install it for your platform
 .. note::
 
    :term:`FiPy` requires at least version 2.4.x of :term:`Python`. See
-   the specialized instructions if you wish to :ref:`RunUnderPython3`.
+   the specialized instructions if you plan on :ref:`RunningUnderPython3`.
 
 .. _download: http://www.python.org/download/
 
 :term:`Python` along with many of :term:`FiPy`'s required and optional
 packages is available with one of the following distributions.
 
-.. _EPD:
 
-Enthought Python Distribution
------------------------------
+Scientific Python Packages
+==========================
 
-http://www.enthought.com/epd
-
-This installer provides a very large number of useful scientific
-packages for :term:`Python`, including :term:`NumPy`,
-:term:`SciPy`, :term:`Matplotlib`, :term:`Mayavi`, and :term:`IPython`, as 
-well as a :term:`Python` interpreter.  Installers
-are available for Windows_, `Mac OS X`_ and `RedHat Linux`_, Solaris_, 
-`Ubuntu Linux`_, and `OpenSuSE Linux`_.
+:term:`FiPy` depends on or benefits from the so-called *scientific Python*
+stack, which includes :term:`IPython`, :term:`Matplotlib`, :term:`NumPy`, 
+:term:`pandas`, and :term:`SciPy`. These packages provide Python with advanced
+numerical and graphical capabilities, important for the analysis and visual
+representation of scientific data. The following :term:`Python` distributions
+provide the :term:`Python` interpreter, scientific Python stacks, and searchable
+package management for all three major operating systems:
+Linux_, `Mac OS X`_, and Windows_.
 
 .. attention::
 
-   :term:`PySparse` and :term:`FiPy` are not presently included in EPD, so you will need
-   to separately install them manually.
+    :term:`Python` distributions include cryptographic software packages,
+    and may be subject to export control laws.
+
+.. _PYPI:
+
+Pip Installs Python
+-------------------
+
+If you have the reference :term:`Python` distribution installed, :term:`pip`
+provides a straightforward way to install and manage the scientific :term:`Python`
+stack. :term:`pip` interfaces with :term:`PyPI`, searchable on the Web or through
+the command line by opening a terminal and typing::
+
+    $ pip search <package name>
+
+:term:`PyPI` packages are maintained by the individual authors, so installations
+using :term:`pip` run a somewhat elevated risk of unmet dependencies as the
+independent codes evolve. Stable releases of :term:`FiPy` are packaged for
+distribution through :term:`PyPI`.
+
+.. _ANACONDA:
+
+Continuum Analytics Anaconda
+----------------------------
+
+http://continuum.io/anaconda
+
+In addition to the scientific :term:`Python` stack, the Anaconda package manager
+also provides virtual environment management. Keeping separate installations is useful
+*e.g.* for comparing :term:`Python` 2 and :term:`Python` 3 software stacks, or
+when the user does not have sufficient provileges to install software system-wide.
+
+.. attention::
+
+   :term:`PySparse` and :term:`FiPy` are not presently included in Anaconda,
+   so you will need to separately install them manually.
+
+.. _ECP:
+
+Enthought Canopy
+----------------
+
+http://www.enthought.com/products/canopy
+
+In addition to the core scientific :term:`Python` stack, Canopy includes packages
+for a very large number of software projects. Canopy supports the venv virtual
+environment manager.
+
+.. attention::
+
+   :term:`PySparse` and :term:`FiPy` are not presently included in Canopy,
+   so you will need to separately install them manually.
 
 .. _PYTHONXY:
 
 Python(x,y)
 -----------
 
-http://www.pythonxy.com/
+http://python-xy.github.io
 
-Another comprehensive :term:`Python` package installer for scientific
-applications, presently only available for Windows_.
+A non-commercial scientific :term:`Python` distribution developed specifically
+for Windows_.
 
 .. attention::
 
    :term:`PySparse` and :term:`FiPy` are not presently included in
-   python(x,y), so you will need to separately install them manually.
+   Python(x,y), so you will need to separately install them manually.
 
 NumPy
 =====
@@ -323,7 +372,7 @@ Options include
    installs all of its dependencies into :file:`/usr/local` (although it
    can be directed not to).
 
-In addition, there is an :ref:`EPD` installer for `Mac OS X`_.
+In addition, there is an :ref:`ECP` installer for `Mac OS X`_.
 
 .. attention::
 
@@ -342,14 +391,14 @@ See the `Miscellaneous Build Recipes`_ for up-to-date directions.
 Windows Installation
 ====================
 
-There is no official package manager for Windows_, but the :ref:`EPD` 
+There is no official package manager for Windows_, but the :ref:`ECP` 
 and :ref:`PYTHONXY` installers provide most of :term:`FiPy`'s 
 prerequisites.
 
 .. attention::
 
-   :term:`PySparse` and :term:`FiPy` are not presently included in EPD or
-   python(x,y), so you will need to separately install them manually.
+   :term:`PySparse` and :term:`FiPy` are not presently included in Canopy or
+   Python(x,y), so you will need to separately install them manually.
 
 Ubuntu/Debian Installation
 ==========================
@@ -367,6 +416,7 @@ to install. The `.deb` includes dependencies for all of the
 
 .. _tested regularly: http://matforge.org/fipy/build
 .. _Mac OS X: http://www.apple.com/macosx/
+.. _Linux: http://www.linux.org/
 .. _Debian Linux: http://www.debian.org/
 .. _RedHat Linux: http://www.redhat.com/
 .. _OpenSUSE Linux: http://www.opensuse.org/

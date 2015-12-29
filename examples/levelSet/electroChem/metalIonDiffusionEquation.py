@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "metalIonDiffusionEquation.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,13 +22,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -101,7 +101,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> ionVar = CellVariable(mesh = mesh, value = 1.)
     >>> from fipy.variables.distanceVariable \
     ...     import DistanceVariable
-    >>> disVar = DistanceVariable(mesh = mesh, 
+    >>> disVar = DistanceVariable(mesh = mesh,
     ...                           value = (x - 0.5) - 0.99,
     ...                           hasOld = 1)
 
@@ -117,7 +117,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     ...                                      metalIonMolarVolume = omega)
 
     >>> ionVar.constrain(cinf, mesh.facesRight)
-    
+
     >>> for i in range(10):
     ...     eqn.solve(ionVar, dt = 1000)
 
@@ -166,9 +166,9 @@ def buildMetalIonDiffusionEquation(ionVar = None,
 
     return eq + ImplicitSourceTerm(coeff)
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()

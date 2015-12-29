@@ -14,13 +14,13 @@ def monitor(p):
     cpu = reCPU.search(r, re.MULTILINE)
     rsz = reRSZ.search(r, re.MULTILINE)
     vsz = reVSZ.search(r, re.MULTILINE)
-    
+
     def numOrNaN(m, g=1):
         if m is None:
             return numpy.NaN
         else:
             return float(m.group(g))
-            
-    return (numOrNaN(cpu), 
+
+    return (numOrNaN(cpu),
             numOrNaN(rsz),
             numOrNaN(vsz))

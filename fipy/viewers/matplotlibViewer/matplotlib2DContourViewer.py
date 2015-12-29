@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "matplotlib2DContourViewer.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,7 +11,7 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,7 +22,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -30,10 +30,10 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
- 
+
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -43,19 +43,19 @@ from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2
 __all__ = ["Matplotlib2DContourViewer"]
 
 class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
-    """Displays a contour plot of a 2D `CellVariable` object.    
+    """Displays a contour plot of a 2D `CellVariable` object.
 
     The `Matplotlib2DContourViewer` plots a 2D `CellVariable` using Matplotlib_.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
-    
+
     __doc__ += Matplotlib2DContourViewer._test2D(viewer="Matplotlib2DContourViewer")
 
 
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, number=10, levels=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DContourViewer`.
-        
+
         :Parameters:
           vars
             a `CellVariable` object.
@@ -64,7 +64,7 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
           limits : dict
             a (deprecated) alternative to limit keyword arguments
           xmin, xmax, ymin, ymax, datamin, datamax
-            displayed range of data. Any limit set to 
+            displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
           cmap
             the colormap. Defaults to `matplotlib.cm.jet`
@@ -85,15 +85,15 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
 
         """
         kwlimits.update(limits)
-        AbstractMatplotlib2DViewer.__init__(self, vars=vars, title=title, 
-                                            cmap=cmap, colorbar=colorbar, axes=axes, 
+        AbstractMatplotlib2DViewer.__init__(self, vars=vars, title=title,
+                                            cmap=cmap, colorbar=colorbar, axes=axes,
                                             figaspect=figaspect,
                                             **kwlimits)
         self.number = number
         self.levels = levels
-        
+
         self._plot()
-        
+
     def _getSuitableVars(self, vars):
         from fipy.meshes.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
@@ -105,10 +105,10 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
             raise MeshDimensionError, "Matplotlib2DViewer can only display a rank-0, 2D CellVariable"
         # this viewer can only display one variable
         return [vars[0]]
-        
+
     def _plot(self):
 ##         pylab.clf()
-        
+
 ##         ## Added garbage collection since matplotlib objects seem to hang
 ##         ## around and accumulate.
 ##         import gc
@@ -117,12 +117,12 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
         mesh = self.vars[0].mesh
         x, y = mesh.cellCenters
         z = self.vars[0].value
-        
+
         xmin, ymin = mesh.extents['min']
         xmax, ymax = mesh.extents['max']
 
         from matplotlib.mlab import griddata
-        
+
         xi = numerix.linspace(xmin, xmax, 1000)
         yi = numerix.linspace(ymin, ymax, 1000)
         # grid the data.
@@ -134,14 +134,14 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
                     ix = self.axes.collections.index(collection)
                 except ValueError, e:
                     ix = None
-                    
+
                 if ix is not None:
                     del self.axes.collections[ix]
 
         zmin, zmax = self._autoscale(vars=self.vars,
                                      datamin=self._getLimit(('datamin', 'zmin')),
                                      datamax=self._getLimit(('datamax', 'zmax')))
-                      
+
         self.norm.vmin = zmin
         self.norm.vmax = zmax
 
@@ -158,17 +158,15 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
 
         self.axes.set_ylim(ymin=self._getLimit('ymin'),
                            ymax=self._getLimit('ymax'))
-                   
-        if self.colorbar is not None:
-            self.colorbar.plot() 
 
-                   
+        if self.colorbar is not None:
+            self.colorbar.plot()
+
+
 def _test():
     from fipy.viewers.viewer import _test2D
     _test2D(Matplotlib2DContourViewer)
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     import fipy.tests.doctestPlus
     fipy.tests.doctestPlus.execButNoTest()
-
-        

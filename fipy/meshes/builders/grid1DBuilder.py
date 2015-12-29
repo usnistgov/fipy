@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
-## 
+##
  # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
  #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -22,7 +22,7 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
  # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
@@ -30,7 +30,7 @@
  # ========================================================================
  #  See the file "license.terms" for information on usage and  redistribution
  #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -43,7 +43,7 @@ from fipy.meshes.builders.utilityClasses import (_UniformNumPts,
                                                  _DOffsets,
                                                  _UniformOrigin)
 from fipy.tools import numerix
- 
+
 class _Grid1DBuilder(_AbstractGridBuilder):
 
     def buildGridData(self, *args, **kwargs):
@@ -62,12 +62,12 @@ class _Grid1DBuilder(_AbstractGridBuilder):
 
     def _calcShape(self):
         return (self.ns[0],)
-             
+
     def _calcPhysicalShape(self):
         """Return physical dimensions of Grid1D."""
         from fipy.tools.dimensions.physicalField import PhysicalField
         return PhysicalField(value = (self.ns[0] * self.ds[0] * self.scale,))
-                      
+
     def _calcMeshSpacing(self):
         return numerix.array((self.ds[0],))[...,numerix.newaxis]
 
@@ -75,7 +75,7 @@ class _Grid1DBuilder(_AbstractGridBuilder):
     def createVertices(dx, nx):
         x = _AbstractGridBuilder.calcVertexCoordinates(dx, nx)
         return x[numerix.newaxis,...]
-    
+
     @staticmethod
     def createFaces(numVertices):
         if numVertices == 1:
@@ -92,23 +92,23 @@ class _Grid1DBuilder(_AbstractGridBuilder):
         f1 = numerix.arange(nx)
         f2 = f1 + 1
         return numerix.array((f1, f2))
-      
+
 class _NonuniformGrid1DBuilder(_Grid1DBuilder):
 
     def __init__(self):
         self.NumPtsCalcClass = _NonuniformNumPts
 
         super(_NonuniformGrid1DBuilder, self).__init__()
- 
+
     def buildGridData(self, *args, **kwargs):
         # call super for side-effects
         super(_NonuniformGrid1DBuilder, self).buildGridData(*args, **kwargs)
 
-        (self.offsets, 
+        (self.offsets,
          self.ds) = _DOffsets.calcDOffsets(self.ds, self.ns, self.offset)
 
         self.vertices = _Grid1DBuilder.createVertices(self.ds[0], self.ns[0]) \
-                         + ((self.offsets[0],),) 
+                         + ((self.offsets[0],),)
         self.faces = _Grid1DBuilder.createFaces(self.numberOfVertices)
         self.numberOfFaces = len(self.faces[0])
         self.cells = _Grid1DBuilder.createCells(self.ns[0])
@@ -119,7 +119,7 @@ class _NonuniformGrid1DBuilder(_Grid1DBuilder):
                 + [self.vertices,
                    self.faces,
                    self.cells]
-                                     
+
 class _UniformGrid1DBuilder(_Grid1DBuilder):
 
     def __init__(self):
@@ -131,7 +131,7 @@ class _UniformGrid1DBuilder(_Grid1DBuilder):
         super(_UniformGrid1DBuilder, self).buildGridData(ns, ds, overlap,
                                                         communicator)
 
-        self.origin = _UniformOrigin.calcOrigin(origin, 
+        self.origin = _UniformOrigin.calcOrigin(origin,
                                                 self.offset, self.ds, self.scale)
 
         if 0 in self.ns:
@@ -145,7 +145,3 @@ class _UniformGrid1DBuilder(_Grid1DBuilder):
     def _specificGridData(self):
         return super(_UniformGrid1DBuilder, self)._specificGridData \
                 + [self.origin]
-
-
-
-

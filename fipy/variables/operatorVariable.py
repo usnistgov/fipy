@@ -1,7 +1,7 @@
 ## -*-Pyth-*-
  # #############################################################################
  # FiPy - a finite volume PDE solver in Python
- # 
+ #
  # FILE: "operatorVariable.py"
  #
  # Author: Jonathan Guyer <guyer@nist.gov>
@@ -9,7 +9,7 @@
  # Author: James Warren   <jwarren@nist.gov>
  #   mail: NIST
  #    www: <http://www.ctcms.nist.gov/fipy/>
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -20,13 +20,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are 
+ # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- # 
+ #
  # #############################################################################
  ##
 
@@ -56,17 +56,17 @@ def _OperatorVariableClass(baseClass=object):
 
             for aVar in self.var:
                 self._requires(aVar)
-            
+
             self.dontCacheMe()
 
             self.comment = inlineComment
 
         def __setitem__(self, index, value):
             raise TypeError, "The value of an `_OperatorVariable` cannot be assigned"
-            
+
         def setValue(self, value, unit=None, where=None):
             raise TypeError, "The value of an `_OperatorVariable` cannot be assigned"
-        
+
         def _calcValue(self):
             if not self.canInline:
                 return self._calcValue_()
@@ -81,7 +81,7 @@ def _OperatorVariableClass(baseClass=object):
             pass
 
         def _isCached(self):
-            return (Variable._isCached(self) 
+            return (Variable._isCached(self)
                     or (len(self.subscribedVariables) > 1 and not self._cacheNever))
 
         def _getCstring(self, argDict={}, id="", freshen=False):
@@ -91,19 +91,19 @@ def _OperatorVariableClass(baseClass=object):
                 s = baseClass._getCstring(self, argDict=argDict, id=id)
             if freshen:
                 self._markFresh()
-              
+
             return s
-                
+
         def _getRepresentation(self, style="__repr__", argDict={}, id=id, freshen=False):
             """
 
             :Parameters:
-                
+
               - `style`: one of `'__repr__'`, `'name'`, `'TeX'`, `'C'`
 
             """
             import opcode
-            
+
             def __var(i):
                 v = self.var[i]
                 if style == "__repr__":
@@ -139,31 +139,31 @@ def _OperatorVariableClass(baseClass=object):
                                                                    freshen=False)
                 else:
                     raise SyntaxError, "Unknown style: %s" % style
-                    
+
                 return result
 
             if isinstance(self.op, numerix.ufunc):
                 return "%s(%s)" % (self.op.__name__, ", ".join([__var(i) for i in range(len(self.var))]))
-            
+
             if sys.version_info < (3,0):
                 bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
             else:
                 bytecodes = list(self.op.__code__.co_code)
-                
+
             def _popIndex():
                 return bytecodes.pop(0) + bytecodes.pop(0) * 256
-            
+
             stack = []
-                
+
             unop = {
                 10: "+", 11: "-", 12: "not ", 15: "~"
             }
-            
+
             binop = {
                 19: "**", 20: "*", 21: "/", 22: "%", 23: "+", 24: "-", 26: "//", 27: "/",
                         62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
             }
-            
+
             while len(bytecodes) > 0:
                 bytecode = bytecodes.pop(0)
                 if opcode.opname[bytecode] == 'UNARY_CONVERT':
@@ -187,7 +187,7 @@ def _OperatorVariableClass(baseClass=object):
                     stack.append(self.op.func_code.co_names[counter])
                 elif opcode.opname[bytecode] == 'LOAD_FAST':
                     stack.append(__var(_popIndex()))
-                elif opcode.opname[bytecode] == 'CALL_FUNCTION':    
+                elif opcode.opname[bytecode] == 'CALL_FUNCTION':
                     args = []
                     for j in range(bytecodes.pop(1)):
                         # keyword parameters
@@ -205,13 +205,13 @@ def _OperatorVariableClass(baseClass=object):
                     stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
                 else:
                     raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (
-                       repr(bytecode), 
+                       repr(bytecode),
                        repr([ord(byte) for byte in self.op.func_code.co_code]),
                        "FIXME")
-                
+
         def __repr__(self):
             return self._getRepresentation()
-            
+
         def __reduce__(self):
             """
             Allows _OperatorVariables to be pickled
@@ -221,7 +221,7 @@ def _OperatorVariableClass(baseClass=object):
                 args = (state['mesh'],)
             else:
                 args = ()
-                        
+
             return (self._variableClass, args, self.__getstate__())
 
         def _getName(self):
@@ -229,7 +229,7 @@ def _OperatorVariableClass(baseClass=object):
             if len(name) == 0:
                 name = self._getRepresentation(style="name")
             return name
-   
+
         name = property(_getName, baseClass._setName)
 
         @property
@@ -241,11 +241,11 @@ def _OperatorVariableClass(baseClass=object):
 ##             return baseClass.getShape(self) or self.opShape
 
     return _OperatorVariable
-    
+
 def _testBinOp(self):
     """
     Test of _getRepresentation
-    
+
         >>> v1 = Variable((1,2,3,4))
         >>> v2 = Variable((5,6,7,8))
         >>> v3 = Variable((9,10,11,12))
@@ -253,13 +253,13 @@ def _testBinOp(self):
 
         >>> (v1 * v2)._getRepresentation()
         '(Variable(value=array([1, 2, 3, 4])) * Variable(value=array([5, 6, 7, 8])))'
-        
+
         >>> (v1 * v2)._getRepresentation(style='C', id="")
         '(var0[i] * var1[i])'
-        
+
         >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C', id="")
         '((var00[i] * var01[i]) + (var10[i] * var11[i]))'
-        
+
         >>> (v1 - v2)._getRepresentation(style='C', id="")
         '(var0[i] - var1[i])'
 
@@ -268,13 +268,13 @@ def _testBinOp(self):
 
         >>> (v1 - 1)._getRepresentation(style='C', id="")
         '(var0[i] - var1)'
-            
+
         >>> (5 * v2)._getRepresentation(style='C', id="")
         '(var0[i] * var1)'
 
         >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id="")
         '(((var000[i] / var001[i]) - (var010[i] * var011[i])) + (var10[i] * var11[i]))'
-        
+
     Check that unit works for a binOp
 
         >>> (Variable(value="1 m") * Variable(value="1 s")).unit
@@ -295,7 +295,7 @@ def _testBinOp(self):
     being thrown by the Cahn-Hilliard example. The fix for this
     bug was to add the last line to the following code in
     `_getRepresentation()`.
-    
+
         >>> ##elif style == "C":
         >>> ##    counter = _popIndex()
         >>> ##    if not self.var[counter]._isCached():
@@ -305,7 +305,7 @@ def _testBinOp(self):
     This is the test that fails if the last line above is removed
     from `_getRepresentation()`, the `binOp.value` statement
     below will return `1.0` and not `0.5`.
-        
+
         >>> from fipy import numerix
         >>> def doBCs(binOp):
         ...     unOp1 = -binOp
@@ -326,22 +326,22 @@ def _testBinOp(self):
 
         >>> from fipy.variables.cellVariable import CellVariable
         >>> from fipy.variables.faceVariable import FaceVariable
-        
+
         >>> from fipy.meshes import Grid2D
         >>> mesh = Grid2D(nx=3)
-        
-        
+
+
     `CellVariable` * CellVariable
-    
+
         >>> cv = CellVariable(mesh=mesh, value=(0, 1, 2))
         >>> cvXcv = cv * cv
         >>> print cvXcv
         [0 1 4]
         >>> print isinstance(cvXcv, CellVariable)
         1
-    
+
     `CellVariable` * FaceVariable
-    
+
         >>> fv = FaceVariable(mesh=mesh, value=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
         >>> fvXcv = fv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
@@ -351,9 +351,9 @@ def _testBinOp(self):
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        
+
     rank-0 `CellVariable` * rank-1 `CellVariable`
-    
+
         >>> vcv = CellVariable(mesh=mesh, value=((0, 1, 2), (1, 2, 3)), rank=1)
         >>> vcvXcv = vcv * cv
         >>> print vcvXcv
@@ -386,7 +386,7 @@ def _testBinOp(self):
         TypeError: can't multiply sequence to non-int
 
     `CellVariable` * Scalar
-    
+
         >>> cvXs = cv * 3
         >>> print cvXs
         [0 3 6]
@@ -399,7 +399,7 @@ def _testBinOp(self):
         1
 
     `CellVariable` * Vector
-    
+
         >>> cvXv2 = cv * (3,2)
         >>> print cvXv2
         [[0 3 6]
@@ -424,7 +424,7 @@ def _testBinOp(self):
         1
         >>> print v2Xcv.rank
         1
-        
+
         >>> cvXv3 = cv * (3,2,1)
         >>> print cvXv3
         [0 2 2]
@@ -435,7 +435,7 @@ def _testBinOp(self):
         [0 2 2]
         >>> print isinstance(v3Xcv, CellVariable)
         1
-        
+
         >>> cvXv4 = cv * (3,2,1,0) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
@@ -447,7 +447,7 @@ def _testBinOp(self):
 
 
     `CellVariable` * `Variable` Scalar
-    
+
         >>> cvXsv = cv * Variable(value=3)
         >>> print cvXsv
         [0 3 6]
@@ -458,7 +458,7 @@ def _testBinOp(self):
         [0 3 6]
         >>> print isinstance(svXcv, CellVariable)
         1
-    
+
     `binOp` `CellVariable` * `binOp` `Variable` Scalar
 
         >>> cvcvXsvsv = (cv * cv) * (Variable(value=3) * Variable(value=3))
@@ -471,9 +471,9 @@ def _testBinOp(self):
         [ 0  9 36]
         >>> print isinstance(svsvXcvcv, CellVariable)
         1
-        
+
     `CellVariable` * `Variable` Vector
-        
+
         >>> cvXv2v = cv * Variable(value=(3,2))
         >>> print cvXv2v
         [[0 3 6]
@@ -495,7 +495,7 @@ def _testBinOp(self):
         1
         >>> print v2vXcv.rank
         1
-        
+
         >>> cvXv3v = cv * Variable(value=(3,2,1))
         >>> print cvXv3v
         [0 2 2]
@@ -515,10 +515,10 @@ def _testBinOp(self):
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        
+
 
     `CellVariable` * CellGradVariable
-    
+
         >>> cvXcgv = cv * cv.grad
         >>> print cvXcgv
         [[ 0.  1.  1.]
@@ -527,7 +527,7 @@ def _testBinOp(self):
         1
         >>> print cvXcgv.rank
         1
-        
+
     `FaceVariable` * FaceVariable
 
         >>> fvXfv = fv * fv
@@ -605,7 +605,7 @@ def _testBinOp(self):
         1
         >>> print v2Xfv.rank
         1
-        
+
         >>> fvXv3 = fv * (3,2,1) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
@@ -640,7 +640,7 @@ def _testBinOp(self):
         1
 
     `FaceVariable` * `Variable` Vector
-        
+
         >>> fvXv2v = fv * Variable(value=(3,2))
         >>> print fvXv2v
         [[ 0  3  6  9 12 15 18 21 24 27]
@@ -665,7 +665,7 @@ def _testBinOp(self):
         1
         >>> print v2vXfv.rank
         1
-        
+
         >>> fvXv3v = fv * Variable(value=(3,2,1)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
@@ -686,8 +686,8 @@ def _testBinOp(self):
         >>> print isinstance(v10vXfv, FaceVariable)
         1
 
-        
-        
+
+
     rank-1 `CellVariable` * rank-1 `CellVariable`
 
         >>> vcvXvcv = vcv * vcv
@@ -755,7 +755,7 @@ def _testBinOp(self):
         1
         >>> print v2Xvcv.rank
         1
-        
+
         >>> vcvXv3 = vcv * (3,2,1)
         >>> print vcvXv3
         [[0 2 2]
@@ -764,7 +764,7 @@ def _testBinOp(self):
         1
         >>> print vcvXv3.rank
         1
-        >>> v3Xvcv = (3,2,1) * vcv 
+        >>> v3Xvcv = (3,2,1) * vcv
         >>> print v3Xvcv
         [[0 2 2]
          [3 4 3]]
@@ -802,7 +802,7 @@ def _testBinOp(self):
         1
 
     rank-1 `CellVariable` * `Variable` Vector
-        
+
         >>> vcvXv2v = vcv * Variable(value=(3,2))
         >>> print vcvXv2v
         [[0 3 6]
@@ -827,7 +827,7 @@ def _testBinOp(self):
         1
         >>> print v2vXvcv.rank
         1
-        
+
         >>> vcvXv3v = vcv * Variable(value=(3,2,1))
         >>> print vcvXv3v
         [[0 2 2]
@@ -836,7 +836,7 @@ def _testBinOp(self):
         1
         >>> print vcvXv3v.rank
         1
-        >>> v3vXvcv = Variable(value=(3,2,1)) * vcv 
+        >>> v3vXvcv = Variable(value=(3,2,1)) * vcv
         >>> print v3vXvcv
         [[0 2 2]
          [3 4 3]]
@@ -854,7 +854,7 @@ def _testBinOp(self):
               ...
         TypeError: can't multiply sequence to non-int
 
-                    
+
     rank-1 `FaceVariable` * rank-1 FaceVariable
 
         >>> vfvXvfv = vfv * vfv
@@ -903,7 +903,7 @@ def _testBinOp(self):
         1
         >>> print v2Xvfv.rank
         1
-        
+
         >>> vfvXv3 = vfv * (2,1,0) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
@@ -951,7 +951,7 @@ def _testBinOp(self):
         1
 
     rank-1 `FaceVariable` * `Variable` Vector
-        
+
         >>> vfvXv2v = vfv * Variable(value=(3,2))
         >>> print vfvXv2v
         [[ 0  3  6  9  3  6  9 18  6  3]
@@ -968,7 +968,7 @@ def _testBinOp(self):
         1
         >>> print v2vXvfv.rank
         1
-        
+
         >>> vfvXv3v = vfv * Variable(value=(2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
@@ -995,8 +995,8 @@ def _testBinOp(self):
         1
         >>> print v10vXvfv.rank
         1
-        
-        
+
+
     Scalar * `Variable` Scalar
 
         >>> sXsv = 3 * Variable(value=3)
@@ -1011,7 +1011,7 @@ def _testBinOp(self):
         1
 
     Scalar * `Variable` Vector
-        
+
         >>> sXv2v = 3 * Variable(value=(3,2))
         >>> print sXv2v
         [9 6]
@@ -1022,9 +1022,9 @@ def _testBinOp(self):
         [9 6]
         >>> print isinstance(v2vXs, Variable)
         1
-        
-        
-        
+
+
+
     Vector * `Variable` Scalar
 
         >>> vXsv = (3, 2) * Variable(value=3)
@@ -1039,7 +1039,7 @@ def _testBinOp(self):
         1
 
     Vector * `Variable` Vector
-        
+
         >>> vXv2v = (3, 2) * Variable(value=(3,2))
         >>> print vXv2v
         [9 4]
@@ -1059,7 +1059,7 @@ def _testBinOp(self):
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        
+
 
     `Variable` Scalar * `Variable` Scalar
 
@@ -1070,7 +1070,7 @@ def _testBinOp(self):
         1
 
     `Variable` Scalar * `Variable` Vector
-        
+
         >>> svXv2v = Variable(value=3) * Variable(value=(3,2))
         >>> print svXv2v
         [9 6]
@@ -1082,15 +1082,15 @@ def _testBinOp(self):
         >>> print isinstance(v2vXsv, Variable)
         1
 
-        
+
     `Variable` Vector * `Variable` Vector
-        
+
         >>> v2vXv2v = Variable(value=(3, 2)) * Variable(value=(3,2))
         >>> print v2vXv2v
         [9 4]
         >>> print isinstance(v2vXv2v, Variable)
         1
-        
+
         >>> v3vXv2v = Variable(value=(3, 2, 1)) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
@@ -1121,7 +1121,7 @@ def _testBinOp(self):
     requested.  The request is caused by the Variable requiring
     its unit to see whether it can do an inline calculation in
     `_UnaryOperatorVariable()`.
-    
+
         >>> T = Variable()
         >>> from fipy import numerix
         >>> v = numerix.exp(-T / (1. *  T))
@@ -1146,7 +1146,7 @@ def _testBinOp(self):
         >>> v0[1] = 0.5
         >>> print v
         [ 1.   0.5]
-        
+
     Test inline indexing
 
         >>> mesh = Grid2D(nx=3, ny=3)
@@ -1164,9 +1164,9 @@ def _testBinOp(self):
     """
     pass
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     _test()

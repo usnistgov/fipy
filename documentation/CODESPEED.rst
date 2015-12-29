@@ -47,14 +47,14 @@ be named default).  Once all of that is created, you can view the data
 on the Changes page and see the data as a plot on the Timeline view.
 
 The benchmarks we've chosen for our benchmarking are:
-    1. Initialization time, which times from the beginning through the 
+    1. Initialization time, which times from the beginning through the
        creation of mesh and the other variables up to the first loop.
     2. First timestep; the first iteration can take significantly longer than the rest,
        so this needs to be measured separately from the rest
-    3. Average of the rest of the timesteps; be advised, this benchmark is misleading in that 
-       the way that the benchmarks are measured is such that it may actually be 
-       'hitting the stopwatch' multiple times per loop iteration, 
-       so while the average may be, for example, 5 seconds, 
+    3. Average of the rest of the timesteps; be advised, this benchmark is misleading in that
+       the way that the benchmarks are measured is such that it may actually be
+       'hitting the stopwatch' multiple times per loop iteration,
+       so while the average may be, for example, 5 seconds,
        it may turn out that each iteration actually takes 20 seconds.
     4. Total runtime of example.
 
@@ -69,31 +69,31 @@ Codespeed user friendly, but there are some things that need to be
 done that won't happen automatically.  Here is an example dictionary
 for uploading data::
 
-     data = { 
-     	  'commitid': '14', 
-    	  'branch': 'default',#Always use default for trunk/master/tip 
-    	  'project': 'Test', 
-	  'executable': 'myexe O3 64bits', 
-          'benchmark': 'float', 
-	  'environment': "Test", 
-          'result_value': 4000, 
-	  } 
+     data = {
+     	  'commitid': '14',
+    	  'branch': 'default',#Always use default for trunk/master/tip
+    	  'project': 'Test',
+	  'executable': 'myexe O3 64bits',
+          'benchmark': 'float',
+	  'environment': "Test",
+          'result_value': 4000,
+	  }
 
-	  # Optional fields 
-	  data.update({ 
-    	  	'revision_date': None, # Optional. Default is taken either 
-                           # from VCS integration or from current date 
-    		'result_date': current_date, # Optional, default is current date 
-    		'std_dev': 1.11111, # Optional. Default is blank 
-    		'max': 4001.6, # Optional. Default is blank 
-    		'min': 3995.1, # Optional. Default is blank 
-	  }) 
+	  # Optional fields
+	  data.update({
+    	  	'revision_date': None, # Optional. Default is taken either
+                           # from VCS integration or from current date
+    		'result_date': current_date, # Optional, default is current date
+    		'std_dev': 1.11111, # Optional. Default is blank
+    		'max': 4001.6, # Optional. Default is blank
+    		'min': 3995.1, # Optional. Default is blank
+	  })
 
 As I've mentioned, the date has to be in the form of current_date.
 Luckily, commitid, branch, project, executable, and benchmark will all
 be created for you if they do not already exist.  However, environment
 must already exist or there will be an error message. Set environment to
-whatever computer is running the test. All of these can 
+whatever computer is running the test. All of these can
 be created in the admin page of Codespeed.
 
 Codespeed is quite customizable but all of that is in Java, so beyond

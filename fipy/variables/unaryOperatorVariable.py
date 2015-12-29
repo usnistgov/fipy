@@ -1,7 +1,7 @@
 ## -*-Pyth-*-
  # #############################################################################
  # FiPy - a finite volume PDE solver in Python
- # 
+ #
  # FILE: "unaryOperatorVariable.py"
  #
  # Author: Jonathan Guyer <guyer@nist.gov>
@@ -9,7 +9,7 @@
  # Author: James Warren   <jwarren@nist.gov>
  #   mail: NIST
  #    www: <http://www.ctcms.nist.gov/fipy/>
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
  # and Technology by employees of the Federal Government in the course
@@ -20,13 +20,13 @@
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
+ #
  # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are 
+ # provided that any derivative works bear some notice that they are
  # derived from it, and any modified versions bear some notice that
  # they have been modified.
  # ========================================================================
- # 
+ #
  # #############################################################################
  ##
 
@@ -46,7 +46,7 @@ def _UnaryOperatorVariable(operatorClass=None):
     >>> for v in vs:
     ...     (f, n) = dump.write(-v)
     ...     tmp += [dump.read(n)]
-    ...     if f is not None: 
+    ...     if f is not None:
     ...         os.close(f)
     ...         os.remove(n)
     >>> for v in tmp:
@@ -61,7 +61,7 @@ def _UnaryOperatorVariable(operatorClass=None):
     >>> print tmp[2].allclose(-4.)
     True
     """
-    
+
     class unOp(operatorClass):
         def _calcValue_(self):
             return self.op(self.var[0].value)
@@ -76,12 +76,12 @@ def _UnaryOperatorVariable(operatorClass=None):
                     return self._extractUnit(self._calcValue())
             else:
                 return self._unit
-            
+
     return unOp
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test()   
+
+if __name__ == "__main__":
+    _test()
