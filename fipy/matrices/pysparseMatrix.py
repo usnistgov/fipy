@@ -82,14 +82,14 @@ class _PysparseMatrix(_SparseMatrix):
             >>> L = _PysparseMatrixFromShape(rows=3, cols=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print L + _PysparseIdentityMatrix(size=3)
-             1.000000  10.000000   3.000000
-                ---     4.141593      ---
-             2.500000      ---     1.000000
+             1.000000  10.000000   3.000000  
+                ---     4.141593      ---    
+             2.500000      ---     1.000000  
 
             >>> print L + 0
-                ---    10.000000   3.000000
-                ---     3.141593      ---
-             2.500000      ---        ---
+                ---    10.000000   3.000000  
+                ---     3.141593      ---    
+             2.500000      ---        ---    
 
             >>> print L + 3
             Traceback (most recent call last):
@@ -191,9 +191,9 @@ class _PysparseMatrix(_SparseMatrix):
             >>> L = _PysparseMatrixFromShape(rows=3, cols=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print L
-                ---    10.000000   3.000000
-                ---     3.141593      ---
-             2.500000      ---        ---
+                ---    10.000000   3.000000  
+                ---     3.141593      ---    
+             2.500000      ---        ---    
         """
         self.matrix.put(vector, id1, id2)
 
@@ -204,14 +204,14 @@ class _PysparseMatrix(_SparseMatrix):
             >>> L = _PysparseMatrixFromShape(rows=3, cols=3)
             >>> L.putDiagonal([3.,10.,numerix.pi])
             >>> print L
-             3.000000      ---        ---
-                ---    10.000000      ---
-                ---        ---     3.141593
+             3.000000      ---        ---    
+                ---    10.000000      ---    
+                ---        ---     3.141593  
             >>> L.putDiagonal([10.,3.])
             >>> print L
-            10.000000      ---        ---
-                ---     3.000000      ---
-                ---        ---     3.141593
+            10.000000      ---        ---    
+                ---     3.000000      ---    
+                ---        ---     3.141593  
         """
         if type(vector) in [type(1), type(1.)]:
             ids = numerix.arange(self._shape[0])
@@ -239,9 +239,9 @@ class _PysparseMatrix(_SparseMatrix):
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
             >>> print L
-            12.300000  10.000000   3.000000
-                ---     3.141593   2.960000
-             2.500000      ---     2.200000
+            12.300000  10.000000   3.000000  
+                ---     3.141593   2.960000  
+             2.500000      ---     2.200000  
         """
         self.matrix.update_add_at(vector, id1, id2)
 
@@ -404,9 +404,9 @@ class _PysparseIdentityMatrix(_PysparseMatrixFromShape):
         """Create a sparse matrix with '1' in the diagonal
 
             >>> print _PysparseIdentityMatrix(size=3)
-             1.000000      ---        ---
-                ---     1.000000      ---
-                ---        ---     1.000000
+             1.000000      ---        ---    
+                ---     1.000000      ---    
+                ---        ---     1.000000  
         """
         _PysparseMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth = 1)
         ids = numerix.arange(size)
@@ -420,9 +420,9 @@ class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
             >>> from fipy.tools import serialComm
             >>> mesh = Grid1D(nx=3, communicator=serialComm)
             >>> print _PysparseIdentityMeshMatrix(mesh=mesh)
-             1.000000      ---        ---
-                ---     1.000000      ---
-                ---        ---     1.000000
+             1.000000      ---        ---    
+                ---     1.000000      ---    
+                ---        ---     1.000000  
         """
         _PysparseIdentityMatrix.__init__(self, size=mesh.numberOfCells)
 
