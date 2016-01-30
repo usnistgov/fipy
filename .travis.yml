@@ -1,0 +1,49 @@
+# language: python causes grief on osx
+language: generic
+os:
+  - osx
+  # - linux
+env:
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=trilinos
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos
+  - TRAVIS_PYTHON_VERSION=3.4 MPIRUN= FIPY_SOLVERS=scipy
+  # - TRAVIS_PYTHON_VERSION=3.5 MPIRUN= FIPY_SOLVERS=scipy
+branches:
+  except:
+    - nist-pages
+before_install:
+  # - sudo apt-get update
+  # We do this conditionally because it saves us some downloading if the
+  # version is the same.
+  - PY3K=$(echo "$TRAVIS_PYTHON_VERSION >= 3.0" | bc)
+  - if [[ $PY3K -eq 1 ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh;
+    else
+      wget https://repo.continuum.io/miniconda/Miniconda-latest-MacOSX-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
+  - source activate test-environment
+  # stipulate numpy 1.9 because mayavi hasn't been build for 1.10 and 
+  # doesn't have a public conda recipe
+  - conda install --channel guyer numpy==1.9 scipy pip gmsh
+  - if [[ $PY3K -eq 0 ]]; then
+      conda install --channel guyer numpy==1.9 pysparse  mayavi openmpi trilinos mpi4py;
+    fi
+  # Useful for debugging any issues with conda
+  - conda info -a
+  - pip install scikit-fmm
+install:
+  - if [[ $PY3K -eq 1 ]]; then
+      2to3 --write . &> /dev/null;
+      2to3 --write --doctests_only . &> /dev/null;
+    fi
+  - python setup.py install
+script:
+ $MPIRUN python setup.py test 
