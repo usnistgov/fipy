@@ -240,7 +240,14 @@ def getVersion():
             # ticket:475 - fix for bytecode received in Py3k
             # http://jeetworks.org/node/67
             out = out.decode("utf-8")
-            version = out.strip().replace('version-', '').replace('_', '.').replace('-', '-dev', 1)
+            # convert git long-form version string, e.g., "version-3_1_1-127-g413ed61",
+            # into PEP 440 version, e.g., "3.1.1.dev127+g413ed61"
+            version = out.strip().split("-")
+            suffix = version[2:]
+            version = ".".join(version[1].split("_"))
+            if suffix:
+                dev, sha = suffix
+                version = "%s.dev%s+%s" % (version, dev, sha)
         except OSError:
             import warnings
             warnings.warn("Could not run ``git describe``")
