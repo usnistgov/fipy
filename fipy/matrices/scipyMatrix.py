@@ -96,14 +96,14 @@ class _ScipyMatrix(_SparseMatrix):
             >>> L = _ScipyMatrixFromShape(size=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print L + _ScipyIdentityMatrix(size=3)
-             1.000000  10.000000   3.000000
-                ---     4.141593      ---
-             2.500000      ---     1.000000
+             1.000000  10.000000   3.000000  
+                ---     4.141593      ---    
+             2.500000      ---     1.000000  
 
             >>> print L + 0
-                ---    10.000000   3.000000
-                ---     3.141593      ---
-             2.500000      ---        ---
+                ---    10.000000   3.000000  
+                ---     3.141593      ---    
+             2.500000      ---        ---    
 
             >>> print L + 3
             Traceback (most recent call last):
@@ -199,9 +199,9 @@ class _ScipyMatrix(_SparseMatrix):
             >>> L = _ScipyMatrixFromShape(size=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print L
-                ---    10.000000   3.000000
-                ---     3.141593      ---
-             2.500000      ---        ---
+                ---    10.000000   3.000000  
+                ---     3.141593      ---    
+             2.500000      ---        ---    
         """
         assert(len(id1) == len(id2) == len(vector))
 
@@ -218,14 +218,14 @@ class _ScipyMatrix(_SparseMatrix):
             >>> L = _ScipyMatrixFromShape(size=3)
             >>> L.putDiagonal([3.,10.,numerix.pi])
             >>> print L
-             3.000000      ---        ---
-                ---    10.000000      ---
-                ---        ---     3.141593
+             3.000000      ---        ---    
+                ---    10.000000      ---    
+                ---        ---     3.141593  
             >>> L.putDiagonal([10.,3.])
             >>> print L
-            10.000000      ---        ---
-                ---     3.000000      ---
-                ---        ---     3.141593
+            10.000000      ---        ---    
+                ---     3.000000      ---    
+                ---        ---     3.141593  
         """
         if type(vector) in [int, float]:
             vector = numerix.repeat(vector, self._shape[0])
@@ -246,9 +246,9 @@ class _ScipyMatrix(_SparseMatrix):
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
             >>> print L
-            12.300000  10.000000   3.000000
-                ---     3.141593   2.960000
-             2.500000      ---     2.200000
+            12.300000  10.000000   3.000000  
+                ---     3.141593   2.960000  
+             2.500000      ---     2.200000  
         """
         assert(len(id1) == len(id2) == len(vector))
 
@@ -393,9 +393,9 @@ class _ScipyIdentityMatrix(_ScipyMatrixFromShape):
         Create a sparse matrix with '1' in the diagonal
 
             >>> print _ScipyIdentityMatrix(size=3)
-             1.000000      ---        ---
-                ---     1.000000      ---
-                ---        ---     1.000000
+             1.000000      ---        ---    
+                ---     1.000000      ---    
+                ---        ---     1.000000  
         """
         _ScipyMatrixFromShape.__init__(self, size=size, bandwidth = 1)
         ids = numerix.arange(size)
@@ -410,9 +410,9 @@ class _ScipyIdentityMeshMatrix(_ScipyIdentityMatrix):
             >>> from fipy.tools import serialComm
             >>> mesh = Grid1D(nx=3, communicator=serialComm)
             >>> print _ScipyIdentityMeshMatrix(mesh=mesh)
-             1.000000      ---        ---
-                ---     1.000000      ---
-                ---        ---     1.000000
+             1.000000      ---        ---    
+                ---     1.000000      ---    
+                ---        ---     1.000000  
         """
         _ScipyIdentityMatrix.__init__(self, size=mesh.numberOfCells)
 
