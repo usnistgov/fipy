@@ -192,14 +192,14 @@ class _TrilinosMatrix(_SparseMatrix):
             >>> L.addAt((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L.addAt([0,0,0], [0,1,2], [0,1,2])
             >>> print L + _TrilinosIdentityMatrix(size=3)
-             1.000000  10.000000   3.000000
-                ---     4.141593      ---
-             2.500000      ---     1.000000
+             1.000000  10.000000   3.000000  
+                ---     4.141593      ---    
+             2.500000      ---     1.000000  
 
             >>> print L + 0
-                ---    10.000000   3.000000
-                ---     3.141593      ---
-             2.500000      ---        ---
+                ---    10.000000   3.000000  
+                ---     3.141593      ---    
+             2.500000      ---        ---    
 
             >>> print L + 3
             Traceback (most recent call last):
@@ -309,9 +309,9 @@ class _TrilinosMatrix(_SparseMatrix):
             >>> L = _TrilinosMatrixFromShape(rows=3, cols=3)
             >>> L.put((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> print L
-                ---    10.000000   3.000000
-                ---     3.141593      ---
-             2.500000      ---        ---
+                ---    10.000000   3.000000  
+                ---     3.141593      ---    
+             2.500000      ---        ---    
         """
 
         if hasattr(id1, 'dtype') and id1.dtype.name == 'int64':
@@ -371,14 +371,14 @@ class _TrilinosMatrix(_SparseMatrix):
             >>> L = _TrilinosMatrixFromShape(rows=3, cols=3)
             >>> L.putDiagonal((3.,10.,numerix.pi))
             >>> print L
-             3.000000      ---        ---
-                ---    10.000000      ---
-                ---        ---     3.141593
+             3.000000      ---        ---    
+                ---    10.000000      ---    
+                ---        ---     3.141593  
             >>> L.putDiagonal((10.,3.))
             >>> print L
-            10.000000      ---        ---
-                ---     3.000000      ---
-                ---        ---     3.141593
+            10.000000      ---        ---    
+                ---     3.000000      ---    
+                ---        ---     3.141593  
         """
 
 
@@ -417,9 +417,9 @@ class _TrilinosMatrix(_SparseMatrix):
             >>> L.addAt((3.,10.,numerix.pi,2.5), (0,0,1,2), (2,1,1,0))
             >>> L.addAt((1.73,2.2,8.4,3.9,1.23), (1,2,0,0,1), (2,2,0,0,2))
             >>> print L
-            12.300000  10.000000   3.000000
-                ---     3.141593   2.960000
-             2.500000      ---     2.200000
+            12.300000  10.000000   3.000000  
+                ---     3.141593   2.960000  
+             2.500000      ---     2.200000  
         """
 
         ## This was added as it seems that trilinos does not like int64 arrays
@@ -1299,9 +1299,9 @@ class _TrilinosIdentityMatrix(_TrilinosMatrixFromShape):
         Create a sparse matrix with '1' in the diagonal
 
             >>> print _TrilinosIdentityMatrix(size=3)
-             1.000000      ---        ---
-                ---     1.000000      ---
-                ---        ---     1.000000
+             1.000000      ---        ---    
+                ---     1.000000      ---    
+                ---        ---     1.000000  
         """
         _TrilinosMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth=1)
         ids = numerix.arange(size)
@@ -1315,9 +1315,9 @@ class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
             >>> from fipy import Grid1D
             >>> mesh = Grid1D(nx=3)
             >>> print _TrilinosIdentityMeshMatrix(mesh=mesh)
-             1.000000      ---        ---
-                ---     1.000000      ---
-                ---        ---     1.000000
+             1.000000      ---        ---    
+                ---     1.000000      ---    
+                ---        ---     1.000000  
         """
         _TrilinosMeshMatrix.__init__(self, mesh=mesh, bandwidth=1)
         size = mesh.numberOfCells
