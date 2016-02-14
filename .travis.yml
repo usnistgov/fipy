@@ -49,18 +49,20 @@ before_install:
   # Useful for debugging any issues with conda
   - conda info -a
   - pip install scikit-fmm
-  # lack of display causes tests to abort at VtkViewer
-  # Workaround @ http://docs.enthought.com/mayavi/mayavi/tips.html#rendering-using-the-virtual-framebuffer
-  - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
-      sudo apt-get xvfb;
-      Xvfb :1 -screen 0 1280x1024x24 -auth localhost;
-      export DISPLAY=:1;
-    fi
 install:
   - if [[ $PY3K -eq 1 ]]; then
       2to3 --write . &> /dev/null;
       2to3 --write --doctests_only . &> /dev/null;
     fi
   - python setup.py install
+before_script:
+  # lack of display causes tests to abort at VtkViewer
+  # Workaround @ http://docs.enthought.com/mayavi/mayavi/tips.html#rendering-using-the-virtual-framebuffer
+  # and https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
+  - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
+      export DISPLAY=:99.0;
+      sh -e /etc/init.d/xvfb start
+      sleep 3 # give xvfb some time to start
+    fi
 script:
  $MPIRUN python setup.py test 
