@@ -15,7 +15,7 @@ branches:
     - nist-pages
 before_install:
   - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
-      sudo apt-get update
+      sudo apt-get update;
     fi
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
