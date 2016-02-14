@@ -61,8 +61,8 @@ before_script:
   # and https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
   - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
       export DISPLAY=:99.0;
-      sh -e /etc/init.d/xvfb start
-      sleep 3 # give xvfb some time to start
+      sh -e /etc/init.d/xvfb start;
+      sleep 3;
     fi
 script:
  $MPIRUN python setup.py test 
