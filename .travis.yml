@@ -21,14 +21,14 @@ before_install:
   # version is the same.
   - PY3K=$(echo "$TRAVIS_PYTHON_VERSION >= 3.0" | bc)
   - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
-      set MINICONDA_OS_NAME=Linux;
+      export MINICONDA_OS_NAME=Linux;
     elif [[ $TRAVIS_OS_NAME -eq "osx" ]]; then
-      set MINICONDA_OS_NAME=MacOSX;
+      export MINICONDA_OS_NAME=MacOSX;
     fi
   - if [[ $PY3K -eq 1 ]]; then
-      set MINICONDA_VERSION=3;
+      export MINICONDA_VERSION=3;
     else
-      set MINICONDA_VERSION=;
+      export MINICONDA_VERSION=;
     fi
   - wget https://repo.continuum.io/miniconda/Miniconda${MINICONDA_VERSION}-latest-${MINICONDA_OS_NAME}-x86_64.sh -O miniconda.sh;
   - bash miniconda.sh -b -p $HOME/miniconda
