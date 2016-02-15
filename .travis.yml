@@ -12,13 +12,20 @@ env:
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos
   - TRAVIS_PYTHON_VERSION=3.4 MPIRUN= FIPY_SOLVERS=scipy
   # - TRAVIS_PYTHON_VERSION=3.5 MPIRUN= FIPY_SOLVERS=scipy
+cache: apt
+addons:
+  apt:
+    packages:
+    - libatlas-dev
+    - libatlas-base-dev
+    - liblapack-dev
+    - gfortran
 branches:
   except:
     - nist-pages
 before_install:
   - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
       sudo apt-get update;
-      sudo apt-get install liblapacke-dev;
     fi
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
