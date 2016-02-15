@@ -19,7 +19,7 @@ addons:
     - libatlas-dev
     - libatlas-base-dev
     - liblapack-dev
-    - liblapack3
+    - liblapack3gf
     - gfortran
 branches:
   except:
