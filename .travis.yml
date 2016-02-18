@@ -78,4 +78,4 @@ before_script:
 script:
  # $MPIRUN python setup.py test ;
  ls -l /usr/lib/liblapack*;
- dpkg -S liblapack.so.3;
+ dpkg -l "liblapack*";
