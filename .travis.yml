@@ -27,6 +27,7 @@ branches:
 before_install:
   - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
       sudo apt-get update;
+      ln -s /usr/lib/lapack/liblapack.so.3gf /usr/lib/lapack/liblapack.so.3
     fi
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
@@ -63,7 +64,7 @@ install:
       2to3 --write . &> /dev/null;
       2to3 --write --doctests_only . &> /dev/null;
     fi
-  # - python setup.py install
+  - python setup.py install
 before_script:
   # lack of display causes tests to abort at VtkViewer
   # Workaround @ http://docs.enthought.com/mayavi/mayavi/tips.html#rendering-using-the-virtual-framebuffer
@@ -74,6 +75,6 @@ before_script:
       sleep 3;
     fi
 script:
- # $MPIRUN python setup.py test 
+ $MPIRUN python setup.py test 
  # ls -l /usr/lib/liblapack*
- dpkg -S liblapack.so.3
+ # dpkg -S liblapack.so.3
