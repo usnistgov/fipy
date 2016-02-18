@@ -28,7 +28,7 @@ before_install:
   - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
       sudo apt-get update;
       sudo ln -s /usr/lib/lapack/liblapack.so.3gf /usr/lib/lapack/liblapack.so.3;
-      ldconfig;
+      sudo ldconfig;
     fi
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
