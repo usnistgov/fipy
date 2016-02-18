@@ -75,4 +75,5 @@ before_script:
     fi
 script:
  # $MPIRUN python setup.py test 
- ls -l /usr/lib/liblapack*
+ # ls -l /usr/lib/liblapack*
+ dpkg -S liblapack.so.3
