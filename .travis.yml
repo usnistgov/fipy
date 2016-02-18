@@ -16,19 +16,19 @@ cache: apt
 addons:
   apt:
     packages:
-    - libatlas-dev
-    - libatlas-base-dev
-    - liblapack-dev
-    - liblapack3gf
-    - gfortran
+    # - libatlas-dev
+    # - libatlas-base-dev
+    # - liblapack-dev
+    # - liblapack3gf
+    # - gfortran
 branches:
   except:
     - nist-pages
 before_install:
+  # sudo ln -s /usr/lib/lapack/liblapack.so.3gf /usr/lib/lapack/liblapack.so.3;
+  # sudo ldconfig;
   - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
       sudo apt-get update;
-      sudo ln -s /usr/lib/lapack/liblapack.so.3gf /usr/lib/lapack/liblapack.so.3;
-      sudo ldconfig;
     fi
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
@@ -76,6 +76,6 @@ before_script:
       sleep 3;
     fi
 script:
- $MPIRUN python setup.py test 
- # ls -l /usr/lib/liblapack*
- # dpkg -S liblapack.so.3
+ # $MPIRUN python setup.py test 
+ ls -l /usr/lib/liblapack*
+ dpkg -S liblapack.so.3
