@@ -63,7 +63,7 @@ install:
       2to3 --write . &> /dev/null;
       2to3 --write --doctests_only . &> /dev/null;
     fi
-  - python setup.py install
+  # - python setup.py install
 before_script:
   # lack of display causes tests to abort at VtkViewer
   # Workaround @ http://docs.enthought.com/mayavi/mayavi/tips.html#rendering-using-the-virtual-framebuffer
