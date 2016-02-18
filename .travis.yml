@@ -16,7 +16,8 @@ cache: apt
 addons:
   apt:
     packages:
-    - liblapack.so.3
+    - liblapack3
+    # - liblapack.so.3
     # - libatlas-dev
     # - libatlas-base-dev
     # - liblapack-dev
