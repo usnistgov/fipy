@@ -27,7 +27,7 @@ branches:
 before_install:
   - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
       sudo apt-get update;
-      ln -s /usr/lib/lapack/liblapack.so.3gf /usr/lib/lapack/liblapack.so.3;
+      sudo ln -s /usr/lib/lapack/liblapack.so.3gf /usr/lib/lapack/liblapack.so.3;
     fi
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
