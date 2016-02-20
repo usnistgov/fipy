@@ -6,8 +6,8 @@ os:
   # - osx
    - linux
 env:
-  # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse
+  # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy
   # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=trilinos
   # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos
   # - TRAVIS_PYTHON_VERSION=3.4 MPIRUN= FIPY_SOLVERS=scipy
@@ -55,7 +55,8 @@ before_install:
   - source activate test-environment
   # stipulate numpy 1.9 because mayavi hasn't been build for 1.10 and 
   # doesn't have a public conda recipe
-  - conda install --channel guyer numpy==1.9 nomkl scipy pip gmsh
+  # scipy 
+  - conda install --channel guyer numpy==1.9 nomkl pip gmsh
   - if [[ $PY3K -eq 0 ]]; then
       conda install --channel guyer numpy==1.9 nomkl pysparse mayavi openmpi trilinos mpi4py;
     fi
