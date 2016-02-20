@@ -55,9 +55,9 @@ before_install:
   - source activate test-environment
   # stipulate numpy 1.9 because mayavi hasn't been build for 1.10 and 
   # doesn't have a public conda recipe
-  - conda install --channel guyer numpy==1.9 scipy pip gmsh
+  - conda install --channel guyer numpy==1.9 nomkl scipy pip gmsh
   - if [[ $PY3K -eq 0 ]]; then
-      conda install --channel guyer numpy==1.9 pysparse mayavi openmpi trilinos mpi4py;
+      conda install --channel guyer numpy==1.9 nomkl pysparse mayavi openmpi trilinos mpi4py;
     fi
   # Useful for debugging any issues with conda
   - conda info -a
