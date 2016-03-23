@@ -37,6 +37,7 @@
 # ###################################################################
 ##
 
+from __future__ import print_function
 __docformat__ = 'restructuredtext'
 
 import os
@@ -80,7 +81,7 @@ register_skipper(flag="GMSH",
 def parprint(str):
     if DEBUG:
         if parallelComm.procID == 0:
-            print >> sys.stderr, str
+            print(str, file=sys.stderr)
 
 class GmshException(Exception):
     pass
@@ -98,7 +99,7 @@ def gmshVersion(communicator=parallelComm):
         while True:
             try:
                 p = Popen(["gmsh", "--version"], stderr=PIPE)
-            except OSError, e:
+            except OSError as e:
                 verStr = None
                 break
 
@@ -301,7 +302,7 @@ class GmshFile:
         elif (vertices == 5 and dimensions == 3):
             return 7 ## pyramid
         else:
-            raise MeshExportError, "Element type unsupported by Gmsh"
+            raise MeshExportError("Element type unsupported by Gmsh")
 
     def _orderVertices(self, vertexCoords, vertices):
         coordinates = nx.take(vertexCoords, vertices, axis=1)
@@ -545,7 +546,7 @@ class MSHFile(GmshFile):
         newF = os.fdopen(newF, 'w')
         try:
             self._seekForHeader(title)
-        except Exception, e:
+        except Exception as e:
             newF.close()
             os.unlink(newPath)
             raise
@@ -714,7 +715,7 @@ class MSHFile(GmshFile):
         self.elemsPath = self._isolateData("Elements")
         try:
             self.namesPath = self._isolateData("PhysicalNames")
-        except EOFError, e:
+        except EOFError as e:
             self.namesPath = None
 
         try:
@@ -919,7 +920,7 @@ class MSHFile(GmshFile):
                 self.fileobj.write(str(coords[2, i]))
                 self.fileobj.write (" \n")
             else:
-                raise MeshExportError, "Mesh has fewer than 2 or more than 3 dimensions"
+                raise MeshExportError("Mesh has fewer than 2 or more than 3 dimensions")
 
         self.fileobj.write("$EndNodes\n")
 

@@ -109,7 +109,7 @@ class Solver(object):
 
         """
         if self.__class__ is Solver:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
         self.tolerance = tolerance
         self.iterations = iterations

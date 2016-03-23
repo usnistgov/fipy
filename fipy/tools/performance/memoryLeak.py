@@ -40,6 +40,7 @@ It outputs the top 100 number of outstanding references for each
 object.
 
 """
+from __future__ import print_function
 
 __all__ = []
 
@@ -53,7 +54,7 @@ def _get_refcounts(theClass = None):
     for m in sys.modules.values():
         for sym in dir(m):
             o = getattr (m, sym)
-            if type(o) is types.ClassType:
+            if type(o) is type:
                 if theClass is not None and o is not theClass:
                     continue
                 d[o] = sys.getrefcount (o)
@@ -65,7 +66,7 @@ def _get_refcounts(theClass = None):
 
 def _print_top_N(n = 100, theClass = None):
     for n, c in _get_refcounts(theClass)[:n]:
-        print '%10d %s' % (n, c.__name__)
+        print('%10d %s' % (n, c.__name__))
 
 if __name__ == '__main__':
     print_top_N()

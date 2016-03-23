@@ -118,7 +118,7 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
               and var.rank == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "Matplotlib2DGridViewer can only display a rank-0 CellVariable with a UniformGrid2D mesh"
+            raise MeshDimensionError("Matplotlib2DGridViewer can only display a rank-0 CellVariable with a UniformGrid2D mesh")
         # this viewer can only display one variable
         return [vars[0]]
 

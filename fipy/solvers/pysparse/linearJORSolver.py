@@ -32,6 +32,7 @@
  # ###################################################################
  ##
 
+from __future__ import print_function
 __docformat__ = 'restructuredtext'
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
@@ -84,4 +85,4 @@ class LinearJORSolver(PysparseSolver):
 
             tol = max(abs(residual))
 
-            print iteration,tol
+            print(iteration,tol)

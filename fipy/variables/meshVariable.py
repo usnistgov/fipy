@@ -39,6 +39,7 @@ __all__ = []
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix
+from functools import reduce
 
 class _MeshVariable(Variable):
     """
@@ -66,7 +67,7 @@ class _MeshVariable(Variable):
             if mesh is None:
                 mesh = value.mesh
             elif mesh != value.mesh:
-                raise ValueError, "The new 'Variable' must use the same mesh as the supplied value"
+                raise ValueError("The new 'Variable' must use the same mesh as the supplied value")
 
         self.mesh = mesh
         value = self._globalToLocalValue(value)
@@ -78,13 +79,13 @@ class _MeshVariable(Variable):
             unit = None
             if isinstance(value, _MeshVariable):
                 if not isinstance(value, self._variableClass):
-                    raise TypeError, "A '%s' cannot be cast to a '%s'" % (value._variableClass.__name__,
-                                                                          self._variableClass.__name__)
+                    raise TypeError("A '%s' cannot be cast to a '%s'" % (value._variableClass.__name__,
+                                                                          self._variableClass.__name__))
                 if elementshape is not None and elementshape != value.shape[:-1]:
-                    raise ValueError, "'elementshape' != shape of elements of 'value'"
+                    raise ValueError("'elementshape' != shape of elements of 'value'")
 
                 if rank is not None and rank != value.rank:
-                    raise ValueError, "'rank' != rank of 'value'"
+                    raise ValueError("'rank' != rank of 'value'")
 
                 elementshape = value.shape[:-1]
                 array = None
@@ -95,10 +96,10 @@ class _MeshVariable(Variable):
             valueShape = numerix.getShape(value)
             if valueShape != () and valueShape[-1] == self._getShapeFromMesh(mesh)[-1]:
                 if elementshape is not None and elementshape != valueShape[:-1]:
-                    raise ValueError, "'elementshape' != shape of elements of 'value'"
+                    raise ValueError("'elementshape' != shape of elements of 'value'")
 
                 if rank is not None and rank != len(valueShape[:-1]):
-                    raise ValueError, "'rank' != rank of 'value'"
+                    raise ValueError("'rank' != rank of 'value'")
                 elementshape = valueShape[:-1]
             elif rank is None and elementshape is None:
                 elementshape = valueShape
@@ -109,7 +110,7 @@ class _MeshVariable(Variable):
         elif elementshape is None:
             elementshape = rank * (mesh.dim,)
         elif len(elementshape) != rank:
-            raise ValueError, 'len(elementshape) != rank'
+            raise ValueError('len(elementshape) != rank')
 
         self.elementshape = elementshape
 

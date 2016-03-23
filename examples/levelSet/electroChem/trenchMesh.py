@@ -33,12 +33,13 @@
  # ###################################################################
  ##
 
+from __future__ import absolute_import
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import parallelComm
-from gapFillMesh import GapFillMesh
+from .gapFillMesh import GapFillMesh
 
 class TrenchMesh(GapFillMesh):
 

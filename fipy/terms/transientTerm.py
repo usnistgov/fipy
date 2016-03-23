@@ -153,9 +153,9 @@ class TransientTerm(CellTerm):
 
     def _checkDt(self, dt):
         if dt is None:
-            raise TypeError, "`dt` must be specified."
+            raise TypeError("`dt` must be specified.")
         if numerix.getShape(dt) != ():
-            raise TypeError, "`dt` must be a single number, not a " + type(dt).__name__
+            raise TypeError("`dt` must be a single number, not a " + type(dt).__name__)
         return float(dt)
 
     def _test(self):

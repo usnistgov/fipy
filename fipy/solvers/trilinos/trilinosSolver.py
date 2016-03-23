@@ -49,7 +49,7 @@ class TrilinosSolver(Solver):
     """
     def __init__(self, *args, **kwargs):
         if self.__class__ is TrilinosSolver:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
         else:
             Solver.__init__(self, *args, **kwargs)
 

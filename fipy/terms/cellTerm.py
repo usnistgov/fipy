@@ -58,7 +58,7 @@ class CellTerm(_NonDiffusionTerm):
             coeff = _Constant(value=coeff)
 
         if isinstance(coeff, FaceVariable):
-             raise TypeError, "The coefficient can not be a FaceVariable."
+             raise TypeError("The coefficient can not be a FaceVariable.")
 
         _NonDiffusionTerm.__init__(self, coeff=coeff, var=var)
         self.coeffVectors = None
@@ -82,18 +82,18 @@ class CellTerm(_NonDiffusionTerm):
 
         if var.rank == 0:
             if shape != ():
-                raise TypeError, "The coefficient must be rank 0 for a rank 0 solution variable."
+                raise TypeError("The coefficient must be rank 0 for a rank 0 solution variable.")
 
         if shape != () and len(shape) != 2 and shape[0] != shape[1]:
-            raise TypeError, "The coefficient must be a rank-0 or rank-2 vector or a scalar value."
+            raise TypeError("The coefficient must be a rank-0 or rank-2 vector or a scalar value.")
 
         if var.rank == 1:
             if shape == ():
                 pass
             elif len(shape) != 2:
-                raise TypeError, "The coefficient must be rank 2 or rank 0 for a rank 1 solution variable."
+                raise TypeError("The coefficient must be rank 2 or rank 0 for a rank 1 solution variable.")
             elif var.shape[0] != shape[0]:
-                raise TypeError, "The coefficient (N , N) shape must match the the solution variable (N,) shape."
+                raise TypeError("The coefficient (N , N) shape must match the the solution variable (N,) shape.")
 
     def _calcCoeffVectors_(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         coeff = self._getGeomCoeff(var)

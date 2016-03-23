@@ -115,17 +115,17 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
                 viewers.append(viewer)
 
             break
-        except Exception, s:
+        except Exception as s:
             errors.append("%s: %s" % (name, s))
 
     if len(attempts) == 0:
         if FIPY_VIEWER is not None:
-            raise ImportError, "`%s` viewer not found" % FIPY_VIEWER
+            raise ImportError("`%s` viewer not found" % FIPY_VIEWER)
         else:
-            raise ImportError, "No viewers found. Run `python setup.py egg_info` or similar."
+            raise ImportError("No viewers found. Run `python setup.py egg_info` or similar.")
 
     if len(vars) > 0:
-        raise ImportError, "Failed to import a viewer: %s" % str(errors)
+        raise ImportError("Failed to import a viewer: %s" % str(errors))
 
     if len(viewers) > 1:
         return MultiViewer(viewers = viewers)

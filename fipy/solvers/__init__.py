@@ -119,7 +119,7 @@ elif solver is None:
 
 
 else:
-    raise ImportError, 'Unknown solver package %s' % solver
+    raise ImportError('Unknown solver package %s' % solver)
 
 
 from fipy.tests.doctestPlus import register_skipper

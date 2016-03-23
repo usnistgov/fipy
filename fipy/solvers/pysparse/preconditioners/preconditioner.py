@@ -47,8 +47,7 @@ class Preconditioner:
         Create a `Preconditioner` object.
         """
         if self.__class__ is Preconditioner:
-            raise NotImplementedError, \
-                  "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
     def _applyToMatrix(self, matrix):
         """

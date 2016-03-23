@@ -921,7 +921,7 @@ class Variable(object):
                     dim = (nk,nj,ni)
                     argDict['nk'] = nk
                 else:
-                    raise DimensionError, 'Impossible Dimensions'
+                    raise DimensionError('Impossible Dimensions')
 
         ## Following section makes sure that the result array has a
         ## valid typecode. If self._value is None then a typecode is

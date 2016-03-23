@@ -71,6 +71,7 @@ The result can be tested with the following code:
 0.00813776069241
 
 """
+from __future__ import print_function
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
@@ -122,7 +123,7 @@ if __name__ == '__main__':
     distanceViewer.plot()
     surfactantViewer.plot()
 
-    print 'total surfactant before:', numerix.sum(surfactantVariable * mesh.cellVolumes)
+    print('total surfactant before:', numerix.sum(surfactantVariable * mesh.cellVolumes))
 
     for step in range(steps):
         distanceVariable.updateOld()
@@ -133,7 +134,7 @@ if __name__ == '__main__':
     surfactantEquation.solve(surfactantVariable, dt=1.)
 
 
-    print 'total surfactant after:', numerix.sum(surfactantVariable * mesh.cellVolumes)
+    print('total surfactant after:', numerix.sum(surfactantVariable * mesh.cellVolumes))
 
     areas = (distanceVariable.cellInterfaceAreas < 1e-6) * 1e+10 + distanceVariable.cellInterfaceAreas
     answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
@@ -148,6 +149,6 @@ if __name__ == '__main__':
 
     error = numerix.sqrt(error / size)
 
-    print 'error:', error
+    print('error:', error)
 
     raw_input('finished')

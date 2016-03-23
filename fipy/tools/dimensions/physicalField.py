@@ -102,6 +102,7 @@ from fipy.tools.numerix import MA
 from fipy.tools.numerix import umath
 
 from fipy.tools.dimensions.NumberDict import _NumberDict
+from functools import reduce
 
 __all__ = ["PhysicalField", "PhysicalUnit"]
 
@@ -315,7 +316,7 @@ class PhysicalField(object):
             elif self.unit.isDimensionlessOrAngle() or self.unit.isInverseAngle():
                 new_value = sign1(selfValue) + sign2(other)
             else:
-                raise TypeError, str(self) + ' and ' + str(other) + ' are incompatible.'
+                raise TypeError(str(self) + ' and ' + str(other) + ' are incompatible.')
         else:
             new_value = (sign1(selfValue)
                          + sign2(other.value) * other.unit.conversionFactorTo(self.unit))
@@ -538,7 +539,7 @@ class PhysicalField(object):
             elif numerix.alltrue(other == 0) or self.unit.isDimensionlessOrAngle():
                 other = PhysicalField(value = other, unit = self.unit)
             else:
-                raise TypeError, 'Incompatible units'
+                raise TypeError('Incompatible units')
         return other.inUnitsOf(self.unit)
 
     def __getitem__(self, index):
@@ -693,7 +694,7 @@ class PhysicalField(object):
         if self.unit.isDimensionlessOrAngle():
             return self.value
         else:
-            raise TypeError, 'Numeric array value must be dimensionless'
+            raise TypeError('Numeric array value must be dimensionless')
 
     def __float__(self):
         """
@@ -727,7 +728,7 @@ class PhysicalField(object):
         if self.unit.isDimensionlessOrAngle():
             return float(self.numericValue)
         else:
-            raise TypeError, 'Not possible to convert a PhysicalField with dimensions to float'
+            raise TypeError('Not possible to convert a PhysicalField with dimensions to float')
 
     def __gt__(self,other):
         """
@@ -863,7 +864,7 @@ class PhysicalField(object):
         if self.unit.isDimensionless():
             return self.value
         else:
-            raise TypeError, 'Incompatible units'
+            raise TypeError('Incompatible units')
 
     def inUnitsOf(self, *units):
         """
@@ -1461,9 +1462,9 @@ class PhysicalUnit:
             if other == 1:
                 return self.isDimensionless()
             else:
-                raise TypeError, 'PhysicalUnits can only be compared with other PhysicalUnits'
+                raise TypeError('PhysicalUnits can only be compared with other PhysicalUnits')
         if not numerix.alltrue(self.powers == other.powers):
-            raise TypeError, 'Incompatible units'
+            raise TypeError('Incompatible units')
 
     def __eq__(self, other):
         """
@@ -1540,7 +1541,7 @@ class PhysicalUnit:
             <PhysicalUnit kB*K>
         """
         if self.offset != 0 or (isinstance(other,PhysicalUnit) and other.offset != 0):
-            raise TypeError, "cannot multiply units with non-zero offset"
+            raise TypeError("cannot multiply units with non-zero offset")
         if isinstance(other,PhysicalUnit):
             return PhysicalUnit(self.names+other.names,
                                 self.factor*other.factor,
@@ -1587,7 +1588,7 @@ class PhysicalUnit:
             <PhysicalUnit J/K>
         """
         if self.offset != 0 or (isinstance(other,PhysicalUnit) and other.offset != 0):
-            raise TypeError, "cannot divide units with non-zero offset"
+            raise TypeError("cannot divide units with non-zero offset")
         if isinstance(other,PhysicalUnit):
             return PhysicalUnit(self.names-other.names,
                                 self.factor/other.factor,
@@ -1617,7 +1618,7 @@ class PhysicalUnit:
             <PhysicalUnit 3.0/K>
         """
         if self.offset != 0 or (isinstance(other,PhysicalUnit) and other.offset != 0):
-            raise TypeError, "cannot divide units with non-zero offset"
+            raise TypeError("cannot divide units with non-zero offset")
         if isinstance(other,PhysicalUnit):
             return PhysicalUnit(other.names-self.names,
                                 other.factor/self.factor,
@@ -1658,7 +1659,7 @@ class PhysicalUnit:
             <PhysicalUnit K**2>
         """
         if self.offset != 0:
-            raise TypeError, "cannot exponentiate units with non-zero offset"
+            raise TypeError("cannot exponentiate units with non-zero offset")
         if type(other) == type(0):
             return PhysicalUnit(other*self.names, pow(self.factor, other),
                                 self.powers*other)
@@ -1689,8 +1690,8 @@ class PhysicalUnit:
                         names[_base_names[i]] = p[i]
                 return PhysicalUnit(names, f, p)
             else:
-                raise TypeError, 'Illegal exponent'
-        raise TypeError, 'Only integer and inverse integer exponents allowed'
+                raise TypeError('Illegal exponent')
+        raise TypeError('Only integer and inverse integer exponents allowed')
 
     def conversionFactorTo(self, other):
         """
@@ -1724,12 +1725,11 @@ class PhysicalUnit:
             if self.isDimensionlessOrAngle() and other.isDimensionlessOrAngle():
                 return self.factor/other.factor
             else:
-                raise TypeError, 'Incompatible units'
+                raise TypeError('Incompatible units')
         if self.offset != other.offset and self.factor != other.factor:
-            raise TypeError, \
-                  ('Unit conversion (%s to %s) cannot be expressed ' +
+            raise TypeError(('Unit conversion (%s to %s) cannot be expressed ' +
                    'as a simple multiplicative factor') % \
-                  (self.name(), other.name())
+                  (self.name(), other.name()))
         return self.factor/other.factor
 
     def conversionTupleTo(self, other): # added 1998/09/29 GPW
@@ -1742,7 +1742,7 @@ class PhysicalUnit:
             ['0.555556', '459.67']
         """
         if not numerix.alltrue(self.powers == other.powers):
-            raise TypeError, 'Incompatible units'
+            raise TypeError('Incompatible units')
 
         # let (s1,d1) be the conversion tuple from 'self' to base units
         #   (ie. (x+d1)*s1 converts a value x from 'self' to base units,
@@ -1913,7 +1913,7 @@ def _findUnit(unit):
         if unit == 1:
             unit = _unity
         else:
-            raise TypeError, str(unit) + ' is not a unit'
+            raise TypeError(str(unit) + ' is not a unit')
     return unit
 
 def _round(x):
@@ -1967,9 +1967,9 @@ def _Scale(quantity, scaling):
         dimensionless = quantity
 
     if isinstance(dimensionless,PhysicalField) and not dimensionless.unit.isDimensionless():
-        raise TypeError, repr(quantity.inBaseUnits().unit) + ' and ' \
+        raise TypeError(repr(quantity.inBaseUnits().unit) + ' and ' \
         + repr(scaling.inBaseUnits().unit) \
-        + ' are incompatible'
+        + ' are incompatible')
 
     return dimensionless
 
@@ -2021,7 +2021,7 @@ for unit in _base_units:
 
 def _addUnit(name, unit):
     if name in _unit_table:
-        raise KeyError, 'Unit ' + name + ' already defined'
+        raise KeyError('Unit ' + name + ' already defined')
     if type(unit) == type(''):
         unit = eval(unit, _unit_table)
         for cruft in ['__builtins__', '__args__']:

@@ -78,8 +78,8 @@ if sys.version_info < (2, 4):
     # Can't set __name__ in 2.3
     import new
     def _set_function_name(func, name):
-        func = new.function(func.func_code, func.func_globals,
-                            name, func.func_defaults, func.func_closure)
+        func = new.function(func.__code__, func.__globals__,
+                            name, func.__defaults__, func.__closure__)
         return func
 else:
     def _set_function_name(func, name):
@@ -114,7 +114,7 @@ class _Deprecate(object):
         old_name = self.old_name
         if old_name is None:
             try:
-                old_name = func.func_name
+                old_name = func.__name__
             except AttributeError:
                 old_name = func.__name__
         return old_name

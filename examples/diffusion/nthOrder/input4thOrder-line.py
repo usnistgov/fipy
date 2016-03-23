@@ -46,6 +46,7 @@
    1
 
 """
+from __future__ import print_function
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, Grid1D, LinearLUSolver, NthOrderBoundaryCondition, DiffusionTerm, Viewer
@@ -75,5 +76,5 @@ if __name__ == '__main__':
     viewer = Viewer(var)
     viewer.plot()
 
-    print var.allclose(mesh.cellCenters[0], atol = 10)
+    print(var.allclose(mesh.cellCenters[0], atol = 10))
     raw_input("finished")

@@ -56,7 +56,7 @@ Take the tangent of such a variable. The returned value is itself a
    >>> v = tan(var)
    >>> v
    tan(Variable(value=array(0)))
-   >>> print float(v)
+   >>> print(float(v))
    0.0
 
 Take the tangent of a int.
@@ -66,10 +66,11 @@ Take the tangent of a int.
 
 Take the tangent of an array.
 
-   >>> print tan(array((0,0,0)))
+   >>> print(tan(array((0,0,0))))
    [ 0.  0.  0.]
 
 """
+from __future__ import print_function
 
 __docformat__ = 'restructuredtext'
 
@@ -146,21 +147,21 @@ def put(arr, ids, values):
        >>> ids = MA.masked_values((2, maskValue), maskValue)
        >>> values = MA.masked_values((4, maskValue), maskValue)
        >>> put(arr, ids, values) ## this should work
-       >>> print arr
+       >>> print(arr)
        [0 0 4]
 
        >>> arr = MA.masked_values((maskValue, 5, 10), maskValue)
        >>> ids = MA.masked_values((2, maskValue), maskValue)
        >>> values = MA.masked_values((4, maskValue), maskValue)
        >>> put(arr, ids, values)
-       >>> print arr ## works as expected
+       >>> print(arr) ## works as expected
        [-- 5 4]
 
        >>> arr = MA.masked_values((maskValue, 5, 10), maskValue)
        >>> ids = MA.masked_values((maskValue, 2), maskValue)
        >>> values = MA.masked_values((4, maskValue), maskValue)
        >>> put(arr, ids, values)
-       >>> print arr ## should be [-- 5 --] maybe??
+       >>> print(arr) ## should be [-- 5 --] maybe??
        [-- 5 999999]
 
     """
@@ -239,7 +240,7 @@ def getShape(arr):
     elif type(arr) in (type(1), type(1.)):
         return ()
     else:
-        raise AttributeError, "No attribute 'shape'"
+        raise AttributeError("No attribute 'shape'")
 
 def rank(a):
     """
@@ -311,23 +312,23 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
 
 
           >>> from fipy import Variable
-          >>> print tostring(Variable((1,0,11.2345)), precision=1)
+          >>> print(tostring(Variable((1,0,11.2345)), precision=1))
           [  1.    0.   11.2]
-          >>> print tostring(array((1,2)), precision=5)
+          >>> print(tostring(array((1,2)), precision=5))
           [1 2]
-          >>> print tostring(array((1.12345,2.79)), precision=2)
+          >>> print(tostring(array((1.12345,2.79)), precision=2))
           [ 1.12  2.79]
-          >>> print tostring(1)
+          >>> print(tostring(1))
           1
-          >>> print tostring(array(1))
+          >>> print(tostring(array(1)))
           1
-          >>> print tostring(array([1.23345]), precision=2)
+          >>> print(tostring(array([1.23345]), precision=2))
           [ 1.23]
-          >>> print tostring(array([1]), precision=2)
+          >>> print(tostring(array([1]), precision=2))
           [1]
-          >>> print tostring(1.123456, precision=2)
+          >>> print(tostring(1.123456, precision=2))
           1.12
-          >>> print tostring(array(1.123456), precision=3)
+          >>> print(tostring(array(1.123456), precision=3))
           1.123
 
 
@@ -364,7 +365,7 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
             from numpy.core.arrayprint import _formatInteger
             return _formatInteger(arr, format='%d')
     else:
-        raise TypeError, 'cannot convert ' + str(arr) + ' to string'
+        raise TypeError('cannot convert ' + str(arr) + ' to string')
 
 #########################
 #                       #
@@ -390,18 +391,18 @@ def dot(a1, a2, axis=0):
     <class 'fipy.variables.cellVariable.CellVariable'>
     >>> dot(v2, v1)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
-    >>> print rank(dot(v2, v1))
+    >>> print(rank(dot(v2, v1)))
     0
-    >>> print dot(v1, v2)
+    >>> print(dot(v1, v2))
     [ 4 10]
     >>> dot(v1, v1)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
-    >>> print dot(v1, v1)
+    >>> print(dot(v1, v1))
     [ 4 10]
     >>> v3 = array(((0,1),(2,3)))
-    >>> print type(dot(v3, v3)) is type(array(1))
+    >>> print(type(dot(v3, v3)) is type(array(1)))
     1
-    >>> print dot(v3, v3)
+    >>> print(dot(v3, v3))
     [ 4 10]
     """
 
@@ -484,11 +485,11 @@ def nearest(data, points, max_mem=1e8):
     >>> from fipy import *
     >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
     >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
-    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue)
+    >>> print(nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue))
     [4 5 7 8]
-    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=100)
+    >>> print(nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=100))
     [4 5 7 8]
-    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=10000)
+    >>> print(nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=10000))
     [4 5 7 8]
     """
     data = asanyarray(data)
@@ -645,7 +646,7 @@ def take(a, indices, axis=0, fill_value=None):
     elif type(a) is type(MA.array((0))):
         taken = MA.take(a, indices, axis=axis)
     else:
-        raise TypeError, 'cannot take from %s object: %s' % (type(a), `a`)
+        raise TypeError('cannot take from %s object: %s' % (type(a), repr(a)))
 
     if fill_value is not None and type(taken) is type(MA.array((0))):
         taken = taken.filled(fill_value=fill_value)
@@ -686,7 +687,7 @@ def indices(dimensions, typecode=None):
 
 
 if not hasattr(NUMERIX, 'empty'):
-    print 'defining empty'
+    print('defining empty')
     if inline.doInline:
         def empty(shape, dtype='d', order='C'):
             """
@@ -999,7 +1000,7 @@ def _compressIndexSubspaces(index, i, broadcastshape = ()):
 
             broadcastshape = _broadcastShape(broadcastshape, element.shape)
             if broadcastshape is None:
-                raise ValueError, "shape mismatch: objects cannot be broadcast to a single shape"
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
         skip += 1
 
     return broadcastshape, skip
@@ -1136,9 +1137,9 @@ def _indexShape(index, arrayShape):
         # "If the lenth of the selection tuple is larger than N (=X.ndim) an error
         # is raised."
         if len(arrayShape) == 0:
-            raise IndexError, "0-d arrays can't be indexed"
+            raise IndexError("0-d arrays can't be indexed")
         else:
-            raise IndexError, "invalid index"
+            raise IndexError("invalid index")
     else:
         # "If the selection tuple is smaller than N, then as many ':' objects as
         # needed are added to the end of the selection tuple so that the modified
@@ -1186,7 +1187,7 @@ def _indexShape(index, arrayShape):
             indexShape += ((stop - start) // stride,)
             j += 1
         else:
-            raise IndexError, "invalid index"
+            raise IndexError("invalid index")
 
     if arrayindex is not None:
         indexShape = indexShape[:arrayindex] + broadcastshape + indexShape[arrayindex:]

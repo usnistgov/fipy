@@ -66,6 +66,7 @@ The result is again tested in the same way:
     1
 
 """
+from __future__ import print_function
 from fipy import CellVariable, Grid2D, Tri2D, TransientTerm, ExplicitDiffusionTerm, Viewer
 from fipy.tools import numerix
 
@@ -121,7 +122,7 @@ if __name__ == '__main__':
         eqn.solve(var, dt=timeStepDuration)
         if(not (step % 100)):
             print (step / 100)
-    print var
+    print(var)
     theMask = numerix.array([[10, 1, 20, 2]])
     viewer.plot()
 ##     viewer.plot(mask = theMask, graphwidth = 15, graphheight = 3)

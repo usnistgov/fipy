@@ -165,7 +165,7 @@ class AbstractMesh(object):
         if self.dim > 1:
             return self.cellCenters[1]
         else:
-            raise AttributeError, '1D meshes do not have a "y" attribute.'
+            raise AttributeError('1D meshes do not have a "y" attribute.')
 
     @property
     def z(self):
@@ -183,7 +183,7 @@ class AbstractMesh(object):
         if self.dim > 2:
             return self.cellCenters[2]
         else:
-            raise AttributeError, '1D and 2D meshes do not have a "z" attribute.'
+            raise AttributeError('1D and 2D meshes do not have a "z" attribute.')
 
     @property
     def extents(self):
@@ -326,7 +326,7 @@ class AbstractMesh(object):
         otherNumVertices = otherc.vertexCoords.shape[-1]
         ## check dimensions
         if(selfc.vertexCoords.shape[0] != otherc.vertexCoords.shape[0]):
-            raise MeshAdditionError, "Dimensions do not match"
+            raise MeshAdditionError("Dimensions do not match")
 
         ## compute vertex correlates
 
@@ -973,7 +973,7 @@ class AbstractMesh(object):
 
         """
         if isinstance(other, AbstractMesh):
-            raise TypeError, "'-' is unsupported for meshes, use '+'"
+            raise TypeError("'-' is unsupported for meshes, use '+'")
         else:
             return self._translate(-numerix.array(other))
 
@@ -1006,7 +1006,7 @@ class AbstractMesh(object):
     def _VTKCellType(self):
         try:
             from tvtk.api import tvtk
-        except ImportError, e:
+        except ImportError as e:
             from enthought.tvtk.api import tvtk
         return tvtk.ConvexPointSet().cell_type
 
@@ -1025,7 +1025,7 @@ class AbstractMesh(object):
 
         try:
             from tvtk.api import tvtk
-        except ImportError, e:
+        except ImportError as e:
             from enthought.tvtk.api import tvtk
         num = counts.shape[0]
 
@@ -1051,7 +1051,7 @@ class AbstractMesh(object):
         """
         try:
             from tvtk.api import tvtk
-        except ImportError, e:
+        except ImportError as e:
             from enthought.tvtk.api import tvtk
 
         points = self.faceCenters

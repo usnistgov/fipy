@@ -140,7 +140,7 @@ class MatplotlibVectorViewer(AbstractMatplotlib2DViewer):
                          or isinstance(var, CellVariable)) and var.rank == 1)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "The mesh must be a Mesh2D instance"
+            raise MeshDimensionError("The mesh must be a Mesh2D instance")
         # this viewer can only display one variable
         return [vars[0]]
 

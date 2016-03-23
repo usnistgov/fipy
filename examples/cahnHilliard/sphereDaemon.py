@@ -2,7 +2,7 @@ import sys
 
 try:
     from mayavi import mlab
-except ImportError, e:
+except ImportError as e:
     from enthought.mayavi import mlab
 
 from fipy.viewers.mayaviViewer.mayaviDaemon import MayaviDaemon

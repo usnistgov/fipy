@@ -42,6 +42,7 @@ import itertools
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
+from functools import reduce
 
 class _AbstractGridBuilder(object):
 

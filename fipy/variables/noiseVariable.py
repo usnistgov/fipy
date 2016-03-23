@@ -54,7 +54,7 @@ class NoiseVariable(CellVariable):
     """
     def __init__(self, mesh, name = '', hasOld = 0):
         if self.__class__ is NoiseVariable:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
         CellVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
         self.scramble()

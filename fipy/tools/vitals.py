@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import platform
 import subprocess
@@ -130,4 +131,4 @@ if __name__ == "__main__":
     solar.appendChild(v.svn("/Users/guyer/Documents/research/codes/solar-dimensionless"))
     v.appendChild(solar)
 
-    print v
+    print(v)

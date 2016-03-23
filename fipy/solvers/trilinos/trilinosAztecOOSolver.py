@@ -60,7 +60,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         """
         if self.__class__ is TrilinosAztecOOSolver:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
         TrilinosSolver.__init__(self, tolerance=tolerance,
                                 iterations=iterations, precon=None)

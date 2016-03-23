@@ -63,6 +63,7 @@ The result is again tested in the same way:
     1
 
 """
+from __future__ import print_function
 
 from fipy import CellVariable, Tri2D, TransientTerm, ExplicitDiffusionTerm, DefaultSolver, Viewer
 from fipy.tools import numerix
@@ -105,7 +106,7 @@ if __name__ == '__main__':
 
     for step in range(steps):
         eq.solve(var, solver = solver, dt = timeStepDuration)
-    print var
+    print(var)
     viewer = Viewer(vars = var)
     viewer.plot()
     raw_input('finished')

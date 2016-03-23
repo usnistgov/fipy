@@ -144,7 +144,7 @@ class _NonuniformNumPts(_AbstractNumPts):
         else:
             n = int(n or len(d))
             if n != len(d) and len(d) != 1:
-                raise IndexError, "n%s != len(d%s)" % (axis, axis)
+                raise IndexError("n%s != len(d%s)" % (axis, axis))
 
         return n
 

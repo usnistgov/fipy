@@ -1,6 +1,7 @@
 """Extract reference documentation from the NumPy source tree.
 
 """
+from __future__ import print_function
 
 import inspect
 import textwrap
@@ -113,7 +114,7 @@ class NumpyDocString(object):
         return self._parsed_data[key]
 
     def __setitem__(self,key,val):
-        if not self._parsed_data.has_key(key):
+        if key not in self._parsed_data:
             warn("Unknown section %s" % key)
         else:
             self._parsed_data[key] = val
@@ -413,10 +414,10 @@ class FunctionDoc(NumpyDocString):
             doc = inspect.getdoc(func) or ''
         try:
             NumpyDocString.__init__(self, doc)
-        except ValueError, e:
-            print '*'*78
-            print "ERROR: '%s' while parsing `%s`" % (e, self._f)
-            print '*'*78
+        except ValueError as e:
+            print('*'*78)
+            print("ERROR: '%s' while parsing `%s`" % (e, self._f))
+            print('*'*78)
             #print "Docstring follows:"
             #print doclines
             #print '='*78
@@ -429,7 +430,7 @@ class FunctionDoc(NumpyDocString):
                 argspec = inspect.formatargspec(*argspec)
                 argspec = argspec.replace('*','\*')
                 signature = '%s%s' % (func_name, argspec)
-            except TypeError, e:
+            except TypeError as e:
                 signature = '%s()' % func_name
             self['Signature'] = signature
 
@@ -451,8 +452,8 @@ class FunctionDoc(NumpyDocString):
                  'meth': 'method'}
 
         if self._role:
-            if not roles.has_key(self._role):
-                print "Warning: invalid role %s" % self._role
+            if self._role not in roles:
+                print("Warning: invalid role %s" % self._role)
             out += '.. %s:: %s\n    \n\n' % (roles.get(self._role,''),
                                              func_name)
 

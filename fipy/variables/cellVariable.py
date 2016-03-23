@@ -215,7 +215,7 @@ class CellVariable(_MeshVariable):
                                       self.grad.globalValue[...,nearestCellIDs]))
 
             else:
-                raise ValueError, 'order should be either 0 or 1'
+                raise ValueError('order should be either 0 or 1')
 
         else:
             return _MeshVariable.__call__(self)
@@ -494,7 +494,7 @@ class CellVariable(_MeshVariable):
 
         """
         if self._old is None:
-            raise AssertionError, 'The updateOld method requires the CellVariable to have an old value. Set hasOld to True when instantiating the CellVariable.'
+            raise AssertionError('The updateOld method requires the CellVariable to have an old value. Set hasOld to True when instantiating the CellVariable.')
         else:
             self._old.value = self.value.copy()
 
