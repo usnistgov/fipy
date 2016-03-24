@@ -151,4 +151,4 @@ if __name__ == '__main__':
 
     print('error:', error)
 
-    raw_input('finished')
+    input('finished')

@@ -89,4 +89,4 @@ if __name__ == '__main__':
     ##viewer7.plot(resolution = 0.2, xlabel = "X values (Z value = 7)", minval = valueFront, maxval = valueBack)
     ##raw_input("press enter to continue")
     ##viewer9.plot(resolution = 0.2, xlabel = "X values (Z value = 9)", minval = valueFront, maxval = valueBack)
-    raw_input("finished")
+    input("finished")

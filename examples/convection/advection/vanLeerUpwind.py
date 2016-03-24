@@ -117,4 +117,4 @@ if __name__ == '__main__':
 
     print('maximum absolute difference between periodic and non-periodic grids:',abs(var1[nx / 4:3 * nx / 4] - newVar2).max())
 
-    raw_input('finished')
+    input('finished')

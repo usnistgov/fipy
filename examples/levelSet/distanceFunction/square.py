@@ -101,4 +101,4 @@ if __name__ == '__main__':
     var.calcDistanceFunction(order=1)
     viewer = Viewer(vars=var, maxval=-5., minval=5.)
     viewer.plot()
-    raw_input('finished')
+    input('finished')

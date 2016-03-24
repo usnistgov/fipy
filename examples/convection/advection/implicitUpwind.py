@@ -69,11 +69,11 @@ if __name__ == '__main__':
 
     viewer = Viewer(vars=(var,))
     viewer.plot()
-    raw_input("press key to continue")
+    input("press key to continue")
     for step in range(steps):
         eq.solve(var,
                  dt = timeStepDuration,
                  solver = LinearLUSolver(tolerance = 1.e-15))
         viewer.plot()
     viewer.plot()
-    raw_input('finished')
+    input('finished')

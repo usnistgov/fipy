@@ -78,4 +78,4 @@ if __name__ == '__main__':
     DiffusionTerm().solve(var)
     viewer = Viewer(vars = var)
     viewer.plot()
-    raw_input("finished")
+    input("finished")

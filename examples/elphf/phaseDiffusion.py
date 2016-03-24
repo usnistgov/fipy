@@ -415,7 +415,7 @@ __docformat__ = 'restructuredtext'
 if __name__ == "__main__":
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    raw_input("finished")
+    input("finished")
 
 ## if __name__ == '__main__':
 ##     ## from fipy.tools.profiler.profiler import Profiler

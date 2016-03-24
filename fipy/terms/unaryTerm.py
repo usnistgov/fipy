@@ -114,7 +114,7 @@ class _UnaryTerm(Term):
              and "terms" in os.environ['FIPY_DISPLAY_MATRIX'].lower().split()):
              self._viewer.title = "%s %s" % (var.name, repr(self))
              self._viewer.plot(matrix=matrix, RHSvector=RHSvector)
-             raw_input()
+             input()
 
         return (var, matrix, RHSvector)
 

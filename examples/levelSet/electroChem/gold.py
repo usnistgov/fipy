@@ -242,4 +242,4 @@ __all__ = ["runGold"]
 
 if __name__ == '__main__':
     runGold(numberOfSteps = 300, cellSize = 0.05e-7, displayViewers=False)
-    raw_input("finished")
+    input("finished")

@@ -126,4 +126,4 @@ if __name__ == '__main__':
     theMask = numerix.array([[10, 1, 20, 2]])
     viewer.plot()
 ##     viewer.plot(mask = theMask, graphwidth = 15, graphheight = 3)
-    raw_input('finished')
+    input('finished')
