@@ -46,6 +46,7 @@ can abort whenever it has problems with::
     $ python -Werror::fipy.PreconditionerWarning myscript.py
 
 """
+from builtins import object
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
