@@ -189,10 +189,10 @@ class MayaviSurfactantViewer(AbstractViewer):
         ## making lists as pyvtk doesn't know what to do with numpy arrays
 
         coords = list(coords)
-        coords = map(lambda coord: [float(coord[0]),float(coord[1]), float(coord[2])], coords)
+        coords = [[float(coord[0]),float(coord[1]), float(coord[2])] for coord in coords]
 
         data = list(data)
-        data = map(lambda item: float(item), data)
+        data = [float(item) for item in data]
 
         return (pyvtk.UnstructuredGrid(points = coords,
                                        poly_line = lines),

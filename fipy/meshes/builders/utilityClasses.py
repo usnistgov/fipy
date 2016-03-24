@@ -155,7 +155,7 @@ class _UniformNumPts(_AbstractNumPts):
 
     @staticmethod
     def calcNs(ns, ds):
-        return map(lambda x: int(x), ns)
+        return [int(x) for x in ns]
 
 if __name__ == '__main__':
     import doctest

@@ -59,7 +59,7 @@ def _get_refcounts(theClass = None):
                     continue
                 d[o] = sys.getrefcount (o)
     # sort by refcount
-    pairs = map (lambda x: (x[1],x[0]), list(d.items()))
+    pairs = [(x[1],x[0]) for x in list(d.items())]
     pairs.sort()
     pairs.reverse()
     return pairs

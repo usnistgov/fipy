@@ -891,7 +891,7 @@ class PhysicalField(object):
         ...                        True)
         1
         """
-        units = map(_findUnit, units)
+        units = list(map(_findUnit, units))
         if len(units) == 1:
             unit = units[0]
             value = _convertValue (self.value, self.unit, unit)
@@ -1622,8 +1622,8 @@ class PhysicalUnit:
         if isinstance(other,PhysicalUnit):
             return PhysicalUnit(other.names-self.names,
                                 other.factor/self.factor,
-                                map(lambda a,b: a-b,
-                                    other.powers, self.powers))
+                                list(map(lambda a,b: a-b,
+                                    other.powers, self.powers)))
         else:
             return PhysicalUnit({str(other): 1}-self.names,
                                 other/self.factor,
@@ -1679,8 +1679,8 @@ class PhysicalUnit:
                 f = pow(self.factor, other)
                 p = self.powers // rounded
                 if reduce(lambda a, b: a and b,
-                          map(lambda x, e=rounded: x%e == 0,
-                              list(self.names.values()))):
+                          list(map(lambda x, e=rounded: x%e == 0,
+                              list(self.names.values())))):
                     names = self.names // rounded
                 else:
                     names = _NumberDict()
