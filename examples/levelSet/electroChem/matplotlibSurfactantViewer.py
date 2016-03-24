@@ -163,13 +163,13 @@ class MatplotlibSurfactantViewer(AbstractMatplotlibViewer):
         IDs = numerix.array([mesh._getNearestCellID(vert[...,numerix.newaxis]) for vert in verts])
 
         colors = pylab.cm.jet(( self.surfactantVar[IDs] - zmin) / (zmax - zmin))
-        segments = zip(verts[:-1], verts[1:])
+        segments = list(zip(verts[:-1], verts[1:]))
         LC = matplotlib.collections.LineCollection(segments, colors=colors)
 
 #         CS.ax.add_collection(LC)
 
         verts = numerix.array((-verts[...,0], verts[..., 1])).swapaxes(0,1)
-        segments = zip(verts[:-1], verts[1:])
+        segments = list(zip(verts[:-1], verts[1:]))
         LC = matplotlib.collections.LineCollection(segments, colors=colors)
 
 #         CS.ax.add_collection(LC)

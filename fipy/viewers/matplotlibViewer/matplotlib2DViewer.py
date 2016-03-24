@@ -105,7 +105,7 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
                 x = x.compressed()
             if hasattr(y, 'mask'):
                 y = y.compressed()
-            polys.append(zip(x,y))
+            polys.append(list(zip(x,y)))
 
         from matplotlib.collections import PolyCollection
         self.collection = PolyCollection(polys)
