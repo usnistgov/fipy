@@ -1,3 +1,4 @@
+from builtins import object
 ## -*-Pyth-*-
  # ########################################################################
  # FiPy - a finite volume PDE solver in Python
@@ -34,7 +35,7 @@ __docformat__ = 'restructuredtext'
 
 __all__ = ["Stepper"]
 
-class Stepper:
+class Stepper(object):
     def __init__(self, vardata=()):
         self.vardata = vardata
 

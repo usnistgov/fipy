@@ -1,3 +1,4 @@
+from builtins import object
 #!/usr/bin/env python
 
 ##
@@ -38,7 +39,7 @@ __docformat__ = 'restructuredtext'
 
 __all__ = ["Preconditioner"]
 
-class Preconditioner:
+class Preconditioner(object):
     """
     The base Preconditioner class.
 

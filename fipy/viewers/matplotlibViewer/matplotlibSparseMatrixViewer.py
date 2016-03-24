@@ -1,4 +1,5 @@
 from __future__ import print_function
+from builtins import object
 ## -*-Pyth-*-
  # #############################################################################
  # FiPy - a finite volume PDE solver in Python
@@ -190,7 +191,7 @@ class SignedLogLocator(ticker.LogLocator):
 
         return nonsingular(vmin, vmax)
 
-class MatplotlibSparseMatrixViewer:
+class MatplotlibSparseMatrixViewer(object):
     def __init__(self, title="Sparsity"):
         self.title = title
 

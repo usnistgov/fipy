@@ -272,7 +272,7 @@ def openPOSFile(name, communicator=parallelComm, mode='w'):
                    communicator=communicator,
                    mode=mode)
 
-class GmshFile:
+class GmshFile(object):
     def __init__(self, filename, communicator, mode, fileIsTemporary=False):
         self.filename = filename
         self.communicator = communicator

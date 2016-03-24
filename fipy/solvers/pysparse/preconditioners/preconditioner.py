@@ -1,3 +1,4 @@
+from builtins import object
 #!/usr/bin/env python
 
 ## -*-Pyth-*-
@@ -35,7 +36,7 @@
 
 __all__ = ["Preconditioner"]
 
-class Preconditioner:
+class Preconditioner(object):
     """
     Base preconditioner class
 

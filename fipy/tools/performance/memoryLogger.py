@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
+from builtins import object
 from builtins import range
 import os
 import select
@@ -39,7 +40,7 @@ class MemoryHighWaterThread(threading.Thread):
 
         return self.maxMem
 
-class MemoryLogger:
+class MemoryLogger(object):
     def __init__(self, sampleTime = 1):
         self.pid = os.getpid()
 

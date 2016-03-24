@@ -1,3 +1,4 @@
+from builtins import object
 #!/usr/bin/env python
 
 ## -*-Pyth-*-
@@ -37,7 +38,7 @@ from pyamg import smoothed_aggregation_solver
 
 __all__ = ["SmoothedAggregationPreconditioner"]
 
-class SmoothedAggregationPreconditioner():
+class SmoothedAggregationPreconditioner(object):
     def __init__(self):
         pass
 

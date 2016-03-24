@@ -1419,7 +1419,7 @@ class PhysicalField(object):
         other = self._inMyUnits(other)
         return MA.allequal(self.value, other.value)
 
-class PhysicalUnit:
+class PhysicalUnit(object):
     """
     A `PhysicalUnit` represents the units of a `PhysicalField`.
     """

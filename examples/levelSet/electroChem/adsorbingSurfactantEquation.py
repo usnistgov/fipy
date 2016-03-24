@@ -1,3 +1,4 @@
+from builtins import object
 #!/usr/bin/env python
 
 ##
@@ -41,7 +42,7 @@ from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.variables.surfactantConvectionVariable import SurfactantConvectionVariable
 from fipy.terms.transientTerm import TransientTerm
 
-class AdsorbingSurfactantEquation():
+class AdsorbingSurfactantEquation(object):
     r"""
 
     The `AdsorbingSurfactantEquation` object solves the
