@@ -747,7 +747,7 @@ while (return_val.refcount() > 1) {
 """
 
             return weave.inline(code,
-                         local_dict.keys(),
+                         list(local_dict.keys()),
                          local_dict=local_dict,
                          type_converters=weave.converters.blitz,
                          compiler='gcc',
