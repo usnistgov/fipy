@@ -33,6 +33,7 @@
  ##
 
 from __future__ import print_function
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver

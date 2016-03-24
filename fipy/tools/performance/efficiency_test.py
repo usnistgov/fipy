@@ -36,6 +36,7 @@
  ##
 
 from __future__ import print_function
+from builtins import range
 from distutils.core import Command
 import os
 import sys

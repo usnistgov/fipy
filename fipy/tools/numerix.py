@@ -71,6 +71,7 @@ Take the tangent of an array.
 
 """
 from __future__ import print_function
+from builtins import range
 
 __docformat__ = 'restructuredtext'
 
@@ -881,7 +882,7 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
             vals = line.split(delimiter)
             if converterseq is None:
                converterseq = [converters.get(j,defconv) \
-                               for j in xrange(len(vals))]
+                               for j in range(len(vals))]
             if usecols is not None:
                 row = [converterseq[j](vals[j]) for j in usecols]
             else:

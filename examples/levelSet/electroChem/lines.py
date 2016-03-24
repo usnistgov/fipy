@@ -1,3 +1,4 @@
+from builtins import range
 93#!/usr/bin/env python
 
 ## -*-Pyth-*-

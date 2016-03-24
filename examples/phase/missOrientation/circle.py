@@ -87,6 +87,7 @@ data and compares it with the ``phase`` variable.
 1
 
 """
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, ModularVariable, Grid2D, TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, Viewer

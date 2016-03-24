@@ -1,3 +1,4 @@
+from builtins import range
 #!/usr/bin/env python
 
 ## -*-Pyth-*-
@@ -116,7 +117,7 @@ class _TrilinosMatrix(_SparseMatrix):
 
     @property
     def _range(self):
-        return (range(self.rowMap.NumGlobalElements()), self.rowMap.MyGlobalElements())
+        return (list(range(self.rowMap.NumGlobalElements())), self.rowMap.MyGlobalElements())
 
     def __setitem__(self, index, value):
         self.matrix[index] = value
@@ -552,12 +553,12 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
             # Matrix building gets done on one processor - it gets the map for
             # all the rows
             if comm.MyPID() == 0:
-                rowMap = Epetra.Map(rows, range(0, rows), 0, comm)
+                rowMap = Epetra.Map(rows, list(range(0, rows)), 0, comm)
             else:
                 rowMap = Epetra.Map(rows, [], 0, comm)
 
         if colMap is None:
-           colMap = Epetra.Map(cols, range(0, cols), 0, comm)
+           colMap = Epetra.Map(cols, list(range(0, cols)), 0, comm)
 
         matrix = Epetra.CrsMatrix(Epetra.Copy, rowMap, (bandwidth*3)//2)
 
@@ -636,7 +637,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
     @property
     def _globalCommonColIDs(self):
-        return range(0, self.numberOfVariables, self.mesh.globalNumberOfCells)
+        return list(range(0, self.numberOfVariables, self.mesh.globalNumberOfCells))
 
     @property
     def _globalOverlappingColIDs(self):

@@ -67,6 +67,7 @@ The result is again tested in the same way:
 
 """
 from __future__ import print_function
+from builtins import range
 from fipy import CellVariable, Grid2D, Tri2D, TransientTerm, ExplicitDiffusionTerm, Viewer
 from fipy.tools import numerix
 

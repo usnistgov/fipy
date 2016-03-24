@@ -85,6 +85,7 @@ data and compares it with the ``theta`` variable.
 >>> print phase.allclose(testData)
 1
 """
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, ModularVariable, Grid1D, TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, Viewer

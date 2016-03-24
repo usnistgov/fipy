@@ -62,6 +62,7 @@ should do better than this.
 1
 """
 from __future__ import print_function
+from builtins import range
 
 __docformat__ = 'restructuredtext'
 

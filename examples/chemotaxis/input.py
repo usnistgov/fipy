@@ -58,6 +58,7 @@ Here are some test cases for the model.
     1
 
 """
+from builtins import range
 
 from examples.chemotaxis.parameters import parameters
 

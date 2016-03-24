@@ -89,6 +89,7 @@ Test for the correct position of the interface:
 
 """
 from __future__ import print_function
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer

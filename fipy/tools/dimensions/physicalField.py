@@ -93,6 +93,7 @@ recommended values from CODATA_. Other conversion factors
 .. _CODATA:                                     http://www.codata.org/
 .. _Appendix B of NIST Special Publication 811: http://physics.nist.gov/Pubs/SP811/appenB9.html
 """
+from builtins import range
 from builtins import object
 __docformat__ = 'restructuredtext'
 
@@ -980,7 +981,7 @@ class PhysicalField(object):
             new_value = self.value
         num = ''
         denom = ''
-        for i in xrange(9):
+        for i in range(9):
             unit = _base_names[i]
             power = self.unit.powers[i]
             if power < 0:

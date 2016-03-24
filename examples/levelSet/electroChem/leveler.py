@@ -210,6 +210,7 @@ can be obtained by running this example.
     :sort:
 """
 from __future__ import absolute_import
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, TransientTerm, FirstOrderAdvectionTerm, GeneralSolver, Viewer

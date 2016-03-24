@@ -1,3 +1,4 @@
+from builtins import range
 #!/usr/bin/env python
 
 ##
@@ -185,7 +186,7 @@ class Mesh(AbstractMesh):
         faceOrigins = numerix.repeat(faceVertexCoords[:,0], faceVertexIDs.shape[0], axis=0)
         faceOrigins = numerix.reshape(faceOrigins, MA.shape(faceVertexCoords))
         faceVertexCoords = faceVertexCoords - faceOrigins
-        left = range(faceVertexIDs.shape[0])
+        left = list(range(faceVertexIDs.shape[0]))
         right = left[1:] + [left[0]]
         cross = numerix.sum(numerix.cross(faceVertexCoords,
                                           numerix.take(faceVertexCoords, right, 1),
