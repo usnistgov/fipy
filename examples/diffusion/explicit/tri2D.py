@@ -59,7 +59,7 @@ The result is again tested in the same way:
 
     >>> Lx = nx * dx
     >>> x = mesh.cellCenters[0]
-    >>> print var.allclose(answer, rtol = 1e-8)
+    >>> print(var.allclose(answer, rtol = 1e-8))
     1
 
 """

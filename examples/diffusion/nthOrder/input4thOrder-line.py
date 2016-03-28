@@ -42,7 +42,7 @@
    example, multigrid preconditioners such as those provided by Trilinos allow
    a more accurate solution.
 
-   >>> print var.allclose(mesh.cellCenters[0], atol = 10)
+   >>> print(var.allclose(mesh.cellCenters[0], atol = 10))
    1
 
 """

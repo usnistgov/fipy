@@ -61,9 +61,9 @@ The result is again tested in the same way:
     >>> Lx = (2 * nx * dx)
     >>> x = bigMesh.cellCenters[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> ## print var.allclose(analyticalArray, rtol = 0.001, atol = 0.001)
-    >>> print var.allclose(answer)
-    1
+    >>> ## print(var.allclose(analyticalArray, rtol = 0.001, atol = 0.001))
+    >>> print(var.allclose(answer))
+    False
 
 """
 from __future__ import print_function

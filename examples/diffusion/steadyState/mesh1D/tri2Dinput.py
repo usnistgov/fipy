@@ -62,7 +62,7 @@ compare with the numerical result,
 Finally the analytical and numerical results are compared with a
 tolerance of `1e-10`.
 
-    >>> print var.allclose(analyticalArray)
+    >>> print(var.allclose(analyticalArray))
     1
 
 """
