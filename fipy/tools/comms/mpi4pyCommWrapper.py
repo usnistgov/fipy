@@ -68,8 +68,8 @@ class Mpi4pyCommWrapper(CommWrapper):
     def allequal(self, a, b):
         return self.mpi4py_comm.allreduce(numerix.allequal(a, b), op=self.MPI.LAND)
 
-    def bcast(self, obj=None, root=0):
+    def bcast(self, obj, root=0):
         return self.mpi4py_comm.bcast(obj=obj, root=root)
 
-    def allgather(self, sendobj=None, recvobj=None):
-        return self.mpi4py_comm.allgather(sendobj=sendobj, recvobj=recvobj)
+    def allgather(self, obj):
+        return self.mpi4py_comm.allgather(sendobj=obj)
