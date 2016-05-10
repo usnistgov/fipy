@@ -76,16 +76,11 @@ class CommWrapper(object):
     def allequal(self, a, b):
         return numerix.allequal(a, b)
 
-    def bcast(self, obj=None, root=0):
+    def bcast(self, obj, root=0):
         return obj
 
-    def allgather(self, sendobj=None, recvobj=None):
-        if recvobj is not None:
-            recvobj[:] = sendobj
-        else:
-            recvobj = sendobj
-
-        return recvobj
+    def allgather(self, obj):
+        return obj
 
     def sum(self, a, axis=None):
         summed = numerix.array(a).sum(axis=axis)
