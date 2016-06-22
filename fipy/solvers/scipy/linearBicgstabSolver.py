@@ -45,7 +45,7 @@ class LinearBicgstabSolver(_ScipyKrylovSolver):
     Scipy, with no preconditioning by default.
     """
 
-    def __init__(self):
+    def __init__(self, tolerance=1e-15, iterations=2000, precon=None):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
@@ -53,5 +53,5 @@ class LinearBicgstabSolver(_ScipyKrylovSolver):
           - `precon`: Preconditioner to use.
         """
 
-        super(LinearBicgstabSolver, self).__init__()
+        super(LinearBicgstabSolver, self).__init__(tolerance=tolerance, iterations=iterations, precon=precon)
         self.solveFnc = bicgstab
