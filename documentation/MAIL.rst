@@ -29,13 +29,19 @@ you can change.
 List Archive
 ------------
 
-http://dir.gmane.org/gmane.comp.python.fipy
+https://www.mail-archive.com/fipy@nist.gov/
 
-The mailing list archive_ is hosted by GMANE_. Any mail sent to
-fipy@nist.gov will appear in this publicly available archive_.
+Copies of messages sent to fipy@nist.gov are stored at `The Mail Archive`_.
+
+(note: we have also historically sent copies to
+http://dir.gmane.org/gmane.comp.python.fipy, but the GMANE_ site now
+appears to be defunct_.)
+
+
+.. _The Mail Archive:   https://www.mail-archive.com
 
 .. _GMANE:    http://gmane.org/
 
-.. _archive: http://dir.gmane.org/gmane.comp.python.fipy
+.. _defunct: https://lars.ingebrigtsen.no/2016/07/28/the-end-of-gmane/
 
 
