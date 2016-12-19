@@ -53,7 +53,7 @@ div.sphinxsidebarwrapper {
 div.sphinxsidebar {
     margin: 0;
     padding: 0.5em 15px 15px 0;
-    width: 210px;
+    width: 100%;
     float: right;
     font-size: 1em;
     text-align: left;

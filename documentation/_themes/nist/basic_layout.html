@@ -1,0 +1,238 @@
+{#
+    nist/basic_layout.html
+    ~~~~~~~~~~~~~~~~~
+
+    Master layout template for Sphinx themes at NIST mimicking Drupal.
+
+    :copyright: Copyright 2007-2015 by the Sphinx team, see AUTHORS.
+    :license: BSD, see LICENSE for details.
+#}
+{%- block doctype -%}
+<!DOCTYPE html>
+{%- endblock %}
+{%- set reldelim1 = reldelim1 is not defined and ' &raquo;' or reldelim1 %}
+{%- set reldelim2 = reldelim2 is not defined and ' |' or reldelim2 %}
+{%- set render_sidebar = (not embedded) and (not theme_nosidebar|tobool) and
+                         (sidebars != []) %}
+{%- set url_root = pathto('', 1) %}
+{# XXX necessary? #}
+{%- if url_root == '#' %}{% set url_root = '' %}{% endif %}
+{%- if not embedded and docstitle %}
+  {%- set titlesuffix = " &mdash; "|safe + docstitle|e %}
+{%- else %}
+  {%- set titlesuffix = "" %}
+{%- endif %}
+
+{%- macro relbar() %}
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>{{ _('Navigation') }}</h3>
+      <ul>
+        {%- for rellink in rellinks %}
+        <li class="right" {% if loop.first %}style="margin-right: 10px"{% endif %}>
+          <a href="{{ pathto(rellink[0]) }}" title="{{ rellink[1]|striptags|e }}"
+             {{ accesskey(rellink[2]) }}>{{ rellink[3] }}</a>
+          {%- if not loop.first %}{{ reldelim2 }}{% endif %}</li>
+        {%- endfor %}
+        {%- block rootrellink %}
+        <li class="nav-item nav-item-0"><a href="{{ pathto(master_doc) }}">{{ shorttitle|e }}</a>{{ reldelim1 }}</li>
+        {%- endblock %}
+        {%- for parent in parents %}
+          <li class="nav-item nav-item-{{ loop.index }}"><a href="{{ parent.link|e }}" {% if loop.last %}{{ accesskey("U") }}{% endif %}>{{ parent.title }}</a>{{ reldelim1 }}</li>
+        {%- endfor %}
+        {%- block relbaritems %} {% endblock %}
+      </ul>
+    </div>
+{%- endmacro %}
+
+{%- macro sidebar() %}
+      {%- if render_sidebar %}
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+          {%- block sidebarlogo %}
+          {%- if logo %}
+            <p class="logo"><a href="{{ pathto(master_doc) }}">
+              <img class="logo" src="{{ pathto('_static/' + logo, 1) }}" alt="Logo"/>
+            </a></p>
+          {%- endif %}
+          {%- endblock %}
+          {%- if sidebars != None %}
+            {#- new style sidebar: explicitly include/exclude templates #}
+            {%- for sidebartemplate in sidebars %}
+            {%- include sidebartemplate %}
+            {%- endfor %}
+          {%- else %}
+            {#- old style sidebars: using blocks -- should be deprecated #}
+            {%- block sidebartoc %}
+            {%- include "localtoc.html" %}
+            {%- endblock %}
+            {%- block sidebarrel %}
+            {%- include "relations.html" %}
+            {%- endblock %}
+            {%- block sidebarsourcelink %}
+            {%- include "sourcelink.html" %}
+            {%- endblock %}
+            {%- if customsidebar %}
+            {%- include customsidebar %}
+            {%- endif %}
+            {%- block sidebarsearch %}
+            {%- include "searchbox.html" %}
+            {%- endblock %}
+          {%- endif %}
+        </div>
+      </div>
+      {%- endif %}
+{%- endmacro %}
+
+{%- macro script() %}
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '{{ url_root }}',
+        VERSION:     '{{ release|e }}',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '{{ '' if no_search_suffix else file_suffix }}',
+        HAS_SOURCE:  {{ has_source|lower }}
+      };
+    </script>
+    {%- for scriptfile in script_files %}
+    <script type="text/javascript" src="{{ pathto(scriptfile, 1) }}"></script>
+    {%- endfor %}
+{%- endmacro %}
+
+{%- macro css() %}
+    <link rel="stylesheet" href="{{ pathto('_static/' + style, 1) }}" type="text/css" />
+    <link rel="stylesheet" href="{{ pathto('_static/pygments.css', 1) }}" type="text/css" />
+    {%- for cssfile in css_files %}
+    <link rel="stylesheet" href="{{ pathto(cssfile, 1) }}" type="text/css" />
+    {%- endfor %}
+{%- endmacro %}
+
+<!--[if IEMobile 7]><html class="iem7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html class="no-js"  lang="en" dir="ltr" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# book: http://ogp.me/ns/book# profile: http://ogp.me/ns/profile# video: http://ogp.me/ns/video# product: http://ogp.me/ns/product# content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#"><!--<![endif]-->
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset={{ encoding }}" />
+    {{ metatags }}
+    {%- block htmltitle %}
+    <title>{{ title|striptags|e }}{{ titlesuffix }}</title>
+    {%- endblock %}
+    {{ css() }}
+    {%- if not embedded %}
+    {{ script() }}
+    {%- if use_opensearch %}
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="{% trans docstitle=docstitle|e %}Search within {{ docstitle }}{% endtrans %}"
+          href="{{ pathto('_static/opensearch.xml', 1) }}"/>
+    {%- endif %}
+    {%- if favicon %}
+    <link rel="shortcut icon" href="{{ pathto('_static/' + favicon, 1) }}"/>
+    {%- endif %}
+    {%- endif %}
+{%- block linktags %}
+    {%- if hasdoc('about') %}
+    <link rel="author" title="{{ _('About these documents') }}" href="{{ pathto('about') }}" />
+    {%- endif %}
+    {%- if hasdoc('genindex') %}
+    <link rel="index" title="{{ _('Index') }}" href="{{ pathto('genindex') }}" />
+    {%- endif %}
+    {%- if hasdoc('search') %}
+    <link rel="search" title="{{ _('Search') }}" href="{{ pathto('search') }}" />
+    {%- endif %}
+    {%- if hasdoc('copyright') %}
+    <link rel="copyright" title="{{ _('Copyright') }}" href="{{ pathto('copyright') }}" />
+    {%- endif %}
+    <link rel="top" title="{{ docstitle|e }}" href="{{ pathto(master_doc) }}" />
+    {%- if parents %}
+    <link rel="up" title="{{ parents[-1].title|striptags|e }}" href="{{ parents[-1].link|e }}" />
+    {%- endif %}
+    {%- if next %}
+    <link rel="next" title="{{ next.title|striptags|e }}" href="{{ next.link|e }}" />
+    {%- endif %}
+    {%- if prev %}
+    <link rel="prev" title="{{ prev.title|striptags|e }}" href="{{ prev.link|e }}" />
+    {%- endif %}
+{%- endblock %}
+{%- block extrahead %} {% endblock %}
+  </head>
+<!--  <body role="document">-->
+  <body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-414011 node-type-software hide-breadcrumb section-services-resources page-panels is-panel" role="document">
+      <div id="page" class="mini-header">
+{%- block header %}{% endblock %}
+
+{%- block relbar1 %}{{ relbar() }}{% endblock %}
+
+  {%- block content %}
+  {%- block sidebar1 %} {# possible location for sidebar #} {% endblock %}
+
+    <div class="document">
+  {%- block document %}
+      <div class="documentwrapper">
+      {%- if render_sidebar %}
+        <div class="bodywrapper">
+      {%- endif %}
+          <div class="body" role="main">
+            {% block body %} {% endblock %}
+          </div>
+      {%- if render_sidebar %}
+        </div>
+      {%- endif %}
+      </div>
+  {%- endblock %}
+
+  {%- block sidebar2 %}{{ sidebar() }}{% endblock %}
+      <div class="clearer"></div>
+    </div>
+{%- endblock %}
+
+{%- block relbar2 %}{{ relbar() }}{% endblock %}
+
+{%- block footer %}
+    <div class="footer" role="contentinfo">
+    {%- if show_copyright %}
+      {%- if hasdoc('copyright') %}
+        {% trans path=pathto('copyright'), copyright=copyright|e %}&copy; <a href="{{ path }}">Copyright</a> {{ copyright }}.{% endtrans %}
+      {%- else %}
+        {% trans copyright=copyright|e %}&copy; Copyright {{ copyright }}.{% endtrans %}
+      {%- endif %}
+    {%- endif %}
+    {%- if last_updated %}
+      {% trans last_updated=last_updated|e %}Last updated on {{ last_updated }}.{% endtrans %}
+    {%- endif %}
+    {%- if show_sphinx %}
+      {% trans sphinx_version=sphinx_version|e %}Created using <a href="http://sphinx-doc.org/">Sphinx</a> {{ sphinx_version }}.{% endtrans %}
+    {%- endif %}
+    </div>
+{%- endblock %}
+    </div>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="https://www.nist.gov/sites/default/files/advagg_js/js__kX2TwVWrYCEjL5deKz2mJFZpmLkMjbKA9cuR8MAd-tg__ZbYhYwLHlZSSiDeuHkBY2_XHf5zGtAGBjqB-f9aTlfM__vwM1Fw5tqZlSbhOdveOReHTSzkETwUo2FAAwjw-rh84.js"></script>
+<script src="https://www.nist.gov/sites/default/files/advagg_js/js__NJFudKMG1NrB6M6bn3tvDT2ooWpN205holFEYaxYA28__KPtLhEmnilnCu64H9hTaWgycZ0Q85UtxLODdv2LX1cY__vwM1Fw5tqZlSbhOdveOReHTSzkETwUo2FAAwjw-rh84.js"></script>
+<script src="https://www.nist.gov/sites/default/files/advagg_js/js__2bzbrE24coPm5uj_fnejfHFhxP4MnERSax237TPs4fw__wdkmtCtFoxsHxi9Aw4Chyjrsk2Wq3W8tT0vOabX8lY4__vwM1Fw5tqZlSbhOdveOReHTSzkETwUo2FAAwjw-rh84.js"></script>
+<script src="https://www.nist.gov/sites/all/libraries/foresee/foresee-prod.js?oioe02"></script>
+<script src="https://www.nist.gov/sites/default/files/advagg_js/js__hbKW9DxXBE7jot9j1i65v6OQqZ0QNXvRqDgLgEfdtlI__pkznQ9uX7tFvjrnSUNMfSbvEAPwJNAw5gt5uKGYQ4rk__vwM1Fw5tqZlSbhOdveOReHTSzkETwUo2FAAwjw-rh84.js"></script>
+<script src="https://www.nist.gov/sites/default/files/advagg_js/js__OBBSi54Qi9UVCX3zurWFEXZdo_-f3dRz92hwPK1ZH1o__be-DXzrft-QCSEEYSHEETefSoQAh89ruPw95iq-rRhY__vwM1Fw5tqZlSbhOdveOReHTSzkETwUo2FAAwjw-rh84.js"></script>
+<script>document.createElement( "picture" );</script>
+<script>(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,"script","https://www.nist.gov/sites/default/files/googleanalytics/analytics.js?oioe02","ga");ga("create", "UA-66610693-3", {"cookieDomain":".nist.gov"});ga("set", "anonymizeIp", true);ga("send", "pageview");ga('create', 'UA-33523145-1', 'auto', 'NISTGSA');
+ga('NISTGSA.send', 'pageview');</script>
+<script>jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"nist_style","theme_token":"0c-tyX-EyeX2V02vjHYcMFYYo1qaEaVEUFRS_IrG0rc"},"colorbox":{"opacity":"0.85","current":"{current} of {total}","previous":"\u00ab Prev","next":"Next \u00bb","close":"Close","maxWidth":"98%","maxHeight":"98%","fixed":true,"mobiledetect":false,"mobiledevicewidth":"480px"},"better_exposed_filters":{"views":{"topics":{"displays":{"topic_tags":{"filters":[]}}},"contact":{"displays":{"attachment_1":{"filters":[]},"attachment_2":{"filters":[]},"block_1":{"filters":[]},"block_3":{"filters":[]}}}}},"extlink":{"extTarget":0,"extClass":"ext","extLabel":"(link is external)","extImgClass":0,"extSubdomains":1,"extExclude":"(w3dev|w3stg|w3auth|www2|www\\.nist\\.gov)","extInclude":"csrc\\.nist\\.gov","extCssExclude":"","extCssExplicit":"","extAlert":0,"extAlertText":{"value":"\u003Ch2\u003EThank you for visiting NIST.\u003C\/h2\u003E\u003Cp\u003EWe hope your visit was informative.\u003C\/p\u003E\u003Cp\u003EWe have provided a link to this site because it has information that may be of interest to our users. NIST does not necessarily endorse the views expressed or the facts presented on this site. Further, NIST does not endorse any commercial products that may be advertised or available on this site.\u003C\/p\u003E\u003Cdiv class=\u0022extlink-direct\u0022\u003E\u003Cp\u003EYou will now be directed to:\u003Cbr \/\u003E\u003Cstrong\u003E[extlink:external-url]\u003C\/strong\u003E\u003C\/p\u003E\u003C\/div\u003E\u003Cdiv class=\u0022extlink-extra-actions\u0022\u003E\u003Cdiv class=\u0022extlink-extra-back-action\u0022\u003E\u003Ca title=\u0022Cancel\u0022 href=\u0022[extlink:back-url]\u0022\u003ECancel\u003C\/a\u003E\u003C\/div\u003E\u003Cdiv class=\u0022extlink-extra-go-action\u0022\u003E\u003Ca class=\u0022ext-override\u0022 title=\u0022Go to link\u0022 href=\u0022[extlink:external-url]\u0022\u003EGo to link\u003C\/a\u003E\u003C\/div\u003E\u003C\/div\u003E[extlink:timer]","format":"full_html"},"mailtoClass":"mailto","mailtoLabel":"(link sends e-mail)"},"extlink_extra":{"extlink_alert_type":"colorbox","extlink_alert_timer":"10","extlink_alert_url":"\/now-leaving?js=1","extlink_cache_fix":1,"extlink_exclude_warning":"(doi\\.org|\\.gov|\\.mil)","extlink_508_fix":1,"extlink_508_text":" [external link]","extlink_url_override":0,"extlink_url_params":{"external_url":null,"back_url":null}},"googleanalytics":{"trackOutbound":1,"trackMailto":1,"trackDownload":1,"trackDownloadExtensions":"7z|aac|arc|arj|asf|asx|avi|bin|bsh|c|csv|doc(x|m)?|dot(x|m)?|dw(fx|g|gd)|dxf|eps|epub|exe|f(90)|flv|gif|gz|gzip|hqx|jar|jpe?g|js|m1v|mp(2|3|4|e?g)|mobi|mov(ie)?|msi|msp|pdf|phps|pl|png|ppt(x|m)?|pot(x|m)?|pps(x|m)?|ppam|sld(x|m)?|thmx|qtm?|ra(m|r)?|rfa|rtf|rvt|sch|sea|sit|swf|tar|tgz|tif|txt|txz|wav|wma|wmv|wpd|wrl|xls(x|m|b)?|xlt(x|m)|xlam|xml|xsd|z|zip","trackColorbox":1,"trackDomainMode":"1"},"currentPath":"node\/762581","currentPathIsAdmin":false});</script>
+<script src="https://www.nist.gov/sites/default/files/advagg_js/js__GM3GJPR36rRIz0TRkjC5OQwrioSyN9aoYRivDhCO_AM__qAl84FcCv2jyN22yFGS5Oc85cjd9zKX6p_cFNLGhe-M__vwM1Fw5tqZlSbhOdveOReHTSzkETwUo2FAAwjw-rh84.js" async="async"></script>
+<script src="https://www.nist.gov/sites/default/files/advagg_js/js__o9SxId96AyhwUzGyS5C4BW9iT4UuJXzBrgcx53aQR0U__YdVCOzh1MiNLMFkxLe8HKLStRXmWR4RYgUK8V0CEzYk__vwM1Fw5tqZlSbhOdveOReHTSzkETwUo2FAAwjw-rh84.js"></script>
+<script src="https://www.nist.gov/sites/default/files/advagg_js/js__Sljc-2GKQoGrrVJTc_2us9r5jjxuKaLijSxC5uC3ZcA__B23h2XkYmSwfkcYcssSOO0XxfdLH-cwyURW80IGRP6M__vwM1Fw5tqZlSbhOdveOReHTSzkETwUo2FAAwjw-rh84.js"></script>
+<script>setTimeout(function(){var a=document.createElement("script");
+var b=document.getElementsByTagName('script')[0];
+a.src=document.location.protocol+"//script.crazyegg.com/pages/scripts/0039/8570.js?"+Math.floor(new Date().getTime()/3600000);
+a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);</script>
+<script type="text/javascript">
+  //<![CDATA[
+  var usasearch_config = { siteHandle: 'nist-search'};
+  var script = document.createElement("script");
+  script.type = "text/javascript";
+  script.src = "//search.usa.gov/javascripts/remote.loader.js";
+  document.getElementsByTagName("head")[0].appendChild(script);
+  //]]>
+</script>
+<script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","licenseKey":"694e8754d9","applicationID":"11081342","transactionName":"NldUMERQXxFSUU0KXw8ddwdCWF4MHEJYBFU+X1cKV1ZUEGxcVgdVPkRfAUFuQQNUVw==","queueTime":0,"applicationTime":695,"atts":"GhBXRgxKTB8=","errorBeacon":"bam.nr-data.net","agent":""}</script>
+  </body>
+</html>
