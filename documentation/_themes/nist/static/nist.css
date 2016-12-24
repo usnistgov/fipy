@@ -8,187 +8,12 @@
  */
 
 @import url("basic.css");
-@import url("http://www.nist.gov/style/SpryMenuBarHorizontal.css");
-@import url("http://www.nist.gov/style/nist-styles.css");
-@import url("http://www.nist.gov/style/nist-subsite-overrides.css");
-@import url("http://www.nist.gov/style/live.css");
 
 /* -- page layout ----------------------------------------------------------- */
 
-#body-dummy {
-    margin: -8px;
-    padding: 0px;
-}
-
-div.bodywrapper {
-    margin: 0 240px 0 0;
-    border-right: 1px solid #ccc;
-    padding-left:5px;
-}
-
-div.bodywrapper h1 {
-    line-height:1.1em;
-}
-
-div.body {
-    margin: 0;
-    padding: 0 20px 20px 20px;
-}
-
-div.related {
-    display:block;
-    padding:10px 0 19px 17px;
-    width: auto;
-}
-
-div.related li {
-    margin: 0;
-    padding: 0;
-}
-
-div.sphinxsidebarwrapper {
-    padding: 0;
-}
-
 div.sphinxsidebar {
-    margin: 0;
-    padding: 0.5em 15px 15px 0;
     width: 100%;
-    float: right;
-    font-size: 1em;
-    text-align: left;
-}
-
-div.sphinxsidebar h3, div.sphinxsidebar h4 {
-    color: gray;
-    font-size:150%;
-    font-style:normal;
-    font-weight:normal;
-    margin: 0.3em 0 0em;
-}
-
-div.sphinxsidebar h3 a, div.sphinxsidebar h4 a {
-    color:gray;
-    text-decoration: underline;
-}
-
-div.sphinxsidebar h3 a:hover, div.sphinxsidebar h4 a:hover {
-    color: black;
-}
-
-div.sphinxsidebarsection {
-    border-top:1px solid #BEBEBE;
-    margin: 1em 0 -0.3em;
-}
-
-div.sphinxsidebar ul {
-    padding-left: 1.5em;
-    margin-top: 7px;
-    padding: 0;
-    line-height: 130%;
-}
-
-div.sphinxsidebar ul ul {
-    margin-left: 20px;
-}
-
-div.sphinxsidebar p {
     margin: 0;
-}
-
-div.footer {
-    border-top:1px solid #BEBEBE;
-    margin:10px 0 10px 24px;
-    padding:10px 0px 10px 0px;
-    clear: both;
-    font-size:0.95em;
-    text-align: left;
-    width: 95%;
-}
-
-div.footer a {
-    color: #86989B;
-}
-
-div.footer p {
-    padding:0 0 10px;
-}
-
-/* -- body styles ----------------------------------------------------------- */
-
-p {    
-    margin: 0.8em 0 0.5em 0;
-}
-
-a {
-    color: #CA7900;
-    text-decoration: none;
-}
-
-a:hover {
-    color: #2491CF;
-}
-
-h1 {
-    margin: 0;
-    padding: 0.7em 0 0.3em 0;
-}
-
-h2 {
-    margin: 1.3em 0 0.2em 0;
-    font-weight: normal;
-    padding: 0;
-    color: 666666;
-    background-color: white;
-}
-
-h3 {
-    margin: 1em 0 -0.3em 0;
-    font-size: 1.2em;
-}
-
-div.body h1 a, div.body h2 a, div.body h3 a, div.body h4 a, div.body h5 a, div.body h6 a {
-    color: black!important;
-}
-
-div.body h2 a {
-    color: gray!important;
-    text-decoration: underline!important;
-}
-
-div.body h2 a:hover {
-    color: black!important;
-}
-
-h1 a.anchor, h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor {
-    display: none;
-    margin: 0 0 0 0.3em;
-    padding: 0 0.2em 0 0.2em;
-    color: #aaa!important;
-}
-
-h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor,
-h5:hover a.anchor, h6:hover a.anchor {
-    display: inline;
-}
-
-h1 a.anchor:hover, h2 a.anchor:hover, h3 a.anchor:hover, h4 a.anchor:hover,
-h5 a.anchor:hover, h6 a.anchor:hover {
-    color: #777;
-    background-color: #eee;
-}
-
-a.headerlink {
-    color: #c60f0f!important;
-    font-size: 1em;
-    margin-left: 6px;
-    padding: 0 4px 0 4px;
-    text-decoration: none!important;
-}
-
-a.headerlink:hover {
-    background-color: #ccc;
-    color: white!important;
 }
 
 cite, code, tt {
@@ -206,11 +31,6 @@ tt {
 
 tt.descname, tt.descclassname, tt.xref {
     border: 0;
-}
-
-hr {
-    border: 1px solid #abc;
-    margin: 2em;
 }
 
 a tt {
@@ -236,31 +56,6 @@ pre {
 pre a {
     color: inherit;
     text-decoration: underline;
-}
-
-td.linenos pre {
-    padding: 0.5em 0;
-}
-
-div.quotebar {
-    background-color: #f8f8f8;
-    max-width: 250px;
-    float: right;
-    padding: 2px 7px;
-    border: 1px solid #ccc;
-}
-
-div.topic {
-    background-color: #f8f8f8;
-}
-
-table {
-    border-collapse: collapse;
-    margin: 0 -0.5em 0 -0.5em;
-}
-
-table td, table th {
-    padding: 0.2em 0.5em 0.2em 0.5em;
 }
 
 div.admonition, div.warning {
@@ -311,26 +106,6 @@ div.warning ul, div.warning ol {
     padding: 0;
 }
 
-div.versioninfo {
-    margin: 1em 0 0 0;
-    border: 1px solid #ccc;
-    background-color: #DDEAF0;
-    padding: 8px;
-    line-height: 1.3em;
-    font-size: 0.9em;
-}
-
-ol.simple, ul.simple {
-    margin-bottom:1em;
-}
-
-ul.simple {
-    list-style-type:disc;
-    margin:0 0 2% 3%;
-    padding:0;
-}
-
-li {
-    margin:0 0 2% 3%;
-    padding:0;
+div.sphinxsidebar #searchbox input[type="submit"] {
+    width: auto;
 }
