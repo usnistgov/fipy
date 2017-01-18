@@ -30,6 +30,46 @@ for details on how to use :term:`FiPy`.
       that may be mentioned on these sites. Please address comments about
       this page to fipy@nist.gov.
 
+------------------
+Recommended Method
+------------------
+
+.. attention::
+
+   There are many ways (described further down) to obtain the software
+   packages necessary to run :term:`FiPy`, but the most expedient way is
+   with the conda_ package manager.
+
+  * `install Miniconda`_ on your computer 
+  * run::
+
+      $ conda create --name MYFIPYENV --channel guyer --channel conda-forge fipy
+
+    .. note::
+
+       This command creates a self-contained conda_ environment and then
+       downloads and populates the environment with the prerequisites for
+       :term:`FiPy` from the channels guyer_ and conda-forge_ at
+       https://anaconda.org.
+
+  * enable this new environment with::
+
+      $ source activate MYFIPYENV
+
+  * move on to :ref:`USAGE`. 
+
+    .. note::
+
+       On Linux_ and `Mac OS X`_, you should have a pretty complete system
+       to run and visualize :term:`FiPy` simulations. On Windows_, there
+       are fewer packages available via conda_, particularly amongst the
+       sparse matrix :ref:`SOLVERS`, but the system still should be
+       functional.
+
+.. _install Miniconda: http://conda.pydata.org/docs/install/quick.html
+.. _guyer: https://anaconda.org/guyer
+.. _conda-forge: https://conda-forge.github.io/
+
 --------------------------
 Installing Python Packages
 --------------------------
@@ -38,6 +78,10 @@ In general, it is best to use the following order of precedence when
 installing packages:
 
  * Use the operating system package manager, if possible.
+ * Use the conda_ package management system, which handles both 
+   :term:`Python` and non-:term:`Python` packages and provides facilities
+   for self-contained environments with different combinations of
+   :term:`Python` packages, libraries, and applications.
  * Use the 
    `pip installs python <http://www.pip-installer.org/>`_ 
    (:term:`pip`) tool to obtain software from the 
@@ -175,6 +219,22 @@ If necessary, you can download_ and install it for your platform
 :term:`Python` along with many of :term:`FiPy`'s required and optional
 packages is available with one of the following distributions.
 
+conda
+-----
+
+http://conda.pydata.org
+
+This package manager provides a wide array of both :term:`Python`-based and
+general scientific packages. In addition to the default packages, many
+other developers (including us) provide "channels" to distribute their own
+builds of a variety of software.
+
+In a given conda_ environment, you can install :term:`FiPy` with::
+
+    $ conda install --channel guyer --channel conda-forge fipy
+
+
+.. _EPD:
 
 Scientific Python Packages
 ==========================
@@ -501,26 +561,6 @@ describe the use of Virtualenv_, which we highly recommend.
 
 .. _Stow: http://savannah.gnu.org/projects/stow/
 .. _zc.buildout: http://pypi.python.org/pypi/zc.buildout
-
-Virtualenv
-==========
-
-http://pypi.python.org/pypi/virtualenv
-
-Virtualenv_ enables the installation of packages in multiple isolated
-environments. It organizes the installation of :term:`Python` packages
-especially well and also provides a handy location for installing
-non-:term:`Python` packages. In addition Virtualenv_ works seamlessly
-with the :term:`PyPI` package manager (:term:`pip`).
-
-The utility of Virtualenv_ is significantly augmented with Virtualenvwrapper_. 
-
-In general, the initial installation of Virtualenv_ and Virtualenvwrapper_
-requires admin privileges, but thereafter, creating new virtual
-environments and installing packages into them does not require admin
-privileges.
-
-.. _Virtualenvwrapper: http://www.doughellmann.com/projects/virtualenvwrapper
 
 .. _documentation:GIT:
 
