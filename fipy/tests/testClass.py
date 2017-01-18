@@ -137,7 +137,7 @@ def _TestClass(base):
                 
                 yield "fipy.viewers.testinteractive._suite"
             if self.modules:
-                yield "fipy.testFiPy._suite"
+                yield "fipy.test._suite"
             if self.examples:
                 yield "examples.test._suite"
 
