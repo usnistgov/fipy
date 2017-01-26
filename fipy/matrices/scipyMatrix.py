@@ -5,9 +5,10 @@ __docformat__ = 'restructuredtext'
 __all__ = []
 
 import scipy.sparse as sp
-from fipy.tools import numerix
+from scipy.io import mmwrite
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
+from fipy.tools import numerix
 
 class _ScipyMatrix(_SparseMatrix):
 
@@ -259,6 +260,9 @@ class _ScipyMatrix(_SparseMatrix):
 
         ids = numerix.arange(len(vector))
         self.addAt(vector, ids, ids)
+        
+    def exportMmf(self, filename):
+        mmwrite(filename, self.matrix)
 
     @property
     def numpyArray(self):
