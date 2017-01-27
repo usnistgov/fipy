@@ -1,20 +1,32 @@
-import os
 import time
+import uuid 
+
+import datreant.core as dtr
 
 import fipy as fp
 from fipy.tools import numerix
 from fipy.tools.parser import parse
 
+data = dtr.Treant(str(uuid.uuid4()))
+
 numberOfElements = parse('--numberOfElements', action='store',
                          type='int', default=10000)
-N = int(numerix.sqrt(numberOfElements))
+data.categories['numberOfElements'] = numberOfElements
 
 tolerance =  parse('--tolerance', action='store',
                    type='float', default=1e-10)
+data.categories['tolerance'] = tolerance
 
 iterations =  parse('--iterations', action='store',
                    type='int', default=1000)
+data.categories['iterations'] = iterations
 
+writeFiles = parse('--writeFiles', action='store_true', default=False)
+
+data.categories['solver'] = fp.solvers.solver
+
+
+N = int(numerix.sqrt(numberOfElements))
 mesh = fp.Grid2D(nx=N, Lx=1., ny=N, Ly=1.)
 
 var = fp.CellVariable(mesh=mesh, value=1., hasOld=True)
@@ -25,21 +37,16 @@ eq = fp.TransientTerm() == fp.DiffusionTerm(coeff=var)
 
 solver = fp.LinearPCGSolver(tolerance=tolerance, iterations=iterations, precon=None)
 
-try:
-    os.mkdir(fp.solvers.solver)
-except:
-    pass
-
 start = time.clock()
 
 for sweep in range(10):
     eq.cacheMatrix()
     eq.cacheRHSvector()
     res = eq.sweep(var=var, dt=1., solver=solver)
-    eq.matrix.exportMmf(os.path.join(fp.solvers.solver, "sweep{0}.mmf".format(sweep)))
-    fp.tools.dump.write((var, eq.RHSvector), 
-                        filename=os.path.join(fp.solvers.solver,
-                                              "sweep{0}.tar.gz".format(sweep)))
+    
+    if writeFiles:
+        eq.matrix.exportMmf(data["sweep{0}.mtx".format(sweep)].make().abspath)
+        fp.tools.dump.write((var, eq.RHSvector), 
+                            filename=data["sweep{0}.tar.gz".format(sweep)].make().abspath)
 
-with open(os.path.join(fp.solvers.solver, "elapsed.txt"), 'w') as f:
-    f.write(str(time.clock() - start))
+data.categories['elapsed'] = time.clock() - start
