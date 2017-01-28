@@ -37,10 +37,9 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         
         (see https://trilinos.org/oldsite/packages/aztecoo/AztecOOUserGuide.pdf)
         """
-
         return self._convergenceCheck
         
-    @property.setter
+    @convergenceCheck.setter
     def convergenceCheck(self, value):
         self._convergenceCheck = value
     
