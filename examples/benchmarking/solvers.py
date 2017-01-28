@@ -7,7 +7,12 @@ import fipy as fp
 from fipy.tools import numerix
 from fipy.tools.parser import parse
 
-data = dtr.Treant(str(uuid.uuid4()))
+output = parse('--output', action='store',
+               type='string', default=str(uuid.uuid4()))
+
+print "storing results in {0}".format(output)
+
+data = dtr.Treant(output)
 
 numberOfElements = parse('--numberOfElements', action='store',
                          type='int', default=10000)
