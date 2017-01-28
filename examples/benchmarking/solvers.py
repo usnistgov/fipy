@@ -41,6 +41,9 @@ var.constrain(0., where=mesh.facesRight)
 eq = fp.TransientTerm() == fp.DiffusionTerm(coeff=var)
 
 solver = fp.LinearPCGSolver(tolerance=tolerance, iterations=iterations, precon=None)
+if fp.solvers.solver == "trilinos":
+    # PySparse does b-normalization for (P)CG
+    solver.convergenceCheck = solver.AZ_rhs
 
 start = time.clock()
 
