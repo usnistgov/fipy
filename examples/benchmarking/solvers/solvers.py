@@ -22,6 +22,10 @@ tolerance =  parse('--tolerance', action='store',
                    type='float', default=1e-10)
 data.categories['tolerance'] = tolerance
 
+sweeps =  parse('--sweeps', action='store',
+                   type='int', default=10)
+data.categories['sweeps'] = sweeps
+
 iterations =  parse('--iterations', action='store',
                    type='int', default=1000)
 data.categories['iterations'] = iterations
@@ -47,7 +51,7 @@ if fp.solvers.solver == "trilinos":
 
 start = time.clock()
 
-for sweep in range(10):
+for sweep in range(sweeps):
     eq.cacheMatrix()
     eq.cacheRHSvector()
     res = eq.sweep(var=var, dt=1., solver=solver)
