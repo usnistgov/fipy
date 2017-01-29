@@ -1,3 +1,4 @@
 #!/bin/bash
-source activate fipy
-python solvers.py "$@"
+
+source activate condafipy
+python "${BASH_SOURCE%/*}/solvers.py" "$@"
