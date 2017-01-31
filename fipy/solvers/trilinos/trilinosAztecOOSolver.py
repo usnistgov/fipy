@@ -83,8 +83,24 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         if self.preconditioner is not None:
             if hasattr(self.preconditioner, 'Prec'):
                 del self.preconditioner.Prec
-
+                
         status = Solver.GetAztecStatus()
+        failure = {AztecOO.AZ_normal : 'AztecOO.AZ_normal',
+                   AztecOO.AZ_param : 'AztecOO.AZ_param',
+                   AztecOO.AZ_breakdown : 'AztecOO.AZ_breakdown',
+                   AztecOO.AZ_loss : 'AztecOO.AZ_loss',
+                   AztecOO.AZ_ill_cond : 'AztecOO.AZ_ill_cond',
+                   AztecOO.AZ_maxits : 'AztecOO.AZ_maxits'}
+
+        # normalize across solver packages
+        self.status['iterations'] = status[AztecOO.AZ_its]
+        self.status['residual'] = status[AztecOO.AZ_r]
+        self.status['scaled residual'] = status[AztecOO.AZ_scaled_r]
+        self.status['convergence residual'] = status[AztecOO.AZ_rec_r]
+        self.status['solve time'] = status[AztecOO.AZ_solve_time]
+        self.status['Aztec version'] = status[AztecOO.AZ_Aztec_version]
+        self.status['code'] = failure[status[AztecOO.AZ_why]]
+
         self._log.debug('iterations: %d / %d', status[AztecOO.AZ_its], self.iterations)
         self._log.debug('failure: %s', _reason[status[AztecOO.AZ_why]])
         self._log.debug('AztecOO.AZ_r: %s', status[AztecOO.AZ_r])
