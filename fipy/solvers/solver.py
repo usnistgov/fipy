@@ -115,6 +115,8 @@ class Solver(object):
         self.iterations = iterations
 
         self.preconditioner = precon
+        
+        self.status = dict()
 
     def _storeMatrix(self, var, matrix, RHSvector):
         self.var = var

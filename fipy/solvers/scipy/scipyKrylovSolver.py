@@ -60,6 +60,8 @@ class _ScipyKrylovSolver(_ScipySolver):
                                 tol=self.tolerance,
                                 maxiter=self.iterations,
                                 M=M)
+                                
+        self.status['code'] = info
 
         if 'FIPY_VERBOSE_SOLVER' in os.environ:
             if info < 0:
