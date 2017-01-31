@@ -92,6 +92,8 @@ class Solver(object):
         self.iterations = iterations
 
         self.preconditioner = precon
+        
+        self.status = dict()
 
         self._log = logging.getLogger(self.__class__.__module__
                                       + "." + self.__class__.__name__)

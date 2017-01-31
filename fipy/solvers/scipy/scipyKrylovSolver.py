@@ -24,6 +24,8 @@ class _ScipyKrylovSolver(_ScipySolver):
                                 maxiter=self.iterations,
                                 M=M,
                                 atol='legacy')
+                                
+        self.status['code'] = info
 
         if info < 0:
             self._log.debug('failure: %s', self._warningList[info].__class__.__name__)
