@@ -41,6 +41,12 @@ from PyTrilinos import AztecOO
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
+from fipy.solvers import (NormalConvergence,
+                          ParameterWarning, 
+                          BreakdownWarning, 
+                          LossOfPrecisionWarning,
+                          MatrixIllConditionedWarning,
+                          MaximumIterationWarning)
 
 __all__ = ["TrilinosAztecOOSolver"]
 
@@ -108,12 +114,6 @@ class TrilinosAztecOOSolver(TrilinosSolver):
                 del self.preconditioner.Prec
                 
         status = Solver.GetAztecStatus()
-        failure = {AztecOO.AZ_normal : 'AztecOO.AZ_normal',
-                   AztecOO.AZ_param : 'AztecOO.AZ_param',
-                   AztecOO.AZ_breakdown : 'AztecOO.AZ_breakdown',
-                   AztecOO.AZ_loss : 'AztecOO.AZ_loss',
-                   AztecOO.AZ_ill_cond : 'AztecOO.AZ_ill_cond',
-                   AztecOO.AZ_maxits : 'AztecOO.AZ_maxits'}
 
         # normalize across solver packages
         self.status['iterations'] = status[AztecOO.AZ_its]
@@ -122,13 +122,17 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         self.status['convergence residual'] = status[AztecOO.AZ_rec_r]
         self.status['solve time'] = status[AztecOO.AZ_solve_time]
         self.status['Aztec version'] = status[AztecOO.AZ_Aztec_version]
-        self.status['code'] = failure[status[AztecOO.AZ_why]]
+        self.status['code'] = self._warningDict[status[AztecOO.AZ_why]].__class__.__name__
+        
+        self._raiseWarning(status[AztecOO.AZ_why], 
+                           status[AztecOO.AZ_its], 
+                           status[AztecOO.AZ_scaled_r])
 
         if 'FIPY_VERBOSE_SOLVER' in os.environ:
             from fipy.tools.debug import PRINT
             PRINT('iterations: %d / %d' % (status[AztecOO.AZ_its], self.iterations))
 
-            PRINT('failure',failure[status[AztecOO.AZ_why]])
+            PRINT('failure', self._warningDict[status[AztecOO.AZ_why]].__class__.__name__)
 
             PRINT('AztecOO.AZ_r:',status[AztecOO.AZ_r])
             PRINT('AztecOO.AZ_scaled_r:',status[AztecOO.AZ_scaled_r])
@@ -137,3 +141,19 @@ class TrilinosAztecOOSolver(TrilinosSolver):
             PRINT('AztecOO.AZ_Aztec_version:',status[AztecOO.AZ_Aztec_version])
 
         return output
+        
+    _warningDict = {AztecOO.AZ_normal : NormalConvergence,
+                    AztecOO.AZ_param : ParameterWarning,
+                    AztecOO.AZ_breakdown : BreakdownWarning,
+                    AztecOO.AZ_loss : LossOfPrecisionWarning,
+                    AztecOO.AZ_ill_cond : MatrixIllConditionedWarning,
+                    AztecOO.AZ_maxits : MaximumIterationWarning}
+
+    def _raiseWarning(self, info, iter, relres):
+        if info != AztecOO.AZ_normal:
+            # is stacklevel=5 always what's needed to get to the user's scope?
+            import warnings
+            warnings.warn(self._warningDicet[info](self, iter, relres), stacklevel=5)
+
+
+

@@ -37,6 +37,12 @@ __docformat__ = 'restructuredtext'
 
 import os
 from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
+from fipy.solvers import (ScalarQuantityOutOfRangeWarning,
+                          StagnatedSolverWarning,
+                          MatrixIllConditionedWarning,
+                          PreconditionerNotPositiveDefiniteWarning,
+                          IllConditionedPreconditionerWarning,
+                          MaximumIterationWarning)
 
 __all__ = ["PysparseSolver"]
 
@@ -113,3 +119,21 @@ class PysparseSolver(_PysparseMatrixSolver):
             array /= self.var.unit.factor
 
         self.var[:] = array.reshape(self.var.shape)
+        
+    _warningList = (ScalarQuantityOutOfRangeWarning,
+                    StagnatedSolverWarning,
+                    MatrixIllConditionedWarning,
+                    PreconditionerNotPositiveDefiniteWarning,
+                    IllConditionedPreconditionerWarning,
+                    MaximumIterationWarning)
+
+    def _raiseWarning(self, info, iter, relres):
+        # info is negative, so we list in reverse order so that
+        # info can be used as an index from the end
+
+        if info < 0:
+            # is stacklevel=5 always what's needed to get to the user's scope?
+            import warnings
+            warnings.warn(self._warningList[info](self, iter, relres), stacklevel=5)
+
+

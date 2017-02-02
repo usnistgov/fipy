@@ -50,10 +50,13 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-__all__ = ["SolverConvergenceWarning", "MaximumIterationWarning",
+__all__ = ["SolverConvergenceWarning", "NormalConvergence", "MaximumIterationWarning",
            "PreconditionerWarning", "IllConditionedPreconditionerWarning",
            "PreconditionerNotPositiveDefiniteWarning", "MatrixIllConditionedWarning",
-           "StagnatedSolverWarning", "ScalarQuantityOutOfRangeWarning", "Solver"]
+           "StagnatedSolverWarning", "ScalarQuantityOutOfRangeWarning", 
+           "IllegalInputOrBreakdownWarning",
+           "ParameterWarning", "BreakdownWarning", "LossOfPrecisionWarning", 
+           "Solver"]
 
 class SolverConvergenceWarning(Warning):
     def __init__(self, solver, iter, relres):
@@ -63,6 +66,10 @@ class SolverConvergenceWarning(Warning):
 
     def __str__(self):
         return "%s failed. Iterations: %g. Relative error: %g" % (str(self.solver), self.iter, self.relres)
+        
+class NormalConvergence(SolverConvergenceWarning):
+    def __str__(self):
+        return "User requested convergence criteria is satisfied. Iterations: {0}. Relative error: {1}".format(self.iter, self.relres)
 
 class MaximumIterationWarning(SolverConvergenceWarning):
     def __str__(self):
@@ -90,6 +97,24 @@ class StagnatedSolverWarning(SolverConvergenceWarning):
 class ScalarQuantityOutOfRangeWarning(SolverConvergenceWarning):
     def __str__(self):
         return "A scalar quantity became too small or too large to continue computing. Iterations: %g. Relative error: %g" % (self.iter, self.relres)
+        
+class IllegalInputOrBreakdownWarning(SolverConvergenceWarning):
+    def __str__(self):
+        return "{0} received illegal input or had a breakdown." \
+          "Iterations: {1}. Relative error: {2}".format(self.solver, self.iter, self.relres)
+
+class ParameterWarning(SolverConvergenceWarning):
+    def __str__(self):
+        return "User requested option is not available for {0}.".format(self.solver)
+        
+class BreakdownWarning(SolverConvergenceWarning):
+    def __str__(self):
+        return "Numerical breakdown occurred. Iterations: {0}. Relative error: {1}".format(self.iter, self.relres)
+        
+class LossOfPrecisionWarning(SolverConvergenceWarning):
+    def __str__(self):
+        return "Numerical loss of precision occurred. Iterations: {0}. Relative error: {1}".format(self.iter, self.relres)
+
 
 class Solver(object):
     """
@@ -150,22 +175,6 @@ class Solver(object):
 
     def _calcRHSNorm(self):
         return numerix.L2norm(self.RHSvector)
-
-    _warningList = (ScalarQuantityOutOfRangeWarning,
-                    StagnatedSolverWarning,
-                    MatrixIllConditionedWarning,
-                    PreconditionerNotPositiveDefiniteWarning,
-                    IllConditionedPreconditionerWarning,
-                    MaximumIterationWarning)
-
-    def _raiseWarning(self, info, iter, relres):
-        # info is negative, so we list in reverse order so that
-        # info can be used as an index from the end
-
-        if info < 0:
-            # is stacklevel=5 always what's needed to get to the user's scope?
-            import warnings
-            warnings.warn(self._warningList[info](self, iter, relres), stacklevel=5)
 
     def __repr__(self):
         return '%s(tolerance=%g, iterations=%g)' \
