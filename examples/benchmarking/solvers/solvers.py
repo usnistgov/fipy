@@ -56,6 +56,8 @@ for sweep in range(sweeps):
     eq.cacheRHSvector()
     res = eq.sweep(var=var, dt=1., solver=solver)
     
+    data.categories['sweep {0} - iterations'.format(sweep)] = solver.status['iterations']
+    
     if writeFiles:
         eq.matrix.exportMmf(data["sweep{0}.mtx".format(sweep)].make().abspath)
         fp.tools.dump.write((var, eq.RHSvector), 
