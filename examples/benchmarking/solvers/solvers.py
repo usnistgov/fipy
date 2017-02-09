@@ -6,13 +6,21 @@ import datreant.core as dtr
 import fipy as fp
 from fipy.tools import numerix
 from fipy.tools.parser import parse
+from fipy.tools import parallelComm
 
 output = parse('--output', action='store',
                type='string', default=str(uuid.uuid4()))
 
-print "storing results in {0}".format(output)
+if parallelComm.procID == 0:
+    print "storing results in {0}".format(output)
+    data = dtr.Treant(output)
+else:
+    class dummyTreant(object):
+        categories = dict()
+        
+    data = dummyTreant()
 
-data = dtr.Treant(output)
+data.categories['processes'] = parallelComm.Nproc
 
 numberOfElements = parse('--numberOfElements', action='store',
                          type='int', default=10000)
@@ -58,7 +66,7 @@ for sweep in range(sweeps):
     
     data.categories['sweep {0} - iterations'.format(sweep)] = solver.status['iterations']
     
-    if writeFiles:
+    if writeFiles and parallelComm.procID == 0:
         eq.matrix.exportMmf(data["sweep{0}.mtx".format(sweep)].make().abspath)
         fp.tools.dump.write((var, eq.RHSvector), 
                             filename=data["sweep{0}.tar.gz".format(sweep)].make().abspath)
