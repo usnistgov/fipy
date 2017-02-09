@@ -125,7 +125,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         if info != AztecOO.AZ_normal:
             # is stacklevel=5 always what's needed to get to the user's scope?
             import warnings
-            warnings.warn(self._warningDicet[info](self, iter, relres), stacklevel=5)
+            warnings.warn(self._warningDict[info](self, iter, relres), stacklevel=5)
 
 
 
