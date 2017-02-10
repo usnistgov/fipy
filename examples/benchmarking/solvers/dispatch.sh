@@ -10,23 +10,22 @@ positional arguments:
               directory as $0)
 
 optional arguments:
-  --cmd CMD   Command used to invoke SCRIPT, e.g., 'qsub -cwd' for
-              Sun grid engine (default: bash)
+  -h, --help  show this help message and exit
+  --qsub      Invoke SCRIPT using 'qsub -cwd' for Sun grid engine 
+              (default: invoke using bash)
   --env ENV   Conda environment to activate before invoking SCRIPT
               (default: fipy)
-  --np NP     Number of processes to invoke SCRIPT with (default: 1)
-  -h, --help  show this help message and exit"
+  --np NP     Number of processes to invoke SCRIPT with (default: 1)"
 
-CMD=bash
+QSUB=0
 ENV=fipy
 NP=1
 
 while [[ $# > 0 ]] && [[ $1 == -* ]]
 do
     case "$1" in
-        --cmd)
-            CMD="$2"
-            shift # option has parameter
+        --qsub)
+            QSUB=1
             ;;
         --env)
             ENV="$2"
@@ -61,10 +60,23 @@ fi
 
 SCRIPT=$1
 
+if [[ $NP > 1 ]]; then
+    MPI="mpirun -np ${NP}"
+else
+    MPI=""
+fi
+
 for solver in trilinos scipy pysparse
 do
-    for size in 100 1000 10000 100000 1000000 # 10000000
+    for size in 100 1000 10000 # 100000 1000000 # 10000000
     do
-	${CMD} "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" --np "${NP}" -- $SCRIPT "--${solver}" "--numberOfElements=${size}"
+        dir="Data/`uuidgen`"
+        mkdir -p $dir
+        INVOCATION="${MPI} python ${BASH_SOURCE%/*}/${SCRIPT} --${solver} --numberOfElements=${size} --output $dir"
+        if [[ $QSUB == 1 ]]; then
+            qsub -cwd -o "${dir}/stdout" -e "${dir}/stderr" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
+        else
+            bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
+        fi
     done
 done
