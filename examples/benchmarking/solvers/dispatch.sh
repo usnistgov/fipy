@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="usage: $0 [-h] [--env ENV] [--cmd CMD] [--np NP] [--] SCRIPT [ARGS]
+USAGE="usage: $0 [-h] [--env ENV] [--cmd CMD] [--np NP] [--mprof] [--] SCRIPT [ARGS]
 
 Iterates over solvers and mesh sizes by calling setup.sh, which activates 
 the appropriate conda environment and calls python on SCRIPT
@@ -58,7 +58,7 @@ do
     shift # option(s) fully processed, proceed to next input argument
 done
 
-if [[ "$#" != 1 ]]; then
+if [[ "$#" < 1 ]]; then
     echo "$USAGE"
     exit 1
 fi
