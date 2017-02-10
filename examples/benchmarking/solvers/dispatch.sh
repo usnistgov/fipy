@@ -39,6 +39,7 @@ do
             ;;
         --mprof)
             PYTHON="mprof run"
+            ;;
         -h|--help)
             echo "$USAGE"
             exit 0
