@@ -15,11 +15,13 @@ optional arguments:
               (default: invoke using bash)
   --env ENV   Conda environment to activate before invoking SCRIPT
               (default: fipy)
-  --np NP     Number of processes to invoke SCRIPT with (default: 1)"
+  --np NP     Number of processes to invoke SCRIPT with (default: 1)
+  --mprof     Whether to run mprof profiler (default: False)"
 
 QSUB=0
 ENV=fipy
 NP=1
+PYTHON=python
 
 while [[ $# > 0 ]] && [[ $1 == -* ]]
 do
@@ -35,6 +37,8 @@ do
             NP="$2"
             shift # option has parameter
             ;;
+        --mprof)
+            PYTHON="mprof run"
         -h|--help)
             echo "$USAGE"
             exit 0
@@ -73,7 +77,7 @@ do
     do
         dir="Data/`uuidgen`"
         mkdir -p $dir
-        INVOCATION="${MPI} python ${BASH_SOURCE%/*}/${SCRIPT} --${solver} --numberOfElements=${size} --output $dir -- $@"
+        INVOCATION="${MPI} ${PYTHON} ${BASH_SOURCE%/*}/${SCRIPT} --${solver} --numberOfElements=${size} --output $dir $@"
         if [[ $QSUB == 1 ]]; then
             qsub -cwd -pe nodal ${NP} -q "wide64" -o "${dir}" -e "${dir}" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
         else
