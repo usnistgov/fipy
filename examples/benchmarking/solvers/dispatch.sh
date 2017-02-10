@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="usage: $0 [-h] [--env ENV] [--cmd CMD] [--np NP] [--] SCRIPT
+USAGE="usage: $0 [-h] [--env ENV] [--cmd CMD] [--np NP] [--] SCRIPT [ARGS]
 
 Iterates over solvers and mesh sizes by calling setup.sh, which activates 
 the appropriate conda environment and calls python on SCRIPT
@@ -59,6 +59,7 @@ if [[ "$#" != 1 ]]; then
 fi
 
 SCRIPT=$1
+shift
 
 if [[ $NP > 1 ]]; then
     MPI="mpirun -np ${NP}"
@@ -68,13 +69,13 @@ fi
 
 for solver in trilinos scipy pysparse
 do
-    for size in 100 1000 10000 # 100000 1000000 # 10000000
+    for size in 100 1000 10000 100000 1000000 10000000
     do
         dir="Data/`uuidgen`"
         mkdir -p $dir
-        INVOCATION="${MPI} python ${BASH_SOURCE%/*}/${SCRIPT} --${solver} --numberOfElements=${size} --output $dir"
+        INVOCATION="${MPI} python ${BASH_SOURCE%/*}/${SCRIPT} --${solver} --numberOfElements=${size} --output $dir -- $@"
         if [[ $QSUB == 1 ]]; then
-            qsub -cwd -o "${dir}/stdout" -e "${dir}/stderr" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
+            qsub -cwd -pe nodal ${NP} -q "wide64" -o "${dir}" -e "${dir}" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
         else
             bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
         fi
