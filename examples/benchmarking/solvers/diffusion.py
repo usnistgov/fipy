@@ -53,20 +53,20 @@ var.constrain(0., where=mesh.facesRight)
 
 eq = fp.TransientTerm() == fp.DiffusionTerm(coeff=var)
 
-if args.solver == "cg":
-    solver = fp.LinearPCGSolver(tolerance=args.tolerance, iterations=args.iterations, precon=None)
-    if fp.solvers.solver == "trilinos":
-        # PySparse does b-normalization for (P)CG
-        solver.convergenceCheck = solver.AZ_rhs
-elif args.solver == "pcg":
-    solver = fp.LinearPCGSolver(tolerance=args.tolerance, iterations=args.iterations, precon=fp.JacobiPreconditioner())
+if fp.solvers.solver != "scipy" and args.solver in ("pcg", "cgs", "gmres"):
+    precon = fp.JacobiPreconditioner()
+else:
+    precon = None
+    
+if args.solver in ("cg", "pcg"):
+    solver = fp.LinearPCGSolver(tolerance=args.tolerance, iterations=args.iterations, precon=precon)
     if fp.solvers.solver == "trilinos":
         # PySparse does b-normalization for (P)CG
         solver.convergenceCheck = solver.AZ_rhs
 elif args.solver == "cgs":
-    solver = fp.LinearCGSSolver(tolerance=args.tolerance, iterations=args.iterations, precon=fp.JacobiPreconditioner())
+    solver = fp.LinearCGSSolver(tolerance=args.tolerance, iterations=args.iterations, precon=precon)
 elif args.solver == "gmres":
-    solver = fp.LinearGMRESSolver(tolerance=args.tolerance, iterations=args.iterations, precon=fp.JacobiPreconditioner())
+    solver = fp.LinearGMRESSolver(tolerance=args.tolerance, iterations=args.iterations, precon=precon)
 elif args.solver == "lu":
     solver = fp.LinearLUSolver(tolerance=args.tolerance, iterations=args.iterations)
 else:
