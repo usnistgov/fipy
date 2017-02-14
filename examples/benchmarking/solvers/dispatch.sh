@@ -72,17 +72,21 @@ else
     MPI=""
 fi
 
-for solver in trilinos scipy pysparse
+for library in trilinos scipy pysparse
 do
-    for size in 100 1000 10000 100000 1000000 10000000
+    for solver in cg pcg cgs gmres lu
     do
-        dir="Data/`uuidgen`"
-        mkdir -p $dir
-        INVOCATION="${MPI} ${PYTHON} ${BASH_SOURCE%/*}/${SCRIPT} --${solver} --numberOfElements=${size} --output $dir $@"
-        if [[ $QSUB == 1 ]]; then
-            qsub -cwd -pe nodal ${NP} -q "wide64" -o "${dir}" -e "${dir}" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
-        else
-            bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
-        fi
+        for size in 100 1000 10000 100000 1000000 10000000
+        do
+            dir="Data/`uuidgen`"
+            mkdir -p $dir
+            INVOCATION="${MPI} ${PYTHON} ${BASH_SOURCE%/*}/${SCRIPT} \
+              --${library} --numberOfElements=${size} --solver=${solver} --output $dir $@"
+            if [[ $QSUB == 1 ]]; then
+                qsub -cwd -pe nodal ${NP} -q "wide64" -o "${dir}" -e "${dir}" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
+            else
+                bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
+            fi
+        done
     done
 done
