@@ -70,6 +70,11 @@ class LinearLUSolver(TrilinosSolver):
              Solver.Solve()
 
              x[:] = x - xError
+             
+         self.status['iterations'] = iteration
+         self.status['scaled residual'] = tol / tol0
+         # never fails?
+         self.status['code'] = "Success"
 
         self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
         self._log.debug('residual: %s', errorVector.Norm2())

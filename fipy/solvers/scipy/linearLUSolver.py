@@ -41,6 +41,11 @@ class LinearLUSolver(_ScipySolver):
 
             xError = LU.solve(errorVector)
             x[:] = x - xError
+            
+        self.status['iterations'] = iteration
+        self.status['scaled residual'] = numerix.sqrt(numerix.sum(errorVector**2)) / error0
+        # never fails?
+        self.status['code'] = "Success"
 
         self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
         self._log.debug('residual: %s', numerix.sqrt(numerix.sum(errorVector**2)))
