@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USAGE="usage: $0 [-h] [--env ENV] [--np NP] [--] SCRIPT [ARGS]
+USAGE="usage: $0 [-h] [--env ENV] [--] SCRIPT [ARGS]
 
 activates the appropriate conda environment and calls python on SCRIPT 
 with ARGS
