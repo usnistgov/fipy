@@ -17,3 +17,4 @@ dictionary.dic
 en_US.aff
 en_US.dic
 build/
+.smt*
