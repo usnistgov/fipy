@@ -28,14 +28,14 @@ weighting of the two effects and :math:`D` is a rate constant.
 
 We can simulate this process in :term:`FiPy` with a simple script:
 
->>> from fipy import CellVariable, Grid2D, GaussianNoiseVariable, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer
+>>> from fipy import CellVariable, Grid2D, GaussianNoiseVariable, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer, LinearGMRESSolver, JacobiPreconditioner
 >>> from fipy.tools import numerix
 
 (Note that all of the functionality of NumPy is imported along with :term:`FiPy`, although
 much is augmented for :term:`FiPy`\'s needs.)
 
 >>> if __name__ == "__main__":
-...     nx = ny = 1000
+...     nx = ny = 500
 ... else:
 ...     nx = ny = 20
 >>> mesh = Grid2D(nx=nx, ny=ny, dx=0.25, dy=0.25)
@@ -49,7 +49,7 @@ We start the problem with random fluctuations about :math:`\phi = 1/2`
 
 :term:`FiPy` doesn't plot or output anything unless you tell it to:
 
->>> if __name__ == "__main__":
+>>> if __name__ == "__mainy__":
 ...     viewer = Viewer(vars=(phi,), datamin=0., datamax=1.)
 
 For :term:`FiPy`, we need to perform the partial derivative
@@ -85,7 +85,7 @@ evolution of their problem.
 >>> dexp = -5
 >>> elapsed = 0.
 >>> if __name__ == "__main__":
-...     duration = 1000.
+...     duration = 0.1
 ... else:
 ...     duration = 1000.
 
@@ -93,8 +93,8 @@ evolution of their problem.
 ...     dt = min(100, numerix.exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(phi, dt=dt, solver=LinearLUSolver())
-...     if __name__ == "__main__":
+...     eq.solve(phi, dt=dt, solver=LinearGMRESSolver(precon=JacobiPreconditioner()))
+...     if __name__ == "__mainys__":
 ...         viewer.plot()
 ...     elif (max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3) and elapsed > 10.:
 ...         break
@@ -117,5 +117,4 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    input('finished')
-
+#     input('finished')
