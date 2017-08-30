@@ -67,9 +67,9 @@ Recommended Method
 
       $ source activate <MYFIPYENV>
 
-      .. note::
+    .. note::
 
-         `activate <MYFIPYENV>` on Windows_
+       ``$ activate <MYFIPYENV>`` on Windows_
 
   * move on to :ref:`USAGE`. 
 
