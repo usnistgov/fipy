@@ -43,7 +43,7 @@ Recommended Method
   * `install Miniconda`_ on your computer 
   * run::
 
-      $ conda create --name MYFIPYENV --channel guyer --channel conda-forge fipy
+      $ conda create --name <MYFIPYENV> --channel guyer --channel conda-forge fipy nomkl
 
     .. note::
 
@@ -52,9 +52,24 @@ Recommended Method
        :term:`FiPy` from the channels guyer_ and conda-forge_ at
        https://anaconda.org.
 
+    .. attention::
+
+       Note, this does not work on Windows. On that platform, you should be able to do::
+
+        conda create --name <MYFIPYENV> --channel guyer --channel conda-forge python numpy scipy matplotlib mayavi
+        activate <MYFIPYENV>
+        pip install fipy
+
+       There are presently no conda packages of any solver suite but scipy available for Windows.
+
+
   * enable this new environment with::
 
-      $ source activate MYFIPYENV
+      $ source activate <MYFIPYENV>
+
+    .. note::
+
+       ``$ activate <MYFIPYENV>`` on Windows_
 
   * move on to :ref:`USAGE`. 
 
