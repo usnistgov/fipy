@@ -242,3 +242,8 @@ or a
 .. _MatForge:             http://matforge.org/
 .. _StackOverflow:        http://stackoverflow.com/questions/tagged/fipy
 
+
+
+.. image:: https://badges.gitter.im/usnistgov/fipy.svg
+   :alt: Join the chat at https://gitter.im/usnistgov/fipy
+   :target: https://gitter.im/usnistgov/fipy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
