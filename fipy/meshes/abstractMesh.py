@@ -724,7 +724,7 @@ class AbstractMesh(object):
 
         """
         x = self.faceCenters[0]
-        return x == _madmin(x)
+        return x == self._madmin(x)
 
     @property
     def facesRight(self):
@@ -744,7 +744,7 @@ class AbstractMesh(object):
 
         """
         x = self.faceCenters[0]
-        return x == _madmax(x)
+        return x == self._madmax(x)
 
     @property
     def facesBottom(self):
@@ -764,7 +764,7 @@ class AbstractMesh(object):
 
         """
         y = self.faceCenters[1]
-        return y == _madmin(y)
+        return y == self._madmin(y)
 
     facesDown = facesBottom
 
@@ -786,7 +786,7 @@ class AbstractMesh(object):
 
         """
         y = self.faceCenters[1]
-        return y == _madmax(y)
+        return y == self._madmax(y)
 
     facesUp = facesTop
 
@@ -804,7 +804,7 @@ class AbstractMesh(object):
 
         """
         z = self.faceCenters[2]
-        return z == _madmax(z)
+        return z == self._madmax(z)
 
     @property
     def facesFront(self):
@@ -820,7 +820,7 @@ class AbstractMesh(object):
 
         """
         z = self.faceCenters[2]
-        return z == _madmin(z)
+        return z == self._madmin(z)
 
     @property
     def _cellVertexIDs(self):
@@ -1135,9 +1135,6 @@ class AbstractMesh(object):
         """return a map of the topology of each cell"""
         return self.topology._cellTopology
 
-    def _makePeriodic(self):
-        raise NotImplementedError
-
     @property
     def aspect2D(self):
         """The physical y:x aspect ratio of a 2D mesh
@@ -1153,17 +1150,17 @@ class AbstractMesh(object):
             return float((yCoords.max() - yCoords.min()) / (xCoords.max() - xCoords.min()))
 
 
-def _madmin(x):
-    if len(x) == 0:
-        return 0
-    else:
-        return min(x)
+    def _madmin(self, x):
+        if len(x) == 0:
+            return 0
+        else:
+            return self.communicator.MinAll(min(x))
 
-def _madmax(x):
-    if len(x) == 0:
-        return 0
-    else:
-        return max(x)
+    def _madmax(self, x):
+        if len(x) == 0:
+            return 0
+        else:
+            return self.communicator.MaxAll(max(x))
 
 def _test():
     import fipy.tests.doctestPlus
