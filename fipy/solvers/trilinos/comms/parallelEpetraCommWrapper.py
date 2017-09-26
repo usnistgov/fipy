@@ -49,3 +49,13 @@ class ParallelEpetraCommWrapper(EpetraCommWrapper):
 
         """
         return self.mpi4py_comm.allgather(sendobj=obj)
+
+    def MaxAll(self, obj):
+        """return max across all processes
+        """
+        return self.mpi4py_comm.allreduce(sendobj=obj, op=max)
+
+    def MinAll(self, obj):
+        """return min across all processes
+        """
+        return self.mpi4py_comm.allreduce(sendobj=obj, op=min)
