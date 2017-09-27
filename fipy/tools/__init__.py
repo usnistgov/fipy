@@ -102,6 +102,11 @@ register_skipper(flag="PROCESSOR_0",
                  why="not running on processor 0",
                  skipWarning=False)
 
+register_skipper(flag="PROCESSOR_NOT_0",
+                 test=lambda: parallelComm.procID > 0,
+                 why="running on processor 0",
+                 skipWarning=False)
+
 for M in (2, 3):
     for N in range(M):
         register_skipper(flag="PROCESSOR_%d_OF_%d" % (N, M),

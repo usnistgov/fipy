@@ -717,10 +717,12 @@ class AbstractMesh(object):
             >>> print numerix.allequal((21, 25),
             ...                        numerix.nonzero(mesh.facesLeft)[0]) # doctest: +PROCESSOR_0
             True
+            >>> ignore = mesh.facesLeft.value # doctest: +PROCESSOR_NOT_0
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)
             >>> print numerix.allequal((9, 13),
             ...                        numerix.nonzero(mesh.facesLeft)[0]) # doctest: +PROCESSOR_0
             True
+            >>> ignore = mesh.facesLeft.value # doctest: +PROCESSOR_NOT_0
 
         """
         x = self.faceCenters[0]
@@ -737,10 +739,12 @@ class AbstractMesh(object):
             >>> print numerix.allequal((24, 28),
             ...                        numerix.nonzero(mesh.facesRight)[0]) # doctest: +PROCESSOR_0
             True
+            >>> ignore = mesh.facesRight.value # doctest: +PROCESSOR_NOT_0
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)
             >>> print numerix.allequal((12, 16),
             ...                        numerix.nonzero(mesh.facesRight)[0]) # doctest: +PROCESSOR_0
             True
+            >>> ignore = mesh.facesRight.value # doctest: +PROCESSOR_NOT_0
 
         """
         x = self.faceCenters[0]
@@ -756,11 +760,13 @@ class AbstractMesh(object):
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
             >>> print numerix.allequal((12, 13, 14),
             ...                        numerix.nonzero(mesh.facesBottom)[0]) # doctest: +PROCESSOR_0
-            1
+            True
+            >>> ignore = mesh.facesBottom.value # doctest: +PROCESSOR_NOT_0
             >>> x, y, z = mesh.faceCenters
             >>> print numerix.allequal((12, 13),
             ...                        numerix.nonzero(mesh.facesBottom & (x < 1))[0]) # doctest: +PROCESSOR_0
-            1
+            True
+            >>> ignore = mesh.facesBottom.value # doctest: +PROCESSOR_NOT_0
 
         """
         y = self.faceCenters[1]
@@ -779,10 +785,12 @@ class AbstractMesh(object):
             >>> print numerix.allequal((18, 19, 20),
             ...                        numerix.nonzero(mesh.facesTop)[0]) # doctest: +PROCESSOR_0
             True
+            >>> ignore = mesh.facesTop.value # doctest: +PROCESSOR_NOT_0
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)
             >>> print numerix.allequal((6, 7, 8),
             ...                        numerix.nonzero(mesh.facesTop)[0]) # doctest: +PROCESSOR_0
             True
+            >>> ignore = mesh.facesTop.value # doctest: +PROCESSOR_NOT_0
 
         """
         y = self.faceCenters[1]
@@ -801,6 +809,7 @@ class AbstractMesh(object):
             >>> print numerix.allequal((6, 7, 8, 9, 10, 11),
             ...                        numerix.nonzero(mesh.facesBack)[0]) # doctest: +PROCESSOR_0
             True
+            >>> ignore = mesh.facesBack.value # doctest: +PROCESSOR_NOT_0
 
         """
         z = self.faceCenters[2]
@@ -817,6 +826,7 @@ class AbstractMesh(object):
             >>> print numerix.allequal((0, 1, 2, 3, 4, 5),
             ...                        numerix.nonzero(mesh.facesFront)[0]) # doctest: +PROCESSOR_0
             True
+            >>> ignore = mesh.facesFront.value # doctest: +PROCESSOR_NOT_0
 
         """
         z = self.faceCenters[2]
