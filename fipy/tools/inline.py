@@ -95,7 +95,7 @@ def _runInline(code_in, converters=None, verbose=0, comment=None, **args):
 
     code = "\n" + comment + "\n" + code
 
-    from scipy import weave
+    import weave
 
     for key in args.keys():
         if hasattr(args[key], 'dtype') and args[key].dtype.char == '?':
@@ -146,7 +146,7 @@ for(i=0; i < ni; i++) {
 
     code = "\n" + comment + "\n" + code
 
-    from scipy import weave
+    import weave
 
     for key in args.keys():
         if hasattr(args[key], 'dtype') and args[key].dtype.char == '?':

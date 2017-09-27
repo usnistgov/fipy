@@ -700,7 +700,7 @@ if not hasattr(NUMERIX, 'empty'):
             We approximate this routine when unavailable, but note that `order` is
             ignored when using Numeric.
             """
-            from scipy import weave
+            import weave
 
             local_dict = {'shape': shape, 'dtype': dtype}
 
