@@ -429,7 +429,10 @@ class _TrilinosMatrix(_SparseMatrix):
             id2 = id2.astype('int32')
 
         if not self.matrix.Filled():
-            self.matrix.InsertGlobalValues(id1, id2, vector)
+            err = self.matrix.InsertGlobalValues(id1, id2, vector)
+            if err < 0:
+                raise RuntimeError, "Processor %d, error code %d" \
+                  % (self.comm.MyPID(), err)
         else:
             if self.matrix.SumIntoGlobalValues(id1, id2, vector) != 0:
                 import warnings
