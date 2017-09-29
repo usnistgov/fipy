@@ -549,18 +549,15 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
         else:
             bandwidth = bandwidth
 
-        comm = Epetra.PyComm()
-
         if rowMap is None:
-            # Matrix building gets done on one processor - it gets the map for
-            # all the rows
-            if comm.MyPID() == 0:
-                rowMap = Epetra.Map(rows, range(0, rows), 0, comm)
-            else:
-                rowMap = Epetra.Map(rows, [], 0, comm)
+            comm = Epetra.SerialComm()
+            # Matrix building gets done on all processors
+            rowMap = Epetra.Map(rows, rows, 0, comm)
+        else:
+            comm = rowMap.Comm()
 
         if colMap is None:
-           colMap = Epetra.Map(cols, range(0, cols), 0, comm)
+            colMap = Epetra.Map(cols, cols, 0, comm)
 
         matrix = Epetra.CrsMatrix(Epetra.Copy, rowMap, (bandwidth*3)//2)
 
