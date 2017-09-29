@@ -111,8 +111,14 @@ class _TrilinosMatrix(_SparseMatrix):
     def __str__(self):
         self.fillComplete()
 
-        from fipy.tools import parallelComm
-        return ''.join(parallelComm.allgather(_SparseMatrix.__str__(self)))
+        s = _SparseMatrix.__str__(self)
+
+        comm = self.matrix.Map().Comm()
+        if comm.NumProc() > 1:
+            from fipy.tools import parallelComm
+            return ''.join(parallelComm.allgather(s))
+        else:
+            return s
 
     @property
     def _range(self):
