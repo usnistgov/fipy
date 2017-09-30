@@ -148,14 +148,16 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
 
             >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
             ...                            dy, dy, dy, dy, dy, dy, dy, dy))
-            >>> faceAreas = faceAreas * mesh.faceCenters[0] # doctest: +PROCESSOR_0
+            >>> faceAreas = faceAreas * mesh.faceCenters[0] 
             >>> print numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
+            >>> ignore = numerix.allclose(faceAreas, mesh._faceAreas).value # doctest: +PROCESSOR_NOT_0
 
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
             >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
+            >>> ignore = numerix.allclose(faceCenters, mesh.faceCenters).value # doctest: +PROCESSOR_NOT_0
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.),
             ...                              (-1., -1., -1., 1., 1., 1., 1., 1., 1., 0., 0., 0., 0., 0., 0., 0., 0.)))
@@ -208,6 +210,7 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             >>> areaProjections = faceNormals * faceAreas
             >>> print numerix.allclose(areaProjections, mesh._areaProjections, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
+            >>> ignore = numerix.allclose(areaProjections, mesh._areaProjections).value # doctest: +PROCESSOR_NOT_0
 
             >>> tangents1 = numerix.array(((1., 1., 1., -1., -1., -1., -1., -1., -1., 0., 0., 0., 0., 0., 0., 0., 0.),
             ...                            (0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.)))
