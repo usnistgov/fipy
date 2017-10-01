@@ -51,15 +51,11 @@ before_install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
+  - conda create --quiet --name test-environment --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy nomkl
   - source activate test-environment
-  # stipulate numpy 1.9 because mayavi hasn't been build for 1.10 and 
-  # doesn't have a public conda recipe
-  # scipy 
-  - conda install --channel guyer numpy==1.9 nomkl pip gmsh
-  - if [[ $PY3K -eq 0 ]]; then
-      conda install --channel guyer numpy==1.9 nomkl pysparse mayavi openmpi trilinos mpi4py;
-    fi
+  # - if [[ $PY3K -eq 0 ]]; then
+  #     conda install --channel guyer numpy==1.9 nomkl pysparse mayavi openmpi trilinos mpi4py;
+  #   fi
   # Useful for debugging any issues with conda
   - conda info -a
   - pip install scikit-fmm
