@@ -88,6 +88,12 @@ class _AbstractBinaryTerm(Term):
         return (-self.term) + (-self.other)
 
     def _calcVars(self):
+        """Collect (nonredundant) list of all CellVariables 
+        this binary term solves for.
+
+        note: cannot use a set because its order can be different 
+        on different processors
+        """
         ids = [id(v) for v in self.term._vars]
         othervars = [v for v in self.other._vars if id(v) not in ids]
         return self.term._vars + othervars
