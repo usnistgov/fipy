@@ -1802,6 +1802,7 @@ class Gmsh2D(Mesh2D):
         <BLANKLINE>
 
         >>> f.close()
+        >>> parallelComm.Barrier()
 
         >>> if parallelComm.procID == 0:
         ...     os.remove(posFile)

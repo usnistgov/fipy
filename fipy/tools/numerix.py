@@ -652,39 +652,6 @@ def take(a, indices, axis=0, fill_value=None):
 
     return taken
 
-def indices(dimensions, typecode=None):
-    """indices(dimensions,typecode=None) returns an array representing a grid
-    of indices with row-only, and column-only variation.
-
-       >>> NUMERIX.allclose(NUMERIX.array(indices((4, 6))), NUMERIX.indices((4,6)))
-       1
-       >>> NUMERIX.allclose(NUMERIX.array(indices((4, 6, 2))), NUMERIX.indices((4, 6, 2)))
-       1
-       >>> NUMERIX.allclose(NUMERIX.array(indices((1,))), NUMERIX.indices((1,)))
-       1
-       >>> NUMERIX.allclose(NUMERIX.array(indices((5,))), NUMERIX.indices((5,)))
-       1
-
-    """
-
-    lst = []
-
-    if len(dimensions) == 1:
-        lst.append(NUMERIX.arange(dimensions[0]))
-    elif len(dimensions) == 2:
-        ## copy() methods are used to force contiguous arrays
-        lst = [NUMERIX.swapaxes(NUMERIX.resize(NUMERIX.arange(dimensions[0]), (dimensions[1], dimensions[0])), 0, 1).copy(),
-               NUMERIX.resize(NUMERIX.arange(dimensions[1]), dimensions).copy()]
-    else:
-        tmp = NUMERIX.ones(dimensions, typecode)
-        lst = []
-        for i in range(len(dimensions)):
-            lst.append(NUMERIX.add.accumulate(tmp, i,) - 1)
-
-    ## we don't turn the list back into an array because that is expensive and not required
-    return lst
-
-
 if not hasattr(NUMERIX, 'empty'):
     print 'defining empty'
     if inline.doInline:
@@ -700,7 +667,7 @@ if not hasattr(NUMERIX, 'empty'):
             We approximate this routine when unavailable, but note that `order` is
             ignored when using Numeric.
             """
-            from scipy import weave
+            import weave
 
             local_dict = {'shape': shape, 'dtype': dtype}
 

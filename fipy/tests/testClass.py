@@ -210,7 +210,7 @@ def _TestClass(base):
 
             if self.inline:
                 try:
-                    from scipy import weave
+                    import weave
                 except ImportError, a:
                     print >>sys.stderr, "!!! weave library is not installed"
                     return

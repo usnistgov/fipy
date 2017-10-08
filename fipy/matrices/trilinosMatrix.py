@@ -111,8 +111,14 @@ class _TrilinosMatrix(_SparseMatrix):
     def __str__(self):
         self.fillComplete()
 
-        from fipy.tools import parallelComm
-        return ''.join(parallelComm.allgather(_SparseMatrix.__str__(self)))
+        s = _SparseMatrix.__str__(self)
+
+        comm = self.matrix.Map().Comm()
+        if comm.NumProc() > 1:
+            from fipy.tools import parallelComm
+            return ''.join(parallelComm.allgather(s))
+        else:
+            return s
 
     @property
     def _range(self):
@@ -429,7 +435,10 @@ class _TrilinosMatrix(_SparseMatrix):
             id2 = id2.astype('int32')
 
         if not self.matrix.Filled():
-            self.matrix.InsertGlobalValues(id1, id2, vector)
+            err = self.matrix.InsertGlobalValues(id1, id2, vector)
+            if err < 0:
+                raise RuntimeError, "Processor %d, error code %d" \
+                  % (self.comm.MyPID(), err)
         else:
             if self.matrix.SumIntoGlobalValues(id1, id2, vector) != 0:
                 import warnings
@@ -546,18 +555,15 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
         else:
             bandwidth = bandwidth
 
-        comm = Epetra.PyComm()
-
         if rowMap is None:
-            # Matrix building gets done on one processor - it gets the map for
-            # all the rows
-            if comm.MyPID() == 0:
-                rowMap = Epetra.Map(rows, range(0, rows), 0, comm)
-            else:
-                rowMap = Epetra.Map(rows, [], 0, comm)
+            comm = Epetra.SerialComm()
+            # Matrix building gets done on all processors
+            rowMap = Epetra.Map(rows, rows, 0, comm)
+        else:
+            comm = rowMap.Comm()
 
         if colMap is None:
-           colMap = Epetra.Map(cols, range(0, cols), 0, comm)
+            colMap = Epetra.Map(cols, cols, 0, comm)
 
         matrix = Epetra.CrsMatrix(Epetra.Copy, rowMap, (bandwidth*3)//2)
 

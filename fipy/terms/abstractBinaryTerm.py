@@ -88,7 +88,9 @@ class _AbstractBinaryTerm(Term):
         return (-self.term) + (-self.other)
 
     def _calcVars(self):
-        return list(set(self.term._vars + self.other._vars))
+        ids = [id(v) for v in self.term._vars]
+        othervars = [v for v in self.other._vars if id(v) not in ids]
+        return self.term._vars + othervars
 
     @property
     def _vars(self):
