@@ -39,6 +39,16 @@ from fipy.tools import inline
 from fipy.variables.cellVariable import CellVariable
 
 class _AddOverFacesVariable(CellVariable):
+    r"""surface integral of `self.faceVariable`, :math:`\phi_f`, discretized by
+
+    ..math:: \frac{\sum_f \phi_f A_f}{V_P}
+
+    Returns
+    -------
+    integral : CellVariable
+        volume-weighted sum
+    """
+
     def __init__(self, faceVariable, mesh = None):
         if not mesh:
             mesh = faceVariable.mesh

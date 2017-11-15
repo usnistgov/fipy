@@ -76,13 +76,25 @@ class FaceVariable(_MeshVariable):
 
     @property
     def divergence(self):
-        """
-            >>> from fipy.meshes import Grid2D
-            >>> from fipy.variables.cellVariable import CellVariable
-            >>> mesh = Grid2D(nx=3, ny=2)
-            >>> var = CellVariable(mesh=mesh, value=range(3*2))
-            >>> print var.faceGrad.divergence
-            [ 4.  3.  2. -2. -3. -4.]
+        r"""the divergence of `self`, :math:`\vec{u}`,
+
+        ..math:: \nabla\cdot\vec{u}
+
+        representing the discretization
+
+        ..math:: \frac{\sum_f (\vec{u}\cdot\hat{n})_f A_f}{V_P}
+
+        Returns
+        -------
+        divergence : CellVariable
+            one rank lower than `self`
+
+        >>> from fipy.meshes import Grid2D
+        >>> from fipy.variables.cellVariable import CellVariable
+        >>> mesh = Grid2D(nx=3, ny=2)
+        >>> var = CellVariable(mesh=mesh, value=range(3*2))
+        >>> print var.faceGrad.divergence
+        [ 4.  3.  2. -2. -3. -4.]
 
         """
         if not hasattr(self, '_divergence'):
