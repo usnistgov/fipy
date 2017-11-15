@@ -39,9 +39,9 @@ from fipy.tools import inline
 from fipy.variables.cellVariable import CellVariable
 
 class _AddOverFacesVariable(CellVariable):
-    r"""surface integral of `self.faceVariable`, :math:`\phi_f`, discretized by
+    r"""surface integral of `self.faceVariable`, :math:`\phi_f`
 
-    ..math:: \frac{\sum_f \phi_f A_f}{V_P}
+    .. math:: \int_S \phi_f\,dS \approx \frac{\sum_f \phi_f A_f}{V_P}
 
     Returns
     -------

@@ -78,16 +78,15 @@ class FaceVariable(_MeshVariable):
     def divergence(self):
         r"""the divergence of `self`, :math:`\vec{u}`,
 
-        ..math:: \nabla\cdot\vec{u}
-
-        representing the discretization
-
-        ..math:: \frac{\sum_f (\vec{u}\cdot\hat{n})_f A_f}{V_P}
+        .. math:: \nabla\cdot\vec{u} \approx \frac{\sum_f (\vec{u}\cdot\hat{n})_f A_f}{V_P}
 
         Returns
         -------
         divergence : CellVariable
             one rank lower than `self`
+
+        Examples
+        --------
 
         >>> from fipy.meshes import Grid2D
         >>> from fipy.variables.cellVariable import CellVariable
