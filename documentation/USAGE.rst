@@ -535,68 +535,181 @@ Further demonstrations of spatially varying boundary condition can be found
 in :mod:`examples.diffusion.mesh20x20`
 and :mod:`examples.diffusion.circle`
 
-Applying internal boundary conditions
-=====================================
+Applying Robin boundary conditions
+==================================
+
+The Robin condition
+
+.. math::
+
+   a\phi + b\hat{n}\cdot\nabla\phi = g\qquad\text{on $f=f_0$}
+
+can be applied at a face :math:`f_0` by taking note of the discretization 
+of the :class:`~fipy.terms.diffusionTerm.DiffusionTerm`:
+
+.. math::
+
+   \begin{aligned}
+       \nabla\cdot\left(\Gamma\nabla\phi\right) &\approx
+       \sum_f \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f \\
+       &= \sum_{f\neq f_0} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f 
+       + \Gamma_{f_0} \left(\hat{n}\cdot\nabla\phi\right)_{f_0} A_{f_0}
+   \end{aligned}
+
+The Robin condition can be used to substitute for the expression 
+:math:`\left(\hat{n}\cdot\nabla\phi\right)_{f_0}`
+but we note that :term:`FiPy` calculates variable values at cell centers 
+and gradients at intervening faces. We obtain a first-order approximation 
+for :math:`\left(\hat{n}\cdot\nabla\phi\right)_{f_0}` in terms of 
+neighboring cell values by substituting 
+:math:`\phi_{f_0} \approx \phi_P + \left(\hat{n}\cdot\nabla\phi\right)_{f_0} d_{Pf}` 
+into the Robin condition, where :math:`d_{Pf}` is the distance from the
+face to the adjoining cell center:
+
+.. math::
+
+   \begin{aligned}
+        a \phi_{f_0} + b \left(\hat{n}\cdot\nabla\phi\right)_{f_0} &= g \\
+        a \phi_P + a \left(\hat{n}\cdot\nabla\phi\right)_{f_0} d_{Pf} 
+        + b \left(\hat{n}\cdot\nabla\phi\right)_{f_0} &\approx g \\
+        \left(\hat{n}\cdot\nabla\phi\right)_{f_0} 
+        &\approx \frac{g - a \phi_P}{a d_{Pf} + b}
+   \end{aligned}
+
+such that
+
+.. math::
+
+   \begin{aligned}
+       \nabla\cdot\left(\Gamma\nabla\phi\right) &\approx
+       \sum_{f\neq f_0} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f 
+       + \Gamma_{f_0} \frac{g - a \phi_P}{a d_{Pf} + b} A_{f_0}
+   \end{aligned}
+
+An equation of the form
+
+>>> eqn = TransientTerm() == DiffusionTerm(coeff=Gamma0)
+
+can be constrained to have a Robin condition at a face identifed by 
+``mask`` by making the following modifications
+
+>>> Gamma = FaceVariable(mesh=mesh, value=Gamma0)
+>>> Gamma.setValue(0., where=mask)
+>>> dPf = FaceVariable(mesh=mesh, value=mesh._faceToCellDistanceRatio * mesh._cellDistances)
+>>> Af = FaceVariable(mesh=mesh, value=mesh._faceAreas)
+>>> RobinCoeff = (mask * Gamma0 * Af / (a * dPf + b)).divergence
+>>> eqn = (TransientTerm() == DiffusionTerm(coeff=Gamma)
+...        + RobinCoeff * g - ImplicitSourceTerm(coeff=RobinCoeff * a))
+
+Applying internal "boundary" conditions
+=======================================
 
 Applying internal boundary conditions can be achieved through the use
-of implicit and explicit sources. An equation of the form
+of implicit and explicit sources. 
+
+Internal fixed value
+--------------------
+
+An equation of the form
 
 >>> eqn = TransientTerm() == DiffusionTerm()
 
 can be constrained to have a fixed internal ``value`` at a position
 given by ``mask`` with the following alterations
 
->>> eqn = TransientTerm() == DiffusionTerm() - ImplicitSourceTerm(mask * largeValue) + mask * largeValue * value
+>>> eqn = (TransientTerm() == DiffusionTerm() 
+...                           - ImplicitSourceTerm(mask * largeValue) 
+...                           + mask * largeValue * value)
 
 The parameter ``largeValue`` must be chosen to be large enough to
 completely dominate the matrix diagonal and the RHS vector in cells
 that are masked. The ``mask`` variable would typically be a
 ``CellVariable`` boolean constructed using the cell center values.
 
-One must be careful to distinguish between constraining internal cell
-values during the solve step and simply applying arbitrary constraints
-to a ``CellVariable``. Applying a constraint,
+Internal fixed gradient
+-----------------------
 
->>> var.constrain(value, where=mask)
+An equation of the form
 
-simply fixes the returned value of ``var`` at ``mask`` to be
-``value``. It does not have any effect on the implicit value of ``var`` at the
-``mask`` location during the linear solve so it is not a substitute
-for the source term machinations described above. Future releases of
-:term:`FiPy` may implicitly deal with this discrepancy, but the current
-release does not. A simple example can be used to demonstrate this::
+>>> eqn = TransientTerm() == DiffusionTerm(coeff=Gamma0)
 
->>> m = Grid1D(nx=2, dx=1.)
->>> var = CellVariable(mesh=m)
+can be constrained to have a fixed internal ``gradient`` magnitude 
+at a position given by ``mask`` with the following alterations
 
-Apply a constraint to the faces for a right side boundary condition
-(which works).
+>>> Gamma = FaceVariable(mesh=mesh, value=Gamma0)
+>>> Gamma[mask.value] = 0.
+>>> eqn = (TransientTerm() == DiffusionTerm(coeff=Gamma) 
+...        + DiffusionTerm(coeff=largeValue * mask)
+...        - ImplicitSourceTerm(mask * largeValue * gradient 
+...                             * mesh.faceNormals).divergence)
 
->>> var.constrain(1., where=m.facesRight)
+The parameter ``largeValue`` must be chosen to be large enough to
+completely dominate the matrix diagonal and the RHS vector in cells
+that are masked. The ``mask`` variable would typically be a
+``FaceVariable`` boolean constructed using the face center values.
 
-Create the equation with the source term constraint described above
+Internal Robin condition
+------------------------
 
->>> mask = m.x < 1.
->>> largeValue = 1e+10
->>> value = 0.25
->>> eqn = DiffusionTerm() - ImplicitSourceTerm(largeValue * mask) + largeValue * mask * value
+Nothing different needs to be done when 
+`applying Robin boundary conditions`_ at internal faces.
 
-and the expected value is obtained.
+.. note::
 
->>> eqn.solve(var)
->>> print var
-[ 0.25  0.75]
+   While we believe these derivations are "correct", they often do not 
+   seem to produce the intuitive result. At this point, we think this has 
+   to do with the pathology of "internal" boundary conditions, but remain 
+   open to other explanations. :term:`FiPy` was designed with diffuse 
+   interface treatments (phase field and level set) in mind and, as such, 
+   internal "boundaries" do not come up in our own work and have not 
+   received much attention.
 
-However, if a constraint is used without the source term constraint an
-unexpected value is obtained
+.. note::
 
->>> var.constrain(0.25, where=mask)
->>> eqn = DiffusionTerm()
->>> eqn.solve(var)
->>> print var
-[ 0.25  1.  ]
+  One must be careful to distinguish between constraining internal cell
+  values during the solve step and simply applying arbitrary constraints
+  to a ``CellVariable``. Applying a constraint,
 
-although the left cell has the expected value as it is constrained.
+  >>> var.constrain(value, where=mask)
+
+  simply fixes the returned value of ``var`` at ``mask`` to be
+  ``value``. It does not have any effect on the implicit value of ``var`` at the
+  ``mask`` location during the linear solve so it is not a substitute
+  for the source term machinations described above. Future releases of
+  :term:`FiPy` may implicitly deal with this discrepancy, but the current
+  release does not. A simple example can be used to demonstrate this::
+
+  >>> m = Grid1D(nx=2, dx=1.)
+  >>> var = CellVariable(mesh=m)
+
+  Apply a constraint to the faces for a right side boundary condition
+  (which works).
+
+  >>> var.constrain(1., where=m.facesRight)
+
+  Create the equation with the source term constraint described above
+
+  >>> mask = m.x < 1.
+  >>> largeValue = 1e+10
+  >>> value = 0.25
+  >>> eqn = DiffusionTerm() - ImplicitSourceTerm(largeValue * mask) + largeValue * mask * value
+
+  and the expected value is obtained.
+
+  >>> eqn.solve(var)
+  >>> print var
+  [ 0.25  0.75]
+
+  However, if a constraint is used without the source term constraint an
+  unexpected value is obtained
+
+  >>> var.constrain(0.25, where=mask)
+  >>> eqn = DiffusionTerm()
+  >>> eqn.solve(var)
+  >>> print var
+  [ 0.25  1.  ]
+
+  although the left cell has the expected value as it is constrained.
 
 .. %    http://thread.gmane.org/gmane.comp.python.fipy/726
    %    http://thread.gmane.org/gmane.comp.python.fipy/846
