@@ -586,18 +586,20 @@ but we note that :term:`FiPy` calculates variable values at cell centers
 and gradients at intervening faces. We obtain a first-order approximation 
 for :math:`\left(\hat{n}\cdot\nabla\phi\right)_{f_0}` in terms of 
 neighboring cell values by substituting 
-:math:`\phi_{f_0} \approx \phi_P + \left(\hat{n}\cdot\nabla\phi\right)_{f_0} d_{Pf}` 
-into the Robin condition, where :math:`d_{Pf}` is the distance from the
-face to the adjoining cell center:
+:math:`\phi_{f_0}
+\approx \phi_P - \left(\vec{d}_{fP}\cdot\nabla\phi\right)_{f_0}
+\approx \phi_P - \left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}`
+into the Robin condition, where :math:`\vec{d}_{fP}` is the distance vector from the
+face center to the adjoining cell center:
 
 .. math::
 
    \begin{aligned}
         a \phi_{f_0} + b \left(\hat{n}\cdot\nabla\phi\right)_{f_0} &= g \\
-        a \phi_P + a \left(\hat{n}\cdot\nabla\phi\right)_{f_0} d_{Pf} 
+        a \phi_P - a \left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}
         + b \left(\hat{n}\cdot\nabla\phi\right)_{f_0} &\approx g \\
         \left(\hat{n}\cdot\nabla\phi\right)_{f_0} 
-        &\approx \frac{g - a \phi_P}{a d_{Pf} + b}
+        &\approx \frac{g - a \phi_P}{-a \left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0} + b}
    \end{aligned}
 
 such that
@@ -607,7 +609,7 @@ such that
    \begin{aligned}
        \nabla\cdot\left(\Gamma\nabla\phi\right) &\approx
        \sum_{f\neq f_0} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f 
-       + \Gamma_{f_0} \frac{g - a \phi_P}{a d_{Pf} + b} A_{f_0}
+       + \Gamma_{f_0} \frac{g - a \phi_P}{-a \left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0} + b} A_{f_0}
    \end{aligned}
 
 An equation of the form
