@@ -544,7 +544,31 @@ The Robin condition
 
    a\phi + b\hat{n}\cdot\nabla\phi = g\qquad\text{on $f=f_0$}
 
-can be applied at a face :math:`f_0` by taking note of the discretization 
+can often be substituted for the flux in an equation
+
+.. math::
+
+   \begin{aligned}
+        \frac{\partial\phi}{\partial t}
+        &= \nabla\cdot\left(\vec{a}\phi\right) + \nabla\cdot\left(b\nabla\phi\right)
+        \\
+        \int_V\frac{\partial\phi}{\partial t}\,dV
+        &= \int_S \hat{n} \cdot \left(\vec{a}\phi + b\nabla\phi\right) \, dS
+        \\
+        \int_V\frac{\partial\phi}{\partial t}\,dV
+        &= \int_{S\neq f_0} \hat{n} \cdot \left(\vec{a}\phi + b\nabla\phi\right) \, dS
+        + \int_{f_0} g \, dS
+   \end{aligned}
+
+>>> convectionCoeff = FaceVariable(mesh=mesh, value=[a])
+>>> convectionCoeff.setValue(0., where=mask)
+>>> diffusionCoeff = FaceVariable(mesh=mesh, value=b)
+>>> diffusionCoeff.setValue(0., where=mask)
+>>> eqn = (TransientTerm() == PowerLawConvectionTerm(coeff=convectionCoeff)
+>>>        + DiffusionTerm(coeff=diffusionCoeff) + (g * mask).divergence)
+
+When the Robin condition does not exactly map onto the boundary flux, we
+can attempt to apply it term by term by taking note of the discretization
 of the :class:`~fipy.terms.diffusionTerm.DiffusionTerm`:
 
 .. math::
