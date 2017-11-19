@@ -627,6 +627,22 @@ can be constrained to have a Robin condition at a face identifed by
 >>> eqn = (TransientTerm() == DiffusionTerm(coeff=Gamma)
 ...        + RobinCoeff * g - ImplicitSourceTerm(coeff=RobinCoeff * a))
 
+For a :class:`~fipy.terms.convectionTerm.ConvectionTerm`, we can use the
+Robin condition directly:
+
+.. math::
+
+   \begin{aligned}
+       \nabla\cdot\left(\vec{u}\phi\right) &\approx
+       \sum_f \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f \\
+       &= \sum_{f\neq f_0} \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f
+       + \left(\hat{n}\cdot\vec{u}\right)_{f_0} \frac{g - b \left(\hat{n}\cdot\nabla\phi\right)_{f_0}}{a} A_{f_0} \\
+       &= \sum_{f\neq f_0} \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f
+       + \left(\hat{n}\cdot\vec{u}\right)_{f_0}
+            \frac{-g \left(\hat{n}\cdot\vec{d}_{fP}\right)_{f_0} + b\phi_P}
+                 {-a \left(\hat{n}\cdot\vec{d}_{fP}\right)_{f_0} + b} A_{f_0}
+   \end{aligned}
+
 Applying internal "boundary" conditions
 =======================================
 
