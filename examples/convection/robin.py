@@ -64,7 +64,7 @@ where
 
 ..
 
->>> from fipy import CellVariable, Grid1D, DiffusionTerm, PowerLawConvectionTerm, ImplicitSourceTerm, Viewer
+>>> from fipy import CellVariable, FaceVariable, Grid1D, DiffusionTerm, PowerLawConvectionTerm, ImplicitSourceTerm, Viewer
 >>> from fipy.tools import numerix
 >>> nx = 100
 >>> dx = 1.0 / nx
@@ -75,11 +75,16 @@ where
 >>> D = 2.0
 >>> P = 3.0
 
->>> C.faceGrad.constrain([-P + P * C.faceValue], mesh.facesLeft)
 >>> C.faceGrad.constrain([0], mesh.facesRight)
 
->>> eq = PowerLawConvectionTerm((P,)) == \
-...      DiffusionTerm() - ImplicitSourceTerm(D)
+>>> convectionCoeff = FaceVariable(mesh=mesh, value=[P])
+>>> convectionCoeff[..., mesh.facesLeft.value] = 0.
+>>> diffusionCoeff = FaceVariable(mesh=mesh, value=1.)
+>>> diffusionCoeff[..., mesh.facesLeft.value] = 0.
+
+>>> eq = (PowerLawConvectionTerm(coeff=convectionCoeff)
+...       == DiffusionTerm(coeff=diffusionCoeff) - ImplicitSourceTerm(coeff=D)
+...       - (P * mesh.facesLeft).divergence)
 
 >>> A = numerix.sqrt(P**2 + 4 * D)
 
@@ -90,7 +95,8 @@ where
 ...             ((P + A)**2*numerix.exp(A / 2)- (P - A)**2 * numerix.exp(-A / 2)))
 
 >>> if __name__ == '__main__':
-...     C.name = 'C'
+...     C.name = '$C$'
+...     CAnalytical.name = '$C_{analytical}$'
 ...     viewer = Viewer(vars=(C, CAnalytical))
 
 >>> if __name__ == '__main__':
