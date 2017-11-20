@@ -99,9 +99,11 @@ introduce a corresponding divergence source to the equation.
 
 >>> x = mesh.cellCenters[0]
 >>> CAnalytical = CellVariable(mesh=mesh)
->>> CAnalytical.setValue(2 * P * numerix.exp(P * x / 2) * ((P + A) * numerix.exp(A / 2 * (1 - x))
-...             - (P - A) * numerix.exp(-A / 2 *(1 - x)))/
-...             ((P + A)**2*numerix.exp(A / 2)- (P - A)**2 * numerix.exp(-A / 2)))
+>>> CAnalytical.setValue(2 * P * numerix.exp(P * x / 2)
+...                      * ((P + A) * numerix.exp(A / 2 * (1 - x))
+...                         - (P - A) * numerix.exp(-A / 2 *(1 - x)))
+...                      / ((P + A)**2*numerix.exp(A / 2)
+...                         - (P - A)**2 * numerix.exp(-A / 2)))
 
 >>> if __name__ == '__main__':
 ...     C.name = '$C$'
