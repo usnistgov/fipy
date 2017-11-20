@@ -77,6 +77,15 @@ where
 
 >>> C.faceGrad.constrain([0], mesh.facesRight)
 
+We note that the Robin condition exactly defines the flux on the left, so we
+introduce a corresponding divergence source to the equation.
+
+.. note::
+
+   Zeroing out the coefficients of the equation at this boundary is probably not
+   necessary due to the default no-flux boundary conditions of cell-centered
+   finite volume, but it's a safe precaution.
+
 >>> convectionCoeff = FaceVariable(mesh=mesh, value=[P])
 >>> convectionCoeff[..., mesh.facesLeft.value] = 0.
 >>> diffusionCoeff = FaceVariable(mesh=mesh, value=1.)
