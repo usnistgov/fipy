@@ -1115,7 +1115,7 @@ class Variable(object):
 
     def __pow__(self, other):
         """return self**other, or self raised to power other
-        
+
         >>> print Variable(1, "mol/l")**3
         1.0 mol**3/l**3
         >>> print (Variable(1, "mol/l")**3).unit
