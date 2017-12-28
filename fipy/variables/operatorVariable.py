@@ -41,11 +41,15 @@ from fipy.tools import numerix
 
 def _OperatorVariableClass(baseClass=object):
     class _OperatorVariable(baseClass):
-        def __init__(self, op, var, opShape=(), canInline=True, unit=None, inlineComment=None, *args, **kwargs):
+        def __init__(self, op, var, opShape=(), canInline=True, unit=None, inlineComment=None, valueMattersForUnit=None, *args, **kwargs):
             self.op = op
             self.var = var
             self.opShape = opShape
             self._unit = unit
+            if valueMattersForUnit is None:
+                self.valueMattersForUnit = [False for v in var]
+            else:
+                self.valueMattersForUnit = valueMattersForUnit
             self.canInline = canInline  #allows for certain functions to opt out of --inline
             baseClass.__init__(self, value=None, *args, **kwargs)
             self.name = ''
@@ -208,6 +212,14 @@ def _OperatorVariableClass(baseClass=object):
                        repr(bytecode),
                        repr([ord(byte) for byte in self.op.func_code.co_code]),
                        "FIXME")
+
+        @property
+        def _varProxy(self):
+            """list of dimensional scalars that stand in for self.var
+
+            Used for determining units of result without doing expensive computation"""
+
+            return [v if valueMatters else v._unitAsOne for v, valueMatters in zip(self.var, self.valueMattersForUnit)]
 
         def __repr__(self):
             return self._getRepresentation()
