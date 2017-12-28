@@ -1013,6 +1013,12 @@ class Variable(object):
             >>> (-Variable(value="1 m")).unit
             <PhysicalUnit m>
 
+        :Parameters:
+          - `op`: the operator function to apply (takes one argument for `self`)
+          - `operatorClass`: the `Variable` class that the binary operator should inherit from
+          - `opShape`: the shape that should result from the operation
+          - `valueMattersForUnit`: whether value of `self` should be used when determining unit,
+                                    e.g., ???
         """
         operatorClass = operatorClass or self._OperatorVariableClass()
         from fipy.variables import unaryOperatorVariable
@@ -1059,6 +1065,10 @@ class Variable(object):
           - `other`: the quantity to be operated with
           - `operatorClass`: the `Variable` class that the binary operator should inherit from
           - `opShape`: the shape that should result from the operation
+          - `value0mattersForUnit`: whether value of `self` should be used when determining unit,
+                                    e.g., `__rpow__`
+          - `value1mattersForUnit`: whether value of `other` should be used when determining unit,
+                                    e.g., `__pow__`
         """
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
