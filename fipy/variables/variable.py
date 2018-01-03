@@ -1005,20 +1005,13 @@ class Variable(object):
         baseClass = baseClass or self._variableClass
         return operatorVariable._OperatorVariableClass(baseClass=baseClass)
 
-    def _UnaryOperatorVariable(self, op, operatorClass=None, opShape=None, canInline=True, unit=None,
-                               valueMattersForUnit=False):
+    def _UnaryOperatorVariable(self, op, operatorClass=None, opShape=None, canInline=True, unit=None):
         """
         Check that unit works for unOp
 
             >>> (-Variable(value="1 m")).unit
             <PhysicalUnit m>
 
-        :Parameters:
-          - `op`: the operator function to apply (takes one argument for `self`)
-          - `operatorClass`: the `Variable` class that the binary operator should inherit from
-          - `opShape`: the shape that should result from the operation
-          - `valueMattersForUnit`: whether value of `self` should be used when determining unit,
-                                    e.g., ???
         """
         operatorClass = operatorClass or self._OperatorVariableClass()
         from fipy.variables import unaryOperatorVariable
@@ -1036,8 +1029,7 @@ class Variable(object):
             canInline = False
 
         return unOp(op=op, var=[self], opShape=opShape, canInline=canInline, unit=unit,
-                    inlineComment=inline._operatorVariableComment(canInline=canInline),
-                    valueMattersForUnit=[valueMattersForUnit])
+                    inlineComment=inline._operatorVariableComment(canInline=canInline))
 
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
@@ -1057,18 +1049,13 @@ class Variable(object):
 
         return (opShape, baseClass, other)
 
-    def _BinaryOperatorVariable(self, op, other, operatorClass=None, opShape=None, canInline=True, unit=None,
-                                value0mattersForUnit=False, value1mattersForUnit=False):
+    def _BinaryOperatorVariable(self, op, other, operatorClass=None, opShape=None, canInline=True, unit=None):
         """
         :Parameters:
           - `op`: the operator function to apply (takes two arguments for `self` and `other`)
           - `other`: the quantity to be operated with
           - `operatorClass`: the `Variable` class that the binary operator should inherit from
           - `opShape`: the shape that should result from the operation
-          - `value0mattersForUnit`: whether value of `self` should be used when determining unit,
-                                    e.g., `__rpow__`
-          - `value1mattersForUnit`: whether value of `other` should be used when determining unit,
-                                    e.g., `__pow__`
         """
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
@@ -1089,8 +1076,7 @@ class Variable(object):
         binOp = binaryOperatorVariable._BinaryOperatorVariable(operatorClass)
 
         return binOp(op=op, var=[self, other], opShape=opShape, canInline=canInline, unit=unit,
-                     inlineComment=inline._operatorVariableComment(canInline=canInline),
-                     valueMattersForUnit=[value0mattersForUnit, value1mattersForUnit])
+                     inlineComment=inline._operatorVariableComment(canInline=canInline))
 
     def __add__(self, other):
         from fipy.terms.term import Term
@@ -1124,17 +1110,10 @@ class Variable(object):
         return self._BinaryOperatorVariable(lambda a,b: numerix.fmod(a, b), other)
 
     def __pow__(self, other):
-        """return self**other, or self raised to power other
-
-        >>> print Variable(1, "mol/l")**3
-        1.0 mol**3/l**3
-        >>> print (Variable(1, "mol/l")**3).unit
-        <PhysicalUnit mol**3/l**3>
-        """
-        return self._BinaryOperatorVariable(lambda a,b: pow(a,b), other, value1mattersForUnit=True)
+        return self._BinaryOperatorVariable(lambda a,b: pow(a,b), other)
 
     def __rpow__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: pow(b,a), other, value0mattersForUnit=True)
+        return self._BinaryOperatorVariable(lambda a,b: pow(b,a), other)
 
     def __truediv__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: a/b, other)
