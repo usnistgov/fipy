@@ -84,7 +84,8 @@ def _BinaryOperatorVariable(operatorClass=None):
         def unit(self):
             if self._unit is None:
                 try:
-                    return self._extractUnit(self.op(self.var[0]._unitAsOne, self.var[1]._unitAsOne))
+                    var = self._varProxy
+                    return self._extractUnit(self.op(var[0], var[1]))
                 except:
                     return self._extractUnit(self._calcValue_())
             else:
