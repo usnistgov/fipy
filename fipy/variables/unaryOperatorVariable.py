@@ -71,8 +71,7 @@ def _UnaryOperatorVariable(operatorClass=None):
             assert(hasattr(self, "_unit") == True)
             if self._unit is None:
                 try:
-                    var = self._varProxy
-                    return self._extractUnit(self.op(var[0]))
+                    return self._extractUnit(self.op(self.var[0]._unitAsOne))
                 except:
                     return self._extractUnit(self._calcValue())
             else:
