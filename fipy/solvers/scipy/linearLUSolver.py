@@ -58,7 +58,6 @@ class LinearLUSolver(_ScipySolver):
         b = b * (1 / maxdiag)
 
         LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=1.,
-                                            drop_tol=0.,
                                             relax=1,
                                             panel_size=10,
                                             permc_spec=3)
