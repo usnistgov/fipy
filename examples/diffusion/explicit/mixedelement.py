@@ -46,18 +46,19 @@ the size of each time step and `steps` is the number of time steps.
     >>> dx = 1.
     >>> dy = 1.
     >>> nx = 10
-    >>> ny = 2
+
     >>> valueLeft = 0.
     >>> valueRight = 1.
     >>> timeStepDuration = 0.005
     >>> if __name__ == '__main__':
-    ...     steps = 10000
+    ...     steps = 100
     ... else:
     ...     steps = 10
 
-    >>> gridMesh = Grid2D(dx, dy, nx, ny)
-    >>> triMesh = Tri2D(dx, dy, nx, 1) + ((dx*nx,), (0,))
-    >>> bigMesh = gridMesh + triMesh
+    >>> gridMesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=2)
+    >>> triMesh = Tri2D(dx=dx, dy=dy, nx=nx, ny=1) + ((dx*nx,), (0,))
+    >>> otherGridMesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=1) + ((dx*nx,), (1,))
+    >>> bigMesh = gridMesh + triMesh + otherGridMesh
 
     >>> var = CellVariable(name="concentration",
     ...                    mesh=bigMesh,
@@ -66,12 +67,8 @@ the size of each time step and `steps` is the number of time steps.
 
     >>> eqn = TransientTerm() == ExplicitDiffusionTerm()
 
-    >>> exteriorFaces = bigMesh.exteriorFaces
-    >>> xFace = bigMesh.faceCenters[0]
-
-    >>> var.constrain(valueLeft, exteriorFaces & (xFace ** 2 < 0.000000000000001))
-    >>> var.constrain((valueLeft + valueRight) * 0.5, exteriorFaces & ((xFace - (dx * nx)) ** 2 < 0.000000000000001))
-    >>> var.constrain(valueRight, exteriorFaces & ((xFace - (2 * dx * nx)) ** 2 < 0.000000000000001))
+    >>> var.constrain(valueLeft, where=bigMesh.facesLeft)
+    >>> var.constrain(valueRight, where=bigMesh.facesRight)
 
     >>> answer = numerix.array([  0.00000000e+00,  8.78906250e-23,  1.54057617e-19,  1.19644866e-16,
     ...                        5.39556276e-14,  1.55308505e-11,  2.94461712e-09,  3.63798469e-07,
