@@ -94,6 +94,8 @@ A loop is required to execute the necessary time steps:
     ...     eqn.solve(var, dt=timeStepDuration)
     ...     if(not (step % 100)):
     ...         print (step / 100)
+    ...         if __name__ == '__main__':
+    ...             viewer.plot()
     >>> print var
 
     >>> if __name__ == '__main__':
