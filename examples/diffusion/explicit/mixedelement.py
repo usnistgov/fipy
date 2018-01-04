@@ -100,11 +100,9 @@ A loop is required to execute the necessary time steps:
     ...     if(not (step % 100)):
     ...         print (step / 100)
     >>> print var
-    >>> theMask = numerix.array([[10, 1, 20, 2]])
 
     >>> if __name__ == '__main__':
     ...     viewer.plot()
-    ...     ##     viewer.plot(mask = theMask, graphwidth = 15, graphheight = 3)
     ...     raw_input('finished')
 
 The result is again tested in the same way:
