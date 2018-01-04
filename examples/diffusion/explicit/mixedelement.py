@@ -51,7 +51,7 @@ the size of each time step and `steps` is the number of time steps.
     >>> valueRight = 1.
     >>> timeStepDuration = 0.005
     >>> if __name__ == '__main__':
-    ...     steps = 100
+    ...     steps = 10000
     ... else:
     ...     steps = 10
 
@@ -62,8 +62,7 @@ the size of each time step and `steps` is the number of time steps.
 
     >>> var = CellVariable(name="concentration",
     ...                    mesh=bigMesh,
-    ...                    value=valueLeft,
-    ...                    hasOld=True)
+    ...                    value=valueLeft)
 
     >>> eqn = TransientTerm() == ExplicitDiffusionTerm()
 
@@ -92,7 +91,6 @@ A loop is required to execute the necessary time steps:
     ...     viewer = Viewer(vars = var)
 
     >>> for step in range(steps):
-    ...     var.updateOld()
     ...     eqn.solve(var, dt=timeStepDuration)
     ...     if(not (step % 100)):
     ...         print (step / 100)
