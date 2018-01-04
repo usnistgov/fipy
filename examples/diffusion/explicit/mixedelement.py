@@ -93,13 +93,16 @@ A loop is required to execute the necessary time steps:
 
     >>> if __name__ == '__main__':
     ...     viewer = Viewer(vars = var)
-    ...     for step in range(steps):
-    ...         var.updateOld()
-    ...         eqn.solve(var, dt=timeStepDuration)
-    ...         if(not (step % 100)):
-    ...             print (step / 100)
-    ...     print var
-    ...     theMask = numerix.array([[10, 1, 20, 2]])
+
+    >>> for step in range(steps):
+    ...     var.updateOld()
+    ...     eqn.solve(var, dt=timeStepDuration)
+    ...     if(not (step % 100)):
+    ...         print (step / 100)
+    >>> print var
+    >>> theMask = numerix.array([[10, 1, 20, 2]])
+
+    >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     ##     viewer.plot(mask = theMask, graphwidth = 15, graphheight = 3)
     ...     raw_input('finished')
