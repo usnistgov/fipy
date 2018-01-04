@@ -49,7 +49,8 @@ the size of each time step and `steps` is the number of time steps.
 
     >>> valueLeft = 0.
     >>> valueRight = 1.
-    >>> timeStepDuration = 0.005
+    >>> D = 1.
+    >>> timeStepDuration = 0.01 * dx**2 / (2 * D)
     >>> if __name__ == '__main__':
     ...     steps = 10000
     ... else:
@@ -60,57 +61,52 @@ the size of each time step and `steps` is the number of time steps.
     >>> otherGridMesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=1) + ((dx*nx,), (1,))
     >>> bigMesh = gridMesh + triMesh + otherGridMesh
 
+    >>> L = dx * nx * 2
+
     >>> var = CellVariable(name="concentration",
     ...                    mesh=bigMesh,
     ...                    value=valueLeft)
 
-    >>> eqn = TransientTerm() == ExplicitDiffusionTerm()
+    >>> eqn = TransientTerm() == ExplicitDiffusionTerm(coeff=D)
 
     >>> var.constrain(valueLeft, where=bigMesh.facesLeft)
     >>> var.constrain(valueRight, where=bigMesh.facesRight)
-
-    >>> answer = numerix.array([  0.00000000e+00,  8.78906250e-23,  1.54057617e-19,  1.19644866e-16,
-    ...                        5.39556276e-14,  1.55308505e-11,  2.94461712e-09,  3.63798469e-07,
-    ...                        2.74326174e-05,  1.01935828e-03,  9.76562500e-24,  1.92578125e-20,
-    ...                        1.70937109e-17,  8.99433979e-15,  3.10726059e-12,  7.36603377e-10,
-    ...                        1.21397338e-07,  1.37456643e-05,  1.02532568e-03,  4.57589878e-02,
-    ...                        2.63278194e-07,  5.70863224e-12,  0.00000000e+00,  0.00000000e+00,
-    ...                        0.00000000e+00,  0.00000000e+00,  1.51165440e-13,  1.23805218e-07,
-    ...                        1.51873310e-03,  5.87457842e-01,  3.78270971e-06,  2.41898556e-10,
-    ...                        2.62440000e-16,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
-    ...                        0.00000000e+00,  1.55453500e-09,  6.18653630e-05,  8.85109369e-02,
-    ...                        7.24354518e-05,  1.32738123e-08,  8.11158300e-14,  0.00000000e+00,
-    ...                        0.00000000e+00,  0.00000000e+00,  0.00000000e+00,  2.27755930e-11,
-    ...                        3.31776157e-06,  1.39387353e-02,  3.78270971e-06,  2.41898556e-10,
-    ...                        2.62440000e-16,  0.00000000e+00,  0.00000000e+00,  0.00000000e+00,
-    ...                        0.00000000e+00,  1.55453500e-09,  6.18653630e-05,  8.85109369e-02])
 
 A loop is required to execute the necessary time steps:
 
     >>> if __name__ == '__main__':
     ...     viewer = Viewer(vars = var)
 
+    >>> x = bigMesh.cellCenters[0]
+    >>> t = timeStepDuration * steps
+
+In a semi-infinite domain, the analytical solution for this transient
+diffusion problem is given by
+:math:`\phi = 1 - \erf((L - x)/2\sqrt{D t})`. If the :term:`SciPy` library is available,
+the result is tested against the expected profile:
+
+    >>> try:
+    ...     from scipy.special import erf # doctest: +SCIPY
+    ...     varAnalytical = 1 - erf((L - x) / (2 * numerix.sqrt(D * t))) # doctest: +SCIPY
+    ... except ImportError:
+    ...     print "The SciPy library is not available to test the solution to \
+    ... the transient diffusion equation"
+
     >>> for step in range(steps):
     ...     eqn.solve(var, dt=timeStepDuration)
-    ...     if(not (step % 100)):
-    ...         print (step / 100)
-    ...         if __name__ == '__main__':
-    ...             viewer.plot()
-    >>> print var
+    ...     if (step % 100) == 0 and (__name__ == '__main__'):
+    ...         viewer.plot()
+
+We check the answer against the analytical result
+
+    >>> print var.allclose(varAnalytical, atol = 5e-3) # doctest: +SCIPY
+    1
+    
+    >>> Viewer(vars=(var - varAnalytical)).plot()
 
     >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input('finished')
-
-The result is again tested in the same way:
-
-    >>> Lx = (2 * nx * dx)
-    >>> x = bigMesh.cellCenters[0]
-    >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> ## print var.allclose(analyticalArray, rtol = 0.001, atol = 0.001)
-    >>> print var.allclose(answer)
-    1
-
 """
 
 __docformat__ = 'restructuredtext'
