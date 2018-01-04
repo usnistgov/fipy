@@ -72,25 +72,29 @@ the size of each time step and `steps` is the number of time steps.
     >>> var.constrain(valueLeft, where=bigMesh.facesLeft)
     >>> var.constrain(valueRight, where=bigMesh.facesRight)
 
-A loop is required to execute the necessary time steps:
-
-    >>> if __name__ == '__main__':
-    ...     viewer = Viewer(vars = var)
+In a semi-infinite domain, the analytical solution for this transient diffusion
+problem is given by :math:`\phi = 1 - \erf((L - x)/2\sqrt{D t})`, which is a
+reasonable approximation at early times. At late times, the solution is just a
+straight line. If the :term:`SciPy` library is available, the result is tested
+against the expected profile:
 
     >>> x = bigMesh.cellCenters[0]
     >>> t = timeStepDuration * steps
 
-In a semi-infinite domain, the analytical solution for this transient
-diffusion problem is given by
-:math:`\phi = 1 - \erf((L - x)/2\sqrt{D t})`. If the :term:`SciPy` library is available,
-the result is tested against the expected profile:
+    >>> if __name__ == '__main__':
+    ...     varAnalytical = valueLeft + (valueRight - valueLeft) * x / L
+    ...     atol = 0.2
+    ... else:
+    ...     try:
+    ...         from scipy.special import erf # doctest: +SCIPY
+    ...         varAnalytical = 1 - erf((L - x) / (2 * numerix.sqrt(D * t))) # doctest: +SCIPY
+    ...         atol = 0.03
+    ...     except ImportError:
+    ...         print "The SciPy library is not available to test the solution to \
+    ...           the transient diffusion equation"
 
-    >>> try:
-    ...     from scipy.special import erf # doctest: +SCIPY
-    ...     varAnalytical = 1 - erf((L - x) / (2 * numerix.sqrt(D * t))) # doctest: +SCIPY
-    ... except ImportError:
-    ...     print "The SciPy library is not available to test the solution to \
-    ... the transient diffusion equation"
+    >>> if __name__ == '__main__':
+    ...     viewer = Viewer(vars=var)
 
     >>> for step in range(steps):
     ...     eqn.solve(var, dt=timeStepDuration)
@@ -99,11 +103,9 @@ the result is tested against the expected profile:
 
 We check the answer against the analytical result
 
-    >>> print var.allclose(varAnalytical, atol = 5e-3) # doctest: +SCIPY
+    >>> print var.allclose(varAnalytical, atol=atol) # doctest: +SCIPY
     1
     
-    >>> Viewer(vars=(var - varAnalytical)).plot()
-
     >>> if __name__ == '__main__':
     ...     viewer.plot()
     ...     raw_input('finished')
