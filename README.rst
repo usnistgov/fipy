@@ -22,9 +22,8 @@ Overview
    significant advantage to :term:`Python` is the existing suite of tools for
    array calculations, sparse matrices and data rendering. 
 
-:term:`FiPy` is free and open-source software, coordinated using GitHub_.
-
-|GitHub|_ |gitter|_ |TravisCI|_ |OpenHub|_ |CondaForge|_ |Depsy|_ |PyPi|_ 
+.. only:: html
+|GitHub|_ |gitter|_ |TravisCI|_ |OpenHub|_ |CondaForge|_ |Depsy|_ |PyPi|_
 
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
@@ -237,7 +236,7 @@ or a
 .. _mailing list:  http://www.ctcms.nist.gov/fipy/documentation/MAIL.html
 .. _StackOverflow: http://stackoverflow.com/questions/tagged/fipy
 
-.. |GitHub|        image:: https://assets-cdn.github.com/favicon.ico
+.. |GitHub|        image:: https://img.shields.io/github/contributors/usnistgov/fipy.svg
 .. _Github:        https://github.com/usnistgov/fipy
 .. |gitter|        image:: https://badges.gitter.im/usnistgov/fipy.svg
 .. _gitter:        https://gitter.im/usnistgov/fipy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
@@ -247,7 +246,7 @@ or a
 .. _OpenHub:       https://www.openhub.net/p/fipy
 .. |PyPi|          image:: https://img.shields.io/pypi/dm/FiPy.svg?style=flat
 .. _PyPi:          https://pypi.python.org/pypi/FiPy
-.. |CondaForge|    image:: https://anaconda.org/guyer/fipy/badges/version.svg
+.. |CondaForge|    image:: https://anaconda.org/guyer/fipy/badges/downloads.svg
 .. _CondaForge:    https://anaconda.org/guyer/fipy
 .. |Depsy|         image:: http://depsy.org/api/package/pypi/FiPy/badge.svg
 .. _Depsy:         http://depsy.org/package/python/FiPy
