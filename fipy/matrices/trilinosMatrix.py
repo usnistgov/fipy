@@ -761,7 +761,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
             >>> from fipy import *
             >>> m = Grid1D(nx=6)
-            >>> v0 = CellVariable(mesh=m, value=numerix.arange(m.globalNumberOfCells))
+            >>> v0 = CellVariable(mesh=m, value=numerix.arange(m.globalNumberOfCells, dtype=float))
             >>> v1 = CellVariable(mesh=m, value=_TrilinosIdentityMeshMatrix(mesh=m) * v0.value)
             >>> print numerix.allclose(v0, v1)
             True
