@@ -1372,7 +1372,7 @@ class PhysicalField(object):
 
         The new shape must have the same size as the existing one.
 
-            >>> print PhysicalField((1.,2.,3.,4.),"m").reshape((2,3))
+            >>> print PhysicalField((1.,2.,3.,4.),"m").reshape((2,3)) # doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ...
             ValueError: total size of new array must be unchanged
