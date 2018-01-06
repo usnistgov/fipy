@@ -289,8 +289,8 @@ def _testBinOp(self):
 
     Check that unit works for a binOp
 
-        >>> (Variable(value="1 m") * Variable(value="1 s")).unit
-        <PhysicalUnit s*m>
+        >>> (Variable(value="1 m") * Variable(value="1 s")).unit == Variable(value="1 s*m").unit
+        True
 
         >>> (Variable(value="1 m") / Variable(value="0 s")).unit
         <PhysicalUnit m/s>

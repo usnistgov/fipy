@@ -362,8 +362,8 @@ class PhysicalField(object):
         Multiply two physical quantities.  The unit of the result is the
         product of the units of the operands.
 
-            >>> print PhysicalField(10., 'N') * PhysicalField(10., 'm')
-            100.0 m*N
+            >>> print PhysicalField(10., 'N') * PhysicalField(10., 'm') == PhysicalField(100., 'N*m')
+            True
 
         As a special case, if the result is dimensionless, the value
         is returned without units, rather than with a dimensionless unit
@@ -1512,14 +1512,14 @@ class PhysicalUnit:
 
             >>> a = PhysicalField("1. m")
             >>> b = PhysicalField("3. ft")
-            >>> a.unit * b.unit
-            <PhysicalUnit ft*m>
+            >>> a.unit * b.unit == _findUnit('ft*m')
+            True
             >>> a.unit * b.inBaseUnits().unit
             <PhysicalUnit m**2>
             >>> c = PhysicalField("1. s")
             >>> d = PhysicalField("3. Hz")
-            >>> c.unit * d.unit
-            <PhysicalUnit Hz*s>
+            >>> c.unit * d.unit == _findUnit('Hz*s')
+            True
             >>> c.unit * d.inBaseUnits().unit
             <PhysicalUnit 1>
 
@@ -1890,8 +1890,8 @@ def _findUnit(unit):
         <PhysicalUnit 1>
         >>> _findUnit(1.)
         <PhysicalUnit 1>
-        >>> _findUnit(PhysicalField("4 N*m").unit)
-        <PhysicalUnit m*N>
+        >>> _findUnit(PhysicalField("4 N*m").unit) == _findUnit('m*N')
+        True
         >>> _findUnit(2.)
         Traceback (most recent call last):
             ...
