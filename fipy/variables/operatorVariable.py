@@ -158,8 +158,6 @@ def _OperatorVariableClass(baseClass=object):
             return result
 
         def _py2kInstructions(self, bytecodes, style):
-            import opcode
-            
             def _popIndex():
                 return bytecodes.pop(0) + bytecodes.pop(0) * 256
 
@@ -176,28 +174,28 @@ def _OperatorVariableClass(baseClass=object):
 
             while len(bytecodes) > 0:
                 bytecode = bytecodes.pop(0)
-                if opcode.opname[bytecode] == 'UNARY_CONVERT':
+                if dis.opname[bytecode] == 'UNARY_CONVERT':
                     stack.append("`" + stack.pop() + "`")
-                elif opcode.opname[bytecode] == 'BINARY_SUBSCR':
+                elif dis.opname[bytecode] == 'BINARY_SUBSCR':
                     stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
-                elif opcode.opname[bytecode] == 'RETURN_VALUE':
+                elif dis.opname[bytecode] == 'RETURN_VALUE':
                     s = stack.pop()
                     if style == 'C':
                         return s.replace('numerix.', '').replace('arc', 'a')
                     else:
                         return s
-                elif opcode.opname[bytecode] == 'LOAD_CONST':
+                elif dis.opname[bytecode] == 'LOAD_CONST':
                     stack.append(self.op.func_code.co_consts[_popIndex()])
-                elif opcode.opname[bytecode] == 'LOAD_ATTR':
+                elif dis.opname[bytecode] == 'LOAD_ATTR':
                     stack.append(stack.pop() + "." + self.op.func_code.co_names[_popIndex()])
-                elif opcode.opname[bytecode] == 'COMPARE_OP':
-                    stack.append(stack.pop(-2) + " " + opcode.cmp_op[_popIndex()] + " " + stack.pop())
-                elif opcode.opname[bytecode] == 'LOAD_GLOBAL':
+                elif dis.opname[bytecode] == 'COMPARE_OP':
+                    stack.append(stack.pop(-2) + " " + dis.cmp_op[_popIndex()] + " " + stack.pop())
+                elif dis.opname[bytecode] == 'LOAD_GLOBAL':
                     counter = _popIndex()
                     stack.append(self.op.func_code.co_names[counter])
-                elif opcode.opname[bytecode] == 'LOAD_FAST':
+                elif dis.opname[bytecode] == 'LOAD_FAST':
                     stack.append(self.__var(_popIndex(), style=style))
-                elif opcode.opname[bytecode] == 'CALL_FUNCTION':
+                elif dis.opname[bytecode] == 'CALL_FUNCTION':
                     args = []
                     for j in range(bytecodes.pop(1)):
                         # keyword parameters
@@ -206,7 +204,7 @@ def _OperatorVariableClass(baseClass=object):
                         # positional parameters
                         args.insert(0, stack.pop())
                     stack.append(stack.pop() + "(" + ", ".join(args) + ")")
-                elif opcode.opname[bytecode] == 'LOAD_DEREF':
+                elif dis.opname[bytecode] == 'LOAD_DEREF':
                     free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
                     stack.append(free[_popIndex()])
                 elif bytecode in unop:
