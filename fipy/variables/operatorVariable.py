@@ -117,9 +117,9 @@ def _OperatorVariableClass(baseClass=object):
                 instructions = [ord(byte) for byte in self.op.func_code.co_code]
                 parseInstructions = self._py2kInstructions
 
-            return parseInstructions(instructions, style=style)
+            return parseInstructions(instructions, style=style, argDict=argDict, id=id, freshen=freshen)
 
-        def __var(self, i, style):
+        def __var(self, i, style, argDict, id, freshen):
             v = self.var[i]
             if style == "__repr__":
                 result = repr(v)
@@ -166,7 +166,7 @@ def _OperatorVariableClass(baseClass=object):
                     62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
         }
 
-        def _py2kInstructions(self, bytecodes, style):
+        def _py2kInstructions(self, bytecodes, style, argDict, id, freshen):
             def _popIndex():
                 return bytecodes.pop(0) + bytecodes.pop(0) * 256
 
@@ -194,7 +194,7 @@ def _OperatorVariableClass(baseClass=object):
                     counter = _popIndex()
                     stack.append(self.op.func_code.co_names[counter])
                 elif dis.opname[bytecode] == 'LOAD_FAST':
-                    stack.append(self.__var(_popIndex(), style=style))
+                    stack.append(self.__var(_popIndex(), style=style, argDict=argDict, id=id, freshen=freshen))
                 elif dis.opname[bytecode] == 'CALL_FUNCTION':
                     args = []
                     for j in range(bytecodes.pop(1)):
@@ -217,7 +217,7 @@ def _OperatorVariableClass(baseClass=object):
                        repr([bytecode] + bytecodes),
                        repr(_getByteCode())))
 
-        def _py3kInstructions(self, instructions, style):
+        def _py3kInstructions(self, instructions, style, argDict, id, freshen):
             stack = []
             
             for ins in instructions:
@@ -240,7 +240,7 @@ def _OperatorVariableClass(baseClass=object):
                 elif ins.opname == 'LOAD_GLOBAL':
                     stack.append(ins.argval)
                 elif ins.opname == 'LOAD_FAST':
-                    stack.append(self.__var(ins.arg, style=style))
+                    stack.append(self.__var(ins.arg, style=style, argDict=argDict, id=id, freshen=freshen))
 #                 elif dis.opname[bytecode] == 'CALL_FUNCTION':
 #                     args = []
 #                     for j in range(bytecodes.pop(1)):
