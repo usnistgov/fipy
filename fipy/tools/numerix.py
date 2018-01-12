@@ -202,7 +202,7 @@ def reshape(arr, shape):
         newShape = array(left + right)
         newShape[newShape == 0] = 1
 
-        shape = left + (oldShape.prod() / newShape.prod(),) + right
+        shape = left + (oldShape.prod() // newShape.prod(),) + right
 
     if _isPhysical(arr):
         return arr.reshape(shape)
