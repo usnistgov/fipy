@@ -242,7 +242,7 @@ def _OperatorVariableClass(baseClass=object):
                     stack.append(ins.argval)
                 elif ins.opname == 'LOAD_FAST':
                     stack.append(self.__var(ins.arg, style=style, argDict=argDict, id=id, freshen=freshen))
-                elif ins.opname[bytecode] == 'CALL_FUNCTION':
+                elif ins.opname == 'CALL_FUNCTION':
                     stack.append(stack.pop() + "(" + ins.argrepr + ")")
                 elif ins.opname == 'LOAD_DEREF':
                     stack.append(ins.argval)
