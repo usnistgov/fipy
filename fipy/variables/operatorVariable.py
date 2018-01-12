@@ -1145,8 +1145,8 @@ def _testBinOp(self):
 
     It seems that numpy's __rmul__ coercion is very strange
 
-        >>> type(numerix.array([1., 2.]) * Variable([1., 2.]))
-        <class 'fipy.variables.binaryOperatorVariable.binOp'>
+        >>> type(numerix.array([1., 2.]) * Variable([1., 2.])) # doctest: +ELLIPSIS
+        <class 'fipy.variables.binaryOperatorVariable...binOp'>
 
     Test inlining
 
