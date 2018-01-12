@@ -108,7 +108,8 @@ def _OperatorVariableClass(baseClass=object):
 
             """
             if isinstance(self.op, numerix.ufunc):
-                return "%s(%s)" % (self.op.__name__, ", ".join([self.__var(i) for i in range(len(self.var))]))
+                return "%s(%s)" % (self.op.__name__, ", ".join([self.__var(i, style, argDict, id, freshen)
+                                                               for i in range(len(self.var))]))
 
             try:
                 instructions = dis.get_instructions(self.op.func_code)
@@ -241,18 +242,10 @@ def _OperatorVariableClass(baseClass=object):
                     stack.append(ins.argval)
                 elif ins.opname == 'LOAD_FAST':
                     stack.append(self.__var(ins.arg, style=style, argDict=argDict, id=id, freshen=freshen))
-#                 elif dis.opname[bytecode] == 'CALL_FUNCTION':
-#                     args = []
-#                     for j in range(bytecodes.pop(1)):
-#                         # keyword parameters
-#                         args.insert(0, stack.pop(-2) + " = " + stack.pop())
-#                     for j in range(bytecodes.pop(0)):
-#                         # positional parameters
-#                         args.insert(0, stack.pop())
-#                     stack.append(stack.pop() + "(" + ", ".join(args) + ")")
-#                 elif dis.opname[bytecode] == 'LOAD_DEREF':
-#                     free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
-#                     stack.append(free[_popIndex()])
+                elif ins.opname[bytecode] == 'CALL_FUNCTION':
+                    stack.append(stack.pop() + "(" + ins.argrepr + ")")
+                elif ins.opname == 'LOAD_DEREF':
+                    stack.append(ins.argval)
                 elif ins.opcode in self._unop:
                     stack.append(self._unop[ins.opcode] + '(' + stack.pop() + ')')
                 elif ins.opcode in self._binop:
