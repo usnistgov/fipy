@@ -217,6 +217,52 @@ def _OperatorVariableClass(baseClass=object):
                        repr([bytecode] + bytecodes),
                        repr(_getByteCode())))
 
+        def _py3kInstructions(self, instructions, style):
+            stack = []
+            
+            for ins in instructions:
+                if ins.opname == 'UNARY_CONVERT':
+                    stack.append("`" + stack.pop() + "`")
+                elif ins.opname == 'BINARY_SUBSCR':
+                    stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
+                elif ins.opname == 'RETURN_VALUE':
+                    s = stack.pop()
+                    if style == 'C':
+                        return s.replace('numerix.', '').replace('arc', 'a')
+                    else:
+                        return s
+                elif ins.opname == 'LOAD_CONST':
+                    stack.append(ins.argval)
+                elif ins.opname == 'LOAD_ATTR':
+                    stack.append(stack.pop() + "." + ins.argval)
+                elif ins.opname == 'COMPARE_OP':
+                    stack.append(stack.pop(-2) + " " + dis.cmp_op[ins.arg] + " " + stack.pop())
+                elif ins.opname == 'LOAD_GLOBAL':
+                    stack.append(ins.argval)
+                elif ins.opname == 'LOAD_FAST':
+                    stack.append(self.__var(ins.arg, style=style))
+#                 elif dis.opname[bytecode] == 'CALL_FUNCTION':
+#                     args = []
+#                     for j in range(bytecodes.pop(1)):
+#                         # keyword parameters
+#                         args.insert(0, stack.pop(-2) + " = " + stack.pop())
+#                     for j in range(bytecodes.pop(0)):
+#                         # positional parameters
+#                         args.insert(0, stack.pop())
+#                     stack.append(stack.pop() + "(" + ", ".join(args) + ")")
+#                 elif dis.opname[bytecode] == 'LOAD_DEREF':
+#                     free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
+#                     stack.append(free[_popIndex()])
+#                 elif bytecode in unop:
+#                     stack.append(unop[bytecode] + '(' + stack.pop() + ')')
+#                 elif bytecode in binop:
+#                     stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
+#                 else:
+#                     raise SyntaxError("Unknown bytecode: %s in %s of %s" % (
+#                        repr(bytecode),
+#                        repr([bytecode] + bytecodes),
+#                        repr(_getByteCode())))
+
         @property
         def _varProxy(self):
             """list of dimensional scalars that stand in for self.var
