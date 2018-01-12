@@ -157,20 +157,20 @@ def _OperatorVariableClass(baseClass=object):
 
             return result
 
+        _unop = {
+            10: "+", 11: "-", 12: "not ", 15: "~"
+        }
+
+        _binop = {
+            19: "**", 20: "*", 21: "/", 22: "%", 23: "+", 24: "-", 26: "//", 27: "/",
+                    62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
+        }
+
         def _py2kInstructions(self, bytecodes, style):
             def _popIndex():
                 return bytecodes.pop(0) + bytecodes.pop(0) * 256
 
             stack = []
-
-            unop = {
-                10: "+", 11: "-", 12: "not ", 15: "~"
-            }
-
-            binop = {
-                19: "**", 20: "*", 21: "/", 22: "%", 23: "+", 24: "-", 26: "//", 27: "/",
-                        62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
-            }
 
             while len(bytecodes) > 0:
                 bytecode = bytecodes.pop(0)
@@ -207,10 +207,10 @@ def _OperatorVariableClass(baseClass=object):
                 elif dis.opname[bytecode] == 'LOAD_DEREF':
                     free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
                     stack.append(free[_popIndex()])
-                elif bytecode in unop:
-                    stack.append(unop[bytecode] + '(' + stack.pop() + ')')
-                elif bytecode in binop:
-                    stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
+                elif bytecode in self._unop:
+                    stack.append(self._unop[bytecode] + '(' + stack.pop() + ')')
+                elif bytecode in self._binop:
+                    stack.append(stack.pop(-2) + " " + self._binop[bytecode] + " " + stack.pop())
                 else:
                     raise SyntaxError("Unknown bytecode: %s in %s of %s" % (
                        repr(bytecode),
@@ -253,15 +253,12 @@ def _OperatorVariableClass(baseClass=object):
 #                 elif dis.opname[bytecode] == 'LOAD_DEREF':
 #                     free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
 #                     stack.append(free[_popIndex()])
-#                 elif bytecode in unop:
-#                     stack.append(unop[bytecode] + '(' + stack.pop() + ')')
-#                 elif bytecode in binop:
-#                     stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
-#                 else:
-#                     raise SyntaxError("Unknown bytecode: %s in %s of %s" % (
-#                        repr(bytecode),
-#                        repr([bytecode] + bytecodes),
-#                        repr(_getByteCode())))
+                elif ins.opcode in self._unop:
+                    stack.append(self._unop[ins.opcode] + '(' + stack.pop() + ')')
+                elif ins.opcode in self._binop:
+                    stack.append(stack.pop(-2) + " " + self._binop[ins.opcode] + " " + stack.pop())
+                else:
+                    raise SyntaxError("Unknown instruction: %s" % repr(ins))
 
         @property
         def _varProxy(self):
