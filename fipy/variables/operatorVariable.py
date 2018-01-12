@@ -149,10 +149,13 @@ def _OperatorVariableClass(baseClass=object):
             if isinstance(self.op, numerix.ufunc):
                 return "%s(%s)" % (self.op.__name__, ", ".join([__var(i) for i in range(len(self.var))]))
 
-            if sys.version_info < (3,0):
-                bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
-            else:
-                bytecodes = list(self.op.__code__.co_code)
+            def _getByteCodes():
+                if sys.version_info < (3,0):
+                    return [ord(byte) for byte in self.op.func_code.co_code]
+                else:
+                    return list(self.op.__code__.co_code)
+
+            bytecodes = _getByteCodes()
 
             def _popIndex():
                 return bytecodes.pop(0) + bytecodes.pop(0) * 256
@@ -208,10 +211,10 @@ def _OperatorVariableClass(baseClass=object):
                 elif bytecode in binop:
                     stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
                 else:
-                    raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (
+                    raise SyntaxError("Unknown bytecode: %s in %s of %s" % (
                        repr(bytecode),
-                       repr([ord(byte) for byte in self.op.func_code.co_code]),
-                       "FIXME")
+                       repr([bytecode] + bytecodes),
+                       repr(_getByteCode()))
 
         @property
         def _varProxy(self):
