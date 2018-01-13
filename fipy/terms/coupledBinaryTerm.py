@@ -235,9 +235,9 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1)
         >>> eq = eq0 & eq1
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var.globalValue
+        >>> print var.globalValue # doctest: +NORMALIZE_WHITESPACE
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print RHSvector.globalValue
+        >>> print RHSvector.globalValue # doctest: +NORMALIZE_WHITESPACE
         [ 0.  0.  0.  1.  1.  1.]
         >>> print numerix.allequal(matrix.numpyArray,
         ...                        [[ 2, -1,  0,  2, -2,  0],
@@ -255,9 +255,9 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1)
         >>> eq = eq0 & eq1
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var.globalValue
+        >>> print var.globalValue # doctest: +NORMALIZE_WHITESPACE
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
-        >>> print RHSvector.globalValue
+        >>> print RHSvector.globalValue # doctest: +NORMALIZE_WHITESPACE
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print numerix.allequal(matrix.numpyArray,
         ...                        [[ 2, -1,  0,  0,  0,  0,  2, -2,  0,  0,  0,  0],
@@ -305,9 +305,9 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         >>> eq1 = PowerLawConvectionTerm(coeff=-0.001, var=v1) - DiffusionTerm(coeff=3., var=v1)
         >>> eq = eq0 & eq1
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass)
-        >>> print var.globalValue
+        >>> print var.globalValue # doctest: +NORMALIZE_WHITESPACE
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print RHSvector.globalValue
+        >>> print RHSvector.globalValue # doctest: +NORMALIZE_WHITESPACE
         [ 0.  0.  0.  0.  0.  0.]
         >>> print numerix.allclose(matrix.numpyArray,
         ...                        [[ 100, 1e-15,      0,       0,       0,       0],

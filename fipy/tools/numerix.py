@@ -66,7 +66,7 @@ Take the tangent of a int.
 
 Take the tangent of an array.
 
-   >>> print tan(array((0,0,0)))
+   >>> print tan(array((0,0,0))) # doctest: +NORMALIZE_WHITESPACE
    [ 0.  0.  0.]
 
 """
@@ -311,17 +311,17 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
 
 
           >>> from fipy import Variable
-          >>> print tostring(Variable((1,0,11.2345)), precision=1)
+          >>> print tostring(Variable((1,0,11.2345)), precision=1) # doctest: +NORMALIZE_WHITESPACE
           [  1.    0.   11.2]
           >>> print tostring(array((1,2)), precision=5)
           [1 2]
-          >>> print tostring(array((1.12345,2.79)), precision=2)
+          >>> print tostring(array((1.12345,2.79)), precision=2) # doctest: +NORMALIZE_WHITESPACE
           [ 1.12  2.79]
           >>> print tostring(1)
           1
           >>> print tostring(array(1))
           1
-          >>> print tostring(array([1.23345]), precision=2)
+          >>> print tostring(array([1.23345]), precision=2) # doctest: +NORMALIZE_WHITESPACE
           [ 1.23]
           >>> print tostring(array([1]), precision=2)
           [1]

@@ -126,11 +126,11 @@ class TransientTerm(CellTerm):
         >>> m = Grid1D(nx=1)
         >>> var = CellVariable(mesh=m)
         >>> eq = TransientTerm(1) == ImplicitSourceTerm(1)
-        >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
+        >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var)) # doctest: +NORMALIZE_WHITESPACE
         [ 1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var, dt=1.)
-        >>> print eq.matrix.numpyArray
+        >>> print eq.matrix.numpyArray # doctest: +NORMALIZE_WHITESPACE
         [[ 1.]]
 
         >>> eq = TransientTerm(-1) == ImplicitSourceTerm(1)
@@ -183,7 +183,7 @@ class TransientTerm(CellTerm):
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve(v, dt=1.)
-        >>> print eq.matrix.numpyArray
+        >>> print eq.matrix.numpyArray # doctest: +NORMALIZE_WHITESPACE
         [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
          [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
          [ 0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.]
@@ -196,7 +196,7 @@ class TransientTerm(CellTerm):
          [ 0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.]
          [ 0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.]
          [ 0.  0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.]]
-        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()
+        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel() # doctest: +NORMALIZE_WHITESPACE
         [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
         >>> v[0] = 1.
         >>> v[1] = 0.5
@@ -204,7 +204,7 @@ class TransientTerm(CellTerm):
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve(v, dt=1.)
-        >>> print eq.matrix.numpyArray
+        >>> print eq.matrix.numpyArray # doctest: +NORMALIZE_WHITESPACE
         [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
          [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
          [ 0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.]
@@ -217,7 +217,7 @@ class TransientTerm(CellTerm):
          [ 0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.]
          [ 0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.]
          [ 0.  0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.]]
-        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()
+        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel() # doctest: +NORMALIZE_WHITESPACE
         [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
 
         """

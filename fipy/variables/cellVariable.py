@@ -183,18 +183,18 @@ class CellVariable(_MeshVariable):
             >>> from fipy import *
             >>> m = Grid2D(nx=3, ny=2)
             >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
-            >>> print v(((0., 1.1, 1.2), (0., 1., 1.)))
+            >>> print v(((0., 1.1, 1.2), (0., 1., 1.))) # doctest: +NORMALIZE_WHITESPACE
             [ 0.5  1.5  1.5]
-            >>> print v(((0., 1.1, 1.2), (0., 1., 1.)), order=1)
+            >>> print v(((0., 1.1, 1.2), (0., 1., 1.)), order=1) # doctest: +NORMALIZE_WHITESPACE
             [ 0.25  1.1   1.2 ]
             >>> m0 = Grid2D(nx=2, ny=2, dx=1., dy=1.)
             >>> m1 = Grid2D(nx=4, ny=4, dx=.5, dy=.5)
             >>> x, y = m0.cellCenters
             >>> v0 = CellVariable(mesh=m0, value=x * y)
-            >>> print v0(m1.cellCenters.globalValue)
+            >>> print v0(m1.cellCenters.globalValue) # doctest: +NORMALIZE_WHITESPACE
             [ 0.25  0.25  0.75  0.75  0.25  0.25  0.75  0.75  0.75  0.75  2.25  2.25
               0.75  0.75  2.25  2.25]
-            >>> print v0(m1.cellCenters.globalValue, order=1)
+            >>> print v0(m1.cellCenters.globalValue, order=1) # doctest: +NORMALIZE_WHITESPACE
             [ 0.125  0.25   0.5    0.625  0.25   0.375  0.875  1.     0.5    0.875
               1.875  2.25   0.625  1.     2.25   2.625]
 
@@ -562,9 +562,9 @@ class CellVariable(_MeshVariable):
             >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
             >>> v.constrain(0., where=m.facesLeft)
             >>> v.faceGrad.constrain([1.], where=m.facesRight)
-            >>> print v.faceGrad
+            >>> print v.faceGrad # doctest: +NORMALIZE_WHITESPACE
             [[ 1.  1.  1.  1.]]
-            >>> print v.faceValue
+            >>> print v.faceValue # doctest: +NORMALIZE_WHITESPACE
             [ 0.   1.   2.   2.5]
 
         Changing the constraint changes the dependencies
@@ -572,21 +572,21 @@ class CellVariable(_MeshVariable):
             >>> v.constrain(1., where=m.facesLeft)
             >>> print v.faceGrad
             [[-1.  1.  1.  1.]]
-            >>> print v.faceValue
+            >>> print v.faceValue # doctest: +NORMALIZE_WHITESPACE
             [ 1.   1.   2.   2.5]
 
         Constraints can be `Variable`
 
             >>> c = Variable(0.)
             >>> v.constrain(c, where=m.facesLeft)
-            >>> print v.faceGrad
+            >>> print v.faceGrad # doctest: +NORMALIZE_WHITESPACE
             [[ 1.  1.  1.  1.]]
-            >>> print v.faceValue
+            >>> print v.faceValue # doctest: +NORMALIZE_WHITESPACE
             [ 0.   1.   2.   2.5]
             >>> c.value = 1.
             >>> print v.faceGrad
             [[-1.  1.  1.  1.]]
-            >>> print v.faceValue
+            >>> print v.faceValue # doctest: +NORMALIZE_WHITESPACE
             [ 1.   1.   2.   2.5]
 
         Constraints can have a `Variable` mask.
@@ -594,10 +594,10 @@ class CellVariable(_MeshVariable):
             >>> v = CellVariable(mesh=m)
             >>> mask = FaceVariable(mesh=m, value=m.facesLeft)
             >>> v.constrain(1., where=mask)
-            >>> print v.faceValue
+            >>> print v.faceValue # doctest: +NORMALIZE_WHITESPACE
             [ 1.  0.  0.  0.]
             >>> mask[:] = mask | m.facesRight
-            >>> print v.faceValue
+            >>> print v.faceValue # doctest: +NORMALIZE_WHITESPACE
             [ 1.  0.  0.  1.]
 
         """
@@ -625,10 +625,10 @@ class CellVariable(_MeshVariable):
         >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
         >>> c = Constraint(0., where=m.facesLeft)
         >>> v.constrain(c)
-        >>> print v.faceValue
+        >>> print v.faceValue # doctest: +NORMALIZE_WHITESPACE
         [ 0.   1.   2.   2.5]
         >>> v.release(constraint=c)
-        >>> print v.faceValue
+        >>> print v.faceValue # doctest: +NORMALIZE_WHITESPACE
         [ 0.5  1.   2.   2.5]
         """
         try:
@@ -652,7 +652,7 @@ class CellVariable(_MeshVariable):
         >>> v[0] = x
         >>> v[1] = y
         >>> v[2] = x**2
-        >>> print v.faceGrad
+        >>> print v.faceGrad # doctest: +NORMALIZE_WHITESPACE
         [[[ 0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5  0.   1.   1.
             0.   0.   1.   1.   0.   0.   1.   1.   0. ]
           [ 0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.
@@ -666,7 +666,7 @@ class CellVariable(_MeshVariable):
             0.5  0.5  1.   1.   1.   1.   0.5  0.5  0.5  0.5]
           [ 0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.
             0.   0.   0.   0.   0.   0.   0.   0.   0. ]]]
-        >>> print v.grad
+        >>> print v.grad # doctest: +NORMALIZE_WHITESPACE
         [[[ 0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5]
           [ 0.   0.   0.   0.   0.   0.   0.   0.   0. ]
           [ 1.   3.   2.   1.   3.   2.   1.   3.   2. ]]

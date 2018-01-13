@@ -172,13 +172,13 @@ class Mesh2D(Mesh):
           - `layers`: the number of layers in the extruded mesh (number of times extrudeFunc will be called)
 
         >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
-        >>> print NonUniformGrid2D(nx=2,ny=2).extrude(layers=2).cellCenters
+        >>> print NonUniformGrid2D(nx=2,ny=2).extrude(layers=2).cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]
          [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]]
 
         >>> from fipy.meshes.tri2D import Tri2D
-        >>> print Tri2D().extrude(layers=2).cellCenters
+        >>> print Tri2D().extrude(layers=2).cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.83333333  0.5         0.16666667  0.5         0.83333333  0.5
            0.16666667  0.5       ]
          [ 0.5         0.83333333  0.5         0.16666667  0.5         0.83333333

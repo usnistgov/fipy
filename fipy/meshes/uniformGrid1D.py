@@ -55,7 +55,7 @@ class UniformGrid1D(UniformGrid):
     Creates a 1D grid mesh.
 
         >>> mesh = UniformGrid1D(nx = 3)
-        >>> print mesh.cellCenters
+        >>> print mesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  1.5  2.5]]
 
     """

@@ -144,7 +144,7 @@ class AbstractMesh(object):
         Equivalent to using :attr:`cellCenters`\ ``[0]``.
 
         >>> from fipy import *
-        >>> print Grid1D(nx=2).x
+        >>> print Grid1D(nx=2).x # doctest: +NORMALIZE_WHITESPACE
         [ 0.5  1.5]
         """
         return self.cellCenters[0]
@@ -155,7 +155,7 @@ class AbstractMesh(object):
         Equivalent to using :attr:`cellCenters`\ ``[1]``.
 
         >>> from fipy import *
-        >>> print Grid2D(nx=2, ny=2).y
+        >>> print Grid2D(nx=2, ny=2).y # doctest: +NORMALIZE_WHITESPACE
         [ 0.5  0.5  1.5  1.5]
         >>> print Grid1D(nx=2).y
         Traceback (most recent call last):
@@ -173,7 +173,7 @@ class AbstractMesh(object):
         Equivalent to using :attr:`cellCenters`\ ``[2]``.
 
         >>> from fipy import *
-        >>> print Grid3D(nx=2, ny=2, nz=2).z
+        >>> print Grid3D(nx=2, ny=2, nz=2).z # doctest: +NORMALIZE_WHITESPACE
         [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]
         >>> print Grid2D(nx=2, ny=2).z
         Traceback (most recent call last):
@@ -868,14 +868,14 @@ class AbstractMesh(object):
 
         >>> from fipy.meshes import Grid2D
         >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
-        >>> print baseMesh.cellCenters
+        >>> print baseMesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  1.5  0.5  1.5]
          [ 0.5  0.5  1.5  1.5]]
 
         If a vector is added to a `Mesh`, a translated `Mesh` is returned
 
         >>> translatedMesh = baseMesh + ((5,), (10,))
-        >>> print translatedMesh.cellCenters
+        >>> print translatedMesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[  5.5   6.5   5.5   6.5]
          [ 10.5  10.5  11.5  11.5]]
 
@@ -884,7 +884,7 @@ class AbstractMesh(object):
         `Mesh` objects is returned
 
         >>> addedMesh = baseMesh + (baseMesh + ((2,), (0,)))
-        >>> print addedMesh.cellCenters
+        >>> print addedMesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
 
@@ -892,19 +892,19 @@ class AbstractMesh(object):
         but the resulting mesh may not have the intended connectivity
 
         >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,)))
-        >>> print addedMesh.cellCenters
+        >>> print addedMesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
 
         >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
-        >>> print addedMesh.cellCenters
+        >>> print addedMesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
          [ 0.5  0.5  1.5  1.5  2.5  2.5  3.5  3.5]]
 
         No provision is made to avoid or consolidate overlapping `Mesh` objects
 
         >>> addedMesh = baseMesh + (baseMesh + ((1,), (0,)))
-        >>> print addedMesh.cellCenters
+        >>> print addedMesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  1.5  0.5  1.5  1.5  2.5  1.5  2.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
 
@@ -944,7 +944,7 @@ class AbstractMesh(object):
         >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0,
         ...                           nx = 1, ny = 1, nz = 1)
         >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + ((2,), (0,), (0,)))
-        >>> print threeDAddedMesh.cellCenters
+        >>> print threeDAddedMesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5  2.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5  0.5]
          [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5  0.5]]
@@ -991,7 +991,7 @@ class AbstractMesh(object):
         """
         Tests.
         >>> from fipy import *
-        >>> print (Grid1D(nx=1) / 2.).cellCenters
+        >>> print (Grid1D(nx=1) / 2.).cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.25]]
         >>> AbstractMesh(communicator=None) / 2.
         Traceback (most recent call last):

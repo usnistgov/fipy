@@ -285,10 +285,10 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             True
 
             >>> mesh = CylindricalNonUniformGrid2D(dx=(1., 2.), dy=(1.,)) + ((1.,),(0.,))
-            >>> print mesh.cellCenters
+            >>> print mesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
             [[ 1.5  3. ]
              [ 0.5  0.5]]
-            >>> print fp.CellVariable(mesh=mesh, value=mesh.cellVolumes).globalValue
+            >>> print fp.CellVariable(mesh=mesh, value=mesh.cellVolumes).globalValue # doctest: +NORMALIZE_WHITESPACE
             [ 1.5  6. ]
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell

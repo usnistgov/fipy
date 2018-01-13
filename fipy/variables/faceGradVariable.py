@@ -58,7 +58,7 @@ class _FaceGradVariable(FaceVariable):
     >>> v2 = CellVariable(mesh=m, value=x**2)
     >>> v.faceGrad.globalValue.shape
     (2, 3, 24)
-    >>> print v0.faceGrad
+    >>> print v0.faceGrad # doctest: +NORMALIZE_WHITESPACE
     [[ 0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5  0.   1.   1.
        0.   0.   1.   1.   0.   0.   1.   1.   0. ]
      [ 0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.

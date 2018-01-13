@@ -400,21 +400,21 @@ class Mesh(AbstractMesh):
 
             >>> from fipy.meshes import Grid2D
             >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
-            >>> print baseMesh.cellCenters
+            >>> print baseMesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
             [[ 0.5  1.5  0.5  1.5]
              [ 0.5  0.5  1.5  1.5]]
 
         The `factor` can be a scalar
 
             >>> dilatedMesh = baseMesh * 3
-            >>> print dilatedMesh.cellCenters
+            >>> print dilatedMesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
             [[ 1.5  4.5  1.5  4.5]
              [ 1.5  1.5  4.5  4.5]]
 
         or a vector
 
             >>> dilatedMesh = baseMesh * ((3,), (2,))
-            >>> print dilatedMesh.cellCenters
+            >>> print dilatedMesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
             [[ 1.5  4.5  1.5  4.5]
              [ 1.   1.   3.   3. ]]
 
@@ -807,10 +807,10 @@ class Mesh(AbstractMesh):
 
             >>> from fipy.meshes.uniformGrid1D import UniformGrid1D
             >>> a = UniformGrid1D(nx=10) + (10,)
-            >>> print a.cellCenters
+            >>> print a.cellCenters # doctest: +NORMALIZE_WHITESPACE
             [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
             >>> b = 10 + UniformGrid1D(nx=10)
-            >>> print b.cellCenters
+            >>> print b.cellCenters # doctest: +NORMALIZE_WHITESPACE
             [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
 
             >>> c = UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10) # doctest: +SERIAL

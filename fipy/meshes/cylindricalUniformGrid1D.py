@@ -49,7 +49,7 @@ class CylindricalUniformGrid1D(UniformGrid1D):
     Creates a 1D cylindrical grid mesh.
 
         >>> mesh = CylindricalUniformGrid1D(nx = 3)
-        >>> print mesh.cellCenters
+        >>> print mesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  1.5  2.5]]
 
     """

@@ -179,7 +179,7 @@ class CellTerm(_NonDiffusionTerm):
             >>> vcv = CellVariable(mesh=m, rank=1)
             >>> vfv = FaceVariable(mesh=m, rank=1)
 
-            >>> __CellTerm(coeff=cv)
+            >>> __CellTerm(coeff=cv) # doctest: +NORMALIZE_WHITESPACE
             __CellTerm(coeff=CellVariable(value=array([ 0.,  0.]), mesh=UniformGrid1D(dx=1.0, nx=2)))
             >>> __CellTerm(coeff=1)
             __CellTerm(coeff=1)

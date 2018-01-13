@@ -146,19 +146,19 @@ class PhysicalField(object):
         The `value` can be a Numeric_ `array`:
 
             >>> a = numerix.array(((3.,4.),(5.,6.)))
-            >>> print PhysicalField(value = a, unit = "m")
+            >>> print PhysicalField(value = a, unit = "m") # doctest: +NORMALIZE_WHITESPACE
             [[ 3.  4.]
              [ 5.  6.]] m
 
         or a `tuple`:
 
-            >>> print PhysicalField(value = ((3.,4.),(5.,6.)), unit = "m")
+            >>> print PhysicalField(value = ((3.,4.),(5.,6.)), unit = "m") # doctest: +NORMALIZE_WHITESPACE
             [[ 3.  4.]
              [ 5.  6.]] m
 
         or as a single value to be applied to every element of a supplied array:
 
-            >>> print PhysicalField(value = 2., unit = "m", array = a)
+            >>> print PhysicalField(value = 2., unit = "m", array = a) # doctest: +NORMALIZE_WHITESPACE
             [[ 2.  2.]
              [ 2.  2.]] m
 
@@ -290,7 +290,7 @@ class PhysicalField(object):
         Return human-readable form of a physical quantity
 
             >>> p = PhysicalField(value = (3., 3.14159), unit = "eV")
-            >>> print p.tostring(precision = 3, separator = '|')
+            >>> print p.tostring(precision = 3, separator = '|') # doctest: +NORMALIZE_WHITESPACE
             [ 3.   | 3.142] eV
         """
         from fipy.tools import numerix
@@ -490,7 +490,7 @@ class PhysicalField(object):
         """
         Return the absolute value of the quantity. The `unit` is unchanged.
 
-            >>> print abs(PhysicalField(((3.,-2.),(-1.,4.)), 'm'))
+            >>> print abs(PhysicalField(((3.,-2.),(-1.,4.)), 'm')) # doctest: +NORMALIZE_WHITESPACE
             [[ 3.  2.]
              [ 1.  4.]] m
         """
@@ -559,7 +559,7 @@ class PhysicalField(object):
 
             >>> a = PhysicalField(((3.,4.),(5.,6.)),"m")
             >>> a[0,1] = PhysicalField("6 ft")
-            >>> print a
+            >>> print a # doctest: +NORMALIZE_WHITESPACE
             [[ 3.      1.8288]
              [ 5.      6.    ]] m
             >>> a[1,0] = PhysicalField("2 min")
@@ -650,14 +650,14 @@ class PhysicalField(object):
         """
         Return a dimensionless `PhysicalField` as a Numeric_ ``array``.
 
-            >>> print numerix.array(PhysicalField(((2.,3.),(4.,5.)),"m/m"))
+            >>> print numerix.array(PhysicalField(((2.,3.),(4.,5.)),"m/m")) # doctest: +NORMALIZE_WHITESPACE
             [[ 2.  3.]
              [ 4.  5.]]
 
         As a special case, fields with angular units are converted to base
         units (radians) and then assumed dimensionless.
 
-            >>> print numerix.array(PhysicalField(((2.,3.),(4.,5.)),"deg"))
+            >>> print numerix.array(PhysicalField(((2.,3.),(4.,5.)),"deg")) # doctest: +NORMALIZE_WHITESPACE
             [[ 0.03490659  0.05235988]
              [ 0.06981317  0.08726646]]
 
@@ -665,7 +665,7 @@ class PhysicalField(object):
         If the array is not dimensionless, the numerical value in its base
         units is returned.
 
-            >>> numerix.array(PhysicalField(((2.,3.),(4.,5.)),"mm"))
+            >>> numerix.array(PhysicalField(((2.,3.),(4.,5.)),"mm")) # doctest: +NORMALIZE_WHITESPACE
             array([[ 0.002,  0.003],
                    [ 0.004,  0.005]])
 
@@ -817,17 +817,17 @@ class PhysicalField(object):
         """
         Converts an angular quantity to radians and returns the numerical value.
 
-            >>> print PhysicalField(((2.,3.),(4.,5.)),"rad").inRadians()
+            >>> print PhysicalField(((2.,3.),(4.,5.)),"rad").inRadians() # doctest: +NORMALIZE_WHITESPACE
             [[ 2.  3.]
              [ 4.  5.]]
-            >>> print PhysicalField(((2.,3.),(4.,5.)),"deg").inRadians()
+            >>> print PhysicalField(((2.,3.),(4.,5.)),"deg").inRadians() # doctest: +NORMALIZE_WHITESPACE
             [[ 0.03490659  0.05235988]
              [ 0.06981317  0.08726646]]
 
          As a special case, assumes a dimensionless quantity is already in
          radians.
 
-             >>> print PhysicalField(((2.,3.),(4.,5.))).inRadians()
+             >>> print PhysicalField(((2.,3.),(4.,5.))).inRadians() # doctest: +NORMALIZE_WHITESPACE
              [[ 2.  3.]
               [ 4.  5.]]
 
@@ -848,7 +848,7 @@ class PhysicalField(object):
         """
         Returns the numerical value of a dimensionless quantity.
 
-             >>> print PhysicalField(((2.,3.),(4.,5.))).inDimensionless()
+             >>> print PhysicalField(((2.,3.),(4.,5.))).inDimensionless() # doctest: +NORMALIZE_WHITESPACE
              [[ 2.  3.]
               [ 4.  5.]]
 
@@ -1298,7 +1298,7 @@ class PhysicalField(object):
         unit is the product of the units of `self` and `other`.
 
             >>> v = PhysicalField(((5.,6.),(7.,8.)), "m")
-            >>> print PhysicalField(((1.,2.),(3.,4.)), "m").dot(v)
+            >>> print PhysicalField(((1.,2.),(3.,4.)), "m").dot(v) # doctest: +NORMALIZE_WHITESPACE
             [ 26.  44.] m**2
 
         """
@@ -1316,13 +1316,13 @@ class PhysicalField(object):
         Return the elements of `self` specified by the elements of `indices`.
         The resulting `PhysicalField` array has the same units as the original.
 
-            >>> print PhysicalField((1.,2.,3.),"m").take((2,0))
+            >>> print PhysicalField((1.,2.,3.),"m").take((2,0)) # doctest: +NORMALIZE_WHITESPACE
             [ 3.  1.] m
 
         The optional third argument specifies the axis along which the selection
         occurs, and the default value (as in the example above) is 0, the first axis.
 
-            >>> print PhysicalField(((1.,2.,3.),(4.,5.,6.)),"m").take((2,0), axis = 1)
+            >>> print PhysicalField(((1.,2.,3.),(4.,5.,6.)),"m").take((2,0), axis = 1) # doctest: +NORMALIZE_WHITESPACE
             [[ 3.  1.]
              [ 6.  4.]] m
 
@@ -1340,7 +1340,7 @@ class PhysicalField(object):
 
             >>> f = PhysicalField((1.,2.,3.),"m")
             >>> f.put((2,0), PhysicalField((2.,3.),"inch"))
-            >>> print f
+            >>> print f # doctest: +NORMALIZE_WHITESPACE
             [ 0.0762  2.      0.0508] m
 
         The units of `values` must be compatible with `self`.
@@ -1366,7 +1366,7 @@ class PhysicalField(object):
         """
         Changes the shape of `self` to that specified in `shape`
 
-            >>> print PhysicalField((1.,2.,3.,4.),"m").reshape((2,2))
+            >>> print PhysicalField((1.,2.,3.,4.),"m").reshape((2,2)) # doctest: +NORMALIZE_WHITESPACE
             [[ 1.  2.]
              [ 3.  4.]] m
 
@@ -1384,9 +1384,9 @@ class PhysicalField(object):
         Returns the sum of all of the elements in `self` along the
         specified axis (first axis by default).
 
-            >>> print PhysicalField(((1.,2.),(3.,4.)), "m").sum()
+            >>> print PhysicalField(((1.,2.),(3.,4.)), "m").sum() # doctest: +NORMALIZE_WHITESPACE
             [ 4.  6.] m
-            >>> print PhysicalField(((1.,2.),(3.,4.)), "m").sum(1)
+            >>> print PhysicalField(((1.,2.),(3.,4.)), "m").sum(1) # doctest: +NORMALIZE_WHITESPACE
             [ 3.  7.] m
         """
         return self.__class__(value = numerix.sum(self.value, index), unit = self.unit)

@@ -50,11 +50,11 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
     Creates a 1D cylindrical grid mesh.
 
         >>> mesh = CylindricalNonUniformGrid1D(nx = 3)
-        >>> print mesh.cellCenters
+        >>> print mesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  1.5  2.5]]
 
         >>> mesh = CylindricalNonUniformGrid1D(dx = (1, 2, 3))
-        >>> print mesh.cellCenters
+        >>> print mesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  2.   4.5]]
 
         >>> print numerix.allclose(mesh.cellVolumes, (0.5, 4., 13.5)) # doctest: +PROCESSOR_0
@@ -66,7 +66,7 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
         IndexError: nx != len(dx)
 
         >>> mesh = CylindricalNonUniformGrid1D(nx=2, dx=(1., 2.)) + ((1.,),)
-        >>> print mesh.cellCenters
+        >>> print mesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 1.5  3. ]]
         >>> print numerix.allclose(mesh.cellVolumes, (1.5, 6)) # doctest: +PROCESSOR_0
         True

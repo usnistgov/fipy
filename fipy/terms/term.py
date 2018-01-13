@@ -693,7 +693,7 @@ class Term(object):
         ...                                      [0, 0, 2, -2]])
         ... # doctest: +PROCESSOR_0
         True
-        >>> print eq.RHSvector.globalValue
+        >>> print eq.RHSvector.globalValue # doctest: +NORMALIZE_WHITESPACE
         [ 0.  0.  0.  0.]
         >>> print eq._vars
         [A, B]
@@ -705,7 +705,7 @@ class Term(object):
         ...                                      [0, 0, 2, -2]])
         ... # doctest: +PROCESSOR_0
         True
-        >>> print eq.RHSvector.globalValue
+        >>> print eq.RHSvector.globalValue # doctest: +NORMALIZE_WHITESPACE
         [ 0.  0.  0.  0.]
         >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.) # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
@@ -754,7 +754,7 @@ class Term(object):
         ...                                      [1, -1, 0, 0, 3, -3]])
         ... # doctest: +PROCESSOR_0
         True
-        >>> print eq.RHSvector.globalValue
+        >>> print eq.RHSvector.globalValue # doctest: +NORMALIZE_WHITESPACE
         [ 0.  0.  0.  0.  0.  0.]
         >>> print eq._vars
         [A, B, C]

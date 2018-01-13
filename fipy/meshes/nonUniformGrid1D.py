@@ -52,11 +52,11 @@ class NonUniformGrid1D(Mesh1D):
     Creates a 1D grid mesh.
 
         >>> mesh = NonUniformGrid1D(nx = 3)
-        >>> print mesh.cellCenters
+        >>> print mesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  1.5  2.5]]
 
         >>> mesh = NonUniformGrid1D(dx = (1, 2, 3))
-        >>> print mesh.cellCenters
+        >>> print mesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
         [[ 0.5  2.   4.5]]
 
         >>> mesh = NonUniformGrid1D(nx = 2, dx = (1, 2, 3))
