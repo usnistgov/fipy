@@ -717,10 +717,10 @@ class PhysicalField(object):
 
         Just as a Numeric_ `array` cannot be cast to float, neither can PhysicalField arrays
 
-            >>> float(PhysicalField(((2.,3.),(4.,5.)),"m/m"))
+            >>> float(PhysicalField(((2.,3.),(4.,5.)),"m/m")) # doctest: +ELLIPSIS
             Traceback (most recent call last):
                 ...
-            TypeError: only length-1 arrays can be converted to Python scalars
+            TypeError: only ...-1 arrays can be converted to Python scalars
 
         .. _Numeric: http://www.numpy.org
         """
