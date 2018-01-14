@@ -243,7 +243,17 @@ def _OperatorVariableClass(baseClass=object):
                 elif ins.opname == 'LOAD_FAST':
                     stack.append(self.__var(ins.arg, style=style, argDict=argDict, id=id, freshen=freshen))
                 elif ins.opname == 'CALL_FUNCTION':
-                    stack.append(stack.pop() + "(" + ins.argrepr + ")")
+                    # args are last ins.arg items on stack
+                    args, stack = stack[-ins.arg:], stack[:-ins.arg]
+                    stack.append(stack.pop() + "(" + ", ".join(args) + ")")
+                elif ins.opname == 'CALL_FUNCTION_KW':
+                    kws = list(stack.pop())
+                    # args are last ins.arg items on stack
+                    args, stack = stack[-ins.arg:], stack[:-ins.arg]
+                    kwargs = []
+                    while kws:
+                        kwargs.append(kws.pop() + "=" + args.pop())
+                    stack.append(stack.pop() + "(" + ", ".join(args + kwargs) + ")")
                 elif ins.opname == 'LOAD_DEREF':
                     stack.append(ins.argval)
                 elif ins.opcode in self._unop:
