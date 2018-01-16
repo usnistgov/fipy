@@ -173,8 +173,8 @@ class Variable(object):
         A dimensional `Variable` will convert to the numeric value in its base units
 
             >>> v = Variable(value=[2,3], unit="mm")
-            >>> numerix.array(v) # doctest: +NORMALIZE_WHITESPACE
-            array([ 0.002,  0.003])
+            >>> numerix.allclose(numerix.array(v), [ 0.002,  0.003])
+            True
         """
 
         return numerix.array(self.value, t)
@@ -887,8 +887,8 @@ class Variable(object):
             >>> var = CellVariable(mesh=mesh, value=0.)
             >>> Y =  mesh.cellCenters[1]
             >>> var.value = (Y + 1.0)
-            >>> print var - Y # doctest: +NORMALIZE_WHITESPACE
-            [ 1.  1.  1.  1.]
+            >>> print (var - Y).allclose([ 1., 1., 1., 1.])
+            True
         """
 
         from fipy.tools import inline

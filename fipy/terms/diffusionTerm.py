@@ -273,18 +273,24 @@ class DiffusionTerm(DiffusionTermNoCorrection):
 
         >>> from fipy.meshes.tri2D import Tri2D
         >>> mesh = Tri2D(nx = 1, ny = 1)
+        >>> cv = CellVariable(mesh=mesh)
         >>> term = DiffusionTermCorrection(CellVariable(value = 1, mesh = mesh))
-        >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0] # doctest: +NORMALIZE_WHITESPACE
-        [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
+        >>> print term._getGeomCoeff(cv)[0].allclose([6., 6., 6., 6.,
+        ...                                           1.5, 1.5, 1.5, 1.5])
+        True
+
         >>> term = DiffusionTerm(FaceVariable(value = 1, mesh = mesh))
-        >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0] # doctest: +NORMALIZE_WHITESPACE
-        [ 6.   6.   6.   6.   1.5  1.5  1.5  1.5]
+        >>> print term._getGeomCoeff(cv)[0].allclose([6., 6., 6., 6.,
+        ...                                          1.5, 1.5, 1.5, 1.5])
+        True
         >>> term = DiffusionTerm(CellVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
-        >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0] # doctest: +NORMALIZE_WHITESPACE
-        [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
+        >>> print term._getGeomCoeff(cv)[0].allclose([6., 6., 3., 3.,
+        ...                                          1.125, 1.125, 1.125, 1.125])
+        True
         >>> term = DiffusionTerm(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
-        >>> print term._getGeomCoeff(CellVariable(mesh=mesh))[0] # doctest: +NORMALIZE_WHITESPACE
-        [ 6.     6.     3.     3.     1.125  1.125  1.125  1.125]
+        >>> print term._getGeomCoeff(cv)[0].allclose([6., 6., 3., 3.,
+        ...                                          1.125, 1.125, 1.125, 1.125])
+        True
         >>> mesh = Tri2D(nx = 1, ny = 1, dy = 0.1)
         >>> term = DiffusionTermCorrection(FaceVariable(value=((0.5,), (1,)), mesh=mesh, rank=1))
         >>> val = (60., 60., 0.3, 0.3, 0.22277228, 0.22277228, 0.22277228, 0.22277228)
@@ -301,11 +307,11 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> from fipy.meshes.tri2D import Tri2D
         >>> mesh = Tri2D(nx = 1, ny = 1)
         >>> term = DiffusionTerm((((1, 2), (3, 4)),))
-        >>> print term._getGeomCoeff(CellVariable(mesh=mesh)) # doctest: +NORMALIZE_WHITESPACE
-        [[ 24.          24.           6.           6.           0.           7.5
-            7.5          0.        ]
-         [ -3.          -3.           2.           2.          -1.41421356
-            0.70710678   0.70710678  -1.41421356]]
+        >>> cv = CellVariable(mesh=mesh)
+        >>> gc = [[ 24., 24.,  6.,  6.,  0.,  7.5, 7.5,  0.],
+        ...       [ -3., -3.,  2.,  2., -1.41421356, 0.70710678, 0.70710678, -1.41421356]]
+        >>> print term._getGeomCoeff(cv).allclose(gc)
+        True
 
         Negate the term.
 

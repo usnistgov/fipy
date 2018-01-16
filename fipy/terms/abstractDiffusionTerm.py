@@ -293,15 +293,15 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         >>> coeff = Variable([[0. , 0.], [0. , 1.]])
         >>> eq = DiffusionTerm(coeff)
         >>> eq.solve(v, solver=DummySolver())
-        >>> print v # doctest: +NORMALIZE_WHITESPACE
-        [ 0.  0.  0.  0.]
+        >>> print v.allclose([0., 0., 0., 0.])
+        True
 
         Change the coefficient.
 
         >>> coeff[0, 0] = 1.
         >>> eq.solve(v)
-        >>> print v # doctest: +NORMALIZE_WHITESPACE
-        [ 1.  1.  1.  1.]
+        >>> print v.allclose([1., 1., 1., 1.])
+        True
 
         Change the constraints.
 
@@ -310,8 +310,8 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         >>> print v.faceValue.constraintMask
         [False False False False False False  True False  True  True False  True]
         >>> eq.solve(v)
-        >>> print v # doctest: +NORMALIZE_WHITESPACE
-        [ 2.25  2.75  2.25  2.75]
+        >>> print v.allclose([2.25, 2.75, 2.25, 2.75])
+        True
 
         """
 

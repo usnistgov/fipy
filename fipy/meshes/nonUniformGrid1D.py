@@ -51,13 +51,15 @@ class NonUniformGrid1D(Mesh1D):
     """
     Creates a 1D grid mesh.
 
+        >>> from fipy.tools import numerix
+
         >>> mesh = NonUniformGrid1D(nx = 3)
-        >>> print mesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
-        [[ 0.5  1.5  2.5]]
+        >>> print numerix.allclose(mesh.cellCenters, [[ 0.5, 1.5, 2.5]])
+        True
 
         >>> mesh = NonUniformGrid1D(dx = (1, 2, 3))
-        >>> print mesh.cellCenters # doctest: +NORMALIZE_WHITESPACE
-        [[ 0.5  2.   4.5]]
+        >>> print numerix.allclose(mesh.cellCenters, [[ 0.5, 2.,  4.5]])
+        True
 
         >>> mesh = NonUniformGrid1D(nx = 2, dx = (1, 2, 3))
         Traceback (most recent call last):

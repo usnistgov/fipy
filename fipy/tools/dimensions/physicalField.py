@@ -407,9 +407,9 @@ class PhysicalField(object):
         such as Numeric_ that cannot use units, while ensuring the quantities
         have the desired units
 
-            >>> print (PhysicalField(1., 'inch')
-            ...        / PhysicalField(1., 'mm'))
-            25.4
+            >>> print numerix.allclose(PhysicalField(1., 'inch')
+            ...                        / PhysicalField(1., 'mm'), 25.4)
+            True
 
         .. _Numeric: http://www.numpy.org
         """
@@ -650,24 +650,25 @@ class PhysicalField(object):
         """
         Return a dimensionless `PhysicalField` as a Numeric_ ``array``.
 
-            >>> print numerix.array(PhysicalField(((2.,3.),(4.,5.)),"m/m")) # doctest: +NORMALIZE_WHITESPACE
-            [[ 2.  3.]
-             [ 4.  5.]]
-
+            >>> print numerix.allclose(numerix.array(PhysicalField(((2.,3.),(4.,5.)),"m/m")), 
+            ...                        [[2., 3.],[4., 5.]])
+            True
+ 
         As a special case, fields with angular units are converted to base
         units (radians) and then assumed dimensionless.
 
-            >>> print numerix.array(PhysicalField(((2.,3.),(4.,5.)),"deg")) # doctest: +NORMALIZE_WHITESPACE
-            [[ 0.03490659  0.05235988]
-             [ 0.06981317  0.08726646]]
-
+            >>> print numerix.allclose(numerix.array(PhysicalField(((2.,3.),(4.,5.)),"deg")),
+            ...                        [[ 0.03490659, 0.05235988],
+            ...                         [ 0.06981317, 0.08726646]])
+            True
 
         If the array is not dimensionless, the numerical value in its base
         units is returned.
 
-            >>> numerix.array(PhysicalField(((2.,3.),(4.,5.)),"mm")) # doctest: +NORMALIZE_WHITESPACE
-            array([[ 0.002,  0.003],
-                   [ 0.004,  0.005]])
+            >>> numerix.allclose(numerix.array(PhysicalField(((2.,3.),(4.,5.)),"mm")),
+            ...                  [[ 0.002,  0.003],
+            ...                   [ 0.004,  0.005]])
+            True
 
         .. _Numeric: http://www.numpy.org
         """
@@ -817,19 +818,22 @@ class PhysicalField(object):
         """
         Converts an angular quantity to radians and returns the numerical value.
 
-            >>> print PhysicalField(((2.,3.),(4.,5.)),"rad").inRadians() # doctest: +NORMALIZE_WHITESPACE
-            [[ 2.  3.]
-             [ 4.  5.]]
-            >>> print PhysicalField(((2.,3.),(4.,5.)),"deg").inRadians() # doctest: +NORMALIZE_WHITESPACE
-            [[ 0.03490659  0.05235988]
-             [ 0.06981317  0.08726646]]
+            >>> print numerix.allclose(PhysicalField(((2.,3.),(4.,5.)),"rad").inRadians(),
+            ...                        [[2., 3.],
+            ...                         [4., 5.]])
+            True
+            >>> print numerix.allclose(PhysicalField(((2.,3.),(4.,5.)),"deg").inRadians(),
+            ...                        [[ 0.03490659, 0.05235988],
+            ...                         [ 0.06981317,  0.08726646]])
+            True
 
          As a special case, assumes a dimensionless quantity is already in
          radians.
 
-             >>> print PhysicalField(((2.,3.),(4.,5.))).inRadians() # doctest: +NORMALIZE_WHITESPACE
-             [[ 2.  3.]
-              [ 4.  5.]]
+             >>> print numerix.allclose(PhysicalField(((2.,3.),(4.,5.))).inRadians(),
+             ...                        [[ 2., 3.],
+             ...                         [ 4., 5.]])
+             True
 
          It's an error to convert a quantity with non-angular units
 
@@ -848,9 +852,10 @@ class PhysicalField(object):
         """
         Returns the numerical value of a dimensionless quantity.
 
-             >>> print PhysicalField(((2.,3.),(4.,5.))).inDimensionless() # doctest: +NORMALIZE_WHITESPACE
-             [[ 2.  3.]
-              [ 4.  5.]]
+             >>> print numerix.allclose(PhysicalField(((2.,3.),(4.,5.))).inDimensionless(),
+             ...                        [[ 2., 3.],
+             ...                         [ 4., 5.]])
+             True
 
          It's an error to convert a quantity with units
 
@@ -1081,10 +1086,10 @@ class PhysicalField(object):
         """
         Return the sine of the `PhysicalField`
 
-            >>> print PhysicalField(numerix.pi/6,"rad").sin()
-            0.5
-            >>> print PhysicalField(30.,"deg").sin()
-            0.5
+            >>> print numerix.allclose(PhysicalField(numerix.pi/6,"rad").sin(), 0.5)
+            True
+            >>> print numerix.allclose(PhysicalField(30.,"deg").sin(), 0.5)
+            True
 
         The units of the PhysicalField must be an angle
 
@@ -1219,8 +1224,8 @@ class PhysicalField(object):
         """
         Return the inverse hyperbolic tangent of the `PhysicalField`
 
-            >>> print PhysicalField(0.5).arctanh()
-            0.549306144334
+            >>> print numerix.allclose(PhysicalField(0.5).arctanh(), 0.549306144334)
+            True
 
         The input `PhysicalField` must be dimensionless
 

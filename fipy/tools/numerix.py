@@ -66,8 +66,8 @@ Take the tangent of a int.
 
 Take the tangent of an array.
 
-   >>> print tan(array((0,0,0))) # doctest: +NORMALIZE_WHITESPACE
-   [ 0.  0.  0.]
+   >>> print allclose(tan(array((0,0,0))), [ 0., 0., 0.])
+   True
 
 """
 

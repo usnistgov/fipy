@@ -186,24 +186,26 @@ class _MeshVariable(Variable):
         >>> v0.constrain(1., where=m.facesLeft)
         >>> print v0.faceValue.constraintMask
         [False False False False False False  True False False  True False False]
-        >>> print v0.faceValue # doctest: +NORMALIZE_WHITESPACE
-        [ 0.  0.  0.  0.  0.  0.  1.  0.  0.  1.  0.  0.]
+        >>> print numerix.allclose(v0.faceValue,
+        ...                        [ 0., 0., 0., 0., 0., 0., 1., 0., 0., 1., 0., 0.])
+        True
         >>> v0.constrain(3., where=m.facesRight)
         >>> print v0.faceValue.constraintMask
         [False False False False False False  True False  True  True False  True]
-        >>> print v0.faceValue # doctest: +NORMALIZE_WHITESPACE
-        [ 0.  0.  0.  0.  0.  0.  1.  0.  3.  1.  0.  3.]
+        >>> print numerix.allclose(v0.faceValue,
+        ...                        [ 0., 0., 0., 0., 0., 0., 1., 0., 3., 1., 0., 3.])
+        True
         >>> v1 = CellVariable(mesh=m)
         >>> v1.constrain(1., where=(x < 1) & (y < 1))
         >>> print v1.constraintMask
         [ True False False False]
-        >>> print v1 # doctest: +NORMALIZE_WHITESPACE
-        [ 1.  0.  0.  0.]
+        >>> print v1.allclose([ 1., 0., 0., 0.])
+        True
         >>> v1.constrain(3., where=(x > 1) & (y > 1))
         >>> print v1.constraintMask
         [ True False False  True]
-        >>> print v1 # doctest: +NORMALIZE_WHITESPACE
-        [ 1.  0.  0.  3.]
+        >>> print v1.allclose([ 1., 0., 0., 3.])
+        True
 
         """
         if not hasattr(self, '_constraintMask'):

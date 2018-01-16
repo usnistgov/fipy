@@ -108,35 +108,35 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> v1 = CellVariable(mesh=m, value=1.)
         >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var # doctest: +NORMALIZE_WHITESPACE
-        [ 0.  0.  0.]
-        >>> print CellVariable(mesh=m, value=RHSvector) # doctest: +NORMALIZE_WHITESPACE
-        [ 0.  0.  0.]
+        >>> print var.allclose([0., 0., 0.])
+        True
+        >>> print CellVariable(mesh=m, value=RHSvector).allclose([0., 0., 0.])
+        True
         >>> print numerix.allequal(matrix.numpyArray, [[ 2, -1,  0],
         ...                                            [-1,  3, -1],
         ...                                            [ 0, -1,  2]])
         True
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var # doctest: +NORMALIZE_WHITESPACE
-        [ 1.  1.  1.]
-        >>> print CellVariable(mesh=m, value=RHSvector) # doctest: +NORMALIZE_WHITESPACE
-        [ 0.  0.  0.]
+        >>> print var.allclose([1., 1., 1.])
+        True
+        >>> print CellVariable(mesh=m, value=RHSvector).allclose([0., 0., 0.])
+        True
         >>> print numerix.allequal(matrix.numpyArray, [[ 2, -2,  0],
         ...                                            [-2,  4, -2],
         ...                                            [ 0, -2,  2]])
         True
-        >>> print CellVariable(mesh=m, value=eq.justResidualVector(dt=1.)) # doctest: +NORMALIZE_WHITESPACE
-        [ 0.  0.  0.]
+        >>> print CellVariable(mesh=m, value=eq.justResidualVector(dt=1.)).allclose([0., 0., 0.])
+        True
 
         >>> m = Grid1D(nx=6)
         >>> v0 = CellVariable(mesh=m, value=1.)
         >>> v1 = CellVariable(mesh=m, value=0.)
         >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var # doctest: +NORMALIZE_WHITESPACE
-        [ 1.  1.  1.  1.  1.  1.]
-        >>> print CellVariable(mesh=m, value=RHSvector) # doctest: +NORMALIZE_WHITESPACE
-        [ 1.  1.  1.  1.  1.  1.]
+        >>> print var.allclose([1., 1., 1., 1., 1., 1.])
+        True
+        >>> print CellVariable(mesh=m, value=RHSvector).allclose([1., 1., 1., 1., 1., 1.])
+        True
         >>> print numerix.allequal(matrix.numpyArray, [[ 2,-1, 0, 0, 0, 0.],
         ...                                            [-1, 3,-1, 0, 0, 0.],
         ...                                            [ 0,-1, 3,-1, 0, 0.],
@@ -145,10 +145,10 @@ class _BinaryTerm(_AbstractBinaryTerm):
         ...                                            [ 0, 0, 0, 0,-1, 2.]])
         True
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var # doctest: +NORMALIZE_WHITESPACE
-        [ 0.  0.  0.  0.  0.  0.]
-        >>> print CellVariable(mesh=m, value=RHSvector) # doctest: +NORMALIZE_WHITESPACE
-        [ 0.  0.  0.  0.  0.  0.]
+        >>> print var.allclose([0., 0., 0., 0., 0., 0.])
+        True
+        >>> print CellVariable(mesh=m, value=RHSvector).allclose([0., 0., 0., 0., 0., 0.])
+        True
         >>> print numerix.allequal(matrix.numpyArray, [[ 2,-2, 0, 0, 0, 0.],
         ...                                            [-2, 4,-2, 0, 0, 0.],
         ...                                            [ 0,-2, 4,-2, 0, 0.],
@@ -157,8 +157,8 @@ class _BinaryTerm(_AbstractBinaryTerm):
         ...                                            [ 0, 0, 0, 0,-2, 2.]])
         True
         >>> value = eq.justResidualVector(dt=1.)
-        >>> print CellVariable(mesh=m, value=value) # doctest: +NORMALIZE_WHITESPACE
-        [ 0.  0.  0.  0.  0.  0.]
+        >>> print CellVariable(mesh=m, value=value).allclose([0., 0., 0., 0., 0., 0.])
+        True
 
         >>> m = Grid1D(nx=3)
         >>> v0 = CellVariable(mesh=m, value=(0., 1., 2.))
@@ -208,39 +208,39 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> v[0] = 1.
         >>> v[1] = 2.
         >>> (TransientTerm(v) == ImplicitSourceTerm(-v)).solve(v, dt=1.)
-        >>> print v # doctest: +NORMALIZE_WHITESPACE
-        [[ 0.5  0.5  0.5  0.5  0.5  0.5]
-         [ 1.   1.   1.   1.   1.   1. ]]
+        >>> print v.allclose([[0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+        ...                   [1., 1., 1., 1., 1., 1. ]])
+        True
         >>> (TransientTerm() == v).solve(v, dt=1.)
-        >>> print v # doctest: +NORMALIZE_WHITESPACE
-        [[ 1.  1.  1.  1.  1.  1.]
-         [ 2.  2.  2.  2.  2.  2.]]
+        >>> print v.allclose([[1., 1., 1., 1., 1., 1.],
+        ...                   [2., 2., 2., 2., 2., 2.]])
+        True
         >>> (TransientTerm(v) == v).solve(v, dt=1.)
-        >>> print v # doctest: +NORMALIZE_WHITESPACE
-        [[ 2.  2.  2.  2.  2.  2.]
-         [ 3.  3.  3.  3.  3.  3.]]
+        >>> print v.allclose([[2., 2., 2., 2., 2., 2.],
+        ...                   [3., 3., 3., 3., 3., 3.]])
+        True
 
         >>> v[0] = 1.
         >>> v[1] = 2.
         >>> (TransientTerm(v) == ImplicitSourceTerm(-v * numerix.identity(2)[...,numerix.newaxis])).solve(v, dt=1.)
-        >>> print v # doctest: +NORMALIZE_WHITESPACE
-        [[ 0.5  0.5  0.5  0.5  0.5  0.5]
-         [ 1.   1.   1.   1.   1.   1. ]]
+        >>> print v.allclose([[0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+        ...                   [1., 1., 1., 1., 1., 1.]])
+        True
         >>> (TransientTerm() == numerix.array((0.5, 1.))).solve(v, dt=1.)
-        >>> print v # doctest: +NORMALIZE_WHITESPACE
-        [[ 1.  1.  1.  1.  1.  1.]
-         [ 2.  2.  2.  2.  2.  2.]]
+        >>> print v.allclose([[1., 1., 1., 1., 1., 1.],
+        ...                   [2., 2., 2., 2., 2., 2.]])
+        True
         >>> (TransientTerm(v * numerix.identity(2)[...,numerix.newaxis]) == v).solve(v, dt=1.)
-        >>> print v # doctest: +NORMALIZE_WHITESPACE
-        [[ 2.  2.  2.  2.  2.  2.]
-         [ 3.  3.  3.  3.  3.  3.]]
+        >>> print v.allclose([[2., 2., 2., 2., 2., 2.],
+        ...                   [3., 3., 3., 3., 3., 3.]])
+        True
 
         >>> v[0] = 1.
         >>> v[1] = 2.
         >>> (TransientTerm(v) == -ImplicitSourceTerm(((1, 0), (0, 2)))).solve(v, dt=1.)
-        >>> print v # doctest: +NORMALIZE_WHITESPACE
-        [[ 0.5  0.5  0.5  0.5  0.5  0.5]
-         [ 1.   1.   1.   1.   1.   1. ]]
+        >>> print v.allclose([[0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+        ...                   [1., 1., 1., 1., 1., 1.]])
+        True
 
         >>> v = CellVariable(mesh=m, elementshape=(2,))
         >>> v[0] = 1

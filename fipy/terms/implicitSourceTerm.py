@@ -61,8 +61,8 @@ class ImplicitSourceTerm(SourceTerm):
             >>> v = CellVariable(mesh=m, value=1.)
             >>> eq = TransientTerm() == ImplicitSourceTerm(v)
             >>> eq.solve(v, dt=1.)
-            >>> print v # doctest: +NORMALIZE_WHITESPACE
-            [ 2.]
+            >>> print v.allclose([ 2.])
+            True
             >>> v.setValue(-1.)
             >>> eq.solve(v, dt=1.)
             >>> print v

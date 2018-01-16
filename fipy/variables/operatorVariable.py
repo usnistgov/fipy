@@ -582,9 +582,9 @@ def _testBinOp(self):
     `CellVariable` * CellGradVariable
 
         >>> cvXcgv = cv * cv.grad
-        >>> print cvXcgv # doctest: +NORMALIZE_WHITESPACE
-        [[ 0.  1.  1.]
-         [ 0.  0.  0.]]
+        >>> print cvXcgv.allclose([[ 0., 1., 1.],
+        ...                        [ 0., 0., 0.]])
+        True
         >>> print isinstance(cvXcgv, CellVariable)
         1
         >>> print cvXcgv.rank
@@ -1190,8 +1190,9 @@ def _testBinOp(self):
 
     Following is a test case for an error when turing a binOp into an array
 
-        >>> print numerix.array(Variable(value=numerix.array([ 1.,])) * [ 1.,]) # doctest: +NORMALIZE_WHITESPACE
-        [ 1.]
+        >>> print numerix.allclose(numerix.array(Variable(value=numerix.array([ 1.,])) * [ 1.,]),
+        ...                        [ 1.])
+        True
 
     It seems that numpy's __rmul__ coercion is very strange
 
@@ -1203,11 +1204,11 @@ def _testBinOp(self):
         >>> v0 = Variable(numerix.ones(2, 'd'))
         >>> v1 = Variable(numerix.ones(2, 'd'))
         >>> v = v1 * v0
-        >>> print v # doctest: +NORMALIZE_WHITESPACE
-        [ 1.  1.]
+        >>> print v.allclose([ 1., 1.])
+        True
         >>> v0[1] = 0.5
-        >>> print v # doctest: +NORMALIZE_WHITESPACE
-        [ 1.   0.5]
+        >>> print v.allclose([ 1., 0.5])
+        True
 
     Test inline indexing
 
