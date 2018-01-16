@@ -59,9 +59,10 @@ class _GaussCellGradVariable(CellVariable):
     >>> v2 = CellVariable(mesh=m, value=x**2)
     >>> v.grad.globalValue.shape
     (2, 3, 9)
-    >>> print v0.grad
-    [[ 0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5]
-     [ 0.   0.   0.   0.   0.   0.   0.   0.   0. ]]
+    >>> print numerix.allclose(v0.grad,
+    ...                        [[ 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.5, 1.,  0.5],
+    ...                         [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0. ]])
+    True
     >>> print (v0.grad.globalValue == v.grad.globalValue[:,0]).all()
     True
     >>> print (v1.grad.globalValue == v.grad.globalValue[:,1]).all()

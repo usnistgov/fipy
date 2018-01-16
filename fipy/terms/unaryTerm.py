@@ -153,10 +153,12 @@ class _UnaryTerm(Term):
         >>> v1 = CellVariable(mesh=m, value=0.)
         >>> eq = TransientTerm(var=v0) & DiffusionTerm(coeff=4., var=v1)
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var.globalValue
-        [ 1.  1.  1.  0.  0.  0.]
-        >>> print RHSvector.globalValue
-        [ 1.  1.  1.  0.  0.  0.]
+        >>> print numerix.allclose(var.globalValue,
+        ...                        [1., 1., 1., 0., 0., 0.])
+        True
+        >>> print numerix.allclose(RHSvector.globalValue,
+        ...                        [1., 1., 1., 0., 0., 0.])
+        True
         >>> print numerix.allequal(matrix.numpyArray,
         ...                        [[ 1,  0,  0,  0,  0,  0],
         ...                         [ 0,  1,  0,  0,  0,  0],
@@ -173,10 +175,12 @@ class _UnaryTerm(Term):
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1)
         >>> eq = eq0 & eq1
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var.globalValue
-        [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
-        >>> print RHSvector.globalValue
-        [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
+        >>> print numerix.allclose(var.globalValue,
+        ...                        [0., 0., 0., 0., 0., 0., 1., 1., 1., 1., 1., 1.])
+        True
+        >>> print numerix.allclose(RHSvector.globalValue,
+        ...                        [0., 0., 0., 0., 0., 0., 1., 1., 1., 1., 1., 1.])
+        True
         >>> print numerix.allequal(matrix.numpyArray,
         ...                        [[-1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         ...                         [ 1, -2,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0],

@@ -126,13 +126,12 @@ class TransientTerm(CellTerm):
         >>> m = Grid1D(nx=1)
         >>> var = CellVariable(mesh=m)
         >>> eq = TransientTerm(1) == ImplicitSourceTerm(1)
-        >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
-        [ 1.]
+        >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var)).allclose([1.])
+        True
         >>> eq.cacheMatrix()
         >>> eq.solve(var, dt=1.)
-        >>> print eq.matrix.numpyArray
-        [[ 1.]]
-
+        >>> print numerix.allclose(eq.matrix.numpyArray, [[1.]])
+        True
         >>> eq = TransientTerm(-1) == ImplicitSourceTerm(1)
         >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
         [-1.]
@@ -183,42 +182,34 @@ class TransientTerm(CellTerm):
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve(v, dt=1.)
-        >>> print eq.matrix.numpyArray
-        [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
-         [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
-         [ 0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.]
-         [ 0.  0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.]
-         [ 0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  2.  0.]
-         [ 0.  0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  2.]
-         [ 3.  0.  0.  0.  0.  0.  4.  0.  0.  0.  0.  0.]
-         [ 0.  3.  0.  0.  0.  0.  0.  4.  0.  0.  0.  0.]
-         [ 0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.  0.]
-         [ 0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.]
-         [ 0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.]
-         [ 0.  0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.]]
-        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()
-        [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
+        >>> mat = [[ 1., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0., 0.],
+        ...        [ 0., 1., 0., 0., 0., 0., 0., 2., 0., 0., 0., 0.],
+        ...        [ 0., 0., 1., 0., 0., 0., 0., 0., 2., 0., 0., 0.],
+        ...        [ 0., 0., 0., 1., 0., 0., 0., 0., 0., 2., 0., 0.],
+        ...        [ 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 2., 0.],
+        ...        [ 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 2.],
+        ...        [ 3., 0., 0., 0., 0., 0., 4., 0., 0., 0., 0., 0.],
+        ...        [ 0., 3., 0., 0., 0., 0., 0., 4., 0., 0., 0., 0.],
+        ...        [ 0., 0., 3., 0., 0., 0., 0., 0., 4., 0., 0., 0.],
+        ...        [ 0., 0., 0., 3., 0., 0., 0., 0., 0., 4., 0., 0.],
+        ...        [ 0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 4., 0.],
+        ...        [ 0., 0., 0., 0., 0., 3., 0., 0., 0., 0., 0., 4.]]
+        >>> print numerix.allclose(eq.matrix.numpyArray, mat)
+        True
+        >>> cv = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1)))
+        >>> print numerix.allclose(cv.globalValue.ravel(), [2., 2., 2., 2., 2., 2., 5., 5., 5., 5., 5., 5.])
+        True
         >>> v[0] = 1.
         >>> v[1] = 0.5
         >>> eq = TransientTerm(((1., 2.), (3. , 4.)))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve(v, dt=1.)
-        >>> print eq.matrix.numpyArray
-        [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
-         [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
-         [ 0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.]
-         [ 0.  0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.]
-         [ 0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  2.  0.]
-         [ 0.  0.  0.  0.  0.  1.  0.  0.  0.  0.  0.  2.]
-         [ 3.  0.  0.  0.  0.  0.  4.  0.  0.  0.  0.  0.]
-         [ 0.  3.  0.  0.  0.  0.  0.  4.  0.  0.  0.  0.]
-         [ 0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.  0.]
-         [ 0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.]
-         [ 0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.]
-         [ 0.  0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.]]
-        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()
-        [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
+        >>> print numerix.allclose(eq.matrix.numpyArray, mat)
+        True
+        >>> cv = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1)))
+        >>> print numerix.allclose(cv.globalValue.ravel(), [2., 2., 2., 2., 2., 2., 5., 5., 5., 5., 5., 5.])
+        True
 
         """
         pass

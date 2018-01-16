@@ -66,9 +66,9 @@ class _AbstractConvectionTerm(FaceTerm):
             Traceback (most recent call last):
                 ...
             VectorCoeffError: The coefficient must be a vector value.
-            >>> __ConvectionTerm(coeff = vcv)
+            >>> __ConvectionTerm(coeff = vcv) # doctest: +NORMALIZE_WHITESPACE
             __ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
-            >>> __ConvectionTerm(coeff = vfv)
+            >>> __ConvectionTerm(coeff = vfv) # doctest: +NORMALIZE_WHITESPACE
             __ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.]]), mesh=UniformGrid1D(dx=1.0, nx=2)))
             >>> __ConvectionTerm(coeff = (1,))
             __ConvectionTerm(coeff=(1,))
@@ -86,10 +86,10 @@ class _AbstractConvectionTerm(FaceTerm):
             >>> cv2 = CellVariable(mesh=m2)
             >>> vcv2 = CellVariable(mesh=m2, rank=1)
             >>> vfv2 = FaceVariable(mesh=m2, rank=1)
-            >>> __ConvectionTerm(coeff=vcv2)
+            >>> __ConvectionTerm(coeff=vcv2) # doctest: +NORMALIZE_WHITESPACE
             __ConvectionTerm(coeff=_ArithmeticCellToFaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
                    [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, nx=2, dy=1.0, ny=1)))
-            >>> __ConvectionTerm(coeff=vfv2)
+            >>> __ConvectionTerm(coeff=vfv2) # doctest: +NORMALIZE_WHITESPACE
             __ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
                    [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, nx=2, dy=1.0, ny=1)))
             >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = ((0,),(0,)))).solve(var=cv2, solver=DummySolver(), dt=1.)

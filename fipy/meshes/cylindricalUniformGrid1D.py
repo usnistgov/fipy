@@ -49,8 +49,8 @@ class CylindricalUniformGrid1D(UniformGrid1D):
     Creates a 1D cylindrical grid mesh.
 
         >>> mesh = CylindricalUniformGrid1D(nx = 3)
-        >>> print mesh.cellCenters
-        [[ 0.5  1.5  2.5]]
+        >>> print numerix.allclose(mesh.cellCenters, [[ 0.5, 1.5, 2.5]])
+        True
 
     """
     def __init__(self, dx=1., nx=1, origin=(0,), overlap=2, communicator=parallelComm, *args, **kwargs):

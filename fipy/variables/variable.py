@@ -133,12 +133,12 @@ class Variable(object):
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
 
-        >>> print type(numerix.array([1.0, 2.0]) * Variable([1.0, 2.0]))
-        <class 'fipy.variables.binaryOperatorVariable.binOp'>
+        >>> print type(numerix.array([1.0, 2.0]) * Variable([1.0, 2.0])) # doctest: +ELLIPSIS
+        <class 'fipy.variables.binaryOperatorVariable...binOp'>
 
         >>> from scipy.special import gamma as Gamma # doctest: +SCIPY
-        >>> print type(Gamma(Variable([1.0, 2.0]))) # doctest: +SCIPY
-        <class 'fipy.variables.unaryOperatorVariable.unOp'>
+        >>> print type(Gamma(Variable([1.0, 2.0]))) # doctest: +SCIPY +ELLIPSIS
+        <class 'fipy.variables.unaryOperatorVariable...unOp'>
         """
         result = arr
 
@@ -173,8 +173,8 @@ class Variable(object):
         A dimensional `Variable` will convert to the numeric value in its base units
 
             >>> v = Variable(value=[2,3], unit="mm")
-            >>> numerix.array(v)
-            array([ 0.002,  0.003])
+            >>> numerix.allclose(numerix.array(v), [ 0.002,  0.003])
+            True
         """
 
         return numerix.array(self.value, t)
@@ -887,8 +887,8 @@ class Variable(object):
             >>> var = CellVariable(mesh=mesh, value=0.)
             >>> Y =  mesh.cellCenters[1]
             >>> var.value = (Y + 1.0)
-            >>> print var - Y
-            [ 1.  1.  1.  1.]
+            >>> print (var - Y).allclose([ 1., 1., 1., 1.])
+            True
         """
 
         from fipy.tools import inline
@@ -1522,52 +1522,52 @@ class Variable(object):
 
         >>> from fipy.tools.numerix import *
 
-        >>> arccos(Variable(value=(0,0.5,1.0)))
+        >>> arccos(Variable(value=(0,0.5,1.0))) # doctest: +NORMALIZE_WHITESPACE
         arccos(Variable(value=array([ 0. ,  0.5,  1. ])))
 
         .. attention::
 
            the next should really return radians, but doesn't
 
-        >>> print tostring(arccos(Variable(value=(0,0.5,1.0))), precision=3)
+        >>> print tostring(arccos(Variable(value=(0,0.5,1.0))), precision=3) # doctest: +NORMALIZE_WHITESPACE
         [ 1.571  1.047  0.   ]
 
         Inverse hyperbolic cosine of :math:`x`, :math:`\cosh^{-1} x`
 
         >>> arccosh(Variable(value=(1,2,3)))
         arccosh(Variable(value=array([1, 2, 3])))
-        >>> print tostring(arccosh(Variable(value=(1,2,3))), precision=3)
+        >>> print tostring(arccosh(Variable(value=(1,2,3))), precision=3) # doctest: +NORMALIZE_WHITESPACE
         [ 0.     1.317  1.763]
 
         Inverse sine of :math:`x`, :math:`\sin^{-1} x`
 
-        >>> arcsin(Variable(value=(0,0.5,1.0)))
+        >>> arcsin(Variable(value=(0,0.5,1.0))) # doctest: +NORMALIZE_WHITESPACE
         arcsin(Variable(value=array([ 0. ,  0.5,  1. ])))
 
         .. attention::
 
            the next should really return radians, but doesn't
 
-        >>> print tostring(arcsin(Variable(value=(0,0.5,1.0))), precision=3)
+        >>> print tostring(arcsin(Variable(value=(0,0.5,1.0))), precision=3) # doctest: +NORMALIZE_WHITESPACE
         [ 0.     0.524  1.571]
 
         Inverse hyperbolic sine of :math:`x`, :math:`\sinh^{-1} x`
 
         >>> arcsinh(Variable(value=(1,2,3)))
         arcsinh(Variable(value=array([1, 2, 3])))
-        >>> print tostring(arcsinh(Variable(value=(1,2,3))), precision=3)
+        >>> print tostring(arcsinh(Variable(value=(1,2,3))), precision=3) # doctest: +NORMALIZE_WHITESPACE
         [ 0.881  1.444  1.818]
 
         Inverse tangent of :math:`x`, :math:`\tan^{-1} x`
 
-        >>> arctan(Variable(value=(0,0.5,1.0)))
+        >>> arctan(Variable(value=(0,0.5,1.0))) # doctest: +NORMALIZE_WHITESPACE
         arctan(Variable(value=array([ 0. ,  0.5,  1. ])))
 
         .. attention::
 
            the next should really return radians, but doesn't
 
-        >>> print tostring(arctan(Variable(value=(0,0.5,1.0))), precision=3)
+        >>> print tostring(arctan(Variable(value=(0,0.5,1.0))), precision=3) # doctest: +NORMALIZE_WHITESPACE
         [ 0.     0.464  0.785]
 
         Inverse tangent of a ratio :math:`x/y`, :math:`\tan^{-1} \frac{x}{y}`
@@ -1579,33 +1579,33 @@ class Variable(object):
 
            the next should really return radians, but doesn't
 
-        >>> print tostring(arctan2(Variable(value=(0, 1, 2)), 2), precision=3)
+        >>> print tostring(arctan2(Variable(value=(0, 1, 2)), 2), precision=3) # doctest: +NORMALIZE_WHITESPACE
         [ 0.     0.464  0.785]
 
         Inverse hyperbolic tangent of :math:`x`, :math:`\tanh^{-1} x`
 
-        >>> arctanh(Variable(value=(0,0.25,0.5)))
+        >>> arctanh(Variable(value=(0,0.25,0.5))) # doctest: +NORMALIZE_WHITESPACE
         arctanh(Variable(value=array([ 0.  ,  0.25,  0.5 ])))
-        >>> print tostring(arctanh(Variable(value=(0,0.25,0.5))), precision=3)
+        >>> print tostring(arctanh(Variable(value=(0,0.25,0.5))), precision=3) # doctest: +NORMALIZE_WHITESPACE
         [ 0.     0.255  0.549]
 
         Cosine of :math:`x`, :math:`\cos x`
 
-        >>> cos(Variable(value=(0,2*pi/6,pi/2), unit="rad"))
+        >>> cos(Variable(value=(0,2*pi/6,pi/2), unit="rad")) # doctest: +NORMALIZE_WHITESPACE
         cos(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  1.57079633]),'rad')))
-        >>> print tostring(cos(Variable(value=(0,2*pi/6,pi/2), unit="rad")), suppress_small=1)
+        >>> print tostring(cos(Variable(value=(0,2*pi/6,pi/2), unit="rad")), suppress_small=1) # doctest: +NORMALIZE_WHITESPACE
         [ 1.   0.5  0. ]
 
         Hyperbolic cosine of :math:`x`, :math:`\cosh x`
 
         >>> cosh(Variable(value=(0,1,2)))
         cosh(Variable(value=array([0, 1, 2])))
-        >>> print tostring(cosh(Variable(value=(0,1,2))), precision=3)
+        >>> print tostring(cosh(Variable(value=(0,1,2))), precision=3) # doctest: +NORMALIZE_WHITESPACE
         [ 1.     1.543  3.762]
 
         Tangent of :math:`x`, :math:`\tan x`
 
-        >>> tan(Variable(value=(0,pi/3,2*pi/3), unit="rad"))
+        >>> tan(Variable(value=(0,pi/3,2*pi/3), unit="rad")) # doctest: +NORMALIZE_WHITESPACE
         tan(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  2.0943951 ]),'rad')))
         >>> print tostring(tan(Variable(value=(0,pi/3,2*pi/3), unit="rad")), precision=3)
         [ 0.     1.732 -1.732]
@@ -1614,35 +1614,35 @@ class Variable(object):
 
         >>> tanh(Variable(value=(0,1,2)))
         tanh(Variable(value=array([0, 1, 2])))
-        >>> print tostring(tanh(Variable(value=(0,1,2))), precision=3)
+        >>> print tostring(tanh(Variable(value=(0,1,2))), precision=3) # doctest: +NORMALIZE_WHITESPACE
         [ 0.     0.762  0.964]
 
         Base-10 logarithm of :math:`x`, :math:`\log_{10} x`
 
-        >>> log10(Variable(value=(0.1,1,10)))
+        >>> log10(Variable(value=(0.1,1,10))) # doctest: +NORMALIZE_WHITESPACE
         log10(Variable(value=array([  0.1,   1. ,  10. ])))
         >>> print log10(Variable(value=(0.1,1,10)))
         [-1.  0.  1.]
 
         Sine of :math:`x`, :math:`\sin x`
 
-        >>> sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
+        >>> sin(Variable(value=(0,pi/6,pi/2), unit="rad")) # doctest: +NORMALIZE_WHITESPACE
         sin(Variable(value=PhysicalField(array([ 0.        ,  0.52359878,  1.57079633]),'rad')))
-        >>> print sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
+        >>> print sin(Variable(value=(0,pi/6,pi/2), unit="rad")) # doctest: +NORMALIZE_WHITESPACE
         [ 0.   0.5  1. ]
 
         Hyperbolic sine of :math:`x`, :math:`\sinh x`
 
         >>> sinh(Variable(value=(0,1,2)))
         sinh(Variable(value=array([0, 1, 2])))
-        >>> print tostring(sinh(Variable(value=(0,1,2))), precision=3)
+        >>> print tostring(sinh(Variable(value=(0,1,2))), precision=3) # doctest: +NORMALIZE_WHITESPACE
         [ 0.     1.175  3.627]
 
         Square root of :math:`x`, :math:`\sqrt{x}`
 
         >>> sqrt(Variable(value=(1, 2, 3), unit="m**2"))
         sqrt(Variable(value=PhysicalField(array([1, 2, 3]),'m**2')))
-        >>> print tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3)
+        >>> print tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3) # doctest: +NORMALIZE_WHITESPACE
         [ 1.     1.414  1.732] m
 
         The largest integer :math:`\le x`, :math:`\lfloor x \rfloor`
@@ -1661,7 +1661,7 @@ class Variable(object):
 
         Natural logarithm of :math:`x`, :math:`\ln x \equiv \log_e x`
 
-        >>> log(Variable(value=(0.1,1,10)))
+        >>> log(Variable(value=(0.1,1,10))) # doctest: +NORMALIZE_WHITESPACE
         log(Variable(value=array([  0.1,   1. ,  10. ])))
         >>> print tostring(log(Variable(value=(0.1,1,10))), precision=3)
         [-2.303  0.     2.303]

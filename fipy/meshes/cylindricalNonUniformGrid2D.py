@@ -285,11 +285,12 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             True
 
             >>> mesh = CylindricalNonUniformGrid2D(dx=(1., 2.), dy=(1.,)) + ((1.,),(0.,))
-            >>> print mesh.cellCenters
-            [[ 1.5  3. ]
-             [ 0.5  0.5]]
-            >>> print fp.CellVariable(mesh=mesh, value=mesh.cellVolumes).globalValue
-            [ 1.5  6. ]
+            >>> print mesh.cellCenters.allclose([[ 1.5,  3. ],
+            ...                                  [ 0.5,  0.5]])
+            True
+            >>> cv = fp.CellVariable(mesh=mesh, value=mesh.cellVolumes)
+            >>> print numerix.allclose(cv.globalValue, [ 1.5,  6. ])
+            True
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell
         volumes were being returned as binOps rather than arrays.

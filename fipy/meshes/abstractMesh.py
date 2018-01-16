@@ -144,8 +144,9 @@ class AbstractMesh(object):
         Equivalent to using :attr:`cellCenters`\ ``[0]``.
 
         >>> from fipy import *
-        >>> print Grid1D(nx=2).x
-        [ 0.5  1.5]
+        >>> print numerix.allclose(Grid1D(nx=2).x, 
+        ...                        [ 0.5, 1.5])
+        True
         """
         return self.cellCenters[0]
 
@@ -155,8 +156,9 @@ class AbstractMesh(object):
         Equivalent to using :attr:`cellCenters`\ ``[1]``.
 
         >>> from fipy import *
-        >>> print Grid2D(nx=2, ny=2).y
-        [ 0.5  0.5  1.5  1.5]
+        >>> print numerix.allclose(Grid2D(nx=2, ny=2).y, 
+        ...                        [ 0.5, 0.5, 1.5, 1.5])
+        True
         >>> print Grid1D(nx=2).y
         Traceback (most recent call last):
           ...
@@ -173,8 +175,9 @@ class AbstractMesh(object):
         Equivalent to using :attr:`cellCenters`\ ``[2]``.
 
         >>> from fipy import *
-        >>> print Grid3D(nx=2, ny=2, nz=2).z
-        [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]
+        >>> print numerix.allclose(Grid3D(nx=2, ny=2, nz=2).z, 
+        ...                        [ 0.5, 0.5, 0.5, 0.5, 1.5, 1.5, 1.5, 1.5])
+        True
         >>> print Grid2D(nx=2, ny=2).z
         Traceback (most recent call last):
           ...
@@ -868,45 +871,45 @@ class AbstractMesh(object):
 
         >>> from fipy.meshes import Grid2D
         >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
-        >>> print baseMesh.cellCenters
-        [[ 0.5  1.5  0.5  1.5]
-         [ 0.5  0.5  1.5  1.5]]
+        >>> print baseMesh.cellCenters.allclose([[ 0.5, 1.5, 0.5, 1.5],
+        ...                                      [ 0.5, 0.5, 1.5, 1.5]])
+        True
 
         If a vector is added to a `Mesh`, a translated `Mesh` is returned
 
         >>> translatedMesh = baseMesh + ((5,), (10,))
-        >>> print translatedMesh.cellCenters
-        [[  5.5   6.5   5.5   6.5]
-         [ 10.5  10.5  11.5  11.5]]
+        >>> print translatedMesh.cellCenters.allclose([[ 5.5,  6.5,  5.5,  6.5],
+        ...                                            [10.5, 10.5, 11.5, 11.5]])
+        True
 
 
         If a `Mesh` is added to a `Mesh`, a concatenation of the two
         `Mesh` objects is returned
 
         >>> addedMesh = baseMesh + (baseMesh + ((2,), (0,)))
-        >>> print addedMesh.cellCenters
-        [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
-         [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+        >>> print addedMesh.cellCenters.allclose([[ 0.5, 1.5, 0.5, 1.5, 2.5, 3.5, 2.5, 3.5],
+        ...                                       [ 0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 1.5, 1.5]])
+        True
 
         The two `Mesh` objects need not be properly aligned in order to concatenate them
         but the resulting mesh may not have the intended connectivity
 
         >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,)))
-        >>> print addedMesh.cellCenters
-        [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
-         [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+        >>> print addedMesh.cellCenters.allclose([[ 0.5, 1.5, 0.5, 1.5, 3.5, 4.5, 3.5, 4.5],
+        ...                                       [ 0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 1.5, 1.5]])
+        True
 
         >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
-        >>> print addedMesh.cellCenters
-        [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
-         [ 0.5  0.5  1.5  1.5  2.5  2.5  3.5  3.5]]
+        >>> print addedMesh.cellCenters.allclose([[ 0.5, 1.5, 0.5, 1.5, 2.5, 3.5, 2.5, 3.5],
+        ...                                       [ 0.5, 0.5, 1.5, 1.5, 2.5, 2.5, 3.5, 3.5]])
+        True
 
         No provision is made to avoid or consolidate overlapping `Mesh` objects
 
         >>> addedMesh = baseMesh + (baseMesh + ((1,), (0,)))
-        >>> print addedMesh.cellCenters
-        [[ 0.5  1.5  0.5  1.5  1.5  2.5  1.5  2.5]
-         [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
+        >>> print addedMesh.cellCenters.allclose([[ 0.5, 1.5, 0.5, 1.5, 1.5, 2.5, 1.5, 2.5],
+        ...                                       [ 0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 1.5, 1.5]])
+        True
 
         Different `Mesh` classes can be concatenated
 
@@ -944,10 +947,10 @@ class AbstractMesh(object):
         >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0,
         ...                           nx = 1, ny = 1, nz = 1)
         >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + ((2,), (0,), (0,)))
-        >>> print threeDAddedMesh.cellCenters
-        [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5  2.5]
-         [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5  0.5]
-         [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5  0.5]]
+        >>> print threeDAddedMesh.cellCenters.allclose([[ 0.5, 1.5, 0.5, 1.5, 0.5, 1.5, 0.5, 1.5, 2.5],
+        ...                                             [ 0.5, 0.5, 1.5,  1.5, 0.5, 0.5, 1.5, 1.5, 0.5],
+        ...                                             [ 0.5, 0.5, 0.5, 0.5, 1.5, 1.5, 1.5, 1.5, 0.5]])
+        True
 
         but the different `Mesh` objects must, of course, have the same
         dimensionality.
@@ -991,8 +994,8 @@ class AbstractMesh(object):
         """
         Tests.
         >>> from fipy import *
-        >>> print (Grid1D(nx=1) / 2.).cellCenters
-        [[ 0.25]]
+        >>> print (Grid1D(nx=1) / 2.).cellCenters.allclose([[ 0.25]])
+        True
         >>> AbstractMesh(communicator=None) / 2.
         Traceback (most recent call last):
         ...

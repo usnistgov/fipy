@@ -400,24 +400,26 @@ class Mesh(AbstractMesh):
 
             >>> from fipy.meshes import Grid2D
             >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
-            >>> print baseMesh.cellCenters
-            [[ 0.5  1.5  0.5  1.5]
-             [ 0.5  0.5  1.5  1.5]]
+            >>> print numerix.allclose(baseMesh.cellCenters,
+            ...                        [[ 0.5, 1.5, 0.5, 1.5],
+            ...                         [ 0.5, 0.5, 1.5, 1.5]])
+            True
 
         The `factor` can be a scalar
 
             >>> dilatedMesh = baseMesh * 3
-            >>> print dilatedMesh.cellCenters
-            [[ 1.5  4.5  1.5  4.5]
-             [ 1.5  1.5  4.5  4.5]]
+            >>> print numerix.allclose(dilatedMesh.cellCenters,
+            ...                        [[ 1.5, 4.5, 1.5, 4.5],
+            ...                         [ 1.5, 1.5, 4.5, 4.5]])
+            True
 
         or a vector
 
             >>> dilatedMesh = baseMesh * ((3,), (2,))
-            >>> print dilatedMesh.cellCenters
-            [[ 1.5  4.5  1.5  4.5]
-             [ 1.   1.   3.   3. ]]
-
+            >>> print numerix.allclose(dilatedMesh.cellCenters,
+            ...                        [[ 1.5, 4.5, 1.5, 4.5],
+            ...                         [ 1.,  1.,  3.,  3. ]])
+            True
 
         but the vector must have the same dimensionality as the `Mesh`
 
@@ -807,11 +809,13 @@ class Mesh(AbstractMesh):
 
             >>> from fipy.meshes.uniformGrid1D import UniformGrid1D
             >>> a = UniformGrid1D(nx=10) + (10,)
-            >>> print a.cellCenters
-            [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
+            >>> print numerix.allclose(a.cellCenters,
+            ...                        [[ 10.5, 11.5, 12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5]])
+            True
             >>> b = 10 + UniformGrid1D(nx=10)
-            >>> print b.cellCenters
-            [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
+            >>> print numerix.allclose(b.cellCenters,
+            ...                        [[ 10.5, 11.5, 12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5]])
+            True
 
             >>> c = UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10) # doctest: +SERIAL
             >>> print numerix.allclose(c.cellCenters[0],

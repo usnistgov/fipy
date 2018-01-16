@@ -55,8 +55,8 @@ class UniformGrid1D(UniformGrid):
     Creates a 1D grid mesh.
 
         >>> mesh = UniformGrid1D(nx = 3)
-        >>> print mesh.cellCenters
-        [[ 0.5  1.5  2.5]]
+        >>> print numerix.allclose(mesh.cellCenters, [[ 0.5, 1.5, 2.5]])
+        True
 
     """
     def __init__(self, dx=1., nx=1, origin=(0,), overlap=2,

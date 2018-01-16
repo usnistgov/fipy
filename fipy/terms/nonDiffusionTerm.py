@@ -65,7 +65,7 @@ class _NonDiffusionTerm(_UnaryTerm):
         Test for ticket:291.
 
             >>> from fipy import PowerLawConvectionTerm
-            >>> PowerLawConvectionTerm(coeff=[[1], [0]]) * 1.0
+            >>> PowerLawConvectionTerm(coeff=[[1], [0]]) * 1.0 # doctest: +NORMALIZE_WHITESPACE
             PowerLawConvectionTerm(coeff=array([[ 1.],
                    [ 0.]]))
 

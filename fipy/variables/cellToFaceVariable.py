@@ -60,14 +60,17 @@ class _CellToFaceVariable(FaceVariable):
         >>> v.constrain(c0)
         >>> c1 = Constraint(3., where=m.facesRight)
         >>> v.faceValue.constrain(c1)
-        >>> print v.faceValue
-        [ 0.  1.  2.  3.]
+        >>> print numerix.allclose(v.faceValue,
+        ...                        [ 0., 1., 2., 3.])
+        True
         >>> v.faceValue.release(constraint=c0)
-        >>> print v.faceValue
-        [ 0.5  1.   2.   3. ]
+        >>> print numerix.allclose(v.faceValue,
+        ...                        [ 0.5, 1., 2., 3. ])
+        True
         >>> v.faceValue.release(constraint=c1)
-        >>> print v.faceValue
-        [ 0.5  1.   2.   2.5]
+        >>> print numerix.allclose(v.faceValue,
+        ...                        [ 0.5, 1., 2., 2.5])
+        True
         """
         try:
             super(FaceVariable, self).constraints.remove(constraint)

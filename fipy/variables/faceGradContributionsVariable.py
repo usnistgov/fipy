@@ -58,7 +58,7 @@ class _FaceGradContributions(FaceVariable):
     (2, 3, 24)
     >>> print _FaceGradContributions(v0).globalValue.shape
     (2, 24)
-    >>> print _FaceGradContributions(v0)
+    >>> print _FaceGradContributions(v0) # doctest: +NORMALIZE_WHITESPACE
     [[ 0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.  -0.5  1.   2.
        2.5 -0.5  1.   2.   2.5 -0.5  1.   2.   2.5]
      [-0.5 -1.5 -2.5  0.5  1.5  2.5  0.5  1.5  2.5  0.5  1.5  2.5  0.   0.   0.

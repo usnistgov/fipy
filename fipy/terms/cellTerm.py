@@ -179,8 +179,10 @@ class CellTerm(_NonDiffusionTerm):
             >>> vcv = CellVariable(mesh=m, rank=1)
             >>> vfv = FaceVariable(mesh=m, rank=1)
 
-            >>> __CellTerm(coeff=cv)
-            __CellTerm(coeff=CellVariable(value=array([ 0.,  0.]), mesh=UniformGrid1D(dx=1.0, nx=2)))
+            >>> type(__CellTerm(coeff=cv).coeff)
+            <class 'fipy.variables.cellVariable.CellVariable'>
+            >>> print __CellTerm(coeff=cv).coeff.allclose([0., 0.])
+            True
             >>> __CellTerm(coeff=1)
             __CellTerm(coeff=1)
             >>> __CellTerm(coeff=fv)
