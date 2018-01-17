@@ -346,13 +346,20 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
                                     separator=separator)
     elif isFloat(arr):
         try:
-            ## this is for numpy 1.0.4 and above
-            ## why has the interface changed again?
-            from numpy.core.arrayprint import FloatFormat
-            return FloatFormat(NUMERIX.array((arr,)), precision, suppress_small)(arr).strip()
-        except:
-            from numpy.core.arrayprint import _floatFormat, _formatFloat
-            return _formatFloat(arr, format='%%1.%df' % precision)
+            ## this is for numpy 1.14 and above
+            ## why has the interface changed *again*?
+            from numpy.core.arrayprint import FloatingFormat
+            return FloatingFormat(data=NUMERIX.array((arr,)), precision=precision,
+                                  floatmode='maxprec', suppress_small=suppress_small)(arr).strip()
+        except ImportError:
+            try:
+                ## this is for numpy 1.0.4 and above
+                ## why has the interface changed again?
+                from numpy.core.arrayprint import FloatFormat
+                return FloatFormat(NUMERIX.array((arr,)), precision, suppress_small)(arr).strip()
+            except ImportError:
+                from numpy.core.arrayprint import _floatFormat, _formatFloat
+                return _formatFloat(arr, format='%%1.%df' % precision)
 
     elif isInt(arr):
         try:
