@@ -58,11 +58,11 @@ class _FaceGradContributions(FaceVariable):
     (2, 3, 24)
     >>> print _FaceGradContributions(v0).globalValue.shape
     (2, 24)
-    >>> print _FaceGradContributions(v0)
-    [[ 0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.   0.  -0.5  1.   2.
-       2.5 -0.5  1.   2.   2.5 -0.5  1.   2.   2.5]
-     [-0.5 -1.5 -2.5  0.5  1.5  2.5  0.5  1.5  2.5  0.5  1.5  2.5  0.   0.   0.
-       0.   0.   0.   0.   0.   0.   0.   0.   0. ]]
+    >>> print _FaceGradContributions(v0).allclose([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., -0.5, 1.,  2.,
+    ...                                              2.5,-0.5, 1.,  2.,  2.5,-0.5, 1.,  2.,  2.5],
+    ...                                            [-0.5,-1.5,-2.5, 0.5, 1.5, 2.5, 0.5, 1.5, 2.5, 0.5, 1.5, 2.5, 0.,  0.,  0.,
+    ...                                              0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0. ]])
+    True
     >>> print (_FaceGradContributions(v0).globalValue == out.globalValue[:,0]).all()
     True
     >>> print (_FaceGradContributions(v1).globalValue == out.globalValue[:,1]).all()
