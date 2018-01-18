@@ -163,9 +163,9 @@ class PeriodicGrid3D(_BasePeriodicGrid3D):
         >>> import fipy as fp
         >>> m = fp.PeriodicGrid3D(nx=3, ny=3, nz=3)
         >>> v = fp.CellVariable(mesh=m)
-        >>> v[0] = 1.
+        >>> v[0] = 1. # doctest: +PROCESSOR_0
         >>> (fp.TransientTerm() == fp.DiffusionTerm()).solve(v, dt=1.)
-        >>> assert numerix.allclose(v[13], v[26])
+        >>> assert numerix.allclose(v[13], v[26]) # doctest: +PROCESSOR_0
 
         """
 
