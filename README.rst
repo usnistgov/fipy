@@ -23,7 +23,8 @@ Overview
    array calculations, sparse matrices and data rendering. 
 
 .. only:: html
-|GitHub|_ |gitter|_ |TravisCI|_ |OpenHub|_ |CondaForge|_ |Depsy|_ |PyPi|_
+
+   |GitHub|_ |gitter|_ |TravisCI|_ |OpenHub|_ |CondaForge|_ |Depsy|_ |PyPi|_
 
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
