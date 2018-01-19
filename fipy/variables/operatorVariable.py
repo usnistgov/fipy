@@ -34,6 +34,7 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
+import dis
 import sys
 
 from fipy.variables.variable import Variable
@@ -106,92 +107,96 @@ def _OperatorVariableClass(baseClass=object):
               - `style`: one of `'__repr__'`, `'name'`, `'TeX'`, `'C'`
 
             """
-            import opcode
-
-            def __var(i):
-                v = self.var[i]
-                if style == "__repr__":
-                    result = repr(v)
-                elif style == "name":
-                    if isinstance(v, Variable):
-                        result = v.name
-                        if len(result) == 0:
-                            # The string form of a variable
-                            # would probably be too long and messy.
-                            # Just give shorthand.
-                            result = "%s(...)" % v.__class__.__name__
-                    elif type(v) in (type(1), type(1.)):
-                        result = repr(v)
-                    else:
-                        # The string form of anything but a
-                        # number would be too long and messy.
-                        # Just give shorthand.
-                        result = "<...>"
-
-                elif style == "TeX":
-                    raise Exception, "TeX style not yet implemented"
-                elif style == "C":
-                    if not v._isCached():
-                        result = v._getCstring(argDict, id=id + str(i), freshen=freshen)
-                        if isinstance(v, Variable):
-                            v._value = None
-                        else:
-                            v.value = None
-                    else:
-                        result = v._variableClass._getCstring(v, argDict,
-                                                                   id=id + str(i),
-                                                                   freshen=False)
-                else:
-                    raise SyntaxError, "Unknown style: %s" % style
-
-                return result
-
             if isinstance(self.op, numerix.ufunc):
-                return "%s(%s)" % (self.op.__name__, ", ".join([__var(i) for i in range(len(self.var))]))
+                return "%s(%s)" % (self.op.__name__, ", ".join([self.__var(i, style, argDict, id, freshen)
+                                                               for i in range(len(self.var))]))
 
-            if sys.version_info < (3,0):
-                bytecodes = [ord(byte) for byte in self.op.func_code.co_code]
+            try:
+                instructions = dis.get_instructions(self.op.func_code)
+                parseInstructions = self._py3kInstructions
+            except AttributeError:
+                instructions = [ord(byte) for byte in self.op.func_code.co_code]
+                parseInstructions = self._py2kInstructions
+
+            return parseInstructions(instructions, style=style, argDict=argDict, id=id, freshen=freshen)
+
+        def __var(self, i, style, argDict, id, freshen):
+            v = self.var[i]
+            if style == "__repr__":
+                result = repr(v)
+            elif style == "name":
+                if isinstance(v, Variable):
+                    result = v.name
+                    if len(result) == 0:
+                        # The string form of a variable
+                        # would probably be too long and messy.
+                        # Just give shorthand.
+                        result = "%s(...)" % v.__class__.__name__
+                elif type(v) in (type(1), type(1.)):
+                    result = repr(v)
+                else:
+                    # The string form of anything but a
+                    # number would be too long and messy.
+                    # Just give shorthand.
+                    result = "<...>"
+
+            elif style == "TeX":
+                raise Exception, "TeX style not yet implemented"
+            elif style == "C":
+                if not v._isCached():
+                    result = v._getCstring(argDict, id=id + str(i), freshen=freshen)
+                    if isinstance(v, Variable):
+                        v._value = None
+                    else:
+                        v.value = None
+                else:
+                    result = v._variableClass._getCstring(v, argDict,
+                                                               id=id + str(i),
+                                                               freshen=False)
             else:
-                bytecodes = list(self.op.__code__.co_code)
+                raise SyntaxError, "Unknown style: %s" % style
 
+            return result
+
+        _unop = {
+            10: "+", 11: "-", 12: "not ", 15: "~"
+        }
+
+        _binop = {
+            19: "**", 20: "*", 21: "/", 22: "%", 23: "+", 24: "-", 26: "//", 27: "/",
+                    62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
+        }
+
+        def _py2kInstructions(self, bytecodes, style, argDict, id, freshen):
             def _popIndex():
                 return bytecodes.pop(0) + bytecodes.pop(0) * 256
 
             stack = []
 
-            unop = {
-                10: "+", 11: "-", 12: "not ", 15: "~"
-            }
-
-            binop = {
-                19: "**", 20: "*", 21: "/", 22: "%", 23: "+", 24: "-", 26: "//", 27: "/",
-                        62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
-            }
-
             while len(bytecodes) > 0:
                 bytecode = bytecodes.pop(0)
-                if opcode.opname[bytecode] == 'UNARY_CONVERT':
+                if dis.opname[bytecode] == 'UNARY_CONVERT':
                     stack.append("`" + stack.pop() + "`")
-                elif opcode.opname[bytecode] == 'BINARY_SUBSCR':
+                elif dis.opname[bytecode] == 'BINARY_SUBSCR':
                     stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
-                elif opcode.opname[bytecode] == 'RETURN_VALUE':
+                elif dis.opname[bytecode] == 'RETURN_VALUE':
                     s = stack.pop()
                     if style == 'C':
                         return s.replace('numerix.', '').replace('arc', 'a')
                     else:
                         return s
-                elif opcode.opname[bytecode] == 'LOAD_CONST':
+                elif dis.opname[bytecode] == 'LOAD_CONST':
                     stack.append(self.op.func_code.co_consts[_popIndex()])
-                elif opcode.opname[bytecode] == 'LOAD_ATTR':
+                elif dis.opname[bytecode] == 'LOAD_ATTR':
                     stack.append(stack.pop() + "." + self.op.func_code.co_names[_popIndex()])
-                elif opcode.opname[bytecode] == 'COMPARE_OP':
-                    stack.append(stack.pop(-2) + " " + opcode.cmp_op[_popIndex()] + " " + stack.pop())
-                elif opcode.opname[bytecode] == 'LOAD_GLOBAL':
+                elif dis.opname[bytecode] == 'COMPARE_OP':
+                    stack.append(stack.pop(-2) + " " + dis.cmp_op[_popIndex()] + " " + stack.pop())
+                elif dis.opname[bytecode] == 'LOAD_GLOBAL':
                     counter = _popIndex()
                     stack.append(self.op.func_code.co_names[counter])
-                elif opcode.opname[bytecode] == 'LOAD_FAST':
-                    stack.append(__var(_popIndex()))
-                elif opcode.opname[bytecode] == 'CALL_FUNCTION':
+                elif dis.opname[bytecode] == 'LOAD_FAST':
+                    stack.append(self.__var(_popIndex(), style=style, argDict=argDict, id=id, freshen=freshen))
+                elif dis.opname[bytecode] == 'CALL_FUNCTION':
                     args = []
                     for j in range(bytecodes.pop(1)):
                         # keyword parameters
@@ -200,18 +205,63 @@ def _OperatorVariableClass(baseClass=object):
                         # positional parameters
                         args.insert(0, stack.pop())
                     stack.append(stack.pop() + "(" + ", ".join(args) + ")")
-                elif opcode.opname[bytecode] == 'LOAD_DEREF':
+                elif dis.opname[bytecode] == 'LOAD_DEREF':
                     free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
                     stack.append(free[_popIndex()])
-                elif bytecode in unop:
-                    stack.append(unop[bytecode] + '(' + stack.pop() + ')')
-                elif bytecode in binop:
-                    stack.append(stack.pop(-2) + " " + binop[bytecode] + " " + stack.pop())
+                elif bytecode in self._unop:
+                    stack.append(self._unop[bytecode] + '(' + stack.pop() + ')')
+                elif bytecode in self._binop:
+                    stack.append(stack.pop(-2) + " " + self._binop[bytecode] + " " + stack.pop())
                 else:
-                    raise SyntaxError, "Unknown bytecode: %s in %s: %s" % (
+                    raise SyntaxError("Unknown bytecode: %s in %s of %s" % (
                        repr(bytecode),
-                       repr([ord(byte) for byte in self.op.func_code.co_code]),
-                       "FIXME")
+                       repr([bytecode] + bytecodes),
+                       repr(_getByteCode())))
+
+        def _py3kInstructions(self, instructions, style, argDict, id, freshen):
+            stack = []
+            
+            for ins in instructions:
+                if ins.opname == 'UNARY_CONVERT':
+                    stack.append("`" + stack.pop() + "`")
+                elif ins.opname == 'BINARY_SUBSCR':
+                    stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
+                elif ins.opname == 'RETURN_VALUE':
+                    s = stack.pop()
+                    if style == 'C':
+                        return s.replace('numerix.', '').replace('arc', 'a')
+                    else:
+                        return s
+                elif ins.opname == 'LOAD_CONST':
+                    stack.append(ins.argval)
+                elif ins.opname == 'LOAD_ATTR':
+                    stack.append(stack.pop() + "." + ins.argval)
+                elif ins.opname == 'COMPARE_OP':
+                    stack.append(stack.pop(-2) + " " + dis.cmp_op[ins.arg] + " " + stack.pop())
+                elif ins.opname == 'LOAD_GLOBAL':
+                    stack.append(ins.argval)
+                elif ins.opname == 'LOAD_FAST':
+                    stack.append(self.__var(ins.arg, style=style, argDict=argDict, id=id, freshen=freshen))
+                elif ins.opname == 'CALL_FUNCTION':
+                    # args are last ins.arg items on stack
+                    args, stack = stack[-ins.arg:], stack[:-ins.arg]
+                    stack.append(stack.pop() + "(" + ", ".join(args) + ")")
+                elif ins.opname == 'CALL_FUNCTION_KW':
+                    kws = list(stack.pop())
+                    # args are last ins.arg items on stack
+                    args, stack = stack[-ins.arg:], stack[:-ins.arg]
+                    kwargs = []
+                    while kws:
+                        kwargs.append(kws.pop() + "=" + args.pop())
+                    stack.append(stack.pop() + "(" + ", ".join(args + kwargs) + ")")
+                elif ins.opname == 'LOAD_DEREF':
+                    stack.append(ins.argval)
+                elif ins.opcode in self._unop:
+                    stack.append(self._unop[ins.opcode] + '(' + stack.pop() + ')')
+                elif ins.opcode in self._binop:
+                    stack.append(stack.pop(-2) + " " + self._binop[ins.opcode] + " " + stack.pop())
+                else:
+                    raise SyntaxError("Unknown instruction: %s" % repr(ins))
 
         @property
         def _varProxy(self):
@@ -289,8 +339,8 @@ def _testBinOp(self):
 
     Check that unit works for a binOp
 
-        >>> (Variable(value="1 m") * Variable(value="1 s")).unit
-        <PhysicalUnit s*m>
+        >>> (Variable(value="1 m") * Variable(value="1 s")).unit == Variable(value="1 s*m").unit
+        True
 
         >>> (Variable(value="1 m") / Variable(value="0 s")).unit
         <PhysicalUnit m/s>
@@ -1145,8 +1195,8 @@ def _testBinOp(self):
 
     It seems that numpy's __rmul__ coercion is very strange
 
-        >>> type(numerix.array([1., 2.]) * Variable([1., 2.]))
-        <class 'fipy.variables.binaryOperatorVariable.binOp'>
+        >>> type(numerix.array([1., 2.]) * Variable([1., 2.])) # doctest: +ELLIPSIS
+        <class 'fipy.variables.binaryOperatorVariable...binOp'>
 
     Test inlining
 

@@ -302,4 +302,14 @@ def testmod(m=None, name=None, globs=None, verbose=None,
         runner.summarize()
         report_skips()
 
-    return doctest.TestResults(runner.failures, runner.tries)
+    from fipy.tools import numerix
+    printoptions = numerix.get_printoptions()
+    if "legacy" in printoptions:
+        numerix.set_printoptions(legacy="1.13")
+
+    results = doctest.TestResults(runner.failures, runner.tries)
+
+    if "legacy" in printoptions:
+        numerix.set_printoptions(legacy=printoptions["legacy"])
+
+    return results

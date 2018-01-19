@@ -226,6 +226,11 @@ def _TestClass(base):
             loader_ep = EntryPoint.parse("x="+self.test_loader)
             loader_class = loader_ep.load(require=False)
 
+            from fipy.tools import numerix
+            printoptions = numerix.get_printoptions()
+            if "legacy" in printoptions:
+                numerix.set_printoptions(legacy="1.13")
+
             try:
                 unittest.main(
                     None, None, [unittest.__file__]+self.test_args,
@@ -239,6 +244,9 @@ def _TestClass(base):
                     pass
                 else:
                     raise
+
+            if "legacy" in printoptions:
+                numerix.set_printoptions(legacy=printoptions["legacy"])
 
             if self.timetests is not None:
                 from fipy.tests.doctestPlus import _DocTestTimes
