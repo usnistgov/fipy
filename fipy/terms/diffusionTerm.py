@@ -301,11 +301,12 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> from fipy.meshes.tri2D import Tri2D
         >>> mesh = Tri2D(nx = 1, ny = 1)
         >>> term = DiffusionTerm((((1, 2), (3, 4)),))
-        >>> print term._getGeomCoeff(CellVariable(mesh=mesh))
-        [[ 24.          24.           6.           6.           0.           7.5
-            7.5          0.        ]
-         [ -3.          -3.           2.           2.          -1.41421356
-            0.70710678   0.70710678  -1.41421356]]
+        >>> print numerix.allclose(term._getGeomCoeff(CellVariable(mesh=mesh)),
+        ...                        [[ 24.,         24.,          6.,          6.,          0.,          7.5,
+        ...                        7.5,         0.        ],
+        ...                         [ -3.,         -3.,          2.,          2.,         -1.41421356,
+        ...                        0.70710678,   0.70710678,  -1.41421356]])
+        True
 
         Negate the term.
 
