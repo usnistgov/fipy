@@ -134,7 +134,7 @@ class DistanceVariable(CellVariable):
     >>> dx = 1.
     >>> dy = 2.
     >>> from fipy.meshes import Grid2D
-    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3)
+    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3, communicator=serialComm)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1., 1., -1., 1.))
 
     >>> var.calcDistanceFunction() #doctest: +LSM
@@ -198,7 +198,7 @@ class DistanceVariable(CellVariable):
     that are opposite sign neighbors have perpendicular normal vectors. In
     fact the two closest cells could have opposite normals.
 
-    >>> mesh = Grid1D(dx = 1., nx = 3)
+    >>> mesh = Grid1D(dx = 1., nx = 3, communicator=serialComm)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., -1.))
     >>> var.calcDistanceFunction() #doctest: +LSM
     >>> print var.allclose((-0.5, 0.5, -0.5)) #doctest: +LSM
