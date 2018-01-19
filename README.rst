@@ -244,7 +244,7 @@ or a
 .. _TravisCI:      https://travis-ci.org/usnistgov/fipy
 .. |OpenHub|       image:: https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif
 .. _OpenHub:       https://www.openhub.net/p/fipy
-.. |PyPi|          image:: https://img.shields.io/pypi/dm/FiPy.svg?style=flat
+.. |PyPi|          image:: https://img.shields.io/pypi/v/fipy.svg
 .. _PyPi:          https://pypi.python.org/pypi/FiPy
 .. |CondaForge|    image:: https://anaconda.org/guyer/fipy/badges/downloads.svg
 .. _CondaForge:    https://anaconda.org/guyer/fipy
