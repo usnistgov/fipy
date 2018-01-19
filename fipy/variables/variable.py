@@ -133,12 +133,12 @@ class Variable(object):
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
 
-        >>> print type(numerix.array([1.0, 2.0]) * Variable([1.0, 2.0]))
-        <class 'fipy.variables.binaryOperatorVariable.binOp'>
+        >>> print type(numerix.array([1.0, 2.0]) * Variable([1.0, 2.0])) # doctest: +ELLIPSIS
+        <class 'fipy.variables.binaryOperatorVariable...binOp'>
 
         >>> from scipy.special import gamma as Gamma # doctest: +SCIPY
-        >>> print type(Gamma(Variable([1.0, 2.0]))) # doctest: +SCIPY
-        <class 'fipy.variables.unaryOperatorVariable.unOp'>
+        >>> print type(Gamma(Variable([1.0, 2.0]))) # doctest: +SCIPY +ELLIPSIS
+        <class 'fipy.variables.unaryOperatorVariable...unOp'>
         """
         result = arr
 
@@ -1005,13 +1005,20 @@ class Variable(object):
         baseClass = baseClass or self._variableClass
         return operatorVariable._OperatorVariableClass(baseClass=baseClass)
 
-    def _UnaryOperatorVariable(self, op, operatorClass=None, opShape=None, canInline=True, unit=None):
+    def _UnaryOperatorVariable(self, op, operatorClass=None, opShape=None, canInline=True, unit=None,
+                               valueMattersForUnit=False):
         """
         Check that unit works for unOp
 
             >>> (-Variable(value="1 m")).unit
             <PhysicalUnit m>
 
+        :Parameters:
+          - `op`: the operator function to apply (takes one argument for `self`)
+          - `operatorClass`: the `Variable` class that the binary operator should inherit from
+          - `opShape`: the shape that should result from the operation
+          - `valueMattersForUnit`: whether value of `self` should be used when determining unit,
+                                    e.g., ???
         """
         operatorClass = operatorClass or self._OperatorVariableClass()
         from fipy.variables import unaryOperatorVariable
@@ -1029,7 +1036,8 @@ class Variable(object):
             canInline = False
 
         return unOp(op=op, var=[self], opShape=opShape, canInline=canInline, unit=unit,
-                    inlineComment=inline._operatorVariableComment(canInline=canInline))
+                    inlineComment=inline._operatorVariableComment(canInline=canInline),
+                    valueMattersForUnit=[valueMattersForUnit])
 
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
@@ -1049,13 +1057,18 @@ class Variable(object):
 
         return (opShape, baseClass, other)
 
-    def _BinaryOperatorVariable(self, op, other, operatorClass=None, opShape=None, canInline=True, unit=None):
+    def _BinaryOperatorVariable(self, op, other, operatorClass=None, opShape=None, canInline=True, unit=None,
+                                value0mattersForUnit=False, value1mattersForUnit=False):
         """
         :Parameters:
           - `op`: the operator function to apply (takes two arguments for `self` and `other`)
           - `other`: the quantity to be operated with
           - `operatorClass`: the `Variable` class that the binary operator should inherit from
           - `opShape`: the shape that should result from the operation
+          - `value0mattersForUnit`: whether value of `self` should be used when determining unit,
+                                    e.g., `__rpow__`
+          - `value1mattersForUnit`: whether value of `other` should be used when determining unit,
+                                    e.g., `__pow__`
         """
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
@@ -1076,7 +1089,8 @@ class Variable(object):
         binOp = binaryOperatorVariable._BinaryOperatorVariable(operatorClass)
 
         return binOp(op=op, var=[self, other], opShape=opShape, canInline=canInline, unit=unit,
-                     inlineComment=inline._operatorVariableComment(canInline=canInline))
+                     inlineComment=inline._operatorVariableComment(canInline=canInline),
+                     valueMattersForUnit=[value0mattersForUnit, value1mattersForUnit])
 
     def __add__(self, other):
         from fipy.terms.term import Term
@@ -1110,10 +1124,17 @@ class Variable(object):
         return self._BinaryOperatorVariable(lambda a,b: numerix.fmod(a, b), other)
 
     def __pow__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: pow(a,b), other)
+        """return self**other, or self raised to power other
+
+        >>> print Variable(1, "mol/l")**3
+        1.0 mol**3/l**3
+        >>> print (Variable(1, "mol/l")**3).unit
+        <PhysicalUnit mol**3/l**3>
+        """
+        return self._BinaryOperatorVariable(lambda a,b: pow(a,b), other, value1mattersForUnit=True)
 
     def __rpow__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: pow(b,a), other)
+        return self._BinaryOperatorVariable(lambda a,b: pow(b,a), other, value0mattersForUnit=True)
 
     def __truediv__(self, other):
         return self._BinaryOperatorVariable(lambda a,b: a/b, other)
