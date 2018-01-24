@@ -24,7 +24,9 @@ Overview
 
 .. only:: html
 
-   |GitHub|_ |gitter|_ |TravisCI|_ |OpenHub|_ |CondaForge|_ |Depsy|_ |PyPi|_
+   |GitHub|_ |TravisCI|_ |gitter|_ |PyPi|_
+   
+   |Depsy|_ |OpenHub|_ |CondaForge|_
 
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
