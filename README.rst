@@ -22,6 +22,12 @@ Overview
    significant advantage to :term:`Python` is the existing suite of tools for
    array calculations, sparse matrices and data rendering. 
 
+.. only:: html
+
+   |GitHub|_ |TravisCI|_ |gitter|_ |PyPi|_
+   
+   |Depsy|_ |OpenHub|_ |CondaForge|_
+
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
 combinations of coupled elliptic, hyperbolic and parabolic PDEs. Currently
@@ -150,11 +156,6 @@ submissions <https://github.com/usnistgov/fipy/issues>. We also monitor
 StackOverflow_ for questions tagged with "fipy". We welcome
 collaborative efforts on this project.
 
-:term:`FiPy` is a member of MatForge_, a project of the `Materials
-Digital Library Pathway`_. This National Science Foundation funded
-service provides a "wiki" space for public contributions of
-code snippets, discussions, and tutorials and hosts our testing framework.
-
 .. toctree::
 
    documentation/MAIL
@@ -230,15 +231,25 @@ or a
 
    to indicate something that could cause serious problems.
 
-.. _MML:                  http://www.nist.gov/mml/
-.. _CTCMS:                http://www.ctcms.nist.gov/
-.. _MSED:                 http://www.nist.gov/mml/msed/
-.. _NIST:                 http://www.nist.gov/
-.. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.tar.gz
-.. _issue tracker:        https://github.com/usnistgov/fipy/issues
-.. _mailing list:         http://www.ctcms.nist.gov/fipy/documentation/MAIL.html
-.. _Sourceforge:          http://www.sourceforge.net/projects/fipy
-.. _Materials Digital Library Pathway: http://matdl.org
-.. _MatForge:             http://matforge.org/
-.. _StackOverflow:        http://stackoverflow.com/questions/tagged/fipy
+.. _MML:           http://www.nist.gov/mml/
+.. _CTCMS:         http://www.ctcms.nist.gov/
+.. _MSED:          http://www.nist.gov/mml/msed/
+.. _NIST:          http://www.nist.gov/
+.. _issue tracker: https://github.com/usnistgov/fipy/issues
+.. _mailing list:  http://www.ctcms.nist.gov/fipy/documentation/MAIL.html
+.. _StackOverflow: http://stackoverflow.com/questions/tagged/fipy
 
+.. |GitHub|        image:: https://img.shields.io/github/contributors/usnistgov/fipy.svg
+.. _Github:        https://github.com/usnistgov/fipy
+.. |gitter|        image:: https://badges.gitter.im/usnistgov/fipy.svg
+.. _gitter:        https://gitter.im/usnistgov/fipy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
+.. |TravisCI|      image:: https://travis-ci.org/usnistgov/fipy.svg?branch=develop
+.. _TravisCI:      https://travis-ci.org/usnistgov/fipy
+.. |OpenHub|       image:: https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif
+.. _OpenHub:       https://www.openhub.net/p/fipy
+.. |PyPi|          image:: https://img.shields.io/pypi/v/fipy.svg
+.. _PyPi:          https://pypi.python.org/pypi/FiPy
+.. |CondaForge|    image:: https://anaconda.org/guyer/fipy/badges/downloads.svg
+.. _CondaForge:    https://anaconda.org/guyer/fipy
+.. |Depsy|         image:: http://depsy.org/api/package/pypi/FiPy/badge.svg
+.. _Depsy:         http://depsy.org/package/python/FiPy
