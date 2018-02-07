@@ -323,7 +323,7 @@ latex_additional_files = ['figures/nistident_flright_vec.pdf']
 # If false, no module index is generated.
 #latex_use_modindex = True
 
-pngmath_latex_preamble = common_preamble
+imgmath_latex_preamble = common_preamble
 
 # refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {
