@@ -28,7 +28,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinx.ext.todo',
               'sphinx.ext.coverage',
-              'sphinx.ext.pngmath',
+              'sphinx.ext.imgmath',
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
               'numpydoc',
@@ -313,7 +313,7 @@ latex_documents = [
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
-latex_use_parts = True
+latex_toplevel_sectioning = 'part'
 
 latex_additional_files = ['figures/nistident_flright_vec.pdf']
 
@@ -323,7 +323,7 @@ latex_additional_files = ['figures/nistident_flright_vec.pdf']
 # If false, no module index is generated.
 #latex_use_modindex = True
 
-pngmath_latex_preamble = common_preamble
+imgmath_latex_preamble = common_preamble
 
 # refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {
