@@ -278,7 +278,7 @@ factor to relax the solution. This argument cannot be passed to
 ...                              underRelaxation=velocityRelaxation)
 ...
 ...     ## update the ap coefficient from the matrix diagonal
-...     ap[:] = -xmat.takeDiagonal()
+...     ap[:] = -numerix.asarray(xmat.takeDiagonal())
 ...
 ...     ## update the face velocities based on starred values with the
 ...     ## Rhie-Chow correction.
