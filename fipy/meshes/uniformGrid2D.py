@@ -74,8 +74,7 @@ class UniformGrid2D(UniformGrid):
             'nx': nx,
             'ny': ny,
             'origin': origin,
-            'overlap': overlap,
-            'communicator': communicator
+            'overlap': overlap
         }
 
         builder.buildGridData([dx, dy], [nx, ny], overlap, communicator,

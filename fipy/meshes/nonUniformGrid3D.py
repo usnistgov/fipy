@@ -74,7 +74,6 @@ class NonUniformGrid3D(Mesh):
             'ny': ny,
             'nz': nz,
             'overlap': overlap,
-            'communicator': communicator
         }
 
         builder.buildGridData([dx, dy, dz], [nx, ny, nz], overlap,
