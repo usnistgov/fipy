@@ -9,7 +9,7 @@ from fipy.solvers.pyamgx.linearGMRESSolver import *
 pyamgx.initialize()
 atexit.register(pyamgx.finalize)
 
-DefaultSolver = LinearCGSSolver
+DefaultSolver = LinearGMRESSolver
 
 __all__ = ["DefaultSolver",
           ]
