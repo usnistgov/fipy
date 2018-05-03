@@ -12,7 +12,7 @@ class LinearGMRESSolver(PyAMGXSolver):
           - `precon`: Preconditioner to use.
 
         """
-        cfgDict = {
+        config_dict = {
             "config_version": 2, 
             "determinism_flag": 1,
             "exception_handling" : 1,
@@ -44,7 +44,7 @@ class LinearGMRESSolver(PyAMGXSolver):
                 "norm": "L2"
             }
         }
-        cfgDict['solver']['tolerance'] = tolerance
-        cfgDict['solver']['max_iters'] = iterations
+        config_dict['solver']['tolerance'] = tolerance
+        config_dict['solver']['max_iters'] = iterations
 
-        super(LinearGMRESSolver, self).__init__(cfgDict)
+        super(LinearGMRESSolver, self).__init__(config_dict, tolerance=tolerance, iterations=iterations)
