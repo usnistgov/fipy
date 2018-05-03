@@ -19,7 +19,7 @@ class LinearGMRESSolver(PyAMGXSolver):
             "solver": {
                 "store_res_history": 1, 
                 "solver": "GMRES", 
-                "obtain_timings": 1, 
+                "obtain_timings": 0, 
                 "preconditioner": {
                     "interpolator": "D2", 
                     "solver": "AMG", 
