@@ -53,11 +53,21 @@ elif solver == "pyamg":
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
     _MeshMatrix = _ScipyMeshMatrix
 
+elif solver == "pyamgx":
+    if _parallelComm.Nproc > 1:
+        raise SerialSolverError('pyamgx')
+    from fipy.solvers.pyamgx import *
+    __all__.extend(pyamgx.__all__)
+    from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+    _MeshMatrix = _ScipyMeshMatrix
+
+
 elif solver == "no-pysparse":
     from fipy.solvers.trilinos import *
     __all__.extend(trilinos.__all__)
     from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
     _MeshMatrix =  _TrilinosMeshMatrix
+
 
 elif solver is None:
     # If no argument or environment variable, try importing them and seeing
