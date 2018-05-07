@@ -222,6 +222,27 @@ def _TestClass(base):
                     print >>sys.stderr, "!!! Trilinos library is not installed"
                     return
 
+            if self.pyamgx:
+                try:
+                    ## Unregister the function pyamgx.finalize
+                    ## from atexit. This prevents
+                    ## pyamgx from printing an error message
+                    ## about memory leaks and a dump of leaked memory.
+                    ## The memory leaks happen because
+                    ## the tests do not use the pyamgx solvers
+                    ## "cleanly", i.e., they do not use the
+                    ## `with` statement.
+                    import pyamgx
+                    import atexit
+                    if hasattr(atexit, 'unregister'):
+                        atexit.unregister(pyamgx.finalize)
+                    else:
+                        atexit._exithandlers.remove(
+                            (pyamgx.finalize, (), {}))
+                except ImportError, e:
+                    print >>sys.stederr, "!!! pyamgx package is not installed"
+                    return
+
             if self.inline:
                 try:
                     import weave
