@@ -9,3 +9,4 @@ documentation/_build/
 documentation/tutorial/package/generated/
 examples/reactiveWetting/generated/
 *.logamgx
+*.dump.gz
