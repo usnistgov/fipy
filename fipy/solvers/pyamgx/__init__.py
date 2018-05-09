@@ -7,14 +7,15 @@ from fipy.solvers.pyamgx.linearPCGSolver import *
 from fipy.solvers.pyamgx.linearGMRESSolver import *
 from fipy.solvers.pyamgx.linearLUSolver import *
 from fipy.solvers.pyamgx.aggregationAMGSolver import *
+from fipy.solvers.pyamgx.classicalAMGSolver import *
 
 pyamgx.initialize()
 atexit.register(pyamgx.finalize)
 
-DefaultSolver = AggregationAMGSolver
-DefaultAsymmetricSolver = LinearGMRESSolver
-DummySolver = AggregationAMGSolver
-GeneralSolver = AggregationAMGSolver
+DefaultSolver = linearPCGSolver
+DefaultAsymmetricSolver = linearGMRESolver
+DummySolver = linearGMRESolver
+GeneralSolver = linearGMRESolver
 
 __all__ = ["DefaultSolver",
            "DummySolver",

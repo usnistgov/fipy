@@ -1,15 +1,15 @@
 from fipy.solvers.pyamgx import PyAMGXSolver
 
-__all__ = ["AggregationAMGSolver"]
+__all__ = ["ClassicalAMGSolver"]
 
-class AggregationAMGSolver(PyAMGXSolver):
+class ClassicalAMGSolver(PyAMGXSolver):
     """
-    The `AggregationAMGSolver` is an interface to the aggregation AMG solver in
+    The `ClassicalAMGSolver` is an interface to the classical AMG solver in
     AMGX, with a Jacobi smoother by default.
     """
     def __init__(self, tolerance=1e-10, iterations=2000,
                  preconditioner=None,
-                 smoother=BlockJacobiSmoother(),
+                 smoother=None,
                  **kwargs):
         """
         :Parameters:
@@ -23,16 +23,15 @@ class AggregationAMGSolver(PyAMGXSolver):
             "config_version": 2, 
             "determinism_flag": 1, 
             "solver": {
-                "algorithm": "AGGREGATION", 
+                "algorithm": "CLASSICAL", 
                 "solver": "AMG", 
                 "coarse_solver": "NOSOLVER",
-                "selector": "SIZE_2", 
                 "monitor_residual": 1, 
+                "print_solve_stats": 1, 
                 "max_levels": 1000, 
-                "cycle": "V"
             }
         }
-        super(AggregationAMGSolver, self).__init__(
+        super(ClassicalAMGSolver, self).__init__(
                 config_dict,
                 tolerance=tolerance,
                 iterations=iterations,

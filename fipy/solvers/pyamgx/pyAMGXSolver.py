@@ -31,15 +31,19 @@ class PyAMGXSolver(Solver):
         if smoother:
             config_dict["solver"]["smoother"] = smoother
         config_dict["solver"].update(kwargs)
+
+        # create AMGX objects:
         self.cfg = pyamgx.Config().create_from_dict(config_dict)
         self.resources = pyamgx.Resources().create_simple(self.cfg)
         self.x_gpu = pyamgx.Vector().create(self.resources)
         self.b_gpu = pyamgx.Vector().create(self.resources)
         self.A_gpu = pyamgx.Matrix().create(self.resources)
         self.solver = pyamgx.Solver().create(self.resources, self.cfg)
+
         super(PyAMGXSolver, self).__init__(tolerance=tolerance, iterations=iterations)
 
     def __exit__(self, *args):
+        # destroy AMGX objects:
         self.A_gpu.destroy()
         self.b_gpu.destroy()
         self.x_gpu.destroy()
