@@ -1,4 +1,5 @@
 from fipy.solvers.pyamgx import PyAMGXSolver
+from fipy.solvers.pyamgx.smoothers import BlockJacobiSmoother
 
 __all__ = ["AggregationAMGSolver"]
 
