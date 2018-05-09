@@ -1,15 +1,17 @@
 from fipy.solvers.pyamgx import PyAMGXSolver
+from fipy.solvers.pyamgx.preconditioners import BlockJacobiPreconditioner
 
-__all__ = ["LinearPCGSolver"]
+__all__ = ["LinearBiCGStabSolver"]
 
-class LinearPCGSolver(PyAMGXSolver):
+class LinearBiCGStabSolver(PyAMGXSolver):
     """
-    The `LinearPCGSolver` is an interface to the PCG solver in
-    AMGX, with no preconditioning by default.
+    The `LinearBiCGStabSolver` is an interface to the PBICGSTAB solver in
+    AMGX, with a Jacobi preconditioner by default.
     """
 
-    def __init__(self, tolerance=1e-10, iterations=2000, preconditioner=None,
-            **kwargs):
+    def __init__(self, tolerance=1e-10, iterations=2000,
+                 preconditioner=BlockJacobiPreconditioner(),
+                 **kwargs):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
@@ -23,18 +25,15 @@ class LinearPCGSolver(PyAMGXSolver):
             "exception_handling" : 1,
             "solver": {
                 "monitor_residual": 1,
-                "solver": "PCG",
+                "solver": "PBICGSTAB",
                 "preconditioner": {
-                   "solver": "NOSOLVER",
+                    "solver": "NOSOLVER"
                 }
             }
         }
-        super(LinearPCGSolver, self).__init__(
+        super(LinearBiCGStabSolver, self).__init__(
                 config_dict,
                 tolerance=tolerance,
                 iterations=iterations,
                 preconditioner=preconditioner,
                 **kwargs)
-
-    def _canSolveAsymmetric(self):
-        return False
