@@ -24,8 +24,12 @@ class LinearPCGSolver(PyAMGXSolver):
             "solver": {"solver": "PCG",
                        "preconditioner": "NOSOLVER"},
         }
-        super(LinearPCGSolver, self).__init__(config_dict, tolerance=tolerance, iterations=iterations,
-                preconditioner=preconditioner, **kwargs)
+        super(LinearPCGSolver, self).__init__(
+                config_dict,
+                tolerance=tolerance,
+                iterations=iterations,
+                preconditioner=preconditioner,
+                **kwargs)
 
     def _canSolveAsymmetric(self):
         return False
