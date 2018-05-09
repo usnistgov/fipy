@@ -22,7 +22,8 @@ class LinearPCGSolver(PyAMGXSolver):
             "determinism_flag": 1,
             "exception_handling" : 1,
             "solver": {"solver": "PCG",
-                       "preconditioner": "NOSOLVER"},
+                       "preconditioner": "NOSOLVER",
+                       "monitor_residual": 1},
         }
         super(LinearPCGSolver, self).__init__(
                 config_dict,
