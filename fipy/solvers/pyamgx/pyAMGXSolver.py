@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import atexit
-
 import numpy
 from scipy.sparse import csr_matrix
 
@@ -14,7 +12,25 @@ __all__ = ["PyAMGXSolver"]
 
 class PyAMGXSolver(Solver):
 
-    def __init__(self, config_dict, tolerance=1e-10, iterations=2000):
+    def __init__(self, config_dict, tolerance=1e-10, iterations=2000,
+                 preconditioner=None, smoother=None, **kwargs):
+        """
+        :Parameters:
+          - `config_dict`: Dictionary specifying AMGX configuration options.
+          - `tolerance`: The required error tolerance.
+          - `iterations`: The maximum number of iterative steps to perform.
+          - `preconditioner`: Preconditioner to use.
+          - `smoother`: Smoother to use.
+          - `kwargs` - Keyword arguments specifying other solver options (see AMGX reference guide).
+        """
+        # update solver config:
+        config_dict["solver"]["tolerance"] = tolerance
+        config_dict["solver"]["max_iters"] = iterations
+        if preconditioner:
+            config_dict["solver"]["preconditioner"] = preconditioner
+        if smoother:
+            config_dict["solver"]["smoother"] = smoother
+        config_dict["solver"].update(kwargs)
         self.cfg = pyamgx.Config().create_from_dict(config_dict)
         self.resources = pyamgx.Resources().create_simple(self.cfg)
         self.x_gpu = pyamgx.Vector().create(self.resources)
@@ -23,7 +39,7 @@ class PyAMGXSolver(Solver):
         self.solver = pyamgx.Solver().create(self.resources, self.cfg)
         super(PyAMGXSolver, self).__init__(tolerance=tolerance, iterations=iterations)
 
-    def __exit__(self):
+    def __exit__(self, *args):
         self.A_gpu.destroy()
         self.b_gpu.destroy()
         self.x_gpu.destroy()

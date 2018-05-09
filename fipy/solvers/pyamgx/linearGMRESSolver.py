@@ -1,50 +1,36 @@
 from fipy.solvers.pyamgx import PyAMGXSolver
+from fipy.solvers.pyamgx.preconditioners import BlockJacobiPreconditioner
 
 __all__ = ["LinearGMRESSolver"]
 
 class LinearGMRESSolver(PyAMGXSolver):
+    """
+    The `LinearGMRESSolver` is an interface to the GMRES solver in
+    AMGX, with a Jacobi preconditioner by default.
+    """
 
-    def __init__(self, tolerance=1e-10, iterations=2000):
+    def __init__(self, tolerance=1e-10, iterations=2000,
+                 preconditioner=BlockJacobiPreconditioner(),
+                 **kwargs):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `precon`: Preconditioner to use.
-
+          - `preconditioner`: Preconditioner to use.
+          - `kwargs`: Keyword arguments specifying other AMGX solver options.
         """
         config_dict = {
             "config_version": 2, 
             "determinism_flag": 1,
             "exception_handling" : 1,
             "solver": {
-                "store_res_history": 1, 
-                "solver": "GMRES", 
-                "obtain_timings": 0, 
-                "preconditioner": {
-                    "interpolator": "D2", 
-                    "solver": "AMG", 
-                    "smoother": "JACOBI_L1", 
-                    "presweeps": 2, 
-                    "selector": "PMIS", 
-                    "coarsest_sweeps": 2, 
-                    "coarse_solver": "NOSOLVER", 
-                    "max_iters": 1, 
-                    "interp_max_elements": 4, 
-                    "min_coarse_rows": 2, 
-                    "scope": "amg_solver", 
-                    "max_levels": 24, 
-                    "cycle": "V", 
-                    "postsweeps": 2
-                }, 
-                "max_iters": 100, 
-                "monitor_residual": 1, 
-                "gmres_n_restart": 10, 
-                "convergence": "RELATIVE_INI_CORE", 
-                "tolerance": 1e-06, 
-                "norm": "L2"
+                "monitor_residual": 1,
+                "solver": "GMRES",
             }
         }
-        config_dict['solver']['tolerance'] = tolerance
-        config_dict['solver']['max_iters'] = iterations
-
-        super(LinearGMRESSolver, self).__init__(config_dict, tolerance=tolerance, iterations=iterations)
+        super(LinearGMRESSolver, self).__init__(
+                config_dict,
+                tolerance=tolerance,
+                iterations=iterations,
+                preconditioner=preconditioner,
+                **kwargs)
