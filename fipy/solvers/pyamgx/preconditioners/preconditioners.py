@@ -1,8 +1,8 @@
 import copy
 
 __all__ = ["AMGPreconditioner",
-           "PCGPreconditioner",
-           "PBiCGStabPreconditioner",
+           "CGPreconditioner",
+           "BiCGStabPreconditioner",
            "FGMRESPreconditioner",
            "BlockJacobiPreconditioner",
            "MultiColorDILUPreconditioner"]
@@ -22,8 +22,8 @@ class Preconditioner:
         return copy.copy(self.config_dict)
 
 AMGPreconditioner = Preconditioner("AMG")
-PCGPreconditioner = Preconditioner("PCG")
-PBiCGStabPreconditioner = Preconditioner("PCIBCGSTAB")
+CGPreconditioner = Preconditioner("PCG")
+BiCGStabPreconditioner = Preconditioner("PCIBCGSTAB")
 FGMRESPreconditioner = Preconditioner("FGMRES")
 BlockJacobiPreconditioner = Preconditioner("BLOCK_JACOBI")
 MultiColorDILUPreconditioner = Preconditioner("MULTICOLOR_DILU")
