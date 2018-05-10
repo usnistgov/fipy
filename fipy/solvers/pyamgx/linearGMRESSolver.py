@@ -26,6 +26,7 @@ class LinearGMRESSolver(PyAMGXSolver):
             "solver": {
                 "monitor_residual": 1,
                 "solver": "GMRES",
+                "convergence": "RELATIVE_INI_CORE",
                 "preconditioner": {
                     "solver": "NOSOLVER"
                 }

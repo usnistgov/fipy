@@ -5,9 +5,9 @@ from fipy.solvers.pyAMG.linearLUSolver import *
 from fipy.solvers.pyAMG.linearGeneralSolver import *
 
 DefaultSolver = LinearGMRESSolver
-DefaultAsymmetricSolver = LinearLUSolver
+DefaultAsymmetricSolver = LinearGMRESSolver
 DummySolver = LinearGMRESSolver
-GeneralSolver = LinearGeneralSolver
+GeneralSolver = LinearGMRESSolver
 
 __all__ = ["DefaultSolver",
            "DummySolver",

@@ -1,5 +1,5 @@
 from fipy.solvers.pyamgx import PyAMGXSolver
-from fipy.solvers.pyamgx.preconditioners import BlockJacobiPreconditioner
+from fipy.solvers.pyamgx.preconditioners import *
 
 __all__ = ["LinearBiCGStabSolver"]
 
@@ -10,7 +10,7 @@ class LinearBiCGStabSolver(PyAMGXSolver):
     """
 
     def __init__(self, tolerance=1e-10, iterations=2000,
-                 preconditioner=BlockJacobiPreconditioner(),
+            preconditioner=BlockJacobiPreconditioner(),
                  **kwargs):
         """
         :Parameters:
@@ -24,8 +24,10 @@ class LinearBiCGStabSolver(PyAMGXSolver):
             "determinism_flag": 1,
             "exception_handling" : 1,
             "solver": {
+                "convergence": "RELATIVE_INI_CORE",
                 "monitor_residual": 1,
                 "solver": "PBICGSTAB",
+                "print_solve_stats": 1,
                 "preconditioner": {
                     "solver": "NOSOLVER"
                 }

@@ -1,14 +1,15 @@
 from fipy.solvers.pyamgx import PyAMGXSolver
+from fipy.solvers.pyamgx.preconditioners import *
 
-__all__ = ["LinearPCGSolver"]
+__all__ = ["LinearCGSolver"]
 
-class LinearPCGSolver(PyAMGXSolver):
+class LinearCGSolver(PyAMGXSolver):
     """
-    The `LinearPCGSolver` is an interface to the PCG solver in
+    The `LinearCGSolver` is an interface to the PCG solver in
     AMGX, with no preconditioning by default.
     """
 
-    def __init__(self, tolerance=1e-10, iterations=2000, preconditioner=None,
+    def __init__(self, tolerance=1e-10, iterations=2000, preconditioner=BlockJacobiPreconditioner(),
             **kwargs):
         """
         :Parameters:
@@ -22,6 +23,7 @@ class LinearPCGSolver(PyAMGXSolver):
             "determinism_flag": 1,
             "exception_handling" : 1,
             "solver": {
+                "convergence": "RELATIVE_INI_CORE",
                 "monitor_residual": 1,
                 "solver": "PCG",
                 "preconditioner": {
@@ -29,7 +31,7 @@ class LinearPCGSolver(PyAMGXSolver):
                 }
             }
         }
-        super(LinearPCGSolver, self).__init__(
+        super(LinearCGSolver, self).__init__(
                 config_dict,
                 tolerance=tolerance,
                 iterations=iterations,
