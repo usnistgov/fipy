@@ -14,7 +14,7 @@ from fipy.solvers.pyamgx.classicalAMGSolver import *
 pyamgx.initialize()
 atexit.register(pyamgx.finalize)
 
-DefaultSolver = LinearBiCGStabSolver
+DefaultSolver = LinearCGSolver
 DefaultAsymmetricSolver = LinearBiCGStabSolver
 DummySolver = LinearBiCGStabSolver
 GeneralSolver = LinearBiCGStabSolver

@@ -1,7 +1,7 @@
 from fipy.solvers.pyamgx import PyAMGXSolver
 from fipy.solvers.pyamgx.preconditioners import *
 
-__all__ = ["LinearCGSolver"]
+__all__ = ["LinearCGSolver", "LinearPCGSolver"]
 
 class LinearCGSolver(PyAMGXSolver):
     """
@@ -40,3 +40,5 @@ class LinearCGSolver(PyAMGXSolver):
 
     def _canSolveAsymmetric(self):
         return False
+
+LinearPCGSolver = LinearCGSolver

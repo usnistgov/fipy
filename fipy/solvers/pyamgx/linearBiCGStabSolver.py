@@ -27,7 +27,6 @@ class LinearBiCGStabSolver(PyAMGXSolver):
                 "convergence": "RELATIVE_INI_CORE",
                 "monitor_residual": 1,
                 "solver": "PBICGSTAB",
-                "print_solve_stats": 1,
                 "preconditioner": {
                     "solver": "NOSOLVER"
                 }
