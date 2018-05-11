@@ -1,4 +1,5 @@
 from fipy.solvers.pyamgx import PyAMGXSolver
+from fipy.solvers.pyamgx.smoothers import BlockJacobiSmoother
 
 __all__ = ["ClassicalAMGSolver"]
 
@@ -9,7 +10,7 @@ class ClassicalAMGSolver(PyAMGXSolver):
     """
     def __init__(self, tolerance=1e-10, iterations=2000,
                  preconditioner=None,
-                 smoother=None,
+                 smoother=BlockJacobiSmoother(),
                  **kwargs):
         """
         :Parameters:
