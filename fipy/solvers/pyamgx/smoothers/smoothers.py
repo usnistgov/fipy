@@ -8,7 +8,8 @@ __all__ = ["BlockJacobiSmoother",
 class Smoother:
     def __init__(self, smoother_type):
         self.config_dict = {
-            "solver": smoother_type
+            "solver": smoother_type,
+            "max_iters": 1
         }
     def __call__(self, **kwargs):
         self.config_dict.update(kwargs)
