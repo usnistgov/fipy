@@ -25,7 +25,6 @@ class ClassicalAMGSolver(PyAMGXSolver):
             "solver": {
                 "algorithm": "CLASSICAL", 
                 "solver": "AMG", 
-                "coarse_solver": "NOSOLVER",
                 "monitor_residual": 1, 
                 "max_levels": 1000, 
             }

@@ -26,7 +26,6 @@ class AggregationAMGSolver(PyAMGXSolver):
             "solver": {
                 "algorithm": "AGGREGATION", 
                 "solver": "AMG", 
-                "coarse_solver": "NOSOLVER",
                 "selector": "SIZE_2", 
                 "monitor_residual": 1, 
                 "max_levels": 1000, 
