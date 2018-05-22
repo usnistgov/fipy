@@ -50,10 +50,8 @@ before_install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - cat ~/.condarc
-  - cat >> ~/.condarc << EOF
-    default_channels: [] 
-    channels: []
-    EOF
+  - echo "default_channels: []" >> ~/.condarc
+  - echo "channels: []" >> ~/.condarc
   - cat ~/.condarc
   - conda info
   - conda config --remove channels defaults
