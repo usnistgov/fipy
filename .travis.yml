@@ -49,8 +49,9 @@ before_install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
+  - conda config --remove channels defaults
   - conda update -q conda
-  - conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge --override-channels python=$TRAVIS_PYTHON_VERSION fipy
+  - conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy
   - source activate test-environment
   # Useful for debugging any issues with conda
   - conda info -a
