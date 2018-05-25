@@ -54,9 +54,9 @@ before_install:
   # conda-forge channel when on linux
   - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
       if [[ $PY3K -eq 1 ]]; then
-        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh pysparse mpi4py matplotlib mayavi;
-      else
         conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh matplotlib;
+      else
+        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh pysparse mpi4py matplotlib mayavi;
       fi
     elif [[ $TRAVIS_OS_NAME -eq "osx" ]]; then
       conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy;
