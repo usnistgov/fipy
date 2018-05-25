@@ -50,9 +50,9 @@ before_install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
+  # fipy conda package does not properly load scipy and numpy from
+  # conda-forge channel when on linux
   - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
-      # fipy conda package does not properly load scipy and numpy from
-      # conda-forge channel when on linux
       if [[ $PY3K -eq 1 ]]; then
         conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh pysparse mpi4py matplotlib mayavi
       else
