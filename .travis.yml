@@ -61,6 +61,9 @@ before_install:
     elif [[ $TRAVIS_OS_NAME -eq "osx" ]]; then
       conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy;
     fi
+  - if [[ $PY3K -eq 0 ]]; then
+      conda install --quiet --name test-environment --show-channel-urls --channel guyer trilinos
+    fi
   - source activate test-environment
   # Useful for debugging any issues with conda
   - conda info -a
