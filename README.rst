@@ -24,9 +24,9 @@ Overview
 
 .. only:: html
 
-   |GitHub|_ |TravisCI|_ |gitter|_ |PyPi|_
+   |GitHub|_ |TravisCI|_ |PyPi|_  |Codacy|_
    
-   |Depsy|_ |OpenHub|_ |CondaForge|_
+   |gitter|_ |Depsy|_ |OpenHub|_ |CondaForge|_
 
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
@@ -253,3 +253,5 @@ or a
 .. _CondaForge:    https://anaconda.org/guyer/fipy
 .. |Depsy|         image:: http://depsy.org/api/package/pypi/FiPy/badge.svg
 .. _Depsy:         http://depsy.org/package/python/FiPy
+.. |Codacy|         image:: https://api.codacy.com/project/badge/Grade/d02921bb54b14e88a1e2e1f5520133f4
+.. _Codacy:         https://www.codacy.com/app/tkphd/fipy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=usnistgov/fipy&amp;utm_campaign=Badge_Grade
