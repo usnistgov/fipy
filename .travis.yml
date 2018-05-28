@@ -54,10 +54,9 @@ before_install:
   # conda-forge channel when on linux
   - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
       if [[ $PY3K -eq 1 ]]; then
-        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh matplotlib;
+        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh matplotlib mayavi vtk=8.1;
       else
-        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh pysparse mpi4py matplotlib mayavi;
-        conda install --quiet --name test-environment --show-channel-urls --channel guyer --no-deps fipytrilinos;
+        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh pysparse mpi4py matplotlib mayavi vtk=8.1 fipytrilinos;
       fi
     elif [[ $TRAVIS_OS_NAME -eq "osx" ]]; then
       conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy;
@@ -66,7 +65,6 @@ before_install:
   # Useful for debugging any issues with conda
   - conda info -a
   - pip install scikit-fmm
-  # dummy line to get things to build?
 install:
   - if [[ $PY3K -eq 1 ]]; then
       2to3 --write . &> /dev/null;
