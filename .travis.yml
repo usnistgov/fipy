@@ -66,6 +66,7 @@ before_install:
   # Useful for debugging any issues with conda
   - conda info -a
   - pip install scikit-fmm
+  # dummy line to get things to build?
 install:
   - if [[ $PY3K -eq 1 ]]; then
       2to3 --write . &> /dev/null;
