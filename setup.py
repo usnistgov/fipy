@@ -230,7 +230,7 @@ except IOError, e:
 ##Hacked from numpy
 def getVersion():
     import subprocess
-    import warndings
+    import warnings
 
     def _minimal_ext_cmd(cmd):
         # construct minimal environment
