@@ -229,6 +229,9 @@ except IOError, e:
 
 ##Hacked from numpy
 def getVersion():
+    import subprocess
+    import warndings
+
     def _minimal_ext_cmd(cmd):
         # construct minimal environment
         env = {}
@@ -240,8 +243,11 @@ def getVersion():
         env['LANGUAGE'] = 'C'
         env['LANG'] = 'C'
         env['LC_ALL'] = 'C'
-        import subprocess
-        out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env).communicate()[0]
+
+        out = subprocess.check_output(cmd, env=env)
+        # ticket:475 - fix for bytecode received in Py3k
+        # http://jeetworks.org/node/67
+        out = out.decode("utf-8")
         return out
 
     version = 'unknown'
@@ -249,9 +255,6 @@ def getVersion():
     if os.path.exists('.git'):
         try:
             out = _minimal_ext_cmd(['git', 'describe', '--tags', '--match', 'version-*'])
-            # ticket:475 - fix for bytecode received in Py3k
-            # http://jeetworks.org/node/67
-            out = out.decode("utf-8")
             # convert git long-form version string, e.g., "version-3_1_1-127-g413ed61",
             # into PEP 440 version, e.g., "3.1.1.dev127+g413ed61"
             version = out.strip().split("-")
@@ -263,7 +266,12 @@ def getVersion():
         except OSError:
             import warnings
             warnings.warn("Could not run ``git describe``")
-    elif os.path.exists('FiPy.egg-info'):
+        except subprocess.CalledProcessError:
+            warnings.warn("Could not read git tags")
+            version = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
+            version = version.strip()
+
+    if (version == 'unknown') and os.path.exists('FiPy.egg-info'):
         from fipy import _getVersion
         version = _getVersion()
 
