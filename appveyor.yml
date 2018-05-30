@@ -6,42 +6,42 @@ environment:
     - TARGET_ARCH: x86
       CONDA_PY: 27
       CONDA_INSTALL_LOCN: C:\\Miniconda
-      FIPY_SOLVERS=pysparse
+      FIPY_SOLVERS: pysparse
 
     - TARGET_ARCH: x64
       CONDA_PY: 27
       CONDA_INSTALL_LOCN: C:\\Miniconda-x64
-      FIPY_SOLVERS=pysparse
+      FIPY_SOLVERS: pysparse
 
     - TARGET_ARCH: x86
       CONDA_PY: 27
       CONDA_INSTALL_LOCN: C:\\Miniconda
-      FIPY_SOLVERS=scipy
+      FIPY_SOLVERS: scipy
 
     - TARGET_ARCH: x64
       CONDA_PY: 27
       CONDA_INSTALL_LOCN: C:\\Miniconda-x64
-      FIPY_SOLVERS=scipy
+      FIPY_SOLVERS: scipy
 
     - TARGET_ARCH: x86
       CONDA_PY: 36
       CONDA_INSTALL_LOCN: C:\\Miniconda36
-      FIPY_SOLVERS=pysparse
+      FIPY_SOLVERS: pysparse
 
     - TARGET_ARCH: x64
       CONDA_PY: 36
       CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
-      FIPY_SOLVERS=pysparse
+      FIPY_SOLVERS: pysparse
 
     - TARGET_ARCH: x86
       CONDA_PY: 36
       CONDA_INSTALL_LOCN: C:\\Miniconda36
-      FIPY_SOLVERS=scipy
+      FIPY_SOLVERS: scipy
 
     - TARGET_ARCH: x64
       CONDA_PY: 36
       CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
-      FIPY_SOLVERS=scipy
+      FIPY_SOLVERS: scipy
 
 # We always use a 64-bit machine, but can build x86 distributions
 # with the TARGET_ARCH variable.
