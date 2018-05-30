@@ -72,7 +72,7 @@ install:
     - cmd: conda.exe config --add channels conda-forge
 
     # Configure the VM.
-    - cmd: conda.exe install --quiet --name root python=%CONDA_PY% fipy
+    - cmd: conda.exe install --quiet --name root fipy
     - cmd: python setup.py install
 
 # Skip .NET project specific build phase.
