@@ -66,6 +66,8 @@ install:
 
     # Add our channels.
     - cmd: conda.exe config --set show_channel_urls true
+    - cmd: conda.exe config --set always_yes yes
+    - cmd: conda.exe config --set changeps1 no
     - cmd: conda.exe config --remove channels defaults
     - cmd: conda.exe config --add channels defaults
     - cmd: conda.exe config --add channels guyer
