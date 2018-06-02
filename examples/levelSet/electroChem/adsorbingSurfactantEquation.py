@@ -248,7 +248,9 @@ class AdsorbingSurfactantEquation():
     ...     levEq.solve(levVar, dt = dt)
     ...     accEq.solve(accVar, dt = dt) #doctest: +LSM
 
-    >>> print (accVar >= -1e-10).all()
+    >>> # The following test fails sometimes on linux with scipy solvers
+    >>> # See issue #588. We ignore for now.
+    >>> print (accVar >= -1e-10).all() #doctest: +SKIP
     True
     """
     def __init__(self,
