@@ -22,11 +22,9 @@ Overview
    significant advantage to :term:`Python` is the existing suite of tools for
    array calculations, sparse matrices and data rendering. 
 
-.. only:: html
-
-   |GitHub|_ |TravisCI|_ |PyPi|_  |Codacy|_
+|GitHub|_ |TravisCI|_ |PyPi|_  |Codacy|_
    
-   |gitter|_ |Depsy|_ |OpenHub|_ |CondaForge|_
+|gitter|_ |Depsy|_ |OpenHub|_ |CondaForge|_
 
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
