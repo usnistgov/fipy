@@ -1,1 +1,2 @@
+source activate fipy_tutorial
 python setup.py install
