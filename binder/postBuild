@@ -1,2 +1,1 @@
-source activate fipy_tutorial
-python setup.py install
+python-2.7 setup.py install
