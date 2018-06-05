@@ -1,0 +1,15 @@
+name: fipy_tutorial
+channels:
+  - guyer
+  - conda-forge
+  - defaults
+dependencies:
+  - python =2.7
+  - numpy
+  - scipy
+  - gmsh
+  - pysparse
+  - mpi4py
+  - matplotlib
+  - mayavi
+  - fipytrilinos
