@@ -252,4 +252,4 @@ or a
 .. |Codacy|         image:: https://api.codacy.com/project/badge/Grade/d02921bb54b14e88a1e2e1f5520133f4
 .. _Codacy:         https://www.codacy.com/app/tkphd/fipy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=usnistgov/fipy&amp;utm_campaign=Badge_Grade
 .. |Binder|        image:: https://mybinder.org/badge.svg
-.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/icmed
+.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/develop
