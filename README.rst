@@ -26,7 +26,7 @@ Overview
 
    |GitHub|_ |TravisCI|_ |gitter|_ |PyPi|_
    
-   |Depsy|_ |OpenHub|_ |CondaForge|_
+   |Depsy|_ |OpenHub|_ |CondaForge|_ |Binder|_
 
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
@@ -253,3 +253,5 @@ or a
 .. _CondaForge:    https://anaconda.org/guyer/fipy
 .. |Depsy|         image:: http://depsy.org/api/package/pypi/FiPy/badge.svg
 .. _Depsy:         http://depsy.org/package/python/FiPy
+.. |Binder|        image:: https://mybinder.org/badge.svg
+.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/icmed
