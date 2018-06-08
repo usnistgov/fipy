@@ -48,11 +48,19 @@
 
 __docformat__ = 'restructuredtext'
 
+import platform
+
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.variables.variable import Variable
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.variables.surfactantConvectionVariable import SurfactantConvectionVariable
 from fipy.terms.transientTerm import TransientTerm
+from fipy.tests.doctestPlus import register_skipper
+from fipy.solvers import solver
+
+register_skipper(flag="NOTLINUXSCIPY",
+                 test=lambda : platform.system() != "Linux" or solver != 'scipy',
+                 why="`scipy` solvers on linux fail intermittently: #575")
 
 class AdsorbingSurfactantEquation():
     r"""
@@ -250,7 +258,7 @@ class AdsorbingSurfactantEquation():
 
     >>> # The following test fails sometimes on linux with scipy solvers
     >>> # See issue #575. We ignore for now.
-    >>> print (accVar >= -1e-10).all() #doctest: +SKIP
+    >>> print (accVar >= -1e-10).all() #doctest: +NOTLINUXSCIPY
     True
     """
     def __init__(self,
