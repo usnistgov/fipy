@@ -20,7 +20,7 @@ Overview
    specific problems.  Our approach, combining the FV method and :term:`Python`,
    provides a tool that is extensible, powerful and freely available. A
    significant advantage to :term:`Python` is the existing suite of tools for
-   array calculations, sparse matrices and data rendering. 
+   array calculations, sparse matrices and data rendering.
 
 |GitHub|_ |gitter|_ |TravisCI|_ |PyPi|_  |Codacy|_ |Depsy|_ |OpenHub|_ |CondaForge|_ |Binder|_
 
@@ -35,7 +35,7 @@ photovoltaics :cite:`Hangarter:2011p2795` and a level set treatment of the
 electrodeposition process :cite:`NIST:damascene:2001`.
 
 .. only:: latex
-  
+
    The latest information about :term:`FiPy` can be found at
    http://www.ctcms.nist.gov/fipy/.
 
@@ -43,7 +43,7 @@ electrodeposition process :cite:`NIST:damascene:2001`.
 Even if you don't read manuals...
 ---------------------------------
 
-...please read :ref:`INSTALLATION`, :ref:`USAGE` and :ref:`FAQ`, as well 
+...please read :ref:`INSTALLATION`, :ref:`USAGE` and :ref:`FAQ`, as well
 as :mod:`examples.diffusion.mesh1D`.
 
 --------------------------------
@@ -52,17 +52,17 @@ What's new in version |release|?
 
 The significant changes since version 3.0 are:
 
-- Level sets are now handled by :ref:`LSMLIBDOC` or :ref:`SCIKITFMM` 
-  solver libraries. These libraries are orders of magnitude faster than the 
+- Level sets are now handled by :ref:`LSMLIBDOC` or :ref:`SCIKITFMM`
+  solver libraries. These libraries are orders of magnitude faster than the
   original, :term:`Python`-only prototype.
-- The :term:`Matplotlib` :func:`streamplot()` function can be used to display 
+- The :term:`Matplotlib` :func:`streamplot()` function can be used to display
   vector fields.
-- Version control was switched to the Git_ distributed version control 
-  system. This system should make it much easier for :term:`FiPy` users to 
+- Version control was switched to the Git_ distributed version control
+  system. This system should make it much easier for :term:`FiPy` users to
   participate in development.
 
 Tickets fixed in this release::
-    
+
     62  "Move 'ImplicitDiffusionTerm().solve(var) == 0' ""failure"" from examples.phase.simple to examples.diffusion.mesh1D?"
     118 subscriber()._markStale() AttributeError
     138 `numerix.dot` doesn't support tensors
@@ -129,7 +129,7 @@ Tickets fixed in this release::
    Please see :mod:`examples.updating.update2_0to3_0` for guidance on the
    changes that you will need to make to your :term:`FiPy` 2.x scripts.
 
-.. _Git: http://git-scm.com/ 
+.. _Git: http://git-scm.com/
 
 -------------------------
 Download and Installation
@@ -148,7 +148,7 @@ Support
 You can communicate with the :term:`FiPy` developers and with other
 users via our `mailing list`_ and we welcome you to use the `issue
 tracker`_ for bugs, support requests, feature requests and patch
-submissions <https://github.com/usnistgov/fipy/issues>. We also monitor 
+submissions <https://github.com/usnistgov/fipy/issues>. We also monitor
 StackOverflow_ for questions tagged with "fipy". We welcome
 collaborative efforts on this project.
 
@@ -215,7 +215,7 @@ separated by "``/``").  Any references of the form::
 are in the :term:`Python` module notation and correspond to the equivalent POSIX
 path given above.
 
-We may at times use a 
+We may at times use a
 
 .. note::
 
@@ -252,4 +252,4 @@ or a
 .. |Codacy|         image:: https://api.codacy.com/project/badge/Grade/d02921bb54b14e88a1e2e1f5520133f4
 .. _Codacy:         https://www.codacy.com/app/tkphd/fipy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=usnistgov/fipy&amp;utm_campaign=Badge_Grade
 .. |Binder|        image:: https://mybinder.org/badge.svg
-.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/develop
+.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/develop?filepath=examples%2Findex.ipynb
