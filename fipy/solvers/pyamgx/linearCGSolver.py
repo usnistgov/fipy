@@ -9,17 +9,17 @@ class LinearCGSolver(PyAMGXSolver):
     AMGX, with no preconditioning by default.
     """
 
-    def __init__(self, tolerance=1e-10, iterations=2000, preconditioner=BlockJacobiPreconditioner(),
+    def __init__(self, tolerance=1e-10, iterations=2000, precon=BlockJacobiPreconditioner(),
             **kwargs):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `preconditioner`: Preconditioner to use.
+          - `precon`: Preconditioner to use.
           - `kwargs`: Keyword arguments specifying other AMGX solver options.
         """
         config_dict = {
-            "config_version": 2, 
+            "config_version": 2,
             "determinism_flag": 1,
             "exception_handling" : 1,
             "solver": {
@@ -35,7 +35,7 @@ class LinearCGSolver(PyAMGXSolver):
                 config_dict,
                 tolerance=tolerance,
                 iterations=iterations,
-                preconditioner=preconditioner,
+                precon=precon,
                 **kwargs)
 
     def _canSolveAsymmetric(self):

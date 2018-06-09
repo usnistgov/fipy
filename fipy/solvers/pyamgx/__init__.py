@@ -16,8 +16,8 @@ atexit.register(pyamgx.finalize)
 
 DefaultSolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearGMRESSolver
-DummySolver = LinearGMRESSolver
-GeneralSolver = LinearGMRESSolver
+DummySolver = DefaultSolver
+GeneralSolver = DefaultSolver
 
 __all__ = ["DefaultSolver",
            "DummySolver",

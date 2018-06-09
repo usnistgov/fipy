@@ -13,21 +13,21 @@ __all__ = ["PyAMGXSolver"]
 class PyAMGXSolver(Solver):
 
     def __init__(self, config_dict, tolerance=1e-10, iterations=2000,
-                 preconditioner=None, smoother=None, **kwargs):
+                 precon=None, smoother=None, **kwargs):
         """
         :Parameters:
           - `config_dict`: Dictionary specifying AMGX configuration options.
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `preconditioner`: Preconditioner to use.
+          - `precon`: Preconditioner to use.
           - `smoother`: Smoother to use.
-          - `kwargs` - Keyword arguments specifying other solver options (see AMGX reference guide).
+          - `kwargs` - Keyword arguments specifying other solver options (see AMGX Reference Manual).
         """
         # update solver config:
         config_dict["solver"]["tolerance"] = tolerance
         config_dict["solver"]["max_iters"] = iterations
-        if preconditioner:
-            config_dict["solver"]["preconditioner"] = preconditioner
+        if precon:
+            config_dict["solver"]["preconditioner"] = precon
         if smoother:
             config_dict["solver"]["smoother"] = smoother
         config_dict["solver"].update(kwargs)
