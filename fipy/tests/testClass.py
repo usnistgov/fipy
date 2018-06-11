@@ -172,9 +172,9 @@ def _TestClass(base):
                 import PyTrilinos
                 print PyTrilinos.version()
             except ImportError, e:
-                print pkg,'is not installed'
+                print 'PyTrilinos is not installed'
             except Exception, e:
-                print pkg, 'version check failed:', e
+                print 'PyTrilinos version check failed:', e
 
             ## Mayavi uses a non-standard approach for storing its version nummber.
             try:
