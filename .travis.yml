@@ -6,11 +6,11 @@ os:
   # - osx
    - linux
 env:
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse INLINE=
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy INLINE=
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=trilinos INLINE=
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos INLINE=
-  - TRAVIS_PYTHON_VERSION=3.6 MPIRUN= FIPY_SOLVERS=scipy INLINE=
+  # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse INLINE=
+  # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy INLINE=
+  # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=trilinos INLINE=
+  # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos INLINE=
+  # - TRAVIS_PYTHON_VERSION=3.6 MPIRUN= FIPY_SOLVERS=scipy INLINE=
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse INLINE=--inline
 cache: apt
 addons:
@@ -66,7 +66,7 @@ before_install:
   # Useful for debugging any issues with conda
   - conda info -a
   - if [[ $INLINE -eq "--inline" ]]; then
-        conda install --channel conda-forge weave;
+        conda install --quiet --show-channel-urls --channel guyer --channel conda-forge weave;
     fi
   - pip install scikit-fmm
 install:
