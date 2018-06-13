@@ -6,11 +6,12 @@ os:
   # - osx
    - linux
 env:
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=trilinos
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos
-  - TRAVIS_PYTHON_VERSION=3.6 MPIRUN= FIPY_SOLVERS=scipy
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse INLINE=
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy INLINE=
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=trilinos INLINE=
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos INLINE=
+  - TRAVIS_PYTHON_VERSION=3.6 MPIRUN= FIPY_SOLVERS=scipy INLINE=
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse INLINE=--inline
 cache: apt
 addons:
   apt:
@@ -64,6 +65,9 @@ before_install:
   - source activate test-environment
   # Useful for debugging any issues with conda
   - conda info -a
+  - if [[ $INLINE -eq "--inline" ]]; then
+        conda install --channel conda-forge weave;
+    fi
   - pip install scikit-fmm
 install:
   - if [[ $PY3K -eq 1 ]]; then
@@ -81,6 +85,8 @@ before_script:
       sleep 3;
     fi
 script:
- $MPIRUN python setup.py test ;
- # ls -l /usr/lib/liblapack*;
- # dpkg -l "liblapack*";
+ if [[ $INLINE -eq "--inline" ]]; then
+     # inline must be run twice to clear out compiler warnings
+     $MPIRUN python setup.py test $INLINE > /dev/null 2>&1;
+ fi
+ $MPIRUN python setup.py test $INLINE;
