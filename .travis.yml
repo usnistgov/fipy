@@ -6,7 +6,7 @@ os:
   # - osx
    - linux
 env:
-  # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse INLINE=
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse INLINE=
   # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy INLINE=
   # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=trilinos INLINE=
   # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos INLINE=
@@ -57,14 +57,17 @@ before_install:
       if [[ $PY3K -eq 1 ]]; then
         conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh matplotlib;
       else
-        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave;
+        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos;
       fi
     elif [[ $TRAVIS_OS_NAME -eq "osx" ]]; then
-      conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy weave;
+      conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy;
     fi
   - source activate test-environment
   # Useful for debugging any issues with conda
   - conda info -a
+  - if [[ $INLINE == "--inline" ]]; then
+      conda install --quiet --show-channel-urls --channel conda-forge weave;
+    fi
   - pip install scikit-fmm
 install:
   - if [[ $PY3K -eq 1 ]]; then
@@ -83,7 +86,7 @@ before_script:
     fi
 script:
  # inline must be run twice to clear out compiler warnings
- - if [[ $INLINE -eq "--inline" ]]; then
+ - if [[ $INLINE == "--inline" ]]; then
      $MPIRUN python setup.py test $INLINE > /dev/null 2>&1;
    fi
  - $MPIRUN python setup.py test $INLINE;
