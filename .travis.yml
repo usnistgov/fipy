@@ -85,8 +85,8 @@ before_script:
       sleep 3;
     fi
 script:
- if [[ $INLINE -eq "--inline" ]]; then
+ - if [[ $INLINE -eq "--inline" ]]; then
      # inline must be run twice to clear out compiler warnings
      $MPIRUN python setup.py test $INLINE > /dev/null 2>&1;
- fi
- $MPIRUN python setup.py test $INLINE;
+   fi
+ - $MPIRUN python setup.py test $INLINE;
