@@ -57,17 +57,14 @@ before_install:
       if [[ $PY3K -eq 1 ]]; then
         conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh matplotlib;
       else
-        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos;
+        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave;
       fi
     elif [[ $TRAVIS_OS_NAME -eq "osx" ]]; then
-      conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy;
+      conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy weave;
     fi
   - source activate test-environment
   # Useful for debugging any issues with conda
   - conda info -a
-  - if [[ $INLINE == "--inline" ]]; then
-      conda install --quiet --show-channel-urls --channel conda-forge weave;
-    fi
   - pip install scikit-fmm
 install:
   - if [[ $PY3K -eq 1 ]]; then
