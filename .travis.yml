@@ -83,7 +83,8 @@ before_script:
     fi
 script:
  # inline must be run twice to clear out compiler warnings
+ # we don't care if it fails the first time
  - if [[ $INLINE == "--inline" ]]; then
-     $MPIRUN python setup.py test $INLINE > /dev/null 2>&1;
+     $MPIRUN python setup.py test $INLINE > /dev/null 2>&1 || true;
    fi
  - $MPIRUN python setup.py test $INLINE;
