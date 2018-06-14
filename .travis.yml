@@ -6,12 +6,12 @@ os:
   # - osx
    - linux
 env:
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse INLINE=
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse INLINE=--inline
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy INLINE=
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=trilinos INLINE=
-  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos INLINE=
-  - TRAVIS_PYTHON_VERSION=3.6 MPIRUN= FIPY_SOLVERS=scipy INLINE=
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse FIPY_INLINE=1
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=trilinos
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos
+  - TRAVIS_PYTHON_VERSION=3.6 MPIRUN= FIPY_SOLVERS=scipy
 cache: apt
 addons:
   apt:
@@ -84,7 +84,7 @@ before_script:
 script:
  # inline must be run twice to clear out compiler warnings
  # we don't care if it fails the first time
- - if [[ $INLINE == "--inline" ]]; then
-     $MPIRUN python setup.py test $INLINE > /dev/null 2>&1 || true;
+ - if [[ -v $FIPY_INLINE ]]; then
+     $MPIRUN python setup.py test > /dev/null 2>&1 || true;
    fi
- - $MPIRUN python setup.py test $INLINE;
+ - $MPIRUN python setup.py test;
