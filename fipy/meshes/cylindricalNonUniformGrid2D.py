@@ -73,7 +73,7 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
         super(CylindricalNonUniformGrid2D, self).__init__(dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap,
                         communicator=communicator, *args, **kwargs)
 
-        self._faceAreas *= self.faceCenters[0]
+        self._faceAreas *= self.faceCenters[0].value
 
         self._scaledFaceAreas = self._scale['area'] * self._faceAreas
         self._areaProjections = self.faceNormals * self._faceAreas

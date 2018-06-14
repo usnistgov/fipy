@@ -447,13 +447,14 @@ if inline.doInline:
 
         Usually used with v1==v2 to return magnitude of v1.
         """
-        unit1 = unit2 = 1
+        from fipy.tools.dimensions import physicalField
+        unit1 = unit2 = physicalField._unity
 
         def dimensionlessUnmasked(a):
-            unit = 1
+            unit = physicalField._unity
             mask = False
             if _isPhysical(a):
-                unit = a.inBaseUnits().getUnit()
+                unit = a.inBaseUnits().unit
                 a = a.numericValue
             if MA.isMaskedArray(a):
                 mask = a.mask
@@ -481,7 +482,7 @@ if inline.doInline:
         if NUMERIX.any(mask1) or NUMERIX.any(mask2):
             result1 = MA.array(result1, mask=NUMERIX.logical_or(mask1, mask2))
 
-        if unit1 != 1 or unit2 != 1:
+        if unit1 != physicalField._unity or unit2 != physicalField._unity:
             from fipy.tools.dimensions.physicalField import PhysicalField
             result1 = PhysicalField(value=result, unit=(unit1 * unit2)**0.5)
 
