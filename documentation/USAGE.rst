@@ -542,7 +542,7 @@ The Robin condition
 
 .. math::
 
-   a\phi + b\hat{n}\cdot\nabla\phi = g\qquad\text{on $f=f_0$}
+   \hat{n}\cdot\vec{a}\phi + b\hat{n}\cdot\nabla\phi = g\qquad\text{on $f=f_0$}
 
 can often be substituted for the flux in an equation
 
@@ -595,11 +595,11 @@ face center to the adjoining cell center:
 .. math::
 
    \begin{aligned}
-        a \phi_{f_0} + b \left(\hat{n}\cdot\nabla\phi\right)_{f_0} &= g \\
-        a \phi_P - a \left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}
+        \hat{n}\cdot\vec{a} \phi_{f_0} + b \left(\hat{n}\cdot\nabla\phi\right)_{f_0} &= g \\
+        \hat{n}\cdot\vec{a} \phi_P - \hat{n}\cdot\vec{a} \left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}
         + b \left(\hat{n}\cdot\nabla\phi\right)_{f_0} &\approx g \\
         \left(\hat{n}\cdot\nabla\phi\right)_{f_0} 
-        &\approx \frac{g - a \phi_P}{-a \left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0} + b}
+        &\approx \frac{g - \hat{n}\cdot\vec{a} \phi_P}{-\hat{n}\cdot\vec{a} \left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0} + b}
    \end{aligned}
 
 such that
@@ -636,11 +636,11 @@ Robin condition directly:
        \nabla\cdot\left(\vec{u}\phi\right) &\approx
        \sum_f \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f \\
        &= \sum_{f\neq f_0} \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f
-       + \left(\hat{n}\cdot\vec{u}\right)_{f_0} \frac{g - b \left(\hat{n}\cdot\nabla\phi\right)_{f_0}}{a} A_{f_0} \\
+       + \left(\hat{n}\cdot\vec{u}\right)_{f_0} \frac{g - b \left(\hat{n}\cdot\nabla\phi\right)_{f_0}}{\hat{n}\cdot\vec{a}} A_{f_0} \\
        &= \sum_{f\neq f_0} \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f
        + \left(\hat{n}\cdot\vec{u}\right)_{f_0}
             \frac{-g \left(\hat{n}\cdot\vec{d}_{fP}\right)_{f_0} + b\phi_P}
-                 {-a \left(\hat{n}\cdot\vec{d}_{fP}\right)_{f_0} + b} A_{f_0}
+                 {-\hat{n}\cdot\vec{a} \left(\hat{n}\cdot\vec{d}_{fP}\right)_{f_0} + b} A_{f_0}
    \end{aligned}
 
 Applying internal "boundary" conditions
