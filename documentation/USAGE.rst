@@ -623,11 +623,11 @@ can be constrained to have a Robin condition at a face identifed by
 
 >>> Gamma = FaceVariable(mesh=mesh, value=Gamma0)
 >>> Gamma.setValue(0., where=mask)
->>> dPf = FaceVariable(mesh=mesh, value=mesh._faceToCellDistanceRatio * mesh._cellDistances)
+>>> dPf = FaceVariable(mesh=mesh, value=mesh._faceToCellDistanceRatio * mesh.cellDistanceVectors)
 >>> Af = FaceVariable(mesh=mesh, value=mesh._faceAreas)
->>> RobinCoeff = (mask * Gamma0 * Af / (a * dPf + b)).divergence
+>>> RobinCoeff = (mask * Gamma0 * Af / (dPf.dot(a) + b)).divergence
 >>> eqn = (TransientTerm() == DiffusionTerm(coeff=Gamma)
-...        + RobinCoeff * g - ImplicitSourceTerm(coeff=RobinCoeff * a))
+...        + RobinCoeff * g - ImplicitSourceTerm(coeff=RobinCoeff * mesh.faceNormals.dot(a)))
 
 For a :class:`~fipy.terms.convectionTerm.ConvectionTerm`, we can use the
 Robin condition directly:
