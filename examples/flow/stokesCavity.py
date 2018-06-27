@@ -167,7 +167,7 @@ obtain,
 
 .. math::
 
-   \nabla \mu \cdot \nabla \vec{u}' = \vec{p}'
+   \nabla \mu \cdot \nabla \vec{u}' = p'
 
 and
 
