@@ -700,7 +700,8 @@ Nothing different needs to be done when
 
 .. note::
 
-   While we believe these derivations are "correct", they often do not 
+   While we believe the derivations for
+   `applying Robin boundary conditions`_ are "correct", they often do not
    seem to produce the intuitive result. At this point, we think this has 
    to do with the pathology of "internal" boundary conditions, but remain 
    open to other explanations. :term:`FiPy` was designed with diffuse 
