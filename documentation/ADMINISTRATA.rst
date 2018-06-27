@@ -240,9 +240,13 @@ Upload
 
 Tag the repository as appropriate (see `Git practices`_ above).
 
-Upload the build products to PyPI
+.. note::
 
-    $ python setup.py sdist upload
+   This step should not generally be necessary, as PyPI is set to point to
+   the lateset commit of the `master` branch, but if desired, upload the
+   build products to PyPI
+
+       $ python setup.py sdist upload
 
 Upload the build products and documentation from :file:`dist/` and
 the web site to CTCMS ::
