@@ -83,8 +83,8 @@ class build_docs(Command):
         pass
 
     def run (self):
-        import sphinx
-        from sphinx import apidoc
+        from sphinx.cmd import build
+        from sphinx.ext import apidoc
         
         sphinx_args = ['-P', '-n', '-c', 'documentation/', '.']
         apidoc_args = []
@@ -93,17 +93,17 @@ class build_docs(Command):
             sphinx_args = ['-a', '-E'] + sphinx_args
             apidoc_args = ['--force'] + apidoc_args
             
-        apidoc.main(['sphinx-apidoc', '--output-dir=fipy/generated', '--suffix=rst'] 
+        apidoc.main(['--output-dir=fipy/generated', '--suffix=rst']
                     + apidoc_args + ['fipy'])
-        apidoc.main(['sphinx-apidoc', '--output-dir=documentation/tutorial/package/generated', '--suffix=rst'] 
+        apidoc.main(['--output-dir=documentation/tutorial/package/generated', '--suffix=rst']
                     + apidoc_args + ['documentation/tutorial/package'])
 
         if self.html:
-            sphinx.main(['sphinx-build', '-b', 'redirecting_html'] + sphinx_args + ['documentation/_build/html/'])
+            build.main(['-b', 'redirecting_html'] + sphinx_args + ['documentation/_build/html/'])
 
         if self.pdf:
             try:
-                sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
+                build.main(['-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
             except SystemExit:
                 pass
             
