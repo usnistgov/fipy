@@ -709,11 +709,13 @@ Nothing different needs to be done when
    internal "boundaries" do not come up in our own work and have not 
    received much attention.
 
-.. note::
+.. warning::
 
-  One must be careful to distinguish between constraining internal cell
-  values during the solve step and simply applying arbitrary constraints
-  to a ``CellVariable``. Applying a constraint,
+  The constraints mechanism is not designed to constrain internal values
+  for variables that are being solved by equations. In particular, one must
+  be careful to distinguish between constraining internal cell values
+  during the solve step and simply applying arbitrary constraints to a
+  ``CellVariable``. Applying a constraint,
 
   >>> var.constrain(value, where=mask)
 
