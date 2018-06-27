@@ -542,7 +542,7 @@ The Robin condition
 
 .. math::
 
-   \hat{n}\cdot\vec{a}\phi + b\hat{n}\cdot\nabla\phi = g\qquad\text{on $f=f_0$}
+   \hat{n}\cdot\left(\vec{a}\phi + b\nabla\phi\right) = g\qquad\text{on $f=f_0$}
 
 can often be substituted for the flux in an equation
 
@@ -595,11 +595,12 @@ face center to the adjoining cell center:
 .. math::
 
    \begin{aligned}
-        \hat{n}\cdot\vec{a} \phi_{f_0} + b \left(\hat{n}\cdot\nabla\phi\right)_{f_0} &= g \\
-        \hat{n}\cdot\vec{a} \phi_P - \hat{n}\cdot\vec{a} \left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}
-        + b \left(\hat{n}\cdot\nabla\phi\right)_{f_0} &\approx g \\
+        \hat{n}\cdot\left(\vec{a} \phi + b \nabla\phi\right)_{f_0} &= g \\
+        \hat{n}\cdot\left(\vec{a} \phi_P
+        - \vec{a} \left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}
+        + b \nabla\phi\right)_{f_0} &\approx g \\
         \left(\hat{n}\cdot\nabla\phi\right)_{f_0} 
-        &\approx \frac{g - \hat{n}\cdot\vec{a} \phi_P}{-\hat{n}\cdot\vec{a} \left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0} + b}
+        &\approx \frac{g - \hat{n}\cdot\vec{a} \phi_P}{-\left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b}
    \end{aligned}
 
 such that
@@ -609,7 +610,8 @@ such that
    \begin{aligned}
        \nabla\cdot\left(\Gamma\nabla\phi\right) &\approx
        \sum_{f\neq f_0} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f 
-       + \Gamma_{f_0} \frac{g - a \phi_P}{-a \left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0} + b} A_{f_0}
+       + \Gamma_{f_0} \frac{g - \hat{n}\cdot\vec{a} \phi_P}
+                           {-\left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b} A_{f_0}
    \end{aligned}
 
 An equation of the form
@@ -640,7 +642,7 @@ Robin condition directly:
        &= \sum_{f\neq f_0} \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f
        + \left(\hat{n}\cdot\vec{u}\right)_{f_0}
             \frac{-g \left(\hat{n}\cdot\vec{d}_{fP}\right)_{f_0} + b\phi_P}
-                 {-\hat{n}\cdot\vec{a} \left(\hat{n}\cdot\vec{d}_{fP}\right)_{f_0} + b} A_{f_0}
+                 {- \left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b} A_{f_0}
    \end{aligned}
 
 Applying internal "boundary" conditions
