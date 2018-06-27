@@ -586,9 +586,15 @@ but we note that :term:`FiPy` calculates variable values at cell centers
 and gradients at intervening faces. We obtain a first-order approximation 
 for :math:`\left(\hat{n}\cdot\nabla\phi\right)_{f_0}` in terms of 
 neighboring cell values by substituting 
-:math:`\phi_{f_0}
-\approx \phi_P - \left(\vec{d}_{fP}\cdot\nabla\phi\right)_{f_0}
-\approx \phi_P - \left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}`
+
+.. math::
+
+   \begin{aligned}
+        \phi_{f_0} &\approx \phi_P - \left(\vec{d}_{fP}\cdot\nabla\phi\right)_{f_0}
+        \\
+        &\approx \phi_P - \left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}
+   \end{aligned}
+
 into the Robin condition, where :math:`\vec{d}_{fP}` is the distance vector from the
 face center to the adjoining cell center:
 
