@@ -55,7 +55,7 @@ grid.  It solves the Navier-Stokes equation in the viscous limit,
 
 .. math::
 
-   \nabla \mu \cdot \nabla \vec{u} = \nabla p
+   \nabla \cdot \left( \mu \nabla \vec{u} \right) = \nabla p
 
 and the
 continuity equation,
@@ -167,7 +167,7 @@ obtain,
 
 .. math::
 
-   \nabla \mu \cdot \nabla \vec{u}' = \vec{p}'
+   \nabla \cdot \left( \mu \nabla \vec{u}' \right) = \nabla p'
 
 and
 
