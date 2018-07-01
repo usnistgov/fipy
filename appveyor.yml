@@ -74,7 +74,7 @@ install:
     - cmd: conda.exe config --add channels conda-forge
 
     # Configure the VM.
-    - cmd: conda.exe install --quiet --name root fipy gmsh
+    - cmd: conda.exe install --quiet --name root fipy  gmsh
     - cmd: python setup.py install
 
 # Skip .NET project specific build phase.
