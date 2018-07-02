@@ -66,8 +66,8 @@ install:
     # Configure the VM.
     - cmd: conda.exe install --quiet --name root fipy  gmsh
 
-    - cmd: if "%CONDA_PY%" == "36" 2to3 --write . > NUL
-    - cmd: if "%CONDA_PY%" == "36" 2to3 --write --doctests_only . > NUL
+    - cmd: if "%CONDA_PY%" == "36" 2to3 --write . 1> NUL 2>&1
+    - cmd: if "%CONDA_PY%" == "36" 2to3 --write --doctests_only . 1> NUL 2>&1
 
     - cmd: python setup.py install
 
