@@ -65,10 +65,11 @@ install:
 
     # Configure the VM.
     - cmd: conda.exe install --quiet --name root fipy  gmsh
-    - cmd: if "%CONDAPY%" == "36" (
-               2to3 --write .
-               2to3 --write --doctests_only .
-           )
+    - cmd: |
+        if "%CONDAPY%" == "36" (
+            2to3 --write .
+            2to3 --write --doctests_only .
+        )
     - cmd: python setup.py install
 
     - cmd: pip install scikit-fmm
