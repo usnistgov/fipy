@@ -114,7 +114,7 @@ def gmshVersion(communicator=parallelComm):
 
             try:
                 out, verStr = p.communicate()
-                verStr = verStr.decode('ascii').strip('\n')
+                verStr = verStr.decode('ascii').strip()
                 break
             except IOError:
                 # some weird conflict with things like PyQT can cause
