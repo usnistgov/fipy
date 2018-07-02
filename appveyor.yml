@@ -81,6 +81,8 @@ install:
            )
     - cmd: python setup.py install
 
+    - cmd: pip install scikit-fmm
+
 # Skip .NET project specific build phase.
 build: off
 
