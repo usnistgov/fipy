@@ -26,7 +26,7 @@ jobs:
           name: install dependencies
           command: |
             apt-get --yes update
-            apt-get --yes install libc-dev
+            apt-get --yes install libc-dev glibc-devel
             conda config --set always_yes yes --set changeps1 no
             conda update -q conda
             conda config --remove channels defaults
