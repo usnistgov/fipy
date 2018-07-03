@@ -25,6 +25,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
+            apt-get update
             apt-get install libc-dev
             conda config --set always_yes yes --set changeps1 no
             conda update -q conda
