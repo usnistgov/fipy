@@ -27,7 +27,9 @@ jobs:
           command: |
             conda config --set always_yes yes --set changeps1 no
             conda update -q conda
+            conda info -a
             conda config --remove channels defaults
+            conda info -a
             conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
             source activate test-environment
             conda info -a
