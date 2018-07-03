@@ -8,8 +8,7 @@ jobs:
   test-27:
     docker:
       # specify the version you desire here
-      # - image: continuumio/miniconda2
-      - image: circleci/python:2.7
+      - image: continuumio/miniconda2
 
     working_directory: ~/repo
 
@@ -28,6 +27,7 @@ jobs:
           command: |
             conda config --set always_yes yes --set changeps1 no
             conda update -q conda
+            conda config --remove channels defaults
             conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
             source activate test-environment
             conda info -a
