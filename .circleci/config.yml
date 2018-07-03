@@ -1,0 +1,50 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+
+jobs:
+  test-27:
+    docker:
+      # specify the version you desire here
+      - image: continuumio/miniconda2
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+#      - restore_cache:
+#          keys:
+#          - v1-dependencies-{{ checksum "requirements.txt" }}
+#          # fallback to using the latest cache if no exact match is found
+#          - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            conda config --set always_yes yes --set changeps1 no
+            conda update -q conda
+            conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
+            source activate test-environment
+            conda info -a
+            pip install scikit-fmm
+            python setup.py install
+
+#      - save_cache:
+#          paths:
+#            - ./venv
+#          key: v1-dependencies-{{ checksum "requirements.txt" }}
+        
+      - run:
+          name: run tests
+          command: |
+            source activate test-environment
+            python setup.py test
+
+      - store_artifacts:
+          path: test-reports
+          destination: test-reports
+          
