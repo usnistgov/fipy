@@ -64,7 +64,7 @@ We start with a regular 2D Cartesian mesh
 >>> if __name__ == "__main__":
 ...     nx = ny = 200
 ... else:
-...     nx = ny = 200
+...     nx = ny = 20
 >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
 
 and we'll take fixed timesteps
