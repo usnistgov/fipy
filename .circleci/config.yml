@@ -16,11 +16,11 @@ jobs:
       - checkout
 
       # Download and cache dependencies
-#      - restore_cache:
-#          keys:
-#          - v1-dependencies-{{ checksum "requirements.txt" }}
-#          # fallback to using the latest cache if no exact match is found
-#          - v1-dependencies-
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ arch }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
 
       - run:
           name: install dependencies
@@ -34,18 +34,23 @@ jobs:
             source activate test-environment
             conda info -a
             pip install scikit-fmm
+
+      - save_cache:
+          paths:
+            - /.conda
+          key: v1-dependencies-{{ arch }}
+
+      - run:
+          name: install fipy
+          command: |
+            source activate test-environment
             python setup.py install
 
-#      - save_cache:
-#          paths:
-#            - ./venv
-#          key: v1-dependencies-{{ checksum "requirements.txt" }}
-        
       - run:
           name: run tests
           command: |
             source activate test-environment
-            python setup.py test
+            python setup.py test --pysparse
 
       - store_artifacts:
           path: test-reports
