@@ -7,6 +7,7 @@ os:
    - linux
 env:
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse FIPY_INLINE=1
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=trilinos
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos
@@ -49,10 +50,18 @@ before_install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
-  - conda info
-  - conda config --remove channels defaults
   - conda update -q conda
-  - conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy
+  # fipy conda package does not properly load scipy and numpy from
+  # conda-forge channel when on linux
+  - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
+      if [[ $PY3K -eq 1 ]]; then
+        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh matplotlib;
+      else
+        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave;
+      fi
+    elif [[ $TRAVIS_OS_NAME -eq "osx" ]]; then
+      conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy weave;
+    fi
   - source activate test-environment
   # Useful for debugging any issues with conda
   - conda info -a
@@ -73,6 +82,9 @@ before_script:
       sleep 3;
     fi
 script:
- $MPIRUN python setup.py test ;
- # ls -l /usr/lib/liblapack*;
- # dpkg -l "liblapack*";
+ # inline must be run twice to clear out compiler warnings
+ # we don't care if it fails the first time
+ - if [[ ! -z "${FIPY_INLINE}" ]]; then
+     $MPIRUN python setup.py test > /dev/null 2>&1 || true;
+   fi
+ - $MPIRUN python setup.py test;
