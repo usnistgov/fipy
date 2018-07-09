@@ -14,10 +14,10 @@ from fipy.solvers.pyamgx.classicalAMGSolver import *
 pyamgx.initialize()
 atexit.register(pyamgx.finalize)
 
-DefaultSolver = LinearGMRESSolver
-DefaultAsymmetricSolver = LinearGMRESSolver
+DefaultSolver = LinearCGSolver
+DefaultAsymmetricSolver = LinearLUSolver
 DummySolver = DefaultSolver
-GeneralSolver = DefaultSolver
+GeneralSolver = LinearLUSolver
 
 __all__ = ["DefaultSolver",
            "DummySolver",

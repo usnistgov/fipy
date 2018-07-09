@@ -60,4 +60,4 @@ class SerialCommWrapper(CommWrapper):
 
     def Norm2(self, vec):
         from fipy.tools import numerix
-        return numerix.L2norm(vec)
+        return numerix.L2norm(numerix.asarray(vec))

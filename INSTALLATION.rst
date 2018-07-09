@@ -30,6 +30,19 @@ for details on how to use :term:`FiPy`.
       that may be mentioned on these sites. Please address comments about
       this page to fipy@nist.gov.
 
+-----------------------
+Pre-Installed on Binder
+-----------------------
+
+A full :term:`FiPy` installation is available for basic exploration on
+|Binder|_. The default notebook gives a rudimentary introduction to :term:`FiPy`
+syntax and, like any `Jupyter Notebook`_ interface, tab completion will help
+you explore the package interactively.
+
+.. |Binder|        image:: https://mybinder.org/badge.svg
+.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/develop
+.. _Jupyter Notebook:    http://jupyter.org
+
 ------------------
 Recommended Method
 ------------------

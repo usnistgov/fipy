@@ -142,7 +142,7 @@ class Solver(object):
 
     def _applyUnderRelaxation(self, underRelaxation=None):
         if underRelaxation is not None:
-            self.matrix.putDiagonal(self.matrix.takeDiagonal() / underRelaxation)
+            self.matrix.putDiagonal(numerix.asarray(self.matrix.takeDiagonal()) / underRelaxation)
             self.RHSvector += (1 - underRelaxation) * self.matrix.takeDiagonal() * numerix.array(self.var).flatten()
 
     def _calcResidualVector(self, residualFn=None):

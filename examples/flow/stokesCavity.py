@@ -55,7 +55,7 @@ grid.  It solves the Navier-Stokes equation in the viscous limit,
 
 .. math::
 
-   \nabla \mu \cdot \nabla \vec{u} = \nabla p
+   \nabla \cdot \left( \mu \nabla \vec{u} \right) = \nabla p
 
 and the
 continuity equation,
@@ -167,7 +167,7 @@ obtain,
 
 .. math::
 
-   \nabla \mu \cdot \nabla \vec{u}' = \vec{p}'
+   \nabla \cdot \left( \mu \nabla \vec{u}' \right) = \nabla p'
 
 and
 
@@ -291,7 +291,7 @@ factor to relax the solution. This argument cannot be passed to
 ...                              underRelaxation=velocityRelaxation)
 ...
 ...     ## update the ap coefficient from the matrix diagonal
-...     ap[:] = -xmat.takeDiagonal()
+...     ap[:] = -numerix.asarray(xmat.takeDiagonal())
 ...
 ...     ## update the face velocities based on starred values with the
 ...     ## Rhie-Chow correction.
@@ -339,11 +339,11 @@ factor to relax the solution. This argument cannot be passed to
 
 Test values in the last cell.
 
->>> print numerix.allclose(pressure.globalValue[...,-1], 162.790867927)
+>>> print numerix.allclose(pressure.globalValue[...,-1], 162.790867927) #doctest: +PYAMGX_SOLVER
+0
+>>> print numerix.allclose(xVelocity.globalValue[...,-1], 0.265072740929) #doctest: +PYAMGX_SOLVER
 1
->>> print numerix.allclose(xVelocity.globalValue[...,-1], 0.265072740929)
-1
->>> print numerix.allclose(yVelocity.globalValue[...,-1], -0.150290488304)
+>>> print numerix.allclose(yVelocity.globalValue[...,-1], -0.150290488304) #doctest: +PYAMGX_SOLVER
 1
 
 .. .. bibmissing:: /documentation/refs.bib

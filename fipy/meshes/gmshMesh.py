@@ -2178,8 +2178,11 @@ class GmshGrid2D(Gmsh2D):
         width  = nx * dx
         numLayers = int(ny / float(dy))
 
-        # kludge: must offset cellSize by `eps` to work properly
-        eps = float(dx)/(nx * 10)
+        if _gmshVersion() < StrictVersion("2.7"):
+            # kludge: must offset cellSize by `eps` to work properly
+            eps = float(dx)/(nx * 10)
+        else:
+            eps = 0.
 
         return """
             ny       = %(ny)g;
@@ -2248,7 +2251,11 @@ class GmshGrid3D(Gmsh3D):
         width  = nx * dx
         depth  = nz * dz
 
-        eps = float(dx)/(nx * 10)
+        if _gmshVersion() < StrictVersion("2.7"):
+            # kludge: must offset cellSize by `eps` to work properly
+            eps = float(dx)/(nx * 10)
+        else:
+            eps = 0.
 
         return """
             ny       = %(ny)g;
