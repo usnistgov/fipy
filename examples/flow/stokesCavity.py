@@ -340,7 +340,7 @@ factor to relax the solution. This argument cannot be passed to
 Test values in the last cell.
 
 >>> print numerix.allclose(pressure.globalValue[...,-1], 162.790867927) #doctest: +PYAMGX_SOLVER
-0
+1
 >>> print numerix.allclose(xVelocity.globalValue[...,-1], 0.265072740929) #doctest: +PYAMGX_SOLVER
 1
 >>> print numerix.allclose(yVelocity.globalValue[...,-1], -0.150290488304) #doctest: +PYAMGX_SOLVER
