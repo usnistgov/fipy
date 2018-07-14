@@ -137,7 +137,7 @@ register_skipper(flag='PYSPARSE_SOLVER',
                  why="the PySparse solvers are not being used.",
                  skipWarning=True)
 
-register_skipper(flag='PYAMGX_SOLVER',
+register_skipper(flag='NOT_PYAMGX_SOLVER',
                  test=lambda: solver != 'pyamgx',
                  why="the PyAMGX solver is being used.",
                  skipWarning=True)
