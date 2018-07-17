@@ -145,7 +145,7 @@ we create the Cahn-Hilliard equation:
 .. index:: LinearLUSolver, DefaultSolver
 
 >>> import fipy.solvers.solver
->>> if fipy.solvers.solver == 'pysparse':
+>>> if fipy.solvers.solver in ['pysparse', 'pyamgx']:
 ...     solver = LinearLUSolver(tolerance=1e-15, iterations=100)
 ... else:
 ...     solver = DefaultSolver()

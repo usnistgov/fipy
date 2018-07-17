@@ -184,3 +184,21 @@ class Solver(object):
 
     def _canSolveAsymmetric(self):
         return True
+
+    def __enter__(self):
+        # The __enter__() and __exit__() methods allow
+        # solver objects to be used within a context manager.
+        # This enables one to write:
+        #
+        #     with ExampleSolver() as solver:
+        #         eq.solve(var=phi, solver=solver)
+        #
+        # For subclasses that do not define __enter__()
+        # and __exit__() methods, the above is equivalent to:
+        #
+        #     eq.solve(var=phi, solver=ExampleSolver())
+
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
