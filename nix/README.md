@@ -37,11 +37,12 @@ the `buildInputs` list in (`nix/build.nix`)[nix/build.nix].
 
 ## Using Pip
 
-Packages unavailable from Nix can be installed using Pip. The
-installation has been set up so that the shell knows about a `.local`
-directory in the FiPy base directory used by `pip install --user
-package` for installation.  So, for example, to install
-the toolz package from within the Nix shell use
+Packages unavailable from Nix can be installed using Pip. Uncomment
+the `postShellHook` section in `nix/build.nix` to enable this. In this
+case, the installation has been set up so that the shell knows about a
+`.local` directory in the FiPy base directory used by `pip install
+--user package` for installation.  So, for example, to install the
+toolz package from within the Nix shell use
 
     $ pip install --user toolz
 
