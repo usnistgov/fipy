@@ -9,6 +9,7 @@ in
      version = "3.1.3.dev";
      env = nixpkgs.buildEnv { name=pname; paths=buildInputs; };
      buildInputs = [
+       pypkgs.pip
        pypkgs.python
        pypkgs.numpy
        pypkgs.scipy
@@ -31,8 +32,9 @@ in
      catchConflicts=false;
      postShellHook = ''
        SOURCE_DATE_EPOCH=$(date +%s)
-       # pip install --install-option="--prefix=$PWD/.local" toolz
-       export PYTHONPATH=$PWD/.local/lib/python${python_version}/site-packages:$PYTHONPATH
-       export PATH=$PATH:$PWD/.local/bin
+       export PYTHONUSERBASE=$PWD/.local
+       export USER_SITE=`python -c "import site; print(site.USER_SITE)"`
+       export PYTHONPATH=$PYTHONPATH:$USER_SITE
+       export PATH=$PATH:$PYTHONUSERBASE/bin
      '';
   }

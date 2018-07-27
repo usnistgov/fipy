@@ -32,20 +32,18 @@ Python 3, use
 
 ## Additional Packages
 
-To install additional packages with Nix add them to the `buildInputs`
-list in (`nix/build.nix`)[nix/build.nix].
+To install additional packages available from Nixpkgs include them in
+the `buildInputs` list in (`nix/build.nix`)[nix/build.nix].
 
 ## Using Pip
 
-The install has been set up to work with pip. The installation has
-been set up with a `.local` directory in the base FiPy directory. So,
-when using pip, run it from the base fipy directory or specify the
-full path name. For example,
+Packages unavailable from Nix can be installed using Pip. The
+installation has been set up so that the shell knows about a `.local`
+directory in the FiPy base directory used by `pip install --user
+package` for installation.  So, for example, to install
+the toolz package from within the Nix shell use
 
-    $ echo $PWD
-    /base/fipy/directory
-    $ pip install --install-option="--prefix=$PWD/.local" my_package
+    $ pip install --user toolz
 
-will install `my_package` in `.local`. There are alternate way to set
-up Pip with Nix including use virtualenv or the `--user` option. However
-if you use the `--user` option or virtualenv outside of
+This is an impure action and will persist after the shell has been
+closed so the `.local` directory should be deleted after use.
