@@ -33,7 +33,7 @@ Python 3, use
 ## Additional Packages
 
 To install additional packages available from Nixpkgs include them in
-the `buildInputs` list in (`nix/build.nix`)[nix/build.nix].
+the `buildInputs` list in (`nix/build.nix`)[./build.nix].
 
 ## Using Pip
 
