@@ -30,11 +30,12 @@ in
        license = nixpkgs.stdenv.lib.licenses.free;
      };
      catchConflicts=false;
-     # postShellHook = ''
-     #   SOURCE_DATE_EPOCH=$(date +%s)
-     #   export PYTHONUSERBASE=$PWD/.local
-     #   export USER_SITE=`python -c "import site; print(site.USER_SITE)"`
-     #   export PYTHONPATH=$PYTHONPATH:$USER_SITE
-     #   export PATH=$PATH:$PYTHONUSERBASE/bin
-     # '';
+     postShellHook = ''
+       SOURCE_DATE_EPOCH=$(date +%s)
+       export PYTHONUSERBASE=$PWD/.local
+       export USER_SITE=`python -c "import site; print(site.USER_SITE)"`
+       export PYTHONPATH=$PYTHONPATH:$USER_SITE
+       export PATH=$PATH:$PYTHONUSERBASE/bin
+       #pip install --user package
+     '';
   }

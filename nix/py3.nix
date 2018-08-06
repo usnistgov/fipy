@@ -1,9 +1,8 @@
-{ nixpkgs ? import ./nix/nixpkgs_version.nix }:
+{ nixpkgs ? import ./nixpkgs_version.nix }:
 let
   pypkgs = nixpkgs.python36Packages;
   pysparse = null;
   preshellhook = version: ''
-    echo hello
     2to3 --write . &> /dev/null;
     2to3 --write --doctests_only . &> /dev/null;
     sed -i 's/version = getVersion()/version="${version}"/' setup.py
