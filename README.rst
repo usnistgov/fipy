@@ -239,7 +239,7 @@ or a
 .. _Github:        https://github.com/usnistgov/fipy
 .. |gitter|        image:: https://badges.gitter.im/usnistgov/fipy.svg
 .. _gitter:        https://gitter.im/usnistgov/fipy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
-.. |TravisCI|      image:: https://travis-ci.org/usnistgov/fipy.svg?branch=develop
+.. |TravisCI|      image:: https://travis-ci.org/usnistgov/fipy/develop.svg?label=Linux
 .. _TravisCI:      https://travis-ci.org/usnistgov/fipy
 .. |OpenHub|       image:: https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif
 .. _OpenHub:       https://www.openhub.net/p/fipy
