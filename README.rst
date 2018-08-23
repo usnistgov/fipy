@@ -23,6 +23,7 @@ Overview
    array calculations, sparse matrices and data rendering.
 
 |TravisCI|_ |AppVeyor|_
+
 |GitHub|_ |gitter|_ |PyPi|_  |Codacy|_ |Depsy|_ |OpenHub|_ |CondaForge|_ |Binder|_
 
 The :term:`FiPy` framework includes terms for transient diffusion,
