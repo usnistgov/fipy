@@ -242,7 +242,7 @@ or a
 .. _gitter:        https://gitter.im/usnistgov/fipy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
 .. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/develop.svg?label=Linux
 .. _TravisCI:      https://travis-ci.org/usnistgov/fipy
-.. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=develop&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing
+.. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=develop&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
 .. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy
 .. |OpenHub|       image:: https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif
 .. _OpenHub:       https://www.openhub.net/p/fipy
