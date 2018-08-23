@@ -60,7 +60,7 @@ before_install:
         conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave;
       fi
     elif [[ $TRAVIS_OS_NAME -eq "osx" ]]; then
-      conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy weave;
+      conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy;
     fi
   - source activate test-environment
   # Useful for debugging any issues with conda
