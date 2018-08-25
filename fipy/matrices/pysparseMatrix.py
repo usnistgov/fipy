@@ -256,7 +256,7 @@ class _PysparseMatrix(_SparseMatrix):
                 ---     3.141593   2.960000  
              2.500000      ---     2.200000  
         """
-        self.matrix.update_add_at(vector, id1, id2)
+        self.matrix.update_add_at(vector, id1.astype('int32'), id2.astype('int32'))
 
     def addAtDiagonal(self, vector):
         if type(vector) in [type(1), type(1.)]:
