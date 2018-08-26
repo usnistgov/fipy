@@ -1033,9 +1033,10 @@ def _indexShape(index, arrayShape):
     ..
 
         >>> ind = zeros((2,3,5), float)
-        >>> _indexShape(index=NUMERIX.index_exp[...,ind],
-        ...             arrayShape=(10,20,30,40,50))
-        (10, 20, 30, 40, 2, 3, 5)
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[...,ind],
+        ...                      arrayShape=(10,20,30,40,50)),
+        ...          (10, 20, 30, 40, 2, 3, 5))
+        True
 
     "Exactly one Ellipsis object will be expanded, any other Ellipsis objects
     will be treated as full slice (':') objects. The Ellipsis object is replaced
@@ -1070,26 +1071,28 @@ def _indexShape(index, arrayShape):
     basic slicing)."
 
         >>> ind = zeros((2,3,4), intp)
-        >>> _indexShape(index=NUMERIX.index_exp[...,ind,:],
-        ...             arrayShape=(10,20,30))
-        (10, 2, 3, 4, 30)
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[...,ind,:],
+        ...                      arrayShape=(10,20,30)),
+        ...          (10, 2, 3, 4, 30))
+        True
 
     "If the index subspaces are right next to each other, then the broadcasted
     indexing space directly replaces all of the indexed subspaces in X."
 
         >>> ind1 = zeros((2,3,4), intp)
         >>> ind2 = zeros((2,3,4), intp)
-        >>> _indexShape(index=NUMERIX.index_exp[:,ind1,ind2],
-        ...             arrayShape=(10,20,30,40,50))
-        (10, 2, 3, 4, 40, 50)
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[:,ind1,ind2],
+        ...                      arrayShape=(10,20,30,40,50)),
+        ...          (10, 2, 3, 4, 40, 50))
+        True
 
     "If the indexing subspaces are separated (by slice objects), then the
     broadcasted indexing space is first, followed by the sliced subspace of X."
 
-        >>> _indexShape(index=NUMERIX.index_exp[:,ind1,:,ind2,:],
-        ...             arrayShape=(10,20,30,40,50))
-        (2, 3, 4, 10, 30, 50)
-
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[:,ind1,:,ind2,:],
+        ...                      arrayShape=(10,20,30,40,50)),
+        ...          (2, 3, 4, 10, 30, 50))
+        True
 
     !!! What about Boolean selections ???
     """

@@ -654,8 +654,8 @@ class CellVariable(_MeshVariable):
         >>> from fipy import *
         >>> m = Grid1D(nx=6)
         >>> q = CellVariable(mesh=m, elementshape=(2,))
-        >>> print q.faceGrad.globalValue.shape
-        (1, 2, 7)
+        >>> print numerix.allequal(q.faceGrad.globalValue.shape, (1, 2, 7))
+        True
         >>> from fipy import *
         >>> m = Grid2D(nx=3, ny=3)
         >>> x, y = m.cellCenters

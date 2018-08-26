@@ -774,17 +774,17 @@ class Variable(object):
 
         >>> Variable(value=3).shape
         ()
-        >>> Variable(value=(3,)).shape
-        (1,)
-        >>> Variable(value=(3,4)).shape
-        (2,)
+        >>> numerix.allequal(Variable(value=(3,)).shape, (1,))
+        True
+        >>> numerix.allequal(Variable(value=(3,4)).shape, (2,))
+        True
 
         >>> Variable(value="3 m").shape
         ()
-        >>> Variable(value=(3,), unit="m").shape
-        (1,)
-        >>> Variable(value=(3,4), unit="m").shape
-        (2,)
+        >>> numerix.allequal(Variable(value=(3,), unit="m").shape, (1,))
+        True
+        >>> numerix.allequal(Variable(value=(3,4), unit="m").shape, (2,))
+        True
         """
         if self._value is not None:
             return numerix.getShape(self._value)
