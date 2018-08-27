@@ -49,7 +49,7 @@ master_doc = 'documentation/contents'
 
 # General information about the project.
 project = u'FiPy'
-copyright = u'2004-2012, Jonathan E. Guyer, Daniel Wheeler & James A. Warren'
+copyright = u'works of NIST employees are not not subject to copyright protection'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
