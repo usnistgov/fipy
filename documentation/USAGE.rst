@@ -656,12 +656,11 @@ command in the base directory::
 .. note::
 
    This mechanism is intended primarily for the developers. At a minimum,
-   you will need at least version 1.1.2 of `Sphinx
-   <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites,
-   although we build the documentation witih the latest development code
-   (you will need hg_ installed)::
+   you will need at least version 1.7.0 of `Sphinx
+   <http://www.sphinx-doc.org/>`_, plus all of its prerequisites. We 
+   install via conda::
 
-   $ pip install --upgrade -e hg+https://bitbucket.org/birkenfeld/sphinx#egg=sphinx
+   $ conda install --channel conda-forge sphinx
 
    We use several contributed Sphinx plugins::
 
