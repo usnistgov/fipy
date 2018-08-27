@@ -591,4 +591,4 @@ describe the use of Virtualenv_, which we highly recommend.
 
 .. _documentation:GIT:
 
-.. include:: documentation/GIT.txt
+.. include:: documentation/GIT.rst
