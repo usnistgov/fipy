@@ -226,18 +226,12 @@ latex_elements = {
       \begin{titlepage}%
         \let\footnotesize\small
         \let\footnoterule\relax
-        \ifsphinxpdfoutput
-          \begingroup
-          % This \def is required to deal with multi-line authors; it
-          % changes \\ to ', ' (comma-space), making it pass muster for
-          % generating document info in the PDF file.
-          \def\\{, }
-          \pdfinfo{
-            /Author (\@author)
-            /Title (\@title)
-          }
+        \noindent\rule{\textwidth}{1pt}\par
+          \begingroup % for PDF information dictionary
+           \def\endgraf{ }\def\and{\& }%
+           \pdfstringdefDisableCommands{\def\\{, }}% overwrite hyperref setup
+           \hypersetup{pdfauthor={\@author}, pdftitle={\@title}}%
           \endgroup
-        \fi
         \changepage{1in}{}{1in}{0.5in}{}{-0.5in}{}{}{}
         \begin{flushright}%
           \fipylogo\par%
