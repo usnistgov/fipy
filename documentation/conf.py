@@ -32,7 +32,6 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
               'numpydoc',
-              'sphinxcontrib.traclinks',
               'redirecting_html',
               'sphinxcontrib.bibtex']
 
@@ -125,8 +124,6 @@ autosummary_generate = ['examples/diffusion/index.rst',
                         'examples/updating/index.rst']
 
 autodoc_member_order = 'alphabetical'
-
-traclinks_base_url = 'http://matforge.org/fipy'
 
 # -- Options for HTML output ---------------------------------------------------
 

@@ -65,25 +65,12 @@ for more details.
 
 :term:`FiPy` will skip tests that depend on :ref:`OPTIONALPACKAGES` that
 have not been installed. For example, if :term:`Mayavi` and :term:`Gmsh`
-are not installed, :term:`FiPy` will warn::
+are not installed, :term:`FiPy` will warn something like::
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     Skipped 131 doctest examples because `gmsh` cannot be found on the $PATH
     Skipped 42 doctest examples because the `tvtk` package cannot be imported
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-We have a few known, intermittent failures:
-
- :trac:`#425`
-    The test suite can freeze, usually in :mod:`examples.chemotaxis`,
-    when running on multiple processors. This has never affected us in an
-    actual parallel simulation, only in the test suite.
-
- :trac:`#430`
-    When running in parallel, the tests for
-    :class:`~fipy.terms.binaryTerm._BinaryTerm` sometimes return one
-    erroneous result. This is not reliably reproducible and doesn't seem to
-    have an effect on actual simulations.
 
 Although the test suite may show warnings, there should be no other errors.
 Any errors should be investigated or reported on the `issue tracker`_.
@@ -661,13 +648,6 @@ command in the base directory::
    install via conda::
 
    $ conda install --channel conda-forge sphinx
-
-   We use several contributed Sphinx plugins::
-
-   $ hg clone https://bitbucket.org/birkenfeld/sphinx-contrib/
-
-   $ cd sphinx-contrib/traclinks
-   $ python setup.py install
 
    Bibliographic citations require the `sphinxcontrib-bibtex` package. For
    the moment, the development versions of several packages are required
