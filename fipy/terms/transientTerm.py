@@ -180,8 +180,8 @@ class TransientTerm(CellTerm):
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve(v, dt=1.)
-        >>> print eq.matrix.numpyArray.shape
-        (12, 12)
+        >>> print numerix.allequal(eq.matrix.numpyArray.shape, (12, 12))
+        True
         >>> print len(CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel())
         12
 
