@@ -35,11 +35,10 @@ Pre-Installed on Binder
 -----------------------
 
 A full :term:`FiPy` installation is available for basic exploration on
-|Binder|_. The default notebook gives a rudimentary introduction to :term:`FiPy`
+Binder_. The default notebook gives a rudimentary introduction to :term:`FiPy`
 syntax and, like any `Jupyter Notebook`_ interface, tab completion will help
 you explore the package interactively.
 
-.. |Binder|        image:: https://mybinder.org/badge.svg
 .. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/develop
 .. _Jupyter Notebook:    http://jupyter.org
 
