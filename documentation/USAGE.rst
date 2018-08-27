@@ -649,16 +649,8 @@ command in the base directory::
 
    $ conda install --channel conda-forge sphinx
 
-   Bibliographic citations require the `sphinxcontrib-bibtex` package. For
-   the moment, the development versions of several packages are required
-   to properly render our bibliography (you will need both bzr_ and git_
-   installed)::
+   Bibliographic citations require the `sphinxcontrib-bibtex` package::
 
-   $ pip install -e bzr+lp:~pybtex-devs/pybtex/trunk
-   $ pip install -e git+git@github.com:mcmtroffaes/pybtex-docutils.git#egg=pybtex-docutils
-   $ pip install -e git+git@github.com:mcmtroffaes/sphinxcontrib-bibtex.git#egg=sphinxcontrib-bibtex
+   $ pip install sphinxcontrib-bibtex
 
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
-.. _hg: http://mercurial.selenic.com
-.. _bzr: http://bazaar.canonical.com
-.. _git: http://git-scm.com
