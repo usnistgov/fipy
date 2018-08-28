@@ -345,7 +345,7 @@ class Term(object):
     def cacheMatrix(self):
         r"""
         Informs `solve()` and `sweep()` to cache their matrix so
-        that `getMatrix()` can return the matrix.
+        that `matrix` can return the matrix.
         """
         self._cacheMatrix = True
 
