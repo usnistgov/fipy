@@ -24,6 +24,8 @@ FiPy Contents
    :hidden:
 
    CODESPEED
-   BUILDBOT
    GUIDELINES
    GIT
+   _templates/example
+   tutorial/package/generated/package
+   ../fipy/generated/fipy
