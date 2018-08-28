@@ -214,7 +214,7 @@ the implementation of :term:`FiPy`.  Python is
    mathemeticians (:term:`SciPy`, :term:`NumPy`, :term:`ScientificPython`, :term:`PySparse`).
 
  * easily integrated with low-level languages such as C
-   (:mod:`~scipy.weave`, :mod:`~scipy.blitz`, :term:`PyRex`).
+   (:mod:`~weave`, :mod:`~weave.blitz`, :term:`PyRex`).
 
 Implementation
 --------------

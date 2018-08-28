@@ -1,6 +1,26 @@
+# fipy.matrices
+py:class fipy.matrices.sparseMatrix._SparseMatrix
+
 # fipy.meshes
 py:class fipy.meshes.periodicGrid2D._BasePeriodicGrid2D
 py:class fipy.meshes.periodicGrid3D._BasePeriodicGrid3D
+py:class fipy.meshes.gmshImport.Gmsh2D
+py:class fipy.meshes.gmshImport.Gmsh3D
+py:class fipy.meshes.grid1D.Grid1D
+py:class fipy.meshes.grid2D.Grid2D
+py:class fipy.meshes.face.Face
+py:meth fipy.meshes.face.Face.getCenters
+py:meth fipy.meshes.mesh.Mesh.getCells
+py:meth fipy.meshes.mesh.Mesh.getFaces
+py:mod fipy.meshes.numMesh
+py:class fipy.meshes.gmshMesh.GmshImporter2D
+py:class fipy.meshes.gmshMesh.GmshImporter3D
+py:class fipy.meshes.gmshMesh.GmshImporter2DIn3DSpace
+
+# fipy.solvers
+py:class fipy.solvers.pysparseMatrixSolver._PysparseMatrixSolver
+py:class fipy.solvers.scipy.scipyKrylovSolver._ScipyKrylovSolver
+py:class fipy.solvers.scipy.scipySolver._ScipySolver
 
 # fipy.terms
 py:class fipy.terms.nonDiffusionTerm._NonDiffusionTerm
@@ -9,17 +29,46 @@ py:class fipy.terms.abstractConvectionTerm._AbstractConvectionTerm
 py:class fipy.terms.abstractUpwindConvectionTerm._AbstractUpwindConvectionTerm
 py:class fipy.terms.asymmetricConvectionTerm._AsymmetricConvectionTerm
 py:class fipy.terms.explicitSourceTerm._ExplicitSourceTerm
+py:class fipy.terms.equation.Equation
+py:class SteadyConvectionDiffusionScEquation
+py:class fipy.terms.convectionTerm.ConvectionTerm
+py:class fipy.terms.term.implicitSourceTerm.ImplicitSourceTerm
+
+# fipy.tests
+py:class _SelectiveDocTestParser
+
+# fipy.tools
+py:class PhysicalQuantity
 
 # fipy.variables
 py:class fipy.variables.meshVariable._MeshVariable
 py:class fipy.variables.cellToFaceVariable._CellToFaceVariable
+py:class fipy.variables.vectorCellVariable.VectorCellVariable
+py:class fipy.variables.vectorFaceVariable.VectorFaceVariable
+py:class fipy.varibles.meshVariable.MeshVariable
 
 # fipy.viewers
 py:class fipy.viewers.matplotlibViewer.matplotlib2DViewer.AbstractMatplotlib2DViewer
+py:exc grid2DGistViewer
+py:class fipy.viewers.viewer.Viewer
+py:class ~fipy.viewers.viewer.AbstractViewer
+py:func fipy.viewers.make
 
 # fipy.fake
 py:func fn(*args, **kwargs)
 py:func fn
+py:mod fipy.package
+py:mod fipy.package.subpackage
+py:class object.Object
+py:meth __init__
+py:mod example.something.input
+py:exc eq
+
+# fipy.archaic
+py:class Iterator
+py:meth solve
+py:exc equations.stdyConvDiffScEquation
+
 
 # Python exceptions
 py:class exceptions.Exception

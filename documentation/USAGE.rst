@@ -117,7 +117,7 @@ script you call from the command line, e.g::
 .. cmdoption:: --inline
 
    Causes many mathematical operations to be performed in C, rather than
-   Python, for improved performance. Requires the :mod:`scipy.weave`
+   Python, for improved performance. Requires the :mod:`weave`
    package.
 
 The following flags take precedence over the :envvar:`FIPY_SOLVERS`
@@ -178,12 +178,12 @@ package.
 .. envvar:: FIPY_INLINE
 
    If present, causes many mathematical operations to be performed in C,
-   rather than Python. Requires the :mod:`scipy.weave` package.
+   rather than Python. Requires the :mod:`weave` package.
 
 .. envvar:: FIPY_INLINE_COMMENT
 
    If present, causes the addition of a comment showing the Python context
-   that produced a particular piece of :mod:`scipy.weave` C code. Useful
+   that produced a particular piece of :mod:`weave` C code. Useful
    for debugging.
 
 .. envvar:: FIPY_SOLVERS

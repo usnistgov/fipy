@@ -108,8 +108,7 @@ Glossary
 
    SciPy
       The :mod:`scipy` package provides a wide range of scientific and
-      mathematical operations. :term:`FiPy` can use :mod:`scipy.weave`
-      for enhanced performance with C language inlining and
+      mathematical operations. :term:`FiPy` can use
       :term:`Scipy`'s solver suite for linear solutions. See
       http://www.scipy.org/.
       and :ref:`SCIPY`.
@@ -127,3 +126,7 @@ Glossary
       solve. See
       http://trilinos.sandia.gov
       and :ref:`TRILINOS`.
+
+   Weave
+      The :mod:`weave` package can enhanced performance with C language
+      inlining.  See https://github.com/scipy/weave.
