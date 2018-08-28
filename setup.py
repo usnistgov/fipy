@@ -105,7 +105,7 @@ class build_docs(Command):
             sphinx_args = ['-a', '-E'] + sphinx_args
             apidoc_args = ['--force'] + apidoc_args
             
-        sphinx.ext.apidoc.main(['--dry-run', '--output-dir=fipy/generated', '--suffix=rst']
+        sphinx.ext.apidoc.main(['--output-dir=fipy/generated', '--suffix=rst']
                     + apidoc_args + ['fipy'])
         sphinx.ext.apidoc.main(['--output-dir=documentation/tutorial/package/generated', '--suffix=rst']
                     + apidoc_args + ['documentation/tutorial/package'])
