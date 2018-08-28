@@ -380,7 +380,7 @@ http://www.scipy.org/
 be useful for running and analyzing :term:`FiPy` simulations. Significantly
 improved performance has been achieved with the judicious use of C language
 inlining (see the :ref:`FlagsAndEnvironmentVariables` section for more
-details), via the :mod:`scipy.weave` module.
+details), via the :mod:weave` module.
 
 .. note:
 
@@ -391,7 +391,7 @@ details), via the :mod:`scipy.weave` module.
 Level Set Packages
 ------------------
 
-To use the level set components of :ref:`FiPy` one of the following is
+To use the level set components of :term:`FiPy` one of the following is
 required.
 
 .. _SCIKITFMM:
