@@ -341,3 +341,19 @@ def skip_numpy_not_numerix(app, what, name, obj, skip, options):
 
 def setup(app):
     app.connect('autodoc-skip-member', skip_numpy_not_numerix)
+    
+# lifted from astropy/astropy@e68ca1a1
+
+# Enable nitpicky mode - which ensures that all references in the docs
+# resolve.
+
+nitpicky = True
+nitpick_ignore = []
+
+for line in open('nitpick-exceptions'):
+    if line.strip() == "" or line.startswith("#"):
+        continue
+    dtype, target = line.split(None, 1)
+    target = target.strip()
+    nitpick_ignore.append((dtype, target))
+

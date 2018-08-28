@@ -1,0 +1,32 @@
+# fipy.meshes
+py:class fipy.meshes.periodicGrid2D._BasePeriodicGrid2D
+py:class fipy.meshes.periodicGrid3D._BasePeriodicGrid3D
+
+# fipy.terms
+py:class fipy.terms.nonDiffusionTerm._NonDiffusionTerm
+py:class fipy.terms.abstractDiffusionTerm._AbstractDiffusionTerm
+py:class fipy.terms.abstractConvectionTerm._AbstractConvectionTerm
+py:class fipy.terms.abstractUpwindConvectionTerm._AbstractUpwindConvectionTerm
+py:class fipy.terms.asymmetricConvectionTerm._AsymmetricConvectionTerm
+py:class fipy.terms.explicitSourceTerm._ExplicitSourceTerm
+
+# fipy.variables
+py:class fipy.variables.meshVariable._MeshVariable
+py:class fipy.variables.cellToFaceVariable._CellToFaceVariable
+
+# fipy.viewers
+py:class fipy.viewers.matplotlibViewer.matplotlib2DViewer.AbstractMatplotlib2DViewer
+
+# fipy.fake
+py:func fn(*args, **kwargs)
+py:func fn
+
+# Python exceptions
+py:class exceptions.Exception
+py:class exceptions.NotImplementedError
+py:class exceptions.IndexError
+py:class exceptions.TypeError
+py:class exceptions.Warning
+
+# Python xml
+py:class xml.dom.minidom.Document
