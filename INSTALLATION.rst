@@ -583,11 +583,13 @@ in which you should use :option:`--prefix` instead of
 An alternative to setting the :envvar:`PYTHONPATH` is to employ one of the
 utilities that manage packages and their dependencies independently of
 the system package manager and the system directories. These utilities
-include Stow_, Virtualenv_ and zc.buildout_, amongst others. Here we'll
-describe the use of Virtualenv_, which we highly recommend.
+include Conda_, Stow_, Virtualenv_ and zc.buildout_, amongst others. Here we'll
+describe the use of Conda_, which we highly recommend.
 
 .. _Stow: http://savannah.gnu.org/projects/stow/
 .. _zc.buildout: http://pypi.python.org/pypi/zc.buildout
+.. _Virtualenv: https://virtualenv.pypa.io
+.. _Conda: https://conda.io
 
 .. _documentation:GIT:
 
