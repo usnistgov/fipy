@@ -127,7 +127,7 @@ autosummary_generate = ['examples/diffusion/index.rst',
 
 autodoc_member_order = 'alphabetical'
 
-autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'NOX']
+autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'PyTrilinos.NOX']
 
 # -- Options for HTML output ---------------------------------------------------
 
