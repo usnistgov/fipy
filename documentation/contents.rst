@@ -26,6 +26,5 @@ FiPy Contents
    CODESPEED
    GUIDELINES
    GIT
-   _templates/example
    tutorial/package/generated/package
    ../fipy/generated/fipy
