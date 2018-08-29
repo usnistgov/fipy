@@ -322,14 +322,10 @@ imgmath_latex_preamble = common_preamble
 
 # refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/', None),
-    'numpy': ('http://docs.scipy.org/doc/numpy/', None),
-    'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
-    'matplotlib': ('http://matplotlib.sourceforge.net/', None)}
-# intersphinx_mapping = {'http://docs.python.org/': None,
-#                        'http://docs.scipy.org/doc/numpy/': None,
-#                        'http://docs.scipy.org/doc/scipy/reference/': None,
-#                        'http://matplotlib.sourceforge.net/': None}
+    'python': ('https://docs.python.org/2/', None),
+    'numpy': ('https://docs.scipy.org/doc/numpy/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
+    'matplotlib': ('https://matplotlib.org/', None)}
 
 def skip_numpy_not_numerix(app, what, name, obj, skip, options):
     import types
