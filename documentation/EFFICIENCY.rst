@@ -26,7 +26,7 @@ The raw CPU execution times for 10 time steps are presented in the
 following table. The run times are in seconds and the memory usage is
 in kilobytes. The Kobayashi code is given the heading of FORTRAN while
 :term:`FiPy` is run with and without inlining. The memory usage is for
-:term:`FiPy` simulations with the :option:`--inline`. The ``--no-cache`` flag is
+:term:`FiPy` simulations with the :option:`--inline`. The :option:`--no-cache` flag is
 on in all cases for the following table.
 
 ========== ============ ======================= ============= ============= =============

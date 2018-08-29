@@ -121,6 +121,18 @@ script you call from the command line, e.g::
    Python, for improved performance. Requires the :mod:`weave`
    package.
 
+.. cmdoption:: --cache
+
+   Causes lazily evaluated :term:`FiPy`
+   :class:`~fipy.variables.variable.Variable` objects to retain their
+   value.
+
+.. cmdoption:: --no-cache
+
+   Causes lazily evaluated :term:`FiPy`
+   :class:`~fipy.variables.variable.Variable` objects to always recalculate
+   their value.
+
 The following flags take precedence over the :envvar:`FIPY_SOLVERS`
 environment variable:
 
@@ -210,6 +222,12 @@ package.
 
    If present, causes the inclusion of all funcions and variables of the
    :mod:`~fipy.tools.numerix` module in the :mod:`fipy` namespace.
+
+.. envvar:: FIPY_CACHE
+
+   If present, causes lazily evaluated :term:`FiPy` 
+   :class:`~fipy.variables.variable.Variable` objects to
+   retain their value.
 
 .. _PARALLEL:
 
