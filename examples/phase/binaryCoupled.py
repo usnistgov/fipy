@@ -545,7 +545,7 @@ and cannot be solved by the default :class:`~fipy.solvers.LinearPCGSolver`. Ther
 
 .. index:: LinearLUSolver, solve, sweep
 
-We now use the ":meth:`~fipy.terms.Term.sweep`" method instead of ":meth:`~fipy.terms.Term.solve`" because we
+We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of ":meth:`~fipy.terms.term.Term.solve`" because we
 require the residual.
 
 >>> solver = LinearLUSolver(tolerance=1e-10)
