@@ -126,6 +126,8 @@ autosummary_generate = ['examples/diffusion/index.rst',
 
 autodoc_member_order = 'alphabetical'
 
+autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'NOX']
+
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
