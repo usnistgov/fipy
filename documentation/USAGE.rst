@@ -159,6 +159,10 @@ environment variable:
    Forces the use of the :ref:`PYAMG` preconditioners in conjunction
    with the :ref:`SCIPY` solvers.
 
+.. cmdoption:: --pyamgx
+
+   Forces the use of the :ref:`PYAMGX` solvers.
+
 .. cmdoption:: --lsmlib
 
    Forces the use of the :ref:`LSMLIBDOC` level set solver.

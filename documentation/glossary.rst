@@ -8,6 +8,7 @@ Glossary
    Buildbot
       The BuildBot is a system to automate the compile/test cycle
       required by most software projects to validate code changes.
+      No longer used for :term:`FiPy`.
       See http://trac.buildbot.net/.
 
    FiPy
@@ -67,6 +68,13 @@ Glossary
       A suite of python-based preconditoners. See
       http://code.google.com/p/pyamg/
       and :ref:`PYAMG`.
+
+   pyamgx
+      a :term:`Python` interface to the NVIDIA 
+      `AMGX <https://github.com/NVIDIA/AMGX>`_ library, which can be used
+      to construct complex solvers and preconditioners to solve sparse
+      sparse linear systems on the GPU. See https://pyamgx.readthedocs.io/
+      and :ref:`PYAMGX`.
 
    PyPI
       The Python Package Index is a repository of software for the
