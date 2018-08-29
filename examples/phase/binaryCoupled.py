@@ -538,15 +538,15 @@ Because the phase field equation is coupled to the composition through
 field through ``phaseTransformationVelocity``, it is necessary sweep this
 non-linear problem to convergence. We use the "residual" of the equations
 (a measure of how well they think they have solved the given set of linear
-equations) as a test for how long to sweep. Because of the
-:class:`~fipy.terms.convectionTerm.ConvectionTerm`, the solution matrix for ``diffusionEq`` is asymmetric
-and cannot be solved by the default :class:`~fipy.solvers.LinearPCGSolver`. Therefore, we use a
+equations) as a test for how long to sweep. The solution matrix for ``diffusionEq`` is asymmetric
+(is this still true?)
+and cannot be solved by the default :class:`~fipy.solvers.pysparse.linearPCGSolver.LinearPCGSolver`. Therefore, we use a
 :class:`~fipy.solvers.LinearLUSolver` for this equation.
 
 .. index:: LinearLUSolver, solve, sweep
 
-We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of ":meth:`~fipy.terms.term.Term.solve`" because we
-require the residual.
+We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
+":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
 
 >>> solver = LinearLUSolver(tolerance=1e-10)
 
