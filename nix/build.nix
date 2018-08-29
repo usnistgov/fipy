@@ -2,7 +2,6 @@
 let
   gmsh = import ./gmsh.nix { inherit nixpkgs; };
   skfmm = import ./skfmm.nix { inherit pypkgs; };
-  python_version = builtins.head (builtins.match "([0-9]*\.[0-9]*)\.[0-9]*" pypkgs.python.version);
 in
   pypkgs.buildPythonPackage rec {
      pname = "fipy";
