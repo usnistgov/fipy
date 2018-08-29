@@ -67,8 +67,28 @@ py:exc eq
 # fipy.archaic
 py:class Iterator
 py:meth solve
-py:exc equations.stdyConvDiffScEquation
+py:mod equations.stdyConvDiffScEquation
+py:class SteadyConvectionDiffusionScEquation
 
+# examples
+py:mod examples.phase.binary
+py:mod examples.cahnHilliard.mesh2D
+py:class examples.levelSet.electroChem.adsorbingSurfactantEquation.AdsorbingSurfactantEquation
+py:func examples.levelSet.electroChem.leveler.runLeveler
+py:func examples.levelSet.electroChem.simpleTrenchSystem.runSimpleTrenchSystem
+
+# other
+py:mod weave
+py:mod weave.blitz
+py:mod scipy
+py:mod tvtk
+py:mod enthought.tvtk
+py:mod lsmlib
+py:mod matplotlib
+py:mod mayavi
+py:mod pysparse
+py:func numpy.sin
+py:class mayavi.plugins.app.Mayavi
 
 # Python exceptions
 py:class exceptions.Exception
