@@ -104,6 +104,7 @@ py:exc NameError: name 'SteadyConvectionDiffusionScEquation' is not defined
 py:exc NameError: name 'eq' is not defined
 py:exc NameError: name 'it' is not defined
 py:exc ImportError: No module named grid2DGistViewer
+py:exc DeprecationWarning
 
 # Python xml
 py:class xml.dom.minidom.Document
