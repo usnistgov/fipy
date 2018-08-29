@@ -269,9 +269,9 @@ Below, we iterate for a set number of sweeps. We use the
 :meth:`~fipy.terms.term.Term.sweep` method instead of
 :meth:`~fipy.terms.term.Term.solve` because we require the residual for output.
 We also use the :meth:`~fipy.terms.term.Term.cacheMatrix`,
-:attribute:`~fipy.terms.term.Term.matrix`,
+:py:attr:`~fipy.terms.term.Term.matrix`,
 :meth:`~fipy.terms.term.Term.cacheRHSvector` and
-:attribute:`~fipy.terms.term.Term.RHSvector` because both the matrix and RHS
+:py:attr:`~fipy.terms.term.Term.RHSvector` because both the matrix and RHS
 vector are required by the SIMPLE algorithm. Additionally, the
 :meth:`~fipy.terms.term.Term.sweep` method is passed an ``underRelaxation``
 factor to relax the solution. This argument cannot be passed to
