@@ -89,6 +89,9 @@ py:mod mayavi
 py:mod pysparse
 py:func numpy.sin
 py:class mayavi.plugins.app.Mayavi
+py:func numerix.max
+py:func numerix.min
+py:mod Numeric
 
 # Python exceptions
 py:class exceptions.Exception
