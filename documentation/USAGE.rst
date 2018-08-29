@@ -35,7 +35,8 @@ examples.
 In order to customize the examples, or to develop your own scripts, some
 knowledge of Python syntax is required.  We recommend you familiarize
 yourself with the excellent `Python tutorial`_ :cite:`PythonTutorial`
-or with `Dive Into Python`_ :cite:`DiveIntoPython`.
+or with `Dive Into Python`_ :cite:`DiveIntoPython`. Deeper insight into 
+Python can be obtained from the :cite:`PythonReference`.
 
 .. _Python tutorial: http://docs.python.org/tut/tut.html
 .. _Dive Into Python: http://diveintopython.org

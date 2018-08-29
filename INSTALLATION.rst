@@ -391,7 +391,7 @@ details), via the :mod:weave` module.
 Level Set Packages
 ------------------
 
-To use the level set components of :term:`FiPy` one of the following is
+To use the level set (:cite:`levelSetBook`) components of :term:`FiPy` one of the following is
 required.
 
 .. _SCIKITFMM:
