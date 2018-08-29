@@ -91,6 +91,7 @@ py:class mayavi.plugins.app.Mayavi
 py:func numerix.max
 py:func numerix.min
 py:mod Numeric
+py:func streamplot
 
 # Python exceptions
 py:class exceptions.Exception
