@@ -49,7 +49,6 @@ py:class fipy.varibles.meshVariable.MeshVariable
 
 # fipy.viewers
 py:class fipy.viewers.matplotlibViewer.matplotlib2DViewer.AbstractMatplotlib2DViewer
-py:exc grid2DGistViewer
 py:class fipy.viewers.viewer.Viewer
 py:class ~fipy.viewers.viewer.AbstractViewer
 py:func fipy.viewers.make
@@ -99,6 +98,11 @@ py:class exceptions.NotImplementedError
 py:class exceptions.IndexError
 py:class exceptions.TypeError
 py:class exceptions.Warning
+py:exc ImportError: No module named equations.stdyConvDiffScEquation
+py:exc NameError: name 'SteadyConvectionDiffusionScEquation' is not defined
+py:exc NameError: name 'eq' is not defined
+py:exc NameError: name 'it' is not defined
+py:exc ImportError: No module named grid2DGistViewer
 
 # Python xml
 py:class xml.dom.minidom.Document
