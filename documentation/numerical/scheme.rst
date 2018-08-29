@@ -3,7 +3,7 @@
 Numerical Schemes
 -----------------
 
-The coefficients of equation :eq:`eqn:num:dap` must remain positive,
+The coefficients of equation :eq:`num:dap` must remain positive,
 since an increase in a neighboring value must result in an increase in
 :math:`\phi_P` to obtain physically realistic solutions.  Thus, the
 inequalities :math:`a_A > 0` and :math:`a_A + F_f>0` must be satisfied.  The
