@@ -12,7 +12,7 @@ http://build.cmi.kent.edu:8010/
 Modifying the configuration
 ---------------------------
 
-The buildbot configuration file is hosted in a Git repository. To clone the
+The Buildbot configuration file is hosted in a Git repository. To clone the
 repository::
 
     $ git clone ssh://buildbot@build.cmi.kent.edu/fipy-buildbot.git
@@ -136,7 +136,7 @@ Py3k
 ====
 
 Setting up a Python 3 build slave is a little tricky because buildbot
-doesn't install under Python 3 (at least [http://twistedmatrix.com twistd]
+doesn't install under Python 3 (at least [http://twistedmatrix.com twisted]
 doesn't).
 
 What worked for me was to set up a `virtualenv` using Python 2.x to

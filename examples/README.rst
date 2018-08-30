@@ -43,7 +43,7 @@ These examples can be used in at least four ways:
      emphasis on serving as both documentation and as comprehensive tests
      of the FiPy framework.  As explained at the end of
      ``examples/diffusion/steadyState/mesh1D.py``, your own scripts can be
-     much more succint, if you wish, and include only the text that follows
+     much more succinct, if you wish, and include only the text that follows
      the "``>>>``" and "``...``" prompts shown in these examples.
 
      To obtain a copy of an example, containing just the script instructions,

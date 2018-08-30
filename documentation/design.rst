@@ -67,7 +67,7 @@ Open Source
 ~~~~~~~~~~~
 
 In recent years, there has been a movement to release software under
-open source and associated unrestrictied licenses, especially within
+open source and associated unrestricted licenses, especially within
 the scientific community.  These licensing terms allow users to
 develop their own applications with complete access to the source code
 and then either contribute back to the main source repository or
@@ -211,7 +211,7 @@ the implementation of :term:`FiPy`.  Python is
    :mod:`unittest`),
 
  * actively used and extended by other scientists and
-   mathemeticians (:term:`SciPy`, :term:`NumPy`, :term:`ScientificPython`, :term:`PySparse`).
+   mathematicians (:term:`SciPy`, :term:`NumPy`, :term:`ScientificPython`, :term:`Pysparse`).
 
  * easily integrated with low-level languages such as C
    (:mod:`~scipy.weave`, :mod:`~scipy.blitz`, :term:`PyRex`).

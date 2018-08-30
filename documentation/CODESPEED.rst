@@ -16,7 +16,7 @@ Using Codespeed 0.8.1
 
 To download it, go to https://github.com/tobami/codespeed and use the
 downloads button on the right side to get the latest stable
-version. Below that on the page is the readme document which does a
+version. Below that on the page is the README document which does a
 pretty good job at letting you know how to get started. Once
 the package is downloaded, you'll need to cd into the speedcenter/
 directory and do three commands::
@@ -32,14 +32,14 @@ couldn't find one after typing no)::
 After this step, you'll have created your database where the data will
 be stored data.db.
 
-Once this is setup you'll be ready to run the codespeed server.  For
+Once this is setup you'll be ready to run the Codespeed server.  For
 testing, it's just the localhost 8000::
 
     $ python manage.py runserver 8000
 
 You can't view any of the pages until you go to /admin and create an
 environment, and then you still can't really access the meat of the
-codespeed pages until there's some actual data to display.
+Codespeed pages until there's some actual data to display.
 
 You can manually create a piece of data in the admin page by creating
 a project, executable, result, revision, benchmark, and branch (must
@@ -98,5 +98,5 @@ be created in the admin page of Codespeed.
 
 Codespeed is quite customizable but all of that is in Java, so beyond
 adding the FiPy logo and changing the titles of pages, we may not want
-to do much customization at all.  Refer to the Readme for instructions
+to do much customization at all.  Refer to the README for instructions
 for customization.

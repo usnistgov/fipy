@@ -4,13 +4,13 @@
 Solvers
 =======
 
-:term:`FiPy` requires either :term:`PySparse`, :term:`SciPy` or
+:term:`FiPy` requires either :term:`Pysparse`, :term:`SciPy` or
 :term:`Trilinos` to be installed in order to solve linear systems.
 From our experiences, :term:`FiPy` runs most efficiently in serial
-when :term:`PySparse` is the linear solver. :term:`Trilinos` is the
+when :term:`Pysparse` is the linear solver. :term:`Trilinos` is the
 most complete of the three solvers due to its numerous preconditioning
 and solver capabilities and it also allows :term:`FiPy` to :ref:`run
-in parallel <PARALLEL>`. Although less efficient than :term:`PySparse`
+in parallel <PARALLEL>`. Although less efficient than :term:`Pysparse`
 and less capable than :term:`Trilinos`, :term:`SciPy` is a very
 popular package, widely available and easy to install. For this
 reason, :term:`SciPy` may be the best linear solver choice when first
@@ -50,12 +50,12 @@ solver suite for generic solvers is :ref:`PYSPARSE` followed by
 .. _PYSPARSE:
 
 --------
-PySparse
+Pysparse
 --------
 
 http://pysparse.sourceforge.net
 
-:term:`PySparse` is a fast serial sparse matrix library for :term:`Python`.
+:term:`Pysparse` is a fast serial sparse matrix library for :term:`Python`.
 It provides several sparse matrix storage formats and conversion methods.
 It also implements a number of iterative solvers, preconditioners, and
 interfaces to efficient factorization packages. The only requirement to
@@ -63,7 +63,7 @@ install and use Pysparse is :term:`NumPy`.
 
 .. warning::
 
-   :term:`FiPy` requires version 1.0 or higher of :term:`PySparse`.
+   :term:`FiPy` requires version 1.0 or higher of :term:`Pysparse`.
 
 .. _SCIPY:
 
@@ -74,7 +74,7 @@ SciPy
 http://www.scipy.org/
 
 The :mod:`scipy.sparse` module provides a basic set of serial Krylov
-solvers, but no preconditoners.
+solvers, but no preconditioners.
 
 .. _PYAMG:
 
@@ -96,9 +96,9 @@ Trilinos
 http://trilinos.sandia.gov
 
 :term:`Trilinos` provides a more complete set of solvers and
-preconditioners than either :term:`PySparse` or
+preconditioners than either :term:`Pysparse` or
 :term:`SciPy`. :term:`Trilinos` preconditioning allows for iterative
-solutions to some difficult problems that :term:`PySparse` and
+solutions to some difficult problems that :term:`Pysparse` and
 :term:`SciPy` cannot solve, and it enables parallel execution of
 :term:`FiPy` (see :ref:`PARALLEL` for more details).
 
@@ -109,7 +109,7 @@ solutions to some difficult problems that :term:`PySparse` and
 
 .. attention::
 
-   :term:`FiPy` runs more efficiently when :term:`PySparse` is
+   :term:`FiPy` runs more efficiently when :term:`Pysparse` is
    installed alongside :term:`Trilinos`.
 
 .. attention::
