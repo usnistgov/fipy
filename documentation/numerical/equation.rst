@@ -21,7 +21,7 @@ Examples of such systems are wide ranging, but include problems that
 exhibit a combination of diffusing and reacting species, as well as
 such diverse problems as determination of the electric potential in
 heart tissue, of fluid flow, stress evolution, and even the
-Schrödinger equation.
+|Schrodinger| equation.
 
 A general conservation equation, solved using :term:`FiPy`, can include any
 combination of the following terms,
@@ -64,3 +64,5 @@ or a phase field crystal term [*i.e.*, :math:`\nabla \cdot (\Gamma_1 \nabla
 ] )` :cite:`Elder:2011p2811`] when :math:`n = 3`, although spectral methods are probably a
 better approach. Higher order terms (:math:`n > 3`) are also possible, but
 the matrix condition number becomes quite poor.
+
+.. |Schrodinger| unicode:: Schr U+00F6 dinger

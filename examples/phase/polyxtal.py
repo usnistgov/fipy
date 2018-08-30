@@ -387,8 +387,3 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
-
-#  LocalWords:  ModularVariable dT heatEq PhiSq DbetaDpsi Ddia thetaMag phaseEq
-#  LocalWords:  et al thetaSmallValue phaseMod Pfunc gradMagTheta IGamma Cx Cy
-#  LocalWords:  thetaEq numSeeds OrientationViewer pb pbx pbcb splitx panchor
-#  LocalWords:  gnomon rgb facecolor edgecolor hsv figsize fontsize polyxtal

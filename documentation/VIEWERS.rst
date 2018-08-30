@@ -49,7 +49,7 @@ probably a better choice for 1D or 2D viewing.
 
 .. note::
 
-   Mayavi 1 is no longer supported.
+   MayaVi 1 is no longer supported.
 
 .. _VTK: http://www.vtk.org/
 .. _Mac OS X: http://www.apple.com/macosx

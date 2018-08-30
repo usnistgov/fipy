@@ -210,7 +210,7 @@ we obtain the surprising result that :math:`\phi` is zero everywhere.
    :alt: steady-state phase field zero everywhere
 
 On inspection, we can see that this occurs because, for our step-function initial condition,
-:math:`m_\phi = 0` ever-where,
+:math:`m_\phi = 0` everywhere,
 hence we are actually only solving the simple implicit diffusion equation
 :math:`\kappa_\phi \nabla^2\phi = 0`,
 which has exactly the uninteresting solution we obtained.
