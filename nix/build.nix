@@ -35,6 +35,10 @@ in
        export USER_SITE=`python -c "import site; print(site.USER_SITE)"`
        export PYTHONPATH=$PYTHONPATH:$USER_SITE
        export PATH=$PATH:$PYTHONUSERBASE/bin
-       #pip install --user package
+       ## To build the docs
+       # pip install --user sphinx sphinxcontrib-bibtex
+       ## To build PyAMG
+       ## add nixpkgs.gcc to buildInputs and
+       # pip install --user pyamg
      '';
   }
