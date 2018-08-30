@@ -50,7 +50,7 @@
 This input file again solves an explicit 1D diffusion problem as in
 `./examples/diffusion/mesh1D.py` but on a mesh with both square and triangular
 elements. The term used is the `ExplicitDiffusionTerm`. In this case many steps
-have to be taken to reach equilibrum. The `timeStepDuration` parameter specifies
+have to be taken to reach equilibrium. The `timeStepDuration` parameter specifies
 the size of each time step and `steps` is the number of time steps.
 
 >>> from fipy import CellVariable, Grid2D, Tri2D, TransientTerm, ExplicitDiffusionTerm, Viewer

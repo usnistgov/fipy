@@ -48,7 +48,7 @@
 r"""
 
 In this example, a phase equation is solved in one dimension with a
-missorientation between two solid domains.
+misorientation between two solid domains.
 The phase equation is given by:
 
 .. math::

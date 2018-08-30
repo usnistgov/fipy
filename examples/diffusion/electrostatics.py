@@ -110,7 +110,7 @@ This problem has the analytical solution
 >>> analytical = CellVariable(mesh=mesh, name="analytical solution",
 ...                           value=(x**2)/2 - 2*x)
 
-which has been satisifactorily obtained
+which has been satisfactorily obtained
 
 >>> print potential.allclose(analytical, rtol = 2e-5, atol = 2e-5)
 1

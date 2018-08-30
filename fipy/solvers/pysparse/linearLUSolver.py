@@ -62,13 +62,13 @@ class LinearLUSolver(PysparseSolver):
     """
 
     The `LinearLUSolver` solves a linear system of equations using
-    LU-factorisation. This method solves systems with a general
+    LU-factorization. This method solves systems with a general
     non-symmetric coefficient matrix using partial pivoting.
 
-    The `LinearLUSolver` is a wrapper class for the the PySparse_
+    The `LinearLUSolver` is a wrapper class for the the Pysparse_
     `superlu.factorize()` method.
 
-    .. _PySparse: http://pysparse.sourceforge.net
+    .. _Pysparse: http://pysparse.sourceforge.net
 
     """
 

@@ -90,7 +90,7 @@ Make sure the dimensionless parameter is large enough
 >>> (diffusion / cinf / L / L / rateConstant) > 100
 True
 
-Start time steping:
+Start time stepping:
 
 >>> currentTime = 0.
 >>> for i in range(totalTimeSteps):
@@ -98,7 +98,7 @@ Start time steping:
 ...     bulkEqn.solve(bulkVar, dt = dt)
 ...     currentTime += dt
 
-Compare the analaytical and numerical results:
+Compare the analytical and numerical results:
 
 >>> theta = surfactantVar.interfaceVar[1]
 

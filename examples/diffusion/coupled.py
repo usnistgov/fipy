@@ -155,7 +155,7 @@ It is also possible to pose the same equations in vector form:
 Whether you pose your problem in coupled or vector form should be dictated by
 the underlying physics. If :math:`v_0` and :math:`v_1` represent the
 concentrations of two conserved species, then it is natural to write two
-seperate governing equations and to couple them. If they represent two
+separate governing equations and to couple them. If they represent two
 components of a vector field, then the vector formulation is obviously more
 natural. FiPy will solve the same matrix system either way.
 """

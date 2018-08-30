@@ -58,7 +58,7 @@ __all__ = ["LinearGMRESSolver"]
 class LinearGMRESSolver(TrilinosAztecOOSolver):
 
     """
-    The `LinearGMRESSolver` is an interface to the gmres solver in Trilinos,
+    The `LinearGMRESSolver` is an interface to the GMRES solver in Trilinos,
     using a the `MultilevelDDPreconditioner` by default.
 
     """

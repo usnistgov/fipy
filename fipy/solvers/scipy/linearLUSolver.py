@@ -59,7 +59,7 @@ __all__ = ["LinearLUSolver"]
 class LinearLUSolver(_ScipySolver):
     """
     The `LinearLUSolver` solves a linear system of equations using
-    LU-factorisation.  The `LinearLUSolver` is a wrapper class for the
+    LU-factorization.  The `LinearLUSolver` is a wrapper class for the
     the Scipy `scipy.sparse.linalg.splu` moduleq.
     """
 

@@ -71,7 +71,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
        \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0
 
     The construction of the gradient magnitude term requires upwinding as in the standard
-    `FirstOrderAdvectionTerm`. The higher order terms are incorperated as follows.
+    `FirstOrderAdvectionTerm`. The higher order terms are incorporated as follows.
     The formula used here is given by:
 
     .. math::

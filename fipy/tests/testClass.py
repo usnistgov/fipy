@@ -178,7 +178,7 @@ def _TestClass(base):
             except Exception, e:
                 print 'PyTrilinos version check failed:', e
 
-            ## Mayavi uses a non-standard approach for storing its version nummber.
+            ## Mayavi uses a non-standard approach for storing its version number.
             try:
                 from mayavi.__version__ import __version__ as mayaviversion
                 print 'mayavi version', mayaviversion

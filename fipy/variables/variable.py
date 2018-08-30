@@ -421,7 +421,7 @@ class Variable(object):
          freshen is ignored
 
          Testing when a cell variable multiplies an array that has a
-         shape, but has olny one element. This works regullarly,
+         shape, but has only one element. This works regularly,
          but fails when inlining.
 
          >>> from fipy import *
@@ -654,7 +654,7 @@ class Variable(object):
 
     def _makeValue(self, value, unit=None, array=None):
 
-        ## --inline code often returns spurious results with noncontiguous
+        ## --inline code often returns spurious results with non-contiguous
         ## arrays. A test case was put in _execInline(). The best fix turned out to
         ## be here.
 

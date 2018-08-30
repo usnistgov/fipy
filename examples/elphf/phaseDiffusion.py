@@ -74,7 +74,7 @@ We create the phase field
 and a dummy electrostatic potential field
 
 >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
->>> permitivityPrime = 0.
+>>> permittivityPrime = 0.
 
 We start with a binary substitutional system
 
@@ -128,13 +128,13 @@ in the solute and a liquid phase rich in the solvent.
 >>> solvent.barrier = 1.
 
 We create the phase equation as in :mod:`examples.elphf.phase.input1D`
-and create the diffustion equations for the different species as in
+and create the diffusion equations for the different species as in
 :mod:`examples.elphf.diffusion.input1D`
 
 >>> def makeEquations(phase, substitutionals, interstitials):
 ...     phase.equation = TransientTerm(coeff = 1/phase.mobility) \
 ...         == DiffusionTerm(coeff = phase.gradientEnergy) \
-...         - (permitivityPrime / 2.) \
+...         - (permittivityPrime / 2.) \
 ...             * potential.grad.dot(potential.grad)
 ...     enthalpy = solvent.standardPotential
 ...     barrier = solvent.barrier

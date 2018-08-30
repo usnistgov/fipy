@@ -223,7 +223,7 @@ class _AbstractTopology(object):
         return numerix.arange(self.mesh.numberOfFaces)
 
     # abstract element types mutually understood by FiPy and other meshing systems
-    # (Vtk, Gmsh, etc.)
+    # (VTK, Gmsh, etc.)
     _elementTopology = dict([(k, v) for (v, k) in enumerate(("vertex",
                                                              "line",
                                                              "triangle",

@@ -142,7 +142,7 @@ class _NonuniformNumPts(_AbstractNumPts):
 
         Used by the `Grid` meshes.
 
-        This tests a bug that was occuring with PeriodicGrid1D when
+        This tests a bug that was occurring with PeriodicGrid1D when
         using a numpy float as the argument for the grid spacing.
 
            >>> from fipy.meshes.periodicGrid1D import PeriodicGrid1D

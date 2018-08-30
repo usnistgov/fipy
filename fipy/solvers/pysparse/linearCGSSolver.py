@@ -64,10 +64,10 @@ class LinearCGSSolver(PysparseSolver):
     biconjugate gradient method (BiCG). CGS solves linear systems with
     a general non-symmetric coefficient matrix.
 
-    The `LinearCGSSolver` is a wrapper class for the the PySparse_
+    The `LinearCGSSolver` is a wrapper class for the the Pysparse_
     `itsolvers.cgs()` method.
 
-    .. _PySparse: http://pysparse.sourceforge.net
+    .. _Pysparse: http://pysparse.sourceforge.net
 
     """
 
@@ -77,6 +77,6 @@ class LinearCGSSolver(PysparseSolver):
           - `precon`: Preconditioner to use
         """
         import warnings
-        warnings.warn("The PySparse CGS solver may return incorrect results for some matrices", UserWarning)
+        warnings.warn("The Pysparse CGS solver may return incorrect results for some matrices", UserWarning)
         super(LinearCGSSolver, self).__init__(precon=precon, *args, **kwargs)
         self.solveFnc = itsolvers.cgs

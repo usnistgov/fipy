@@ -91,7 +91,7 @@ Construct a `distanceVariable` object.
 ...     value = 1.,
 ...     hasOld = 1)
 
-Initialise the `distanceVariable` to be a circular distance function.
+Initialize the `distanceVariable` to be a circular distance function.
 
 >>> x, y = mesh.cellCenters
 >>> initialArray = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - radius
