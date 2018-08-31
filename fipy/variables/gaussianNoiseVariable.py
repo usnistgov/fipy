@@ -96,7 +96,7 @@ class GaussianNoiseVariable(NoiseVariable):
     >>> from fipy import numerix
     >>> numerix.random.seed(3)
 
-    We generate noise on a non-uniform cartesian mesh with cell dimensions of
+    We generate noise on a non-uniform Cartesian mesh with cell dimensions of
     :math:`x^2` and :math:`y^3`.
 
     >>> from fipy.meshes import Grid2D
@@ -138,21 +138,21 @@ class GaussianNoiseVariable(NoiseVariable):
     .. image:: fipy/variables/gaussian.*
       :scale: 25
       :align: center
-      :alt: random values with a gaussian distribution
+      :alt: random values with a Gaussian distribution
 
     but that the root-volume-weighted histogram is Gaussian.
 
     .. image:: fipy/variables/gauss-histogram.*
       :scale: 25
       :align: center
-      :alt: histogram of random values with a gaussian distribution
+      :alt: histogram of random values with a Gaussian distribution
 
     """
     def __init__(self, mesh, name = '', mean = 0., variance = 1., hasOld = 0):
         """
         :Parameters:
             - `mesh`: The mesh on which to define the noise.
-            - `mean`: The mean of the noise distrubution, :math:`\mu`.
+            - `mean`: The mean of the noise distribution, :math:`\mu`.
             - `variance`: The variance of the noise distribution, :math:`\sigma^2`.
         """
         self.mean = mean

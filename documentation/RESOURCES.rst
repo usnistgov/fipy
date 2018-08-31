@@ -1,20 +1,19 @@
 Computational Resources
 -----------------------
 
-- ACCESS: German phase field code, <http://www.micress.de/>
-- Dolfyin + Fenics PDE solvers OO, <http://www.fenics.org/>
-- <http://www.femcenter.org/>
-- Dolfyn, open source CFD, <http://www.dolfyn.net/>
-- Openflower
-- Trilinos, solvers of all types <http://software.sandia.gov/trilinos>
+- Micress: phase-field software, <https://www.micress.de/>
+- FEniCS: OO PDE solvers, <https://www.fenicsproject.org/>
+- Dolfyn: open source CFD, <https://www.dolfyn.net/>
+- OpenFlower
+- Trilinos, solvers of all types <https://trilinos.org>
 - Pyrex
-- Petc
+- PETSc
 - matpy
-- Ryo's code
-- Femlego
+- Ryo's code <https://sites.google.com/site/kobalabhiroshima/software>
+- femLego
 - Spectral MATLAB CH
-- Femlab
-- Diffpack
-- Information for validation and verification of numerical codes <http://www.grc.nasa.gov/WWW/wind/valid/tutorial/tutorial.html>
-- BLENDER3D: meshing software
-- POVRAY: meshing software
+- FEMLAB
+- DiffPack
+- Information for validation and verification of numerical codes <https://www.grc.nasa.gov/WWW/wind/valid/tutorial/tutorial.html>
+- Blender: meshing software
+- POV-Ray: meshing software

@@ -46,7 +46,7 @@
 
 r"""Solves the Cahn-Hilliard problem on the surface of a sphere.
 
-This phenomenon canoccur on vesicles (http://www.youtube.com/watch?v=kDsFP67_ZSE).
+This phenomenon can occur on vesicles (http://www.youtube.com/watch?v=kDsFP67_ZSE).
 
 >>> from fipy import CellVariable, Gmsh2DIn3DSpace, GaussianNoiseVariable, Viewer, TransientTerm, DiffusionTerm, DefaultSolver
 >>> from fipy.tools import numerix
@@ -92,7 +92,7 @@ We start the problem with random fluctuations about
 
 :term:`FiPy` doesn't plot or output anything unless you tell it to: If
 :class:`~fipy.viewers.mayaviViewer.mayaviClient.MayaviClient` is available, we
-can customize the view with a sublcass of
+can customize the view with a subclass of
 :class:`~fipy.viewers.mayaviViewer.mayaviDaemon.MayaviDaemon`.
 
 >>> if __name__ == "__main__":

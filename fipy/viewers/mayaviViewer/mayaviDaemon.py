@@ -54,9 +54,9 @@
 
 
 """A simple script that polls a data file for changes and then updates
-the mayavi pipeline automatically.
+the Mayavi pipeline automatically.
 
-This script is based heavily on the poll_file.py exampe in the mayavi distribution.
+This script is based heavily on the poll_file.py example in the Mayavi distribution.
 
 
 This script is to be run like so::

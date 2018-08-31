@@ -157,7 +157,7 @@ complex meshes requiring the :command:`gmsh` software.
     \end{tabular}
    }
 
-If the MayaVi plotting
+If the Mayavi plotting
 software is
 installed (see :ref:`INSTALLATION`) then a plot should
 appear that is updated every 20 time steps and will eventually

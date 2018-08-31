@@ -144,7 +144,7 @@ class Tri2D(Mesh2D):
     def _createFaces(self):
         """
         v1, v2 refer to the cells.
-        Horizontel faces are first
+        Horizontal faces are first
         """
         v1 = numerix.arange(self.numberOfCornerVertices)
         v2 = v1 + 1

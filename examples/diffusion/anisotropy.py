@@ -53,7 +53,7 @@ We wish to solve the problem
 
    \frac{\partial \phi}{\partial t} = \partial_j \Gamma_{ij} \partial_i \phi
 
-on a circular domain centred at :math:`(0, 0)`. We can choose an anisotropy ratio of 5
+on a circular domain centered at :math:`(0, 0)`. We can choose an anisotropy ratio of 5
 such that
 
 .. math::
@@ -99,7 +99,7 @@ Import a mesh previously created using :term:`Gmsh`.
 >>> import os
 >>> mesh = Gmsh2D(os.path.splitext(__file__)[0] + '.msh', communicator=serialComm) # doctest: +GMSH
 
-Set the centermost cell to have a value.
+Set the center-most cell to have a value.
 
 >>> var = CellVariable(mesh=mesh, hasOld=1) # doctest: +GMSH
 >>> x, y = mesh.cellCenters # doctest: +GMSH

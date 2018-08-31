@@ -1201,7 +1201,7 @@ def _testBinOp(self):
         >>> from fipy import numerix
         >>> v = numerix.exp(-T / (1. *  T))
 
-    Following is a test case for an error when turing a binOp into an array
+    Following is a test case for an error when turning a binOp into an array
 
         >>> print numerix.array(Variable(value=numerix.array([ 1.,])) * [ 1.,])
         [ 1.]

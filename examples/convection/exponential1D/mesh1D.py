@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 ##
  # ###################################################################
@@ -93,7 +94,7 @@ with
 
 The equation is created with the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` and
 :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm`. The scheme used by the convection term
-needs to calculate a Peclet number and thus the diffusion term
+needs to calculate a Péclet number and thus the diffusion term
 instance must be passed to the convection term.
 
 >>> eq = (DiffusionTerm(coeff=diffCoeff)

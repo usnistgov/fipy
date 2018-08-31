@@ -48,7 +48,7 @@
 r"""
 
 In this example a phase equation is solved in one dimension with a
-missorientation present. The phase equation is given by:
+misorientation present. The phase equation is given by:
 
 .. math::
 

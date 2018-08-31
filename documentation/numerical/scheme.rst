@@ -7,7 +7,7 @@ The coefficients of equation :eq:`eqn:num:dap` must remain positive,
 since an increase in a neighboring value must result in an increase in
 :math:`\phi_P` to obtain physically realistic solutions.  Thus, the
 inequalities :math:`a_A > 0` and :math:`a_A + F_f>0` must be satisfied.  The
-Peclet number :math:`P_f \equiv F_f / D_f` is the ratio between convective
+|Peclet| number :math:`P_f \equiv F_f / D_f` is the ratio between convective
 strength and diffusive conductance.  To achieve physically realistic
 solutions, the inequality
 
@@ -105,3 +105,5 @@ the power law scheme,
 
 All of the numerical schemes presented here are available in :term:`FiPy`
 and can be selected by the user.
+
+.. |Peclet| unicode:: P U+00E9 clet

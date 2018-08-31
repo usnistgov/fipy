@@ -232,14 +232,14 @@ manner so Equation :eq:`num:sou` becomes
    V_P (S_0 + S_1 \phi_P),
 
 where :math:`S_0` is the source which is independent of :math:`\phi` and
-:math:`S_1` is the coeficient of the source which is linearly dependent
+:math:`S_1` is the coefficient of the source which is linearly dependent
 on :math:`\phi`.
 
 A source term is represented in :term:`FiPy` essentially as it appears in
 mathematical form, *e.g.*, :math:`3\kappa^2 + b \sin
 \theta` would be written
 
->>> 3 * kappa**2 + b * numrix.sin(theta)
+>>> 3 * kappa**2 + b * numerix.sin(theta)
 
 .. note::
 
@@ -268,7 +268,7 @@ equation to a set of discrete linear equations that can then be solved
 to obtain the value of the dependent variable at each CV center. This
 results in a sparse linear system that requires an efficient iterative
 scheme to solve. The iterative schemes available to :term:`FiPy` are
-currently encapsulated in the :term:`PySparse` and :term:`PyTrilinos`
+currently encapsulated in the :term:`Pysparse` and :term:`PyTrilinos`
 suites of solvers and include most common solvers such as the conjugate
 gradient method and LU decomposition.
 

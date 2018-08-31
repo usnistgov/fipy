@@ -308,11 +308,11 @@ http://continuum.io/anaconda
 In addition to the scientific :term:`Python` stack, the Anaconda package manager
 also provides virtual environment management. Keeping separate installations is useful
 *e.g.* for comparing :term:`Python` 2 and :term:`Python` 3 software stacks, or
-when the user does not have sufficient provileges to install software system-wide.
+when the user does not have sufficient privileges to install software system-wide.
 
 .. attention::
 
-   :term:`PySparse` and :term:`FiPy` are not presently included in Anaconda,
+   :term:`Pysparse` and :term:`FiPy` are not presently included in Anaconda,
    so you will need to separately install them manually.
 
 .. _ECP:
@@ -328,7 +328,7 @@ environment manager.
 
 .. attention::
 
-   :term:`PySparse` and :term:`FiPy` are not presently included in Canopy,
+   :term:`Pysparse` and :term:`FiPy` are not presently included in Canopy,
    so you will need to separately install them manually.
 
 .. _PYTHONXY:
@@ -343,7 +343,7 @@ for Windows_.
 
 .. attention::
 
-   :term:`PySparse` and :term:`FiPy` are not presently included in
+   :term:`Pysparse` and :term:`FiPy` are not presently included in
    Python(x,y), so you will need to separately install them manually.
 
 NumPy
@@ -464,12 +464,12 @@ In addition, there is an :ref:`ECP` installer for `Mac OS X`_.
 
 .. attention::
 
-   :term:`PySparse` and :term:`FiPy` are not presently included in any of
+   :term:`Pysparse` and :term:`FiPy` are not presently included in any of
    these package managers or installers, so you will need to separately
    install them manually.
 
 We presently find that the combination of Homebrew_ and :term:`pip` is a 
-pretty straightforward way to get most of :term:`FiPy`'s prerequesites. 
+pretty straightforward way to get most of :term:`FiPy`'s prerequisites. 
 See the `Miscellaneous Build Recipes`_ for up-to-date directions.
 
 .. _Fink: http://www.finkproject.org/
@@ -485,7 +485,7 @@ prerequisites.
 
 .. attention::
 
-   :term:`PySparse` and :term:`FiPy` are not presently included in Canopy or
+   :term:`Pysparse` and :term:`FiPy` are not presently included in Canopy or
    Python(x,y), so you will need to separately install them manually.
 
 Ubuntu/Debian Installation
@@ -525,7 +525,7 @@ We often post miscellaneous installation instructions on the
 
 .. note::
 
-    We encourange you to contribute your own build recipes on the wiki_
+    We encourage you to contribute your own build recipes on the wiki_
     if they are significantly different.
 
 .. _Installing FiPy on Mac OS X using Homebrew: http://matforge.org/fipy/wiki/InstallFiPy/MacOSX/HomeBrew

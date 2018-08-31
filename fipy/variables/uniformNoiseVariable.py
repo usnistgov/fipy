@@ -53,7 +53,7 @@ class UniformNoiseVariable(NoiseVariable):
     r"""
     Represents a uniform distribution of random numbers.
 
-    We generate noise on a uniform cartesian mesh
+    We generate noise on a uniform Cartesian mesh
 
     >>> from fipy.meshes import Grid2D
     >>> noise = UniformNoiseVariable(mesh=Grid2D(nx=100, ny=100))

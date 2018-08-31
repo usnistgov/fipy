@@ -60,7 +60,7 @@ from fipy.solvers import solver
 
 register_skipper(flag="NOTLINUXSCIPY",
                  test=lambda : platform.system() != "Linux" or solver != 'scipy',
-                 why="`scipy` solvers on linux fail intermittently: #575")
+                 why="`scipy` solvers on Linux fail intermittently: #575")
 
 class AdsorbingSurfactantEquation():
     r"""
@@ -188,7 +188,7 @@ class AdsorbingSurfactantEquation():
     >>> print check.allequal(answer)
     True
 
-    The following test case is to fix a bug where setting the adosrbtion
+    The following test case is to fix a bug where setting the adsorption
     coefficient to zero leads to the solver not converging and an eventual
     failure.
 

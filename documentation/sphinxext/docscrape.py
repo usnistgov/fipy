@@ -463,7 +463,7 @@ class FunctionDoc(NumpyDocString):
 class ClassDoc(NumpyDocString):
     def __init__(self,cls,modulename='',func_doc=FunctionDoc,doc=None):
         if not inspect.isclass(cls):
-            raise ValueError("Initialise using a class. Got %r" % cls)
+            raise ValueError("Initialize using a class. Got %r" % cls)
         self._cls = cls
 
         if modulename and not modulename.endswith('.'):

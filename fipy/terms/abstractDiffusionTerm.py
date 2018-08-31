@@ -197,7 +197,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 if anisotropicRank > 0:
                     shape = numerix.getShape(coeff)
                     if mesh.dim != shape[0] or mesh.dim != shape[1]:
-                        raise IndexError, 'diffusion coefficent tensor is not an appropriate shape for this mesh'
+                        raise IndexError, 'diffusion coefficient tensor is not an appropriate shape for this mesh'
 
                 faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh.faceNormals)
                 rotationTensor = self.__getRotationTensor(mesh)

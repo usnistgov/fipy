@@ -59,7 +59,7 @@ with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 >>> diffCoeff = 1.
 >>> convCoeff = ((10.,),)
 
-We define a 1D cylindrical mesh representing an anulus. The mesh has a
+We define a 1D cylindrical mesh representing an annulus. The mesh has a
 non-constant cell spacing.
 
 >>> from fipy import CellVariable, CylindricalGrid1D, DiffusionTerm, ExponentialConvectionTerm, Viewer

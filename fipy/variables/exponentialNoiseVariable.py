@@ -65,7 +65,7 @@ class ExponentialNoiseVariable(NoiseVariable):
     >>> from fipy import numerix
     >>> numerix.random.seed(1)
 
-    We generate noise on a uniform cartesian mesh
+    We generate noise on a uniform Cartesian mesh
 
     >>> from fipy.variables.variable import Variable
     >>> mean = Variable()

@@ -138,7 +138,7 @@ and is initially solid everywhere
 
 Because ``theta``
 is an :math:`S^1`-valued variable (i.e. it maps to the circle) and thus
-intrinsically has :math:`2\pi`-peridocity,
+intrinsically has :math:`2\pi`-periodicity,
 we must use :class:`~fipy.variables.modularVariable.ModularVariable` instead of a :class:`~fipy.variables.cellVariable.CellVariable`. A
 :class:`~fipy.variables.modularVariable.ModularVariable` confines ``theta`` to
 :math:`-\pi < \theta \le \pi` by adding or subtracting :math:`2\pi` where
@@ -199,7 +199,7 @@ discretization of ``theta`` on the circle.
 
 The source term requires the evaluation of the face gradient without
 the modular operator. ``theta``:meth:`~fipy.variables.modularVariable.ModularVariable.getFaceGradNoMod`
-evelautes the gradient without modular arithmetic.
+evaluates the gradient without modular arithmetic.
 
 >>> thetaGradDiff = theta.faceGrad - theta.faceGradNoMod
 >>> sourceCoeff = (diffusionCoeff * thetaGradDiff).divergence
