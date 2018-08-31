@@ -380,7 +380,7 @@ http://www.scipy.org/
 be useful for running and analyzing :term:`FiPy` simulations. Significantly
 improved performance has been achieved with the judicious use of C language
 inlining (see the :ref:`FlagsAndEnvironmentVariables` section for more
-details), via the :mod:weave` module.
+details), via the :mod:`weave` module.
 
 .. note:
 

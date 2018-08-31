@@ -136,5 +136,5 @@ Glossary
       and :ref:`TRILINOS`.
 
    Weave
-      The :mod:`weave` package can enhanced performance with C language
+      The :mod:`weave` package can enhance performance with C language
       inlining.  See https://github.com/scipy/weave.
