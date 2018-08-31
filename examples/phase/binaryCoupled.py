@@ -52,7 +52,7 @@ As in :mod:`examples.phase.simple`, we will examine a 1D problem
 
 .. index:: Grid1D
 
->>> from fipy import CellVariable, Variable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer
+>>> from fipy import CellVariable, Variable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer
 >>> from fipy.tools import numerix
 
 >>> nx = 400
@@ -540,10 +540,12 @@ non-linear problem to convergence. We use the "residual" of the equations
 (a measure of how well they think they have solved the given set of linear
 equations) as a test for how long to sweep.
 
-.. index:: solve, sweep
+.. index:: LinearLUSolver, solve, sweep
 
 We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
+
+>>> solver = LinearLUSolver(tolerance=1e-10)
 
 >>> phase.updateOld()
 >>> C.updateOld()
@@ -551,7 +553,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 >>> initialRes = None
 
 >>> while res > 1e-4:
-...     res = eq.sweep(dt=dt)
+...     res = eq.sweep(dt=dt, solver=solver)
 ...     if initialRes is None:
 ...         initialRes = res
 ...     res = res / initialRes
@@ -638,7 +640,7 @@ time step of about :math:`\unit{10^{-5}}{\second}`.
 ...     C.updateOld()
 ...     res = 1e+10
 ...     while res > 1e-3:
-...         res = eq.sweep(dt=dt)
+...         res = eq.sweep(dt=dt, solver=solver)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
