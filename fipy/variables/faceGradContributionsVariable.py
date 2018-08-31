@@ -65,10 +65,10 @@ class _FaceGradContributions(FaceVariable):
     >>> v0 = CellVariable(mesh=m, value=x)
     >>> v1 = CellVariable(mesh=m, value=y)
     >>> v2 = CellVariable(mesh=m, value=x**2)
-    >>> print _FaceGradContributions(v).globalValue.shape
-    (2, 3, 24)
-    >>> print _FaceGradContributions(v0).globalValue.shape
-    (2, 24)
+    >>> print numerix.allequal(_FaceGradContributions(v).globalValue.shape, (2, 3, 24))
+    True
+    >>> print numerix.allequal(_FaceGradContributions(v0).globalValue.shape, (2, 24))
+    True
     >>> print _FaceGradContributions(v0).allclose([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., -0.5, 1.,  2.,
     ...                                              2.5,-0.5, 1.,  2.,  2.5,-0.5, 1.,  2.,  2.5],
     ...                                            [-0.5,-1.5,-2.5, 0.5, 1.5, 2.5, 0.5, 1.5, 2.5, 0.5, 1.5, 2.5, 0.,  0.,  0.,
