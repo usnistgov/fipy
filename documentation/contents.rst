@@ -28,4 +28,4 @@ FiPy Contents
    GIT
    tutorial/package/generated/package
    ../fipy/generated/fipy
-   bogus
+   external_definitions
