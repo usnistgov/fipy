@@ -198,7 +198,7 @@ discretization of ``theta`` on the circle.
 >>> diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
 
 The source term requires the evaluation of the face gradient without
-the modular operator. ``theta``:meth:`~fipy.variables.modularVariable.ModularVariable.getFaceGradNoMod`
+the modular operator. ``theta``:py:attr:`~fipy.variables.modularVariable.ModularVariable.faceGradNoMod`
 evaluates the gradient without modular arithmetic.
 
 >>> thetaGradDiff = theta.faceGrad - theta.faceGradNoMod

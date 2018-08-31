@@ -524,7 +524,7 @@ What does this error message mean?
 
 ``repairing catalog by removing key``
   This message (not really an error, but may cause test failures) can
-  result when using the :mod:`scipy.weave` package via the
+  result when using the :mod:`weave` package via the
   :option:`--inline` flag. It is due to a bug in :term:`SciPy` that has been
   patched in their source repository:
   http://www.scipy.org/mailinglists/mailman?fn=scipy-dev/2005-June/003010.html.

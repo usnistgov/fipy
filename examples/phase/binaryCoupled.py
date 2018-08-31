@@ -307,7 +307,7 @@ Although the second syntax would essentially work as written, such an
 explicit implementation would be very slow. In order to take advantage
 of :term:`FiPy`'s implicit solvers, it is necessary to reduce
 Eq. :eq:`eq:phase:binary:diffusion` to the canonical form of
-Eq. :eq:`eqn:num:gen`, hence we must expand
+Eq. :eq:`num:gen`, hence we must expand
 Eq. :eq:`eq:phase:binary:chemicalPotential` as
 
 .. math::
@@ -538,15 +538,12 @@ Because the phase field equation is coupled to the composition through
 field through ``phaseTransformationVelocity``, it is necessary sweep this
 non-linear problem to convergence. We use the "residual" of the equations
 (a measure of how well they think they have solved the given set of linear
-equations) as a test for how long to sweep. Because of the
-:class:`~fipy.terms.convectionTerm.ConvectionTerm`, the solution matrix for ``diffusionEq`` is asymmetric
-and cannot be solved by the default :class:`~fipy.solvers.LinearPCGSolver`. Therefore, we use a
-:class:`~fipy.solvers.LinearLUSolver` for this equation.
+equations) as a test for how long to sweep.
 
 .. index:: LinearLUSolver, solve, sweep
 
-We now use the ":meth:`~fipy.terms.Term.sweep`" method instead of ":meth:`~fipy.terms.Term.solve`" because we
-require the residual.
+We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
+":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
 
 >>> solver = LinearLUSolver(tolerance=1e-10)
 

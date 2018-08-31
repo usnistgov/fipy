@@ -215,7 +215,7 @@ discretization of ``theta`` on the circle.
 >>> D_theta = phase.arithmeticFaceValue**2 * (s * IGamma + epsilon**2)
 
 The source term requires the evaluation of the face gradient without
-the modular operator. ``theta``:meth:`~fipy.variables.modularVariable.ModularVariable.getFaceGradNoMod`
+the modular operator. ``theta``:py:attr:`~fipy.variables.modularVariable.ModularVariable.faceGradNoMod`
 evaluates the gradient without modular arithmetic.
 
 >>> thetaEq = (TransientTerm(tau_theta * phaseMod**2 * Pfunc)

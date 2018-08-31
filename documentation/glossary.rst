@@ -8,6 +8,7 @@ Glossary
    Buildbot
       The Buildbot is a system to automate the compile/test cycle
       required by most software projects to validate code changes.
+      No longer used for :term:`FiPy`.
       See http://trac.buildbot.net/.
 
    FiPy
@@ -68,6 +69,13 @@ Glossary
       http://code.google.com/p/pyamg/
       and :ref:`PYAMG`.
 
+   pyamgx
+      a :term:`Python` interface to the NVIDIA 
+      `AMGX <https://github.com/NVIDIA/AMGX>`_ library, which can be used
+      to construct complex solvers and preconditioners to solve sparse
+      sparse linear systems on the GPU. See https://pyamgx.readthedocs.io/
+      and :ref:`PYAMGX`.
+
    PyPI
       The Python Package Index is a repository of software for the
       :term:`Python` programming language.
@@ -108,8 +116,7 @@ Glossary
 
    SciPy
       The :mod:`scipy` package provides a wide range of scientific and
-      mathematical operations. :term:`FiPy` can use :mod:`scipy.weave`
-      for enhanced performance with C language inlining and
+      mathematical operations. :term:`FiPy` can use
       :term:`Scipy`'s solver suite for linear solutions. See
       http://www.scipy.org/.
       and :ref:`SCIPY`.
@@ -127,3 +134,7 @@ Glossary
       solve. See
       http://trilinos.sandia.gov
       and :ref:`TRILINOS`.
+
+   Weave
+      The :mod:`weave` package can enhance performance with C language
+      inlining.  See https://github.com/scipy/weave.

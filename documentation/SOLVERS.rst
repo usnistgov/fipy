@@ -87,6 +87,19 @@ http://code.google.com/p/pyamg/
 The :term:`PyAMG` package provides adaptive multigrid preconditioners that
 can be used in conjunction with the :term:`SciPy` solvers.
 
+.. _PYAMGX:
+
+------
+pyamgx
+------
+
+https://pyamgx.readthedocs.io/
+
+The :term:`pyamgx` package is a :term:`Python` interface to the 
+NVIDIA `AMGX <https://github.com/NVIDIA/AMGX>`_
+library.  :term:`pyamgx` can be used to construct complex solvers and
+preconditioners to solve sparse sparse linear systems on the GPU.
+
 .. _TRILINOS:
 
 --------

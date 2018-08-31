@@ -214,7 +214,7 @@ the implementation of :term:`FiPy`.  Python is
    mathematicians (:term:`SciPy`, :term:`NumPy`, :term:`ScientificPython`, :term:`Pysparse`).
 
  * easily integrated with low-level languages such as C
-   (:mod:`~scipy.weave`, :mod:`~scipy.blitz`, :term:`PyRex`).
+   (:mod:`~weave`, :mod:`~weave.blitz`, :term:`PyRex`).
 
 Implementation
 --------------
@@ -267,16 +267,16 @@ A :class:`~fipy.variables.variable.Variable` object
 
 A :class:`~fipy.terms.term.Term` object
   represents any of the terms in
-  Equation :eq:`eqn:num:gen` or any linear combination of such
+  Equation :eq:`num:gen` or any linear combination of such
   terms.  Early in the development of :term:`FiPy`, a distinction was
   made between ``Equation`` objects, which represented all of
-  Equation :eq:`eqn:num:gen`, and :class:`~fipy.terms.term.Term` objects, which
+  Equation :eq:`num:gen`, and :class:`~fipy.terms.term.Term` objects, which
   represented the individual terms in that equation.  The
   ``Equation`` object has since been eliminated as redundant.
   :class:`~fipy.terms.term.Term` objects can be single entities such as a
   :class:`~fipy.terms.diffusionTerm.DiffusionTerm` or a linear combination of other
   :class:`~fipy.terms.term.Term` objects that build up to form an expression such as
-  Equation :eq:`eqn:num:gen`.
+  Equation :eq:`num:gen`.
 
 Beyond these three fundamental classes of :class:`~fipy.meshes.mesh.Mesh`,
 :class:`~fipy.variables.variable.Variable`, and :class:`~fipy.terms.term.Term`, :term:`FiPy` is composed of a

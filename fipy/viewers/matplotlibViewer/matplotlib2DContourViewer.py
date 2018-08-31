@@ -61,7 +61,7 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
 
-    __doc__ += Matplotlib2DContourViewer._test2D(viewer="Matplotlib2DContourViewer")
+    __doc__ += AbstractMatplotlib2DViewer._test2D(viewer="Matplotlib2DContourViewer")
 
 
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, number=10, levels=None, figaspect='auto', **kwlimits):

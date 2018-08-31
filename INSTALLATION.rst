@@ -35,11 +35,10 @@ Pre-Installed on Binder
 -----------------------
 
 A full :term:`FiPy` installation is available for basic exploration on
-|Binder|_. The default notebook gives a rudimentary introduction to :term:`FiPy`
+Binder_. The default notebook gives a rudimentary introduction to :term:`FiPy`
 syntax and, like any `Jupyter Notebook`_ interface, tab completion will help
 you explore the package interactively.
 
-.. |Binder|        image:: https://mybinder.org/badge.svg
 .. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/develop
 .. _Jupyter Notebook:    http://jupyter.org
 
@@ -381,7 +380,7 @@ http://www.scipy.org/
 be useful for running and analyzing :term:`FiPy` simulations. Significantly
 improved performance has been achieved with the judicious use of C language
 inlining (see the :ref:`FlagsAndEnvironmentVariables` section for more
-details), via the :mod:`scipy.weave` module.
+details), via the :mod:`weave` module.
 
 .. note:
 
@@ -392,7 +391,7 @@ details), via the :mod:`scipy.weave` module.
 Level Set Packages
 ------------------
 
-To use the level set components of :ref:`FiPy` one of the following is
+To use the level set (:cite:`levelSetBook`) components of :term:`FiPy` one of the following is
 required.
 
 .. _SCIKITFMM:
@@ -584,12 +583,14 @@ in which you should use :option:`--prefix` instead of
 An alternative to setting the :envvar:`PYTHONPATH` is to employ one of the
 utilities that manage packages and their dependencies independently of
 the system package manager and the system directories. These utilities
-include Stow_, Virtualenv_ and zc.buildout_, amongst others. Here we'll
-describe the use of Virtualenv_, which we highly recommend.
+include Conda_, Stow_, Virtualenv_ and zc.buildout_, amongst others. Here we'll
+describe the use of Conda_, which we highly recommend.
 
 .. _Stow: http://savannah.gnu.org/projects/stow/
 .. _zc.buildout: http://pypi.python.org/pypi/zc.buildout
+.. _Virtualenv: https://virtualenv.pypa.io
+.. _Conda: https://conda.io
 
 .. _documentation:GIT:
 
-.. include:: documentation/GIT.txt
+.. include:: documentation/GIT.rst
