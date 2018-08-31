@@ -191,7 +191,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         ...                                                [-2,  4, -2],
         ...                                                [ 0, -2,  2]])
         True
-        >>> ## This currectly returns None because we lost the handle to the DiffusionTerm when it's negated.
+        >>> ## This correctly returns None because we lost the handle to the DiffusionTerm when it's negated.
         >>> print diffTerm.matrix
         None
 

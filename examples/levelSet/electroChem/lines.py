@@ -1,4 +1,4 @@
-93#!/usr/bin/env python
+#!/usr/bin/env python
 
 ## -*-Pyth-*-
  # ###################################################################
@@ -159,7 +159,7 @@ def _getOrderedLines(IDs, coordinates, thresholdDistance = 0.0):
     :Parameters:
 
       - `IDs`: An array of integers.
-      - `coordinates`: An array of coordiantes of the same length as IDs.
+      - `coordinates`: An array of coordinates of the same length as IDs.
 
     The following are a general set of test cases.
 

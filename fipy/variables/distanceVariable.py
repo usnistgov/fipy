@@ -332,7 +332,7 @@ class DistanceVariable(CellVariable):
         Calculates the `distanceVariable` as a distance function.
 
         :Parameters:
-          - `order`: The order of accuracy for the distance funtion
+          - `order`: The order of accuracy for the distance function
             calculation, either 1 or 2.
 
         """
@@ -391,7 +391,7 @@ class DistanceVariable(CellVariable):
         ...                        answer)
         True
 
-        Test to check that the circumfrence of a circle is, in fact,
+        Test to check that the circumference of a circle is, in fact,
         :math:`2\pi r`.
 
         >>> mesh = Grid2D(dx = 0.05, dy = 0.05, nx = 20, ny = 20)

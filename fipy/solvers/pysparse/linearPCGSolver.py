@@ -65,10 +65,10 @@ class LinearPCGSolver(PysparseSolver):
     The PCG method solves systems with
     a symmetric positive definite coefficient matrix.
 
-    The `LinearPCGSolver` is a wrapper class for the the PySparse_
+    The `LinearPCGSolver` is a wrapper class for the the Pysparse_
     `itsolvers.pcg()` and `precon.ssor()` methods.
 
-    .. _PySparse: http://pysparse.sourceforge.net
+    .. _Pysparse: http://pysparse.sourceforge.net
 
     """
 

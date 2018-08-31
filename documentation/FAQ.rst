@@ -314,7 +314,7 @@ Iterations, timesteps, and sweeps? Oh, my!
 ------------------------------------------
 
 Any non-linear solution of partial differential equations is an
-approximation. These approximations benefit from repetetive
+approximation. These approximations benefit from repetitive
 solution to achieve the best possible answer. In :term:`FiPy` (and in
 many similar PDE solvers), there are three layers of repetition.
 
@@ -435,7 +435,7 @@ timesteps
   >>> while elapsedTime < totalElapsedTime:
   ...     eq.solve(var=myVar, dt=timeStep, ...)
   ...     elapsedTime += timeStep
-  ...     timeStep = SomeFunctionOfVariablesAndTime(myVar1, myVar2, elapedTime)
+  ...     timeStep = SomeFunctionOfVariablesAndTime(myVar1, myVar2, elapsedTime)
 
 
   A majority of the examples in this manual illustrate time evolving

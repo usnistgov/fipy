@@ -13,7 +13,7 @@ Contributors
     volume techniques, and level set treatments.
 
 `Jim Warren`_
-    is the leader of the Themodynamics and Kinetics group in
+    is the leader of the Thermodynamics and Kinetics group in
     |MSED| and Director of |CTCMS| of |MML| at
     |NIST|. Jim is interested in a variety of problems, including the
     phase field modeling of solidification, polycrystalline solids,
@@ -33,7 +33,7 @@ Max Gibiansky
     from `Harvey Mudd College`_
 
 `Andrew Reeve`_
-    added support for anistropic diffusion coefficients while he was on
+    added support for anisotropic diffusion coefficients while he was on
     sabbatical from the `University of Maine`_.
 
 Olivia Buzek

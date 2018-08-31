@@ -15,7 +15,7 @@ run any of the scripts in the :ref:`examples <part:examples>`.
    :mod:`examples.diffusion.mesh1D` to understand the notation and
    basic concepts of :term:`FiPy`.
 
-We exclusively use either the unix command line or :term:`IPython` to
+We exclusively use either the UNIX command line or :term:`IPython` to
 interact with :term:`FiPy`. The commands in the :ref:`examples
 <part:examples>` are written with the assumption that they will be
 executed from the command line. For instance, from within the main
@@ -224,7 +224,7 @@ package.
 
 .. envvar:: FIPY_INCLUDE_NUMERIX_ALL
 
-   If present, causes the inclusion of all funcions and variables of the
+   If present, causes the inclusion of all functions and variables of the
    :mod:`~fipy.tools.numerix` module in the :mod:`fipy` namespace.
 
 .. envvar:: FIPY_CACHE
@@ -258,8 +258,8 @@ class meshes. Currently, the only remaining serial-only meshes are
 .. note::
 
    Parallel efficiency is greatly improved by installing
-   :term:`PySparse` in addition to :term:`Trilinos`. If
-   :term:`PySparse` is not installed be sure to use the
+   :term:`Pysparse` in addition to :term:`Trilinos`. If
+   :term:`Pysparse` is not installed be sure to use the
    ``--no-pysparse`` flag when running in parallel.
 
 It should not generally be necessary to change anything in your script.
@@ -279,7 +279,7 @@ examples, e.g.,::
 
 You should see two viewers open with half the simulation running in one of
 them and half in the other. If this does not look right (e.g., you get two
-viewers, both showing the entire simultion), or if you just want to be
+viewers, both showing the entire simulation), or if you just want to be
 sure, you can run a diagnostic script::
 
     $ mpirun -np 3 python examples/parallel.py
@@ -561,7 +561,7 @@ given by ``mask`` with the following alterations
 The parameter ``largeValue`` must be chosen to be large enough to
 completely dominate the matrix diagonal and the RHS vector in cells
 that are masked. The ``mask`` variable would typically be a
-``CellVariable`` boolean constructed using the cell center values.
+``CellVariable`` Boolean constructed using the cell center values.
 
 One must be careful to distinguish between constraining internal cell
 values during the solve step and simply applying arbitrary constraints

@@ -51,7 +51,7 @@ This input file again solves a 1D diffusion problem as in
 `./examples/diffusion/steadyState/mesh1D.py`. The difference in this example is
 that the solution method is explicit. The equation used is the
 `ExplicitDiffusionEquation`. In this case many steps have to be taken to reach
-equilibrum. The `timeStepDuration` parameter specifies the size of each time step
+equilibrium. The `timeStepDuration` parameter specifies the size of each time step
 and `steps` is the number of time steps.
 
     >>> dx = 1.

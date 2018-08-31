@@ -58,7 +58,7 @@ __all__ = ["LinearCGSSolver"]
 class LinearCGSSolver(TrilinosAztecOOSolver):
 
     """
-    The `LinearCGSSolver` is an interface to the cgs solver in Trilinos, using
+    The `LinearCGSSolver` is an interface to the CGS solver in Trilinos, using
     the `MultilevelSGSPreconditioner` by default.
 
     """

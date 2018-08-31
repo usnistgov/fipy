@@ -373,7 +373,7 @@ we can associate the mobility :math:`M_C` with the intrinsic diffusivity :math:`
    \right).
 
 The first term is clearly a :class:`~fipy.terms.diffusionTerm.DiffusionTerm` in :math:`C`. The second is a
-:class:`~fipy.terms.diffusionTerm.DiffusionTerm` in :math:`\phi` with a diffusion coefficent
+:class:`~fipy.terms.diffusionTerm.DiffusionTerm` in :math:`\phi` with a diffusion coefficient
 
 .. math::
 

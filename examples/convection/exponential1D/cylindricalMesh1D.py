@@ -59,7 +59,7 @@ with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 >>> diffCoeff = 1.
 >>> convCoeff = (10.,)
 
-We define a 1D cylindrical mesh representing an anulus
+We define a 1D cylindrical mesh representing an annulus
 
 .. index:: Grid1D
 

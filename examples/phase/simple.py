@@ -207,10 +207,10 @@ we obtain the surprising result that :math:`\phi` is zero everywhere.
 .. image:: simple/explicit.*
    :width: 50%
    :align: center
-   :alt: steady-state phase field zero everwhere
+   :alt: steady-state phase field zero everywhere
 
 On inspection, we can see that this occurs because, for our step-function initial condition,
-:math:`m_\phi = 0` everwhere,
+:math:`m_\phi = 0` everywhere,
 hence we are actually only solving the simple implicit diffusion equation
 :math:`\kappa_\phi \nabla^2\phi = 0`,
 which has exactly the uninteresting solution we obtained.
@@ -283,7 +283,7 @@ Kobayashi:
 
 .. note:: Because ``mPhi`` is a variable field, the quantities ``(mPhi > 0)``
    and ``(mPhi < 0)`` evaluate to variable *fields* of `True` and `False`,
-   instead of single boolean values.
+   instead of single Boolean values.
 
 This expression converges to the same value given by the explicit
 relaxation approach, but in only 8 sweeps (note that because there is no
@@ -322,7 +322,7 @@ then :math:`S_1 = \left.\frac{\partial S}{\partial
 S}{\partial\phi} \phi)_\text{old} = S_\text{old} - S_1
 \phi_\text{old}`.
 In this way, the linearized source will be tangent to the curve of the
-actual source as a function of the dependendent variable.
+actual source as a function of the dependent variable.
 
 For our source,
 :math:`S = m_\phi \phi (1 - \phi)`,

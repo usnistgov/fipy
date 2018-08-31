@@ -307,7 +307,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> print numerix.allclose(term._getGeomCoeff(CellVariable(mesh=mesh))[0], val)
         Traceback (most recent call last):
             ...
-        IndexError: diffusion coefficent tensor is not an appropriate shape for this mesh
+        IndexError: diffusion coefficient tensor is not an appropriate shape for this mesh
 
         Anisotropy test
 

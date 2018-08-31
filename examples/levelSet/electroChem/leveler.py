@@ -173,7 +173,7 @@ and their corresponding arguments for the
     \multicolumn{6}{|c|}{Accelerator Parameters}                                                                                                                       \\
     \hline
     $\theta_A$            & accelerator coverage              & \texttt{acceleratorCoverage}          & 0&0                       &                                    \\
-    $c_A$                 & accelerator concentartion         & \texttt{acceleratorConcentration}     & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
+    $c_A$                 & accelerator concentration         & \texttt{acceleratorConcentration}     & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
     $c_A^{\infty}$        & far field accelerator concentration & \texttt{acceleratorConcentration}   & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
     $D_A$                 & catalyst diffusion coefficient    & \texttt{catalystDiffusion}            & 1&0$\times$10$^{-9}$      & m$^2$ s$^{-1}$                     \\
     $\Gamma_A$            & accelerator site density          & \texttt{siteDensity}                  & 9&8$\times$10$^{-6}$      & mol m$^{-2}$                       \\

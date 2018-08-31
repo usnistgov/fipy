@@ -19,7 +19,7 @@
  # United States Code this software is not subject to copyright
  # protection, and this software is considered to be in the public domain.
  # FiPy is an experimental system.
- # NIST assumes no responsibility whatsoever for its use by whatsever for its use by
+ # NIST assumes no responsibility whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.

@@ -189,7 +189,7 @@ class _MeshVariable(Variable):
     @property
     def constraintMask(self):
         r"""
-        Test that `constraintMask` returns a Variable that updates itself whenver the constraints change.
+        Test that `constraintMask` returns a Variable that updates itself whenever the constraints change.
 
         >>> from fipy import *
 

@@ -54,7 +54,7 @@ from fipy.terms.sourceTerm import SourceTerm
 class _ExplicitSourceTerm(SourceTerm):
     r"""
 
-    The `_ExplicitSourceTerm` discretisation is given by
+    The `_ExplicitSourceTerm` discretization is given by
 
     .. math::
 

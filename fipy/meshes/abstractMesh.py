@@ -209,7 +209,7 @@ class AbstractMesh(object):
 
         return ext
 
-    """scaled geometery properties
+    """scaled geometry properties
 
     These should not exist."""
     scaledFaceAreas           = property(lambda s: s._scaledFaceAreas)

@@ -6,7 +6,7 @@ Glossary
 .. glossary::
 
    Buildbot
-      The BuildBot is a system to automate the compile/test cycle
+      The Buildbot is a system to automate the compile/test cycle
       required by most software projects to validate code changes.
       No longer used for :term:`FiPy`.
       See http://trac.buildbot.net/.
@@ -65,7 +65,7 @@ Glossary
       See http://www.pip-installer.org.
 
    PyAMG
-      A suite of python-based preconditoners. See
+      A suite of python-based preconditioners. See
       http://code.google.com/p/pyamg/
       and :ref:`PYAMG`.
 
@@ -85,7 +85,7 @@ Glossary
       A mechanism for mixing C and Python code.
       See http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/.
 
-   PySparse
+   Pysparse
       The :mod:`pysparse` :term:`Python` package provides sparse
       matrix storage, solvers, and linear algebra routines. See
       http://pysparse.sourceforge.net
@@ -128,9 +128,9 @@ Glossary
 
    Trilinos
       This package provides sparse matrix storage, solvers, and
-      preconditioners, and can be used instead of :term:`PySparse`.
+      preconditioners, and can be used instead of :term:`Pysparse`.
       :term:`Trilinos` preconditioning allows for iterative solutions
-      to some difficult problems that :term:`PySparse` cannot
+      to some difficult problems that :term:`Pysparse` cannot
       solve. See
       http://trilinos.sandia.gov
       and :ref:`TRILINOS`.

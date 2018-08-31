@@ -202,7 +202,7 @@ typed by you.
    text exactly as it appears in the examples.
 
 When references are made to file system paths, it is assumed that the
-current working directory is the :term:`FiPy` distribution directory, refered to
+current working directory is the :term:`FiPy` distribution directory, referred to
 as the "base directory", such that::
 
     examples/diffusion/steadyState/mesh1D.py
@@ -240,7 +240,7 @@ or a
 .. _StackOverflow: http://stackoverflow.com/questions/tagged/fipy
 
 .. |GitHub|        image:: https://img.shields.io/github/contributors/usnistgov/fipy.svg
-.. _Github:        https://github.com/usnistgov/fipy
+.. _GitHub:        https://github.com/usnistgov/fipy
 .. |gitter|        image:: https://badges.gitter.im/usnistgov/fipy.svg
 .. _gitter:        https://gitter.im/usnistgov/fipy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
 .. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/develop.svg?label=Linux

@@ -100,7 +100,7 @@ and one field to represent the electrostatic potential (0 everywhere)
 
     >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
 
-Althought it is constant in this problem, in later problems we will need the following
+Although it is constant in this problem, in later problems we will need the following
 functions of the phase field
 
     >>> def pPrime(xi):

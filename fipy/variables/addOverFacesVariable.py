@@ -82,7 +82,7 @@ class _AddOverFacesVariable(CellVariable):
           for(j = 0; j < numberOfCellFaces; j++)
             {
               // cellFaceIDs can be masked, which caused subtle and
-              // unreproduceable problems on OS X (who knows why not elsewhere)
+              // unreproducible problems on OS X (who knows why not elsewhere)
               long id = ids[i + j * numberOfCells];
               if (id >= 0) {
                   value[i] += orientations[i + j * numberOfCells] * faceVariable[id];

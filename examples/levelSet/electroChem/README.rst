@@ -9,7 +9,7 @@ State of the art manufacturing of semiconductor devices involves the
 electrodeposition of copper for on-chip wiring of integrated circuits.
 In the Damascene process interconnects are fabricated by first
 patterning trenches in a dielectric medium and then filling by metal
-electrodeposition over the entire wafer surface. This metalization
+electrodeposition over the entire wafer surface. This metallization
 process, pioneered by IBM, depends on the use of electrolyte additives
 that effect the local metal deposition rate.
 
