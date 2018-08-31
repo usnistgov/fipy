@@ -243,7 +243,7 @@ def testmod(m=None, name=None, globs=None, verbose=None,
     default, no extra globals are used.  This is new in 2.4.
 
     Optional keyword arg "verbose" prints lots of stuff if true, prints
-    only failures if false; by default, it's true iff. "-v" is in sys.argv.
+    only failures if false; by default, it's true iff "-v" is in sys.argv.
 
     Optional keyword arg "report" prints a summary at the end when true,
     else prints nothing at the end.  In verbose mode, the summary is

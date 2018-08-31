@@ -102,7 +102,7 @@ def gmshVersion(communicator=parallelComm):
     """Determine the version of Gmsh.
 
     We can't trust the generated .msh file for the correct version number, so
-    we have to retrieve it from the Gmsh binary.
+    we have to retrieve it from the gmsh binary.
     """
     if communicator.procID == 0:
         while True:
