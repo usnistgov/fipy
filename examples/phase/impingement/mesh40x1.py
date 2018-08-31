@@ -256,8 +256,3 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
-
-#  LocalWords:  WarrenPolycrystal ModularVariable et al Acta Materialia mPhiVar
-#  LocalWords:  phaseTransientCoeff thetaSmallValue thetaTransientCoeff phaseEq
-#  LocalWords:  thetaMag implicitSource phaseMod phaseModSq pFunc phaseFace
-#  LocalWords:  phaseSq gradMag IGamma
