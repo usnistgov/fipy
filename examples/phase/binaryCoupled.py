@@ -52,7 +52,7 @@ As in :mod:`examples.phase.simple`, we will examine a 1D problem
 
 .. index:: Grid1D
 
->>> from fipy import CellVariable, Variable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer
+>>> from fipy import CellVariable, Variable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer
 >>> from fipy.tools import numerix
 
 >>> nx = 400
@@ -538,17 +538,12 @@ Because the phase field equation is coupled to the composition through
 field through ``phaseTransformationVelocity``, it is necessary sweep this
 non-linear problem to convergence. We use the "residual" of the equations
 (a measure of how well they think they have solved the given set of linear
-equations) as a test for how long to sweep. The solution matrix for ``diffusionEq`` is asymmetric
-(is this still true?)
-and cannot be solved by the default :class:`~fipy.solvers.pysparse.linearPCGSolver.LinearPCGSolver`. Therefore, we use a
-:class:`~fipy.solvers.LinearLUSolver` for this equation.
+equations) as a test for how long to sweep.
 
-.. index:: LinearLUSolver, solve, sweep
+.. index:: solve, sweep
 
 We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
-
->>> solver = LinearLUSolver(tolerance=1e-10)
 
 >>> phase.updateOld()
 >>> C.updateOld()
@@ -556,7 +551,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 >>> initialRes = None
 
 >>> while res > 1e-4:
-...     res = eq.sweep(dt=dt, solver=solver)
+...     res = eq.sweep(dt=dt)
 ...     if initialRes is None:
 ...         initialRes = res
 ...     res = res / initialRes
@@ -643,7 +638,7 @@ time step of about :math:`\unit{10^{-5}}{\second}`.
 ...     C.updateOld()
 ...     res = 1e+10
 ...     while res > 1e-3:
-...         res = eq.sweep(dt=dt, solver=solver)
+...         res = eq.sweep(dt=dt)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
