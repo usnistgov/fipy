@@ -740,17 +740,21 @@ Nothing different needs to be done when
   ``mask`` location during the linear solve so it is not a substitute
   for the source term machinations described above. Future releases of
   :term:`FiPy` may implicitly deal with this discrepancy, but the current
-  release does not. A simple example can be used to demonstrate this::
+  release does not. 
+
+  A simple example can be used to demonstrate this::
 
   >>> m = Grid1D(nx=2, dx=1.)
   >>> var = CellVariable(mesh=m)
 
-  Apply a constraint to the faces for a right side boundary condition
+  We wish to solve :math:`\nabla^2 \phi = 0` subject to
+  :math:`\phi\rvert_\text{right} = 1` and :math:`\phi\rvert_{x < 1} = 0.25`.
+  We apply a constraint to the faces for the right side boundary condition
   (which works).
 
   >>> var.constrain(1., where=m.facesRight)
 
-  Create the equation with the source term constraint described above
+  We create the equation with the source term constraint described above
 
   >>> mask = m.x < 1.
   >>> largeValue = 1e+10
@@ -764,7 +768,7 @@ Nothing different needs to be done when
   [ 0.25  0.75]
 
   However, if a constraint is used without the source term constraint an
-  unexpected value is obtained
+  unexpected solution is obtained
 
   >>> var.constrain(0.25, where=mask)
   >>> eqn = DiffusionTerm()
@@ -773,6 +777,12 @@ Nothing different needs to be done when
   [ 0.25  1.  ]
 
   although the left cell has the expected value as it is constrained.
+
+  :term:`FiPy` has simply solved :math:`\nabla^2 \phi = 0` with
+  :math:`\phi\rvert_\text{right} = 1` and (by default)
+  :math:`\hat{n}\cdot\nabla\phi\rvert_\text{left} = 0`, giving :math:`\phi
+  = 1` everywhere, and then subsequently replaced the cells :math:`x < 1`
+  with :math:`\phi = 0.25`.
 
 .. %    http://thread.gmane.org/gmane.comp.python.fipy/726
    %    http://thread.gmane.org/gmane.comp.python.fipy/846
