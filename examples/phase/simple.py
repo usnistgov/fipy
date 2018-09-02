@@ -14,19 +14,32 @@
  #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
  #
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
  #
  # ###################################################################
@@ -194,10 +207,10 @@ we obtain the surprising result that :math:`\phi` is zero everywhere.
 .. image:: simple/explicit.*
    :width: 50%
    :align: center
-   :alt: steady-state phase field zero everwhere
+   :alt: steady-state phase field zero everywhere
 
 On inspection, we can see that this occurs because, for our step-function initial condition,
-:math:`m_\phi = 0` everwhere,
+:math:`m_\phi = 0` everywhere,
 hence we are actually only solving the simple implicit diffusion equation
 :math:`\kappa_\phi \nabla^2\phi = 0`,
 which has exactly the uninteresting solution we obtained.
@@ -270,7 +283,7 @@ Kobayashi:
 
 .. note:: Because ``mPhi`` is a variable field, the quantities ``(mPhi > 0)``
    and ``(mPhi < 0)`` evaluate to variable *fields* of `True` and `False`,
-   instead of single boolean values.
+   instead of single Boolean values.
 
 This expression converges to the same value given by the explicit
 relaxation approach, but in only 8 sweeps (note that because there is no
@@ -309,7 +322,7 @@ then :math:`S_1 = \left.\frac{\partial S}{\partial
 S}{\partial\phi} \phi)_\text{old} = S_\text{old} - S_1
 \phi_\text{old}`.
 In this way, the linearized source will be tangent to the curve of the
-actual source as a function of the dependendent variable.
+actual source as a function of the dependent variable.
 
 For our source,
 :math:`S = m_\phi \phi (1 - \phi)`,

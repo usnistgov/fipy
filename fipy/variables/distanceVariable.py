@@ -14,19 +14,32 @@
  #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
  #
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
  #
  # ###################################################################
@@ -134,7 +147,7 @@ class DistanceVariable(CellVariable):
     >>> dx = 1.
     >>> dy = 2.
     >>> from fipy.meshes import Grid2D
-    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3)
+    >>> mesh = Grid2D(dx = dx, dy = dy, nx = 2, ny = 3, communicator=serialComm)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1., 1., -1., 1.))
 
     >>> var.calcDistanceFunction() #doctest: +LSM
@@ -198,7 +211,7 @@ class DistanceVariable(CellVariable):
     that are opposite sign neighbors have perpendicular normal vectors. In
     fact the two closest cells could have opposite normals.
 
-    >>> mesh = Grid1D(dx = 1., nx = 3)
+    >>> mesh = Grid1D(dx = 1., nx = 3, communicator=serialComm)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., -1.))
     >>> var.calcDistanceFunction() #doctest: +LSM
     >>> print var.allclose((-0.5, 0.5, -0.5)) #doctest: +LSM
@@ -319,7 +332,7 @@ class DistanceVariable(CellVariable):
         Calculates the `distanceVariable` as a distance function.
 
         :Parameters:
-          - `order`: The order of accuracy for the distance funtion
+          - `order`: The order of accuracy for the distance function
             calculation, either 1 or 2.
 
         """
@@ -378,7 +391,7 @@ class DistanceVariable(CellVariable):
         ...                        answer)
         True
 
-        Test to check that the circumfrence of a circle is, in fact,
+        Test to check that the circumference of a circle is, in fact,
         :math:`2\pi r`.
 
         >>> mesh = Grid2D(dx = 0.05, dy = 0.05, nx = 20, ny = 20)

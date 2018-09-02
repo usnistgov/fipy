@@ -13,20 +13,32 @@
  #     www: http://www.ctcms.nist.gov/fipy/
  #
  # ========================================================================
- # This document was prepared at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this document is not subject to copyright
- # protection and is in the public domain.  setup.py
- # is an experimental work.  NIST assumes no responsibility whatsoever
+ # This software was developed by employees of the National Institute
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
+ # works of NIST employees are not subject to copyright
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.  NIST assumes no responsibility whatsoever
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
  # We would appreciate acknowledgement if the document is used.
  #
- # This document can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
  #
  # ###################################################################
@@ -49,6 +61,7 @@ def _TestClass(base):
             ('Scipy', None, "run FiPy using SciPy solvers"),
             ('no-pysparse',None, "run FiPy without using the Pysparse solvers"),
             ('pyamg',None, "run FiPy without using the PyAMG solvers"),
+            ('pyamgx',None, "run FiPy using the pyamgx solvers"),
             ('all', None, "run all non-interactive FiPy tests (default)"),
             ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
             ('examples', None, "test FiPy examples"),
@@ -81,6 +94,7 @@ def _TestClass(base):
             self.pysparse = False
             self.no_pysparse = False
             self.pyamg = False
+            self.pyamgx = False
             self.scipy = False
             self.timetests = None
             self.skfmm = False
@@ -139,7 +153,7 @@ def _TestClass(base):
 
         def printPackageInfo(self):
             
-            for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'mpi4py']:
+            for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'mpi4py', 'pyamgx']:
 
                 try:
                     mod = __import__(pkg)
@@ -160,11 +174,11 @@ def _TestClass(base):
                 import PyTrilinos
                 print PyTrilinos.version()
             except ImportError, e:
-                print pkg,'is not installed'
+                print 'PyTrilinos is not installed'
             except Exception, e:
-                print pkg, 'version check failed:', e
+                print 'PyTrilinos version check failed:', e
 
-            ## Mayavi uses a non-standard approach for storing its version nummber.
+            ## Mayavi uses a non-standard approach for storing its version number.
             try:
                 from mayavi.__version__ import __version__ as mayaviversion
                 print 'mayavi version', mayaviversion
@@ -206,6 +220,27 @@ def _TestClass(base):
                     import PyTrilinos
                 except ImportError, a:
                     print >>sys.stderr, "!!! Trilinos library is not installed"
+                    return
+
+            if self.pyamgx:
+                try:
+                    ## Unregister the function pyamgx.finalize
+                    ## from atexit. This prevents
+                    ## pyamgx from printing an error message
+                    ## about memory leaks and a dump of leaked memory.
+                    ## The memory leaks happen because
+                    ## the tests do not use the pyamgx solvers
+                    ## "cleanly", i.e., they do not use the
+                    ## `with` statement.
+                    import pyamgx
+                    import atexit
+                    if hasattr(atexit, 'unregister'):
+                        atexit.unregister(pyamgx.finalize)
+                    else:
+                        atexit._exithandlers.remove(
+                            (pyamgx.finalize, (), {}))
+                except ImportError, e:
+                    print >>sys.stederr, "!!! pyamgx package is not installed"
                     return
 
             if self.inline:

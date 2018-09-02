@@ -11,17 +11,20 @@ simulation of science problems.  Numerous PDE solvers exist, using a
 variety of languages and numerical approaches. Many are proprietary,
 expensive and difficult to customize.  As a result, scientists spend
 considerable resources repeatedly developing limited tools for
-specific problems.  Our approach, combining the FV method and Python_,
+specific problems.  Our approach, combining the FV method and :term:`Python`,
 provides a tool that is extensible, powerful and freely available. A
-significant advantage to Python_ is the existing suite of tools for
+significant advantage to :term:`Python` is the existing suite of tools for
 array calculations, sparse matrices and data rendering.
 
-The :term:`FiPy` framework includes terms for transient diffusion, convection and
-standard sources, enabling the solution of arbitrary combinations of
-coupled elliptic, hyperbolic and parabolic PDEs.  Currently implemented
-models include phase field |citePhaseField| treatments of polycrystalline,
-dendritic, and electrochemical phase transformations as well as a level set
-treatment of the electrodeposition process |citeCEAC|.
+The :term:`FiPy` framework includes terms for transient diffusion,
+convection and standard sources, enabling the solution of arbitrary
+combinations of coupled elliptic, hyperbolic and parabolic PDEs. Currently
+implemented models include phase field :cite:`BoettingerReview:2002`
+:cite:`ChenReview:2002` :cite:`McFaddenReview:2002` treatments of polycrystalline,
+dendritic, and electrochemical phase transformations, as well as drug
+eluting stents :cite:`Saylor:2011p2794`, reactive wetting :cite:`PhysRevE.82.051601`,
+photovoltaics :cite:`Hangarter:2011p2795` and a level set treatment of the
+electrodeposition process :cite:`NIST:damascene:2001`.
 
 .. _MML:                  http://www.nist.gov/mml/
 .. _CTCMS:                http://www.ctcms.nist.gov/

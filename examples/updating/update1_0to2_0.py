@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 ##
  # ###################################################################
@@ -12,19 +13,32 @@
  #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
  #
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
  #
  # ###################################################################
@@ -137,7 +151,7 @@ The following items **must** be changed in your scripts
    :class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition` now takes a mask,
    instead of a list of :class:`~fipy.meshes.face.Face` IDs. Now you write
 
-   >>> X, Y = mesh.getFaaceCenters()
+   >>> X, Y = mesh.getFaceCenters()
    >>> FixedValue(faces=mesh.getExteriorFaces() & (X**2 < 1e-6), value=...)
 
    instead of
@@ -276,7 +290,7 @@ to indicate that we may not maintain the old syntax indefinitely.
    which can be very hard to understand after the fact (``make``? ``make`` what?).
 
  * A :class:`~fipy.terms.convectionTerm.ConvectionTerm` can now calculate its
-   Peclet number automatically, so the ``diffusionTerm`` argument is no longer required
+   Péclet number automatically, so the ``diffusionTerm`` argument is no longer required
 
    >>> eq = (TransientTerm()
    ...       == DiffusionTerm(coeff=diffCoeff)
@@ -290,7 +304,7 @@ to indicate that we may not maintain the old syntax indefinitely.
    ...       + PowerLawConvectionTerm(coeff=convCoeff, diffusionTerm=diffTerm))
 
  * An :class:`~fipy.terms.term.implicitSourceTerm.ImplicitSourceTerm` now "knows"
-   how to partion itself onto the solution matrix, so you can write
+   how to partition itself onto the solution matrix, so you can write
 
    >>> S0 = mXi * phase * (1 - phase) - phase * S1
    >>> source = S0 + ImplicitSourceTerm(coeff=S1)

@@ -15,7 +15,7 @@ run any of the scripts in the :ref:`examples <part:examples>`.
    :mod:`examples.diffusion.mesh1D` to understand the notation and
    basic concepts of :term:`FiPy`.
 
-We exclusively use either the unix command line or :term:`IPython` to
+We exclusively use either the UNIX command line or :term:`IPython` to
 interact with :term:`FiPy`. The commands in the :ref:`examples
 <part:examples>` are written with the assumption that they will be
 executed from the command line. For instance, from within the main
@@ -35,7 +35,8 @@ examples.
 In order to customize the examples, or to develop your own scripts, some
 knowledge of Python syntax is required.  We recommend you familiarize
 yourself with the excellent `Python tutorial`_ :cite:`PythonTutorial`
-or with `Dive Into Python`_ :cite:`DiveIntoPython`.
+or with `Dive Into Python`_ :cite:`DiveIntoPython`. Deeper insight into 
+Python can be obtained from the :cite:`PythonReference`.
 
 .. _Python tutorial: http://docs.python.org/tut/tut.html
 .. _Dive Into Python: http://diveintopython.org
@@ -65,25 +66,12 @@ for more details.
 
 :term:`FiPy` will skip tests that depend on :ref:`OPTIONALPACKAGES` that
 have not been installed. For example, if :term:`Mayavi` and :term:`Gmsh`
-are not installed, :term:`FiPy` will warn::
+are not installed, :term:`FiPy` will warn something like::
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     Skipped 131 doctest examples because `gmsh` cannot be found on the $PATH
     Skipped 42 doctest examples because the `tvtk` package cannot be imported
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-We have a few known, intermittent failures:
-
- :trac:`#425`
-    The test suite can freeze, usually in :mod:`examples.chemotaxis`,
-    when running on multiple processors. This has never affected us in an
-    actual parallel simulation, only in the test suite.
-
- :trac:`#430`
-    When running in parallel, the tests for
-    :class:`~fipy.terms.binaryTerm._BinaryTerm` sometimes return one
-    erroneous result. This is not reliably reproducible and doesn't seem to
-    have an effect on actual simulations.
 
 Although the test suite may show warnings, there should be no other errors.
 Any errors should be investigated or reported on the `issue tracker`_.
@@ -130,8 +118,20 @@ script you call from the command line, e.g::
 .. cmdoption:: --inline
 
    Causes many mathematical operations to be performed in C, rather than
-   Python, for improved performance. Requires the :mod:`scipy.weave`
+   Python, for improved performance. Requires the :mod:`weave`
    package.
+
+.. cmdoption:: --cache
+
+   Causes lazily evaluated :term:`FiPy`
+   :class:`~fipy.variables.variable.Variable` objects to retain their
+   value.
+
+.. cmdoption:: --no-cache
+
+   Causes lazily evaluated :term:`FiPy`
+   :class:`~fipy.variables.variable.Variable` objects to always recalculate
+   their value.
 
 The following flags take precedence over the :envvar:`FIPY_SOLVERS`
 environment variable:
@@ -158,6 +158,10 @@ environment variable:
 
    Forces the use of the :ref:`PYAMG` preconditioners in conjunction
    with the :ref:`SCIPY` solvers.
+
+.. cmdoption:: --pyamgx
+
+   Forces the use of the :ref:`PYAMGX` solvers.
 
 .. cmdoption:: --lsmlib
 
@@ -191,12 +195,12 @@ package.
 .. envvar:: FIPY_INLINE
 
    If present, causes many mathematical operations to be performed in C,
-   rather than Python. Requires the :mod:`scipy.weave` package.
+   rather than Python. Requires the :mod:`weave` package.
 
 .. envvar:: FIPY_INLINE_COMMENT
 
    If present, causes the addition of a comment showing the Python context
-   that produced a particular piece of :mod:`scipy.weave` C code. Useful
+   that produced a particular piece of :mod:`weave` C code. Useful
    for debugging.
 
 .. envvar:: FIPY_SOLVERS
@@ -220,8 +224,14 @@ package.
 
 .. envvar:: FIPY_INCLUDE_NUMERIX_ALL
 
-   If present, causes the inclusion of all funcions and variables of the
+   If present, causes the inclusion of all functions and variables of the
    :mod:`~fipy.tools.numerix` module in the :mod:`fipy` namespace.
+
+.. envvar:: FIPY_CACHE
+
+   If present, causes lazily evaluated :term:`FiPy` 
+   :class:`~fipy.variables.variable.Variable` objects to
+   retain their value.
 
 .. _PARALLEL:
 
@@ -248,8 +258,8 @@ class meshes. Currently, the only remaining serial-only meshes are
 .. note::
 
    Parallel efficiency is greatly improved by installing
-   :term:`PySparse` in addition to :term:`Trilinos`. If
-   :term:`PySparse` is not installed be sure to use the
+   :term:`Pysparse` in addition to :term:`Trilinos`. If
+   :term:`Pysparse` is not installed be sure to use the
    ``--no-pysparse`` flag when running in parallel.
 
 It should not generally be necessary to change anything in your script.
@@ -269,7 +279,7 @@ examples, e.g.,::
 
 You should see two viewers open with half the simulation running in one of
 them and half in the other. If this does not look right (e.g., you get two
-viewers, both showing the entire simultion), or if you just want to be
+viewers, both showing the entire simulation), or if you just want to be
 sure, you can run a diagnostic script::
 
     $ mpirun -np 3 python examples/parallel.py
@@ -674,7 +684,7 @@ given by ``mask`` with the following alterations
 The parameter ``largeValue`` must be chosen to be large enough to
 completely dominate the matrix diagonal and the RHS vector in cells
 that are masked. The ``mask`` variable would typically be a
-``CellVariable`` boolean constructed using the cell center values.
+``CellVariable`` Boolean constructed using the cell center values.
 
 Internal fixed gradient
 -----------------------
@@ -822,30 +832,14 @@ command in the base directory::
 .. note::
 
    This mechanism is intended primarily for the developers. At a minimum,
-   you will need at least version 1.1.2 of `Sphinx
-   <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites,
-   although we build the documentation witih the latest development code
-   (you will need hg_ installed)::
+   you will need at least version 1.7.0 of `Sphinx
+   <http://www.sphinx-doc.org/>`_, plus all of its prerequisites. We 
+   install via conda::
 
-   $ pip install --upgrade -e hg+https://bitbucket.org/birkenfeld/sphinx#egg=sphinx
+   $ conda install --channel conda-forge sphinx
 
-   We use several contributed Sphinx plugins::
+   Bibliographic citations require the `sphinxcontrib-bibtex` package::
 
-   $ hg clone https://bitbucket.org/birkenfeld/sphinx-contrib/
-
-   $ cd sphinx-contrib/traclinks
-   $ python setup.py install
-
-   Bibliographic citations require the `sphinxcontrib-bibtex` package. For
-   the moment, the development versions of several packages are required
-   to properly render our bibliography (you will need both bzr_ and git_
-   installed)::
-
-   $ pip install -e bzr+lp:~pybtex-devs/pybtex/trunk
-   $ pip install -e git+git@github.com:mcmtroffaes/pybtex-docutils.git#egg=pybtex-docutils
-   $ pip install -e git+git@github.com:mcmtroffaes/sphinxcontrib-bibtex.git#egg=sphinxcontrib-bibtex
+   $ pip install sphinxcontrib-bibtex
 
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
-.. _hg: http://mercurial.selenic.com
-.. _bzr: http://bazaar.canonical.com
-.. _git: http://git-scm.com

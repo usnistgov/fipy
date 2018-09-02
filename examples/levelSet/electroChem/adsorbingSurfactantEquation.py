@@ -15,19 +15,32 @@
  #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  PFM is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
  #
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
  #
  # ###################################################################
@@ -35,11 +48,19 @@
 
 __docformat__ = 'restructuredtext'
 
+import platform
+
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.variables.variable import Variable
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.variables.surfactantConvectionVariable import SurfactantConvectionVariable
 from fipy.terms.transientTerm import TransientTerm
+from fipy.tests.doctestPlus import register_skipper
+from fipy.solvers import solver
+
+register_skipper(flag="NOTLINUXSCIPY",
+                 test=lambda : platform.system() != "Linux" or solver != 'scipy',
+                 why="`scipy` solvers on Linux fail intermittently: #575")
 
 class AdsorbingSurfactantEquation():
     r"""
@@ -167,7 +188,7 @@ class AdsorbingSurfactantEquation():
     >>> print check.allequal(answer)
     True
 
-    The following test case is to fix a bug where setting the adosrbtion
+    The following test case is to fix a bug where setting the adsorption
     coefficient to zero leads to the solver not converging and an eventual
     failure.
 
@@ -235,7 +256,9 @@ class AdsorbingSurfactantEquation():
     ...     levEq.solve(levVar, dt = dt)
     ...     accEq.solve(accVar, dt = dt) #doctest: +LSM
 
-    >>> print (accVar >= -1e-10).all()
+    >>> # The following test fails sometimes on linux with scipy solvers
+    >>> # See issue #575. We ignore for now.
+    >>> print (accVar >= -1e-10).all() #doctest: +NOTLINUXSCIPY
     True
     """
     def __init__(self,

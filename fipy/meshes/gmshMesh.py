@@ -15,24 +15,34 @@
 #     www: http://www.ctcms.nist.gov/fipy/
 #
 # ========================================================================
-# This document was prepared at the National Institute of Standards
-# and Technology by employees of the Federal Government in the course
-# of their official duties.  Pursuant to title 17 Section 105 of the
-# United States Code this document is not subject to copyright
-# protection and is in the public domain.  gmshExport.py
-# is an experimental work.  NIST assumes no responsibility whatsoever
+# This software was developed by employees of the National Institute
+# of Standards and Technology, an agency of the Federal Government.
+# Pursuant to title 17 section 105 of the United States Code,
+# works of NIST employees are not subject to copyright
+# protection, and this software is considered to be in the public domain.
+# FiPy is an experimental system.  NIST assumes no responsibility whatsoever
 # for its use by other parties, and makes no guarantees, expressed
 # or implied, about its quality, reliability, or any other characteristic.
 # We would appreciate acknowledgement if the document is used.
 #
-# This document can be redistributed and/or modified freely
-# provided that any derivative works bear some notice that they are
-# derived from it, and any modified versions bear some notice that
-# they have been modified.
+# To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
 # ========================================================================
-#  See the file "license.terms" for information on usage and
 #  redistribution
-#  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
 #
 # ###################################################################
 ##
@@ -91,7 +101,7 @@ class MeshExportError(GmshException):
 def gmshVersion(communicator=parallelComm):
     """Determine the version of Gmsh.
 
-    We can't trust the generated msh file for the correct version number, so
+    We can't trust the generated .msh file for the correct version number, so
     we have to retrieve it from the gmsh binary.
     """
     if communicator.procID == 0:
@@ -104,7 +114,7 @@ def gmshVersion(communicator=parallelComm):
 
             try:
                 out, verStr = p.communicate()
-                verStr = verStr.decode('ascii').strip('\n')
+                verStr = verStr.decode('ascii').strip()
                 break
             except IOError:
                 # some weird conflict with things like PyQT can cause
@@ -882,7 +892,7 @@ class MSHFile(GmshFile):
             # says "Sections can be repeated in the same file",
             # but this seems to only apply to $NodeData, $ElementData,
             # and $ElementNodeData. Even if Gmsh understood it,
-            # it's not worth the bookkeeping to be able to write more thean one.
+            # it's not worth the bookkeeping to be able to write more than one.
             raise ValueError("Only one Mesh can be written to a MSH file")
 
         coords = mesh.vertexCoords
@@ -1437,7 +1447,7 @@ class Gmsh2D(Mesh2D):
     ... // label the three domains
     ...
     ... // attention: if you use any "Physical" labels, you *must* label
-    ... // all elements that correspond to FiPy Cells (Physical Surace in 2D
+    ... // all elements that correspond to FiPy Cells (Physical Surface in 2D
     ... // and Physical Volume in 3D) or Gmsh will not include them and FiPy
     ... // will not be able to include them in the Mesh.
     ...
@@ -2168,8 +2178,11 @@ class GmshGrid2D(Gmsh2D):
         width  = nx * dx
         numLayers = int(ny / float(dy))
 
-        # kludge: must offset cellSize by `eps` to work properly
-        eps = float(dx)/(nx * 10)
+        if _gmshVersion() < StrictVersion("2.7"):
+            # kludge: must offset cellSize by `eps` to work properly
+            eps = float(dx)/(nx * 10)
+        else:
+            eps = 0.
 
         return """
             ny       = %(ny)g;
@@ -2238,7 +2251,11 @@ class GmshGrid3D(Gmsh3D):
         width  = nx * dx
         depth  = nz * dz
 
-        eps = float(dx)/(nx * 10)
+        if _gmshVersion() < StrictVersion("2.7"):
+            # kludge: must offset cellSize by `eps` to work properly
+            eps = float(dx)/(nx * 10)
+        else:
+            eps = 0.
 
         return """
             ny       = %(ny)g;

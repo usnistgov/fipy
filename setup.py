@@ -14,20 +14,32 @@
  #     www: http://www.ctcms.nist.gov/fipy/
  #  
  # ========================================================================
- # This document was prepared at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this document is not subject to copyright
- # protection and is in the public domain.  setup.py
- # is an experimental work.  NIST assumes no responsibility whatsoever
+ # This software was developed by employees of the National Institute
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
+ # works of NIST employees are not subject to copyright
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.  NIST assumes no responsibility whatsoever
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
  # We would appreciate acknowledgement if the document is used.
  # 
- # This document can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
  #  
  # ###################################################################
@@ -83,8 +95,8 @@ class build_docs(Command):
         pass
 
     def run (self):
-        from sphinx.cmd import build
-        from sphinx.ext import apidoc
+        import sphinx.cmd.build
+        import sphinx.ext.apidoc
         
         sphinx_args = ['-P', '-n', '-c', 'documentation/', '.']
         apidoc_args = []
@@ -93,17 +105,17 @@ class build_docs(Command):
             sphinx_args = ['-a', '-E'] + sphinx_args
             apidoc_args = ['--force'] + apidoc_args
             
-        apidoc.main(['--output-dir=fipy/generated', '--suffix=rst']
+        sphinx.ext.apidoc.main(['--output-dir=fipy/generated', '--suffix=rst']
                     + apidoc_args + ['fipy'])
-        apidoc.main(['--output-dir=documentation/tutorial/package/generated', '--suffix=rst']
+        sphinx.ext.apidoc.main(['--output-dir=documentation/tutorial/package/generated', '--suffix=rst']
                     + apidoc_args + ['documentation/tutorial/package'])
 
         if self.html:
-            build.main(['-b', 'redirecting_html'] + sphinx_args + ['documentation/_build/html/'])
+            sphinx.cmd.build.main(['-b', 'redirecting_html'] + sphinx_args + ['documentation/_build/html/'])
 
         if self.pdf:
             try:
-                build.main(['-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
+                sphinx.cmd.build.main(['-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
             except SystemExit:
                 pass
             
@@ -217,6 +229,9 @@ except IOError, e:
 
 ##Hacked from numpy
 def getVersion():
+    import subprocess
+    import warnings
+
     def _minimal_ext_cmd(cmd):
         # construct minimal environment
         env = {}
@@ -228,8 +243,11 @@ def getVersion():
         env['LANGUAGE'] = 'C'
         env['LANG'] = 'C'
         env['LC_ALL'] = 'C'
-        import subprocess
-        out = subprocess.Popen(cmd, stdout = subprocess.PIPE, env=env).communicate()[0]
+
+        out = subprocess.check_output(cmd, env=env)
+        # ticket:475 - fix for bytecode received in Py3k
+        # http://jeetworks.org/node/67
+        out = out.decode("utf-8")
         return out
 
     version = 'unknown'
@@ -237,9 +255,6 @@ def getVersion():
     if os.path.exists('.git'):
         try:
             out = _minimal_ext_cmd(['git', 'describe', '--tags', '--match', 'version-*'])
-            # ticket:475 - fix for bytecode received in Py3k
-            # http://jeetworks.org/node/67
-            out = out.decode("utf-8")
             # convert git long-form version string, e.g., "version-3_1_1-127-g413ed61",
             # into PEP 440 version, e.g., "3.1.1.dev127+g413ed61"
             version = out.strip().split("-")
@@ -251,7 +266,12 @@ def getVersion():
         except OSError:
             import warnings
             warnings.warn("Could not run ``git describe``")
-    elif os.path.exists('FiPy.egg-info'):
+        except subprocess.CalledProcessError:
+            warnings.warn("Could not read git tags")
+            version = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
+            version = version.strip()
+
+    if (version == 'unknown') and os.path.exists('FiPy.egg-info'):
         from fipy import _getVersion
         version = _getVersion()
 

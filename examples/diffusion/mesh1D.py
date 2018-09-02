@@ -14,19 +14,32 @@
  #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
  #
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
  #
  # ###################################################################
@@ -102,7 +115,7 @@ and a set of faces over which they apply.
 For example, here the exterior faces on the left of the domain are extracted by
 ``mesh``.\ :attr:`~fipy.meshes.abstractMesh.AbstractMesh.facesLeft`. The boundary
 conditions is applied using
-``phi``\. :meth:`~fipy.variables.variable.Variable.constrain` with tthese faces and
+``phi``\. :meth:`~fipy.variables.variable.Variable.constrain` with these faces and
 a value (``valueLeft``).
 
 >>> phi.constrain(valueRight, mesh.facesRight)
@@ -545,7 +558,7 @@ calculated over and over, using the result of the previous sweep to update
 the coefficients of the equation, without advancing in time. In :term:`FiPy`, this
 is accomplished by creating a solution variable that explicitly retains its
 "old" value by specifying ``hasOld`` when you create it. The variable does
-not move forward in time until it is explicity told to ``updateOld()``. In
+not move forward in time until it is explicitly told to ``updateOld()``. In
 order to compare the effects of different numbers of sweeps, let us create
 a list of variables: ``phi[0]`` will be the variable that is actually being
 solved and ``phi[1]`` through ``phi[4]`` will display the result of taking the
@@ -641,7 +654,7 @@ sweeps.
 ...     phi[sweeps].setValue(phi[0])
 ...     if __name__ == '__main__':
 ...         viewer.plot()
-...         raw_input("Implicit variable diffusity. %d sweep(s). \
+...         raw_input("Implicit variable diffusivity. %d sweep(s). \
 ... Residual = %f. Press <return> to proceed..." % (sweeps, (abs(res))))
 
 As can be seen, sweeping does not dramatically change the result, but the
@@ -672,7 +685,7 @@ can just solve for it directly
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Implicit variable diffusity - steady-state. \
+...     raw_input("Implicit variable diffusivity - steady-state. \
 ... Press <return> to proceed...")
 
 .. image:: mesh1Dvariable.*
@@ -848,7 +861,7 @@ remaining lines, leaving::
      #
      if __name__ == '__main__':
          viewer.plot()
-         raw_input("Implicit variable diffusity - steady-state. \
+         raw_input("Implicit variable diffusivity - steady-state. \
      Press <return> to proceed...")
 
 Your own scripts will tend to look like this, although you can always write

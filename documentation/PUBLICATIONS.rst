@@ -86,7 +86,7 @@ August 2009.
 
 Other invited talks about FiPy:
 
-* "FiPy: An Open Source Finite Volume PDE Solver Implmented in Python"
+* "FiPy: An Open Source Finite Volume PDE Solver Implemented in Python"
   by J. E. Guyer at the George Mason University Department of Mathematical Sciences,
   October 2009.
 
@@ -108,7 +108,7 @@ Other invited talks about FiPy:
 
 * "FiPy: A Finite Volume PDE Solver Implemented in Python"
   by J. E. Guyer in the Computational Materials Research and Education
-  Luncheon Roundable of the TMS Annual Meeting, February 2009.
+  Luncheon Roundtable of the TMS Annual Meeting, February 2009.
 
 * "FiPy - An Object-Oriented Tool for Phase Transformation Simulations
   Using Python"  by J. E. Guyer at Microstructology III, Birmingham, AL,

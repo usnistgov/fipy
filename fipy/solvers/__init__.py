@@ -53,6 +53,14 @@ elif solver == "pyamg":
     from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
     _MeshMatrix = _ScipyMeshMatrix
 
+elif solver == "pyamgx":
+    if _parallelComm.Nproc > 1:
+        raise SerialSolverError('pyamgx')
+    from fipy.solvers.pyamgx import *
+    __all__.extend(pyamgx.__all__)
+    from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
+    _MeshMatrix = _ScipyMeshMatrix
+
 elif solver == "no-pysparse":
     from fipy.solvers.trilinos import *
     __all__.extend(trilinos.__all__)
@@ -126,5 +134,10 @@ from fipy.tests.doctestPlus import register_skipper
 
 register_skipper(flag='PYSPARSE_SOLVER',
                  test=lambda: solver == 'pysparse',
-                 why="the PySparse solvers are not being used.",
+                 why="the Pysparse solvers are not being used.",
+                 skipWarning=True)
+
+register_skipper(flag='NOT_PYAMGX_SOLVER',
+                 test=lambda: solver != 'pyamgx',
+                 why="the PyAMGX solver is being used.",
                  skipWarning=True)

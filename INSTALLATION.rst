@@ -30,6 +30,18 @@ for details on how to use :term:`FiPy`.
       that may be mentioned on these sites. Please address comments about
       this page to fipy@nist.gov.
 
+-----------------------
+Pre-Installed on Binder
+-----------------------
+
+A full :term:`FiPy` installation is available for basic exploration on
+Binder_. The default notebook gives a rudimentary introduction to :term:`FiPy`
+syntax and, like any `Jupyter Notebook`_ interface, tab completion will help
+you explore the package interactively.
+
+.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/develop
+.. _Jupyter Notebook:    http://jupyter.org
+
 ------------------
 Recommended Method
 ------------------
@@ -295,11 +307,11 @@ http://continuum.io/anaconda
 In addition to the scientific :term:`Python` stack, the Anaconda package manager
 also provides virtual environment management. Keeping separate installations is useful
 *e.g.* for comparing :term:`Python` 2 and :term:`Python` 3 software stacks, or
-when the user does not have sufficient provileges to install software system-wide.
+when the user does not have sufficient privileges to install software system-wide.
 
 .. attention::
 
-   :term:`PySparse` and :term:`FiPy` are not presently included in Anaconda,
+   :term:`Pysparse` and :term:`FiPy` are not presently included in Anaconda,
    so you will need to separately install them manually.
 
 .. _ECP:
@@ -315,7 +327,7 @@ environment manager.
 
 .. attention::
 
-   :term:`PySparse` and :term:`FiPy` are not presently included in Canopy,
+   :term:`Pysparse` and :term:`FiPy` are not presently included in Canopy,
    so you will need to separately install them manually.
 
 .. _PYTHONXY:
@@ -330,7 +342,7 @@ for Windows_.
 
 .. attention::
 
-   :term:`PySparse` and :term:`FiPy` are not presently included in
+   :term:`Pysparse` and :term:`FiPy` are not presently included in
    Python(x,y), so you will need to separately install them manually.
 
 NumPy
@@ -368,7 +380,7 @@ http://www.scipy.org/
 be useful for running and analyzing :term:`FiPy` simulations. Significantly
 improved performance has been achieved with the judicious use of C language
 inlining (see the :ref:`FlagsAndEnvironmentVariables` section for more
-details), via the :mod:`scipy.weave` module.
+details), via the :mod:`weave` module.
 
 .. note:
 
@@ -379,7 +391,7 @@ details), via the :mod:`scipy.weave` module.
 Level Set Packages
 ------------------
 
-To use the level set components of :ref:`FiPy` one of the following is
+To use the level set (:cite:`levelSetBook`) components of :term:`FiPy` one of the following is
 required.
 
 .. _SCIKITFMM:
@@ -451,12 +463,12 @@ In addition, there is an :ref:`ECP` installer for `Mac OS X`_.
 
 .. attention::
 
-   :term:`PySparse` and :term:`FiPy` are not presently included in any of
+   :term:`Pysparse` and :term:`FiPy` are not presently included in any of
    these package managers or installers, so you will need to separately
    install them manually.
 
 We presently find that the combination of Homebrew_ and :term:`pip` is a 
-pretty straightforward way to get most of :term:`FiPy`'s prerequesites. 
+pretty straightforward way to get most of :term:`FiPy`'s prerequisites. 
 See the `Miscellaneous Build Recipes`_ for up-to-date directions.
 
 .. _Fink: http://www.finkproject.org/
@@ -472,7 +484,7 @@ prerequisites.
 
 .. attention::
 
-   :term:`PySparse` and :term:`FiPy` are not presently included in Canopy or
+   :term:`Pysparse` and :term:`FiPy` are not presently included in Canopy or
    Python(x,y), so you will need to separately install them manually.
 
 Ubuntu/Debian Installation
@@ -512,7 +524,7 @@ We often post miscellaneous installation instructions on the
 
 .. note::
 
-    We encourange you to contribute your own build recipes on the wiki_
+    We encourage you to contribute your own build recipes on the wiki_
     if they are significantly different.
 
 .. _Installing FiPy on Mac OS X using Homebrew: http://matforge.org/fipy/wiki/InstallFiPy/MacOSX/HomeBrew
@@ -571,12 +583,14 @@ in which you should use :option:`--prefix` instead of
 An alternative to setting the :envvar:`PYTHONPATH` is to employ one of the
 utilities that manage packages and their dependencies independently of
 the system package manager and the system directories. These utilities
-include Stow_, Virtualenv_ and zc.buildout_, amongst others. Here we'll
-describe the use of Virtualenv_, which we highly recommend.
+include Conda_, Stow_, Virtualenv_ and zc.buildout_, amongst others. Here we'll
+describe the use of Conda_, which we highly recommend.
 
 .. _Stow: http://savannah.gnu.org/projects/stow/
 .. _zc.buildout: http://pypi.python.org/pypi/zc.buildout
+.. _Virtualenv: https://virtualenv.pypa.io
+.. _Conda: https://conda.io
 
 .. _documentation:GIT:
 
-.. include:: documentation/GIT.txt
+.. include:: documentation/GIT.rst

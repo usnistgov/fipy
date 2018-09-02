@@ -14,19 +14,32 @@
  #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
  #
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
  #
  # ###################################################################
@@ -36,7 +49,7 @@ r"""
 This example adds two more components to
 ``examples/elphf/input1DphaseBinary.py``
 one of which is another substitutional species and the other represents
-electrons and diffuses interterstitially.
+electrons and diffuses interstitially.
 
 Parameters from `2004/January/21/elphf0214`
 
@@ -148,7 +161,7 @@ Finally, we create the electrostatic potential field
     >>> permittivity = PF("78.49 eps0") / (Faraday**2 * mesh.scale**2 / (RT * molarVolume))
 
     >>> permittivity = 1.
-    >>> permitivityPrime = 0.
+    >>> permittivityPrime = 0.
 
 The thermodynamic parameters are chosen to give a solid phase rich in electrons
 and the solvent and a liquid phase rich in the two substitutional species
@@ -176,7 +189,7 @@ We again create the phase equation as in ``examples.elphf.phase.input1D``
 
     >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
     ...     == DiffusionTerm(coeff = phase.gradientEnergy) \
-    ...     - (permitivityPrime / 2.) * potential.grad.dot(potential.grad)
+    ...     - (permittivityPrime / 2.) * potential.grad.dot(potential.grad)
 
 We linearize the source term in the same way as in `example.phase.simple.input1D`.
 
@@ -193,7 +206,7 @@ We linearize the source term in the same way as in `example.phase.simple.input1D
 
     >>> phase.equation -= S0 + ImplicitSourceTerm(coeff = S1)
 
-and we create the diffustion equation for the solute as in
+and we create the diffusion equation for the solute as in
 ``examples.elphf.diffusion.input1D``
 
     >>> for Cj in substitutionals:

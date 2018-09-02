@@ -1,3 +1,5 @@
+.. _chap:Efficiency:
+
 ==========
 Efficiency
 ==========
@@ -24,7 +26,7 @@ The raw CPU execution times for 10 time steps are presented in the
 following table. The run times are in seconds and the memory usage is
 in kilobytes. The Kobayashi code is given the heading of FORTRAN while
 :term:`FiPy` is run with and without inlining. The memory usage is for
-:term:`FiPy` simulations with the :option:`--inline`. The ``--no-cache`` flag is
+:term:`FiPy` simulations with the :option:`--inline`. The :option:`--no-cache` flag is
 on in all cases for the following table.
 
 ========== ============ ======================= ============= ============= =============
@@ -89,7 +91,7 @@ Efficiency discussion of Pysparse and Trilinos
 ==================================================================
 
 Trilinos provides multigrid capabilities which are beneficial for
-some problems, but has significant overhead compared to PySparse.
+some problems, but has significant overhead compared to Pysparse.
 The matrix-building step takes significantly longer in Trilinos,
 and the solvers also have more overhead costs in memory and
 performance than the equivalent Pysparse solvers. However, the
@@ -97,6 +99,6 @@ multigrid preconditioning capabilities of Trilinos can, in some
 cases, provide enough of a speedup in the solution step to make up
 for the overhead costs. This depends greatly on the specifics of
 the problem, but is most likely in the cases when the problem is
-larrge and when Pysparse cannot solve the problem with an iterative
+large and when Pysparse cannot solve the problem with an iterative
 solver and must use an LU solver, while Trilinos can still have
 success with an iterative method.

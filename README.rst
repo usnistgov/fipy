@@ -20,7 +20,13 @@ Overview
    specific problems.  Our approach, combining the FV method and :term:`Python`,
    provides a tool that is extensible, powerful and freely available. A
    significant advantage to :term:`Python` is the existing suite of tools for
-   array calculations, sparse matrices and data rendering. 
+   array calculations, sparse matrices and data rendering.
+
+.. only:: html
+
+   | |TravisCI|_ |AppVeyor|_
+   | |GitHub|_ |PyPi|_  |Codacy|_ |CondaForge|_ |Binder|_
+   | |gitter|_ |Depsy|_ |OpenHub|_
 
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
@@ -33,7 +39,7 @@ photovoltaics :cite:`Hangarter:2011p2795` and a level set treatment of the
 electrodeposition process :cite:`NIST:damascene:2001`.
 
 .. only:: latex
-  
+
    The latest information about :term:`FiPy` can be found at
    http://www.ctcms.nist.gov/fipy/.
 
@@ -41,7 +47,7 @@ electrodeposition process :cite:`NIST:damascene:2001`.
 Even if you don't read manuals...
 ---------------------------------
 
-...please read :ref:`INSTALLATION`, :ref:`USAGE` and :ref:`FAQ`, as well 
+...please read :ref:`INSTALLATION`, :ref:`USAGE` and :ref:`FAQ`, as well
 as :mod:`examples.diffusion.mesh1D`.
 
 --------------------------------
@@ -50,17 +56,17 @@ What's new in version |release|?
 
 The significant changes since version 3.0 are:
 
-- Level sets are now handled by :ref:`LSMLIBDOC` or :ref:`SCIKITFMM` 
-  solver libraries. These libraries are orders of magnitude faster than the 
+- Level sets are now handled by :ref:`LSMLIBDOC` or :ref:`SCIKITFMM`
+  solver libraries. These libraries are orders of magnitude faster than the
   original, :term:`Python`-only prototype.
-- The :term:`Matplotlib` :func:`streamplot()` function can be used to display 
+- The :term:`Matplotlib` :func:`streamplot()` function can be used to display
   vector fields.
-- Version control was switched to the Git_ distributed version control 
-  system. This system should make it much easier for :term:`FiPy` users to 
+- Version control was switched to the Git_ distributed version control
+  system. This system should make it much easier for :term:`FiPy` users to
   participate in development.
 
 Tickets fixed in this release::
-    
+
     62  "Move 'ImplicitDiffusionTerm().solve(var) == 0' ""failure"" from examples.phase.simple to examples.diffusion.mesh1D?"
     118 subscriber()._markStale() AttributeError
     138 `numerix.dot` doesn't support tensors
@@ -127,7 +133,7 @@ Tickets fixed in this release::
    Please see :mod:`examples.updating.update2_0to3_0` for guidance on the
    changes that you will need to make to your :term:`FiPy` 2.x scripts.
 
-.. _Git: http://git-scm.com/ 
+.. _Git: http://git-scm.com/
 
 -------------------------
 Download and Installation
@@ -146,14 +152,9 @@ Support
 You can communicate with the :term:`FiPy` developers and with other
 users via our `mailing list`_ and we welcome you to use the `issue
 tracker`_ for bugs, support requests, feature requests and patch
-submissions <https://github.com/usnistgov/fipy/issues>. We also monitor 
+submissions <https://github.com/usnistgov/fipy/issues>. We also monitor
 StackOverflow_ for questions tagged with "fipy". We welcome
 collaborative efforts on this project.
-
-:term:`FiPy` is a member of MatForge_, a project of the `Materials
-Digital Library Pathway`_. This National Science Foundation funded
-service provides a "wiki" space for public contributions of
-code snippets, discussions, and tutorials and hosts our testing framework.
 
 .. toctree::
 
@@ -201,7 +202,7 @@ typed by you.
    text exactly as it appears in the examples.
 
 When references are made to file system paths, it is assumed that the
-current working directory is the :term:`FiPy` distribution directory, refered to
+current working directory is the :term:`FiPy` distribution directory, referred to
 as the "base directory", such that::
 
     examples/diffusion/steadyState/mesh1D.py
@@ -218,7 +219,7 @@ separated by "``/``").  Any references of the form::
 are in the :term:`Python` module notation and correspond to the equivalent POSIX
 path given above.
 
-We may at times use a 
+We may at times use a
 
 .. note::
 
@@ -230,15 +231,31 @@ or a
 
    to indicate something that could cause serious problems.
 
-.. _MML:                  http://www.nist.gov/mml/
-.. _CTCMS:                http://www.ctcms.nist.gov/
-.. _MSED:                 http://www.nist.gov/mml/msed/
-.. _NIST:                 http://www.nist.gov/
-.. _compressed archive:   http://www.ctcms.nist.gov/fipy/download/FiPy-1.1.tar.gz
-.. _issue tracker:        https://github.com/usnistgov/fipy/issues
-.. _mailing list:         http://www.ctcms.nist.gov/fipy/documentation/MAIL.html
-.. _Sourceforge:          http://www.sourceforge.net/projects/fipy
-.. _Materials Digital Library Pathway: http://matdl.org
-.. _MatForge:             http://matforge.org/
-.. _StackOverflow:        http://stackoverflow.com/questions/tagged/fipy
+.. _MML:           http://www.nist.gov/mml/
+.. _CTCMS:         http://www.ctcms.nist.gov/
+.. _MSED:          http://www.nist.gov/mml/msed/
+.. _NIST:          http://www.nist.gov/
+.. _issue tracker: https://github.com/usnistgov/fipy/issues
+.. _mailing list:  http://www.ctcms.nist.gov/fipy/documentation/MAIL.html
+.. _StackOverflow: http://stackoverflow.com/questions/tagged/fipy
 
+.. |GitHub|        image:: https://img.shields.io/github/contributors/usnistgov/fipy.svg
+.. _GitHub:        https://github.com/usnistgov/fipy
+.. |gitter|        image:: https://badges.gitter.im/usnistgov/fipy.svg
+.. _gitter:        https://gitter.im/usnistgov/fipy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
+.. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/develop.svg?label=Linux
+.. _TravisCI:      https://travis-ci.org/usnistgov/fipy
+.. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=develop&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
+.. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy
+.. |OpenHub|       image:: https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif
+.. _OpenHub:       https://www.openhub.net/p/fipy
+.. |PyPi|          image:: https://img.shields.io/pypi/v/fipy.svg
+.. _PyPi:          https://pypi.python.org/pypi/FiPy
+.. |CondaForge|    image:: https://anaconda.org/guyer/fipy/badges/downloads.svg
+.. _CondaForge:    https://anaconda.org/guyer/fipy
+.. |Depsy|         image:: http://depsy.org/api/package/pypi/FiPy/badge.svg
+.. _Depsy:         http://depsy.org/package/python/FiPy
+.. |Codacy|         image:: https://api.codacy.com/project/badge/Grade/d02921bb54b14e88a1e2e1f5520133f4
+.. _Codacy:         https://www.codacy.com/app/tkphd/fipy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=usnistgov/fipy&amp;utm_campaign=Badge_Grade
+.. |Binder|        image:: https://mybinder.org/badge.svg
+.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/develop?filepath=examples%2Findex.ipynb
