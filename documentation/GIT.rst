@@ -33,6 +33,8 @@ most part, we follow `a successful Git branching model`_. You will
 need to decide on your own risk tolerance when deciding which stage of
 development to track.
 
+.. _cloning the repository:
+
 A fresh copy of the :term:`FiPy` source code  can be obtained with::
 
    $ git clone https://github.com/usnistgov/fipy.git

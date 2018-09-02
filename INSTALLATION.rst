@@ -93,6 +93,12 @@ Recommended Method
        sparse matrix :ref:`SOLVERS`, but the system still should be
        functional.
 
+.. attention::
+
+   When installed via conda_ or :term:`pip`, :term:`FiPy` will not include
+   its :ref:`examples <part:examples>`.  These can be obtained by 
+   `cloning the repository`_ or downloading a `compressed archive`_.
+
 .. _install Miniconda: http://conda.pydata.org/docs/install/quick.html
 .. _guyer: https://anaconda.org/guyer
 .. _conda-forge: https://conda-forge.github.io/
