@@ -23,7 +23,6 @@ FiPy Contents
 .. toctree::
    :hidden:
 
-   CODESPEED
    GUIDELINES
    GIT
    tutorial/package/generated/package

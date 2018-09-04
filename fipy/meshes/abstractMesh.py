@@ -861,7 +861,7 @@ class AbstractMesh(object):
 
     @property
     def _cellDistanceNormals(self):
-        return self._cellDistanceNormals/ self._cellDistances
+        return self.cellDistanceVectors / self._cellDistances
 
     @property
     def _cellAreaProjections(self):
