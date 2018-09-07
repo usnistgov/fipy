@@ -3,8 +3,8 @@ let
   nixpkgs_download = fetchFromGitHub {
     owner = "NixOS";
     repo = "nixpkgs-channels";
-    rev = "120b013e0c082d58a5712cde0a7371ae8b25a601";
-    sha256 = "00gd96p7yz3rgpjjkizp397y2syfc272yvwxqixbjd1qdshbizmj";
+    rev = "61deecdc34fc609d0f805b434101f3c8ae3b807a";
+    sha256 = "147xyn8brvkfgz1z3jbk13w00h6camnf6z0bz0r21g9pn1vv7sb0";
   };
 in
   import nixpkgs_download {}
