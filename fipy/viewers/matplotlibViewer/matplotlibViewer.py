@@ -51,6 +51,48 @@ __all__ = ["AbstractMatplotlibViewer"]
 
 from fipy.viewers.viewer import AbstractViewer
 
+def _isnotebook():
+    """return True if running in a jupyter notebook
+
+    https://stackoverflow.com/a/39662359/2019542
+    """
+    try:
+        import IPython
+
+        shell = IPython.get_ipython().__class__.__name__
+        if shell == 'ZMQInteractiveShell':
+            return True   # Jupyter notebook or qtconsole
+        elif shell == 'TerminalInteractiveShell':
+            return False  # Terminal running IPython
+        else:
+            return False  # Other type (?)
+    except (ImportError, NameError):
+        return False      # Probably standard Python interpreter
+
+def _isretina():
+    """return True if jupyter notebook configuration
+    InlineBackend.figure_formats contains 'retina' or
+    InlineBackend.figure_format is set to 'retina'
+    """
+    isretina = False
+
+    try:
+        import IPython
+
+        cfg = IPython.get_ipython().config
+
+        if "InlineBackend" in cfg:
+            inbk = cfg["InlineBackend"]
+            if "figure_formats" in inbk:
+                if "retina" in inbk["figure_formats"]:
+                    isretina = True
+            if not isretina and ("figure_format" in inbk):
+                isretina = inbk["figure_format"] == "retina"
+    except ImportError:
+        pass
+
+    return isretina
+
 class AbstractMatplotlibViewer(AbstractViewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -187,6 +229,14 @@ class AbstractMatplotlibViewer(AbstractViewer):
         if filename is not None:
             pylab.savefig(filename)
 
+        if _isnotebook():
+            # plots don't animate in the notebook unless we
+            # explicitly clear_output and display
+            from IPython.display import display, clear_output
+
+            clear_output(wait=True)
+            display(self)
+
     def _validFileExtensions(self):
         import pylab
         return ["""
@@ -204,10 +254,14 @@ class AbstractMatplotlibViewer(AbstractViewer):
 
         Invoke with `display(myViewer)`
         """
-        from IPython.core.pylabtools import print_figure
+        from IPython.core.pylabtools import print_figure, retina_figure
 
-        self._plot()
-        return print_figure(fig=self.axes.get_figure(), fmt="png")
+        fig = self.axes.get_figure()
+
+        if _isretina():
+            return retina_figure(fig)
+        else:
+            return print_figure(fig, "png")
 
 class _ColorBar(object):
     def __init__(self, viewer, vmin=-1, vmax=1, orientation="vertical"):
