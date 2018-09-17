@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mesh1D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,33 +11,46 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
 r"""Solve a one-dimensional diffusion equation under different conditions.
 
 To run this example from the base :term:`FiPy` directory, type::
-    
+
     $ python examples/diffusion/mesh1D.py
-    
+
 at the command line. Different stages of the example should be displayed,
 along with prompting messages in the terminal.
 
@@ -47,14 +60,15 @@ diffusivity and fixed value boundary conditions such that,
 
 .. math::
    :label: eq:diffusion:mesh1D:constantD
-   
+
    \frac{\partial \phi}{\partial t} = D \nabla^2 \phi.
 
 The first step is to define a one dimensional domain with 50 solution
 points. The :class:`~fipy.meshes.grid1D.Grid1D` object represents a linear structured grid. The
 parameter ``dx`` refers to the grid spacing (set to unity here).
 
->>> from fipy import *
+>>> from fipy import Variable, FaceVariable, CellVariable, Grid1D, ExplicitDiffusionTerm, TransientTerm, DiffusionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> nx = 50
 >>> dx = 1.
@@ -62,9 +76,9 @@ parameter ``dx`` refers to the grid spacing (set to unity here).
 
 :term:`FiPy` solves all equations at the centers of the cells of the mesh. We
 thus need a :class:`~fipy.variables.cellVariable.CellVariable` object to hold the values of the
-solution, with the initial condition :math:`\phi = 0` at :math:`t = 0`, 
+solution, with the initial condition :math:`\phi = 0` at :math:`t = 0`,
 
->>> phi = CellVariable(name="solution variable", 
+>>> phi = CellVariable(name="solution variable",
 ...                    mesh=mesh,
 ...                    value=0.)
 
@@ -72,11 +86,11 @@ We'll let
 
 >>> D = 1.
 
-for now. 
+for now.
 
 The set of boundary conditions are given to the equation as a Python
 tuple or list (the distinction is not generally important to :term:`FiPy`).
-The boundary conditions 
+The boundary conditions
 
 .. math::
 
@@ -86,7 +100,7 @@ The boundary conditions
        1& \text{at \(x = 0\).}
    \end{cases}
 
-are formed with a value 
+are formed with a value
 
 >>> valueLeft = 1
 >>> valueRight = 0
@@ -94,36 +108,36 @@ are formed with a value
 and a set of faces over which they apply.
 
 .. note::
-    
+
    Only faces around the exterior of the mesh can be used for boundary
    conditions.
 
 For example, here the exterior faces on the left of the domain are extracted by
 ``mesh``.\ :attr:`~fipy.meshes.abstractMesh.AbstractMesh.facesLeft`. The boundary
 conditions is applied using
-``phi``\. :meth:`~fipy.variables.variable.Variable.constrain` with tthese faces and
+``phi``\. :meth:`~fipy.variables.variable.Variable.constrain` with these faces and
 a value (``valueLeft``).
 
 >>> phi.constrain(valueRight, mesh.facesRight)
 >>> phi.constrain(valueLeft, mesh.facesLeft)
 
 .. note::
-    
+
    If no boundary conditions are specified on exterior faces, the default
    boundary condition is equivalent to a zero gradient, equivalent to
    :math:`\vec{n} \cdot \nabla \phi \rvert_\text{someFaces} = 0`.
 
 If you have ever tried to numerically solve
-Eq. :eq:`eq:diffusion:mesh1D:constantD`, 
+Eq. :eq:`eq:diffusion:mesh1D:constantD`,
 you most likely attempted "explicit finite differencing" with code
 something like::
-    
+
     for step in range(steps):
         for j in range(cells):
             phi_new[j] = phi_old[j] \
               + (D * dt / dx**2) * (phi_old[j+1] - 2 * phi_old[j] + phi_old[j-1])
         time += dt
-        
+
 plus additional code for the boundary conditions. In :term:`FiPy`, you would write
 
 .. index:: ExplicitDiffusionTerm, TransientTerm
@@ -132,7 +146,7 @@ plus additional code for the boundary conditions. In :term:`FiPy`, you would wri
 
 The largest stable timestep that can be taken for this explicit 1D
 diffusion problem is :math:`\Delta t \le \Delta x^2 / (2 D)`.
-   
+
 We limit our steps to 90% of that value for good measure
 
 >>> timeStepDuration = 0.9 * dx**2 / (2 * D)
@@ -160,7 +174,7 @@ viewers and the dimension of the mesh.
 In a semi-infinite domain, the analytical solution for this transient
 diffusion problem is given by
 :math:`\phi = 1 - \erf(x/2\sqrt{D t})`. If the :term:`SciPy` library is available,
-the result is tested against the expected profile: 
+the result is tested against the expected profile:
 
 >>> x = mesh.cellCenters[0]
 >>> t = timeStepDuration * steps
@@ -195,13 +209,13 @@ We then solve the equation by repeatedly looping in time:
 
 Although explicit finite differences are easy to program, we have just seen
 that this 1D transient diffusion problem is limited to taking rather small
-time steps. If, instead, we represent 
-Eq. :eq:`eq:diffusion:mesh1D:constantD` 
+time steps. If, instead, we represent
+Eq. :eq:`eq:diffusion:mesh1D:constantD`
 as::
 
     phi_new[j] = phi_old[j] \
       + (D * dt / dx**2) * (phi_new[j+1] - 2 * phi_new[j] + phi_new[j-1])
-    
+
 it is possible to take much larger time steps. Because ``phi_new`` appears on
 both the left and right sides of the equation, this form is called
 "implicit". In general, the "implicit" representation is much more
@@ -240,11 +254,11 @@ implicit version (there is, in fact, no limit to how large an implicit
 timestep you can take for this particular problem), the solution is less
 *accurate*. One way to achieve a compromise between *stability* and
 *accuracy* is with the Crank-Nicholson scheme, represented by::
-    
+
     phi_new[j] = phi_old[j] + (D * dt / (2 * dx**2)) * \
                     ((phi_new[j+1] - 2 * phi_new[j] + phi_new[j-1])
                      + (phi_old[j+1] - 2 * phi_old[j] + phi_old[j-1]))
-    
+
 which is essentially an average of the explicit and implicit schemes from
 above. This can be rendered in :term:`FiPy` as easily as
 
@@ -298,7 +312,7 @@ function, but simply a straight line, which we can confirm to a tolerance
 of :math:`10^{-10}`.
 
 >>> L = nx * dx
->>> print phi.allclose(valueLeft + (valueRight - valueLeft) * x / L, 
+>>> print phi.allclose(valueLeft + (valueRight - valueLeft) * x / L,
 ...                    rtol = 1e-10, atol = 1e-10)
 1
 
@@ -309,7 +323,7 @@ of :math:`10^{-10}`.
    :width: 90%
    :align: center
    :alt: steady-state solution to diffusion problem
-       
+
 ------
 
 Often, boundary conditions may be functions of another variable in the
@@ -318,7 +332,7 @@ system or of time.
 For example, to have
 
 .. math::
-    
+
    \phi = \begin{cases}
        (1 + \sin t) / 2 &\text{on \( x = 0 \)} \\
        0 &\text{on \( x = L \)} \\
@@ -358,7 +372,7 @@ condition will automatically update,
 ------
 
 Many interesting problems do not have simple, uniform diffusivities. We consider a
-steady-state diffusion problem  
+steady-state diffusion problem
 
 .. math::
 
@@ -382,7 +396,7 @@ has cell centers that lie at :math:`L / 4` and :math:`3 L / 4`, or when the
 number of cells in the mesh :math:`N_i` satisfies :math:`N_i = 4 i + 2`,
 where :math:`i` is an integer. The mesh we've been using thus far is
 satisfactory, with :math:`N_i = 50` and :math:`i = 12`.
-   
+
 Because :term:`FiPy` considers diffusion to be a flux from one cell to the next,
 through the intervening face, we must define the non-uniform diffusion
 coefficient on the mesh faces
@@ -393,14 +407,14 @@ coefficient on the mesh faces
 >>> X = mesh.faceCenters[0]
 >>> D.setValue(0.1, where=(L / 4. <= X) & (X < 3. * L / 4.))
 
-The boundary conditions are a fixed value of 
+The boundary conditions are a fixed value of
 
 >>> valueLeft = 0.
 
 to the left and a fixed flux of
 
 >>> fluxRight = 1.
-    
+
 to the right:
 
 >>> phi = CellVariable(mesh=mesh)
@@ -408,9 +422,9 @@ to the right:
 >>> phi.constrain(valueLeft, mesh.facesLeft)
 
 We re-initialize the solution variable
-    
+
 >>> phi.setValue(0)
-    
+
 and obtain the steady-state solution with one implicit solution step
 
 >>> DiffusionTerm(coeff = D).solve(var=phi)
@@ -418,20 +432,20 @@ and obtain the steady-state solution with one implicit solution step
 The analytical solution is simply
 
 .. math::
-    
+
    \phi = \begin{cases}
    x & \text{for \( 0 < x < L/4 \),} \\
    10 x - 9L/4 & \text{for \( L/4 \le x < 3 L / 4 \),} \\
    x + 18 L / 4 & \text{for \( 3 L / 4 \le x < L \),}
    \end{cases}
-   
+
 or
 
 >>> x = mesh.cellCenters[0]
 >>> phiAnalytical.setValue(x)
->>> phiAnalytical.setValue(10 * x - 9. * L / 4. , 
+>>> phiAnalytical.setValue(10 * x - 9. * L / 4. ,
 ...                        where=(L / 4. <= x) & (x < 3. * L / 4.))
->>> phiAnalytical.setValue(x + 18. * L / 4. , 
+>>> phiAnalytical.setValue(x + 18. * L / 4. ,
 ...                        where=3. * L / 4. <= x)
 >>> print phi.allclose(phiAnalytical, atol = 1e-8, rtol = 1e-8)
 1
@@ -450,6 +464,86 @@ And finally, we can plot the result
 
 ------
 
+Note that for problems involving heat transfer and other similar
+conservation equations, it is important to ensure that we begin with
+the correct form of the equation. For example, for heat transfer with
+:math:`\phi` representing the temperature,
+
+.. math::
+    \frac{\partial}{\partial t} \left(\rho \hat{C}_p \phi\right) = \nabla \cdot [ k \nabla \phi ].
+
+With constant and uniform density :math:`\rho`, heat capacity :math:`\hat{C}_p`
+and thermal conductivity :math:`k`, this is often written like Eq.
+:eq:`eq:diffusion:mesh1D:constantD`, but replacing :math:`D` with :math:`\alpha =
+\frac{k}{\rho \hat{C}_p}`. However, when these parameters vary either in position
+or time, it is important to be careful with the form of the equation used. For
+example, if :math:`k = 1` and
+
+.. math::
+   \rho \hat{C}_p = \begin{cases}
+   1& \text{for \( 0 < x < L / 4 \),} \\
+   10& \text{for \( L / 4 \le x < 3 L / 4 \),} \\
+   1& \text{for \( 3 L / 4 \le x < L \),}
+   \end{cases},
+
+then we have
+
+.. math::
+   \alpha = \begin{cases}
+   1& \text{for \( 0 < x < L / 4 \),} \\
+   0.1& \text{for \( L / 4 \le x < 3 L / 4 \),} \\
+   1& \text{for \( 3 L / 4 \le x < L \),}
+   \end{cases}.
+
+However, using a ``DiffusionTerm`` with the same coefficient as that in the
+section above is incorrect, as the steady state governing equation reduces to
+:math:`0 = \nabla^2\phi`, which results in a linear profile in 1D, unlike that
+for the case above with spatially varying diffusivity. Similar care must be
+taken if there is time dependence in the parameters in transient problems.
+
+We can illustrate the differences with an example. We define field
+variables for the correct and incorrect solution
+
+>>> phiT = CellVariable(name="correct", mesh=mesh)
+>>> phiF = CellVariable(name="incorrect", mesh=mesh)
+>>> phiT.faceGrad.constrain([fluxRight], mesh.facesRight)
+>>> phiF.faceGrad.constrain([fluxRight], mesh.facesRight)
+>>> phiT.constrain(valueLeft, mesh.facesLeft)
+>>> phiF.constrain(valueLeft, mesh.facesLeft)
+>>> phiT.setValue(0)
+>>> phiF.setValue(0)
+
+The relevant parameters are
+
+>>> k = 1.
+>>> alpha_false = FaceVariable(mesh=mesh, value=1.0)
+>>> X = mesh.faceCenters[0]
+>>> alpha_false.setValue(0.1, where=(L / 4. <= X) & (X < 3. * L / 4.))
+>>> eqF = 0 == DiffusionTerm(coeff=alpha_false)
+>>> eqT = 0 == DiffusionTerm(coeff=k)
+>>> eqF.solve(var=phiF)
+>>> eqT.solve(var=phiT)
+
+Comparing to the correct analytical solution, :math:`\phi = x`
+
+>>> x = mesh.cellCenters[0]
+>>> phiAnalytical.setValue(x)
+>>> print phiT.allclose(phiAnalytical, atol = 1e-8, rtol = 1e-8) # doctest: +SCIPY
+1
+
+and finally, plot
+
+>>> if __name__ == '__main__':
+...     Viewer(vars=(phiT, phiF)).plot()
+...     raw_input("Non-uniform thermal conductivity. Press <return> to proceed...")
+
+.. image:: mesh1Dalpha.*
+   :width: 90%
+   :align: center
+   :alt: representation of difference between non-uniform alpha and D
+
+------
+
 Often, the diffusivity is not only non-uniform, but also depends on
 the value of the variable, such that
 
@@ -457,14 +551,14 @@ the value of the variable, such that
    :label: eq:diffusion:mesh1D:variableD
 
    \frac{\partial \phi}{\partial t} = \nabla \cdot [ D(\phi) \nabla \phi].
-    
+
 With such a non-linearity, it is generally necessary to "sweep" the
 solution to convergence. This means that each time step should be
 calculated over and over, using the result of the previous sweep to update
 the coefficients of the equation, without advancing in time. In :term:`FiPy`, this
 is accomplished by creating a solution variable that explicitly retains its
 "old" value by specifying ``hasOld`` when you create it. The variable does
-not move forward in time until it is explicity told to ``updateOld()``. In
+not move forward in time until it is explicitly told to ``updateOld()``. In
 order to compare the effects of different numbers of sweeps, let us create
 a list of variables: ``phi[0]`` will be the variable that is actually being
 solved and ``phi[1]`` through ``phi[4]`` will display the result of taking the
@@ -493,19 +587,19 @@ If, for example,
 .. math::
 
    D = D_0 (1 - \phi)
-   
+
 we would simply write
-Eq. :eq:`eq:diffusion:mesh1D:variableD`   
+Eq. :eq:`eq:diffusion:mesh1D:variableD`
 as
 
 >>> D0 = 1.
 >>> eq = TransientTerm() == DiffusionTerm(coeff=D0 * (1 - phi[0]))
 
 .. note::
-    
+
    Because of the non-linearity, the Crank-Nicholson scheme does not work
    for this problem.
-   
+
 We apply the same boundary conditions that we used for the uniform
 diffusivity cases
 
@@ -548,27 +642,27 @@ sweeps.
 ...     for step in range(steps):
 ...         # only move forward in time once per time step
 ...         phi[0].updateOld()
-...         
+...
 ...         # but "sweep" many times per time step
 ...         for sweep in range(sweeps):
 ...             res = eq.sweep(var=phi[0],
 ...                            dt=timeStepDuration)
 ...         if __name__ == '__main__':
 ...             viewer.plot()
-...             
+...
 ...     # copy the final result into the appropriate display variable
 ...     phi[sweeps].setValue(phi[0])
 ...     if __name__ == '__main__':
 ...         viewer.plot()
-...         raw_input("Implicit variable diffusity. %d sweep(s). \
+...         raw_input("Implicit variable diffusivity. %d sweep(s). \
 ... Residual = %f. Press <return> to proceed..." % (sweeps, (abs(res))))
 
 As can be seen, sweeping does not dramatically change the result, but the
 "residual" of the equation (a measure of how accurately it has been solved)
-drops about an order of magnitude with each additional sweep. 
+drops about an order of magnitude with each additional sweep.
 
 .. attention::
-    
+
    Choosing an optimal balance between the number of time steps, the number
    of sweeps, the number of solver iterations, and the solver tolerance is
    more art than science and will require some experimentation on your part
@@ -591,7 +685,7 @@ can just solve for it directly
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Implicit variable diffusity - steady-state. \
+...     raw_input("Implicit variable diffusivity - steady-state. \
 ... Press <return> to proceed...")
 
 .. image:: mesh1Dvariable.*
@@ -617,7 +711,7 @@ state. Consider a localized block of material diffusing in a closed box.
    :alt: initial condition for no-flux boundary conditions
 
 We assign no explicit boundary conditions, leaving the default no-flux boundary
-conditions, and solve 
+conditions, and solve
 
 .. math::
 
@@ -678,7 +772,7 @@ conditions?
 The problem is that in the implicit discretization of :math:`\nabla\cdot(D\nabla\phi) = 0`,
 
 .. math::
-    
+
    \begin{vmatrix}
    \frac{D}{{\Delta x}^2} & -\frac{D}{{\Delta x}^2} & & & & & \\\\[1em]
    \ddots & \ddots & \ddots & & & & \\[1em]
@@ -708,7 +802,7 @@ The problem is that in the implicit discretization of :math:`\nabla\cdot(D\nabla
    0
    \end{vmatrix}
 
-the initial condition :math:`\phi^\text{old}` no longer appears and 
+the initial condition :math:`\phi^\text{old}` no longer appears and
 :math:`\phi = 0` is a perfectly legitimate solution to this matrix equation.
 
 The solution is to run the transient problem and to take one enormous time step
@@ -739,7 +833,7 @@ If this example had been written primarily as a script, instead of as
 documentation, we would delete every line that does not begin with
 either "``>>>``" or "``...``", and then delete those prefixes from the
 remaining lines, leaving::
-    
+
      #!/usr/bin/env python
 
      ## This script was derived from
@@ -748,10 +842,10 @@ remaining lines, leaving::
      nx = 50
      dx = 1.
      mesh = Grid1D(nx = nx, dx = dx)
-     phi = CellVariable(name="solution variable", 
+     phi = CellVariable(name="solution variable",
                         mesh=mesh,
                         value=0)
-  
+
 ::
 
      eq = DiffusionTerm(coeff=D0 * (1 - phi[0]))
@@ -764,16 +858,16 @@ remaining lines, leaving::
      print phi[0].allclose(phiAnalytical, atol = 1e-1)
      # Expect:
      # 1
-     # 
+     #
      if __name__ == '__main__':
          viewer.plot()
-         raw_input("Implicit variable diffusity - steady-state. \
+         raw_input("Implicit variable diffusivity - steady-state. \
      Press <return> to proceed...")
 
 Your own scripts will tend to look like this, although you can always write
 them as doctest scripts if you choose.  You can obtain a plain script
 like this from some `.../example.py` by typing::
-    
+
     $ python setup.py copy_script --From .../example.py --To myExample.py
 
 at the command line.
@@ -792,4 +886,3 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-

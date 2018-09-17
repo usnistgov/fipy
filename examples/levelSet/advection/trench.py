@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "trench.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,24 +11,37 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -42,7 +55,8 @@ This example creates a trench with the following zero level set:
    \phi \left( x, y \right) = 0 & \text{when $L_y / 5 \le y \le 3 Ly / 5$ and $x = L_x / 2$$} \\
    \phi \left( x, y \right) = 0 & \text{when $y = 3 Ly / 5$ and $x \le L_x / 2$}
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, DistanceVariable, TransientTerm, FirstOrderAdvectionTerm, AdvectionTerm, Viewer
+>>> from fipy.tools import numerix, serialComm
 
 >>> height = 0.5
 >>> Lx = 0.4
@@ -56,7 +70,6 @@ This example creates a trench with the following zero level set:
 >>> timeStepDuration = cfl * dx / velocity
 >>> steps = 200
 
->>> from fipy.tools import serialComm
 >>> mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny, communicator=serialComm)
 
 >>> var = DistanceVariable(name = 'level set variable',
@@ -90,7 +103,7 @@ Advect the interface and check the position.
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var, datamin=-0.1, datamax=0.1)
-...     
+...
 ...     viewer.plot()
 
 >>> for step in range(steps):

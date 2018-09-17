@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - a finite volume PDE solver in Python
- # 
+ #
  #  FILE: "binaryTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,25 +11,36 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
- # This document was prepared at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this document is not subject to copyright
- # protection and is in the public domain.  summationTerm.py
- # is an experimental work.  NIST assumes no responsibility whatsoever
+ # This software was developed by employees of the National Institute
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
+ # works of NIST employees are not subject to copyright
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.  NIST assumes no responsibility whatsoever
  # for its use by other parties, and makes no guarantees, expressed
  # or implied, about its quality, reliability, or any other characteristic.
  # We would appreciate acknowledgement if the document is used.
- # 
- # This document can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -43,7 +54,7 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 from fipy.terms import SolutionVariableNumberError
 from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
-                
+
 class _CoupledBinaryTerm(_AbstractBinaryTerm):
     """
     Test to ensure that _getTransientGeomCoeff and _getDiffusionGeomCoeff return sensible results for coupled equations.
@@ -65,7 +76,7 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
     >>> diffCoeff = eq._uncoupledTerms[1]._getDiffusionGeomCoeff(v0)
     >>> print numerix.allequal(diffCoeff, [[-8, -8]])
     True
-    
+
     """
     def __init__(self, term, other):
         _AbstractBinaryTerm.__init__(self, term, other)
@@ -93,13 +104,13 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         """Build matrices of constituent Terms and collect them
 
         Only called at top-level by `_prepareLinearSystem()`
-        
+
         """
 
         from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
         SparseMatrix =  OffsetSparseMatrix(SparseMatrix=SparseMatrix,
                                            numberOfVariables=len(self._vars),
-                                           numberOfEquations=len(self._uncoupledTerms))        
+                                           numberOfEquations=len(self._uncoupledTerms))
         matrix = SparseMatrix(mesh=var.mesh)
         RHSvectors = []
 
@@ -108,11 +119,11 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
             SparseMatrix.equationIndex = equationIndex
             termRHSvector = 0
             termMatrix = SparseMatrix(mesh=var.mesh)
-            
+
             for varIndex, tmpVar in enumerate(var.vars):
 
                 SparseMatrix.varIndex = varIndex
-                
+
                 tmpVar, tmpMatrix, tmpRHSvector = uncoupledTerm._buildAndAddMatrices(tmpVar,
                                                                                      SparseMatrix,
                                                                                      boundaryConditions=(),
@@ -121,13 +132,13 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
                                                                                      diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(tmpVar),
                                                                                      buildExplicitIfOther=buildExplicitIfOther)
 
-                termMatrix += tmpMatrix 
+                termMatrix += tmpMatrix
                 termRHSvector += tmpRHSvector
 
             uncoupledTerm._buildCache(termMatrix, termRHSvector)
             RHSvectors += [CellVariable(value=termRHSvector, mesh=var.mesh)]
             matrix += termMatrix
-            
+
         return (var, matrix, _CoupledCellVariable(RHSvectors))
 
     def __repr__(self):
@@ -136,9 +147,9 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
         if solver and not solver._canSolveAsymmetric():
             import warnings
-            warnings.warn("%s cannot solve assymetric matrices" % solver)
+            warnings.warn("%s cannot solve asymmetric matrices" % solver)
         from fipy.solvers import DefaultAsymmetricSolver
-        return solver or DefaultAsymmetricSolver(*args, **kwargs)    
+        return solver or DefaultAsymmetricSolver(*args, **kwargs)
 
     def _calcVars(self):
         """
@@ -168,28 +179,28 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         >>> print (eq2 & eq0 & eq1)([v1, v2, v0])._vars
         [v1, v2, v0]
         >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last): 
-            ... 
+        Traceback (most recent call last):
+            ...
         SolutionVariableNumberError: Different number of solution variables and equations.
         >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last): 
-            ... 
+        Traceback (most recent call last):
+            ...
         SolutionVariableNumberError: Variable not in previously defined variables for this coupled equation.
         >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last): 
-            ... 
+        Traceback (most recent call last):
+            ...
         SolutionVariableNumberError: Different number of solution variables and equations.
         >>> print (eq2 & eq0 & eq1)([v1, v2])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last): 
-            ... 
+        Traceback (most recent call last):
+            ...
         SolutionVariableNumberError: Different number of solution variables and equations.
 
         """
-    
+
         ## set() is used to force comparison by reference rather than value
         unorderedVars = _AbstractBinaryTerm._calcVars(self)
         uncoupledTerms = self._uncoupledTerms
-        
+
         if len(unorderedVars) == len(uncoupledTerms):
             unorderedVars = set(unorderedVars)
             orderedVars = [None] * len(uncoupledTerms)
@@ -203,7 +214,7 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
                         if  _vars != [] and _vars[0] in unorderedVars:
                             orderedVars[index] = _vars[0]
                             unorderedVars.remove(_vars[0])
-            
+
             return orderedVars
         else:
             ## Constituent _CoupledBinaryTerms don't necessarily have the same
@@ -230,11 +241,11 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         >>> from fipy import *
         >>> m = Grid1D(nx=3)
         >>> v0 = CellVariable(mesh=m, value=0.)
-        >>> v1 = CellVariable(mesh=m, value=1.)        
+        >>> v1 = CellVariable(mesh=m, value=1.)
         >>> eq0 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
-        >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
+        >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1)
         >>> eq = eq0 & eq1
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
         >>> print var.globalValue
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.globalValue
@@ -244,17 +255,17 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         ...                         [-1,  3, -1, -2,  4, -2],
         ...                         [ 0, -1,  2,  0, -2,  2],
         ...                         [ 3, -3,  0,  5, -4,  0],
-        ...                         [-3,  6, -3, -4,  9, -4],                
+        ...                         [-3,  6, -3, -4,  9, -4],
         ...                         [ 0, -3,  3,  0, -4,  5]])
         True
 
         >>> m = Grid1D(nx=6)
         >>> v0 = CellVariable(mesh=m, value=0.)
-        >>> v1 = CellVariable(mesh=m, value=1.)        
+        >>> v1 = CellVariable(mesh=m, value=1.)
         >>> eq0 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
-        >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
+        >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1)
         >>> eq = eq0 & eq1
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
         >>> print var.globalValue
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
         >>> print RHSvector.globalValue
@@ -273,14 +284,14 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         ...                         [ 0,  0,  0, -3,  6, -3,  0,  0,  0, -4,  9, -4],
         ...                         [ 0,  0,  0,  0, -3,  3,  0,  0,  0,  0, -4,  5]])
         True
-        
+
         >>> m = Grid1D(nx=3)
         >>> v0 = CellVariable(mesh=m, value=0.)
         >>> v1 = CellVariable(mesh=m, value=1.)
         >>> diffTerm = DiffusionTerm(coeff=1., var=v0)
         >>> eq00 = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0)
         >>> eq0 = eq00 - DiffusionTerm(coeff=2., var=v1)
-        >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1) 
+        >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1)
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
         >>> (eq0 & eq1).solve(dt=1.)
@@ -292,19 +303,19 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         ...                         [ 0,  0,  0,  0,  0,  0],
         ...                         [ 0,  0,  0,  0,  0,  0]])
         True
-        >>> ## This currectly returns None because we lost the handle to the DiffusionTerm when it's negated.
-        >>> print diffTerm.matrix 
+        >>> ## This correctly returns None because we lost the handle to the DiffusionTerm when it's negated.
+        >>> print diffTerm.matrix
         None
-        
+
         Check `diffusionGeomCoeff` is determined correctly (ticket:329)
-        
+
         >>> m = Grid1D(nx=3)
         >>> v0 = CellVariable(mesh=m, value=0.)
         >>> v1 = CellVariable(mesh=m, value=1.)
         >>> eq0 = PowerLawConvectionTerm(coeff=100., var=v0) - DiffusionTerm(coeff=1., var=v0)
         >>> eq1 = PowerLawConvectionTerm(coeff=-0.001, var=v1) - DiffusionTerm(coeff=3., var=v1)
         >>> eq = eq0 & eq1
-        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass) 
+        >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass)
         >>> print var.globalValue
         [ 0.  0.  0.  1.  1.  1.]
         >>> print RHSvector.globalValue
@@ -314,15 +325,14 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         ...                         [-100,   100,  1e-15,       0,       0,       0],
         ...                         [   0,  -100, -1e-15,       0,       0,       0],
         ...                         [   0,     0,      0,  2.9995, -3.0005,       0],
-        ...                         [   0,     0,      0, -2.9995,  6.0000, -3.0005],                
+        ...                         [   0,     0,      0, -2.9995,  6.0000, -3.0005],
         ...                         [   0,     0,      0,       0, -2.9995,  3.0005]])
         True
         """
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()
-

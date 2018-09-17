@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mesh20x20.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,24 +11,37 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -38,7 +51,7 @@ In the following examples, we solve the same set of equations as in
 :mod:`examples.phase.impingement.mesh40x1`
 with different initial conditions and a 2D mesh:
 
-.. index:: 
+.. index::
    module: fipy.tools.parser
 
 >>> from fipy.tools.parser import parse
@@ -50,7 +63,8 @@ with different initial conditions and a 2D mesh:
 
 .. index:: sqrt, Grid2D
 
->>> from fipy import *
+>>> from fipy import CellVariable, ModularVariable, Grid2D, TransientTerm, DiffusionTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, GeneralSolver, Viewer
+>>> from fipy.tools import numerix, dump
 
 >>> steps = numberOfSteps
 >>> N = int(numerix.sqrt(numberOfElements))
@@ -62,7 +76,7 @@ The initial conditions are given by
 :math:`\phi = 1` and
 
 .. math::
-    
+
    \theta = \begin{cases}
    \frac{2 \pi}{3} & \text{for $x^2 - y^2 < L / 2$,} \\
    \frac{-2 \pi}{3} & \text{for $(x-L)^2 - y^2 < L / 2$,} \\
@@ -90,7 +104,7 @@ The parameters for this example are
 The system is held isothermal at
 
 >>> temperature = 10.
-    
+
 and is initialized to liquid everywhere
 
 .. index:: CellVariable
@@ -113,9 +127,9 @@ Four different solid circular domains are created at each corner of
 the domain with appropriate orientations
 
 >>> x, y = mesh.cellCenters
->>> for a, b, thetaValue in ((0., 0.,  2. * numerix.pi / 3.), 
-...                          (L, 0., -2. * numerix.pi / 3.), 
-...                          (0., L, -2. * numerix.pi / 3. + 0.3), 
+>>> for a, b, thetaValue in ((0., 0.,  2. * numerix.pi / 3.),
+...                          (L, 0., -2. * numerix.pi / 3.),
+...                          (0., L, -2. * numerix.pi / 3. + 0.3),
 ...                          (L, L,  2. * numerix.pi / 3.)):
 ...     segment = (x - a)**2 + (y - b)**2 < (L / 2.)**2
 ...     phase.setValue(1., where=segment)
@@ -210,21 +224,21 @@ We step the solution in time, plotting as we go if running interactively,
 ...     if __name__ == '__main__':
 ...         phaseViewer.plot()
 ...         thetaProductViewer.plot()
-    
+
 The solution is compared against Ryo Kobayashi's test data
 
 >>> print theta.allclose(testData, rtol=1e-7, atol=1e-7)
 1
-    
+
 The following code shows how to restart a simulation from some saved
 data. First, reset the variables to their original values.
 
 >>> phase.setValue(0)
 >>> theta.setValue(-numerix.pi + 0.0001)
 >>> x, y = mesh.cellCenters
->>> for a, b, thetaValue in ((0., 0.,  2. * numerix.pi / 3.), 
-...                          (L, 0., -2. * numerix.pi / 3.), 
-...                          (0., L, -2. * numerix.pi / 3. + 0.3), 
+>>> for a, b, thetaValue in ((0., 0.,  2. * numerix.pi / 3.),
+...                          (L, 0., -2. * numerix.pi / 3.),
+...                          (0., L, -2. * numerix.pi / 3. + 0.3),
 ...                          (L, L,  2. * numerix.pi / 3.)):
 ...     segment = (x - a)**2 + (y - b)**2 < (L / 2.)**2
 ...     phase.setValue(1., where=segment)
@@ -237,7 +251,7 @@ Step through half the time steps.
 ...     thetaEq.solve(theta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
 ...     phaseEq.solve(phase, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
 
-We confirm that the solution has not yet converged to that given by 
+We confirm that the solution has not yet converged to that given by
 Ryo Kobayashi's FORTRAN code:
 
 >>> print theta.allclose(testData)
@@ -249,7 +263,7 @@ We save the variables to disk.
    module: fipy.tools.dump
 
 >>> (f, filename) = dump.write({'phase' : phase, 'theta' : theta}, extension = '.gz')
-    
+
 and then recall them to test the data pickling mechanism
 
 >>> data = dump.read(filename, f)
@@ -275,6 +289,5 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    
-    raw_input('finished')
 
+    raw_input('finished')

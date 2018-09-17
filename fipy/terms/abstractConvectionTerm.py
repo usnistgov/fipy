@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "baseConvectionTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,24 +11,37 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -51,7 +64,7 @@ class _AbstractConvectionTerm(FaceTerm):
     def __init__(self, coeff=1.0, var=None):
         """
         Create a `_AbstractConvectionTerm` object.
-        
+
             >>> from fipy import *
             >>> m = Grid1D(nx = 2)
             >>> cv = CellVariable(mesh = m)
@@ -95,15 +108,15 @@ class _AbstractConvectionTerm(FaceTerm):
             >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = ((0,),(0,)))).solve(var=cv2, solver=DummySolver(), dt=1.)
             >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (0,0))).solve(var=cv2, solver=DummySolver(), dt=1.)
 
-        
+
         :Parameters:
           - `coeff` : The `Term`'s coefficient value.
         """
         if self.__class__ is _AbstractConvectionTerm:
             raise AbstractBaseClassError
-            
+
         self.stencil = None
-        
+
         if isinstance(coeff, _MeshVariable) and coeff.rank < 1:
             raise VectorCoeffError
 
@@ -111,7 +124,7 @@ class _AbstractConvectionTerm(FaceTerm):
             coeff = coeff.arithmeticFaceValue
 
         FaceTerm.__init__(self, coeff=coeff, var=var)
-        
+
     def _calcGeomCoeff(self, var):
         mesh = var.mesh
 
@@ -120,13 +133,13 @@ class _AbstractConvectionTerm(FaceTerm):
 
             if shape != () and shape != (1,) and shape[-1] == 1:
                 shape = shape[:-1]
-            
+
             self.coeff = FaceVariable(mesh=mesh, elementshape=shape, value=self.coeff)
 
         projectedCoefficients = self.coeff * mesh._orientedAreaProjections
 
         return projectedCoefficients.sum(0)
-        
+
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         r"""
         Testing that the sign of the equation is taken into account
@@ -152,9 +165,9 @@ class _AbstractConvectionTerm(FaceTerm):
 
         >>> print numerix.allclose(v, v0)
         True
-        
+
         """
-                
+
         if self.stencil is None:
 
             geomCoeff = self._getGeomCoeff(var)
@@ -169,7 +182,7 @@ class _AbstractConvectionTerm(FaceTerm):
                 diffCoeff = diffusionGeomCoeff[0].numericValue
                 diffCoeff = diffCoeff - (diffCoeff == 0) * geomCoeff / pecletLarge
                 peclet = -geomCoeff / diffCoeff
-                    
+
             alpha = self._alpha(peclet)
 
             self.stencil = {'implicit' : {'cell 1 diag'    : alpha,
@@ -180,14 +193,14 @@ class _AbstractConvectionTerm(FaceTerm):
         return self.stencil
 
     def _checkVar(self, var):
-        FaceTerm._checkVar(self, var)  
+        FaceTerm._checkVar(self, var)
         if not (isinstance(self.coeff, FaceVariable) and self.coeff.rank == 1):
             coeffShape = numerix.getShape(self.coeff)
             if (coeffShape is ()) or (coeffShape[0] != var.mesh.dim):
                 raise VectorCoeffError
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        
+
         var, L, b = FaceTerm._buildMatrix(self, var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
 ##        if var.rank != 1:
@@ -216,13 +229,13 @@ class _AbstractConvectionTerm(FaceTerm):
 
         return (var, L, b)
 
-class __ConvectionTerm(_AbstractConvectionTerm): 
+class __ConvectionTerm(_AbstractConvectionTerm):
     """
     Dummy subclass for tests
     """
-    pass 
+    pass
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
 

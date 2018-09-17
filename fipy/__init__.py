@@ -11,17 +11,20 @@ simulation of science problems.  Numerous PDE solvers exist, using a
 variety of languages and numerical approaches. Many are proprietary,
 expensive and difficult to customize.  As a result, scientists spend
 considerable resources repeatedly developing limited tools for
-specific problems.  Our approach, combining the FV method and Python_,
+specific problems.  Our approach, combining the FV method and :term:`Python`,
 provides a tool that is extensible, powerful and freely available. A
-significant advantage to Python_ is the existing suite of tools for
-array calculations, sparse matrices and data rendering. 
+significant advantage to :term:`Python` is the existing suite of tools for
+array calculations, sparse matrices and data rendering.
 
-The :term:`FiPy` framework includes terms for transient diffusion, convection and
-standard sources, enabling the solution of arbitrary combinations of
-coupled elliptic, hyperbolic and parabolic PDEs.  Currently implemented
-models include phase field |citePhaseField| treatments of polycrystalline,
-dendritic, and electrochemical phase transformations as well as a level set
-treatment of the electrodeposition process |citeCEAC|.
+The :term:`FiPy` framework includes terms for transient diffusion,
+convection and standard sources, enabling the solution of arbitrary
+combinations of coupled elliptic, hyperbolic and parabolic PDEs. Currently
+implemented models include phase field :cite:`BoettingerReview:2002`
+:cite:`ChenReview:2002` :cite:`McFaddenReview:2002` treatments of polycrystalline,
+dendritic, and electrochemical phase transformations, as well as drug
+eluting stents :cite:`Saylor:2011p2794`, reactive wetting :cite:`PhysRevE.82.051601`,
+photovoltaics :cite:`Hangarter:2011p2795` and a level set treatment of the
+electrodeposition process :cite:`NIST:damascene:2001`.
 
 .. _MML:                  http://www.nist.gov/mml/
 .. _CTCMS:                http://www.ctcms.nist.gov/
@@ -37,9 +40,9 @@ def _getVersion():
         version = get_distribution(__name__).version
     except DistributionNotFound:
         version = "unknown, try running `python setup.py egg_info`"
-        
+
     return version
-    
+
 __version__ = _getVersion()
 
 from fipy.boundaryConditions import *
@@ -71,7 +74,7 @@ if sys.version_info >= (3, 0):
     if parallelComm.Nproc > 1:
         def mpi_input(prompt=""):
             parallelComm.Barrier()
-            sys.stdout.flush() 
+            sys.stdout.flush()
             if parallelComm.procID == 0:
                 sys.stdout.write(prompt)
                 sys.stdout.flush()
@@ -79,7 +82,7 @@ if sys.version_info >= (3, 0):
             else:
                 return ""
         input = mpi_input
-        
+
     __all__.extend(['input', 'input_original'])
 else:
     raw_input = raw_input
@@ -96,7 +99,7 @@ else:
             else:
                 return ""
         raw_input = mpi_raw_input
-        
+
     __all__.extend(['raw_input', 'raw_input_original'])
 
 _saved_stdout = sys.stdout
@@ -111,7 +114,7 @@ def _serial_doctest_raw_input(prompt):
 
 def doctest_raw_input(prompt):
     """Replacement for `raw_input()` that works in doctests
-    
+
     This routine attempts to be savvy about running in parallel.
     """
     try:
@@ -130,7 +133,7 @@ def doctest_raw_input(prompt):
 def test(*args):
     r"""
     Test `Fipy`. Equivalent to::
-    
+
     $ python setup.py test --modules
 
     Use

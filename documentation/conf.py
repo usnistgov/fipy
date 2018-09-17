@@ -23,16 +23,15 @@ sys.path.append(os.path.abspath('tutorial'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 
-              'sphinx.ext.doctest', 
-              'sphinx.ext.intersphinx', 
-              'sphinx.ext.todo', 
-              'sphinx.ext.coverage', 
-              'sphinx.ext.pngmath', 
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.doctest',
+              'sphinx.ext.intersphinx',
+              'sphinx.ext.todo',
+              'sphinx.ext.coverage',
+              'sphinx.ext.imgmath',
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
               'numpydoc',
-              'sphinxcontrib.traclinks',
               'redirecting_html',
               'sphinxcontrib.bibtex']
 
@@ -50,7 +49,7 @@ master_doc = 'documentation/contents'
 
 # General information about the project.
 project = u'FiPy'
-copyright = u'2004-2012, Jonathan E. Guyer, Daniel Wheeler & James A. Warren'
+copyright = u'works of NIST employees are not not subject to copyright protection'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -76,22 +75,24 @@ release = fipy.__version__
 
 # List of documents that shouldn't be included in the build.
 unused_docs = ['documentation/RESOURCES',
-               'documentation/TODOLIST', 
+               'documentation/TODOLIST',
                'documentation/VERSION']
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
 exclude_patterns = ['fipy/generated/modules.rst',
                     'fipy/generated/__init__.rst',
-                    'build', 
+                    'build',
                     'dist',
-                    'FiPy.egg-info', 
-                    'documentation/_build', 
+                    'FiPy.egg-info',
+                    'documentation/_build',
+                    'documentation/_templates',
                     'documentation/tutorial/package/generated/modules.rst',
                     'documentation/sphinxext',
                     'documentation/sphinxext/bibtex/bibstuff/examples/*.rst',
                     '**/.svn',
-                    '**/.git']
+                    '**/.git',
+                    'worktrees']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -123,11 +124,11 @@ autosummary_generate = ['examples/diffusion/index.rst',
                         'examples/flow/index.rst',
                         'examples/reactiveWetting/index.rst',
                         'examples/updating/index.rst']
-                        
+
 autodoc_member_order = 'alphabetical'
 
-traclinks_base_url = 'http://matforge.org/fipy'
-                        
+autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'PyTrilinos.NOX']
+
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
@@ -156,7 +157,7 @@ html_logo = '_static/logo.png'
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-html_favicon = 'favicon.ico'
+html_favicon = '_static/favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -229,18 +230,12 @@ latex_elements = {
       \begin{titlepage}%
         \let\footnotesize\small
         \let\footnoterule\relax
-        \ifsphinxpdfoutput
-          \begingroup
-          % This \def is required to deal with multi-line authors; it
-          % changes \\ to ', ' (comma-space), making it pass muster for
-          % generating document info in the PDF file.
-          \def\\{, }
-          \pdfinfo{
-            /Author (\@author)
-            /Title (\@title)
-          }
+        \noindent\rule{\textwidth}{1pt}\par
+          \begingroup % for PDF information dictionary
+           \def\endgraf{ }\def\and{\& }%
+           \pdfstringdefDisableCommands{\def\\{, }}% overwrite hyperref setup
+           \hypersetup{pdfauthor={\@author}, pdftitle={\@title}}%
           \endgroup
-        \fi
         \changepage{1in}{}{1in}{0.5in}{}{-0.5in}{}{}{}
         \begin{flushright}%
           \fipylogo\par%
@@ -280,15 +275,15 @@ latex_elements = {
 
     \definecolor{redish}{rgb}{0.894,0.122,0.122}
     \definecolor{bluish}{rgb}{0.216,0.188,0.533}
-    
+
     \authoraddress{Materials Science and Engineering Division \\
     and the Center for Theoretical and Computational Materials Science \\
     Material Measurement Laboratory}
-    
+
     \newcommand{\fipylogo}{\scalebox{10}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}}
-    
-    \ChNameVar{\fontsize{14}{16}\usefont{OT1}{phv}{m}{n}\selectfont} 
-    \ChNumVar{\fontsize{60}{62}\usefont{OT1}{ptm}{m}{n}\selectfont} 
+
+    \ChNameVar{\fontsize{14}{16}\usefont{OT1}{phv}{m}{n}\selectfont}
+    \ChNumVar{\fontsize{60}{62}\usefont{OT1}{ptm}{m}{n}\selectfont}
     \ChTitleVar{\Huge\bfseries\rm}
     \ChRuleWidth{1pt}
     """
@@ -313,7 +308,7 @@ latex_documents = [
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
-latex_use_parts = True
+latex_toplevel_sectioning = 'part'
 
 latex_additional_files = ['figures/nistident_flright_vec.pdf']
 
@@ -323,32 +318,41 @@ latex_additional_files = ['figures/nistident_flright_vec.pdf']
 # If false, no module index is generated.
 #latex_use_modindex = True
 
-pngmath_latex_preamble = common_preamble
+imgmath_latex_preamble = common_preamble
 
 # refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/', None),
-    'numpy': ('http://docs.scipy.org/doc/numpy/', None),
-    'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
-    'matplotlib': ('http://matplotlib.sourceforge.net/', None)}
-# intersphinx_mapping = {'http://docs.python.org/': None,
-#                        'http://docs.scipy.org/doc/numpy/': None,
-#                        'http://docs.scipy.org/doc/scipy/reference/': None,
-#                        'http://matplotlib.sourceforge.net/': None}
+    'python': ('https://docs.python.org/2/', None),
+    'numpy': ('https://docs.scipy.org/doc/numpy/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
+    'matplotlib': ('https://matplotlib.org/', None)}
 
 def skip_numpy_not_numerix(app, what, name, obj, skip, options):
     import types
-    if ((type(obj) in [types.FunctionType, 
+    if ((type(obj) in [types.FunctionType,
                        types.BuiltinFunctionType,
-                       types.ClassType, 
-                       types.TypeType]) 
+                       types.ClassType,
+                       types.TypeType])
         and not (obj.__module__.startswith("fipy")
                  or obj.__module__.startswith("package"))):
             skip = True
     return skip
-    
+
 def setup(app):
     app.connect('autodoc-skip-member', skip_numpy_not_numerix)
+    
+# lifted from astropy/astropy@e68ca1a1
 
-    
-    
+# Enable nitpicky mode - which ensures that all references in the docs
+# resolve.
+
+nitpicky = True
+nitpick_ignore = []
+
+for line in open('nitpick-exceptions'):
+    if line.strip() == "" or line.startswith("#"):
+        continue
+    dtype, target = line.split(None, 1)
+    target = target.strip()
+    nitpick_ignore.append((dtype, target))
+

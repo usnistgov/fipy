@@ -1,33 +1,46 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "howToWriteAScript.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  PFM is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -39,7 +52,7 @@ not meet the required needs. It provides the functionality of
 :mod:`examples.levelSet.electroChem.simpleTrenchSystem`.
 
 To run this example from the base fipy directory type::
-    
+
     $ python examples/levelSet/electroChem/howToWriteAScript.py --numberOfElements=10000 --numberOfSteps=800
 
 at the command line. The results of the simulation will be displayed
@@ -72,7 +85,7 @@ The following parameters (all in S.I. units)  represent,
    >>> rateConstant3 = -245e-6
    >>> catalystDiffusion = 1e-9
    >>> siteDensity = 9.8e-6
-   
+
  * properties of the cupric ions,
 
    >>> molarVolume = 7.1e-6
@@ -86,7 +99,7 @@ The following parameters (all in S.I. units)  represent,
    >>> bulkMetalConcentration = 250.
    >>> catalystConcentration = 5e-3
    >>> catalystCoverage = 0.
-   
+
  * parameters obtained from experiments on flat copper electrodes,
 
    >>> currentDensity0 = 0.26
@@ -105,7 +118,7 @@ The following parameters (all in S.I. units)  represent,
    >>> aspectRatio = 2.
    >>> trenchSpacing = 0.6e-6
    >>> boundaryLayerDepth = 0.3e-6
-   
+
 The hydrodynamic boundary layer depth (``boundaryLayerDepth``) is
 intentionally small in this example to keep the mesh at a reasonable
 size.
@@ -153,11 +166,11 @@ A ``distanceVariable`` object,
 :math:`\phi`, is  required to store  the  position of the interface.
 
 The ``distanceVariable`` calculates its value so that it is a distance
-function 
+function
 (*i.e.* holds the distance at any point in the mesh from the electrolyte/metal
 interface at :math:`\phi = 0`) and :math:`|\nabla\phi| = 1`.
 
-First, create the :math:`\phi` variable, which is initially set to -1 everywhere. 
+First, create the :math:`\phi` variable, which is initially set to -1 everywhere.
 Create an initial variable,
 
 .. index:: DistanceVariable
@@ -178,8 +191,8 @@ region will be negative.
 >>> sideWidth = (trenchSpacing - trenchWidth) / 2
 
 >>> x, y = mesh.cellCenters
->>> distanceVar.setValue(1., where=(y > trenchHeight) 
-...                                 | ((y > bottomHeight) 
+>>> distanceVar.setValue(1., where=(y > trenchHeight)
+...                                 | ((y > bottomHeight)
 ...                                    & (x < xCells * cellSize - sideWidth)))
 
 >>> distanceVar.calcDistanceFunction(order=2) #doctest: +LSM
@@ -206,10 +219,10 @@ in the electrolyte,
 ...     name='bulk catalyst variable',
 ...     mesh=mesh,
 ...     value=catalystConcentration)
-   
+
 Create the bulk metal ion concentration,
 :math:`c_m`, in the electrolyte.
-        
+
 >>> metalVar = CellVariable(
 ...     name='metal variable',
 ...     mesh=mesh,
@@ -227,7 +240,7 @@ charge and :math:`F` is Faraday's constant. The current density is given
 by
 
 .. math::
-    
+
    i = i_0 \frac{c_m^i}{c_m^{\infty}} \exp{ \left( \frac{- \alpha F}{R T} \eta \right) }
 
 where :math:`c_m^i` is the metal ion concentration in the bulk at the
@@ -238,7 +251,7 @@ overpotential. The exchange current density is an empirical
 function of catalyst coverage,
 
 .. math::
-    
+
    i_0(\theta) = b_0 + b_1 \theta
 
 The commands needed to build this equation are,
@@ -262,7 +275,7 @@ rest of the domain.
 >>> extensionVelocityVariable = CellVariable(
 ...     name='extension velocity',
 ...     mesh=mesh,
-...     value=depositionRateVariable)   
+...     value=depositionRateVariable)
 
 Using the variables created above the governing equations will be
 built.  The governing equation for surfactant conservation is given
@@ -279,11 +292,11 @@ catalyst in the bulk at the interface. The value :math:`k` is given
 by an empirical function of overpotential,
 
 .. math::
-    
+
    k = k_0 + k_3 \eta^3
 
-The above equation is represented by the 
-:class:`~fipy.models.levelSet.surfactant.adsorbingSurfactantEquation.AdsorbingSurfactantEquation`
+The above equation is represented by the
+:class:`~examples.levelSet.electroChem.adsorbingSurfactantEquation.AdsorbingSurfactantEquation`
 in :term:`FiPy`:
 
 >>> surfactantEquation = AdsorbingSurfactantEquation(
@@ -299,9 +312,9 @@ The variable :math:`\phi` is advected by the
 .. math::
 
    \frac{\partial \phi}{\partial t} + v_{\text{ext}}|\nabla \phi| = 0
-   
+
 and is set up with the following commands:
-    
+
 .. index:: AdvectionTerm
 
 >>> advectionEquation = TransientTerm() + AdvectionTerm(extensionVelocityVariable)
@@ -316,7 +329,7 @@ governed by,
 where,
 
 .. math::
-    
+
    D = \begin{cases}
    D_m & \text{when $\phi > 0$,} \\
    0   & \text{when $\phi \le 0$}
@@ -325,9 +338,9 @@ where,
 The following boundary condition applies at :math:`\phi = 0`,
 
 .. math::
-    
+
    D \hat{n} \cdot \nabla c = \frac{v}{\Omega}.
-   
+
 The metal ion diffusion equation is set up with the following commands.
 
 >>> metalEquation = buildMetalIonDiffusionEquation(
@@ -365,9 +378,9 @@ density and a jump coefficient. The boundary condition
 at :math:`\phi = 0` is given by,
 
 .. math::
-    
+
    D \hat{n} \cdot \nabla c = -k c (1 - \theta).
-   
+
 The surfactant bulk diffusion equation is set up with the following commands.
 
 >>> from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
@@ -384,21 +397,21 @@ The surfactant bulk diffusion equation is set up with the following commands.
 If running interactively, create viewers.
 
 .. index:: MayaviSurfactantViewer
-   
+
 >>> if __name__ == '__main__':
 ...     try:
 ...         from mayaviSurfactantViewer import MayaviSurfactantViewer
 ...         viewer = MayaviSurfactantViewer(distanceVar,
 ...                                         catalystVar.interfaceVar,
 ...                                         zoomFactor=1e6,
-...                                         datamax=1.0, 
+...                                         datamax=1.0,
 ...                                         datamin=0.0,
 ...                                         smooth=1)
 ...     except:
 ...         viewer = MultiViewer(viewers=(
 ...             Viewer(distanceVar, datamin=-1e-9, datamax=1e-9),
 ...             Viewer(catalystVar.interfaceVar)))
-...         from fipy.models.levelSet.surfactant.matplotlibSurfactantViewer import MatplotlibSurfactantViewer 
+...         from fipy.models.levelSet.surfactant.matplotlibSurfactantViewer import MatplotlibSurfactantViewer
 ...         viewer = MatplotlibSurfactantViewer(catalystVar.interfaceVar)
 ... else:
 ...     viewer = None
@@ -425,7 +438,7 @@ is calculated with the CFL number and the maximum extension velocity.
 ...         distanceVar.calcDistanceFunction(order=2)
 ...
 ...     extensionVelocityVariable.setValue(depositionRateVariable())
-...     
+...
 ...     distanceVar.updateOld()
 ...     distanceVar.extendVariable(extensionVelocityVariable, order=2)
 ...     dt = cflNumber * cellSize / extensionVelocityVariable.max()
@@ -433,13 +446,13 @@ is calculated with the CFL number and the maximum extension velocity.
 ...     surfactantEquation.solve(catalystVar, dt=dt)
 ...     metalEquation.solve(var=metalVar, dt=dt)
 ...     bulkCatalystEquation.solve(var=bulkCatalystVar, dt=dt, solver=GeneralSolver()) #doctest: +LSM
-   
+
 The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
 to tell if something has changed or been broken.
 
 .. index:: loadtxt
-   
+
 >>> import os
 
 >>> filepath = os.path.join(os.path.split(__file__)[0],
@@ -456,8 +469,6 @@ __docformat__ = 'restructuredtext'
 def _run():
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript(__name__))
-    
+
 if __name__ == '__main__':
     _run()
-
-

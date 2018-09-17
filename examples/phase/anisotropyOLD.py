@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "input.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,30 +11,43 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
 r"""
 .. attention::
-    
+
    This example remains only for exact comparison against Ryo Kobayashi's
    FORTRAN code. See :mod:`examples.phase.anisotropy` for a better, although not
    numerically identical implementation.
@@ -42,12 +55,13 @@ r"""
 In this example we solve a coupled phase and temperature equation to model
 solidification, and eventually dendritic growth, based on the work of
 Warren, Kobayashi, Lobkovsky and Carter :cite:`WarrenPolycrystal`.
-   
+
 We start from a circular seed in a 2D mesh:
 
 .. index:: Grid2D
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, TransientTerm, DiffusionTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> numberOfCells = 40
 >>> Length = numberOfCells * 2.5 / 100.
@@ -69,7 +83,7 @@ The governing equation for the phase field is given by:
 
 .. math::
 
-   \tau_{\phi} \frac{\partial \phi}{\partial t} 
+   \tau_{\phi} \frac{\partial \phi}{\partial t}
    = \nabla \cdot \left[ D \nabla \phi + A \nabla \xi \right] +
    \phi ( 1 - \phi ) m ( \phi , T)
 
@@ -77,13 +91,13 @@ where
 
 .. math::
 
-   m(\phi, T) 
+   m(\phi, T)
    = \phi - \frac{1}{2} - \frac{ \kappa_1 }{ \pi } \arctan \left( \kappa_2 T \right).
 
 The coefficients :math:`D` and :math:`A` are given by,
 
 .. math::
-    
+
    D = \alpha^2 \left[ 1 + c \beta \right]^2
 
 and
@@ -100,7 +114,7 @@ where :math:`\beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2}`,
 The governing equation for temperature is given by:
 
 .. math::
-    
+
    \frac{\partial T}{\partial t} = D_T \nabla^2 T + \frac{\partial \phi}{\partial t}
 
 ..  Further details of the numerical method for this problem can be found in
@@ -110,7 +124,7 @@ The governing equation for temperature is given by:
 Here the phase and temperature equations are solved with an explicit
 and implicit technique, respectively.
 
-The parameters for these equations are 
+The parameters for these equations are
 
 >>> timeStepDuration = 5e-5
 >>> tau = 3e-4
@@ -118,7 +132,7 @@ The parameters for these equations are
 >>> c = 0.02
 >>> N = 4.
 >>> kappa1 = 0.9
->>> kappa2 = 20.    
+>>> kappa2 = 20.
 >>> tempDiffusionCoeff = 2.25
 >>> theta = 0.
 
@@ -131,13 +145,13 @@ the ``phase`` variable is initialized as a liquid,
 
 The ``hasOld`` flag keeps the old value of the variable. This is
 necessary for a transient solution. In this example we wish to set up
-an interior region that is solid. 
+an interior region that is solid.
 The domain is seeded with a circular solidified region with parameters
 ``seedCenter`` and ``radius`` representing the center and radius of the
 seed.
-   
+
 >>> x, y = mesh.cellCenters
->>> phase.setValue(1., where=((x - seedCenter[0])**2 
+>>> phase.setValue(1., where=((x - seedCenter[0])**2
 ...                           + (y - seedCenter[1])**2) < radius**2)
 
 The temperature field is initialized to a value of -0.4 throughout:
@@ -148,8 +162,8 @@ The temperature field is initialized to a value of -0.4 throughout:
 ...     value=initialTemperature,
 ...     hasOld=1)
 
-The :math:`m(\phi, T)` variable 
-   
+The :math:`m(\phi, T)` variable
+
 is created from the ``phase`` and ``temperature`` variables.
 
 .. index:: :math:`\pi`, pi, arctan, arctan2, tan
@@ -171,7 +185,7 @@ The following section of code builds up the :math:`A` and :math:`D` coefficients
 The :math:`\nabla \xi` variable (``dxi``),
 given by :math:`(\xi_x, \xi_y) = (-\phi_y, \phi_x)`,
 is constructed by first obtaining :math:`\nabla \phi`
-    
+
 using :meth:`getFaceGrad`. The axes are rotated ninety degrees.
 
 >>> dxi = phase.faceGrad.dot(((0, 1),(-1,0)))
@@ -199,7 +213,7 @@ the phase and temperature fields
 
 >>> if __name__ == '__main__':
 ...     phaseViewer = Viewer(vars=phase)
-...     temperatureViewer = Viewer(vars=temperature, 
+...     temperatureViewer = Viewer(vars=temperature,
 ...                                datamin=-0.5, datamax=0.5)
 ...     phaseViewer.plot()
 ...     temperatureViewer.plot()
@@ -235,4 +249,3 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
-

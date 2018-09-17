@@ -8,7 +8,7 @@ Refer to :ref:`documentation:GIT` for the current branching conventions.
 Branches
 --------
 
-Whether fixing a bug or adding a feature, all work on FiPy should be based 
+Whether fixing a bug or adding a feature, all work on FiPy should be based
 on a reported `GitHub issue`_. Assuming issue number 12345, branch the code::
 
     $ BRANCH=issue12345-Summary_of_what_branch_addresses
@@ -68,7 +68,7 @@ request via RSS feed.
        $ git format-patch
 
    and then attach the :file:`*.patch` files to the ticket.
-    
+
 Refactoring complete: merge branch to develop
 ---------------------------------------------
 
@@ -76,7 +76,7 @@ Refactoring complete: merge branch to develop
 
    **Administrators Only!**
 
-   First, follow the instructions for 
+   First, follow the instructions for
    `Merging changes from develop to the branch`_.
 
    Merge the branch to ``develop``::
@@ -112,7 +112,7 @@ necessary if the branch already exists due to a previous fix)::
 
     $ git branch version-n_m refs/tags/version-n_m
 
-Proceed as with other Branches_, but instead branching from ``develop``, 
+Proceed as with other Branches_, but instead branching from ``develop``,
 do development work off of the historical branch::
 
     $ BRANCH=ticket12345-Summary_of_what_branch_addresses
@@ -120,7 +120,7 @@ do development work off of the historical branch::
 
 Edit and commit as usual.
 
-If appropriate, after successful code review and merger to the 
+If appropriate, after successful code review and merger to the
 ``version-n_m`` branch, the changes should also be merged to ``develop``::
 
     $ git checkout develop
@@ -238,9 +238,13 @@ Make sure stdeb_ and debhelper_ are installed::
 Upload
 ------
 
-Tag the repository as appropriate (see `SVN practices`_ above).
+Tag the repository as appropriate (see `Git practices`_ above).
 
-Upload the build products and documentation from :file:`dist/` and 
+Upload the build products to PyPI
+
+    $ python setup.py sdist upload
+
+Upload the build products and documentation from :file:`dist/` and
 the web site to CTCMS ::
 
     $ export FIPY_WWWHOST=bunter:/u/WWW/wd15/fipy
@@ -263,4 +267,3 @@ executable and upload to download page.
 .. _PyVTK: http://cens.ioc.ee/projects/pyvtk/
 .. _stdeb: http://github.com/astraw/stdeb
 .. _debhelper: http://kitenet.net/~joey/code/debhelper/
-

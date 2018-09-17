@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "matplotlibStreamViewer.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,29 +11,40 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
- 
+
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -51,21 +62,21 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
     One issue is that this `Viewer` relies on `scipy.interpolate.griddata`,
     which interpolates on the convex hull of the data. The results is that
     streams are plotted across any concavities in the mesh.
-    
+
     Another issue is that it does not seem possible to remove the streams
     without calling `cla()`, which means that different set of streams cannot be
     overlaid.
-    
+
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
     """
-    
+
     __doc__ += AbstractMatplotlib2DViewer._test2Dvector(viewer="MatplotlibStreamViewer")
     __doc__ += AbstractMatplotlib2DViewer._test2DvectorIrregular(viewer="MatplotlibStreamViewer")
 
-    def __init__(self, vars, title=None, log=False, limits={}, axes=None, figaspect='auto', 
-                 density=1, linewidth=None, color=None, cmap=None, norm=None, arrowsize=1, 
-                 arrowstyle='-|>', minlength=0.1, 
+    def __init__(self, vars, title=None, log=False, limits={}, axes=None, figaspect='auto',
+                 density=1, linewidth=None, color=None, cmap=None, norm=None, arrowsize=1,
+                 arrowstyle='-|>', minlength=0.1,
                  **kwlimits):
         """Creates a `MatplotlibStreamViewer`.
 
@@ -79,7 +90,7 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
           limits : dict
             a (deprecated) alternative to limit keyword arguments
           xmin, xmax, ymin, ymax, datamin, datamax
-            displayed range of data. Any limit set to 
+            displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
           axes
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
@@ -96,7 +107,7 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
             vary linewidth when given a `CellVariable` or `FaceVariable` of same
             type as vars.
           *color* : matplotlib color code, or rank-0 `MeshVariable`
-              Streamline color. When given an array with the type as vars, 
+              Streamline color. When given an array with the type as vars,
               *color* values are converted to colors using *cmap*.
           *cmap* : :class:`~matplotlib.colors.Colormap`
               Colormap used to plot streamlines and arrows. Only necessary when using
@@ -117,21 +128,21 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
         AbstractMatplotlib2DViewer.__init__(self, vars=vars, title=title, axes=axes, figaspect=figaspect, **kwlimits)
 
         self.log = log
-        self.kwargs = dict(density=density, cmap=cmap, norm=norm, arrowsize=arrowsize, 
+        self.kwargs = dict(density=density, cmap=cmap, norm=norm, arrowsize=arrowsize,
                            arrowstyle=arrowstyle, minlength=minlength)
         self.linewidth = linewidth
         self.color = color
-        
+
         self._stream = None
-        
+
         self._plot()
-        
+
     def _getSuitableVars(self, vars):
         from fipy.meshes.mesh2D import Mesh2D
         from fipy.meshes.uniformGrid2D import UniformGrid2D
 
         vars = [var for var in AbstractMatplotlib2DViewer._getSuitableVars(self, vars) \
-                if ((isinstance(var.mesh, Mesh2D) 
+                if ((isinstance(var.mesh, Mesh2D)
                      or isinstance(var.mesh, UniformGrid2D))\
                     and (isinstance(var, FaceVariable) \
                          or isinstance(var, CellVariable)) and var.rank == 1)]
@@ -140,7 +151,7 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
             raise MeshDimensionError, "The mesh must be a Mesh2D instance"
         # this viewer can only display one variable
         return [vars[0]]
-                
+
     def _plot(self):
         from scipy.interpolate import griddata
 
@@ -149,49 +160,49 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
 
         xmin, ymin = mesh.extents['min']
         xmax, ymax = mesh.extents['max']
-        
+
         N = 100
         X = numerix.linspace(xmin, xmax, N)
         Y = numerix.linspace(ymin, ymax, N)
-                                
+
         grid_x, grid_y = numerix.mgrid[xmin:xmax:N*1j, ymin:ymax:N*1j]
-        
+
         if isinstance(var, FaceVariable):
             C = mesh.faceCenters
         elif isinstance(var, CellVariable):
             C = mesh.cellCenters
-            
-        U = griddata(C.value.T, var.value[0], 
+
+        U = griddata(C.value.T, var.value[0],
                      (grid_x, grid_y), method='cubic')
-        V = griddata(C.value.T, var.value[1], 
+        V = griddata(C.value.T, var.value[1],
                      (grid_x, grid_y), method='cubic')
-                     
+
         lw = self.linewidth
         if isinstance(lw, (FaceVariable, CellVariable)):
-            lw = griddata(C.value.T, lw.value, 
+            lw = griddata(C.value.T, lw.value,
                           (grid_x, grid_y), method='cubic')
-                     
+
         color = self.color
         if isinstance(color, (FaceVariable, CellVariable)):
-            color = griddata(C.value.T, color.value, 
+            color = griddata(C.value.T, color.value,
                              (grid_x, grid_y), method='cubic', fill_value=color.min())
-                             
+
         U = U.T
         V = V.T
 
         ang = numerix.arctan2(V, U)
         mag = numerix.sqrt(U**2 + V**2)
-        
+
         datamin, datamax = self._autoscale(vars=(mag,),
                                            datamin=self._getLimit('datamin'),
                                            datamax=self._getLimit('datamax'))
-        
+
         mag = numerix.where(mag > datamax, numerix.nan, mag)
         mag = numerix.where(mag < datamin, numerix.nan, mag)
-        
+
         if self.log:
             mag = numerix.log10(mag)
-            
+
         U = mag * numerix.cos(ang)
         V = mag * numerix.sin(ang)
 
@@ -202,12 +213,12 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
 
         self.axes.cla()
         self._stream = self.axes.streamplot(X, Y, U, V, linewidth=lw, color=color, **self.kwargs)
-        
+
         self.axes.set_xlim(xmin=self._getLimit('xmin'),
                            xmax=self._getLimit('xmax'))
         self.axes.set_ylim(ymin=self._getLimit('ymin'),
                            ymax=self._getLimit('ymax'))
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     import fipy.tests.doctestPlus
     fipy.tests.doctestPlus.execButNoTest()

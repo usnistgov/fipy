@@ -32,4 +32,3 @@ Cartesian grids.
    equation
    discret
    scheme
-

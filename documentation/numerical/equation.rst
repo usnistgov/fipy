@@ -21,7 +21,7 @@ Examples of such systems are wide ranging, but include problems that
 exhibit a combination of diffusing and reacting species, as well as
 such diverse problems as determination of the electric potential in
 heart tissue, of fluid flow, stress evolution, and even the
-Schroedinger equation.
+|Schroedinger| equation.
 
 A general conservation equation, solved using :term:`FiPy`, can include any
 combination of the following terms,
@@ -36,7 +36,7 @@ combination of the following terms,
    \underbrace{
      \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
      \nabla \cdot \left( \vec{u} \phi \right)
-   }_{\text{convection}}  
+   }_{\text{convection}}
    =
    \underbrace{
      \vphantom{\frac{\partial (\rho \phi)}{\partial t}}
@@ -54,7 +54,7 @@ coefficients can be arbitrary functions of any parameters or variables
 in the system.  The variable :math:`\phi` represents the unknown quantity in
 the equation.  The diffusion term can represent any higher order
 diffusion-like term, where the order is given by the exponent :math:`n`.
-For example, the diffusion term can represent conventional Fickean
+For example, the diffusion term can represent conventional Fickian
 diffusion [*i.e.*, :math:`\nabla\cdot(\Gamma\nabla\phi)`] when the
 exponent :math:`n = 1` or a Cahn-Hilliard term [*i.e.*, :math:`\nabla
 \cdot (\Gamma_1 \nabla [ \nabla \cdot \Gamma_2 \nabla \phi ) ] )`
@@ -65,5 +65,4 @@ or a phase field crystal term [*i.e.*, :math:`\nabla \cdot (\Gamma_1 \nabla
 better approach. Higher order terms (:math:`n > 3`) are also possible, but
 the matrix condition number becomes quite poor.
 
-
-
+.. |Schroedinger| unicode:: Schr U+00F6 dinger

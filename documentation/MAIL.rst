@@ -2,7 +2,7 @@
 Mailing List
 ------------
 
-In order to discuss :term:`FiPy` with other users and with the developers, 
+In order to discuss :term:`FiPy` with other users and with the developers,
 we encourage you to sign up for the mailing list by sending a
 `subscription email <mailto:fipy-request@nist.gov?&body=subscribe>`__:
 
@@ -23,7 +23,7 @@ effective questions:  http://www.catb.org/~esr/faqs/smart-questions.html
 To get off the list follow the instructions above, but place
 ``unsubscribe`` in the text body.
 
-Send ``help`` in the text body to learn other mailing list configurations 
+Send ``help`` in the text body to learn other mailing list configurations
 you can change.
 
 List Archive

@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mayaviDaemon.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -18,34 +18,45 @@
  # Author: Prabhu Ramachandran <prabhu@aero.iitb.ac.in>
  # Copyright (c) 2006-2007, Enthought Inc.
  # License: BSD Style.
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
 
 """A simple script that polls a data file for changes and then updates
-the mayavi pipeline automatically.
+the Mayavi pipeline automatically.
 
-This script is based heavily on the poll_file.py exampe in the mayavi distribution.
+This script is based heavily on the poll_file.py example in the Mayavi distribution.
 
 
 This script is to be run like so::
@@ -55,11 +66,11 @@ This script is to be run like so::
 Or::
 
  $ python mayaviDaemon.py <options>
- 
+
 Run::
-    
+
  $ python mayaviDaemon.py --help
- 
+
 to see available options.
 """
 __docformat__ = 'restructuredtext'
@@ -92,9 +103,9 @@ class MayaviDaemon(Mayavi):
     polls the file for any changes and automatically updates the
     mayavi pipeline.
     """
-    
+
     _viewers = []
-    
+
     def parse_command_line(self, argv):
         """Parse command line options.
 
@@ -146,26 +157,26 @@ class MayaviDaemon(Mayavi):
                           help="frames per second to attempt to display")
 
         (options, args) = parser.parse_args(argv)
-        
+
         self.lockfname = options.lock
         self.cellfname = options.cell
         self.facefname = options.face
-        self.bounds = [options.xmin, options.xmax, 
-                       options.ymin, options.ymax, 
+        self.bounds = [options.xmin, options.xmax,
+                       options.ymin, options.ymax,
                        options.zmin, options.zmax]
-                       
+
         self.datamin = options.datamin
         self.datamax = options.datamax
-        
+
         self.fps = options.fps
-        
+
     def run(self):
         MayaviDaemon._viewers.append(self)
-        
+
         mlab.clf()
 
         bounds = zeros((0, 6), 'l')
-        
+
         self.cellsource = self.setup_source(self.cellfname)
         if self.cellsource is not None:
             tmp = [out.cell_data.scalars for out in self.cellsource.outputs \
@@ -178,7 +189,7 @@ class MayaviDaemon(Mayavi):
                    if out.cell_data.tensors is not None]
             self.has_cell_tensors = (len(tmp) > 0)
 
-            bounds = concatenate((bounds, 
+            bounds = concatenate((bounds,
                                   [out.bounds for out in self.cellsource.outputs]),
                                  axis=0)
 
@@ -194,20 +205,20 @@ class MayaviDaemon(Mayavi):
             tmp = [out.point_data.tensors for out in self.facesource.outputs \
                    if out.point_data.tensors is not None]
             self.has_face_tensors = (len(tmp) > 0)
-            
-            bounds = concatenate((bounds, 
+
+            bounds = concatenate((bounds,
                                   [out.bounds for out in self.facesource.outputs]),
                                  axis=0)
-                                 
+
         boundsmin = bounds.min(axis=0)
         boundsmax = bounds.max(axis=0)
-        
-        bounds = (boundsmin[0], boundsmax[1], 
-                  boundsmin[2], boundsmax[3], 
+
+        bounds = (boundsmin[0], boundsmax[1],
+                  boundsmin[2], boundsmax[3],
                   boundsmin[4], boundsmax[5])
 
         self.bounds = where(self.bounds == array((None,)),
-                            bounds, 
+                            bounds,
                             self.bounds).astype(float)
 
         self.view_data()
@@ -224,7 +235,7 @@ class MayaviDaemon(Mayavi):
                     dir = os.path.dirname(fname)
         if dir:
             os.rmdir(dir)
-        
+
     @staticmethod
     def _sigint_handler(signum, frame):
         for viewer in MayaviDaemon._viewers:
@@ -262,13 +273,13 @@ class MayaviDaemon(Mayavi):
         """
         if fname is None:
             return None
-            
+
         source = VTKFileReader()
         source.initialize(fname)
         mlab.pipeline.add_dataset(source)
-        
+
         return source
-        
+
     def clip_data(self, src):
         if hasattr(mlab.pipeline, "data_set_clipper"):
             clip = mlab.pipeline.data_set_clipper(src)
@@ -284,7 +295,7 @@ class MayaviDaemon(Mayavi):
             import warnings
             warnings.warn("Mayavi r24017 or newer needed for data_set_clipper()", UserWarning, stacklevel=2)
             clip = src
-        
+
         return clip
 
     def view_data(self):
@@ -293,7 +304,7 @@ class MayaviDaemon(Mayavi):
         has_scale_bar = False
         if self.cellsource is not None:
             clip = self.clip_data(self.cellsource)
-            
+
             if self.has_cell_scalars:
                 s = mlab.pipeline.surface(clip, vmin=self.datamin, vmax=self.datamax)
                 s.module_manager.scalar_lut_manager.show_scalar_bar = True

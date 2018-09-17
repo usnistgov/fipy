@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "diffusionTerm.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,24 +11,37 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -42,7 +55,7 @@ __all__ = ["DiffusionTerm", "DiffusionTermCorrection", "DiffusionTermNoCorrectio
 
 class DiffusionTerm(DiffusionTermNoCorrection):
     r"""
-    
+
     This term represents a higher order diffusion term. The order of the term is determined
     by the number of `coeffs`, such that::
 
@@ -81,34 +94,34 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print numerix.allclose(A,
-        ...                        (( 1., -1.), 
+        ...                        (( 1., -1.),
         ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
         >>> from fipy.variables.cellVariable import CellVariable
         >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
-        ...                        ((-1.,  1.), 
+        ...                        ((-1.,  1.),
         ...                         ( 1., -1.))) # doctest: +PROCESSOR_0
         True
         >>> print numerix.allclose(b, (0., 0.)) # doctest: +PROCESSOR_0
         True
 
         The coefficient must be a `FaceVariable`, a `CellVariable` (which will
-        be interpolated to a `FaceVariable`), or a scalar value 
-        
+        be interpolated to a `FaceVariable`), or a scalar value
+
         >>> from fipy.variables.faceVariable import FaceVariable
         >>> term = DiffusionTerm(coeff=FaceVariable(mesh=mesh, value=1))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
         >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
-        >>> print numerix.allclose(A, (( 1., -1.), 
+        >>> print numerix.allclose(A, (( 1., -1.),
         ...                            (-1.,  1.))) # doctest: +PROCESSOR_0
         True
         >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
-        ...                        ((-1.,  1.), 
+        ...                        ((-1.,  1.),
         ...                         ( 1., -1.))) # doctest: +PROCESSOR_0
         True
         >>> print numerix.allclose(b, (0., 0.)) # doctest: +PROCESSOR_0
@@ -119,13 +132,13 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print numerix.allclose(A,
-        ...                        (( 1., -1.), 
+        ...                        (( 1., -1.),
         ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
         >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
-        ...                        ((-1.,  1.), 
+        ...                        ((-1.,  1.),
         ...                         ( 1., -1.))) # doctest: +PROCESSOR_0
         True
         >>> print numerix.allclose(b, (0., 0.)) # doctest: +PROCESSOR_0
@@ -137,18 +150,18 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print numerix.allclose(A,
-        ...                        (( 1., -1.), 
+        ...                        (( 1., -1.),
         ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
         >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
-        ...                        ((-1.,  1.), 
+        ...                        ((-1.,  1.),
         ...                         ( 1., -1.))) # doctest: +PROCESSOR_0
         True
         >>> print numerix.allclose(b, (0., 0.)) # doctest: +PROCESSOR_0
         True
-                   
+
         >>> term = DiffusionTerm(coeff = ((1,2),))
 
         >>> term = DiffusionTerm(coeff = FaceVariable(mesh = mesh, value = (1,), rank=1))
@@ -164,19 +177,19 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print numerix.allclose(A,
-        ...                        (( 1., -1.), 
+        ...                        (( 1., -1.),
         ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
-        >>> v,L,b = term._buildMatrix(var=var, 
+        >>> v,L,b = term._buildMatrix(var=var,
         ...                         SparseMatrix=_MeshMatrix)
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
-        ...                        ((-1.,  1.), 
+        ...                        ((-1.,  1.),
         ...                         ( 1., -3.))) # doctest: +PROCESSOR_0
         True
         >>> print numerix.allclose(b, (-3., -8.)) # doctest: +PROCESSOR_0
         True
-           
+
         Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvatures 0,
         x = 2, fixed value 1, fixed curvature 0
 
@@ -191,8 +204,8 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
         >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
-        >>> print numerix.allclose(A, 
-        ...                        (( 1., -1.), 
+        >>> print numerix.allclose(A,
+        ...                        (( 1., -1.),
         ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
 
@@ -200,12 +213,12 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         ...                         boundaryConditions=(bcLeft2, bcRight2))
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
-        ...                        (( 4., -6.), 
+        ...                        (( 4., -6.),
         ...                         (-4., 10.))) # doctest: +PROCESSOR_0
         True
         >>> print numerix.allclose(b, (1., 21.)) # doctest: +PROCESSOR_0
         True
-        
+
         Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvature 2,
         x = 2, fixed value 4, fixed 3rd order -1
 
@@ -221,7 +234,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print numerix.allclose(A,
-        ...                        ((-1.,  1.), 
+        ...                        ((-1.,  1.),
         ...                         ( 1., -1.))) # doctest: +PROCESSOR_0
         True
 
@@ -230,7 +243,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         ...                         boundaryConditions = (bcLeft2, bcRight2))
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
-        ...                        ((-4.,  6.), 
+        ...                        ((-4.,  6.),
         ...                         ( 2., -4.))) # doctest: +PROCESSOR_0
         True
         >>> print numerix.allclose(b, (3., -4.)) # doctest: +PROCESSOR_0
@@ -247,17 +260,17 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> var = CellVariable(mesh=mesh)
         >>> var.faceGrad.constrain([1.], mesh.facesRight)
         >>> var.constrain(0., mesh.facesLeft)
-        
+
         >>> term = DiffusionTerm(coeff = (1., 1.))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
         >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print numerix.allclose(A,
-        ...                        (( 2., -2.), 
+        ...                        (( 2., -2.),
         ...                         (-2.,  2.))) # doctest: +PROCESSOR_0
         True
 
-        >>> v,L,b = term._buildMatrix(var=var, 
+        >>> v,L,b = term._buildMatrix(var=var,
         ...                         SparseMatrix=_MeshMatrix,
         ...                         boundaryConditions = (bcLeft2, bcRight2))
         >>> A = L.numpyArray
@@ -294,18 +307,19 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> print numerix.allclose(term._getGeomCoeff(CellVariable(mesh=mesh))[0], val)
         Traceback (most recent call last):
             ...
-        IndexError: diffusion coefficent tensor is not an appropriate shape for this mesh
+        IndexError: diffusion coefficient tensor is not an appropriate shape for this mesh
 
         Anisotropy test
 
         >>> from fipy.meshes.tri2D import Tri2D
         >>> mesh = Tri2D(nx = 1, ny = 1)
         >>> term = DiffusionTerm((((1, 2), (3, 4)),))
-        >>> print term._getGeomCoeff(CellVariable(mesh=mesh))
-        [[ 24.          24.           6.           6.           0.           7.5
-            7.5          0.        ]
-         [ -3.          -3.           2.           2.          -1.41421356
-            0.70710678   0.70710678  -1.41421356]]
+        >>> print numerix.allclose(term._getGeomCoeff(CellVariable(mesh=mesh)),
+        ...                        [[ 24.,         24.,          6.,          6.,          0.,          7.5,
+        ...                        7.5,         0.        ],
+        ...                         [ -3.,         -3.,          2.,          2.,         -1.41421356,
+        ...                        0.70710678,   0.70710678,  -1.41421356]])
+        True
 
         Negate the term.
 
@@ -318,7 +332,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         Testing vector diffusion terms by comparing with coupled solutions.
 
         >>> from fipy import *
-        >>> m = Grid1D(nx=6)        
+        >>> m = Grid1D(nx=6)
         >>> q = CellVariable(mesh=m, elementshape=(2,))
         >>> coeff = FaceVariable(mesh=m, elementshape=(2, 2), value=[[1, 2], [3, 4]])
         >>> vectorEq = DiffusionTerm(coeff) == 0
@@ -351,7 +365,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> vectorEq1.solve(q, solver=DummySolver())
 
         The following test tests for negating a tuple/list coefficient for the diffusion term.
-        
+
         >>> m = Grid2D(nx=2, ny=2)
         >>> q = CellVariable(mesh=m, elementshape=(3,))
         >>> vectorEq2 = TransientTerm(1e-20) == DiffusionTerm(([[1, 2, 3], [4, 5, 6], [7, 8, 9]],))
@@ -359,7 +373,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> vectorEq2.solve(q, solver=DummySolver(), dt=1.)
 
         Test the previous three vector examples against coupled.
-        
+
         >>> v0 = CellVariable(mesh=m)
         >>> v1 = CellVariable(mesh=m)
         >>> v2 = CellVariable(mesh=m)
@@ -368,7 +382,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         ...              (DiffusionTerm(coeff=7., var=v0) + DiffusionTerm(coeff=8., var=v1) + DiffusionTerm(coeff=9, var=v2)))((v0, v1, v2))
         >>> coupledEq.cacheMatrix()
         >>> coupledEq.solve(solver=DummySolver())
-        >>> coupledMatrix = coupledEq.matrix.numpyArray 
+        >>> coupledMatrix = coupledEq.matrix.numpyArray
         >>> print (coupledMatrix == vectorEq0.matrix.numpyArray).all()
         True
         >>> print (coupledMatrix == vectorEq1.matrix.numpyArray).all()
@@ -377,16 +391,13 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         True
 
         """
-        pass            
+        pass
 
 
-        
-def _test(): 
+
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()
-
-
-

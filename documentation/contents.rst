@@ -23,8 +23,8 @@ FiPy Contents
 .. toctree::
    :hidden:
 
-   CODESPEED
-   BUILDBOT
    GUIDELINES
    GIT
-
+   tutorial/package/generated/package
+   ../fipy/generated/fipy
+   external_definitions

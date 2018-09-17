@@ -4,7 +4,7 @@ def PRINT(label, arg="", stall=True):
     import sys
     from fipy import parallelComm
     import time
-    
+
     for procID in range(parallelComm.Nproc):
         if procID == parallelComm.procID:
             print >>sys.stderr, parallelComm.procID, label, arg

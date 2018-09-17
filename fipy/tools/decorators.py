@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "decorators.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -12,22 +12,35 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
  # Portions of this code are copied and/or derived from numpy.lib.utils
  #
@@ -36,23 +49,23 @@
  #
  # Copyright (c) 2005-2010, NumPy Developers.
  # All rights reserved.
- # 
+ #
  # Redistribution and use in source and binary forms, with or without
  # modification, are permitted provided that the following conditions are
  # met:
- # 
+ #
  #     * Redistributions of source code must retain the above copyright
  #        notice, this list of conditions and the following disclaimer.
- # 
+ #
  #     * Redistributions in binary form must reproduce the above
  #        copyright notice, this list of conditions and the following
  #        disclaimer in the documentation and/or other materials provided
  #        with the distribution.
- # 
+ #
  #     * Neither the name of the NumPy Developers nor the names of any
  #        contributors may be used to endorse or promote products derived
  #        from this software without specific prior written permission.
- # 
+ #
  # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -71,7 +84,7 @@ import re
 import sys
 import warnings
 
-__all__ = ["getsetDeprecated", "mathMethodDeprecated"]
+__all__ = ["deprecate"]
 
 # Stolen from `numpy.lib.utils`
 if sys.version_info < (2, 4):
@@ -93,13 +106,13 @@ class _Deprecate(object):
     Refer to `deprecate` for details.
 
     Stolen from `numpy.lib.utils`
-    
+
     See Also
     --------
     numerix.deprecate
 
     """
-    def __init__(self, old_name=None, new_name=None, message=None, 
+    def __init__(self, old_name=None, new_name=None, message=None,
                  old_string=":func:`%s` is deprecated",
                  new_string="use :func:`%s` instead",
                  version="UNKNOWN"):
@@ -121,7 +134,7 @@ class _Deprecate(object):
 
     def new_name_old_name(self, old_name):
         return self.new_name
-        
+
     def __call__(self, func, *args, **kwargs):
         """
         Decorator call.  Refer to ``decorate``.
@@ -132,7 +145,7 @@ class _Deprecate(object):
 
         old_name = self.old_name_from_func(func=func)
         new_name = self.new_name_old_name(old_name=old_name)
-        
+
         if new_name is None:
             depwarn = (self.old_string + "!") % old_name
             depdoc = ""
@@ -151,9 +164,9 @@ class _Deprecate(object):
             return func(*args, **kwds)
 
         newfunc = _set_function_name(newfunc, old_name)
-        
-        depdoc = (["", "", ".. deprecated:: %s" % self.version] 
-                  + ["   " + s for s in depdoc.split('\n')] 
+
+        depdoc = (["", "", ".. deprecated:: %s" % self.version]
+                  + ["   " + s for s in depdoc.split('\n')]
                   + ["", ""])
         doc = func.__doc__
         if doc is None:
@@ -205,113 +218,9 @@ def deprecate(*args, **kwargs):
     else:
         return _Deprecate(*args, **kwargs)
 
-def deprecateGist(version="3.0", *args, **kwargs):
-    return deprecate(*args, 
-                     message="Support for Pygist <http://hifweb.lbl.gov/public/software/gist/> will be discontinued.",  
-                     version=version, **kwargs)
-
-def deprecateGnuplot(version="3.0", *args, **kwargs):
-    return deprecate(*args, 
-                     message="Support for Gnuplot.py <http://gnuplot-py.sourceforge.net/> will be discontinued.",  
-                     version=version, **kwargs)
-
-class _GetSetDeprecated(_Deprecate):
-    def __init__(self, old_name=None, new_name=None, message=None, version="3.0"):
-        _Deprecate.__init__(self, old_name=old_name, new_name=new_name, message=message,
-                            old_string=":func:`%s` is deprecated",
-                            new_string="use the :attr:`%s` property instead",
-                            version=version)
-    
-    def new_name_old_name(self, old_name):
-        new_name = self.new_name
-        if new_name is None:
-            RE = re.search("(_*)(get|set)(.)(.*)", old_name)
-            if RE is not None:
-                new_name = RE.group(1) + RE.group(3).lower() + RE.group(4)
-        return new_name
-
-def getsetDeprecated(*args, **kwargs):
-    """Issues a `DeprecationWarning` to use the appropriate property, rather than the get/set method of the same name
-
-    This function may also be used as a decorator.
-
-    Parameters
-    ----------
-    func : function
-        The function to be deprecated.
-    old_name : str, optional
-        The name of the function to be deprecated. Default is None, in which
-        case the name of `func` is used.
-    new_name : str, optional
-        The new name for the function. Default is None, in which case
-        the deprecation message is that `old_name` is deprecated. If given,
-        the deprecation message is that `old_name` is deprecated and `new_name`
-        should be used instead.
-    message : str, optional
-        Additional explanation of the deprecation.  Displayed in the docstring
-        after the warning.
-
-    Returns
-    -------
-    old_func : function
-        The deprecated function.
-    """
-    if args:
-        fn = args[0]
-        args = args[1:]
-
-        return _GetSetDeprecated(*args, **kwargs)(fn)
-    else:
-        return _GetSetDeprecated(*args, **kwargs)
-        
-class _MathMethodDeprecated(_Deprecate):
-    def __init__(self, version="3.0", *args, **kwargs):
-         _Deprecate.__init__(self, *args, version=version, **kwargs)
-
-    def new_name_old_name(self, old_name):
-        new_name = self.new_name
-        if new_name is None:
-            new_name = "numerix.%s() <numpy.%s>" % (old_name, old_name)
-        return new_name
-
-def mathMethodDeprecated(*args, **kwargs):
-    """Issues a `DeprecationWarning` to use the appropriate ufunc from
-    `numerix`, rather than the method of the same name
-    
-    This function may also be used as a decorator.
-
-    Parameters
-    ----------
-    func : function
-        The function to be deprecated.
-    old_name : str, optional
-        The name of the function to be deprecated. Default is None, in which
-        case the name of `func` is used.
-    new_name : str, optional
-        The new name for the function. Default is None, in which case
-        the deprecation message is that `old_name` is deprecated. If given,
-        the deprecation message is that `old_name` is deprecated and `new_name`
-        should be used instead.
-    message : str, optional
-        Additional explanation of the deprecation.  Displayed in the docstring
-        after the warning.
-
-    Returns
-    -------
-    old_func : function
-        The deprecated function.
-    """
-    if args:
-        fn = args[0]
-        args = args[1:]
-
-        return _MathMethodDeprecated(*args, **kwargs)(fn)
-    else:
-        return _MathMethodDeprecated(*args, **kwargs)
-
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()

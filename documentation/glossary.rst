@@ -6,12 +6,13 @@ Glossary
 .. glossary::
 
    Buildbot
-      The BuildBot is a system to automate the compile/test cycle
+      The Buildbot is a system to automate the compile/test cycle
       required by most software projects to validate code changes.
+      No longer used for :term:`FiPy`.
       See http://trac.buildbot.net/.
 
    FiPy
-      The eponymous software package. 
+      The eponymous software package.
       See http://www.ctcms.nist.gov/fipy.
 
    Gmsh
@@ -28,7 +29,7 @@ Glossary
       results. It displays both 1D X-Y type plots and 2D contour plots for
       structured data. It does not display unstructured 2D data or 3D data.
       It works on all common platforms and produces publication quality hard
-      copies. See 
+      copies. See
       http://matplotlib.sourceforge.net
       and :ref:`Matplotlib`.
 
@@ -50,9 +51,13 @@ Glossary
       An archaic predecessor to :term:`NumPy`.
 
    NumPy
-      The :mod:`numpy` :term:`Python` package provides array arithmetic 
+      The :mod:`numpy` :term:`Python` package provides array arithmetic
       facilities. See
       http://www.scipy.org/NumPy.
+
+   pandas
+      "Python Data Analysis Library" provides high-performance data structures
+      for flexible, extensible analysis. See http://pandas.pydata.org.
 
    pip
       "pip installs python" is a tool for installing and managing Python
@@ -60,20 +65,27 @@ Glossary
       See http://www.pip-installer.org.
 
    PyAMG
-      A suite of python-based preconditoners. See 
+      A suite of python-based preconditioners. See
       http://code.google.com/p/pyamg/
       and :ref:`PYAMG`.
 
+   pyamgx
+      a :term:`Python` interface to the NVIDIA 
+      `AMGX <https://github.com/NVIDIA/AMGX>`_ library, which can be used
+      to construct complex solvers and preconditioners to solve sparse
+      sparse linear systems on the GPU. See https://pyamgx.readthedocs.io/
+      and :ref:`PYAMGX`.
+
    PyPI
       The Python Package Index is a repository of software for the
-      :term:`Python` programming language. 
+      :term:`Python` programming language.
       See http://pypi.python.org/pypi.
 
    Pyrex
       A mechanism for mixing C and Python code.
       See http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/.
 
-   PySparse
+   Pysparse
       The :mod:`pysparse` :term:`Python` package provides sparse
       matrix storage, solvers, and linear algebra routines. See
       http://pysparse.sourceforge.net
@@ -90,22 +102,21 @@ Glossary
       :term:`FiPy` uses are not yet available. See
       http://docs.python.org/py3k/
       and :pep:`3000`.
-     
+
    PyTrilinos
-      :term:`Python` wrapper for :term:`Trilinos`. See 
+      :term:`Python` wrapper for :term:`Trilinos`. See
       http://trilinos.sandia.gov/packages/pytrilinos/.
 
    PyxViewer
       A now defunct python viewer.
 
    ScientificPython
-      A collection of useful utilities for scientists. See 
+      A collection of useful utilities for scientists. See
       http://dirac.cnrs-orleans.fr/plone/software/scientificpython.
 
    SciPy
       The :mod:`scipy` package provides a wide range of scientific and
-      mathematical operations. :term:`FiPy` can use :mod:`scipy.weave`
-      for enhanced performance with C language inlining and
+      mathematical operations. :term:`FiPy` can use
       :term:`Scipy`'s solver suite for linear solutions. See
       http://www.scipy.org/.
       and :ref:`SCIPY`.
@@ -117,9 +128,13 @@ Glossary
 
    Trilinos
       This package provides sparse matrix storage, solvers, and
-      preconditioners, and can be used instead of :term:`PySparse`.
+      preconditioners, and can be used instead of :term:`Pysparse`.
       :term:`Trilinos` preconditioning allows for iterative solutions
-      to some difficult problems that :term:`PySparse` cannot
+      to some difficult problems that :term:`Pysparse` cannot
       solve. See
       http://trilinos.sandia.gov
       and :ref:`TRILINOS`.
+
+   Weave
+      The :mod:`weave` package can enhance performance with C language
+      inlining.  See https://github.com/scipy/weave.

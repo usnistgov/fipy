@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "coupled.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,24 +11,37 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -38,32 +51,32 @@ r"""Solve the biharmonic equation as a coupled pair of diffusion equations.
 as the biharmonic wave equation written as
 
 .. math::
-    
+
    \frac{\partial^4 v}{\partial x^4} + \frac{\partial^2 v}{\partial t^2} &= 0
-   
+
 cannot be represented as a single equation. We need to decompose the
 biharmonic equation into two equations that are first order in time in
 the following way,
 
 .. math::
-    
+
    \frac{\partial^2 v_0}{\partial x^2} + \frac{\partial v_1}{\partial t} &= 0 \\
-   \frac{\partial^2 v_1}{\partial x^2} - \frac{\partial v_0}{\partial t} &= 0 
+   \frac{\partial^2 v_1}{\partial x^2} - \frac{\partial v_0}{\partial t} &= 0
 
 Historically, :term:`FiPy` required systems of coupled equations to be
 solved successively, "sweeping" the equations to convergence. As a
 practical example, we use the following system
 
 .. math::
-    
+
    \frac{\partial v_0}{\partial t} &= 0.01 \nabla^2 v_0 - \nabla^2 v_1 \\
    \frac{\partial v_1}{\partial t} &= \nabla^2 v_0 + 0.01 \nabla^2 v_1
-   
-subject to the boundary conditions 
+
+subject to the boundary conditions
 
 .. math::
    :nowrap:
-    
+
    \begin{align*}
    v_0|_{x=0} &= 0 & v_0|_{x=1} &= 1 \\
    v_1|_{x=0} &= 1 & v_1|_{x=1} &= 0
@@ -92,7 +105,7 @@ explicit coupling for the cross-coupled terms.
 
 >>> vi = Viewer((v0, v1))
 
->>> for t in range(100): 
+>>> for t in range(100):
 ...     v0.updateOld()
 ...     v1.updateOld()
 ...     res0 = res1 = 1e100
@@ -115,7 +128,7 @@ increase the time steps:
 
 >>> eqn = eqn0 & eqn1
 
->>> for t in range(1): 
+>>> for t in range(1):
 ...     v0.updateOld()
 ...     v1.updateOld()
 ...     eqn.solve(dt=1.e-3)
@@ -128,13 +141,13 @@ It is also possible to pose the same equations in vector form:
 >>> v.constrain([[0], [1]], m.facesLeft)
 >>> v.constrain([[1], [0]], m.facesRight)
 
->>> eqn = TransientTerm([[1, 0], 
-...                      [0, 1]]) == DiffusionTerm([[[0.01, -1], 
+>>> eqn = TransientTerm([[1, 0],
+...                      [0, 1]]) == DiffusionTerm([[[0.01, -1],
 ...                                                  [1, 0.01]]])
 
 >>> vi = Viewer((v[0], v[1]))
 
->>> for t in range(1): 
+>>> for t in range(1):
 ...     v.updateOld()
 ...     eqn.solve(var=v, dt=1.e-3)
 ...     vi.plot()
@@ -142,7 +155,7 @@ It is also possible to pose the same equations in vector form:
 Whether you pose your problem in coupled or vector form should be dictated by
 the underlying physics. If :math:`v_0` and :math:`v_1` represent the
 concentrations of two conserved species, then it is natural to write two
-seperate governing equations and to couple them. If they represent two
+separate governing equations and to couple them. If they represent two
 components of a vector field, then the vector formulation is obviously more
 natural. FiPy will solve the same matrix system either way.
 """
@@ -153,4 +166,3 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
-

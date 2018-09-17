@@ -6,5 +6,3 @@ Reactive Wetting Examples
    :toctree: generated
 
    examples.reactiveWetting.liquidVapor1D
-
-

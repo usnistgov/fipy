@@ -3,11 +3,11 @@
 Numerical Schemes
 -----------------
 
-The coefficients of equation :eq:`eqn:num:dap` must remain positive,
+The coefficients of equation :eq:`num:dap` must remain positive,
 since an increase in a neighboring value must result in an increase in
 :math:`\phi_P` to obtain physically realistic solutions.  Thus, the
 inequalities :math:`a_A > 0` and :math:`a_A + F_f>0` must be satisfied.  The
-Peclet number :math:`P_f \equiv F_f / D_f` is the ratio between convective
+|Peclet| number :math:`P_f \equiv F_f / D_f` is the ratio between convective
 strength and diffusive conductance.  To achieve physically realistic
 solutions, the inequality
 
@@ -21,7 +21,7 @@ The parameter :math:`\alpha_f` is defined by the chosen scheme, depending
 on Equation :eq:`eqn:num:inq`. The various
 differencing schemes are:
 
-the central differencing scheme, 
+the central differencing scheme,
   where
 
   .. math::
@@ -33,7 +33,7 @@ the central differencing scheme,
   central differencing scheme is only numerically stable for a low
   values of :math:`P_f`.
 
-the upwind scheme, 
+the upwind scheme,
   where
 
   .. math::
@@ -49,7 +49,7 @@ the upwind scheme,
   solution over predicts the diffusive term leading to excessive
   numerical smearing ("false diffusion").
 
-the exponential scheme, 
+the exponential scheme,
   where
 
   .. math::
@@ -63,13 +63,13 @@ the exponential scheme,
   therefore a faster scheme is generally used, especially in higher
   dimensions.
 
-the hybrid scheme, 
+the hybrid scheme,
   where
 
   .. math::
      :label: eqn:num:hys
 
-     \alpha_f = 
+     \alpha_f =
      \begin{cases}
          \frac{P_f-1}{P_f} & \text{if $P_f > 2$,} \\
          \frac{1}{2} & \text{if $|P_f| < 2$,} \\
@@ -81,13 +81,13 @@ the hybrid scheme,
   scheme.  The hybrid scheme is an improvement on the upwind scheme,
   however, it deviates from the exponential scheme at :math:`|P_f|=2`.
 
-the power law scheme, 
+the power law scheme,
   where
 
   .. math::
      :label: eqn:num:pls
 
-     \alpha_f = 
+     \alpha_f =
      \begin{cases}
          \frac{P_f-1}{P_f} & \text{if $P_f > 10$,} \\
          \frac{(P_f-1)+(1-P_f/10)^5}{P_f} & \text{if $0 < P_f < 10$,} \\
@@ -106,9 +106,4 @@ the power law scheme,
 All of the numerical schemes presented here are available in :term:`FiPy`
 and can be selected by the user.
 
-
-
-
-
-
-
+.. |Peclet| unicode:: P U+00E9 clet

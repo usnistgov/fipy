@@ -1,36 +1,47 @@
 #!/usr/bin/env python
 
-## 
+##
  # -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
  #  Author: James Warren   <jwarren@nist.gov>
  #  Author: James O'Beirne <james.obeirne@gmail.com>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
+ #
  # ###################################################################
  ##
 
@@ -106,7 +117,7 @@ class _AbstractNumPts(object):
     @staticmethod
     def calcNs(ns, ds):
         raise NotImplementedError
- 
+
 class _NonuniformNumPts(_AbstractNumPts):
     """
     For use by non-uniform grid builders.
@@ -128,10 +139,10 @@ class _NonuniformNumPts(_AbstractNumPts):
         Calculate the number of cells along the specified axis, based
         on either the specified number or on the number elements in the
         cell  `d` spacings.
-        
+
         Used by the `Grid` meshes.
 
-        This tests a bug that was occuring with PeriodicGrid1D when
+        This tests a bug that was occurring with PeriodicGrid1D when
         using a numpy float as the argument for the grid spacing.
 
            >>> from fipy.meshes.periodicGrid1D import PeriodicGrid1D
@@ -145,14 +156,14 @@ class _NonuniformNumPts(_AbstractNumPts):
             n = int(n or len(d))
             if n != len(d) and len(d) != 1:
                 raise IndexError, "n%s != len(d%s)" % (axis, axis)
-                
+
         return n
 
 class _UniformNumPts(_AbstractNumPts):
     """
     For use by uniform grid builders.
     """
- 
+
     @staticmethod
     def calcNs(ns, ds):
         return map(lambda x: int(x), ns)

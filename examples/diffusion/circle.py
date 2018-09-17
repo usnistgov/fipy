@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "circle.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,24 +11,37 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://ctcms.nist.gov
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -53,7 +66,9 @@ for :term:`Gmsh`, see the `gmsh manual`_.
 The mesh created by :term:`Gmsh` is then imported into :term:`FiPy` using the
 :class:`~fipy.meshes.gmshMesh.Gmsh2D` object.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Gmsh2D, TransientTerm, DiffusionTerm, Viewer
+>>> from fipy.tools import numerix
+
 >>> mesh = Gmsh2D('''
 ...               cellSize = %(cellSize)g;
 ...               radius = %(radius)g;
@@ -88,7 +103,7 @@ We can now create a :class:`Viewer <~fipy.viewers.viewer.AbstractViewer>` to see
 ...         viewer.plotMesh()
 ...         raw_input("Irregular circular mesh. Press <return> to proceed...") # doctest: +GMSH
 ...     except:
-...         print "Unable to create a viewer for an irregular mesh (try Gist2DViewer, Matplotlib2DViewer, or MayaviViewer)"
+...         print "Unable to create a viewer for an irregular mesh (try Matplotlib2DViewer or MayaviViewer)"
 
 .. image:: circleMesh.*
    :width: 90%
@@ -125,7 +140,7 @@ We first step through the transient problem
    :width: 90%
    :align: center
    :alt: evolution of diffusion problem on a circular mesh
-   
+
 -----
 
 If we wanted to plot or analyze the results of this calculation with
@@ -135,15 +150,15 @@ another application, we could export tab-separated-values with
    object: fipy.viewers.tsvViewer.TSVViewer
 
 ::
-    
+
    TSVViewer(vars=(phi, phi.grad)).plot(filename="myTSV.tsv")
 
 .. literalinclude:: myTSV.tsv
-   
+
 The values are listed at the cell centers.
 Particularly for irregular meshes, no specific ordering should be relied upon.
 Vector quantities are listed in multiple columns, one for each mesh dimension.
-            
+
 -----
 
 This problem again has an analytical solution that depends on the error
@@ -157,7 +172,7 @@ vertical positions
 >>> phiAnalytical = CellVariable(name="analytical value",
 ...                              mesh=mesh) # doctest: +GMSH
 
-.. index:: 
+.. index::
     module: scipy
     single: sqrt; arcsin; cos
 
@@ -166,7 +181,7 @@ vertical positions
 ...     from scipy.special import erf # doctest: +SCIPY
 ...     ## This function can sometimes throw nans on OS X
 ...     ## see http://projects.scipy.org/scipy/scipy/ticket/325
-...     phiAnalytical.setValue(x0 * (erf((x0+x) / (2 * numerix.sqrt(D * t))) 
+...     phiAnalytical.setValue(x0 * (erf((x0+x) / (2 * numerix.sqrt(D * t)))
 ...                                  - erf((x0-x) / (2 * numerix.sqrt(D * t))))) # doctest: +GMSH, +SCIPY
 ... except ImportError:
 ...     print "The SciPy library is not available to test the solution to \
@@ -184,7 +199,7 @@ As in the earlier examples, we can also directly solve the steady-state
 diffusion problem.
 
 >>> DiffusionTerm(coeff=D).solve(var=phi) # doctest: +GMSH
-                                                    
+
 The values at the elements should be equal to their `x` coordinate
 
 >>> print phi.allclose(x, atol = 0.03) # doctest: +GMSH
@@ -207,4 +222,3 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-

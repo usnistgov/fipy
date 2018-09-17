@@ -3,7 +3,7 @@
 ## -*-Pyth-*-
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "advectionEquation.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,27 +11,40 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
- 
+
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AdvectionTerm"]
@@ -48,7 +61,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
     the advection term given by
 
     .. math::
-    
+
        u \abs{\nabla \phi}
 
     from the advection equation given by:
@@ -58,7 +71,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
        \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0
 
     The construction of the gradient magnitude term requires upwinding as in the standard
-    `FirstOrderAdvectionTerm`. The higher order terms are incorperated as follows.
+    `FirstOrderAdvectionTerm`. The higher order terms are incorporated as follows.
     The formula used here is given by:
 
     .. math::
@@ -78,7 +91,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
        m\left(x, y\right) &= x \qquad \text{if $\abs{x} \le \abs{y} \forall xy \ge 0$} \\
        m\left(x, y\right) &= y \qquad \text{if $\abs{x} > \abs{y} \forall xy \ge 0$} \\
        m\left(x, y\right) &= 0 \qquad \text{if $xy < 0$}
-    
+
     also,
 
     .. math::
@@ -91,8 +104,8 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
     >>> from fipy.meshes import Grid1D
     >>> from fipy.solvers import *
     >>> SparseMatrix = LinearPCGSolver()._matrixClass
-    >>> mesh = Grid1D(dx = 1., nx = 3) 
-   
+    >>> mesh = Grid1D(dx = 1., nx = 3)
+
     Trivial test:
 
     >>> from fipy.variables.cellVariable import CellVariable
@@ -100,7 +113,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
     >>> v, L, b = AdvectionTerm(0.)._buildMatrix(coeff, SparseMatrix)
     >>> print numerix.allclose(b, numerix.zeros(3, 'd'), atol = 1e-10) # doctest: +PROCESSOR_0
     True
-   
+
     Less trivial test:
 
     >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3))
@@ -110,7 +123,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
 
     Even less trivial
 
-    >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3)) 
+    >>> coeff = CellVariable(mesh = mesh, value = numerix.arange(3))
     >>> v, L, b = AdvectionTerm(-1.)._buildMatrix(coeff, SparseMatrix)
     >>> print numerix.allclose(b, numerix.array((1., 1., 0.)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
@@ -119,7 +132,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
     standing on a harpsichord singing 'trivial test cases are here again')
 
     >>> vel = numerix.array((-1, 2, -3))
-    >>> coeff = CellVariable(mesh = mesh, value = numerix.array((4,6,1))) 
+    >>> coeff = CellVariable(mesh = mesh, value = numerix.array((4,6,1)))
     >>> v, L, b = AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
     >>> print numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
@@ -155,7 +168,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
     >>> vel = 1.
     >>> coeff = CellVariable(mesh = mesh, value = mesh.cellCenters[0]**2)
     >>> v, L, b = __AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
-       
+
     The first order term is not accurate. The first and last element are ignored because they
     don't have any neighbors for higher order evaluation
 
@@ -204,9 +217,9 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
 
     """
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
-        
+
         dAP = mesh._cellToCellDistances
-        
+
 ##        adjacentGradient = numerix.take(oldArray.grad, cellToCellIDs)
         adjacentGradient = numerix.take(oldArray.grad, mesh._cellToCellIDs, axis=-1)
         adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._cellNormals)
@@ -218,7 +231,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
         cellGradient = numerix.take(oldArray.grad, cellIDs, axis=-1)
         cellNormalGradient = numerix.dot(cellGradient, mesh._cellNormals)
         cellUpValues = adjacentValues - 2 * dAP * cellNormalGradient
-        
+
         cellLaplacian = (cellUpValues + adjacentValues - 2 * cellValues) / dAP**2
 
         adjacentLaplacian = (adjacentUpValues + cellValues - 2 * adjacentValues) / dAP**2
@@ -230,7 +243,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
                            numerix.where(abs(cellLaplacian) > abs(adjacentLaplacian),
                                          adjacentLaplacian,
                                          cellLaplacian))
-        
+
         return FirstOrderAdvectionTerm._getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh) -  mm * dAP / 2.
 
 class __AdvectionTerm(FirstOrderAdvectionTerm):
@@ -239,26 +252,9 @@ class __AdvectionTerm(FirstOrderAdvectionTerm):
     """
     pass
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
     _test()
-        
-        
-
-    
-
-
-        
-
-    
-
-    
-      
-
-        
-        
-        
-        

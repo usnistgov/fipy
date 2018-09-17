@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "input.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,39 +11,52 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
 r"""
 This example adds two more components to
 ``examples/elphf/input1DphaseBinary.py``
-one of which is another substitutional species and the other represents 
-electrons and diffuses interterstitially.
+one of which is another substitutional species and the other represents
+electrons and diffuses interstitially.
 
 Parameters from `2004/January/21/elphf0214`
 
 We start by defining a 1D mesh
 
     >>> from fipy import PhysicalField as PF
-    
+
     >>> RT = (PF("1 Nav*kB") * PF("298 K"))
     >>> molarVolume = PF("1.80000006366754e-05 m**3/mol")
     >>> Faraday = PF("1 Nav*e")
@@ -64,20 +77,20 @@ We start by defining a 1D mesh
 We create the phase field
 
     >>> timeStep = PF("1e-12 s")
-    
+
     >>> phase = CellVariable(mesh = mesh, name = 'xi', value = 1, hasOld = 1)
     >>> phase.mobility = PF("1 m**3/J/s") / (molarVolume / (RT * timeStep))
     >>> phase.gradientEnergy = PF("3.6e-11 J/m") / (mesh.scale**2 * RT / molarVolume)
 
     >>> def p(xi):
     ...     return xi**3 * (6 * xi**2 - 15 * xi + 10.)
-        
+
     >>> def g(xi):
     ...     return (xi * (1 - xi))**2
 
     >>> def pPrime(xi):
     ...     return 30. * (xi * (1 - xi))**2
-        
+
     >>> def gPrime(xi):
     ...     return 4 * xi * (1 - xi) * (0.5 - xi)
 
@@ -93,10 +106,10 @@ We create four components
     ...         CellVariable.__init__(self, mesh = mesh, value = value, name = name, hasOld = hasOld)
     ...
     ...     def copy(self):
-    ...         return self.__class__(mesh = self.mesh, value = self.value, 
-    ...                               name = self.name, 
-    ...                               standardPotential = self.standardPotential, 
-    ...                               barrier = self.barrier, 
+    ...         return self.__class__(mesh = self.mesh, value = self.value,
+    ...                               name = self.name,
+    ...                               standardPotential = self.standardPotential,
+    ...                               barrier = self.barrier,
     ...                               diffusivity = self.diffusivity,
     ...                               valence = self.valence,
     ...                               equation = self.equation,
@@ -108,7 +121,7 @@ the solvent
     >>> CnStandardPotential = PF("34139.7265625 J/mol") / RT
     >>> CnBarrier = PF("3.6e5 J/mol") / RT
     >>> CnValence = 0
-    
+
 and two solute species
 
     >>> substitutionals = [
@@ -124,7 +137,7 @@ and two solute species
     ...                       barrier = CnBarrier,
     ...                       valence = +2,
     ...                       value = PF("55.5553718417909 mol/l") * molarVolume)]
-    
+
 and one interstitial
 
     >>> interstitials = [
@@ -144,13 +157,13 @@ and one interstitial
 Finally, we create the electrostatic potential field
 
     >>> potential = CellVariable(mesh = mesh, name = 'phi', value = 0.)
-    
+
     >>> permittivity = PF("78.49 eps0") / (Faraday**2 * mesh.scale**2 / (RT * molarVolume))
 
     >>> permittivity = 1.
-    >>> permitivityPrime = 0.
+    >>> permittivityPrime = 0.
 
-The thermodynamic parameters are chosen to give a solid phase rich in electrons 
+The thermodynamic parameters are chosen to give a solid phase rich in electrons
 and the solvent and a liquid phase rich in the two substitutional species
 
 .. warning: Addition and subtraction cause `solvent` to lose some crucial information
@@ -169,14 +182,14 @@ Once again, we start with a sharp phase boundary
     >>> interstitials[0].setValue("0.000111111503177394 mol/l" * molarVolume, where=x > L / 2)
     >>> substitutionals[0].setValue("0.249944439430068 mol/l" * molarVolume, where=x > L / 2)
     >>> substitutionals[1].setValue("0.249999982581341 mol/l" * molarVolume, where=x > L / 2)
-    
+
 We again create the phase equation as in ``examples.elphf.phase.input1D``
 
     >>> mesh.setScale(1)
 
     >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
     ...     == DiffusionTerm(coeff = phase.gradientEnergy) \
-    ...     - (permitivityPrime / 2.) * potential.grad.dot(potential.grad)
+    ...     - (permittivityPrime / 2.) * potential.grad.dot(potential.grad)
 
 We linearize the source term in the same way as in `example.phase.simple.input1D`.
 
@@ -185,15 +198,15 @@ We linearize the source term in the same way as in `example.phase.simple.input1D
     >>> for component in substitutionals + interstitials:
     ...     enthalpy += component * component.standardPotential
     ...     barrier += component * component.barrier
-          
+
     >>> mXi = -(30 * phase * (1 - phase) * enthalpy +  4 * (0.5 - phase) * barrier)
     >>> dmXidXi = (-60 * (0.5 - phase) * enthalpy + 4 * barrier)
     >>> S1 = dmXidXi * phase * (1 - phase) + mXi * (1 - 2 * phase)
     >>> S0 = mXi * phase * (1 - phase) - phase * S1
-    
+
     >>> phase.equation -= S0 + ImplicitSourceTerm(coeff = S1)
-    
-and we create the diffustion equation for the solute as in 
+
+and we create the diffusion equation for the solute as in
 ``examples.elphf.diffusion.input1D``
 
     >>> for Cj in substitutionals:
@@ -202,13 +215,13 @@ and we create the diffustion equation for the solute as in
     ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
     ...         CkSum += Ck
     ...         CkFaceSum += Ck.harmonicFaceValue
-    ...        
+    ...
     ...     counterDiffusion = CkSum.faceGrad
-    ...     # phaseTransformation = (pPrime(phase.harmonicFaceValue) * Cj.standardPotential 
+    ...     # phaseTransformation = (pPrime(phase.harmonicFaceValue) * Cj.standardPotential
     ...     #         + gPrime(phase.harmonicFaceValue) * Cj.barrier) * phase.faceGrad
-    ...     phaseTransformation = (pPrime(phase).harmonicFaceValue * Cj.standardPotential 
+    ...     phaseTransformation = (pPrime(phase).harmonicFaceValue * Cj.standardPotential
     ...             + gPrime(phase).harmonicFaceValue * Cj.barrier) * phase.faceGrad
-    ...     # phaseTransformation = (p(phase).faceGrad * Cj.standardPotential 
+    ...     # phaseTransformation = (p(phase).faceGrad * Cj.standardPotential
     ...     #         + g(phase).faceGrad * Cj.barrier)
     ...     electromigration = Cj.valence * potential.faceGrad
     ...     convectionCoeff = counterDiffusion + \
@@ -218,13 +231,13 @@ and we create the diffustion equation for the solute as in
     ...     Cj.equation = (TransientTerm()
     ...                    == DiffusionTerm(coeff=Cj.diffusivity)
     ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
-    
+
     >>> for Cj in interstitials:
-    ...     # phaseTransformation = (pPrime(phase.harmonicFaceValue) * Cj.standardPotential 
+    ...     # phaseTransformation = (pPrime(phase.harmonicFaceValue) * Cj.standardPotential
     ...     #         + gPrime(phase.harmonicFaceValue) * Cj.barrier) * phase.faceGrad
-    ...     phaseTransformation = (pPrime(phase).harmonicFaceValue * Cj.standardPotential 
+    ...     phaseTransformation = (pPrime(phase).harmonicFaceValue * Cj.standardPotential
     ...             + gPrime(phase).harmonicFaceValue * Cj.barrier) * phase.faceGrad
-    ...     # phaseTransformation = (p(phase).faceGrad * Cj.standardPotential 
+    ...     # phaseTransformation = (p(phase).faceGrad * Cj.standardPotential
     ...     #         + g(phase).faceGrad * Cj.barrier)
     ...     electromigration = Cj.valence * potential.faceGrad
     ...     convectionCoeff = Cj.diffusivity * (1 + Cj.harmonicFaceValue) * \
@@ -246,7 +259,7 @@ If running interactively, we create viewers to display the results
 
     >>> if __name__ == '__main__':
     ...     phaseViewer = Viewer(vars=phase, datamin=0, datamax=1)
-    ...     concViewer = Gist1DViewer(vars = [solvent] + substitutionals + interstitials, ylog = 1)
+    ...     concViewer = Viewer(vars=[solvent] + substitutionals + interstitials, ylog=True)
     ...     potentialViewer = Viewer(vars = potential)
     ...     phaseViewer.plot()
     ...     concViewer.plot()
@@ -265,9 +278,9 @@ iterating to equilibrium
     >>> for Cj in substitutionals + interstitials:
     ...     Cj.residual = CellVariable(mesh = mesh)
     >>> residualViewer = Viewer(vars = [phase.residual, potential.residual] + [Cj.residual for Cj in substitutionals + interstitials])
-    
+
     >>> tsv = TSVViewer(vars = [phase, potential] + substitutionals + interstitials)
-    
+
     >>> dt = substitutionals[0].diffusivity * 100
     >>> # dt = 1.
     >>> elapsed = 0.
@@ -290,31 +303,31 @@ iterating to equilibrium
     ...             print i, j, dt * timeStep, residual
     ...             # raw_input()
     ...             residual = 0.
-    ...                 
+    ...
     ...             phase.equation.solve(var = phase, dt = dt)
     ...             # print phase.name, phase.equation.residual.max()
     ...             residual = max(phase.equation.residual.max(), residual)
     ...             phase.residual[:] = phase.equation.residual
-    ...    
+    ...
     ...             potential.equation.solve(var = potential, dt = dt)
     ...             # print potential.name, potential.equation.residual.max()
     ...             residual = max(potential.equation.residual.max(), residual)
     ...             potential.residual[:] = potential.equation.residual
-    ...    
+    ...
     ...             for Cj in substitutionals + interstitials:
-    ...                 Cj.equation.solve(var = Cj, 
+    ...                 Cj.equation.solve(var = Cj,
     ...                                   dt = dt,
     ...                                   solver = solver)
     ...                 # print Cj.name, Cj.equation.residual.max()
     ...                 residual = max(Cj.equation.residual.max(), residual)
     ...                 Cj.residual[:] = Cj.equation.residual
-    ...    
+    ...
     ...             # print
     ...             # phaseViewer.plot()
     ...             # concViewer.plot()
     ...             # potentialViewer.plot()
     ...             # residualViewer.plot()
-    ...    
+    ...
     ...         residual /= maxError
     ...         if residual <= 1.:
     ...             break	# step succeeded
@@ -329,7 +342,7 @@ iterating to equilibrium
     ...         dt *= SAFETY * residual**-0.2
     ...     else:
     ...         dt *= 5.
-    ...    
+    ...
     ...     # dt *= (maxError / residual)**0.5
     ...
     ...     if thisTimeStep >= desiredTimestep:
@@ -337,8 +350,8 @@ iterating to equilibrium
     ...         thisTimeStep = 0.
     ...     else:
     ...         dt = min(dt, desiredTimestep - thisTimeStep)
-    ...         
-    ...     if __name__ == '__main__':    
+    ...
+    ...     if __name__ == '__main__':
     ...         phaseViewer.plot()
     ...         concViewer.plot()
     ...         potentialViewer.plot()
@@ -350,7 +363,7 @@ we confirm that the far-field phases have remained separated
     >>> ends = take(phase, (0,-1))
     >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
-    
+
 and that the concentration fields has appropriately segregated into into
 their respective phases
 
@@ -366,12 +379,12 @@ their respective phases
 """
 __docformat__ = 'restructuredtext'
 
-## def _test(): 
+## def _test():
 ##     import doctest
 ##     return doctest.testmod()
-##     
-## if __name__ == "__main__": 
-##     _test() 
+##
+## if __name__ == "__main__":
+##     _test()
 ##     raw_input("finished")
 
 if __name__ == '__main__':
@@ -385,6 +398,5 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     # profile.stop()
-            
-    raw_input("finished")
 
+    raw_input("finished")

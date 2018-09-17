@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-## 
+##
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
- # 
+ #
  #  FILE: "mesh1D.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
@@ -11,24 +11,37 @@
  #  Author: James Warren   <jwarren@nist.gov>
  #    mail: NIST
  #     www: http://www.ctcms.nist.gov/fipy/
- #  
+ #
  # ========================================================================
  # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
+ # of Standards and Technology, an agency of the Federal Government.
+ # Pursuant to title 17 section 105 of the United States Code,
  # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
+ # protection, and this software is considered to be in the public domain.
+ # FiPy is an experimental system.
+ # NIST assumes no responsibility whatsoever for its use by whatsoever for its use by
  # other parties, and makes no guarantees, expressed or implied, about
  # its quality, reliability, or any other characteristic.  We would
  # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
+ #
+ # To the extent that NIST may hold copyright in countries other than the
+ # United States, you are hereby granted the non-exclusive irrevocable and
+ # unconditional right to print, publish, prepare derivative works and
+ # distribute this software, in any medium, or authorize others to do so on
+ # your behalf, on a royalty-free basis throughout the world.
+ #
+ # You may improve, modify, and create derivative works of the software or
+ # any portion of the software, and you may copy and distribute such
+ # modifications or works.  Modified works should carry a notice stating
+ # that you changed the software and should note the date and nature of any
+ # such change.  Please explicitly acknowledge the National Institute of
+ # Standards and Technology as the original source.
+ #
+ # This software can be redistributed and/or modified freely provided that
+ # any derivative works bear some notice that they are derived from it, and
+ # any modified versions bear some notice that they have been modified.
  # ========================================================================
- #  
+ #
  # ###################################################################
  ##
 
@@ -38,10 +51,10 @@ equations.  The diffusion equation for each species in single-phase
 multicomponent system can be expressed as
 
 .. math::
-   
+
    \frac{\partial C_j}{\partial t}
    = D_{jj}\nabla^2 C_j
-     + D_{j}\nabla\cdot 
+     + D_{j}\nabla\cdot
        \frac{C_j}{1 - \sum_{\substack{k=2\\ k \neq j}}^{n-1} C_k}
            \sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i
 
@@ -58,16 +71,16 @@ We solve the problem on a 1D mesh
 >>> dx = 0.01
 >>> L = nx * dx
 
->>> from fipy import *
+>>> from fipy import CellVariable, FaceVariable, Grid1D, TransientTerm, DiffusionTerm, PowerLawConvectionTerm, DefaultAsymmetricSolver, Viewer
 >>> mesh = Grid1D(dx = dx, nx = nx)
 
 One component in this ternary system will be designated the "solvent"
 
 >>> class ComponentVariable(CellVariable):
-...     def __init__(self, mesh, value = 0., name = '', 
-...                  standardPotential = 0., barrier = 0., 
+...     def __init__(self, mesh, value = 0., name = '',
+...                  standardPotential = 0., barrier = 0.,
 ...                  diffusivity = None, valence = 0, equation = None):
-...         CellVariable.__init__(self, mesh = mesh, value = value, 
+...         CellVariable.__init__(self, mesh = mesh, value = value,
 ...                               name = name)
 ...         self.standardPotential = standardPotential
 ...         self.barrier = barrier
@@ -76,12 +89,12 @@ One component in this ternary system will be designated the "solvent"
 ...         self.equation = equation
 ...
 ...     def copy(self):
-...         return self.__class__(mesh = self.mesh, 
-...                               value = self.value, 
-...                               name = self.name, 
-...                               standardPotential = 
-...                                   self.standardPotential, 
-...                               barrier = self.barrier, 
+...         return self.__class__(mesh = self.mesh,
+...                               value = self.value,
+...                               name = self.name,
+...                               standardPotential =
+...                                   self.standardPotential,
+...                               barrier = self.barrier,
 ...                               diffusivity = self.diffusivity,
 ...                               valence = self.valence,
 ...                               equation = self.equation)
@@ -92,7 +105,7 @@ We can create an arbitrary number of components,
 simply by providing a :keyword:`tuple` or :keyword:`list` of components
 
 >>> substitutionals = [
-...     ComponentVariable(mesh = mesh, name = 'C1', diffusivity = 1., 
+...     ComponentVariable(mesh = mesh, name = 'C1', diffusivity = 1.,
 ...                       standardPotential = 1., barrier = 1.),
 ...     ComponentVariable(mesh = mesh, name = 'C2', diffusivity = 1.,
 ...                       standardPotential = 1., barrier = 1.),
@@ -119,7 +132,7 @@ We create one diffusion equation for each substitutional component
 ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
 ...         CkSum += Ck
 ...         CkFaceSum += Ck.harmonicFaceValue
-...        
+...
 ...     convectionCoeff = CkSum.faceGrad \
 ...                       * (Cj.diffusivity / (1. - CkFaceSum))
 ...
@@ -139,13 +152,13 @@ Now, we iterate the problem to equilibrium, plotting as we go
 
 >>> for i in range(40):
 ...     for Cj in substitutionals:
-...         Cj.equation.solve(var=Cj, 
+...         Cj.equation.solve(var=Cj,
 ...                           dt=10000.,
 ...                           solver=Cj.solver)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
-Since there is nothing to maintain the concentration separation in this problem, 
+Since there is nothing to maintain the concentration separation in this problem,
 we verify that the concentrations have become uniform
 
 >>> print substitutionals[0].allclose(0.45, rtol = 1e-7, atol = 1e-7)
@@ -164,8 +177,7 @@ if __name__ == '__main__':
 
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    
-    # profile.stop()
-	    
-    raw_input("finished")
 
+    # profile.stop()
+
+    raw_input("finished")

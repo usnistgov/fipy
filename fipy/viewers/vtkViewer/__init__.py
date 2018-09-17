@@ -8,12 +8,12 @@ __all__.extend(vtkCellViewer.__all__)
 __all__.extend(vtkFaceViewer.__all__)
 
 def VTKViewer(vars, title=None, limits={}, **kwlimits):
-    """Generic function for creating a `VTKViewer`. 
-    
+    """Generic function for creating a `VTKViewer`.
+
     The `VTKViewer` factory will search the module tree and return an
     instance of the first `VTKViewer` it finds of the correct dimension
     and rank.
-    
+
     :Parameters:
       vars
         a `_MeshVariable` or tuple of `_MeshVariable` objects to plot
@@ -30,9 +30,9 @@ def VTKViewer(vars, title=None, limits={}, **kwlimits):
     """
     if type(vars) not in [type([]), type(())]:
         vars = [vars]
-        
+
     kwlimits.update(limits)
-    
+
     try:
         return VTKCellViewer(vars=vars, title=title, **kwlimits)
     except TypeError:

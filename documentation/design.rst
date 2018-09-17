@@ -53,7 +53,7 @@ the core modules at the individual method level.  The aim is that
 every method within the core installation has a test case.  The high
 level test cases operate in conjunction with example solutions and
 serve to test global solution algorithms and the interaction of
-various modules.  
+various modules.
 
 With this two-tiered battery of tests, at any stage in code
 development, the test cases can be executed and errors can be
@@ -67,15 +67,15 @@ Open Source
 ~~~~~~~~~~~
 
 In recent years, there has been a movement to release software under
-open source and associated unrestrictied licenses, especially within
+open source and associated unrestricted licenses, especially within
 the scientific community.  These licensing terms allow users to
 develop their own applications with complete access to the source code
 and then either contribute back to the main source repository or
-freely distribute their new adapted version.  
+freely distribute their new adapted version.
 
 As a product of the National Institute of Standards and Technology,
-the :term:`FiPy` framework is placed in the public domain as a matter of 
-U. S. Federal law. Furthermore, :term:`FiPy` is built upon existing open source 
+the :term:`FiPy` framework is placed in the public domain as a matter of
+U. S. Federal law. Furthermore, :term:`FiPy` is built upon existing open source
 tools. Others are free to use :term:`FiPy` as they see fit and we welcome
 contributions to make :term:`FiPy` better.
 
@@ -113,7 +113,7 @@ written in C might be rendered as
 
 .. code-block:: c
 
-   if (Acols != Brows) 
+   if (Acols != Brows)
        error "these matrix shapes cannot be multiplied";
 
    C = (float *) malloc(sizeof(float) * Bcols * Arows);
@@ -126,7 +126,7 @@ written in C might be rendered as
            }
        }
    }
-    
+
 Note that the dimensions of the arrays must be supplied externally, as
 C provides no intrinsic mechanism for determining the shape of an
 array.  An equivalent high-level construction might be as simple as
@@ -190,33 +190,31 @@ is more palatable to the computer than to the programmer.  Thus
 code first and then dealing with the issue of user interaction,
 initially implements most modules in high-level scripting language and
 only translates to low-level compiled code those portions that prove
-inefficient. 
+inefficient [#]_.
 
-.. A discussion of efficiency issues can be found in
-   :ref:`chap:Efficiency`.
 
-:term:`Python` Programming Language
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Python Programming Language
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Acknowledging that several scripting languages offer a number, if not
 all, of the features described above, we have selected :term:`Python` for
 the implementation of :term:`FiPy`.  Python is
-    
+
  * an interpreted language that combines remarkable power with very clear
    syntax,
-    
+
  * freely usable and distributable, even for commercial use,
-    
+
  * fully object oriented,
-    
+
  * distributed with powerful automated testing tools (:mod:`doctest`,
    :mod:`unittest`),
 
  * actively used and extended by other scientists and
-   mathemeticians (:term:`SciPy`, :term:`NumPy`, :term:`ScientificPython`, :term:`PySparse`).
-    
+   mathematicians (:term:`SciPy`, :term:`NumPy`, :term:`ScientificPython`, :term:`Pysparse`).
+
  * easily integrated with low-level languages such as C
-   (:mod:`~scipy.weave`, :mod:`~scipy.blitz`, :term:`PyRex`).
+   (:mod:`~weave`, :mod:`~weave.blitz`, :term:`PyRex`).
 
 Implementation
 --------------
@@ -229,12 +227,12 @@ based around three fundamental :term:`Python` classes:
 :class:`~fipy.terms.term.Term`. Using the terminology of
 :ref:`chap:Numerics`:
 
-A :class:`~fipy.meshes.mesh.Mesh` object 
+A :class:`~fipy.meshes.mesh.Mesh` object
   represents the domain of interest.
   :term:`FiPy` contains many different specific mesh classes to describe
   different geometries.
 
-A :class:`~fipy.variables.variable.Variable` object 
+A :class:`~fipy.variables.variable.Variable` object
   represents a quantity or field that can change during the problem
   evolution. A particular type of
   :class:`~fipy.variables.variable.Variable`, called a
@@ -246,11 +244,11 @@ A :class:`~fipy.variables.variable.Variable` object
   that role is taken by the :class:`~fipy.meshes.mesh.Mesh`.
 
   An important property of :class:`~fipy.variables.variable.Variable` objects is that they can
-  describe dependency relationships, such that:    
+  describe dependency relationships, such that:
 
   >>> a = Variable(value = 3)
   >>> b = a * 4
-  
+
   does not assign the value ``12`` to ``b``, but rather it
   assigns a multiplication operator object to ``b``, which
   depends on the :class:`~fipy.variables.variable.Variable` object ``a``:
@@ -260,35 +258,35 @@ A :class:`~fipy.variables.variable.Variable` object
   >>> a.setValue(5)
   >>> b
   (Variable(value = 5) * 4)
-  
+
   The numerical value of the :class:`~fipy.variables.variable.Variable` is not calculated
   until it is needed (a process known as "lazy evaluation"):
 
   >>> print b
   20
 
-A :class:`~fipy.terms.term.Term` object 
+A :class:`~fipy.terms.term.Term` object
   represents any of the terms in
-  Equation :eq:`eqn:num:gen` or any linear combination of such
+  Equation :eq:`num:gen` or any linear combination of such
   terms.  Early in the development of :term:`FiPy`, a distinction was
   made between ``Equation`` objects, which represented all of
-  Equation :eq:`eqn:num:gen`, and :class:`~fipy.terms.term.Term` objects, which
+  Equation :eq:`num:gen`, and :class:`~fipy.terms.term.Term` objects, which
   represented the individual terms in that equation.  The
   ``Equation`` object has since been eliminated as redundant.
   :class:`~fipy.terms.term.Term` objects can be single entities such as a
   :class:`~fipy.terms.diffusionTerm.DiffusionTerm` or a linear combination of other
   :class:`~fipy.terms.term.Term` objects that build up to form an expression such as
-  Equation :eq:`eqn:num:gen`.
-    
-Beyond these three fundamental classes of :class:`~fipy.meshes.mesh.Mesh`, 
+  Equation :eq:`num:gen`.
+
+Beyond these three fundamental classes of :class:`~fipy.meshes.mesh.Mesh`,
 :class:`~fipy.variables.variable.Variable`, and :class:`~fipy.terms.term.Term`, :term:`FiPy` is composed of a
-number of related classes. 
+number of related classes.
 
 .. _fig:objects:
 
 .. figure:: objects.*
    :scale: 50%
-   
+
    Primary object relationships in `FiPy`.
 
 A :class:`~fipy.meshes.mesh.Mesh` object is composed of cells. Each cell is
@@ -316,3 +314,6 @@ the examples, along with illustrations of their instantiation and use.
 .. rubric:: Footnotes
 
 .. [#] ... neglecting such common optimizations as byte-code interpreters.
+
+.. [#] A discussion of efficiency issues can be found in
+   :ref:`chap:Efficiency`.
