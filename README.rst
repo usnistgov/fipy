@@ -54,6 +54,9 @@ as :mod:`examples.diffusion.mesh1D`.
 What's new in version |release|?
 --------------------------------
 
+.. git_changelog::
+   :rev-list: version-3_1_3..HEAD
+
 The significant changes since version 3.0 are:
 
 - Level sets are now handled by :ref:`LSMLIBDOC` or :ref:`SCIKITFMM`

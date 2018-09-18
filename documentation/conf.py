@@ -33,7 +33,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
               'numpydoc',
               'redirecting_html',
-              'sphinxcontrib.bibtex']
+              'sphinxcontrib.bibtex',
+              'sphinx_git']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
