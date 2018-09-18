@@ -45,15 +45,15 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
     :class:`~fipy.variables.variable.Variable`\s against different Matplotlib_
     `Axes`
 
-    >>> from matplotlib import pylab
+    >>> from matplotlib import pyplot as plt
     >>> from fipy import *
 
-    >>> pylab.ion()
-    >>> fig = pylab.figure()
+    >>> plt.ion()
+    >>> fig = plt.figure()
 
-    >>> ax1 = pylab.subplot((221))
-    >>> ax2 = pylab.subplot((223))
-    >>> ax3 = pylab.subplot((224))
+    >>> ax1 = plt.subplot((221))
+    >>> ax2 = plt.subplot((223))
+    >>> ax3 = plt.subplot((224))
 
     >>> k = Variable(name="k", value=0.)
 
@@ -87,7 +87,7 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
     ...                            datamin=-0.9, datamax=2.0,
     ...                            title="Irregular 2D test",
     ...                            axes=ax3,
-    ...                            cmap = pylab.cm.OrRd)
+    ...                            cmap = plt.cm.OrRd)
 
     >>> viewer = MultiViewer(viewers=(viewer1, viewer2, viewer3))
     >>> for kval in range(10):

@@ -118,7 +118,7 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
         return [vars[0]]
 
     def _plot(self):
-##         pylab.clf()
+##         plt.clf()
 
 ##         ## Added garbage collection since matplotlib objects seem to hang
 ##         ## around and accumulate.

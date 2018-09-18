@@ -132,14 +132,14 @@ class AbstractMatplotlibViewer(AbstractViewer):
 
         AbstractViewer.__init__(self, vars=vars, title=title, **kwlimits)
 
-        import pylab
+        from matplotlib import pyplot as plt
 
-        pylab.ion()
+        plt.ion()
 
         if axes is None:
-            w, h = pylab.figaspect(self.figaspect(figaspect))
-            fig = pylab.figure(figsize=(w, h))
-            self.axes = pylab.gca()
+            w, h = plt.figaspect(self.figaspect(figaspect))
+            fig = plt.figure(figsize=(w, h))
+            self.axes = plt.gca()
         else:
             self.axes = axes
             fig = axes.get_figure()
@@ -189,22 +189,22 @@ class AbstractMatplotlibViewer(AbstractViewer):
     log = property(**log())
 
     def plot(self, filename = None):
-        import pylab
+        from matplotlib import pyplot as plt
 
         fig = self.axes.get_figure()
 
-        pylab.ioff()
+        plt.ioff()
 
         self._plot()
 
-        pylab.draw()
+        plt.draw()
 
         try:
             fig.canvas.flush_events()
         except NotImplementedError:
             pass
 
-        pylab.ion()
+        plt.ion()
 
         if _isnotebook():
             # plots don't animate in the notebook unless we
@@ -214,13 +214,12 @@ class AbstractMatplotlibViewer(AbstractViewer):
             clear_output(wait=True)
             display(self)
         else:
-            pylab.show(block=False)
+            fig.show()
 
         if filename is not None:
-            pylab.savefig(filename)
+            fig.savefig(filename)
 
     def _validFileExtensions(self):
-        import pylab
         return ["""
         Matplotlib has no reliable way to determine
         valid file extensions. Either guess, or see
@@ -228,7 +227,7 @@ class AbstractMatplotlibViewer(AbstractViewer):
         and then guess. Yes, this is lame.
         """]
 
-#         filetypes = pylab.figure(self.id).canvas.filetypes
+#         filetypes = plt.figure(self.id).canvas.filetypes
 #         return [".%s" % key for key in filetypes.keys()]
 
     def _repr_png_(self):
