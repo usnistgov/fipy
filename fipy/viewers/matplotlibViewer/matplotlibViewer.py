@@ -51,6 +51,23 @@ __all__ = ["AbstractMatplotlibViewer"]
 
 from fipy.viewers.viewer import AbstractViewer
 
+def _isnotebook():
+    """return True if running in a jupyter notebook
+     https://stackoverflow.com/a/39662359/2019542
+    """
+    try:
+        import IPython
+
+        shell = IPython.get_ipython().__class__.__name__
+        if shell == 'ZMQInteractiveShell':
+            return True   # Jupyter notebook or qtconsole
+        elif shell == 'TerminalInteractiveShell':
+            return False  # Terminal running IPython
+        else:
+            return False  # Other type (?)
+    except (ImportError, NameError):
+        return False      # Probably standard Python interpreter
+
 class AbstractMatplotlibViewer(AbstractViewer):
     """
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -125,15 +142,6 @@ class AbstractMatplotlibViewer(AbstractViewer):
         self.norm = None
         self.log = log
 
-        try:
-            # Plotting needs to work differently for inline
-            # integration in the IPython notebook.
-            # (test is from http://stackoverflow.com/a/15346737/2019542)
-            backend = pylab.get_backend()
-            self.IPYinline = __IPYTHON__ and ("inline" in backend)
-        except NameError:
-            self.IPYinline = False
-
     def figaspect(self, figaspect):
         return figaspect
 
@@ -161,27 +169,29 @@ class AbstractMatplotlibViewer(AbstractViewer):
     def plot(self, filename = None):
         import pylab
 
-        fig = pylab.figure(self.id)
+        fig = self.axes.get_figure()
 
-        if self.IPYinline:
-            from IPython.display import clear_output, display_png
+        pylab.ioff()
+
+        self._plot()
+
+        pylab.draw()
+
+        try:
+            fig.canvas.flush_events()
+        except NotImplementedError:
+            pass
+
+        pylab.ion()
+
+        if _isnotebook():
+            # plots don't animate in the notebook unless we
+            # explicitly clear_output and display
+            from IPython.display import display, clear_output
 
             clear_output(wait=True)
-            display_png(self)
+            display(self)
         else:
-            pylab.ioff()
-
-            self._plot()
-
-            pylab.draw()
-
-            try:
-                fig.canvas.flush_events()
-            except NotImplementedError:
-                pass
-
-            pylab.ion()
-
             pylab.show(block=False)
 
         if filename is not None:
