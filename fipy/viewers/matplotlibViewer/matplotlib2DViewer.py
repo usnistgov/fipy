@@ -150,7 +150,7 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
         return [vars[0]]
 
     def _plot(self):
-##         pylab.clf()
+##         plt.clf()
 
 ##         ## Added garbage collection since matplotlib objects seem to hang
 ##         ## around and accumulate.
@@ -170,11 +170,11 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
         if self.colorbar is not None:
             self.colorbar.plot() #vmin=zmin, vmax=zmax)
 
-##        pylab.xlim(xmin=self._getLimit('xmin'),
-##                   xmax=self._getLimit('xmax'))
+##        plt.xlim(xmin=self._getLimit('xmin'),
+##                 xmax=self._getLimit('xmax'))
 
-##        pylab.ylim(ymin=self._getLimit('ymin'),
-##                   ymax=self._getLimit('ymax'))
+##        plt.ylim(ymin=self._getLimit('ymin'),
+##                 ymax=self._getLimit('ymax'))
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus
