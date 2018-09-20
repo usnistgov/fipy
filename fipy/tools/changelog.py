@@ -2,7 +2,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  #
- #  FILE: "Change_log.py"
+ #  FILE: "changelog.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
@@ -44,14 +44,15 @@
 
 """Uses basic authentication (Github username + password) to retrieve issues
 from a repository that username has access to. Supports Github API v3.
-Forked from: patrickfuller/github_issues_to_csv.py
+Adapted from: https://gist.github.com/patrickfuller/e2ea8a94badc5b6967ef3ca0a9452a43
 """
 
+import os
 from distutils.core import Command
 
-__all__ = ["Change_log"]
+__all__ = ["changelog"]
 
-class Change_log(Command):
+class changelog(Command):
     description = "Generate ReST change log from github issues and pull requests"
 
     # List of option tuples: long name, short name (None if no short
@@ -59,52 +60,71 @@ class Change_log(Command):
     user_options = [
         ('repository=', None,
          "GitHub repository to obtain issues from (default: 'usnistgov/fipy')"),
+        ('tokenvar=', None,
+         "Environment variable holding GitHub personal access token with 'repo' scope (default: 'FIPY_GITHUB_TOKEN')"),
         ('username=', None,
-         "GitHub username to authenticate as (default: None). Note: GitHub limits the rate of unauthenticated queries: https://developer.github.com/v3/#rate-limiting")
+         "GitHub username to authenticate as (default: None). Supersedes `tokenvar`. Note: GitHub limits the rate of unauthenticated queries: https://developer.github.com/v3/#rate-limiting"),
         ('state=', None,
          "Indicates the state of the issues to return. Can be either `open`, `closed`, or `all`. (default: `closed`)"),
+        ('since=', None,
+         "Only issues updated at or after this tag are returned.")
      ]
 
     def initialize_options(self):
         self.repository = "usnistgov/fipy"
+        self.tokenvar = "FIPY_GITHUB_TOKEN"
         self.username = None
         self.auth = None
         self.state = "closed"
+        self.since = None
 
     def finalize_options(self):
         if self.username is not None:
             from getpass import getpass
-            
+
             password = getpass("Password for 'https://{}@github.com': ".format(self.username))
             self.auth = (username, password)
+        else:
+            try:
+                self.auth = (os.environ[self.tokenvar],)
+            except KeyError:
+                pass
 
     def run(self):
-        """Requests issues from GitHub API and writes to JSON file.
+        """Requests issues from GitHub API and prints as ReST to stdout
         """
-        url = 'https://api.github.com/repos/{}/issues?state={}'.format(name, state)
-        r = requests.get(url, auth=auth)
+        import github
+        import pandas as pd
         
-        jsondat = []
+        g = github.Github(*self.auth)
+        repo = g.get_repo(self.repository)
         
-        while True:
-            if r.status_code != 200:
-                raise Exception(r.status_code)
+        if self.since is not None:
+            for tag in repo.get_tags():
+                if tag.name == self.since:
+                    self.since = tag.commit.committer.date
+                    break
+            if type(self.since) is str:
+                raise KeyError("Tag `{}` not found".format(self.since))
+        else:
+            self.since = github.GithubObject.NotSet 
+            
+        issues = [{
+              'number': issue.number,
+              'state': issue.state,
+              'title': issue.title,
+              'body': issue.body,
+              'created_at': issue.created_at,
+              'updated_at': issue.updated_at,
+              'closed_at': issue.closed_at,
+              'url': issue.url,
+              'pull_request': issue.pull_request,
+              'user': issue.user
+            } for issue in repo.get_issues(state=self.state, since=self.since)]
+            
+        issues = pd.DataFrame(issues)
 
-            jsondat += r.json()
-            
-            if 'link' not in r.headers:
-                break
-            
-            pages = {rel[6:-1]: url[url.index('<')+1:-1] for url, rel in
-                     (link.split(';') for link in
-                      r.headers['link'].split(','))}
+        pulls = issues[issues['pull_request'].notna()]
+        issues = issues[issues['pull_request'].isna()]
 
-            if 'next' not in pages:
-                break
-                
-            r = requests.get(pages['next'], auth=auth)
-            
-        jsonfilename = '{}-issues.json'.format(name.replace('/', '-'))
-            
-        with open(jsonfilename, 'w') as jsonfile:
-            json.dump(jsondat, jsonfile, indent=2)
+        print issues

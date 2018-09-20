@@ -50,6 +50,7 @@ import os
 from distutils.core import Command
 from fipy.tools.performance.efficiency_test import Efficiency_test
 from fipy.tools.copy_script import Copy_script
+from fipy.tools.changelog import changelog
 from fipy.tests.testClass import _TestClass
 
 # bootstrap setuptools for users that don't already have it
@@ -291,7 +292,8 @@ dist = setup(	name = "FiPy",
             'test':test,
             'unittest':unittest,
             'copy_script': Copy_script,
-            'efficiency_test': Efficiency_test
+            'efficiency_test': Efficiency_test,
+            'changelog': changelog
         },
         test_suite="fipy.testFiPy._suite",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
