@@ -66,8 +66,10 @@ class changelog(Command):
          "GitHub username to authenticate as (default: None). Supersedes `tokenvar`. Note: GitHub limits the rate of unauthenticated queries: https://developer.github.com/v3/#rate-limiting"),
         ('state=', None,
          "Indicates the state of the issues to return. Can be either `open`, `closed`, or `all`. (default: `closed`)"),
-        ('since=', None,
-         "Only issues updated at or after this tag are returned.")
+        ('after=', None,
+         "Only issues closed at or after this tag are returned."),
+        ('before=', None,
+         "Only issues closed at or before this tag are returned.")
      ]
 
     def initialize_options(self):
@@ -76,7 +78,8 @@ class changelog(Command):
         self.username = None
         self.auth = None
         self.state = "closed"
-        self.since = None
+        self.after = None
+        self.before = None
 
     def finalize_options(self):
         if self.username is not None:
@@ -99,16 +102,6 @@ class changelog(Command):
         g = github.Github(*self.auth)
         repo = g.get_repo(self.repository)
         
-        if self.since is not None:
-            for tag in repo.get_tags():
-                if tag.name == self.since:
-                    self.since = tag.commit.committer.date
-                    break
-            if type(self.since) is str:
-                raise KeyError("Tag `{}` not found".format(self.since))
-        else:
-            self.since = github.GithubObject.NotSet 
-            
         issues = [{
               'number': issue.number,
               'state': issue.state,
@@ -120,9 +113,14 @@ class changelog(Command):
               'url': issue.url,
               'pull_request': issue.pull_request,
               'user': issue.user
-            } for issue in repo.get_issues(state=self.state, since=self.since)]
+            } for issue in repo.get_issues(state=self.state)]
             
         issues = pd.DataFrame(issues)
+
+        if self.after is not None:
+            issues = issues[issues['closed_at'] >= self.after]
+        if self.before is not None:
+            issues = issues[issues['closed_at'] <= self.before]
 
         pulls = issues[issues['pull_request'].notna()]
         issues = issues[issues['pull_request'].isna()]
