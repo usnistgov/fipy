@@ -87,7 +87,6 @@ class changelog(Command):
         self.state = "closed"
         self.after = None
         self.before = None
-        self.since = github.GithubObject.NotSet
 
     def finalize_options(self):
         if self.username is not None:
@@ -100,10 +99,6 @@ class changelog(Command):
                 self.auth = (os.environ[self.tokenvar],)
             except KeyError:
                 pass
-
-        if self.after is not None:
-            import pandas as pd
-            self.since = pd.to_datetime(self.after).to_pydatetime()
 
     def _printReST(self, issues, label):
         """Print section of issues to stdout
@@ -126,8 +121,13 @@ class changelog(Command):
         
         g = github.Github(*self.auth)
         repo = g.get_repo(self.repository)
-        
-        issues = repo.get_issues(state=self.state, since=self.since)
+
+        if self.after is not None:
+            since = pd.to_datetime(self.after).to_pydatetime()
+        else:
+            since = github.GithubObject.NotSet
+
+        issues = repo.get_issues(state=self.state, since=since)
         collaborators = [collaborator.login for collaborator in repo.get_collaborators()]
 
         with open("issues.pkl", 'wb') as pkl:
