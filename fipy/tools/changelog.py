@@ -146,7 +146,39 @@ class changelog(Command):
         if self.before is not None:
             issues = issues[issues['closed_at'] <= self.before]
 
-        pulls = issues[issues['pull_request'].notna()]
-        issues = issues[issues['pull_request'].isna()]
+        ispull = issues['pull_request'].notna()
+        isissue = ~ispull
 
-        print issues
+        fmt = lambda x: (u" Thanks to `@{} <{}>`_.".format(x.user.login,
+                                                           x.user.html_url))
+        issues.loc[ispull, 'thx'] = issues.apply(fmt, axis=1)
+
+        fmt = lambda x: u"- {} (`#{} <{}>`_).{}".format(x.title,
+                                                        x.number,
+                                                        x.html_url,
+                                                        x.thx)
+        issues.loc[ispull, 'ReST'] = issues.apply(fmt, axis=1)
+
+        fmt = lambda x: u"- `#{} <{}>`_: {}".format(x.number,
+                                                    x.html_url,
+                                                    x.title)
+        issues.loc[isissue, 'ReST'] = issues.apply(fmt, axis=1)
+
+        print "Pulls"
+        print "-----"
+        print
+
+        for i, pull in issues[ispull].iterrows():
+            # distutils does something disgusting with encodings
+            # we have to strip out unicode or we get errors
+            print(pull.ReST.encode("ascii", errors="replace"))
+
+        print
+        print "Fixes"
+        print "-----"
+        print
+
+        for i, issue in issues[isissue].iterrows():
+            # distutils does something disgusting with encodings
+            # we have to strip out unicode or we get errors
+            print(issue.ReST.encode("ascii", errors="replace"))
