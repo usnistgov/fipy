@@ -61,11 +61,16 @@ class changelog(Command):
         ('repository=', None,
          "GitHub repository to obtain issues from (default: 'usnistgov/fipy')"),
         ('tokenvar=', None,
-         "Environment variable holding GitHub personal access token with 'repo' scope (default: 'FIPY_GITHUB_TOKEN')"),
+         "Environment variable holding GitHub personal access token "
+         "with 'repo' scope (default: 'FIPY_GITHUB_TOKEN')"),
         ('username=', None,
-         "GitHub username to authenticate as (default: None). Supersedes `tokenvar`. Note: GitHub limits the rate of unauthenticated queries: https://developer.github.com/v3/#rate-limiting"),
+         "GitHub username to authenticate as (default: None). "
+         "Supersedes `tokenvar`. "
+         "Note: GitHub limits the rate of unauthenticated queries: "
+         "https://developer.github.com/v3/#rate-limiting"),
         ('state=', None,
-         "Indicates the state of the issues to return. Can be either `open`, `closed`, or `all`. (default: `closed`)"),
+         "Indicates the state of the issues to return. "
+         "Can be either `open`, `closed`, or `all`. (default: `closed`)"),
         ('after=', None,
          "Only issues closed at or after this tag are returned."),
         ('before=', None,
