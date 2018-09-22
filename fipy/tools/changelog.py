@@ -105,6 +105,19 @@ class changelog(Command):
             import pandas as pd
             self.since = pd.to_datetime(self.after).to_pydatetime()
 
+    def _printReST(self, issues, label):
+        """Print section of issues to stdout
+        """
+        print
+        print label
+        print "-" * len(label)
+        print
+
+        for i, issue in issues.iterrows():
+            # distutils does something disgusting with encodings
+            # we have to strip out unicode or we get errors
+            print(issue.ReST.encode("ascii", errors="replace"))
+
     def run(self):
         """Requests issues from GitHub API and prints as ReST to stdout
         """
@@ -115,7 +128,7 @@ class changelog(Command):
         repo = g.get_repo(self.repository)
         
         issues = repo.get_issues(state=self.state, since=self.since)
-        collaborators = [collaborator.login for collaborator in  repo.get_collaborators()]
+        collaborators = [collaborator.login for collaborator in repo.get_collaborators()]
 
         with open("issues.pkl", 'wb') as pkl:
             import pickle
@@ -177,21 +190,5 @@ class changelog(Command):
                                                     x.title)
         issues.loc[isissue, 'ReST'] = issues.apply(fmt, axis=1)
 
-        print "Pulls"
-        print "-----"
-        print
-
-        for i, pull in issues[ispull].iterrows():
-            # distutils does something disgusting with encodings
-            # we have to strip out unicode or we get errors
-            print(pull.ReST.encode("ascii", errors="replace"))
-
-        print
-        print "Fixes"
-        print "-----"
-        print
-
-        for i, issue in issues[isissue].iterrows():
-            # distutils does something disgusting with encodings
-            # we have to strip out unicode or we get errors
-            print(issue.ReST.encode("ascii", errors="replace"))
+        self._printReST(issues[ispull], "Pulls")
+        self._printReST(issues[isissue], "Fixes")
