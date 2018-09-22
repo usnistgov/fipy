@@ -142,6 +142,16 @@ class changelog(Command):
         invalid = issues.labels.apply(lambda x: 'invalid' in x)
         issues = issues[~wontfix & ~invalid]
 
+        # fix the dates to reflect dates from original Trac issue tracker
+        trac = (r" _Imported from trac ticket .*,  "
+                r"created by .* on (.*), "
+                r"last modified: (.*)_")
+        olddates = issues.body.str.extract(trac).apply(pd.to_datetime)
+        issues.loc[olddates[1].notna(), "created_at"] = olddates[0]
+        issues.loc[olddates[1].notna(), "updated_at"] = olddates[1]
+        issues.loc[((issues.state == "closed")
+                    & olddates[1].notna()), "closed_at"] = olddates[1]
+
         if self.after is not None:
             issues = issues[issues['closed_at'] >= self.after]
         if self.before is not None:
