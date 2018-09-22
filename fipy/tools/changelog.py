@@ -78,6 +78,8 @@ class changelog(Command):
      ]
 
     def initialize_options(self):
+        import github
+
         self.repository = "usnistgov/fipy"
         self.tokenvar = "FIPY_GITHUB_TOKEN"
         self.username = None
@@ -85,6 +87,7 @@ class changelog(Command):
         self.state = "closed"
         self.after = None
         self.before = None
+        self.since = github.GithubObject.NotSet
 
     def finalize_options(self):
         if self.username is not None:
@@ -98,6 +101,10 @@ class changelog(Command):
             except KeyError:
                 pass
 
+        if self.after is not None:
+            import pandas as pd
+            self.since = pd.to_datetime(self.after).to_pydatetime()
+
     def run(self):
         """Requests issues from GitHub API and prints as ReST to stdout
         """
@@ -107,6 +114,7 @@ class changelog(Command):
         g = github.Github(*self.auth)
         repo = g.get_repo(self.repository)
         
+        issues = repo.get_issues(state=self.state, since=self.since)
         issues = [{
               'number': issue.number,
               'state': issue.state,
@@ -115,11 +123,12 @@ class changelog(Command):
               'created_at': issue.created_at,
               'updated_at': issue.updated_at,
               'closed_at': issue.closed_at,
-              'url': issue.url,
+              'html_url': issue.html_url,
               'pull_request': issue.pull_request,
-              'user': issue.user
-            } for issue in repo.get_issues(state=self.state)]
-            
+              'user': issue.user,
+              'labels': [label.name for label in issue.labels]
+            } for issue in issues]
+
         issues = pd.DataFrame(issues)
 
         if self.after is not None:
