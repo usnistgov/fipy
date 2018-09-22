@@ -115,6 +115,7 @@ class changelog(Command):
         repo = g.get_repo(self.repository)
         
         issues = repo.get_issues(state=self.state, since=self.since)
+        collaborators = [collaborator.login for collaborator in  repo.get_collaborators()]
 
         with open("issues.pkl", 'wb') as pkl:
             import pickle
@@ -150,7 +151,9 @@ class changelog(Command):
         isissue = ~ispull
 
         fmt = lambda x: (u" Thanks to `@{} <{}>`_.".format(x.user.login,
-                                                           x.user.html_url))
+                                                           x.user.html_url)
+                         if x.user.login not in collaborators
+                         else "")
         issues.loc[ispull, 'thx'] = issues.apply(fmt, axis=1)
 
         fmt = lambda x: u"- {} (`#{} <{}>`_).{}".format(x.title,
