@@ -136,6 +136,11 @@ class changelog(Command):
 
         issues = pd.DataFrame(issues)
 
+        issues = issues.sort_values(by=["number"], ascending=[False])
+        wontfix = issues.labels.apply(lambda x: 'wontfix' in x)
+        invalid = issues.labels.apply(lambda x: 'invalid' in x)
+        issues = issues[~wontfix & ~invalid]
+
         if self.after is not None:
             issues = issues[issues['closed_at'] >= self.after]
         if self.before is not None:
