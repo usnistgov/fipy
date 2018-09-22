@@ -115,6 +115,11 @@ class changelog(Command):
         repo = g.get_repo(self.repository)
         
         issues = repo.get_issues(state=self.state, since=self.since)
+
+        with open("issues.pkl", 'wb') as pkl:
+            import pickle
+            pickle.dump(issues, pkl)
+
         issues = [{
               'number': issue.number,
               'state': issue.state,
