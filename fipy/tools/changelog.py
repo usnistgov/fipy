@@ -127,7 +127,7 @@ class changelog(Command):
         """
         if milestone not in ("*", "none"):
             milestones = self.repo.get_milestones()
-            milestones = [ms if ms.title = self.milestone for ms in milestones]
+            milestones = [ms for ms in milestones if ms.title == self.milestone]
             try:
                 milestone = milestones[0]
             except IndexError:
