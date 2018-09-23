@@ -2,6 +2,7 @@
 Change Log
 ==========
 
+
 ------------
 Next Release
 ------------
@@ -173,6 +174,8 @@ The significant changes since version 3.0 are:
 - Version control was switched to the Git_ distributed version control 
   system. This system should make it much easier for :term:`FiPy` users to 
   participate in development.
+
+.. _Git:       https://github.com/usnistgov/fipy
 
 Fixes
 -----
@@ -426,7 +429,7 @@ increment because it is completely (er... [#almost]_) compatible with older scri
 
 The significant changes since version 2.0.2 are:
 
-- :term:`FiPy` can use :term:`Trilinos` for `solving in parallel`_.
+- :term:`FiPy` can use :term:`Trilinos` for :ref:`PARALLEL`.
 
 - We have switched from :term:`MayaVi` 1 to :term:`Mayavi` 2. This 
   :class:`~fipy.viewers.viewer.Viewer` is an independent process that 
@@ -448,6 +451,20 @@ Fixes
 - `#169 <https://github.com/usnistgov/fipy/issues/169>`_: The FiPy webpage seems to be broken on Internet Explorer
 - `#156 <https://github.com/usnistgov/fipy/issues/156>`_: update the mayavi viewer to use  mayavi 2
 - `#153 <https://github.com/usnistgov/fipy/issues/153>`_: Switch documentation to use `:math:` directive
+
+.. [#almost] Only two examples from :term:`FiPy` 2.0 fail when run with :term:`FiPy` 2.1:
+
+    * :file:`examples/phase/symmetry.py` fails because
+      :class:`~fipy.meshes.mesh.Mesh` no longer provides a
+      ``getCells`` method. The mechanism
+      for enforcing symmetry in the updated example is both clearer and
+      faster.
+
+    * :mod:`examples.levelSet.distanceFunction.circle` fails because of a
+      change in the comparison of masked values.
+
+   Both of these are subtle issues unlikely to affect very many
+   :term:`FiPy` users.
 
 --------------------------
 Version 2.0.3 - 2010-03-17
@@ -495,8 +512,8 @@ The significant changes since version 1.2 are:
   rank.
 
 - Much simpler syntax for specifying
-  :class:`~fipy.meshes.numMesh.cell.Cell`\s for initial conditions and
-  :class:`~fipy.meshes.numMesh.face.Face`\s for boundary conditions.
+  ``Cell``\s for initial conditions and
+  ``Face``\s for boundary conditions.
 
 - Automated determination of the Peclet number and partitioning of 
   :class:`~fipy.terms.implicitSourceTerm.ImplicitSourceTerm` coefficients between the matrix diagonal and the
@@ -597,7 +614,7 @@ Fixes
 - `#104 <https://github.com/usnistgov/fipy/issues/104>`_: Syntax error in MatplotlibVectorViewer._plot()
 - `#101 <https://github.com/usnistgov/fipy/issues/101>`_: matplotlib 1D viewer autoscales when a limit is set to 0
 - `#93 <https://github.com/usnistgov/fipy/issues/93>`_: Broken examples
-- `#91 <https://github.com/usnistgov/fipy/issues/91>`_: update the examples to use "from fipy import *"
+- `#91 <https://github.com/usnistgov/fipy/issues/91>`_: update the examples to use "from fipy import \*"
 - `#76 <https://github.com/usnistgov/fipy/issues/76>`_: solve() and sweep() accept dt=CellVariable
 - `#75 <https://github.com/usnistgov/fipy/issues/75>`_: installation of fipy shoould auto include REAMDE as a docstring
 - `#74 <https://github.com/usnistgov/fipy/issues/74>`_: Some combinations of DiffusionTerm and ConvectionTerm do not work
@@ -615,11 +632,8 @@ The significant changes since version 1.1 are:
 
 - ``--inline`` automatically generates C code from ``Variable`` expressions.
 
-- |FiPy| has been updated to use the Python_ NumPy_ module. |FiPy| no
-  longer works with the older Numeric_ module.
-
-.. _NumPy: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://www.scipy.org/NumPy
-.. _Numeric:  http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=1351
+- :term:`FiPy` has been updated to use the :term:`Python` :term:`NumPy` module. :term:`FiPy` no
+  longer works with the older :term:`Numeric` module.
 
 Fixes
 -----
@@ -656,12 +670,12 @@ The significant changes since version 1.0 are:
   * introducing ``UniformGrid`` classes that calculate geometric
     arrays on the fly.
 
-  Details of these improvements are presented in |EFFICIENCY-txt|.
+  Details of these improvements are presented in :ref:`chap:Efficiency`.
 
 - Installation on Windows has been made considerably easier by
-  constructing executable installers for |FiPy| and its
+  constructing executable installers for :term:`FiPy` and its
   dependencies. Instructions for Windows installation can be found in
-  |WINDOWS-INSTALLATION-txt|.
+  :ref:`WINDOWS-INSTALLATION`.
 
 - The arithmetic for ``Variable`` subclasses now works, and returns
   sensible answers. For example, ``VectorCellVariable * CellVariable``
@@ -673,7 +687,7 @@ The significant changes since version 1.0 are:
 - Many of the examples have been completely rewritten
 
   * A basic 1D diffusion problem now serves as a general tutorial for 
-    setting up any problem in |FiPy|. 
+    setting up any problem in :term:`FiPy`. 
   * Several more phase field examples have been added that should make it 
     clearer how to get from the simple 1D case to the more elaborate 
     multicomponent, multidimensional, and anisotropic models.
@@ -684,7 +698,7 @@ The significant changes since version 1.0 are:
 
 - A clear distinction has been made between solving an equation via `solve()`
   and iterating an non-linear equation to solution via `sweep()`. An extensive 
-  explanation of the concepts involved has been added to |the FAQ|.
+  explanation of the concepts involved has been added to the :ref:`FAQ`.
 
 - Added a `MultiViewer` class that automatically groups several viewers 
   together if the variables couldn't be displayed by a single viewer.
@@ -695,16 +709,20 @@ The significant changes since version 1.0 are:
 
 - The repository has been converted from a CVS to a Subversion_
   repository. Details on how to check out the new repository are given
-  in the |INSTALLATION-txt|.
+  in :ref:`INSTALLATION`.
 
-- The |FiPy| repository has also been moved from Sourceforge_ to the
+- The :term:`FiPy` repository has also been moved from Sourceforge_ to the
   `Materials Digital Library Pathway`_.
+
+..  _Subversion: https://subversion.apache.org/
+..  _Sourceforge: https://sourceforge.net/
+..  _Materials Digital Library Pathway: https://www.kent.edu/cmi/materials-digital-library-pathway-matdl
 
 ------------------------
 Version 1.0 - 2005-09-16
 ------------------------
 
-Numerous changes have been made since |FiPy| 0.1 was released, but the most 
+Numerous changes have been made since :term:`FiPy` 0.1 was released, but the most
 signficant ones are:
 
 - ``Equation`` objects no longer exist. PDEs are constructed from ``Term`` 
@@ -730,7 +748,7 @@ signficant ones are:
 
 - A number of `NoiseVariable` objects have been added.
 
-- A new viewer based on `matplotlib`_ has been added.
+- A new viewer based on :term:`Matplotlib` has been added.
 
 - The `PyX` viewer has been removed.
 
@@ -755,9 +773,9 @@ signficant ones are:
   This system is still experimental. Please tell us if you find situations
   that don't work.
 
-The syntax of |FiPy| 1.0 scripts is incompatible with earlier releases.  A 
+The syntax of :term:`FiPy` 1.0 scripts is incompatible with earlier releases.  A
 tutorial for updating your existing scripts can be found in 
-|examples/update0_1to1_0.py|.
+:file:`examples/updating/update0_1to1_0.py`.
 
 Fixes
 -----

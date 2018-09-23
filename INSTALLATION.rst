@@ -481,6 +481,8 @@ See the `Miscellaneous Build Recipes`_ for up-to-date directions.
 .. _MacPorts: http://www.macports.org/
 .. _Homebrew: http://mxcl.github.com/homebrew/
 
+..  _WINDOWS-INSTALLATION:
+
 Windows Installation
 ====================
 
