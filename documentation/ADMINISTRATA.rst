@@ -146,9 +146,18 @@ Make sure ``develop`` is ready for release::
 
    $ git checkout develop
 
-Check items in the issues_ and update the :file:`README.txt`::
+Check items in the issues_ and update the :file:`CHANGELOG.txt`::
 
-   $ git commit README.txt -m "REL: update new features for release"
+   $ git commit CHANGELOG.txt -m "REL: update new features for release"
+
+.. note::
+
+   You can use::
+
+      $ python setup.py changelog --after=<version-x_y>
+
+   to obtain a ReST-formatted list of pull requests and issues closed
+   since the last release.
 
 .. attention::
 
