@@ -184,10 +184,6 @@ class changelog(Command):
                                       milestone=milestone)
         collaborators = [collaborator.login for collaborator in self.repo.get_collaborators()]
 
-        with open("issues.pkl", 'wb') as pkl:
-            import pickle
-            pickle.dump(issues, pkl)
-
         issues = [{
               'number': issue.number,
               'state': issue.state,
