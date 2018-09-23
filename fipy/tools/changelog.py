@@ -74,7 +74,13 @@ class changelog(Command):
         ('after=', None,
          "Only issues closed at or after this tag are returned."),
         ('before=', None,
-         "Only issues closed at or before this tag are returned.")
+         "Only issues closed at or before this tag are returned."),
+        ('milestone=', None,
+         "A string referring to a milestone by its title field. "
+         "If the string `*` is passed, issues with any milestone are accepted. "
+         "If the string `none` is passed, "
+         "issues without milestones are returned. "
+         "(default: `*`)")
      ]
 
     def initialize_options(self):
@@ -87,6 +93,7 @@ class changelog(Command):
         self.state = "closed"
         self.after = None
         self.before = None
+        self.milestone = "*"
 
     def finalize_options(self):
         if self.username is not None:
@@ -113,22 +120,39 @@ class changelog(Command):
             # we have to strip out unicode or we get errors
             print(issue.ReST.encode("ascii", errors="replace"))
 
+    def _getMilestone(self, milestone):
+        """Return Milestone with title of `milestone`
+
+        If `milestone` is "*" or "none", returns unchanged
+        """
+        if milestone not in ("*", "none"):
+            milestones = self.repo.get_milestones()
+            milestones = [ms if ms.title = self.milestone for ms in milestones]
+            try:
+                milestone = milestones[0]
+            except IndexError:
+                raise KeyError("Milestone `{}` not found".format(self.milestone))
+
+        return milestone
+
     def run(self):
         """Requests issues from GitHub API and prints as ReST to stdout
         """
         import github
         import pandas as pd
         
-        g = github.Github(*self.auth)
-        repo = g.get_repo(self.repository)
+        self.gh = github.Github(*self.auth)
+        self.repo = self.gh.get_repo(self.repository)
 
         if self.after is not None:
             since = pd.to_datetime(self.after).to_pydatetime()
         else:
             since = github.GithubObject.NotSet
 
-        issues = repo.get_issues(state=self.state, since=since)
-        collaborators = [collaborator.login for collaborator in repo.get_collaborators()]
+        issues = self.repo.get_issues(state=self.state,
+                                      since=since,
+                                      milestone=self._getMilestone(self.milestone))
+        collaborators = [collaborator.login for collaborator in self.repo.get_collaborators()]
 
         with open("issues.pkl", 'wb') as pkl:
             import pickle
