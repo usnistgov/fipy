@@ -79,8 +79,7 @@ class changelog(Command):
          "A string referring to a milestone by its title field. "
          "If the string `*` is passed, issues with any milestone are accepted. "
          "If the string `none` is passed, "
-         "issues without milestones are returned. "
-         "(default: `*`)")
+         "issues without milestones are returned. ")
      ]
 
     def initialize_options(self):
@@ -93,7 +92,7 @@ class changelog(Command):
         self.state = "closed"
         self.after = None
         self.before = None
-        self.milestone = "*"
+        self.milestone = None
 
     def finalize_options(self):
         if self.username is not None:
@@ -125,7 +124,7 @@ class changelog(Command):
 
         If `milestone` is "*" or "none", returns unchanged
         """
-        if milestone not in ("*", "none"):
+        if milestone not in (None, "*", "none"):
             milestones = self.repo.get_milestones()
             milestones = [ms for ms in milestones if ms.title == self.milestone]
             try:
@@ -149,9 +148,13 @@ class changelog(Command):
         else:
             since = github.GithubObject.NotSet
 
+        milestone = self._getMilestone(self.milestone)
+        if milestone is None:
+            milestone = github.GithubObject.NotSet
+
         issues = self.repo.get_issues(state=self.state,
                                       since=since,
-                                      milestone=self._getMilestone(self.milestone))
+                                      milestone=milestone)
         collaborators = [collaborator.login for collaborator in self.repo.get_collaborators()]
 
         with open("issues.pkl", 'wb') as pkl:
