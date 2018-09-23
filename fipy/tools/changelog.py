@@ -134,6 +134,30 @@ class changelog(Command):
 
         return milestone
 
+    def _getDateFromTagOrSHA(self, tagOrSHA):
+        """Return date of tag or commit
+
+        If tagOrSHA is None, return intact to allow all dates.
+        If tagOrSHA corresponds to a tag.name, return date of its commit.
+        If tagOrSHA corresponds to a commit SHA, return date of its commit.
+        Else assume it's a date string.
+        """
+        if tagOrSHA is None:
+            date = tagOrSHA
+        else:
+            tags = self.repo.get_tags()
+            tags = [tag for tag in tags if tag.name == tagOrSHA]
+            try:
+                date = tags[0].commit.commit.author.date
+            except IndexError:
+                try:
+                    commit = self.repo.get_commit(tagOrSHA)
+                    date = commit.commit.author.date
+                except:
+                    date = tagOrSHA
+
+        return date
+
     def run(self):
         """Requests issues from GitHub API and prints as ReST to stdout
         """
@@ -142,6 +166,9 @@ class changelog(Command):
         
         self.gh = github.Github(*self.auth)
         self.repo = self.gh.get_repo(self.repository)
+
+        self.after = self._getDateFromTagOrSHA(self.after)
+        self.before = self._getDateFromTagOrSHA(self.before)
 
         if self.after is not None:
             since = pd.to_datetime(self.after).to_pydatetime()
