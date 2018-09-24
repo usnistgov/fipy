@@ -4,7 +4,6 @@
 Change Log
 ==========
 
-
 ------------
 Next Release
 ------------
@@ -129,11 +128,9 @@ Pulls
 - Robust Gmsh version checking with distutils.version.StrictVersion (`#442 <https://github.com/usnistgov/fipy/pull/442>`_).
 - compare gmsh versions as tuples, not floats (`#441 <https://github.com/usnistgov/fipy/pull/441>`_).
 - Corrected two tests (`#439 <https://github.com/usnistgov/fipy/pull/439>`_). Thanks to `@alfrenardi <https://github.com/alfrenardi>`_.
-- Issue426 fix robin example typo (`#431 <https://github.com/usnistgov/fipy/pull/431>`_). Thanks to `@raybsmith <https://github.com/raybsmith>`_.
-- Issue426 fix robin example analytical solution (`#429 <https://github.com/usnistgov/fipy/pull/429>`_). Thanks to `@raybsmith <https://github.com/raybsmith>`_.
+- Fix robin example typo (`#431 <https://github.com/usnistgov/fipy/pull/431>`_). Thanks to `@raybsmith <https://github.com/raybsmith>`_.
 - Force MatplotlibViewer to display (`#428 <https://github.com/usnistgov/fipy/pull/428>`_).
 - Allow for 2 periodic axes in 3d (`#424 <https://github.com/usnistgov/fipy/pull/424>`_).
-- Fix ticket:413 by adding section to mesh1D example (`#423 <https://github.com/usnistgov/fipy/pull/423>`_). Thanks to `@raybsmith <https://github.com/raybsmith>`_.
 - Bug with Matplotliv 1.4.0 is fixed (`#419 <https://github.com/usnistgov/fipy/pull/419>`_).
 
 Fixes
@@ -154,7 +151,7 @@ Fixes
 - `#416 <https://github.com/usnistgov/fipy/issues/416>`_: Updates to reflect move to Github
 - `#415 <https://github.com/usnistgov/fipy/issues/415>`_: MatplotlibGrid2DViewer error with Matplotlib version 1.4.0
 - `#414 <https://github.com/usnistgov/fipy/issues/414>`_: PeriodicGrid3D supports Only 1 axes of periodicity or all 3, not 2
-- `#413 <https://github.com/usnistgov/fipy/issues/413>`_: Remind users of different types of conservation equations
+- `#413 <https://github.com/usnistgov/fipy/issues/413>`_: Remind users of different types of conservation equations. Thanks to `@raybsmith <https://github.com/raybsmith>`_.
 - `#412 <https://github.com/usnistgov/fipy/issues/412>`_: Pickling Communicators is unnecessary for Grids
 - `#408 <https://github.com/usnistgov/fipy/issues/408>`_: Implement PeriodicGrid3D
 - `#407 <https://github.com/usnistgov/fipy/issues/407>`_: Strange deprecation loop in reshape()
@@ -498,6 +495,11 @@ Fixes
 Version 2.0.1 - 2009-04-23
 --------------------------
 
+Fixes
+-----
+
+- `#154 <https://github.com/usnistgov/fipy/issues/154>`_: Update manuals
+
 ------------------------
 Version 2.0 - 2009-02-09
 ------------------------
@@ -529,13 +531,9 @@ The significant changes since version 1.2 are:
 
 .. _Trilinos solvers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
 
-Fixes
------
-
 - `#167 <https://github.com/usnistgov/fipy/issues/167>`_: example showing how to go from 1.2 to 2.0
 - `#166 <https://github.com/usnistgov/fipy/issues/166>`_: Still references to VectorCell and VectorFace Variable in manual
 - `#165 <https://github.com/usnistgov/fipy/issues/165>`_: Edit the what's new section of the manual
-- `#154 <https://github.com/usnistgov/fipy/issues/154>`_: Update manuals
 - `#149 <https://github.com/usnistgov/fipy/issues/149>`_: Test viewers
 - `#143 <https://github.com/usnistgov/fipy/issues/143>`_: Document syntax changes
 - `#141 <https://github.com/usnistgov/fipy/issues/141>`_: enthought toolset?
