@@ -146,7 +146,7 @@ Make sure ``develop`` is ready for release::
 
    $ git checkout develop
 
-Check items in the issues_ and update the CHANGELOG_::
+Check items in the issues_ and update the :ref:`CHANGELOG`::
 
    $ git commit CHANGELOG.txt -m "REL: update new features for release"
 
