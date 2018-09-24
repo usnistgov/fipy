@@ -146,7 +146,7 @@ Make sure ``develop`` is ready for release::
 
    $ git checkout develop
 
-Check items in the issues_ and update the :file:`CHANGELOG.txt`::
+Check items in the issues_ and update the CHANGELOG_::
 
    $ git commit CHANGELOG.txt -m "REL: update new features for release"
 
@@ -161,9 +161,17 @@ Check items in the issues_ and update the :file:`CHANGELOG.txt`::
       $ python setup.py changelog --milestone=<version-x_z>
 
    to obtain a ReST-formatted list of GitHub_ `pull requests`_ and issues_
-   closed since the last release.  Particularly for major and feature
-   releases, be sure to curate the output so that it's clear what's a big
-   deal about this release.
+   closed since the last release.
+
+   Particularly for major and feature releases, be sure to curate the
+   output so that it's clear what's a big deal about this release.  Some
+   `pull requests`_ will be redundant to issues_, e.g., "``Issue123 blah
+   blah``".  If the pull request fixes a bug, preference is given to the
+   corresponding issue under **Fixes**.  Alternatively, if the pull request
+   adds a new feature, preference is given to the item under **Pulls** and
+   corresponding issue should be removed from **Fixes**.  If appropriate,
+   be sure to move the "Thanks to @mention" to the appropriate issue to
+   recognize outside contributors.
 
    ..  attention:: Requires PyGithub_ and Pandas_.
 
