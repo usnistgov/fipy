@@ -48,6 +48,7 @@ Adapted from: https://gist.github.com/patrickfuller/e2ea8a94badc5b6967ef3ca0a945
 """
 
 import os
+import textwrap
 from distutils.core import Command
 
 __all__ = ["changelog"]
@@ -158,6 +159,31 @@ class changelog(Command):
 
         return date
 
+    @static
+    def format_pull(x):
+        prefix = "- "
+        hang = " " * len(prefix)
+        s = [textwrap.fill(x.title,
+                           initial_indent=prefix,
+                           subsequent_indent=hang)]
+        s += [u"{}(`#{} <{}>`_)".format(hang,
+                                        x.number,
+                                        x.html_url)]
+        if x.thx:
+            s += [hang + x.thx]
+        return "\n".join(s)
+
+    @static
+    def format_issue(x):
+        prefix = "- "
+        hang = " " * len(prefix)
+        s = [prefix + u"`#{} <{}>`_:".format(x.number,
+                                             x.html_url)]
+        s += [textwrap.fill(x.title,
+                            initial_indent=hang,
+                            subsequent_indent=hang)]
+        return "\n".join(s)
+
     def run(self):
         """Requests issues from GitHub API and prints as ReST to stdout
         """
@@ -223,22 +249,16 @@ class changelog(Command):
         ispull = issues['pull_request'].notna()
         isissue = ~ispull
 
-        fmt = lambda x: (u" Thanks to `@{} <{}>`_.".format(x.user.login,
-                                                           x.user.html_url)
+        issues['thx'] = ""
+        fmt = lambda x: (u"Thanks to `@{} <{}>`_.".format(x.user.login,
+                                                          x.user.html_url)
                          if x.user.login not in collaborators
                          else "")
         issues.loc[ispull, 'thx'] = issues.apply(fmt, axis=1)
 
-        fmt = lambda x: u"- {} (`#{} <{}>`_).{}".format(x.title,
-                                                        x.number,
-                                                        x.html_url,
-                                                        x.thx)
-        issues.loc[ispull, 'ReST'] = issues.apply(fmt, axis=1)
+        issues.loc[ispull, 'ReST'] = issues.apply(self.format_pull, axis=1)
 
-        fmt = lambda x: u"- `#{} <{}>`_: {}".format(x.number,
-                                                    x.html_url,
-                                                    x.title)
-        issues.loc[isissue, 'ReST'] = issues.apply(fmt, axis=1)
+        issues.loc[isissue, 'ReST'] = issues.apply(format_issue, axis=1)
 
         self._printReST(issues[ispull], "Pulls")
         self._printReST(issues[isissue], "Fixes")
