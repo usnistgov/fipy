@@ -159,8 +159,7 @@ class changelog(Command):
 
         return date
 
-    @static
-    def format_pull(x):
+    def format_pull(self, x):
         prefix = "- "
         hang = " " * len(prefix)
         s = [textwrap.fill(x.title,
@@ -169,12 +168,14 @@ class changelog(Command):
         s += [u"{}(`#{} <{}>`_)".format(hang,
                                         x.number,
                                         x.html_url)]
-        if x.thx:
-            s += [hang + x.thx]
+        s += ([u"{}Thanks to `@{} <{}>`_.".format(hang,
+                                                  x.user.login,
+                                                  x.user.html_url)]
+               if x.user.login not in self.collaborators
+               else [])
         return "\n".join(s)
 
-    @static
-    def format_issue(x):
+    def format_issue(self, x):
         prefix = "- "
         hang = " " * len(prefix)
         s = [prefix + u"`#{} <{}>`_:".format(x.number,
@@ -248,13 +249,6 @@ class changelog(Command):
 
         ispull = issues['pull_request'].notna()
         isissue = ~ispull
-
-        issues['thx'] = ""
-        fmt = lambda x: (u"Thanks to `@{} <{}>`_.".format(x.user.login,
-                                                          x.user.html_url)
-                         if x.user.login not in collaborators
-                         else "")
-        issues.loc[ispull, 'thx'] = issues.apply(fmt, axis=1)
 
         issues.loc[ispull, 'ReST'] = issues.apply(self.format_pull, axis=1)
 
