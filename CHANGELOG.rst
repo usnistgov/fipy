@@ -476,8 +476,8 @@ The significant changes since version 2.1 are:
 - The test suite now runs much faster.
 - Tests can now be run on a full install using `fipy.test()`.
 - The functions of the :mod:`~fipy.tools.numerix` module are no longer 
-  included in the :mod:`fipy` namespace. See :mod:`examples.updating.update2_0to3_0` 
-  for details.
+  included in the :mod:`fipy` namespace.  See
+  :mod:`examples.updating.update2_0to3_0` for details.
 - Equations containing a :class:`~fipy.terms.transientTerm.TransientTerm`,
   must specify the timestep by passing a ``dt=`` argument when calling
   :meth:`~fipy.terms.term.Term.solve` or :meth:`~fipy.terms.term.Term.sweep`.
@@ -725,8 +725,9 @@ Version 2.1 - 2010-04-01
 ------------------------
 
 The relatively small change in version number belies significant advances
-in :term:`FiPy` capabilities. This release did not receive a "full" version
-increment because it is completely (er... [#almost]_) compatible with older scripts.
+in :term:`FiPy` capabilities.  This release did not receive a "full"
+version increment because it is completely (er...  [#almost]_) compatible
+with older scripts.
 
 The significant changes since version 2.0.2 are:
 
@@ -736,8 +737,8 @@ The significant changes since version 2.0.2 are:
   :class:`~fipy.viewers.viewer.Viewer` is an independent process that 
   allows interaction with the display while a simulation is running.
 
-- Documentation has been switched to :term:`Sphinx`, allowing the entire manual to 
-  be available on the web and for our documentation to link to the
+- Documentation has been switched to :term:`Sphinx`, allowing the entire manual
+  to be available on the web and for our documentation to link to the
   documentation for packages such as :mod:`numpy`, :mod:`scipy`,
   :mod:`matplotlib`, and for :term:`Python` itself.
 
@@ -762,7 +763,8 @@ Fixes
 - `#153 <https://github.com/usnistgov/fipy/issues/153>`_:
   Switch documentation to use `:math:` directive
 
-.. [#almost] Only two examples from :term:`FiPy` 2.0 fail when run with :term:`FiPy` 2.1:
+.. [#almost] Only two examples from :term:`FiPy` 2.0 fail when run with
+   :term:`FiPy` 2.1:
 
     * :file:`examples/phase/symmetry.py` fails because
       :class:`~fipy.meshes.mesh.Mesh` no longer provides a
@@ -837,16 +839,17 @@ Version 2.0 - 2009-02-09
 
 The significant changes since version 1.2 are:
 
-- :class:`~fipy.variables.cellVariable.CellVariable` and :class:`~fipy.variables.faceVariable.FaceVariable` objects can hold values of any 
-  rank.
+- :class:`~fipy.variables.cellVariable.CellVariable` and
+  :class:`~fipy.variables.faceVariable.FaceVariable` objects can hold
+  values of any rank.
 
 - Much simpler syntax for specifying
   ``Cell``\s for initial conditions and
   ``Face``\s for boundary conditions.
 
 - Automated determination of the Peclet number and partitioning of 
-  :class:`~fipy.terms.implicitSourceTerm.ImplicitSourceTerm` coefficients between the matrix diagonal and the
-  right-hand-side-vector.
+  :class:`~fipy.terms.implicitSourceTerm.ImplicitSourceTerm` coefficients
+  between the matrix diagonal and the right-hand-side-vector.
 
 - Simplified :class:`~fipy.viewers.viewer.Viewer` syntax.
 
@@ -1030,8 +1033,8 @@ The significant changes since version 1.1 are:
 
 - ``--inline`` automatically generates C code from ``Variable`` expressions.
 
-- :term:`FiPy` has been updated to use the :term:`Python` :term:`NumPy` module. :term:`FiPy` no
-  longer works with the older :term:`Numeric` module.
+- :term:`FiPy` has been updated to use the :term:`Python` :term:`NumPy` module.
+  :term:`FiPy` no longer works with the older :term:`Numeric` module.
 
 Fixes
 -----
@@ -1190,8 +1193,8 @@ signficant ones are:
   This system is still experimental. Please tell us if you find situations
   that don't work.
 
-The syntax of :term:`FiPy` 1.0 scripts is incompatible with earlier releases.  A
-tutorial for updating your existing scripts can be found in 
+The syntax of :term:`FiPy` 1.0 scripts is incompatible with earlier
+releases.  A tutorial for updating your existing scripts can be found in
 :file:`examples/updating/update0_1to1_0.py`.
 
 Fixes
