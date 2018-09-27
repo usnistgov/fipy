@@ -209,7 +209,7 @@ class changelog(Command):
         issues = self.repo.get_issues(state=self.state,
                                       since=since,
                                       milestone=milestone)
-        collaborators = [collaborator.login for collaborator in self.repo.get_collaborators()]
+        self.collaborators = [c.login for c in self.repo.get_collaborators()]
 
         issues = [{
               'number': issue.number,
@@ -252,7 +252,7 @@ class changelog(Command):
 
         issues.loc[ispull, 'ReST'] = issues.apply(self.format_pull, axis=1)
 
-        issues.loc[isissue, 'ReST'] = issues.apply(format_issue, axis=1)
+        issues.loc[isissue, 'ReST'] = issues.apply(self.format_issue, axis=1)
 
         self._printReST(issues[ispull], "Pulls")
         self._printReST(issues[isissue], "Fixes")
