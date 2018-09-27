@@ -1,3 +1,6 @@
+.. Generate incremental updates to this file with
+   $ python setup.py changelog <OPTIONS>
+
 .. _CHANGELOG:
 
 ==========
