@@ -73,9 +73,9 @@ class changelog(Command):
          "Indicates the state of the issues to return. "
          "Can be either `open`, `closed`, or `all`. (default: `closed`)"),
         ('after=', None,
-         "Only issues closed at or after this tag are returned."),
+         "Only issues closed at or after this tag, SHA, or date are returned."),
         ('before=', None,
-         "Only issues closed at or before this tag are returned."),
+         "Only issues closed at or before this tag, SHA, or date are returned."),
         ('milestone=', None,
          "A string referring to a milestone by its title field. "
          "If the string `*` is passed, issues with any milestone are accepted. "
