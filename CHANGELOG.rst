@@ -1007,7 +1007,7 @@ Fixes
 - `#93 <https://github.com/usnistgov/fipy/issues/93>`_:
   Broken examples
 - `#91 <https://github.com/usnistgov/fipy/issues/91>`_:
-  update the examples to use "from fipy import *"
+  update the examples to use `from fipy import *`
 - `#76 <https://github.com/usnistgov/fipy/issues/76>`_:
   solve() and sweep() accept dt=CellVariable
 - `#75 <https://github.com/usnistgov/fipy/issues/75>`_:
