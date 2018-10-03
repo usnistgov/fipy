@@ -852,8 +852,4 @@ command in the base directory::
 
    $ pip install sphinxcontrib-bibtex
 
-   Generating the chnage log requires the `sphinx-git` package::
-
-   $ pip install sphinx-git
-
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
