@@ -19,6 +19,7 @@ FiPy Contents
    ../DISCLAIMER
    manual
    references
+   ../CHANGELOG
 
 .. toctree::
    :hidden:

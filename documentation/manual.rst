@@ -8,3 +8,4 @@ FiPy Manual
    ../examples/README
    API
    references
+   ../CHANGELOG
