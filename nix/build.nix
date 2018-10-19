@@ -1,7 +1,7 @@
 { nixpkgs, pypkgs, pysparse, preshellhook }:
 let
   gmsh = import ./gmsh.nix { inherit nixpkgs; };
-  skfmm = import ./skfmm.nix { inherit pypkgs; };
+  skfmm = import ./skfmm.nix { inherit nixpkgs pypkgs; };
 in
   pypkgs.buildPythonPackage rec {
      pname = "fipy";

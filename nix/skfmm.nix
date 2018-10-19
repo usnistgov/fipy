@@ -1,4 +1,4 @@
-{ pypkgs }:
+{ nixpkgs, pypkgs }:
 pypkgs.buildPythonPackage rec {
   version = "0.0.9";
   pname = "scikit-fmm";
