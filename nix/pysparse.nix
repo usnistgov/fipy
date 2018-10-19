@@ -9,6 +9,8 @@ pypkgs.buildPythonPackage rec {
   doCheck = false;
   buildInputs = [
     pypkgs.numpy
+    nixpkgs.pkgs.blas
+    nixpkgs.pkgs.liblapackWithoutAtlas
   ];
   hardeningDisable = [ "all" ];
 }

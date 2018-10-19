@@ -1,5 +1,8 @@
-{ nixpkgs }:
-let version = "3.0.6"; in
+{ nixpkgs ? import ./nixpkgs_version.nix }:
+let
+  version = "3.0.6";
+  lapack = nixpkgs.pkgs.liblapackWithoutAtlas.override { shared = true; };
+in
 nixpkgs.stdenv.mkDerivation {
   name = "gmsh-${version}";
 
@@ -10,12 +13,13 @@ nixpkgs.stdenv.mkDerivation {
 
   # The original CMakeLists tries to use some version of the Lapack lib
   # that is supposed to work without Fortran but didn't for me.
-  patches = [ ./CMakeLists.txt.patch ];
+  #patches = [ ./CMakeLists.txt.patch ];
 
   buildInputs = [
+    nixpkgs.pkgs.gcc
     nixpkgs.pkgs.cmake
     nixpkgs.pkgs.blas
-    nixpkgs.pkgs.liblapack
+    lapack
     nixpkgs.pkgs.gfortran
     nixpkgs.pkgs.gmm
     nixpkgs.pkgs.fltk
@@ -34,6 +38,15 @@ nixpkgs.stdenv.mkDerivation {
     nixpkgs.pkgs.xorg.libICE
     nixpkgs.gfortran.cc.lib
   ];
+
+  preBuild = ''
+  echo NIX_CFLAGS_COMPILE=$NIX_CFLAGS_COMPILE
+  echo NIX_LDFLAGS_COMPILE=$NIX_LDFLAGS
+  '';
+#  NIX_CFLAGS_COMPILE = "-Ofoo";
+  NIX_CFLAGS_COMPILE = "-Wno-error=format-security -fPIC";
+#  makeFlags = ["CFLAGS=-Wno-error=format-security"];
+#  makeFlags = [ "CFLAGS=-Wblah" ];
 
   enableParallelBuilding = true;
 
