@@ -17,7 +17,6 @@ in
        pysparse
        pypkgs.matplotlib
        pypkgs.tkinter
-       pypkgs.jupyter
      ];
      src=./..;
      doCheck=false;

@@ -8,12 +8,12 @@ nixpkgs.stdenv.mkDerivation {
 
   src = nixpkgs.fetchurl {
     url = "http://gmsh.info/src/gmsh-${version}-source.tgz";
-    sha256 = "0ywqhr0zmdhn8dvi6l8z1vkfycyv67fdrz6b95mb39np832bq04p";
+    sha256 = "9700bcc440d7a6b16a49cbfcdcdc31db33efe60e1f5113774316b6fa4186987b";
   };
 
   # The original CMakeLists tries to use some version of the Lapack lib
   # that is supposed to work without Fortran but didn't for me.
-  #patches = [ ./CMakeLists.txt.patch ];
+  patches = [ ./CMakeLists.txt.patch ];
 
   buildInputs = [
     nixpkgs.pkgs.gcc
@@ -39,14 +39,14 @@ nixpkgs.stdenv.mkDerivation {
     nixpkgs.gfortran.cc.lib
   ];
 
-  preBuild = ''
-  echo NIX_CFLAGS_COMPILE=$NIX_CFLAGS_COMPILE
-  echo NIX_LDFLAGS_COMPILE=$NIX_LDFLAGS
-  '';
-#  NIX_CFLAGS_COMPILE = "-Ofoo";
-  NIX_CFLAGS_COMPILE = "-Wno-error=format-security -fPIC";
-#  makeFlags = ["CFLAGS=-Wno-error=format-security"];
-#  makeFlags = [ "CFLAGS=-Wblah" ];
+  cmakeFlags = [ "-DENABLE_OS_SPECIFIC_INSTALL=0" ];
+
+  NIX_CFLAGS_COMPILE = (
+    if nixpkgs.system == "x86_64-darwin" then
+      [ "-Wno-error=format-security" ]
+    else
+      [ ]
+  );
 
   enableParallelBuilding = true;
 
