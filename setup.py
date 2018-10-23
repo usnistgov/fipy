@@ -50,6 +50,7 @@ import os
 from distutils.core import Command
 from fipy.tools.performance.efficiency_test import Efficiency_test
 from fipy.tools.copy_script import Copy_script
+from fipy.tools.changelog import changelog
 from fipy.tests.testClass import _TestClass
 
 # bootstrap setuptools for users that don't already have it
@@ -95,8 +96,8 @@ class build_docs(Command):
         pass
 
     def run (self):
-        import sphinx
-        from sphinx import apidoc
+        import sphinx.cmd.build
+        import sphinx.ext.apidoc
         
         sphinx_args = ['-P', '-n', '-c', 'documentation/', '.']
         apidoc_args = []
@@ -105,17 +106,17 @@ class build_docs(Command):
             sphinx_args = ['-a', '-E'] + sphinx_args
             apidoc_args = ['--force'] + apidoc_args
             
-        apidoc.main(['sphinx-apidoc', '--output-dir=fipy/generated', '--suffix=rst'] 
+        sphinx.ext.apidoc.main(['--output-dir=fipy/generated', '--suffix=rst']
                     + apidoc_args + ['fipy'])
-        apidoc.main(['sphinx-apidoc', '--output-dir=documentation/tutorial/package/generated', '--suffix=rst'] 
+        sphinx.ext.apidoc.main(['--output-dir=documentation/tutorial/package/generated', '--suffix=rst']
                     + apidoc_args + ['documentation/tutorial/package'])
 
         if self.html:
-            sphinx.main(['sphinx-build', '-b', 'redirecting_html'] + sphinx_args + ['documentation/_build/html/'])
+            sphinx.cmd.build.main(['-b', 'redirecting_html'] + sphinx_args + ['documentation/_build/html/'])
 
         if self.pdf:
             try:
-                sphinx.main(['sphinx-build', '-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
+                sphinx.cmd.build.main(['-b', 'latex'] + sphinx_args + ['documentation/_build/latex/'])
             except SystemExit:
                 pass
             
@@ -291,7 +292,8 @@ dist = setup(	name = "FiPy",
             'test':test,
             'unittest':unittest,
             'copy_script': Copy_script,
-            'efficiency_test': Efficiency_test
+            'efficiency_test': Efficiency_test,
+            'changelog': changelog
         },
         test_suite="fipy.testFiPy._suite",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),

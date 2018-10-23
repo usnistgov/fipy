@@ -54,7 +54,7 @@
    :mod:`numpy` in your own code. The documentation for :mod:`numpy` remains
    canonical for all functions and classes not explicitly documented here.
 
-The functions provided in ths module replace and augment the `NumPy` module.
+The functions provided in this module replace and augment the `NumPy` module.
 The functions work with `Variables`, arrays or numbers. For example,
 create a `Variable`.
 
@@ -148,7 +148,7 @@ def put(arr, ids, values):
     The opposite of `take`.  The values of `arr` at the locations
     specified by `ids` are set to the corresponding value of `values`.
 
-    The following is to test improvments to puts with masked arrays.
+    The following is to test improvements to puts with masked arrays.
     Places in the code were assuming incorrect put behavior.
 
        >>> maskValue = 999999
@@ -195,7 +195,7 @@ def put(arr, ids, values):
 def reshape(arr, shape):
     """
     Change the shape of `arr` to `shape`, as long as the product of all the
-    lenghts of all the axes is constant (the total number of elements does not
+    lengths of all the axes is constant (the total number of elements does not
     change).
     """
     if -1 in shape:
@@ -306,7 +306,7 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
     which each subset of the field is output.  The orientation of the dimensions
     is as follows: the last (rightmost) dimension is always horizontal, so that
     the frequent rank-1 fields use a minimum of screen real-estate.  The
-    next-to-last dimesnion is displayed vertically if present and any earlier
+    next-to-last dimension is displayed vertically if present and any earlier
     dimension is displayed with additional bracket divisions.
 
     :Parameters:
@@ -522,7 +522,7 @@ def nearest(data, points, max_mem=1e8):
 
     # given (D, N) data and (D, M) points,
     # break points into (D, C) chunks of points
-    # calculatate the full factorial (D, N, C) distances between them
+    # calculate the full factorial (D, N, C) distances between them
     # and then reduce to the indices of the C closest values of data
     # then assemble chunks C into total M closest indices
 
@@ -620,7 +620,7 @@ def all(a, axis=None, out=None):
 
 def isclose(first, second, rtol=1.e-5, atol=1.e-8):
     r"""
-    Returns which elements of `first` and `second` are equal, subect to the given
+    Returns which elements of `first` and `second` are equal, subject to the given
     relative and absolute tolerances, such that::
 
         |first - second| < atol + rtol * |second|
@@ -816,18 +816,18 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
         comments - the character used to indicate the start of a comment
         in the file
 
-        delimiter is a string-like character used to seperate values in the
+        delimiter is a string-like character used to separate values in the
         file. If delimiter is unspecified or none, any whitespace string is
         a separator.
 
         converters, if not None, is a dictionary mapping column number to
-        a function that will convert that column to a float.  Eg, if
+        a function that will convert that column to a float.  E.g., if
         column 0 is a date string: converters={0:datestr2num}
 
         skiprows is the number of rows from the top to skip
 
         usecols, if not None, is a sequence of integer column indexes to
-        extract where 0 is the first column, eg usecols=(1,4,5) to extract
+        extract where 0 is the first column, e.g. usecols=(1,4,5) to extract
         just the 2nd, 5th and 6th columns
 
         unpack, if True, will transpose the matrix allowing you to unpack
@@ -901,7 +901,7 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
         save('test2.out', x)        # x is 1D
         save('test3.out', x, fmt='%1.4e')  # use exponential notation
 
-        delimiter is used to separate the fields, eg delimiter ',' for
+        delimiter is used to separate the fields, e.g. delimiter ',' for
         comma-separated values
         """
 
@@ -1033,9 +1033,10 @@ def _indexShape(index, arrayShape):
     ..
 
         >>> ind = zeros((2,3,5), float)
-        >>> _indexShape(index=NUMERIX.index_exp[...,ind],
-        ...             arrayShape=(10,20,30,40,50))
-        (10, 20, 30, 40, 2, 3, 5)
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[...,ind],
+        ...                      arrayShape=(10,20,30,40,50)),
+        ...          (10, 20, 30, 40, 2, 3, 5))
+        True
 
     "Exactly one Ellipsis object will be expanded, any other Ellipsis objects
     will be treated as full slice (':') objects. The Ellipsis object is replaced
@@ -1070,26 +1071,28 @@ def _indexShape(index, arrayShape):
     basic slicing)."
 
         >>> ind = zeros((2,3,4), intp)
-        >>> _indexShape(index=NUMERIX.index_exp[...,ind,:],
-        ...             arrayShape=(10,20,30))
-        (10, 2, 3, 4, 30)
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[...,ind,:],
+        ...                      arrayShape=(10,20,30)),
+        ...          (10, 2, 3, 4, 30))
+        True
 
     "If the index subspaces are right next to each other, then the broadcasted
     indexing space directly replaces all of the indexed subspaces in X."
 
         >>> ind1 = zeros((2,3,4), intp)
         >>> ind2 = zeros((2,3,4), intp)
-        >>> _indexShape(index=NUMERIX.index_exp[:,ind1,ind2],
-        ...             arrayShape=(10,20,30,40,50))
-        (10, 2, 3, 4, 40, 50)
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[:,ind1,ind2],
+        ...                      arrayShape=(10,20,30,40,50)),
+        ...          (10, 2, 3, 4, 40, 50))
+        True
 
     "If the indexing subspaces are separated (by slice objects), then the
     broadcasted indexing space is first, followed by the sliced subspace of X."
 
-        >>> _indexShape(index=NUMERIX.index_exp[:,ind1,:,ind2,:],
-        ...             arrayShape=(10,20,30,40,50))
-        (2, 3, 4, 10, 30, 50)
-
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[:,ind1,:,ind2,:],
+        ...                      arrayShape=(10,20,30,40,50)),
+        ...          (2, 3, 4, 10, 30, 50))
+        True
 
     !!! What about Boolean selections ???
     """
@@ -1119,7 +1122,7 @@ def _indexShape(index, arrayShape):
             expanded += (element,)
 
     if len(expanded) > desiredRank:
-        # "If the lenth of the selection tuple is larger than N (=X.ndim) an error
+        # "If the length of the selection tuple is larger than N (=X.ndim) an error
         # is raised."
         if len(arrayShape) == 0:
             raise IndexError, "0-d arrays can't be indexed"
@@ -1185,7 +1188,7 @@ def _broadcastShapes(shape1, shape2):
     necessary, and return their (padded) shapes and the broadcast shape. If the
     shapes cannot broadcast, return a broadcastshape of `None`.
 
-    Broadcasting zero lenght arrays must also be accounted for.
+    Broadcasting zero length arrays must also be accounted for.
 
     >>> _broadcastShapes((1,), (0,))[2]
     (0,)

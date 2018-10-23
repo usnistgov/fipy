@@ -84,7 +84,7 @@ class MayaviClient(AbstractViewer):
             viewers will use `datamin` and `datamax`. Any limit set to a
             (default) value of `None` will autoscale.
           daemon_file
-            the path to the script to run the separate MayaVi viewer process.
+            the path to the script to run the separate Mayavi viewer process.
             Defaults to "fipy/viewers/mayaviViewer/mayaviDaemon.py"
           fps
             frames per second to attempt to display

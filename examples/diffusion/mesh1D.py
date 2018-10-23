@@ -115,7 +115,7 @@ and a set of faces over which they apply.
 For example, here the exterior faces on the left of the domain are extracted by
 ``mesh``.\ :attr:`~fipy.meshes.abstractMesh.AbstractMesh.facesLeft`. The boundary
 conditions is applied using
-``phi``\. :meth:`~fipy.variables.variable.Variable.constrain` with tthese faces and
+``phi``\. :meth:`~fipy.variables.variable.Variable.constrain` with these faces and
 a value (``valueLeft``).
 
 >>> phi.constrain(valueRight, mesh.facesRight)
@@ -558,7 +558,7 @@ calculated over and over, using the result of the previous sweep to update
 the coefficients of the equation, without advancing in time. In :term:`FiPy`, this
 is accomplished by creating a solution variable that explicitly retains its
 "old" value by specifying ``hasOld`` when you create it. The variable does
-not move forward in time until it is explicity told to ``updateOld()``. In
+not move forward in time until it is explicitly told to ``updateOld()``. In
 order to compare the effects of different numbers of sweeps, let us create
 a list of variables: ``phi[0]`` will be the variable that is actually being
 solved and ``phi[1]`` through ``phi[4]`` will display the result of taking the
@@ -654,7 +654,7 @@ sweeps.
 ...     phi[sweeps].setValue(phi[0])
 ...     if __name__ == '__main__':
 ...         viewer.plot()
-...         raw_input("Implicit variable diffusity. %d sweep(s). \
+...         raw_input("Implicit variable diffusivity. %d sweep(s). \
 ... Residual = %f. Press <return> to proceed..." % (sweeps, (abs(res))))
 
 As can be seen, sweeping does not dramatically change the result, but the
@@ -685,7 +685,7 @@ can just solve for it directly
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Implicit variable diffusity - steady-state. \
+...     raw_input("Implicit variable diffusivity - steady-state. \
 ... Press <return> to proceed...")
 
 .. image:: mesh1Dvariable.*
@@ -861,7 +861,7 @@ remaining lines, leaving::
      #
      if __name__ == '__main__':
          viewer.plot()
-         raw_input("Implicit variable diffusity - steady-state. \
+         raw_input("Implicit variable diffusivity - steady-state. \
      Press <return> to proceed...")
 
 Your own scripts will tend to look like this, although you can always write

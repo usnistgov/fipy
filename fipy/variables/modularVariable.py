@@ -53,7 +53,7 @@ __all__ = ["ModularVariable"]
 
 class ModularVariable(CellVariable):
     r"""
-    The `ModularVariable` defines a variable that exisits on the circle between
+    The `ModularVariable` defines a variable that exists on the circle between
     :math:`-\pi` and :math:`\pi`
 
     The following examples show how `ModularVariable` works. When

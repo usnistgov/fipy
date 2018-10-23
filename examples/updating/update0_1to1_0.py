@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 ##
  # ###################################################################
@@ -267,7 +268,7 @@ assembly of the equation occurred in the black-box of
 
 One thing that :class:`SteadyConvectionDiffusionScEquation` took care of
 automatically was that a :class:`~fipy.terms.convectionTerm.ConvectionTerm` must know about any
-:class:`~fipy.terms.diffusionTerm.DiffusionTerm` in the equation in order to calculate a Peclet number.
+:class:`~fipy.terms.diffusionTerm.DiffusionTerm` in the equation in order to calculate a Péclet number.
 Now, the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` must be explicitly passed to the :class:`~fipy.terms.convectionTerm.ConvectionTerm`
 in the `diffusionTerm` parameter.
 

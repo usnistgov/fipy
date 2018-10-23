@@ -838,7 +838,7 @@ class UniformGrid2D(UniformGrid):
             ...                        faceCellIDs) # doctest: +PROCESSOR_0
             True
 
-        Following test added to change nx, ny argment to integer when its a float to prevent
+        Following test added to change nx, ny argument to integer when its a float to prevent
         warnings from the solver.
 
             >>> from fipy import *

@@ -101,7 +101,7 @@ class MeshExportError(GmshException):
 def gmshVersion(communicator=parallelComm):
     """Determine the version of Gmsh.
 
-    We can't trust the generated msh file for the correct version number, so
+    We can't trust the generated .msh file for the correct version number, so
     we have to retrieve it from the gmsh binary.
     """
     if communicator.procID == 0:
@@ -114,7 +114,7 @@ def gmshVersion(communicator=parallelComm):
 
             try:
                 out, verStr = p.communicate()
-                verStr = verStr.decode('ascii').strip('\n')
+                verStr = verStr.decode('ascii').strip()
                 break
             except IOError:
                 # some weird conflict with things like PyQT can cause
@@ -892,7 +892,7 @@ class MSHFile(GmshFile):
             # says "Sections can be repeated in the same file",
             # but this seems to only apply to $NodeData, $ElementData,
             # and $ElementNodeData. Even if Gmsh understood it,
-            # it's not worth the bookkeeping to be able to write more thean one.
+            # it's not worth the bookkeeping to be able to write more than one.
             raise ValueError("Only one Mesh can be written to a MSH file")
 
         coords = mesh.vertexCoords
@@ -1447,7 +1447,7 @@ class Gmsh2D(Mesh2D):
     ... // label the three domains
     ...
     ... // attention: if you use any "Physical" labels, you *must* label
-    ... // all elements that correspond to FiPy Cells (Physical Surace in 2D
+    ... // all elements that correspond to FiPy Cells (Physical Surface in 2D
     ... // and Physical Volume in 3D) or Gmsh will not include them and FiPy
     ... // will not be able to include them in the Mesh.
     ...

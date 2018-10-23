@@ -49,7 +49,7 @@ r"""
 This example adds two more components to
 ``examples/elphf/input1DphaseBinary.py``
 one of which is another substitutional species and the other represents
-electrons and diffuses interterstitially.
+electrons and diffuses interstitially.
 
 Parameters from `2004/January/21/elphf0214`
 
@@ -161,7 +161,7 @@ Finally, we create the electrostatic potential field
     >>> permittivity = PF("78.49 eps0") / (Faraday**2 * mesh.scale**2 / (RT * molarVolume))
 
     >>> permittivity = 1.
-    >>> permitivityPrime = 0.
+    >>> permittivityPrime = 0.
 
 The thermodynamic parameters are chosen to give a solid phase rich in electrons
 and the solvent and a liquid phase rich in the two substitutional species
@@ -189,7 +189,7 @@ We again create the phase equation as in ``examples.elphf.phase.input1D``
 
     >>> phase.equation = TransientTerm(coeff = 1/phase.mobility) \
     ...     == DiffusionTerm(coeff = phase.gradientEnergy) \
-    ...     - (permitivityPrime / 2.) * potential.grad.dot(potential.grad)
+    ...     - (permittivityPrime / 2.) * potential.grad.dot(potential.grad)
 
 We linearize the source term in the same way as in `example.phase.simple.input1D`.
 
@@ -206,7 +206,7 @@ We linearize the source term in the same way as in `example.phase.simple.input1D
 
     >>> phase.equation -= S0 + ImplicitSourceTerm(coeff = S1)
 
-and we create the diffustion equation for the solute as in
+and we create the diffusion equation for the solute as in
 ``examples.elphf.diffusion.input1D``
 
     >>> for Cj in substitutionals:

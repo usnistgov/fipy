@@ -67,8 +67,8 @@ class _FaceGradVariable(FaceVariable):
     >>> v0 = CellVariable(mesh=m, value=x)
     >>> v1 = CellVariable(mesh=m, value=y)
     >>> v2 = CellVariable(mesh=m, value=x**2)
-    >>> v.faceGrad.globalValue.shape
-    (2, 3, 24)
+    >>> numerix.allequal(v.faceGrad.globalValue.shape, (2, 3, 24))
+    True
     >>> print v0.faceGrad.allclose([[ 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.,  1.,  1.,
     ...                               0.,  0.,  1.,  1.,  0.,  0.,  1.,  1.,  0. ],
     ...                             [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,

@@ -26,16 +26,6 @@ environment:
     - TARGET_ARCH: x86
       CONDA_PY: 36
       CONDA_INSTALL_LOCN: C:\\Miniconda36
-      FIPY_SOLVERS: pysparse
-
-    - TARGET_ARCH: x64
-      CONDA_PY: 36
-      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
-      FIPY_SOLVERS: pysparse
-
-    - TARGET_ARCH: x86
-      CONDA_PY: 36
-      CONDA_INSTALL_LOCN: C:\\Miniconda36
       FIPY_SOLVERS: scipy
 
     - TARGET_ARCH: x64
@@ -75,7 +65,13 @@ install:
 
     # Configure the VM.
     - cmd: conda.exe install --quiet --name root fipy
+
+    - cmd: if "%CONDA_PY%" == "36" 2to3 --write . 1> NUL 2>&1
+    - cmd: if "%CONDA_PY%" == "36" 2to3 --write --doctests_only . 1> NUL 2>&1
+
     - cmd: python setup.py install
+
+    - cmd: pip install scikit-fmm
 
 # Skip .NET project specific build phase.
 build: off

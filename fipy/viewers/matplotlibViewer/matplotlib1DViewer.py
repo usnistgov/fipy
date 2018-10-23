@@ -87,8 +87,6 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
         kwlimits.update(limits)
         AbstractMatplotlibViewer.__init__(self, vars=vars, title=title, axes=axes, **kwlimits)
 
-        import pylab
-
         if xlog and ylog:
             self.lines = [self.axes.loglog(*datum) for datum in self._data]
         elif xlog:

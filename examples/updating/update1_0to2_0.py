@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 ##
  # ###################################################################
@@ -150,7 +151,7 @@ The following items **must** be changed in your scripts
    :class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition` now takes a mask,
    instead of a list of :class:`~fipy.meshes.face.Face` IDs. Now you write
 
-   >>> X, Y = mesh.getFaaceCenters()
+   >>> X, Y = mesh.getFaceCenters()
    >>> FixedValue(faces=mesh.getExteriorFaces() & (X**2 < 1e-6), value=...)
 
    instead of
@@ -289,7 +290,7 @@ to indicate that we may not maintain the old syntax indefinitely.
    which can be very hard to understand after the fact (``make``? ``make`` what?).
 
  * A :class:`~fipy.terms.convectionTerm.ConvectionTerm` can now calculate its
-   Peclet number automatically, so the ``diffusionTerm`` argument is no longer required
+   Péclet number automatically, so the ``diffusionTerm`` argument is no longer required
 
    >>> eq = (TransientTerm()
    ...       == DiffusionTerm(coeff=diffCoeff)
@@ -303,7 +304,7 @@ to indicate that we may not maintain the old syntax indefinitely.
    ...       + PowerLawConvectionTerm(coeff=convCoeff, diffusionTerm=diffTerm))
 
  * An :class:`~fipy.terms.term.implicitSourceTerm.ImplicitSourceTerm` now "knows"
-   how to partion itself onto the solution matrix, so you can write
+   how to partition itself onto the solution matrix, so you can write
 
    >>> S0 = mXi * phase * (1 - phase) - phase * S1
    >>> source = S0 + ImplicitSourceTerm(coeff=S1)

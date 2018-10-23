@@ -296,7 +296,7 @@ by an empirical function of overpotential,
    k = k_0 + k_3 \eta^3
 
 The above equation is represented by the
-:class:`~fipy.models.levelSet.surfactant.adsorbingSurfactantEquation.AdsorbingSurfactantEquation`
+:class:`~examples.levelSet.electroChem.adsorbingSurfactantEquation.AdsorbingSurfactantEquation`
 in :term:`FiPy`:
 
 >>> surfactantEquation = AdsorbingSurfactantEquation(

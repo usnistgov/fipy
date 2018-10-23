@@ -46,7 +46,7 @@
 
 r"""
 The spinodal decomposition phenomenon is a spontaneous separation of
-an initially homogenous mixture into two distinct regions of different
+an initially homogeneous mixture into two distinct regions of different
 properties (spin-up/spin-down, component A/component B). It is a
 "barrierless" phase separation process, such that under the right
 thermodynamic conditions, any fluctuation, no matter how small, will

@@ -12,11 +12,9 @@
    ../fipy/generated/fipy.boundaryConditions
    ../fipy/generated/fipy.matrices
    ../fipy/generated/fipy.meshes
-   ../fipy/generated/fipy.models
    ../fipy/generated/fipy.solvers
    ../fipy/generated/fipy.steppers
    ../fipy/generated/fipy.terms
-   ../fipy/generated/fipy.test
    ../fipy/generated/fipy.tests
    ../fipy/generated/fipy.tools
    ../fipy/generated/fipy.variables

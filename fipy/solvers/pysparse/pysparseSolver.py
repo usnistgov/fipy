@@ -101,7 +101,7 @@ class PysparseSolver(_PysparseMatrixSolver):
     def _solve(self):
 
         if self.var.mesh.communicator.Nproc > 1:
-            raise Exception("PySparse solvers cannot be used with multiple processors")
+            raise Exception("Pysparse solvers cannot be used with multiple processors")
 
         array = self.var.numericValue.ravel()
 

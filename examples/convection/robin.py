@@ -77,7 +77,7 @@ where
 
 ..
 
->>> from fipy import CellVariable, Grid1D, DiffusionTerm, PowerLawConvectionTerm, ImplicitSourceTerm, Viewer
+>>> from fipy import CellVariable, FaceVariable, Grid1D, DiffusionTerm, PowerLawConvectionTerm, ImplicitSourceTerm, Viewer
 >>> from fipy.tools import numerix
 >>> nx = 100
 >>> dx = 1.0 / nx
@@ -88,22 +88,39 @@ where
 >>> D = 2.0
 >>> P = 3.0
 
->>> C.faceGrad.constrain([-P + P * C.faceValue], mesh.facesLeft)
 >>> C.faceGrad.constrain([0], mesh.facesRight)
 
->>> eq = PowerLawConvectionTerm((P,)) == \
-...      DiffusionTerm() - ImplicitSourceTerm(D)
+We note that the Robin condition exactly defines the flux on the left, so we
+introduce a corresponding divergence source to the equation.
+
+.. note::
+
+   Zeroing out the coefficients of the equation at this boundary is probably not
+   necessary due to the default no-flux boundary conditions of cell-centered
+   finite volume, but it's a safe precaution.
+
+>>> convectionCoeff = FaceVariable(mesh=mesh, value=[P])
+>>> convectionCoeff[..., mesh.facesLeft.value] = 0.
+>>> diffusionCoeff = FaceVariable(mesh=mesh, value=1.)
+>>> diffusionCoeff[..., mesh.facesLeft.value] = 0.
+
+>>> eq = (PowerLawConvectionTerm(coeff=convectionCoeff)
+...       == DiffusionTerm(coeff=diffusionCoeff) - ImplicitSourceTerm(coeff=D)
+...       - (P * mesh.facesLeft).divergence)
 
 >>> A = numerix.sqrt(P**2 + 4 * D)
 
 >>> x = mesh.cellCenters[0]
 >>> CAnalytical = CellVariable(mesh=mesh)
->>> CAnalytical.setValue(2 * P * numerix.exp(P * x / 2) * ((P + A) * numerix.exp(A / 2 * (1 - x))
-...             - (P - A) * numerix.exp(-A / 2 *(1 - x)))/
-...             ((P + A)**2*numerix.exp(A / 2)- (P - A)**2 * numerix.exp(-A / 2)))
+>>> CAnalytical.setValue(2 * P * numerix.exp(P * x / 2)
+...                      * ((P + A) * numerix.exp(A / 2 * (1 - x))
+...                         - (P - A) * numerix.exp(-A / 2 *(1 - x)))
+...                      / ((P + A)**2*numerix.exp(A / 2)
+...                         - (P - A)**2 * numerix.exp(-A / 2)))
 
 >>> if __name__ == '__main__':
-...     C.name = 'C'
+...     C.name = '$C$'
+...     CAnalytical.name = '$C_{analytical}$'
 ...     viewer = Viewer(vars=(C, CAnalytical))
 
 >>> if __name__ == '__main__':

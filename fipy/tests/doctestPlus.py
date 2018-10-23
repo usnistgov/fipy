@@ -280,7 +280,7 @@ def testmod(m=None, name=None, globs=None, verbose=None,
 
     Optional keyword arg "raise_on_error" raises an exception on the
     first unexpected exception or failure. This allows failures to be
-    post-mortem debugged.
+    postmortem debugged.
     """
     # If no module was given, then use __main__.
     if m is None:

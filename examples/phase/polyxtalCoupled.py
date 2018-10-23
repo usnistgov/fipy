@@ -64,7 +64,7 @@ We start with a regular 2D Cartesian mesh
 >>> if __name__ == "__main__":
 ...     nx = ny = 200
 ... else:
-...     nx = ny = 200
+...     nx = ny = 20
 >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
 
 and we'll take fixed timesteps
@@ -216,7 +216,7 @@ discretization of ``theta`` on the circle.
 >>> D_theta = phase.arithmeticFaceValue**2 * (s * IGamma + epsilon**2)
 
 The source term requires the evaluation of the face gradient without
-the modular operator. ``theta``:meth:`~fipy.variables.modularVariable.ModularVariable.getFaceGradNoMod`
+the modular operator. ``theta``:py:attr:`~fipy.variables.modularVariable.ModularVariable.faceGradNoMod`
 evaluates the gradient without modular arithmetic.
 
 >>> thetaEq = (TransientTerm(coeff=tau_theta * phaseMod**2 * Pfunc, var=theta)

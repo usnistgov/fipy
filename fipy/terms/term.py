@@ -345,14 +345,14 @@ class Term(object):
     def cacheMatrix(self):
         r"""
         Informs `solve()` and `sweep()` to cache their matrix so
-        that `getMatrix()` can return the matrix.
+        that `matrix` can return the matrix.
         """
         self._cacheMatrix = True
 
     @property
     def matrix(self):
         r"""
-        Return the matrix caculated in `solve()` or `sweep()`. The
+        Return the matrix calculated in `solve()` or `sweep()`. The
         cacheMatrix() method should be called before `solve()` or
         `sweep()` to cache the matrix.
         """
@@ -375,7 +375,7 @@ class Term(object):
     @property
     def RHSvector(self):
         r"""
-        Return the RHS vector caculated in `solve()` or `sweep()`. The
+        Return the RHS vector calculated in `solve()` or `sweep()`. The
         cacheRHSvector() method should be called before `solve()` or
         `sweep()` to cache the vector.
         """

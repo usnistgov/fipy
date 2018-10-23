@@ -32,7 +32,6 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
               'numpydoc',
-              'sphinxcontrib.traclinks',
               'redirecting_html',
               'sphinxcontrib.bibtex']
 
@@ -50,7 +49,7 @@ master_doc = 'documentation/contents'
 
 # General information about the project.
 project = u'FiPy'
-copyright = u'2004-2012, Jonathan E. Guyer, Daniel Wheeler & James A. Warren'
+copyright = u'works of NIST employees are not not subject to copyright protection'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -87,11 +86,13 @@ exclude_patterns = ['fipy/generated/modules.rst',
                     'dist',
                     'FiPy.egg-info',
                     'documentation/_build',
+                    'documentation/_templates',
                     'documentation/tutorial/package/generated/modules.rst',
                     'documentation/sphinxext',
                     'documentation/sphinxext/bibtex/bibstuff/examples/*.rst',
                     '**/.svn',
-                    '**/.git']
+                    '**/.git',
+                    'worktrees']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -126,7 +127,7 @@ autosummary_generate = ['examples/diffusion/index.rst',
 
 autodoc_member_order = 'alphabetical'
 
-traclinks_base_url = 'http://matforge.org/fipy'
+autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'PyTrilinos.NOX']
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -156,7 +157,7 @@ html_logo = '_static/logo.png'
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-html_favicon = 'favicon.ico'
+html_favicon = '_static/favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -229,18 +230,12 @@ latex_elements = {
       \begin{titlepage}%
         \let\footnotesize\small
         \let\footnoterule\relax
-        \ifsphinxpdfoutput
-          \begingroup
-          % This \def is required to deal with multi-line authors; it
-          % changes \\ to ', ' (comma-space), making it pass muster for
-          % generating document info in the PDF file.
-          \def\\{, }
-          \pdfinfo{
-            /Author (\@author)
-            /Title (\@title)
-          }
+        \noindent\rule{\textwidth}{1pt}\par
+          \begingroup % for PDF information dictionary
+           \def\endgraf{ }\def\and{\& }%
+           \pdfstringdefDisableCommands{\def\\{, }}% overwrite hyperref setup
+           \hypersetup{pdfauthor={\@author}, pdftitle={\@title}}%
           \endgroup
-        \fi
         \changepage{1in}{}{1in}{0.5in}{}{-0.5in}{}{}{}
         \begin{flushright}%
           \fipylogo\par%
@@ -327,14 +322,10 @@ imgmath_latex_preamble = common_preamble
 
 # refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/', None),
-    'numpy': ('http://docs.scipy.org/doc/numpy/', None),
-    'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
-    'matplotlib': ('http://matplotlib.sourceforge.net/', None)}
-# intersphinx_mapping = {'http://docs.python.org/': None,
-#                        'http://docs.scipy.org/doc/numpy/': None,
-#                        'http://docs.scipy.org/doc/scipy/reference/': None,
-#                        'http://matplotlib.sourceforge.net/': None}
+    'python': ('https://docs.python.org/2/', None),
+    'numpy': ('https://docs.scipy.org/doc/numpy/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
+    'matplotlib': ('https://matplotlib.org/', None)}
 
 def skip_numpy_not_numerix(app, what, name, obj, skip, options):
     import types
@@ -349,3 +340,19 @@ def skip_numpy_not_numerix(app, what, name, obj, skip, options):
 
 def setup(app):
     app.connect('autodoc-skip-member', skip_numpy_not_numerix)
+    
+# lifted from astropy/astropy@e68ca1a1
+
+# Enable nitpicky mode - which ensures that all references in the docs
+# resolve.
+
+nitpicky = True
+nitpick_ignore = []
+
+for line in open('nitpick-exceptions'):
+    if line.strip() == "" or line.startswith("#"):
+        continue
+    dtype, target = line.split(None, 1)
+    target = target.strip()
+    nitpick_ignore.append((dtype, target))
+

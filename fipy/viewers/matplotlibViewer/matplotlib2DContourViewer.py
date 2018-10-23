@@ -61,7 +61,7 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
 
-    __doc__ += Matplotlib2DContourViewer._test2D(viewer="Matplotlib2DContourViewer")
+    __doc__ += AbstractMatplotlib2DViewer._test2D(viewer="Matplotlib2DContourViewer")
 
 
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, number=10, levels=None, figaspect='auto', **kwlimits):
@@ -87,7 +87,7 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
             contour `number` automatically-chosen levels
           *levels* [level0, level1, ..., leveln]
             A list of floating point numbers indicating the level
-            curves to draw; eg to draw just the zero contour pass
+            curves to draw; e.g. to draw just the zero contour pass
             ``levels=[0]``
           figaspect
             desired aspect ratio of figure. If arg is a number, use that aspect
@@ -118,7 +118,7 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
         return [vars[0]]
 
     def _plot(self):
-##         pylab.clf()
+##         plt.clf()
 
 ##         ## Added garbage collection since matplotlib objects seem to hang
 ##         ## around and accumulate.

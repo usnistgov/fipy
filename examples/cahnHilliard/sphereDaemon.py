@@ -10,7 +10,7 @@ from fipy.viewers.mayaviViewer.mayaviDaemon import MayaviDaemon
 class SphereDaemon(MayaviDaemon):
 
     def view_data(self):
-        """Sets up the mayavi pipeline for the visualization.
+        """Sets up the Mayavi pipeline for the visualization.
         """
         var = mlab.pipeline.set_active_attribute(self.cellsource, cell_scalars=r"$\phi$")
 
@@ -33,7 +33,7 @@ class SphereDaemon(MayaviDaemon):
 
 
 def main(argv=None):
-    """Simple helper to start up the mayavi application.  This returns
+    """Simple helper to start up the Mayavi application.  This returns
     the running application."""
     m = SphereDaemon()
     m.main(argv)

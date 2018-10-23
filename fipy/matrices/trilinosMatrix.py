@@ -58,7 +58,7 @@ from fipy.tools import numerix, parallelComm
 
 # Current inadequacies of the matrix class:
 
-# 1) Adding matrices - the matrix with fewer nonzeros gets added into the one
+# 1) Adding matrices - the matrix with fewer non-zeros gets added into the one
 # that has more; this works as long as it's nonzero entries are a subset of the
 # larger one's nonzero entries. Is true for all cases in fipy, but is not true
 # in the general case - this isn't a general matrix class like the pysparse
@@ -191,7 +191,7 @@ class _TrilinosMatrix(_SparseMatrix):
         self.fillComplete()
         other.fillComplete()
 
-        # make the one with more nonzeros the right-hand operand
+        # make the one with more non-zeros the right-hand operand
         # so addition is likely to succeed
         if self.matrix.NumGlobalNonzeros() > other.matrix.NumGlobalNonzeros():
             tempMatrix = self.copy()
@@ -553,7 +553,7 @@ class _TrilinosMatrix(_SparseMatrix):
 class _TrilinosMatrixFromShape(_TrilinosMatrix):
     def __init__(self, rows, cols, bandwidth=1, sizeHint=None,
                  rowMap=None, colMap=None, domainMap=None):
-        """Instantiants and wraps an Epetra.CrsMatrix
+        """Instantiates and wraps an Epetra.CrsMatrix
 
         :Parameters:
           - `rows`: The number of matrix rows

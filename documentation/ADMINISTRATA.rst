@@ -44,7 +44,7 @@ Submit branch for code review
 
    **Administrators Only!**
 
-   Push the code to GitHub for automated testing::
+   Push the code to GitHub_ for automated testing::
 
        $ git push origin $BRANCH
 
@@ -89,7 +89,7 @@ Refactoring complete: merge branch to develop
 
        $ python setup.py test
 
-   Push the code to GitHub for automated testing::
+   Push the code to GitHub_ for automated testing::
 
        $ git push origin develop
 
@@ -146,14 +146,42 @@ Make sure ``develop`` is ready for release::
 
    $ git checkout develop
 
-Check items in the issues_ and update the :file:`README.txt`::
+Check items in the issues_ and update the :ref:`CHANGELOG`::
 
-   $ git commit README.txt -m "REL: update new features for release"
+   $ git commit CHANGELOG.txt -m "REL: update new features for release"
+
+.. note::
+
+   You can use::
+
+      $ python setup.py changelog --after=<version-x_y>
+
+   or::
+
+      $ python setup.py changelog --milestone=<version-x_z>
+
+   to obtain a ReST-formatted list of GitHub_ `pull requests`_ and issues_
+   closed since the last release.
+
+   Particularly for major and feature releases, be sure to curate the
+   output so that it's clear what's a big deal about this release.  Some
+   `pull requests`_ will be redundant to issues_, e.g., "``Issue123 blah
+   blah``".  If the pull request fixes a bug, preference is given to the
+   corresponding issue under **Fixes**.  Alternatively, if the pull request
+   adds a new feature, preference is given to the item under **Pulls** and
+   corresponding issue should be removed from **Fixes**.  If appropriate,
+   be sure to move the "Thanks to @mention" to the appropriate issue to
+   recognize outside contributors.
+
+   ..  attention:: Requires PyGithub_ and Pandas_.
 
 .. attention::
 
    If Buildbot_ doesn't show all green boxes for this release, make sure to
    add appropriate notes in :file:`README.txt` or :file:`INSTALLATION.txt`!
+
+.. _PyGithub: https://pygithub.readthedocs.io
+.. _Pandas: https://pandas.pydata.org
 
 -------------------
 Release from master
@@ -260,8 +288,10 @@ Make an announcement to `fipy@nist.gov`_
 Build (``python setup.py bdist --formats=wininst``) a Windows `PyVTK`_
 executable and upload to download page.
 
+.. _GitHub: https://github.com/
 .. _GitHub issue: https://github.com/usnistgov/fipy/issues/new
 .. _issues: https://github.com/usnistgov/fipy/issues
+.. _pull requests: https://github.com/usnistgov/fipy/pulls
 .. _Buildbot: http://build.cmi.kent.edu:8010/tgrid
 .. _fipy@nist.gov: mailto:fipy@nist.gov
 .. _PyVTK: http://cens.ioc.ee/projects/pyvtk/

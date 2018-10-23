@@ -51,7 +51,7 @@ is a demonstration of the use of :term:`FiPy`
 for modeling electrodeposition using the CEAC mechanism. The
 material properties and experimental parameters used are roughly
 those that have been previously
-published :cite:`NIST:damascene:2003]`.
+published :cite:`NIST:damascene:2003`.
 
 To run this example from the base fipy directory type::
 
@@ -157,7 +157,7 @@ complex meshes requiring the :command:`gmsh` software.
     \end{tabular}
    }
 
-If the MayaVi plotting
+If the Mayavi plotting
 software is
 installed (see :ref:`INSTALLATION`) then a plot should
 appear that is updated every 20 time steps and will eventually

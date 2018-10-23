@@ -201,7 +201,7 @@ class Mesh2D(Mesh):
         return self._extrude(self, extrudeFunc, layers)
 
     def _extrude(self, mesh, extrudeFunc, layers):
-        ## should extrude cnahe self rather than creating a new mesh?
+        ## should extrude self rather than creating a new mesh?
 
         ## the following allows the 2D mesh to be in 3D space, this can be the case for a
         ## Gmsh2DIn3DSpace which would then be extruded.

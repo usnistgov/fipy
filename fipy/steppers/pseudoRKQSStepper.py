@@ -50,7 +50,7 @@ __all__ = ["PseudoRKQSStepper"]
 class PseudoRKQSStepper(Stepper):
     """
     Adaptive stepper based on the ``rkqs`` (Runge-Kutta
-    "quality-controlled" stepper) algorithm of numerixal Recipes in C: 2nd
+    "quality-controlled" stepper) algorithm of Numerical Recipes in C: 2nd
     Edition, Section 16.2.
 
     Not really appropriate, since we're not doing Runge-Kutta steps

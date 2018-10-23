@@ -4,7 +4,7 @@
  # ###################################################################
  #  FiPy - Python-based finite volume PDE solver
  #
- #  FILE: "ttri2Dinput.py"
+ #  FILE: "tri2Dinput.py"
  #
  #  Author: Jonathan Guyer <guyer@nist.gov>
  #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>

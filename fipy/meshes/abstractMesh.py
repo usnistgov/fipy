@@ -209,7 +209,7 @@ class AbstractMesh(object):
 
         return ext
 
-    """scaled geometery properties
+    """scaled geometry properties
 
     These should not exist."""
     scaledFaceAreas           = property(lambda s: s._scaledFaceAreas)
@@ -861,7 +861,7 @@ class AbstractMesh(object):
 
     @property
     def _cellDistanceNormals(self):
-        return self._cellDistanceNormals/ self._cellDistances
+        return self.cellDistanceVectors / self._cellDistances
 
     @property
     def _cellAreaProjections(self):

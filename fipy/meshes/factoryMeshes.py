@@ -59,7 +59,7 @@ def _dnl(dx, nx, Lx):
     """
     Initialize arguments for grid classes based on an over determined
     set of initial arguments. The order of precedence is `nx` then
-    `Lx` then `dx`. i.e. If `Lx` is specfied the length of the domain
+    `Lx` then `dx`. i.e. If `Lx` is specified the length of the domain
     is always `Lx` regardless of `dx`.
 
     :Parameters:
@@ -182,9 +182,9 @@ def Grid1D(dx=1., nx=None, Lx=None, overlap=2, communicator=parallelComm):
 
     :Parameters:
 
-      - `dx`: grid spacing in the horizonal direction
-      - `nx`: number of cells in the horizonal direction
-      - `Lx`: the domain length in the horizonal direction
+      - `dx`: grid spacing in the horizontal direction
+      - `nx`: number of cells in the horizontal direction
+      - `Lx`: the domain length in the horizontal direction
       - `overlap`: the number of overlapping cells for parallel
         simulations. Generally 2 is adequate. Higher order equations or
         discretizations require more.

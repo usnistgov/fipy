@@ -9,7 +9,7 @@ State of the art manufacturing of semiconductor devices involves the
 electrodeposition of copper for on-chip wiring of integrated circuits.
 In the Damascene process interconnects are fabricated by first
 patterning trenches in a dielectric medium and then filling by metal
-electrodeposition over the entire wafer surface. This metalization
+electrodeposition over the entire wafer surface. This metallization
 process, pioneered by IBM, depends on the use of electrolyte additives
 that effect the local metal deposition rate.
 
@@ -52,13 +52,13 @@ mechanism can be found in :cite:`moffatInterface:2004`.
 Using FiPy to model Superfill
 -----------------------------
 
-Example |simpleTrenchSystem| provides a simple way to use :term:`FiPy` to model the
+Example :mod:`~examples.levelSet.electroChem.simpleTrenchSystem` provides a simple way to use :term:`FiPy` to model the
 superfill process. The example includes a detailed description of the governing
 equations and feature geometry. It requires the user to import and execute a
 function at the python prompt.  The model parameters can be passed as arguments
 to this function. In future all superfill examples will be provided with this
-type of interface. Example |howToWriteAScript| has the same functionality as
-|simpleTrenchSystem| but demonstrates how to write a new script in the case where
+type of interface. Example :mod:`~examples.levelSet.electroChem.howToWriteAScript` has the same functionality as
+:mod:`~examples.levelSet.electroChem.simpleTrenchSystem` but demonstrates how to write a new script in the case where
 the existing suite of scripts do not meet the required needs.
 
 In general it is a good idea to obtain the Mayavi_ plotting package
@@ -77,23 +77,3 @@ of high surfactant concentration have an increased deposition rate.
    :alt: FiPy simulation contours of superfill
 
 .. _Mayavi:   http://mayavi.sourceforge.net
-
-.. |latexSimpleTrenchSystem| raw:: latex
-
-   \ref{simpleTrenchSystem}
-
-.. |htmlSimpleTrenchSystem| raw:: html
-
-   <a href="download/fipy.pdf">1</a>
-
-.. |simpleTrenchSystem| replace:: |htmlSimpleTrenchSystem| |latexSimpleTrenchSystem|
-
-.. |latexHowToWriteAScript| raw:: latex
-
-   \ref{howToWriteAScript}
-
-.. |htmlHowToWriteAScript| raw:: html
-
-   <a href="download/fipy.pdf">2</a>
-
-.. |howToWriteAScript| replace:: |htmlHowToWriteAScript| |latexHowToWriteAScript|

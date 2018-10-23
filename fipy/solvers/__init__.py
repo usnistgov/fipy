@@ -134,7 +134,7 @@ from fipy.tests.doctestPlus import register_skipper
 
 register_skipper(flag='PYSPARSE_SOLVER',
                  test=lambda: solver == 'pysparse',
-                 why="the PySparse solvers are not being used.",
+                 why="the Pysparse solvers are not being used.",
                  skipWarning=True)
 
 register_skipper(flag='NOT_PYAMGX_SOLVER',

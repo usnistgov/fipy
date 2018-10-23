@@ -189,7 +189,7 @@ class _MeshVariable(Variable):
     @property
     def constraintMask(self):
         r"""
-        Test that `constraintMask` returns a Variable that updates itself whenver the constraints change.
+        Test that `constraintMask` returns a Variable that updates itself whenever the constraints change.
 
         >>> from fipy import *
 
@@ -259,8 +259,8 @@ class _MeshVariable(Variable):
         >>> from fipy import Grid1D
         >>> m = Grid1D(nx=0)
         >>> v = CellVariable(mesh=m, elementshape=(2,))
-        >>> (v * 1).shape
-        (2, 0)
+        >>> numerix.allequal((v * 1).shape, (2, 0))
+        True
 
         """
         return (Variable._getShape(self)
@@ -309,18 +309,18 @@ class _MeshVariable(Variable):
 
         >>> print len(v.dot(1.).shape)
         2
-        >>> print v.dot(1.).globalValue.shape
-        (2, 12)
+        >>> print numerix.allequal(v.dot(1.).globalValue.shape, (2, 12))
+        True
         >>> tmp = m._cellDistances * v.dot(1.)
-        >>> print tmp.globalValue.shape
-        (2, 12)
+        >>> print numerix.allequal(tmp.globalValue.shape, (2, 12))
+        True
 
         The value shouldn't change shape the second time it's
         evaluated. The second time is inline and the inline code does
         not have the correct shape.
 
-        >>> print tmp.globalValue.shape
-        (2, 12)
+        >>> print numerix.allequal(tmp.globalValue.shape, (2, 12))
+        True
 
         More inconsistent shape problems.
 
@@ -328,8 +328,8 @@ class _MeshVariable(Variable):
         >>> v0 = FaceVariable(mesh=m, rank=1, value=m._orientedFaceNormals)
         >>> print len(v0.dot(m.faceCenters[0]).shape)
         2
-        >>> print v0.dot(m.faceCenters[0]).globalValue.shape
-        (2, 24)
+        >>> print numerix.allequal(v0.dot(m.faceCenters[0]).globalValue.shape, (2, 24))
+        True
 
         """
         rankA = len(A.shape) - 1
@@ -663,7 +663,7 @@ def _testDot(self):
 
     >>> def P(a):
     ...     a = a.globalValue
-    ...     print a[...,0], a.shape
+    ...     print a[...,0], tuple(numerix.asarray(a.shape, dtype='int32'))
 
     >>> P(v1.dot(v2))
     18 (6,)
