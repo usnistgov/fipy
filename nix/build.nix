@@ -17,6 +17,7 @@ in
        pysparse
        pypkgs.matplotlib
        pypkgs.tkinter
+       nixpkgs.pkgs.git
      ];
      src=./..;
      doCheck=false;
@@ -35,10 +36,14 @@ in
        export USER_SITE=`python -c "import site; print(site.USER_SITE)"`
        export PYTHONPATH=$PYTHONPATH:$USER_SITE
        export PATH=$PATH:$PYTHONUSERBASE/bin
+
        ## To build the docs
-       # pip install --user sphinx sphinxcontrib-bibtex
-       ## To build PyAMG
-       ## add nixpkgs.gcc to buildInputs and
+       # pip install --user sphinx
+       # pip install --user sphinxcontrib-bibtex
+       # pip install --user git+https://github.com/thewtex/sphinx-contrib.git#subdirectory=traclinks
+       # python setup.py build_docs --html
+
+       ## To build PyAMG add nixpkgs.gcc to buildInputs and then
        # pip install --user pyamg
      '';
   }
