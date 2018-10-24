@@ -526,8 +526,8 @@ Nix Installation
 
 :term:`FiPy` now has a `Nix`_ recipe. Nix is a powerful package
 manager that makes package management reliable and reproducible. The
-recipe works on both Linux and Mac OS X. See the `nix/README.md`_ for
-more details.
+recipe works on both Linux and Mac OS X. See the
+:ref:`nixinstall` guide for more details.
 
 .. _Nix: https://nixos.org/nix/
 .. _nix/README.md: https://github.com/usnistgov/fipy/blob/develop/nix/README.md
