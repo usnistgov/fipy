@@ -11,7 +11,7 @@ to install :term:`FiPy`, not how to use it. See :ref:`USAGE`
 for details on how to use :term:`FiPy`.
 
 .. note::
-   
+
    It may be useful to set up a :ref:`ENVIRONMENT` before beginning
    the installation process.
 
@@ -52,7 +52,7 @@ Recommended Method
    packages necessary to run :term:`FiPy`, but the most expedient way is
    with the conda_ package manager.
 
-  * `install Miniconda`_ on your computer 
+  * `install Miniconda`_ on your computer
   * run::
 
       $ conda create --name <MYFIPYENV> --channel guyer --channel conda-forge fipy nomkl
@@ -83,7 +83,7 @@ Recommended Method
 
        ``$ activate <MYFIPYENV>`` on Windows_
 
-  * move on to :ref:`USAGE`. 
+  * move on to :ref:`USAGE`.
 
     .. note::
 
@@ -96,7 +96,7 @@ Recommended Method
 .. attention::
 
    When installed via conda_ or :term:`pip`, :term:`FiPy` will not include
-   its :ref:`examples <part:examples>`.  These can be obtained by 
+   its :ref:`examples <part:examples>`.  These can be obtained by
    `cloning the repository`_ or downloading a `compressed archive`_.
 
 .. _install Miniconda: http://conda.pydata.org/docs/install/quick.html
@@ -111,14 +111,14 @@ In general, it is best to use the following order of precedence when
 installing packages:
 
  * Use the operating system package manager, if possible.
- * Use the conda_ package management system, which handles both 
+ * Use the conda_ package management system, which handles both
    :term:`Python` and non-:term:`Python` packages and provides facilities
    for self-contained environments with different combinations of
    :term:`Python` packages, libraries, and applications.
- * Use the 
-   `pip installs python <http://www.pip-installer.org/>`_ 
-   (:term:`pip`) tool to obtain software from the 
-   `Python Package Index <http://pypi.python.org/pypi>`_ 
+ * Use the
+   `pip installs python <http://www.pip-installer.org/>`_
+   (:term:`pip`) tool to obtain software from the
+   `Python Package Index <http://pypi.python.org/pypi>`_
    (:term:`PyPI`) repository::
 
      $ pip install package
@@ -178,13 +178,13 @@ installing the following prerequisite packages on your system:
 
  * Python_
 
- * NumPy_ 
- 
+ * NumPy_
+
  * At least one of the :ref:`SOLVERS`
 
- * At least one of the :ref:`VIEWERS` (:term:`FiPy`'s tests will run 
+ * At least one of the :ref:`VIEWERS` (:term:`FiPy`'s tests will run
    without a viewer, but you'll want one for any practical work)
- 
+
 Other :ref:`OPTIONALPACKAGES` add greatly to :term:`FiPy`'s
 capabilities, but are not necessary for an initial installation or to
 simply run the test suite.
@@ -196,10 +196,10 @@ been installed properly, you can install it by typing::
     $ pip install fipy
 
 or by unpacking the archive and typing::
-  
+
     $ python setup.py install
 
-at the command line in the base :term:`FiPy` directory. You can also install 
+at the command line in the base :term:`FiPy` directory. You can also install
 :term:`FiPy` in "development mode" by typing::
 
     $ python setup.py develop
@@ -234,10 +234,10 @@ on many operating systems, which you can check by opening a terminal
 and typing ``python``, *e.g.*::
 
     $ python
-    Python 2.3 (#1, Sep 13 2003, 00:49:11) 
+    Python 2.3 (#1, Sep 13 2003, 00:49:11)
     ...
     Type "help", "copyright", "credits" or "license" for more information.
-    >>> 
+    >>>
 
 If necessary, you can download_ and install it for your platform
 <http://www.python.org/download>.
@@ -273,7 +273,7 @@ Scientific Python Packages
 ==========================
 
 :term:`FiPy` depends on or benefits from the so-called *scientific Python*
-stack, which includes :term:`IPython`, :term:`Matplotlib`, :term:`NumPy`, 
+stack, which includes :term:`IPython`, :term:`Matplotlib`, :term:`NumPy`,
 :term:`pandas`, and :term:`SciPy`. These packages provide Python with advanced
 numerical and graphical capabilities, important for the analysis and visual
 representation of scientific data. The following :term:`Python` distributions
@@ -449,16 +449,16 @@ any platform that has a recent :term:`Python` installation.
 Mac OS X Installation
 =====================
 
-There is no official package manager for `Mac OS X`_, but there are 
-several third-party package managers that provide many, but not all of 
-:term:`FiPy`'s :ref:`REQUIREDPACKAGES` and :ref:`OPTIONALPACKAGES`. 
+There is no official package manager for `Mac OS X`_, but there are
+several third-party package managers that provide many, but not all of
+:term:`FiPy`'s :ref:`REQUIREDPACKAGES` and :ref:`OPTIONALPACKAGES`.
 Options include
 
  Fink_
    is based on the Debian package management system. It installs all of its
    dependencies into :file:`/sw`.
  MacPorts_
-   is a package manager originally part of OpenDarwin. It installs all of 
+   is a package manager originally part of OpenDarwin. It installs all of
    its dependencies into :file:`/opt`.
  Homebrew_
    is a recent, lightweight package manager based on Ruby scripts. It
@@ -473,8 +473,9 @@ In addition, there is an :ref:`ECP` installer for `Mac OS X`_.
    these package managers or installers, so you will need to separately
    install them manually.
 
-We presently find that the combination of Homebrew_ and :term:`pip` is a 
-pretty straightforward way to get most of :term:`FiPy`'s prerequisites. 
+We presently find that the combination of Homebrew_ and :term:`pip` is a
+pretty straightforward way to get most of :term:`FiPy`'s prerequisites.
+
 See the `Miscellaneous Build Recipes`_ for up-to-date directions.
 
 .. _Fink: http://www.finkproject.org/
@@ -486,8 +487,8 @@ See the `Miscellaneous Build Recipes`_ for up-to-date directions.
 Windows Installation
 ====================
 
-There is no official package manager for Windows_, but the :ref:`ECP` 
-and :ref:`PYTHONXY` installers provide most of :term:`FiPy`'s 
+There is no official package manager for Windows_, but the :ref:`ECP`
+and :ref:`PYTHONXY` installers provide most of :term:`FiPy`'s
 prerequisites.
 
 .. attention::
@@ -519,6 +520,17 @@ to install. The `.deb` includes dependencies for all of the
 .. _Solaris: http://oracle.com/solaris
 .. _Windows: http://www.microsoft.com/windows/
 .. _Windows XP: http://www.microsoft.com/windowsxp/
+
+
+.. Nix Installation
+   ================
+
+.. include:: nix/README.rst
+
+.. toctree::
+   :hidden:
+
+   ../nix/README
 
 Miscellaneous Build Recipes
 ===========================
@@ -560,14 +572,14 @@ directories. The reasons for this include:
  * or not having admin privileges.
 
 The simplest way to use a :term:`Python` package without installing it
-is to work in the base directory of the unpacked package and set 
+is to work in the base directory of the unpacked package and set
 the :envvar:`PYTHONPATH` environment variable to "``.``". In order to work in an
 directory other than the package's base directory, the :envvar:`PYTHONPATH`
 environment variable must be set to ":file:`~/path/to/package`". This
 method of working is adequate for one package, but quickly becomes
 unmanageable with multiple :term:`Python` packages. In order to manage
 multiple packages, it is better to choose a standard location other
-than the default installation path. 
+than the default installation path.
 
 If you do not have administrative privileges on your computer, or if
 for any reason you don't want to tamper with your existing
