@@ -40,7 +40,7 @@ Python 2. To install with Python 3, use::
     $ nix-shell --pure nix/py3.nix
 
 ``nix-shell`` drops the user into a shell with a working version of
-:term:`FiPy`. To test your installation use
+:term:`FiPy`. To test your installation use::
 
     $ nix-shell --pure --command "python setup.py test"
 
