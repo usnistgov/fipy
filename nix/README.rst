@@ -1,6 +1,5 @@
 .. _nixinstall:
 
-================
 Nix Installation
 ================
 
@@ -9,7 +8,6 @@ using `Nix`_. `Nix`_ is a powerful package manager for Linux and other
 Unix systems that makes package management reliable and
 reproducible. The recipe works on both Linux and Mac OS X.
 
-------------------------
 Getting Started with Nix
 ------------------------
 
@@ -26,7 +24,6 @@ https://github.com/wd15/nixes/blob/master/NIX-NOTES.md
 which are a succinct steps that I use when setting up a new system with
 Nix.
 
-----------
 Installing
 ----------
 
@@ -49,7 +46,6 @@ Python 2. To install with Python 3, use::
    :term:`Trilinos` is currently not available as part of the Nix
    :term:`FiPy` installation.
 
--------------------
 Additional Packages
 -------------------
 
@@ -57,7 +53,6 @@ To install additional packages available from Nixpkgs include them in
 the ``buildInputs`` list in ``nix/build.nix`` (in the ``nix``
 subdirectory of the base :term:`FiPy` directory).
 
----------
 Using Pip
 ---------
 

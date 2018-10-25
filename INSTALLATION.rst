@@ -521,16 +521,16 @@ to install. The `.deb` includes dependencies for all of the
 .. _Windows: http://www.microsoft.com/windows/
 .. _Windows XP: http://www.microsoft.com/windowsxp/
 
-Nix Installation
-================
 
-:term:`FiPy` now has a `Nix`_ recipe. Nix is a powerful package
-manager that makes package management reliable and reproducible. The
-recipe works on both Linux and Mac OS X. See the
-:ref:`nixinstall` guide for more details.
+.. Nix Installation
+   ================
 
-.. _Nix: https://nixos.org/nix/
-.. _nix/README.md: https://github.com/usnistgov/fipy/blob/develop/nix/README.md
+.. include:: nix/README.rst
+
+.. toctree::
+   :hidden:
+
+   ../nix/README
 
 Miscellaneous Build Recipes
 ===========================
