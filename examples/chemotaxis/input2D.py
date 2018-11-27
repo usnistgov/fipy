@@ -1,6 +1,3 @@
-
-
-
 """
 
 Input file for chemotaxis modeling.

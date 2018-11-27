@@ -1,6 +1,3 @@
-
-
-
 ##from fipy.tools.profiler.profiler import Profiler
 ##from fipy.tools.profiler.profiler import calibrate_profiler
 

@@ -1,6 +1,3 @@
-
-
-
 r"""Solve a two-dimensional diffusion problem in a square domain.
 
 This example solves a diffusion problem and demonstrates the use of

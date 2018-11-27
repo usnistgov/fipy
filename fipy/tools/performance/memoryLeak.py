@@ -1,6 +1,3 @@
-
-
-
 """
 
 This python script is ripped from

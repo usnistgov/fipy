@@ -1,6 +1,3 @@
-
-
-
 from pyamg import smoothed_aggregation_solver
 
 __all__ = ["SmoothedAggregationPreconditioner"]

@@ -1,6 +1,3 @@
-
-
-
 r"""Create a level set variable in one dimension.
 
 The level set

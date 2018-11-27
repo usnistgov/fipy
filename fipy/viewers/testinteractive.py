@@ -1,6 +1,3 @@
-
-
-
 """
 Interactively test the viewers
 """

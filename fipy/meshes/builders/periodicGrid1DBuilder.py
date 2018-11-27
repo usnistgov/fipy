@@ -1,6 +1,3 @@
-
-
-
 __docformat__ = 'restructuredtext'
 
 __all__ = []

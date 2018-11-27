@@ -1,6 +1,3 @@
-
-
-
 def _TestClass(base):
     class _test(base):
         description = str(base.description) + ", for FiPy and its examples"

@@ -1,6 +1,3 @@
-
-
-
 """
 
 This input file again solves a 2D diffusion problem on a triangular mesh.

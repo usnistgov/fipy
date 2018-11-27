@@ -1,6 +1,3 @@
-
-
-
 r"""Solve a circular distance function equation and then advect it.
 
 This example first imposes a circular distance function:

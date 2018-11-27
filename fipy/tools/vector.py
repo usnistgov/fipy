@@ -1,6 +1,3 @@
-
-
-
 """Vector utility functions that are inexplicably absent from Numeric
 """
 

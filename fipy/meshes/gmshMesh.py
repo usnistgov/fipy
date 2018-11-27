@@ -1,5 +1,3 @@
-
-
 __docformat__ = 'restructuredtext'
 
 import os

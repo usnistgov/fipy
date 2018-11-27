@@ -1,6 +1,3 @@
-
-
-
 __docformat__ = 'restructuredtext'
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver

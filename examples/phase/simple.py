@@ -1,6 +1,3 @@
-
-
-
 r"""Solve a phase-field (Allen-Cahn) problem in one-dimension.
 
 To run this example from the base FiPy directory, type

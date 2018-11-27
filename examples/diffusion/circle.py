@@ -1,6 +1,3 @@
-
-
-
 r"""Solve the diffusion equation in a circular domain meshed with triangles.
 
 This example demonstrates how to solve a simple diffusion problem on a

@@ -1,6 +1,3 @@
-
-
-
 r"""Solve for the impingement of four grains in two dimensions.
 
 In the following examples, we solve the same set of equations as in

@@ -1,6 +1,3 @@
-
-
-
 __all__ = []
 
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable

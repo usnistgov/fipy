@@ -1,6 +1,3 @@
-
-
-
 """
 The iterative solvers may output warnings if the solution is considered
 unsatisfactory. If you are not interested in these warnings, you can invoke

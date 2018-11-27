@@ -1,6 +1,3 @@
-
-
-
 r"""Solve a convection problem with a source.
 
 This example solves the equation

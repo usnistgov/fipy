@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 Here we solve the level set equation in two dimension for an interior region. The equation is

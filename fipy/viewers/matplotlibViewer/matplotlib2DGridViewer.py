@@ -1,6 +1,3 @@
-
-
-
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer

@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 Here we solve the level set equation in two dimensions for a square. The equation is

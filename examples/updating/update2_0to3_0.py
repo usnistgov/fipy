@@ -1,6 +1,3 @@
-
-
-
 r"""
 How to update scripts from version 2.0 to 3.0.
 

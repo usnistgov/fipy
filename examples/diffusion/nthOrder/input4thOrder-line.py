@@ -1,6 +1,3 @@
-
-
-
 """
    >>> eq.solve(var,
    ...          boundaryConditions = BCs,

@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 This example creates a trench with the following zero level set:

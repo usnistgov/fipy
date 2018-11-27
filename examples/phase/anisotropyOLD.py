@@ -1,6 +1,3 @@
-
-
-
 r"""
 .. attention::
 

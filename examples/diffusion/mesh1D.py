@@ -1,6 +1,3 @@
-
-
-
 r"""Solve a one-dimensional diffusion equation under different conditions.
 
 To run this example from the base :term:`FiPy` directory, type::

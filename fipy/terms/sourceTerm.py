@@ -1,6 +1,3 @@
-
-
-
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm

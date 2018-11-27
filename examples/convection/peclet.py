@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 This example tests diffusion-convection for increasing Peclet numbers.

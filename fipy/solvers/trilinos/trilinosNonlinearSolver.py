@@ -1,6 +1,3 @@
-
-
-
 from PyTrilinos import Epetra
 from PyTrilinos import NOX
 

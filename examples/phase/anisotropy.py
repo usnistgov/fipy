@@ -1,6 +1,3 @@
-
-
-
 r"""Solve a dendritic solidification problem.
 
 To convert a liquid material to a solid,  it must be cooled to a

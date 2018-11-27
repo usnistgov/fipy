@@ -1,6 +1,3 @@
-
-
-
 """
 
 The `gapFillMesh` function glues 3 meshes together to form a composite

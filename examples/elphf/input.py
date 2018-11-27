@@ -1,6 +1,3 @@
-
-
-
 r"""
 This example adds two more components to
 ``examples/elphf/input1DphaseBinary.py``

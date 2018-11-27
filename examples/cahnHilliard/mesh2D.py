@@ -1,6 +1,3 @@
-
-
-
 r"""
 The spinodal decomposition phenomenon is a spontaneous separation of
 an initially homogeneous mixture into two distinct regions of different

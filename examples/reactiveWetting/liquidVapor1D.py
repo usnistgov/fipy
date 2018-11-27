@@ -1,6 +1,3 @@
-
-
-
 r"""Solve a single-component, liquid-vapor, van der Waals system.
 
 This example solves a single-component, liquid-vapor, van der Waals system as

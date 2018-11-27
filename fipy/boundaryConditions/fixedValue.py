@@ -1,6 +1,3 @@
-
-
-
 __docformat__ = 'restructuredtext'
 
 """Fixed value (Dirichlet) boundary condition

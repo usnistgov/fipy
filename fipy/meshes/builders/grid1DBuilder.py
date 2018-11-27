@@ -1,6 +1,3 @@
-
-
-
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.builders.abstractGridBuilder import _AbstractGridBuilder

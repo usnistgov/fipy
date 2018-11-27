@@ -1,6 +1,3 @@
-
-
-
 __all__ = []
 
 class _Vertex:

@@ -1,7 +1,3 @@
-
-
-
-
 """A simple script that polls a data file for changes and then updates
 the Mayavi pipeline automatically.
 

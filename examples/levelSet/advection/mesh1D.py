@@ -1,6 +1,3 @@
-
-
-
 r"""Solve the distance function equation in one dimension and then advect it.
 
 This example first solves the distance function equation in one dimension:

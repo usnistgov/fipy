@@ -1,6 +1,3 @@
-
-
-
 __all__ = []
 
 from fipy.tests.doctestPlus import _LateImportDocTestSuite

@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 This example demonstrates the use of the :class:`~fipy.terms.vanLeerConvectionTerm.VanLeerConvectionTerm` as

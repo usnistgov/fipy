@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 To run this example from the base FiPy directory, type::

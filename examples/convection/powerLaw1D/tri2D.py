@@ -1,6 +1,3 @@
-
-
-
 """
 
 This example solves the steady-state convection-diffusion equation as described in

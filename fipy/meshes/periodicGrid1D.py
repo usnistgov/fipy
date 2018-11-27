@@ -1,6 +1,3 @@
-
-
-
 """
 Peridoic 1D Mesh
 """

@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 This example creates four symmetric quadrilateral regions in a box.

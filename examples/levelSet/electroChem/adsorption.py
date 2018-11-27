@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 This example tests 1D adsorption onto an interface and subsequent

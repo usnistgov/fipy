@@ -1,6 +1,3 @@
-
-
-
 r"""Simultaneously solve a phase-field evolution and solute diffusion problem in one-dimension.
 
 It is straightforward to extend a phase field model to include binary alloys.

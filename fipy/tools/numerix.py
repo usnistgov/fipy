@@ -1,6 +1,3 @@
-
-
-
 """Replacement module for NumPy
 
 .. attention::

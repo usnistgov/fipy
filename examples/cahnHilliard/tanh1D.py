@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 This example solves the Cahn-Hilliard equation given by,

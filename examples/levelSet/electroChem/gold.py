@@ -1,6 +1,3 @@
-
-
-
 r"""Model electrochemical superfill of gold using the CEAC mechanism.
 
 This input file

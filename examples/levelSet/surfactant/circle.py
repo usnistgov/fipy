@@ -1,6 +1,3 @@
-
-
-
 r"""
 This example first imposes a circular distance function:
 

@@ -1,6 +1,3 @@
-
-
-
 """
 
 This test file generates lots of different SkewedGrid2D meshes, each with a different non-orthogonality,

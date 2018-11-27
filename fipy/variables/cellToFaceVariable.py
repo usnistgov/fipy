@@ -1,6 +1,3 @@
-
-
-
 __all__ = []
 
 from fipy.variables.faceVariable import FaceVariable

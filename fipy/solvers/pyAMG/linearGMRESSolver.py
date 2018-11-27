@@ -1,6 +1,3 @@
-
-
-
 from fipy.solvers.scipy.linearGMRESSolver import LinearGMRESSolver as ScipyLinearGMRESSolver
 from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner
 

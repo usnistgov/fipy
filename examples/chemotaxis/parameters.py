@@ -1,5 +1,3 @@
-
-
 """
 
 Input file for parameters

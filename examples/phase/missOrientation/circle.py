@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 In this example, a phase equation is solved in one dimension with a

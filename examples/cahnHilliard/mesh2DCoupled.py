@@ -1,6 +1,3 @@
-
-
-
 r"""Solve the Cahn-Hilliard problem in two dimensions.
 
 The spinodal decomposition phenomenon is a spontaneous separation of

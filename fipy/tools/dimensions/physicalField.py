@@ -1,7 +1,3 @@
-
-
-
-
 """
 Physical quantities with units.
 

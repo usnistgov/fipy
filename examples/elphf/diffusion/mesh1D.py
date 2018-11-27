@@ -1,6 +1,3 @@
-
-
-
 r"""
 A simple 1D example to test the setup of the multi-component diffusion
 equations.  The diffusion equation for each species in single-phase

@@ -1,6 +1,3 @@
-
-
-
 r"""
 A simple 1D example to test the setup of the Poisson equation.
 

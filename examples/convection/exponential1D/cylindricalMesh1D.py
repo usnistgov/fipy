@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 This example solves the steady-state cylindrical convection-diffusion equation

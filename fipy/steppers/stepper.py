@@ -1,4 +1,3 @@
-
 __docformat__ = 'restructuredtext'
 
 __all__ = ["Stepper"]

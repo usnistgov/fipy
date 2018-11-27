@@ -1,6 +1,3 @@
-
-
-
 """Generic mesh class using numerix to do the calculations
 
     Meshes contain cells, faces, and vertices.

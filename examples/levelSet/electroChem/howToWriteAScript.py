@@ -1,6 +1,3 @@
-
-
-
 r"""Tutorial for writing an electrochemical superfill script.
 
 This input file demonstrates how to

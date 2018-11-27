@@ -1,6 +1,3 @@
-
-
-
 """Test implementation of the mesh
 """
 

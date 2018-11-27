@@ -1,6 +1,3 @@
-
-
-
 r"""
 This example combines a phase field problem, as given in
 :mod:`examples.elphf.phase.input1D`, with a binary diffusion problem, such as

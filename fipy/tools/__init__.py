@@ -1,6 +1,3 @@
-
-
-
 def _parallelImport():
     try:
         import scipy

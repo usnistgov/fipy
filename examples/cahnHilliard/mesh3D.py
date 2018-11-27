@@ -1,6 +1,3 @@
-
-
-
 r"""
 Solves the Cahn-Hilliard problem in a 3D cube
 

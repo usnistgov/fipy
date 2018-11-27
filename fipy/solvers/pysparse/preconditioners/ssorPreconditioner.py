@@ -1,6 +1,3 @@
-
-
-
 from pysparse import precon
 
 from fipy.solvers.pysparse.preconditioners.preconditioner import Preconditioner

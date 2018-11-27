@@ -1,6 +1,3 @@
-
-
-
 r""" Solve a phase-field evolution and diffusion of four species in one-dimension.
 
 The same procedure used to construct the two-component phase field

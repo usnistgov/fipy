@@ -1,6 +1,3 @@
-
-
-
 import os
 import re
 import shutil

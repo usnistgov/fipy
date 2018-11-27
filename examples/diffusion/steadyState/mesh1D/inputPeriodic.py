@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 One can then solve the same problem as in

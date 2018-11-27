@@ -1,7 +1,3 @@
-
-
-
-
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.faceVariable import FaceVariable

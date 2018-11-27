@@ -1,6 +1,3 @@
-
-
-
 from fipy.tools.comms.commWrapper import CommWrapper
 
 __all__ = ["SerialCommWrapper"]

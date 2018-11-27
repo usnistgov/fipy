@@ -1,6 +1,3 @@
-
-
-
 from distutils.core import Command
 import os
 import sys

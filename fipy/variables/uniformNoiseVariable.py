@@ -1,4 +1,3 @@
-
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random

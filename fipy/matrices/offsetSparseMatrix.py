@@ -1,6 +1,3 @@
-
-
-
 from fipy.tools import numerix
 
 __all__ = ["OffsetSparseMatrix"]

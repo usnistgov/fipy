@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 This example represents an expanding circular interface with an initial

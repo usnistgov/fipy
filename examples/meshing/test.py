@@ -1,6 +1,3 @@
-
-
-
 """Run all the test cases in examples/meshing/
 """
 

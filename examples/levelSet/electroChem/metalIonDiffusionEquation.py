@@ -1,8 +1,3 @@
-
-
-
-
-
 __docformat__ = 'restructuredtext'
 
 

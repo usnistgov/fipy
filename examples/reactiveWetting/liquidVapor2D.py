@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 A 2D version of the 1D example.

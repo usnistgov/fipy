@@ -1,4 +1,3 @@
-
 """Uses basic authentication (Github username + password) to retrieve issues
 from a repository that username has access to. Supports Github API v3.
 Adapted from: https://gist.github.com/patrickfuller/e2ea8a94badc5b6967ef3ca0a9452a43

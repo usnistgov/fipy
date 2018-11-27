@@ -1,4 +1,3 @@
-
 from fipy.viewers.viewer import AbstractViewer
 
 __all__ = ["MultiViewer"]

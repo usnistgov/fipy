@@ -1,4 +1,3 @@
-
 from fipy.steppers.stepper import Stepper
 
 __all__ = ["PseudoRKQSStepper"]

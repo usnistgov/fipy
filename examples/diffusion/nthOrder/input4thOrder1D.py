@@ -1,6 +1,3 @@
-
-
-
 r"""Solve a fourth-order diffusion problem.
 
 This example uses the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` class to solve the equation

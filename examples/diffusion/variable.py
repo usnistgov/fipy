@@ -1,6 +1,3 @@
-
-
-
 """
 
 This example is a 1D steady state diffusion test case as in

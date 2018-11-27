@@ -1,6 +1,3 @@
-
-
-
 r"""
 
 This input file again solves a 1D diffusion problem as in

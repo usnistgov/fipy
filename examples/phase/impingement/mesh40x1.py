@@ -1,6 +1,3 @@
-
-
-
 r"""Solve for the impingement of two grains in one dimension.
 
 In this example we solve a coupled phase and orientation equation on a one

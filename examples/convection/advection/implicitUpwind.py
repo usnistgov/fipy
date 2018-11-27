@@ -1,6 +1,3 @@
-
-
-
 """
 This example shows the failure of advecting a square pulse with a first
 order implicit upwind scheme.

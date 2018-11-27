@@ -1,6 +1,3 @@
-
-
-
 r"""
 In this example, we present the same three-component diffusion problem
 introduced in ``examples/elphf/diffusion/mesh1D.py``

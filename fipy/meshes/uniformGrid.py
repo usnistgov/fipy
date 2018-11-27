@@ -1,5 +1,3 @@
-
-
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.abstractMesh import AbstractMesh

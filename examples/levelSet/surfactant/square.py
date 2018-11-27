@@ -1,6 +1,3 @@
-
-
-
 """
 
 This example advects a 2 by 2 initially square region outwards.

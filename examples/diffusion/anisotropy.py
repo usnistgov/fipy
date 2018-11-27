@@ -1,6 +1,3 @@
-
-
-
 r"""Solve the diffusion equation with an anisotropic diffusion coefficient.
 
 We wish to solve the problem

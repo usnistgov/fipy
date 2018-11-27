@@ -1,6 +1,3 @@
-
-
-
 __all__ = []
 
 from fipy.variables.variable import Variable

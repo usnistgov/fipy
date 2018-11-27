@@ -1,6 +1,3 @@
-
-
-
 import sys
 import time
 import doctest

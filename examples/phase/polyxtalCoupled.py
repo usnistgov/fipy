@@ -1,6 +1,3 @@
-
-
-
 r"""Simultaneously solve the dendritic growth of nuclei and subsequent grain impingement.
 
 To convert a liquid material to a solid,  it must be cooled to a

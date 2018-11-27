@@ -1,6 +1,3 @@
-
-
-
 __all__ = ["Preconditioner"]
 
 class Preconditioner:

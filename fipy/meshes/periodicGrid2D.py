@@ -1,6 +1,3 @@
-
-
-
 """
 2D periodic rectangular Mesh
 """

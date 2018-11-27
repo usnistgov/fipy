@@ -1,6 +1,3 @@
-
-
-
 r"""Solve the biharmonic equation as a coupled pair of diffusion equations.
 
 :term:`FiPy` has only first order time derivatives so equations such

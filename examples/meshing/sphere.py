@@ -1,6 +1,3 @@
-
-
-
 """
 An interesting problem is to solve an equation on a 2D geometry that
 is embedded in 3D space, such as diffusion on the surface of a sphere

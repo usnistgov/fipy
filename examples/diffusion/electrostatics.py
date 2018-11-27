@@ -1,6 +1,3 @@
-
-
-
 r"""Solve the Poisson equation in one dimension.
 
 The Poisson equation is a particular example of the steady-state diffusion

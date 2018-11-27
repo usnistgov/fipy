@@ -1,6 +1,3 @@
-
-
-
 r"""
 It is straightforward to extend a phase field model to include binary alloys.
 As in :mod:`examples.phase.simple`, we will examine a 1D problem
