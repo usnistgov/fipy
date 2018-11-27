@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 def _TestClass(base):

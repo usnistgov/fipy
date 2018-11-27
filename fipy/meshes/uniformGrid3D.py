@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 from fipy.tools import numerix

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve a one-dimensional diffusion equation under different conditions.
@@ -790,7 +790,7 @@ documentation, we would delete every line that does not begin with
 either "``>>>``" or "``...``", and then delete those prefixes from the
 remaining lines, leaving::
 
-     #!/usr/bin/env python
+     
 
      ## This script was derived from
      ## 'examples/diffusion/mesh1D.py'

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Model electrochemical superfill of copper with leveler and accelerator additives.

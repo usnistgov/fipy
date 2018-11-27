@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve the Navier-Stokes equation in the viscous limit.

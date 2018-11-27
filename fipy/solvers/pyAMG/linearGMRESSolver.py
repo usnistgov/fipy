@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 from fipy.solvers.scipy.linearGMRESSolver import LinearGMRESSolver as ScipyLinearGMRESSolver

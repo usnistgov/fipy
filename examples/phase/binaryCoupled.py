@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Simultaneously solve a phase-field evolution and solute diffusion problem in one-dimension.

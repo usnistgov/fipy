@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve a two-dimensional diffusion problem in a square domain.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Simultaneously solve the dendritic growth of nuclei and subsequent grain impingement.

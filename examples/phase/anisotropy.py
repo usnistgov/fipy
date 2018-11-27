@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve a dendritic solidification problem.

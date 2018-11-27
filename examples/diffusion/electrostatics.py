@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve the Poisson equation in one dimension.

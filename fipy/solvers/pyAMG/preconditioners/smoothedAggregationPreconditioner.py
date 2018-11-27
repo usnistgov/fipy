@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 from pyamg import smoothed_aggregation_solver

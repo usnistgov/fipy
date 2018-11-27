@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 """Vector utility functions that are inexplicably absent from Numeric

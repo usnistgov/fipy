@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve a fourth-order diffusion problem.

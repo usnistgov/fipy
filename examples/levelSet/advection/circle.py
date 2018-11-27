@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve a circular distance function equation and then advect it.

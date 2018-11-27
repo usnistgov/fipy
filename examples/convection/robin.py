@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve an advection-diffusion equation with a Robin boundary condition.

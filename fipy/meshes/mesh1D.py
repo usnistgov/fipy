@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 """Generic mesh class using numerix to do the calculations

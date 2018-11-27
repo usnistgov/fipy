@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solves the Cahn-Hilliard problem on the surface of a sphere.

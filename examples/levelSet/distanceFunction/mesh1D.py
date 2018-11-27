@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Create a level set variable in one dimension.

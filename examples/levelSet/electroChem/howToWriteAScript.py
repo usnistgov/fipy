@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Tutorial for writing an electrochemical superfill script.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve a single-component, liquid-vapor, van der Waals system.

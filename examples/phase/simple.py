@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve a phase-field (Allen-Cahn) problem in one-dimension.

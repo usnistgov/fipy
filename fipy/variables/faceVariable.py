@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 from fipy.variables.meshVariable import _MeshVariable

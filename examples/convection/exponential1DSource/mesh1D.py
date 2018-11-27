@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve the steady-state convection-diffusion equation with a constant source.

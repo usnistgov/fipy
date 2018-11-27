@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve the diffusion equation in a circular domain meshed with triangles.

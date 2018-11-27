@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 """Run all the test cases in examples/diffusion/

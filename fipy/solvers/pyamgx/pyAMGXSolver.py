@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 import numpy
 from scipy.sparse import csr_matrix
 

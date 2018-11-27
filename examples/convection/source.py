@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve a convection problem with a source.

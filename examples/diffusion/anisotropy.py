@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve the diffusion equation with an anisotropic diffusion coefficient.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Model electrochemical superfill using the CEAC mechanism.

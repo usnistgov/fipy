@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve for the impingement of four grains in two dimensions.

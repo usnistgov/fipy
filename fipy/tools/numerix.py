@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 """Replacement module for NumPy

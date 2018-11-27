@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve the distance function equation in one dimension and then advect it.

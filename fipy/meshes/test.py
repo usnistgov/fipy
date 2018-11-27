@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 """Test implementation of the mesh

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve a coupled set of diffusion equations in two dimensions.

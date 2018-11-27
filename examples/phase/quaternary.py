@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r""" Solve a phase-field evolution and diffusion of four species in one-dimension.

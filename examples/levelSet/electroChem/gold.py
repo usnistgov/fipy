@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Model electrochemical superfill of gold using the CEAC mechanism.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve the Cahn-Hilliard problem in two dimensions.

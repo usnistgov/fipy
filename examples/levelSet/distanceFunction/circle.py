@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 
 r"""Solve the level set equation in two dimensions for a circle.
