@@ -1,8 +1,11 @@
+# Written by Konrad Hinsen <hinsen@cnrs-orleans.fr>
+# with contributions from Greg Ward
+
 """
 Physical quantities with units.
 
 This module derives from `Konrad Hinsen`_'s :class:`PhysicalQuantity`
-<http://dirac.cnrs-orleans.fr/ScientificPython/ScientificPythonManual/Scientific.Physics.PhysicalQuantities-module.html>.
+<http://dirac.cnrs-orleans.fr/ScientificPython/>.
 
 This module provides a data type that represents a physical
 quantity together with its unit. It is possible to add and
@@ -24,7 +27,6 @@ recommended values from CODATA_. Other conversion factors
    so use this at your own risk!
 
 .. _Konrad Hinsen:                              mailto:hinsen@cnrs-orleans.fr
-.. _PhysicalQuantity:                           http://starship.python.net/~hinsen/ScientificPython/ScientificPythonManual/Scientific_31.html
 .. _CODATA:                                     http://www.codata.org/
 .. _Appendix B of NIST Special Publication 811: http://physics.nist.gov/Pubs/SP811/appenB9.html
 """
@@ -101,7 +103,7 @@ class PhysicalField(object):
         once for the whole array.
 
         .. _Konrad Hinsen: mailto:hinsen@cnrs-orleans.fr
-        .. _PhysicalQuantity: http://starship.python.net/~hinsen/ScientificPython/ScientificPythonManual/Scientific_31.html
+        .. _PhysicalQuantity: http://dirac.cnrs-orleans.fr/ScientificPython/
         .. _Numeric: http://www.numpy.org
         """
         if hasattr(value, "value") and not isinstance(value, PhysicalField):
