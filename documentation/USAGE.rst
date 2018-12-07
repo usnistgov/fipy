@@ -584,7 +584,7 @@ of the :class:`~fipy.terms.diffusionTerm.DiffusionTerm`:
 .. math::
 
    \begin{aligned}
-       \nabla\cdot\left(\Gamma\nabla\phi\right) &\approx
+       \int_V \nabla\cdot\left(\Gamma\nabla\phi\right) dV &\approx
        \sum_f \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f \\
        &= \sum_{f\neq f_0} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f 
        + \Gamma_{f_0} \left(\hat{n}\cdot\nabla\phi\right)_{f_0} A_{f_0}
@@ -624,7 +624,7 @@ such that
 .. math::
 
    \begin{aligned}
-       \nabla\cdot\left(\Gamma\nabla\phi\right) &\approx
+       \int_V \nabla\cdot\left(\Gamma\nabla\phi\right) dV &\approx
        \sum_{f\neq f_0} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f 
        + \Gamma_{f_0} \frac{g - \hat{n}\cdot\vec{a} \phi_P}
                            {-\left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b} A_{f_0}
@@ -651,7 +651,7 @@ Robin condition directly:
 .. math::
 
    \begin{aligned}
-       \nabla\cdot\left(\vec{u}\phi\right) &\approx
+       \int_V \nabla\cdot\left(\vec{u}\phi\right) dV &\approx
        \sum_f \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f \\
        &= \sum_{f\neq f_0} \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f
        + \left(\hat{n}\cdot\vec{u}\right)_{f_0} \frac{g - b \left(\hat{n}\cdot\nabla\phi\right)_{f_0}}{\hat{n}\cdot\vec{a}} A_{f_0} \\
