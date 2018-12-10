@@ -558,17 +558,15 @@ can often be substituted for the flux in an equation
 
 .. math::
 
-   \begin{aligned}
-        \frac{\partial\phi}{\partial t}
-        &= \nabla\cdot\left(\vec{a}\phi\right) + \nabla\cdot\left(b\nabla\phi\right)
-        \\
-        \int_V\frac{\partial\phi}{\partial t}\,dV
-        &= \int_S \hat{n} \cdot \left(\vec{a}\phi + b\nabla\phi\right) \, dS
-        \\
-        \int_V\frac{\partial\phi}{\partial t}\,dV
-        &= \int_{S\neq f_0} \hat{n} \cdot \left(\vec{a}\phi + b\nabla\phi\right) \, dS
-        + \int_{f_0} g \, dS
-   \end{aligned}
+    \frac{\partial\phi}{\partial t}
+    &= \nabla\cdot\left(\vec{a}\phi\right) + \nabla\cdot\left(b\nabla\phi\right)
+    \\
+    \int_V\frac{\partial\phi}{\partial t}\,dV
+    &= \int_S \hat{n} \cdot \left(\vec{a}\phi + b\nabla\phi\right) \, dS
+    \\
+    \int_V\frac{\partial\phi}{\partial t}\,dV
+    &= \int_{S\neq f_0} \hat{n} \cdot \left(\vec{a}\phi + b\nabla\phi\right) \, dS
+    + \int_{f_0} g \, dS
 
 >>> convectionCoeff = FaceVariable(mesh=mesh, value=[a])
 >>> convectionCoeff.setValue(0., where=mask)
@@ -578,63 +576,72 @@ can often be substituted for the flux in an equation
 >>>        + DiffusionTerm(coeff=diffusionCoeff) + (g * mask * mesh.faceNormals).divergence)
 
 When the Robin condition does not exactly map onto the boundary flux, we
-can attempt to apply it term by term by taking note of the discretization
-of the :class:`~fipy.terms.diffusionTerm.DiffusionTerm`:
+can attempt to apply it term by term.  The Robin condition relates the
+gradient at a boundary face to the value on that face, however
+:term:`FiPy` naturally calculates variable values at cell centers
+and gradients at intervening faces. Using a first order upwind
+approximation, the boundary value of the variable can be put in terms of
+the neighboring cell value and the normal gradient at the boundary:
+
+.. math::
+   :label: upwind1
+
+   \phi_{f_0} &\approx \phi_P - \left(\vec{d}_{fP}\cdot\nabla\phi\right)_{f_0}
+   \\
+   &\approx \phi_P - \left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}
+
+where :math:`\vec{d}_{fP}` is the distance vector from the face center to
+the adjoining cell center.  The approximation
+:math:`\left(\vec{d}_{fP}\cdot\nabla\phi\right)_{f_0} \approx
+\left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}`
+is most valid when the mesh is orthogonal.
+
+Substituting this expression into the Robin condition:
+
+.. math::
+   :label: Robin_facegrad
+
+   \hat{n}\cdot\left(\vec{a} \phi + b \nabla\phi\right)_{f_0} &= g \\
+   \hat{n}\cdot\left(\vec{a} \phi_P
+   - \vec{a} \left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}
+   + b \nabla\phi\right)_{f_0} &\approx g \\
+   \left(\hat{n}\cdot\nabla\phi\right)_{f_0}
+   &\approx \frac{g - \hat{n}\cdot\vec{a} \phi_P}{-\left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b}
+
+we obtain an expression for the gradient at the boundary face in terms of
+its neighboring cell.  We can, in turn, substitute this back into
+:eq:`upwind1`
+
+.. math::
+   :label: upwind2
+
+   \phi_{f_0} &\approx \phi_P
+   - \frac{g - \hat{n}\cdot\vec{a} \phi_P}
+          {-\left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b}
+   \left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0} \\
+   &\approx \frac{-g \left(\hat{n}\cdot\vec{d}_{fP}\right)_{f_0} + b\phi_P}
+                 {- \left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b}
+
+to obtain the value on the bounary face in terms of the neighboring cell.
+
+Substituting :eq:`Robin_facegrad` into the discretization of the
+:class:`~fipy.terms.diffusionTerm.DiffusionTerm`:
 
 .. math::
 
-   \begin{aligned}
-       \int_V \nabla\cdot\left(\Gamma\nabla\phi\right) dV &\approx
-       \sum_f \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f \\
-       &= \sum_{f\neq f_0} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f 
-       + \Gamma_{f_0} \left(\hat{n}\cdot\nabla\phi\right)_{f_0} A_{f_0}
-   \end{aligned}
-
-The Robin condition can be used to substitute for the expression 
-:math:`\left(\hat{n}\cdot\nabla\phi\right)_{f_0}`
-but we note that :term:`FiPy` calculates variable values at cell centers 
-and gradients at intervening faces. We obtain a first-order approximation 
-for :math:`\left(\hat{n}\cdot\nabla\phi\right)_{f_0}` in terms of 
-neighboring cell values by substituting 
-
-.. math::
-
-   \begin{aligned}
-        \phi_{f_0} &\approx \phi_P - \left(\vec{d}_{fP}\cdot\nabla\phi\right)_{f_0}
-        \\
-        &\approx \phi_P - \left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}
-   \end{aligned}
-
-into the Robin condition, where :math:`\vec{d}_{fP}` is the distance vector from the
-face center to the adjoining cell center:
-
-.. math::
-
-   \begin{aligned}
-        \hat{n}\cdot\left(\vec{a} \phi + b \nabla\phi\right)_{f_0} &= g \\
-        \hat{n}\cdot\left(\vec{a} \phi_P
-        - \vec{a} \left(\hat{n}\cdot\nabla\phi\right)_{f_0}\left(\vec{d}_{fP}\cdot\hat{n}\right)_{f_0}
-        + b \nabla\phi\right)_{f_0} &\approx g \\
-        \left(\hat{n}\cdot\nabla\phi\right)_{f_0} 
-        &\approx \frac{g - \hat{n}\cdot\vec{a} \phi_P}{-\left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b}
-   \end{aligned}
-
-such that
-
-.. math::
-
-   \begin{aligned}
-       \int_V \nabla\cdot\left(\Gamma\nabla\phi\right) dV &\approx
-       \sum_{f\neq f_0} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f 
-       + \Gamma_{f_0} \frac{g - \hat{n}\cdot\vec{a} \phi_P}
-                           {-\left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b} A_{f_0}
-   \end{aligned}
+   \int_V \nabla\cdot\left(\Gamma\nabla\phi\right) dV &\approx
+   \sum_f \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f \\
+   &= \sum_{f\neq f_0} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f
+   + \Gamma_{f_0} \left(\hat{n}\cdot\nabla\phi\right)_{f_0} A_{f_0} \\
+   &\approx \sum_{f\neq f_0} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f
+   + \Gamma_{f_0} \frac{g - \hat{n}\cdot\vec{a} \phi_P}
+                       {-\left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b} A_{f_0}
 
 An equation of the form
 
 >>> eqn = TransientTerm() == DiffusionTerm(coeff=Gamma0)
 
-can be constrained to have a Robin condition at a face identifed by 
+can be constrained to have a Robin condition at a face identifed by
 ``mask`` by making the following modifications
 
 >>> Gamma = FaceVariable(mesh=mesh, value=Gamma0)
@@ -645,21 +652,22 @@ can be constrained to have a Robin condition at a face identifed by
 >>> eqn = (TransientTerm() == DiffusionTerm(coeff=Gamma)
 ...        + RobinCoeff * g - ImplicitSourceTerm(coeff=RobinCoeff * mesh.faceNormals.dot(a)))
 
-For a :class:`~fipy.terms.convectionTerm.ConvectionTerm`, we can use the
-Robin condition directly:
+Similarly, for a :class:`~fipy.terms.convectionTerm.ConvectionTerm`, we can
+substitute :eq:`upwind2`:
 
 .. math::
 
-   \begin{aligned}
-       \int_V \nabla\cdot\left(\vec{u}\phi\right) dV &\approx
-       \sum_f \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f \\
-       &= \sum_{f\neq f_0} \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f
-       + \left(\hat{n}\cdot\vec{u}\right)_{f_0} \frac{g - b \left(\hat{n}\cdot\nabla\phi\right)_{f_0}}{\hat{n}\cdot\vec{a}} A_{f_0} \\
-       &= \sum_{f\neq f_0} \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f
-       + \left(\hat{n}\cdot\vec{u}\right)_{f_0}
-            \frac{-g \left(\hat{n}\cdot\vec{d}_{fP}\right)_{f_0} + b\phi_P}
-                 {- \left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b} A_{f_0}
-   \end{aligned}
+   \int_V \nabla\cdot\left(\vec{u}\phi\right) dV &\approx
+   \sum_f \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f \\
+   &= \sum_{f\neq f_0} \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f
+   + \left(\hat{n}\cdot\vec{u}\right)_{f_0}
+        \frac{-g \left(\hat{n}\cdot\vec{d}_{fP}\right)_{f_0} + b\phi_P}
+             {- \left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b} A_{f_0}
+
+.. note:: An expression like the heat flux convection boundary condition
+   :math:`-k\nabla T\cdot\hat{n} = h(T - T_\infty)` can be put in the form of the
+   Robin condition used above by letting :math:`\vec{a} \equiv h \hat{n}`,
+   :math:`b \equiv k`, and :math:`g \equiv h T_\infty`.
 
 Applying internal "boundary" conditions
 =======================================
