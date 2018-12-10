@@ -573,7 +573,8 @@ can often be substituted for the flux in an equation
 >>> diffusionCoeff = FaceVariable(mesh=mesh, value=b)
 >>> diffusionCoeff.setValue(0., where=mask)
 >>> eqn = (TransientTerm() == PowerLawConvectionTerm(coeff=convectionCoeff)
->>>        + DiffusionTerm(coeff=diffusionCoeff) + (g * mask * mesh.faceNormals).divergence)
+...        + DiffusionTerm(coeff=diffusionCoeff)
+...        + (g * mask * mesh.faceNormals).divergence)
 
 When the Robin condition does not exactly map onto the boundary flux, we
 can attempt to apply it term by term.  The Robin condition relates the
@@ -646,11 +647,12 @@ can be constrained to have a Robin condition at a face identifed by
 
 >>> Gamma = FaceVariable(mesh=mesh, value=Gamma0)
 >>> Gamma.setValue(0., where=mask)
->>> dPf = FaceVariable(mesh=mesh, value=mesh._faceToCellDistanceRatio * mesh.cellDistanceVectors)
+>>> dPf = FaceVariable(mesh=mesh, 
+...                    value=mesh._faceToCellDistanceRatio * mesh.cellDistanceVectors)
 >>> Af = FaceVariable(mesh=mesh, value=mesh._faceAreas)
 >>> RobinCoeff = (mask * Gamma0 * Af * mesh.faceNormals / (dPf.dot(a) + b)).divergence
->>> eqn = (TransientTerm() == DiffusionTerm(coeff=Gamma)
-...        + RobinCoeff * g - ImplicitSourceTerm(coeff=RobinCoeff * mesh.faceNormals.dot(a)))
+>>> eqn = (TransientTerm() == DiffusionTerm(coeff=Gamma) + RobinCoeff * g
+...        - ImplicitSourceTerm(coeff=RobinCoeff * mesh.faceNormals.dot(a)))
 
 Similarly, for a :class:`~fipy.terms.convectionTerm.ConvectionTerm`, we can
 substitute :eq:`upwind2`:
