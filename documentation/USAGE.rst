@@ -623,7 +623,7 @@ its neighboring cell.  We can, in turn, substitute this back into
    &\approx \frac{-g \left(\hat{n}\cdot\vec{d}_{fP}\right)_{f_0} + b\phi_P}
                  {- \left(\vec{d}_{fP}\cdot\vec{a}\right)_{f_0} + b}
 
-to obtain the value on the bounary face in terms of the neighboring cell.
+to obtain the value on the boundary face in terms of the neighboring cell.
 
 Substituting :eq:`Robin_facegrad` into the discretization of the
 :class:`~fipy.terms.diffusionTerm.DiffusionTerm`:
