@@ -29,4 +29,4 @@ SOFTWARE OR SERVICES PROVIDED HEREUNDER.
 
 .. _National Institute of Standards and Technology: http://www.nist.gov/
 .. _NIST: http://www.nist.gov/
-.. _title 17 United States Code Section 105: http://uscode.house.gov/uscode-cgi/fastweb.exe?getdoc+uscview+t17t20+9+0++
+.. _title 17 United States Code Section 105: https://www.copyright.gov/title17/92chap1.html#105
