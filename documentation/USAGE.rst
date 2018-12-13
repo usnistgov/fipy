@@ -568,12 +568,15 @@ can often be substituted for the flux in an equation
     &= \int_{S \notin S_R} \hat{n} \cdot \left(\vec{a}\phi + b\nabla\phi\right) \, dS
     + \int_{S \in S_R} g \, dS
 
->>> convectionCoeff = FaceVariable(mesh=mesh, value=[a])
->>> convectionCoeff.setValue(0., where=mask)
->>> diffusionCoeff = FaceVariable(mesh=mesh, value=b)
->>> diffusionCoeff.setValue(0., where=mask)
->>> eqn = (TransientTerm() == PowerLawConvectionTerm(coeff=convectionCoeff)
-...        + DiffusionTerm(coeff=diffusionCoeff)
+At faces identifed by ``mask``,
+
+>>> a = FaceVariable(mesh=mesh, value=..., rank=1)
+>>> a.setValue(0., where=mask)
+>>> b = FaceVariable(mesh=mesh, value=..., rank=0)
+>>> b.setValue(0., where=mask)
+>>> g = FaceVariable(mesh=mesh, value=..., rank=0)
+>>> eqn = (TransientTerm() == PowerLawConvectionTerm(coeff=a)
+...        + DiffusionTerm(coeff=b)
 ...        + (g * mask * mesh.faceNormals).divergence)
 
 When the Robin condition does not exactly map onto the boundary flux, we
@@ -643,7 +646,7 @@ An equation of the form
 
 >>> eqn = TransientTerm() == DiffusionTerm(coeff=Gamma0)
 
-can be constrained to have a Robin condition at a face identifed by
+can be constrained to have a Robin condition at faces identifed by
 ``mask`` by making the following modifications
 
 >>> Gamma = FaceVariable(mesh=mesh, value=Gamma0)
@@ -652,6 +655,9 @@ can be constrained to have a Robin condition at a face identifed by
 ...                    value=mesh._faceToCellDistanceRatio * mesh.cellDistanceVectors)
 >>> Af = FaceVariable(mesh=mesh, value=mesh._faceAreas)
 >>> n = mesh.faceNormals
+>>> a = FaceVariable(mesh=mesh, value=..., rank=1)
+>>> b = FaceVariable(mesh=mesh, value=..., rank=0)
+>>> g = FaceVariable(mesh=mesh, value=..., rank=0)
 >>> RobinCoeff = (mask * Gamma0 * Af * n / (-dPf.dot(a) + b)
 >>> eqn = (TransientTerm() == DiffusionTerm(coeff=Gamma) + (RobinCoeff * g).divergence
 ...        - ImplicitSourceTerm(coeff=(RobinCoeff * n.dot(a)).divergence)
