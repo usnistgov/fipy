@@ -581,7 +581,7 @@ can attempt to apply it term by term.  The Robin condition relates the
 gradient at a boundary face to the value on that face, however
 :term:`FiPy` naturally calculates variable values at cell centers
 and gradients at intervening faces. Using a first order upwind
-approximation, the boundary value of the variable at face :math:`f` can be put in terms of
+approximation, the boundary value of the variable at face :math:`f` can be written in terms of
 the value at the neighboring cell :math:`P` and the normal gradient at the boundary:
 
 .. math::
