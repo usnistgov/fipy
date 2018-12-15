@@ -653,12 +653,11 @@ can be constrained to have a Robin condition at faces identifed by
 >>> Gamma.setValue(0., where=mask)
 >>> dPf = FaceVariable(mesh=mesh, 
 ...                    value=mesh._faceToCellDistanceRatio * mesh.cellDistanceVectors)
->>> Af = FaceVariable(mesh=mesh, value=mesh._faceAreas)
 >>> n = mesh.faceNormals
 >>> a = FaceVariable(mesh=mesh, value=..., rank=1)
 >>> b = FaceVariable(mesh=mesh, value=..., rank=0)
 >>> g = FaceVariable(mesh=mesh, value=..., rank=0)
->>> RobinCoeff = (mask * Gamma0 * Af * n / (-dPf.dot(a) + b)
+>>> RobinCoeff = (mask * Gamma0 * n / (-dPf.dot(a) + b)
 >>> eqn = (TransientTerm() == DiffusionTerm(coeff=Gamma) + (RobinCoeff * g).divergence
 ...        - ImplicitSourceTerm(coeff=(RobinCoeff * n.dot(a)).divergence)
 
