@@ -46,11 +46,6 @@ jobs:
             source activate test-environment
             python setup.py install
 
-      - persist_to_workspace:
-          root: /opt
-          paths:
-            - conda
-
   test-27-pysparse:
     docker:
       # specify the version you desire here
@@ -59,9 +54,6 @@ jobs:
     working_directory: ~/repo
 
     steps:
-      - attach_workspace:
-          at: /opt/conda
-
       - run:
           name: run tests
           command: |
@@ -80,9 +72,6 @@ jobs:
     working_directory: ~/repo
 
     steps:
-      - attach_workspace:
-          at: /opt/conda
-
       - run:
           name: run tests
           command: |
