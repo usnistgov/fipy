@@ -5,7 +5,7 @@
 version: 2
 
 jobs:
-  binky:
+  build:
     docker:
       # specify the version you desire here
       - image: continuumio/miniconda2
@@ -87,7 +87,7 @@ workflows:
 
   test:
     jobs:
-      - binky
+      - build
       - test-27-pysparse
           requires:
             - install
