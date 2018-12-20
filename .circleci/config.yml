@@ -87,6 +87,7 @@ workflows:
 
   test:
     jobs:
+      - install
       - test-27-pysparse
           requires:
             - install
