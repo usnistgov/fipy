@@ -18,9 +18,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v2-dependencies-{{ arch }}
+          - v3-dependencies-{{ arch }}
           # fallback to using the latest cache if no exact match is found
-          - v2-dependencies-
+          - v3-dependencies-
 
       - run:
           name: install dependencies
@@ -30,15 +30,20 @@ jobs:
             conda config --set always_yes yes --set changeps1 no
             conda update -q conda
             conda config --remove channels defaults
-            conda create -v --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
+            conda create -v --quiet --name cache --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
             source activate test-environment
             conda info -a
             pip install scikit-fmm
+            conda remove -n cache --all --yes
 
       - save_cache:
           paths:
             - /opt/conda
-          key: v2-dependencies-{{ arch }}
+          key: v3-dependencies-{{ arch }}
+
+      - run:
+          name: make environment
+          conda create -v --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
 
       - run:
           name: install fipy
