@@ -88,9 +88,9 @@ workflows:
   test:
     jobs:
       - build
-      - test-27-pysparse
+      - test-27-pysparse:
           requires:
             - build
-      - test-27-scipy
+      - test-27-scipy:
           requires:
             - build
