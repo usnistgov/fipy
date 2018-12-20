@@ -156,7 +156,7 @@ workflows:
       - build
       - test-27-pysparse
           requires:
-            - install
+            - build
       - test-27-scipy
           requires:
-            - install
+            - build
