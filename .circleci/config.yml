@@ -37,7 +37,7 @@ jobs:
 
       - save_cache:
           paths:
-            - /.conda
+            - /opt/conda
           key: v1-dependencies-{{ arch }}
 
       - run:
@@ -45,6 +45,11 @@ jobs:
           command: |
             source activate test-environment
             python setup.py install
+
+      - persist_to_workspace:
+          root: /opt
+          paths:
+            - conda
 
   test-27-pysparse:
     docker:
@@ -54,6 +59,9 @@ jobs:
     working_directory: ~/repo
 
     steps:
+      - attach_workspace:
+          at: /opt/conda
+
       - run:
           name: run tests
           command: |
@@ -72,6 +80,9 @@ jobs:
     working_directory: ~/repo
 
     steps:
+      - attach_workspace:
+          at: /opt/conda
+
       - run:
           name: run tests
           command: |
