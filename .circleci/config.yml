@@ -43,7 +43,10 @@ jobs:
 
       - run:
           name: make environment
-          conda create -v --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
+          command: |
+            conda create -v --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
+            source activate test-environment
+            pip install scikit-fmm
 
       - run:
           name: install fipy
