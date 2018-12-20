@@ -34,6 +34,7 @@ jobs:
             source activate cache
             conda info -a
             pip install scikit-fmm
+            source deactivate
             conda remove -n cache --all --yes
 
       - save_cache:
