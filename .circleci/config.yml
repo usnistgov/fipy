@@ -18,9 +18,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ arch }}
+          - v2-dependencies-{{ arch }}
           # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - v2-dependencies-
 
       - run:
           name: install dependencies
@@ -38,7 +38,7 @@ jobs:
       - save_cache:
           paths:
             - /opt/conda
-          key: v1-dependencies-{{ arch }}
+          key: v2-dependencies-{{ arch }}
 
       - run:
           name: install fipy
