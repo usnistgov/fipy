@@ -5,47 +5,6 @@
 version: 2
 
 jobs:
-  build:
-    docker:
-      # specify the version you desire here
-      - image: continuumio/miniconda2
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ arch }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run:
-          name: install dependencies
-          command: |
-            apt-get --yes update
-            apt-get --yes install build-essential
-            conda config --set always_yes yes --set changeps1 no
-            conda update -q conda
-            conda config --remove channels defaults
-            conda create -v --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
-            source activate test-environment
-            conda info -a
-            pip install scikit-fmm
-
-      - save_cache:
-          paths:
-            - /.conda
-          key: v1-dependencies-{{ arch }}
-
-      - run:
-          name: install fipy
-          command: |
-            source activate test-environment
-            python setup.py install
-
   test-27-pysparse:
     docker:
       # specify the version you desire here
@@ -153,10 +112,5 @@ workflows:
 
   test:
     jobs:
-      - build
       - test-27-pysparse
-          requires:
-            - build
       - test-27-scipy
-          requires:
-            - build
