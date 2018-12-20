@@ -31,7 +31,7 @@ jobs:
             conda update -q conda
             conda config --remove channels defaults
             conda create -v --quiet --name cache --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
-            source activate test-environment
+            source activate cache
             conda info -a
             pip install scikit-fmm
             conda remove -n cache --all --yes
