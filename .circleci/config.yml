@@ -34,6 +34,9 @@ commands:
       options:
         type: string
         default: ""
+      mpirun:
+        type: string
+        default: ""
 
     steps:
       - checkout
@@ -47,7 +50,7 @@ commands:
           name: Run Tests
           command: |
             source activate ~/project/test-environment
-            python setup.py test << parameters.options >>
+            << parameters.mpirun >> python setup.py test << parameters.options >>
 
       - store_artifacts:
           path: test-reports
@@ -121,6 +124,21 @@ jobs:
       - test_fipy:
           options: "--scipy"
 
+  test-27-trilinos:
+    <<: *defaults
+
+    steps:
+      - test_fipy:
+          options: "--trilinos"
+
+  test-27-parallel:
+    <<: *defaults
+
+    steps:
+      - test_fipy:
+          options: "--trilinos"
+          mpirun: "mpirun -np 2"
+
 workflows:
   version: 2
 
@@ -131,5 +149,11 @@ workflows:
           requires:
             - conda_env
       - test-27-scipy:
+          requires:
+            - conda_env
+      - test-27-trilinos:
+          requires:
+            - conda_env
+      - test-27-parallel:
           requires:
             - conda_env
