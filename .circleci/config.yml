@@ -34,9 +34,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v3-dependencies-{{ arch }}
+          - v4-dependencies-{{ arch }}
           # fallback to using the latest cache if no exact match is found
-          - v3-dependencies-
+          - v4-dependencies-
 
       - run:
           name: install dependencies
@@ -55,7 +55,7 @@ jobs:
       - save_cache:
           paths:
             - /opt/conda
-          key: v3-dependencies-{{ arch }}
+          key: v4-dependencies-{{ arch }}
 
       - run:
           name: make environment
@@ -80,9 +80,9 @@ jobs:
     steps:
       - restore_cache:
           keys:
-          - v3-dependencies-{{ arch }}
+          - v4-dependencies-{{ arch }}
           # fallback to using the latest cache if no exact match is found
-          - v3-dependencies-
+          - v4-dependencies-
 
       - createenv:
            env: "test-environment"
@@ -107,9 +107,9 @@ jobs:
     steps:
       - restore_cache:
           keys:
-          - v3-dependencies-{{ arch }}
+          - v4-dependencies-{{ arch }}
           # fallback to using the latest cache if no exact match is found
-          - v3-dependencies-
+          - v4-dependencies-
 
       - createenv:
            env: "test-environment"
