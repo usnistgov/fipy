@@ -27,6 +27,32 @@ commands:
             source activate ~/project/<< parameters.env >>
             pip install scikit-fmm
 
+  test_fipy:
+    description: "Run FiPy Tests"
+
+    parameters:
+      options:
+        type: string
+        default: ""
+
+    steps:
+      - checkout
+
+      - restore_conda_cache
+
+      - attach_workspace:
+          at: ~/project
+
+      - run:
+          name: Run Tests
+          command: |
+            source activate ~/project/test-environment
+            python setup.py test << parameters.options >>
+
+      - store_artifacts:
+          path: test-reports
+          destination: test-reports
+
   # localize changes to cache name to these two commands
   save_conda_cache:
     steps:
@@ -85,44 +111,15 @@ jobs:
     <<: *defaults
 
     steps:
-      - checkout
-
-      - restore_conda_cache
-
-      - attach_workspace:
-          at: ~/project
-
-      - run:
-          name: run tests
-          command: |
-            source activate ~/project/test-environment
-            python setup.py test --pysparse
-
-      - store_artifacts:
-          path: test-reports
-          destination: test-reports
+      - test_fipy:
+          options: "--pysparse"
 
   test-27-scipy:
     <<: *defaults
 
     steps:
-      - checkout
-
-      - restore_conda_cache
-
-      - attach_workspace:
-          at: ~/project
-
-      - run:
-          name: run tests
-          no_output_timeout: 20m
-          command: |
-            source activate ~/project/test-environment
-            python setup.py test --scipy
-
-      - store_artifacts:
-          path: test-reports
-          destination: test-reports
+      - test_fipy:
+          options: "--scipy"
 
 workflows:
   version: 2
