@@ -34,9 +34,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v5-dependencies-{{ arch }}
+          - v6-dependencies-{{ arch }}
           # fallback to using the latest cache if no exact match is found
-          - v5-dependencies-
+          - v6-dependencies-
 
       - run:
           name: install dependencies
@@ -50,13 +50,20 @@ jobs:
       - createenv:
            env: "cache"
 
-      - run: conda remove -n cache --all
+      # force conda to download packages into the cache and then
+      # clean out extracted packages
+      # after https://gist.github.com/mcg1969/cbb1760cea6b0671959d8cbf957c89bf
+      - run:
+        name: remove cached environment
+        command: |
+          - conda remove -n cache --all
+          - conda clean --packages
 
       - save_cache:
           paths:
             - /opt/conda
             - /root/.cache/pip
-          key: v5-dependencies-{{ arch }}
+          key: v6-dependencies-{{ arch }}
 
   test-27-pysparse:
     docker:
@@ -68,9 +75,9 @@ jobs:
     steps:
       - restore_cache:
           keys:
-          - v5-dependencies-{{ arch }}
+          - v6-dependencies-{{ arch }}
           # fallback to using the latest cache if no exact match is found
-          - v5-dependencies-
+          - v6-dependencies-
 
       - createenv:
            env: "test-environment"
@@ -95,9 +102,9 @@ jobs:
     steps:
       - restore_cache:
           keys:
-          - v4-dependencies-{{ arch }}
+          - v6-dependencies-{{ arch }}
           # fallback to using the latest cache if no exact match is found
-          - v4-dependencies-
+          - v6-dependencies-
 
       - createenv:
            env: "test-environment"
