@@ -56,8 +56,8 @@ jobs:
       - run:
           name: remove cached environment
           command: |
-            - conda remove -n cache --all
-            - conda clean --packages
+            conda remove -n cache --all
+            conda clean --packages
 
       - save_cache:
           paths:
