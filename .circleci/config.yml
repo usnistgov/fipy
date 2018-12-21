@@ -47,15 +47,14 @@ jobs:
             conda config --remove channels defaults
 
       - createenv:
-           env: "cache"
+          env: "test-environment"
 
       # force conda to download packages into the cache and then
       # clean out extracted packages
       # after https://gist.github.com/mcg1969/cbb1760cea6b0671959d8cbf957c89bf
       - run:
-          name: Remove Cached Environment
+          name: Remove Extracted Conda Packages
           command: |
-            conda remove -n cache --all
             conda clean --packages
 
       - save_cache:
@@ -63,9 +62,6 @@ jobs:
             - /opt/conda
             - /root/.cache/pip
           key: v6-dependencies-{{ arch }}
-
-      - createenv:
-          env: "test-environment"
 
       - persist_to_workspace:
           root: ~/repo
