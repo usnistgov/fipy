@@ -54,10 +54,10 @@ jobs:
       # clean out extracted packages
       # after https://gist.github.com/mcg1969/cbb1760cea6b0671959d8cbf957c89bf
       - run:
-        name: remove cached environment
-        command: |
-          - conda remove -n cache --all
-          - conda clean --packages
+          name: remove cached environment
+          command: |
+            - conda remove -n cache --all
+            - conda clean --packages
 
       - save_cache:
           paths:
