@@ -48,7 +48,7 @@ commands:
 
       - run:
           name: Run Tests
-          no_output_timeout: 20m
+          no_output_timeout: 30m
           command: |
             source activate ~/project/test-environment
             << parameters.mpirun >> python setup.py test << parameters.options >>
