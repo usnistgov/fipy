@@ -8,7 +8,7 @@ defaults: &defaults
   docker:
     - image: continuumio/miniconda2
 
-  working_directory: ~/repo
+  working_directory: ~/project
 
 commands:
   createenv:
@@ -24,7 +24,7 @@ commands:
           name: Create Conda Environment
           command: |
             conda create -v --quiet --prefix << parameters.env >> --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
-            source activate ~/repo/<< parameters.env >>
+            source activate ~/project/<< parameters.env >>
             pip install scikit-fmm
 
   # localize changes to cache name to these two commands
@@ -77,7 +77,7 @@ jobs:
       - save_conda_cache
 
       - persist_to_workspace:
-          root: ~/repo
+          root: ~/project
           paths:
             - test-environment
 
@@ -90,12 +90,12 @@ jobs:
       - restore_conda_cache
 
       - attach_workspace:
-          at: ~/repo
+          at: ~/project
 
       - run:
           name: run tests
           command: |
-            source activate ~/repo/test-environment
+            source activate ~/project/test-environment
             python setup.py test --pysparse
 
       - store_artifacts:
@@ -111,13 +111,13 @@ jobs:
       - restore_conda_cache
 
       - attach_workspace:
-          at: ~/repo
+          at: ~/project
 
       - run:
           name: run tests
           no_output_timeout: 20m
           command: |
-            source activate ~/repo/test-environment
+            source activate ~/project/test-environment
             python setup.py test --scipy
 
       - store_artifacts:
