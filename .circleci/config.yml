@@ -138,7 +138,7 @@ workflows:
       - conda_env
       - test-27-pysparse:
           requires:
-            - build
+            - conda_env
       - test-27-scipy:
           requires:
-            - build
+            - conda_env
