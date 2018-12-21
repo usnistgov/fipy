@@ -34,9 +34,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v4-dependencies-{{ arch }}
+          - v5-dependencies-{{ arch }}
           # fallback to using the latest cache if no exact match is found
-          - v4-dependencies-
+          - v5-dependencies-
 
       - run:
           name: install dependencies
@@ -55,7 +55,8 @@ jobs:
       - save_cache:
           paths:
             - /opt/conda
-          key: v4-dependencies-{{ arch }}
+            - /root/.cache/pip
+          key: v5-dependencies-{{ arch }}
 
   test-27-pysparse:
     docker:
@@ -67,9 +68,9 @@ jobs:
     steps:
       - restore_cache:
           keys:
-          - v4-dependencies-{{ arch }}
+          - v5-dependencies-{{ arch }}
           # fallback to using the latest cache if no exact match is found
-          - v4-dependencies-
+          - v5-dependencies-
 
       - createenv:
            env: "test-environment"
