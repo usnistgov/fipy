@@ -4,6 +4,12 @@
 #
 version: 2.1
 
+defaults: &defaults
+  docker:
+    - image: continuumio/miniconda2
+
+  working_directory: ~/repo
+
 commands:
   createenv:
     description: "Create conda environment"
@@ -23,11 +29,7 @@ commands:
 
 jobs:
   conda_env:
-    docker:
-      # specify the version you desire here
-      - image: continuumio/miniconda2
-
-    working_directory: ~/repo
+    <<: *defaults
 
     steps:
       # Download and cache dependencies
@@ -69,11 +71,7 @@ jobs:
             - test-environment
 
   test-27-pysparse:
-    docker:
-      # specify the version you desire here
-      - image: continuumio/miniconda2
-
-    working_directory: ~/repo
+    <<: *defaults
 
     steps:
       - checkout
@@ -98,11 +96,7 @@ jobs:
           destination: test-reports
 
   test-27-scipy:
-    docker:
-      # specify the version you desire here
-      - image: continuumio/miniconda2
-
-    working_directory: ~/repo
+    <<: *defaults
 
     steps:
       - checkout
