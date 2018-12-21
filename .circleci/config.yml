@@ -20,7 +20,6 @@ commands:
             source activate << parameters.env >>
             pip install scikit-fmm
 
-
 jobs:
   build:
     docker:
@@ -57,19 +56,6 @@ jobs:
           paths:
             - /opt/conda
           key: v4-dependencies-{{ arch }}
-
-      - run:
-          name: make environment
-          command: |
-            conda create -v --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
-            source activate test-environment
-            pip install scikit-fmm
-
-      - run:
-          name: install fipy
-          command: |
-            source activate test-environment
-            python setup.py install
 
   test-27-pysparse:
     docker:
