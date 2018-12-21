@@ -27,17 +27,32 @@ commands:
             source activate ~/repo/<< parameters.env >>
             pip install scikit-fmm
 
+  # localize changes to cache name to these two commands
+  save_conda_cache:
+    steps:
+      - save_cache:
+          paths:
+            - /opt/conda
+            - /root/.cache/pip
+          key: v6-dependencies-{{ arch }}
+
+  restore_conda_cache:
+    description: "Restore cache holding conda and pip"
+
+    steps:
+      - restore_cache:
+          keys:
+          - v6-dependencies-{{ arch }}
+          # fallback to using the latest cache if no exact match is found
+          - v6-dependencies-
+
 jobs:
   conda_env:
     <<: *defaults
 
     steps:
       # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v6-dependencies-{{ arch }}
-          # fallback to using the latest cache if no exact match is found
-          - v6-dependencies-
+      - restore_conda_cache
 
       - run:
           name: Install Dependencies
@@ -59,11 +74,7 @@ jobs:
           command: |
             conda clean --packages
 
-      - save_cache:
-          paths:
-            - /opt/conda
-            - /root/.cache/pip
-          key: v6-dependencies-{{ arch }}
+      - save_conda_cache
 
       - persist_to_workspace:
           root: ~/repo
@@ -76,11 +87,7 @@ jobs:
     steps:
       - checkout
 
-      - restore_cache:
-          keys:
-          - v6-dependencies-{{ arch }}
-          # fallback to using the latest cache if no exact match is found
-          - v6-dependencies-
+      - restore_conda_cache
 
       - attach_workspace:
           at: ~/repo
@@ -101,11 +108,7 @@ jobs:
     steps:
       - checkout
 
-      - restore_cache:
-          keys:
-          - v6-dependencies-{{ arch }}
-          # fallback to using the latest cache if no exact match is found
-          - v6-dependencies-
+      - restore_conda_cache
 
       - attach_workspace:
           at: ~/repo
