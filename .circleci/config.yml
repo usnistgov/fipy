@@ -94,7 +94,7 @@ jobs:
       - run:
           name: run tests
           command: |
-            source activate test-environment
+            source activate ~/repo/test-environment
             python setup.py test --pysparse
 
       - store_artifacts:
@@ -123,7 +123,7 @@ jobs:
       - run:
           name: run tests
           command: |
-            source activate test-environment
+            source activate ~/repo/test-environment
             python setup.py test --scipy
 
       - store_artifacts:
