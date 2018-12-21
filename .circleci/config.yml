@@ -122,6 +122,7 @@ jobs:
 
       - run:
           name: run tests
+          no_output_timeout: 20m
           command: |
             source activate ~/repo/test-environment
             python setup.py test --scipy
