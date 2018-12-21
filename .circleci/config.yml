@@ -73,6 +73,8 @@ jobs:
     working_directory: ~/repo
 
     steps:
+      - checkout
+
       - restore_cache:
           keys:
           - v6-dependencies-{{ arch }}
@@ -100,6 +102,8 @@ jobs:
     working_directory: ~/repo
 
     steps:
+      - checkout
+
       - restore_cache:
           keys:
           - v6-dependencies-{{ arch }}
