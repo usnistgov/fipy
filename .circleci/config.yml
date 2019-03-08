@@ -41,6 +41,11 @@ commands:
         default: ""
 
     steps:
+      - run:
+          name: Install libGL
+          command: |
+            apt-get --yes install libgl1-mesa-glx
+
       - checkout
 
       - restore_conda_cache
@@ -66,7 +71,7 @@ commands:
           paths:
             - /opt/conda
             - /root/.cache/pip
-          key: v6-dependencies-{{ arch }}
+          key: v7-dependencies-{{ arch }}
 
   restore_conda_cache:
     description: "Restore cache holding conda and pip"
@@ -74,9 +79,9 @@ commands:
     steps:
       - restore_cache:
           keys:
-          - v6-dependencies-{{ arch }}
+          - v7-dependencies-{{ arch }}
           # fallback to using the latest cache if no exact match is found
-          - v6-dependencies-
+          - v7-dependencies-
 
 jobs:
   conda_env:
@@ -91,10 +96,6 @@ jobs:
           command: |
             apt-get --yes update
             apt-get --yes install build-essential
-            apt-get --yes install libgl1-mesa-glx
-            echo "=== BEGIN find libGL ==="
-            find /usr/lib -name "libGL*"
-            echo "=== END find libGL ==="
             conda config --set always_yes yes --set changeps1 no
             conda update -q conda
             conda config --remove channels defaults
