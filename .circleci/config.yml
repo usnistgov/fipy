@@ -91,6 +91,7 @@ jobs:
           command: |
             apt-get --yes update
             apt-get --yes install build-essential
+            apt-get --yes install libgl1-mesa-glx
             conda config --set always_yes yes --set changeps1 no
             conda update -q conda
             conda config --remove channels defaults
