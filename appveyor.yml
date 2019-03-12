@@ -64,7 +64,9 @@ install:
     - cmd: conda.exe config --add channels conda-forge
 
     # Configure the VM.
-    - cmd: conda.exe install --quiet --name root fipy
+    # - cmd: conda.exe install --quiet --name root fipy
+    - cmd: if "%CONDA_PY%" == "27" conda.exe install --quiet --name root numpy scipy gmsh=3.0.6 pysparse matplotlib mayavi weave
+    - cmd: if "%CONDA_PY%" == "36" conda.exe install --quiet --name root numpy scipy gmsh=3.0.6 matplotlib
 
     - cmd: if "%CONDA_PY%" == "36" 2to3 --write . 1> NUL 2>&1
     - cmd: if "%CONDA_PY%" == "36" 2to3 --write --doctests_only . 1> NUL 2>&1
