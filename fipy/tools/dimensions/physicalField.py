@@ -603,7 +603,7 @@ class PhysicalField(object):
             ...     raise ValueError("can only place a scalar for an  array of size 1")
             Traceback (most recent call last):
                 ...
-            ValueError: can only place a scalar for an  array of size 1
+            ValueError: can only convert an array of size 1 to a Python scalar #doctest: +IGNORE_EXCEPTION_DETAIL
             >>> a.itemset(PhysicalField("2 min"))
             Traceback (most recent call last):
                 ...
