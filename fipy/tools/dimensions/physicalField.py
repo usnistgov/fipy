@@ -596,14 +596,14 @@ class PhysicalField(object):
             >>> print a.allclose("1.8288 m")
             1
             >>> a = PhysicalField(((3.,4.),(5.,6.)),"m")
-            >>> try:
+            >>> try: #doctest: +IGNORE_EXCEPTION_DETAIL
             ...     a.itemset(PhysicalField("6 ft"))
             ... except IndexError:
             ...     # NumPy 1.7 has changed the exception type
             ...     raise ValueError("can only place a scalar for an  array of size 1")
             Traceback (most recent call last):
                 ...
-            ValueError: can only convert an array of size 1 to a Python scalar #doctest: +IGNORE_EXCEPTION_DETAIL
+            ValueError: can only convert an array of size 1 to a Python scalar
             >>> a.itemset(PhysicalField("2 min"))
             Traceback (most recent call last):
                 ...
