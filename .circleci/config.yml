@@ -24,7 +24,7 @@ commands:
       - run:
           name: Create Conda Environment
           command: |
-            conda create -v --quiet --prefix << parameters.env >> --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh<4.0 pysparse pytrilinos  mpi4py  matplotlib mayavi weave
+            conda create -v --quiet --prefix << parameters.env >> --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy "gmsh<4.0" pysparse pytrilinos  mpi4py  matplotlib mayavi weave
             source activate ~/project/<< parameters.env >>
             pip install scikit-fmm
 
