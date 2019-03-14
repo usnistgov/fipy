@@ -2,6 +2,7 @@
 Overview
 ========
 
+
 .. only:: latex
 
    :term:`FiPy` is an object oriented, partial differential equation (PDE)
