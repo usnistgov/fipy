@@ -13,16 +13,6 @@ env:
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos
   - TRAVIS_PYTHON_VERSION=3.6 MPIRUN= FIPY_SOLVERS=scipy
 cache: apt
-addons:
-  apt:
-    packages:
-    # - liblapack3
-    # - liblapack.so.3
-    # - libatlas-dev
-    # - libatlas-base-dev
-    # - liblapack-dev
-    # - liblapack3gf
-    # - gfortran
 branches:
   except:
     - nist-pages
@@ -61,7 +51,6 @@ before_install:
       fi
     elif [[ $TRAVIS_OS_NAME -eq "osx" ]]; then
       conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy "gmsh<4.0" pysparse pytrilinos mpi4py matplotlib mayavi weave;
-      # conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy;
     fi
   - source activate test-environment
   # Useful for debugging any issues with conda
