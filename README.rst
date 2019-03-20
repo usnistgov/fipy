@@ -22,6 +22,7 @@ Overview
    significant advantage to :term:`Python` is the existing suite of tools for
    array calculations, sparse matrices and data rendering.
 
+
 .. only:: html
 
    | |CircleCI|_ |TravisCI|_ |AppVeyor|_
