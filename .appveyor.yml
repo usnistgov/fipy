@@ -62,7 +62,7 @@ install:
     - cmd: conda.exe install --quiet --name root python numpy scipy matplotlib
     - cmd: if "%CONDA_PY%" == "27" conda.exe install --quiet --name root mayavi weave
     - cmd: if "%FIPY_SOLVERS%" == "pysparse" conda.exe install --quiet --name root pysparse
-    - cmd: if "%FIPY_SOLVERS%" == "scipy" if "%TARGET_ARCH%" == "x64" conda.exe install --quiet --name root gmsh=3.0.6
+    - cmd: if "%CONDA_PY%" == "36" if "%TARGET_ARCH%" == "x64" conda.exe install --quiet --name root gmsh=3.0.6
 
     - cmd: if "%CONDA_PY%" == "36" 2to3 --write . 1> NUL 2>&1
     - cmd: if "%CONDA_PY%" == "36" 2to3 --write --doctests_only . 1> NUL 2>&1
