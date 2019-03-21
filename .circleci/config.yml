@@ -147,14 +147,14 @@ jobs:
     <<: *defaults2
 
     steps:
-      - install_conda_packages
+      - install_conda_packages:
           packages: "python=2.7 numpy scipy \"gmsh<4.0\" pysparse pytrilinos  mpi4py  matplotlib mayavi weave"
 
   conda3_env:
     <<: *defaults3
 
     steps:
-      - install_conda_packages
+      - install_conda_packages:
           packages: "python=3.6 numpy scipy \"gmsh<4.0\" matplotlib mayavi"
 
   test-27-pysparse:
