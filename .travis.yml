@@ -19,7 +19,6 @@ branches:
 before_install:
   # sudo ln -s /usr/lib/lapack/liblapack.so.3gf /usr/lib/lapack/liblapack.so.3;
   # sudo ldconfig;
-  - echo "TRAVIS_OS_NAME = $TRAVIS_OS_NAME"
   - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
       sudo apt-get update;
     fi
@@ -36,7 +35,7 @@ before_install:
     else
       export MINICONDA_VERSION=;
     fi
-  - wget https://repo.continuum.io/miniconda/Miniconda${MINICONDA_VERSION}-latest-${MINICONDA_OS_NAME}-x86_64.sh -O miniconda.sh;
+  - wget "https://repo.continuum.io/miniconda/Miniconda${MINICONDA_VERSION}-latest-${MINICONDA_OS_NAME}-x86_64.sh" -O miniconda.sh;
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
