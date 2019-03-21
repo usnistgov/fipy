@@ -52,11 +52,6 @@ commands:
         default: ""
 
     steps:
-      - run:
-          name: Install libGLU
-          command: |
-            apt-get --yes install libglu1-mesa
-
       - checkout
 
       - restore_conda_cache
