@@ -80,6 +80,11 @@ commands:
         default: ""
 
     steps:
+      - run:
+          name: Install libGLU
+          command: |
+            apt-get --yes install libglu1-mesa
+
       - checkout
 
       - test_fipy:
@@ -98,6 +103,11 @@ commands:
         default: ""
 
     steps:
+      - run:
+          name: Install libGL
+          command: |
+            apt-get --yes install libgl1-mesa-glx
+
       - checkout
 
       - run:
