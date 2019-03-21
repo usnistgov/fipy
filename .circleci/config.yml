@@ -83,6 +83,7 @@ commands:
       - run:
           name: Install libGLU
           command: |
+            apt-get --yes update
             apt-get --yes install libglu1-mesa
 
       - checkout
@@ -106,6 +107,7 @@ commands:
       - run:
           name: Install libGL
           command: |
+            apt-get --yes update
             apt-get --yes install libgl1-mesa-glx
 
       - checkout
