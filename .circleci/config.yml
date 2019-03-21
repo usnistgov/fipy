@@ -43,7 +43,7 @@ commands:
       - run:
           name: Install libGLU
           command: |
-            apt-get --yes install libgl1-mesa
+            apt-get --yes install libglu1-mesa
 
       - checkout
 
