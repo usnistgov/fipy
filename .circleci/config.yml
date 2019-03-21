@@ -4,12 +4,20 @@
 #
 version: 2.1
 
-
 defaults: &defaults
+  working_directory: ~/project
+
+defaults2: &defaults2
+  <<: *defaults
+
   docker:
     - image: continuumio/miniconda2
 
-  working_directory: ~/project
+defaults3: &defaults3
+  <<: *defaults
+
+  docker:
+    - image: continuumio/miniconda3
 
 commands:
   createenv:
@@ -20,11 +28,15 @@ commands:
         type: string
         default: "cache"
 
+      packages:
+        type: string
+        default: ""
+
     steps:
       - run:
           name: Create Conda Environment
           command: |
-            conda create -v --quiet --prefix << parameters.env >> --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy "gmsh<4.0" pysparse pytrilinos  mpi4py  matplotlib mayavi weave
+            conda create -v --quiet --prefix << parameters.env >> --show-channel-urls --channel guyer --channel conda-forge << parameters.packages >>
             source activate ~/project/<< parameters.env >>
             pip install scikit-fmm
 
@@ -82,14 +94,8 @@ commands:
           # fallback to using the latest cache if no exact match is found
           - v7-dependencies-
 
-jobs:
-  conda_env:
-    <<: *defaults
-
+  install_dependencies:
     steps:
-      # Download and cache dependencies
-      - restore_conda_cache
-
       - run:
           name: Install Dependencies
           command: |
@@ -99,16 +105,35 @@ jobs:
             conda update -q conda
             conda config --remove channels defaults
 
-      - createenv:
-          env: "test-environment"
-
-      # force conda to download packages into the cache and then
-      # clean out extracted packages
-      # after https://gist.github.com/mcg1969/cbb1760cea6b0671959d8cbf957c89bf
+  remove_extracted_conda_packages:
+    description: "force conda to download packages into the cache and then
+                  clean out extracted packages
+                  after https://gist.github.com/mcg1969/cbb1760cea6b0671959d8cbf957c89bf"
+    steps:
       - run:
           name: Remove Extracted Conda Packages
           command: |
             conda clean --packages
+
+  install_conda_packages:
+    description: "Restore conda environment and install packages"
+
+    parameters:
+      packages:
+        type: string
+        default: ""
+
+    steps:
+      # Download and cache dependencies
+      - restore_conda_cache
+
+      - install_dependencies
+
+      - createenv:
+          env: "test-environment"
+          packages: << parameters.packages >>
+
+      - remove_extracted_conda_packages
 
       - save_conda_cache
 
@@ -117,50 +142,76 @@ jobs:
           paths:
             - test-environment
 
+jobs:
+  conda2_env:
+    <<: *defaults2
+
+    steps:
+      - install_conda_packages
+          packages: "python=2.7 numpy scipy \"gmsh<4.0\" pysparse pytrilinos  mpi4py  matplotlib mayavi weave"
+
+  conda3_env:
+    <<: *defaults3
+
+    steps:
+      - install_conda_packages
+          packages: "python=3.6 numpy scipy \"gmsh<4.0\" matplotlib mayavi"
+
   test-27-pysparse:
-    <<: *defaults
+    <<: *defaults2
 
     steps:
       - test_fipy:
           options: "--pysparse"
 
   test-27-scipy:
-    <<: *defaults
+    <<: *defaults2
 
     steps:
       - test_fipy:
           options: "--scipy"
 
   test-27-trilinos:
-    <<: *defaults
+    <<: *defaults2
 
     steps:
       - test_fipy:
           options: "--trilinos"
 
   test-27-parallel:
-    <<: *defaults
+    <<: *defaults2
 
     steps:
       - test_fipy:
           options: "--trilinos"
           mpirun: "mpirun -np 2"
 
+  test-36-scipy:
+    <<: *defaults3
+
+    steps:
+      - test_fipy:
+          options: "--scipy"
+
 workflows:
   version: 2
 
   test:
     jobs:
-      - conda_env
+      - conda2_env
+      - conda3_env
       - test-27-pysparse:
           requires:
-            - conda_env
+            - conda2_env
       - test-27-scipy:
           requires:
-            - conda_env
+            - conda2_env
       - test-27-trilinos:
           requires:
-            - conda_env
+            - conda2_env
       - test-27-parallel:
           requires:
-            - conda_env
+            - conda2_env
+      - test-36-scipy:
+          requires:
+            - conda3_env
