@@ -70,6 +70,48 @@ commands:
           path: test-reports
           destination: test-reports
 
+  test_fipy2:
+    description: "Run FiPy Tests with python 2.x"
+
+    parameters:
+      options:
+        type: string
+        default: ""
+      mpirun:
+        type: string
+        default: ""
+
+    steps:
+      - checkout
+
+      - test_fipy:
+          options: << parameters.options >>
+          mpirun: << parameters.mpirun >>
+
+  test_fipy3:
+    description: "Run FiPy Tests with Py3k"
+
+    parameters:
+      options:
+        type: string
+        default: ""
+      mpirun:
+        type: string
+        default: ""
+
+    steps:
+      - checkout
+
+      - run:
+          name: 2to3
+          command: |
+            2to3 --write . &> /dev/null;
+            2to3 --write --doctests_only . &> /dev/null;
+
+      - test_fipy:
+          options: << parameters.options >>
+          mpirun: << parameters.mpirun >>
+
   # localize changes to cache name to these two commands
   save_conda_cache:
     steps:
@@ -156,28 +198,28 @@ jobs:
     <<: *defaults2
 
     steps:
-      - test_fipy:
+      - test_fipy2:
           options: "--pysparse"
 
   test-27-scipy:
     <<: *defaults2
 
     steps:
-      - test_fipy:
+      - test_fipy2:
           options: "--scipy"
 
   test-27-trilinos:
     <<: *defaults2
 
     steps:
-      - test_fipy:
+      - test_fipy2:
           options: "--trilinos"
 
   test-27-parallel:
     <<: *defaults2
 
     steps:
-      - test_fipy:
+      - test_fipy2:
           options: "--trilinos"
           mpirun: "mpirun -np 2"
 
@@ -185,13 +227,7 @@ jobs:
     <<: *defaults3
 
     steps:
-      - run:
-          name: 2to3
-          command: |
-            2to3 --write . &> /dev/null;
-            2to3 --write --doctests_only . &> /dev/null;
-
-      - test_fipy:
+      - test_fipy3:
           options: "--scipy"
 
 workflows:
