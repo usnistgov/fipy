@@ -52,8 +52,6 @@ commands:
         default: ""
 
     steps:
-      - checkout
-
       - restore_conda_cache
 
       - attach_workspace:
