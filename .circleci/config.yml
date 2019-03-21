@@ -190,6 +190,12 @@ jobs:
     <<: *defaults3
 
     steps:
+      - run:
+          name: 2to3
+          command: |
+            2to3 --write . &> /dev/null;
+            2to3 --write --doctests_only . &> /dev/null;
+
       - test_fipy:
           options: "--scipy"
 
