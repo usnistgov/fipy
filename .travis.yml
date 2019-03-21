@@ -19,6 +19,7 @@ branches:
 before_install:
   # sudo ln -s /usr/lib/lapack/liblapack.so.3gf /usr/lib/lapack/liblapack.so.3;
   # sudo ldconfig;
+  - echo "TRAVIS_OS_NAME = $TRAVIS_OS_NAME"
   - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
       sudo apt-get update;
     fi
