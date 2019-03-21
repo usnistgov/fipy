@@ -109,6 +109,7 @@ commands:
           command: |
             apt-get --yes update
             apt-get --yes install libgl1-mesa-glx
+            apt-get --yes install libxrender1
 
       - checkout
 
