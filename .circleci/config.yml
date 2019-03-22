@@ -62,6 +62,7 @@ commands:
           no_output_timeout: 30m
           command: |
             source activate ~/project/test-environment
+            export OMP_NUM_THREADS=1
             << parameters.mpirun >> python setup.py test << parameters.options >>
 
       - store_artifacts:
