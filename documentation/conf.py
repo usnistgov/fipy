@@ -28,11 +28,10 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx', 
               'sphinx.ext.todo', 
               'sphinx.ext.coverage', 
-              'sphinx.ext.pngmath', 
+              'sphinx.ext.imgmath', 
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
               'numpydoc',
-              'sphinxcontrib.traclinks',
               'redirecting_html',
               'sphinxcontrib.bibtex']
 
@@ -126,8 +125,6 @@ autosummary_generate = ['examples/diffusion/index.rst',
                         
 autodoc_member_order = 'alphabetical'
 
-traclinks_base_url = 'http://matforge.org/fipy'
-                        
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
@@ -323,7 +320,7 @@ latex_additional_files = ['figures/nistident_flright_vec.pdf']
 # If false, no module index is generated.
 #latex_use_modindex = True
 
-pngmath_latex_preamble = common_preamble
+imgmath_latex_preamble = common_preamble
 
 # refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {
