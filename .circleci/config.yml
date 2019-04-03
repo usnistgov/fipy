@@ -36,7 +36,7 @@ commands:
       - run:
           name: Create Conda Environment
           command: |
-            conda create -v --quiet --prefix << parameters.env >> --show-channel-urls --channel guyer --channel conda-forge << parameters.packages >>
+            conda create -v --quiet --prefix << parameters.env >> --show-channel-urls --channel conda-forge << parameters.packages >>
             source activate ~/project/<< parameters.env >>
             pip install scikit-fmm
 
@@ -198,14 +198,14 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=2.7 numpy scipy \"gmsh<4.0\" pysparse pytrilinos  mpi4py  matplotlib mayavi weave"
+          packages: "python=2.7 fipy"
 
   conda3_env:
     <<: *defaults3
 
     steps:
       - install_conda_packages:
-          packages: "python=3.6 numpy scipy \"gmsh<4.0\" matplotlib mayavi"
+          packages: "python=3.6 fipy"
 
   test-27-pysparse:
     <<: *defaults2

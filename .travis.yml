@@ -41,13 +41,7 @@ before_install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  # fipy conda package does not properly load scipy and numpy from
-  # conda-forge channel when on linux
-  - if [[ $PY3K -eq 1 ]]; then
-      conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy "gmsh<4.0" matplotlib;
-    else
-      conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy "gmsh<4.0" pysparse pytrilinos mpi4py matplotlib mayavi weave;
-    fi
+  - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy;
   - source activate test-environment
   # Useful for debugging any issues with conda
   - conda info -a
