@@ -451,6 +451,16 @@ of the system package manager and the system directories.  These utilities
 include conda_, Stow_, Virtualenv_ and zc.buildout_, amongst others.
 Conda_ is the only one of these we have the resources to support.
 
+Our preferred development environment is set up with::
+
+   $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy
+   $ source activate <MYFIPYENV>
+   $ pip install scikit-fmm
+   $ conda remove --channel conda-forge fipy
+   $ git clone https://github.com/usnistgov/fipy.git
+   $ cd fipy
+   $ python setup.py develop
+
 .. _Conda: https://conda.io
 .. _Stow: http://savannah.gnu.org/projects/stow/
 .. _zc.buildout: http://pypi.python.org/pypi/zc.buildout
