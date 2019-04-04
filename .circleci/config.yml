@@ -69,8 +69,7 @@ commands:
       - run:
           name: Output Environment
           command: |
-            source activate ~/project/test-environment
-            conda env export
+            conda env export --prefix ~/project/test-environment
 
       - store_artifacts:
           path: test-reports
