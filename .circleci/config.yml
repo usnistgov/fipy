@@ -69,7 +69,7 @@ commands:
       - run:
           name: Output Environment
           command: |
-          conda env export
+            conda env export
 
       - store_artifacts:
           path: test-reports
