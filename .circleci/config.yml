@@ -208,7 +208,7 @@ jobs:
     <<: *defaults2
 
     steps:
-      - test_fipy2:
+      - test_fipy2
     environment:
       FIPY_SOLVERS: pysparse
 
@@ -216,7 +216,7 @@ jobs:
     <<: *defaults2
 
     steps:
-      - test_fipy2:
+      - test_fipy2
     environment:
       FIPY_SOLVERS: pysparse
       FIPY_INLINE: 1
@@ -225,7 +225,7 @@ jobs:
     <<: *defaults2
 
     steps:
-      - test_fipy2:
+      - test_fipy2
     environment:
       FIPY_SOLVERS: scipy
 
@@ -233,7 +233,7 @@ jobs:
     <<: *defaults2
 
     steps:
-      - test_fipy2:
+      - test_fipy2
     environment:
       FIPY_SOLVERS: trilinos
 
@@ -251,7 +251,7 @@ jobs:
     <<: *defaults3
 
     steps:
-      - test_fipy3:
+      - test_fipy3
     environment:
       FIPY_SOLVERS: scipy
 
