@@ -45,9 +45,6 @@ commands:
     description: "Run FiPy Tests"
 
     parameters:
-      options:
-        type: string
-        default: ""
       mpirun:
         type: string
         default: ""
@@ -63,8 +60,10 @@ commands:
           no_output_timeout: 30m
           command: |
             source activate ~/project/test-environment
-            export OMP_NUM_THREADS=1
-            << parameters.mpirun >> python setup.py test << parameters.options >>
+            if [[ ! -z "${FIPY_INLINE}" ]]; then
+              << parameters.mpirun >> python setup.py test > /dev/null 2>&1 || true;
+            fi
+            << parameters.mpirun >> python setup.py test
 
       - run:
           name: Output Environment
@@ -79,9 +78,6 @@ commands:
     description: "Run FiPy Tests with python 2.x"
 
     parameters:
-      options:
-        type: string
-        default: ""
       mpirun:
         type: string
         default: ""
@@ -96,16 +92,12 @@ commands:
       - checkout
 
       - test_fipy:
-          options: << parameters.options >>
           mpirun: << parameters.mpirun >>
 
   test_fipy3:
     description: "Run FiPy Tests with Py3k"
 
     parameters:
-      options:
-        type: string
-        default: ""
       mpirun:
         type: string
         default: ""
@@ -128,7 +120,6 @@ commands:
             2to3 --write --doctests_only . &> /dev/null;
 
       - test_fipy:
-          options: << parameters.options >>
           mpirun: << parameters.mpirun >>
 
   # localize changes to cache name to these two commands
@@ -218,36 +209,51 @@ jobs:
 
     steps:
       - test_fipy2:
-          options: "--pysparse"
+          environment:
+            FIPY_SOLVERS: pysparse
+
+  test-27-inline:
+    <<: *defaults2
+
+    steps:
+      - test_fipy2:
+          environment:
+            FIPY_SOLVERS: pysparse
+            FIPY_INLINE: 1
 
   test-27-scipy:
     <<: *defaults2
 
     steps:
       - test_fipy2:
-          options: "--scipy"
+          environment:
+            FIPY_SOLVERS: scipy
 
   test-27-trilinos:
     <<: *defaults2
 
     steps:
       - test_fipy2:
-          options: "--trilinos"
+          environment:
+            FIPY_SOLVERS: trilinos
 
   test-27-parallel:
     <<: *defaults2
 
     steps:
       - test_fipy2:
-          options: "--trilinos"
           mpirun: "mpirun -np 2"
+          environment:
+            FIPY_SOLVERS: trilinos
+            OMP_NUM_THREADS: 1
 
   test-36-scipy:
     <<: *defaults3
 
     steps:
       - test_fipy3:
-          options: "--scipy"
+          environment:
+            FIPY_SOLVERS: scipy
 
 workflows:
   version: 2
