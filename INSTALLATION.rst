@@ -55,7 +55,7 @@ Recommended Method
   * `install Miniconda`_ on your computer
   * run::
 
-      $ conda create --name <MYFIPYENV> --channel conda-forge fipy
+      $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy
 
     .. note::
 
@@ -69,11 +69,11 @@ Recommended Method
        Note, this does not work on Windows x86, as conda-forge_ no longer
        supports that platform.  For Python 2.7.x, you should be able to do::
 
-        conda create --name <MYFIPYENV> --channel conda-forge python numpy scipy matplotlib pysparse mayavi weave
+        conda create --name <MYFIPYENV> --channel conda-forge python=2.7 numpy scipy matplotlib pysparse mayavi weave
 
        and for Python 3.x, you should be able to do::
 
-        conda create --name <MYFIPYENV> --channel conda-forge python numpy scipy matplotlib pysparse
+        conda create --name <MYFIPYENV> --channel conda-forge python=3.6 numpy scipy matplotlib pysparse
 
        followed, for either, by::
 
