@@ -75,5 +75,6 @@ build: off
 
 test_script:
     - python setup.py test --%FIPY_SOLVERS%
+    - conda env export
 # deploy_script:
 #     - cmd: upload_or_check_non_existence .\recipe guyer --channel=main

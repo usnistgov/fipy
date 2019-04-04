@@ -66,6 +66,11 @@ commands:
             export OMP_NUM_THREADS=1
             << parameters.mpirun >> python setup.py test << parameters.options >>
 
+      - run:
+          name: Output Environment
+          command: |
+          conda env export
+
       - store_artifacts:
           path: test-reports
           destination: test-reports
