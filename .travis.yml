@@ -65,7 +65,7 @@ before_script:
   # inline must be run twice to clear out compiler warnings
   # we don't care if it fails the first time
   - if [[ ! -z "${FIPY_INLINE}" ]]; then
-      $MPIRUN python setup.py test || true;
+      travis_wait $MPIRUN python setup.py test || true;
     fi
 script:
   - $MPIRUN python setup.py test;
