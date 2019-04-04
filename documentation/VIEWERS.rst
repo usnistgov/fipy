@@ -39,13 +39,6 @@ visualizer.  It displays 1D, 2D and 3D data. It is the only
 probably a better choice for 1D or 2D viewing.
 
 :term:`Mayavi` requires VTK_, which can be difficult to build from source.
-:term:`Mayavi` and VTK_ can be most easily obtained through
-
-  * the Ubuntu or Debian package managers
-  * the :ref:`Enthought Python Edition <EPD>`
-  * :ref:`python(x,y) <PYTHONXY>`
-  * the Homebrew_ package manager for `Mac OS X`_ (VTK_ only, not
-    :term:`Mayavi`)
 
 .. note::
 
@@ -53,4 +46,3 @@ probably a better choice for 1D or 2D viewing.
 
 .. _VTK: http://www.vtk.org/
 .. _Mac OS X: http://www.apple.com/macosx
-.. _Homebrew: http://mxcl.github.com/homebrew/

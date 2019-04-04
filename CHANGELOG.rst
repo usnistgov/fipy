@@ -1094,8 +1094,7 @@ The significant changes since version 1.0 are:
 
 - Installation on Windows has been made considerably easier by
   constructing executable installers for :term:`FiPy` and its
-  dependencies. Instructions for Windows installation can be found in
-  :ref:`WINDOWS-INSTALLATION`.
+  dependencies.
 
 - The arithmetic for ``Variable`` subclasses now works, and returns
   sensible answers. For example, ``VectorCellVariable * CellVariable``

@@ -74,9 +74,9 @@ Any other branches will not generally be of interest to most users.
    For some time now, we have done all significant development work on
    branches, only merged back to ``develop`` when the tests pass
    successfully. Although we cannot guarantee that ``develop`` will never be
-   broken, you can always check our build status page
+   broken, you can always check our build status pages
 
-       http://build.cmi.kent.edu:8010
+   |CircleCI|_ |TravisCI|_ |AppVeyor|_
 
    to find the most recent revision that it is running acceptably.
 
@@ -92,3 +92,10 @@ The `Pro Git book`_ :cite:`ProGit` is particularly instructive.
 .. _GitHub: https://github.com/usnistgov/fipy
 
 .. _a successful Git branching model: http://nvie.com/posts/a-successful-git-branching-model/
+
+.. |CircleCI|      image:: https://img.shields.io/circleci/project/github/usnistgov/fipy/develop.svg?label=Linux
+.. _CircleCI:      https://circleci.com/gh/usnistgov/fipy
+.. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/develop.svg?label=macOS
+.. _TravisCI:      https://travis-ci.org/usnistgov/fipy
+.. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=develop&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
+.. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy
