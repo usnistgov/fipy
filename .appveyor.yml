@@ -72,7 +72,7 @@ install:
     - cmd: if "%TARGET_ARCH%" == "x86" if "%FIPY_SOLVERS%" == "pysparse" conda.exe install --quiet --name root pysparse
 
     # conda-forge weave 0.17 is incompatible with something
->     # else and conda-forge weave 0.15 is
+    # else and conda-forge weave 0.15 is
     # [broken](https://github.com/scipy/weave/issues/11)
     - cmd: conda.exe remove --channel conda-forge weave
     - cmd: pip install weave
