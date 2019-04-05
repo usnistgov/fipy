@@ -40,6 +40,11 @@ commands:
             source activate ~/project/<< parameters.env >>
             conda uninstall --quiet fipy
             pip install scikit-fmm
+            # conda-forge weave 0.17 is incompatible with something
+            # else and conda-forge weave 0.15 is
+            # [broken](https://github.com/scipy/weave/issues/11)
+            conda remove --channel conda-forge weave
+            pip install weave
 
   test_fipy:
     description: "Run FiPy Tests"
