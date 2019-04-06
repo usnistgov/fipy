@@ -1392,6 +1392,11 @@ class Variable(object):
                                   op=lambda a: a.min(axis=axis),
                                   axis=axis)
 
+    def std(self, axis=None):
+        return self._axisOperator(opname="stdVar",
+                                  op=lambda a: numerix.std(a, axis=axis),
+                                  axis=axis)
+
     def _getitemClass(self, index):
         return self._OperatorVariableClass()
 

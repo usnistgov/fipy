@@ -455,6 +455,30 @@ class _MeshVariable(Variable):
          else:
              return Variable.allequal(self, other)
 
+    def std(self, axis=None):
+        """Evaluate standard deviation of all the elements of a `MeshVariable`.
+
+        Adapted from http://mpitutorial.com/tutorials/mpi-reduce-and-allreduce/
+
+        >>> import fipy as fp
+        >>> mesh = fp.Grid2D(nx=2, ny=2, dx=2., dy=5.)
+        >>> var = fp.CellVariable(value=(1., 2., 3., 4.), mesh=mesh)
+        >>> print (var.std()**2).allclose(1.25)
+        True
+        """
+        if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
+            def stdParallel(a):
+                N = self.mesh.globalNumberOfCells
+                mean = self.sum(axis=axis) / N
+                sq_diff = (self - mean)**2
+
+                return numerix.sqrt(sq_diff.sum(axis=axis) / N)
+
+            return self._axisOperator(opname="stdVar",
+                                      op=stdParallel,
+                                      axis=axis)
+        else:
+            return Variable.std(self, axis=axis)
 
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
