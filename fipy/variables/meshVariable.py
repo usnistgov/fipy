@@ -455,7 +455,7 @@ class _MeshVariable(Variable):
          else:
              return Variable.allequal(self, other)
 
-    def std(self, axis=None):
+    def std(self, axis=None, **kwargs):
         """Evaluate standard deviation of all the elements of a `MeshVariable`.
 
         Adapted from http://mpitutorial.com/tutorials/mpi-reduce-and-allreduce/
@@ -469,10 +469,10 @@ class _MeshVariable(Variable):
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def stdParallel(a):
                 N = self.mesh.globalNumberOfCells
-                mean = self.sum(axis=axis) / N
+                mean = self.sum(axis=axis).value / N
                 sq_diff = (self - mean)**2
 
-                return numerix.sqrt(sq_diff.sum(axis=axis) / N)
+                return numerix.sqrt(sq_diff.sum(axis=axis).value / N)
 
             return self._axisOperator(opname="stdVar",
                                       op=stdParallel,
