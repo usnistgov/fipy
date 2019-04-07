@@ -1479,7 +1479,7 @@ class Gmsh2D(Mesh2D):
     ...     square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
     ...     x, y = square.cellCenters # doctest: +GMSH
     ...     bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
-    ...     std.append(numerix.std(numerix.sqrt(2 * square.cellVolumes) / bkg)) # doctest: +GMSH
+    ...     std.append((numerix.sqrt(2 * square.cellVolumes) / bkg).std()) # doctest: +GMSH
 
     Check that the mesh is monotonically approaching the desired density
 
@@ -1498,12 +1498,12 @@ class Gmsh2D(Mesh2D):
     >>> trisquare = Tri2D(nx=1, ny=1)
     >>> x, y = trisquare.cellCenters
     >>> bkg = CellVariable(mesh=trisquare, value=abs(x / 4) + 0.01)
-    >>> std1 = numerix.std(numerix.sqrt(2 * trisquare.cellVolumes) / bkg)
+    >>> std1 = (numerix.sqrt(2 * trisquare.cellVolumes) / bkg).std()
 
     >>> square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
     >>> x, y = square.cellCenters # doctest: +GMSH
     >>> bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
-    >>> std2 = numerix.std(numerix.sqrt(2 * square.cellVolumes) / bkg) # doctest: +GMSH
+    >>> std2 = (numerix.sqrt(2 * square.cellVolumes) / bkg).std() # doctest: +GMSH
 
     >>> print std1 > std2 # doctest: +GMSH
     True
