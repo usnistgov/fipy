@@ -14,20 +14,20 @@ environment:
 #      FIPY_SOLVERS: pysparse
 #      FIPY_INLINE: 1
 
-    - TARGET_ARCH: x86
-      CONDA_PY: 27
-      CONDA_INSTALL_LOCN: C:\\Miniconda
-      FIPY_SOLVERS: scipy
+#    - TARGET_ARCH: x86
+#      CONDA_PY: 27
+#      CONDA_INSTALL_LOCN: C:\\Miniconda
+#      FIPY_SOLVERS: scipy
 
     - TARGET_ARCH: x64
       CONDA_PY: 27
       CONDA_INSTALL_LOCN: C:\\Miniconda-x64
       FIPY_SOLVERS: scipy
 
-    - TARGET_ARCH: x86
-      CONDA_PY: 36
-      CONDA_INSTALL_LOCN: C:\\Miniconda36
-      FIPY_SOLVERS: scipy
+#    - TARGET_ARCH: x86
+#      CONDA_PY: 36
+#      CONDA_INSTALL_LOCN: C:\\Miniconda36
+#      FIPY_SOLVERS: scipy
 
     - TARGET_ARCH: x64
       CONDA_PY: 36
