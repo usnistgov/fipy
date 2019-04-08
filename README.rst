@@ -24,7 +24,7 @@ Overview
 
 .. only:: html
 
-   | |TravisCI|_ |AppVeyor|_
+   | |CircleCI|_ |TravisCI|_ |AppVeyor|_
    | |GitHub|_ |PyPi|_  |Codacy|_ |CondaForge|_ |Binder|_
    | |gitter|_ |Depsy|_ |OpenHub|_
 
@@ -160,7 +160,9 @@ or a
 .. _GitHub:        https://github.com/usnistgov/fipy
 .. |gitter|        image:: https://badges.gitter.im/usnistgov/fipy.svg
 .. _gitter:        https://gitter.im/usnistgov/fipy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
-.. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/develop.svg?label=Linux
+.. |CircleCI|      image:: https://img.shields.io/circleci/project/github/usnistgov/fipy/develop.svg?label=Linux
+.. _CircleCI:      https://circleci.com/gh/usnistgov/fipy
+.. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/develop.svg?label=macOS
 .. _TravisCI:      https://travis-ci.org/usnistgov/fipy
 .. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=develop&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
 .. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy

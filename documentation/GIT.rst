@@ -73,13 +73,9 @@ Any other branches will not generally be of interest to most users.
 
    For some time now, we have done all significant development work on
    branches, only merged back to ``develop`` when the tests pass
-   successfully. Although we cannot guarantee that ``develop`` will never be
-   broken, you can always check our build status page
-
-       http://build.cmi.kent.edu:8010
-
+   successfully.  Although we cannot guarantee that ``develop`` will never
+   be broken, you can always check our :ref:`CONTINUOUSINTEGRATION` status
    to find the most recent revision that it is running acceptably.
-
 
 For those who are interested in learning more about Git, a wide variety of
 online sources are available, starting with the `official Git website`_.

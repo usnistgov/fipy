@@ -17,7 +17,7 @@ Test case for the Grid3D.
 from fipy import CellVariable, Grid2D, Grid3D, DiffusionTerm, Viewer
 from fipy.tools import numerix
 
-nx = 10
+nx = 8 # FIXME: downsized temporarily from 10 due to https://github.com/usnistgov/fipy/issues/622
 ny = 5
 nz = 3
 
@@ -41,7 +41,7 @@ var.constrain(valueBottomTop, mesh.facesBottom)
 
 #do the 2D problem for comparison
 
-nx = 10
+nx = 8 # FIXME: downsized temporarily from 10 due to https://github.com/usnistgov/fipy/issues/622
 ny = 5
 
 dx = 1.

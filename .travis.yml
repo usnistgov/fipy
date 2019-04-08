@@ -3,47 +3,37 @@
 # language: python causes grief on osx
 language: generic
 os:
-  # - osx
-   - linux
+   - osx
+  # - linux
 env:
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse
-  # - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse FIPY_INLINE=1
+#  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=pysparse FIPY_INLINE=1
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=trilinos
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos
   - TRAVIS_PYTHON_VERSION=3.6 MPIRUN= FIPY_SOLVERS=scipy
 cache: apt
-addons:
-  apt:
-    packages:
-    # - liblapack3
-    # - liblapack.so.3
-    # - libatlas-dev
-    # - libatlas-base-dev
-    # - liblapack-dev
-    # - liblapack3gf
-    # - gfortran
 branches:
   except:
     - nist-pages
 before_install:
   # sudo ln -s /usr/lib/lapack/liblapack.so.3gf /usr/lib/lapack/liblapack.so.3;
   # sudo ldconfig;
-  - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
+  - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
       sudo apt-get update;
     fi
   # We do this conditionally because it saves us some downloading if the
   # version is the same.
   - PY3K=$(echo "$TRAVIS_PYTHON_VERSION >= 3.0" | bc)
-  - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
+  - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
       export MINICONDA_OS_NAME=Linux;
-    elif [[ $TRAVIS_OS_NAME -eq "osx" ]]; then
+    elif [[ $TRAVIS_OS_NAME = "osx" ]]; then
       export MINICONDA_OS_NAME=MacOSX;
     fi
   - if [[ $PY3K -eq 1 ]]; then
       export MINICONDA_VERSION=3;
     else
-      export MINICONDA_VERSION=;
+      export MINICONDA_VERSION=2;
     fi
   - wget https://repo.continuum.io/miniconda/Miniconda${MINICONDA_VERSION}-latest-${MINICONDA_OS_NAME}-x86_64.sh -O miniconda.sh;
   - bash miniconda.sh -b -p $HOME/miniconda
@@ -51,18 +41,9 @@ before_install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  # fipy conda package does not properly load scipy and numpy from
-  # conda-forge channel when on linux
-  - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
-      if [[ $PY3K -eq 1 ]]; then
-        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh matplotlib;
-      else
-        conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION numpy scipy gmsh pysparse mpi4py matplotlib mayavi pytrilinos weave;
-      fi
-    elif [[ $TRAVIS_OS_NAME -eq "osx" ]]; then
-      conda create --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy;
-    fi
+  - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy;
   - source activate test-environment
+  - conda uninstall --quiet fipy
   # Useful for debugging any issues with conda
   - conda info -a
   - pip install scikit-fmm
@@ -76,15 +57,17 @@ before_script:
   # lack of display causes tests to abort at VtkViewer
   # Workaround @ http://docs.enthought.com/mayavi/mayavi/tips.html#rendering-using-the-virtual-framebuffer
   # and https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
-  - if [[ $TRAVIS_OS_NAME -eq "linux" ]]; then
+  - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
       export DISPLAY=:99.0;
       sh -e /etc/init.d/xvfb start;
       sleep 3;
     fi
+  # inline must be run twice to clear out compiler warnings
+  # we don't care if it fails the first time
+  - if [[ ! -z "${FIPY_INLINE}" ]]; then
+      travis_wait 40 $MPIRUN python setup.py test || true;
+    fi
 script:
- # inline must be run twice to clear out compiler warnings
- # we don't care if it fails the first time
- - if [[ ! -z "${FIPY_INLINE}" ]]; then
-     $MPIRUN python setup.py test > /dev/null 2>&1 || true;
-   fi
- - $MPIRUN python setup.py test;
+  - $MPIRUN python setup.py test;
+after_success:
+  - conda env export

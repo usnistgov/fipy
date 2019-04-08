@@ -48,8 +48,8 @@ Submit branch for code review
 
        $ git push origin $BRANCH
 
-   Check the Buildbot_ status. Fix (or, if absolutely necessary, document)
-   any failures.
+   Check the `Continuous Integration`_ status.  Fix (or, if absolutely
+   necessary, document) any failures.
 
 Paste the result of::
 
@@ -130,6 +130,50 @@ If appropriate, after successful code review and merger to the
 
    When complete, the ``version-n_m`` branch is not merged to ``master``.
 
+
+.. _CONTINUOUSINTEGRATION:
+
+======================
+Continuous Integration
+======================
+
+We use three different cloud services for continuous integration (CI).  Each
+service offers unique capabilities, but this also serves to distribute the
+load.
+
+.. only:: html
+
+   | |CircleCI|_ |TravisCI|_ |AppVeyor|_
+
+-----
+Linux
+-----
+
+Linux builds are performed on CircleCI_. This CI is configured in
+:file:`{FiPySource}/.circleci/config.yml`.
+
+--------
+Mac OS X
+--------
+
+Mac OS X builds are performed on TravisCI_. This CI is configured in
+:file:`{FiPySource}/.travis.yml`.
+
+-------
+Windows
+-------
+
+Windows builds are performed on AppVeyor_. This CI is configured in
+:file:`{FiPySource}/.appveyor.yml`.
+
+.. |CircleCI|      image:: https://img.shields.io/circleci/project/github/usnistgov/fipy/develop.svg?label=Linux
+.. _CircleCI:      https://circleci.com/gh/usnistgov/fipy
+.. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/develop.svg?label=macOS
+.. _TravisCI:      https://travis-ci.org/usnistgov/fipy
+.. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=develop&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
+.. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy
+
+
 ================
 Making a Release
 ================
@@ -177,8 +221,9 @@ Check items in the issues_ and update the :ref:`CHANGELOG`::
 
 .. attention::
 
-   If Buildbot_ doesn't show all green boxes for this release, make sure to
-   add appropriate notes in :file:`README.txt` or :file:`INSTALLATION.txt`!
+   If `Continuous Integration`_ doesn't show all green boxes for this
+   release, make sure to add appropriate notes in :file:`README.txt` or
+   :file:`INSTALLATION.txt`!
 
 .. _PyGithub: https://pygithub.readthedocs.io
 .. _Pandas: https://pandas.pydata.org
@@ -292,7 +337,6 @@ executable and upload to download page.
 .. _GitHub issue: https://github.com/usnistgov/fipy/issues/new
 .. _issues: https://github.com/usnistgov/fipy/issues
 .. _pull requests: https://github.com/usnistgov/fipy/pulls
-.. _Buildbot: http://build.cmi.kent.edu:8010/tgrid
 .. _fipy@nist.gov: mailto:fipy@nist.gov
 .. _PyVTK: http://cens.ioc.ee/projects/pyvtk/
 .. _stdeb: http://github.com/astraw/stdeb

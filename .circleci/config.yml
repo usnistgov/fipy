@@ -2,116 +2,281 @@
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
-version: 2
+version: 2.1
+
+defaults: &defaults
+  working_directory: ~/project
+
+defaults2: &defaults2
+  <<: *defaults
+
+  docker:
+    - image: continuumio/miniconda2
+
+defaults3: &defaults3
+  <<: *defaults
+
+  docker:
+    - image: continuumio/miniconda3
+
+commands:
+  createenv:
+    description: "Create conda environment"
+
+    parameters:
+      env:
+        type: string
+        default: "cache"
+
+      packages:
+        type: string
+        default: ""
+
+    steps:
+      - run:
+          name: Create Conda Environment
+          command: |
+            conda create -v --quiet --prefix << parameters.env >> --show-channel-urls --channel conda-forge << parameters.packages >>
+            source activate ~/project/<< parameters.env >>
+            conda uninstall --quiet fipy
+            pip install scikit-fmm
+
+  test_fipy:
+    description: "Run FiPy Tests"
+
+    parameters:
+      mpirun:
+        type: string
+        default: ""
+
+    steps:
+      - restore_conda_cache
+
+      - attach_workspace:
+          at: ~/project
+
+      - run:
+          name: Run Tests
+          no_output_timeout: 30m
+          command: |
+            source activate ~/project/test-environment
+            if [[ ! -z "${FIPY_INLINE}" ]]; then
+              << parameters.mpirun >> python setup.py test > /dev/null 2>&1 || true;
+            fi
+            << parameters.mpirun >> python setup.py test
+
+      - run:
+          name: Output Environment
+          command: |
+            conda env export --prefix ~/project/test-environment
+
+      - store_artifacts:
+          path: test-reports
+          destination: test-reports
+
+  test_fipy2:
+    description: "Run FiPy Tests with python 2.x"
+
+    parameters:
+      mpirun:
+        type: string
+        default: ""
+
+    steps:
+      - run:
+          name: Install libGLU
+          command: |
+            apt-get --yes update
+            apt-get --yes install libglu1-mesa
+
+      - checkout
+
+      - test_fipy:
+          mpirun: << parameters.mpirun >>
+
+  test_fipy3:
+    description: "Run FiPy Tests with Py3k"
+
+    parameters:
+      mpirun:
+        type: string
+        default: ""
+
+    steps:
+      - run:
+          name: Install libGL
+          command: |
+            apt-get --yes update
+            apt-get --yes install libglu1-mesa
+            apt-get --yes install libgl1-mesa-glx
+            apt-get --yes install libxrender1
+
+      - checkout
+
+      - run:
+          name: 2to3
+          command: |
+            2to3 --write . &> /dev/null;
+            2to3 --write --doctests_only . &> /dev/null;
+
+      - test_fipy:
+          mpirun: << parameters.mpirun >>
+
+  # localize changes to cache name to these two commands
+  save_conda_cache:
+    steps:
+      - save_cache:
+          paths:
+            - /opt/conda
+            - /root/.cache/pip
+          key: v7-dependencies-{{ arch }}
+
+  restore_conda_cache:
+    description: "Restore cache holding conda and pip"
+
+    steps:
+      - restore_cache:
+          keys:
+          - v7-dependencies-{{ arch }}
+          # fallback to using the latest cache if no exact match is found
+          - v7-dependencies-
+
+  install_dependencies:
+    steps:
+      - run:
+          name: Install Dependencies
+          command: |
+            apt-get --yes update
+            apt-get --yes install build-essential
+            conda config --set always_yes yes --set changeps1 no
+            conda update -q conda
+            conda config --remove channels defaults
+
+  remove_extracted_conda_packages:
+    description: "force conda to download packages into the cache and then
+                  clean out extracted packages
+                  after https://gist.github.com/mcg1969/cbb1760cea6b0671959d8cbf957c89bf"
+    steps:
+      - run:
+          name: Remove Extracted Conda Packages
+          command: |
+            conda clean --packages
+
+  install_conda_packages:
+    description: "Restore conda environment and install packages"
+
+    parameters:
+      packages:
+        type: string
+        default: ""
+
+    steps:
+      # Download and cache dependencies
+      - restore_conda_cache
+
+      - install_dependencies
+
+      - createenv:
+          env: "test-environment"
+          packages: << parameters.packages >>
+
+      - remove_extracted_conda_packages
+
+      - save_conda_cache
+
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - test-environment
 
 jobs:
-  test-27-pysparse:
-    docker:
-      # specify the version you desire here
-      - image: continuumio/miniconda2
-
-    working_directory: ~/repo
+  conda2_env:
+    <<: *defaults2
 
     steps:
-      - checkout
+      - install_conda_packages:
+          packages: "python=2.7 fipy"
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ arch }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+  conda3_env:
+    <<: *defaults3
 
-      - run:
-          name: install dependencies
-          command: |
-            apt-get --yes update
-            apt-get --yes install build-essential
-            conda config --set always_yes yes --set changeps1 no
-            conda update -q conda
-            conda config --remove channels defaults
-            conda create -v --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
-            source activate test-environment
-            conda info -a
-            pip install scikit-fmm
+    steps:
+      - install_conda_packages:
+          packages: "python=3.6 fipy"
 
-      - save_cache:
-          paths:
-            - /.conda
-          key: v1-dependencies-{{ arch }}
+  test-27-pysparse:
+    <<: *defaults2
 
-      - run:
-          name: install fipy
-          command: |
-            source activate test-environment
-            python setup.py install
+    steps:
+      - test_fipy2
+    environment:
+      FIPY_SOLVERS: pysparse
 
-      - run:
-          name: run tests
-          command: |
-            source activate test-environment
-            python setup.py test --pysparse
+  test-27-inline:
+    <<: *defaults2
 
-      - store_artifacts:
-          path: test-reports
-          destination: test-reports
+    steps:
+      - test_fipy2
+    environment:
+      FIPY_SOLVERS: pysparse
+      FIPY_INLINE: 1
 
   test-27-scipy:
-    docker:
-      # specify the version you desire here
-      - image: continuumio/miniconda2
-
-    working_directory: ~/repo
+    <<: *defaults2
 
     steps:
-      - checkout
+      - test_fipy2
+    environment:
+      FIPY_SOLVERS: scipy
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ arch }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+  test-27-trilinos:
+    <<: *defaults2
 
-      - run:
-          name: install dependencies
-          command: |
-            apt-get --yes update
-            apt-get --yes install build-essential
-            conda config --set always_yes yes --set changeps1 no
-            conda update -q conda
-            conda config --remove channels defaults
-            conda create -v --quiet --name test-environment --show-channel-urls --channel guyer --channel conda-forge python=2.7 numpy scipy gmsh pysparse mpi4py matplotlib mayavi fipytrilinos weave
-            source activate test-environment
-            conda info -a
-            pip install scikit-fmm
+    steps:
+      - test_fipy2
+    environment:
+      FIPY_SOLVERS: trilinos
 
-      - save_cache:
-          paths:
-            - /.conda
-          key: v1-dependencies-{{ arch }}
+  test-27-parallel:
+    <<: *defaults2
 
-      - run:
-          name: install fipy
-          command: |
-            source activate test-environment
-            python setup.py install
+    steps:
+      - test_fipy2:
+          mpirun: "mpirun -np 2"
+    environment:
+      FIPY_SOLVERS: trilinos
+      OMP_NUM_THREADS: 1
 
-      - run:
-          name: run tests
-          command: |
-            source activate test-environment
-            python setup.py test --scipy
+  test-36-scipy:
+    <<: *defaults3
 
-      - store_artifacts:
-          path: test-reports
-          destination: test-reports
+    steps:
+      - test_fipy3
+    environment:
+      FIPY_SOLVERS: scipy
 
 workflows:
   version: 2
 
   test:
     jobs:
-      - test-27-pysparse
-      - test-27-scipy
-          
+      - conda2_env
+      - conda3_env
+      - test-27-pysparse:
+          requires:
+            - conda2_env
+#       - test-27-inline:
+#           requires:
+#             - conda2_env
+      - test-27-scipy:
+          requires:
+            - conda2_env
+      - test-27-trilinos:
+          requires:
+            - conda2_env
+      - test-27-parallel:
+          requires:
+            - conda2_env
+      - test-36-scipy:
+          requires:
+            - conda3_env

@@ -55,7 +55,7 @@ Recommended Method
   * `install Miniconda`_ on your computer
   * run::
 
-      $ conda create --name <MYFIPYENV> --channel guyer --channel conda-forge fipy nomkl
+      $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy
 
     .. note::
 
@@ -66,14 +66,19 @@ Recommended Method
 
     .. attention::
 
-       Note, this does not work on Windows. On that platform, you should be able to do::
+       Note, this does not work on Windows x86, as conda-forge_ no longer
+       supports that platform.  For Python 2.7.x, you should be able to do::
 
-        conda create --name <MYFIPYENV> --channel guyer --channel conda-forge python numpy scipy matplotlib mayavi
+        conda create --name <MYFIPYENV> --channel conda-forge python=2.7 numpy scipy matplotlib pysparse mayavi weave
+
+       and for Python 3.x, you should be able to do::
+
+        conda create --name <MYFIPYENV> --channel conda-forge python=3.6 numpy scipy matplotlib pysparse
+
+       followed, for either, by::
+
         activate <MYFIPYENV>
         pip install fipy
-
-       There are presently no conda packages of any solver suite but scipy available for Windows.
-
 
   * enable this new environment with::
 
@@ -102,6 +107,10 @@ Recommended Method
 .. _install Miniconda: http://conda.pydata.org/docs/install/quick.html
 .. _guyer: https://anaconda.org/guyer
 .. _conda-forge: https://conda-forge.github.io/
+.. _Mac OS X: http://www.apple.com/macosx/
+.. _Linux: http://www.linux.org/
+.. _Windows: http://www.microsoft.com/windows/
+
 
 --------------------------
 Installing Python Packages
@@ -171,8 +180,8 @@ with Git_.
 Installing FiPy
 ---------------
 
-Details of the `Required Packages`_ and links are given below and in
-`platform-specific instructions`_, but for the courageous and the
+Details of the `Required Packages`_ and links are given below,
+but for the courageous and the
 impatient, :term:`FiPy` can be up and running quickly by simply
 installing the following prerequisite packages on your system:
 
@@ -234,7 +243,7 @@ on many operating systems, which you can check by opening a terminal
 and typing ``python``, *e.g.*::
 
     $ python
-    Python 2.3 (#1, Sep 13 2003, 00:49:11)
+    Python 2.7.15 | ...
     ...
     Type "help", "copyright", "credits" or "license" for more information.
     >>>
@@ -244,7 +253,7 @@ If necessary, you can download_ and install it for your platform
 
 .. note::
 
-   :term:`FiPy` requires at least version 2.4.x of :term:`Python`. See
+   :term:`FiPy` requires at least version 2.7.x of :term:`Python`. See
    the specialized instructions if you plan on :ref:`RunningUnderPython3`.
 
 .. _download: http://www.python.org/download/
@@ -252,22 +261,13 @@ If necessary, you can download_ and install it for your platform
 :term:`Python` along with many of :term:`FiPy`'s required and optional
 packages is available with one of the following distributions.
 
-conda
------
+NumPy
+=====
 
-http://conda.pydata.org
+http://numpy.scipy.org
 
-This package manager provides a wide array of both :term:`Python`-based and
-general scientific packages. In addition to the default packages, many
-other developers (including us) provide "channels" to distribute their own
-builds of a variety of software.
-
-In a given conda_ environment, you can install :term:`FiPy` with::
-
-    $ conda install --channel guyer --channel conda-forge fipy
-
-
-.. _EPD:
+Obtain and install the :term:`NumPy` package. :term:`FiPy` requires at
+least version 1.0 of NumPy_.
 
 Scientific Python Packages
 ==========================
@@ -286,6 +286,25 @@ Linux_, `Mac OS X`_, and Windows_.
     :term:`Python` distributions include cryptographic software packages,
     and may be subject to export control laws.
 
+Continuum Analytics Anaconda
+----------------------------
+
+http://continuum.io/anaconda
+
+In addition to the scientific :term:`Python` stack, the Anaconda package manager
+also provides virtual environment management. Keeping separate installations is useful
+*e.g.* for comparing :term:`Python` 2 and :term:`Python` 3 software stacks, or
+when the user does not have sufficient privileges to install software system-wide.
+
+In addition to the default packages, many
+other developers (including us) provide "channels" to distribute their own
+builds of a variety of software. These days, the most useful channel is
+`conda-forge`, which provides everything necessary to install :term:`FiPy`.
+
+In a given conda_ environment, you can install :term:`FiPy` with::
+
+    $ conda install --channel conda-forge fipy
+
 .. _PYPI:
 
 Pip Installs Python
@@ -303,24 +322,9 @@ using :term:`pip` run a somewhat elevated risk of unmet dependencies as the
 independent codes evolve. Stable releases of :term:`FiPy` are packaged for
 distribution through :term:`PyPI`.
 
-.. _ANACONDA:
-
-Continuum Analytics Anaconda
-----------------------------
-
-http://continuum.io/anaconda
-
-In addition to the scientific :term:`Python` stack, the Anaconda package manager
-also provides virtual environment management. Keeping separate installations is useful
-*e.g.* for comparing :term:`Python` 2 and :term:`Python` 3 software stacks, or
-when the user does not have sufficient privileges to install software system-wide.
-
-.. attention::
-
-   :term:`Pysparse` and :term:`FiPy` are not presently included in Anaconda,
-   so you will need to separately install them manually.
-
 .. _ECP:
+
+.. _EPD:
 
 Enthought Canopy
 ----------------
@@ -350,14 +354,6 @@ for Windows_.
 
    :term:`Pysparse` and :term:`FiPy` are not presently included in
    Python(x,y), so you will need to separately install them manually.
-
-NumPy
-=====
-
-http://numpy.scipy.org
-
-Obtain and install the :term:`NumPy` package. :term:`FiPy` requires at
-least version 1.0 of NumPy_.
 
 .. _OPTIONALPACKAGES:
 
@@ -431,128 +427,6 @@ https://github.com/ktchu/LSMLIB/tree/master/pylsmlib#pylsmlib.
 .. _PyLSMLIB: https://github.com/ktchu/LSMLIB/tree/master/pylsmlib#pylsmlib
 .. _LSMLIB: http://ktchu.serendipityresearch.org/software/lsmlib/index.html
 
-------------------------------
-Platform-Specific Instructions
-------------------------------
-
-:term:`FiPy` is `tested regularly`_ on `Mac OS X`_, `Debian Linux`_,
-`Ubuntu Linux`_, and `Windows XP`_. We welcome reports of compatibility
-with other systems, particularly if any additional steps are necessary to
-install (see `Miscellaneous Build Recipes`_ for user contributed
-installation tips).
-
-The only elements of :term:`FiPy` that are likely to be
-platform-dependent are the :ref:`VIEWERS` but at least one viewer
-should work on each platform.  All other aspects should function on
-any platform that has a recent :term:`Python` installation.
-
-Mac OS X Installation
-=====================
-
-There is no official package manager for `Mac OS X`_, but there are
-several third-party package managers that provide many, but not all of
-:term:`FiPy`'s :ref:`REQUIREDPACKAGES` and :ref:`OPTIONALPACKAGES`.
-Options include
-
- Fink_
-   is based on the Debian package management system. It installs all of its
-   dependencies into :file:`/sw`.
- MacPorts_
-   is a package manager originally part of OpenDarwin. It installs all of
-   its dependencies into :file:`/opt`.
- Homebrew_
-   is a recent, lightweight package manager based on Ruby scripts. It
-   installs all of its dependencies into :file:`/usr/local` (although it
-   can be directed not to).
-
-In addition, there is an :ref:`ECP` installer for `Mac OS X`_.
-
-.. attention::
-
-   :term:`Pysparse` and :term:`FiPy` are not presently included in any of
-   these package managers or installers, so you will need to separately
-   install them manually.
-
-We presently find that the combination of Homebrew_ and :term:`pip` is a
-pretty straightforward way to get most of :term:`FiPy`'s prerequisites.
-
-See the `Miscellaneous Build Recipes`_ for up-to-date directions.
-
-.. _Fink: http://www.finkproject.org/
-.. _MacPorts: http://www.macports.org/
-.. _Homebrew: http://mxcl.github.com/homebrew/
-
-..  _WINDOWS-INSTALLATION:
-
-Windows Installation
-====================
-
-There is no official package manager for Windows_, but the :ref:`ECP`
-and :ref:`PYTHONXY` installers provide most of :term:`FiPy`'s
-prerequisites.
-
-.. attention::
-
-   :term:`Pysparse` and :term:`FiPy` are not presently included in Canopy or
-   Python(x,y), so you will need to separately install them manually.
-
-Ubuntu/Debian Installation
-==========================
-
-:term:`FiPy` now has a `.deb` for Ubuntu/Debian systems that can be
-downloaded from <http://www.ctcms.nist.gov/fipy/download>. Simply run::
-
-  $ VERSION=x.y-z  # choose the version you want
-  $ apt-get install gmsh libsuperlu3 python-central python-sparse
-  $ curl -O http://www.ctcms.nist.gov/fipy/download/python-fipy_${VERSION}_all.deb
-  $ dpkg -i python-fipy_${VERSION}_all.deb
-
-to install. The `.deb` includes dependencies for all of the
-:ref:`REQUIREDPACKAGES` and :ref:`OPTIONALPACKAGES`.
-
-.. _tested regularly: http://matforge.org/fipy/build
-.. _Mac OS X: http://www.apple.com/macosx/
-.. _Linux: http://www.linux.org/
-.. _Debian Linux: http://www.debian.org/
-.. _RedHat Linux: http://www.redhat.com/
-.. _OpenSUSE Linux: http://www.opensuse.org/
-.. _Ubuntu Linux: http://www.ubuntu.com/
-.. _Solaris: http://oracle.com/solaris
-.. _Windows: http://www.microsoft.com/windows/
-.. _Windows XP: http://www.microsoft.com/windowsxp/
-
-
-.. Nix Installation
-   ================
-
-.. include:: nix/README.rst
-
-.. toctree::
-   :hidden:
-
-   ../nix/README
-
-Miscellaneous Build Recipes
-===========================
-
-We often post miscellaneous installation instructions on the
-:term:`FiPy` blog_ and wiki_ pages. The most useful of these include:
-
- * `Installing FiPy on Mac OS X using Homebrew`_
- * `Building a 64-bit scientific python environment for FiPy from source`_
- * `Installing FiPy with pip`_
-
-.. note::
-
-    We encourage you to contribute your own build recipes on the wiki_
-    if they are significantly different.
-
-.. _Installing FiPy on Mac OS X using Homebrew: http://matforge.org/fipy/wiki/InstallFiPy/MacOSX/HomeBrew
-.. _Building a 64-bit scientific python environment for FiPy from source: http://matforge.org/fipy/wiki/InstallFiPy/MacOSX/SnowLeopard
-.. _Installing FiPy with pip: http://matforge.org/fipy/wiki/InstallFiPy/PipInstallsPython
-.. _wiki: http://matforge.org/fipy
-.. _blog: http://matforge.org/fipy/blog
-
 .. _ENVIRONMENT:
 
 -----------------------
@@ -571,45 +445,26 @@ directories. The reasons for this include:
 
  * or not having admin privileges.
 
-The simplest way to use a :term:`Python` package without installing it
-is to work in the base directory of the unpacked package and set
-the :envvar:`PYTHONPATH` environment variable to "``.``". In order to work in an
-directory other than the package's base directory, the :envvar:`PYTHONPATH`
-environment variable must be set to ":file:`~/path/to/package`". This
-method of working is adequate for one package, but quickly becomes
-unmanageable with multiple :term:`Python` packages. In order to manage
-multiple packages, it is better to choose a standard location other
-than the default installation path.
+To avoid tampering with the system Python_ installation, you can employ one
+of the utilities that manage packages and their dependencies independently
+of the system package manager and the system directories.  These utilities
+include conda_, Stow_, Virtualenv_ and zc.buildout_, amongst others.
+Conda_ is the only one of these we have the resources to support.
 
-If you do not have administrative privileges on your computer, or if
-for any reason you don't want to tamper with your existing
-:term:`Python` installation, most packages (including :term:`FiPy`)
-will allow you to install to an alternative location.  Instead of
-installing these packages with ``python setup.py install``, you would
-use :samp:`python setup.py install --home={dir}`, where :samp:`{dir}`
-is the desired installation directory (usually "``~``" to indicate
-your home directory).  You will then need to append
-:file:`{dir}/lib/python` to your :envvar:`PYTHONPATH` environment
-variable.  See the `Alternate Installation`_ section of the
-:term:`Python` document "`Installing Python Modules`_"
-:cite:`InstallingPythonModules` for more information, such as circumstances
-in which you should use :option:`--prefix` instead of
-:option:`--home`.
+Our preferred development environment is set up with::
 
-.. _Alternate Installation: http://docs.python.org/inst/alt-install-windows.html
+   $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy
+   $ source activate <MYFIPYENV>
+   $ pip install scikit-fmm
+   $ conda remove --channel conda-forge fipy
+   $ git clone https://github.com/usnistgov/fipy.git
+   $ cd fipy
+   $ python setup.py develop
 
-.. _Installing Python Modules: http://docs.python.org/inst/
-
-An alternative to setting the :envvar:`PYTHONPATH` is to employ one of the
-utilities that manage packages and their dependencies independently of
-the system package manager and the system directories. These utilities
-include Conda_, Stow_, Virtualenv_ and zc.buildout_, amongst others. Here we'll
-describe the use of Conda_, which we highly recommend.
-
+.. _Conda: https://conda.io
 .. _Stow: http://savannah.gnu.org/projects/stow/
 .. _zc.buildout: http://pypi.python.org/pypi/zc.buildout
 .. _Virtualenv: https://virtualenv.pypa.io
-.. _Conda: https://conda.io
 
 .. _documentation:GIT:
 
