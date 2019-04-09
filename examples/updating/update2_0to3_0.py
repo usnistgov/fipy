@@ -10,9 +10,9 @@ incompatible change (when :term:`FiPy` 2.0 superceded :term:`FiPy` 1.0).
 All examples included with version 3.0 have been updated to use the new syntax,
 but any scripts you have written for :term:`FiPy` 2.0 will need to be updated. A
 complete listing of the changes needed to take the :term:`FiPy` examples scripts from
-version 2.0 to version 3.0 can be found at
+version 2.0 to version 3.0 can be found with
 
-    http://www.matforge.org/fipy/wiki/upgrade2_0examplesTo3_0
+    $ git diff version-2_1 version-3_0 examples/
 
 but we summarize the necessary changes here. If these tips are not sufficient to
 make your scripts compatible with :term:`FiPy` 3.0, please don't hesitate to ask for
