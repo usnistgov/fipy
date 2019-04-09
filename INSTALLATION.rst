@@ -448,7 +448,7 @@ directories. The reasons for this include:
 To avoid tampering with the system Python_ installation, you can employ one
 of the utilities that manage packages and their dependencies independently
 of the system package manager and the system directories.  These utilities
-include conda_, Stow_, Virtualenv_ and zc.buildout_, amongst others.
+include conda_, Nix_, Stow_, Virtualenv_ and zc.buildout_, amongst others.
 Conda_ is the only one of these we have the resources to support.
 
 Our preferred development environment is set up with::
