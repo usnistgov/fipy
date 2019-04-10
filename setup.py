@@ -241,7 +241,7 @@ dist = setup(	name = "FiPy",
         license = license,
         description = "A finite volume PDE solver in Python",
         long_description = long_description,
-        cmdclass = {
+        cmdclass = dict({
             'build_docs':build_docs,
             'upload_products':upload_products,
             'test':test,
@@ -249,8 +249,9 @@ dist = setup(	name = "FiPy",
             'copy_script': Copy_script,
             'efficiency_test': Efficiency_test,
             'changelog': changelog,
-            'version': versioneer.get_cmdclass()
-        },
+            },
+            **versioneer.get_cmdclass()
+        ),
         test_suite="fipy.testFiPy._suite",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
         entry_points="""
