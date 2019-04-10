@@ -1,9 +1,9 @@
 import os
 from distutils.core import Command
 
-__all__ = ["Copy_script"]
+__all__ = ["copy_script"]
 
-class Copy_script(Command):
+class copy_script(Command):
     description = "copy an example script into a new editable file"
 
     # List of option tuples: long name, short name (None if no short

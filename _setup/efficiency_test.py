@@ -2,9 +2,9 @@ from distutils.core import Command
 import os
 import sys
 
-__all__ = ["Efficiency_test"]
+__all__ = ["efficiency_test"]
 
-class Efficiency_test(Command):
+class efficiency_test(Command):
     description = "run FiPy efficiency tests"
 
     user_options = [ ('minimumelements=', None, 'minimum number of elements'),

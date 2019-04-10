@@ -3,8 +3,8 @@ import os
 from distutils.core import Command
 import versioneer
 
-from _setup.efficiency_test import Efficiency_test
-from _setup.copy_script import Copy_script
+from _setup.efficiency_test import efficiency_test
+from _setup.copy_script import copy_script
 from _setup.changelog import changelog
 from _setup.testClass import _TestClass
 
@@ -246,9 +246,9 @@ dist = setup(	name = "FiPy",
             'upload_products':upload_products,
             'test':test,
             'unittest':unittest,
-            'copy_script': Copy_script,
-            'efficiency_test': Efficiency_test,
-            'changelog': changelog,
+            'copy_script': copy_script,
+            'efficiency_test': efficiency_test,
+            'changelog': changelog
             },
             **versioneer.get_cmdclass()
         ),
