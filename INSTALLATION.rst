@@ -71,8 +71,7 @@ Recommended Method
 
      This command creates a self-contained conda_ environment and then
      downloads and populates the environment with the prerequisites for
-     :term:`FiPy` from the channels guyer_ and conda-forge_ at
-     https://anaconda.org.
+     :term:`FiPy` from the conda-forge_ channel at https://anaconda.org.
 
   .. attention::
 
