@@ -3,10 +3,10 @@ import os
 from distutils.core import Command
 import versioneer
 
-from fipy.tools.performance.efficiency_test import Efficiency_test
-from fipy.tools.copy_script import Copy_script
-from fipy.tools.changelog import changelog
-from fipy.tests.testClass import _TestClass
+from _setup.efficiency_test import Efficiency_test
+from _setup.copy_script import Copy_script
+from _setup.changelog import changelog
+from _setup.testClass import _TestClass
 
 # bootstrap setuptools for users that don't already have it
 import ez_setup
