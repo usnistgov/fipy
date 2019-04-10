@@ -58,10 +58,10 @@ in the base directory of the working copy. The main branches for FiPy are:
 
 Past releases of FiPy are tagged as
 
-``version-x_y_z``
-    which designates a released version x.y.z. Any released
-    version of FiPy will be designated with a fixed tag: The current
-    version of FiPy is |version|.
+``x.y.z``
+    Any released version of FiPy will be designated with a fixed tag: The
+    current version of FiPy is |version|.  (Legacy ``version-x_y_z`` tags
+    are retained for historical purposes, but won't be added to.)
 
 Tagged releases can be found with::
 
