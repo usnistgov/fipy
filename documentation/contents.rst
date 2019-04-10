@@ -29,3 +29,4 @@ FiPy Contents
    tutorial/package/generated/package
    ../fipy/generated/fipy
    external_definitions
+   ../nix/README

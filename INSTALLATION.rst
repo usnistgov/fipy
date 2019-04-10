@@ -48,55 +48,65 @@ Recommended Method
 
 .. attention::
 
-   There are many ways (described further down) to obtain the software
+   There are many ways to obtain the software
    packages necessary to run :term:`FiPy`, but the most expedient way is
-   with the conda_ package manager.
+   with the conda_ package manager.  In addition to the scientific
+   :term:`Python` stack, conda_ also provides virtual environment
+   management.  Keeping separate installations is useful *e.g.* for
+   comparing :term:`Python` 2 and :term:`Python` 3 software stacks, or when
+   the user does not have sufficient privileges to install software
+   system-wide.
 
-  * `install Miniconda`_ on your computer
-  * run::
+   In addition to the default packages, many other developers provide
+   "channels" to distribute their own builds of a variety of software.
+   These days, the most useful channel is `conda-forge`, which provides
+   everything necessary to install :term:`FiPy`.
 
-      $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy
+* `install Miniconda`_ on your computer
+* run::
 
-    .. note::
+    $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy
 
-       This command creates a self-contained conda_ environment and then
-       downloads and populates the environment with the prerequisites for
-       :term:`FiPy` from the channels guyer_ and conda-forge_ at
-       https://anaconda.org.
+  .. note::
 
-    .. attention::
+     This command creates a self-contained conda_ environment and then
+     downloads and populates the environment with the prerequisites for
+     :term:`FiPy` from the conda-forge_ channel at https://anaconda.org.
 
-       Note, this does not work on Windows x86, as conda-forge_ no longer
-       supports that platform.  For Python 2.7.x, you should be able to do::
+  .. attention::
 
-        conda create --name <MYFIPYENV> --channel conda-forge python=2.7 numpy scipy matplotlib pysparse mayavi weave
+     Windows x86_64 is fully supported, but this does not work on
+     Windows x86_32, as conda-forge_ no longer supports that platform.  For
+     Python 2.7.x, you should be able to do::
 
-       and for Python 3.x, you should be able to do::
+      conda create --name <MYFIPYENV> --channel conda-forge python=2.7 numpy scipy matplotlib pysparse mayavi weave
 
-        conda create --name <MYFIPYENV> --channel conda-forge python=3.6 numpy scipy matplotlib pysparse
+     and for Python 3.x, you should be able to do::
 
-       followed, for either, by::
+      conda create --name <MYFIPYENV> --channel conda-forge python=3.6 numpy scipy matplotlib pysparse
 
-        activate <MYFIPYENV>
-        pip install fipy
+     followed, for either, by::
 
-  * enable this new environment with::
+      activate <MYFIPYENV>
+      pip install fipy
 
-      $ source activate <MYFIPYENV>
+* enable this new environment with::
 
-    .. note::
+    $ source activate <MYFIPYENV>
 
-       ``$ activate <MYFIPYENV>`` on Windows_
+  .. note::
 
-  * move on to :ref:`USAGE`.
+     ``$ activate <MYFIPYENV>`` on Windows_
 
-    .. note::
+* move on to :ref:`USAGE`.
 
-       On Linux_ and `Mac OS X`_, you should have a pretty complete system
-       to run and visualize :term:`FiPy` simulations. On Windows_, there
-       are fewer packages available via conda_, particularly amongst the
-       sparse matrix :ref:`SOLVERS`, but the system still should be
-       functional.
+  .. note::
+
+     On Linux_ and `Mac OS X`_, you should have a pretty complete system
+     to run and visualize :term:`FiPy` simulations. On Windows_, there
+     are fewer packages available via conda_, particularly amongst the
+     sparse matrix :ref:`SOLVERS`, but the system still should be
+     functional.
 
 .. attention::
 
@@ -110,51 +120,6 @@ Recommended Method
 .. _Mac OS X: http://www.apple.com/macosx/
 .. _Linux: http://www.linux.org/
 .. _Windows: http://www.microsoft.com/windows/
-
-
---------------------------
-Installing Python Packages
---------------------------
-
-In general, it is best to use the following order of precedence when
-installing packages:
-
- * Use the operating system package manager, if possible.
- * Use the conda_ package management system, which handles both
-   :term:`Python` and non-:term:`Python` packages and provides facilities
-   for self-contained environments with different combinations of
-   :term:`Python` packages, libraries, and applications.
- * Use the
-   `pip installs python <http://www.pip-installer.org/>`_
-   (:term:`pip`) tool to obtain software from the
-   `Python Package Index <http://pypi.python.org/pypi>`_
-   (:term:`PyPI`) repository::
-
-     $ pip install package
-
-   .. warning::
-
-      :term:`pip` takes care of dependencies that are themselves
-      :term:`Python` packages. It does not deal with non-:term:`Python`
-      dependencies.
-
- * Download the packages manually, unpack and run::
-
-     $ python setup.py install
-
-   Further information about each ``setup.py`` script is available by
-   typing::
-
-     $ python setup.py --help
-
-Many of the packages listed below have prebuilt installers for
-different platforms (particularly for Windows).  These installers can
-save considerable time and effort compared to configuring and building
-from source, although they frequently comprise somewhat older versions
-of the respective code.  Whether building from source or using a
-prebuilt installer, please read and follow explicitly any instructions
-given in the respective packages' :file:`README` and
-:file:`INSTALLATION` files.
 
 --------------
 Obtaining FiPy
@@ -269,92 +234,6 @@ http://numpy.scipy.org
 Obtain and install the :term:`NumPy` package. :term:`FiPy` requires at
 least version 1.0 of NumPy_.
 
-Scientific Python Packages
-==========================
-
-:term:`FiPy` depends on or benefits from the so-called *scientific Python*
-stack, which includes :term:`IPython`, :term:`Matplotlib`, :term:`NumPy`,
-:term:`pandas`, and :term:`SciPy`. These packages provide Python with advanced
-numerical and graphical capabilities, important for the analysis and visual
-representation of scientific data. The following :term:`Python` distributions
-provide the :term:`Python` interpreter, scientific Python stacks, and searchable
-package management for all three major operating systems:
-Linux_, `Mac OS X`_, and Windows_.
-
-.. attention::
-
-    :term:`Python` distributions include cryptographic software packages,
-    and may be subject to export control laws.
-
-Continuum Analytics Anaconda
-----------------------------
-
-http://continuum.io/anaconda
-
-In addition to the scientific :term:`Python` stack, the Anaconda package manager
-also provides virtual environment management. Keeping separate installations is useful
-*e.g.* for comparing :term:`Python` 2 and :term:`Python` 3 software stacks, or
-when the user does not have sufficient privileges to install software system-wide.
-
-In addition to the default packages, many
-other developers (including us) provide "channels" to distribute their own
-builds of a variety of software. These days, the most useful channel is
-`conda-forge`, which provides everything necessary to install :term:`FiPy`.
-
-In a given conda_ environment, you can install :term:`FiPy` with::
-
-    $ conda install --channel conda-forge fipy
-
-.. _PYPI:
-
-Pip Installs Python
--------------------
-
-If you have the reference :term:`Python` distribution installed, :term:`pip`
-provides a straightforward way to install and manage the scientific :term:`Python`
-stack. :term:`pip` interfaces with :term:`PyPI`, searchable on the Web or through
-the command line by opening a terminal and typing::
-
-    $ pip search <package name>
-
-:term:`PyPI` packages are maintained by the individual authors, so installations
-using :term:`pip` run a somewhat elevated risk of unmet dependencies as the
-independent codes evolve. Stable releases of :term:`FiPy` are packaged for
-distribution through :term:`PyPI`.
-
-.. _ECP:
-
-.. _EPD:
-
-Enthought Canopy
-----------------
-
-http://www.enthought.com/products/canopy
-
-In addition to the core scientific :term:`Python` stack, Canopy includes packages
-for a very large number of software projects. Canopy supports the venv virtual
-environment manager.
-
-.. attention::
-
-   :term:`Pysparse` and :term:`FiPy` are not presently included in Canopy,
-   so you will need to separately install them manually.
-
-.. _PYTHONXY:
-
-Python(x,y)
------------
-
-http://python-xy.github.io
-
-A non-commercial scientific :term:`Python` distribution developed specifically
-for Windows_.
-
-.. attention::
-
-   :term:`Pysparse` and :term:`FiPy` are not presently included in
-   Python(x,y), so you will need to separately install them manually.
-
 .. _OPTIONALPACKAGES:
 
 -----------------
@@ -448,8 +327,8 @@ directories. The reasons for this include:
 To avoid tampering with the system Python_ installation, you can employ one
 of the utilities that manage packages and their dependencies independently
 of the system package manager and the system directories.  These utilities
-include conda_, Stow_, Virtualenv_ and zc.buildout_, amongst others.
-Conda_ is the only one of these we have the resources to support.
+include conda_, Nix_, Stow_, Virtualenv_ and Buildout_, amongst others.
+Conda_ and Nix_ are only ones of these we have the resources to support.
 
 Our preferred development environment is set up with::
 
@@ -463,9 +342,15 @@ Our preferred development environment is set up with::
 
 .. _Conda: https://conda.io
 .. _Stow: http://savannah.gnu.org/projects/stow/
-.. _zc.buildout: http://pypi.python.org/pypi/zc.buildout
+.. _Buildout: http://pypi.python.org/pypi/zc.buildout
 .. _Virtualenv: https://virtualenv.pypa.io
 
 .. _documentation:GIT:
 
 .. include:: documentation/GIT.rst
+
+---
+Nix
+---
+
+.. include:: nix/README.rst
