@@ -198,11 +198,11 @@ Check items in the issues_ and update the :ref:`CHANGELOG`::
 
    You can use::
 
-      $ python setup.py changelog --after=<version-x_y>
+      $ python setup.py changelog --after=<x.y>
 
    or::
 
-      $ python setup.py changelog --milestone=<version-x_z>
+      $ python setup.py changelog --milestone=<x.z>
 
    to obtain a ReST-formatted list of GitHub_ `pull requests`_ and issues_
    closed since the last release.
@@ -239,7 +239,7 @@ Release from master
 
 Resolve any conflicts and push to ``master``::
 
-    $ git tag --annotate version-x_y master
+    $ git tag --annotate x.y master
     $ git push --tags origin master
 
 Clean the working copy::

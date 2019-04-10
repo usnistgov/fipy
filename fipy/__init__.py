@@ -33,18 +33,6 @@ electrodeposition process :cite:`NIST:damascene:2001`.
 """
 __docformat__ = 'restructuredtext'
 
-def _getVersion():
-    from pkg_resources import get_distribution, DistributionNotFound
-
-    try:
-        version = get_distribution(__name__).version
-    except DistributionNotFound:
-        version = "unknown, try running `python setup.py egg_info`"
-
-    return version
-
-__version__ = _getVersion()
-
 from fipy.boundaryConditions import *
 from fipy.meshes import *
 from fipy.solvers import *
@@ -169,3 +157,7 @@ def test(*args):
         import shutil
         shutil.rmtree(tmpDir)
         raise exitErr
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions

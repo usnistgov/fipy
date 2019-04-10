@@ -1,6 +1,8 @@
 import os
 
 from distutils.core import Command
+import versioneer
+
 from fipy.tools.performance.efficiency_test import Efficiency_test
 from fipy.tools.copy_script import Copy_script
 from fipy.tools.changelog import changelog
@@ -232,22 +234,24 @@ def getVersion():
     return version
 
 dist = setup(	name = "FiPy",
-        version = getVersion(), 
+        version = versioneer.get_version(),
         author = "Jonathan Guyer, Daniel Wheeler, & Jim Warren",
         author_email = "fipy@nist.gov",
         url = "http://www.ctcms.nist.gov/fipy/",
         license = license,
         description = "A finite volume PDE solver in Python",
         long_description = long_description,
-        cmdclass = {
+        cmdclass = dict({
             'build_docs':build_docs,
             'upload_products':upload_products,
             'test':test,
             'unittest':unittest,
             'copy_script': Copy_script,
             'efficiency_test': Efficiency_test,
-            'changelog': changelog
-        },
+            'changelog': changelog,
+            },
+            **versioneer.get_cmdclass()
+        ),
         test_suite="fipy.testFiPy._suite",
         packages = find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
         entry_points="""
