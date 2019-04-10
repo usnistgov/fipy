@@ -111,21 +111,21 @@ Linux
 -----
 
 Linux builds are performed on CircleCI_. This CI is configured in
-:file:`{FiPySource}/.circleci/config.yml`.
+`{FiPySource}/.circleci/config.yml`_.
 
 --------
 Mac OS X
 --------
 
 Mac OS X builds are performed on TravisCI_. This CI is configured in
-:file:`{FiPySource}/.travis.yml`.
+`{FiPySource}/.travis.yml`_.
 
 -------
 Windows
 -------
 
 Windows builds are performed on AppVeyor_. This CI is configured in
-:file:`{FiPySource}/.appveyor.yml`.
+`{FiPySource}/.appveyor.yml`_.
 
 .. |CircleCI|      image:: https://img.shields.io/circleci/project/github/usnistgov/fipy/develop.svg?label=Linux
 .. _CircleCI:      https://circleci.com/gh/usnistgov/fipy
@@ -133,6 +133,10 @@ Windows builds are performed on AppVeyor_. This CI is configured in
 .. _TravisCI:      https://travis-ci.org/usnistgov/fipy
 .. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=develop&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
 .. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy
+
+.. _{FiPySource}/.circleci/config.yml: https://github.com/usnistgov/fipy/blob/develop/.circleci/config.yml
+.. _{FiPySource}/.travis.yml: https://github.com/usnistgov/fipy/blob/develop/.travis.yml
+.. _{FiPySource}/.appveyor.yml: https://github.com/usnistgov/fipy/blob/develop/.appveyor.yml
 
 
 ================
