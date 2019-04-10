@@ -239,7 +239,7 @@ Release from master
 
 Resolve any conflicts and push to ``master``::
 
-    $ git tag --annotate version-x_y master
+    $ git tag --annotate x.y master
     $ git push --tags origin master
 
 Clean the working copy::
