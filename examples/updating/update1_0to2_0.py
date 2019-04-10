@@ -13,9 +13,9 @@ incompatible change (when :term:`FiPy` 1.0 superceded :term:`FiPy` 0.1).
 All examples included with version 2.0 have been updated to use the new syntax,
 but any scripts you have written for :term:`FiPy` 1.0 will need to be updated. A
 complete listing of the changes needed to take the :term:`FiPy` examples scripts from
-version 1.0 to version 2.0 can be found at
+version 1.0 to version 2.0 can be found with:
 
-    http://www.matforge.org/fipy/wiki/upgrade1_0examplesTo2_0
+    $ git diff version-1_2 version-2_0 examples/
 
 but we summarize the necessary changes here. If these tips are not sufficient to
 make your scripts compatible with :term:`FiPy` 2.0, please don't hesitate to ask for
