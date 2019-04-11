@@ -6,7 +6,6 @@ import versioneer
 from _setup.build_docs import build_docs
 from _setup.changelog import changelog
 from _setup.copy_script import copy_script
-from _setup.efficiency_test import efficiency_test
 from _setup.testClass import _TestClass
 from _setup.upload_products import upload_products
 
@@ -110,7 +109,6 @@ dist = setup(	name = "FiPy",
             'test': test,
             'unittest': test,
             'copy_script': copy_script,
-            'efficiency_test': efficiency_test,
             'changelog': changelog
             },
             **versioneer.get_cmdclass()
