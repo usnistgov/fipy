@@ -1,13 +1,13 @@
 import os
 
 from distutils.core import Command
+import versioneer
 
 from _setup.build_docs import build_docs
 from _setup.changelog import changelog
 from _setup.copy_script import copy_script
 from _setup.testClass import _TestClass
 from _setup.upload_products import upload_products
-from _setup import versioneer
 
 # bootstrap setuptools for users that don't already have it
 import ez_setup
