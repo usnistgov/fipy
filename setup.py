@@ -16,24 +16,11 @@ ez_setup.use_setuptools()
 
 from setuptools import setup, find_packages
 
-# from fipy.tests.testRunner import test, unittest
-
 from setuptools.command.test import test as _test
 
             
 test = _TestClass(_test)
 
-try:
-    # we only need "unittest" if bitten is installed 
-    # (and we're running as a bitten.slave)
-    from bitten.util.testrunner import unittest as _unittest
-    unittest = _TestClass(_unittest)
-except ImportError, e:
-    unittest = test
-
-
-
-            
 
 try:            
     f = open('README.rst', 'r')
@@ -117,11 +104,11 @@ dist = setup(	name = "FiPy",
         license = license,
         description = "A finite volume PDE solver in Python",
         long_description = long_description,
-        cmdclass = dict({
-            'build_docs':build_docs,
-            'upload_products':upload_products,
-            'test':test,
-            'unittest':unittest,
+        cmdclass = {
+            'build_docs': build_docs,
+            'upload_products': upload_products,
+            'test': test,
+            'unittest': test,
             'copy_script': copy_script,
             'efficiency_test': efficiency_test,
             'changelog': changelog
