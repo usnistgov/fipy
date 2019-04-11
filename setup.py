@@ -103,7 +103,7 @@ dist = setup(	name = "FiPy",
         license = license,
         description = "A finite volume PDE solver in Python",
         long_description = long_description,
-        cmdclass = {
+        cmdclass = dict({
             'build_docs': build_docs,
             'upload_products': upload_products,
             'test': test,
