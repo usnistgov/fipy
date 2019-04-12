@@ -2,6 +2,10 @@
 Overview
 ========
 
+| |CircleCI|_ |TravisCI|_ |AppVeyor|_
+| |GitHub|_ |PyPi|_  |Codacy|_ |CondaForge|_ |Binder|_
+| |gitter|_ |Depsy|_ |OpenHub|_
+
 .. only:: latex
 
    :term:`FiPy` is an object oriented, partial differential equation (PDE)
@@ -21,12 +25,6 @@ Overview
    provides a tool that is extensible, powerful and freely available. A
    significant advantage to :term:`Python` is the existing suite of tools for
    array calculations, sparse matrices and data rendering.
-
-.. only:: html
-
-   | |CircleCI|_ |TravisCI|_ |AppVeyor|_
-   | |GitHub|_ |PyPi|_  |Codacy|_ |CondaForge|_ |Binder|_
-   | |gitter|_ |Depsy|_ |OpenHub|_
 
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
