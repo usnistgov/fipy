@@ -102,9 +102,7 @@ We use three different cloud services for continuous integration (CI).  Each
 service offers unique capabilities, but this also serves to distribute the
 load.
 
-.. only:: html
-
-   | |CircleCI|_ |TravisCI|_ |AppVeyor|_
+| |CircleCI|_ |TravisCI|_ |AppVeyor|_
 
 -----
 Linux
