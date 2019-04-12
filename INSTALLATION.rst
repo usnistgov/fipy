@@ -46,6 +46,8 @@ you explore the package interactively.
 Recommended Method
 ------------------
 
+|CondaForge|
+
 .. attention::
 
    There are many ways to obtain the software
@@ -120,6 +122,9 @@ Recommended Method
 .. _Mac OS X: http://www.apple.com/macosx/
 .. _Linux: http://www.linux.org/
 .. _Windows: http://www.microsoft.com/windows/
+.. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
+.. _CondaForge:    https://anaconda.org/guyer/fipy
+
 
 --------------
 Obtaining FiPy
