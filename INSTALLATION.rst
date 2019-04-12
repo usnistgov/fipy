@@ -46,7 +46,7 @@ you explore the package interactively.
 Recommended Method
 ------------------
 
-|CondaForge|
+|CondaForge|_
 
 .. attention::
 
