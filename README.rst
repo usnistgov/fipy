@@ -170,7 +170,7 @@ or a
 .. _OpenHub:       https://www.openhub.net/p/fipy
 .. |PyPi|          image:: https://img.shields.io/pypi/v/fipy.svg
 .. _PyPi:          https://pypi.python.org/pypi/FiPy
-.. |CondaForge|    image:: https://anaconda.org/guyer/fipy/badges/downloads.svg
+.. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
 .. _CondaForge:    https://anaconda.org/guyer/fipy
 .. |Depsy|         image:: http://depsy.org/api/package/pypi/FiPy/badge.svg
 .. _Depsy:         http://depsy.org/package/python/FiPy
