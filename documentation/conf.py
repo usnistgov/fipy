@@ -31,6 +31,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.imgmath',
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
+              'sphinx.ext.imgconverter',
               'numpydoc',
               'redirecting_html',
               'sphinxcontrib.bibtex']

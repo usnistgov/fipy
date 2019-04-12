@@ -2,6 +2,10 @@
 Overview
 ========
 
+| |CircleCI|_ |TravisCI|_ |AppVeyor|_
+| |GitHub|_ |PyPi|_  |Codacy|_ |CondaForge|_ |Binder|_
+| |gitter|_ |Depsy|_ |OpenHub|_
+
 .. only:: latex
 
    :term:`FiPy` is an object oriented, partial differential equation (PDE)
@@ -21,12 +25,6 @@ Overview
    provides a tool that is extensible, powerful and freely available. A
    significant advantage to :term:`Python` is the existing suite of tools for
    array calculations, sparse matrices and data rendering.
-
-.. only:: html
-
-   | |CircleCI|_ |TravisCI|_ |AppVeyor|_
-   | |GitHub|_ |PyPi|_  |Codacy|_ |CondaForge|_ |Binder|_
-   | |gitter|_ |Depsy|_ |OpenHub|_
 
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
@@ -170,7 +168,7 @@ or a
 .. _OpenHub:       https://www.openhub.net/p/fipy
 .. |PyPi|          image:: https://img.shields.io/pypi/v/fipy.svg
 .. _PyPi:          https://pypi.python.org/pypi/FiPy
-.. |CondaForge|    image:: https://anaconda.org/guyer/fipy/badges/downloads.svg
+.. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
 .. _CondaForge:    https://anaconda.org/guyer/fipy
 .. |Depsy|         image:: http://depsy.org/api/package/pypi/FiPy/badge.svg
 .. _Depsy:         http://depsy.org/package/python/FiPy
