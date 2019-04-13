@@ -376,7 +376,8 @@ current session, you may prefer to restrict its use to :term:`FiPy` runs::
 The difference can be extreme.  We have observed the :term:`FiPy` test
 suite to run in `just over two minutes`_ when ``OMP_NUM_THREADS=1``,
 compared to `over an hour and 23 minutes`_ when OpenMP_ threads are
-unrestricted.
+unrestricted. We don't know why, but `other platforms`_ do not suffer the
+same degradation.
 
 Conceivably, allowing Trilinos unfettered access to OpenMP_ threads with
 no MPI_ communication at all could perform as well or better than purely
@@ -397,6 +398,7 @@ and building Trilinos is |NotFun (TM)|_.
 .. _Global Interpreter Lock:     https://docs.python.org/2.7/c-api/init.html#thread-state-and-the-global-interpreter-lock
 .. _just over two minutes:       https://circleci.com/gh/guyer/fipy/461
 .. _over an hour and 23 minutes: https://circleci.com/gh/guyer/fipy/423
+.. _other platforms:             https://travis-ci.org/usnistgov/fipy/builds/509556033
 .. |NotFun (TM)|                 unicode:: NotFun U+2122
 .. _NotFun (TM):                 https://commons.wikimedia.org/wiki/File:Hieronymus_Bosch_-_Triptych_of_Garden_of_Earthly_Delights_(detail)_-_WGA2526.jpg#/media/File:Hieronymus_Bosch_-_Triptych_of_Garden_of_Earthly_Delights_(detail)_-_WGA2526.jpg
 
