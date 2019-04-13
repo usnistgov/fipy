@@ -18,26 +18,26 @@ test = _TestClass(_test)
 
 try:
     f = open('README.rst', 'r')
-    long_description = '\n' + f.read() + '\n'
+    LONG_DESCRIPTION = '\n' + f.read() + '\n'
     f.close()
 except IOError, e:
-    long_description = ''
+    LONG_DESCRIPTION = ''
 
 try:
     f = open('LICENSE.rst', 'r')
-    license = '\n' + ''.join([' '*8 + l for l in f])
+    LICENSE = '\n' + ''.join([' '*8 + l for l in f])
     f.close()
 except IOError, e:
-    license = ''
+    LICENSE = ''
 
-dist = setup(name="FiPy",
+DIST = setup(name="FiPy",
              version=versioneer.get_version(),
              author="Jonathan Guyer, Daniel Wheeler, & Jim Warren",
              author_email="fipy@nist.gov",
              url="http://www.ctcms.nist.gov/fipy/",
-             license=license,
+             license=LICENSE,
              description="A finite volume PDE solver in Python",
-             long_description=long_description,
+             long_description=LONG_DESCRIPTION,
              cmdclass=dict({
                  'build_docs': build_docs,
                  'upload_products': upload_products,
@@ -71,29 +71,29 @@ dist = setup(name="FiPy",
              ],
             )
 
-if 'install' in dist.commands:
-    req = []
+if 'install' in DIST.commands:
+    REQ = []
 
     for pkg in ['numpy', 'pysparse']:
         try:
             __import__(pkg)
         except ImportError, exc:
-            req.append(pkg)
+            REQ.append(pkg)
 
-    if req:
+    if REQ:
         print "!!!!!!"
-        print "The required module(s) " + str(req) + " cannot be loaded."
+        print "The required module(s) " + str(REQ) + " cannot be loaded."
         print "FiPy will not work properly until these modules are installed."
 
-    opt = []
+    OPT = []
 
     for pkg in ['scipy', 'matplotlib', 'mayavi']:
         try:
             __import__(pkg)
         except ImportError, exc:
-            opt.append(pkg)
+            OPT.append(pkg)
 
-    if opt:
+    if OPT:
         print "------"
-        print "The optional module(s) " + str(opt) + " cannot be loaded."
+        print "The optional module(s) " + str(OPT) + " cannot be loaded."
         print "FiPy will have improved capabilities if these modules are installed."
