@@ -248,14 +248,22 @@ class meshes. Currently, the only remaining serial-only meshes are
 
 .. attention::
 
-   :term:`Trilinos` *must* be compiled with MPI support.
+   :term:`Trilinos` *must* be compiled with MPI_ support.
 
 .. attention::
 
    :term:`FiPy` requires :ref:`MPI4PY` to work in parallel. See the
    :ref:`MPI4PY` installation guide.
 
-.. note::
+.. tip::
+
+   You are strongly advised to force the use of only one OpenMP_ thread::
+
+       $ export OMP_NUM_THREADS=1
+
+   See :ref:`THREADS_VS_RANKS` for more information.
+
+.. tip::
 
    Parallel efficiency is greatly improved by installing
    :term:`Pysparse` in addition to :term:`Trilinos`. If
@@ -341,6 +349,56 @@ you need to do something with the entire solution, you can use
         forced the solver to stop before reaching an adequate solution.
         Different solvers, different preconditioners, or a less restrictive
         tolerance may help.
+
+.. _THREADS_VS_RANKS:
+
+OpenMP Threads vs. MPI Ranks
+============================
+
+By default, Trilinos spawns as many OpenMP_ threads as there are cores
+available.  This may very well be an intentional optimization, where
+Trilinos is designed to have one MPI_ rank per node of a cluster, so each
+of the child threads would help with computation but would not compete for
+I/O resources during ghost cell exchanges and file I/O. However, Python's
+`Global Interpreter Lock`_ (GIL) binds all of the child threads to the same
+core as their parent!  So instead of improving performance, each core
+suffers a heavy overhead from the managing those idling threads.
+
+The solution to this is to force Trilinos to use only one OpenMP_ thread::
+
+   $ export OMP_NUM_THREADS=1
+
+Because this environment variable affects all processes launched in the
+current session, you may prefer to restrict its use to :term:`FiPy` runs::
+
+   $ OMP_NUM_THREADS=1 mpirun -np {# of processors} python myScript.py --trilinos
+
+The difference can be extreme.  We have observed the :term:`FiPy` test
+suite to run in `just over two minutes`_ when ``OMP_NUM_THREADS=1``,
+compared to `over an hour and 23 minutes`_ when OpenMP_ threads are
+unrestricted.
+
+Conceivably, allowing Trilinos unfettered access to OpenMP_ threads with
+no MPI_ communication at all could perform as well or better than purely
+MPI_ parallelization. The plot below demonstrates this is not the case.
+OpenMP_ threading always slows down FiPy performance.
+
+.. .. image::
+
+See https://www.mail-archive.com/fipy@nist.gov/msg03393.html for further
+analysis.
+
+It may be possible to configure PyTrilinos to use only one OpenMP_ thread,
+but this not the configuration of the version available from conda-forge
+and building Trilinos is |NotFun (TM)|_.
+
+.. _OpenMP:                      https://www.openmp.org
+.. _MPI:                         http://www.mpi-forum.org
+.. _Global Interpreter Lock:     https://docs.python.org/2.7/c-api/init.html#thread-state-and-the-global-interpreter-lock
+.. _just over two minutes:       https://circleci.com/gh/guyer/fipy/461
+.. _over an hour and 23 minutes: https://circleci.com/gh/guyer/fipy/423
+.. |NotFun (TM)|                 unicode:: NotFun U+2122
+.. _NotFun (TM):                 https://commons.wikimedia.org/wiki/File:Hieronymus_Bosch_-_Triptych_of_Garden_of_Earthly_Delights_(detail)_-_WGA2526.jpg#/media/File:Hieronymus_Bosch_-_Triptych_of_Garden_of_Earthly_Delights_(detail)_-_WGA2526.jpg
 
 .. _MeshingWithGmsh:
 
