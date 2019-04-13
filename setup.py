@@ -61,12 +61,9 @@ DIST = setup(
         **versioneer.get_cmdclass()
     ),
     test_suite="fipy.testFiPy._suite",
-    packages=find_packages(exclude=[
-        "examples",
-        "examples.*",
-        "utils",
-        "utils.*"
-    ]),
+    packages=find_packages(
+        exclude=["examples", "examples.*", "utils", "utils.*"]
+    ),
     entry_points="""
                  [fipy.viewers]
                  matplotlib = fipy.viewers.matplotlibViewer:MatplotlibViewer
