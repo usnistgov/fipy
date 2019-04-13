@@ -58,7 +58,12 @@ DIST = setup(name="FiPy",
                            **versioneer.get_cmdclass()
                           ),
              test_suite="fipy.testFiPy._suite",
-             packages=find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
+             packages=find_packages(exclude=[
+                 "examples",
+                 "examples.*",
+                 "utils",
+                 "utils.*"
+             ]),
              entry_points="""
                  [fipy.viewers]
                  matplotlib = fipy.viewers.matplotlibViewer:MatplotlibViewer
@@ -77,8 +82,7 @@ DIST = setup(name="FiPy",
                  'Topic :: Scientific/Engineering :: Physics',
                  'Topic :: Scientific/Engineering :: Visualization',
                  'Topic :: Software Development :: Libraries :: Python Modules'
-             ],
-            )
+             ])
 
 if 'install' in DIST.commands:
     REQ = []
@@ -105,4 +109,5 @@ if 'install' in DIST.commands:
     if OPT:
         print "------"
         print "The optional module(s) " + str(OPT) + " cannot be loaded."
-        print "FiPy will have improved capabilities if these modules are installed."
+        print "FiPy will have improved capabilities \
+if these modules are installed."
