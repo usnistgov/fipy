@@ -43,11 +43,11 @@ Submit branch for code review
 
 If necessary, fork_ the `fipy repository`_.
 
-Add a "remote" link to your fork:
+Add a "remote" link to your fork::
 
     $ git remote add <MYFORK> <MYFORKURL>
 
-Push the code to your fork on GitHub_:
+Push the code to your fork on GitHub_::
 
     $ git push <MYFORK> $BRANCH
 
@@ -59,14 +59,14 @@ if absolutely necessary, document) any failures.
 .. note::
 
    If your branch is still in an experimental state, but you would like to
-   check its impact on the tests, you may prepend "`WIP: `" to your `pull
+   check its impact on the tests, you may prepend "``WIP:``" to your `pull
    request`_ title.  This will prevent your branch from being merged before
    it's complete, but will allow the automated tests to run.
 
    Please be respectful of the `Continuous Integration`_ resources and do
    the bulk of your testing on your local machine or against your own
    `Continuous Integration`_ accounts (if you have a lot of testing to do,
-   *before you create a `pull request`_*, push your branch to your own
+   before you create a `pull request`_, push your branch to your own
    fork_ and enable the `Continuous Integration`_ services there.
 
 You can avoid testing individual commits by adding "``[skip ci]``" to the
