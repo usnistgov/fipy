@@ -80,7 +80,7 @@ if 'install' in dist.commands:
         except ImportError, exc:
             req.append(pkg)
 
-    if len(req) > 0:
+    if req:
         print "!!!!!!"
         print "The required module(s) " + str(req) + " cannot be loaded."
         print "FiPy will not work properly until these modules are installed."
@@ -93,7 +93,7 @@ if 'install' in dist.commands:
         except ImportError, exc:
             opt.append(pkg)
 
-    if len(opt) > 0:
+    if opt:
         print "------"
         print "The optional module(s) " + str(opt) + " cannot be loaded."
         print "FiPy will have improved capabilities if these modules are installed."
