@@ -1,7 +1,5 @@
-import os
 from setuptools import setup, find_packages
 from setuptools.command.test import test as _test
-from distutils.core import Command
 
 import versioneer
 
@@ -71,7 +69,7 @@ dist = setup(name="FiPy",
                  'Topic :: Scientific/Engineering :: Visualization',
                  'Topic :: Software Development :: Libraries :: Python Modules'
              ],
-              )
+            )
 
 if 'install' in dist.commands:
     req = []
