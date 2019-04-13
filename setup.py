@@ -20,74 +20,73 @@ from _setup.upload_products import upload_products
 
 # bootstrap setuptools for users that don't already have it
 import ez_setup
+
 ez_setup.use_setuptools()
 
 test = _TestClass(_test)
 
 
 try:
-    f = open('README.rst', 'r')
-    LONG_DESCRIPTION = '\n' + f.read() + '\n'
+    f = open("README.rst", "r")
+    LONG_DESCRIPTION = "\n" + f.read() + "\n"
     f.close()
 except IOError, e:
-    LONG_DESCRIPTION = ''
+    LONG_DESCRIPTION = ""
 
 try:
-    f = open('LICENSE.rst', 'r')
-    LICENSE = '\n' + ''.join([' '*8 + l for l in f])
+    f = open("LICENSE.rst", "r")
+    LICENSE = "\n" + "".join([" " * 8 + l for l in f])
     f.close()
 except IOError, e:
-    LICENSE = ''
+    LICENSE = ""
 
-DIST = setup(name="FiPy",
-             version=versioneer.get_version(),
-             author="Jonathan Guyer, Daniel Wheeler, & Jim Warren",
-             author_email="fipy@nist.gov",
-             url="http://www.ctcms.nist.gov/fipy/",
-             license=LICENSE,
-             description="A finite volume PDE solver in Python",
-             long_description=LONG_DESCRIPTION,
-             cmdclass=dict({
-                 'build_docs': build_docs,
-                 'upload_products': upload_products,
-                 'test': test,
-                 'unittest': test,
-                 'copy_script': copy_script,
-                 'changelog': changelog
-             },
-                           **versioneer.get_cmdclass()
-                          ),
-             test_suite="fipy.testFiPy._suite",
-             packages=find_packages(exclude=[
-                 "examples",
-                 "examples.*",
-                 "utils",
-                 "utils.*"
-             ]),
-             entry_points="""
+DIST = setup(
+    name="FiPy",
+    version=versioneer.get_version(),
+    author="Jonathan Guyer, Daniel Wheeler, & Jim Warren",
+    author_email="fipy@nist.gov",
+    url="http://www.ctcms.nist.gov/fipy/",
+    license=LICENSE,
+    description="A finite volume PDE solver in Python",
+    long_description=LONG_DESCRIPTION,
+    cmdclass=dict(
+        {
+            "build_docs": build_docs,
+            "upload_products": upload_products,
+            "test": test,
+            "unittest": test,
+            "copy_script": copy_script,
+            "changelog": changelog,
+        },
+        **versioneer.get_cmdclass()
+    ),
+    test_suite="fipy.testFiPy._suite",
+    packages=find_packages(exclude=["examples", "examples.*", "utils", "utils.*"]),
+    entry_points="""
                  [fipy.viewers]
                  matplotlib = fipy.viewers.matplotlibViewer:MatplotlibViewer
                  mayavi = fipy.viewers.mayaviViewer:MayaviClient
              """,
-             classifiers=[
-                 'Development Status :: 5 - Production/Stable',
-                 'Environment :: Console',
-                 'Environment :: X11 Applications',
-                 'Intended Audience :: Science/Research',
-                 'License :: Public Domain',
-                 'Natural Language :: English',
-                 'Operating System :: OS Independent',
-                 'Programming Language :: Python',
-                 'Topic :: Scientific/Engineering :: Mathematics',
-                 'Topic :: Scientific/Engineering :: Physics',
-                 'Topic :: Scientific/Engineering :: Visualization',
-                 'Topic :: Software Development :: Libraries :: Python Modules'
-             ])
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Console",
+        "Environment :: X11 Applications",
+        "Intended Audience :: Science/Research",
+        "License :: Public Domain",
+        "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Topic :: Scientific/Engineering :: Mathematics",
+        "Topic :: Scientific/Engineering :: Physics",
+        "Topic :: Scientific/Engineering :: Visualization",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+    ],
+)
 
-if 'install' in DIST.commands:
+if "install" in DIST.commands:
     REQ = []
 
-    for pkg in ['numpy', 'pysparse']:
+    for pkg in ["numpy", "pysparse"]:
         try:
             __import__(pkg)
         except ImportError, exc:
@@ -100,7 +99,7 @@ if 'install' in DIST.commands:
 
     OPT = []
 
-    for pkg in ['scipy', 'matplotlib', 'mayavi']:
+    for pkg in ["scipy", "matplotlib", "mayavi"]:
         try:
             __import__(pkg)
         except ImportError, exc:
