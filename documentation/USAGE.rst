@@ -377,20 +377,24 @@ The difference can be extreme.  We have observed the :term:`FiPy` test
 suite to run in `just over two minutes`_ when ``OMP_NUM_THREADS=1``,
 compared to `over an hour and 23 minutes`_ when OpenMP_ threads are
 unrestricted. We don't know why, but `other platforms`_ do not suffer the
-same degradation.
+same degree of degradation.
 
-Conceivably, allowing Trilinos unfettered access to OpenMP_ threads with
-no MPI_ communication at all could perform as well or better than purely
-MPI_ parallelization. The plot below demonstrates this is not the case.
+Conceivably, allowing Trilinos unfettered access to OpenMP_ threads with no
+MPI_ communication at all could perform as well or better than purely MPI_
+parallelization.  The plot below demonstrates this is not the case.  We
+compare solution time vs number of OpenMP_ threads for fixed number of
+slots for a `Method of Manufactured Solutions Allen-Cahn problem`_.
 OpenMP_ threading always slows down FiPy performance.
 
-.. .. image::
+.. plot:: documentation/pyplots/threadanalyze.py
+
+   OpenMP_ threads :math:`\times` MPI_ cpus = slots.
 
 See https://www.mail-archive.com/fipy@nist.gov/msg03393.html for further
 analysis.
 
 It may be possible to configure PyTrilinos to use only one OpenMP_ thread,
-but this not the configuration of the version available from conda-forge
+but this not the configuration of the version available from conda-forge_
 and building Trilinos is |NotFun (TM)|_.
 
 .. _OpenMP:                      https://www.openmp.org
@@ -399,6 +403,8 @@ and building Trilinos is |NotFun (TM)|_.
 .. _just over two minutes:       https://circleci.com/gh/guyer/fipy/461
 .. _over an hour and 23 minutes: https://circleci.com/gh/guyer/fipy/423
 .. _other platforms:             https://travis-ci.org/usnistgov/fipy/builds/509556033
+.. _Method of Manufactured Solutions Allen-Cahn problem:  https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb
+.. _conda-forge:                 https://conda-forge.github.io/
 .. |NotFun (TM)|                 unicode:: NotFun U+2122
 .. _NotFun (TM):                 https://commons.wikimedia.org/wiki/File:Hieronymus_Bosch_-_Triptych_of_Garden_of_Earthly_Delights_(detail)_-_WGA2526.jpg#/media/File:Hieronymus_Bosch_-_Triptych_of_Garden_of_Earthly_Delights_(detail)_-_WGA2526.jpg
 
