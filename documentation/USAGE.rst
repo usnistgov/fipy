@@ -937,4 +937,9 @@ command in the base directory::
 
    $ pip install sphinxcontrib-bibtex
 
+   Some embeded figures require `matplotlib` and `pandas`::
+
+   $ pip install matplotlib
+   $ pip install pandas
+
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
