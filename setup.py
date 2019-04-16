@@ -83,31 +83,3 @@ DIST = setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
 )
-
-if "install" in DIST.commands:
-    REQ = []
-
-    for pkg in ["numpy", "pysparse"]:
-        try:
-            __import__(pkg)
-        except ImportError, exc:
-            REQ.append(pkg)
-
-    if REQ:
-        print "!!!!!!"
-        print "The required module(s) " + str(REQ) + " cannot be loaded."
-        print "FiPy will not work properly until these modules are installed."
-
-    OPT = []
-
-    for pkg in ["scipy", "matplotlib", "mayavi"]:
-        try:
-            __import__(pkg)
-        except ImportError, exc:
-            OPT.append(pkg)
-
-    if OPT:
-        print "------"
-        print "The optional module(s) " + str(OPT) + " cannot be loaded."
-        print "FiPy will have improved capabilities \
-if these modules are installed."
