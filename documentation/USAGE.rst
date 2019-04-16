@@ -394,7 +394,7 @@ See https://www.mail-archive.com/fipy@nist.gov/msg03393.html for further
 analysis.
 
 It may be possible to configure PyTrilinos to use only one OpenMP_ thread,
-but this not the configuration of the version available from conda-forge_
+but this is not the configuration of the version available from conda-forge_
 and building Trilinos is |NotFun (TM)|_.
 
 .. _OpenMP:                      https://www.openmp.org
