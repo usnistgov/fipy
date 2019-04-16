@@ -937,9 +937,8 @@ command in the base directory::
 
    $ pip install sphinxcontrib-bibtex
 
-   Some embeded figures require `matplotlib` and `pandas`::
+   Some embeded figures require `matplotlib`, `pandas`, and `imagemagick`::
 
-   $ pip install matplotlib
-   $ pip install pandas
+   $ conda install --channel conda-forge matplotlib pandas imagemagick
 
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
