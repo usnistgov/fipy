@@ -23,21 +23,21 @@ import ez_setup
 
 ez_setup.use_setuptools()
 
-test = _TestClass(_test)
+TEST = _TestClass(_test)
 
 
 try:
-    f = open("README.rst", "r")
-    LONG_DESCRIPTION = "\n" + f.read() + "\n"
-    f.close()
-except IOError, e:
+    FILE = open("README.rst", "r")
+    LONG_DESCRIPTION = "\n" + FILE.read() + "\n"
+    FILE.close()
+except IOError, _:
     LONG_DESCRIPTION = ""
 
 try:
-    f = open("LICENSE.rst", "r")
-    LICENSE = "\n" + "".join([" " * 8 + l for l in f])
-    f.close()
-except IOError, e:
+    FILE = open("LICENSE.rst", "r")
+    LICENSE = "\n" + "".join([" " * 8 + l for l in FILE])
+    FILE.close()
+except IOError, _:
     LICENSE = ""
 
 DIST = setup(
@@ -53,8 +53,8 @@ DIST = setup(
         {
             "build_docs": build_docs,
             "upload_products": upload_products,
-            "test": test,
-            "unittest": test,
+            "test": TEST,
+            "unittest": TEST,
             "copy_script": copy_script,
             "changelog": changelog,
         },
