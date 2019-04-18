@@ -255,6 +255,60 @@ jobs:
     environment:
       FIPY_SOLVERS: scipy
 
+  pylint:
+    <<: *defaults2
+
+    steps:
+      - checkout
+
+      - restore_conda_cache
+
+      - attach_workspace:
+          at: ~/project
+
+      - run:
+          name: Lint
+          command: |
+            source activate ~/project/test-environment
+            pip install pylint
+            pylint setup.py
+
+  flake8:
+    <<: *defaults2
+
+    steps:
+      - checkout
+
+      - restore_conda_cache
+
+      - attach_workspace:
+          at: ~/project
+
+      - run:
+          name: Lint
+          command: |
+            source activate ~/project/test-environment
+            pip install flake8
+            flake8 setup.py
+
+  black:
+    <<: *defaults3
+
+    steps:
+      - checkout
+
+      - restore_conda_cache
+
+      - attach_workspace:
+          at: ~/project
+
+      - run:
+          name: Lint
+          command: |
+            source activate ~/project/test-environment
+            conda install --channel conda-forge black
+            black --target-version py27 --fast --diff --check setup.py
+
 workflows:
   version: 2
 
@@ -262,6 +316,15 @@ workflows:
     jobs:
       - conda2_env
       - conda3_env
+      - pylint:
+          requires:
+            - conda2_env
+      - flake8:
+          requires:
+            - conda2_env
+      - black:
+          requires:
+            - conda3_env
       - test-27-pysparse:
           requires:
             - conda2_env
