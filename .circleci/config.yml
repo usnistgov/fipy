@@ -273,7 +273,7 @@ jobs:
             pip install pylint
             pylint setup.py
 
-  pyflakes:
+  flake8:
     <<: *defaults2
 
     steps:
@@ -319,7 +319,7 @@ workflows:
       - pylint:
           requires:
             - conda2_env
-      - pyflakes:
+      - flake8:
           requires:
             - conda2_env
       - black:
