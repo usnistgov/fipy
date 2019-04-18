@@ -288,7 +288,7 @@ jobs:
           name: Lint
           command: |
             source activate ~/project/test-environment
-            pip install pyflakes
+            pip install flake8
             flake8 setup.py
 
   black:
