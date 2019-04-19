@@ -227,7 +227,7 @@ Test the installed compressed distribution::
 
     $ conda create -n <testenvironment> --channel conda-forge python=<PYVERSION> fipy
     $ source activate <testenvironment>
-    $ conda remove --channel conda-forge
+    $ conda remove --channel conda-forge fipy
     $ mkdir tmp
     $ cd tmp
     $ cp ../dist/FiPy-${FIPY_VERSION}.tar.gz .
