@@ -11,15 +11,35 @@ Change Log
 Version |release|
 -----------------
 
+This is predominantly a `DevOps`_ release.  The focus has been on making
+FiPy easier to install with :term:`conda`.  It's also possible to install a
+minimal set of prerequisites with :term:`pip`.  Further, :term:`FiPy` is
+automatically tested on all major platforms using cloud-based
+:ref:`CONTINUOUSINTEGRATION` (:term:`linux` with :term:`CircleCI`,
+:term:`macOS` with :term:`TravisCI`, and :term:`Windows` with
+:term:`AppVeyor`).
+
 Pulls
 -----
 
+- Make badges work in GitHub and pdf
+  (`#636 <https://github.com/usnistgov/fipy/pull/636>`_)
+- Fix Robin errors
+  (`#615 <https://github.com/usnistgov/fipy/pull/615>`_)
+- Issue555 inclusive license
+  (`#613 <https://github.com/usnistgov/fipy/pull/613>`_)
+- Update CIs
+  (`#607 <https://github.com/usnistgov/fipy/pull/607>`_)
+- Add CHANGELOG and tool to generate from issues and pull requests
+  (`#600 <https://github.com/usnistgov/fipy/pull/600>`_)
 - Explain where to get examples
   (`#596 <https://github.com/usnistgov/fipy/pull/596>`_)
 - spelling corrections using en_US dictionary
   (`#594 <https://github.com/usnistgov/fipy/pull/594>`_)
 - Remove SmoothedAggregationSolver
   (`#593 <https://github.com/usnistgov/fipy/pull/593>`_)
+- Nix recipe for FiPy
+  (`#585 <https://github.com/usnistgov/fipy/pull/585>`_)
 - Point PyPI to github master tarball
   (`#582 <https://github.com/usnistgov/fipy/pull/582>`_)
 - Revise Navier-Stokes expression in the viscous limit
@@ -31,10 +51,10 @@ Pulls
   (`#578 <https://github.com/usnistgov/fipy/pull/578>`_)
 - Add support for binder
   (`#577 <https://github.com/usnistgov/fipy/pull/577>`_)
-- Issue575 skip intermittent levelset failure
-  (`#576 <https://github.com/usnistgov/fipy/pull/576>`_)
 - Fix epetra vector not numarray
   (`#574 <https://github.com/usnistgov/fipy/pull/574>`_)
+- add Codacy badge
+  (`#572 <https://github.com/usnistgov/fipy/pull/572>`_)
 - Fix output when PyTrilinos or PyTrilinos version is unavailable
   (`#570 <https://github.com/usnistgov/fipy/pull/570>`_)
   Thanks to `@shwina <https://github.com/shwina>`_.
@@ -48,6 +68,8 @@ Pulls
   (`#556 <https://github.com/usnistgov/fipy/pull/556>`_)
 - Fix tests that don't work in parallel
   (`#550 <https://github.com/usnistgov/fipy/pull/550>`_)
+- add badges to index and readme
+  (`#546 <https://github.com/usnistgov/fipy/pull/546>`_)
 - Ensure vector is dtype float before matrix multiply
   (`#544 <https://github.com/usnistgov/fipy/pull/544>`_)
 - Remove drop_tol argument to scipy.sparse.linalg.splu
@@ -60,12 +82,40 @@ Pulls
   (`#524 <https://github.com/usnistgov/fipy/pull/524>`_)
 - Make max/min global
   (`#520 <https://github.com/usnistgov/fipy/pull/520>`_)
+- Add a Gitter chat badge to README.rst
+  (`#516 <https://github.com/usnistgov/fipy/pull/516>`_)
+  Thanks to `@gitter-badger <https://github.com/gitter-badger>`_.
 - Add travis build recipe
   (`#489 <https://github.com/usnistgov/fipy/pull/489>`_)
 
 Fixes
 -----
 
+- `#631 <https://github.com/usnistgov/fipy/issues/631>`_:
+  Clean up INSTALLATION.rst
+- `#628 <https://github.com/usnistgov/fipy/issues/628>`_:
+  Problems with the viewer
+- `#627 <https://github.com/usnistgov/fipy/issues/627>`_:
+  Document OMP_NUM_THREADS
+- `#625 <https://github.com/usnistgov/fipy/issues/625>`_:
+  setup.py should not import fipy
+- `#623 <https://github.com/usnistgov/fipy/issues/623>`_:
+  Start using versioneer
+- `#621 <https://github.com/usnistgov/fipy/issues/621>`_:
+  Plot FaceVariable with matplotlib
+- `#617 <https://github.com/usnistgov/fipy/issues/617>`_:
+  Pick 1st Value and last Value of 1D cellVariable while running in
+  parallel
+- `#611 <https://github.com/usnistgov/fipy/issues/611>`_:
+  The coefficient cannot be a FaceVariable ??
+- `#610 <https://github.com/usnistgov/fipy/issues/610>`_:
+  Anisotropy example: Contour plot displaying in legend of figure !?
+- `#608 <https://github.com/usnistgov/fipy/issues/608>`_:
+  var.mesh: 'Property' object not callable...?
+- `#603 <https://github.com/usnistgov/fipy/issues/603>`_:
+  Can't run basic test or examples
+- `#602 <https://github.com/usnistgov/fipy/issues/602>`_:
+  Revise build and release documentation
 - `#592 <https://github.com/usnistgov/fipy/issues/592>`_:
   is resources.rst useful?
 - `#590 <https://github.com/usnistgov/fipy/issues/590>`_:
@@ -74,9 +124,15 @@ Fixes
   Viewers don't animate in jupyter notebook
 - `#566 <https://github.com/usnistgov/fipy/issues/566>`_:
   Support for GPU solvers using pyamgx
+- `#565 <https://github.com/usnistgov/fipy/issues/565>`_:
+  pip install does not work on empty env
+- `#564 <https://github.com/usnistgov/fipy/issues/564>`_:
+  Get green boxes across the board
 - `#561 <https://github.com/usnistgov/fipy/issues/561>`_:
   Cannot cast array data from dtype('int64') to dtype('int32')
   according to the rule 'safe'
+- `#555 <https://github.com/usnistgov/fipy/issues/555>`_:
+  inclusive license
 - `#551 <https://github.com/usnistgov/fipy/issues/551>`_:
   Sphinx spews many warnings:
 - `#545 <https://github.com/usnistgov/fipy/issues/545>`_:
@@ -93,6 +149,8 @@ Fixes
   pip or conda installation don't make clear where to get examples
 - `#531 <https://github.com/usnistgov/fipy/issues/531>`_:
   drop_tol argument to scipy.sparse.linalg.splu is gone
+- `#530 <https://github.com/usnistgov/fipy/issues/530>`_:
+  conda installation instructions not explicit about python version
 - `#528 <https://github.com/usnistgov/fipy/issues/528>`_:
   scipy 1.0.0 incompatibilities
 - `#525 <https://github.com/usnistgov/fipy/issues/525>`_:
@@ -107,9 +165,14 @@ Fixes
   Error using spatially varying anisotropic diffusion coefficient
 - `#488 <https://github.com/usnistgov/fipy/issues/488>`_:
   Gmsh 2.11 breaks GmshGrids
+- `#435 <https://github.com/usnistgov/fipy/issues/435>`_:
+  `pip install pysparse` fails with "fatal error: 'spmatrix.h' file
+  not found"
 - `#434 <https://github.com/usnistgov/fipy/issues/434>`_:
   `pip install fipy` fails with "ImportError: No module named
   ez_setup"
+
+.. _DevOps:   https://en.wikipedia.org/wiki/DevOps
 
 --------------------------
 Version 3.1.3 - 2017-01-17

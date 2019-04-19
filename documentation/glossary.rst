@@ -5,11 +5,33 @@ Glossary
 
 .. glossary::
 
+   AppVeyor
+      A cloud-based :term:`Continuous Integration` tool.
+      See https://www.appveyor.com.
+
    Buildbot
       The Buildbot is a system to automate the compile/test cycle
       required by most software projects to validate code changes.
       No longer used for :term:`FiPy`.
       See http://trac.buildbot.net/.
+
+   CircleCI
+      A cloud-based :term:`Continuous Integration` tool.
+      See https://circleci.com.
+
+   conda
+      An open source package management system and environment management
+      system that runs on Windows, macOS and Linux.  Conda quickly
+      installs, runs and updates packages and their dependencies.  Conda
+      easily creates, saves, loads and switches between environments on
+      your local computer.  It was created for Python programs, but it can
+      package and distribute software for any language.
+      See https://conda.io.
+
+   Continuous Integration
+      The practice of frequently testing and integrating one's new or
+      changed code with the existing code repository.
+      See https://en.wikipedia.org/wiki/Continuous_integration.
 
    FiPy
       The eponymous software package.
@@ -23,6 +45,14 @@ Glossary
    IPython
       An improved :term:`Python` shell that integrates nicely with
       :ref:`MATPLOTLIB`. See http://ipython.scipy.org/.
+
+   linux
+      An operating system.
+      See http://www.linux.org.
+
+   macOS
+      An operating system.
+      See http://www.apple.com/macos.
 
    Matplotlib
       :mod:`matplotlib` :term:`Python` package displays publication quality
@@ -126,6 +156,10 @@ Glossary
       See
       http://sphinx.pocoo.org/.
 
+   TravisCI
+      A cloud-based :term:`Continuous Integration` tool.
+      See https://travis-ci.org.
+
    Trilinos
       This package provides sparse matrix storage, solvers, and
       preconditioners, and can be used instead of :term:`Pysparse`.
@@ -138,3 +172,8 @@ Glossary
    Weave
       The :mod:`weave` package can enhance performance with C language
       inlining.  See https://github.com/scipy/weave.
+
+   Windows
+      An operating system.
+      See http://www.microsoft.com/windows.
+
