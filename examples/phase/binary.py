@@ -1,44 +1,11 @@
-#!/usr/bin/env python
-
-## -*-Pyth-*-
- # ########################################################################
- # FiPy - a finite volume PDE solver in Python
- # 
- # FILE: "binary.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #   mail: NIST
- #    www: <http://www.ctcms.nist.gov/fipy/>
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are 
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- # 
- # ########################################################################
- ##
-
 r"""
 It is straightforward to extend a phase field model to include binary alloys.
 As in :mod:`examples.phase.simple`, we will examine a 1D problem
 
 .. index:: Grid1D
 
->>> from fipy import *
+>>> from fipy import CellVariable, Variable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, PowerLawConvectionTerm, DefaultAsymmetricSolver, Viewer
+>>> from fipy.tools import numerix
 
 >>> nx = 400
 >>> dx = 5e-6 # cm
@@ -49,7 +16,7 @@ The Helmholtz free energy functional can be written as the integral
 :cite:`BoettingerReview:2002` :cite:`McFaddenReview:2002` :cite:`Wheeler:1992`
 
 .. math::
-    
+
    \mathcal{F}\left(\phi, C, T\right)
    = \int_\mathcal{V} \left\{
        f(\phi, C, T)
@@ -60,17 +27,17 @@ The Helmholtz free energy functional can be written as the integral
 over the volume :math:`\mathcal{V}` as a function of phase :math:`\phi` [#phi]_
 
 .. index:: CellVariable
-   
+
 >>> phase = CellVariable(name="phase", mesh=mesh, hasOld=1)
 
 composition :math:`C`
-   
+
 >>> C = CellVariable(name="composition", mesh=mesh, hasOld=1)
 
-and temperature :math:`T` [#T]_ 
+and temperature :math:`T` [#T]_
 
 .. index:: Variable
-   
+
 >>> T = Variable(name="temperature")
 
 Frequently, the gradient energy term in concentration is ignored and we
@@ -78,16 +45,16 @@ can derive governing equations
 
 .. math::
    :label: eq:phase:binary:phase
-    
+
     \frac{\partial\phi}{\partial t}
-    = M_\phi \left( \kappa_\phi \nabla^2 \phi 
+    = M_\phi \left( \kappa_\phi \nabla^2 \phi
                    - \frac{\partial f}{\partial \phi} \right)
-                   
+
 for phase and
 
 .. math::
    :label: eq:phase:binary:diffusion
-    
+
    \frac{\partial C}{\partial t}
    = \nabla\cdot\left( M_C \nabla \frac{\partial f}{\partial C} \right)
 
@@ -98,15 +65,15 @@ different ways. One approach is to construct free energy densities for
 each of the pure components, as functions of phase, *e.g.*
 
 .. math::
-    
+
    f_A(\phi, T) = p(\phi) f_A^S(T)
    + \left(1 - p(\phi)\right) f_A^L(T) + \frac{W_A}{2} g(\phi)
 
 where :math:`f_A^L(T)`, :math:`f_B^L(T)`, :math:`f_A^S(T)`, and :math:`f_B^S(T)`
 are the free energy densities of the pure components. There are a
 variety of choices for the interpolation function :math:`p(\phi)` and the
-barrier function :math:`g(\phi)`, 
-   
+barrier function :math:`g(\phi)`,
+
 such as those shown in :mod:`examples.phase.simple`
 
 >>> def p(phi):
@@ -114,37 +81,37 @@ such as those shown in :mod:`examples.phase.simple`
 
 >>> def g(phi):
 ...     return (phi * (1 - phi))**2
-   
-The desired thermodynamic model can then be applied to obtain 
+
+The desired thermodynamic model can then be applied to obtain
 :math:`f(\phi, C, T)`, such as for a regular solution,
 
 .. math::
-    
+
    f(\phi, C, T) &= (1 - C) f_A(\phi, T) + C f_B(\phi, T) \\
    &\qquad + R T \left[
        (1 - C) \ln (1 - C) + C \ln C
    \right]
-   + C (1 - C) \left[ 
+   + C (1 - C) \left[
        \Omega_S p(\phi)
        + \Omega_L \left( 1 - p(\phi) \right)
    \right]
 
 where
-   
+
 >>> R = 8.314 # J / (mol K)
 
 is the gas constant and :math:`\Omega_S` and :math:`\Omega_L` are the
 regular solution interaction parameters for solid and liquid.
 
-Another approach is useful when the free energy densities :math:`f^L(C, T)` 
+Another approach is useful when the free energy densities :math:`f^L(C, T)`
 and :math:`f^S(C,T)` of the alloy in the solid and liquid phases are
 known. This might be the case when the two different phases have
 different thermodynamic models or when one or both is obtained from a
 Calphad code. In this case, we can construct
 
 .. math::
-    
-   f(\phi, C, T) = p(\phi) f^S(C,T) 
+
+   f(\phi, C, T) = p(\phi) f^S(C,T)
    + \left(1 - p(\phi)\right) f^L(C, T)
    + \left[
        (1-C) \frac{W_A}{2} + C \frac{W_B}{2}
@@ -157,12 +124,12 @@ We choose the first approach and make the simplifying assumptions of an
 ideal solution and that
 
 .. math::
-    
+
    f_A^L(T) & = 0 \\
    f_A^S(T) - f_A^L(T) &= \frac{L_A\left(T - T_M^A\right)}{T_M^A}
 
-and likewise for component :math:`B`. 
-   
+and likewise for component :math:`B`.
+
 >>> LA = 2350. # J / cm**3
 >>> LB = 1728. # J / cm**3
 >>> TmA = 1728. # K
@@ -176,40 +143,40 @@ pure solid and pure liquid phases to the latent heat :math:`L_A` and the
 pure component melting point :math:`T_M^A`, such that
 
 .. math::
-    
-   f_A(\phi, T) = \frac{L_A\left(T - T_M^A\right)}{T_M^A} p(\phi) 
+
+   f_A(\phi, T) = \frac{L_A\left(T - T_M^A\right)}{T_M^A} p(\phi)
    + \frac{W_A}{2} g(\phi).
 
 With these assumptions
 
 .. math::
    :label: eq:phase:binary:phaseTransformation
-    
+
    \frac{\partial f}{\partial \phi}
-   &= (1-C) \frac{\partial f_A}{\partial \phi} 
+   &= (1-C) \frac{\partial f_A}{\partial \phi}
    + C \frac{\partial f_B}{\partial \phi} \nonumber \\
    &= \left\{
        (1-C) \frac{L_A\left(T - T_M^A\right)}{T_M^A}
-       + C \frac{L_B\left(T - T_M^B\right)}{T_M^B} 
+       + C \frac{L_B\left(T - T_M^B\right)}{T_M^B}
    \right\} p'(\phi)
    + \left\{
-     (1-C) \frac{W_A}{2} + C \frac{W_B}{2}  
+     (1-C) \frac{W_A}{2} + C \frac{W_B}{2}
    \right\} g'(\phi)
 
 and
 
 .. math::
    :label: eq:phase:binary:chemicalPotential
-   
+
    \frac{\partial f}{\partial C}
-   &= \left[f_B(\phi, T) + \frac{R T}{V_m} \ln C\right] 
+   &= \left[f_B(\phi, T) + \frac{R T}{V_m} \ln C\right]
    - \left[f_A(\phi, T) + \frac{R T}{V_m} \ln (1-C) \right] \nonumber \\
    &= \left[\mu_B(\phi, C, T) - \mu_A(\phi, C, T) \right] / V_m
 
 where :math:`\mu_A` and :math:`\mu_B` are the classical chemical potentials
 for the binary species. :math:`p'(\phi)` and :math:`g'(\phi)` are the
 partial derivatives of of :math:`p` and :math:`g` with respect to :math:`\phi`
-  
+
 >>> def pPrime(phi):
 ...     return 30. * g(phi)
 
@@ -218,9 +185,9 @@ partial derivatives of of :math:`p` and :math:`g` with respect to :math:`\phi`
 
 :math:`V_m` is the molar volume, which we take to be independent of
 concentration and phase
-   
+
 >>> Vm = 7.42 # cm**3 / mol
-   
+
 On comparison with :mod:`examples.phase.simple`, we can see that the
 present form of the phase field equation is identical to the one found
 earlier, with the source now composed of the concentration-weighted average
@@ -236,7 +203,7 @@ equal the previous value
 >>> kappaB = 6 * sigmaB * deltaB # J / cm
 >>> WA = 6 * sigmaA / deltaA # J / cm**3
 >>> WB = 6 * sigmaB / deltaB # J / cm**3
-    
+
 and define the averages
 
 >>> W = (1 - C) * WA / 2. + C * WB / 2.
@@ -265,20 +232,20 @@ When coding explicitly, it is typical to simply write a function to
 evaluate the chemical potentials :math:`\mu_A` and :math:`\mu_B` and then
 perform the finite differences necessary to calculate their gradient and
 divergence, e.g.,::
-    
+
     def deltaChemPot(phase, C, T):
         return ((Vm * (enthalpyB * p(phase) + WA * g(phase)) + R * T * log(1 - C)) -
                 (Vm * (enthalpyA * p(phase) + WA * g(phase)) + R * T * log(C)))
-    
+
     for j in range(faces):
         flux[j] = ((Mc[j+.5] + Mc[j-.5]) / 2) \
           * (deltaChemPot(phase[j+.5], C[j+.5], T) \
             - deltaChemPot(phase[j-.5], C[j-.5], T)) / dx
-        
+
     for j in range(cells):
         diffusion = (flux[j+.5] - flux[j-.5]) / dx
-        
-where we neglect the details of the outer boundaries (``j = 0`` and ``j = N``) 
+
+where we neglect the details of the outer boundaries (``j = 0`` and ``j = N``)
 or exactly how to translate ``j+.5`` or ``j-.5`` into an array index,
 much less the complexities of higher dimensions. FiPy can handle all of
 these issues automatically, so we could just write::
@@ -292,14 +259,14 @@ Although the second syntax would essentially work as written, such an
 explicit implementation would be very slow. In order to take advantage
 of :term:`FiPy`'s implicit solvers, it is necessary to reduce
 Eq. :eq:`eq:phase:binary:diffusion` to the canonical form of
-Eq. :eq:`eqn:num:gen`, hence we must expand
+Eq. :eq:`num:gen`, hence we must expand
 Eq. :eq:`eq:phase:binary:chemicalPotential` as
 
 .. math::
-    
-   \frac{\partial f}{\partial C} 
+
+   \frac{\partial f}{\partial C}
    = \left[
-       \frac{L_B\left(T - T_M^B\right)}{T_M^B} 
+       \frac{L_B\left(T - T_M^B\right)}{T_M^B}
        - \frac{L_A\left(T - T_M^A\right)}{T_M^A}
    \right] p(\phi)
    + \frac{R T}{V_m} \left[\ln C - \ln (1-C)\right]
@@ -310,39 +277,39 @@ we can then reduce Eq. :eq:`eq:phase:binary:diffusion` to
 
 .. math::
    :label: eq:phase:binary:diffusion:bulk
-    
+
    \frac{\partial C}{\partial t}
    &= \nabla\cdot\left( M_C \nabla \left\{
        \frac{R T}{V_m} \left[\ln C - \ln (1-C)\right]
    \right\}
    \right) \nonumber \\
-   &= \nabla\cdot\left[ 
+   &= \nabla\cdot\left[
        \frac{M_C R T}{C (1-C) V_m} \nabla C
    \right]
 
 and, by comparison with Fick's second law
 
 .. math::
-    
+
    \frac{\partial C}{\partial t}
    = \nabla\cdot\left[D \nabla C\right],
 
-we can associate the mobility :math:`M_C` with the intrinsic diffusivity :math:`D` by 
+we can associate the mobility :math:`M_C` with the intrinsic diffusivity :math:`D` by
 :math:`M_C \equiv D C (1-C) V_m / R T` and write Eq. :eq:`eq:phase:binary:diffusion` as
 
 .. math::
    :label: eq:phase:binary:diffusion:canonical
-    
+
    \frac{\partial C}{\partial t}
    &= \nabla\cdot\left( D \nabla C \right) \nonumber \\
    &\qquad + \nabla\cdot\left(
    \frac{D C (1 - C) V_m}{R T}
    \left\{
        \left[
-           \frac{L_B\left(T - T_M^B\right)}{T_M^B} 
+           \frac{L_B\left(T - T_M^B\right)}{T_M^B}
            - \frac{L_A\left(T - T_M^A\right)}{T_M^A}
        \right] \nabla p(\phi)
-       + \frac{W_B - W_A}{2} \nabla g(\phi)  
+       + \frac{W_B - W_A}{2} \nabla g(\phi)
    \right\}
    \right).
 
@@ -351,25 +318,25 @@ obvious, but by factoring out :math:`C`, we can see that this is a
 :class:`~fipy.terms.convectionTerm.ConvectionTerm` with a velocity
 
 .. math::
-    
-   \vec{u}_\phi = 
+
+   \vec{u}_\phi =
    \frac{D (1 - C) V_m}{R T}
    \left\{
        \left[
-           \frac{L_B\left(T - T_M^B\right)}{T_M^B} 
+           \frac{L_B\left(T - T_M^B\right)}{T_M^B}
            - \frac{L_A\left(T - T_M^A\right)}{T_M^A}
        \right] \nabla p(\phi)
-       + \frac{W_B - W_A}{2} \nabla g(\phi)  
+       + \frac{W_B - W_A}{2} \nabla g(\phi)
    \right\}
 
 due to phase transformation, such that
 
 .. math::
-    
+
    \frac{\partial C}{\partial t}
    = \nabla\cdot\left( D \nabla C \right) + \nabla\cdot\left(C \vec{u}_\phi\right)
 
-   
+
 or
 
 >>> Dl = Variable(value=1e-5) # cm**2 / s
@@ -384,7 +351,7 @@ or
 
 .. index:: PowerLawConvectionTerm
 
->>> diffusionEq = (TransientTerm() 
+>>> diffusionEq = (TransientTerm()
 ...                == DiffusionTerm(coeff=D)
 ...                + PowerLawConvectionTerm(coeff=phaseTransformationVelocity))
 
@@ -396,22 +363,22 @@ We initialize the phase field to a step function in the middle of the domain
 >>> phase.setValue(0., where=mesh.cellCenters[0] > L/2.)
 
 and start with a uniform composition field :math:`C = 1/2`
-   
+
 >>> C.setValue(0.5)
 
-In equilibrium, :math:`\mu_A(0, C_L, T) = \mu_A(1, C_S, T)` and 
+In equilibrium, :math:`\mu_A(0, C_L, T) = \mu_A(1, C_S, T)` and
 :math:`\mu_B(0, C_L, T) = \mu_B(1, C_S, T)` and, for ideal solutions, we can
 deduce the liquidus and solidus compositions as
 
 .. math::
 
    C_L &= \frac{1 - \exp\left(-\frac{L_A\left(T - T_M^A\right)}{T_M^A}\frac{V_m}{R T}\right)}
-   {\exp\left(-\frac{L_B\left(T - T_M^B\right)}{T_M^B}\frac{V_m}{R T}\right) 
+   {\exp\left(-\frac{L_B\left(T - T_M^B\right)}{T_M^B}\frac{V_m}{R T}\right)
    - \exp\left(-\frac{L_A\left(T - T_M^A\right)}{T_M^A}\frac{V_m}{R T}\right)} \\
    C_S &= \exp\left(-\frac{L_B\left(T - T_M^B\right)}{T_M^B}\frac{V_m}{R T}\right) C_L
 
 .. index:: exp
-   
+
 >>> Cl = (1. - numerix.exp(-enthalpyA * Vm / (R * T))) \
 ...   / (numerix.exp(-enthalpyB * Vm / (R * T)) - numerix.exp(-enthalpyA * Vm / (R * T)))
 >>> Cs = numerix.exp(-enthalpyB * Vm / (R * T)) * Cl
@@ -424,7 +391,7 @@ The phase fraction is predicted by the lever rule
 For the special case of ``fraction = Cavg = 0.5``, a little bit of algebra
 reveals that the temperature that leaves the phase fraction unchanged is
 given by
-    
+
 >>> T.setValue((LA + LB) * TmA * TmB / (LA * TmB + LB * TmA))
 
 In this simple, binary, ideal solution case, we can derive explicit
@@ -435,40 +402,40 @@ SciPy can be used.
 We'll need a function to return the two conditions for equilibrium
 
 .. math::
-    
-   0 = \mu_A(1, C_S, T) - \mu_A(0, C_L, T) &= 
-   \frac{L_A\left(T - T_M^A\right)}{T_M^A} V_m 
+
+   0 = \mu_A(1, C_S, T) - \mu_A(0, C_L, T) &=
+   \frac{L_A\left(T - T_M^A\right)}{T_M^A} V_m
    + R T \ln (1 - C_S) - R T \ln (1 - C_L) \\
-   0 = \mu_B(1, C_S, T) - \mu_B(0, C_L, T) &= 
+   0 = \mu_B(1, C_S, T) - \mu_B(0, C_L, T) &=
    \frac{L_B\left(T - T_M^B\right)}{T_M^B} V_m
    + R T \ln C_S - R T \ln C_L
 
 .. index:: log, array
 
 >>> def equilibrium(C):
-...     return [numerix.array(enthalpyA * Vm 
-...                           + R * T * numerix.log(1 - C[0]) 
+...     return [numerix.array(enthalpyA * Vm
+...                           + R * T * numerix.log(1 - C[0])
 ...                           - R * T * numerix.log(1 - C[1])),
-...             numerix.array(enthalpyB * Vm 
-...                           + R * T * numerix.log(C[0]) 
+...             numerix.array(enthalpyB * Vm
+...                           + R * T * numerix.log(C[0])
 ...                           - R * T * numerix.log(C[1]))]
-               
+
 and we'll have much better luck if we also supply the Jacobian
 
 .. math::
-    
-   \left[\begin{matrix} 
+
+   \left[\begin{matrix}
        \frac{\partial(\mu_A^S - \mu_A^L)}{\partial C_S}
        & \frac{\partial(\mu_A^S - \mu_A^L)}{\partial C_L} \\
        \frac{\partial(\mu_B^S - \mu_B^L)}{\partial C_S}
        & \frac{\partial(\mu_B^S - \mu_B^L)}{\partial C_L}
    \end{matrix}\right]
-   = 
-   R T\left[\begin{matrix} 
+   =
+   R T\left[\begin{matrix}
        -\frac{1}{1-C_S} & \frac{1}{1-C_L} \\
        \frac{1}{C_S} & -\frac{1}{C_L}
    \end{matrix}\right]
-   
+
 >>> def equilibriumJacobian(C):
 ...     return R * T * numerix.array([[-1. / (1 - C[0]), 1. / (1 - C[1])],
 ...                                   [ 1. / C[0],      -1. / C[1]]])
@@ -477,7 +444,7 @@ and we'll have much better luck if we also supply the Jacobian
 
 >>> try:
 ...     from scipy.optimize import fsolve # doctest: +SCIPY
-...     CsRoot, ClRoot = fsolve(func=equilibrium, x0=[0.5, 0.5], 
+...     CsRoot, ClRoot = fsolve(func=equilibrium, x0=[0.5, 0.5],
 ...                             fprime=equilibriumJacobian) # doctest: +SCIPY
 ... except ImportError:
 ...     ClRoot = CsRoot = 0
@@ -500,7 +467,7 @@ We plot the result against the sharp interface solution
    module: fipy.viewers
 
 >>> if __name__ == '__main__':
-...     viewer = Viewer(vars=(phase, C, sharp), 
+...     viewer = Viewer(vars=(phase, C, sharp),
 ...                     datamin=0., datamax=1.)
 ...     viewer.plot()
 
@@ -536,7 +503,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ...     diffRes = diffusionEq.sweep(var=C, dt=dt, solver=solver)
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("stationary phase field")
+...     raw_input("Stationary phase field. Press <return> to proceed...")
 
 .. image:: binary/stationary.*
    :width: 90%
@@ -581,7 +548,7 @@ take by looking at the velocity of convection induced by phase transformation in
 Eq. :eq:`eq:phase:binary:diffusion:canonical`. If we assume that the phase changes from 1 to 0 in a single grid spacing,
 that the diffusivity is `Dl` at the interface, and that the term due to the difference in
 barrier heights is negligible:
-    
+
 .. math::
 
    \vec{u}_\phi &= \frac{D_\phi}{C} \nabla \phi
@@ -589,13 +556,13 @@ barrier heights is negligible:
    &\approx
    \frac{Dl \frac{1}{2} V_m}{R T}
    \left[
-       \frac{L_B\left(T - T_M^B\right)}{T_M^B} 
+       \frac{L_B\left(T - T_M^B\right)}{T_M^B}
        - \frac{L_A\left(T - T_M^A\right)}{T_M^A}
    \right] \frac{1}{\Delta x}
    \\
    &\approx
    \frac{Dl \frac{1}{2} V_m}{R T}
-   \left(L_B + L_A\right) \frac{T_M^A - T_M^B}{T_M^A + T_M^B} 
+   \left(L_B + L_A\right) \frac{T_M^A - T_M^B}{T_M^A + T_M^B}
    \frac{1}{\Delta x}
    \\
    &\approx \unit{0.28}{\centi\meter\per\second}
@@ -621,8 +588,8 @@ time step of about :math:`\unit{10^{-5}}{\second}`.
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
->>> if __name__ == '__main__': 
-...     raw_input("moving phase field")
+>>> if __name__ == '__main__':
+...     raw_input("Moving phase field. Press <return> to proceed...")
 
 .. image:: binary/moving.*
    :width: 90%
@@ -633,17 +600,17 @@ We see that the composition on either side of the interface approach the
 sharp-interface solidus and liquidus, but it will take a great many more
 timesteps to reach equilibrium. If we waited sufficiently long, we
 could again verify the final concentrations and phase fraction against the
-expected values. 
+expected values.
 
 .. rubric:: Footnotes
 
 .. [#phi] We will find that we need to "sweep" this non-linear problem
    (see *e.g.* the composition-dependent diffusivity example in
-   :mod:`examples.diffusion.mesh1D`), so we declare :math:`\phi` and :math:`C` 
+   :mod:`examples.diffusion.mesh1D`), so we declare :math:`\phi` and :math:`C`
    to retain an "old" value.
-   
+
 .. [#T] we are going to want to
-   examine different temperatures in this example, so we declare :math:`T` 
+   examine different temperatures in this example, so we declare :math:`T`
    as a :class:`~fipy.variables.variable.Variable`
 
 .. _CFL limit: http://en.wikipedia.org/wiki/Courant-Friedrichs-Lewy_condition

@@ -1,5 +1,5 @@
-from fipy import *
-
+from fipy import CellVariable, Gmsh2D, DiffusionTerm, Viewer
+from fipy.tools import numerix
 from matplotlib import cm
 
 monitor = None
@@ -10,7 +10,7 @@ c1_y = 6;
 c2_x = 4;
 c2_y = 4;
 r = 0.2;
-                  
+
 Point(1) = {0, 0, 0, 1.0};
 Point(2) = {10, 0, 0, 1.0};
 Point(3) = {10, 10, 0, 1.0};
@@ -59,21 +59,21 @@ for refinement in range(10):
     charge = CellVariable(mesh=mesh, name=r"$\rho$", value=0.)
     charge.setValue(+1, where=mesh.physicalCells["Anode"])
     charge.setValue(-1, where=mesh.physicalCells["Cathode"])
-    
+
     potential = CellVariable(mesh=mesh, name=r"$\psi$")
     potential.constrain(0., where=mesh.physicalFaces["Ground"])
-    
+
     eq = DiffusionTerm(coeff=1.) == -charge
-    
+
     res0 = eq.sweep(var=potential)
-    
+
     res = eq.justResidualVector(var=potential)
-    
-    res1 = L2norm(res)
+
+    res1 = numerix.L2norm(res)
     res1a = CellVariable(mesh=mesh, value=abs(res))
-    
+
     res = CellVariable(mesh=mesh, name="residual", value=abs(res) / mesh.cellVolumes**(1./mesh.dim) / 1e-3)
-    
+
     # want cells no bigger than 1 and no smaller than 0.001
     maxSize = 1.
     minSize = 0.001
@@ -82,11 +82,9 @@ for refinement in range(10):
     viewer = Viewer(vars=potential, xmin=3.5, xmax=4.5, ymin=3.5, ymax=4.5)
 #     viewer = Viewer(vars=(potential, charge))
     viewer.plot()
-    
+
 #     resviewer = Viewer(vars=res1a, log=True, datamin=1e-6, datamax=1e-2, cmap=cm.gray)
 #     monviewer = Viewer(vars=monitor, log=True, datamin=1e-3, datamax=1)
- 
-    raw_input("refinement %d, res0: %g, res: %g:%g, N: %d, min: %g, max: %g, avg: %g" 
-              % (refinement, res0, res1, res1a.cellVolumeAverage, mesh.numberOfCells, sqrt(min(mesh.cellVolumes)), sqrt(max(mesh.cellVolumes)), mean(sqrt(mesh.cellVolumes))))
-    
-    
+
+    raw_input("refinement %d, res0: %g, res: %g:%g, N: %d, min: %g, max: %g, avg: %g. Press <return> to proceed..." \
+              % (refinement, res0, res1, res1a.cellVolumeAverage, mesh.numberOfCells, numerix.sqrt(min(mesh.cellVolumes)), numerix.sqrt(max(mesh.cellVolumes)), numerix.mean(numerix.sqrt(mesh.cellVolumes))))

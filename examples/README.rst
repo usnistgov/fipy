@@ -11,7 +11,7 @@ Examples
 
 These examples can be used in at least four ways:
 
-- Each example can be invoked individually to demonstrate an 
+- Each example can be invoked individually to demonstrate an
   application of :term:`FiPy`::
 
     $ python examples/something/input.py
@@ -43,15 +43,15 @@ These examples can be used in at least four ways:
      emphasis on serving as both documentation and as comprehensive tests
      of the FiPy framework.  As explained at the end of
      ``examples/diffusion/steadyState/mesh1D.py``, your own scripts can be
-     much more succint, if you wish, and include only the text that follows
-     the "``>>>``" and "``...``" prompts shown in these examples. 
+     much more succinct, if you wish, and include only the text that follows
+     the "``>>>``" and "``...``" prompts shown in these examples.
 
      To obtain a copy of an example, containing just the script instructions,
      type::
 
        $ python setup.py copy_script --From x.py --To y.py
 
-     
+
 In addition to those presented in this manual, there are dozens of other
 files in the :file:`examples/` directory, that demonstrate other uses of FiPy.
 If these examples do not help you construct your own problem scripts,

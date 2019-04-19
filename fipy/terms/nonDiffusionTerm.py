@@ -1,37 +1,3 @@
-#!/usr/bin/env python
-
-## -*-Pyth-*-
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "nonDiffusionTerm.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -61,7 +27,7 @@ class _NonDiffusionTerm(_UnaryTerm):
 
             >>> 2. * __NonDiffusionTerm(coeff=0.5)
             __NonDiffusionTerm(coeff=1.0)
-            
+
         Test for ticket:291.
 
             >>> from fipy import PowerLawConvectionTerm
@@ -79,7 +45,7 @@ class _NonDiffusionTerm(_UnaryTerm):
             return self.__class__(coeff=other * coeff, var=self.var)
         else:
             raise TermMultiplyError
-            
+
     __rmul__ = __mul__
 
     @property
@@ -97,13 +63,13 @@ class _NonDiffusionTerm(_UnaryTerm):
             diagonalSign = 2 * numerix.all(diffusionGeomCoeff[0] <= 0, axis=-1) - 1
         else:
             diagonalSign = 1
-			
+
         return diagonalSign
-    
+
     def _test(self):
         r"""
         Test stuff.
-    
+
          Subtract a `Term` from a `Term`, number or variable.
 
            >>> __NonDiffusionTerm(coeff=1.) - 10.
@@ -141,18 +107,18 @@ class _NonDiffusionTerm(_UnaryTerm):
            >>> __NonDiffusionTerm(coeff=1.) - __NonDiffusionTerm(coeff=2.)
            (__NonDiffusionTerm(coeff=1.0) + __NonDiffusionTerm(coeff=-2.0))
 
-        A `Term` can also equate with a number. 
+        A `Term` can also equate with a number.
 
-           >>> __NonDiffusionTerm(coeff=1.) == 1.  
+           >>> __NonDiffusionTerm(coeff=1.) == 1.
            (__NonDiffusionTerm(coeff=1.0) + -1.0)
-           
+
         Likewise for integers.
 
            >>> __NonDiffusionTerm(coeff=1.) == 1
            (__NonDiffusionTerm(coeff=1.0) + -1)
-           
+
         Equating to zero is allowed, of course
-        
+
             >>> __NonDiffusionTerm(coeff=1.) == 0
             __NonDiffusionTerm(coeff=1.0)
             >>> 0 == __NonDiffusionTerm(coeff=1.)
@@ -163,7 +129,7 @@ class _NonDiffusionTerm(_UnaryTerm):
             >>> __NonDiffusionTerm(2.) / 2.
             __NonDiffusionTerm(coeff=1.0)
 
-        Combine this equation with another 
+        Combine this equation with another
 
             >>> from fipy.variables.variable import Variable
             >>> eq1 = 10. + __NonDiffusionTerm(coeff=1., var=Variable(name='A'))
@@ -171,17 +137,17 @@ class _NonDiffusionTerm(_UnaryTerm):
             >>> eq1 & eq2
             ((__NonDiffusionTerm(coeff=1.0, var=A) + 10.0) & (__NonDiffusionTerm(coeff=2.0, var=B) + 20.0))
 
-        """ 
+        """
 
-        
 
-class __NonDiffusionTerm(_NonDiffusionTerm): 
+
+class __NonDiffusionTerm(_NonDiffusionTerm):
     """
     Dummy subclass for tests
     """
-    pass 
+    pass
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
 

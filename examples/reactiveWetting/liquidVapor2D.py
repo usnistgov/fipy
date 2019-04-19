@@ -1,37 +1,3 @@
-#!/usr/bin/env python
-
-## 
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "liquidVapor1D.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
 r"""
 
 A 2D version of the 1D example.
@@ -45,7 +11,8 @@ A 2D version of the 1D example.
 >>> liquidDensity = 7354.3402662299995
 >>> vaporDensity = 82.855803327810008
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, TransientTerm, VanLeerConvectionTerm, DiffusionTerm, ImplicitSourceTerm, ConvectionTerm, CentralDifferenceConvectionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> def f(rho):
 ...     return ee * rho**2 / molarWeight**2 + gasConstant * temperature * rho / molarWeight * \
@@ -120,7 +87,7 @@ A 2D version of the 1D example.
 ...                  - DiffusionTerm(coeff=epsilon * temperature, var=density)
 
 >>> potentialNC.faceGrad.constrain(value=[[0], [0]], where=mesh.exteriorFaces)
-                 
+
 >>> coupledEqn = massEqn & momentumXEqn & momentumYEqn & potentialNCEqn
 
 >>> numerix.random.seed(2012)
@@ -149,12 +116,12 @@ A 2D version of the 1D example.
 ...     totalSweeps = 1
 
 >>> while timestep < totalSteps:
-... 
+...
 ...     sweep = 0
 ...     dt *= 1.1
 ...     residual = 1.
 ...     initialResidual = None
-...     
+...
 ...     density.updateOld()
 ...     velocityX.updateOld()
 ...     velocityY.updateOld()
@@ -170,7 +137,7 @@ A 2D version of the 1D example.
 ...         velocityVector[1] = velocityY
 ...
 ...         dt = min(dt, dx / max(abs(velocityVector.mag)) * cfl)
-...         
+...
 ...         coupledEqn.cacheMatrix()
 ...         residual = coupledEqn.sweep(dt=dt)
 ...
@@ -198,7 +165,7 @@ A 2D version of the 1D example.
 ...         sweep += 1
 ...
 ...     if __name__ == '__main__' and timestep % 1 == 0:
-...         print 'timestep: %i, dt: %1.5e, free energy: %1.5e' % (timestep, dt, freeEnergy)
+...         print 'timestep: %e / %e, dt: %1.5e, free energy: %1.5e' % (timestep, totalSteps, dt, freeEnergy)
 ...         for viewer in viewers:
 ...             viewer.plot()
 ...

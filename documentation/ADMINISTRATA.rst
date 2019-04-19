@@ -8,8 +8,9 @@ Refer to :ref:`documentation:GIT` for the current branching conventions.
 Branches
 --------
 
-Whether fixing a bug or adding a feature, all work on FiPy should be based 
-on a reported `GitHub issue`_. Assuming issue number 12345, branch the code::
+Whether fixing a bug or adding a feature, all work on FiPy should be
+conducted on a branch and submitted as a `pull request`_. If there is
+already a reported GitHub_ issue_, name the branch accordingly::
 
     $ BRANCH=issue12345-Summary_of_what_branch_addresses
     $ git checkout -b $BRANCH develop
@@ -30,8 +31,8 @@ Make sure ``develop`` is up to date::
 
 Merge updated state of ``develop`` to the branch::
 
-    $ git diff develop
-    $ git merge develop
+    $ git diff origin/develop
+    $ git merge origin/develop
 
 Resolve any conflicts and test::
 
@@ -40,35 +41,42 @@ Resolve any conflicts and test::
 Submit branch for code review
 -----------------------------
 
-.. attention::
+If necessary, fork_ the `fipy repository`_.
 
-   **Administrators Only!**
+Add a "remote" link to your fork::
 
-   Push the code to GitHub for automated testing::
+    $ git remote add <MYFORK> <MYFORKURL>
 
-       $ git push origin $BRANCH
+Push the code to your fork on GitHub_::
 
-   Check the Buildbot_ status. Fix (or, if absolutely necessary, document)
-   any failures.
+    $ git push <MYFORK> $BRANCH
 
-Paste the result of::
-
-    $ git request-pull develop origin
-
-(or whatever is appropriate for your branch and clone) into a comment on
-the ticket this branch addresses. You can send a message to the mailing
-list about it if you like, but the FiPy developers should see the pull
-request via RSS feed.
+Now `create a pull request`_ from your ``$BRANCH`` against the ``develop``
+branch of ``usnistgov/fipy``.  The `pull request`_ should initiate
+automated testing.  Check the `Continuous Integration`_ status.  Fix (or,
+if absolutely necessary, document) any failures.
 
 .. note::
 
-   A ``request-pull`` requires that your repository be publicly accessible.
-   If that's not possible, then alternatively, you can do a::
+   If your branch is still in an experimental state, but you would like to
+   check its impact on the tests, you may prepend "``WIP:``" to your `pull
+   request`_ title.  This will prevent your branch from being merged before
+   it's complete, but will allow the automated tests to run.
 
-       $ git format-patch
+   Please be respectful of the `Continuous Integration`_ resources and do
+   the bulk of your testing on your local machine or against your own
+   `Continuous Integration`_ accounts (if you have a lot of testing to do,
+   before you create a `pull request`_, push your branch to your own
+   fork_ and enable the `Continuous Integration`_ services there.
 
-   and then attach the :file:`*.patch` files to the ticket.
-    
+You can avoid testing individual commits by adding "``[skip ci]``" to the
+commit message title.
+
+When your `pull request`_ is ready and successfully passes the tests, you
+can `request a pull request review`_ or send a message to the mailing list
+about it if you like, but the FiPy developers should automatically see the
+pull request and respond to it without further action on your part.
+
 Refactoring complete: merge branch to develop
 ---------------------------------------------
 
@@ -76,59 +84,58 @@ Refactoring complete: merge branch to develop
 
    **Administrators Only!**
 
-   First, follow the instructions for 
-   `Merging changes from develop to the branch`_.
-
-   Merge the branch to ``develop``::
-
-       $ git checkout develop
-       $ git diff $BRANCH
-       $ git merge $BRANCH
-
-   Resolve any conflicts and test::
-
-       $ python setup.py test
-
-   Push the code to GitHub for automated testing::
-
-       $ git push origin develop
-
-   When completely done with the branch::
-
-       $ git branch -D $BRANCH
-       $ git push origin :$BRANCH
-
----------
-Bug fixes
----------
+Use the GitHub_ interface to `merge the pull request`_.
 
 .. note::
 
-   This is not well thought out. By and large, we don't do this.
+   Particularly for branches with a long development history, consider
+   doing a `Squash and merge`_.
 
-At the point some fix is made to an old version n.m *that is not at the tip
-of ``master``*, make a branch from that old release (this step not
-necessary if the branch already exists due to a previous fix)::
 
-    $ git branch version-n_m refs/tags/version-n_m
+.. _CONTINUOUSINTEGRATION:
 
-Proceed as with other Branches_, but instead branching from ``develop``, 
-do development work off of the historical branch::
+======================
+Continuous Integration
+======================
 
-    $ BRANCH=ticket12345-Summary_of_what_branch_addresses
-    $ git checkout -b $BRANCH version-n_m
+We use three different cloud services for continuous integration (CI).  Each
+service offers unique capabilities, but this also serves to distribute the
+load.
 
-Edit and commit as usual.
+| |CircleCI|_ |TravisCI|_ |AppVeyor|_
 
-If appropriate, after successful code review and merger to the 
-``version-n_m`` branch, the changes should also be merged to ``develop``::
+-----
+Linux
+-----
 
-    $ git checkout develop
-    $ git merge version-n_m
+Linux builds are performed on CircleCI_. This CI is configured in
+`{FiPySource}/.circleci/config.yml`_.
 
-.. attention::
+--------
+Mac OS X
+--------
 
-   When complete, the ``version-n_m`` branch is not merged to ``master``.
+Mac OS X builds are performed on TravisCI_. This CI is configured in
+`{FiPySource}/.travis.yml`_.
+
+-------
+Windows
+-------
+
+Windows builds are performed on AppVeyor_. This CI is configured in
+`{FiPySource}/.appveyor.yml`_.
+
+.. |CircleCI|      image:: https://img.shields.io/circleci/project/github/usnistgov/fipy/develop.svg?label=Linux
+.. _CircleCI:      https://circleci.com/gh/usnistgov/fipy
+.. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/develop.svg?label=macOS
+.. _TravisCI:      https://travis-ci.org/usnistgov/fipy
+.. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=develop&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
+.. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy
+
+.. _{FiPySource}/.circleci/config.yml: https://github.com/usnistgov/fipy/blob/develop/.circleci/config.yml
+.. _{FiPySource}/.travis.yml: https://github.com/usnistgov/fipy/blob/develop/.travis.yml
+.. _{FiPySource}/.appveyor.yml: https://github.com/usnistgov/fipy/blob/develop/.appveyor.yml
+
 
 ================
 Making a Release
@@ -146,14 +153,43 @@ Make sure ``develop`` is ready for release::
 
    $ git checkout develop
 
-Check items in the issues_ and update the :file:`README.txt`::
+Check the issue_ list and update the :ref:`CHANGELOG`::
 
-   $ git commit README.txt -m "REL: update new features for release"
+   $ git commit CHANGELOG.txt -m "REL: update new features for release"
+
+.. note::
+
+   You can use::
+
+      $ python setup.py changelog --after=<x.y>
+
+   or::
+
+      $ python setup.py changelog --milestone=<x.z>
+
+   to obtain a ReST-formatted list of every GitHub_ `pull request`_ and issue_
+   closed since the last release.
+
+   Particularly for major and feature releases, be sure to curate the
+   output so that it's clear what's a big deal about this release.
+   Sometimes a `pull request`_ will be redundant to an issue_, e.g.,
+   "``Issue123 blah blah``".  If the `pull request`_ fixes a bug,
+   preference is given to the corresponding issue_ under **Fixes**.
+   Alternatively, if the `pull request`_ adds a new feature, preference is
+   given to the item under **Pulls** and corresponding issue_ should be
+   removed from **Fixes**.  If appropriate, be sure to move the "Thanks to
+   @mention" to the appropriate issue_ to recognize outside contributors.
+
+   ..  attention:: Requires PyGithub_ and Pandas_.
 
 .. attention::
 
-   If Buildbot_ doesn't show all green boxes for this release, make sure to
-   add appropriate notes in :file:`README.txt` or :file:`INSTALLATION.txt`!
+   If `Continuous Integration`_ doesn't show all green boxes for this
+   release, make sure to add appropriate notes in :file:`README.txt` or
+   :file:`INSTALLATION.txt`!
+
+.. _PyGithub: https://pygithub.readthedocs.io
+.. _Pandas: https://pandas.pydata.org
 
 -------------------
 Release from master
@@ -166,7 +202,7 @@ Release from master
 
 Resolve any conflicts and push to ``master``::
 
-    $ git tag --annotate version-x_y master
+    $ git tag --annotate x.y master
     $ git push --tags origin master
 
 Clean the working copy::
@@ -189,7 +225,9 @@ Build the compressed distribution::
 
 Test the installed compressed distribution::
 
-    $ cpvirtualenv trunk test
+    $ conda create -n <testenvironment> --channel conda-forge python=<PYVERSION> fipy
+    $ source activate <testenvironment>
+    $ conda remove --channel conda-forge
     $ mkdir tmp
     $ cd tmp
     $ cp ../dist/FiPy-${FIPY_VERSION}.tar.gz .
@@ -198,8 +236,8 @@ Test the installed compressed distribution::
     $ python setup.py install
     $ cd ..
     $ python -c "import fipy; fipy.test()"
-    $ deactivate
-    $ rmvirtualenv test
+    $ source deactivate
+    $ conda env remove -n <testenvironment>
     $ cd ..
     $ \rm -rf tmp
 
@@ -225,22 +263,16 @@ Combine the windows installer and examples into one archive::
     $ mv dist-windows/FiPy-${FIPY_VERSION}.zip dist/FiPy-${FIPY_VERSION}.win32.zip
 
 ------
-Debian
-------
-
-Make sure stdeb_ and debhelper_ are installed::
-
-    $ cd CLEAN
-    $ python setup.py --command-packages=stdeb.command bdist_deb
-    $ mv deb_dist/python-fipy_${FIPY_VERSION}-1_all.deb dist/python-fipy_${FIPY_VERSION}-1_all.deb
-
-------
 Upload
 ------
 
-Tag the repository as appropriate (see `SVN practices`_ above).
+Tag the repository as appropriate (see `Git practices`_ above).
 
-Upload the build products and documentation from :file:`dist/` and 
+Upload the build products to PyPI
+
+    $ python setup.py sdist upload
+
+Upload the build products and documentation from :file:`dist/` and
 the web site to CTCMS ::
 
     $ export FIPY_WWWHOST=bunter:/u/WWW/wd15/fipy
@@ -253,14 +285,13 @@ the web site to CTCMS ::
 
 Make an announcement to `fipy@nist.gov`_
 
-Build (``python setup.py bdist --formats=wininst``) a Windows `PyVTK`_
-executable and upload to download page.
-
-.. _GitHub issue: https://github.com/usnistgov/fipy/issues/new
-.. _issues: https://github.com/usnistgov/fipy/issues
-.. _Buildbot: http://build.cmi.kent.edu:8010/tgrid
+.. _GitHub: https://github.com/
+.. _fipy repository: https://github.com/usnistgov/fipy
+.. _issue: https://github.com/usnistgov/fipy/issues
+.. _pull request: https://github.com/usnistgov/fipy/pulls
+.. _fork: https://help.github.com/en/articles/fork-a-repo
+.. _create a pull request: https://help.github.com/en/articles/creating-a-pull-request
+.. _request a pull request review: https://help.github.com/en/articles/requesting-a-pull-request-review
+.. _merge the pull request: https://help.github.com/en/articles/merging-a-pull-request
+.. _Squash and merge: https://help.github.com/en/articles/about-pull-request-merges/#squash-and-merge-your-pull-request-commits
 .. _fipy@nist.gov: mailto:fipy@nist.gov
-.. _PyVTK: http://cens.ioc.ee/projects/pyvtk/
-.. _stdeb: http://github.com/astraw/stdeb
-.. _debhelper: http://kitenet.net/~joey/code/debhelper/
-

@@ -1,37 +1,3 @@
-#!/usr/bin/env python
-
-## 
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "circle.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
 r"""Solve a circular distance function equation and then advect it.
 
 This example first imposes a circular distance function:
@@ -52,7 +18,8 @@ preserves the ``var`` as a distance function. The solution to this
 problem will be demonstrated in the following script. Firstly, setup
 the parameters.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, DistanceVariable, TransientTerm, FirstOrderAdvectionTerm, AdvectionTerm, Viewer
+>>> from fipy.tools import numerix
 
 >>> L = 1.
 >>> N = 25
@@ -61,7 +28,7 @@ the parameters.
 >>> velocity = 1.
 >>> distanceToTravel = L / 10.
 >>> radius = L / 4.
->>> dL = L / N   
+>>> dL = L / N
 >>> timeStepDuration = cfl * dL / velocity
 >>> steps = int(distanceToTravel / dL / cfl)
 
@@ -77,14 +44,14 @@ Construct a `distanceVariable` object.
 ...     value = 1.,
 ...     hasOld = 1)
 
-Initialise the `distanceVariable` to be a circular distance function.
+Initialize the `distanceVariable` to be a circular distance function.
 
 >>> x, y = mesh.cellCenters
 >>> initialArray = numerix.sqrt((x - L / 2.)**2 + (y - L / 2.)**2) - radius
 >>> var.setValue(initialArray)
 
 The advection equation is constructed.
-   
+
 >>> advEqn = TransientTerm() + FirstOrderAdvectionTerm(velocity)
 
 The problem can then be solved by executing a serious of time steps.

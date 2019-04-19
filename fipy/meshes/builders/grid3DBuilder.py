@@ -1,41 +1,5 @@
-#!/usr/bin/env python
-
-## 
- # -*-Pyth-*-
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #  Author: James O'Beirne <james.obeirne@gmail.com>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
- # ###################################################################
- ##
-
 __docformat__ = 'restructuredtext'
- 
+
 __all__ = []
 
 from fipy.meshes.builders.abstractGridBuilder import _AbstractGridBuilder
@@ -58,17 +22,17 @@ class _Grid3DBuilder(_AbstractGridBuilder):
 
     def _calcShape(self):
         return (self.ns[0], self.ns[1], self.ns[2])
-             
+
     def _calcPhysicalShape(self):
         """Return physical dimensions of Grid1D."""
         from fipy.tools.dimensions.physicalField import PhysicalField
-        return PhysicalField(value = (self.ns[0] * self.ds[0] * self.scale, 
-                                      self.ns[1] * self.ds[1] * self.scale, 
+        return PhysicalField(value = (self.ns[0] * self.ds[0] * self.scale,
+                                      self.ns[1] * self.ds[1] * self.scale,
                                       self.ns[2] * self.ds[2] * self.scale))
-                      
+
     def _calcMeshSpacing(self):
         return numerix.array((self.ds[0], self.ds[1], self.ds[2]))[...,numerix.newaxis]
-     
+
     @property
     def _specificGridData(self):
         return [self.numberOfXYFaces,
@@ -78,23 +42,23 @@ class _Grid3DBuilder(_AbstractGridBuilder):
                 self.numberOfVerticalColumns,
                 self.numberOfLayersDeep]
 
-    
+
     @staticmethod
     def createVertices(dx, dy, dz, nx, ny, nz,
                        numVertices, numHorizRows, numVertCols):
         x = _AbstractGridBuilder.calcVertexCoordinates(dx, nx)
         x = numerix.resize(x, (numVertices,))
-        
+
         y = _AbstractGridBuilder.calcVertexCoordinates(dy, ny)
         y = numerix.repeat(y, numVertCols)
         y = numerix.resize(y, (numVertices,))
-        
+
         z = _AbstractGridBuilder.calcVertexCoordinates(dz, nz)
         z = numerix.repeat(z, numHorizRows * numVertCols)
         z = numerix.resize(z, (numVertices,))
-        
+
         return numerix.array((x, y, z))
-    
+
     @staticmethod
     def createFaces(nx, ny, nz):
         """
@@ -103,7 +67,7 @@ class _Grid3DBuilder(_AbstractGridBuilder):
         ## do the XY faces
         v1 = numerix.arange((nx + 1) * (ny))
         v1 = vector.prune(v1, nx + 1, nx)
-        v1 = _Grid3DBuilder._repeatWithOffset(v1, (nx + 1) * (ny + 1), nz + 1) 
+        v1 = _Grid3DBuilder._repeatWithOffset(v1, (nx + 1) * (ny + 1), nz + 1)
         v2 = v1 + 1
         v3 = v1 + (nx + 2)
         v4 = v1 + (nx + 1)
@@ -117,12 +81,12 @@ class _Grid3DBuilder(_AbstractGridBuilder):
         v3 = v1 + ((nx + 1)*(ny + 1)) + 1
         v4 = v1 + ((nx + 1)*(ny + 1))
         XZFaces = numerix.array((v1, v2, v3, v4))
-        
+
         ## do the YZ faces
         v1 = numerix.arange((nx + 1) * ny)
         v1 = _Grid3DBuilder._repeatWithOffset(v1, (nx + 1) * (ny + 1), nz)
         v2 = v1 + (nx + 1)
-        v3 = v1 + ((nx + 1)*(ny + 1)) + (nx + 1)                                  
+        v3 = v1 + ((nx + 1)*(ny + 1)) + (nx + 1)
         v4 = v1 + ((nx + 1)*(ny + 1))
         YZFaces = numerix.array((v1, v2, v3, v4))
 
@@ -130,10 +94,10 @@ class _Grid3DBuilder(_AbstractGridBuilder):
         numberOfXZFaces = (nx * (ny + 1) * nz)
         numberOfYZFaces = ((nx + 1) * ny * nz)
         numberOfFaces = numberOfXYFaces + numberOfXZFaces + numberOfYZFaces
-        
+
         return ([numberOfXYFaces, numberOfXZFaces, numberOfYZFaces, numberOfFaces],
                 numerix.concatenate((XYFaces, XZFaces, YZFaces), axis=1))
-    
+
     @staticmethod
     def createCells(nx, ny, nz, numXYFaces, numXZFaces, numYZFaces):
         """
@@ -159,15 +123,15 @@ class _Grid3DBuilder(_AbstractGridBuilder):
         bottomFaces = numerix.arange(nx * ny * nz)
         topFaces = bottomFaces + (nx * ny)
 
-        return numerix.array((frontFaces, backFaces, leftFaces, 
+        return numerix.array((frontFaces, backFaces, leftFaces,
                               rightFaces, bottomFaces, topFaces))
 
     @staticmethod
     def _repeatWithOffset(array, offset, reps):
-        a = numerix.fromfunction(lambda rnum, x: array + (offset * rnum), 
+        a = numerix.fromfunction(lambda rnum, x: array + (offset * rnum),
                                  (reps, numerix.size(array))).astype('l')
         return numerix.ravel(a)
-          
+
 
     def _packOverlap(self, first, second):
         return {'left': 0, 'right': 0, 'bottom' : 0, 'top' : 0,
@@ -185,10 +149,10 @@ class _NonuniformGrid3DBuilder(_Grid3DBuilder):
 
     def buildGridData(self, *args, **kwargs):
         super(_NonuniformGrid3DBuilder, self).buildGridData(*args, **kwargs)
-                      
+
         ([self.Xoffset, self.Yoffset, self.Zoffset],
-         self.ds) = _DOffsets.calcDOffsets(self.ds, 
-                                           self.ns, 
+         self.ds) = _DOffsets.calcDOffsets(self.ds,
+                                           self.ns,
                                            self.offset)
 
         self.vertices = _Grid3DBuilder.createVertices(self.ds[0], self.ds[1],
@@ -209,7 +173,7 @@ class _NonuniformGrid3DBuilder(_Grid3DBuilder):
         self.numberOfYZFaces = numFacesList[2]
         self.numberOfFaces   = numFacesList[3]
 
-        self.cells = _Grid3DBuilder.createCells(self.ns[0], 
+        self.cells = _Grid3DBuilder.createCells(self.ns[0],
                                                 self.ns[1],
                                                 self.ns[2],
                                                 self.numberOfXYFaces,
@@ -234,10 +198,10 @@ class _UniformGrid3DBuilder(_Grid3DBuilder):
     def buildGridData(self, ds, ns, overlap, communicator, origin):
         super(_UniformGrid3DBuilder, self).buildGridData(ds, ns, overlap,
                                                         communicator)
-         
-        self.origin = _UniformOrigin.calcOrigin(origin, 
+
+        self.origin = _UniformOrigin.calcOrigin(origin,
                                                 self.offset, self.ds, self.scale)
-        
+
         self.numberOfXYFaces = self.ns[0] * self.ns[1] * (self.ns[2] + 1)
         self.numberOfXZFaces = self.ns[0] * (self.ns[1] + 1) * self.ns[2]
         self.numberOfYZFaces = (self.ns[0] + 1) * self.ns[1] * self.ns[2]
@@ -248,5 +212,3 @@ class _UniformGrid3DBuilder(_Grid3DBuilder):
     def _specificGridData(self):
         return super(_UniformGrid3DBuilder, self)._specificGridData \
                 + [self.origin]
-
-                                  

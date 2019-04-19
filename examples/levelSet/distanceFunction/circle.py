@@ -1,38 +1,4 @@
-#!/usr/bin/env python
-
-## 
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "circle.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
-r"""Solve the level set equation in two dimensions for a circle. 
+r"""Solve the level set equation in two dimensions for a circle.
 
 The 2D level set equation can be written,
 
@@ -40,13 +6,14 @@ The 2D level set equation can be written,
 
    \abs{\nabla \phi} = 1
 
-and the boundary condition for a circle is given by, :math:`\phi = 0` at 
+and the boundary condition for a circle is given by, :math:`\phi = 0` at
 :math:`(x - L / 2)^2 + (y - L / 2)^2 = (L / 4)^2`.
 
 The solution to this problem will be demonstrated in the following
 script. Firstly, setup the parameters.
 
->>> from fipy import *
+>>> from fipy import CellVariable, Grid2D, DistanceVariable, TransientTerm, FirstOrderAdvectionTerm, AdvectionTerm, Viewer
+>>> from fipy.tools import numerix, serialComm
 
 >>> dx = 1.
 >>> dy = 1.
@@ -59,7 +26,6 @@ Construct the mesh.
 
 .. index:: Grid2D
 
->>> from fipy.tools import serialComm
 >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, communicator=serialComm)
 
 Construct a `distanceVariable` object.
@@ -90,14 +56,14 @@ The result can be tested with the following commands.
 ...     cc = dy**2 * phix**2 + dx**2 * phiy**2 - dx**2 * dy**2
 ...     sqr = numerix.sqrt(bb**2 - 4. * aa * cc)
 ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
->>> v1 = evalCell(-dY, -m1, dx, dy)[0] 
+>>> v1 = evalCell(-dY, -m1, dx, dy)[0]
 >>> v2 = evalCell(-m1, -dX, dx, dy)[0]
 >>> v3 = evalCell(m1,  m1,  dx, dy)[1]
 >>> v4 = evalCell(v3, dY, dx, dy)[1]
 >>> v5 = evalCell(dX, v3, dx, dy)[1]
 >>> MASK = -1000.
 >>> trialValues = CellVariable(mesh=mesh, value= \
-...     numerix.array((   
+...     numerix.array((
 ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK,
 ...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
 ...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,

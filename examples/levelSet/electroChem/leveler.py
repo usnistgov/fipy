@@ -1,36 +1,3 @@
-#!/usr/bin/env python
-
-## 
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "leveler.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #    mail: NIST
- #     www: http://ctcms.nist.gov
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  PFM is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
 r"""Model electrochemical superfill of copper with leveler and accelerator additives.
 
 This input file is a demonstration of the use of :term:`FiPy` for
@@ -40,7 +7,7 @@ used are roughly those that have been previously
 published :cite:`NIST:leveler:2005`.
 
 To run this example from the base fipy directory type::
-    
+
     $ python examples/levelSet/electroChem/leveler.py
 
 at the command line. The results of the simulation will be displayed and the word
@@ -58,7 +25,7 @@ results displayed on the screen. This example requires :term:`gmsh` to
 construct the mesh.
 
 .. index:: gmsh
-    
+
 This example models the case when suppressor, accelerator and leveler
 additives are present in the electrolyte. The suppressor is
 assumed to absorb quickly compared with the other additives. Any
@@ -73,12 +40,12 @@ additives.
 
 The following is a complete description of the equations for the
 model described here. Any equations that have been omitted are the
-same as those given in 
+same as those given in
 :mod:`examples.levelSet.electroChem.simpleTrenchSystem`. The
-current density is governed by 
+current density is governed by
 
-.. math:: 
-    
+.. math::
+
    i = \frac{ c_m }{ c_m^\infty }
    \sum_{ j } \left[ i_j \theta_j \left( \exp{ \frac{-\alpha_j F \eta
    }{ R T }} - \exp{ \frac{ \left( 1 - \alpha_j \right) F \eta}{ R T
@@ -88,22 +55,22 @@ where :math:`j` represents :math:`S` for suppressor, :math:`A`
 for accelerator, :math:`L` for leveler and :math:`V` for vacant. This model
 assumes a linear interpolation between the three cases of complete
 coverage for each additive or vacant substrate. The governing
-equations for the surfactants are given by, 
+equations for the surfactants are given by,
 
 .. math::
-    
+
    \dot{\theta_{L}} &=
    \kappa v \theta_L + k_l^+ c_L \left( 1 - \theta_L \right) - k_L^-
-   v \theta_L, 
+   v \theta_L,
    \\
    \dot{\theta_{a}} &= \kappa v \theta_A + k_A^+ c_A
    \left( 1 - \theta_A - \theta_L \right) - k_L c_L \theta_A - k_A^-
    \theta_A^{q - 1},
    \\
-   \theta_S &= 1 - \theta_A - \theta_L 
+   \theta_S &= 1 - \theta_A - \theta_L
    \\
    \theta_V &= 0.
-     
+
 It has been found experimentally that :math:`i_L = i_S`.
 
 If the surface reaches full coverage, the equations do not naturally prevent the
@@ -113,10 +80,10 @@ coverage rising above full coverage due to the curvature terms. Thus, when
 equation for leveler becomes :math:`\dot{\theta_{L}} = - k_L^- v \theta_L.`
 
 The parameters :math:`k_A^+`, :math:`k_A^-` and :math:`q` are both functions of :math:`\eta`
-given by, 
+given by,
 
-.. math:: 
-    
+.. math::
+
    k_A^+ &= k_{A0}^+ \exp{\frac{-\alpha_k F \eta}{R T}},
    \\
    k_A^- &= B_d + \frac{A}{\exp{\left(B_a \left(\eta + V_d
@@ -130,7 +97,7 @@ and their corresponding arguments for the
 :func:`~examples.levelSet.electroChem.leveler.runLeveler` function.
 
 .. math::
-    
+
    \mbox{
     \begin{tabular}{|rllr@{.}ll|}
     \hline
@@ -160,7 +127,7 @@ and their corresponding arguments for the
     \multicolumn{6}{|c|}{Accelerator Parameters}                                                                                                                       \\
     \hline
     $\theta_A$            & accelerator coverage              & \texttt{acceleratorCoverage}          & 0&0                       &                                    \\
-    $c_A$                 & accelerator concentartion         & \texttt{acceleratorConcentration}     & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
+    $c_A$                 & accelerator concentration         & \texttt{acceleratorConcentration}     & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
     $c_A^{\infty}$        & far field accelerator concentration & \texttt{acceleratorConcentration}   & 5&0$\times$10$^{-3}$      & mol m$^{-3}$                       \\
     $D_A$                 & catalyst diffusion coefficient    & \texttt{catalystDiffusion}            & 1&0$\times$10$^{-9}$      & m$^2$ s$^{-1}$                     \\
     $\Gamma_A$            & accelerator site density          & \texttt{siteDensity}                  & 9&8$\times$10$^{-6}$      & mol m$^{-2}$                       \\
@@ -192,7 +159,7 @@ and their corresponding arguments for the
     \hline
     \end{tabular}
    }
-    
+
 The following images show accelerator and leveler contour plots that
 can be obtained by running this example.
 
@@ -205,30 +172,31 @@ can be obtained by running this example.
    :width: 90%
    :align: center
    :alt: leveler coverage as a function of time during superfill
-    
+
 .. .. bibmissing:: /documentation/refs.bib
     :sort:
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, SurfactantVariable, TransientTerm, FirstOrderAdvectionTerm, GeneralSolver, Viewer
+from fipy.tools import numerix
 from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 from trenchMesh import TrenchMesh
 from gapFillDistanceVariable import GapFillDistanceVariable
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 
-def runLeveler(kLeveler=0.018, 
-               bulkLevelerConcentration=0.02, 
-               cellSize=0.1e-7, 
-               rateConstant=0.00026, 
-               initialAcceleratorCoverage=0.0, 
-               levelerDiffusionCoefficient=5e-10, 
-               numberOfSteps=400, 
-               displayRate=10, 
+def runLeveler(kLeveler=0.018,
+               bulkLevelerConcentration=0.02,
+               cellSize=0.1e-7,
+               rateConstant=0.00026,
+               initialAcceleratorCoverage=0.0,
+               levelerDiffusionCoefficient=5e-10,
+               numberOfSteps=400,
+               displayRate=10,
                displayViewers=True):
 
-    
+
     kLevelerConsumption = 0.0005
     aspectRatio = 1.5
     faradaysConstant = 9.6485e4
@@ -276,7 +244,7 @@ def runLeveler(kLeveler=0.018,
         value = -1.)
 
     distanceVar.setValue(1., where=mesh.electrolyteMask)
-    
+
     distanceVar.calcDistanceFunction()
     levelerVar = SurfactantVariable(
         name = "leveler variable",
@@ -318,7 +286,7 @@ def runLeveler(kLeveler=0.018,
     extensionVelocityVariable = CellVariable(
         name = 'extension velocity',
         mesh = mesh,
-        value = depositionRateVariable)   
+        value = depositionRateVariable)
 
     kAccelerator = rateConstant * numerix.exp(-alphaAdsorption * etaPrime)
     kAcceleratorConsumption =  Bd + A / (numerix.exp(Ba * (overpotential + Vd)) + numerix.exp(Bb * (overpotential + Vd)))
@@ -365,7 +333,7 @@ def runLeveler(kLeveler=0.018,
         rateConstant = kAccelerator * siteDensity)
 
     bulkAcceleratorVar.constrain(bulkAcceleratorConcentration, mesh.facesTop)
-    
+
     bulkLevelerEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkLevelerVar,
         distanceVar = distanceVar,
@@ -374,7 +342,7 @@ def runLeveler(kLeveler=0.018,
         rateConstant = kLeveler * siteDensity)
 
     bulkLevelerVar.constrain(bulkLevelerConcentration, mesh.facesTop)
-    
+
     eqnTuple = ( (advectionEquation, distanceVar, (), None),
                  (levelerSurfactantEquation, levelerVar, (), None),
                  (acceleratorSurfactantEquation, acceleratorVar, (), None),
@@ -406,14 +374,14 @@ def runLeveler(kLeveler=0.018,
             viewers = (Viewer(PlotVariable(var=acceleratorVar.interfaceVar)),
                        Viewer(PlotVariable(var=levelerVar.interfaceVar)))
 
-        
+
     for step in range(numberOfSteps):
 
         if displayViewers:
             if step % displayRate == 0:
                 for viewer in viewers:
                     viewer.plot()
-            
+
         if step % levelSetUpdateFrequency == 0:
             distanceVar.calcDistanceFunction()
 
@@ -437,9 +405,9 @@ def runLeveler(kLeveler=0.018,
     point = ((1.25e-08,), (3.125e-07,))
     value = 2.02815779e-08
     return abs(float(distanceVar(point, order=1)) - value) < cellSize / 10.0
-    
+
 __all__ = ["runLeveler"]
 
 if __name__ == '__main__':
     runLeveler(numberOfSteps=5, displayViewers=False)
-##    raw_input("finished")    
+##    raw_input("finished")

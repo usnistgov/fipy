@@ -1,45 +1,9 @@
-#!/usr/bin/env python
-
-## 
- # -*-Pyth-*-
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #  Author: James O'Beirne <james.obeirne@gmail.com>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
- # ###################################################################
- ##
-
 __docformat__ = 'restructuredtext'
- 
+
 __all__ = []
 
 from fipy.meshes.builders.abstractGridBuilder import _AbstractGridBuilder
-from fipy.tools import inline  
+from fipy.tools import inline
 from fipy.tools import numerix
 from fipy.tools import vector
 from fipy.meshes.builders.utilityClasses import (_UniformNumPts,
@@ -78,20 +42,20 @@ class _Grid2DBuilder(_AbstractGridBuilder):
             return False
 
         return True
-                    
+
     def _calcShape(self):
         return (self.ns[0], self.ns[1])
-             
+
     def _calcPhysicalShape(self):
         """Return physical dimensions of Grid2D."""
         from fipy.tools.dimensions.physicalField import PhysicalField
 
         if self._dsUniformLen():
-            return PhysicalField(value = (self.ns[0] * self.ds[0] * self.scale, 
+            return PhysicalField(value = (self.ns[0] * self.ds[0] * self.scale,
                                           self.ns[1] * self.ds[1] * self.scale))
         else:
             return None
-                      
+
     def _calcMeshSpacing(self):
         if self._dsUniformLen():
             return numerix.array((self.ds[0],self.ds[1]))[...,numerix.newaxis]
@@ -102,18 +66,18 @@ class _Grid2DBuilder(_AbstractGridBuilder):
     def _specificGridData(self):
         return [self.numberOfHorizontalRows,
                 self.numberOfVerticalColumns,
-                self.numberOfHorizontalFaces]  
-     
+                self.numberOfHorizontalFaces]
+
     @staticmethod
     def createVertices(nx, ny, dx, dy, numVerts, numVertCols):
         x = _AbstractGridBuilder.calcVertexCoordinates(dx, nx)
         x = numerix.resize(x, (numVerts,))
-            
+
         y = _AbstractGridBuilder.calcVertexCoordinates(dy, ny)
         y = numerix.repeat(y, numVertCols)
-        
+
         return numerix.array((x, y))
-    
+
     @staticmethod
     def createFaces(nx, numVerts, numVertCols):
         """
@@ -134,7 +98,7 @@ class _Grid2DBuilder(_AbstractGridBuilder):
         ## The cell normals must point out of the cell.
         ## The left and bottom faces have only one neighboring cell,
         ## in the 2nd neighbor position (there is nothing in the 1st).
-        ## 
+        ##
         ## reverse some of the face orientations to obtain the correct normals
 
         tmp = horizontalFaces.copy()
@@ -152,16 +116,16 @@ class _Grid2DBuilder(_AbstractGridBuilder):
 
         return (numerix.concatenate((horizontalFaces, verticalFaces), axis=1),
                 numberOfHorizontalFaces)
-           
+
     if inline.doInline:
         @staticmethod
         def createCells(nx, ny, numFaces, numHorizFaces, numVertCols):
             """
             cells = (f1, f2, f3, f4) going anticlock wise.
             f1 etc. refer to the faces
-            """ 
+            """
             cellFaceIDs = numerix.zeros((4, nx * ny), 'l')
-            
+
             inline._runInline("""
                 int ID = j * ni + i;
                 int NCELLS = ni * nj;
@@ -176,26 +140,26 @@ class _Grid2DBuilder(_AbstractGridBuilder):
             nj=ny)
 
             return cellFaceIDs
-                           
+
     else:
         @staticmethod
         def createCells(nx, ny, numFaces, numHorizFaces, numVertCols):
             """
             cells = (f1, f2, f3, f4) going anticlock wise.
             f1 etc. refer to the faces
-            """ 
+            """
             cellFaceIDs = numerix.zeros((4, nx * ny), 'l')
             faceIDs = numerix.arange(numFaces)
             if numFaces > 0:
                 cellFaceIDs[0,:] = faceIDs[:numHorizFaces - nx]
                 cellFaceIDs[2,:] = cellFaceIDs[0,:] + nx
-                cellFaceIDs[1,:] = vector.prune(faceIDs[numHorizFaces:], 
+                cellFaceIDs[1,:] = vector.prune(faceIDs[numHorizFaces:],
                                                 numVertCols)
                 cellFaceIDs[3,:] = cellFaceIDs[1,:] - 1
             return cellFaceIDs
 
     def _packOverlap(self, first, second):
-        return {'left': 0, 'right': 0, 'bottom': first, 'top': second}  
+        return {'left': 0, 'right': 0, 'bottom': first, 'top': second}
 
     def _packOffset(self, arg):
         return (0, arg)
@@ -211,14 +175,14 @@ class _NonuniformGrid2DBuilder(_Grid2DBuilder):
         # call super for side-effects
         super(_NonuniformGrid2DBuilder, self).buildGridData(*args, **kwargs)
 
-        (self.offsets, 
+        (self.offsets,
          self.ds) = _DOffsets.calcDOffsets(self.ds, self.ns, self.offset)
 
         self.vertices = _Grid2DBuilder.createVertices(self.ns[0], self.ns[1],
                                         self.ds[0], self.ds[1],
-                                        self.numberOfVertices, 
+                                        self.numberOfVertices,
                                         self.numberOfVerticalColumns) \
-                          + ((self.offsets[0],), (self.offsets[1],)) 
+                          + ((self.offsets[0],), (self.offsets[1],))
 
         (self.faces,
          self.numberOfHorizontalFaces) = _Grid2DBuilder.createFaces(self.ns[0],
@@ -249,10 +213,10 @@ class _UniformGrid2DBuilder(_Grid2DBuilder):
         # call super for side-effects
         super(_UniformGrid2DBuilder, self).buildGridData(ds, ns, overlap,
                                                         communicator)
-        
-        self.origin = _UniformOrigin.calcOrigin(origin, 
+
+        self.origin = _UniformOrigin.calcOrigin(origin,
                                                 self.offset, self.ds, self.scale)
-           
+
         self.numberOfHorizontalFaces = self.ns[0] * self.numberOfHorizontalRows
         self.numberOfVerticalFaces = self.numberOfVerticalColumns * self.ns[1]
         self.numberOfFaces = self.numberOfHorizontalFaces \
@@ -263,4 +227,3 @@ class _UniformGrid2DBuilder(_Grid2DBuilder):
         return super(_UniformGrid2DBuilder, self)._specificGridData \
                 + [self.numberOfVerticalFaces,
                    self.origin]
-                                 

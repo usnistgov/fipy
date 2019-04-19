@@ -1,36 +1,3 @@
-#!/usr/bin/env python
-
-## 
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "gold.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #    mail: NIST
- #     www: http://ctcms.nist.gov
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  PFM is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
- 
 r"""Model electrochemical superfill of gold using the CEAC mechanism.
 
 This input file
@@ -40,7 +7,7 @@ parameters used are roughly those that have been previously
 published :cite:`NIST:damascene:2005`.
 
 To run this example from the base fipy directory type::
-    
+
     $ python examples/levelSet/electroChem/gold.py
 
 at the command line. The results of the simulation will be displayed and the word
@@ -52,7 +19,7 @@ the ``numberOfSteps`` argument as follows,
 
 >>> runGold(numberOfSteps=10, displayViewers=False) # doctest: +GMSH, +LSM
 1
-    
+
 Change the ``displayViewers`` argument to ``True`` if you wish to see the
 results displayed on the screen. This example has a more realistic
 default boundary layer depth and thus requires `gmsh` to construct a
@@ -61,18 +28,18 @@ more complex mesh.
 .. index:: gmsh
 
 There are a few differences between the gold superfill model presented
-in this example and in :mod:`examples.levelSet.electroChem.simpleTrenchSystem`. 
+in this example and in :mod:`examples.levelSet.electroChem.simpleTrenchSystem`.
 Most default
 values have changed to account for a different metal ion (gold)
 and catalyst (lead). In this system the catalyst is not present in
 the electrolyte but instead has a non-zero initial coverage. Thus
 quantities associated with bulk catalyst and catalyst accumulation
-are not defined. The current density is given by, 
+are not defined. The current density is given by,
 
-.. math:: 
-    
+.. math::
+
    i = \frac{c_m}{c_m^{\infty}} \left( b_0 + b_1 \theta \right).
-   
+
 The
 more common representation of the current density includes an
 exponential part. Here it is buried in :math:`b_0` and :math:`b_1`. The
@@ -80,14 +47,14 @@ governing equation for catalyst evolution includes a term for
 catalyst consumption on the interface and is given by
 
 .. math::
-    
+
    \dot{\theta} = J v \theta - k_c v \theta
-   
+
 where :math:`k_c` is the consumption coefficient
 (``consumptionRateConstant``). The trench geometry is also given a
 slight taper, given by ``taperAngle``.
 
-If the MayaVi plotting software is
+If the Mayavi plotting software is
 installed (see :ref:`INSTALLATION`) then a plot should
 appear that is updated every 10 time steps and will eventually
 resemble the image below.
@@ -102,7 +69,8 @@ resemble the image below.
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, SurfactantVariable, TransientTerm, FirstOrderAdvectionTerm, MultiViewer, Viewer
+from fipy.tools import numerix
 from trenchMesh import TrenchMesh
 from gapFillDistanceVariable  import GapFillDistanceVariable
 from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
@@ -125,10 +93,10 @@ def runGold(faradaysConstant=9.6e4,
             numberOfSteps=10,
             taperAngle=6.0,
             displayViewers=True):
-    
+
     cflNumber = 0.2
     numberOfCellsInNarrowBand = 20
-    
+
     mesh = TrenchMesh(cellSize = cellSize,
                       trenchSpacing = trenchSpacing,
                       trenchDepth = trenchDepth,
@@ -157,7 +125,7 @@ def runGold(faradaysConstant=9.6e4,
         value = metalConcentration)
 
     exchangeCurrentDensity = currentDensity0 + currentDensity1 * catalystVar.interfaceVar
-    
+
     currentDensity = metalVar / metalConcentration * exchangeCurrentDensity
 
     depositionRateVariable = currentDensity * molarVolume / charge / faradaysConstant
@@ -165,7 +133,7 @@ def runGold(faradaysConstant=9.6e4,
     extensionVelocityVariable = CellVariable(
         name = 'extension velocity',
         mesh = mesh,
-        value = depositionRateVariable)   
+        value = depositionRateVariable)
 
     catalystSurfactantEquation = AdsorbingSurfactantEquation(
         catalystVar,
@@ -190,9 +158,9 @@ def runGold(faradaysConstant=9.6e4,
         try:
             from mayaviSurfactantViewer import MayaviSurfactantViewer
             viewer = MayaviSurfactantViewer(distanceVar, catalystVar.interfaceVar, zoomFactor = 1e6, datamax=1.0, datamin=0.0, smooth = 1, title = 'catalyst coverage', animate=True)
-            
+
         except:
-            
+
             class PlotVariable(CellVariable):
                 def __init__(self, var = None, name = ''):
                     CellVariable.__init__(self, mesh = mesh.fineMesh, name = name)
@@ -216,7 +184,7 @@ def runGold(faradaysConstant=9.6e4,
             viewer.plot()
 
         if step % levelSetUpdateFrequency == 0:
-            
+
             distanceVar.calcDistanceFunction()
 
         extensionVelocityVariable.setValue(numerix.array(depositionRateVariable))
@@ -229,16 +197,15 @@ def runGold(faradaysConstant=9.6e4,
         catalystSurfactantEquation.solve(catalystVar, dt = dt)
 
         metalEquation.solve(metalVar, dt = dt)
-                    
+
         step += 1
 
     point = ((5e-09,), (1.15e-07,))
     value = 1.45346701e-09
     return abs(float(distanceVar(point, order=1)) - value) < cellSize / 10.0
-    
+
 __all__ = ["runGold"]
 
 if __name__ == '__main__':
-    runGold(numberOfSteps = 300, cellSize = 0.05e-7)
+    runGold(numberOfSteps = 300, cellSize = 0.05e-7, displayViewers=False)
     raw_input("finished")
-    

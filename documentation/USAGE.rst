@@ -15,7 +15,7 @@ run any of the scripts in the :ref:`examples <part:examples>`.
    :mod:`examples.diffusion.mesh1D` to understand the notation and
    basic concepts of :term:`FiPy`.
 
-We exclusively use either the unix command line or :term:`IPython` to
+We exclusively use either the UNIX command line or :term:`IPython` to
 interact with :term:`FiPy`. The commands in the :ref:`examples
 <part:examples>` are written with the assumption that they will be
 executed from the command line. For instance, from within the main
@@ -34,8 +34,9 @@ examples.
 
 In order to customize the examples, or to develop your own scripts, some
 knowledge of Python syntax is required.  We recommend you familiarize
-yourself with the excellent `Python tutorial`_ :cite:`PythonTutorial` 
-or with `Dive Into Python`_ :cite:`DiveIntoPython`.
+yourself with the excellent `Python tutorial`_ :cite:`PythonTutorial`
+or with `Dive Into Python`_ :cite:`DiveIntoPython`. Deeper insight into 
+Python can be obtained from the :cite:`PythonReference`.
 
 .. _Python tutorial: http://docs.python.org/tut/tut.html
 .. _Dive Into Python: http://diveintopython.org
@@ -60,30 +61,17 @@ examples <part:examples>`. To run the test cases in both :ref:`modules
 
 in an unpacked :term:`FiPy` archive. The test suite can be run with a
 number of different configurations depending on which solver suite is
-available and other factors. See :ref:`FlagsAndEnvironmentVariables` 
+available and other factors. See :ref:`FlagsAndEnvironmentVariables`
 for more details.
 
 :term:`FiPy` will skip tests that depend on :ref:`OPTIONALPACKAGES` that
 have not been installed. For example, if :term:`Mayavi` and :term:`Gmsh`
-are not installed, :term:`FiPy` will warn::
+are not installed, :term:`FiPy` will warn something like::
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     Skipped 131 doctest examples because `gmsh` cannot be found on the $PATH
     Skipped 42 doctest examples because the `tvtk` package cannot be imported
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-We have a few known, intermittent failures:
-
- :trac:`#425`
-    The test suite can freeze, usually in :mod:`examples.chemotaxis`, 
-    when running on multiple processors. This has never affected us in an 
-    actual parallel simulation, only in the test suite.
-
- :trac:`#430`
-    When running in parallel, the tests for
-    :class:`~fipy.terms.binaryTerm._BinaryTerm` sometimes return one
-    erroneous result. This is not reliably reproducible and doesn't seem to
-    have an effect on actual simulations.
 
 Although the test suite may show warnings, there should be no other errors.
 Any errors should be investigated or reported on the `issue tracker`_.
@@ -95,17 +83,17 @@ distribution by checking `FiPy's automated test display`_.
 
 Below are a number of common `Command-line Flags`_ for testing various
 :term:`FiPy` configurations.
- 
+
 Parallel Tests
 ==============
 
-If :term:`FiPy` is configured for :ref:`PARALLEL`, you can run the tests 
+If :term:`FiPy` is configured for :ref:`PARALLEL`, you can run the tests
 on multiple processor cores with::
 
     $ mpirun -np {# of processors} python setup.py test --trilinos
 
 or::
- 
+
     $ mpirun -np {# of processors} python -c "import fipy; fipy.test('--trilinos')"
 
 .. _FlagsAndEnvironmentVariables:
@@ -130,18 +118,30 @@ script you call from the command line, e.g::
 .. cmdoption:: --inline
 
    Causes many mathematical operations to be performed in C, rather than
-   Python, for improved performance. Requires the :mod:`scipy.weave`
+   Python, for improved performance. Requires the :mod:`weave`
    package.
+
+.. cmdoption:: --cache
+
+   Causes lazily evaluated :term:`FiPy`
+   :class:`~fipy.variables.variable.Variable` objects to retain their
+   value.
+
+.. cmdoption:: --no-cache
+
+   Causes lazily evaluated :term:`FiPy`
+   :class:`~fipy.variables.variable.Variable` objects to always recalculate
+   their value.
 
 The following flags take precedence over the :envvar:`FIPY_SOLVERS`
 environment variable:
 
 .. cmdoption:: --pysparse
 
-   Forces the use of the :ref:`PYSPARSE` solvers. 
+   Forces the use of the :ref:`PYSPARSE` solvers.
 
 .. cmdoption:: --trilinos
- 
+
    Forces the use of the :ref:`TRILINOS` solvers, but uses
    :ref:`PYSPARSE` to construct the matrices.
 
@@ -158,6 +158,10 @@ environment variable:
 
    Forces the use of the :ref:`PYAMG` preconditioners in conjunction
    with the :ref:`SCIPY` solvers.
+
+.. cmdoption:: --pyamgx
+
+   Forces the use of the :ref:`PYAMGX` solvers.
 
 .. cmdoption:: --lsmlib
 
@@ -183,7 +187,7 @@ package.
    .. currentmodule:: fipy.terms.term
 
    If present, causes the graphical display of the solution matrix of each
-   equation at each call of :meth:`~Term.solve` or :meth:`~Term.sweep`. 
+   equation at each call of :meth:`~Term.solve` or :meth:`~Term.sweep`.
    Setting the value to "``terms``," causes the display of the matrix for each
    :class:`Term` that composes the equation. Requires the :term:`Matplotlib`
    package.
@@ -191,12 +195,12 @@ package.
 .. envvar:: FIPY_INLINE
 
    If present, causes many mathematical operations to be performed in C,
-   rather than Python. Requires the :mod:`scipy.weave` package.
+   rather than Python. Requires the :mod:`weave` package.
 
 .. envvar:: FIPY_INLINE_COMMENT
 
    If present, causes the addition of a comment showing the Python context
-   that produced a particular piece of :mod:`scipy.weave` C code. Useful
+   that produced a particular piece of :mod:`weave` C code. Useful
    for debugging.
 
 .. envvar:: FIPY_SOLVERS
@@ -204,7 +208,7 @@ package.
    Forces the use of the specified suite of linear solvers. Valid
    (case-insensitive) choices are "``pysparse``", "``trilinos``",
    "``no-pysparse``", "``scipy``" and "``pyamg``".
-    
+
 .. envvar:: FIPY_VERBOSE_SOLVER
 
    If present, causes the linear solvers to print a variety of diagnostic
@@ -220,8 +224,14 @@ package.
 
 .. envvar:: FIPY_INCLUDE_NUMERIX_ALL
 
-   If present, causes the inclusion of all funcions and variables of the
+   If present, causes the inclusion of all functions and variables of the
    :mod:`~fipy.tools.numerix` module in the :mod:`fipy` namespace.
+
+.. envvar:: FIPY_CACHE
+
+   If present, causes lazily evaluated :term:`FiPy` 
+   :class:`~fipy.variables.variable.Variable` objects to
+   retain their value.
 
 .. _PARALLEL:
 
@@ -238,18 +248,26 @@ class meshes. Currently, the only remaining serial-only meshes are
 
 .. attention::
 
-   :term:`Trilinos` *must* be compiled with MPI support.
+   :term:`Trilinos` *must* be compiled with MPI_ support.
 
 .. attention::
 
    :term:`FiPy` requires :ref:`MPI4PY` to work in parallel. See the
    :ref:`MPI4PY` installation guide.
 
-.. note::
+.. tip::
+
+   You are strongly advised to force the use of only one OpenMP_ thread::
+
+       $ export OMP_NUM_THREADS=1
+
+   See :ref:`THREADS_VS_RANKS` for more information.
+
+.. tip::
 
    Parallel efficiency is greatly improved by installing
-   :term:`PySparse` in addition to :term:`Trilinos`. If
-   :term:`PySparse` is not installed be sure to use the
+   :term:`Pysparse` in addition to :term:`Trilinos`. If
+   :term:`Pysparse` is not installed be sure to use the
    ``--no-pysparse`` flag when running in parallel.
 
 It should not generally be necessary to change anything in your script.
@@ -266,10 +284,10 @@ to solve in parallel, the easiest way to tell is to run one of the
 examples, e.g.,::
 
     $ mpirun -np 2 examples/diffusion/mesh1D.py
-   
+
 You should see two viewers open with half the simulation running in one of
 them and half in the other. If this does not look right (e.g., you get two
-viewers, both showing the entire simultion), or if you just want to be
+viewers, both showing the entire simulation), or if you just want to be
 sure, you can run a diagnostic script::
 
     $ mpirun -np 3 python examples/parallel.py
@@ -306,7 +324,7 @@ up into separate sub-domains and solves them (somewhat) independently.
 you need to do something with the entire solution, you can use
 ``var.``:attr:`~fipy.variables.cellVariable.CellVariable.globalValue`.
 
-.. note:: 
+.. note::
 
     :term:`Trilinos` solvers frequently give intermediate output that
     :term:`FiPy` cannot suppress. The most commonly encountered
@@ -331,6 +349,64 @@ you need to do something with the entire solution, you can use
         forced the solver to stop before reaching an adequate solution.
         Different solvers, different preconditioners, or a less restrictive
         tolerance may help.
+
+.. _THREADS_VS_RANKS:
+
+OpenMP Threads vs. MPI Ranks
+============================
+
+By default, Trilinos spawns as many OpenMP_ threads as there are cores
+available.  This may very well be an intentional optimization, where
+Trilinos is designed to have one MPI_ rank per node of a cluster, so each
+of the child threads would help with computation but would not compete for
+I/O resources during ghost cell exchanges and file I/O. However, Python's
+`Global Interpreter Lock`_ (GIL) binds all of the child threads to the same
+core as their parent!  So instead of improving performance, each core
+suffers a heavy overhead from the managing those idling threads.
+
+The solution to this is to force Trilinos to use only one OpenMP_ thread::
+
+   $ export OMP_NUM_THREADS=1
+
+Because this environment variable affects all processes launched in the
+current session, you may prefer to restrict its use to :term:`FiPy` runs::
+
+   $ OMP_NUM_THREADS=1 mpirun -np {# of processors} python myScript.py --trilinos
+
+The difference can be extreme.  We have observed the :term:`FiPy` test
+suite to run in `just over two minutes`_ when ``OMP_NUM_THREADS=1``,
+compared to `over an hour and 23 minutes`_ when OpenMP_ threads are
+unrestricted. We don't know why, but `other platforms`_ do not suffer the
+same degree of degradation.
+
+Conceivably, allowing Trilinos unfettered access to OpenMP_ threads with no
+MPI_ communication at all could perform as well or better than purely MPI_
+parallelization.  The plot below demonstrates this is not the case.  We
+compare solution time vs number of OpenMP_ threads for fixed number of
+slots for a `Method of Manufactured Solutions Allen-Cahn problem`_.
+OpenMP_ threading always slows down FiPy performance.
+
+.. plot:: documentation/pyplots/threadanalyze.py
+
+   OpenMP_ threads :math:`\times` MPI_ cpus = slots.
+
+See https://www.mail-archive.com/fipy@nist.gov/msg03393.html for further
+analysis.
+
+It may be possible to configure PyTrilinos to use only one OpenMP_ thread,
+but this is not the configuration of the version available from conda-forge_
+and building Trilinos is |NotFun (TM)|_.
+
+.. _OpenMP:                      https://www.openmp.org
+.. _MPI:                         http://www.mpi-forum.org
+.. _Global Interpreter Lock:     https://docs.python.org/2.7/c-api/init.html#thread-state-and-the-global-interpreter-lock
+.. _just over two minutes:       https://circleci.com/gh/guyer/fipy/461
+.. _over an hour and 23 minutes: https://circleci.com/gh/guyer/fipy/423
+.. _other platforms:             https://travis-ci.org/usnistgov/fipy/builds/509556033
+.. _Method of Manufactured Solutions Allen-Cahn problem:  https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb
+.. _conda-forge:                 https://conda-forge.github.io/
+.. |NotFun (TM)|                 unicode:: NotFun U+2122
+.. _NotFun (TM):                 https://commons.wikimedia.org/wiki/File:Hieronymus_Bosch_-_Triptych_of_Garden_of_Earthly_Delights_(detail)_-_WGA2526.jpg#/media/File:Hieronymus_Bosch_-_Triptych_of_Garden_of_Earthly_Delights_(detail)_-_WGA2526.jpg
 
 .. _MeshingWithGmsh:
 
@@ -407,15 +483,15 @@ In this case the matrix system will have the form
    \left(
    \begin{array}{c}
    \text{\ttfamily var0}  \\ \hline
-   \text{\ttfamily var1} 
+   \text{\ttfamily var1}
    \end{array} \right)
-   =	       
+   =
    \left(
    \begin{array}{c}
    \text{\ttfamily source0}  \\ \hline
-   \text{\ttfamily source1} 
+   \text{\ttfamily source1}
    \end{array} \right)
-   
+
 :term:`FiPy` tries to make sensible decisions regarding each term's
 location in the matrix and the ordering of the variable column
 array. For example, if ``Term01`` is a transient term then ``Term01``
@@ -447,7 +523,7 @@ have a value of `2` along the upper surface of a domain, use
 
 >>> var.constrain(2., where=mesh.facesTop)
 
-.. note:: 
+.. note::
 
    The old equivalent
    :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary
@@ -483,14 +559,14 @@ terms' coefficients to be zero on the exterior faces,
 
 then create an equation with an extra term to account for the exterior flux,
 
->>> eqn = (TransientTerm() + ConvectionTerm(convCoeff) 
+>>> eqn = (TransientTerm() + ConvectionTerm(convCoeff)
 ...        == DiffusionCoeff(diffCoeff)
 ...        + (mesh.exteriorFaces * exteriorFlux).divergence)
 
 where `exteriorFlux` is a rank 1
 :class:`~fipy.variables.faceVariable.FaceVariable`.
 
-.. note:: 
+.. note::
 
    The old equivalent :class:`~fipy.boundaryConditions.fixedFlux.FixedFlux`
    boundary condition is now deprecated.
@@ -513,7 +589,7 @@ boundary conditions,
 .. math::
 
   \phi = \left\{
-            \begin{aligned} 
+            \begin{aligned}
                 xy &\quad \text{on $x>1/2$ and $y>1/2$} \\
                 \vec{n} \cdot \vec{F} = 0 &\quad \text{elsewhere}
             \end{aligned}
@@ -535,68 +611,263 @@ Further demonstrations of spatially varying boundary condition can be found
 in :mod:`examples.diffusion.mesh20x20`
 and :mod:`examples.diffusion.circle`
 
-Applying internal boundary conditions
-=====================================
+Applying Robin boundary conditions
+==================================
+
+The Robin condition applied on the portion of the boundary :math:`S_R`
+
+.. math::
+
+   \hat{n}\cdot\left(\vec{a}\phi + b\nabla\phi\right) = g\qquad\text{on $S_R$}
+
+can often be substituted for the flux in an equation
+
+.. math::
+
+    \frac{\partial\phi}{\partial t}
+    &= \nabla\cdot\left(\vec{a}\phi\right) + \nabla\cdot\left(b\nabla\phi\right)
+    \\
+    \int_V\frac{\partial\phi}{\partial t}\,dV
+    &= \int_S \hat{n} \cdot \left(\vec{a}\phi + b\nabla\phi\right) \, dS
+    \\
+    \int_V\frac{\partial\phi}{\partial t}\,dV
+    &= \int_{S \notin S_R} \hat{n} \cdot \left(\vec{a}\phi + b\nabla\phi\right) \, dS
+    + \int_{S \in S_R} g \, dS
+
+At faces identifed by ``mask``,
+
+>>> a = FaceVariable(mesh=mesh, value=..., rank=1)
+>>> a.setValue(0., where=mask)
+>>> b = FaceVariable(mesh=mesh, value=..., rank=0)
+>>> b.setValue(0., where=mask)
+>>> g = FaceVariable(mesh=mesh, value=..., rank=0)
+>>> eqn = (TransientTerm() == PowerLawConvectionTerm(coeff=a)
+...        + DiffusionTerm(coeff=b)
+...        + (g * mask * mesh.faceNormals).divergence)
+
+When the Robin condition does not exactly map onto the boundary flux, we
+can attempt to apply it term by term.  The Robin condition relates the
+gradient at a boundary face to the value on that face, however
+:term:`FiPy` naturally calculates variable values at cell centers
+and gradients at intervening faces. Using a first order upwind
+approximation, the boundary value of the variable at face :math:`f` can be written in terms of
+the value at the neighboring cell :math:`P` and the normal gradient at the boundary:
+
+.. math::
+   :label: upwind1
+
+   \phi_f &\approx \phi_P - \left(\vec{d}_{fP}\cdot\nabla\phi\right)_f
+   \\
+   &\approx \phi_P - \left(\hat{n}\cdot\nabla\phi\right)_f\left(\vec{d}_{fP}\cdot\hat{n}\right)_f
+
+where :math:`\vec{d}_{fP}` is the distance vector from the face center to
+the adjoining cell center.  The approximation
+:math:`\left(\vec{d}_{fP}\cdot\nabla\phi\right)_f \approx
+\left(\hat{n}\cdot\nabla\phi\right)_f\left(\vec{d}_{fP}\cdot\hat{n}\right)_f`
+is most valid when the mesh is orthogonal.
+
+Substituting this expression into the Robin condition:
+
+.. math::
+   :label: Robin_facegrad
+
+   \hat{n}\cdot\left(\vec{a} \phi + b \nabla\phi\right)_f &= g \\
+   \hat{n}\cdot\left[\vec{a} \phi_P
+   - \vec{a} \left(\hat{n}\cdot\nabla\phi\right)_f\left(\vec{d}_{fP}\cdot\hat{n}\right)_f
+   + b \nabla\phi\right]_f &\approx g \\
+   \left(\hat{n}\cdot\nabla\phi\right)_f
+   &\approx \frac{g_f - \left(\hat{n}\cdot\vec{a}\right)_f \phi_P}
+                 {-\left(\vec{d}_{fP}\cdot\vec{a}\right)_f + b_f}
+
+we obtain an expression for the gradient at the boundary face in terms of
+its neighboring cell.  We can, in turn, substitute this back into
+:eq:`upwind1`
+
+.. math::
+   :label: upwind2
+
+   \phi_f &\approx \phi_P
+   - \frac{g_f - \left(\hat{n}\cdot\vec{a}\right)_f \phi_P}
+          {-\left(\vec{d}_{fP}\cdot\vec{a}\right)_f + b_f}
+   \left(\vec{d}_{fP}\cdot\hat{n}\right)_f \\
+   &\approx \frac{-g_f \left(\hat{n}\cdot\vec{d}_{fP}\right)_f + b_f\phi_P}
+                 {- \left(\vec{d}_{fP}\cdot\vec{a}\right)_f + b_f}
+
+to obtain the value on the boundary face in terms of the neighboring cell.
+
+Substituting :eq:`Robin_facegrad` into the discretization of the
+:class:`~fipy.terms.diffusionTerm.DiffusionTerm`:
+
+.. math::
+
+   \int_V \nabla\cdot\left(\Gamma\nabla\phi\right) dV
+   &= \int_S \Gamma \hat{n}\cdot\nabla\phi\, S \\
+   &\approx \sum_f \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f \\
+   &= \sum_{f \notin S_R} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f
+   + \sum_{f \in S_R} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f \\
+   &\approx \sum_{f \notin S_R} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f
+   + \sum_{f \in S_R} \Gamma_f \frac{g_f - \left(\hat{n}\cdot\vec{a}\right)_f \phi_P}
+                       {-\left(\vec{d}_{fP}\cdot\vec{a}\right)_f + b_f} A_f
+
+An equation of the form
+
+>>> eqn = TransientTerm() == DiffusionTerm(coeff=Gamma0)
+
+can be constrained to have a Robin condition at faces identifed by
+``mask`` by making the following modifications
+
+>>> Gamma = FaceVariable(mesh=mesh, value=Gamma0)
+>>> Gamma.setValue(0., where=mask)
+>>> dPf = FaceVariable(mesh=mesh, 
+...                    value=mesh._faceToCellDistanceRatio * mesh.cellDistanceVectors)
+>>> n = mesh.faceNormals
+>>> a = FaceVariable(mesh=mesh, value=..., rank=1)
+>>> b = FaceVariable(mesh=mesh, value=..., rank=0)
+>>> g = FaceVariable(mesh=mesh, value=..., rank=0)
+>>> RobinCoeff = (mask * Gamma0 * n / (-dPf.dot(a) + b)
+>>> eqn = (TransientTerm() == DiffusionTerm(coeff=Gamma) + (RobinCoeff * g).divergence
+...        - ImplicitSourceTerm(coeff=(RobinCoeff * n.dot(a)).divergence)
+
+Similarly, for a :class:`~fipy.terms.convectionTerm.ConvectionTerm`, we can
+substitute :eq:`upwind2`:
+
+.. math::
+
+   \int_V \nabla\cdot\left(\vec{u}\phi\right) dV
+   &= \int_S \hat{n}\cdot\vec{u} \phi\,dS \\
+   &\approx \sum_f \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f \\
+   &= \sum_{f \notin S_R} \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f
+   + \sum_{f \in S_R} \left(\hat{n}\cdot\vec{u}\right)_f
+        \frac{-g_f \left(\hat{n}\cdot\vec{d}_{fP}\right)_f + b_f\phi_P}
+             {- \left(\vec{d}_{fP}\cdot\vec{a}\right)_f + b_f} A_f
+
+.. note:: An expression like the heat flux convection boundary condition
+   :math:`-k\nabla T\cdot\hat{n} = h(T - T_\infty)` can be put in the form of the
+   Robin condition used above by letting :math:`\vec{a} \equiv h \hat{n}`,
+   :math:`b \equiv k`, and :math:`g \equiv h T_\infty`.
+
+Applying internal "boundary" conditions
+=======================================
 
 Applying internal boundary conditions can be achieved through the use
-of implicit and explicit sources. An equation of the form
+of implicit and explicit sources. 
+
+Internal fixed value
+--------------------
+
+An equation of the form
 
 >>> eqn = TransientTerm() == DiffusionTerm()
 
 can be constrained to have a fixed internal ``value`` at a position
 given by ``mask`` with the following alterations
 
->>> eqn = TransientTerm() == DiffusionTerm() - ImplicitSourceTerm(mask * largeValue) + mask * largeValue * value 
+>>> eqn = (TransientTerm() == DiffusionTerm() 
+...                           - ImplicitSourceTerm(mask * largeValue) 
+...                           + mask * largeValue * value)
 
 The parameter ``largeValue`` must be chosen to be large enough to
 completely dominate the matrix diagonal and the RHS vector in cells
 that are masked. The ``mask`` variable would typically be a
-``CellVariable`` boolean constructed using the cell center values.
+``CellVariable`` Boolean constructed using the cell center values.
 
-One must be careful to distinguish between constraining internal cell
-values during the solve step and simply applying arbitrary constraints
-to a ``CellVariable``. Applying a constraint,
+Internal fixed gradient
+-----------------------
 
->>> var.constrain(value, where=mask)
+An equation of the form
 
-simply fixes the returned value of ``var`` at ``mask`` to be
-``value``. It does not have any effect on the implicit value of ``var`` at the
-``mask`` location during the linear solve so it is not a substitute
-for the source term machinations described above. Future releases of
-:term:`FiPy` may implicitly deal with this discrepancy, but the current
-release does not. A simple example can be used to demonstrate this::
+>>> eqn = TransientTerm() == DiffusionTerm(coeff=Gamma0)
 
->>> m = Grid1D(nx=2, dx=1.)
->>> var = CellVariable(mesh=m)
+can be constrained to have a fixed internal ``gradient`` magnitude 
+at a position given by ``mask`` with the following alterations
 
-Apply a constraint to the faces for a right side boundary condition
-(which works).
+>>> Gamma = FaceVariable(mesh=mesh, value=Gamma0)
+>>> Gamma[mask.value] = 0.
+>>> eqn = (TransientTerm() == DiffusionTerm(coeff=Gamma) 
+...        + DiffusionTerm(coeff=largeValue * mask)
+...        - ImplicitSourceTerm(mask * largeValue * gradient 
+...                             * mesh.faceNormals).divergence)
 
->>> var.constrain(1., where=m.facesRight)
+The parameter ``largeValue`` must be chosen to be large enough to
+completely dominate the matrix diagonal and the RHS vector in cells
+that are masked. The ``mask`` variable would typically be a
+``FaceVariable`` boolean constructed using the face center values.
 
-Create the equation with the source term constraint described above
+Internal Robin condition
+------------------------
 
->>> mask = m.x < 1.
->>> largeValue = 1e+10
->>> value = 0.25
->>> eqn = DiffusionTerm() - ImplicitSourceTerm(largeValue * mask) + largeValue * mask * value
+Nothing different needs to be done when 
+`applying Robin boundary conditions`_ at internal faces.
 
-and the expected value is obtained.
+.. note::
 
->>> eqn.solve(var)
->>> print var
-[ 0.25  0.75]
+   While we believe the derivations for
+   `applying Robin boundary conditions`_ are "correct", they often do not
+   seem to produce the intuitive result. At this point, we think this has 
+   to do with the pathology of "internal" boundary conditions, but remain 
+   open to other explanations. :term:`FiPy` was designed with diffuse 
+   interface treatments (phase field and level set) in mind and, as such, 
+   internal "boundaries" do not come up in our own work and have not 
+   received much attention.
 
-However, if a constraint is used without the source term constraint an
-unexpected value is obtained
+.. warning::
 
->>> var.constrain(0.25, where=mask)
->>> eqn = DiffusionTerm()
->>> eqn.solve(var)
->>> print var
-[ 0.25  1.  ]
+  The constraints mechanism is not designed to constrain internal values
+  for variables that are being solved by equations. In particular, one must
+  be careful to distinguish between constraining internal cell values
+  during the solve step and simply applying arbitrary constraints to a
+  ``CellVariable``. Applying a constraint,
 
-although the left cell has the expected value as it is constrained.
+  >>> var.constrain(value, where=mask)
+
+  simply fixes the returned value of ``var`` at ``mask`` to be
+  ``value``. It does not have any effect on the implicit value of ``var`` at the
+  ``mask`` location during the linear solve so it is not a substitute
+  for the source term machinations described above. Future releases of
+  :term:`FiPy` may implicitly deal with this discrepancy, but the current
+  release does not. 
+
+  A simple example can be used to demonstrate this::
+
+  >>> m = Grid1D(nx=2, dx=1.)
+  >>> var = CellVariable(mesh=m)
+
+  We wish to solve :math:`\nabla^2 \phi = 0` subject to
+  :math:`\phi\rvert_\text{right} = 1` and :math:`\phi\rvert_{x < 1} = 0.25`.
+  We apply a constraint to the faces for the right side boundary condition
+  (which works).
+
+  >>> var.constrain(1., where=m.facesRight)
+
+  We create the equation with the source term constraint described above
+
+  >>> mask = m.x < 1.
+  >>> largeValue = 1e+10
+  >>> value = 0.25
+  >>> eqn = DiffusionTerm() - ImplicitSourceTerm(largeValue * mask) + largeValue * mask * value
+
+  and the expected value is obtained.
+
+  >>> eqn.solve(var)
+  >>> print var
+  [ 0.25  0.75]
+
+  However, if a constraint is used without the source term constraint an
+  unexpected solution is obtained
+
+  >>> var.constrain(0.25, where=mask)
+  >>> eqn = DiffusionTerm()
+  >>> eqn.solve(var)
+  >>> print var
+  [ 0.25  1.  ]
+
+  although the left cell has the expected value as it is constrained.
+
+  :term:`FiPy` has simply solved :math:`\nabla^2 \phi = 0` with
+  :math:`\phi\rvert_\text{right} = 1` and (by default)
+  :math:`\hat{n}\cdot\nabla\phi\rvert_\text{left} = 0`, giving :math:`\phi
+  = 1` everywhere, and then subsequently replaced the cells :math:`x < 1`
+  with :math:`\phi = 0.25`.
 
 .. %    http://thread.gmane.org/gmane.comp.python.fipy/726
    %    http://thread.gmane.org/gmane.comp.python.fipy/846
@@ -618,7 +889,7 @@ although the left cell has the expected value as it is constrained.
 .. _RunningUnderPython3:
 
 ----------------------
-Running under Python 3     
+Running under Python 3
 ----------------------
 
 It is possible to run :term:`FiPy` scripts under :term:`Python 3`, but
@@ -645,8 +916,8 @@ The minimal prerequisites are:
 Manual
 ------
 
-You can view the manual online at <http://www.ctcms.nist.gov/fipy> or you 
-can `download the latest manual`_ from 
+You can view the manual online at <http://www.ctcms.nist.gov/fipy> or you
+can `download the latest manual`_ from
 <http://www.ctcms.nist.gov/fipy/download/>. Alternatively,
 it may be possible to build a fresh copy by issuing the following
 command in the base directory::
@@ -655,36 +926,19 @@ command in the base directory::
 
 .. note::
 
-   This mechanism is intended primarily for the developers. At a minimum, 
-   you will need at least version 1.1.2 of `Sphinx
-   <http://sphinx.pocoo.org/latest>`_, plus all of its prerequisites, 
-   although we build the documentation witih the latest development code 
-   (you will need hg_ installed)::
+   This mechanism is intended primarily for the developers. At a minimum,
+   you will need at least version 1.7.0 of `Sphinx
+   <http://www.sphinx-doc.org/>`_, plus all of its prerequisites. We 
+   install via conda::
 
-   $ pip install --upgrade -e hg+https://bitbucket.org/birkenfeld/sphinx#egg=sphinx
+   $ conda install --channel conda-forge sphinx
 
-   We use several contributed Sphinx plugins::
+   Bibliographic citations require the `sphinxcontrib-bibtex` package::
 
-   $ hg clone https://bitbucket.org/birkenfeld/sphinx-contrib/
+   $ pip install sphinxcontrib-bibtex
 
-   $ cd sphinx-contrib/traclinks
-   $ python setup.py install
+   Some embeded figures require `matplotlib`, `pandas`, and `imagemagick`::
 
-   Bibliographic citations require the `sphinxcontrib-bibtex` package. For 
-   the moment, the development versions of several packages are required 
-   to properly render our bibliography (you will need both bzr_ and git_ 
-   installed)::
-
-   $ pip install -e bzr+lp:~pybtex-devs/pybtex/trunk
-   $ pip install -e git+git@github.com:mcmtroffaes/pybtex-docutils.git#egg=pybtex-docutils
-   $ pip install -e git+git@github.com:mcmtroffaes/sphinxcontrib-bibtex.git#egg=sphinxcontrib-bibtex
+   $ conda install --channel conda-forge matplotlib pandas imagemagick
 
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
-.. _hg: http://mercurial.selenic.com
-.. _bzr: http://bazaar.canonical.com
-.. _git: http://git-scm.com
-
-
-
-
-

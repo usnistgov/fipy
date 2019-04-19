@@ -1,38 +1,3 @@
-#!/usr/bin/env python
-
-## -*-Pyth-*-
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "uniformGrid1D.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #  Author: James O'Beirne <james.obeirne@gmail.com>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
 """
 1D Mesh
 """
@@ -53,38 +18,38 @@ __all__ = ["UniformGrid1D"]
 class UniformGrid1D(UniformGrid):
     """
     Creates a 1D grid mesh.
-    
+
         >>> mesh = UniformGrid1D(nx = 3)
         >>> print mesh.cellCenters
         [[ 0.5  1.5  2.5]]
-         
+
     """
     def __init__(self, dx=1., nx=1, origin=(0,), overlap=2,
-                 communicator=parallelComm, 
+                 communicator=parallelComm,
                  _RepresentationClass=_Grid1DRepresentation,
                  _TopologyClass=_Grid1DTopology):
-                           
+
         super(UniformGrid1D, self).__init__(communicator=communicator,
                                             _RepresentationClass=_RepresentationClass,
                                             _TopologyClass=_TopologyClass)
-                                            
+
         builder = _UniformGrid1DBuilder()
 
         origin = numerix.array(origin)
-        
+
         self.args = {
-            'dx': dx, 
-            'nx': nx, 
-            'origin': origin, 
+            'dx': dx,
+            'nx': nx,
+            'origin': origin,
             'overlap': overlap
         }
-        
+
         self._scale = {
             'length': 1.,
             'area': 1.,
             'volume': 1.
         }
-         
+
         builder.buildGridData([dx], [nx], overlap, communicator, origin)
 
         ([self.dx],
@@ -105,21 +70,21 @@ class UniformGrid1D(UniformGrid):
          self.origin) = builder.gridData
 
         self._setTopology()
- 
+
     """
     Topology set and calc
     """
 
     def _setTopology(self):
         self._exteriorFaces = self.facesLeft | self.facesRight
-                                  
+
     @property
     def _interiorFaces(self):
         from fipy.variables.faceVariable import FaceVariable
         interiorFaces = FaceVariable(mesh=self, value=False)
         interiorFaces[numerix.arange(self.numberOfFaces-2) + 1] = True
         return interiorFaces
-            
+
     @property
     def _cellToFaceOrientations(self):
         orientations = numerix.ones((2, self.numberOfCells), 'l')
@@ -145,21 +110,21 @@ class UniformGrid1D(UniformGrid):
             ids[0,0] = MA.masked
             ids[1,-1] = MA.masked
         return ids
-        
+
     @property
     def _cellToCellIDsFilled(self):
         ids = self._cellToCellIDs.filled()
         if self.numberOfCells > 0:
             ids[0,0] = 0
             ids[1,-1] = self.numberOfCells - 1
-        return ids          
+        return ids
 
     def _getExteriorFaces(self):
         return self._exteriorFaces
 
     def _setExteriorFaces(self, e):
         self._exteriorFaces = e
-    
+
     exteriorFaces = property(_getExteriorFaces, _setExteriorFaces)
 
     """
@@ -213,7 +178,7 @@ class UniformGrid1D(UniformGrid):
     @property
     def _faceTangents2(self):
         return numerix.zeros(self.numberOfFaces, 'd')[numerix.NewAxis, ...]
-    
+
     @property
     def _cellToCellDistances(self):
         distances = MA.zeros((2, self.numberOfCells), 'd')
@@ -229,7 +194,7 @@ class UniformGrid1D(UniformGrid):
         if self.numberOfCells > 0:
             normals[:,0] = -1
         return normals
-        
+
     @property
     def _cellAreas(self):
         return numerix.ones((2, self.numberOfCells), 'd')
@@ -241,13 +206,18 @@ class UniformGrid1D(UniformGrid):
     @property
     def _cellVolumes(self):
         return numerix.ones(self.numberOfCells, 'd') * self.dx
-                                                          
+
     """
     Scaled geometry set and calc
     """
 
     @property
     def _faceToCellDistanceRatio(self):
+        """how far face is from first to second cell
+        
+        distance from center of face to center of first cell divided by distance
+        between cell centers
+        """
         distances = numerix.ones(self.numberOfFaces, 'd')
         distances *= 0.5
         if len(distances) > 0:
@@ -258,19 +228,19 @@ class UniformGrid1D(UniformGrid):
     @property
     def _areaProjections(self):
         return self.faceNormals
-        
+
     @property
     def _orientedAreaProjections(self):
         return self._areaProjections
-        
+
     @property
     def _getFaceAspectRatios(self):
         return 1. / self._cellDistances
 
 
     def _translate(self, vector):
-        return UniformGrid1D(dx=self.dx, 
-                             nx=self.args['nx'], 
+        return UniformGrid1D(dx=self.dx,
+                             nx=self.args['nx'],
                              origin=self.args['origin'] + numerix.array(vector),
                              overlap=self.args['overlap'])
 
@@ -283,10 +253,10 @@ class UniformGrid1D(UniformGrid):
     @property
     def _concatenableMesh(self):
         from fipy.meshes.mesh1D import Mesh1D
-        return Mesh1D(vertexCoords = self.vertexCoords, 
-                      faceVertexIDs = _Grid1DBuilder.createFaces(self.numberOfVertices), 
+        return Mesh1D(vertexCoords = self.vertexCoords,
+                      faceVertexIDs = _Grid1DBuilder.createFaces(self.numberOfVertices),
                       cellFaceIDs = _Grid1DBuilder.createCells(self.nx))
-                      
+
     @property
     def _cellFaceIDs(self):
         return MA.array(_Grid1DBuilder.createCells(self.nx))
@@ -294,7 +264,7 @@ class UniformGrid1D(UniformGrid):
     @property
     def _maxFacesPerCell(self):
         return 2
-    
+
     @property
     def vertexCoords(self):
         return numerix.array(self.faceCenters)
@@ -328,17 +298,17 @@ class UniformGrid1D(UniformGrid):
            >>> m1 = Grid1D(nx=4, dx=.5)
            >>> print m0._getNearestCellID(m1.cellCenters.globalValue)
            [0 0 1 1]
-           
+
         """
         nx = self.globalNumberOfCells
-        
+
         if nx == 0:
             return numerix.arange(0)
-            
-        x0, = self.cellCenters.globalValue[...,0]        
+
+        x0, = self.cellCenters.globalValue[...,0]
         xi, = points
         dx = self.dx
-        
+
         i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
         i[i < 0] = 0
         i[i > nx - 1] = nx - 1

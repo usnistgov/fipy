@@ -1,37 +1,3 @@
-#!/usr/bin/env python
-
-## -*-Pyth-*-
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "CylindricalNonUniformGrid2D.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
 """
 2D rectangular Mesh
 """
@@ -51,47 +17,47 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
     Creates a 2D cylindrical grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx=1., dy=1., nx=None, ny=None, 
+    def __init__(self, dx=1., dy=1., nx=None, ny=None,
                  origin=((0.,), (0.,)), overlap=2, communicator=parallelComm, *args, **kwargs):
         scale = PhysicalField(value=1, unit=PhysicalField(value=dx).unit)
         self.origin = PhysicalField(value=origin)
         self.origin /= scale
 
-        super(CylindricalNonUniformGrid2D, self).__init__(dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap, 
+        super(CylindricalNonUniformGrid2D, self).__init__(dx=dx, dy=dy, nx=nx, ny=ny, overlap=overlap,
                         communicator=communicator, *args, **kwargs)
-        
-        self._faceAreas *= self.faceCenters[0]
+
+        self._faceAreas *= self.faceCenters[0].value
 
         self._scaledFaceAreas = self._scale['area'] * self._faceAreas
         self._areaProjections = self.faceNormals * self._faceAreas
         self._orientedAreaProjections = self._calcOrientedAreaProjections()
         self._faceAspectRatios = self._calcFaceAspectRatios()
-                                       
+
         self._cellAreas = self._calcCellAreas()
-        self._cellNormals = self._calcCellNormals() 
-          
+        self._cellNormals = self._calcCellNormals()
+
         self.vertexCoords += self.origin
         self.args['origin'] = self.origin
- 
+
     def _calcFaceCenters(self):
         return super(CylindricalNonUniformGrid2D, self)._calcFaceCenters() + self.origin
-         
+
     def _calcCellVolumes(self):
         return super(CylindricalNonUniformGrid2D, self)._calcCellVolumes() \
           * self._calcCellCenters()[0]
-  
+
     def _translate(self, vector):
-        return CylindricalNonUniformGrid2D(dx=self.args['dx'], nx=self.args['nx'], 
-                                           dy=self.args['dy'], ny=self.args['ny'], 
+        return CylindricalNonUniformGrid2D(dx=self.args['dx'], nx=self.args['nx'],
+                                           dy=self.args['dy'], ny=self.args['ny'],
                                            origin=self.args['origin'] + vector,
                                            overlap=self.args['overlap'])
 
     def __mul__(self, factor):
         if numerix.shape(factor) is ():
             factor = numerix.resize(factor, (2,1))
-        
-        return CylindricalNonUniformGrid2D(dx=self.args['dx'] * numerix.array(factor[0]), nx=self.args['nx'], 
-                                           dy=self.args['dy'] * numerix.array(factor[1]), ny=self.args['ny'], 
+
+        return CylindricalNonUniformGrid2D(dx=self.args['dx'] * numerix.array(factor[0]), nx=self.args['nx'],
+                                           dy=self.args['dy'] * numerix.array(factor[1]), ny=self.args['ny'],
                                            origin=self.args['origin'] * factor,
                                            overlap=self.args['overlap'])
 
@@ -101,21 +67,21 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
         everything works as expected.
 
             >>> import fipy as fp
-        
+
             >>> dx = 0.5
             >>> dy = 2.
             >>> nx = 3
             >>> ny = 2
-            
-            >>> mesh = CylindricalNonUniformGrid2D(nx = nx, ny = ny, dx = dx, dy = dy)     
-            
+
+            >>> mesh = CylindricalNonUniformGrid2D(nx = nx, ny = ny, dx = dx, dy = dy)
+
             >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3.),
             ...                           (0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2.)))
             >>> vertices *= numerix.array(((dx,), (dy,)))
             >>> print numerix.allequal(vertices,
             ...                        mesh.vertexCoords) # doctest: +PROCESSOR_0
             True
-        
+
             >>> faces = numerix.array(((1, 2, 3, 4, 5, 6, 8, 9, 10, 0, 5, 6, 7, 4, 9, 10, 11),
             ...                        (0, 1, 2, 5, 6, 7, 9, 10, 11, 4, 1, 2, 3, 8, 5, 6, 7)))
             >>> print numerix.allequal(faces,
@@ -131,12 +97,12 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             True
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
-            >>> print numerix.allequal(externalFaces, 
+            >>> print numerix.allequal(externalFaces,
             ...                        numerix.nonzero(mesh.exteriorFaces)) # doctest: +PROCESSOR_0
             True
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
-            >>> print numerix.allequal(internalFaces, 
+            >>> print numerix.allequal(internalFaces,
             ...                        numerix.nonzero(mesh.interiorFaces)) # doctest: +PROCESSOR_0
             True
 
@@ -148,14 +114,16 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
 
             >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
             ...                            dy, dy, dy, dy, dy, dy, dy, dy))
-            >>> faceAreas = faceAreas * mesh.faceCenters[0] # doctest: +PROCESSOR_0
+            >>> faceAreas = faceAreas * mesh.faceCenters[0] 
             >>> print numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
-            
+            >>> ignore = numerix.allclose(faceAreas, mesh._faceAreas).value # doctest: +PROCESSOR_NOT_0
+
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
             >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
+            >>> ignore = numerix.allclose(faceCenters, mesh.faceCenters).value # doctest: +PROCESSOR_NOT_0
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.),
             ...                              (-1., -1., -1., 1., 1., 1., 1., 1., 1., 0., 0., 0., 0., 0., 0., 0., 0.)))
@@ -168,12 +136,12 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             ...                                         (1, -1, -1,  1, -1, -1)))
             >>> print numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations) # doctest: +PROCESSOR_0
             True
-                                            
+
             >>> type(mesh.cellCenters)
             <class 'fipy.variables.cellVariable.CellVariable'>
-                                               
+
            >>> testCellVolumes = mesh.cellCenters[0].globalValue * numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
-            
+
             >>> print isinstance(mesh.cellVolumes, numerix.ndarray)
             True
 
@@ -190,7 +158,7 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             ...                                         (-1, -1, -1, dy / 2., dy / 2., dy / 2., -1, -1, -1, -1, dx / 2., dx / 2., -1, -1, dx / 2., dx / 2., -1)), -1)
             >>> print numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
-                                              
+
             >>> cellDistances = numerix.array((dy / 2., dy / 2., dy / 2.,
             ...                                dy, dy, dy,
             ...                                dy / 2., dy / 2., dy / 2.,
@@ -200,7 +168,7 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             ...                                dx / 2.))
             >>> print numerix.allclose(cellDistances, mesh._cellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
-            
+
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
             >>> print numerix.allclose(faceToCellDistanceRatios, mesh._faceToCellDistanceRatio, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
@@ -208,6 +176,7 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             >>> areaProjections = faceNormals * faceAreas
             >>> print numerix.allclose(areaProjections, mesh._areaProjections, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
+            >>> ignore = numerix.allclose(areaProjections, mesh._areaProjections).value # doctest: +PROCESSOR_NOT_0
 
             >>> tangents1 = numerix.array(((1., 1., 1., -1., -1., -1., -1., -1., -1., 0., 0., 0., 0., 0., 0., 0., 0.),
             ...                            (0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.)))
@@ -274,8 +243,8 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             >>> print numerix.allclose(mesh._cellVertexIDs, cellVertexIDs) # doctest: +PROCESSOR_0
             True
 
-            >>> from fipy.tools import dump            
-            >>> (f, filename) = dump.write(mesh, extension = '.gz')            
+            >>> from fipy.tools import dump
+            >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
             >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.cellCenters)
@@ -301,14 +270,14 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
 
             >>> print isinstance(fp.CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
             True
-            
+
         Test for https://github.com/usnistgov/fipy/issues/393. exteriorFaces were
         ndarrays rather than FaceVariables.
-        
+
             >>> print isinstance(m.facesTop, fp.FaceVariable)
             True
-            
-            
+
+
         """
 
 def _test():

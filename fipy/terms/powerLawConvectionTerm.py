@@ -1,37 +1,3 @@
-#!/usr/bin/env python
-
-## -*-Pyth-*-
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "powerLawConvectionTerm.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
- # ###################################################################
- ##
-
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.asymmetricConvectionTerm import _AsymmetricConvectionTerm
@@ -51,7 +17,7 @@ class _PowerLawConvectionTermAlpha(FaceVariable):
         >>> mesh = Grid1D(nx = 3)
         >>> from fipy.variables.faceVariable import FaceVariable
         >>> P = FaceVariable(mesh=mesh, value=(1e-3, 1e+71, 1e-3, 1e-3))
-        >>> 
+        >>>
         >>> alpha = PowerLawConvectionTerm([1])._alpha(P)
         >>> print numerix.allclose(alpha, [ 0.5,  1.,   0.5 , 0.5])
         True
@@ -63,7 +29,7 @@ class _PowerLawConvectionTermAlpha(FaceVariable):
 
     if inline.doInline:
         def _calcValue(self):
-            eps = self.eps 
+            eps = self.eps
             P = self.P.numericValue
             alpha = self._array.copy()
 
@@ -95,7 +61,7 @@ class _PowerLawConvectionTermAlpha(FaceVariable):
             return self._makeValue(value = alpha)
     else:
         def _calcValue(self):
-            eps = self.eps 
+            eps = self.eps
             P = self.P.numericValue
             P = numerix.where(abs(P) < eps, eps, P)
 
@@ -118,7 +84,7 @@ class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
     The discretization for this :class:`~fipy.terms.term.Term` is given by
 
     .. math::
-    
+
        \int_V \nabla \cdot (\vec{u} \phi)\,dV \simeq \sum_{f} (\vec{n}
        \cdot \vec{u})_f \phi_f A_f
 
@@ -129,7 +95,7 @@ class PowerLawConvectionTerm(_AsymmetricConvectionTerm):
     def _alpha(self, P):
         return _PowerLawConvectionTermAlpha(P)
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
 

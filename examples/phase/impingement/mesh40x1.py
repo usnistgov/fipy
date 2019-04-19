@@ -1,37 +1,3 @@
-#!/usr/bin/env python
-
-## 
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "mesh40x1.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
 r"""Solve for the impingement of two grains in one dimension.
 
 In this example we solve a coupled phase and orientation equation on a one
@@ -40,35 +6,36 @@ Lobkovsky and Carter :cite:`WarrenPolycrystal`
 
 .. index:: Grid1D
 
->>> from fipy import *
+>>> from fipy import CellVariable, ModularVariable, Grid1D, TransientTerm, DiffusionTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, GeneralSolver, Viewer
+>>> from fipy.tools import numerix
 
 >>> nx = 40
 >>> Lx = 2.5 * nx / 100.
 >>> dx = Lx / nx
 >>> mesh = Grid1D(dx=dx, nx=nx)
-        
-This problem simulates the wet boundary that forms between grains of different 
+
+This problem simulates the wet boundary that forms between grains of different
 orientations. The phase equation is given by
 
 .. math::
-    
-   \tau_{\phi} \frac{\partial \phi}{\partial t} 
-   = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T) 
+
+   \tau_{\phi} \frac{\partial \phi}{\partial t}
+   = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T)
    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2
 
 where
 
 .. math::
-    
+
    m_1(\phi, T) = \phi - \frac{1}{2} - T \phi ( 1 - \phi )
 
 and the orientation equation is given by
 
 .. math::
 
-   P(\epsilon | \nabla \theta |) \tau_{\theta} \phi^2 
-   \frac{\partial \theta}{\partial t} 
-   = \nabla \cdot \left[ \phi^2 \left( \frac{s}{| \nabla \theta |} 
+   P(\epsilon | \nabla \theta |) \tau_{\theta} \phi^2
+   \frac{\partial \theta}{\partial t}
+   = \nabla \cdot \left[ \phi^2 \left( \frac{s}{| \nabla \theta |}
    + \epsilon^2 \right) \nabla \theta \right]
 
 where
@@ -78,10 +45,10 @@ where
    P(w) = 1 - \exp{(-\beta w)} + \frac{\mu}{\epsilon} \exp{(-\beta w)}
 
 The initial conditions for this problem are set such that
-:math:`\phi = 1` for :math:`0 \le x \le L_x` and 
-   
+:math:`\phi = 1` for :math:`0 \le x \le L_x` and
+
 .. math::
-    
+
    \theta = \begin{cases}
    1 & \text{for $0 \le x < L_x / 2$,} \\
    0 & \text{for $L_x / 2 \le x \le L_x$.}
@@ -90,7 +57,7 @@ The initial conditions for this problem are set such that
 .. Further details of the numerical method for this problem can be found in
    "Extending Phase Field Models of Solidification to Polycrystalline
    Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
-   6035-6058.  
+   6035-6058.
 
 Here the phase and orientation equations are solved with an
 explicit and implicit technique respectively.
@@ -124,7 +91,7 @@ and is initially solid everywhere
 
 Because ``theta``
 is an :math:`S^1`-valued variable (i.e. it maps to the circle) and thus
-intrinsically has :math:`2\pi`-peridocity,
+intrinsically has :math:`2\pi`-periodicity,
 we must use :class:`~fipy.variables.modularVariable.ModularVariable` instead of a :class:`~fipy.variables.cellVariable.CellVariable`. A
 :class:`~fipy.variables.modularVariable.ModularVariable` confines ``theta`` to
 :math:`-\pi < \theta \le \pi` by adding or subtracting :math:`2\pi` where
@@ -139,7 +106,7 @@ subtraction operator between two angles.
 ...     )
 
 The left and right halves of the domain are given different orientations.
-    
+
 >>> theta.setValue(0., where=mesh.cellCenters[0] > Lx / 2.)
 
 The ``phase`` equation is built in the following way.
@@ -184,8 +151,8 @@ discretization of ``theta`` on the circle.
 >>> diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
 
 The source term requires the evaluation of the face gradient without
-the modular operator. ``theta``:meth:`~fipy.variables.modularVariable.ModularVariable.getFaceGradNoMod`
-evelautes the gradient without modular arithmetic.
+the modular operator. ``theta``:py:attr:`~fipy.variables.modularVariable.ModularVariable.faceGradNoMod`
+evaluates the gradient without modular arithmetic.
 
 >>> thetaGradDiff = theta.faceGrad - theta.faceGradNoMod
 >>> sourceCoeff = (diffusionCoeff * thetaGradDiff).divergence
@@ -201,13 +168,13 @@ and orientation variables.
 
 .. index::
    module: fipy.viewers
-   
+
 .. index:: :math:`\pi`, pi
 
 >>> if __name__ == '__main__':
 ...     phaseViewer = Viewer(vars=phase, datamin=0., datamax=1.)
 ...     thetaProductViewer = Viewer(vars=theta,
-...                                 datamin=-pi, datamax=pi)
+...                                 datamin=-numerix.pi, datamax=numerix.pi)
 ...     phaseViewer.plot()
 ...     thetaProductViewer.plot()
 

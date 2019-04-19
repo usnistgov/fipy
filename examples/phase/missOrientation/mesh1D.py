@@ -1,46 +1,12 @@
-#!/usr/bin/env python
-
-## 
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "mesh1D.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
 r"""
 
 In this example a phase equation is solved in 1 dimension with a
-missorientation present. The phase equation is given by:
+misorientation present. The phase equation is given by:
 
 .. math::
-    
-   \tau_{\phi} \frac{\partial \phi}{\partial t} 
-   = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T) 
+
+   \tau_{\phi} \frac{\partial \phi}{\partial t}
+   = \alpha^2 \nabla^2 \phi + \phi ( 1 - \phi ) m_1 ( \phi , T)
    - 2 s \phi | \nabla \theta | - \epsilon^2 \phi | \nabla \theta |^2
 
 where
@@ -66,8 +32,8 @@ and boundary conditions
 .. Further details of the numerical method for this problem can be found in
    "Extending Phase Field Models of Solidification to Polycrystalline
    Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
-   6035-6058.  
-   
+   6035-6058.
+
 Here the phase equation is solved with an explicit technique.
 
 The solution is allowed to evolve for ``steps = 100`` time steps.
@@ -87,7 +53,8 @@ data and compares it with the ``theta`` variable.
 """
 __docformat__ = 'restructuredtext'
 
-from fipy import *
+from fipy import CellVariable, ModularVariable, Grid1D, TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, Viewer
+from fipy.tools import numerix
 
 steps = 100
 timeStepDuration = 0.02
@@ -120,7 +87,7 @@ phaseEq = TransientTerm(phaseTransientCoeff) == \
           + (mPhiVar > 0) * mPhiVar * phase
 
 if __name__ == '__main__':
-   
+
    phaseViewer = Viewer(vars = phase)
    phaseViewer.plot()
    for step in range(steps):

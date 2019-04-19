@@ -1,34 +1,5 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-## 
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
 
 r"""How to update scripts from version 0.1 to 1.0.
 
@@ -61,11 +32,11 @@ with coefficients :math:`D = 1` and :math:`\vec{u} = (10, 0)`, or
 
 >>> diffCoeff = 1.
 >>> convCoeff = (10.,0.)
-    
+
 We define a 1D mesh
 
 .. index:: Grid2D
-   
+
 >>> L = 10.
 >>> nx = 1000
 >>> ny = 1
@@ -80,11 +51,11 @@ and impose the boundary conditions
    0& \text{at $x = 0$,} \\
    1& \text{at $x = L$,}
    \end{cases}
-   
+
 or
 
 .. index:: FixedValue, FixedFlux
-      
+
 >>> valueLeft = 0.
 >>> valueRight = 1.
 >>> from fipy.boundaryConditions.fixedValue import FixedValue
@@ -97,7 +68,7 @@ or
 ...     )
 
 The solution variable is initialized to `valueLeft`:
-    
+
 .. index:: CellVariable
 
 >>> from fipy.variables.cellVariable import CellVariable
@@ -155,8 +126,8 @@ and test the solution against the analytical result
 .. math::
 
    \phi = \frac{1 - \exp(-u_x x / D)}{1 - \exp(-u_x L / D)}
-   
-or 
+
+or
 
 .. index:: numerix
 
@@ -168,7 +139,7 @@ or
 >>> analyticalArray = CC / DD
 >>> numerix.allclose(analyticalArray, var, rtol = 1e-10, atol = 1e-10)
 0
-   
+
 If the problem is run interactively, we can view the result:
 
 .. index:: Grid2DGistViewer
@@ -178,22 +149,22 @@ If the problem is run interactively, we can view the result:
 Traceback (most recent call last):
 ...
 ImportError: No module named grid2DGistViewer
-    
+
 ::
-    
+
 ...     viewer = Grid2DGistViewer(var)
 ...     viewer.plot()
-    
+
 ----
 
 We see that a number of errors are thrown:
-    
+
     - :exc:`ImportError: No module named equations.stdyConvDiffScEquation`
     - :exc:`NameError: name 'SteadyConvectionDiffusionScEquation' is not defined`
     - :exc:`NameError: name 'eq' is not defined`
     - :exc:`NameError: name 'it' is not defined`
     - :exc:`ImportError: No module named grid2DGistViewer`
-    
+
 As is usually the case with computer programming, many of these errors are
 caused by earlier errors.  Let us update the script, section by
 section:
@@ -207,7 +178,7 @@ a true 1D mesh class, so we instantiate the mesh as
 >>> nx = 1000
 >>> from fipy.meshes.grid1D import Grid1D
 >>> mesh = Grid1D(dx = L / nx, nx = nx)
-    
+
 The :class:`~fipy.meshes.grid2D.Grid2D` class with `ny = 1` still works perfectly well for 1D
 problems, but the :class:`~fipy.meshes.grid1D.Grid1D` class is slightly more efficient, and it makes
 the code clearer when a 1D geometry is actually desired.
@@ -217,7 +188,7 @@ vector to be 1D as well
 
 >>> diffCoeff = 1.
 >>> convCoeff = (10.,)
-    
+
 The :class:`~fipy.boundaryConditions.fixedValue.FixedValue` boundary conditions at the left and right are unchanged,
 but a `Grid1D` mesh does not even have top and bottom faces:
 
@@ -231,7 +202,7 @@ but a `Grid1D` mesh does not even have top and bottom faces:
 ...     FixedValue(mesh.getFacesRight(), valueRight))
 
 The creation of the solution variable is unchanged:
-    
+
 .. index:: CellVariable
 
 >>> from fipy.variables.cellVariable import CellVariable
@@ -249,12 +220,12 @@ assembly of the equation occurred in the black-box of
 >>> diffTerm = ImplicitDiffusionTerm(coeff = diffCoeff)
 
 >>> from fipy.terms.exponentialConvectionTerm import ExponentialConvectionTerm
->>> eq = diffTerm + ExponentialConvectionTerm(coeff = convCoeff, 
+>>> eq = diffTerm + ExponentialConvectionTerm(coeff = convCoeff,
 ...                                           diffusionTerm = diffTerm)
-    
+
 One thing that :class:`SteadyConvectionDiffusionScEquation` took care of
 automatically was that a :class:`~fipy.terms.convectionTerm.ConvectionTerm` must know about any
-:class:`~fipy.terms.diffusionTerm.DiffusionTerm` in the equation in order to calculate a Peclet number.
+:class:`~fipy.terms.diffusionTerm.DiffusionTerm` in the equation in order to calculate a Péclet number.
 Now, the :class:`~fipy.terms.diffusionTerm.DiffusionTerm` must be explicitly passed to the :class:`~fipy.terms.convectionTerm.ConvectionTerm`
 in the `diffusionTerm` parameter.
 
@@ -263,21 +234,21 @@ the solution to an implicit steady-state problem like this can simply be
 obtained by telling the equation to solve itself (with an appropriate
 `solver` if desired, although the default :class:`~fipy.solvers.pysparse.linearPCGSolver.LinearPCGSolver` is usually
 suitable):
-    
+
 >>> from fipy.solvers import *
->>> eq.solve(var = var, 
-...          solver = LinearLUSolver(tolerance = 1.e-15, steps = 2000), 
+>>> eq.solve(var = var,
+...          solver = LinearLUSolver(tolerance = 1.e-15, steps = 2000),
 ...          boundaryConditions = boundaryConditions)
 
-.. note:: 
+.. note::
    In version 0.1, the :class:`~fipy.terms.equation.Equation` object had to be
-   told about the :class:`~fipy.variables.variable.Variable`, :class:`~fipy.solvers.solver.Solver`, 
+   told about the :class:`~fipy.variables.variable.Variable`, :class:`~fipy.solvers.solver.Solver`,
    and :class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition` objects
-   when it was created (and it, in turn, passed much of this information to 
+   when it was created (and it, in turn, passed much of this information to
    the :class:`~fipy.terms.term.Term` objects in order to create them). In version
    1.0, the :class:`~fipy.terms.term.Term` objects (and the equation assembled
-   from them) are abstract. 
-   The :class:`~fipy.variables.variable.Variable`, :class:`~fipy.solvers.solver.Solver`, 
+   from them) are abstract.
+   The :class:`~fipy.variables.variable.Variable`, :class:`~fipy.solvers.solver.Solver`,
    and :class:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition` objects
    are only needed by the :meth:`solve` method (and, in fact, the same equation
    could be used to solve different variables, with different solvers, subject
@@ -287,7 +258,7 @@ The analytical solution is unchanged, and we can test as before
 
 >>> numerix.allclose(analyticalArray, var, rtol = 1e-10, atol = 1e-10)
 1
-    
+
 or we can use the slightly simpler syntax
 
 >>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
@@ -307,7 +278,7 @@ by changing the `import` statement appropriately:
 Instead, rather than instantiating a particular :class:`~fipy.viewers.viewer.Viewer` (which you can
 still do, if you desire), a generic "factory" method will return a :class:`~fipy.viewers.viewer.Viewer`
 appropriate for the supplied `Variable` object(s):
-    
+
 .. index:: fipy.viewers
 
 >>> if __name__ == '__main__':
@@ -320,10 +291,10 @@ convert your existing scripts to :term:`FiPy` 1.0.
 """
 __docformat__ = 'restructuredtext'
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()
     raw_input('finished')

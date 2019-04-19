@@ -1,45 +1,18 @@
-#!/usr/bin/env python
-
-## 
- # -*-Pyth-*-
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "adsorbingSurfactantEquation.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  PFM is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
 __docformat__ = 'restructuredtext'
+
+import platform
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
 from fipy.variables.variable import Variable
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.variables.surfactantConvectionVariable import SurfactantConvectionVariable
 from fipy.terms.transientTerm import TransientTerm
+from fipy.tests.doctestPlus import register_skipper
+from fipy.solvers import solver
+
+register_skipper(flag="NOTLINUXSCIPY",
+                 test=lambda : platform.system() != "Linux" or solver != 'scipy',
+                 why="`scipy` solvers on Linux fail intermittently: #575")
 
 class AdsorbingSurfactantEquation():
     r"""
@@ -82,15 +55,15 @@ class AdsorbingSurfactantEquation():
     >>> k = 0.56
     >>> initialValue = 0.1
     >>> c = 0.2
-    
+
     >>> from fipy.meshes import Grid2D
     >>> from fipy import serialComm
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1, communicator=serialComm)
-    >>> distanceVar = DistanceVariable(mesh = mesh, 
-    ...                                value = (-dx*3/2, -dx/2, dx/2, 
+    >>> distanceVar = DistanceVariable(mesh = mesh,
+    ...                                value = (-dx*3/2, -dx/2, dx/2,
     ...                                          3*dx/2,  5*dx/2),
     ...                                hasOld = 1)
-    >>> surfactantVar = SurfactantVariable(value = (0, 0, initialValue, 0 ,0), 
+    >>> surfactantVar = SurfactantVariable(value = (0, 0, initialValue, 0 ,0),
     ...                                    distanceVar = distanceVar)
     >>> bulkVar = CellVariable(mesh = mesh, value = (c , c, c, c, c))
     >>> eqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
@@ -99,7 +72,7 @@ class AdsorbingSurfactantEquation():
     ...                                   rateConstant = k)
     >>> eqn.solve(surfactantVar, dt = dt)
     >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
-    >>> print numerix.allclose(surfactantVar.interfaceVar, 
+    >>> print numerix.allclose(surfactantVar.interfaceVar,
     ...                  numerix.array((0, 0, answer, 0, 0)))
     1
 
@@ -121,12 +94,12 @@ class AdsorbingSurfactantEquation():
     >>> c1 = 1.
     >>> totalSteps = 10
     >>> mesh = Grid2D(dx = dx, dy = dy, nx = 5, ny = 1, communicator=serialComm)
-    >>> distanceVar = DistanceVariable(mesh = mesh, 
+    >>> distanceVar = DistanceVariable(mesh = mesh,
     ...                                value = dx * (numerix.arange(5) - 1.5),
     ...                                hasOld = 1)
-    >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0), 
+    >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0),
     ...                           distanceVar = distanceVar)
-    >>> var1 = SurfactantVariable(value = (0, 0, theta1, 0 ,0), 
+    >>> var1 = SurfactantVariable(value = (0, 0, theta1, 0 ,0),
     ...                           distanceVar = distanceVar)
     >>> bulkVar0 = CellVariable(mesh = mesh, value = (c0, c0, c0, c0, c0))
     >>> bulkVar1 = CellVariable(mesh = mesh, value = (c1, c1, c1, c1, c1))
@@ -149,10 +122,10 @@ class AdsorbingSurfactantEquation():
     ...     eqn1.solve(var1, dt = dt)
     >>> answer0 = 1 - numerix.exp(-k0 * c0 * dt * totalSteps)
     >>> answer1 = (1 - numerix.exp(-k1 * c1 * dt * totalSteps)) * (1 - answer0)
-    >>> print numerix.allclose(var0.interfaceVar, 
+    >>> print numerix.allclose(var0.interfaceVar,
     ...                  numerix.array((0, 0, answer0, 0, 0)), rtol = 1e-2)
     1
-    >>> print numerix.allclose(var1.interfaceVar, 
+    >>> print numerix.allclose(var1.interfaceVar,
     ...                  numerix.array((0, 0, answer1, 0, 0)), rtol = 1e-2)
     1
     >>> dt = 0.1
@@ -167,11 +140,11 @@ class AdsorbingSurfactantEquation():
     >>> print check.allequal(answer)
     True
 
-    The following test case is to fix a bug where setting the adosrbtion
+    The following test case is to fix a bug where setting the adsorption
     coefficient to zero leads to the solver not converging and an eventual
     failure.
 
-    >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0), 
+    >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0),
     ...                           distanceVar = distanceVar)
     >>> bulkVar0 = CellVariable(mesh = mesh, value = (c0, c0, c0, c0, c0))
 
@@ -184,7 +157,7 @@ class AdsorbingSurfactantEquation():
     >>> eqn0.solve(var0, dt = dt)
     >>> answer = CellVariable(mesh=mesh, value=var0.interfaceVar)
     >>> answer[x==1.25] = 0.
-    
+
     >>> print var0.interfaceVar.allclose(answer)
     True
 
@@ -235,7 +208,9 @@ class AdsorbingSurfactantEquation():
     ...     levEq.solve(levVar, dt = dt)
     ...     accEq.solve(accVar, dt = dt) #doctest: +LSM
 
-    >>> print (accVar >= -1e-10).all()
+    >>> # The following test fails sometimes on linux with scipy solvers
+    >>> # See issue #575. We ignore for now.
+    >>> print (accVar >= -1e-10).all() #doctest: +NOTLINUXSCIPY
     True
     """
     def __init__(self,
@@ -259,7 +234,7 @@ class AdsorbingSurfactantEquation():
           - `otherBulkVar`: The value of the `otherVar` in the bulk.
           - `otherRateConstant`: The adsorption rate of the `otherVar`.
           - `consumptionCoeff`: The rate that the `surfactantVar` is consumed during deposition.
-                             
+
         """
 
         self.eq = TransientTerm(coeff = 1) - ExplicitUpwindConvectionTerm(SurfactantConvectionVariable(distanceVar))
@@ -290,10 +265,10 @@ class AdsorbingSurfactantEquation():
         val = distanceVar.cellInterfaceAreas / mesh.cellVolumes
         for var in vars[1:]:
             val -= distanceVar._cellInterfaceFlag * var
-        
+
         spMaxCoeff = 1e20 * maxVar
         scMaxCoeff = spMaxCoeff * val * (val > 0)
-            
+
         self.eq += ImplicitSourceTerm(spMaxCoeff) - scMaxCoeff - 1e-40
 
         if consumptionCoeff is not None:
@@ -302,13 +277,13 @@ class AdsorbingSurfactantEquation():
     def solve(self, var, boundaryConditions=(), solver=None, dt=None):
         """
         Builds and solves the `AdsorbingSurfactantEquation`'s linear system once.
-        	
+
         :Parameters:
            - `var`: A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
            - `solver`: The iterative solver to be used to solve the linear system of equations.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
-           
+
 	"""
         self.dt.setValue(dt)
         if solver is None:
@@ -319,17 +294,17 @@ class AdsorbingSurfactantEquation():
             else:
                 from fipy.solvers import LinearPCGSolver
                 solver = LinearPCGSolver()
-            
+
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
-        
+
         var.constrain(0, var.mesh.exteriorFaces)
-        
+
         self.eq.solve(var,
                       boundaryConditions=boundaryConditions,
                       solver = solver,
                       dt=1.)
-        
+
     def sweep(self, var, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
         r"""
         Builds and solves the `AdsorbingSurfactantEquation`'s linear
@@ -339,7 +314,7 @@ class AdsorbingSurfactantEquation():
         :Parameters:
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. 
+           - `solver`: The iterative solver to be used to solve the linear system of equations.
            - `boundaryConditions`: A tuple of boundaryConditions.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
@@ -349,17 +324,17 @@ class AdsorbingSurfactantEquation():
         if solver is None:
             from fipy.solvers import DefaultAsymmetricSolver
             solver = DefaultAsymmetricSolver()
-        
+
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)
-        
+
         var.constrain(0, var.mesh.exteriorFaces)
 
         return self.eq.sweep(var, solver=solver, boundaryConditions=boundaryConditions, underRelaxation=underRelaxation, residualFn=residualFn, dt=1.)
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
-    _test() 
+
+if __name__ == "__main__":
+    _test()

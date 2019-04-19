@@ -1,46 +1,8 @@
-#!/usr/bin/env python
-
-## -*-Pyth-*-
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "viewer.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
- # ###################################################################
- ##
-
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractViewer"]
 
 import sys
-
-from fipy.tools.decorators import getsetDeprecated
 
 class AbstractViewer(object):
     """
@@ -48,7 +10,7 @@ class AbstractViewer(object):
     """
     def __init__(self, vars, title=None, **kwlimits):
         """Create a `AbstractViewer` object.
-        
+
         :Parameters:
           vars
             a `CellVariable` or tuple of `CellVariable` objects to plot
@@ -62,7 +24,7 @@ class AbstractViewer(object):
         """
         if self.__class__ is AbstractViewer:
             raise NotImplementedError, "can't instantiate abstract base class"
-            
+
         self.vars = self._getSuitableVars(vars)
 
         self.limits = kwlimits
@@ -75,21 +37,12 @@ class AbstractViewer(object):
 
         self.title = title
 
-    @getsetDeprecated
-    def getVars(self):
-        """Get the Variables
-        
-        .. deprecated::
-           Use :attr:`fipy.viewers.viewer.AbstractViewer.vars` instead
-        """
-        return self.vars
-        
     def _getSuitableVars(self, vars):
         if type(vars) not in [type([]), type(())]:
             vars = [vars]
 
         return [var for var in vars]
-        
+
     def setLimits(self, limits={}, **kwlimits):
         """
         Update the limits.
@@ -103,19 +56,19 @@ class AbstractViewer(object):
             viewers will use `datamin` and `datamax`. Any limit set to a
             (default) value of `None` will autoscale.
 
-        """           
+        """
         self.limits.update(limits)
         self.limits.update(kwlimits)
-        
+
     def _getLimit(self, keys, default=None):
         """
         Return the limit associated with the first available key in `keys`
-        
+
         :Parameters:
           keys
             a `tuple`, `list`, or single key string that identifies
             the limit of interest
-            
+
         :Returns:
           the value of the limit or `None`
         """
@@ -126,13 +79,13 @@ class AbstractViewer(object):
             limit = self.limits.get(key, limit)
             if limit is not None:
                 break
-            
+
         return limit
-        
+
     def plot(self, filename=None):
         """
         Update the display of the viewed variables.
-        
+
         :Parameters:
           filename
             If not `None`, the name of a file to save the image into.
@@ -143,7 +96,7 @@ class AbstractViewer(object):
     def plotMesh(self, filename=None):
         """
         Display a representation of the mesh
-        
+
         :Parameters:
           filename
             If not `None`, the name of a file to save the image into.
@@ -163,12 +116,12 @@ class AbstractViewer(object):
             datamax = -1e300
             for var in vars:
                 datamax = max(datamax, numerix.nanmax(var))
-                
+
         return datamin, datamax
-        
+
     def _validFileExtensions(self):
         return []
-    
+
     _saved_stdout = sys.stdout
 
     @staticmethod
@@ -183,7 +136,7 @@ class AbstractViewer(object):
     @staticmethod
     def _doctest_raw_input(prompt):
         """Replacement for `raw_input()` that works in doctests
-        
+
         This routine attempts to be savvy about running in parallel.
         """
         try:
@@ -204,7 +157,7 @@ class AbstractViewer(object):
         # This method is usually invoked from a test, which can have a weird
         # state; In particular, it may have a special `raw_input` to prevent user
         # interaction during the test.
-        
+
         opinion = self._doctest_raw_input(self.__class__.__name__ + ": " + prompt).strip()
         if len(opinion) > 0:
             extensions = ", ".join(self._validFileExtensions())
@@ -213,8 +166,8 @@ class AbstractViewer(object):
             snapshot = self._doctest_raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions).strip()
             self.plot(snapshot)
             print opinion
-              
-        
+
+
     def _test1D(**kwargs):
         s = """
             >>> from fipy import *
@@ -222,15 +175,15 @@ class AbstractViewer(object):
             >>> x, = mesh.cellCenters
             >>> xVar = CellVariable(mesh=mesh, name="x", value=x)
             >>> k = Variable(name="k", value=0.)
-            >>> viewer = VIEWERSUBSTITUTION(vars=(numerix.sin(k * xVar), numerix.cos(k * xVar / numerix.pi)), 
-            ...                 limits={'xmin': 10, 'xmax': 90}, 
+            >>> viewer = VIEWERSUBSTITUTION(vars=(numerix.sin(k * xVar), numerix.cos(k * xVar / numerix.pi)),
+            ...                 limits={'xmin': 10, 'xmax': 90},
             ...                 datamin=-0.9, datamax=2.0,
             ...                 title="VIEWERSUBSTITUTION test")
             >>> for kval in numerix.arange(0,0.3,0.03):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
-        """ 
+        """
         s = s.replace("VIEWERSUBSTITUTION", kwargs["viewer"])
         return s
     _test1D = staticmethod(_test1D)
@@ -242,15 +195,15 @@ class AbstractViewer(object):
             >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k", value=0.)
-            >>> viewer = VIEWERSUBSTITUTION(vars=numerix.sin(k * xyVar), 
-            ...                 limits={'ymin': 0.1, 'ymax': 0.9}, 
+            >>> viewer = VIEWERSUBSTITUTION(vars=numerix.sin(k * xyVar),
+            ...                 limits={'ymin': 0.1, 'ymax': 0.9},
             ...                 datamin=-0.9, datamax=2.0,
             ...                 title="VIEWERSUBSTITUTION test")
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
-        """ 
+        """
         s = s.replace("VIEWERSUBSTITUTION", kwargs["viewer"])
         s = s.replace("MESHSUBSTITUTION", kwargs["mesh"])
         return s
@@ -264,7 +217,7 @@ class AbstractViewer(object):
     def _test2Dirregular(**kwargs):
         """"""
         return AbstractViewer._test2Dbase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
-            ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
+            ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1)
             ...          + ((0.5,), (0.2,))))""", **kwargs)
     _test2Dirregular = staticmethod(_test2Dirregular)
 
@@ -275,14 +228,14 @@ class AbstractViewer(object):
             >>> x, y = mesh.cellCenters
             >>> xyVar = CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = Variable(name="k", value=1.)
-            >>> viewer = VIEWERSUBSTITUTION(vars=numerix.sin(k * xyVar).grad, 
+            >>> viewer = VIEWERSUBSTITUTION(vars=numerix.sin(k * xyVar).grad,
             ...                 title="VIEWERSUBSTITUTION test")
             >>> for kval in numerix.arange(1, 10):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
 
-            >>> viewer = VIEWERSUBSTITUTION(vars=numerix.sin(k * xyVar).faceGrad, 
+            >>> viewer = VIEWERSUBSTITUTION(vars=numerix.sin(k * xyVar).faceGrad,
             ...                 title="VIEWERSUBSTITUTION test")
             >>> for kval in numerix.arange(1, 10):
             ...     k.setValue(kval)
@@ -303,11 +256,11 @@ class AbstractViewer(object):
     def _test2DvectorIrregular(**kwargs):
         """"""
         return AbstractViewer._test2DvectorBase(mesh="""(Grid2D(nx=5, ny=10, dx=0.1, dy=0.1)
-            ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1) 
+            ...         + (Tri2D(nx=5, ny=5, dx=0.1, dy=0.1)
             ...          + ((0.5,), (0.2,))))""", **kwargs)
     _test2DvectorIrregular = staticmethod(_test2DvectorIrregular)
 
-    
+
     def _test3D(**kwargs):
         s = """
             >>> from fipy import *
@@ -315,8 +268,8 @@ class AbstractViewer(object):
             >>> x, y, z = mesh.cellCenters
             >>> xyzVar = CellVariable(mesh=mesh, name=r"x y z", value=x * y * z)
             >>> k = Variable(name="k", value=0.)
-            >>> viewer = VIEWERSUBSTITUTION(vars=numerix.sin(k * xyzVar), 
-            ...                     limits={'ymin': 0.1, 'ymax': 0.9}, 
+            >>> viewer = VIEWERSUBSTITUTION(vars=numerix.sin(k * xyzVar),
+            ...                     limits={'ymin': 0.1, 'ymax': 0.9},
             ...                     datamin=-0.9, datamax=2.0,
             ...                     title="VIEWERSUBSTITUTION test")
             >>> for kval in range(10):

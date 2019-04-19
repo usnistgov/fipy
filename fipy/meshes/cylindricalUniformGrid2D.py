@@ -1,37 +1,3 @@
-#!/usr/bin/env python
-
-## -*-Pyth-*-
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "CylindricalUniformGrid2D.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
 """
 2D cylindrical rectangular Mesh with constant spacing in x and constant spacing in y
 """
@@ -48,16 +14,16 @@ class CylindricalUniformGrid2D(UniformGrid2D):
     Creates a 2D cylindrical grid in the radial and axial directions,
     appropriate for axial symmetry.
     """
-    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)), 
+    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)),
                  overlap=2, communicator=parallelComm, *args, **kwargs):
-        super(CylindricalUniformGrid2D, self).__init__(dx=dx, dy=dy, nx=nx, ny=ny, 
-                                                       origin=origin, overlap=overlap, 
-                                                       communicator=communicator, 
+        super(CylindricalUniformGrid2D, self).__init__(dx=dx, dy=dy, nx=nx, ny=ny,
+                                                       origin=origin, overlap=overlap,
+                                                       communicator=communicator,
                                                        *args, **kwargs)
 
     def _translate(self, vector):
-        return CylindricalUniformGrid2D(dx = self.args['dx'], nx = self.args['nx'], 
-                                        dy = self.args['dy'], ny = self.args['ny'], 
+        return CylindricalUniformGrid2D(dx = self.args['dx'], nx = self.args['nx'],
+                                        dy = self.args['dy'], ny = self.args['ny'],
                                         origin=numerix.array(self.args['origin']) + vector,
                                         overlap=self.args['overlap'])
 
@@ -67,7 +33,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
         faceAreas[:self.numberOfHorizontalFaces] = self.dx
         faceAreas[self.numberOfHorizontalFaces:] = self.dy
         return faceAreas * self._faceCenters[0]
-        
+
     @property
     def _cellVolumes(self):
         return numerix.ones(self.numberOfCells, 'd') * self.dx * self.dy
@@ -80,15 +46,15 @@ class CylindricalUniformGrid2D(UniformGrid2D):
         areas[2] = self.dx * self._cellCenters[0]
         areas[3] = self.dy * (self._cellCenters[0] - self.dx / 2)
         return areas
- 
+
     """
     def _calcAreaProjections(self):
         return self._getAreaProjectionsPy()
     """
- 
+
     def _calcAreaProjections(self):
         return self.faceNormals * self._faceAreas
- 
+
     @property
     def cellVolumes(self):
         return self._cellVolumes * self.cellCenters[0].value
@@ -99,26 +65,26 @@ class CylindricalUniformGrid2D(UniformGrid2D):
         everything works as expected.
 
             >>> import fipy as fp
-            
+
             >>> dx = 0.5
             >>> dy = 2.
             >>> nx = 3
             >>> ny = 2
-            
-            >>> mesh = CylindricalUniformGrid2D(nx = nx, ny = ny, dx = dx, dy = dy)     
-            
-            >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 
+
+            >>> mesh = CylindricalUniformGrid2D(nx = nx, ny = ny, dx = dx, dy = dy)
+
+            >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1.,
             ...                            2., 3., 0., 1., 2., 3.),
-            ...                           (0., 0., 0., 0., 1., 1., 
+            ...                           (0., 0., 0., 0., 1., 1.,
             ...                            1., 1., 2., 2., 2., 2.)))
             >>> vertices *= numerix.array([[dx], [dy]])
             >>> print numerix.allequal(vertices,
             ...                        mesh.vertexCoords) # doctest: +PROCESSOR_0
             True
-        
-            >>> faces = numerix.array([[0, 1, 2, 4, 5, 6, 8, 9, 10, 
+
+            >>> faces = numerix.array([[0, 1, 2, 4, 5, 6, 8, 9, 10,
             ...                         0, 1, 2, 3, 4, 5, 6, 7],
-            ...                        [1, 2, 3, 5, 6, 7, 9, 10, 11, 
+            ...                        [1, 2, 3, 5, 6, 7, 9, 10, 11,
             ...                         4, 5, 6, 7, 8, 9, 10, 11]])
             >>> print numerix.allequal(faces,
             ...                        mesh.faceVertexIDs) # doctest: +PROCESSOR_0
@@ -133,23 +99,23 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             True
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
-            >>> print numerix.allequal(externalFaces, 
+            >>> print numerix.allequal(externalFaces,
             ...                        numerix.nonzero(mesh.exteriorFaces)) # doctest: +PROCESSOR_0
             True
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
-            >>> print numerix.allequal(internalFaces, 
+            >>> print numerix.allequal(internalFaces,
             ...                        numerix.nonzero(mesh.interiorFaces)) # doctest: +PROCESSOR_0
             True
 
             >>> from fipy.tools.numerix import MA
-            >>> faceCellIds = MA.masked_values((( 0,  1,  2, 0,  1,  2,  3,  4, 
+            >>> faceCellIds = MA.masked_values((( 0,  1,  2, 0,  1,  2,  3,  4,
             ...                                   5,  0,  0, 1,  2,  3,  3,  4,  5),
-            ...                                 (-1, -1, -1, 3,  4,  5, -1, -1, 
+            ...                                 (-1, -1, -1, 3,  4,  5, -1, -1,
             ...                                  -1, -1,  1, 2, -1, -1,  4,  5, -1)), -1)
             >>> print numerix.allequal(faceCellIds, mesh.faceCellIDs) # doctest: +PROCESSOR_0
             True
-            
+
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
             >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
@@ -161,20 +127,20 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> print numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
-            >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., 
+            >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0.,
             ...                               -1., 1., 1., 1., -1., 1., 1., 1.),
-            ...                              (-1., -1., -1., 1., 1., 1., 1., 1., 
+            ...                              (-1., -1., -1., 1., 1., 1., 1., 1.,
             ...                               1., 0, 0, 0, 0, 0, 0, 0, 0)))
             >>> print numerix.allclose(faceNormals, mesh.faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
-            >>> cellToFaceOrientations = numerix.array(((1,  1,  1, -1, -1, -1), 
+            >>> cellToFaceOrientations = numerix.array(((1,  1,  1, -1, -1, -1),
             ...                                         (1,  1,  1,  1,  1,  1),
             ...                                         (1,  1,  1,  1,  1,  1),
             ...                                         (1, -1, -1,  1, -1, -1)))
             >>> print numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations) # doctest: +PROCESSOR_0
             True
-                                             
+
             >>> type(mesh.cellCenters)
             <class 'fipy.variables.cellVariable.CellVariable'>
 
@@ -182,7 +148,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
 
             >>> print isinstance(mesh.cellVolumes, numerix.ndarray)
             True
-            
+
             >>> globalValue = fp.CellVariable(mesh=mesh,value=mesh.cellVolumes).globalValue
             >>> print numerix.allclose(testCellVolumes, globalValue, atol = 1e-10, rtol = 1e-10)
             True
@@ -191,7 +157,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             ...                              (dy/2.,    dy/2.,    dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2.)))
             >>> print numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10)
             True
-                                              
+
             >>> cellDistances = numerix.array((dy / 2., dy / 2., dy / 2.,
             ...                                dy, dy, dy,
             ...                                dy / 2., dy / 2., dy / 2.,
@@ -201,7 +167,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             ...                                dx / 2.))
             >>> print numerix.allclose(cellDistances, mesh._cellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
-            
+
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2.),
             ...                                         (     -1,      -1,      -1, dy / 2., dy / 2., dy / 2.,      -1,      -1,      -1,      -1, dx / 2., dx / 2.,      -1,      -1, dx / 2., dx / 2.,      -1)), -1)
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
@@ -212,9 +178,9 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> print numerix.allclose(areaProjections, mesh._areaProjections, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
-            >>> tangents1 = numerix.array(((1., 1., 1., -1., -1., -1., -1., -1., 
+            >>> tangents1 = numerix.array(((1., 1., 1., -1., -1., -1., -1., -1.,
             ...                             -1., 0., 0., 0., 0., 0., 0., 0., 0.),
-            ...                            (0, 0, 0, 0, 0, 0, 0, 0, 0, -1., 1., 
+            ...                            (0, 0, 0, 0, 0, 0, 0, 0, 0, -1., 1.,
             ...                             1., 1., -1., 1., 1., 1.)))
             >>> print numerix.allclose(tangents1, mesh._faceTangents1, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
@@ -250,7 +216,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
 
             >>> cellAreaProjections = numerix.array((((0,) * 6, (dy,) * 6, (0,) * 6, (-dy,) * 6),
             ...                                      ((-dx,) * 6, (0,) * 6, (dx,) * 6, (0,) * 6)))
-            
+
             >>> cellAreaProjections[:,0] = cellAreaProjections[:,0] * mesh.cellCenters[0] # doctest: +PROCESSOR_0
             >>> cellAreaProjections[:,1] = cellAreaProjections[:,1] * (mesh.cellCenters[0] + mesh.dx / 2.) # doctest: +PROCESSOR_0
             >>> cellAreaProjections[:,2] = cellAreaProjections[:,2] * mesh.cellCenters[0] # doctest: +PROCESSOR_0
@@ -266,13 +232,13 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> print numerix.allclose(mesh._cellVertexIDs, cellVertexIDs) # doctest: +PROCESSOR_0
             True
 
-            >>> from fipy.tools import dump            
+            >>> from fipy.tools import dump
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
             >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.cellCenters)
             True
-            
+
             >>> faceVertexIDs = [[ 0, 1, 2, 4, 5, 6, 8, 9, 10, 0, 1, 2, 3, 4, 5, 6, 7],
             ...                  [ 1, 2, 3, 5, 6, 7, 9, 10, 11, 4, 5, 6, 7, 8, 9, 10, 11]]
             >>> print numerix.allequal(mesh.faceVertexIDs, faceVertexIDs) # doctest: +PROCESSOR_0
@@ -304,7 +270,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             ...                        faceCellIDs) # doctest: +PROCESSOR_0
             True
 
-        Following test added to change nx, ny argment to integer when its a float to prevent
+        Following test added to change nx, ny argument to integer when its a float to prevent
         warnings from the solver.
 
             >>> from fipy import *
@@ -325,7 +291,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
 
             >>> print isinstance(CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
             True
-            
+
         """
 
 def _test():

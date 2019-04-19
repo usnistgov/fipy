@@ -1,38 +1,4 @@
-#!/usr/bin/env python
-
-## 
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "vanLeerUpwind.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
-r""" 
+r"""
 
 This example demonstrates the use of the :class:`~fipy.terms.vanLeerConvectionTerm.VanLeerConvectionTerm` as
 defined by http://www.gre.ac.uk/~physica/phy2.12/theory/node173.htm
@@ -57,15 +23,16 @@ periodic wave wraps around the mesh.
 
 Currently after 20 steps the wave has lost 23% of its height. Van Leer
 should do better than this.
-    
+
 >>> print var1.max() > 0.77
 1
 """
 
 __docformat__ = 'restructuredtext'
 
-from fipy import *
-     
+from fipy import CellVariable, Grid1D, PeriodicGrid1D, TransientTerm, VanLeerConvectionTerm, DefaultAsymmetricSolver, Viewer
+from fipy.tools import numerix
+
 L = 20.
 nx = 40
 dx = L / nx
@@ -80,7 +47,7 @@ mesh = Grid1D(dx = dx, nx = nx)
 periodicMesh = PeriodicGrid1D(dx=dx, nx=nx // 2)
 
 startingArray = numerix.zeros(nx, 'd')
-startingArray[2 * nx // 10: 3 * nx // 10] = 1. 
+startingArray[2 * nx // 10: 3 * nx // 10] = 1.
 
 var1 = CellVariable(
     name = "non-periodic",

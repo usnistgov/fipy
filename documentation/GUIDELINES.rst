@@ -2,7 +2,7 @@
 Development Guidelines
 ======================
 
-The following are the practices that have evolved over the course of 
+The following are the practices that have evolved over the course of
 :term:`FiPy`'s development. Stray from them at your peril.
 
 ----------------------
@@ -27,8 +27,8 @@ knew there even was a PEP 8.
 
           def __init__(self, width, height,
                        color='black', emphasis=None, highlight=0):
-              if (width == 0 and height == 0 
-                  and color == 'red' and emphasis == 'strong' 
+              if (width == 0 and height == 0
+                  and color == 'red' and emphasis == 'strong'
                   or highlight > 100):
                   raise ValueError("sorry, you lose")
               if width == 0 and height == 0 and (color == 'red'
@@ -43,21 +43,21 @@ knew there even was a PEP 8.
 
  Function and Method Names
   Use ``mixedCase`` rather than ``lower_case_with_underscores`` names.
-   
+
 Any other deviations from PEP 8 should probably be corrected, but ask if
-you are unsure. Even the exceptions listed above are open to discussion by 
+you are unsure. Even the exceptions listed above are open to discussion by
 anybody willing to do the work of changing the existing code.
 
 -------
 Testing
 -------
 
-:term:`FiPy` uses :mod:`doctest` pervasively. We have not seen a case where 
-:mod:`unittest` would simplify things. As a heavily numerical code, care 
+:term:`FiPy` uses :mod:`doctest` pervasively. We have not seen a case where
+:mod:`unittest` would simplify things. As a heavily numerical code, care
 must be taken in checking floating-point values.
 
-Tests should not fail as a result of a missing optional install. :term:`FiPy` 
-defines the following :mod:`doctest` directives to specify what conditions 
+Tests should not fail as a result of a missing optional install. :term:`FiPy`
+defines the following :mod:`doctest` directives to specify what conditions
 are needed to run the test:
 
   ``GMSH``
@@ -77,23 +77,23 @@ are needed to run the test:
     :term:`FiPy` must be running on more than one processor.
 
   ``PROCESSOR_0``
-    Whether serial or parallel, the test will only be run on 
+    Whether serial or parallel, the test will only be run on
     processor ID 0.
 
   ``PROCESSOR_0_OF_2``
-    The test will only be run on processor ID 0 of a two processor 
+    The test will only be run on processor ID 0 of a two processor
     parallel job.
 
   ``PROCESSOR_1_OF_2``
-    The test will only be run on processor ID 1 of a two processor 
+    The test will only be run on processor ID 1 of a two processor
     parallel job.
 
   ``PROCESSOR_0_OF_3``
-    The test will only be run on processor ID 0 of a three processor 
+    The test will only be run on processor ID 0 of a three processor
     parallel job.
 
   ``PROCESSOR_1_OF_3``
-    The test will only be run on processor ID 1 of a three processor 
+    The test will only be run on processor ID 1 of a three processor
     parallel job.
 
   ``PROCESSOR_2_OF_3``

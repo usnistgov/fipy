@@ -1,41 +1,3 @@
-#!/usr/bin/env python
-
-## -*-Pyth-*-
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "vtkViewer.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Stiles  <daniel.stiles@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  See the file "license.terms" for information on usage and  redistribution
- #  of this file, and for a DISCLAIMER OF ALL WARRANTIES.
- #  
- # ###################################################################
- ##
-
-
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.faceVariable import FaceVariable
@@ -49,7 +11,7 @@ class VTKFaceViewer(VTKViewer):
     """
     def _makeDataSet(self, mesh):
         return mesh.VTKFaceDataSet
-        
+
     @property
     def _data(self):
         return self.dataset.point_data
@@ -57,7 +19,7 @@ class VTKFaceViewer(VTKViewer):
     @property
     def _variableClass(self):
         return FaceVariable
-        
+
     def _test(self):
         """
         >>> import os
@@ -89,7 +51,7 @@ class VTKFaceViewer(VTKViewer):
         >>> r.file_name = fname # doctest: +TVTK
         >>> r.update() # doctest: +TVTK
         >>> p = r.output.point_data # doctest: +TVTK
-        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0,1)[0], 
+        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0,1)[0],
         ...                  v3.value) # doctest: +TVTK, +SERIAL
         True
         >>> numerix.allclose(p.get_array("v1.harmonicFaceValue").to_array(),
@@ -98,7 +60,7 @@ class VTKFaceViewer(VTKViewer):
         >>> numerix.allclose(p.get_array("v1.arithmeticFaceValue").to_array(),
         ...                  v5.value) # doctest: +TVTK, +SERIAL
         True
-        >>> numerix.allclose(p.scalars.to_array(), 
+        >>> numerix.allclose(p.scalars.to_array(),
         ...                  v5.value) # doctest: +TVTK, +SERIAL
         True
         >>> r.get_vectors_name_in_file(0) == v3.name  # doctest: +TVTK, +PROCESSOR_0
@@ -130,7 +92,7 @@ class VTKFaceViewer(VTKViewer):
         >>> numerix.allclose(p.get_array("v1.arithmeticFaceValue").to_array(),
         ...                  v5.value) # doctest: +TVTK, +SERIAL
         True
-        >>> numerix.allclose(p.scalars.to_array(), 
+        >>> numerix.allclose(p.scalars.to_array(),
         ...                  v5.value) # doctest: +TVTK, +SERIAL
         True
         >>> r.get_vectors_name_in_file(0) == v3.name  # doctest: +TVTK, +PROCESSOR_0
@@ -164,7 +126,7 @@ class VTKFaceViewer(VTKViewer):
         >>> numerix.allclose(p.get_array("v1.arithmeticFaceValue").to_array(),
         ...                  v5.value) # doctest: +TVTK, +SERIAL
         True
-        >>> numerix.allclose(p.scalars.to_array(), 
+        >>> numerix.allclose(p.scalars.to_array(),
         ...                  v5.value) # doctest: +TVTK, +SERIAL
         True
         >>> r.get_vectors_name_in_file(0) == v3.name  # doctest: +TVTK, +PROCESSOR_0
@@ -196,7 +158,7 @@ class VTKFaceViewer(VTKViewer):
         >>> numerix.allclose(p.get_array("v1.arithmeticFaceValue").to_array(),
         ...                  v5.value) # doctest: +TVTK, +SERIAL
         True
-        >>> numerix.allclose(p.scalars.to_array(), 
+        >>> numerix.allclose(p.scalars.to_array(),
         ...                  v5.value) # doctest: +TVTK, +SERIAL
         True
         >>> r.get_vectors_name_in_file(0) == v3.name  # doctest: +TVTK, +PROCESSOR_0

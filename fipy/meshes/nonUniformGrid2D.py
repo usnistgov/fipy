@@ -1,38 +1,3 @@
-#!/usr/bin/env python
-
-## -*-Pyth-*-
- # ###################################################################
- #  FiPy - Python-based finite volume PDE solver
- # 
- #  FILE: "nonUniformGrid2D.py"
- #
- #  Author: Jonathan Guyer <guyer@nist.gov>
- #  Author: Daniel Wheeler <daniel.wheeler@nist.gov>
- #  Author: James Warren   <jwarren@nist.gov>
- #  Author: James O'Beirne <james.obeirne@gmail.com>
- #    mail: NIST
- #     www: http://www.ctcms.nist.gov/fipy/
- #  
- # ========================================================================
- # This software was developed at the National Institute of Standards
- # and Technology by employees of the Federal Government in the course
- # of their official duties.  Pursuant to title 17 Section 105 of the
- # United States Code this software is not subject to copyright
- # protection and is in the public domain.  FiPy is an experimental
- # system.  NIST assumes no responsibility whatsoever for its use by
- # other parties, and makes no guarantees, expressed or implied, about
- # its quality, reliability, or any other characteristic.  We would
- # appreciate acknowledgement if the software is used.
- # 
- # This software can be redistributed and/or modified freely
- # provided that any derivative works bear some notice that they are
- # derived from it, and any modified versions bear some notice that
- # they have been modified.
- # ========================================================================
- #  
- # ###################################################################
- ##
-
 """
 2D rectangular Mesh
 """
@@ -56,18 +21,17 @@ class NonUniformGrid2D(Mesh2D):
                  _RepresentationClass=_Grid2DRepresentation, _TopologyClass=_Grid2DTopology):
 
         builder = _NonuniformGrid2DBuilder()
-        
+
         self.args = {
             'dx': dx, 
             'dy': dy, 
             'nx': nx, 
             'ny': ny, 
-            'overlap': overlap,
-            'communicator': communicator
+            'overlap': overlap
         }
-        
+
         builder.buildGridData([dx, dy], [nx, ny], overlap, communicator)
-                                               
+
         ([self.dx, self.dy],
          [self.nx, self.ny],
          self.dim,
@@ -89,10 +53,10 @@ class NonUniformGrid2D(Mesh2D):
          faces,
          cells,
          [self.Xoffset, self.Yoffset]) = builder.gridData
-         
-        Mesh2D.__init__(self, vertices, faces, cells, communicator=communicator, 
+
+        Mesh2D.__init__(self, vertices, faces, cells, communicator=communicator,
                         _RepresentationClass=_RepresentationClass, _TopologyClass=_TopologyClass)
-        
+
         self.scale = scale
 
     def _test(self):
@@ -104,8 +68,8 @@ class NonUniformGrid2D(Mesh2D):
             >>> dy = 2.
             >>> nx = 3
             >>> ny = 2
-            
-            >>> mesh = NonUniformGrid2D(nx = nx, ny = ny, dx = dx, dy = dy)     
+
+            >>> mesh = NonUniformGrid2D(nx = nx, ny = ny, dx = dx, dy = dy)
             >>> from fipy import numerix
             >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3.),
             ...                           (0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2.)))
@@ -113,7 +77,7 @@ class NonUniformGrid2D(Mesh2D):
             >>> print numerix.allequal(vertices,
             ...                        mesh.vertexCoords) # doctest: +PROCESSOR_0
             True
-        
+
             >>> faces = numerix.array(((1, 2, 3, 4, 5, 6, 8, 9, 10, 0, 5, 6, 7, 4, 9, 10, 11),
             ...                        (0, 1, 2, 5, 6, 7, 9, 10, 11, 4, 1, 2, 3, 8, 5, 6, 7)))
             >>> print numerix.allequal(faces,
@@ -129,12 +93,12 @@ class NonUniformGrid2D(Mesh2D):
             True
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
-            >>> print numerix.allequal(externalFaces, 
+            >>> print numerix.allequal(externalFaces,
             ...                        numerix.nonzero(mesh.exteriorFaces)) # doctest: +PROCESSOR_0
             True
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
-            >>> print numerix.allequal(internalFaces, 
+            >>> print numerix.allequal(internalFaces,
             ...                        numerix.nonzero(mesh.interiorFaces)) # doctest: +PROCESSOR_0
             True
 
@@ -143,12 +107,12 @@ class NonUniformGrid2D(Mesh2D):
             ...                                 (-1, -1, -1, 3, 4, 5, -1, -1, -1, -1, 1, 2, -1, -1, 4, 5, -1)), -1)
             >>> print numerix.allequal(faceCellIds, mesh.faceCellIDs) # doctest: +PROCESSOR_0
             True
-            
+
             >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
             ...                            dy, dy, dy, dy, dy, dy, dy, dy))
             >>> print numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
-            
+
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
             >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
@@ -165,7 +129,7 @@ class NonUniformGrid2D(Mesh2D):
             ...                                         (1, -1, -1,  1, -1, -1)))
             >>> print numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations) # doctest: +PROCESSOR_0
             True
-                                             
+
             >>> cellVolumes = numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
             >>> print numerix.allclose(cellVolumes, mesh.cellVolumes, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
@@ -174,12 +138,12 @@ class NonUniformGrid2D(Mesh2D):
             ...                              (dy/2., dy/2., dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2.)))
             >>> print numerix.allclose(mesh.cellCenters, cellCenters, atol = 1e-10, rtol = 1e-10)
             True
-                                              
+
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2.),
             ...                                         (-1, -1, -1, dy / 2., dy / 2., dy / 2., -1, -1, -1, -1, dx / 2., dx / 2., -1, -1, dx / 2., dx / 2., -1)), -1)
             >>> print numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
-                                              
+
             >>> cellDistances = numerix.array((dy / 2., dy / 2., dy / 2.,
             ...                                dy, dy, dy,
             ...                                dy / 2., dy / 2., dy / 2.,
@@ -189,7 +153,7 @@ class NonUniformGrid2D(Mesh2D):
             ...                                dx / 2.))
             >>> print numerix.allclose(cellDistances, mesh._cellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
-            
+
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
             >>> print numerix.allclose(faceToCellDistanceRatios, mesh._faceToCellDistanceRatio, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
@@ -259,15 +223,15 @@ class NonUniformGrid2D(Mesh2D):
             >>> print numerix.allclose(mesh._cellVertexIDs, cellVertexIDs) # doctest: +PROCESSOR_0
             True
 
-            >>> from fipy.tools import dump            
-            >>> (f, filename) = dump.write(mesh, extension = '.gz')            
+            >>> from fipy.tools import dump
+            >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
             >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.cellCenters)
             True
 
         Test for https://github.com/usnistgov/fipy/issues/364.
-            
+
             >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
             >>> m = NonUniformGrid2D(nx=1, ny=9, overlap=1)
             >>> print min(m.y) == 0.5 # doctest: +SERIAL
@@ -276,7 +240,7 @@ class NonUniformGrid2D(Mesh2D):
             True
             >>> print min(m.y) == 5.5 # doctest: +PROCESSOR_2_OF_3
             True
-            
+
         """
 
 def _test():

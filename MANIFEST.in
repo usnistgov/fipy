@@ -11,3 +11,5 @@ include documentation/_build/latex/fipy.pdf
 
 recursive-include examples *.py *.msh *.gz
 recursive-include fipy *.msh
+include versioneer.py
+include fipy/_version.py
