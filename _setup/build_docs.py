@@ -1,4 +1,5 @@
 from distutils.core import Command
+import os
 
 __all__ = ["build_docs"]
 
