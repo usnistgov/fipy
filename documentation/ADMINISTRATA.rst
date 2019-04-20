@@ -200,10 +200,9 @@ Release from master
     $ git checkout master
     $ git merge develop
 
-Resolve any conflicts and push to ``master``::
+Resolve any conflicts and tag the release::
 
     $ git tag --annotate x.y master
-    $ git push --tags origin master
 
 Clean the working copy::
 
@@ -283,6 +282,29 @@ the web site to CTCMS ::
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
 
+--------------
+Push to GitHub
+--------------
+
+We delay pushing tagged ``master`` to GitHub_ until now to avoid needing
+to rewrite history if anything went wrong in the release.
+
+    $ git push --tags origin master
+
+----------------------------
+Update conda-forge feedstock
+----------------------------
+
+Using a pull request, update the fipy-feedstock_ with:
+
+* revised version number
+* revised sha256 (use ``openssl dgst -sha256 /path/to/fipy-x.y.tar.gz``)
+* reset build number to ``0``
+
+--------
+Announce
+--------
+
 Make an announcement to `fipy@nist.gov`_
 
 .. _GitHub: https://github.com/
@@ -294,4 +316,5 @@ Make an announcement to `fipy@nist.gov`_
 .. _request a pull request review: https://help.github.com/en/articles/requesting-a-pull-request-review
 .. _merge the pull request: https://help.github.com/en/articles/merging-a-pull-request
 .. _Squash and merge: https://help.github.com/en/articles/about-pull-request-merges/#squash-and-merge-your-pull-request-commits
+.. _fipy-feedstock: https://github.com/conda-forge/fipy-feedstock
 .. _fipy@nist.gov: mailto:fipy@nist.gov
