@@ -220,6 +220,7 @@ Build the documentation and the web pages::
 Build the compressed distribution::
 
     $ rm MANIFEST
+    $ cp MANIFEST-UNIX.in MANIFEST.in
     $ python setup.py sdist
 
 Test the installed compressed distribution::
@@ -254,10 +255,8 @@ Combine the windows installer and examples into one archive::
     $ rm MANIFEST
     $ FIPY_VERSION=XXX
     $ ln dist/FiPy-${FIPY_VERSION}.win32.exe .
-    $ cp MANIFEST.in MANIFEST.in.bkup
     $ cp MANIFEST-WINDOWS.in MANIFEST.in
     $ python setup.py sdist --dist-dir=dist-windows --formats=zip
-    $ cp MANIFEST.in.bkup MANIFEST.in
     $ unlink FiPy-${FIPY_VERSION}.win32.exe
     $ mv dist-windows/FiPy-${FIPY_VERSION}.zip dist/FiPy-${FIPY_VERSION}.win32.zip
 

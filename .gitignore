@@ -4,6 +4,7 @@
 *~
 .DS_Store
 FiPy.egg-info
+MANIFEST.in
 dist/
 documentation/_build/
 documentation/tutorial/package/generated/
