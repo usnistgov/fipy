@@ -267,7 +267,7 @@ Upload
 
 Tag the repository as appropriate (see `Git practices`_ above).
 
-Upload the build products to PyPI
+Upload the build products to PyPI::
 
     $ python setup.py sdist upload
 
@@ -287,7 +287,7 @@ Push to GitHub
 --------------
 
 We delay pushing tagged ``master`` to GitHub_ until now to avoid needing
-to rewrite history if anything went wrong in the release.
+to rewrite history if anything went wrong in the release::
 
     $ git push --tags origin master
 
