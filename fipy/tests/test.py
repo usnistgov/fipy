@@ -1,3 +1,5 @@
+from setuptools.command.test import test as _test
+
 def _TestClass(base):
     class _test(base):
         description = str(base.description) + ", for FiPy and its examples"
@@ -246,3 +248,5 @@ def _TestClass(base):
 
             raise exitErr
     return _test
+
+test = _TestClass(_test)
