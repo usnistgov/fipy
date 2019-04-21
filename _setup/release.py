@@ -72,7 +72,6 @@ class release(Command):
 
     def run(self):
         run_setup("setup.py", ["bdist_egg"])
-        run_setup("setup.py", ["build_docs", "--pdf", "--html", "--cathartic"])
 
         self._build_unix_distribution()
         self._build_windows_distribution()
