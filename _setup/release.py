@@ -57,7 +57,7 @@ class release(Command):
 
         self._remove_manifest()
         fname = "FiPy-{}.win32.exe".format(self.version)
-        os.symlink(os.path.join("dist", fname), ".")
+        os.symlink(os.path.join("dist", fname), fname)
         shutil.copyfile("MANIFEST-WINDOWS.in", "MANIFEST.in")
         run_setup("setup.py", ["sdist", "--dist-dir=dist-windows", "--formats=zip"])
         os.unlink(fname)
