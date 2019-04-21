@@ -19,12 +19,10 @@ class release(Command):
 
     # List of option tuples: long name, short name (None if no short
     # name), and help string.
-    user_options = [("version=", None, "Version string to tag and assign to release")]
+    user_options = []
 
     def initialize_options(self):
-        import versioneer
-
-        self.version = versioneer.get_version()
+        pass
 
     def finalize_options(self):
         pass
@@ -52,18 +50,22 @@ class release(Command):
 
         Contains executable installer and examples"""
 
+        import versioneer
+
+        version = versioneer.get_version()
+
         self._remove_manifest()
         run_setup("setup.py", ["bdist", "--formats=wininst"])
 
         self._remove_manifest()
-        fname = "FiPy-{}.win32.exe".format(self.version)
+        fname = "FiPy-{}.win32.exe".format(version)
         os.symlink(os.path.join("dist", fname), fname)
         shutil.copyfile("MANIFEST-WINDOWS.in", "MANIFEST.in")
         run_setup("setup.py", ["sdist", "--dist-dir=dist-windows", "--formats=zip"])
         os.unlink(fname)
         shutil.move(
-            os.path.join("dist-windows", "FiPy-{}.zip".format(self.version)),
-            os.path.join("dist", "FiPy-{}.win32.zip".format(self.version)),
+            os.path.join("dist-windows", "FiPy-{}.zip".format(version)),
+            os.path.join("dist", "FiPy-{}.win32.zip".format(version)),
         )
         os.rmdir("dist-windows")
         os.remove("MANIFEST.in")
