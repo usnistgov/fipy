@@ -59,7 +59,7 @@ DIST = setup(
             "unittest": TEST,
             "copy_script": copy_script,
             "changelog": changelog,
-            "release": release
+            "release": release,
         },
         **versioneer.get_cmdclass()
     ),
