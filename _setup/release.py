@@ -71,7 +71,5 @@ class release(Command):
         os.remove("MANIFEST.in")
 
     def run(self):
-        run_setup("setup.py", ["bdist_egg"])
-
         self._build_unix_distribution()
         self._build_windows_distribution()
