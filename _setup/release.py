@@ -29,17 +29,33 @@ class release(Command):
     def finalize_options(self):
         pass
 
-    def _build_unix_archive(self):
-        os.remove("MANIFEST")
+    def _remove_manifest(self):
+        """Remove MANIFEST file
+
+        probably no longer needed, MANIFEST was ancient history?"""
+
+        try:
+            os.remove("MANIFEST")
+        except OSError, _:
+            pass
+
+    def _build_unix_distribution(self):
+        """Create Unix source distribution"""
+
+        self._remove_manifest()
         shutil.copyfile("MANIFEST-UNIX.in", "MANIFEST.in")
         run_setup("setup.py", ["sdist"])
         os.remove("MANIFEST.in")
 
-    def _build_windows_archive(self):
-        os.remove("MANIFEST")
+    def _build_windows_distribution(self):
+        """Create Windows source distribution
+
+        Contains executable installer and examples"""
+
+        self._remove_manifest()
         run_setup("setup.py", ["bdist", "--formats=wininst"])
 
-        os.remove("MANIFEST")
+        self._remove_manifest()
         fname = "FiPy-{}.win32.exe".format(self.version)
         os.symlink(os.path.join("dist", fname), ".")
         shutil.copyfile("MANIFEST-WINDOWS.in", "MANIFEST.in")
@@ -55,5 +71,5 @@ class release(Command):
         run_setup("setup.py", ["bdist_egg"])
         run_setup("setup.py", ["build_docs", "--pdf", "--html", "--cathartic"])
 
-        self._build_unix_archive()
-        self._build_windows_archive()
+        self._build_unix_distribution()
+        self._build_windows_distribution()
