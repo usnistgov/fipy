@@ -65,6 +65,7 @@ class release(Command):
             os.path.join("dist-windows", "FiPy-{}.zip".format(self.version)),
             os.path.join("dist", "FiPy-{}.win32.zip".format(self.version)),
         )
+        os.rmdir("dist-windows")
         os.remove("MANIFEST.in")
 
     def run(self):
