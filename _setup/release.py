@@ -1,11 +1,11 @@
 from distutils.core import Command
+import os
 from setuptools.sandbox import run_setup
 import shutil
 
-import versioneer
-
 
 __all__ = ["release"]
+
 
 class release(Command):
 
@@ -16,12 +16,12 @@ class release(Command):
     user_options = [('version=', None,
                     "Version string to tag and assign to release")]
 
-    def initialize_options (self):
+    def initialize_options(self):
         import versioneer
-        
+
         self.version = versioneer.get_version()
 
-    def finalize_options (self):
+    def finalize_options(self):
         pass
 
     def _buildUNIXArchive(self):
@@ -29,27 +29,26 @@ class release(Command):
         shutil.copyfile("MANIFEST-UNIX.in", "MANIFEST.in")
         run_setup('setup.py', ['sdist'])
         os.remove("MANIFEST.in")
-        
+
     def _buildWindowsArchive(self):
         os.remove("MANIFEST")
         run_setup('setup.py', ['bdist', '--formats=wininst'])
-        
+
         os.remove("MANIFEST")
         fname = "FiPy-{}.win32.exe".format(self.version)
         os.symlink(os.path.join("dist", fname), ".")
         shutil.copyfile("MANIFEST-WINDOWS.in", "MANIFEST.in")
         run_setup('setup.py', ['sdist', '--dist-dir=dist-windows', '--formats=zip'])
         os.unlink(fname)
-        shutil.move(os.path.join("dist-windows", 
+        shutil.move(os.path.join("dist-windows",
                                  "FiPy-{}.zip".format(self.version)).
                     os.path.join("dist",
-                                 "FiPy-{}.win32.zip".format(self.version))) 
+                                 "FiPy-{}.win32.zip".format(self.version)))
         os.remove("MANIFEST.in")
-        
-    def run (self):
+
+    def run(self):
         run_setup('setup.py', ['bdist_egg'])
-        run_setup('setup.py', ['build_docs', '--pdf'. '--html', '--cathartic'])
+        run_setup('setup.py', ['build_docs', '--pdf', '--html', '--cathartic'])
 
         self._buildUNIXArchive()
         self._buildWindowsArchive()
-        
