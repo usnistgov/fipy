@@ -217,11 +217,9 @@ Build the documentation and the web pages::
     $ python setup.py bdist_egg
     $ python setup.py build_docs --pdf --html --cathartic
 
-Build the compressed distribution::
+Build the compressed distributions::
 
-    $ rm MANIFEST
-    $ cp MANIFEST-UNIX.in MANIFEST.in
-    $ python setup.py sdist
+    $ python setup.py release
 
 Test the installed compressed distribution::
 
@@ -240,25 +238,6 @@ Test the installed compressed distribution::
     $ conda env remove -n <testenvironment>
     $ cd ..
     $ \rm -rf tmp
-
--------
-Windows
--------
-
-Build a windows executable installer::
-
-    $ rm MANIFEST
-    $ python setup.py bdist --formats=wininst
-
-Combine the windows installer and examples into one archive::
-
-    $ rm MANIFEST
-    $ FIPY_VERSION=XXX
-    $ ln dist/FiPy-${FIPY_VERSION}.win32.exe .
-    $ cp MANIFEST-WINDOWS.in MANIFEST.in
-    $ python setup.py sdist --dist-dir=dist-windows --formats=zip
-    $ unlink FiPy-${FIPY_VERSION}.win32.exe
-    $ mv dist-windows/FiPy-${FIPY_VERSION}.zip dist/FiPy-${FIPY_VERSION}.win32.zip
 
 ------
 Upload
