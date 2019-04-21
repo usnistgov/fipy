@@ -27,18 +27,18 @@ class release(Command):
     def _buildUNIXArchive(self):
         os.remove("MANIFEST")
         shutil.copyfile("MANIFEST-UNIX.in", "MANIFEST.in")
-        run_setup('setup.py', script_args=['sdist'])
+        run_setup('setup.py', ['sdist'])
         os.remove("MANIFEST.in")
         
     def _buildWindowsArchive(self):
         os.remove("MANIFEST")
-        run_setup('setup.py', script_args=['bdist', '--formats=wininst'])
+        run_setup('setup.py', ['bdist', '--formats=wininst'])
         
         os.remove("MANIFEST")
         fname = "FiPy-{}.win32.exe".format(self.version)
         os.symlink(os.path.join("dist", fname), ".")
         shutil.copyfile("MANIFEST-WINDOWS.in", "MANIFEST.in")
-        run_setup('setup.py', script_args=['sdist', '--dist-dir=dist-windows', '--formats=zip'])
+        run_setup('setup.py', ['sdist', '--dist-dir=dist-windows', '--formats=zip'])
         os.unlink(fname)
         shutil.move(os.path.join("dist-windows", 
                                  "FiPy-{}.zip".format(self.version)).
@@ -47,8 +47,8 @@ class release(Command):
         os.remove("MANIFEST.in")
         
     def run (self):
-        run_setup('setup.py', script_args=['bdist_egg'])
-        run_setup('setup.py', script_args=['build_docs', '--pdf'. '--html', '--cathartic'])
+        run_setup('setup.py', ['bdist_egg'])
+        run_setup('setup.py', ['build_docs', '--pdf'. '--html', '--cathartic'])
 
         self._buildUNIXArchive()
         self._buildWindowsArchive()
