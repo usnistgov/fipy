@@ -14,4 +14,4 @@ dependencies:
   - mayavi
   - weave
   - pip:
-    - "--editable=./"
+    - "--editable=../"
