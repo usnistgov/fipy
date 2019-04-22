@@ -8,23 +8,19 @@ Standards and Technology (NIST).
 """
 
 from setuptools import setup, find_packages
-from setuptools.command.test import test as _test
 
 import versioneer
 
 from _setup.build_docs import build_docs
 from _setup.changelog import changelog
 from _setup.copy_script import copy_script
-from _setup.testClass import _TestClass
 from _setup.upload_products import upload_products
+from _setup.release import release
 
 # bootstrap setuptools for users that don't already have it
 import ez_setup
 
 ez_setup.use_setuptools()
-
-TEST = _TestClass(_test)
-
 
 try:
     FILE = open("README.rst", "r")
@@ -54,10 +50,9 @@ DIST = setup(
         {
             "build_docs": build_docs,
             "upload_products": upload_products,
-            "test": TEST,
-            "unittest": TEST,
             "copy_script": copy_script,
             "changelog": changelog,
+            "release": release,
         },
         **versioneer.get_cmdclass()
     ),
@@ -67,6 +62,9 @@ DIST = setup(
                  [fipy.viewers]
                  matplotlib = fipy.viewers.matplotlibViewer:MatplotlibViewer
                  mayavi = fipy.viewers.mayaviViewer:MayaviClient
+                 [distutils.commands]
+                 test = fipy.tests.test:test
+                 unittest = fipy.tests.test:test
              """,
     classifiers=[
         "Development Status :: 5 - Production/Stable",

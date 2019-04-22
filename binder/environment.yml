@@ -1,17 +1,17 @@
 name: fipy
 channels:
-  - guyer
   - conda-forge
   - defaults
 dependencies:
   - python =2.7
   - numpy
   - scipy
-  - gmsh
+  - gmsh <4.0
   - pysparse
+  - pytrilinos
   - mpi4py
   - matplotlib
   - mayavi
-  - fipytrilinos
+  - weave
   - pip:
-    - "--editable=./"
+    - "--editable=../"

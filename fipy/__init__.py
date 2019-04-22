@@ -142,8 +142,7 @@ def test(*args):
     """
 
     from setuptools import setup
-    from fipy.tests.testClass import _TestClass
-    from setuptools.command.test import test as _test
+    from fipy.tests.test import test
     import tempfile
 
     tmpDir = tempfile.mkdtemp()
@@ -152,7 +151,7 @@ def test(*args):
         setup(name='FiPy',
               script_args = ['egg_info', '--egg-base=' + tmpDir,
                              'test', '--modules'] + list(args),
-              cmdclass={'test': _TestClass(_test)})
+              cmdclass={'test': test})
     except SystemExit, exitErr:
         import shutil
         shutil.rmtree(tmpDir)
