@@ -1,6 +1,7 @@
 """setuptools command to prepare FiPy for release"""
 
 from distutils.core import Command
+import glob
 import os
 import shutil
 
@@ -58,8 +59,12 @@ class release(Command):
         run_setup("setup.py", ["bdist", "--formats=wininst"])
 
         self._remove_manifest()
+
+        # At least on macOS, gets built as *.macosx-10.6-x86_64.exe
+        wininst = glob.glob(os.path.join("dist",
+                                         "FiPy-{}.*.exe".format(version)))[0]
         fname = "FiPy-{}.win32.exe".format(version)
-        os.symlink(os.path.join("dist", fname), fname)
+        os.symlink(wininst, fname)
         shutil.copyfile("MANIFEST-WINDOWS.in", "MANIFEST.in")
         run_setup("setup.py", ["sdist", "--dist-dir=dist-windows", "--formats=zip"])
         os.unlink(fname)
