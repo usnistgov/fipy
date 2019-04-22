@@ -245,9 +245,9 @@ Upload
 
 Tag the repository as appropriate (see `Git practices`_ above).
 
-Upload the build products to PyPI::
+Upload the build products to PyPI with twine_::
 
-    $ python setup.py sdist upload
+    $ twine upload dist/FiPy-${FIPY_VERSION}.tar.gz
 
 Upload the build products and documentation from :file:`dist/` and
 the web site to CTCMS ::
@@ -294,5 +294,6 @@ Make an announcement to `fipy@nist.gov`_
 .. _request a pull request review: https://help.github.com/en/articles/requesting-a-pull-request-review
 .. _merge the pull request: https://help.github.com/en/articles/merging-a-pull-request
 .. _Squash and merge: https://help.github.com/en/articles/about-pull-request-merges/#squash-and-merge-your-pull-request-commits
+.. _twine: https://pypi.org/project/twine
 .. _fipy-feedstock: https://github.com/conda-forge/fipy-feedstock
 .. _fipy@nist.gov: mailto:fipy@nist.gov
