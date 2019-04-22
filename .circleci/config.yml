@@ -60,6 +60,7 @@ commands:
           no_output_timeout: 30m
           command: |
             source activate ~/project/test-environment
+            python setup.py egg_info
             if [[ ! -z "${FIPY_INLINE}" ]]; then
               << parameters.mpirun >> python setup.py test > /dev/null 2>&1 || true;
             fi

@@ -59,6 +59,14 @@ examples <part:examples>`. To run the test cases in both :ref:`modules
 
     $ python setup.py test
 
+.. note::
+
+   You may need to first run::
+
+        $ python setup.py egg_info
+
+   for this to work properly.
+
 in an unpacked :term:`FiPy` archive. The test suite can be run with a
 number of different configurations depending on which solver suite is
 available and other factors. See :ref:`FlagsAndEnvironmentVariables`
