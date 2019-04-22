@@ -200,10 +200,9 @@ Release from master
     $ git checkout master
     $ git merge develop
 
-Resolve any conflicts and push to ``master``::
+Resolve any conflicts and tag the release::
 
     $ git tag --annotate x.y master
-    $ git push --tags origin master
 
 Clean the working copy::
 
@@ -218,16 +217,15 @@ Build the documentation and the web pages::
     $ python setup.py bdist_egg
     $ python setup.py build_docs --pdf --html --cathartic
 
-Build the compressed distribution::
+Build the compressed distributions::
 
-    $ rm MANIFEST
-    $ python setup.py sdist
+    $ python setup.py release
 
 Test the installed compressed distribution::
 
     $ conda create -n <testenvironment> --channel conda-forge python=<PYVERSION> fipy
     $ source activate <testenvironment>
-    $ conda remove --channel conda-forge
+    $ conda remove --channel conda-forge fipy
     $ mkdir tmp
     $ cd tmp
     $ cp ../dist/FiPy-${FIPY_VERSION}.tar.gz .
@@ -241,34 +239,13 @@ Test the installed compressed distribution::
     $ cd ..
     $ \rm -rf tmp
 
--------
-Windows
--------
-
-Build a windows executable installer::
-
-    $ rm MANIFEST
-    $ python setup.py bdist --formats=wininst
-
-Combine the windows installer and examples into one archive::
-
-    $ rm MANIFEST
-    $ FIPY_VERSION=XXX
-    $ ln dist/FiPy-${FIPY_VERSION}.win32.exe .
-    $ cp MANIFEST.in MANIFEST.in.bkup
-    $ cp MANIFEST-WINDOWS.in MANIFEST.in
-    $ python setup.py sdist --dist-dir=dist-windows --formats=zip
-    $ cp MANIFEST.in.bkup MANIFEST.in
-    $ unlink FiPy-${FIPY_VERSION}.win32.exe
-    $ mv dist-windows/FiPy-${FIPY_VERSION}.zip dist/FiPy-${FIPY_VERSION}.win32.zip
-
 ------
 Upload
 ------
 
 Tag the repository as appropriate (see `Git practices`_ above).
 
-Upload the build products to PyPI
+Upload the build products to PyPI::
 
     $ python setup.py sdist upload
 
@@ -283,6 +260,29 @@ the web site to CTCMS ::
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
 
+--------------
+Push to GitHub
+--------------
+
+We delay pushing tagged ``master`` to GitHub_ until now to avoid needing
+to rewrite history if anything went wrong in the release::
+
+    $ git push --tags origin master
+
+----------------------------
+Update conda-forge feedstock
+----------------------------
+
+Using a pull request, update the fipy-feedstock_ with:
+
+* revised version number
+* revised sha256 (use ``openssl dgst -sha256 /path/to/fipy-x.y.tar.gz``)
+* reset build number to ``0``
+
+--------
+Announce
+--------
+
 Make an announcement to `fipy@nist.gov`_
 
 .. _GitHub: https://github.com/
@@ -294,4 +294,5 @@ Make an announcement to `fipy@nist.gov`_
 .. _request a pull request review: https://help.github.com/en/articles/requesting-a-pull-request-review
 .. _merge the pull request: https://help.github.com/en/articles/merging-a-pull-request
 .. _Squash and merge: https://help.github.com/en/articles/about-pull-request-merges/#squash-and-merge-your-pull-request-commits
+.. _fipy-feedstock: https://github.com/conda-forge/fipy-feedstock
 .. _fipy@nist.gov: mailto:fipy@nist.gov

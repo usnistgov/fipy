@@ -15,6 +15,7 @@ from _setup.build_docs import build_docs
 from _setup.changelog import changelog
 from _setup.copy_script import copy_script
 from _setup.upload_products import upload_products
+from _setup.release import release
 
 # bootstrap setuptools for users that don't already have it
 import ez_setup
@@ -51,6 +52,7 @@ DIST = setup(
             "upload_products": upload_products,
             "copy_script": copy_script,
             "changelog": changelog,
+            "release": release,
         },
         **versioneer.get_cmdclass()
     ),
