@@ -158,7 +158,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                 else: # gmsh version is adequate for partitioning
                     gmshFlags += ["-part", "%d" % communicator.Nproc]
 
-            gmshFlags += ["-format", "msh"]
+            gmshFlags += ["-format", "msh2"]
 
             if background is not None:
                 if communicator.procID == 0:
