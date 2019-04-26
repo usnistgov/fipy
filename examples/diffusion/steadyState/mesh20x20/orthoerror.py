@@ -8,7 +8,6 @@ from __future__ import division
 from __future__ import unicode_literals
 
 from builtins import range
-from past.utils import old_div
 if __name__ == '__main__':
 
     import sys
@@ -39,11 +38,11 @@ if __name__ == '__main__':
 
         varArray = numerix.array(var)
         x = mesh.cellCenters[0]
-        analyticalArray = valueLeft + old_div((valueRight - valueLeft) * x, 20)
+        analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
         errorArray = varArray - analyticalArray
         nonOrthoArray = mesh._nonOrthogonality
-        RMSError = (old_div(numerix.add.reduce(errorArray * errorArray), len(errorArray))) ** 0.5
-        RMSNonOrtho = (old_div(numerix.add.reduce(nonOrthoArray * nonOrthoArray), len(nonOrthoArray))) ** 0.5
+        RMSError = (numerix.add.reduce(errorArray * errorArray) / len(errorArray)) ** 0.5
+        RMSNonOrtho = (numerix.add.reduce(nonOrthoArray * nonOrthoArray) / len(nonOrthoArray)) ** 0.5
 
         RMSNonOrthoList += [RMSNonOrtho]
         RMSErrorList += [RMSError]

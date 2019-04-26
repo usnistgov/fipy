@@ -1,6 +1,5 @@
 from __future__ import division
 from __future__ import unicode_literals
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
@@ -72,7 +71,7 @@ class SurfactantVariable(CellVariable):
         CellVariable.__init__(self, mesh = distanceVar.mesh, name = name, hasOld=False)
 
         self.distanceVar = self._requires(distanceVar)
-        self._value = old_div(numerix.array(distanceVar.cellInterfaceAreas) * value, self.mesh.cellVolumes)
+        self._value = numerix.array(distanceVar.cellInterfaceAreas) * value / self.mesh.cellVolumes
 
         if hasOld:
             self._old = self.copy()
@@ -114,7 +113,7 @@ class _InterfaceSurfactantVariable(CellVariable):
     def _calcValue(self):
         areas = numerix.array(self.surfactantVar.distanceVar.cellInterfaceAreas)
         areas = numerix.where(areas > 1e-20, areas, 1)
-        return old_div(numerix.array(self.surfactantVar) * self.mesh.cellVolumes, areas)
+        return numerix.array(self.surfactantVar) * self.mesh.cellVolumes / areas
 
 def _test():
     import fipy.tests.doctestPlus

@@ -13,7 +13,6 @@ from __future__ import division
 from __future__ import unicode_literals
 
 from builtins import input
-from past.utils import old_div
 if __name__ == '__main__':
     import sys
     import os
@@ -39,7 +38,7 @@ if __name__ == '__main__':
 
     varArray = numerix.array(var)
     x = mesh.cellCenters[0]
-    analyticalArray = valueLeft + old_div((valueRight - valueLeft) * x, 20)
+    analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
     errorArray = varArray - analyticalArray
     errorVar = CellVariable(name = 'absolute error',
                             mesh = mesh,

@@ -60,7 +60,6 @@ from __future__ import division
 from __future__ import unicode_literals
 from builtins import input
 from builtins import range
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
@@ -71,7 +70,7 @@ nx = 50
 cfl = 0.1
 initialRadius = L / 4.
 k = 1
-dx = old_div(L, nx)
+dx = L / nx
 steps = 20
 
 from fipy.tools import serialComm
@@ -119,7 +118,7 @@ if __name__ == '__main__':
         print('step', step)
         velocity.setValue(surfactantVariable.interfaceVar * k)
         distanceVariable.extendVariable(velocity)
-        timeStepDuration = old_div(cfl * dx, velocity.max())
+        timeStepDuration = cfl * dx / velocity.max()
         distanceVariable.updateOld()
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
         surfactantEquation.solve(surfactantVariable, dt=1)
@@ -131,10 +130,10 @@ if __name__ == '__main__':
         surfactantViewer.plot()
 
         finalRadius = numerix.sqrt(2 * k * initialRadius * initialSurfactantValue * totalTime + initialRadius**2)
-        answer = old_div(initialSurfactantValue * initialRadius, finalRadius)
+        answer = initialSurfactantValue * initialRadius / finalRadius
         coverage = surfactantVariable.interfaceVar
-        error = (old_div(coverage, answer) - 1)**2 * (coverage > 1e-3)
-        print('error', numerix.sqrt(old_div(numerix.sum(error), numerix.sum(error > 0))))
+        error = (coverage / answer - 1)**2 * (coverage > 1e-3)
+        print('error', numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)))
 
 
 

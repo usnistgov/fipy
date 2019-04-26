@@ -71,7 +71,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import unicode_literals
 from builtins import input
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, TransientTerm, FirstOrderAdvectionTerm, MultiViewer, Viewer
@@ -131,9 +130,9 @@ def runGold(faradaysConstant=9.6e4,
 
     exchangeCurrentDensity = currentDensity0 + currentDensity1 * catalystVar.interfaceVar
 
-    currentDensity = old_div(metalVar, metalConcentration * exchangeCurrentDensity)
+    currentDensity = metalVar / metalConcentration * exchangeCurrentDensity
 
-    depositionRateVariable = old_div(currentDensity * molarVolume, charge / faradaysConstant)
+    depositionRateVariable = currentDensity * molarVolume / charge / faradaysConstant
 
     extensionVelocityVariable = CellVariable(
         name = 'extension velocity',
@@ -194,7 +193,7 @@ def runGold(faradaysConstant=9.6e4,
 
         extensionVelocityVariable.setValue(numerix.array(depositionRateVariable))
 
-        dt = old_div(cflNumber * cellSize, max(extensionVelocityVariable.globalValue))
+        dt = cflNumber * cellSize / max(extensionVelocityVariable.globalValue)
         distanceVar.extendVariable(extensionVelocityVariable)
 
         advectionEquation.solve(distanceVar, dt = dt)

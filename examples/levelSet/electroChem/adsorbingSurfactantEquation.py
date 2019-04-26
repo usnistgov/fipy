@@ -1,7 +1,6 @@
 from __future__ import division
 from __future__ import unicode_literals
 from builtins import object
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 import platform
@@ -250,7 +249,7 @@ class AdsorbingSurfactantEquation(object):
         mesh = distanceVar.mesh
         adsorptionCoeff = self.dt * bulkVar * rateConstant
         spCoeff = adsorptionCoeff * distanceVar._cellInterfaceFlag
-        scCoeff = old_div(adsorptionCoeff * distanceVar.cellInterfaceAreas, mesh.cellVolumes)
+        scCoeff = adsorptionCoeff * distanceVar.cellInterfaceAreas / mesh.cellVolumes
 
         self.eq += ImplicitSourceTerm(spCoeff) - scCoeff
 
@@ -269,7 +268,7 @@ class AdsorbingSurfactantEquation(object):
             total += var.interfaceVar
         maxVar = (total > 1) * distanceVar._cellInterfaceFlag
 
-        val = old_div(distanceVar.cellInterfaceAreas, mesh.cellVolumes)
+        val = distanceVar.cellInterfaceAreas / mesh.cellVolumes
         for var in vars[1:]:
             val -= distanceVar._cellInterfaceFlag * var
 

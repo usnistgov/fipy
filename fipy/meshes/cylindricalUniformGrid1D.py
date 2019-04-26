@@ -3,7 +3,6 @@
 """
 from __future__ import division
 from __future__ import unicode_literals
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.uniformGrid1D import UniformGrid1D
@@ -47,7 +46,7 @@ class CylindricalUniformGrid1D(UniformGrid1D):
 
     @property
     def _faceAspectRatios(self):
-        return old_div(self._faceAreas, self._cellDistances)
+        return self._faceAreas / self._cellDistances
 
     @property
     def _areaProjections(self):

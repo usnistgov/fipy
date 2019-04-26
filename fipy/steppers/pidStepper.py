@@ -1,6 +1,5 @@
 from __future__ import division
 from __future__ import unicode_literals
-from past.utils import old_div
 from fipy.steppers.stepper import Stepper
 
 __all__ = ["PIDStepper"]
@@ -51,14 +50,14 @@ class PIDStepper(Stepper):
 
                 dt = self._lowerBound(factor * dt)
 
-                dtPrev = old_div(dt**2, dtPrev)
+                dtPrev = dt**2 / dtPrev
             else:
                 # step succeeded
                 break
 
-        dtNext = dtPrev * ((old_div(self.error[1], self.error[2]))**self.proportional
+        dtNext = dtPrev * ((self.error[1] / self.error[2])**self.proportional
                            * (1. / self.error[2])**self.integral
-                           * (old_div(self.error[1]**2, (self.error[2] * self.error[0])))**self.derivative)
+                           * (self.error[1]**2 / (self.error[2] * self.error[0]))**self.derivative)
 
         self.error[0] = self.error[1]
         self.error[1] = self.error[2]

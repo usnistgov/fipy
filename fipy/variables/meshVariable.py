@@ -3,7 +3,6 @@ from __future__ import division
 from __future__ import unicode_literals
 
 from builtins import str
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -476,10 +475,10 @@ class _MeshVariable(Variable):
         if self.mesh.communicator.Nproc > 1 and (axis is None or axis == len(self.shape) - 1):
             def stdParallel(a):
                 N = self.mesh.globalNumberOfCells
-                mean = old_div(self.sum(axis=axis).value, N)
+                mean = self.sum(axis=axis).value / N
                 sq_diff = (self - mean)**2
 
-                return numerix.sqrt(old_div(sq_diff.sum(axis=axis).value, N))
+                return numerix.sqrt(sq_diff.sum(axis=axis).value / N)
 
             return self._axisOperator(opname="stdVar",
                                       op=stdParallel,

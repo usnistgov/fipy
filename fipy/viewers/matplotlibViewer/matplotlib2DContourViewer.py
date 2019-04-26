@@ -1,6 +1,5 @@
 from __future__ import division
 from __future__ import unicode_literals
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -117,7 +116,7 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
         if self.levels is not None:
             levels = self.levels
         else:
-            levels = old_div(numerix.arange(self.number + 1) * (zmax - zmin), self.number) + zmin
+            levels = numerix.arange(self.number + 1) * (zmax - zmin) / self.number + zmin
 
 
         self._contourSet = self.axes.contour(xi, yi, zi, levels=levels, cmap=self.cmap)

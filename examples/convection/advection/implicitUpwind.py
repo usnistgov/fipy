@@ -7,7 +7,6 @@ from __future__ import unicode_literals
 
 from builtins import range
 from builtins import input
-from past.utils import old_div
 from fipy import CellVariable, Grid1D, TransientTerm, PowerLawConvectionTerm, LinearLUSolver, Viewer
 from fipy.tools import numerix
 
@@ -15,10 +14,10 @@ valueLeft = 0.
 valueRight = 0.
 L = 10.
 nx = 400
-dx = old_div(L, nx)
+dx = L / nx
 cfl = 0.01
 velocity = 1.
-timeStepDuration = old_div(cfl * dx, abs(velocity))
+timeStepDuration = cfl * dx / abs(velocity)
 steps = 1000
 
 mesh = Grid1D(dx = dx, nx = nx)

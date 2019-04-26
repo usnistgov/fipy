@@ -34,7 +34,6 @@ from __future__ import unicode_literals
 
 from builtins import input
 from builtins import range
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, Grid1D, PeriodicGrid1D, TransientTerm, VanLeerConvectionTerm, DefaultAsymmetricSolver, Viewer
@@ -42,10 +41,10 @@ from fipy.tools import numerix
 
 L = 20.
 nx = 40
-dx = old_div(L, nx)
+dx = L / nx
 cfl = 0.5
 velocity = 1.0
-dt = old_div(cfl * dx, velocity)
+dt = cfl * dx / velocity
 
 steps = int(L /  4. / dt / velocity)
 
@@ -84,9 +83,9 @@ if __name__ == '__main__':
         viewer1.plot()
         viewer2.plot()
 
-    newVar2[:old_div(nx, 4)] = var2[old_div(nx, 4):]
-    newVar2[old_div(nx, 4):] = var2[:old_div(nx, 4)]
+    newVar2[:nx // 4] = var2[nx // 4:]
+    newVar2[nx // 4:] = var2[:nx // 4]
 
-    print('maximum absolute difference between periodic and non-periodic grids:', abs(var1[old_div(nx, 4):old_div(3 * nx, 4)] - newVar2).max())
+    print('maximum absolute difference between periodic and non-periodic grids:', abs(var1[nx // 4:(3 * nx) // 4] - newVar2).max())
 
     eval(input('finished'))

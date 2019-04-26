@@ -1,6 +1,5 @@
 from __future__ import division
 from __future__ import unicode_literals
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 
@@ -130,7 +129,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     eq =  TransientTerm(transientCoeff) - DiffusionTermNoCorrection(diffusionCoeff)
 
     mesh = distanceVar.mesh
-    coeff = old_div(depositionRate * distanceVar.cellInterfaceAreas, (mesh.cellVolumes * metalIonMolarVolume) / ionVar)
+    coeff = depositionRate * distanceVar.cellInterfaceAreas / (mesh.cellVolumes * metalIonMolarVolume) / ionVar
 
     return eq + ImplicitSourceTerm(coeff)
 

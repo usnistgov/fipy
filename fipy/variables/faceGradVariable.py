@@ -1,6 +1,5 @@
 from __future__ import division
 from __future__ import unicode_literals
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -122,7 +121,7 @@ class _FaceGradVariable(FaceVariable):
 
         N2[s] = self.var.faceValue[s]
 
-        N = old_div((N2 - numerix.take(self.var, id1, axis=-1)), dAP)
+        N = (N2 - numerix.take(self.var, id1, axis=-1)) / dAP
 
         normals = self.mesh._orientedFaceNormals
 

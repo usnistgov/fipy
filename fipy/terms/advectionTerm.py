@@ -1,6 +1,5 @@
 from __future__ import division
 from __future__ import unicode_literals
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AdvectionTerm"]
@@ -190,9 +189,9 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
         cellNormalGradient = numerix.dot(cellGradient, mesh._cellNormals)
         cellUpValues = adjacentValues - 2 * dAP * cellNormalGradient
 
-        cellLaplacian = old_div((cellUpValues + adjacentValues - 2 * cellValues), dAP**2)
+        cellLaplacian = (cellUpValues + adjacentValues - 2 * cellValues) / dAP**2
 
-        adjacentLaplacian = old_div((adjacentUpValues + cellValues - 2 * adjacentValues), dAP**2)
+        adjacentLaplacian = (adjacentUpValues + cellValues - 2 * adjacentValues) / dAP**2
         adjacentLaplacian = adjacentLaplacian.filled(0)
         cellLaplacian = cellLaplacian.filled(0)
 

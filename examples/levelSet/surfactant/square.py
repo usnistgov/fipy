@@ -23,7 +23,6 @@ from __future__ import division
 from __future__ import unicode_literals
 from builtins import input
 from builtins import range
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
@@ -36,17 +35,17 @@ cfl = 0.1
 distanceToTravel = L / 5.
 boxSize = .2
 
-nx = int(old_div(L, dx))
-ny = int(old_div(L, dx))
+nx = L // dx
+ny = L // dx
 
-steps = int(old_div(distanceToTravel, dx / cfl))
+steps = int(distanceToTravel / dx / cfl)
 
-timeStepDuration = old_div(cfl * dx, velocity)
+timeStepDuration = cfl * dx / velocity
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
 
-x0 = old_div((L - boxSize), 2)
-x1 = old_div((L + boxSize), 2)
+x0 = (L - boxSize) / 2
+x1 = (L + boxSize) / 2
 
 distanceVariable = DistanceVariable(
     mesh = mesh,

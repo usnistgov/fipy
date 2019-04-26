@@ -3,7 +3,6 @@
 """
 from __future__ import division
 from __future__ import unicode_literals
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -314,7 +313,7 @@ class UniformGrid1D(UniformGrid):
         xi, = points
         dx = self.dx
 
-        i = numerix.array(numerix.rint((old_div((xi - x0), dx))), 'l')
+        i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
         i[i < 0] = 0
         i[i > nx - 1] = nx - 1
 

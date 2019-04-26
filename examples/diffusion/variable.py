@@ -20,7 +20,6 @@ from __future__ import division
 from __future__ import unicode_literals
 
 from builtins import input
-from past.utils import old_div
 from fipy import FaceVariable, Tri2D, CellVariable, DiffusionTerm, Viewer
 from fipy.tools import numerix
 
@@ -33,7 +32,7 @@ timeStepDuration = 1.
 
 L = 10.
 
-dx = old_div(L, nx)
+dx = L / nx
 dy = 1.
 
 mesh = Tri2D(dx, dy, nx, ny)

@@ -2,7 +2,6 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
 from builtins import range
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 import os
@@ -54,8 +53,8 @@ class LinearLUSolver(PysparseSolver):
         diag = L.takeDiagonal()
         maxdiag = max(numerix.absolute(diag))
 
-        L = L * (old_div(1, maxdiag))
-        b = b * (old_div(1, maxdiag))
+        L = L * (1 / maxdiag)
+        b = b * (1 / maxdiag)
 
         LU = superlu.factorize(L.matrix.to_csr())
 
@@ -68,7 +67,7 @@ class LinearLUSolver(PysparseSolver):
         for iteration in range(self.iterations):
             errorVector = L * x - b
 
-            if (old_div(numerix.sqrt(numerix.sum(errorVector**2)), error0))  <= self.tolerance:
+            if (numerix.sqrt(numerix.sum(errorVector**2)) / error0)  <= self.tolerance:
                 break
 
             xError = numerix.zeros(len(b), 'd')

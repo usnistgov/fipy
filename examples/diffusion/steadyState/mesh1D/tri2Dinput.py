@@ -37,7 +37,6 @@ from __future__ import division
 from __future__ import unicode_literals
 
 from builtins import input
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import Tri2D, CellVariable, DiffusionTerm, Viewer
@@ -60,7 +59,7 @@ if __name__ == '__main__':
     viewer.plot()
     x = mesh.cellCenters[0]
     Lx = nx * dx
-    analyticalArray = valueLeft + old_div((valueRight - valueLeft) * x, Lx)
+    analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     print(var.allclose(analyticalArray))
     eval(input("finished"))
 

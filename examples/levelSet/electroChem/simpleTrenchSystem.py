@@ -131,7 +131,6 @@ from __future__ import division
 from __future__ import unicode_literals
 from builtins import input
 from builtins import range
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, DistanceVariable, SurfactantVariable, Grid2D, TransientTerm, AdvectionTerm, GeneralSolver, Viewer, MultiViewer
@@ -169,9 +168,9 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     cellsBelowTrench = 10
 
     yCells = cellsBelowTrench \
-             + int(old_div((trenchDepth + boundaryLayerDepth), cellSize))
+             + int((trenchDepth + boundaryLayerDepth) / cellSize)
 
-    xCells = int(old_div(trenchSpacing, 2 / cellSize))
+    xCells = int(trenchSpacing / 2 / cellSize)
 
     from fipy.tools import serialComm
     mesh = Grid2D(dx = cellSize,
@@ -190,8 +189,8 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     bottomHeight = cellsBelowTrench * cellSize
     trenchHeight = bottomHeight + trenchDepth
-    trenchWidth = old_div(trenchDepth, aspectRatio)
-    sideWidth = old_div((trenchSpacing - trenchWidth), 2)
+    trenchWidth = trenchDepth / aspectRatio
+    sideWidth = (trenchSpacing - trenchWidth) / 2
 
     x, y = mesh.cellCenters
     distanceVar.setValue(1., where=(y > trenchHeight) | ((y > bottomHeight) & (x < xCells * cellSize - sideWidth)))
@@ -213,16 +212,16 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         mesh = mesh,
         value = metalConcentration)
 
-    expoConstant = old_div(-transferCoefficient * faradaysConstant, (gasConstant * temperature))
+    expoConstant = -transferCoefficient * faradaysConstant / (gasConstant * temperature)
 
     tmp = currentDensity1 * catalystVar.interfaceVar
 
     exchangeCurrentDensity = currentDensity0 + tmp
 
     expo = numerix.exp(expoConstant * overpotential)
-    currentDensity = old_div(expo * exchangeCurrentDensity * metalVar, metalConcentration)
+    currentDensity = expo * exchangeCurrentDensity * metalVar / metalConcentration
 
-    depositionRateVariable = old_div(currentDensity * molarVolume, (charge * faradaysConstant))
+    depositionRateVariable = currentDensity * molarVolume / (charge * faradaysConstant)
 
     extensionVelocityVariable = CellVariable(
         name = 'extension velocity',
@@ -285,7 +284,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         distanceVar.updateOld()
 
         distanceVar.extendVariable(extensionVelocityVariable, order=2)
-        dt = old_div(cflNumber * cellSize, extensionVelocityVariable.max())
+        dt = cflNumber * cellSize / extensionVelocityVariable.max()
 
         advectionEquation.solve(distanceVar, dt = dt)
         surfactantEquation.solve(catalystVar, dt = dt)

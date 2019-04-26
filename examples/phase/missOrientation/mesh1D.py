@@ -57,7 +57,6 @@ from __future__ import division
 from __future__ import unicode_literals
 from builtins import input
 from builtins import range
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, ModularVariable, Grid1D, TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, Viewer
@@ -74,7 +73,7 @@ s = 0.01
 alpha = 0.015
 temperature = 1.
 
-dx = old_div(L, nx)
+dx = L / nx
 
 mesh = Grid1D(dx = dx, nx = nx)
 

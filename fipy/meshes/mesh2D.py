@@ -9,7 +9,6 @@ from __future__ import division
 from __future__ import unicode_literals
 from builtins import range
 from builtins import zip
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -22,12 +21,12 @@ from fipy.meshes.topologies.meshTopology import _Mesh2DTopology
 
 def _orderVertices(vertexCoords, vertices):
     coordinates = numerix.take(vertexCoords, vertices)
-    centroid = old_div(numerix.add.reduce(coordinates), coordinates.shape[0])
+    centroid = numerix.add.reduce(coordinates) / coordinates.shape[0]
     coordinates = coordinates - centroid
     # to prevent division by zero
     coordinates = numerix.where(coordinates == 0, 1.e-100, coordinates)
     # angles go from -pi / 2 to 3*pi / 2
-    angles = numerix.arctan(old_div(coordinates[:, 1], coordinates[:, 0])) \
+    angles = numerix.arctan(coordinates[:, 1] / coordinates[:, 0]) \
                + numerix.where(coordinates[:, 0] < 0, numerix.pi, 0)
     sortorder = numerix.argsort(angles)
     return numerix.take(vertices, sortorder)
@@ -57,8 +56,8 @@ class Mesh2D(Mesh):
         t1 = faceVertexCoords[:, 1,:] - faceVertexCoords[:, 0,:]
         faceNormals = t1.copy()
         mag = numerix.sqrt(t1[1]**2 + t1[0]**2)
-        faceNormals[0] = old_div(-t1[1], mag)
-        faceNormals[1] = old_div(t1[0], mag)
+        faceNormals[0] = -t1[1] / mag
+        faceNormals[1] = t1[0] / mag
 
         orientation = 1 - 2 * (numerix.dot(faceNormals, self.cellDistanceVectors) < 0)
         return faceNormals * orientation
@@ -121,7 +120,7 @@ class Mesh2D(Mesh):
         faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[0,:] ** 2) \
           + (faceDisplacementVectors[1,:] ** 2)) ** 0.5, 1.e-100)
 
-        faceWeightedNonOrthogonalities = abs(old_div(faceCrossProducts, faceDisplacementVectorLengths)) * self._faceAreas
+        faceWeightedNonOrthogonalities = abs(faceCrossProducts / faceDisplacementVectorLengths) * self._faceAreas
 
         cellFaceWeightedNonOrthogonalities = numerix.take(faceWeightedNonOrthogonalities, self.cellFaceIDs)
 
@@ -129,7 +128,7 @@ class Mesh2D(Mesh):
         cellTotalWeightedValues = numerix.add.reduce(cellFaceWeightedNonOrthogonalities, axis = 0)
         cellTotalFaceAreas = numerix.add.reduce(cellFaceAreas, axis = 0)
 
-        return (old_div(cellTotalWeightedValues, cellTotalFaceAreas))
+        return (cellTotalWeightedValues / cellTotalFaceAreas)
 
     def extrude(self, extrudeFunc=lambda x: x + numerix.array((0, 0, 1))[:, numerix.newaxis] , layers=1):
         """

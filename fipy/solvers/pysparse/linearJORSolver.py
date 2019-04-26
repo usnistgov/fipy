@@ -2,7 +2,6 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
 from builtins import range
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
@@ -51,7 +50,7 @@ class LinearJORSolver(PysparseSolver):
             residual = L * x - b
 
             xold[:] = x
-            x[:] = old_div((-(LU) * x + b), d)
+            x[:] = (-(LU) * x + b) / d
 
             x[:] = xold + self.relaxation * (x - xold)
 

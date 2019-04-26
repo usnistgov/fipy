@@ -1,6 +1,5 @@
 from __future__ import division
 from __future__ import unicode_literals
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
@@ -24,7 +23,7 @@ class ScharfetterGummelFaceVariable(_CellToFaceVariable):
         value = where(abs(delta) < eps, 1. / exp(delta), 0.)
         delta = where(abs(delta) < eps, eps, delta)
         value = where((abs(delta) > eps) & (delta < 100),
-                      old_div(delta, (exp(delta) - 1)), value)
+                      delta / (exp(delta) - 1), value)
 
         value *= exp(cell1)
 

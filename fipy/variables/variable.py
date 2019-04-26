@@ -2,7 +2,6 @@ from __future__ import division
 from __future__ import unicode_literals
 from builtins import object
 from builtins import str
-from past.utils import old_div
 from future.utils import string_types
 __docformat__ = 'restructuredtext'
 
@@ -1119,12 +1118,12 @@ class Variable(object):
         return self._BinaryOperatorVariable(lambda a, b: pow(b, a), other, value0mattersForUnit=True)
 
     def __truediv__(self, other):
-        return self._BinaryOperatorVariable(lambda a, b: old_div(a,b), other)
+        return self._BinaryOperatorVariable(lambda a, b: a / b, other)
 
     __div__ = __truediv__
 
     def __rtruediv__(self, other):
-        return self._BinaryOperatorVariable(lambda a, b: old_div(b,a), other)
+        return self._BinaryOperatorVariable(lambda a, b: b / a, other)
 
     __rdiv__ = __rtruediv__
 

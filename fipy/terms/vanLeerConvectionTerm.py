@@ -1,6 +1,5 @@
 from __future__ import division
 from __future__ import unicode_literals
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
@@ -39,7 +38,7 @@ class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
         # Courant-Friedrichs-Levy number
         interiorCFL = abs(numerix.take(self._getGeomCoeff(oldArray), interiorIDs)) * dt
 
-        gradUpwind = old_div((oldArray2 - oldArray1), numerix.take(mesh._cellDistances, interiorIDs))
+        gradUpwind = (oldArray2 - oldArray1) / numerix.take(mesh._cellDistances, interiorIDs)
 
         vol1 = numerix.take(mesh.cellVolumes, id1)
 

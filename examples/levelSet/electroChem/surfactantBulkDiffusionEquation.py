@@ -1,6 +1,5 @@
 from __future__ import division
 from __future__ import unicode_literals
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.implicitSourceTerm import ImplicitSourceTerm
@@ -55,7 +54,7 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
 
     """
 
-    spCoeff = old_div(rateConstant * distanceVar.cellInterfaceAreas, bulkVar.mesh.cellVolumes)
+    spCoeff = rateConstant * distanceVar.cellInterfaceAreas / bulkVar.mesh.cellVolumes
     spSourceTerm = ImplicitSourceTerm(spCoeff)
 
     bulkSpCoeff = spCoeff * bulkVar

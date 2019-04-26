@@ -1,6 +1,5 @@
 from __future__ import division
 from __future__ import unicode_literals
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -43,7 +42,7 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
             eps = 1e-20
             value = (value == 0.) * eps + (value != 0.) * value
             cell1Xcell2 = cell1 * cell2
-            value = old_div(((value > eps) | (value < -eps)) * cell1Xcell2, value)
+            value = ((value > eps) | (value < -eps)) * cell1Xcell2 / value
             value = (cell1Xcell2 >= 0.) * value
 
             return value

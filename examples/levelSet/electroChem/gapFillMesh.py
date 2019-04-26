@@ -12,7 +12,6 @@ only used for the diffusion in the boundary layer.
 from __future__ import division
 from __future__ import unicode_literals
 
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from distutils.version import StrictVersion
@@ -94,14 +93,14 @@ class GapFillMesh(Gmsh2D):
         """
 
         # Calculate the fine region cell counts.
-        nx = int(old_div(desiredDomainWidth, cellSize))
-        ny = int(old_div(desiredFineRegionHeight, cellSize))
+        nx = desiredDomainWidth // cellSize
+        ny = desiredFineRegionHeight // cellSize
 
         # Calculate the actual mesh dimensions
         actualFineRegionHeight = ny * cellSize
         actualDomainWidth = nx * cellSize
         boundaryLayerHeight = desiredDomainHeight - actualFineRegionHeight - transitionRegionHeight
-        numberOfBoundaryLayerCells = int(old_div(boundaryLayerHeight, actualDomainWidth))
+        numberOfBoundaryLayerCells = boundaryLayerHeight // actualDomainWidth
 
         # Build the fine region mesh.
         self.fineMesh = Grid2D(nx=nx, ny=ny, dx=cellSize, dy=cellSize, communicator=serialComm)

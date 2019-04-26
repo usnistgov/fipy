@@ -43,7 +43,6 @@ from __future__ import division
 from __future__ import unicode_literals
 from builtins import input
 from builtins import range
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
@@ -57,9 +56,9 @@ velocity = 1.
 distanceToTravel = L / 10.
 initialRadius = L / 4.
 
-dx = old_div(L, nx)
-timeStepDuration = old_div(cfl * dx, velocity)
-steps = int(old_div(distanceToTravel, dx / cfl))
+dx = L / nx
+timeStepDuration = cfl * dx / velocity
+steps = int(distanceToTravel / dx / cfl)
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = nx)
 
@@ -109,17 +108,17 @@ if __name__ == '__main__':
     print('total surfactant after:', numerix.sum(surfactantVariable * mesh.cellVolumes))
 
     areas = (distanceVariable.cellInterfaceAreas < 1e-6) * 1e+10 + distanceVariable.cellInterfaceAreas
-    answer = old_div(initialSurfactantValue * initialRadius, (initialRadius +  distanceToTravel))
-    coverage = old_div(surfactantVariable * mesh.cellVolumes, areas)
+    answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
+    coverage = surfactantVariable * mesh.cellVolumes / areas
 
     error = 0.
     size = 0
     for i in range(len(coverage)):
         if coverage[i] > 1e-3:
-            error += (old_div(coverage[i], answer) - 1.)**2
+            error += (coverage[i] / answer - 1.)**2
             size += 1
 
-    error = numerix.sqrt(old_div(error, size))
+    error = numerix.sqrt(error / size)
 
     print('error:', error)
 

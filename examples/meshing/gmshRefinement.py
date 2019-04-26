@@ -2,7 +2,6 @@ from __future__ import division
 from __future__ import unicode_literals
 from builtins import range
 from builtins import input
-from past.utils import old_div
 from fipy import CellVariable, Gmsh2D, DiffusionTerm, Viewer
 from fipy.tools import numerix
 from matplotlib import cm
@@ -77,7 +76,7 @@ for refinement in range(10):
     res1 = numerix.L2norm(res)
     res1a = CellVariable(mesh=mesh, value=abs(res))
 
-    res = CellVariable(mesh=mesh, name="residual", value=old_div(abs(res), mesh.cellVolumes**(1./mesh.dim) / 1e-3))
+    res = CellVariable(mesh=mesh, name="residual", value=abs(res) / mesh.cellVolumes**(1./mesh.dim) / 1e-3)
 
     # want cells no bigger than 1 and no smaller than 0.001
     maxSize = 1.
