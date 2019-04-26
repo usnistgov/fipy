@@ -370,7 +370,7 @@ def dot(a1, a2, axis=0):
     >>> print dot(v1, v1)
     [ 4 10]
     >>> v3 = array(((0,1),(2,3)))
-    >>> print type(dot(v3, v3)) is type(array(1))
+    >>> print isinstance(dot(v3, v3), type(array(1)))
     1
     >>> print dot(v3, v3)
     [ 4 10]
@@ -1259,3 +1259,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

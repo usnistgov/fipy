@@ -564,7 +564,7 @@ class PhysicalField(object):
         <class 'fipy.tools.dimensions.physicalField.PhysicalField'>
 
         >>> from scipy.special import gamma as Gamma # doctest: +SCIPY
-        >>> print type(Gamma(PhysicalField([1.0, 2.0]))) is type(numerix.array(1)) # doctest: +SCIPY
+        >>> print isinstance(Gamma(PhysicalField([1.0, 2.0])), type(numerix.array(1))) # doctest: +SCIPY
         1
         """
         result = arr
@@ -2191,3 +2191,4 @@ def _test():
 if __name__ == "__main__":
 ##     print _getUnitStrings()
     _test()
+
