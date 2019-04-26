@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random
