@@ -50,6 +50,14 @@ commands:
         default: ""
 
     steps:
+      - run:
+          name: Install libGL
+          command: |
+            apt-get --yes update
+            apt-get --yes install libglu1-mesa
+            apt-get --yes install libgl1-mesa-glx
+            apt-get --yes install libxrender1
+
       - checkout
 
       - restore_conda_cache
@@ -103,9 +111,6 @@ commands:
           command: |
             apt-get --yes update
             apt-get --yes install build-essential
-            apt-get --yes install libglu1-mesa
-            apt-get --yes install libgl1-mesa-glx
-            apt-get --yes install libxrender1
             conda config --set always_yes yes --set changeps1 no
             conda update -q conda
             conda config --remove channels defaults
