@@ -18,6 +18,8 @@ Advect the interface and check the position.
 
 """
 from __future__ import print_function
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
@@ -30,17 +32,17 @@ cfl = 0.1
 distanceToTravel = L / 5.
 boxSize = .2
 
-nx = int(L / dx)
-ny = int(L / dx)
+nx = int(old_div(L, dx))
+ny = int(old_div(L, dx))
 
-steps = int(distanceToTravel / dx / cfl)
+steps = int(old_div(distanceToTravel, dx / cfl))
 
-timeStepDuration = cfl * dx / velocity
+timeStepDuration = old_div(cfl * dx, velocity)
 
 mesh = Grid2D(dx = dx, dy = dx, nx = nx, ny = ny)
 
-x0 = (L - boxSize) / 2
-x1 = (L + boxSize) / 2
+x0 = old_div((L - boxSize), 2)
+x1 = old_div((L + boxSize), 2)
 
 distanceVariable = DistanceVariable(
     mesh = mesh,

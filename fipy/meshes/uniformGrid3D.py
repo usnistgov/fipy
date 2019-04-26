@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools import parallelComm
@@ -369,7 +371,7 @@ class UniformGrid3D(UniformGrid):
 
     @property
     def _faceAspectRatios(self):
-        return self._faceAreas / self._cellDistances
+        return old_div(self._faceAreas, self._cellDistances)
 
     def _translate(self, vector):
         return self.__class__(dx = self.args['dx'], nx = self.args['nx'],
@@ -499,15 +501,15 @@ class UniformGrid3D(UniformGrid):
         nx, ny, nz = self.shape
         dx, dy, dz = self.dx, self.dy, self.dz
 
-        i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
+        i = numerix.array(numerix.rint((old_div((xi - x0), dx))), 'l')
         i[i < 0] = 0
         i[i > nx - 1] = nx - 1
 
-        j = numerix.array(numerix.rint(((yi - y0) / dy)), 'l')
+        j = numerix.array(numerix.rint((old_div((yi - y0), dy))), 'l')
         j[j < 0] = 0
         j[j > ny - 1]  = ny - 1
 
-        k = numerix.array(numerix.rint(((zi - z0) / dz)), 'l')
+        k = numerix.array(numerix.rint((old_div((zi - z0), dz))), 'l')
         k[k < 0] = 0
         k[k > nz - 1]  = nz - 1
 

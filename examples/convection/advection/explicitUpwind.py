@@ -2,7 +2,9 @@
 This example shows the failure of advecting a square pulse with a first
 order explicit upwind scheme.
 """
+from __future__ import division
 
+from past.utils import old_div
 from fipy import CellVariable, Grid1D, TransientTerm, ExplicitUpwindConvectionTerm, LinearLUSolver, Viewer
 from fipy.tools import numerix
 
@@ -10,10 +12,10 @@ valueLeft = 0.
 valueRight = 0.
 L = 10.
 nx = 400
-dx = L / nx
+dx = old_div(L, nx)
 cfl = 0.1
 velocity = -1.
-timeStepDuration = cfl * dx / abs(velocity)
+timeStepDuration = old_div(cfl * dx, abs(velocity))
 steps = 1000
 
 mesh = Grid1D(dx = dx, nx = nx)

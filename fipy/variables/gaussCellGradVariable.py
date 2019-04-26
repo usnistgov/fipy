@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -69,7 +71,7 @@ class _GaussCellGradVariable(CellVariable):
     def _calcValueNoInline(self, N, M, ids, orientations, volumes):
         contributions = numerix.take(self.faceGradientContributions, ids, axis=-1)
         grad = numerix.array(numerix.sum(orientations * contributions, -2))
-        return grad / volumes
+        return old_div(grad, volumes)
 
     def _calcValue(self):
         if inline.doInline and self.var.rank == 0:

@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -91,13 +93,13 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
                 rotationTensor[0, 1] = 1
                 rotationTensor[:, 1] = numerix.where(flag,
-                                                     rotationTensor[:, 0].dot((((0, 1, 0), (-1, 0, 0), (0, 0, 0)))) / div,
+                                                     old_div(rotationTensor[:, 0].dot((((0, 1, 0), (-1, 0, 0), (0, 0, 0)))), div),
                                                      rotationTensor[:, 1])
 
 
                 rotationTensor[1, 2] = 1
                 rotationTensor[:, 2] = numerix.where(flag,
-                                                     rotationTensor[:, 0] * rotationTensor[2, 0] / div,
+                                                     old_div(rotationTensor[:, 0] * rotationTensor[2, 0], div),
                                                      rotationTensor[:, 2])
                 rotationTensor[2, 2] = -div
 
@@ -140,7 +142,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 if coeff.shape != () and not isinstance(coeff, FaceVariable):
                     coeff = coeff[..., numerix.newaxis]
 
-                tmpBop = (coeff * FaceVariable(mesh=mesh, value=mesh._faceAreas) / mesh._cellDistances)[numerix.newaxis,:]
+                tmpBop = (old_div(coeff * FaceVariable(mesh=mesh, value=mesh._faceAreas), mesh._cellDistances))[numerix.newaxis,:]
 
             else:
 
@@ -154,7 +156,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
                 faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh.faceNormals)
                 rotationTensor = self.__getRotationTensor(mesh)
-                rotationTensor[:, 0] = rotationTensor[:, 0] / mesh._cellDistances
+                rotationTensor[:, 0] = old_div(rotationTensor[:, 0], mesh._cellDistances)
 
                 tmpBop = faceNormals.dot(coeff).dot(rotationTensor) * mesh._faceAreas
 
@@ -306,8 +308,8 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
                 self.constraintB = -(var.faceGrad.constraintMask * nthCoeffFaceGrad).divergence * mesh.cellVolumes
 
-                constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * \
-                                                    normalsNthCoeff / mesh._cellDistances
+                constrainedNormalsDotCoeffOverdAP = old_div(var.arithmeticFaceValue.constraintMask * \
+                                                    normalsNthCoeff, mesh._cellDistances)
 
                 self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
 
@@ -337,7 +339,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                                                                                       diffusionGeomCoeff=diffusionGeomCoeff)
             del lowerOrderBCs
 
-            lowerOrderb = lowerOrderb / mesh.cellVolumes
+            lowerOrderb = old_div(lowerOrderb, mesh.cellVolumes)
             volMatrix = SparseMatrix(mesh=var.mesh, bandwidth = 1)
 
             volMatrix.addAtDiagonal(1. / mesh.cellVolumes)

@@ -1,4 +1,6 @@
 from __future__ import print_function
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 import os
@@ -267,14 +269,14 @@ class GmshFile:
 
     def _orderVertices(self, vertexCoords, vertices):
         coordinates = nx.take(vertexCoords, vertices, axis=1)
-        centroid = nx.add.reduce(coordinates, axis=1) / coordinates.shape[1]
+        centroid = old_div(nx.add.reduce(coordinates, axis=1), coordinates.shape[1])
         coordinates = coordinates - centroid[..., nx.newaxis]
 
         # to prevent div by zero
         coordinates = nx.where(coordinates == 0, 1.e-10, coordinates)
 
         # angles go from -pi / 2 to 3*pi / 2
-        angles = nx.arctan(coordinates[1] / coordinates[0]) \
+        angles = nx.arctan(old_div(coordinates[1], coordinates[0])) \
                 + nx.where(coordinates[0] < 0, nx.pi, 0)
         sortorder = nx.argsort(angles)
         return nx.take(vertices, sortorder)

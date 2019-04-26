@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -40,11 +42,11 @@ class _LeastSquaresCellGradVariable(CellVariable):
         vec = numerix.array(numerix.sum((neighborValue - value) * cellDistanceNormals, axis=1))
 
         if D == 1:
-            vec[0] = vec[0] / mat[0, 0]
+            vec[0] = old_div(vec[0], mat[0, 0])
         elif D == 2:
             divisor = mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0]
-            gradx = (vec[0] * mat[1, 1] - vec[1] * mat[1, 0]) / divisor
-            grady = (vec[1] * mat[0, 0] - vec[0] * mat[0, 1]) / divisor
+            gradx = old_div((vec[0] * mat[1, 1] - vec[1] * mat[1, 0]), divisor)
+            grady = old_div((vec[1] * mat[0, 0] - vec[0] * mat[0, 1]), divisor)
             vec[0] = gradx
             vec[1] = grady
         else:

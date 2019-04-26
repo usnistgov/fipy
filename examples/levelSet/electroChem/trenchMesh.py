@@ -1,4 +1,6 @@
 from __future__ import absolute_import
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -103,16 +105,16 @@ class TrenchMesh(GapFillMesh):
                                          transitionRegionHeight=transitionHeight,
                                          communicator=parallelComm)
 
-        trenchWidth = trenchDepth / aspectRatio
+        trenchWidth = old_div(trenchDepth, aspectRatio)
 
         x, y = self.cellCenters
-        Y = (y - (heightBelowTrench + trenchDepth / 2))
+        Y = (y - (heightBelowTrench + old_div(trenchDepth, 2)))
         taper = numerix.tan(angle) * Y
         self.electrolyteMask = numerix.where(y > trenchDepth + heightBelowTrench,
                                              1,
                                              numerix.where(y < heightBelowTrench,
                                                            0,
-                                                           numerix.where(x > trenchWidth / 2 + taper,
+                                                           numerix.where(x > old_div(trenchWidth, 2) + taper,
                                                                          0,
                                                                          1)))
 

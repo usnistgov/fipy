@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 import os
@@ -20,8 +22,8 @@ class LinearLUSolver(_ScipySolver):
         diag = L.takeDiagonal()
         maxdiag = max(numerix.absolute(diag))
 
-        L = L * (1 / maxdiag)
-        b = b * (1 / maxdiag)
+        L = L * (old_div(1, maxdiag))
+        b = b * (old_div(1, maxdiag))
 
         LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=1.,
                                             relax=1,
@@ -33,7 +35,7 @@ class LinearLUSolver(_ScipySolver):
         for iteration in range(min(self.iterations, 10)):
             errorVector = L * x - b
 
-            if (numerix.sqrt(numerix.sum(errorVector**2)) / error0)  <= self.tolerance:
+            if (old_div(numerix.sqrt(numerix.sum(errorVector**2)), error0))  <= self.tolerance:
                 break
 
             xError = LU.solve(errorVector)

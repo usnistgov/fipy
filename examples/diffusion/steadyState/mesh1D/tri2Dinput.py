@@ -33,7 +33,9 @@ tolerance of `1e-10`.
 
 """
 from __future__ import print_function
+from __future__ import division
 
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import Tri2D, CellVariable, DiffusionTerm, Viewer
@@ -56,7 +58,7 @@ if __name__ == '__main__':
     viewer.plot()
     x = mesh.cellCenters[0]
     Lx = nx * dx
-    analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
+    analyticalArray = valueLeft + old_div((valueRight - valueLeft) * x, Lx)
     print(var.allclose(analyticalArray))
     input("finished")
 

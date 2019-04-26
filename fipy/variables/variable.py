@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 import os
@@ -1103,12 +1105,12 @@ class Variable(object):
         return self._BinaryOperatorVariable(lambda a, b: pow(b, a), other, value0mattersForUnit=True)
 
     def __truediv__(self, other):
-        return self._BinaryOperatorVariable(lambda a, b: a/b, other)
+        return self._BinaryOperatorVariable(lambda a, b: old_div(a,b), other)
 
     __div__ = __truediv__
 
     def __rtruediv__(self, other):
-        return self._BinaryOperatorVariable(lambda a, b: b/a, other)
+        return self._BinaryOperatorVariable(lambda a, b: old_div(b,a), other)
 
     __rdiv__ = __rtruediv__
 

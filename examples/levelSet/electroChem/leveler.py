@@ -177,6 +177,8 @@ can be obtained by running this example.
     :sort:
 """
 from __future__ import absolute_import
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, TransientTerm, FirstOrderAdvectionTerm, GeneralSolver, Viewer
@@ -230,7 +232,7 @@ def runLeveler(kLeveler=0.018,
     Vd = 0.098
     Bd = 0.0008
 
-    etaPrime = faradaysConstant * overpotential / gasConstant / temperature
+    etaPrime = old_div(faradaysConstant * overpotential, gasConstant / temperature)
 
     mesh = TrenchMesh(cellSize = cellSize,
                       trenchSpacing = trenchSpacing,
@@ -280,9 +282,9 @@ def runLeveler(kLeveler=0.018,
 
     exchangeCurrentDensity = acceleratorVar.interfaceVar * (coeffAccelerator - coeffSuppressor) + coeffSuppressor
 
-    currentDensity = metalVar / bulkMetalConcentration * exchangeCurrentDensity
+    currentDensity = old_div(metalVar, bulkMetalConcentration * exchangeCurrentDensity)
 
-    depositionRateVariable = currentDensity * atomicVolume / charge / faradaysConstant
+    depositionRateVariable = old_div(currentDensity * atomicVolume, charge / faradaysConstant)
 
     extensionVelocityVariable = CellVariable(
         name = 'extension velocity',
@@ -290,7 +292,7 @@ def runLeveler(kLeveler=0.018,
         value = depositionRateVariable)
 
     kAccelerator = rateConstant * numerix.exp(-alphaAdsorption * etaPrime)
-    kAcceleratorConsumption =  Bd + A / (numerix.exp(Ba * (overpotential + Vd)) + numerix.exp(Bb * (overpotential + Vd)))
+    kAcceleratorConsumption =  Bd + old_div(A, (numerix.exp(Ba * (overpotential + Vd)) + numerix.exp(Bb * (overpotential + Vd))))
     q = m * overpotential + b
 
     levelerSurfactantEquation = AdsorbingSurfactantEquation(
@@ -394,7 +396,7 @@ def runLeveler(kLeveler=0.018,
                                                0),
                                  0)
 
-        dt = cflNumber * cellSize / extOnInt.max()
+        dt = old_div(cflNumber * cellSize, extOnInt.max())
 
         distanceVar.extendVariable(extensionVelocityVariable)
 

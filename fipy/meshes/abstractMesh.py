@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractMesh"]
@@ -813,7 +815,7 @@ class AbstractMesh(object):
 
     @property
     def _cellDistanceNormals(self):
-        return self.cellDistanceVectors / self._cellDistances
+        return old_div(self.cellDistanceVectors, self._cellDistances)
 
     @property
     def _cellAreaProjections(self):
@@ -964,7 +966,7 @@ class AbstractMesh(object):
         NotImplementedError
 
         """
-        return self.__mul__(1 / other)
+        return self.__mul__(old_div(1, other))
 
     __div__ = __truediv__
 
@@ -1125,7 +1127,7 @@ class AbstractMesh(object):
             xCoords = numerix.take(self.vertexCoords[0], vertexIDs)
             yCoords = numerix.take(self.vertexCoords[1], vertexIDs)
 
-            return float((yCoords.max() - yCoords.min()) / (xCoords.max() - xCoords.min()))
+            return float(old_div((yCoords.max() - yCoords.min()), (xCoords.max() - xCoords.min())))
 
 
 def _madmin(x):

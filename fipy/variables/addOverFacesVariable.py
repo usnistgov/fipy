@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __all__ = []
 
 from fipy.tools import numerix
@@ -74,5 +76,5 @@ class _AddOverFacesVariable(CellVariable):
 
         faceContributions = contributions * self.mesh._cellToFaceOrientations[s]
 
-        return numerix.tensordot(numerix.ones(faceContributions.shape[-2], 'd'),
-                                 numerix.MA.filled(faceContributions, 0.), (0, -2)) / self.mesh.cellVolumes
+        return old_div(numerix.tensordot(numerix.ones(faceContributions.shape[-2], 'd'),
+                                 numerix.MA.filled(faceContributions, 0.), (0, -2)), self.mesh.cellVolumes)

@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = ['FirstOrderAdvectionTerm']
@@ -117,7 +119,7 @@ class FirstOrderAdvectionTerm(_NonDiffusionTerm):
         return (var, SparseMatrix(mesh=var.mesh), -coeffXdifferences * mesh.cellVolumes)
 
     def _getDifferences(self, adjacentValues, cellValues, oldArray, cellToCellIDs, mesh):
-        return (adjacentValues - cellValues) / mesh._cellToCellDistances
+        return old_div((adjacentValues - cellValues), mesh._cellToCellDistances)
 
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
         solver = solver or super(FirstOrderAdvectionTerm, self)._getDefaultSolver(var, solver, *args, **kwargs)

@@ -1,4 +1,6 @@
 from __future__ import print_function
+from __future__ import division
+from past.utils import old_div
 from matplotlib import cm
 from matplotlib import pyplot
 from matplotlib import rcParams
@@ -116,14 +118,14 @@ class SignedLogLocator(ticker.LogLocator):
                     subs = numerix.arange(2.0, b, 2.0)
                 else:
                     subs = numerix.arange(2.0, b)
-                subs = numerix.log(subs) / numerix.log(b)
+                subs = old_div(numerix.log(subs), numerix.log(b))
             else:
                 subs = self._subs
                 if numdec == 0 and len(subs) == 1:
-                    subs = numerix.array(list(subs) + list(numerix.log(numerix.arange(2.0, b)) / numerix.log(b)))
+                    subs = numerix.array(list(subs) + list(old_div(numerix.log(numerix.arange(2.0, b)), numerix.log(b))))
 
             stride = 1
-            while numdec/stride+1 > self.numticks:
+            while old_div(numdec,stride)+1 > self.numticks:
                 stride += 1
 
             for decadeStart in numerix.arange(numerix.floor(self.threshold),
@@ -155,8 +157,8 @@ class SignedLogLocator(ticker.LogLocator):
         if remainder < 0.5:
             exponent -= 1
         scale = 10**(-exponent)
-        vmin = numerix.floor(scale*vmin)/scale
-        vmax = numerix.ceil(scale*vmax)/scale
+        vmin = old_div(numerix.floor(scale*vmin),scale)
+        vmax = old_div(numerix.ceil(scale*vmax),scale)
 
         return nonsingular(vmin, vmax)
 
@@ -165,9 +167,9 @@ class MatplotlibSparseMatrixViewer:
         self.title = title
 
         self.L_width = 0.8
-        self.margin = (1. - self.L_width) / 2
+        self.margin = old_div((1. - self.L_width), 2)
         self.b_width = self.margin
-        self.c_width = self.margin / 3
+        self.c_width = old_div(self.margin, 3)
         self.buffer = 1.5 * self.margin
         self.aspect = (self.margin + self.L_width                   # M
                        + self.buffer + self.c_width                 # colorbar
@@ -279,15 +281,15 @@ class MatplotlibSparseMatrixViewer:
         norm = Normalize(vmin=-zRange, vmax=zRange)
 
         x0 = self.margin
-        L_ax = fig.add_axes([x0 / self.aspect, self.margin, self.L_width / self.aspect, self.L_width])
+        L_ax = fig.add_axes([old_div(x0, self.aspect), self.margin, old_div(self.L_width, self.aspect), self.L_width])
         L_ax.text(0.5, -0.1, "L",
                   transform=L_ax.transAxes, horizontalalignment='center', verticalalignment='baseline')
 
         x0 += self.L_width + self.buffer
-        c_ax = fig.add_axes([x0 / self.aspect, self.margin, self.c_width / self.aspect, self.L_width])
+        c_ax = fig.add_axes([old_div(x0, self.aspect), self.margin, old_div(self.c_width, self.aspect), self.L_width])
 
         x0 += self.c_width + self.buffer
-        b_ax = fig.add_axes([x0 / self.aspect, self.margin, self.b_width / self.aspect, self.L_width],
+        b_ax = fig.add_axes([old_div(x0, self.aspect), self.margin, old_div(self.b_width, self.aspect), self.L_width],
                             sharey=L_ax)
         b_ax.text(0.5, -0.1, "b",
                   transform=b_ax.transAxes, horizontalalignment='center', verticalalignment='baseline')

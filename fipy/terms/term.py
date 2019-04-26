@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 import os
@@ -380,7 +382,7 @@ class Term(object):
     __rmul__ = __mul__
 
     def __truediv__(self, other):
-        return (1 / other) * self
+        return (old_div(1, other)) * self
 
     __div__ = __truediv__
 

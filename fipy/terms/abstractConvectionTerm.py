@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -133,8 +135,8 @@ class _AbstractConvectionTerm(FaceTerm):
                 peclet = pecletLarge
             else:
                 diffCoeff = diffusionGeomCoeff[0].numericValue
-                diffCoeff = diffCoeff - (diffCoeff == 0) * geomCoeff / pecletLarge
-                peclet = -geomCoeff / diffCoeff
+                diffCoeff = diffCoeff - old_div((diffCoeff == 0) * geomCoeff, pecletLarge)
+                peclet = old_div(-geomCoeff, diffCoeff)
 
             alpha = self._alpha(peclet)
 

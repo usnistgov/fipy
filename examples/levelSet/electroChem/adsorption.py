@@ -64,6 +64,8 @@ Compare the analytical and numerical results:
 """
 from __future__ import absolute_import
 from __future__ import print_function
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, DistanceVariable, SurfactantVariable, Grid1D
@@ -83,7 +85,7 @@ dt = 0.001
 
 ## build the mesh
 
-dx = L / (nx - 1.5)
+dx = old_div(L, (nx - 1.5))
 mesh = Grid1D(nx = nx, dx = dx, communicator=serialComm)
 
 ## build the distance variable
@@ -120,12 +122,12 @@ surfEqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
 x = mesh.cellCenters[0, 1:] - dx
 
 def concentrationFunc(theta):
-    tmp = (1 + rateConstant * siteDensity * (1 - theta) * L / diffusion)
-    return cinf * (1 + rateConstant * siteDensity * (1 - theta) * x / diffusion) / tmp
+    tmp = (1 + old_div(rateConstant * siteDensity * (1 - theta) * L, diffusion))
+    return old_div(cinf * (1 + old_div(rateConstant * siteDensity * (1 - theta) * x, diffusion)), tmp)
 
 def currentTimeFunc(theta):
     tmp = -diffusion * numerix.log(1 - theta) + rateConstant * siteDensity * L * theta
-    return tmp / rateConstant / diffusion/ cinf
+    return old_div(tmp, rateConstant / diffusion/ cinf)
 
 ## set up the comparison arrays
 

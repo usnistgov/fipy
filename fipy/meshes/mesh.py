@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.abstractMesh import AbstractMesh
@@ -179,7 +181,7 @@ class Mesh(AbstractMesh):
         norm = numerix.cross(t1, t2, axis=0)
         ## reordering norm's internal memory for inlining
         norm = norm.copy()
-        norm = norm / numerix.sqrtDot(norm, norm)
+        norm = old_div(norm, numerix.sqrtDot(norm, norm))
 
         faceNormals = -norm
 
@@ -193,7 +195,7 @@ class Mesh(AbstractMesh):
         norm = numerix.cross(t1, t2, axis=0)
         ## reordering norm's internal memory for inlining
         norm = norm.copy()
-        norm = norm / numerix.sqrtDot(norm, norm)
+        norm = old_div(norm, numerix.sqrtDot(norm, norm))
 
         faceNormals = -norm
 
@@ -209,7 +211,7 @@ class Mesh(AbstractMesh):
 
         diff = faceCellCentersDown - faceCellCentersUp
         mag = numerix.sqrt(numerix.sum(diff**2))
-        faceCellToCellNormals = diff / numerix.resize(mag, (self.dim, len(mag)))
+        faceCellToCellNormals = old_div(diff, numerix.resize(mag, (self.dim, len(mag))))
 
         orientation = 1 - 2 * (numerix.dot(self.faceNormals, faceCellToCellNormals) < 0)
         return faceCellToCellNormals * orientation
@@ -248,9 +250,9 @@ class Mesh(AbstractMesh):
                                                      self.faceVertexIDs[0],
                                                      axis=1))
         tmp = self._faceCenters - faceVertexCoord
-        faceTangents1 = tmp / numerix.sqrtDot(tmp, tmp)
+        faceTangents1 = old_div(tmp, numerix.sqrtDot(tmp, tmp))
         tmp = numerix.cross(faceTangents1, self.faceNormals, axis=0)
-        faceTangents2 = tmp / numerix.sqrtDot(tmp, tmp)
+        faceTangents2 = old_div(tmp, numerix.sqrtDot(tmp, tmp))
         return faceTangents1, faceTangents2
 
     def _calcCellToCellDist(self):
@@ -350,10 +352,10 @@ class Mesh(AbstractMesh):
         dAP = self._cellDistances
         dFP = self._faceToCellDistances[0]
 
-        return MA.filled(dFP / dAP)
+        return MA.filled(old_div(dFP, dAP))
 
     def _calcFaceAspectRatios(self):
-        return self._scaledFaceAreas / self._cellDistances
+        return old_div(self._scaledFaceAreas, self._cellDistances)
 
     def __mul__(self, factor):
         """

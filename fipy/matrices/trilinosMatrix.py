@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -112,8 +114,7 @@ class _TrilinosMatrix(_SparseMatrix):
             # Depending on which one is more filled, pick the order of operations
             if self.matrix.Filled() and other.matrix.NumGlobalNonzeros() \
                                             > self.matrix.NumGlobalNonzeros():
-                tempBandwidth = other.matrix.NumGlobalNonzeros() \
-                                 /self.matrix.NumGlobalRows()+1
+                tempBandwidth = old_div(other.matrix.NumGlobalNonzeros(),self.matrix.NumGlobalRows())+1
 
                 tempMatrix = Epetra.CrsMatrix(Epetra.Copy, self.rowMap, tempBandwidth)
 
@@ -488,7 +489,7 @@ class _TrilinosMatrix(_SparseMatrix):
             DistributedMap = Epetra.Map(totalElements, 0, self.comm)
             RootToDist = Epetra.Import(DistributedMap, self.rangeMap)
 
-            DistMatrix = Epetra.CrsMatrix(Epetra.Copy, DistributedMap, self.bandwidth*3/2)
+            DistMatrix = Epetra.CrsMatrix(Epetra.Copy, DistributedMap, old_div(self.bandwidth*3,2))
 
             DistMatrix.Import(self.matrix, RootToDist, Epetra.Insert)
 
@@ -516,7 +517,7 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
         """
         size = max(rows, cols)
         if sizeHint is not None and bandwidth == 0:
-            bandwidth = (sizeHint + size - 1) / (size or 1)
+            bandwidth = old_div((sizeHint + size - 1), (size or 1))
         else:
             bandwidth = bandwidth
 

@@ -4,7 +4,9 @@ This test file generates lots of different SkewedGrid2D meshes, each with a diff
 and runs a 1D diffusion problem on them all. It computes the RMS non-orthogonality and the RMS error
 for each mesh and displays them in a graph, allowing the relationship of error to non-orthogonality to be investigated.
 """
+from __future__ import division
 
+from past.utils import old_div
 if __name__ == '__main__':
 
     import sys
@@ -35,11 +37,11 @@ if __name__ == '__main__':
 
         varArray = numerix.array(var)
         x = mesh.cellCenters[0]
-        analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
+        analyticalArray = valueLeft + old_div((valueRight - valueLeft) * x, 20)
         errorArray = varArray - analyticalArray
         nonOrthoArray = mesh._nonOrthogonality
-        RMSError = (numerix.add.reduce(errorArray * errorArray) / len(errorArray)) ** 0.5
-        RMSNonOrtho = (numerix.add.reduce(nonOrthoArray * nonOrthoArray) / len(nonOrthoArray)) ** 0.5
+        RMSError = (old_div(numerix.add.reduce(errorArray * errorArray), len(errorArray))) ** 0.5
+        RMSNonOrtho = (old_div(numerix.add.reduce(nonOrthoArray * nonOrthoArray), len(nonOrthoArray))) ** 0.5
 
         RMSNonOrthoList += [RMSNonOrtho]
         RMSErrorList += [RMSError]

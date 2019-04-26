@@ -30,6 +30,8 @@ recommended values from CODATA_. Other conversion factors
 .. _CODATA:                                     http://www.codata.org/
 .. _Appendix B of NIST Special Publication 811: http://physics.nist.gov/Pubs/SP811/appenB9.html
 """
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 import re
@@ -356,11 +358,11 @@ class PhysicalField(object):
         if isinstance(other, type('')):
             other = self.__class__(value = other)
         if not isinstance(other, PhysicalField):
-            value = self.value/other
+            value = old_div(self.value,other)
             unit = self.unit
         else:
-            value = self.value/other.value
-            unit = self.unit/other.unit
+            value = old_div(self.value,other.value)
+            unit = old_div(self.unit,other.unit)
         if unit.isDimensionless():
             return value*unit.factor
         else:
@@ -375,11 +377,11 @@ class PhysicalField(object):
         if isinstance(other, type('')):
             other = PhysicalField(value = other)
         if not isinstance(other, PhysicalField):
-            value = other/self.value
+            value = old_div(other,self.value)
             unit = pow(self.unit, -1)
         else:
-            value = other.value/self.value
-            unit = other.unit/self.unit
+            value = old_div(other.value,self.value)
+            unit = old_div(other.unit,self.unit)
         if unit.isDimensionless():
             return value*unit.factor
         else:
@@ -404,7 +406,7 @@ class PhysicalField(object):
             unit = self.unit
         else:
             value = self.value % other.value
-            unit = self.unit/other.unit
+            unit = old_div(self.unit,other.unit)
         if unit.isDimensionless():
             return value*unit.factor
         else:
@@ -1530,11 +1532,11 @@ class PhysicalUnit:
             raise TypeError("cannot divide units with non-zero offset")
         if isinstance(other, PhysicalUnit):
             return PhysicalUnit(self.names-other.names,
-                                self.factor/other.factor,
+                                old_div(self.factor,other.factor),
                                 self.powers - other.powers)
         else:
             return PhysicalUnit(self.names+{str(other): -1},
-                                self.factor/other, self.powers)
+                                old_div(self.factor,other), self.powers)
 
     __div__ = __truediv__
 
@@ -1560,12 +1562,12 @@ class PhysicalUnit:
             raise TypeError("cannot divide units with non-zero offset")
         if isinstance(other, PhysicalUnit):
             return PhysicalUnit(other.names-self.names,
-                                other.factor/self.factor,
+                                old_div(other.factor,self.factor),
                                 list(map(lambda a, b: a-b,
                                     other.powers, self.powers)))
         else:
             return PhysicalUnit({str(other): 1}-self.names,
-                                other/self.factor,
+                                old_div(other,self.factor),
                                 -self.powers)
 
     __rdiv__ = __rtruediv__
@@ -1662,14 +1664,14 @@ class PhysicalUnit:
         """
         if not numerix.alltrue(self.powers == other.powers):
             if self.isDimensionlessOrAngle() and other.isDimensionlessOrAngle():
-                return self.factor/other.factor
+                return old_div(self.factor,other.factor)
             else:
                 raise TypeError('Incompatible units')
         if self.offset != other.offset and self.factor != other.factor:
             raise TypeError(('Unit conversion (%s to %s) cannot be expressed ' +
                    'as a simple multiplicative factor') % \
                   (self.name(), other.name()))
-        return self.factor/other.factor
+        return old_div(self.factor,other.factor)
 
     def conversionTupleTo(self, other): # added 1998/09/29 GPW
         """
@@ -1698,8 +1700,8 @@ class PhysicalUnit:
         #   = ( (x+d1) - (d1*s2/s1) ) * s1/s2
         #   = (x + d1 - d2*s2/s1) * s1/s2
         # thus, D = d1 - d2*s2/s1 and S = s1/s2
-        factor = self.factor / other.factor
-        offset = self.offset - (other.offset * other.factor / self.factor)
+        factor = old_div(self.factor, other.factor)
+        offset = self.offset - (old_div(other.offset * other.factor, self.factor))
         return (factor, offset)
 
     def isCompatible (self, other):     # added 1998/10/01 GPW
@@ -1899,7 +1901,7 @@ def _Scale(quantity, scaling):
         scaling = PhysicalField(scaling)
         # normalize quantity to scaling
         # error will be thrown if incompatible
-        dimensionless = quantity / scaling
+        dimensionless = old_div(quantity, scaling)
     else:
         # Assume quantity is a dimensionless number and return it.
         # Automatically throws an error if it's not a number.

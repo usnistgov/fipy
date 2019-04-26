@@ -5,7 +5,9 @@ Test
 True
 
 """
+from __future__ import division
 
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, FaceVariable, Grid1D, TransientTerm, CentralDifferenceConvectionTerm
@@ -18,7 +20,7 @@ cfl = 0.1
 K = 4.
 rho = 1.
 
-dx = L / nx
+dx = old_div(L, nx)
 m = Grid1D(nx=nx, dx=dx) + X0
 x, = m.cellCenters
 
@@ -27,7 +29,7 @@ q = CellVariable(mesh=m, rank=1, elementshape=(2,))
 q[0,:] = numerix.exp(-50 * (x - 0.3)**2) * numerix.cos(20 * (x - 0.3))
 q[0, x > 0.3] = 0.
 
-Ax = FaceVariable(mesh=m, rank=3, value=[((0, K), (1 / rho, 0))], elementshape=(1, 2, 2))
+Ax = FaceVariable(mesh=m, rank=3, value=[((0, K), (old_div(1, rho), 0))], elementshape=(1, 2, 2))
 
 eqn = TransientTerm() + CentralDifferenceConvectionTerm(Ax) == 0
 

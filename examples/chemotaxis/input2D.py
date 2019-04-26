@@ -25,7 +25,9 @@ Here are some test cases for the model.
     1
 
 """
+from __future__ import division
 
+from past.utils import old_div
 from examples.chemotaxis.parameters import parameters
 from fipy import CellVariable, Grid2D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer
 
@@ -51,7 +53,7 @@ RVar = CellVariable(mesh = mesh, value = params['R'], hasOld = 1)
 PN = P3Var + P2Var
 
 KMscCoeff = params['chiK'] * (RVar + 1) * (1 - KCVar - KMVar.cellVolumeAverage)
-KMspCoeff = params['lambdaK'] / (1 + PN / params['kappaK'])
+KMspCoeff = old_div(params['lambdaK'], (1 + old_div(PN, params['kappaK'])))
 KMEq = TransientTerm() - KMscCoeff + ImplicitSourceTerm(KMspCoeff)
 
 TMscCoeff = params['chiT'] * (1 - TCVar - TMVar.cellVolumeAverage)
@@ -62,33 +64,33 @@ TCscCoeff = params['lambdaT'] * (TMVar * KMVar).cellVolumeAverage
 TCspCoeff = params['lambdaTstar']
 TCEq = TransientTerm() - TCscCoeff + ImplicitSourceTerm(TCspCoeff)
 
-PIP2PITP = PN / (PN / params['kappam'] + PN.cellVolumeAverage / params['kappac'] + 1) + params['zetaPITP']
+PIP2PITP = old_div(PN, (old_div(PN, params['kappam']) + old_div(PN.cellVolumeAverage, params['kappac']) + 1)) + params['zetaPITP']
 
 P3spCoeff = params['lambda3'] * (TMVar + params['zeta3T'])
-P3scCoeff = params['chi3'] * KMVar * (PIP2PITP / (1 + KMVar / params['kappa3']) + params['zeta3PITP']) + params['zeta3']
+P3scCoeff = params['chi3'] * KMVar * (old_div(PIP2PITP, (1 + old_div(KMVar, params['kappa3']))) + params['zeta3PITP']) + params['zeta3']
 P3Eq = TransientTerm() - DiffusionTerm(params['diffusionCoeff']) - P3scCoeff + ImplicitSourceTerm(P3spCoeff)
 
 P2scCoeff = scCoeff = params['chi2'] + params['lambda3'] * params['zeta3T'] * P3Var
 P2spCoeff = params['lambda2'] * (TMVar + params['zeta2T'])
 P2Eq = TransientTerm() - DiffusionTerm(params['diffusionCoeff']) - P2scCoeff + ImplicitSourceTerm(P2spCoeff)
 
-KCscCoeff = params['alphaKstar'] * params['lambdaK'] * (KMVar / (1 + PN / params['kappaK'])).cellVolumeAverage
-KCspCoeff = params['lambdaKstar'] / (params['kappaKstar'] + KCVar)
+KCscCoeff = params['alphaKstar'] * params['lambdaK'] * (old_div(KMVar, (1 + old_div(PN, params['kappaK'])))).cellVolumeAverage
+KCspCoeff = old_div(params['lambdaKstar'], (params['kappaKstar'] + KCVar))
 KCEq = TransientTerm() - KCscCoeff + ImplicitSourceTerm(KCspCoeff)
 
 eqs = ((KMVar, KMEq), (TMVar, TMEq), (TCVar, TCEq), (P3Var, P3Eq), (P2Var, P2Eq), (KCVar, KCEq))
 
 if __name__ == '__main__':
 
-    PNView = PN / PN.cellVolumeAverage
+    PNView = old_div(PN, PN.cellVolumeAverage)
     PNView.setName('PN')
     PNViewer = Viewer(PNView, datamax=2., datamin=0., title='')
 
-    KMView = KMVar / KMVar.cellVolumeAverage
+    KMView = old_div(KMVar, KMVar.cellVolumeAverage)
     KMView.setName('KM')
     KMViewer = Viewer(KMView, datamax=2., datamin=0., title='')
 
-    TMView = TMVar / TMVar.cellVolumeAverage
+    TMView = old_div(TMVar, TMVar.cellVolumeAverage)
     TMView.setName('TM')
     TMViewer = Viewer(TMView, datamax=2., datamin=0., title='')
 
@@ -100,7 +102,7 @@ if __name__ == '__main__':
 
     x, y = mesh.cellCenters
 
-    RVar[:] = L / sqrt((x - L / 2)**2 + (y - 2 * L)**2)
+    RVar[:] = old_div(L, sqrt((x - old_div(L, 2))**2 + (y - 2 * L)**2))
 
     for i in range(100):
         for var, eqn in eqs:

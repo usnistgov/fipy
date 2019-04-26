@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
@@ -27,4 +29,4 @@ class HistogramVariable(CellVariable):
         n = numerix.searchsorted(numerix.sort(self.distribution), bins)
         n = numerix.concatenate([n, [l]])
         dx = bins[1:] - bins[:-1]
-        return (n[1:] - n[:-1]) / numerix.concatenate([dx, [dx[-1]]]) / float(l)
+        return old_div((n[1:] - n[:-1]), numerix.concatenate([dx, [dx[-1]]]) / float(l))

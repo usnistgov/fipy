@@ -1,4 +1,6 @@
 from __future__ import print_function
+from __future__ import division
+from past.utils import old_div
 import os
 import sys
 import re
@@ -112,7 +114,7 @@ if steps == 0:
     print("max resident memory: %.2f B / cell" % float(rsz))
     print(" max virtual memory: %.2f B / cell" % float(vsz))
 else:
-    print("           cpu time: %.9f s / step / cell" % ((cpu - cpu0) / steps / N**2))
+    print("           cpu time: %.9f s / step / cell" % (old_div((cpu - cpu0), steps / N**2)))
     print("max resident memory: %.2f B / cell" % (float(rsz) / N**2))
     print(" max virtual memory: %.2f B / cell" % (float(vsz) / N**2))
 

@@ -1,6 +1,8 @@
 """
 2D rectangular Mesh with constant spacing in x and constant spacing in y
 """
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -253,7 +255,7 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _faceAspectRatios(self):
-        return self._faceAreas / self._cellDistances
+        return old_div(self._faceAreas, self._cellDistances)
 
     @property
     def _faceAreas(self):
@@ -583,11 +585,11 @@ class UniformGrid2D(UniformGrid):
         xi, yi = points
         dx, dy = self.dx, self.dy
 
-        i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
+        i = numerix.array(numerix.rint((old_div((xi - x0), dx))), 'l')
         i[i < 0] = 0
         i[i > nx - 1] = nx - 1
 
-        j = numerix.array(numerix.rint(((yi - y0) / dy)), 'l')
+        j = numerix.array(numerix.rint((old_div((yi - y0), dy))), 'l')
         j[j < 0] = 0
         j[j > ny - 1]  = ny - 1
 

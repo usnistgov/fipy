@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -15,9 +17,9 @@ class _HybridConvectionTermAlpha(FaceVariable):
         eps = 1e-3
         P  = self.P
 
-        alpha = numerix.where(                                 P > 2., (P - 1) / P,    0.)
+        alpha = numerix.where(                                 P > 2., old_div((P - 1), P),    0.)
         alpha = numerix.where( numerix.logical_and(2. >= P, P >= -2.),         0.5, alpha)
-        alpha = numerix.where(                               -2. >  P,      -1 / P, alpha)
+        alpha = numerix.where(                               -2. >  P,      old_div(-1, P), alpha)
 
         return alpha
 

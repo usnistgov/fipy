@@ -18,6 +18,8 @@ Run::
 
 to see available options.
 """
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 # Standard imports.
@@ -169,7 +171,7 @@ class MayaviDaemon(Mayavi):
         self.view_data()
 
         # Poll the lock file.
-        self.timer = Timer(1000 / self.fps, self.poll_file)
+        self.timer = Timer(old_div(1000, self.fps), self.poll_file)
 
     def __del__(self):
         dir = None

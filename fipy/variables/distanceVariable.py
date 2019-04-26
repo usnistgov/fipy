@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -519,7 +521,7 @@ class DistanceVariable(CellVariable):
         if len(exteriorFaces.value) > 0:
             faceGrad[..., exteriorFaces.value] = 0.
 
-        return faceGrad / faceGradMag
+        return old_div(faceGrad, faceGradMag)
 
 def _test():
     import fipy.tests.doctestPlus

@@ -13,13 +13,15 @@
 
 """
 from __future__ import print_function
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, Grid1D, LinearLUSolver, NthOrderBoundaryCondition, DiffusionTerm, Viewer
 
 Lx = 1.
 nx = 100000
-dx = Lx / nx
+dx = old_div(Lx, nx)
 
 mesh = Grid1D(dx = dx, nx = nx)
 

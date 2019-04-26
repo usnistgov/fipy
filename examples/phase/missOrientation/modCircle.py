@@ -52,6 +52,8 @@ data and compares it with the ``phase`` variable.
 1
 
 """
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 
@@ -73,8 +75,8 @@ epsilon = 0.008
 s = 0.01
 alpha = 0.015
 
-dx = L / nx
-dy = L / ny
+dx = old_div(L, nx)
+dy = old_div(L, ny)
 
 mesh = Grid2D(dx, dy, nx, ny)
 

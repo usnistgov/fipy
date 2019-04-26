@@ -9,7 +9,9 @@ the non-orthogonality error, this uses a SkewedGrid2D, which is a
 Grid2D with each interior vertex moved in a random direction.
 
 """
+from __future__ import division
 
+from past.utils import old_div
 if __name__ == '__main__':
     import sys
     import os
@@ -35,7 +37,7 @@ if __name__ == '__main__':
 
     varArray = numerix.array(var)
     x = mesh.cellCenters[0]
-    analyticalArray = valueLeft + (valueRight - valueLeft) * x / 20
+    analyticalArray = valueLeft + old_div((valueRight - valueLeft) * x, 20)
     errorArray = varArray - analyticalArray
     errorVar = CellVariable(name = 'absolute error',
                             mesh = mesh,

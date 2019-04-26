@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -88,9 +90,9 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
         diff = zmax - zmin
 
         if diff < smallNumber:
-            V = numerix.arange(numberOfContours + 1) * smallNumber / numberOfContours + zmin
+            V = old_div(numerix.arange(numberOfContours + 1) * smallNumber, numberOfContours) + zmin
         else:
-            V = numerix.arange(numberOfContours + 1) * diff / numberOfContours + zmin
+            V = old_div(numerix.arange(numberOfContours + 1) * diff, numberOfContours) + zmin
 
         self.axes.contourf(X, Y, Z, V, cmap=self.cmap)
 

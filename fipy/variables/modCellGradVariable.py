@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -43,4 +45,4 @@ class _ModCellGradVariable(_GaussCellGradVariable):
     def _calcValueNoInline(self, N, M, ids, orientations, volumes):
         value = _GaussCellGradVariable._calcValueNoInline(self, N, M, ids, orientations, volumes)
         gridSpacing = self.mesh._meshSpacing
-        return self.modPy(value * gridSpacing) / gridSpacing
+        return old_div(self.modPy(value * gridSpacing), gridSpacing)

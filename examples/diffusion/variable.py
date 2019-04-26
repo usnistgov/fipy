@@ -16,7 +16,9 @@ A simple analytical answer can be used to test the result:
    1
 
 """
+from __future__ import division
 
+from past.utils import old_div
 from fipy import FaceVariable, Tri2D, CellVariable, DiffusionTerm, Viewer
 from fipy.tools import numerix
 
@@ -29,7 +31,7 @@ timeStepDuration = 1.
 
 L = 10.
 
-dx = L / nx
+dx = old_div(L, nx)
 dy = 1.
 
 mesh = Tri2D(dx, dy, nx, ny)
