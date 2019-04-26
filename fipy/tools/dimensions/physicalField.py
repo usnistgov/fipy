@@ -39,6 +39,7 @@ from fipy.tools.numerix import MA
 from fipy.tools.numerix import umath
 
 from fipy.tools.dimensions.NumberDict import _NumberDict
+from functools import reduce
 
 __all__ = ["PhysicalField", "PhysicalUnit"]
 

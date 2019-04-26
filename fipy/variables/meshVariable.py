@@ -5,6 +5,7 @@ __all__ = []
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix
+from functools import reduce
 
 class _MeshVariable(Variable):
     """
