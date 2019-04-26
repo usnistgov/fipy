@@ -17,6 +17,7 @@ The result is again tested in the same way:
 
 """
 
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, Grid2D, DiffusionTerm, Viewer

@@ -1,3 +1,5 @@
+from builtins import zip
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 __all__ = []

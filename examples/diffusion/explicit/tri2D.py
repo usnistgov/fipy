@@ -31,6 +31,8 @@ The result is again tested in the same way:
 """
 from __future__ import print_function
 
+from builtins import input
+from builtins import range
 from fipy import CellVariable, Tri2D, TransientTerm, ExplicitDiffusionTerm, DefaultSolver, Viewer
 from fipy.tools import numerix
 

@@ -58,6 +58,7 @@ The analytical solution test for this problem is given by:
 ...     viewer = Viewer(vars = var)
 ...     viewer.plot()
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

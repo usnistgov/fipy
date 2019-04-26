@@ -44,6 +44,7 @@ The result of the calculation will be the average value over the domain.
 
 """
 
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

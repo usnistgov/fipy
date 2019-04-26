@@ -53,6 +53,8 @@ data and compares it with the ``phase`` variable.
 
 """
 from __future__ import division
+from builtins import input
+from builtins import range
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 

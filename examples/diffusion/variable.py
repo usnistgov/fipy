@@ -18,6 +18,7 @@ A simple analytical answer can be used to test the result:
 """
 from __future__ import division
 
+from builtins import input
 from past.utils import old_div
 from fipy import FaceVariable, Tri2D, CellVariable, DiffusionTerm, Viewer
 from fipy.tools import numerix

@@ -73,6 +73,7 @@ Advect the interface and check the position.
 1
 
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

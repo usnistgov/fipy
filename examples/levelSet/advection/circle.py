@@ -91,6 +91,7 @@ the result is more accurate,
 1
 
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

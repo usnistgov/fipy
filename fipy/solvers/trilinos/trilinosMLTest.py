@@ -1,3 +1,4 @@
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import Epetra

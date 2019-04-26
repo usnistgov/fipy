@@ -38,6 +38,7 @@ Do the tests:
 1
 
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 from fipy import Grid2D, DistanceVariable, Viewer

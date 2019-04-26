@@ -50,6 +50,7 @@ One can view the mesh with the following code,
    ...     viewer.plot()
 
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 def _run():

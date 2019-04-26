@@ -14,6 +14,7 @@ Test case for the Grid3D.
 
 """
 
+from builtins import input
 from fipy import CellVariable, Grid2D, Grid3D, DiffusionTerm, Viewer
 from fipy.tools import numerix
 

@@ -78,6 +78,7 @@ The following code tests the results with a different algorithm:
 >>> numerix.allclose(testResult, topRight, atol = 1e-10)
 1
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

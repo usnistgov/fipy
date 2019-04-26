@@ -302,6 +302,7 @@ Test values in the last cell.
 .. .. bibmissing:: /documentation/refs.bib
     :sort:
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

@@ -39,6 +39,8 @@ The result can be tested with the following code:
 """
 from __future__ import print_function
 from __future__ import division
+from builtins import input
+from builtins import range
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 

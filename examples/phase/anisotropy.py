@@ -203,6 +203,7 @@ We note that this FiPy simulation is written in about 50 lines of code (excludin
 custom viewer), compared with over 800 lines of (fairly lucid) FORTRAN code used for
 the figures in :cite:`WarrenPolycrystal`.
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

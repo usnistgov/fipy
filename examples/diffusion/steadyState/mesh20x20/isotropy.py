@@ -31,6 +31,7 @@ the diffusion coefficient, even though the coefficient is isotropic.
 1
 """
 
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

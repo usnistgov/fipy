@@ -178,6 +178,7 @@ can be obtained by running this example.
 """
 from __future__ import absolute_import
 from __future__ import division
+from builtins import range
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 

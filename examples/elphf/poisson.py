@@ -181,6 +181,7 @@ and again view the result
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

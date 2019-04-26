@@ -4,6 +4,8 @@ order explicit upwind scheme.
 """
 from __future__ import division
 
+from builtins import input
+from builtins import range
 from past.utils import old_div
 from fipy import CellVariable, Grid1D, TransientTerm, ExplicitUpwindConvectionTerm, LinearLUSolver, Viewer
 from fipy.tools import numerix

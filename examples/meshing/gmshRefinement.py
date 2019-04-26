@@ -1,4 +1,6 @@
 from __future__ import division
+from builtins import range
+from builtins import input
 from past.utils import old_div
 from fipy import CellVariable, Gmsh2D, DiffusionTerm, Viewer
 from fipy.tools import numerix

@@ -1,4 +1,5 @@
 from __future__ import print_function
+from builtins import str
 __docformat__ = 'restructuredtext'
 
 import os

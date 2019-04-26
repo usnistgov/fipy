@@ -44,6 +44,7 @@ We test the solution against the analytical result:
 ...     viewer = Viewer(vars = var)
 ...     viewer.plot()
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

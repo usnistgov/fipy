@@ -478,6 +478,7 @@ True
 .. .. bibmissing:: /documentation/refs.bib
     :sort:
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 

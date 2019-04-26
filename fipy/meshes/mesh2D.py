@@ -6,6 +6,8 @@ Meshes contain cells, faces, and vertices.
 This is built for a non-mixed element mesh.
 """
 from __future__ import division
+from builtins import range
+from builtins import zip
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 

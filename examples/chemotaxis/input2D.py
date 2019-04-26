@@ -27,6 +27,8 @@ Here are some test cases for the model.
 """
 from __future__ import division
 
+from builtins import input
+from builtins import range
 from past.utils import old_div
 from examples.chemotaxis.parameters import parameters
 from fipy import CellVariable, Grid2D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer

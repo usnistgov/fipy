@@ -169,6 +169,7 @@ a vector format.
 True
 
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

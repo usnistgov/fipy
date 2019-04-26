@@ -1,3 +1,4 @@
+from builtins import str
 __all__ = []
 
 from fipy.variables.variable import Variable

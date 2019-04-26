@@ -202,6 +202,7 @@ extracts the data and compares it with the ``theta`` variable.
 >>> print(theta.allclose(testData))
 1
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

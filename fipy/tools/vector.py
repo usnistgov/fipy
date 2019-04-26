@@ -1,6 +1,8 @@
 """Vector utility functions that are inexplicably absent from Numeric
 """
 
+from builtins import range
+from builtins import zip
 from fipy.tools import inline, numerix
 
 __all__ = ["putAdd", "prune"]

@@ -11,6 +11,7 @@ Grid2D with each interior vertex moved in a random direction.
 """
 from __future__ import division
 
+from builtins import input
 from past.utils import old_div
 if __name__ == '__main__':
     import sys

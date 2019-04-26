@@ -93,6 +93,7 @@ If the problem is run interactively, we can view the result:
    :alt: solution to biharmonic equation
 
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

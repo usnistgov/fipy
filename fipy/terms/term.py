@@ -1,4 +1,5 @@
 from __future__ import division
+from builtins import input
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 

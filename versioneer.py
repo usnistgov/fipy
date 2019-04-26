@@ -277,6 +277,8 @@ https://creativecommons.org/publicdomain/zero/1.0/ .
 """
 
 from __future__ import print_function
+from builtins import range
+from builtins import str
 try:
     import configparser
 except ImportError:

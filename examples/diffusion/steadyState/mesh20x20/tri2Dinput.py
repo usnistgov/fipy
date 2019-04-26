@@ -14,6 +14,7 @@ The result is again tested in the same way:
 
 """
 
+from builtins import input
 from fipy import CellVariable, Tri2D, DiffusionTerm, Viewer
 
 nx = 20

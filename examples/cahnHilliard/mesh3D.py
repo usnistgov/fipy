@@ -74,6 +74,7 @@ evolution of their problem.
    :align: center
    :alt: snapshot of Cahn-Hilliard phase separation in 3D with cutaway
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

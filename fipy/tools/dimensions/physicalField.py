@@ -31,6 +31,9 @@ recommended values from CODATA_. Other conversion factors
 .. _Appendix B of NIST Special Publication 811: http://physics.nist.gov/Pubs/SP811/appenB9.html
 """
 from __future__ import division
+from builtins import range
+from builtins import map
+from builtins import str
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 

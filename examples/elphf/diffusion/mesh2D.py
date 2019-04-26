@@ -153,6 +153,7 @@ and verify that the correct uniform concentrations are achieved
 
 
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

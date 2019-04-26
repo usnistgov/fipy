@@ -1,4 +1,5 @@
 from __future__ import print_function
+from builtins import str
 from setuptools.command.test import test as _test
 
 class test(_test):

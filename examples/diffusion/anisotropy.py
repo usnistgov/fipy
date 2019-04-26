@@ -97,6 +97,7 @@ Compare with the analytical solution (within 5% accuracy).
 True
 
 """
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
