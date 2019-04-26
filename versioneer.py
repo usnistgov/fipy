@@ -277,6 +277,7 @@ https://creativecommons.org/publicdomain/zero/1.0/ .
 """
 
 from __future__ import print_function
+from builtins import object
 from future import standard_library
 standard_library.install_aliases()
 from builtins import range
@@ -293,7 +294,7 @@ import subprocess
 import sys
 
 
-class VersioneerConfig:
+class VersioneerConfig(object):
     """Container for Versioneer configuration parameters."""
 
 
