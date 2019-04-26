@@ -177,7 +177,7 @@ class _AbstractConvectionTerm(FaceTerm):
             self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
 
         ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
-        L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
+        L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0, 1).ravel())
         b += numerix.reshape(self.constraintB.value, ids.shape).sum(0).ravel()
 
         return (var, L, b)

@@ -37,10 +37,10 @@ class FaceTerm(_NonDiffusionTerm):
         id1 = self._reshapeIDs(var, id1)
         id2 = self._reshapeIDs(var, id2)
 
-        L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces, axis=-1).ravel(), id1.ravel(), id1.swapaxes(0,1).ravel())
-        L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces, axis=-1).ravel(), id1.ravel(), id2.swapaxes(0,1).ravel())
-        L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces, axis=-1).ravel(), id2.ravel(), id1.swapaxes(0,1).ravel())
-        L.addAt(numerix.take(coeffMatrix['cell 2 diag'], interiorFaces, axis=-1).ravel(), id2.ravel(), id2.swapaxes(0,1).ravel())
+        L.addAt(numerix.take(coeffMatrix['cell 1 diag'], interiorFaces, axis=-1).ravel(), id1.ravel(), id1.swapaxes(0, 1).ravel())
+        L.addAt(numerix.take(coeffMatrix['cell 1 offdiag'], interiorFaces, axis=-1).ravel(), id1.ravel(), id2.swapaxes(0, 1).ravel())
+        L.addAt(numerix.take(coeffMatrix['cell 2 offdiag'], interiorFaces, axis=-1).ravel(), id2.ravel(), id1.swapaxes(0, 1).ravel())
+        L.addAt(numerix.take(coeffMatrix['cell 2 diag'], interiorFaces, axis=-1).ravel(), id2.ravel(), id2.swapaxes(0, 1).ravel())
 
         N = mesh.numberOfCells
         M = mesh._maxFacesPerCell
@@ -70,7 +70,7 @@ class FaceTerm(_NonDiffusionTerm):
 
         for boundaryCondition in boundaryConditions:
 
-            LL,bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffMatrix)
+            LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffMatrix)
             if LL != 0:
 ##              b -= LL.takeDiagonal() * numerix.array(oldArray)
                 b -= LL * numerix.array(oldArray)
@@ -83,13 +83,13 @@ class FaceTerm(_NonDiffusionTerm):
             coeff = numerix.array(self._getGeomCoeff(oldArray))
             Nfac = mesh.numberOfFaces
 
-            cell1Diag = numerix.zeros((Nfac,),'d')
+            cell1Diag = numerix.zeros((Nfac,), 'd')
             cell1Diag[:] = weight['cell 1 diag']
-            cell1OffDiag = numerix.zeros((Nfac,),'d')
+            cell1OffDiag = numerix.zeros((Nfac,), 'd')
             cell1OffDiag[:] = weight['cell 1 offdiag']
-            cell2Diag = numerix.zeros((Nfac,),'d')
+            cell2Diag = numerix.zeros((Nfac,), 'd')
             cell2Diag[:] = weight['cell 2 diag']
-            cell2OffDiag = numerix.zeros((Nfac,),'d')
+            cell2OffDiag = numerix.zeros((Nfac,), 'd')
             cell2OffDiag[:] = weight['cell 2 offdiag']
 
             inline._runInline("""
@@ -99,7 +99,7 @@ class FaceTerm(_NonDiffusionTerm):
 
                 b[cellID1] += -coeff[faceID] * (cell1Diag[faceID] * oldArrayId1[i] + cell1OffDiag[faceID] * oldArrayId2[i]);
                 b[cellID2] += -coeff[faceID] * (cell2Diag[faceID] * oldArrayId2[i] + cell2OffDiag[faceID] * oldArrayId1[i]);
-            """,oldArrayId1 = numerix.array(oldArrayId1),
+            """, oldArrayId1 = numerix.array(oldArrayId1),
                 oldArrayId2 = numerix.array(oldArrayId2),
                 id1 = id1,
                 id2 = id2,
@@ -135,7 +135,7 @@ class FaceTerm(_NonDiffusionTerm):
         id1 = numerix.take(id1, interiorFaces)
         id2 = numerix.take(id2, interiorFaces)
 
-        b = numerix.zeros(var.shape,'d').ravel()
+        b = numerix.zeros(var.shape, 'd').ravel()
         L = SparseMatrix(mesh=mesh)
 
         weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)

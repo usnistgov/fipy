@@ -21,7 +21,7 @@ class UniformGrid2D(UniformGrid):
     Creates a 2D grid mesh with horizontal faces numbered
     first and then vertical faces.
     """
-    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)),
+    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,), (0,)),
                        overlap=2, communicator=parallelComm,
                        _RepresentationClass=_Grid2DRepresentation,
                        _TopologyClass=_Grid2DTopology):
@@ -91,11 +91,11 @@ class UniformGrid2D(UniformGrid):
         """
         Hids = numerix.arange(0, self.numberOfHorizontalFaces)
         Hids = numerix.reshape(Hids, (self.numberOfHorizontalRows, self.nx))
-        Hids = Hids[1:-1,...]
+        Hids = Hids[1:-1, ...]
 
         Vids = numerix.arange(self.numberOfHorizontalFaces, self.numberOfFaces)
         Vids = numerix.reshape(Vids, (self.ny, self.numberOfVerticalColumns))
-        Vids = Vids[...,1:-1]
+        Vids = Vids[..., 1:-1]
 
         interiorIDs = numerix.concatenate((numerix.reshape(Hids, (self.nx * (self.ny - 1),)),
                                            numerix.reshape(Vids, ((self.nx - 1) * self.ny,))))
@@ -110,7 +110,7 @@ class UniformGrid2D(UniformGrid):
         cellFaceOrientations = numerix.ones((4, self.numberOfCells), 'l')
         if self.numberOfCells > 0:
             cellFaceOrientations[0, self.nx:] = -1
-            cellFaceOrientations[3, :] = -1
+            cellFaceOrientations[3,:] = -1
             cellFaceOrientations[3, ::self.nx] = 1
         return cellFaceOrientations
 
@@ -162,28 +162,28 @@ class UniformGrid2D(UniformGrid):
             Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2), 'l')
             indices = numerix.indices((self.numberOfHorizontalRows, self.nx))
 
-            Hids[...,1] = indices[1] + indices[0] * self.nx
-            Hids[...,0] = Hids[...,1] - self.nx
+            Hids[..., 1] = indices[1] + indices[0] * self.nx
+            Hids[..., 0] = Hids[..., 1] - self.nx
 
             if self.numberOfHorizontalRows > 0:
-                Hids[0,...,0] = Hids[0,...,1]
-                Hids[0,...,1] = Hids[0,...,0]
-                Hids[-1,...,1] = Hids[-1,...,0]
+                Hids[0, ..., 0] = Hids[0, ..., 1]
+                Hids[0, ..., 1] = Hids[0, ..., 0]
+                Hids[-1, ..., 1] = Hids[-1, ..., 0]
 
             Vids = numerix.zeros((self.ny, self.numberOfVerticalColumns, 2), 'l')
             indices = numerix.indices((self.ny, self.numberOfVerticalColumns))
-            Vids[...,1] = indices[1] + indices[0] * self.nx
-            Vids[...,0] = Vids[...,1] - 1
+            Vids[..., 1] = indices[1] + indices[0] * self.nx
+            Vids[..., 0] = Vids[..., 1] - 1
 
             if self.numberOfVerticalColumns > 0:
-                Vids[...,0,0] = Vids[...,0,1]
-                Vids[...,0,1] = Vids[...,0,0]
-                Vids[...,-1,1] = Vids[...,-1,0]
+                Vids[..., 0, 0] = Vids[..., 0, 1]
+                Vids[..., 0, 1] = Vids[..., 0, 0]
+                Vids[..., -1, 1] = Vids[..., -1, 0]
 
             faceCellIDs =  numerix.concatenate((numerix.reshape(Hids, (self.numberOfHorizontalFaces, 2)),
                                                 numerix.reshape(Vids, (self.numberOfFaces - self.numberOfHorizontalFaces, 2))))
 
-            return (faceCellIDs[:,0], faceCellIDs[:,1])
+            return (faceCellIDs[:, 0], faceCellIDs[:, 1])
 
     @property
     def _cellToCellIDs(self):
@@ -195,13 +195,13 @@ class UniformGrid2D(UniformGrid):
         ids[3] = (indices[0] - 1) + indices[1] * self.nx
 
         if self.ny > 0:
-            ids[0,..., 0] = MA.masked
-            ids[2,...,-1] = MA.masked
+            ids[0, ..., 0] = MA.masked
+            ids[2, ..., -1] = MA.masked
         if self.nx > 0:
-            ids[1,-1,...] = MA.masked
-            ids[3, 0,...] = MA.masked
+            ids[1, -1, ...] = MA.masked
+            ids[3, 0, ...] = MA.masked
 
-        return MA.reshape(ids.swapaxes(1,2), (4, self.numberOfCells))
+        return MA.reshape(ids.swapaxes(1, 2), (4, self.numberOfCells))
 
     @property
     def _cellToCellIDsFilled(self):
@@ -294,17 +294,17 @@ class UniformGrid2D(UniformGrid):
         Hdis = numerix.repeat((self.dy,), self.numberOfHorizontalFaces)
         Hdis = numerix.reshape(Hdis, (self.nx, self.numberOfHorizontalRows))
         if self.numberOfHorizontalRows > 0:
-            Hdis[...,0] = self.dy / 2.
-            Hdis[...,-1] = self.dy / 2.
+            Hdis[..., 0] = self.dy / 2.
+            Hdis[..., -1] = self.dy / 2.
 
         Vdis = numerix.repeat((self.dx,), self.numberOfFaces - self.numberOfHorizontalFaces)
         Vdis = numerix.reshape(Vdis, (self.numberOfVerticalColumns, self.ny))
         if self.numberOfVerticalColumns > 0:
-            Vdis[0,...] = self.dx / 2.
-            Vdis[-1,...] = self.dx / 2.
+            Vdis[0, ...] = self.dx / 2.
+            Vdis[-1, ...] = self.dx / 2.
 
-        return numerix.concatenate((numerix.reshape(numerix.swapaxes(Hdis,0,1), (self.numberOfHorizontalFaces,)),
-                                    numerix.reshape(numerix.swapaxes(Vdis,0,1), (self.numberOfFaces - self.numberOfHorizontalFaces,))))
+        return numerix.concatenate((numerix.reshape(numerix.swapaxes(Hdis, 0, 1), (self.numberOfHorizontalFaces,)),
+                                    numerix.reshape(numerix.swapaxes(Vdis, 0, 1), (self.numberOfFaces - self.numberOfHorizontalFaces,))))
 
     @property
     def _faceToCellDistanceRatio(self):
@@ -343,7 +343,7 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _faceTangents1(self):
-        tangents = numerix.zeros((2,self.numberOfFaces), 'd')
+        tangents = numerix.zeros((2, self.numberOfFaces), 'd')
 
         if self.numberOfFaces > 0:
             tangents[0, :self.numberOfHorizontalFaces] = -1
@@ -366,11 +366,11 @@ class UniformGrid2D(UniformGrid):
         distances[3] = self.dx
 
         if self.ny > 0:
-            distances[0,..., 0] = self.dy / 2.
-            distances[2,...,-1] = self.dy / 2.
+            distances[0, ..., 0] = self.dy / 2.
+            distances[2, ..., -1] = self.dy / 2.
         if self.nx > 0:
-            distances[3, 0,...] = self.dx / 2.
-            distances[1,-1,...] = self.dx / 2.
+            distances[3, 0, ...] = self.dx / 2.
+            distances[1, -1, ...] = self.dx / 2.
 
         return distances.reshape((4, self.numberOfCells), order="FORTRAN")
 
@@ -402,13 +402,13 @@ class UniformGrid2D(UniformGrid):
     def _faceCenters(self):
         Hcen = numerix.zeros((2, self.nx, self.numberOfHorizontalRows), 'd')
         indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
-        Hcen[0,...] = (indices[0] + 0.5) * self.dx
-        Hcen[1,...] = indices[1] * self.dy
+        Hcen[0, ...] = (indices[0] + 0.5) * self.dx
+        Hcen[1, ...] = indices[1] * self.dy
 
         Vcen = numerix.zeros((2, self.numberOfVerticalColumns, self.ny), 'd')
         indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
-        Vcen[0,...] = indices[0] * self.dx
-        Vcen[1,...] = (indices[1] + 0.5) * self.dy
+        Vcen[0, ...] = indices[0] * self.dx
+        Vcen[1, ...] = (indices[1] + 0.5) * self.dy
 
         return numerix.concatenate((Hcen.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"),
                                     Vcen.reshape((2,
@@ -422,7 +422,7 @@ class UniformGrid2D(UniformGrid):
 
     def __mul__(self, factor):
         if numerix.shape(factor) is ():
-            factor = numerix.resize(factor, (2,1))
+            factor = numerix.resize(factor, (2, 1))
 
         return UniformGrid2D(dx=self.args['dx'] * numerix.array(factor[0]), nx=self.args['nx'],
                              dy=self.args['dy'] * numerix.array(factor[1]), ny=self.args['ny'],
@@ -508,18 +508,18 @@ class UniformGrid2D(UniformGrid):
             Hids[1] = indices[0] + indices[1] * self.nx
             Hids[0] = Hids[1] - self.nx
             if self.numberOfHorizontalRows > 0:
-                Hids[0,...,0] = Hids[1,...,0]
-                Hids[1,...,0] = -1
-                Hids[1,...,-1] = -1
+                Hids[0, ..., 0] = Hids[1, ..., 0]
+                Hids[1, ..., 0] = -1
+                Hids[1, ..., -1] = -1
 
             Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny), 'l')
             indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
             Vids[1] = indices[0] + indices[1] * self.nx
             Vids[0] = Vids[1] - 1
             if self.numberOfVerticalColumns > 0:
-                Vids[0,0] = Vids[1,0]
-                Vids[1,0] = -1
-                Vids[1,-1] = -1
+                Vids[0, 0] = Vids[1, 0]
+                Vids[1, 0] = -1
+                Vids[1, -1] = -1
 
             return MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"),
                                                          Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1)
@@ -579,7 +579,7 @@ class UniformGrid2D(UniformGrid):
         if nx == 0 or ny == 0:
             return numerix.arange(0)
 
-        x0, y0 = self.cellCenters.globalValue[...,0]
+        x0, y0 = self.cellCenters.globalValue[..., 0]
         xi, yi = points
         dx, dy = self.dx, self.dy
 

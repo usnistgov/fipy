@@ -86,7 +86,7 @@ def _runInline(code_in, converters=None, verbose=0, comment=None, **args):
         for dim in range(dimensions):
             d = dimList[dim]
             declarations.append(d)
-            loops += "\t" * dim + "for(%s=0;%s<n%s;%s++) {\n" % (d,d,d,d)
+            loops += "\t" * dim + "for(%s=0;%s<n%s;%s++) {\n" % (d, d, d, d)
             enders += "\n" + "\t" * (dimensions - dim -1) + "}"
         code = 'int ' + ','.join(declarations) + ';\n' + loops + "\t" * dimensions + code_in + enders
 

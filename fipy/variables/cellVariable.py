@@ -175,8 +175,8 @@ class CellVariable(_MeshVariable):
                 ##cellID = self.mesh._getNearestCellID(points)
 ##                return self[...,self.mesh._getNearestCellID(points)] + numerix.dot(points - self.mesh.cellCenters[...,cellID], self.grad[...,cellID])
                 return (self.globalValue[..., nearestCellIDs]
-                        + numerix.dot(points - self.mesh.cellCenters.globalValue[...,nearestCellIDs],
-                                      self.grad.globalValue[...,nearestCellIDs]))
+                        + numerix.dot(points - self.mesh.cellCenters.globalValue[..., nearestCellIDs],
+                                      self.grad.globalValue[..., nearestCellIDs]))
 
             else:
                 raise ValueError, 'order should be either 0 or 1'

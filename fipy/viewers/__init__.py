@@ -97,7 +97,7 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
     import pkg_resources
     for ep in pkg_resources.iter_entry_points(group='fipy.viewers',
                                               name=FIPY_VIEWER):
-        enpts.append((ep.name,ep))
+        enpts.append((ep.name, ep))
 
     for name, ep in sorted(enpts):
 

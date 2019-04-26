@@ -82,22 +82,22 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             rotationTensor[:, 0] = self._getNormals(mesh)
 
             if mesh.dim == 2:
-                rotationTensor[:,1] = rotationTensor[:,0].dot((((0, 1), (-1, 0))))
+                rotationTensor[:, 1] = rotationTensor[:, 0].dot((((0, 1), (-1, 0))))
             elif mesh.dim ==3:
                 epsilon = 1e-20
 
-                div = numerix.sqrt(1 - rotationTensor[2,0]**2)
+                div = numerix.sqrt(1 - rotationTensor[2, 0]**2)
                 flag = numerix.resize(div > epsilon, (mesh.dim, mesh.numberOfFaces))
 
                 rotationTensor[0, 1] = 1
                 rotationTensor[:, 1] = numerix.where(flag,
-                                                     rotationTensor[:,0].dot((((0, 1, 0), (-1, 0, 0), (0, 0, 0)))) / div,
+                                                     rotationTensor[:, 0].dot((((0, 1, 0), (-1, 0, 0), (0, 0, 0)))) / div,
                                                      rotationTensor[:, 1])
 
 
                 rotationTensor[1, 2] = 1
                 rotationTensor[:, 2] = numerix.where(flag,
-                                                     rotationTensor[:,0] * rotationTensor[2,0] / div,
+                                                     rotationTensor[:, 0] * rotationTensor[2, 0] / div,
                                                      rotationTensor[:, 2])
                 rotationTensor[2, 2] = -div
 
@@ -138,9 +138,9 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             if anisotropicRank == 0 and self._treatMeshAsOrthogonal(mesh):
 
                 if coeff.shape != () and not isinstance(coeff, FaceVariable):
-                    coeff = coeff[...,numerix.newaxis]
+                    coeff = coeff[..., numerix.newaxis]
 
-                tmpBop = (coeff * FaceVariable(mesh=mesh, value=mesh._faceAreas) / mesh._cellDistances)[numerix.newaxis, :]
+                tmpBop = (coeff * FaceVariable(mesh=mesh, value=mesh._faceAreas) / mesh._cellDistances)[numerix.newaxis,:]
 
             else:
 
@@ -154,7 +154,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
                 faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh.faceNormals)
                 rotationTensor = self.__getRotationTensor(mesh)
-                rotationTensor[:,0] = rotationTensor[:,0] / mesh._cellDistances
+                rotationTensor[:, 0] = rotationTensor[:, 0] / mesh._cellDistances
 
                 tmpBop = faceNormals.dot(coeff).dot(rotationTensor) * mesh._faceAreas
 
@@ -188,10 +188,10 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
         coefficientMatrix = SparseMatrix(mesh=mesh, bandwidth = mesh._maxFacesPerCell + 1)
         interiorCoeff = numerix.take(coeff, interiorFaces, axis=-1).ravel()
-        coefficientMatrix.addAt(interiorCoeff, id1.ravel(), id1.swapaxes(0,1).ravel())
-        coefficientMatrix.addAt(-interiorCoeff, id1.ravel(), id2.swapaxes(0,1).ravel())
-        coefficientMatrix.addAt(-interiorCoeff, id2.ravel(), id1.swapaxes(0,1).ravel())
-        coefficientMatrix.addAt(interiorCoeff, id2.ravel(), id2.swapaxes(0,1).ravel())
+        coefficientMatrix.addAt(interiorCoeff, id1.ravel(), id1.swapaxes(0, 1).ravel())
+        coefficientMatrix.addAt(-interiorCoeff, id1.ravel(), id2.swapaxes(0, 1).ravel())
+        coefficientMatrix.addAt(-interiorCoeff, id2.ravel(), id1.swapaxes(0, 1).ravel())
+        coefficientMatrix.addAt(interiorCoeff, id2.ravel(), id2.swapaxes(0, 1).ravel())
 
 ##         print 'coefficientMatrix',coefficientMatrix
 ##         raw_input('stopped')
@@ -296,12 +296,12 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 else:
 
                     if self.nthCoeff.shape != () and not isinstance(self.nthCoeff, FaceVariable):
-                        coeff = self.nthCoeff[...,numerix.newaxis]
+                        coeff = self.nthCoeff[..., numerix.newaxis]
                     else:
                         coeff = self.nthCoeff
 
-                    nthCoeffFaceGrad = coeff[numerix.newaxis] * var.faceGrad[:,numerix.newaxis]
-                    s = (slice(0,None,None),) + (numerix.newaxis,) * (len(coeff.shape) - 1) + (slice(0,None,None),)
+                    nthCoeffFaceGrad = coeff[numerix.newaxis] * var.faceGrad[:, numerix.newaxis]
+                    s = (slice(0, None, None),) + (numerix.newaxis,) * (len(coeff.shape) - 1) + (slice(0, None, None),)
                     normalsNthCoeff = coeff[numerix.newaxis] * normals[s]
 
                 self.constraintB = -(var.faceGrad.constraintMask * nthCoeffFaceGrad).divergence * mesh.cellVolumes
@@ -316,7 +316,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 self.constraintL = -constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
 
             ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
-            L.addAt(self.constraintL.ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
+            L.addAt(self.constraintL.ravel(), ids.ravel(), ids.swapaxes(0, 1).ravel())
             b += numerix.reshape(self.constraintB.ravel(), ids.shape).sum(-2).ravel()
 
         return (var, L, b)
@@ -365,7 +365,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
             mm = self.__getCoefficientMatrix(SparseMatrix, var, self.coeffDict['cell 1 diag'])
             L, b = self.__doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict,
-                               mm, numerix.zeros(len(var.ravel()),'d'))
+                               mm, numerix.zeros(len(var.ravel()), 'd'))
 
             del higherOrderBCs
             del mm
@@ -403,7 +403,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             del lowerOrderBCs
 
             L, b = self.__doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict,
-                               self.__getCoefficientMatrix(SparseMatrix, var, self.coeffDict['cell 1 diag']), numerix.zeros(len(var.ravel()),'d'))
+                               self.__getCoefficientMatrix(SparseMatrix, var, self.coeffDict['cell 1 diag']), numerix.zeros(len(var.ravel()), 'd'))
 
             if hasattr(self, 'anisotropySource'):
                 b -= self.anisotropySource
@@ -415,7 +415,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
             L = SparseMatrix(mesh=mesh)
             L.addAtDiagonal(mesh.cellVolumes)
-            b = numerix.zeros(len(var.ravel()),'d')
+            b = numerix.zeros(len(var.ravel()), 'd')
 
         return (var, L, b)
 

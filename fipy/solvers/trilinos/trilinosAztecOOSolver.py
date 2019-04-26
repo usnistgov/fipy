@@ -63,12 +63,12 @@ class TrilinosAztecOOSolver(TrilinosSolver):
                        AztecOO.AZ_ill_cond : 'AztecOO.AZ_ill_cond',
                        AztecOO.AZ_maxits : 'AztecOO.AZ_maxits'}
 
-            PRINT('failure',failure[status[AztecOO.AZ_why]])
+            PRINT('failure', failure[status[AztecOO.AZ_why]])
 
-            PRINT('AztecOO.AZ_r:',status[AztecOO.AZ_r])
-            PRINT('AztecOO.AZ_scaled_r:',status[AztecOO.AZ_scaled_r])
-            PRINT('AztecOO.AZ_rec_r:',status[AztecOO.AZ_rec_r])
-            PRINT('AztecOO.AZ_solve_time:',status[AztecOO.AZ_solve_time])
-            PRINT('AztecOO.AZ_Aztec_version:',status[AztecOO.AZ_Aztec_version])
+            PRINT('AztecOO.AZ_r:', status[AztecOO.AZ_r])
+            PRINT('AztecOO.AZ_scaled_r:', status[AztecOO.AZ_scaled_r])
+            PRINT('AztecOO.AZ_rec_r:', status[AztecOO.AZ_rec_r])
+            PRINT('AztecOO.AZ_solve_time:', status[AztecOO.AZ_solve_time])
+            PRINT('AztecOO.AZ_Aztec_version:', status[AztecOO.AZ_Aztec_version])
 
         return output

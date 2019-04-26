@@ -33,7 +33,7 @@ class _LeastSquaresCellGradVariable(CellVariable):
         ## good god! numpy.outer should have an axis argument!!!
         for i in range(D):
             for j in range(D):
-                mat[i,j] = cellDistanceNormals[i] * cellDistanceNormals[j]
+                mat[i, j] = cellDistanceNormals[i] * cellDistanceNormals[j]
 
         mat = numerix.sum(mat, axis=2)
 
@@ -42,14 +42,14 @@ class _LeastSquaresCellGradVariable(CellVariable):
         if D == 1:
             vec[0] = vec[0] / mat[0, 0]
         elif D == 2:
-            divisor = mat[0,0] * mat[1,1] - mat[0,1] * mat[1,0]
-            gradx = (vec[0] * mat[1,1] - vec[1] * mat[1,0]) / divisor
-            grady = (vec[1] * mat[0,0] - vec[0] * mat[0,1]) / divisor
+            divisor = mat[0, 0] * mat[1, 1] - mat[0, 1] * mat[1, 0]
+            gradx = (vec[0] * mat[1, 1] - vec[1] * mat[1, 0]) / divisor
+            grady = (vec[1] * mat[0, 0] - vec[0] * mat[0, 1]) / divisor
             vec[0] = gradx
             vec[1] = grady
         else:
             ## very stuppy! numerix.linalg.solve should have an axis argument!!!
             for i in range(N):
-                vec[...,i] = numerix.linalg.solve(mat[...,i],vec[...,i])
+                vec[..., i] = numerix.linalg.solve(mat[..., i], vec[..., i])
 
         return vec

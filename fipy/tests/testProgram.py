@@ -11,13 +11,13 @@ class _TestProgram(unittest.TestProgram):
 ##        numMesh = 0
         try:
             options, args = getopt.getopt(argv[1:], 'hHvq',
-                                          ['help','verbose','quiet','inline', 'Trilinos', 'Pysparse', 'pysparse', 'trilinos', 'no-pysparse', 'scipy', 'pyamg', 'skfmm', 'lsmlib'])
+                                          ['help', 'verbose', 'quiet', 'inline', 'Trilinos', 'Pysparse', 'pysparse', 'trilinos', 'no-pysparse', 'scipy', 'pyamg', 'skfmm', 'lsmlib'])
             for opt, value in options:
-                if opt in ('-h','-H','--help'):
+                if opt in ('-h', '-H', '--help'):
                     self.usageExit()
-                if opt in ('-q','--quiet'):
+                if opt in ('-q', '--quiet'):
                     self.verbosity = 0
-                if opt in ('-v','--verbose'):
+                if opt in ('-v', '--verbose'):
                     self.verbosity = 2
 ##              if opt in ('--inline',):
 ##                  inline = 1

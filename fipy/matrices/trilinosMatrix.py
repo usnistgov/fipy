@@ -130,7 +130,7 @@ class _TrilinosMatrix(_SparseMatrix):
                 self.matrix = tempMatrix
 
             else:
-                if EpetraExt.Add(other.matrix, False,1,self.matrix,1) != 0:
+                if EpetraExt.Add(other.matrix, False, 1, self.matrix, 1) != 0:
                     import warnings
                     warnings.warn("EpetraExt.Add returned error code in __iadd__",
                                    UserWarning, stacklevel=2)
@@ -269,7 +269,7 @@ class _TrilinosMatrix(_SparseMatrix):
     @property
     def _shape(self):
         N = self.matrix.NumGlobalRows()
-        return (N,N)
+        return (N, N)
 
 
 
@@ -576,22 +576,22 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
     def _cellIDsToGlobalRowIDs(self, IDs):
          N = len(IDs)
          M = self.numberOfEquations
-         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.globalNumberOfCells).flatten()
+         return (numerix.vstack([IDs] * M) + numerix.indices((M, N))[0] * self.mesh.globalNumberOfCells).flatten()
 
     def _cellIDsToGlobalColIDs(self, IDs):
          N = len(IDs)
          M = self.numberOfVariables
-         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.globalNumberOfCells).flatten()
+         return (numerix.vstack([IDs] * M) + numerix.indices((M, N))[0] * self.mesh.globalNumberOfCells).flatten()
 
     def _cellIDsToLocalRowIDs(self, IDs):
          M = self.numberOfEquations
          N = len(IDs)
-         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.numberOfCells).flatten()
+         return (numerix.vstack([IDs] * M) + numerix.indices((M, N))[0] * self.mesh.numberOfCells).flatten()
 
     def _cellIDsToLocalColIDs(self, IDs):
          M = self.numberOfVariables
          N = len(IDs)
-         return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.numberOfCells).flatten()
+         return (numerix.vstack([IDs] * M) + numerix.indices((M, N))[0] * self.mesh.numberOfCells).flatten()
 
     @property
     def _globalNonOverlappingRowIDs(self):

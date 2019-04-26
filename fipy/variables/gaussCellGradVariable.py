@@ -54,7 +54,7 @@ class _GaussCellGradVariable(CellVariable):
             }
 
             ITEM(val, i, vec) /= ITEM(volumes, i, NULL);
-        """,val = val,
+        """, val = val,
             ids = numerix.array(numerix.MA.filled(ids, 0)),
             orientations = numerix.array(numerix.MA.filled(orientations, 0)),
             volumes = numerix.array(volumes),

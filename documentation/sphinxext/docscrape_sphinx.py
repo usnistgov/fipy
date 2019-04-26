@@ -33,11 +33,11 @@ class SphinxDocString(NumpyDocString):
         if self[name]:
             out += self._str_field_list(name)
             out += ['']
-            for param,param_type,desc in self[name]:
+            for param, param_type, desc in self[name]:
                 out += self._str_indent(['**%s** : %s' % (param.strip(),
                                                           param_type)])
                 out += ['']
-                out += self._str_indent(desc,8)
+                out += self._str_indent(desc, 8)
                 out += ['']
         return out
 
@@ -72,7 +72,7 @@ class SphinxDocString(NumpyDocString):
         if len(idx) == 0:
             return out
 
-        out += ['.. index:: %s' % idx.get('default','')]
+        out += ['.. index:: %s' % idx.get('default', '')]
         for section, references in idx.iteritems():
             if section == 'default':
                 continue
@@ -99,14 +99,14 @@ class SphinxDocString(NumpyDocString):
         out += self._str_summary()
         out += self._str_extended_summary()
         for param_list in ('Parameters', 'Attributes', 'Methods',
-                           'Returns','Raises'):
+                           'Returns', 'Raises'):
             out += self._str_param_list(param_list)
         out += self._str_warnings()
         out += self._str_see_also(func_role)
         out += self._str_section('Notes')
         out += self._str_references()
         out += self._str_section('Examples')
-        out = self._str_indent(out,indent)
+        out = self._str_indent(out, indent)
         return '\n'.join(out)
 
 class SphinxFunctionDoc(SphinxDocString, FunctionDoc):

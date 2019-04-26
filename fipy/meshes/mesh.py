@@ -143,7 +143,7 @@ class Mesh(AbstractMesh):
         faceVertexIDs = numerix.where(MA.getmaskarray(self.faceVertexIDs),
                                       substitute, faceVertexIDs)
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
-        faceOrigins = numerix.repeat(faceVertexCoords[:,0], faceVertexIDs.shape[0], axis=0)
+        faceOrigins = numerix.repeat(faceVertexCoords[:, 0], faceVertexIDs.shape[0], axis=0)
         faceOrigins = numerix.reshape(faceOrigins, MA.shape(faceVertexCoords))
         faceVertexCoords = faceVertexCoords - faceOrigins
         left = range(faceVertexIDs.shape[0])
@@ -163,7 +163,7 @@ class Mesh(AbstractMesh):
             faceVertexCoordsMask = numerix.zeros(numerix.shape(faceVertexCoords), 'l')
         else:
             faceVertexCoordsMask = \
-              numerix.repeat(MA.getmaskarray(self.faceVertexIDs)[numerix.newaxis,...],
+              numerix.repeat(MA.getmaskarray(self.faceVertexIDs)[numerix.newaxis, ...],
                              self.dim, axis=0)
 
         faceVertexCoords = MA.array(data=faceVertexCoords, mask=faceVertexCoordsMask)
@@ -174,8 +174,8 @@ class Mesh(AbstractMesh):
     def _rightHandOrientation(self):
         faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
-        t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
-        t2 = faceVertexCoords[:,2,:] - faceVertexCoords[:,1,:]
+        t1 = faceVertexCoords[:, 1,:] - faceVertexCoords[:, 0,:]
+        t2 = faceVertexCoords[:, 2,:] - faceVertexCoords[:, 1,:]
         norm = numerix.cross(t1, t2, axis=0)
         ## reordering norm's internal memory for inlining
         norm = norm.copy()
@@ -188,8 +188,8 @@ class Mesh(AbstractMesh):
     def _calcFaceNormals(self):
         faceVertexIDs = MA.filled(self.faceVertexIDs, 0)
         faceVertexCoords = numerix.take(self.vertexCoords, faceVertexIDs, axis=1)
-        t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
-        t2 = faceVertexCoords[:,2,:] - faceVertexCoords[:,1,:]
+        t1 = faceVertexCoords[:, 1,:] - faceVertexCoords[:, 0,:]
+        t2 = faceVertexCoords[:, 2,:] - faceVertexCoords[:, 1,:]
         norm = numerix.cross(t1, t2, axis=0)
         ## reordering norm's internal memory for inlining
         norm = norm.copy()
@@ -227,18 +227,18 @@ class Mesh(AbstractMesh):
         return MA.filled(MA.average(tmp, 1))
 
     def _calcFaceToCellDistAndVec(self):
-        tmp = MA.repeat(self._faceCenters[...,numerix.NewAxis,:], 2, 1)
+        tmp = MA.repeat(self._faceCenters[..., numerix.NewAxis,:], 2, 1)
         # array -= masked_array screws up masking for on numpy 1.1
 
         tmp = tmp - numerix.take(self._cellCenters, self.faceCellIDs, axis=1)
         cellToFaceDistanceVectors = tmp
-        faceToCellDistances = MA.sqrt(MA.sum(tmp * tmp,0))
+        faceToCellDistances = MA.sqrt(MA.sum(tmp * tmp, 0))
         return faceToCellDistances, cellToFaceDistanceVectors
 
     def _calcCellDistAndVec(self):
         tmp = numerix.take(self._cellCenters, self.faceCellIDs, axis=1)
-        tmp = tmp[...,1,:] - tmp[...,0,:]
-        tmp = MA.filled(MA.where(MA.getmaskarray(tmp), self._cellToFaceDistanceVectors[:,0], tmp))
+        tmp = tmp[..., 1,:] - tmp[..., 0,:]
+        tmp = MA.filled(MA.where(MA.getmaskarray(tmp), self._cellToFaceDistanceVectors[:, 0], tmp))
         cellDistanceVectors = tmp
         cellDistances = MA.filled(MA.sqrt(MA.sum(tmp * tmp, 0)))
         return cellDistances, cellDistanceVectors
@@ -263,7 +263,7 @@ class Mesh(AbstractMesh):
     def _calcCellNormals(self):
         cellNormals = numerix.take(self.faceNormals, self.cellFaceIDs, axis=1)
         cellFaceCellIDs = numerix.take(self.faceCellIDs[0], self.cellFaceIDs)
-        cellIDs = numerix.repeat(numerix.arange(self.numberOfCells)[numerix.newaxis,...],
+        cellIDs = numerix.repeat(numerix.arange(self.numberOfCells)[numerix.newaxis, ...],
                                  self._maxFacesPerCell,
                                  axis=0)
         direction = (cellFaceCellIDs == cellIDs) * 2 - 1
@@ -438,7 +438,7 @@ class Mesh(AbstractMesh):
         firstRow = faceCellIDs[0]
         secondRow = faceCellIDs[1]
 
-        numerix.put(firstRow, self.cellFaceIDs[::-1,::-1], array[::-1,::-1])
+        numerix.put(firstRow, self.cellFaceIDs[::-1, ::-1], array[::-1, ::-1])
         numerix.put(secondRow, self.cellFaceIDs, array)
 
         mask = ((False,) * self.numberOfFaces, (firstRow == secondRow))

@@ -14,7 +14,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
     Creates a 2D cylindrical grid in the radial and axial directions,
     appropriate for axial symmetry.
     """
-    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,),(0,)),
+    def __init__(self, dx=1., dy=1., nx=1, ny=1, origin=((0,), (0,)),
                  overlap=2, communicator=parallelComm, *args, **kwargs):
         super(CylindricalUniformGrid2D, self).__init__(dx=dx, dy=dy, nx=nx, ny=ny,
                                                        origin=origin, overlap=overlap,

@@ -34,7 +34,7 @@ class NthOrderBoundaryCondition(BoundaryCondition):
         """
         self.order = order
         self.derivative = {}
-        BoundaryCondition.__init__(self,faces,value)
+        BoundaryCondition.__init__(self, faces, value)
 
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Leave **L** and **b** unchanged

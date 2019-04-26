@@ -38,7 +38,7 @@ class ImplicitSourceTerm(SourceTerm):
 
         coeff = self._getGeomCoeff(var)
         diagonalSign = self._getDiagonalSign(transientGeomCoeff, diffusionGeomCoeff)
-        combinedSign = numerix.array(diagonalSign)[...,numerix.newaxis] * numerix.sign(coeff)
+        combinedSign = numerix.array(diagonalSign)[..., numerix.newaxis] * numerix.sign(coeff)
 
         return {'diagonal' : (combinedSign >= 0),
                 'old value' : numerix.zeros(var.shape, 'd'),

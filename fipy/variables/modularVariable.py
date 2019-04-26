@@ -150,10 +150,10 @@ class ModularVariable(CellVariable):
         if isinstance(other, Term):
             return -other + self
         else:
-            return self._BinaryOperatorVariable(lambda a,b: a-b, other, canInline=False)
+            return self._BinaryOperatorVariable(lambda a, b: a-b, other, canInline=False)
 
     def __rsub__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: b-a, other, canInline=False)
+        return self._BinaryOperatorVariable(lambda a, b: b-a, other, canInline=False)
 
     def _getArithmeticBaseClass(self, other=None):
         """

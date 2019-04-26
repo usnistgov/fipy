@@ -27,7 +27,7 @@ class _ModCellGradVariable(_GaussCellGradVariable):
 
             ITEM(val, i, vec) /= ITEM(volumes, i, NULL);
             ITEM(val, i, vec) = mod(ITEM(val, i, vec) * gridSpacing[vec[0]]) /  gridSpacing[vec[0]];
-        """,val = val,
+        """, val = val,
             ids = numerix.array(ids),
             orientations = numerix.array(orientations),
             volumes = numerix.array(volumes),

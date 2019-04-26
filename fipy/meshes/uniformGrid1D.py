@@ -90,7 +90,7 @@ class UniformGrid1D(UniformGrid):
         orientations = numerix.ones((2, self.numberOfCells), 'l')
         if self.numberOfCells > 0:
             orientations[0] *= -1
-            orientations[0,0] = 1
+            orientations[0, 0] = 1
         return orientations
 
     @property
@@ -98,8 +98,8 @@ class UniformGrid1D(UniformGrid):
         c1 = numerix.arange(self.numberOfFaces)
         ids = numerix.array((c1 - 1, c1))
         if self.numberOfFaces > 0:
-            ids[0,0] = ids[1,0]
-            ids[1,-1] = ids[0,-1]
+            ids[0, 0] = ids[1, 0]
+            ids[1, -1] = ids[0, -1]
         return ids[0], ids[1]
 
     @property
@@ -107,16 +107,16 @@ class UniformGrid1D(UniformGrid):
         c1 = numerix.arange(self.numberOfCells)
         ids = MA.array((c1 - 1, c1 + 1))
         if self.numberOfCells > 0:
-            ids[0,0] = MA.masked
-            ids[1,-1] = MA.masked
+            ids[0, 0] = MA.masked
+            ids[1, -1] = MA.masked
         return ids
 
     @property
     def _cellToCellIDsFilled(self):
         ids = self._cellToCellIDs.filled()
         if self.numberOfCells > 0:
-            ids[0,0] = 0
-            ids[1,-1] = self.numberOfCells - 1
+            ids[0, 0] = 0
+            ids[1, -1] = self.numberOfCells - 1
         return ids
 
     def _getExteriorFaces(self):
@@ -133,7 +133,7 @@ class UniformGrid1D(UniformGrid):
 
     @property
     def _faceAreas(self):
-        return numerix.ones(self.numberOfFaces,'d')
+        return numerix.ones(self.numberOfFaces, 'd')
 
     @property
     def _faceCenters(self):
@@ -145,7 +145,7 @@ class UniformGrid1D(UniformGrid):
         # The left-most face has neighboring cells None and the left-most cell.
         # We must reverse the normal to make fluxes work correctly.
         if self.numberOfFaces > 0:
-            faceNormals[...,0] *= -1
+            faceNormals[..., 0] *= -1
         return faceNormals
 
     @property
@@ -184,15 +184,15 @@ class UniformGrid1D(UniformGrid):
         distances = MA.zeros((2, self.numberOfCells), 'd')
         distances[:] = self.dx
         if self.numberOfCells > 0:
-            distances[0,0] = self.dx / 2.
-            distances[1,-1] = self.dx / 2.
+            distances[0, 0] = self.dx / 2.
+            distances[1, -1] = self.dx / 2.
         return distances
 
     @property
     def _cellNormals(self):
         normals = numerix.ones((1, 2, self.numberOfCells), 'd')
         if self.numberOfCells > 0:
-            normals[:,0] = -1
+            normals[:, 0] = -1
         return normals
 
     @property
@@ -274,9 +274,9 @@ class UniformGrid1D(UniformGrid):
         c1 = numerix.arange(self.numberOfFaces)
         ids = MA.array((c1 - 1, c1))
         if self.numberOfFaces > 0:
-            ids[0,0] = ids[1,0]
-            ids[1,0] = MA.masked
-            ids[1,-1] = MA.masked
+            ids[0, 0] = ids[1, 0]
+            ids[1, 0] = MA.masked
+            ids[1, -1] = MA.masked
         return ids
 
     @property
@@ -305,7 +305,7 @@ class UniformGrid1D(UniformGrid):
         if nx == 0:
             return numerix.arange(0)
 
-        x0, = self.cellCenters.globalValue[...,0]
+        x0, = self.cellCenters.globalValue[..., 0]
         xi, = points
         dx = self.dx
 

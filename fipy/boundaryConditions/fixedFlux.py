@@ -18,7 +18,7 @@ class FixedFlux(BoundaryCondition):
 
     """
 
-    def __init__(self,faces,value):
+    def __init__(self, faces, value):
         """
         Creates a `FixedFlux` object.
 
@@ -27,7 +27,7 @@ class FixedFlux(BoundaryCondition):
             - `value`: The value to impose.
 
         """
-        BoundaryCondition.__init__(self,faces,value)
+        BoundaryCondition.__init__(self, faces, value)
         ## The extra index [self.faces.value] makes self.contribution the same length as self.adjacentCellIDs
         self.contribution = (self.value * self.faces.mesh._faceAreas)[self.faces.value]
 
@@ -41,7 +41,7 @@ class FixedFlux(BoundaryCondition):
           - `coeff`:        *unused*
         """
 
-        bb = numerix.zeros((Ncells,),'d')
+        bb = numerix.zeros((Ncells,), 'd')
 
         if not self.boundaryConditionApplied:
             vector.putAdd(bb, self.adjacentCellIDs, -self.contribution)

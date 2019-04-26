@@ -88,10 +88,10 @@ class UniformGrid3D(UniformGrid):
         XZids = self._XZFaceIDs
         YZids = self._YZFaceIDs
 
-        exteriorIDs = numerix.concatenate((numerix.ravel(XYids[...,      0].swapaxes(0,1)),
-                                           numerix.ravel(XYids[...,     -1].swapaxes(0,1)),
-                                           numerix.ravel(XZids[:,     0, :]),
-                                           numerix.ravel(XZids[:,    -1, :]),
+        exteriorIDs = numerix.concatenate((numerix.ravel(XYids[...,      0].swapaxes(0, 1)),
+                                           numerix.ravel(XYids[...,     -1].swapaxes(0, 1)),
+                                           numerix.ravel(XZids[:,     0,:]),
+                                           numerix.ravel(XZids[:,    -1,:]),
                                            numerix.ravel(YZids[ 0,     ...]),
                                            numerix.ravel(YZids[-1,     ...])))
 
@@ -109,9 +109,9 @@ class UniformGrid3D(UniformGrid):
         XZids = self._XZFaceIDs
         YZids = self._YZFaceIDs
 
-        interiorIDs = numerix.concatenate((numerix.ravel(XYids[ ...      ,1:-1]),
-                                           numerix.ravel(XZids[   :, 1:-1,   :]),
-                                           numerix.ravel(YZids[1:-1,       ...].swapaxes(0,1))))
+        interiorIDs = numerix.concatenate((numerix.ravel(XYids[ ..., 1:-1]),
+                                           numerix.ravel(XZids[:, 1:-1,:]),
+                                           numerix.ravel(YZids[1:-1,       ...].swapaxes(0, 1))))
 
         from fipy.variables.faceVariable import FaceVariable
         interiorFaces = FaceVariable(mesh=self, value=False)
@@ -145,15 +145,15 @@ class UniformGrid3D(UniformGrid):
 
         if self.nx > 0:
             ids[0, 0,  ...] = MA.masked
-            ids[1,-1,  ...] = MA.masked
+            ids[1, -1,  ...] = MA.masked
         if self.ny > 0:
-            ids[2, :, 0, :] = MA.masked
-            ids[3, :,-1, :] = MA.masked
+            ids[2,:, 0,:] = MA.masked
+            ids[3,:, -1,:] = MA.masked
         if self.nz > 0:
             ids[4, ...,  0] = MA.masked
             ids[5, ..., -1] = MA.masked
 
-        return MA.reshape(ids.swapaxes(1,3), (6, self.numberOfCells))
+        return MA.reshape(ids.swapaxes(1, 3), (6, self.numberOfCells))
 
     @property
     def _cellToCellIDsFilled(self):
@@ -181,15 +181,15 @@ class UniformGrid3D(UniformGrid):
 
         XZnor = numerix.zeros((3, self.nx, self.ny + 1, self.nz), 'l')
         XZnor[1,     ...] =  1
-        XZnor[1, :, 0, :] = -1
+        XZnor[1,:, 0,:] = -1
 
         YZnor = numerix.zeros((3, self.nx + 1, self.ny, self.nz), 'l')
         YZnor[2,     ...] =  1
         YZnor[2, 0,  ...] = -1
 
-        return numerix.concatenate((numerix.reshape(XYnor[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)),
-                                    numerix.reshape(XZnor[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)),
-                                    numerix.reshape(YZnor[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+        return numerix.concatenate((numerix.reshape(XYnor[::-1].swapaxes(1, 3), (3, self.numberOfXYFaces)),
+                                    numerix.reshape(XZnor[::-1].swapaxes(1, 3), (3, self.numberOfXZFaces)),
+                                    numerix.reshape(YZnor[::-1].swapaxes(1, 3), (3, self.numberOfYZFaces))), axis=1)
 
     @property
     def _cellVolumes(self):
@@ -202,25 +202,25 @@ class UniformGrid3D(UniformGrid):
         centers[0] = (indices[0] + 0.5) * self.dx
         centers[1] = (indices[1] + 0.5) * self.dy
         centers[2] = (indices[2] + 0.5) * self.dz
-        ccs = numerix.reshape(centers.swapaxes(1,3), (3, self.numberOfCells)) + self.origin
+        ccs = numerix.reshape(centers.swapaxes(1, 3), (3, self.numberOfCells)) + self.origin
         return ccs
 
     @property
     def _cellDistances(self):
-        XYdis = numerix.zeros((self.nz + 1, self.ny, self.nx),'d')
+        XYdis = numerix.zeros((self.nz + 1, self.ny, self.nx), 'd')
         XYdis[:] = self.dz
-        XYdis[ 0,...] = self.dz / 2.
-        XYdis[-1,...] = self.dz / 2.
+        XYdis[ 0, ...] = self.dz / 2.
+        XYdis[-1, ...] = self.dz / 2.
 
-        XZdis = numerix.zeros((self.nz, self.ny + 1, self.nx),'d')
+        XZdis = numerix.zeros((self.nz, self.ny + 1, self.nx), 'd')
         XZdis[:] = self.dy
-        XZdis[:, 0, :] = self.dy / 2.
-        XZdis[:,-1, :] = self.dy / 2.
+        XZdis[:, 0,:] = self.dy / 2.
+        XZdis[:, -1,:] = self.dy / 2.
 
-        YZdis = numerix.zeros((self.nz, self.ny, self.nx + 1),'d')
+        YZdis = numerix.zeros((self.nz, self.ny, self.nx + 1), 'd')
         YZdis[:] = self.dx
         YZdis[..., 0] = self.dx / 2.
-        YZdis[...,-1] = self.dx / 2.
+        YZdis[..., -1] = self.dx / 2.
 
         return numerix.concatenate((numerix.ravel(XYdis),
                                     numerix.ravel(XZdis),
@@ -233,24 +233,24 @@ class UniformGrid3D(UniformGrid):
         distance from center of face to center of first cell divided by distance
         between cell centers
         """
-        XYdis = numerix.zeros((self.nx, self.ny, self.nz + 1),'d')
+        XYdis = numerix.zeros((self.nx, self.ny, self.nz + 1), 'd')
         XYdis[:] = 0.5
         XYdis[..., 0] = 1
-        XYdis[...,-1] = 1
+        XYdis[..., -1] = 1
 
-        XZdis = numerix.zeros((self.nx, self.ny + 1, self.nz),'d')
+        XZdis = numerix.zeros((self.nx, self.ny + 1, self.nz), 'd')
         XZdis[:] = 0.5
-        XZdis[:, 0, :] = 1
-        XZdis[:,-1, :] = 1
+        XZdis[:, 0,:] = 1
+        XZdis[:, -1,:] = 1
 
-        YZdis = numerix.zeros((self.nx + 1, self.ny, self.nz),'d')
+        YZdis = numerix.zeros((self.nx + 1, self.ny, self.nz), 'd')
         YZdis[:] = 0.5
-        YZdis[ 0,...] = 1
-        YZdis[-1,...] = 1
+        YZdis[ 0, ...] = 1
+        YZdis[-1, ...] = 1
 
-        return numerix.concatenate((numerix.ravel(XYdis.swapaxes(0,2)),
-                                    numerix.ravel(XZdis.swapaxes(0,2)),
-                                    numerix.ravel(YZdis.swapaxes(0,2))))
+        return numerix.concatenate((numerix.ravel(XYdis.swapaxes(0, 2)),
+                                    numerix.ravel(XZdis.swapaxes(0, 2)),
+                                    numerix.ravel(YZdis.swapaxes(0, 2))))
 
     @property
     def _orientedFaceNormals(self):
@@ -267,9 +267,9 @@ class UniformGrid3D(UniformGrid):
         YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz), 'l')
         YZtan[1, ...] =  1
 
-        return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)),
-                                    numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)),
-                                    numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+        return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1, 3), (3, self.numberOfXYFaces)),
+                                    numerix.reshape(XZtan[::-1].swapaxes(1, 3), (3, self.numberOfXZFaces)),
+                                    numerix.reshape(YZtan[::-1].swapaxes(1, 3), (3, self.numberOfYZFaces))), axis=1)
 
     @property
     def _faceTangents2(self):
@@ -282,9 +282,9 @@ class UniformGrid3D(UniformGrid):
         YZtan = numerix.zeros((3, self.nx + 1, self.ny, self.nz), 'l')
         YZtan[0, ...] =  1
 
-        return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1,3), (3, self.numberOfXYFaces)),
-                                    numerix.reshape(XZtan[::-1].swapaxes(1,3), (3, self.numberOfXZFaces)),
-                                    numerix.reshape(YZtan[::-1].swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1)
+        return numerix.concatenate((numerix.reshape(XYtan[::-1].swapaxes(1, 3), (3, self.numberOfXYFaces)),
+                                    numerix.reshape(XZtan[::-1].swapaxes(1, 3), (3, self.numberOfXZFaces)),
+                                    numerix.reshape(YZtan[::-1].swapaxes(1, 3), (3, self.numberOfYZFaces))), axis=1)
 
     @property
     def _cellToCellDistances(self):
@@ -296,24 +296,24 @@ class UniformGrid3D(UniformGrid):
         distances[4] = self.dz
         distances[5] = self.dz
 
-        distances[0,  0,...   ] = self.dx / 2.
-        distances[1, -1,...   ] = self.dx / 2.
-        distances[2,  :,  0, :] = self.dy / 2.
-        distances[3,  :, -1, :] = self.dy / 2.
-        distances[4,...,     0] = self.dz / 2.
-        distances[5,...,    -1] = self.dz / 2.
+        distances[0,  0, ...   ] = self.dx / 2.
+        distances[1, -1, ...   ] = self.dx / 2.
+        distances[2,:,  0,:] = self.dy / 2.
+        distances[3,:, -1,:] = self.dy / 2.
+        distances[4, ...,     0] = self.dz / 2.
+        distances[5, ...,    -1] = self.dz / 2.
 
-        return numerix.reshape(distances.swapaxes(1,3), (6, self.numberOfCells))
+        return numerix.reshape(distances.swapaxes(1, 3), (6, self.numberOfCells))
 
     @property
     def _cellNormals(self):
         normals = numerix.zeros((3, 6, self.numberOfCells), 'd')
-        normals[:, 0, :] = [[-1], [ 0], [ 0]]
-        normals[:, 1, :] = [[ 1], [ 0], [ 0]]
-        normals[:, 2, :] = [[ 0], [-1], [ 0]]
-        normals[:, 3, :] = [[ 0], [ 1], [ 0]]
-        normals[:, 4, :] = [[ 0], [ 0], [-1]]
-        normals[:, 5, :] = [[ 0], [ 0], [ 1]]
+        normals[:, 0,:] = [[-1], [ 0], [ 0]]
+        normals[:, 1,:] = [[ 1], [ 0], [ 0]]
+        normals[:, 2,:] = [[ 0], [-1], [ 0]]
+        normals[:, 3,:] = [[ 0], [ 1], [ 0]]
+        normals[:, 4,:] = [[ 0], [ 0], [-1]]
+        normals[:, 5,:] = [[ 0], [ 0], [ 1]]
 
         return normals
 
@@ -355,9 +355,9 @@ class UniformGrid3D(UniformGrid):
         YZcen[1] = (indices[1] + 0.5) * self.dy
         YZcen[2] = (indices[2] + 0.5) * self.dz
 
-        return numerix.concatenate((numerix.reshape(XYcen.swapaxes(1,3), (3, self.numberOfXYFaces)),
-                                    numerix.reshape(XZcen.swapaxes(1,3), (3, self.numberOfXZFaces)),
-                                    numerix.reshape(YZcen.swapaxes(1,3), (3, self.numberOfYZFaces))), axis=1) + self.origin
+        return numerix.concatenate((numerix.reshape(XYcen.swapaxes(1, 3), (3, self.numberOfXYFaces)),
+                                    numerix.reshape(XZcen.swapaxes(1, 3), (3, self.numberOfXZFaces)),
+                                    numerix.reshape(YZcen.swapaxes(1, 3), (3, self.numberOfYZFaces))), axis=1) + self.origin
 
     @property
     def _orientedAreaProjections(self):
@@ -405,17 +405,17 @@ class UniformGrid3D(UniformGrid):
     @property
     def _XYFaceIDs(self):
         ids = numerix.arange(0, self.numberOfXYFaces)
-        return ids.reshape((self.nz + 1, self.ny, self.nx)).swapaxes(0,2)
+        return ids.reshape((self.nz + 1, self.ny, self.nx)).swapaxes(0, 2)
 
     @property
     def _XZFaceIDs(self):
         ids = numerix.arange(self.numberOfXYFaces, self.numberOfXYFaces + self.numberOfXZFaces)
-        return ids.reshape((self.nz, self.ny + 1, self.nx)).swapaxes(0,2)
+        return ids.reshape((self.nz, self.ny + 1, self.nx)).swapaxes(0, 2)
 
     @property
     def _YZFaceIDs(self):
         ids = numerix.arange(self.numberOfXYFaces + self.numberOfXZFaces, self.numberOfFaces)
-        return ids.reshape((self.nz, self.ny, self.nx + 1)).swapaxes(0,2)
+        return ids.reshape((self.nz, self.ny, self.nx + 1)).swapaxes(0, 2)
 
     @property
     def _maxFacesPerCell(self):
@@ -438,17 +438,17 @@ class UniformGrid3D(UniformGrid):
         indices = numerix.indices((self.nx, self.ny, self.nz + 1))
         XYids[1] = indices[0] + (indices[1] + indices[2] * self.ny) * self.nx
         XYids[0] = XYids[1] - self.nx * self.ny
-        XYids[0,..., 0] = XYids[1,..., 0]
-        XYids[1,..., 0] = MA.masked
-        XYids[1,...,-1] = MA.masked
+        XYids[0, ..., 0] = XYids[1, ..., 0]
+        XYids[1, ..., 0] = MA.masked
+        XYids[1, ..., -1] = MA.masked
 
         XZids = MA.zeros((2, self.nx, self.ny + 1, self.nz), 'l')
         indices = numerix.indices((self.nx, self.ny + 1, self.nz))
         XZids[1] = indices[0] + (indices[1] + indices[2] * self.ny) * self.nx
         XZids[0] = XZids[1] - self.nx
-        XZids[0, :, 0, :] = XZids[1, :, 0, :]
-        XZids[1, :, 0, :] = MA.masked
-        XZids[1, :,-1, :] = MA.masked
+        XZids[0,:, 0,:] = XZids[1,:, 0,:]
+        XZids[1,:, 0,:] = MA.masked
+        XZids[1,:, -1,:] = MA.masked
 
         YZids = MA.zeros((2, self.nx + 1, self.ny, self.nz), 'l')
         indices = numerix.indices((self.nx + 1, self.ny, self.nz))
@@ -456,11 +456,11 @@ class UniformGrid3D(UniformGrid):
         YZids[0] = YZids[1] - 1
         YZids[0, 0] = YZids[1, 0]
         YZids[1, 0] = MA.masked
-        YZids[1,-1] = MA.masked
+        YZids[1, -1] = MA.masked
 
-        return MA.concatenate((XYids.swapaxes(1,3).reshape((2, self.numberOfXYFaces)),
-                               XZids.swapaxes(1,3).reshape((2, self.numberOfXZFaces)),
-                               YZids.swapaxes(1,3).reshape((2, self.numberOfYZFaces))), axis=1)
+        return MA.concatenate((XYids.swapaxes(1, 3).reshape((2, self.numberOfXYFaces)),
+                               XZids.swapaxes(1, 3).reshape((2, self.numberOfXZFaces)),
+                               YZids.swapaxes(1, 3).reshape((2, self.numberOfYZFaces))), axis=1)
 
 ##         from common/mesh
 
@@ -485,7 +485,7 @@ class UniformGrid3D(UniformGrid):
         ids[7] = indices[0] + (indices[1] + indices[2] * (self.ny + 1)) * (self.nx + 1)
         ids[6] = ids[7] + 1
 
-        return numerix.reshape(ids.swapaxes(1,3), (8, self.numberOfCells))
+        return numerix.reshape(ids.swapaxes(1, 3), (8, self.numberOfCells))
 
 ##     scaling
 
@@ -494,7 +494,7 @@ class UniformGrid3D(UniformGrid):
         ny = self.args['ny']
         nz = self.args['nz']
 
-        x0, y0, z0 = self.cellCenters[...,0]
+        x0, y0, z0 = self.cellCenters[..., 0]
         xi, yi, zi = points
         nx, ny, nz = self.shape
         dx, dy, dz = self.dx, self.dy, self.dz

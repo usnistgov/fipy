@@ -70,7 +70,7 @@ class _AddOverFacesVariable(CellVariable):
         contributions = numerix.take(self.faceVariable, ids, axis=-1)
 
         # FIXME: numerix.MA.filled casts away dimensions
-        s = (numerix.newaxis,) * (len(contributions.shape) - 2) + (slice(0,None,None),) + (slice(0,None,None),)
+        s = (numerix.newaxis,) * (len(contributions.shape) - 2) + (slice(0, None, None),) + (slice(0, None, None),)
 
         faceContributions = contributions * self.mesh._cellToFaceOrientations[s]
 

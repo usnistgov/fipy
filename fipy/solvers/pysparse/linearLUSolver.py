@@ -64,7 +64,7 @@ class LinearLUSolver(PysparseSolver):
             if (numerix.sqrt(numerix.sum(errorVector**2)) / error0)  <= self.tolerance:
                 break
 
-            xError = numerix.zeros(len(b),'d')
+            xError = numerix.zeros(len(b), 'd')
             LU.solve(errorVector, xError)
             x[:] = x - xError
 

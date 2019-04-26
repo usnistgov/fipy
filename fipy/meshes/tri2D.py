@@ -159,7 +159,7 @@ class Tri2D(Mesh2D):
 
     @property
     def _meshSpacing(self):
-        return numerix.array((self.dx,self.dy))[...,numerix.newaxis]
+        return numerix.array((self.dx, self.dy))[..., numerix.newaxis]
 
     @property
     def shape(self):

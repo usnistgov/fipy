@@ -38,7 +38,7 @@ class _SparseMatrix(object):
 
         for j in Jrange:
             for i in Irange:
-                v = self[j,i]
+                v = self[j, i]
                 if v == 0:
                     s += "---".center(cellWidth)
                 else:
@@ -47,7 +47,7 @@ class _SparseMatrix(object):
                         if exp < 0:
                             s += ("%9.6f" % v).ljust(cellWidth)
                         else:
-                            s += ("%9.*f" % (6,v)).ljust(cellWidth)
+                            s += ("%9.*f" % (6, v)).ljust(cellWidth)
                     else:
                         s += ("%9.2e" % v).ljust(cellWidth)
             s += "\n"

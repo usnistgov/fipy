@@ -75,7 +75,7 @@ def read(filename, fileobject=None, communicator=parallelComm, mesh_unmangle=Fal
     if communicator.Nproc > 1:
         data = communicator.bcast(data, root=0)
 
-    if sys.version_info < (3,0):
+    if sys.version_info < (3, 0):
         import StringIO
         f = StringIO.StringIO(data)
     else:

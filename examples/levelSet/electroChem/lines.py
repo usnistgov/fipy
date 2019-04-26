@@ -141,7 +141,7 @@ def _getOrderedLines(IDs, coordinates, thresholdDistance = 0.0):
     for ID in IDs:
         distances = numerix.zeros(len(IDs), 'd')
         for i in range(len(coordinates[0,:])):
-            distances += (coordinates[:,i] - coordinates[ID,i])**2
+            distances += (coordinates[:, i] - coordinates[ID, i])**2
         vertices.append(_Vertex(ID, coordinates[ID, 0], coordinates[ID, 1]))
         closeIDs[ID,:] = numerix.argsort(distances)
 
@@ -149,7 +149,7 @@ def _getOrderedLines(IDs, coordinates, thresholdDistance = 0.0):
     for ID in IDs:
         i = 1
         closeVertices = []
-        while i < 3 or vertices[ID].distance(vertices[closeIDs[ID,i]]) < thresholdDistance:
+        while i < 3 or vertices[ID].distance(vertices[closeIDs[ID, i]]) < thresholdDistance:
             closeVertices.append(vertices[closeIDs[ID, i]])
             i += 1
 

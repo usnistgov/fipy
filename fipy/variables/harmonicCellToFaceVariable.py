@@ -34,8 +34,8 @@ class _HarmonicCellToFaceVariable(_CellToFaceVariable):
             return self._makeValue(value = val)
     else:
         def _calcValue_(self, alpha, id1, id2):
-            cell1 = numerix.take(self.var,id1, axis=-1)
-            cell2 = numerix.take(self.var,id2, axis=-1)
+            cell1 = numerix.take(self.var, id1, axis=-1)
+            cell2 = numerix.take(self.var, id2, axis=-1)
             value = ((cell2 - cell1) * alpha + cell1)
             eps = 1e-20
             value = (value == 0.) * eps + (value != 0.) * value

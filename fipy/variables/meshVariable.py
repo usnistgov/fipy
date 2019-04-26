@@ -296,7 +296,7 @@ class _MeshVariable(Variable):
         if rankA > 0 and rankB > (rankA - 1):
             opShape = opShape[:rankA-1] + opShape[rankA:]
 
-        return A._BinaryOperatorVariable(lambda a,b: _MeshVariable._dot(a, b, index),
+        return A._BinaryOperatorVariable(lambda a, b: _MeshVariable._dot(a, b, index),
                                          B,
                                          opShape=opShape,
                                          operatorClass=operatorClass,

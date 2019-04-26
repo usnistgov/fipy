@@ -19,7 +19,7 @@ args = sys.argv[1:]
 
 print "size\tcpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)"
 
-for size in numerix.arange(2,6.5,0.5):
+for size in numerix.arange(2, 6.5, 0.5):
     p = Popen(["python", benchmarker] + args
               + ["--numberOfElements=%d" % int(10**size),
                  "--numberOfSteps=0"],

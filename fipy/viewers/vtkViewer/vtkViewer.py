@@ -87,8 +87,8 @@ class VTKViewer(AbstractViewer):
             from enthought.tvtk.misc import write_data
         write_data(self.dataset, filename)
 
-    def _getSuitableVars(self,vars):
-        if type(vars) not in [type([]),type(())]:
+    def _getSuitableVars(self, vars):
+        if type(vars) not in [type([]), type(())]:
             vars = [vars]
         cls = self._variableClass
         vars = [var for var in vars if isinstance(var, cls)]

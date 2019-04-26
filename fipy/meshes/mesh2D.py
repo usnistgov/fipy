@@ -42,12 +42,12 @@ class Mesh2D(Mesh):
 
     def _calcFaceAreas(self):
         faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
-        tangent = faceVertexCoords[:,1] - faceVertexCoords[:,0]
+        tangent = faceVertexCoords[:, 1] - faceVertexCoords[:, 0]
         return numerix.sqrtDot(tangent, tangent)
 
     def _calcFaceNormals(self):
         faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
-        t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
+        t1 = faceVertexCoords[:, 1,:] - faceVertexCoords[:, 0,:]
         faceNormals = t1.copy()
         mag = numerix.sqrt(t1[1]**2 + t1[0]**2)
         faceNormals[0] = -t1[1] / mag
@@ -101,18 +101,18 @@ class Mesh2D(Mesh):
         faceDisplacementVectors = \
           numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)),
                         0.0,
-                        numerix.take(self._scaledCellCenters.swapaxes(0,1),
-                                     unmaskedFaceCellIDs[1, :]) \
-                          - numerix.take(self._scaledCellCenters.swapaxes(0,1),
-                        unmaskedFaceCellIDs[0, :]))
+                        numerix.take(self._scaledCellCenters.swapaxes(0, 1),
+                                     unmaskedFaceCellIDs[1,:]) \
+                          - numerix.take(self._scaledCellCenters.swapaxes(0, 1),
+                        unmaskedFaceCellIDs[0,:]))
 
-        faceDisplacementVectors = faceDisplacementVectors.swapaxes(0,1)
+        faceDisplacementVectors = faceDisplacementVectors.swapaxes(0, 1)
 
-        faceCrossProducts = (faceDisplacementVectors[0, :] * self.faceNormals[1,:]) \
-          - (faceDisplacementVectors[1, :] * self.faceNormals[0, :])
+        faceCrossProducts = (faceDisplacementVectors[0,:] * self.faceNormals[1,:]) \
+          - (faceDisplacementVectors[1,:] * self.faceNormals[0,:])
 
-        faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[0, :] ** 2) \
-          + (faceDisplacementVectors[1, :] ** 2)) ** 0.5, 1.e-100)
+        faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[0,:] ** 2) \
+          + (faceDisplacementVectors[1,:] ** 2)) ** 0.5, 1.e-100)
 
         faceWeightedNonOrthogonalities = abs(faceCrossProducts / faceDisplacementVectorLengths) * self._faceAreas
 
@@ -124,7 +124,7 @@ class Mesh2D(Mesh):
 
         return (cellTotalWeightedValues / cellTotalFaceAreas)
 
-    def extrude(self, extrudeFunc=lambda x: x + numerix.array((0, 0, 1))[:,numerix.newaxis] , layers=1):
+    def extrude(self, extrudeFunc=lambda x: x + numerix.array((0, 0, 1))[:, numerix.newaxis] , layers=1):
         """
         This function returns a new 3D mesh. The 2D mesh is extruded
         using the extrudeFunc and the number of layers.
@@ -210,7 +210,7 @@ class Mesh2D(Mesh):
                 cells = numerix.concatenate((c0, c0 + NCells, mesh.cellFaceIDs + 2 * NCells), axis = 0)
             else:
                 newCells = numerix.concatenate((c0, c0 + initialFaceCount, mesh.cellFaceIDs + faceCount), axis=0)
-                newCells[0] = cells[1,-NCells:]
+                newCells[0] = cells[1, -NCells:]
                 cells = numerix.concatenate((cells, newCells), axis=1)
 
             ## keep a count of things for the next layer

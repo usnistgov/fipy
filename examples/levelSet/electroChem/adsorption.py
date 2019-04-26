@@ -115,7 +115,7 @@ surfEqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
 
 ## Build the analytical solutions,
 
-x = mesh.cellCenters[0,1:] - dx
+x = mesh.cellCenters[0, 1:] - dx
 
 def concentrationFunc(theta):
     tmp = (1 + rateConstant * siteDensity * (1 - theta) * L / diffusion)
@@ -141,7 +141,7 @@ if __name__ == "__main__":
         ## evaluate the analytical and numerical solution and plot
 
         theta = surfactantVar.interfaceVar[1]
-        print "theta:",theta
+        print "theta:", theta
 
         ## do a time step
         surfEqn.solve(surfactantVar, dt = dt)

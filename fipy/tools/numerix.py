@@ -87,7 +87,7 @@ def _isPhysical(arr):
     from fipy.variables.variable import Variable
     from fipy.tools.dimensions.physicalField import PhysicalField
 
-    return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
+    return isinstance(arr, Variable) or isinstance(arr, PhysicalField)
 
 def getUnit(arr):
     if hasattr(arr, "getUnit") and callable(arr.getUnit):
@@ -420,7 +420,7 @@ if inline.doInline:
         a2, unit2, mask2 = dimensionlessUnmasked(a2)
 
         NJ, ni = NUMERIX.shape(a1)
-        result1 = NUMERIX.zeros((ni,),'d')
+        result1 = NUMERIX.zeros((ni,), 'd')
 
         inline._runInline("""
             int j;
@@ -430,7 +430,7 @@ if inline.doInline:
                 result1[i] += a1[i + j * ni] * a2[i + j * ni];
             }
             result1[i] = sqrt(result1[i]);
-        """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
+        """, result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
 
         if NUMERIX.any(mask1) or NUMERIX.any(mask2):
             result1 = MA.array(result1, mask=NUMERIX.logical_or(mask1, mask2))
@@ -499,7 +499,7 @@ def nearest(data, points, max_mem=1e8):
         # (D, M) -> (D, C)
         chunkOfPoints = points[..., chunk]
         # (D, C) -> (D, 1, C)
-        chunkOfPoints = chunkOfPoints[..., newaxis, :]
+        chunkOfPoints = chunkOfPoints[..., newaxis,:]
         # (D, 1, C) -> (D, N, C)
         chunkOfPoints = NUMERIX.repeat(chunkOfPoints, N, axis=1)
 
@@ -812,26 +812,26 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
                 converterseq = [_getconv(dtype.fields[name][0]) \
                                 for name in dtype.names]
 
-        for i,line in enumerate(fh):
+        for i, line in enumerate(fh):
             if i<skiprows: continue
             line = line[:line.find(comments)].strip()
             if not len(line): continue
             vals = line.split(delimiter)
             if converterseq is None:
-               converterseq = [converters.get(j,defconv) \
+               converterseq = [converters.get(j, defconv) \
                                for j in xrange(len(vals))]
             if usecols is not None:
                 row = [converterseq[j](vals[j]) for j in usecols]
             else:
-                row = [converterseq[j](val) for j,val in enumerate(vals)]
+                row = [converterseq[j](val) for j, val in enumerate(vals)]
             if dtype.names is not None:
                 row = tuple(row)
             X.append(row)
 
         X = array(X, dtype)
-        r,c = X.shape
+        r, c = X.shape
         if r==1 or c==1:
-            X.shape = max([r,c]),
+            X.shape = max([r, c]),
         if unpack: return X.T
         else:  return X
 
@@ -861,9 +861,9 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
         if _string_like(fname):
             if fname.endswith('.gz'):
                 import gzip
-                fh = gzip.open(fname,'wb')
+                fh = gzip.open(fname, 'wb')
             else:
-                fh = file(fname,'w')
+                fh = file(fname, 'w')
         elif hasattr(fname, 'seek'):
             fh = fname
         else:
@@ -1159,10 +1159,10 @@ def _broadcastShapes(shape1, shape2):
         if s == 0 or o == 0:
             return 0
         else:
-            return max(s,o)
+            return max(s, o)
 
-    if logical_and.reduce([(s == o or s == 1 or o == 1) for s,o in zip(shape1, shape2)]):
-        broadcastshape = tuple([maxzero(s,o) for s,o in zip(shape1, shape2)])
+    if logical_and.reduce([(s == o or s == 1 or o == 1) for s, o in zip(shape1, shape2)]):
+        broadcastshape = tuple([maxzero(s, o) for s, o in zip(shape1, shape2)])
     else:
         broadcastshape = None
 

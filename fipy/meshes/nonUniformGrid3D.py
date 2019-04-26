@@ -34,7 +34,7 @@ class NonUniformGrid3D(Mesh):
         self.args = {
             'dx': dx,
             'dy': dy,
-            'dz' :dz,
+            'dz': dz,
             'nx': nx,
             'ny': ny,
             'nz': nz,
@@ -89,9 +89,9 @@ class NonUniformGrid3D(Mesh):
         xzd = xzd % (self.nx * (self.ny + 1))
         xzd = (xzd < self.nx)
         xzd = 1 - (2 * xzd)
-        XZFaceNormals[1, :] = xzd
+        XZFaceNormals[1,:] = xzd
         YZFaceNormals = numerix.zeros((3, self.numberOfYZFaces), 'l')
-        YZFaceNormals[0, :] = 1
+        YZFaceNormals[0,:] = 1
         YZFaceNormals[0, ::self.nx + 1] = -1
         return numerix.concatenate((XYFaceNormals,
                                     XZFaceNormals,

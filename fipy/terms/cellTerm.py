@@ -38,7 +38,7 @@ class CellTerm(_NonDiffusionTerm):
 
         if var.rank == 1 and (shape == () or len(shape) == 1):
             if len(self.coeff.shape) == 2 and isinstance(self.coeff, CellVariable):
-                self.coeff *= numerix.identity(var.shape[0])[...,numerix.newaxis]
+                self.coeff *= numerix.identity(var.shape[0])[..., numerix.newaxis]
             else:
                 self.coeff *= numerix.identity(var.shape[0])
             if isinstance(self.coeff, CellVariable):
@@ -86,7 +86,7 @@ class CellTerm(_NonDiffusionTerm):
     def _buildMatrixInline_(self, L, oldArray, b, dt, coeffVectors):
         oldArray = oldArray.value.ravel()
         N = len(oldArray)
-        updatePyArray = numerix.zeros((N),'d')
+        updatePyArray = numerix.zeros((N), 'd')
 
         dt = self._checkDt(dt)
 
@@ -95,7 +95,7 @@ class CellTerm(_NonDiffusionTerm):
             b[i] += bCoeff[i];
             updatePyArray[i] += newCoeff[i] / dt;
             updatePyArray[i] += diagCoeff[i];
-        """,b=b,
+        """, b=b,
             oldArray=oldArray,
             oldCoeff=coeffVectors['old value'].ravel(),
             bCoeff=coeffVectors['b vector'].ravel(),
@@ -111,12 +111,12 @@ class CellTerm(_NonDiffusionTerm):
         ids = self._reshapeIDs(oldArray, numerix.arange(oldArray.shape[-1]))
         b += (oldArray.value[numerix.newaxis] * coeffVectors['old value']).sum(-2).ravel() / dt
         b += coeffVectors['b vector'][numerix.newaxis].sum(-2).ravel()
-        L.addAt(coeffVectors['new value'].ravel() / dt, ids.ravel(), ids.swapaxes(0,1).ravel())
-        L.addAt(coeffVectors['diagonal'].ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
+        L.addAt(coeffVectors['new value'].ravel() / dt, ids.ravel(), ids.swapaxes(0, 1).ravel())
+        L.addAt(coeffVectors['diagonal'].ravel(), ids.ravel(), ids.swapaxes(0, 1).ravel())
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
-        b = numerix.zeros(var.shape,'d').ravel()
+        b = numerix.zeros(var.shape, 'd').ravel()
         L = SparseMatrix(mesh=var.mesh)
 
         coeffVectors = self._getCoeffVectors_(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)

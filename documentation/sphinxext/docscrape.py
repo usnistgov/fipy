@@ -21,7 +21,7 @@ class Reader(object):
            String with lines separated by '\n'.
 
         """
-        if isinstance(data,list):
+        if isinstance(data, list):
             self._str = data
         else:
             self._str = data.split('\n') # store string as list of lines
@@ -84,7 +84,7 @@ class Reader(object):
 
 
 class NumpyDocString(object):
-    def __init__(self,docstring):
+    def __init__(self, docstring):
         docstring = textwrap.dedent(docstring).split('\n')
 
         self._doc = Reader(docstring)
@@ -109,10 +109,10 @@ class NumpyDocString(object):
 
         self._parse()
 
-    def __getitem__(self,key):
+    def __getitem__(self, key):
         return self._parsed_data[key]
 
-    def __setitem__(self,key,val):
+    def __setitem__(self, key, val):
         if key not in self._parsed_data:
             warn("Unknown section %s" % key)
         else:
@@ -132,13 +132,13 @@ class NumpyDocString(object):
         l2 = self._doc.peek(1).strip() #    ---------- or ==========
         return l2.startswith('-'*len(l1)) or l2.startswith('='*len(l1))
 
-    def _strip(self,doc):
+    def _strip(self, doc):
         i = 0
         j = 0
-        for i,line in enumerate(doc):
+        for i, line in enumerate(doc):
             if line.strip(): break
 
-        for j,line in enumerate(doc[::-1]):
+        for j, line in enumerate(doc[::-1]):
             if line.strip(): break
 
         return doc[i:len(doc)-j]
@@ -166,7 +166,7 @@ class NumpyDocString(object):
             else:
                 yield name, self._strip(data[2:])
 
-    def _parse_param_list(self,content):
+    def _parse_param_list(self, content):
         r = Reader(content)
         params = []
         while not r.eof():
@@ -179,7 +179,7 @@ class NumpyDocString(object):
             desc = r.read_to_next_unindented_line()
             desc = dedent_lines(desc)
 
-            params.append((arg_name,arg_type,desc))
+            params.append((arg_name, arg_type, desc))
 
         return params
 
@@ -280,7 +280,7 @@ class NumpyDocString(object):
         self._doc.reset()
         self._parse_summary()
 
-        for (section,content) in self._read_sections():
+        for (section, content) in self._read_sections():
             if not section.startswith('..'):
                 section = ' '.join([s.capitalize() for s in section.split(' ')])
             if section in ('Parameters', 'Attributes', 'Methods',
@@ -306,7 +306,7 @@ class NumpyDocString(object):
 
     def _str_signature(self):
         if self['Signature']:
-            return [self['Signature'].replace('*','\*')] + ['']
+            return [self['Signature'].replace('*', '\*')] + ['']
         else:
             return ['']
 
@@ -326,7 +326,7 @@ class NumpyDocString(object):
         out = []
         if self[name]:
             out += self._str_header(name)
-            for param,param_type,desc in self[name]:
+            for param, param_type, desc in self[name]:
                 out += ['%s : %s' % (param, param_type)]
                 out += self._str_indent(desc)
             out += ['']
@@ -368,7 +368,7 @@ class NumpyDocString(object):
     def _str_index(self):
         idx = self['index']
         out = []
-        out += ['.. index:: %s' % idx.get('default','')]
+        out += ['.. index:: %s' % idx.get('default', '')]
         for section, references in idx.iteritems():
             if section == 'default':
                 continue
@@ -380,11 +380,11 @@ class NumpyDocString(object):
         out += self._str_signature()
         out += self._str_summary()
         out += self._str_extended_summary()
-        for param_list in ('Parameters','Returns','Raises'):
+        for param_list in ('Parameters', 'Returns', 'Raises'):
             out += self._str_param_list(param_list)
         out += self._str_section('Warnings')
         out += self._str_see_also(func_role)
-        for s in ('Notes','References','Examples'):
+        for s in ('Notes', 'References', 'Examples'):
             out += self._str_section(s)
         out += self._str_index()
         return '\n'.join(out)
@@ -427,7 +427,7 @@ class FunctionDoc(NumpyDocString):
                 # try to read signature
                 argspec = inspect.getargspec(func)
                 argspec = inspect.formatargspec(*argspec)
-                argspec = argspec.replace('*','\*')
+                argspec = argspec.replace('*', '\*')
                 signature = '%s%s' % (func_name, argspec)
             except TypeError as e:
                 signature = '%s()' % func_name
@@ -453,7 +453,7 @@ class FunctionDoc(NumpyDocString):
         if self._role:
             if self._role not in roles:
                 print "Warning: invalid role %s" % self._role
-            out += '.. %s:: %s\n    \n\n' % (roles.get(self._role,''),
+            out += '.. %s:: %s\n    \n\n' % (roles.get(self._role, ''),
                                              func_name)
 
         out += super(FunctionDoc, self).__str__(func_role=self._role)
@@ -479,7 +479,7 @@ class ClassDoc(NumpyDocString):
 
     @property
     def methods(self):
-        return [name for name,func in inspect.getmembers(self._cls)
+        return [name for name, func in inspect.getmembers(self._cls)
                 if not name.startswith('_') and callable(func)]
 
     def __str__(self):

@@ -14,9 +14,9 @@ class test(_test):
         ('pysparse', None, "run FiPy using Pysparse solvers (default)"),
         ('scipy', None, "run FiPy using SciPy solvers"),
         ('Scipy', None, "run FiPy using SciPy solvers"),
-        ('no-pysparse',None, "run FiPy without using the Pysparse solvers"),
-        ('pyamg',None, "run FiPy without using the PyAMG solvers"),
-        ('pyamgx',None, "run FiPy using the pyamgx solvers"),
+        ('no-pysparse', None, "run FiPy without using the Pysparse solvers"),
+        ('pyamg', None, "run FiPy without using the PyAMG solvers"),
+        ('pyamgx', None, "run FiPy using the pyamgx solvers"),
         ('all', None, "run all non-interactive FiPy tests (default)"),
         ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
         ('examples', None, "test FiPy examples"),
@@ -114,12 +114,12 @@ class test(_test):
                 mod = __import__(pkg)
 
                 if hasattr(mod, '__version__'):
-                    print pkg,'version',mod.__version__
+                    print pkg, 'version', mod.__version__
                 else:
-                    print pkg,'version not available'
+                    print pkg, 'version not available'
 
             except ImportError as e:
-                print pkg,'is not installed'
+                print pkg, 'is not installed'
 
             except Exception as e:
                 print pkg, 'version check failed:', e
@@ -155,7 +155,7 @@ class test(_test):
             if gmshversion is None:
                 print 'gmsh is not installed'
             else:
-                print 'gmsh version',gmshversion
+                print 'gmsh version', gmshversion
         except Exception as e:
             print 'gmsh version check failed:', e
 

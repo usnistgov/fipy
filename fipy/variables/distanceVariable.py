@@ -391,7 +391,7 @@ class DistanceVariable(CellVariable):
         valueOverFaces = numerix.repeat(self._cellValueOverFaces[numerix.newaxis, ...], dim, axis=0)
         cellFaceIDs = self.mesh.cellFaceIDs
         if cellFaceIDs.shape[-1] > 0:
-            interfaceNormals = self._interfaceNormals[...,cellFaceIDs]
+            interfaceNormals = self._interfaceNormals[..., cellFaceIDs]
         else:
             interfaceNormals = 0
 

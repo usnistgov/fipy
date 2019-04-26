@@ -79,7 +79,7 @@ class TransientTerm(CellTerm):
     def _calcGeomCoeff(self, var):
         self._checkCoeff(var)
         if var.rank != 0 and not isinstance(self.coeff, CellVariable):
-            return self.coeff[...,numerix.newaxis] * numerix.resize(var.mesh.cellVolumes, var.shape)
+            return self.coeff[..., numerix.newaxis] * numerix.resize(var.mesh.cellVolumes, var.shape)
         else:
             return self.coeff * numerix.resize(var.mesh.cellVolumes, var.shape)
 

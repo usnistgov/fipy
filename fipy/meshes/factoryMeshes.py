@@ -159,7 +159,7 @@ def CylindricalGrid2D(dr=None, dz=None,
                       dx=1., dy=1.,
                       nx=None, ny=None,
                       Lx=None, Ly=None,
-                      origin=((0,),(0,)),
+                      origin=((0,), (0,)),
                       overlap=2,
                       communicator=parallelComm):
 

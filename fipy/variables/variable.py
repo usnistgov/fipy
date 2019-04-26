@@ -881,10 +881,10 @@ class Variable(object):
                 nj = self.opShape[-2]
                 argDict['nj'] = nj
                 if dimensions == 2:
-                    dim =(nj,ni)
+                    dim =(nj, ni)
                 elif dimensions == 3:
                     nk = self.opShape[-3]
-                    dim = (nk,nj,ni)
+                    dim = (nk, nj, ni)
                     argDict['nk'] = nk
                 else:
                     raise DimensionError, 'Impossible Dimensions'
@@ -1063,7 +1063,7 @@ class Variable(object):
         if isinstance(other, Term):
             return other + self
         else:
-            return self._BinaryOperatorVariable(lambda a,b: a+b, other)
+            return self._BinaryOperatorVariable(lambda a, b: a+b, other)
 
     __radd__ = __add__
 
@@ -1072,22 +1072,22 @@ class Variable(object):
         if isinstance(other, Term):
             return -other + self
         else:
-            return self._BinaryOperatorVariable(lambda a,b: a-b, other)
+            return self._BinaryOperatorVariable(lambda a, b: a-b, other)
 
     def __rsub__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: b-a, other)
+        return self._BinaryOperatorVariable(lambda a, b: b-a, other)
 
     def __mul__(self, other):
         from fipy.terms.term import Term
         if isinstance(other, Term):
             return other * self
         else:
-            return self._BinaryOperatorVariable(lambda a,b: a*b, other)
+            return self._BinaryOperatorVariable(lambda a, b: a*b, other)
 
     __rmul__ = __mul__
 
     def __mod__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: numerix.fmod(a, b), other)
+        return self._BinaryOperatorVariable(lambda a, b: numerix.fmod(a, b), other)
 
     def __pow__(self, other):
         """return self**other, or self raised to power other
@@ -1097,18 +1097,18 @@ class Variable(object):
         >>> print (Variable(1, "mol/l")**3).unit
         <PhysicalUnit mol**3/l**3>
         """
-        return self._BinaryOperatorVariable(lambda a,b: pow(a,b), other, value1mattersForUnit=True)
+        return self._BinaryOperatorVariable(lambda a, b: pow(a, b), other, value1mattersForUnit=True)
 
     def __rpow__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: pow(b,a), other, value0mattersForUnit=True)
+        return self._BinaryOperatorVariable(lambda a, b: pow(b, a), other, value0mattersForUnit=True)
 
     def __truediv__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: a/b, other)
+        return self._BinaryOperatorVariable(lambda a, b: a/b, other)
 
     __div__ = __truediv__
 
     def __rtruediv__(self, other):
-        return self._BinaryOperatorVariable(lambda a,b: b/a, other)
+        return self._BinaryOperatorVariable(lambda a, b: b/a, other)
 
     __rdiv__ = __rtruediv__
 
@@ -1140,7 +1140,7 @@ class Variable(object):
         """
         return self._UnaryOperatorVariable(lambda a: ~a)
 
-    def __lt__(self,other):
+    def __lt__(self, other):
         """
         Test if a `Variable` is less than another quantity
 
@@ -1164,9 +1164,9 @@ class Variable(object):
             >>> 4 > Variable(value=3)
             (Variable(value=array(3)) < 4)
         """
-        return self._BinaryOperatorVariable(lambda a,b: a<b, other)
+        return self._BinaryOperatorVariable(lambda a, b: a<b, other)
 
-    def __le__(self,other):
+    def __le__(self, other):
         """
         Test if a `Variable` is less than or equal to another quantity
 
@@ -1183,9 +1183,9 @@ class Variable(object):
             >>> print b()
             0
         """
-        return self._BinaryOperatorVariable(lambda a,b: a<=b, other)
+        return self._BinaryOperatorVariable(lambda a, b: a<=b, other)
 
-    def __eq__(self,other):
+    def __eq__(self, other):
         """
         Test if a `Variable` is equal to another quantity
 
@@ -1196,11 +1196,11 @@ class Variable(object):
             >>> b()
             0
         """
-        return self._BinaryOperatorVariable(lambda a,b: a==b, other)
+        return self._BinaryOperatorVariable(lambda a, b: a==b, other)
 
     __hash__ = object.__hash__
 
-    def __ne__(self,other):
+    def __ne__(self, other):
         """
         Test if a `Variable` is not equal to another quantity
 
@@ -1211,9 +1211,9 @@ class Variable(object):
             >>> b()
             1
         """
-        return self._BinaryOperatorVariable(lambda a,b: a!=b, other)
+        return self._BinaryOperatorVariable(lambda a, b: a!=b, other)
 
-    def __gt__(self,other):
+    def __gt__(self, other):
         """
         Test if a `Variable` is greater than another quantity
 
@@ -1227,9 +1227,9 @@ class Variable(object):
             >>> print b()
             1
         """
-        return self._BinaryOperatorVariable(lambda a,b: a>b, other)
+        return self._BinaryOperatorVariable(lambda a, b: a>b, other)
 
-    def __ge__(self,other):
+    def __ge__(self, other):
         """
         Test if a `Variable` is greater than or equal to another quantity
 
@@ -1246,7 +1246,7 @@ class Variable(object):
             >>> print b()
             1
         """
-        return self._BinaryOperatorVariable(lambda a,b: a>=b, other)
+        return self._BinaryOperatorVariable(lambda a, b: a>=b, other)
 
     def __and__(self, other):
         """
@@ -1268,7 +1268,7 @@ class Variable(object):
         >>> print a & b
         [0 0 0 1]
         """
-        return self._BinaryOperatorVariable(lambda a,b: a & b, other, canInline=False)
+        return self._BinaryOperatorVariable(lambda a, b: a & b, other, canInline=False)
 
     def __or__(self, other):
         """
@@ -1290,7 +1290,7 @@ class Variable(object):
         >>> print a | b
         [0 1 1 1]
         """
-        return self._BinaryOperatorVariable(lambda a,b: a | b, other, canInline=False)
+        return self._BinaryOperatorVariable(lambda a, b: a | b, other, canInline=False)
 
     def __iter__(self):
         return iter(self.value)
@@ -1347,7 +1347,7 @@ class Variable(object):
             other = _Constant(value=other)
         if opShape is None:
             opShape = self._broadcastShape(other)
-        return self._BinaryOperatorVariable(lambda a,b: numerix.dot(a,b, axis=axis),
+        return self._BinaryOperatorVariable(lambda a, b: numerix.dot(a, b, axis=axis),
                                             other,
                                             opShape=opShape[:axis]+opShape[axis+1:],
                                             operatorClass=operatorClass,
@@ -1443,7 +1443,7 @@ class Variable(object):
 
         """
         operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
-        return self._BinaryOperatorVariable(lambda a,b: numerix.allclose(a, b, atol=atol, rtol=rtol),
+        return self._BinaryOperatorVariable(lambda a, b: numerix.allclose(a, b, atol=atol, rtol=rtol),
                                             other,
                                             operatorClass=operatorClass,
                                             opShape=(),
@@ -1451,7 +1451,7 @@ class Variable(object):
 
     def allequal(self, other):
         operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
-        return self._BinaryOperatorVariable(lambda a,b: numerix.allequal(a,b),
+        return self._BinaryOperatorVariable(lambda a, b: numerix.allequal(a, b),
                                             other,
                                             operatorClass=operatorClass,
                                             opShape=(),

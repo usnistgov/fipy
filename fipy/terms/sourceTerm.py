@@ -20,7 +20,7 @@ class SourceTerm(CellTerm):
         self._checkCoeff(var)
 
         if self.coeff.shape != () and self.coeff.shape[-1] != len(var.mesh.cellVolumes):
-            return self.coeff[...,numerix.newaxis] * CellVariable(mesh=var.mesh, value=var.mesh.cellVolumes)
+            return self.coeff[..., numerix.newaxis] * CellVariable(mesh=var.mesh, value=var.mesh.cellVolumes)
         else:
             return self.coeff * CellVariable(mesh=var.mesh, value=var.mesh.cellVolumes)
 

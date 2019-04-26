@@ -33,12 +33,12 @@ class _Grid1DBuilder(_AbstractGridBuilder):
         return PhysicalField(value = (self.ns[0] * self.ds[0] * self.scale,))
 
     def _calcMeshSpacing(self):
-        return numerix.array((self.ds[0],))[...,numerix.newaxis]
+        return numerix.array((self.ds[0],))[..., numerix.newaxis]
 
     @staticmethod
     def createVertices(dx, nx):
         x = _AbstractGridBuilder.calcVertexCoordinates(dx, nx)
-        return x[numerix.newaxis,...]
+        return x[numerix.newaxis, ...]
 
     @staticmethod
     def createFaces(numVertices):

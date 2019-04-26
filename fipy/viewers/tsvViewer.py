@@ -63,7 +63,7 @@ class TSVViewer(AbstractViewer):
 
     def _plot(self, values, f, dim):
         for index in range(values.shape[-1]):
-            lineValues = values[...,index]
+            lineValues = values[..., index]
 
             # omit any elements whose cell centers lie outside of the specified limits
             skip = False

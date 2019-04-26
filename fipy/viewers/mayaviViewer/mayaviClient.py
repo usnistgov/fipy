@@ -148,7 +148,7 @@ class MayaviClient(AbstractViewer):
             print "viewer: SKIPPED"
 
     def _validFileExtensions(self):
-        return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]
+        return [".png", ".jpg", ".bmp", ".tiff", ".ps", ".eps", ".pdf", ".rib", ".oogl", ".iv", ".vrml", ".obj"]
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

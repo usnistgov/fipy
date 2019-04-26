@@ -13,7 +13,7 @@ class BoundaryCondition(object):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self,faces,value):
+    def __init__(self, faces, value):
         """
         :Parameters:
             - `faces`: A `list` or `tuple` of exterior `Face` objects to which this condition applies.

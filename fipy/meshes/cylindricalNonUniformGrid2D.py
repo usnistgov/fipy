@@ -54,7 +54,7 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
 
     def __mul__(self, factor):
         if numerix.shape(factor) is ():
-            factor = numerix.resize(factor, (2,1))
+            factor = numerix.resize(factor, (2, 1))
 
         return CylindricalNonUniformGrid2D(dx=self.args['dx'] * numerix.array(factor[0]), nx=self.args['nx'],
                                            dy=self.args['dy'] * numerix.array(factor[1]), ny=self.args['ny'],

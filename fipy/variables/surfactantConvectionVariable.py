@@ -98,7 +98,7 @@ class SurfactantConvectionVariable(FaceVariable):
         volumes = numerix.array(self.mesh.cellVolumes)
         alpha = alpha * volumes * norms
 
-        value = numerix.zeros((dim, Nfaces),'d')
+        value = numerix.zeros((dim, Nfaces), 'd')
 
         vector._putAdd(value, cellFaceIDs, alpha, mask=MA.getmask(MA.array(cellFaceIDs)))
 

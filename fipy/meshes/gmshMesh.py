@@ -611,7 +611,7 @@ class MSHFile(GmshFile):
 
         facesToVertices = nx.array(uniqueFaces, dtype=nx.INT_DTYPE)
 
-        return facesToVertices.swapaxes(0,1)[::-1], cellsToFaces.swapaxes(0,1).copy('C'), facesDict
+        return facesToVertices.swapaxes(0, 1)[::-1], cellsToFaces.swapaxes(0, 1).copy('C'), facesDict
 
     def _translateNodesToVertices(self, entitiesNodes, vertexMap):
         """Translates entitiesNodes from Gmsh node IDs to `vertexCoords` indices.
@@ -813,7 +813,7 @@ class MSHFile(GmshFile):
         maxVerts = max([len(v) for v in cellsToVertIDs])
         # ticket:539 - NumPy 1.7 casts to array before concatenation and empty array defaults to float
         cellsToVertIDs = [nx.concatenate((v, nx.array([-1] * (maxVerts-len(v)), dtype=nx.INT_DTYPE))) for v in cellsToVertIDs]
-        cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0,1)
+        cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0, 1)
 
         parprint("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF,
@@ -987,7 +987,7 @@ class MSHFile(GmshFile):
         nodesFile.close()
 
         # transpose for FiPy
-        transCoords = vertexCoords.swapaxes(0,1)
+        transCoords = vertexCoords.swapaxes(0, 1)
         return transCoords, vertGIDtoIdx
 
     def _parseElementFile(self):
@@ -2122,7 +2122,7 @@ class GmshGrid2D(Gmsh2D):
 
     @property
     def _meshSpacing(self):
-        return nx.array((self.dx,self.dy))[...,nx.newaxis]
+        return nx.array((self.dx, self.dy))[..., nx.newaxis]
 
     def _makeGridGeo(self, dx, dy, nx, ny):
         height = ny * dy
@@ -2195,7 +2195,7 @@ class GmshGrid3D(Gmsh3D):
 
     @property
     def _meshSpacing(self):
-        return nx.array((self.dx,self.dy,self.dz))[...,nx.newaxis]
+        return nx.array((self.dx, self.dy, self.dz))[..., nx.newaxis]
 
     def _makeGridGeo(self, dx, dy, dz, nx, ny, nz):
         height = ny * dy

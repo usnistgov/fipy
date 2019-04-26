@@ -73,7 +73,7 @@ class _UnaryTerm(Term):
             RHSvector = RHSvector - matrix * self.var.value
             matrix = SparseMatrix(mesh=var.mesh)
         else:
-            RHSvector = numerix.zeros(len(var.ravel()),'d')
+            RHSvector = numerix.zeros(len(var.ravel()), 'd')
             matrix = SparseMatrix(mesh=var.mesh)
 
         if ('FIPY_DISPLAY_MATRIX' in os.environ
@@ -89,7 +89,7 @@ class _UnaryTerm(Term):
         ids = numerix.resize(ids, shape)
         X, Y =  numerix.indices(shape[:-1])
         X *= var.mesh.numberOfCells
-        ids += X[...,numerix.newaxis]
+        ids += X[..., numerix.newaxis]
         return ids
 
     def _getDefaultSolver(self, var, solver, *args, **kwargs):

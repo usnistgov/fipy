@@ -54,7 +54,7 @@ class FixedValue(BoundaryCondition):
         ##     self.minusCoeff = -coeff['cell 1 offdiag']
         ##     self.minusCoeff.dontCacheMe()
 
-        bb = numerix.zeros((Ncells,),'d')
+        bb = numerix.zeros((Ncells,), 'd')
 
         value = self.value
         if isinstance(value, Variable):

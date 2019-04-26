@@ -39,7 +39,7 @@ class _ModFaceGradVariable(_FaceGradVariable):
             ITEM(val, i, vec) += ITEM(tangents1, i, vec) * (t1grad1 + t1grad2) / 2.;
             ITEM(val, i, vec) += ITEM(tangents2, i, vec) * (t2grad1 + t2grad2) / 2.;
 
-            """,tangents1 = tangents1,
+            """, tangents1 = tangents1,
                 tangents2 = tangents2,
                 cellGrad = self.var.grad.numericValue,
                 normals = numerix.array(self.mesh._orientedFaceNormals),
@@ -56,7 +56,7 @@ class _ModFaceGradVariable(_FaceGradVariable):
         def _calcValue(self):
             dAP = self.mesh._cellDistances
             id1, id2 = self.mesh._adjacentCellIDs
-            N = (numerix.take(self.var,id2) - numerix.take(self.var,id1)) / dAP
+            N = (numerix.take(self.var, id2) - numerix.take(self.var, id1)) / dAP
             normals = self.mesh._orientedFaceNormals
 
             tangents1 = self.mesh._faceTangents1
@@ -65,10 +65,10 @@ class _ModFaceGradVariable(_FaceGradVariable):
 
             grad1 = numerix.take(cellGrad, id1, axis=1)
             grad2 = numerix.take(cellGrad, id2, axis=1)
-            t1grad1 = numerix.sum(tangents1*grad1,0)
-            t1grad2 = numerix.sum(tangents1*grad2,0)
-            t2grad1 = numerix.sum(tangents2*grad1,0)
-            t2grad2 = numerix.sum(tangents2*grad2,0)
+            t1grad1 = numerix.sum(tangents1*grad1, 0)
+            t1grad2 = numerix.sum(tangents1*grad2, 0)
+            t2grad1 = numerix.sum(tangents2*grad1, 0)
+            t2grad2 = numerix.sum(tangents2*grad2, 0)
 
             T1 = (t1grad1 + t1grad2) / 2.
             T2 = (t2grad1 + t2grad2) / 2.

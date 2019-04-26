@@ -64,12 +64,12 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
 
         polys = []
 
-        for x, y in zip(xCoords.swapaxes(0,1), yCoords.swapaxes(0,1)):
+        for x, y in zip(xCoords.swapaxes(0, 1), yCoords.swapaxes(0, 1)):
             if hasattr(x, 'mask'):
                 x = x.compressed()
             if hasattr(y, 'mask'):
                 y = y.compressed()
-            polys.append(zip(x,y))
+            polys.append(zip(x, y))
 
         from matplotlib.collections import PolyCollection
         self.collection = PolyCollection(polys)

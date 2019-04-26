@@ -42,7 +42,7 @@ class _FaceGradContributions(FaceVariable):
 
     def _calcValue(self):
         faceValue = self.var.arithmeticFaceValue.numericValue
-        return self.mesh._areaProjections[(slice(0,None,None),) + (numerix.newaxis,) * (len(faceValue.shape) - 1) + (slice(0,None,None),)] * faceValue[numerix.newaxis]
+        return self.mesh._areaProjections[(slice(0, None, None),) + (numerix.newaxis,) * (len(faceValue.shape) - 1) + (slice(0, None, None),)] * faceValue[numerix.newaxis]
 
 def _test():
     import fipy.tests.doctestPlus

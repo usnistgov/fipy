@@ -82,7 +82,7 @@ class _FaceGradVariable(FaceVariable):
             ITEM(val, i, vec) =  ITEM(normals, i, vec) * N;
             ITEM(val, i, vec) += ITEM(tangents1, i, vec) * (t1grad1 + t1grad2) / 2.;
             ITEM(val, i, vec) += ITEM(tangents2, i, vec) * (t2grad1 + t2grad2) / 2.;
-        """,tangents1 = tangents1,
+        """, tangents1 = tangents1,
             tangents2 = tangents2,
             cellGrad = self.var.grad.numericValue,
             normals = faceNormals,
@@ -102,7 +102,7 @@ class _FaceGradVariable(FaceVariable):
         dAP = self.mesh._cellDistances
         id1, id2 = self.mesh._adjacentCellIDs
 
-        N2 = numerix.take(self.var.value,id2, axis=-1)
+        N2 = numerix.take(self.var.value, id2, axis=-1)
 
         faceMask = numerix.array(self.mesh.exteriorFaces)
 
@@ -119,7 +119,7 @@ class _FaceGradVariable(FaceVariable):
 
         N2[s] = self.var.faceValue[s]
 
-        N = (N2 - numerix.take(self.var,id1, axis=-1)) / dAP
+        N = (N2 - numerix.take(self.var, id1, axis=-1)) / dAP
 
         normals = self.mesh._orientedFaceNormals
 
@@ -130,7 +130,7 @@ class _FaceGradVariable(FaceVariable):
         grad1 = numerix.take(cellGrad, id1, axis=-1)
         grad2 = numerix.take(cellGrad, id2, axis=-1)
 
-        s = (slice(0,None,None),) + (numerix.newaxis,) * (len(grad1.shape) - 2) + (slice(0,None,None),)
+        s = (slice(0, None, None),) + (numerix.newaxis,) * (len(grad1.shape) - 2) + (slice(0, None, None),)
         t1grad1 = numerix.sum(tangents1[s] * grad1, 0)
         t1grad2 = numerix.sum(tangents1[s] * grad2, 0)
         t2grad1 = numerix.sum(tangents2[s] * grad1, 0)

@@ -109,7 +109,7 @@ if __name__ == '__main__':
     totalTime = 0
 
     for step in range(steps):
-        print 'step',step
+        print 'step', step
         velocity.setValue(surfactantVariable.interfaceVar * k)
         distanceVariable.extendVariable(velocity)
         timeStepDuration = cfl * dx / velocity.max()

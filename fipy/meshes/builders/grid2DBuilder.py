@@ -58,7 +58,7 @@ class _Grid2DBuilder(_AbstractGridBuilder):
 
     def _calcMeshSpacing(self):
         if self._dsUniformLen():
-            return numerix.array((self.ds[0],self.ds[1]))[...,numerix.newaxis]
+            return numerix.array((self.ds[0], self.ds[1]))[..., numerix.newaxis]
         else:
             return None
 
@@ -102,17 +102,17 @@ class _Grid2DBuilder(_AbstractGridBuilder):
         ## reverse some of the face orientations to obtain the correct normals
 
         tmp = horizontalFaces.copy()
-        horizontalFaces[0,:nx] = tmp[1,:nx]
-        horizontalFaces[1,:nx] = tmp[0,:nx]
+        horizontalFaces[0, :nx] = tmp[1, :nx]
+        horizontalFaces[1, :nx] = tmp[0, :nx]
 
         numberOfHorizontalFaces = horizontalFaces.shape[-1]
 
         tmp = verticalFaces.copy()
-        verticalFaces[0, :] = tmp[1, :]
-        verticalFaces[1, :] = tmp[0, :]
+        verticalFaces[0,:] = tmp[1,:]
+        verticalFaces[1,:] = tmp[0,:]
         if numVertCols > 0:
             verticalFaces[0, ::numVertCols] = tmp[0, ::numVertCols]
-            verticalFaces[1, ::numVertCols] = tmp[1,::numVertCols]
+            verticalFaces[1, ::numVertCols] = tmp[1, ::numVertCols]
 
         return (numerix.concatenate((horizontalFaces, verticalFaces), axis=1),
                 numberOfHorizontalFaces)

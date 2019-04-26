@@ -11,8 +11,8 @@ class ScharfetterGummelFaceVariable(_CellToFaceVariable):
         self.bcs = boundaryConditions
 
     def _calcValue_(self, alpha, id1, id2):
-        cell1 = take(self.var,id1)
-        cell2 = take(self.var,id2)
+        cell1 = take(self.var, id1)
+        cell2 = take(self.var, id2)
         delta = cell1 - cell2
 
         eps = 1e-14

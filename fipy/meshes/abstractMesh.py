@@ -989,14 +989,14 @@ class AbstractMesh(object):
     def VTKCellDataSet(self):
         """Returns a TVTK `DataSet` representing the cells of this mesh
         """
-        cvi = self._orderedCellVertexIDs.swapaxes(0,1)
+        cvi = self._orderedCellVertexIDs.swapaxes(0, 1)
         from fipy.tools import numerix
         if isinstance(cvi, numerix.ma.masked_array):
-            counts = cvi.count(axis=1)[:,None]
-            cells = numerix.ma.concatenate((counts,cvi),axis=1).compressed()
+            counts = cvi.count(axis=1)[:, None]
+            cells = numerix.ma.concatenate((counts, cvi), axis=1).compressed()
         else:
-            counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:,None]
-            cells = numerix.concatenate((counts,cvi),axis=1).flatten()
+            counts = numerix.array([cvi.shape[1]]*cvi.shape[0])[:, None]
+            cells = numerix.concatenate((counts, cvi), axis=1).flatten()
 
         try:
             from tvtk.api import tvtk
@@ -1013,7 +1013,7 @@ class AbstractMesh(object):
         points = self._toVTK3D(points)
         ug = tvtk.UnstructuredGrid(points=points)
 
-        offset = numerix.cumsum(counts[:,0]+1)
+        offset = numerix.cumsum(counts[:, 0]+1)
         if len(offset) > 0:
             offset -= offset[0]
         ug.set_cells(cell_types, offset, cell_array)
