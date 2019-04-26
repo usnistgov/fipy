@@ -71,6 +71,7 @@ install:
     - cmd: if "%TARGET_ARCH%" == "x86" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root mayavi weave
     - cmd: if "%TARGET_ARCH%" == "x86" if "%FIPY_SOLVERS%" == "pysparse" conda.exe install --quiet --name root pysparse
 
+    - cmd: pip install future
     - cmd: pip install scikit-fmm
 
 # Skip .NET project specific build phase.

@@ -46,6 +46,7 @@ before_install:
   - conda uninstall --quiet fipy
   # Useful for debugging any issues with conda
   - conda info -a
+  - pip install future
   - pip install scikit-fmm
 install:
   - python setup.py install

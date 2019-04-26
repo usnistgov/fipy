@@ -39,7 +39,7 @@ except IOError as _:
 
 DIST = setup(
     name="FiPy",
-    install_requires=["numpy", "scipy", "matplotlib"],
+    install_requires=["numpy", "scipy", "matplotlib", "future"],
     version=versioneer.get_version(),
     author="Jonathan Guyer, Daniel Wheeler, & Jim Warren",
     author_email="fipy@nist.gov",
