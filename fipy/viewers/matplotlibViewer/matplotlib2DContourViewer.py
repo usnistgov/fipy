@@ -96,7 +96,7 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
             for collection in self._contourSet.collections:
                 try:
                     ix = self.axes.collections.index(collection)
-                except ValueError, e:
+                except ValueError as e:
                     ix = None
 
                 if ix is not None:

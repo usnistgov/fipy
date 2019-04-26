@@ -981,7 +981,7 @@ class AbstractMesh(object):
     def _VTKCellType(self):
         try:
             from tvtk.api import tvtk
-        except ImportError, e:
+        except ImportError as e:
             from enthought.tvtk.api import tvtk
         return tvtk.ConvexPointSet().cell_type
 
@@ -1000,7 +1000,7 @@ class AbstractMesh(object):
 
         try:
             from tvtk.api import tvtk
-        except ImportError, e:
+        except ImportError as e:
             from enthought.tvtk.api import tvtk
         num = counts.shape[0]
 
@@ -1026,7 +1026,7 @@ class AbstractMesh(object):
         """
         try:
             from tvtk.api import tvtk
-        except ImportError, e:
+        except ImportError as e:
             from enthought.tvtk.api import tvtk
 
         points = self.faceCenters

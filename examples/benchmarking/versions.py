@@ -81,9 +81,9 @@ try:
 
             print entry.revision.number, cpu, rsz, vsz
 
-        except Exception, e:
+        except Exception as e:
             print entry.revision.number, e
-except Exception, e:
+except Exception as e:
     print e
 
 shutil.rmtree(dir)

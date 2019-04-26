@@ -115,7 +115,7 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
                 viewers.append(viewer)
 
             break
-        except Exception, s:
+        except Exception as s:
             errors.append("%s: %s" % (name, s))
 
     if len(attempts) == 0:

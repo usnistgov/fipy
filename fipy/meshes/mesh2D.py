@@ -224,7 +224,7 @@ class Mesh2D(Mesh):
     def _VTKCellType(self):
         try:
             from tvtk.api import tvtk
-        except ImportError, e:
+        except ImportError as e:
             from enthought.tvtk.api import tvtk
         return tvtk.Polygon().cell_type
 

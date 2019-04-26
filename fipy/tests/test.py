@@ -118,34 +118,34 @@ class test(_test):
                 else:
                     print pkg,'version not available'
 
-            except ImportError, e:
+            except ImportError as e:
                 print pkg,'is not installed'
 
-            except Exception, e:
+            except Exception as e:
                 print pkg, 'version check failed:', e
 
         ## PyTrilinos
         try:
             import PyTrilinos
             print PyTrilinos.version()
-        except ImportError, e:
+        except ImportError as e:
             print 'PyTrilinos is not installed'
-        except Exception, e:
+        except Exception as e:
             print 'PyTrilinos version check failed:', e
 
         ## Mayavi uses a non-standard approach for storing its version number.
         try:
             from mayavi.__version__ import __version__ as mayaviversion
             print 'mayavi version', mayaviversion
-        except ImportError, e:
+        except ImportError as e:
             try:
                 from enthought.mayavi.__version__ import __version__ as mayaviversion
                 print 'enthought.mayavi version', mayaviversion
-            except ImportError, e:
+            except ImportError as e:
                 print 'enthought.mayavi is not installed'
-            except Exception, e:
+            except Exception as e:
                 print 'enthought.mayavi version check failed:', e
-        except Exception, e:
+        except Exception as e:
             print 'mayavi version check failed:', e
 
         ## Gmsh version
@@ -156,7 +156,7 @@ class test(_test):
                 print 'gmsh is not installed'
             else:
                 print 'gmsh version',gmshversion
-        except Exception, e:
+        except Exception as e:
             print 'gmsh version check failed:', e
 
     def run_tests(self):
@@ -173,7 +173,7 @@ class test(_test):
                 except:
                     pass
                 import PyTrilinos
-            except ImportError, a:
+            except ImportError as a:
                 print >>sys.stderr, "!!! Trilinos library is not installed"
                 return
 
@@ -194,14 +194,14 @@ class test(_test):
                 else:
                     atexit._exithandlers.remove(
                         (pyamgx.finalize, (), {}))
-            except ImportError, e:
+            except ImportError as e:
                 print >>sys.stederr, "!!! pyamgx package is not installed"
                 return
 
         if self.inline:
             try:
                 import weave
-            except ImportError, a:
+            except ImportError as a:
                 print >>sys.stderr, "!!! weave library is not installed"
                 return
 
@@ -226,7 +226,7 @@ class test(_test):
                 None, None, [unittest.__file__]+self.test_args,
                 testLoader = loader_class()
                 )
-        except SystemExit, exitErr:
+        except SystemExit as exitErr:
             # unittest.main(..., exit=...) not available until Python 2.7
             from fipy.tests.doctestPlus import report_skips
             report_skips()

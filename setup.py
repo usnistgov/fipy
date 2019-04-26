@@ -26,14 +26,14 @@ try:
     FILE = open("README.rst", "r")
     LONG_DESCRIPTION = "\n" + FILE.read() + "\n"
     FILE.close()
-except IOError, _:
+except IOError as _:
     LONG_DESCRIPTION = ""
 
 try:
     FILE = open("LICENSE.rst", "r")
     LICENSE = "\n" + "".join([" " * 8 + l for l in FILE])
     FILE.close()
-except IOError, _:
+except IOError as _:
     LICENSE = ""
 
 DIST = setup(

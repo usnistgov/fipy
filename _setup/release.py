@@ -35,7 +35,7 @@ class release(Command):
 
         try:
             os.remove("MANIFEST")
-        except OSError, _:
+        except OSError as _:
             pass
 
     def _build_unix_distribution(self):

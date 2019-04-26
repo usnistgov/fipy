@@ -59,7 +59,7 @@ def gmshVersion(communicator=parallelComm):
         while True:
             try:
                 p = Popen(["gmsh", "--version"], stderr=PIPE)
-            except OSError, e:
+            except OSError as e:
                 verStr = None
                 break
 
@@ -506,7 +506,7 @@ class MSHFile(GmshFile):
         newF = os.fdopen(newF, 'w')
         try:
             self._seekForHeader(title)
-        except Exception, e:
+        except Exception as e:
             newF.close()
             os.unlink(newPath)
             raise
@@ -675,7 +675,7 @@ class MSHFile(GmshFile):
         self.elemsPath = self._isolateData("Elements")
         try:
             self.namesPath = self._isolateData("PhysicalNames")
-        except EOFError, e:
+        except EOFError as e:
             self.namesPath = None
 
         try:
