@@ -263,7 +263,7 @@ class GmshFile:
         elif (vertices == 5 and dimensions == 3):
             return 7 ## pyramid
         else:
-            raise MeshExportError, "Element type unsupported by Gmsh"
+            raise MeshExportError("Element type unsupported by Gmsh")
 
     def _orderVertices(self, vertexCoords, vertices):
         coordinates = nx.take(vertexCoords, vertices, axis=1)
@@ -881,7 +881,7 @@ class MSHFile(GmshFile):
                 self.fileobj.write(str(coords[2, i]))
                 self.fileobj.write (" \n")
             else:
-                raise MeshExportError, "Mesh has fewer than 2 or more than 3 dimensions"
+                raise MeshExportError("Mesh has fewer than 2 or more than 3 dimensions")
 
         self.fileobj.write("$EndNodes\n")
 

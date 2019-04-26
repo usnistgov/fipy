@@ -13,8 +13,7 @@ class PysparseSolver(_PysparseMatrixSolver):
     """
     def __init__(self, *args, **kwargs):
         if self.__class__ is PysparseSolver:
-            raise NotImplementedError, \
-                  "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
         super(PysparseSolver, self).__init__(*args, **kwargs)
 

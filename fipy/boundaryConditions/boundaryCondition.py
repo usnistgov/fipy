@@ -20,7 +20,7 @@ class BoundaryCondition(object):
             - `value`: The value to impose.
         """
         if self.__class__ is BoundaryCondition:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
         self.faces = faces
         if not (isinstance(value, PhysicalField) or isinstance(value, Variable)):
@@ -29,7 +29,7 @@ class BoundaryCondition(object):
 
         if not (self.faces | self.faces.mesh.exteriorFaces
                 == self.faces.mesh.exteriorFaces).value.all():
-            raise IndexError, 'Face list has interior faces'
+            raise IndexError('Face list has interior faces')
 
         self.adjacentCellIDs = self.faces.mesh._adjacentCellIDs[0][self.faces.value]
         self.boundaryConditionApplied = False

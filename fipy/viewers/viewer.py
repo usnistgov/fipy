@@ -24,7 +24,7 @@ class AbstractViewer(object):
             (default) value of `None` will autoscale.
         """
         if self.__class__ is AbstractViewer:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
         self.vars = self._getSuitableVars(vars)
 

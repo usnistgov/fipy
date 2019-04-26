@@ -391,7 +391,7 @@ class Term(object):
         elif other == 0:
             return self
         else:
-            raise Exception, "Can only couple Term objects."
+            raise Exception("Can only couple Term objects.")
 
     __rand__ = __and__
 
