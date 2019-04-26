@@ -17,6 +17,7 @@ Advect the interface and check the position.
 
 
 """
+from __future__ import print_function
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
@@ -73,7 +74,7 @@ if __name__ == '__main__':
     distanceVariable.calcDistanceFunction()
 
     for step in range(steps):
-        print numerix.sum(surfactantVariable)
+        print(numerix.sum(surfactantVariable))
         distanceVariable.updateOld()
         surfactantEquation.solve(surfactantVariable, dt=1)
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
@@ -84,5 +85,5 @@ if __name__ == '__main__':
 
     distanceViewer.plot()
     surfactantViewer.plot()
-    print surfactantVariable
+    print(surfactantVariable)
     raw_input('finished')

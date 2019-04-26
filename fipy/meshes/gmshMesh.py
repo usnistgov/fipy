@@ -1,3 +1,4 @@
+from __future__ import print_function
 __docformat__ = 'restructuredtext'
 
 import os
@@ -41,7 +42,7 @@ register_skipper(flag="GMSH",
 def parprint(str):
     if DEBUG:
         if parallelComm.procID == 0:
-            print >> sys.stderr, str
+            print(str, file=sys.stderr)
 
 class GmshException(Exception):
     pass

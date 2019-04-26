@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import sys
 import re
@@ -17,7 +18,7 @@ benchmarker = os.path.join(os.path.dirname(__file__),
 
 args = sys.argv[1:]
 
-print "size\tcpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)"
+print("size\tcpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)")
 
 for size in numerix.arange(2, 6.5, 0.5):
     p = Popen(["python", benchmarker] + args
@@ -37,4 +38,4 @@ for size in numerix.arange(2, 6.5, 0.5):
 
     cpu, rsz, vsz = monitor(p)
 
-    print "%d\t%g\t%g\t%g" % (10**size, cpu, rsz, vsz)
+    print("%d\t%g\t%g\t%g" % (10**size, cpu, rsz, vsz))

@@ -34,6 +34,7 @@ Take the tangent of an array.
    [ 0.  0.  0.]
 
 """
+from __future__ import print_function
 
 __docformat__ = 'restructuredtext'
 
@@ -625,7 +626,7 @@ def take(a, indices, axis=0, fill_value=None):
     return taken
 
 if not hasattr(NUMERIX, 'empty'):
-    print 'defining empty'
+    print('defining empty')
     if inline.doInline:
         def empty(shape, dtype='d', order='C'):
             """

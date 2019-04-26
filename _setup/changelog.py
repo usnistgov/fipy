@@ -2,6 +2,7 @@
 from a repository that username has access to. Supports Github API v3.
 Adapted from: https://gist.github.com/patrickfuller/e2ea8a94badc5b6967ef3ca0a9452a43
 """
+from __future__ import print_function
 
 import os
 import textwrap
@@ -66,10 +67,10 @@ class changelog(Command):
     def _printReST(self, issues, label):
         """Print section of issues to stdout
         """
-        print
-        print label
-        print "-" * len(label)
-        print
+        print()
+        print(label)
+        print("-" * len(label))
+        print()
 
         for i, issue in issues.iterrows():
             # distutils does something disgusting with encodings

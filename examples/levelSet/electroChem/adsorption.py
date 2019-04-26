@@ -63,6 +63,7 @@ Compare the analytical and numerical results:
 
 """
 from __future__ import absolute_import
+from __future__ import print_function
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, DistanceVariable, SurfactantVariable, Grid1D
@@ -142,7 +143,7 @@ if __name__ == "__main__":
         ## evaluate the analytical and numerical solution and plot
 
         theta = surfactantVar.interfaceVar[1]
-        print "theta:", theta
+        print("theta:", theta)
 
         ## do a time step
         surfEqn.solve(surfactantVar, dt = dt)

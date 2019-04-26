@@ -1,3 +1,4 @@
+from __future__ import print_function
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractViewer"]
@@ -165,7 +166,7 @@ class AbstractViewer(object):
                 extensions = " (%s)" % extensions
             snapshot = self._doctest_raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions).strip()
             self.plot(snapshot)
-            print opinion
+            print(opinion)
 
 
     def _test1D(**kwargs):

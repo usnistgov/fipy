@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 from distutils.core import Command
 
@@ -51,4 +52,4 @@ class copy_script(Command):
         f.write(script)
         f.close()
 
-        print "Script code exported from '%s' to '%s'"%(self.From, self.To)
+        print("Script code exported from '%s' to '%s'"%(self.From, self.To))

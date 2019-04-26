@@ -1,3 +1,4 @@
+from __future__ import print_function
 from setuptools.command.test import test as _test
 
 class test(_test):
@@ -92,13 +93,13 @@ class test(_test):
             yield self.test_suite
 
         if self.viewers:
-            print "*" * 60
-            print "*" + "".center(58) + "*"
-            print "*" + "ATTENTION".center(58) + "*"
-            print "*" + "".center(58) + "*"
-            print "*" + "Some of the following tests require user interaction".center(58) + "*"
-            print "*" + "".center(58) + "*"
-            print "*" * 60
+            print("*" * 60)
+            print("*" + "".center(58) + "*")
+            print("*" + "ATTENTION".center(58) + "*")
+            print("*" + "".center(58) + "*")
+            print("*" + "Some of the following tests require user interaction".center(58) + "*")
+            print("*" + "".center(58) + "*")
+            print("*" * 60)
 
             yield "fipy.viewers.testinteractive._suite"
         if self.modules:
@@ -114,50 +115,50 @@ class test(_test):
                 mod = __import__(pkg)
 
                 if hasattr(mod, '__version__'):
-                    print pkg, 'version', mod.__version__
+                    print(pkg, 'version', mod.__version__)
                 else:
-                    print pkg, 'version not available'
+                    print(pkg, 'version not available')
 
             except ImportError as e:
-                print pkg, 'is not installed'
+                print(pkg, 'is not installed')
 
             except Exception as e:
-                print pkg, 'version check failed:', e
+                print(pkg, 'version check failed:', e)
 
         ## PyTrilinos
         try:
             import PyTrilinos
-            print PyTrilinos.version()
+            print(PyTrilinos.version())
         except ImportError as e:
-            print 'PyTrilinos is not installed'
+            print('PyTrilinos is not installed')
         except Exception as e:
-            print 'PyTrilinos version check failed:', e
+            print('PyTrilinos version check failed:', e)
 
         ## Mayavi uses a non-standard approach for storing its version number.
         try:
             from mayavi.__version__ import __version__ as mayaviversion
-            print 'mayavi version', mayaviversion
+            print('mayavi version', mayaviversion)
         except ImportError as e:
             try:
                 from enthought.mayavi.__version__ import __version__ as mayaviversion
-                print 'enthought.mayavi version', mayaviversion
+                print('enthought.mayavi version', mayaviversion)
             except ImportError as e:
-                print 'enthought.mayavi is not installed'
+                print('enthought.mayavi is not installed')
             except Exception as e:
-                print 'enthought.mayavi version check failed:', e
+                print('enthought.mayavi version check failed:', e)
         except Exception as e:
-            print 'mayavi version check failed:', e
+            print('mayavi version check failed:', e)
 
         ## Gmsh version
         try:
             from fipy.meshes.gmshMesh import gmshVersion
             gmshversion = gmshVersion()
             if gmshversion is None:
-                print 'gmsh is not installed'
+                print('gmsh is not installed')
             else:
-                print 'gmsh version', gmshversion
+                print('gmsh version', gmshversion)
         except Exception as e:
-            print 'gmsh version check failed:', e
+            print('gmsh version check failed:', e)
 
     def run_tests(self):
         import sys
@@ -174,7 +175,7 @@ class test(_test):
                     pass
                 import PyTrilinos
             except ImportError as a:
-                print >>sys.stderr, "!!! Trilinos library is not installed"
+                print("!!! Trilinos library is not installed", file=sys.stderr)
                 return
 
         if self.pyamgx:
@@ -195,14 +196,14 @@ class test(_test):
                     atexit._exithandlers.remove(
                         (pyamgx.finalize, (), {}))
             except ImportError as e:
-                print >>sys.stederr, "!!! pyamgx package is not installed"
+                print("!!! pyamgx package is not installed", file=sys.stederr)
                 return
 
         if self.inline:
             try:
                 import weave
             except ImportError as a:
-                print >>sys.stderr, "!!! weave library is not installed"
+                print("!!! weave library is not installed", file=sys.stderr)
                 return
 
         if self.pythoncompiled is not None:

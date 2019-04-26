@@ -27,6 +27,7 @@ should do better than this.
 >>> print var1.max() > 0.77
 1
 """
+from __future__ import print_function
 
 __docformat__ = 'restructuredtext'
 
@@ -80,6 +81,6 @@ if __name__ == '__main__':
     newVar2[:nx / 4] = var2[nx / 4:]
     newVar2[nx / 4:] = var2[:nx / 4]
 
-    print 'maximum absolute difference between periodic and non-periodic grids:', abs(var1[nx / 4:3 * nx / 4] - newVar2).max()
+    print('maximum absolute difference between periodic and non-periodic grids:', abs(var1[nx / 4:3 * nx / 4] - newVar2).max())
 
     raw_input('finished')

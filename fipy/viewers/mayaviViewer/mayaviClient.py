@@ -1,3 +1,4 @@
+from __future__ import print_function
 __docformat__ = 'restructuredtext'
 
 import os
@@ -142,10 +143,10 @@ class MayaviClient(AbstractViewer):
                 plotted = True
 
             if (time.time() - start > 30. / self.fps) and not plotted:
-                print "viewer: NOT READY"
+                print("viewer: NOT READY")
                 start = time.time()
         if not plotted:
-            print "viewer: SKIPPED"
+            print("viewer: SKIPPED")
 
     def _validFileExtensions(self):
         return [".png", ".jpg", ".bmp", ".tiff", ".ps", ".eps", ".pdf", ".rib", ".oogl", ".iv", ".vrml", ".obj"]

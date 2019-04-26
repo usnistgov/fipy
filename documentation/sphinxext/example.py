@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os.path
 import posixpath
 
@@ -95,7 +96,7 @@ class FiPyExample(Directive):
 def exampletree_directive(name, arguments, options, content, lineno,
                           content_offset, block_text, state, state_machine):
 
-    print "exampletree_directive"
+    print("exampletree_directive")
 
     env = state.document.settings.env
     suffix = env.config.source_suffix
@@ -143,14 +144,14 @@ def exampletree_directive(name, arguments, options, content, lineno,
                     line=lineno))
     subnode['includefiles'] = includefiles
 
-    print "exampletree:", subnode
+    print("exampletree:", subnode)
 
     subnode['includetitles'] = includetitles
     subnode['maxdepth'] = options.get('maxdepth', -1)
     subnode['glob'] = glob
     ret.append(subnode)
 
-    print "exampletree:", subnode
+    print("exampletree:", subnode)
 
     return ret
 
@@ -237,15 +238,15 @@ class ExampleTree(Directive):
         return ret
 
 def process_missing_example(app, env, node, contnode):
-    print "app:", app
-    print "env:", env
-    print "node:", node
-    print "contnode:", contnode
+    print("app:", app)
+    print("env:", env)
+    print("node:", node)
+    print("contnode:", contnode)
 
     return None
 
 def doctree_read(app, doctree):
-    print "doctree:", doctree.attributes['source']
+    print("doctree:", doctree.attributes['source'])
 
 def autodoc_process_docstring(app, what, name, obj, options, lines):
     if name.startswith("examples."):
@@ -254,7 +255,7 @@ def autodoc_process_docstring(app, what, name, obj, options, lines):
         lines.insert(1, "-" * len(title))
 
 def source_read(app, docname, source):
-    print "source-read:", docname
+    print("source-read:", docname)
 
 def setup(app):
     app.add_directive('fipyexample', FiPyExample)

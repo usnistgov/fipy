@@ -1,3 +1,4 @@
+from __future__ import print_function
 from distutils.core import Command
 import os
 
@@ -23,38 +24,38 @@ class upload_products(Command):
 
     def run(self):
         if self.pdf:
-            print "setting permissions of manual..."
+            print("setting permissions of manual...")
             os.system('chmod -R g+w documentation/_build/latex/fipy.pdf')
             
-            print "linking manual to `dist/`..."
+            print("linking manual to `dist/`...")
             os.system('mkdir dist/')
             os.system('ln -f documentation/_build/latex/fipy.pdf dist/fipy-%s.pdf'%self.distribution.metadata.get_version())
             
         if self.html:
-            print "setting group and ownership of web pages..."
+            print("setting group and ownership of web pages...")
             os.system('chmod -R g+w documentation/_build/html/')
             
-            print "uploading web pages..."
+            print("uploading web pages...")
             # The -t flag (implicit in -a) is suddenly causing problems
             # os.system('rsync -aLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
             os.system('rsync -rlpgoDLC -e ssh %s %s' % ('documentation/_build/html/', os.environ['FIPY_WWWHOST']))
 
         if self.tarball:
             file = 'dist/FiPy-%s.tar.gz' % self.distribution.metadata.get_version()
-            print "setting permissions for %s ..." % file
+            print("setting permissions for %s ..." % file)
             os.system('chmod -R g+w %s' % file)
 
-            print "uploading tarball..."
+            print("uploading tarball...")
             os.system('rsync -pgoDLC -e ssh %s %s/download/' % (file, os.environ['FIPY_WWWHOST']))
 
         if self.winzip:
             file = 'dist/FiPy-%s.win32.zip' % self.distribution.metadata.get_version()
-            print "setting permissions for %s ..." % file
+            print("setting permissions for %s ..." % file)
             os.system('chmod -R g+w %s' % file)
             
-            print "uploading winzip..."
+            print("uploading winzip...")
             os.system('rsync -pgoDLC -e ssh %s %s/download/' % (file, os.environ['FIPY_WWWHOST']))
 
         if self.pdf or self.tarball or self.winzip:
-            print "activating web pages..."
+            print("activating web pages...")
             os.system(os.environ['FIPY_WWWACTIVATE'])
