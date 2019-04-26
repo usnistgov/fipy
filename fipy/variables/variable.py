@@ -1315,6 +1315,8 @@ class Variable(object):
         """
         return bool(self.value)
 
+    __nonzero__ = __bool__
+
     def any(self, axis=None):
         """
             >>> print(Variable(value=0).any())

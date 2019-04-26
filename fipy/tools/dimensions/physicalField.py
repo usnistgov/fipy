@@ -466,6 +466,8 @@ class PhysicalField(object):
         """
         return self.value != 0
 
+    __nonzero__ = __bool__
+
     def _inMyUnits(self, other):
         if _isVariable(other):
             other = other.value
