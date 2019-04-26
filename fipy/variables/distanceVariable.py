@@ -78,7 +78,7 @@ class DistanceVariable(CellVariable):
     >>> from fipy.meshes import Grid1D
     >>> from fipy.tools import serialComm
     >>> mesh = Grid1D(dx = .5, nx = 8, communicator=serialComm)
-    >>> from distanceVariable import DistanceVariable
+    >>> from .distanceVariable import DistanceVariable
     >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1., 1., 1., 1., 1.))
     >>> var.calcDistanceFunction() #doctest: +LSM
     >>> answer = (-1.75, -1.25, -.75, -0.25, 0.25, 0.75, 1.25, 1.75)
@@ -527,4 +527,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 
