@@ -20,15 +20,15 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
     >>> eq0 = TransientTerm(1, var=v0) == DiffusionTerm(2, var=v1)
     >>> eq1 = TransientTerm(3, var=v1) == DiffusionTerm(4, var=v0)
     >>> eq = eq0 & eq1
-    >>> print eq._getTransientGeomCoeff(v0)
+    >>> print(eq._getTransientGeomCoeff(v0))
     None
-    >>> print eq._getDiffusionGeomCoeff(v1)
+    >>> print(eq._getDiffusionGeomCoeff(v1))
     None
     >>> tranCoeff = eq._uncoupledTerms[0]._getTransientGeomCoeff(v0)
-    >>> print numerix.allequal(tranCoeff, [1]) # doctest: +PROCESSOR_0
+    >>> print(numerix.allequal(tranCoeff, [1])) # doctest: +PROCESSOR_0
     True
     >>> diffCoeff = eq._uncoupledTerms[1]._getDiffusionGeomCoeff(v0)
-    >>> print numerix.allequal(diffCoeff, [[-8, -8]])
+    >>> print(numerix.allequal(diffCoeff, [[-8, -8]]))
     True
 
     """
@@ -121,30 +121,30 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         >>> eq0 = TransientTerm(var=v0) + VanLeerConvectionTerm(var=v0) + DiffusionTerm(var=v1)
         >>> eq1 = TransientTerm(var=v2) + ConvectionTerm(var=v2) + DiffusionTerm(var=v2) + ConvectionTerm(var=v1) + ImplicitSourceTerm(var=v1)
         >>> eq2 = ImplicitSourceTerm(var=v1) + 1 + ImplicitSourceTerm(var=v0) + 1 + DiffusionTerm(var=v1)
-        >>> print (eq0 & eq1 & eq2)._vars
+        >>> print((eq0 & eq1 & eq2)._vars)
         [v0, v2, v1]
-        >>> print (eq0 & eq2 & eq1)._vars
+        >>> print((eq0 & eq2 & eq1)._vars)
         [v0, v1, v2]
         >>> eq0 =  DiffusionTerm(var=v1) + TransientTerm(var=v0) + VanLeerConvectionTerm(var=v0)
-        >>> print (eq0 & eq2 & eq1)._vars
+        >>> print((eq0 & eq2 & eq1)._vars)
         [v0, v1, v2]
-        >>> print (eq2 & eq0 & eq1)._vars
+        >>> print((eq2 & eq0 & eq1)._vars)
         [v1, v0, v2]
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v0])._vars
+        >>> print((eq2 & eq0 & eq1)([v1, v2, v0])._vars)
         [v1, v2, v0]
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v0, v2])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> print((eq2 & eq0 & eq1)([v1, v2, v0, v2])._vars) # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         SolutionVariableNumberError: Different number of solution variables and equations.
-        >>> print (eq2 & eq0 & eq1)([v1, v2, 1])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> print((eq2 & eq0 & eq1)([v1, v2, 1])._vars) # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         SolutionVariableNumberError: Variable not in previously defined variables for this coupled equation.
-        >>> print (eq2 & eq0 & eq1)([v1, v2, v1])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> print((eq2 & eq0 & eq1)([v1, v2, v1])._vars) # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         SolutionVariableNumberError: Different number of solution variables and equations.
-        >>> print (eq2 & eq0 & eq1)([v1, v2])._vars # doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> print((eq2 & eq0 & eq1)([v1, v2])._vars) # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         SolutionVariableNumberError: Different number of solution variables and equations.
@@ -200,17 +200,17 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1)
         >>> eq = eq0 & eq1
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var.globalValue
+        >>> print(var.globalValue)
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print RHSvector.globalValue
+        >>> print(RHSvector.globalValue)
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.numpyArray,
+        >>> print(numerix.allequal(matrix.numpyArray,
         ...                        [[ 2, -1,  0,  2, -2,  0],
         ...                         [-1,  3, -1, -2,  4, -2],
         ...                         [ 0, -1,  2,  0, -2,  2],
         ...                         [ 3, -3,  0,  5, -4,  0],
         ...                         [-3,  6, -3, -4,  9, -4],
-        ...                         [ 0, -3,  3,  0, -4,  5]])
+        ...                         [ 0, -3,  3,  0, -4,  5]]))
         True
 
         >>> m = Grid1D(nx=6)
@@ -220,11 +220,11 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1)
         >>> eq = eq0 & eq1
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var.globalValue
+        >>> print(var.globalValue)
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
-        >>> print RHSvector.globalValue
+        >>> print(RHSvector.globalValue)
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.numpyArray,
+        >>> print(numerix.allequal(matrix.numpyArray,
         ...                        [[ 2, -1,  0,  0,  0,  0,  2, -2,  0,  0,  0,  0],
         ...                         [-1,  3, -1,  0,  0,  0, -2,  4, -2,  0,  0,  0],
         ...                         [ 0, -1,  3, -1,  0,  0,  0, -2,  4, -2,  0,  0],
@@ -236,7 +236,7 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         ...                         [ 0, -3,  6, -3,  0,  0,  0, -4,  9, -4,  0,  0],
         ...                         [ 0,  0, -3,  6, -3,  0,  0,  0, -4,  9, -4,  0],
         ...                         [ 0,  0,  0, -3,  6, -3,  0,  0,  0, -4,  9, -4],
-        ...                         [ 0,  0,  0,  0, -3,  3,  0,  0,  0,  0, -4,  5]])
+        ...                         [ 0,  0,  0,  0, -3,  3,  0,  0,  0,  0, -4,  5]]))
         True
 
         >>> m = Grid1D(nx=3)
@@ -249,16 +249,16 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
         >>> (eq0 & eq1).solve(dt=1.)
-        >>> print numerix.allequal(eq0.matrix.numpyArray,
+        >>> print(numerix.allequal(eq0.matrix.numpyArray,
         ...                        [[ 2, -1,  0,  2, -2,  0],
         ...                         [-1,  3, -1, -2,  4, -2],
         ...                         [ 0, -1,  2,  0, -2,  2],
         ...                         [ 0,  0,  0,  0,  0,  0],
         ...                         [ 0,  0,  0,  0,  0,  0],
-        ...                         [ 0,  0,  0,  0,  0,  0]])
+        ...                         [ 0,  0,  0,  0,  0,  0]]))
         True
         >>> ## This correctly returns None because we lost the handle to the DiffusionTerm when it's negated.
-        >>> print diffTerm.matrix
+        >>> print(diffTerm.matrix)
         None
 
         Check `diffusionGeomCoeff` is determined correctly (ticket:329)
@@ -270,17 +270,17 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         >>> eq1 = PowerLawConvectionTerm(coeff=-0.001, var=v1) - DiffusionTerm(coeff=3., var=v1)
         >>> eq = eq0 & eq1
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass)
-        >>> print var.globalValue
+        >>> print(var.globalValue)
         [ 0.  0.  0.  1.  1.  1.]
-        >>> print RHSvector.globalValue
+        >>> print(RHSvector.globalValue)
         [ 0.  0.  0.  0.  0.  0.]
-        >>> print numerix.allclose(matrix.numpyArray,
+        >>> print(numerix.allclose(matrix.numpyArray,
         ...                        [[ 100, 1e-15,      0,       0,       0,       0],
         ...                         [-100,   100,  1e-15,       0,       0,       0],
         ...                         [   0,  -100, -1e-15,       0,       0,       0],
         ...                         [   0,     0,      0,  2.9995, -3.0005,       0],
         ...                         [   0,     0,      0, -2.9995,  6.0000, -3.0005],
-        ...                         [   0,     0,      0,       0, -2.9995,  3.0005]])
+        ...                         [   0,     0,      0,       0, -2.9995,  3.0005]]))
         True
         """
 
@@ -290,3 +290,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

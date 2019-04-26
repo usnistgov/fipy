@@ -23,14 +23,14 @@ class _GaussCellGradVariable(CellVariable):
     >>> v2 = CellVariable(mesh=m, value=x**2)
     >>> numerix.allequal(v.grad.globalValue.shape, (2, 3, 9))
     True
-    >>> print v0.grad
+    >>> print(v0.grad)
     [[ 0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5]
      [ 0.   0.   0.   0.   0.   0.   0.   0.   0. ]]
-    >>> print (v0.grad.globalValue == v.grad.globalValue[:, 0]).all()
+    >>> print((v0.grad.globalValue == v.grad.globalValue[:, 0]).all())
     True
-    >>> print (v1.grad.globalValue == v.grad.globalValue[:, 1]).all()
+    >>> print((v1.grad.globalValue == v.grad.globalValue[:, 1]).all())
     True
-    >>> print (v2.grad.globalValue == v.grad.globalValue[:, 2]).all()
+    >>> print((v2.grad.globalValue == v.grad.globalValue[:, 2]).all())
     True
 
     """
@@ -92,4 +92,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

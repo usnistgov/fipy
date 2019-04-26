@@ -39,28 +39,28 @@ class _GridRepresentation(_AbstractRepresentation):
         >>> v = fp.CellVariable(mesh=m, value=m.x)
         >>> fp.dump.write(v, filename='dump.gz')
         >>> v0 = fp.dump.read(filename='dump.gz')
-        >>> print (v == v0.mesh.x).all()
+        >>> print((v == v0.mesh.x).all())
         True
 
         >>> m = fp.PeriodicGrid1D(nx=10)
         >>> v = fp.CellVariable(mesh=m, value=m.x)
         >>> fp.dump.write(v, filename='dump.gz')
         >>> v0 = fp.dump.read(filename='dump.gz')
-        >>> print (v == v0.mesh.x).all()
+        >>> print((v == v0.mesh.x).all())
         True
 
         >>> m = fp.Tri2D(nx=10, ny=10)
         >>> v = fp.CellVariable(mesh=m, value=m.x)
         >>> fp.dump.write(v, filename='dump.gz')
         >>> v0 = fp.dump.read(filename='dump.gz')
-        >>> print (v == v0.mesh.x).all()
+        >>> print((v == v0.mesh.x).all())
         True
 
         >>> m = fp.SkewedGrid2D(nx=10, ny=10)
         >>> v = fp.CellVariable(mesh=m, value=m.x)
         >>> fp.dump.write(v, filename='dump.gz')
         >>> v0 = fp.dump.read(filename='dump.gz')
-        >>> print (v == v0.mesh.x).all()
+        >>> print((v == v0.mesh.x).all())
         True
 
         """
@@ -86,3 +86,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

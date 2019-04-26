@@ -1431,7 +1431,7 @@ class Gmsh2D(Mesh2D):
     ...           & ~((x > -side/2) & (x < side/2)
     ...               & (y > -side/2) & (y < side/2))) # doctest: +GMSH
 
-    >>> print (middle == squaredCircle.physicalCells["Middle"]).all() # doctest: +GMSH
+    >>> print((middle == squaredCircle.physicalCells["Middle"]).all()) # doctest: +GMSH
     True
 
     >>> X, Y = squaredCircle.faceCenters # doctest: +GMSH
@@ -1440,7 +1440,7 @@ class Gmsh2D(Mesh2D):
     ...       & (X**2 + Y**2 < (2.01*radius)**2)
     ...       & (X <= 0) & (Y >= 0)) # doctest: +GMSH
 
-    >>> print (NW == squaredCircle.physicalFaces["NW"]).all() # doctest: +GMSH
+    >>> print((NW == squaredCircle.physicalFaces["NW"]).all()) # doctest: +GMSH
     True
 
     It is possible to direct Gmsh to give the mesh different densities in
@@ -1484,12 +1484,12 @@ class Gmsh2D(Mesh2D):
 
     Check that the mesh is monotonically approaching the desired density
 
-    >>> print numerix.greater(std[:-1], std[1:]).all() # doctest: +GMSH
+    >>> print(numerix.greater(std[:-1], std[1:]).all()) # doctest: +GMSH
     True
 
     and that the final density is close enough to the desired density
 
-    >>> print std[-1] < 0.2 # doctest: +GMSH
+    >>> print(std[-1] < 0.2) # doctest: +GMSH
     True
 
     The initial mesh doesn't have to be from Gmsh
@@ -1506,7 +1506,7 @@ class Gmsh2D(Mesh2D):
     >>> bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
     >>> std2 = (numerix.sqrt(2 * square.cellVolumes) / bkg).std() # doctest: +GMSH
 
-    >>> print std1 > std2 # doctest: +GMSH
+    >>> print(std1 > std2) # doctest: +GMSH
     True
 
     :Parameters:
@@ -1592,7 +1592,7 @@ class Gmsh2D(Mesh2D):
         ... Plane Surface(11) = {10};
         ... ''') # doctest: +GMSH
 
-        >>> print circ.cellVolumes[0] > 0 # doctest: +GMSH
+        >>> print(circ.cellVolumes[0] > 0) # doctest: +GMSH
         True
 
         Now we'll test Gmsh2D again, but on a rectangle.
@@ -1612,7 +1612,7 @@ class Gmsh2D(Mesh2D):
         ... Plane Surface(11) = {10};
         ... ''') # doctest: +GMSH
 
-        >>> print rect.cellVolumes[0] > 0 # doctest: +GMSH
+        >>> print(rect.cellVolumes[0] > 0) # doctest: +GMSH
         True
 
         Testing multiple shape types within a mesh;
@@ -1634,18 +1634,18 @@ class Gmsh2D(Mesh2D):
         ... Recombine Surface{11};
         ... ''') # doctest: +GMSH
 
-        >>> print circle.cellVolumes[0] > 0 # doctest: +GMSH
+        >>> print(circle.cellVolumes[0] > 0) # doctest: +GMSH
         True
 
         >>> from fipy.tools import dump
         >>> f, tmpfile = dump.write(circle) # doctest: +GMSH
         >>> pickle_circle = dump.read(tmpfile, f) # doctest: +GMSH
 
-        >>> print (pickle_circle.cellVolumes == circle.cellVolumes).all()
+        >>> print((pickle_circle.cellVolumes == circle.cellVolumes).all())
         ... # doctest: +GMSH, +SERIAL
         True
 
-        >>> print (pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all()
+        >>> print((pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all())
         ... # doctest: +GMSH, +SERIAL
         True
 
@@ -1709,7 +1709,7 @@ class Gmsh2D(Mesh2D):
 
         >>> os.remove(mshFile)
 
-        >>> print nx.allclose(sqrTri.cellVolumes, [1., 0.5]) # doctest: +GMSH
+        >>> print(nx.allclose(sqrTri.cellVolumes, [1., 0.5])) # doctest: +GMSH
         True
 
 
@@ -1729,7 +1729,7 @@ class Gmsh2D(Mesh2D):
         >>> f.close() # doctest: +GMSH
 
         >>> f = open(posFile, mode='r')
-        >>> print "".join(f.readlines()) # doctest: +GMSH
+        >>> print("".join(f.readlines())) # doctest: +GMSH
         $PostFormat
         1.4 0 8
         $EndPostFormat
@@ -1858,18 +1858,18 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         ... Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};
         ... ''').extrude(extrudeFunc=lambda r: 1.1 * r) # doctest: +GMSH
 
-        >>> print sphere.cellVolumes[0] > 0 # doctest: +GMSH
+        >>> print(sphere.cellVolumes[0] > 0) # doctest: +GMSH
         True
 
         >>> from fipy.tools import dump
         >>> f, tmpfile = dump.write(sphere) # doctest: +GMSH
         >>> pickle_sphere = dump.read(tmpfile, f) # doctest: +GMSH
 
-        >>> print (pickle_sphere.cellVolumes == sphere.cellVolumes).all()
+        >>> print((pickle_sphere.cellVolumes == sphere.cellVolumes).all())
         ... # doctest: +GMSH, +SERIAL
         True
 
-        >>> print (pickle_sphere._globalOverlappingCellIDs == sphere._globalOverlappingCellIDs).all()
+        >>> print((pickle_sphere._globalOverlappingCellIDs == sphere._globalOverlappingCellIDs).all())
         ... # doctest: +GMSH, +SERIAL
         True
         """
@@ -1979,18 +1979,18 @@ class Gmsh3D(Mesh):
         ... Volume(34) = {33};
         ... ''') # doctest: +GMSH
 
-        >>> print prism.cellVolumes[0] > 0 # doctest: +GMSH
+        >>> print(prism.cellVolumes[0] > 0) # doctest: +GMSH
         True
 
         >>> from fipy.tools import dump
         >>> f, tmpfile = dump.write(prism) # doctest: +GMSH
         >>> pickle_prism = dump.read(tmpfile, f) # doctest: +GMSH
 
-        >>> print (pickle_prism.cellVolumes == prism.cellVolumes).all()
+        >>> print((pickle_prism.cellVolumes == prism.cellVolumes).all())
         ... # doctest: +GMSH, +SERIAL
         True
 
-        >>> print (pickle_prism._globalOverlappingCellIDs == prism._globalOverlappingCellIDs).all()
+        >>> print((pickle_prism._globalOverlappingCellIDs == prism._globalOverlappingCellIDs).all())
         ... # doctest: +GMSH, +SERIAL
         True
 
@@ -2032,7 +2032,7 @@ class Gmsh3D(Mesh):
 
         >>> os.remove(mshFile)
 
-        >>> print nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3]) # doctest: +GMSH
+        >>> print(nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3])) # doctest: +GMSH
         True
 
         Write tetrahedron, prism, and pyramid volumes out as a POS file
@@ -2053,7 +2053,7 @@ class Gmsh3D(Mesh):
         >>> f = open(posFile, mode='r') # doctest: +GMSH
         >>> l = f.readlines() # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
-        >>> print "".join(l[:5]) # doctest: +GMSH
+        >>> print("".join(l[:5])) # doctest: +GMSH
         $PostFormat
         1.4 0 8
         $EndPostFormat
@@ -2061,7 +2061,7 @@ class Gmsh3D(Mesh):
         volume 1
         <BLANKLINE>
 
-        >>> print l[-1] # doctest: +GMSH
+        >>> print(l[-1]) # doctest: +GMSH
         $EndView
         <BLANKLINE>
 
@@ -2101,7 +2101,7 @@ class Gmsh3D(Mesh):
         ...  0.0 0.0 0.0 0.0 -1.0
         ...  0.6666666666666666 0.6666666666666666 0.6666666666666666 0.6666666666666666 0.6666666666666666
         ...  ''', sep=" ")
-        >>> print numerix.allclose(a1, a2) # doctest: +GMSH
+        >>> print(numerix.allclose(a1, a2)) # doctest: +GMSH
         True
 
         >>> if parallelComm.procID == 0:
@@ -2285,3 +2285,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

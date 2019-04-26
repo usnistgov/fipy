@@ -10,7 +10,7 @@ class _AsymmetricConvectionTerm(_AbstractConvectionTerm):
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
         r"""
         Make sure the method actually does something.
-        >>> print _AsymmetricConvectionTerm((1,)).getDefaultSolver().__repr__()[:6]
+        >>> print(_AsymmetricConvectionTerm((1,)).getDefaultSolver().__repr__()[:6])
         Linear
         """
         solver = solver or super(_AsymmetricConvectionTerm, self)._getDefaultSolver(var, solver, *args, **kwargs)
@@ -26,3 +26,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

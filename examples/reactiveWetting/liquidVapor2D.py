@@ -153,7 +153,7 @@ A 2D version of the 1D example.
 ...             matrixDiagonal[:] = matrixDiagonal.old
 ...             dt = dt / 10.
 ...             if __name__ == '__main__':
-...                 print 'Recalculate the time step'
+...                 print('Recalculate the time step')
 ...             timestep -= 1
 ...             break
 ...         else:
@@ -165,7 +165,7 @@ A 2D version of the 1D example.
 ...         sweep += 1
 ... 
 ...     if __name__ == '__main__' and timestep % 1 == 0:
-...         print 'timestep: %e / %e, dt: %1.5e, free energy: %1.5e' % (timestep, totalSteps, dt, freeEnergy)
+...         print('timestep: %e / %e, dt: %1.5e, free energy: %1.5e' % (timestep, totalSteps, dt, freeEnergy))
 ...         for viewer in viewers:
 ...             viewer.plot()
 ... 
@@ -181,4 +181,5 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+
 

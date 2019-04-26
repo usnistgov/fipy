@@ -90,7 +90,7 @@ introduce a corresponding divergence source to the equation.
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
->>> print C.allclose(CAnalytical, rtol=anstol, atol=anstol)
+>>> print(C.allclose(CAnalytical, rtol=anstol, atol=anstol))
 True
 
 """
@@ -101,3 +101,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

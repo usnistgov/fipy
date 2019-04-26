@@ -57,7 +57,7 @@ We can now create a :class:`Viewer <~fipy.viewers.viewer.AbstractViewer>` to see
 ...         viewer.plotMesh()
 ...         raw_input("Irregular circular mesh. Press <return> to proceed...")
 ...     except:
-...         print "Unable to create a viewer for an irregular mesh (try Matplotlib2DViewer or MayaviViewer)"
+...         print("Unable to create a viewer for an irregular mesh (try Matplotlib2DViewer or MayaviViewer)")
 
 .. image:: circleMesh.*
    :width: 90%
@@ -135,10 +135,10 @@ vertical positions
 ...     phiAnalytical.setValue(x0 * (erf((x0+x) / (2 * numerix.sqrt(D * t)))
 ...                                  - erf((x0-x) / (2 * numerix.sqrt(D * t))))) # doctest: +GMSH, +SCIPY
 ... except ImportError:
-...     print "The SciPy library is not available to test the solution to \
-... the transient diffusion equation"
+...     print("The SciPy library is not available to test the solution to \
+... the transient diffusion equation")
 
->>> print phi.allclose(phiAnalytical, atol = 7e-2) # doctest: +GMSH, +SCIPY
+>>> print(phi.allclose(phiAnalytical, atol = 7e-2)) # doctest: +GMSH, +SCIPY
 1
 
 >>> if __name__ == '__main__':
@@ -153,7 +153,7 @@ diffusion problem.
 
 The values at the elements should be equal to their `x` coordinate
 
->>> print phi.allclose(x, atol = 0.035) # doctest: +GMSH
+>>> print(phi.allclose(x, atol = 0.035)) # doctest: +GMSH
 1
 
 Display the results if run as a script.
@@ -172,3 +172,4 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+

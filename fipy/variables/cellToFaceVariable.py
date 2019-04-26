@@ -24,13 +24,13 @@ class _CellToFaceVariable(FaceVariable):
         >>> v.constrain(c0)
         >>> c1 = Constraint(3., where=m.facesRight)
         >>> v.faceValue.constrain(c1)
-        >>> print v.faceValue
+        >>> print(v.faceValue)
         [ 0.  1.  2.  3.]
         >>> v.faceValue.release(constraint=c0)
-        >>> print v.faceValue
+        >>> print(v.faceValue)
         [ 0.5  1.   2.   3. ]
         >>> v.faceValue.release(constraint=c1)
-        >>> print v.faceValue
+        >>> print(v.faceValue)
         [ 0.5  1.   2.   2.5]
         """
         try:
@@ -68,3 +68,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

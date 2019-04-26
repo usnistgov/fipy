@@ -19,7 +19,7 @@ class _PowerLawConvectionTermAlpha(FaceVariable):
         >>> P = FaceVariable(mesh=mesh, value=(1e-3, 1e+71, 1e-3, 1e-3))
         >>>
         >>> alpha = PowerLawConvectionTerm([1])._alpha(P)
-        >>> print numerix.allclose(alpha, [ 0.5,  1.,   0.5, 0.5])
+        >>> print(numerix.allclose(alpha, [ 0.5,  1.,   0.5, 0.5]))
         True
     """
     def __init__(self, P):
@@ -101,4 +101,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

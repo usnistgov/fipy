@@ -72,8 +72,8 @@ class AdsorbingSurfactantEquation():
     ...                                   rateConstant = k)
     >>> eqn.solve(surfactantVar, dt = dt)
     >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
-    >>> print numerix.allclose(surfactantVar.interfaceVar,
-    ...                  numerix.array((0, 0, answer, 0, 0)))
+    >>> print(numerix.allclose(surfactantVar.interfaceVar,
+    ...                  numerix.array((0, 0, answer, 0, 0))))
     1
 
     The following test case is for two surfactant variables. One has more
@@ -122,11 +122,11 @@ class AdsorbingSurfactantEquation():
     ...     eqn1.solve(var1, dt = dt)
     >>> answer0 = 1 - numerix.exp(-k0 * c0 * dt * totalSteps)
     >>> answer1 = (1 - numerix.exp(-k1 * c1 * dt * totalSteps)) * (1 - answer0)
-    >>> print numerix.allclose(var0.interfaceVar,
-    ...                  numerix.array((0, 0, answer0, 0, 0)), rtol = 1e-2)
+    >>> print(numerix.allclose(var0.interfaceVar,
+    ...                  numerix.array((0, 0, answer0, 0, 0)), rtol = 1e-2))
     1
-    >>> print numerix.allclose(var1.interfaceVar,
-    ...                  numerix.array((0, 0, answer1, 0, 0)), rtol = 1e-2)
+    >>> print(numerix.allclose(var1.interfaceVar,
+    ...                  numerix.array((0, 0, answer1, 0, 0)), rtol = 1e-2))
     1
     >>> dt = 0.1
     >>> for step in range(10):
@@ -137,7 +137,7 @@ class AdsorbingSurfactantEquation():
     >>> check = var0.interfaceVar + var1.interfaceVar
     >>> answer = CellVariable(mesh=mesh, value=check)
     >>> answer[x==1.25] = 1.
-    >>> print check.allequal(answer)
+    >>> print(check.allequal(answer))
     True
 
     The following test case is to fix a bug where setting the adsorption
@@ -158,7 +158,7 @@ class AdsorbingSurfactantEquation():
     >>> answer = CellVariable(mesh=mesh, value=var0.interfaceVar)
     >>> answer[x==1.25] = 0.
 
-    >>> print var0.interfaceVar.allclose(answer)
+    >>> print(var0.interfaceVar.allclose(answer))
     True
 
     The following test case is to fix a bug that allows the accelerator to
@@ -210,7 +210,7 @@ class AdsorbingSurfactantEquation():
 
     >>> # The following test fails sometimes on linux with scipy solvers
     >>> # See issue #575. We ignore for now.
-    >>> print (accVar >= -1e-10).all() #doctest: +NOTLINUXSCIPY
+    >>> print((accVar >= -1e-10).all()) #doctest: +NOTLINUXSCIPY
     True
     """
     def __init__(self,
@@ -338,4 +338,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

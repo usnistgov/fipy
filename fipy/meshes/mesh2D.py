@@ -134,18 +134,18 @@ class Mesh2D(Mesh):
           - `layers`: the number of layers in the extruded mesh (number of times extrudeFunc will be called)
 
         >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
-        >>> print NonUniformGrid2D(nx=2, ny=2).extrude(layers=2).cellCenters
+        >>> print(NonUniformGrid2D(nx=2, ny=2).extrude(layers=2).cellCenters)
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]
          [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]]
 
         >>> from fipy.meshes.tri2D import Tri2D
-        >>> print Tri2D().extrude(layers=2).cellCenters.allclose([[ 0.83333333, 0.5,        0.16666667, 0.5,       0.83333333, 0.5,
+        >>> print(Tri2D().extrude(layers=2).cellCenters.allclose([[ 0.83333333, 0.5,        0.16666667, 0.5,       0.83333333, 0.5,
         ...                                                      0.16666667, 0.5       ],
         ...                                                       [ 0.5,        0.83333333, 0.5,        0.16666667, 0.5,        0.83333333,
         ...                                                      0.5,        0.16666667],
         ...                                                      [ 0.5,        0.5,        0.5,        0.5,        1.5,        1.5,        1.5,
-        ...                                                      1.5       ]])
+        ...                                                      1.5       ]]))
         True
         """
 
@@ -257,13 +257,13 @@ class Mesh2D(Mesh):
             >>> mesh = Mesh2D(vertexCoords = vertices, faceVertexIDs = faces, cellFaceIDs = cells)
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9, 13, 17, 19))
-            >>> print numerix.allequal(externalFaces,
-            ...                        numerix.nonzero(mesh.exteriorFaces))
+            >>> print(numerix.allequal(externalFaces,
+            ...                        numerix.nonzero(mesh.exteriorFaces)))
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 12, 14, 15, 16, 18))
-            >>> print numerix.allequal(internalFaces,
-            ...                        numerix.nonzero(mesh.interiorFaces))
+            >>> print(numerix.allequal(internalFaces,
+            ...                        numerix.nonzero(mesh.interiorFaces)))
             1
 
             >>> faceCellIds = MA.masked_values((( 0,  1,  2, 0,  1, 2,  3,  4,  5,
@@ -281,7 +281,7 @@ class Mesh2D(Mesh):
 
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
             >>> faceCenters = (faceCoords[..., 0,:] + faceCoords[..., 1,:]) / 2.
-            >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
+            >>> print(numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10))
             True
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0.,
@@ -310,7 +310,7 @@ class Mesh2D(Mesh):
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2., 3.*dx+dx/3., 3.*dx+dx/3.),
             ...                              (dy/2., dy/2., dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2., 2.*dy/3., 4.*dy/3.)))
-            >>> print numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10)
+            >>> print(numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10))
             True
 
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2.,
@@ -435,7 +435,7 @@ class Mesh2D(Mesh):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.cellCenters)
+            >>> print(numerix.allequal(mesh.cellCenters, unpickledMesh.cellCenters))
             True
 
 
@@ -448,4 +448,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

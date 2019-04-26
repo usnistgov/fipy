@@ -259,24 +259,24 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         >>> coeff = Variable([[0., 0.], [0., 1.]])
         >>> eq = DiffusionTerm(coeff)
         >>> eq.solve(v, solver=DummySolver())
-        >>> print v
+        >>> print(v)
         [ 0.  0.  0.  0.]
 
         Change the coefficient.
 
         >>> coeff[0, 0] = 1.
         >>> eq.solve(v)
-        >>> print v
+        >>> print(v)
         [ 1.  1.  1.  1.]
 
         Change the constraints.
 
         >>> c0.setValue(2.)
         >>> v.constrain(3., where=m.facesRight)
-        >>> print v.faceValue.constraintMask
+        >>> print(v.faceValue.constraintMask)
         [False False False False False False  True False  True  True False  True]
         >>> eq.solve(v)
-        >>> print v
+        >>> print(v)
         [ 2.25  2.75  2.25  2.75]
 
         """
@@ -438,4 +438,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

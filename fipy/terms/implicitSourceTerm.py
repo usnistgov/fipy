@@ -27,11 +27,11 @@ class ImplicitSourceTerm(SourceTerm):
             >>> v = CellVariable(mesh=m, value=1.)
             >>> eq = TransientTerm() == ImplicitSourceTerm(v)
             >>> eq.solve(v, dt=1.)
-            >>> print v
+            >>> print(v)
             [ 2.]
             >>> v.setValue(-1.)
             >>> eq.solve(v, dt=1.)
-            >>> print v
+            >>> print(v)
             [-0.5]
 
         """
@@ -51,3 +51,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

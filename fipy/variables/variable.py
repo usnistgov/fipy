@@ -29,7 +29,7 @@ class Variable(object):
     >>> a.setValue(5)
     >>> b
     (Variable(value=array(5)) * 4)
-    >>> print b()
+    >>> print(b())
     20
     """
 
@@ -99,11 +99,11 @@ class Variable(object):
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
 
-        >>> print type(numerix.array([1.0, 2.0]) * Variable([1.0, 2.0])) # doctest: +ELLIPSIS
+        >>> print(type(numerix.array([1.0, 2.0]) * Variable([1.0, 2.0]))) # doctest: +ELLIPSIS
         <class 'fipy.variables.binaryOperatorVariable...binOp'>
 
         >>> from scipy.special import gamma as Gamma # doctest: +SCIPY
-        >>> print type(Gamma(Variable([1.0, 2.0]))) # doctest: +SCIPY +ELLIPSIS
+        >>> print(type(Gamma(Variable([1.0, 2.0])))) # doctest: +SCIPY +ELLIPSIS
         <class 'fipy.variables.unaryOperatorVariable...unOp'>
         """
         result = arr
@@ -133,7 +133,7 @@ class Variable(object):
         Attempt to convert the `Variable` to a numerix `array` object
 
             >>> v = Variable(value=[2, 3])
-            >>> print numerix.array(v)
+            >>> print(numerix.array(v))
             [2 3]
 
         A dimensional `Variable` will convert to the numeric value in its base units
@@ -216,7 +216,7 @@ class Variable(object):
 
             >>> a = Variable(value="1 m")
             >>> a.unit = "m**2/s"
-            >>> print a
+            >>> print(a)
             1.0 m**2/s
         """
         if self._value is None:
@@ -235,7 +235,7 @@ class Variable(object):
         their base SI elements.
 
             >>> e = Variable(value="2.7 Hartree*Nav")
-            >>> print e.inBaseUnits().allclose("7088849.01085 kg*m**2/s**2/mol")
+            >>> print(e.inBaseUnits().allclose("7088849.01085 kg*m**2/s**2/mol"))
             1
         """
         value = self.value
@@ -253,7 +253,7 @@ class Variable(object):
         is a single `Variable`.
 
         >>> freeze = Variable('0 degC')
-        >>> print freeze.inUnitsOf('degF').allclose("32.0 degF")
+        >>> print(freeze.inUnitsOf('degF').allclose("32.0 degF"))
         1
 
         If several units are specified, the return value is a tuple of
@@ -264,9 +264,9 @@ class Variable(object):
         hour/minute/second.  The original object will not be changed.
 
         >>> t = Variable(value=314159., unit='s')
-        >>> print numerix.allclose([e.allclose(v) for (e, v) in zip(t.inUnitsOf('d', 'h', 'min', 's'),
+        >>> print(numerix.allclose([e.allclose(v) for (e, v) in zip(t.inUnitsOf('d', 'h', 'min', 's'),
         ...                                                         ['3.0 d', '15.0 h', '15.0 min', '59.0 s'])],
-        ...                        True)
+        ...                        True))
         1
         """
         value = self.value
@@ -326,7 +326,7 @@ class Variable(object):
         First variable value access does not provoke inlining.
 
         >>> value = normalsNthCoeff.value
-        >>> print (normalsNthCoeff == value).all()
+        >>> print((normalsNthCoeff == value).all())
         True
 
         """
@@ -381,9 +381,9 @@ class Variable(object):
          >>> m = Grid1D(nx=3)
          >>> x = m.cellCenters[0]
          >>> tmp = m.cellCenters[0] * numerix.array(((0.,), (1.,)))[1]
-         >>> print numerix.allclose(tmp, x)
+         >>> print(numerix.allclose(tmp, x))
          True
-         >>> print numerix.allclose(tmp, x)
+         >>> print(numerix.allclose(tmp, x))
          True
 
          """
@@ -449,7 +449,7 @@ class Variable(object):
         "Evaluate" the `Variable` and return its value
 
             >>> a = Variable(value=3)
-            >>> print a()
+            >>> print(a())
             3
             >>> b = a + 4
             >>> b
@@ -464,7 +464,7 @@ class Variable(object):
         "Evaluate" the `Variable` and return its value (longhand)
 
             >>> a = Variable(value=3)
-            >>> print a.value
+            >>> print(a.value)
             3
             >>> b = a + 4
             >>> b
@@ -521,25 +521,25 @@ class Variable(object):
 
         >>> v = Variable((0, 1, 2, 3))
         >>> v.constrain(2, numerix.array((True, False, False, False)))
-        >>> print v
+        >>> print(v)
         [2 1 2 3]
         >>> v[:] = 10
-        >>> print v
+        >>> print(v)
         [ 2 10 10 10]
         >>> v.constrain(5, numerix.array((False, False, True, False)))
-        >>> print v
+        >>> print(v)
         [ 2 10  5 10]
         >>> v[:] = 6
-        >>> print v
+        >>> print(v)
         [2 6 5 6]
         >>> v.constrain(8)
-        >>> print v
+        >>> print(v)
         [8 8 8 8]
         >>> v[:] = 10
-        >>> print v
+        >>> print(v)
         [8 8 8 8]
         >>> del v.constraints[2]
-        >>> print v
+        >>> print(v)
         [ 2 10  5 10]
 
         >>> from fipy.variables.cellVariable import CellVariable
@@ -548,7 +548,7 @@ class Variable(object):
         >>> x, y = m.cellCenters
         >>> v = CellVariable(mesh=m, rank=1, value=(x, y))
         >>> v.constrain(((0.,), (-1.,)), where=m.facesLeft)
-        >>> print v.faceValue
+        >>> print(v.faceValue)
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.   1.   1.5  0.   1.   1.5]
          [ 0.5  0.5  1.   1.   1.5  1.5 -1.   0.5  0.5 -1.   1.5  1.5]]
 
@@ -582,7 +582,7 @@ class Variable(object):
         >>> v[:] = 10
         >>> del v.constraints[2]
         >>> v.release(constraint=c1)
-        >>> print v
+        >>> print(v)
         [ 2 10 10 10]
         """
         self.constraints.remove(constraint)
@@ -656,23 +656,23 @@ class Variable(object):
 
             >>> a = Variable((1, 2, 3))
             >>> a.setValue(5, where=(1, 0, 1))
-            >>> print a
+            >>> print(a)
             [5 2 5]
 
             >>> b = Variable((4, 5, 6))
             >>> a.setValue(b, where=(1, 0, 1))
-            >>> print a
+            >>> print(a)
             [4 2 6]
-            >>> print b
+            >>> print(b)
             [4 5 6]
             >>> a.value = 3
-            >>> print a
+            >>> print(a)
             [3 3 3]
 
             >>> b = numerix.array((3, 4, 5))
             >>> a.value = b
             >>> a[:] = 1
-            >>> print b
+            >>> print(b)
             [3 4 5]
 
             >>> a.setValue((4, 5, 6), where=(1, 0)) #doctest: +IGNORE_EXCEPTION_DETAIL
@@ -853,7 +853,7 @@ class Variable(object):
             >>> var = CellVariable(mesh=mesh, value=0.)
             >>> Y =  mesh.cellCenters[1]
             >>> var.value = (Y + 1.0)
-            >>> print var - Y
+            >>> print(var - Y)
             [ 1.  1.  1.  1.]
         """
 
@@ -1092,9 +1092,9 @@ class Variable(object):
     def __pow__(self, other):
         """return self**other, or self raised to power other
 
-        >>> print Variable(1, "mol/l")**3
+        >>> print(Variable(1, "mol/l")**3)
         1.0 mol**3/l**3
-        >>> print (Variable(1, "mol/l")**3).unit
+        >>> print((Variable(1, "mol/l")**3).unit)
         <PhysicalUnit mol**3/l**3>
         """
         return self._BinaryOperatorVariable(lambda a, b: pow(a, b), other, value1mattersForUnit=True)
@@ -1124,7 +1124,7 @@ class Variable(object):
         Following test it to fix a bug with C inline string using
         abs() instead of fabs()
 
-            >>> print abs(Variable(2.3) - Variable(1.2))
+            >>> print(abs(Variable(2.3) - Variable(1.2)))
             1.1
 
         """
@@ -1135,7 +1135,7 @@ class Variable(object):
         Returns logical "not" of the `Variable`
 
             >>> a = Variable(value=True)
-            >>> print ~a
+            >>> print(~a)
             False
         """
         return self._UnaryOperatorVariable(lambda a: ~a)
@@ -1151,11 +1151,11 @@ class Variable(object):
             >>> b()
             1
             >>> a.value = 4
-            >>> print b()
+            >>> print(b())
             0
-            >>> print 1000000000000000000 * Variable(1) < 1.
+            >>> print(1000000000000000000 * Variable(1) < 1.)
             0
-            >>> print 1000 * Variable(1) < 1.
+            >>> print(1000 * Variable(1) < 1.)
             0
 
 
@@ -1177,10 +1177,10 @@ class Variable(object):
             >>> b()
             1
             >>> a.value = 4
-            >>> print b()
+            >>> print(b())
             1
             >>> a.value = 5
-            >>> print b()
+            >>> print(b())
             0
         """
         return self._BinaryOperatorVariable(lambda a, b: a<=b, other)
@@ -1221,10 +1221,10 @@ class Variable(object):
             >>> b = (a > 4)
             >>> b
             (Variable(value=array(3)) > 4)
-            >>> print b()
+            >>> print(b())
             0
             >>> a.value = 5
-            >>> print b()
+            >>> print(b())
             1
         """
         return self._BinaryOperatorVariable(lambda a, b: a>b, other)
@@ -1240,10 +1240,10 @@ class Variable(object):
             >>> b()
             0
             >>> a.value = 4
-            >>> print b()
+            >>> print(b())
             1
             >>> a.value = 5
-            >>> print b()
+            >>> print(b())
             1
         """
         return self._BinaryOperatorVariable(lambda a, b: a>=b, other)
@@ -1254,18 +1254,18 @@ class Variable(object):
 
         >>> a = Variable(value=(0, 0, 1, 1))
         >>> b = Variable(value=(0, 1, 0, 1))
-        >>> print numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all()
+        >>> print(numerix.equal((a == 0) & (b == 1), [False,  True, False, False]).all())
         True
-        >>> print a & b
+        >>> print(a & b)
         [0 0 0 1]
         >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx=4)
         >>> from fipy.variables.cellVariable import CellVariable
         >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
         >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-        >>> print numerix.allequal((a == 0) & (b == 1), [False,  True, False, False])
+        >>> print(numerix.allequal((a == 0) & (b == 1), [False,  True, False, False]))
         True
-        >>> print a & b
+        >>> print(a & b)
         [0 0 0 1]
         """
         return self._BinaryOperatorVariable(lambda a, b: a & b, other, canInline=False)
@@ -1276,18 +1276,18 @@ class Variable(object):
 
         >>> a = Variable(value=(0, 0, 1, 1))
         >>> b = Variable(value=(0, 1, 0, 1))
-        >>> print numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all()
+        >>> print(numerix.equal((a == 0) | (b == 1), [True,  True, False, True]).all())
         True
-        >>> print a | b
+        >>> print(a | b)
         [0 1 1 1]
         >>> from fipy.meshes import Grid1D
         >>> mesh = Grid1D(nx=4)
         >>> from fipy.variables.cellVariable import CellVariable
         >>> a = CellVariable(value=(0, 0, 1, 1), mesh=mesh)
         >>> b = CellVariable(value=(0, 1, 0, 1), mesh=mesh)
-        >>> print numerix.allequal((a == 0) | (b == 1), [True,  True, False, True])
+        >>> print(numerix.allequal((a == 0) | (b == 1), [True,  True, False, True]))
         True
-        >>> print a | b
+        >>> print(a | b)
         [0 1 1 1]
         """
         return self._BinaryOperatorVariable(lambda a, b: a | b, other, canInline=False)
@@ -1306,9 +1306,9 @@ class Variable(object):
 
     def __nonzero__(self):
         """
-            >>> print bool(Variable(value=0))
+            >>> print(bool(Variable(value=0)))
             0
-            >>> print bool(Variable(value=(0, 0, 1, 1)))
+            >>> print(bool(Variable(value=(0, 0, 1, 1))))
             Traceback (most recent call last):
                 ...
             ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
@@ -1317,9 +1317,9 @@ class Variable(object):
 
     def any(self, axis=None):
         """
-            >>> print Variable(value=0).any()
+            >>> print(Variable(value=0).any())
             0
-            >>> print Variable(value=(0, 0, 1, 1)).any()
+            >>> print(Variable(value=(0, 0, 1, 1)).any())
             1
         """
         operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
@@ -1330,9 +1330,9 @@ class Variable(object):
 
     def all(self, axis=None):
         """
-            >>> print Variable(value=(0, 0, 1, 1)).all()
+            >>> print(Variable(value=(0, 0, 1, 1)).all())
             0
-            >>> print Variable(value=(1, 1, 1, 1)).all()
+            >>> print(Variable(value=(1, 1, 1, 1)).all())
             1
         """
         operatorClass = Variable._OperatorVariableClass(self, baseClass=Variable)
@@ -1405,7 +1405,7 @@ class Variable(object):
         "Evaluate" the `Variable` and return the specified element
 
             >>> a = Variable(value=((3., 4.), (5., 6.)), unit="m") + "4 m"
-            >>> print a[1, 1]
+            >>> print(a[1, 1])
             10.0 m
 
         It is an error to slice a `Variable` whose `value` is not sliceable
@@ -1428,9 +1428,9 @@ class Variable(object):
     def allclose(self, other, rtol=1.e-5, atol=1.e-8):
         """
            >>> var = Variable((1, 1))
-           >>> print var.allclose((1, 1))
+           >>> print(var.allclose((1, 1)))
            1
-           >>> print var.allclose((1,))
+           >>> print(var.allclose((1,)))
            1
 
         The following test is to check that the system does not run
@@ -1438,7 +1438,7 @@ class Variable(object):
 
            >>> from fipy.tools import numerix
            >>> var = Variable(numerix.ones(10000))
-           >>> print var.allclose(numerix.zeros(10000, 'l'))
+           >>> print(var.allclose(numerix.zeros(10000, 'l')))
            False
 
         """
@@ -1500,14 +1500,14 @@ class Variable(object):
 
            the next should really return radians, but doesn't
 
-        >>> print tostring(arccos(Variable(value=(0, 0.5, 1.0))), precision=3)
+        >>> print(tostring(arccos(Variable(value=(0, 0.5, 1.0))), precision=3))
         [ 1.571  1.047  0.   ]
 
         Inverse hyperbolic cosine of :math:`x`, :math:`\cosh^{-1} x`
 
         >>> arccosh(Variable(value=(1, 2, 3)))
         arccosh(Variable(value=array([1, 2, 3])))
-        >>> print tostring(arccosh(Variable(value=(1, 2, 3))), precision=3)
+        >>> print(tostring(arccosh(Variable(value=(1, 2, 3))), precision=3))
         [ 0.     1.317  1.763]
 
         Inverse sine of :math:`x`, :math:`\sin^{-1} x`
@@ -1519,14 +1519,14 @@ class Variable(object):
 
            the next should really return radians, but doesn't
 
-        >>> print tostring(arcsin(Variable(value=(0, 0.5, 1.0))), precision=3)
+        >>> print(tostring(arcsin(Variable(value=(0, 0.5, 1.0))), precision=3))
         [ 0.     0.524  1.571]
 
         Inverse hyperbolic sine of :math:`x`, :math:`\sinh^{-1} x`
 
         >>> arcsinh(Variable(value=(1, 2, 3)))
         arcsinh(Variable(value=array([1, 2, 3])))
-        >>> print tostring(arcsinh(Variable(value=(1, 2, 3))), precision=3)
+        >>> print(tostring(arcsinh(Variable(value=(1, 2, 3))), precision=3))
         [ 0.881  1.444  1.818]
 
         Inverse tangent of :math:`x`, :math:`\tan^{-1} x`
@@ -1538,7 +1538,7 @@ class Variable(object):
 
            the next should really return radians, but doesn't
 
-        >>> print tostring(arctan(Variable(value=(0, 0.5, 1.0))), precision=3)
+        >>> print(tostring(arctan(Variable(value=(0, 0.5, 1.0))), precision=3))
         [ 0.     0.464  0.785]
 
         Inverse tangent of a ratio :math:`x/y`, :math:`\tan^{-1} \frac{x}{y}`
@@ -1550,99 +1550,99 @@ class Variable(object):
 
            the next should really return radians, but doesn't
 
-        >>> print tostring(arctan2(Variable(value=(0, 1, 2)), 2), precision=3)
+        >>> print(tostring(arctan2(Variable(value=(0, 1, 2)), 2), precision=3))
         [ 0.     0.464  0.785]
 
         Inverse hyperbolic tangent of :math:`x`, :math:`\tanh^{-1} x`
 
         >>> arctanh(Variable(value=(0, 0.25, 0.5)))
         arctanh(Variable(value=array([ 0.  ,  0.25,  0.5 ])))
-        >>> print tostring(arctanh(Variable(value=(0, 0.25, 0.5))), precision=3)
+        >>> print(tostring(arctanh(Variable(value=(0, 0.25, 0.5))), precision=3))
         [ 0.     0.255  0.549]
 
         Cosine of :math:`x`, :math:`\cos x`
 
         >>> cos(Variable(value=(0, 2*pi/6, pi/2), unit="rad"))
         cos(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  1.57079633]),'rad')))
-        >>> print tostring(cos(Variable(value=(0, 2*pi/6, pi/2), unit="rad")), suppress_small=1)
+        >>> print(tostring(cos(Variable(value=(0, 2*pi/6, pi/2), unit="rad")), suppress_small=1))
         [ 1.   0.5  0. ]
 
         Hyperbolic cosine of :math:`x`, :math:`\cosh x`
 
         >>> cosh(Variable(value=(0, 1, 2)))
         cosh(Variable(value=array([0, 1, 2])))
-        >>> print tostring(cosh(Variable(value=(0, 1, 2))), precision=3)
+        >>> print(tostring(cosh(Variable(value=(0, 1, 2))), precision=3))
         [ 1.     1.543  3.762]
 
         Tangent of :math:`x`, :math:`\tan x`
 
         >>> tan(Variable(value=(0, pi/3, 2*pi/3), unit="rad"))
         tan(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  2.0943951 ]),'rad')))
-        >>> print tostring(tan(Variable(value=(0, pi/3, 2*pi/3), unit="rad")), precision=3)
+        >>> print(tostring(tan(Variable(value=(0, pi/3, 2*pi/3), unit="rad")), precision=3))
         [ 0.     1.732 -1.732]
 
         Hyperbolic tangent of :math:`x`, :math:`\tanh x`
 
         >>> tanh(Variable(value=(0, 1, 2)))
         tanh(Variable(value=array([0, 1, 2])))
-        >>> print tostring(tanh(Variable(value=(0, 1, 2))), precision=3)
+        >>> print(tostring(tanh(Variable(value=(0, 1, 2))), precision=3))
         [ 0.     0.762  0.964]
 
         Base-10 logarithm of :math:`x`, :math:`\log_{10} x`
 
         >>> log10(Variable(value=(0.1, 1, 10)))
         log10(Variable(value=array([  0.1,   1. ,  10. ])))
-        >>> print log10(Variable(value=(0.1, 1, 10)))
+        >>> print(log10(Variable(value=(0.1, 1, 10))))
         [-1.  0.  1.]
 
         Sine of :math:`x`, :math:`\sin x`
 
         >>> sin(Variable(value=(0, pi/6, pi/2), unit="rad"))
         sin(Variable(value=PhysicalField(array([ 0.        ,  0.52359878,  1.57079633]),'rad')))
-        >>> print sin(Variable(value=(0, pi/6, pi/2), unit="rad"))
+        >>> print(sin(Variable(value=(0, pi/6, pi/2), unit="rad")))
         [ 0.   0.5  1. ]
 
         Hyperbolic sine of :math:`x`, :math:`\sinh x`
 
         >>> sinh(Variable(value=(0, 1, 2)))
         sinh(Variable(value=array([0, 1, 2])))
-        >>> print tostring(sinh(Variable(value=(0, 1, 2))), precision=3)
+        >>> print(tostring(sinh(Variable(value=(0, 1, 2))), precision=3))
         [ 0.     1.175  3.627]
 
         Square root of :math:`x`, :math:`\sqrt{x}`
 
         >>> sqrt(Variable(value=(1, 2, 3), unit="m**2"))
         sqrt(Variable(value=PhysicalField(array([1, 2, 3]),'m**2')))
-        >>> print tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3)
+        >>> print(tostring(sqrt(Variable(value=(1, 2, 3), unit="m**2")), precision=3))
         [ 1.     1.414  1.732] m
 
         The largest integer :math:`\le x`, :math:`\lfloor x \rfloor`
 
         >>> floor(Variable(value=(-1.5, 2, 2.5), unit="m**2"))
         floor(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
-        >>> print floor(Variable(value=(-1.5, 2, 2.5), unit="m**2"))
+        >>> print(floor(Variable(value=(-1.5, 2, 2.5), unit="m**2")))
         [-2.  2.  2.] m**2
 
         The largest integer :math:`\ge x`, :math:`\lceil x \rceil`
 
         >>> ceil(Variable(value=(-1.5, 2, 2.5), unit="m**2"))
         ceil(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
-        >>> print ceil(Variable(value=(-1.5, 2, 2.5), unit="m**2"))
+        >>> print(ceil(Variable(value=(-1.5, 2, 2.5), unit="m**2")))
         [-1.  2.  3.] m**2
 
         Natural logarithm of :math:`x`, :math:`\ln x \equiv \log_e x`
 
         >>> log(Variable(value=(0.1, 1, 10)))
         log(Variable(value=array([  0.1,   1. ,  10. ])))
-        >>> print tostring(log(Variable(value=(0.1, 1, 10))), precision=3)
+        >>> print(tostring(log(Variable(value=(0.1, 1, 10))), precision=3))
         [-2.303  0.     2.303]
 
         Complex conjugate of :math:`z = x + i y`, :math:`z^\star = x - i y`
 
         >>> var = conjugate(Variable(value=(3 + 4j, -2j, 10), unit="ohm"))
-        >>> print var.unit
+        >>> print(var.unit)
         <PhysicalUnit ohm>
-        >>> print allclose(var.numericValue, (3 - 4j, 2j, 10))
+        >>> print(allclose(var.numericValue, (3 - 4j, 2j, 10)))
         1
         """
         pass
@@ -1654,4 +1654,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

@@ -11,7 +11,7 @@ Advect the interface and check the position.
    ...     distanceVariable.updateOld()
    ...     surfactantEquation.solve(surfactantVariable, dt=1)
    ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration) #doctest: +LSM
-   >>> print numerix.allclose(initialSurfactant, numerix.sum(surfactantVariable)) #doctest: +LSM
+   >>> print(numerix.allclose(initialSurfactant, numerix.sum(surfactantVariable))) #doctest: +LSM
    1
 
 
@@ -87,3 +87,4 @@ if __name__ == '__main__':
     surfactantViewer.plot()
     print(surfactantVariable)
     raw_input('finished')
+

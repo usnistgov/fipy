@@ -31,7 +31,7 @@ Do the tests:
 ...                           dX,  -dX,   -v1,  -dX,   dX,
 ...                           dX,  -mm,   -dY,  -mm,   dX,
 ...                           v1,   dY,   dY,  dY,  v1  ))
->>> print var.allclose(values, atol = 1e-10) #doctest: +LSM
+>>> print(var.allclose(values, atol = 1e-10)) #doctest: +LSM
 1
 
 """
@@ -66,4 +66,5 @@ if __name__ == '__main__':
     viewer = Viewer(vars=var, datamin=-5., datamax=5.)
     viewer.plot()
     raw_input('finished')
+
 

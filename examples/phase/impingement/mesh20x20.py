@@ -180,7 +180,7 @@ We step the solution in time, plotting as we go if running interactively,
 
 The solution is compared against Ryo Kobayashi's test data
 
->>> print theta.allclose(testData, rtol=1e-7, atol=1e-7)
+>>> print(theta.allclose(testData, rtol=1e-7, atol=1e-7))
 1
 
 The following code shows how to restart a simulation from some saved
@@ -207,7 +207,7 @@ Step through half the time steps.
 We confirm that the solution has not yet converged to that given by
 Ryo Kobayashi's FORTRAN code:
 
->>> print theta.allclose(testData)
+>>> print(theta.allclose(testData))
 0
 
 We save the variables to disk.
@@ -234,7 +234,7 @@ and finish the iterations,
 
 The solution is compared against Ryo Kobayashi's test data
 
->>> print newTheta.allclose(testData, rtol=1e-7)
+>>> print(newTheta.allclose(testData, rtol=1e-7))
 1
 """
 __docformat__ = 'restructuredtext'
@@ -244,5 +244,6 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+
 
 

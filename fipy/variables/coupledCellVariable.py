@@ -71,12 +71,12 @@ class _CoupledCellVariable(object):
         >>> v1 = CellVariable(mesh=mesh, value=[2, 3])
         >>> v2 = CellVariable(mesh=mesh, value=[4, 5])
         >>> v = _CoupledCellVariable(vars=(v1, v2))
-        >>> print numerix.allequal([2, 3, 4, 5], numerix.array(v)) # doctest: +PROCESSOR_0
+        >>> print(numerix.allequal([2, 3, 4, 5], numerix.array(v))) # doctest: +PROCESSOR_0
         True
         >>> v[:] = (6, 7, 8, 9)
-        >>> print v1
+        >>> print(v1)
         [6 7]
-        >>> print v2
+        >>> print(v2)
         [8 9]
         >>> v.getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
         True
@@ -110,4 +110,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

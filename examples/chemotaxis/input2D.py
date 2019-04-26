@@ -11,17 +11,17 @@ Here are some test cases for the model.
     ...         eqn.solve(var, dt = 1.0)
 
     >>> accuracy = 1e-2
-    >>> print KMVar.allclose(params['KM'], atol = accuracy)
+    >>> print(KMVar.allclose(params['KM'], atol = accuracy))
     1
-    >>> print TMVar.allclose(params['TM'], atol = accuracy)
+    >>> print(TMVar.allclose(params['TM'], atol = accuracy))
     1
-    >>> print TCVar.allclose(params['TC'], atol = accuracy)
+    >>> print(TCVar.allclose(params['TC'], atol = accuracy))
     1
-    >>> print P2Var.allclose(params['P2'], atol = accuracy)
+    >>> print(P2Var.allclose(params['P2'], atol = accuracy))
     1
-    >>> print P3Var.allclose(params['P3'], atol = accuracy)
+    >>> print(P3Var.allclose(params['P3'], atol = accuracy))
     1
-    >>> print KCVar.allclose(params['KC'], atol = accuracy)
+    >>> print(KCVar.allclose(params['KC'], atol = accuracy))
     1
 
 """
@@ -113,3 +113,4 @@ if __name__ == '__main__':
         TMViewer.plot()
 
     raw_input("finished")
+

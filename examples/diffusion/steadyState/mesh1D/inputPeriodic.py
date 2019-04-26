@@ -39,7 +39,7 @@ solver has no fixed value and can become unstable.
 
 The result of the calculation will be the average value over the domain.
 
->>> print var.allclose((valueLeft + valueRight) / 2., rtol = 1e-5)
+>>> print(var.allclose((valueLeft + valueRight) / 2., rtol = 1e-5))
 1
 
 """
@@ -50,3 +50,4 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
     raw_input("finished")
+

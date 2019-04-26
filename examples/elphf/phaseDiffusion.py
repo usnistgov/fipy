@@ -197,7 +197,7 @@ we confirm that the far-field phases have remained separated
 and that the solute concentration field has appropriately segregated into
 solute-rich and solute-poor phases.
 
->>> print numerix.allclose(substitutionals[0](((0., L),)), (0.7, 0.3), rtol = 2e-3, atol = 2e-3)
+>>> print(numerix.allclose(substitutionals[0](((0., L),)), (0.7, 0.3), rtol = 2e-3, atol = 2e-3))
 1
 
 The same system of equations can model a quaternary substitutional system as
@@ -397,5 +397,6 @@ if __name__ == "__main__":
 ##
 ##     raw_input("finished")
 ##
+
 
 

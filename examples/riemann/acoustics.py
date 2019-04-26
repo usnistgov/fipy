@@ -1,7 +1,7 @@
 r"""
 Test
 
->>> print (0.4 < max(q.globalValue[0]) < 0.5)
+>>> print((0.4 < max(q.globalValue[0]) < 0.5))
 True
 
 """
@@ -46,3 +46,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

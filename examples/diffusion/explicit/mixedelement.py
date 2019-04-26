@@ -56,8 +56,8 @@ against the expected profile:
 ...         varAnalytical = 1 - erf((L - x) / (2 * numerix.sqrt(D * t))) # doctest: +SCIPY
 ...         atol = 0.03
 ...     except ImportError:
-...         print "The SciPy library is not available to test the solution to \
-...           the transient diffusion equation"
+...         print("The SciPy library is not available to test the solution to \
+...           the transient diffusion equation")
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var)
@@ -69,7 +69,7 @@ against the expected profile:
 
 We check the answer against the analytical result
 
->>> print var.allclose(varAnalytical, atol=atol) # doctest: +SCIPY
+>>> print(var.allclose(varAnalytical, atol=atol)) # doctest: +SCIPY
 1
 
 >>> if __name__ == '__main__':
@@ -82,3 +82,4 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+

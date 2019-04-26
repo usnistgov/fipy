@@ -99,7 +99,7 @@ evolution of their problem.
 ...     elif (max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3) and elapsed > 10.:
 ...         break
 
->>> print (max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3)
+>>> print((max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3))
 True
 
 .. image:: mesh2D.*
@@ -115,3 +115,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

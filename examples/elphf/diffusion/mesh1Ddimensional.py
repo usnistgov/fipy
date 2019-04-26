@@ -106,11 +106,11 @@ Now, we iterate the problem to equilibrium, plotting as we go
 Since there is nothing to maintain the concentration separation in this problem,
 we verify that the concentrations have become uniform
 
-    >>> print substitutionals[0].scaled.allclose("0.45 mol/m**3",
-    ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
+    >>> print(substitutionals[0].scaled.allclose("0.45 mol/m**3",
+    ...     atol = "1e-7 mol/m**3", rtol = 1e-7))
     1
-    >>> print substitutionals[1].scaled.allclose("0.45 mol/m**3",
-    ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
+    >>> print(substitutionals[1].scaled.allclose("0.45 mol/m**3",
+    ...     atol = "1e-7 mol/m**3", rtol = 1e-7))
     1
 
 .. note::
@@ -134,5 +134,6 @@ if __name__ == '__main__':
     # profile.stop()
 
     raw_input("finished")
+
 
 

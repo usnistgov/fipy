@@ -27,13 +27,13 @@ The result can be tested with the following code:
 ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
 >>> surfactantEquation.solve(surfactantVariable, dt=1.)
 >>> surfactantAfter = numerix.sum(surfactantVariable * mesh.cellVolumes)
->>> print surfactantBefore.allclose(surfactantAfter)
+>>> print(surfactantBefore.allclose(surfactantAfter))
 1
 >>> areas = (distanceVariable.cellInterfaceAreas < 1e-6) * 1e+10 + distanceVariable.cellInterfaceAreas
 >>> answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
 >>> coverage = surfactantVariable * mesh.cellVolumes / areas
 >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
->>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0))
+>>> print(numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)))
 0.00813776069241
 
 """
@@ -118,3 +118,4 @@ if __name__ == '__main__':
     print('error:', error)
 
     raw_input('finished')
+

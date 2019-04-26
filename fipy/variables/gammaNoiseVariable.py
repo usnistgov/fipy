@@ -57,11 +57,11 @@ class GammaNoiseVariable(NoiseVariable):
     ...         beta.value = rate
     ...         if __name__ == '__main__':
     ...             import sys
-    ...             print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
+    ...             print("alpha: %g, beta: %g" % (alpha, beta), file=sys.stderr)
     ...             viewer.plot()
     ...             histoplot.plot()
 
-    >>> print abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15
+    >>> print(abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15)
     1
 
     .. image:: fipy/variables/gamma.*
@@ -97,4 +97,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

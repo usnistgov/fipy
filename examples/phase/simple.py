@@ -151,7 +151,7 @@ After solving this equation
 
 we obtain the surprising result that :math:`\phi` is zero everywhere.
 
->>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+>>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 0
 >>> if __name__ == '__main__':
 ...     viewer.plot()
@@ -187,7 +187,7 @@ transient term from Equation :eq:`eq-phase:simple`
 
 After 13 time steps, the solution has converged to the analytical solution
 
->>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+>>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 1
 >>> if __name__ == '__main__':
 ...     raw_input("Relaxation, explicit. Press <return> to proceed...")
@@ -254,7 +254,7 @@ iterations at the same time step to reach a converged solution).
 
 >>> for i in range(8):
 ...     eq.solve(var = phase)
->>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+>>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 1
 >>> if __name__ == '__main__':
 ...     viewer.plot()
@@ -307,7 +307,7 @@ tangent to the source, we reach convergence in only 5 sweeps
 
 >>> for i in range(5):
 ...     eq.solve(var = phase)
->>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+>>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 1
 >>> if __name__ == '__main__':
 ...     viewer.plot()
@@ -437,7 +437,7 @@ A hyperbolic tangent is not an exact steady-state solution given the
 quintic polynomial we chose for the :math:`p` function, but it gives a
 reasonable approximation.
 
->>> print phase.allclose(analyticalArray, rtol = 5, atol = 2e-3)
+>>> print(phase.allclose(analyticalArray, rtol = 5, atol = 2e-3))
 1
 
 If we had made another common choice of :math:`p(\phi) = \phi^2(3 - 2\phi)`,
@@ -459,12 +459,12 @@ thickness
 ...                                   args=(phase.globalValue, x.globalValue, elapsed)) # doctest: +SCIPY
 ... except ImportError:
 ...     V_fit = d_fit = 0
-...     print "The SciPy library is unavailable to fit the interface \
-... thickness and velocity"
+...     print("The SciPy library is unavailable to fit the interface \
+... thickness and velocity")
 
->>> print abs(1 - V_fit / velocity) < 4.1e-2 # doctest: +SCIPY
+>>> print(abs(1 - V_fit / velocity) < 4.1e-2) # doctest: +SCIPY
 True
->>> print abs(1 - d_fit / delta) < 2e-2 # doctest: +SCIPY
+>>> print(abs(1 - d_fit / delta) < 2e-2) # doctest: +SCIPY
 True
 
 >>> if __name__ == '__main__':
@@ -486,3 +486,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

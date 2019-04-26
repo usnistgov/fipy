@@ -27,7 +27,7 @@ the diffusion coefficient, even though the coefficient is isotropic.
 ...     viewer = Viewer(vars=var).plot()
 
 >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
->>> print var.allclose(analyticalArray, atol = 0.025)
+>>> print(var.allclose(analyticalArray, atol = 0.025))
 1
 """
 
@@ -38,3 +38,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

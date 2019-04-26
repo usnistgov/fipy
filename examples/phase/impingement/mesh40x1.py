@@ -199,7 +199,7 @@ extracts the data and compares it with the ``theta`` variable.
 >>> import os
 >>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
 >>> testData = CellVariable(mesh=mesh, value=testData)
->>> print theta.allclose(testData)
+>>> print(theta.allclose(testData))
 1
 """
 __docformat__ = 'restructuredtext'
@@ -209,3 +209,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

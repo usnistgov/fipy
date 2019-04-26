@@ -93,7 +93,7 @@ Compare with the analytical solution (within 5% accuracy).
 
 >>> X, Y = numerix.dot(mesh.cellCenters, CellVariable(mesh=mesh, rank=2, value=rotationMatrix)) # doctest: +GMSH
 >>> solution = mass * numerix.exp(-(X**2 / gamma_prime[0][0] + Y**2 / gamma_prime[1][1]) / (4 * time)) / (4 * numerix.pi * time * numerix.sqrt(gamma_prime[0][0] * gamma_prime[1][1])) # doctest: +GMSH
->>> print max(abs((var - solution) / max(solution))) < 0.08 # doctest: +GMSH
+>>> print(max(abs((var - solution) / max(solution))) < 0.08) # doctest: +GMSH
 True
 
 """
@@ -104,4 +104,5 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+
 

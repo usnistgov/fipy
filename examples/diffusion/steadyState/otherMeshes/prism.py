@@ -28,7 +28,7 @@ The result is again tested in the same way:
     >>> Lx = 20
     >>> x = mesh.cellCenters[0] # doctest: +GMSH
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx # doctest: +GMSH
-    >>> print var.allclose(analyticalArray, atol = 0.027) # doctest: +GMSH
+    >>> print(var.allclose(analyticalArray, atol = 0.027)) # doctest: +GMSH
     1
 
 """
@@ -38,3 +38,4 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+

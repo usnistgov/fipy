@@ -17,11 +17,11 @@ class NonUniformGrid1D(Mesh1D):
     Creates a 1D grid mesh.
 
         >>> mesh = NonUniformGrid1D(nx = 3)
-        >>> print mesh.cellCenters
+        >>> print(mesh.cellCenters)
         [[ 0.5  1.5  2.5]]
 
         >>> mesh = NonUniformGrid1D(dx = (1, 2, 3))
-        >>> print mesh.cellCenters
+        >>> print(mesh.cellCenters)
         [[ 0.5  2.   4.5]]
 
         >>> mesh = NonUniformGrid1D(nx = 2, dx = (1, 2, 3))
@@ -87,11 +87,11 @@ class NonUniformGrid1D(Mesh1D):
 
             >>> from fipy.meshes.nonUniformGrid1D import NonUniformGrid1D
             >>> m = NonUniformGrid1D(nx=9, overlap=1)
-            >>> print min(m.x) == 0.5 # doctest: +SERIAL
+            >>> print(min(m.x) == 0.5) # doctest: +SERIAL
             True
-            >>> print min(m.x) == 3.5 # doctest: +PROCESSOR_1_OF_2
+            >>> print(min(m.x) == 3.5) # doctest: +PROCESSOR_1_OF_2
             True
-            >>> print min(m.x) == 5.5 # doctest: +PROCESSOR_2_OF_3
+            >>> print(min(m.x) == 5.5) # doctest: +PROCESSOR_2_OF_3
             True
 
         """
@@ -102,3 +102,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

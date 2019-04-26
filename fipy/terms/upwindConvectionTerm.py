@@ -56,25 +56,25 @@ class UpwindConvectionTerm(_AbstractUpwindConvectionTerm):
             >>> var[:] = 0
             >>> eqn = UpwindConvectionTerm(coeff=convCoeff) == dTerm
             >>> eqn.solve(var)
-            >>> print var.allclose(analytical)
+            >>> print(var.allclose(analytical))
             1
 
             >>> var[:] = 0
             >>> eqn = TransientTerm(1e-10) == UpwindConvectionTerm(coeff=-convCoeff) +  dTerm
             >>> eqn.solve(var, dt = 1e+10)
-            >>> print var.allclose(analytical)
+            >>> print(var.allclose(analytical))
             1
 
             >>> var[:] = 0
             >>> eqn = 0 == UpwindConvectionTerm(coeff=-convCoeff) +  dTerm
             >>> eqn.solve(var)
-            >>> print var.allclose(analytical)
+            >>> print(var.allclose(analytical))
             1
 
             >>> var[:] = 0
             >>> eqn = 0 == -UpwindConvectionTerm(coeff=convCoeff) +  dTerm
             >>> eqn.solve(var)
-            >>> print var.allclose(analytical)
+            >>> print(var.allclose(analytical))
             1
 
         """
@@ -86,3 +86,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

@@ -242,7 +242,7 @@ iterating to equilibrium
     >>> ERRCON = 1.89e-4
     >>> desiredTimestep = 1.
     >>> thisTimeStep = 0.
-    >>> print "%3s: %20s | %20s | %20s | %20s" % ("i", "elapsed", "this", "next dt", "residual")
+    >>> print("%3s: %20s | %20s | %20s | %20s" % ("i", "elapsed", "this", "next dt", "residual"))
     >>> residual = 0.
     >>> for i in range(500): # iterate
     ...     if thisTimeStep == 0.:
@@ -253,7 +253,7 @@ iterating to equilibrium
     ... 
     ...     while True:
     ...         for j in range(10): # sweep
-    ...             print i, j, dt * timeStep, residual
+    ...             print(i, j, dt * timeStep, residual)
     ...             # raw_input()
     ...             residual = 0.
     ... 
@@ -308,7 +308,7 @@ iterating to equilibrium
     ...         phaseViewer.plot()
     ...         concViewer.plot()
     ...         potentialViewer.plot()
-    ...         print "%3d: %20s | %20s | %20s | %g" % (i, str(elapsed * timeStep), str(thisTimeStep * timeStep), str(dt * timeStep), residual)
+    ...         print("%3d: %20s | %20s | %20s | %g" % (i, str(elapsed * timeStep), str(thisTimeStep * timeStep), str(dt * timeStep), residual))
 
 
 we confirm that the far-field phases have remained separated
@@ -353,6 +353,7 @@ if __name__ == '__main__':
     # profile.stop()
 
     raw_input("finished")
+
 
 
 

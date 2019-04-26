@@ -261,7 +261,7 @@ The analytical solution is unchanged, and we can test as before
 
 or we can use the slightly simpler syntax
 
->>> print var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10)
+>>> print(var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10))
 1
 
 The :exc:`ImportError: No module named grid2DGistViewer` results because the
@@ -298,4 +298,5 @@ def _test():
 if __name__ == "__main__":
     _test()
     raw_input('finished')
+
 

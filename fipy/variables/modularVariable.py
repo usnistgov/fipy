@@ -18,28 +18,28 @@ class ModularVariable(CellVariable):
     >>> pi = numerix.pi
     >>> v1 = ModularVariable(mesh = mesh, value = (2*pi/3, -2*pi/3))
     >>> v2 = ModularVariable(mesh = mesh, value = -2*pi/3)
-    >>> print numerix.allclose(v2 - v1, (2*pi/3, 0))
+    >>> print(numerix.allclose(v2 - v1, (2*pi/3, 0)))
     1
 
     Obtaining the arithmetic face value.
 
-    >>> print numerix.allclose(v1.arithmeticFaceValue, (2*pi/3, pi, -2*pi/3))
+    >>> print(numerix.allclose(v1.arithmeticFaceValue, (2*pi/3, pi, -2*pi/3)))
     1
 
     Obtaining the gradient.
 
-    >>> print numerix.allclose(v1.grad, ((pi/3, pi/3),))
+    >>> print(numerix.allclose(v1.grad, ((pi/3, pi/3),)))
     1
 
     Obtaining the gradient at the faces.
 
-    >>> print numerix.allclose(v1.faceGrad, ((0, 2*pi/3, 0),))
+    >>> print(numerix.allclose(v1.faceGrad, ((0, 2*pi/3, 0),)))
     1
 
     Obtaining the gradient at the faces but without modular
     arithmetic.
 
-    >>> print numerix.allclose(v1.faceGradNoMod, ((0, -4*pi/3, 0),))
+    >>> print(numerix.allclose(v1.faceGradNoMod, ((0, -4*pi/3, 0),)))
     1
     """
 
@@ -55,10 +55,10 @@ class ModularVariable(CellVariable):
         >>> from fipy.variables.modularVariable import ModularVariable
         >>> var = ModularVariable(mesh = mesh, value = 1., hasOld = 1)
         >>> answer = CellVariable(mesh=mesh, value=1.)
-        >>> print var.allclose(answer)
+        >>> print(var.allclose(answer))
         True
         >>> var.value = 1
-        >>> print var.allclose(answer)
+        >>> print(var.allclose(answer))
         True
         """
         value = self._makeValue(value=value, unit=unit, array=array)
@@ -76,7 +76,7 @@ class ModularVariable(CellVariable):
         >>> var.updateOld()
         >>> var[:] = 2
         >>> answer = CellVariable(mesh=mesh, value=1.)
-        >>> print var.old.allclose(answer)
+        >>> print(var.old.allclose(answer))
         True
         """
         self.value = (self.value.mod(self().inRadians()))
@@ -172,3 +172,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

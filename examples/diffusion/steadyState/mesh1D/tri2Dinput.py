@@ -28,7 +28,7 @@ compare with the numerical result,
 Finally the analytical and numerical results are compared with a
 tolerance of `1e-10`.
 
-    >>> print var.allclose(analyticalArray)
+    >>> print(var.allclose(analyticalArray))
     1
 
 """
@@ -59,3 +59,4 @@ if __name__ == '__main__':
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     print(var.allclose(analyticalArray))
     raw_input("finished")
+

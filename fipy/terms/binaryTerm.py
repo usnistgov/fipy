@@ -73,24 +73,24 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> v1 = CellVariable(mesh=m, value=1.)
         >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var
+        >>> print(var)
         [ 0.  0.  0.]
-        >>> print CellVariable(mesh=m, value=RHSvector)
+        >>> print(CellVariable(mesh=m, value=RHSvector))
         [ 0.  0.  0.]
-        >>> print numerix.allequal(matrix.numpyArray, [[ 2, -1,  0],
+        >>> print(numerix.allequal(matrix.numpyArray, [[ 2, -1,  0],
         ...                                            [-1,  3, -1],
-        ...                                            [ 0, -1,  2]])
+        ...                                            [ 0, -1,  2]]))
         True
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var
+        >>> print(var)
         [ 1.  1.  1.]
-        >>> print CellVariable(mesh=m, value=RHSvector)
+        >>> print(CellVariable(mesh=m, value=RHSvector))
         [ 0.  0.  0.]
-        >>> print numerix.allequal(matrix.numpyArray, [[ 2, -2,  0],
+        >>> print(numerix.allequal(matrix.numpyArray, [[ 2, -2,  0],
         ...                                            [-2,  4, -2],
-        ...                                            [ 0, -2,  2]])
+        ...                                            [ 0, -2,  2]]))
         True
-        >>> print CellVariable(mesh=m, value=eq.justResidualVector(dt=1.))
+        >>> print(CellVariable(mesh=m, value=eq.justResidualVector(dt=1.)))
         [ 0.  0.  0.]
 
         >>> m = Grid1D(nx=6)
@@ -98,31 +98,31 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> v1 = CellVariable(mesh=m, value=0.)
         >>> eq = TransientTerm(var=v0) - DiffusionTerm(coeff=1., var=v0) - DiffusionTerm(coeff=2., var=v1)
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v0, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var
+        >>> print(var)
         [ 1.  1.  1.  1.  1.  1.]
-        >>> print CellVariable(mesh=m, value=RHSvector)
+        >>> print(CellVariable(mesh=m, value=RHSvector))
         [ 1.  1.  1.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.numpyArray, [[ 2, -1, 0, 0, 0, 0.],
+        >>> print(numerix.allequal(matrix.numpyArray, [[ 2, -1, 0, 0, 0, 0.],
         ...                                            [-1, 3, -1, 0, 0, 0.],
         ...                                            [ 0, -1, 3, -1, 0, 0.],
         ...                                            [ 0, 0, -1, 3, -1, 0.],
         ...                                            [ 0, 0, 0, -1, 3, -1.],
-        ...                                            [ 0, 0, 0, 0, -1, 2.]])
+        ...                                            [ 0, 0, 0, 0, -1, 2.]]))
         True
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var
+        >>> print(var)
         [ 0.  0.  0.  0.  0.  0.]
-        >>> print CellVariable(mesh=m, value=RHSvector)
+        >>> print(CellVariable(mesh=m, value=RHSvector))
         [ 0.  0.  0.  0.  0.  0.]
-        >>> print numerix.allequal(matrix.numpyArray, [[ 2, -2, 0, 0, 0, 0.],
+        >>> print(numerix.allequal(matrix.numpyArray, [[ 2, -2, 0, 0, 0, 0.],
         ...                                            [-2, 4, -2, 0, 0, 0.],
         ...                                            [ 0, -2, 4, -2, 0, 0.],
         ...                                            [ 0, 0, -2, 4, -2, 0.],
         ...                                            [ 0, 0, 0, -2, 4, -2.],
-        ...                                            [ 0, 0, 0, 0, -2, 2.]])
+        ...                                            [ 0, 0, 0, 0, -2, 2.]]))
         True
         >>> value = eq.justResidualVector(dt=1.)
-        >>> print CellVariable(mesh=m, value=value)
+        >>> print(CellVariable(mesh=m, value=value))
         [ 0.  0.  0.  0.  0.  0.]
 
         >>> m = Grid1D(nx=3)
@@ -133,20 +133,20 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> eq0 = eq00 - DiffusionTerm(coeff=2., var=v1)
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
-        >>> print CellVariable(mesh=m, value=eq0.justResidualVector(dt=1.))
+        >>> print(CellVariable(mesh=m, value=eq0.justResidualVector(dt=1.)))
         [-3.  0.  3.]
         >>> eq0.solve(var=v0, solver=DummySolver(), dt=1.)
-        >>> print numerix.allequal(eq0.matrix.numpyArray, [[ 2, -1,  0],
+        >>> print(numerix.allequal(eq0.matrix.numpyArray, [[ 2, -1,  0],
         ...                                                [-1,  3, -1],
-        ...                                                [ 0, -1,  2]])
+        ...                                                [ 0, -1,  2]]))
         True
         >>> eq0.solve(var=v1, solver=DummySolver(), dt=1.)
-        >>> print numerix.allequal(eq0.matrix.numpyArray, [[ 2, -2,  0],
+        >>> print(numerix.allequal(eq0.matrix.numpyArray, [[ 2, -2,  0],
         ...                                                [-2,  4, -2],
-        ...                                                [ 0, -2,  2]])
+        ...                                                [ 0, -2,  2]]))
         True
         >>> ## This correctly returns None because we lost the handle to the DiffusionTerm when it's negated.
-        >>> print diffTerm.matrix
+        >>> print(diffTerm.matrix)
         None
 
         Testing solution for one variable in a multi-variable equation.
@@ -163,7 +163,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> v1.constrain(0.,  where=m.facesLeft)
         >>> v1.constrain(-L,  where=m.facesRight)
         >>> (DiffusionTerm(var=v0) + DiffusionTerm(var=v1)).solve(v0)
-        >>> print numerix.allclose(v0, -v1)
+        >>> print(numerix.allclose(v0, -v1))
         True
 
         Testing for vector equations.
@@ -173,37 +173,37 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> v[0] = 1.
         >>> v[1] = 2.
         >>> (TransientTerm(v) == ImplicitSourceTerm(-v)).solve(v, dt=1.)
-        >>> print v
+        >>> print(v)
         [[ 0.5  0.5  0.5  0.5  0.5  0.5]
          [ 1.   1.   1.   1.   1.   1. ]]
         >>> (TransientTerm() == v).solve(v, dt=1.)
-        >>> print v
+        >>> print(v)
         [[ 1.  1.  1.  1.  1.  1.]
          [ 2.  2.  2.  2.  2.  2.]]
         >>> (TransientTerm(v) == v).solve(v, dt=1.)
-        >>> print v
+        >>> print(v)
         [[ 2.  2.  2.  2.  2.  2.]
          [ 3.  3.  3.  3.  3.  3.]]
 
         >>> v[0] = 1.
         >>> v[1] = 2.
         >>> (TransientTerm(v) == ImplicitSourceTerm(-v * numerix.identity(2)[..., numerix.newaxis])).solve(v, dt=1.)
-        >>> print v
+        >>> print(v)
         [[ 0.5  0.5  0.5  0.5  0.5  0.5]
          [ 1.   1.   1.   1.   1.   1. ]]
         >>> (TransientTerm() == numerix.array((0.5, 1.))).solve(v, dt=1.)
-        >>> print v
+        >>> print(v)
         [[ 1.  1.  1.  1.  1.  1.]
          [ 2.  2.  2.  2.  2.  2.]]
         >>> (TransientTerm(v * numerix.identity(2)[..., numerix.newaxis]) == v).solve(v, dt=1.)
-        >>> print v
+        >>> print(v)
         [[ 2.  2.  2.  2.  2.  2.]
          [ 3.  3.  3.  3.  3.  3.]]
 
         >>> v[0] = 1.
         >>> v[1] = 2.
         >>> (TransientTerm(v) == -ImplicitSourceTerm(((1, 0), (0, 2)))).solve(v, dt=1.)
-        >>> print v
+        >>> print(v)
         [[ 0.5  0.5  0.5  0.5  0.5  0.5]
          [ 1.   1.   1.   1.   1.   1. ]]
 
@@ -217,7 +217,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> eqn.cacheMatrix()
         >>> eqn.cacheRHSvector()
         >>> eqn.solve(v, dt=1)
-        >>> print numerix.allequal(eqn.matrix.numpyArray,
+        >>> print(numerix.allequal(eqn.matrix.numpyArray,
         ... [[ 1.0,   0,    0,    0,    0,    0,   0.5,  0.5,   0,    0,    0,    0,  ],
         ...  [  0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,    0,  ],
         ...  [  0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,  ],
@@ -229,11 +229,11 @@ class _BinaryTerm(_AbstractBinaryTerm):
         ...  [  0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,  ],
         ...  [  0,    0,  -1.0,    0,  1.0,   0,    0,    0,    0,   1.0,   0,    0,  ],
         ...  [  0,    0,    0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,  ],
-        ...  [  0,    0,    0,    0,  -1.0, -1.0,   0,    0,    0,    0,    0,   1.0, ]])
+        ...  [  0,    0,    0,    0,  -1.0, -1.0,   0,    0,    0,    0,    0,   1.0, ]]))
         True
         >>> LHS =  CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.matrix * v.value.ravel(), (2, -1))).globalValue.ravel()
         >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
-        >>> print numerix.allclose(LHS, RHS)
+        >>> print(numerix.allclose(LHS, RHS))
         True
 
         >>> v[0] = 1
@@ -242,7 +242,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> eqn.cacheMatrix()
         >>> eqn.cacheRHSvector()
         >>> eqn.solve(v, dt=1)
-        >>> print numerix.allequal(eqn.matrix.numpyArray,
+        >>> print(numerix.allequal(eqn.matrix.numpyArray,
         ... [[ 1.0,   0,    0,    0,    0,    0,   0.5,  0.5,   0,    0,    0,    0,  ],
         ...  [  0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,    0,  ],
         ...  [  0,    0,   1.0,   0,    0,    0,    0,  -0.5,   0,   0.5,   0,    0,  ],
@@ -254,11 +254,11 @@ class _BinaryTerm(_AbstractBinaryTerm):
         ...  [  0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,    0,    0,  ],
         ...  [  0,    0,  -1.0,    0,  1.0,   0,    0,    0,    0,   1.0,   0,    0,  ],
         ...  [  0,    0,    0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,  ],
-        ...  [  0,    0,    0,    0,  -1.0, -1.0,   0,    0,    0,    0,    0,   1.0, ]])
+        ...  [  0,    0,    0,    0,  -1.0, -1.0,   0,    0,    0,    0,    0,   1.0, ]]))
         True
         >>> LHS =  CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.matrix * v.value.ravel(), (2, -1))).globalValue.ravel()
         >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
-        >>> print numerix.allclose(LHS, RHS)
+        >>> print(numerix.allclose(LHS, RHS))
         True
 
 
@@ -271,7 +271,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> eqn.cacheMatrix()
         >>> eqn.cacheRHSvector()
         >>> eqn.solve(v, dt=1)
-        >>> print numerix.allequal(eqn.matrix.numpyArray,
+        >>> print(numerix.allequal(eqn.matrix.numpyArray,
         ... [[ 1.0,   0,    0,    0,    0,    0,    0,  -1.0,   0,    0,    0,    0,  ],
         ...  [  0,   1.0,   0,    0,    0,    0,    0,   1.0, -1.0,   0,    0,    0,  ],
         ...  [  0,    0,   1.0,   0,    0,    0,    0,    0,   1.0,   0,    0,    0,  ],
@@ -283,11 +283,11 @@ class _BinaryTerm(_AbstractBinaryTerm):
         ...  [  0,  -2.0,   0,    0,    0,    0,    0,    0,   1.0,   0,    0,    0,  ],
         ...  [  0,    0,    0,    0,  -2.0,   0,    0,    0,    0,   1.0,   0,    0,  ],
         ...  [  0,    0,    0,    0,   2.0, -2.0,   0,    0,    0,    0,   1.0,   0,  ],
-        ...  [  0,    0,    0,    0,    0,   2.0,   0,    0,    0,    0,    0,   1.0, ]])
+        ...  [  0,    0,    0,    0,    0,   2.0,   0,    0,    0,    0,    0,   1.0, ]]))
         True
         >>> LHS =  CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.matrix * v.value.ravel(), (2, -1))).globalValue.ravel()
         >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
-        >>> print numerix.allclose(LHS, RHS)
+        >>> print(numerix.allclose(LHS, RHS))
         True
 
         """
@@ -299,4 +299,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

@@ -82,7 +82,7 @@ class DistanceVariable(CellVariable):
     >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1., 1., 1., 1., 1.))
     >>> var.calcDistanceFunction() #doctest: +LSM
     >>> answer = (-1.75, -1.25, -.75, -0.25, 0.25, 0.75, 1.25, 1.75)
-    >>> print var.allclose(answer) #doctest: +LSM
+    >>> print(var.allclose(answer)) #doctest: +LSM
     1
 
     A 1D test case with very small dimensions.
@@ -92,7 +92,7 @@ class DistanceVariable(CellVariable):
     >>> var = DistanceVariable(mesh = mesh, value = (-1., -1., -1., -1., 1., 1., 1., 1.))
     >>> var.calcDistanceFunction() #doctest: +LSM
     >>> answer = numerix.arange(8) * dx - 3.5 * dx
-    >>> print var.allclose(answer) #doctest: +LSM
+    >>> print(var.allclose(answer)) #doctest: +LSM
     1
 
     A 2D test case to test `_calcTrialValue` for a pathological case.
@@ -114,7 +114,7 @@ class DistanceVariable(CellVariable):
     >>> sqrt = numerix.sqrt(max(sqrt, 0))
     >>> vmr = (top + sqrt) / dsq
     >>> answer = (vbl, vbr, vml, vmr, vbl, vbr)
-    >>> print var.allclose(answer) #doctest: +LSM
+    >>> print(var.allclose(answer)) #doctest: +LSM
     1
 
     The `extendVariable` method solves the following equation for a given
@@ -133,10 +133,10 @@ class DistanceVariable(CellVariable):
     >>> var.calcDistanceFunction() #doctest: +LSM
     >>> extensionVar = CellVariable(mesh = mesh, value = (-1, .5, 2, -1))
     >>> tmp = 1 / numerix.sqrt(2)
-    >>> print var.allclose((-tmp / 2, 0.5, 0.5, 0.5 + tmp)) #doctest: +LSM
+    >>> print(var.allclose((-tmp / 2, 0.5, 0.5, 0.5 + tmp))) #doctest: +LSM
     1
     >>> var.extendVariable(extensionVar, order=1) #doctest: +LSM
-    >>> print extensionVar.allclose((1.25, .5, 2, 1.25)) #doctest: +LSM
+    >>> print(extensionVar.allclose((1.25, .5, 2, 1.25))) #doctest: +LSM
     1
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3, communicator=serialComm)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., 1.,
@@ -151,12 +151,12 @@ class DistanceVariable(CellVariable):
     >>> v2 = 1.5
     >>> tmp1 = (v1 + v2) / 2 + numerix.sqrt(2. - (v1 - v2)**2) / 2
     >>> tmp2 = tmp1 + 1 / numerix.sqrt(2)
-    >>> print var.allclose((-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp,
-    ...                      tmp1, 1.5, tmp1, tmp2)) #doctest: +LSM
+    >>> print(var.allclose((-tmp / 2, 0.5, 1.5, 0.5, 0.5 + tmp,
+    ...                      tmp1, 1.5, tmp1, tmp2))) #doctest: +LSM
     1
     >>> answer = (1.25, .5, .5, 2, 1.25, 0.9544, 2, 1.5456, 1.25)
     >>> var.extendVariable(extensionVar, order=1) #doctest: +LSM
-    >>> print extensionVar.allclose(answer, rtol = 1e-4) #doctest: +LSM
+    >>> print(extensionVar.allclose(answer, rtol = 1e-4)) #doctest: +LSM
     1
 
     Test case for a bug that occurs when initializing the distance
@@ -167,7 +167,7 @@ class DistanceVariable(CellVariable):
     >>> mesh = Grid1D(dx = 1., nx = 3, communicator=serialComm)
     >>> var = DistanceVariable(mesh = mesh, value = (-1., 1., -1.))
     >>> var.calcDistanceFunction() #doctest: +LSM
-    >>> print var.allclose((-0.5, 0.5, -0.5)) #doctest: +LSM
+    >>> print(var.allclose((-0.5, 0.5, -0.5))) #doctest: +LSM
     1
 
     Testing second order. This example failed with Scikit-fmm.
@@ -182,7 +182,7 @@ class DistanceVariable(CellVariable):
     ...           -0.5, -0.35355339, 0.5, 1.45118446,
     ...            0.5, 0.5, 0.97140452, 1.76215286,
     ...            1.49923009, 1.45118446, 1.76215286, 2.33721352]
-    >>> print numerix.allclose(var, answer, rtol=1e-9) #doctest: +LSM
+    >>> print(numerix.allclose(var, answer, rtol=1e-9)) #doctest: +LSM
     True
 
     ** A test for a bug in both LSMLIB and Scikit-fmm **
@@ -216,7 +216,7 @@ class DistanceVariable(CellVariable):
     slightly different order so gets a seemingly better answer, but
     this is just chance.
 
-    >>> print numerix.allclose(var, answer, rtol=1e-9) #doctest: +SKFMM
+    >>> print(numerix.allclose(var, answer, rtol=1e-9)) #doctest: +SKFMM
     True
 
     """
@@ -314,8 +314,8 @@ class DistanceVariable(CellVariable):
         >>> distanceVariable = DistanceVariable(mesh = mesh,
         ...                                     value = (-1.5, -0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh, value=(0, 0., 1., 0))
-        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas,
-        ...                        answer)
+        >>> print(numerix.allclose(distanceVariable.cellInterfaceAreas,
+        ...                        answer))
         True
 
         A 2D test case:
@@ -329,7 +329,7 @@ class DistanceVariable(CellVariable):
         ...                                              1.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh,
         ...                       value=(0, 1, 0, 1, 0, 1, 0, 1, 0))
-        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas, answer)
+        >>> print(numerix.allclose(distanceVariable.cellInterfaceAreas, answer))
         True
 
         Another 2D test case:
@@ -340,8 +340,8 @@ class DistanceVariable(CellVariable):
         ...                                     value = (-0.5, 0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh,
         ...                       value=(0, numerix.sqrt(2) / 4,  numerix.sqrt(2) / 4, 0))
-        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas,
-        ...                        answer)
+        >>> print(numerix.allclose(distanceVariable.cellInterfaceAreas,
+        ...                        answer))
         True
 
         Test to check that the circumference of a circle is, in fact,
@@ -352,7 +352,7 @@ class DistanceVariable(CellVariable):
         >>> x, y = mesh.cellCenters
         >>> rad = numerix.sqrt((x - .5)**2 + (y - .5)**2) - r
         >>> distanceVariable = DistanceVariable(mesh = mesh, value = rad)
-        >>> print numerix.allclose(distanceVariable.cellInterfaceAreas.sum(), 1.57984690073)
+        >>> print(numerix.allclose(distanceVariable.cellInterfaceAreas.sum(), 1.57984690073))
         1
 
 
@@ -381,7 +381,7 @@ class DistanceVariable(CellVariable):
            ...                               (0, 0, 0, 0),
            ...                               (0, 0, 0, 0),
            ...                               (0, v, 0, 0))))
-           >>> print numerix.allclose(distanceVariable._cellInterfaceNormals, answer)
+           >>> print(numerix.allclose(distanceVariable._cellInterfaceNormals, answer))
            True
 
         """
@@ -412,7 +412,7 @@ class DistanceVariable(CellVariable):
            >>> answer = FaceVariable(mesh=mesh,
            ...                       value=((0, 0, v, 0, 0, 0, 0, v, 0, 0, 0, 0),
            ...                              (0, 0, v, 0, 0, 0, 0, v, 0, 0, 0, 0)))
-           >>> print numerix.allclose(distanceVariable._interfaceNormals, answer)
+           >>> print(numerix.allclose(distanceVariable._interfaceNormals, answer))
            True
 
         """
@@ -434,7 +434,7 @@ class DistanceVariable(CellVariable):
            ...                                     value = (-0.5, 0.5, 0.5, 1.5))
            >>> answer = FaceVariable(mesh=mesh,
            ...                       value=(0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0))
-           >>> print numerix.allclose(distanceVariable._interfaceFlag, answer)
+           >>> print(numerix.allclose(distanceVariable._interfaceFlag, answer))
            True
 
         """
@@ -456,7 +456,7 @@ class DistanceVariable(CellVariable):
         >>> distanceVariable = DistanceVariable(mesh = mesh,
         ...                                     value = (-0.5, 0.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh, value=(0, 1, 1, 0))
-        >>> print numerix.allclose(distanceVariable._cellInterfaceFlag, answer)
+        >>> print(numerix.allclose(distanceVariable._cellInterfaceFlag, answer))
         True
 
         """
@@ -479,7 +479,7 @@ class DistanceVariable(CellVariable):
            ...                              (-.5, .5, .5, 1.5),
            ...                              (-.5, .5, .5, 1.5),
            ...                              (-.5, .5, .5, 1.5)))
-           >>> print numerix.allclose(distanceVariable._cellValueOverFaces, answer)
+           >>> print(numerix.allclose(distanceVariable._cellValueOverFaces, answer))
            True
 
         """
@@ -503,7 +503,7 @@ class DistanceVariable(CellVariable):
            >>> answer = FaceVariable(mesh=mesh,
            ...                       value=((0, 0, v, v, 0, 0, 0, v, 0, 0, v, 0),
            ...                              (0, 0, v, v, 0, 0, 0, v, 0, 0, v, 0)))
-           >>> print numerix.allclose(distanceVariable._levelSetNormals, answer)
+           >>> print(numerix.allclose(distanceVariable._levelSetNormals, answer))
            True
         """
 
@@ -527,5 +527,6 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 
 

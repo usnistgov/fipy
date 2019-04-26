@@ -361,21 +361,21 @@ class Mesh(AbstractMesh):
 
             >>> from fipy.meshes import Grid2D
             >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
-            >>> print baseMesh.cellCenters
+            >>> print(baseMesh.cellCenters)
             [[ 0.5  1.5  0.5  1.5]
              [ 0.5  0.5  1.5  1.5]]
 
         The `factor` can be a scalar
 
             >>> dilatedMesh = baseMesh * 3
-            >>> print dilatedMesh.cellCenters
+            >>> print(dilatedMesh.cellCenters)
             [[ 1.5  4.5  1.5  4.5]
              [ 1.5  1.5  4.5  4.5]]
 
         or a vector
 
             >>> dilatedMesh = baseMesh * ((3,), (2,))
-            >>> print dilatedMesh.cellCenters
+            >>> print(dilatedMesh.cellCenters)
             [[ 1.5  4.5  1.5  4.5]
              [ 1.   1.   3.   3. ]]
 
@@ -536,7 +536,7 @@ class Mesh(AbstractMesh):
            >>> from fipy import *
            >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
            >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
-           >>> print m0._getNearestCellID(m1.cellCenters.globalValue)
+           >>> print(m0._getNearestCellID(m1.cellCenters.globalValue))
            [4 5 7 8]
 
         """
@@ -569,13 +569,13 @@ class Mesh(AbstractMesh):
             >>> mesh = Mesh(vertexCoords=vertices, faceVertexIDs=faces, cellFaceIDs=cells)
 
             >>> externalFaces = numerix.array((0, 1, 2, 4, 5, 6, 7, 8, 9))
-            >>> print numerix.allequal(externalFaces,
-            ...                        numerix.nonzero(mesh.exteriorFaces))
+            >>> print(numerix.allequal(externalFaces,
+            ...                        numerix.nonzero(mesh.exteriorFaces)))
             1
 
             >>> internalFaces = numerix.array((3,))
-            >>> print numerix.allequal(internalFaces,
-            ...                        numerix.nonzero(mesh.interiorFaces))
+            >>> print(numerix.allequal(internalFaces,
+            ...                        numerix.nonzero(mesh.interiorFaces)))
             1
 
             >>> from fipy.tools.numerix import MA
@@ -596,7 +596,7 @@ class Mesh(AbstractMesh):
             >>> faceCenters = faceCoords[..., 0,:] + faceCoords[..., 1,:] + faceCoords[..., 2,:] + faceCoords[..., 3,:]
             >>> numVex = numerix.array((4., 4., 4., 4., 4., 4., 3., 3., 4., 4.))
             >>> faceCenters /= numVex
-            >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
+            >>> print(numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10))
             True
 
             >>> faceNormals = numerix.array((( 0., 0., -1., 1.,  0., 0.,  0., 0.,  0., dy / numerix.sqrt(dy**2 + dx**2)),
@@ -621,7 +621,7 @@ class Mesh(AbstractMesh):
             >>> cellCenters = numerix.array(((dx/2., dx+dx/3.),
             ...                              (dy/2.,    dy/3.),
             ...                              (dz/2.,    dz/2.)))
-            >>> print numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10)
+            >>> print(numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10))
             True
 
             >>> d1 = numerix.sqrt((dx / 3.)**2 + (dy / 6.)**2)
@@ -630,7 +630,7 @@ class Mesh(AbstractMesh):
             >>> d4 = numerix.sqrt((5 * dx / 6.)**2 + (dy / 6.)**2)
             >>> faceToCellDistances = MA.masked_values(((dz / 2., dz / 2., dx / 2., dx / 2., dy / 2., dy / 2., dz / 2., dz / 2., d2, d3),
             ...                                         (     -1,      -1,      -1,      d1,      -1,      -1,      -1,      -1, -1, -1)), -1)
-            >>> print numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10)
+            >>> print(numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10))
             True
 
             >>> cellDistances = numerix.array((dz / 2., dz / 2., dx / 2.,
@@ -745,7 +745,7 @@ class Mesh(AbstractMesh):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.cellCenters)
+            >>> print(numerix.allequal(mesh.cellCenters, unpickledMesh.cellCenters))
             True
 
             >>> dx = 1.
@@ -761,23 +761,23 @@ class Mesh(AbstractMesh):
             >>> from fipy.variables.cellVariable import CellVariable
             >>> volumes = CellVariable(mesh=bigMesh, value=1.)
             >>> volumes[x > dx * nx] = 0.25
-            >>> print numerix.allclose(bigMesh.cellVolumes, volumes)
+            >>> print(numerix.allclose(bigMesh.cellVolumes, volumes))
             True
 
             Following test was added due to a bug in adding UniformGrids.
 
             >>> from fipy.meshes.uniformGrid1D import UniformGrid1D
             >>> a = UniformGrid1D(nx=10) + (10,)
-            >>> print a.cellCenters
+            >>> print(a.cellCenters)
             [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
             >>> b = 10 + UniformGrid1D(nx=10)
-            >>> print b.cellCenters
+            >>> print(b.cellCenters)
             [[ 10.5  11.5  12.5  13.5  14.5  15.5  16.5  17.5  18.5  19.5]]
 
             >>> c = UniformGrid1D(nx=10) + (UniformGrid1D(nx=10) + 10) # doctest: +SERIAL
-            >>> print numerix.allclose(c.cellCenters[0],
+            >>> print(numerix.allclose(c.cellCenters[0],
             ...                        [0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5,
-            ...                        12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5])
+            ...                        12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5]))
             ... # doctest: +SERIAL
             True
 
@@ -789,4 +789,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

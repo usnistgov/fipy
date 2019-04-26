@@ -165,7 +165,7 @@ a vector format.
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
->>> print numerix.allclose(var, (phi, psi))
+>>> print(numerix.allclose(var, (phi, psi)))
 True
 
 """
@@ -176,3 +176,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

@@ -18,31 +18,31 @@ class PeriodicGrid1D(NonUniformGrid1D):
 
         >>> mesh = PeriodicGrid1D(dx = (1, 2, 3))
 
-        >>> print numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0],
-        ...                        [3]) # doctest: +PROCESSOR_0
+        >>> print(numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0],
+        ...                        [3])) # doctest: +PROCESSOR_0
         True
 
-        >>> print numerix.allclose(mesh.faceCellIDs.filled(-999),
+        >>> print(numerix.allclose(mesh.faceCellIDs.filled(-999),
         ...                        [[2, 0, 1, 2],
-        ...                         [0, 1, 2, -999]]) # doctest: +PROCESSOR_0
+        ...                         [0, 1, 2, -999]])) # doctest: +PROCESSOR_0
         True
 
-        >>> print numerix.allclose(mesh._cellDistances,
-        ...                        [ 2., 1.5, 2.5, 1.5]) # doctest: +PROCESSOR_0
+        >>> print(numerix.allclose(mesh._cellDistances,
+        ...                        [ 2., 1.5, 2.5, 1.5])) # doctest: +PROCESSOR_0
         True
 
-        >>> print numerix.allclose(mesh._cellToCellDistances,
+        >>> print(numerix.allclose(mesh._cellToCellDistances,
         ...                        [[ 2.,   1.5,  2.5],
-        ...                         [ 1.5,  2.5,  2. ]]) # doctest: +PROCESSOR_0
+        ...                         [ 1.5,  2.5,  2. ]])) # doctest: +PROCESSOR_0
         True
 
-        >>> print numerix.allclose(mesh.faceNormals,
-        ...                        [[ 1.,  1.,  1.,  1.]]) # doctest: +PROCESSOR_0
+        >>> print(numerix.allclose(mesh.faceNormals,
+        ...                        [[ 1.,  1.,  1.,  1.]])) # doctest: +PROCESSOR_0
         True
 
-        >>> print numerix.allclose(mesh._cellVertexIDs,
+        >>> print(numerix.allclose(mesh._cellVertexIDs,
         ...                        [[1, 2, 2],
-        ...                        [0, 1, 0]]) # doctest: +PROCESSOR_0
+        ...                        [0, 1, 0]])) # doctest: +PROCESSOR_0
         True
     """
     def __init__(self, dx = 1., nx = None, overlap=2, *args, **kwargs):
@@ -73,7 +73,7 @@ class PeriodicGrid1D(NonUniformGrid1D):
 
         >>> from fipy import *
         >>> m = PeriodicGrid1D(nx=2) + [[-1]]
-        >>> print CellVariable(mesh=m, value=m.cellCenters[0])
+        >>> print(CellVariable(mesh=m, value=m.cellCenters[0]))
         [-0.5  0.5]
 
         """
@@ -90,3 +90,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

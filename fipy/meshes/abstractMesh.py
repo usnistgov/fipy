@@ -109,7 +109,7 @@ class AbstractMesh(object):
         Equivalent to using :attr:`cellCenters`\ ``[0]``.
 
         >>> from fipy import *
-        >>> print Grid1D(nx=2).x
+        >>> print(Grid1D(nx=2).x)
         [ 0.5  1.5]
         """
         return self.cellCenters[0]
@@ -120,9 +120,9 @@ class AbstractMesh(object):
         Equivalent to using :attr:`cellCenters`\ ``[1]``.
 
         >>> from fipy import *
-        >>> print Grid2D(nx=2, ny=2).y
+        >>> print(Grid2D(nx=2, ny=2).y)
         [ 0.5  0.5  1.5  1.5]
-        >>> print Grid1D(nx=2).y
+        >>> print(Grid1D(nx=2).y)
         Traceback (most recent call last):
           ...
         AttributeError: 1D meshes do not have a "y" attribute.
@@ -138,9 +138,9 @@ class AbstractMesh(object):
         Equivalent to using :attr:`cellCenters`\ ``[2]``.
 
         >>> from fipy import *
-        >>> print Grid3D(nx=2, ny=2, nz=2).z
+        >>> print(Grid3D(nx=2, ny=2, nz=2).z)
         [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]
-        >>> print Grid2D(nx=2, ny=2).z
+        >>> print(Grid2D(nx=2, ny=2).z)
         Traceback (most recent call last):
           ...
         AttributeError: 1D and 2D meshes do not have a "z" attribute.
@@ -184,18 +184,18 @@ class AbstractMesh(object):
            >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
            >>> mesh = NonUniformGrid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
 
-           >>> print (mesh.cellFaceIDs == [[0, 1, 2, 3],
+           >>> print((mesh.cellFaceIDs == [[0, 1, 2, 3],
            ...                             [7, 8, 10, 11],
            ...                             [2, 3, 4, 5],
-           ...                             [6, 7, 9, 10]]).flatten().all() # doctest: +PROCESSOR_0
+           ...                             [6, 7, 9, 10]]).flatten().all()) # doctest: +PROCESSOR_0
            True
 
            >>> mesh._connectFaces(numerix.nonzero(mesh.facesLeft), numerix.nonzero(mesh.facesRight))
 
-           >>> print (mesh.cellFaceIDs == [[0, 1, 2, 3],
+           >>> print((mesh.cellFaceIDs == [[0, 1, 2, 3],
            ...                             [7, 6, 10, 9],
            ...                             [2, 3, 4, 5],
-           ...                             [6, 7, 9, 10]]).flatten().all() # doctest: +PROCESSOR_0
+           ...                             [6, 7, 9, 10]]).flatten().all()) # doctest: +PROCESSOR_0
            True
 
         """
@@ -679,13 +679,13 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid2D, Grid3D
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> print numerix.allequal((21, 25),
-            ...                        numerix.nonzero(mesh.facesLeft)[0]) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal((21, 25),
+            ...                        numerix.nonzero(mesh.facesLeft)[0])) # doctest: +PROCESSOR_0
             True
             >>> ignore = mesh.facesLeft.value # doctest: +PROCESSOR_NOT_0
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)
-            >>> print numerix.allequal((9, 13),
-            ...                        numerix.nonzero(mesh.facesLeft)[0]) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal((9, 13),
+            ...                        numerix.nonzero(mesh.facesLeft)[0])) # doctest: +PROCESSOR_0
             True
             >>> ignore = mesh.facesLeft.value # doctest: +PROCESSOR_NOT_0
 
@@ -701,13 +701,13 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> print numerix.allequal((24, 28),
-            ...                        numerix.nonzero(mesh.facesRight)[0]) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal((24, 28),
+            ...                        numerix.nonzero(mesh.facesRight)[0])) # doctest: +PROCESSOR_0
             True
             >>> ignore = mesh.facesRight.value # doctest: +PROCESSOR_NOT_0
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)
-            >>> print numerix.allequal((12, 16),
-            ...                        numerix.nonzero(mesh.facesRight)[0]) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal((12, 16),
+            ...                        numerix.nonzero(mesh.facesRight)[0])) # doctest: +PROCESSOR_0
             True
             >>> ignore = mesh.facesRight.value # doctest: +PROCESSOR_NOT_0
 
@@ -723,13 +723,13 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> print numerix.allequal((12, 13, 14),
-            ...                        numerix.nonzero(mesh.facesBottom)[0]) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal((12, 13, 14),
+            ...                        numerix.nonzero(mesh.facesBottom)[0])) # doctest: +PROCESSOR_0
             True
             >>> ignore = mesh.facesBottom.value # doctest: +PROCESSOR_NOT_0
             >>> x, y, z = mesh.faceCenters
-            >>> print numerix.allequal((12, 13),
-            ...                        numerix.nonzero(mesh.facesBottom & (x < 1))[0]) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal((12, 13),
+            ...                        numerix.nonzero(mesh.facesBottom & (x < 1))[0])) # doctest: +PROCESSOR_0
             True
             >>> ignore = mesh.facesBottom.value # doctest: +PROCESSOR_NOT_0
 
@@ -747,13 +747,13 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid2D, Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> print numerix.allequal((18, 19, 20),
-            ...                        numerix.nonzero(mesh.facesTop)[0]) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal((18, 19, 20),
+            ...                        numerix.nonzero(mesh.facesTop)[0])) # doctest: +PROCESSOR_0
             True
             >>> ignore = mesh.facesTop.value # doctest: +PROCESSOR_NOT_0
             >>> mesh = Grid2D(nx = 3, ny = 2, dx = 0.5, dy = 2.)
-            >>> print numerix.allequal((6, 7, 8),
-            ...                        numerix.nonzero(mesh.facesTop)[0]) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal((6, 7, 8),
+            ...                        numerix.nonzero(mesh.facesTop)[0])) # doctest: +PROCESSOR_0
             True
             >>> ignore = mesh.facesTop.value # doctest: +PROCESSOR_NOT_0
 
@@ -771,8 +771,8 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> print numerix.allequal((6, 7, 8, 9, 10, 11),
-            ...                        numerix.nonzero(mesh.facesBack)[0]) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal((6, 7, 8, 9, 10, 11),
+            ...                        numerix.nonzero(mesh.facesBack)[0])) # doctest: +PROCESSOR_0
             True
             >>> ignore = mesh.facesBack.value # doctest: +PROCESSOR_NOT_0
 
@@ -788,8 +788,8 @@ class AbstractMesh(object):
 
             >>> from fipy import Grid3D, numerix
             >>> mesh = Grid3D(nx = 3, ny = 2, nz = 1, dx = 0.5, dy = 2., dz = 4.)
-            >>> print numerix.allequal((0, 1, 2, 3, 4, 5),
-            ...                        numerix.nonzero(mesh.facesFront)[0]) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal((0, 1, 2, 3, 4, 5),
+            ...                        numerix.nonzero(mesh.facesFront)[0])) # doctest: +PROCESSOR_0
             True
             >>> ignore = mesh.facesFront.value # doctest: +PROCESSOR_NOT_0
 
@@ -833,14 +833,14 @@ class AbstractMesh(object):
 
         >>> from fipy.meshes import Grid2D
         >>> baseMesh = Grid2D(dx = 1.0, dy = 1.0, nx = 2, ny = 2)
-        >>> print baseMesh.cellCenters
+        >>> print(baseMesh.cellCenters)
         [[ 0.5  1.5  0.5  1.5]
          [ 0.5  0.5  1.5  1.5]]
 
         If a vector is added to a `Mesh`, a translated `Mesh` is returned
 
         >>> translatedMesh = baseMesh + ((5,), (10,))
-        >>> print translatedMesh.cellCenters
+        >>> print(translatedMesh.cellCenters)
         [[  5.5   6.5   5.5   6.5]
          [ 10.5  10.5  11.5  11.5]]
 
@@ -849,7 +849,7 @@ class AbstractMesh(object):
         `Mesh` objects is returned
 
         >>> addedMesh = baseMesh + (baseMesh + ((2,), (0,)))
-        >>> print addedMesh.cellCenters
+        >>> print(addedMesh.cellCenters)
         [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
 
@@ -857,19 +857,19 @@ class AbstractMesh(object):
         but the resulting mesh may not have the intended connectivity
 
         >>> addedMesh = baseMesh + (baseMesh + ((3,), (0,)))
-        >>> print addedMesh.cellCenters
+        >>> print(addedMesh.cellCenters)
         [[ 0.5  1.5  0.5  1.5  3.5  4.5  3.5  4.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
 
         >>> addedMesh = baseMesh + (baseMesh + ((2,), (2,)))
-        >>> print addedMesh.cellCenters
+        >>> print(addedMesh.cellCenters)
         [[ 0.5  1.5  0.5  1.5  2.5  3.5  2.5  3.5]
          [ 0.5  0.5  1.5  1.5  2.5  2.5  3.5  3.5]]
 
         No provision is made to avoid or consolidate overlapping `Mesh` objects
 
         >>> addedMesh = baseMesh + (baseMesh + ((1,), (0,)))
-        >>> print addedMesh.cellCenters
+        >>> print(addedMesh.cellCenters)
         [[ 0.5  1.5  0.5  1.5  1.5  2.5  1.5  2.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]]
 
@@ -883,8 +883,8 @@ class AbstractMesh(object):
         ...                 2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
         ...                [0.5, 0.5, 1.5, 1.5, 0.5, 0.5, 0.83333333, 0.83333333,
         ...                 0.5, 0.5, 0.16666667, 0.16666667]]
-        >>> print numerix.allclose(triAddedMesh.cellCenters,
-        ...                        cellCenters)
+        >>> print(numerix.allclose(triAddedMesh.cellCenters,
+        ...                        cellCenters))
         True
 
         again, their faces need not align, but the mesh may not have
@@ -897,8 +897,8 @@ class AbstractMesh(object):
         ...                  2.5, 3.5, 2.16666667, 3.16666667, 2.5, 3.5],
         ...                [ 0.5, 0.5, 1.5, 1.5, 1., 1.,
         ...                  1.66666667, 1.66666667, 1., 1., 0.33333333, 0.33333333]]
-        >>> print numerix.allclose(triAddedMesh.cellCenters,
-        ...                        cellCenters)
+        >>> print(numerix.allclose(triAddedMesh.cellCenters,
+        ...                        cellCenters))
         True
 
         `Mesh` concatenation is not limited to 2D meshes
@@ -909,7 +909,7 @@ class AbstractMesh(object):
         >>> threeDSecondMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0,
         ...                           nx = 1, ny = 1, nz = 1)
         >>> threeDAddedMesh = threeDBaseMesh + (threeDSecondMesh + ((2,), (0,), (0,)))
-        >>> print threeDAddedMesh.cellCenters
+        >>> print(threeDAddedMesh.cellCenters)
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5  2.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5  0.5]
          [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5  0.5]]
@@ -939,7 +939,7 @@ class AbstractMesh(object):
         Tests.
         >>> from fipy import *
         >>> m = Grid1D()
-        >>> print (m - ((1,))).cellCenters
+        >>> print((m - ((1,))).cellCenters)
         [[-0.5]]
         >>> ((1,)) - m
         Traceback (most recent call last):
@@ -956,7 +956,7 @@ class AbstractMesh(object):
         """
         Tests.
         >>> from fipy import *
-        >>> print (Grid1D(nx=1) / 2.).cellCenters
+        >>> print((Grid1D(nx=1) / 2.).cellCenters)
         [[ 0.25]]
         >>> AbstractMesh(communicator=None) / 2.
         Traceback (most recent call last):
@@ -1146,3 +1146,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

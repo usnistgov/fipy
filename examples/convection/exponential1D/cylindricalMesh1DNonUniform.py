@@ -83,9 +83,9 @@ or
 ...     CC = expi(U * r0 / diffCoeff) - expi(U * r1 / diffCoeff) # doctest: +SCIPY
 ...     analyticalArray = AA * BB / CC # doctest: +SCIPY
 ... except ImportError:
-...     print "The SciPy library is unavailable. It is required for testing purposes."
+...     print("The SciPy library is unavailable. It is required for testing purposes.")
 
->>> print var.allclose(analyticalArray, atol=1e-3) # doctest: +SCIPY
+>>> print(var.allclose(analyticalArray, atol=1e-3)) # doctest: +SCIPY
 1
 
 If the problem is run interactively, we can view the result:
@@ -104,3 +104,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

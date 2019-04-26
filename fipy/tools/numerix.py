@@ -20,7 +20,7 @@ Take the tangent of such a variable. The returned value is itself a
    >>> v = tan(var)
    >>> v
    tan(Variable(value=array(0)))
-   >>> print float(v)
+   >>> print(float(v))
    0.0
 
 Take the tangent of a int.
@@ -30,7 +30,7 @@ Take the tangent of a int.
 
 Take the tangent of an array.
 
-   >>> print tan(array((0, 0, 0)))
+   >>> print(tan(array((0, 0, 0))))
    [ 0.  0.  0.]
 
 """
@@ -111,21 +111,21 @@ def put(arr, ids, values):
        >>> ids = MA.masked_values((2, maskValue), maskValue)
        >>> values = MA.masked_values((4, maskValue), maskValue)
        >>> put(arr, ids, values) ## this should work
-       >>> print arr
+       >>> print(arr)
        [0 0 4]
 
        >>> arr = MA.masked_values((maskValue, 5, 10), maskValue)
        >>> ids = MA.masked_values((2, maskValue), maskValue)
        >>> values = MA.masked_values((4, maskValue), maskValue)
        >>> put(arr, ids, values)
-       >>> print arr ## works as expected
+       >>> print(arr) ## works as expected
        [-- 5 4]
 
        >>> arr = MA.masked_values((maskValue, 5, 10), maskValue)
        >>> ids = MA.masked_values((maskValue, 2), maskValue)
        >>> values = MA.masked_values((4, maskValue), maskValue)
        >>> put(arr, ids, values)
-       >>> print arr ## should be [-- 5 --] maybe??
+       >>> print(arr) ## should be [-- 5 --] maybe??
        [-- 5 999999]
 
     """
@@ -276,23 +276,23 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
 
 
           >>> from fipy import Variable
-          >>> print tostring(Variable((1, 0, 11.2345)), precision=1)
+          >>> print(tostring(Variable((1, 0, 11.2345)), precision=1))
           [  1.    0.   11.2]
-          >>> print tostring(array((1, 2)), precision=5)
+          >>> print(tostring(array((1, 2)), precision=5))
           [1 2]
-          >>> print tostring(array((1.12345, 2.79)), precision=2)
+          >>> print(tostring(array((1.12345, 2.79)), precision=2))
           [ 1.12  2.79]
-          >>> print tostring(1)
+          >>> print(tostring(1))
           1
-          >>> print tostring(array(1))
+          >>> print(tostring(array(1)))
           1
-          >>> print tostring(array([1.23345]), precision=2)
+          >>> print(tostring(array([1.23345]), precision=2))
           [ 1.23]
-          >>> print tostring(array([1]), precision=2)
+          >>> print(tostring(array([1]), precision=2))
           [1]
-          >>> print tostring(1.123456, precision=2)
+          >>> print(tostring(1.123456, precision=2))
           1.12
-          >>> print tostring(array(1.123456), precision=3)
+          >>> print(tostring(array(1.123456), precision=3))
           1.123
 
 
@@ -362,18 +362,18 @@ def dot(a1, a2, axis=0):
     <class 'fipy.variables.cellVariable.CellVariable'>
     >>> dot(v2, v1)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
-    >>> print rank(dot(v2, v1))
+    >>> print(rank(dot(v2, v1)))
     0
-    >>> print dot(v1, v2)
+    >>> print(dot(v1, v2))
     [ 4 10]
     >>> dot(v1, v1)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
-    >>> print dot(v1, v1)
+    >>> print(dot(v1, v1))
     [ 4 10]
     >>> v3 = array(((0, 1), (2, 3)))
-    >>> print isinstance(dot(v3, v3), type(array(1)))
+    >>> print(isinstance(dot(v3, v3), type(array(1))))
     1
-    >>> print dot(v3, v3)
+    >>> print(dot(v3, v3))
     [ 4 10]
     """
 
@@ -457,11 +457,11 @@ def nearest(data, points, max_mem=1e8):
     >>> from fipy import *
     >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
     >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
-    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue)
+    >>> print(nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue))
     [4 5 7 8]
-    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=100)
+    >>> print(nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=100))
     [4 5 7 8]
-    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=10000)
+    >>> print(nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=10000))
     [4 5 7 8]
     """
     data = asanyarray(data)
@@ -1260,5 +1260,6 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 
 

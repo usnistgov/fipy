@@ -65,7 +65,7 @@ This problem has the analytical solution
 
 which has been satisfactorily obtained
 
->>> print potential.allclose(analytical, rtol = 2e-5, atol = 2e-5)
+>>> print(potential.allclose(analytical, rtol = 2e-5, atol = 2e-5))
 1
 
 If we are running the example interactively, we view the result
@@ -111,7 +111,7 @@ which now has the analytical solution
 >>> analytical.setValue(-x)
 >>> analytical.setValue(((x-1)**2)/2 - x, where=x > L/2)
 
->>> print potential.allclose(analytical, rtol = 2e-5, atol = 2e-5)
+>>> print(potential.allclose(analytical, rtol = 2e-5, atol = 2e-5))
 1
 
 and again view the result
@@ -158,7 +158,7 @@ We again verify that the correct equilibrium is attained
 >>> analytical.setValue((x**2)/2 - x)
 >>> analytical.setValue(-0.5, where=x > L / 2)
 
->>> print potential.allclose(analytical, rtol = 2e-5, atol = 2e-5)
+>>> print(potential.allclose(analytical, rtol = 2e-5, atol = 2e-5))
 1
 
 and once again view the result
@@ -179,3 +179,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input("finished")
+

@@ -91,7 +91,7 @@ We verify that the correct equilibrium is attained
 >>> x = mesh.cellCenters[0]
 >>> analyticalArray = (x**2)/2 - 2*x
 
->>> print potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
+>>> print(potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5))
 1
 
 If we are running the example interactively, we view the result
@@ -188,4 +188,5 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input("finished")
+
 

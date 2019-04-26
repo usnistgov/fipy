@@ -48,7 +48,7 @@ data and compares it with the ``phase`` variable.
 
 >>> import os
 >>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
->>> print phase.allclose(testData)
+>>> print(phase.allclose(testData))
 1
 
 """
@@ -102,3 +102,4 @@ if __name__ == '__main__':
       phaseEq.solve(phase, dt = timeStepDuration)
       phaseViewer.plot()
    raw_input('finished')
+

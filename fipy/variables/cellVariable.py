@@ -22,7 +22,7 @@ class CellVariable(_MeshVariable):
     >>> (f, filename) = dump.write(var, extension = '.gz')
     >>> unPickledVar = dump.read(filename, f)
 
-    >>> print var.allclose(unPickledVar, atol = 1e-10, rtol = 1e-10)
+    >>> print(var.allclose(unPickledVar, atol = 1e-10, rtol = 1e-10))
     1
 
     """
@@ -48,30 +48,30 @@ class CellVariable(_MeshVariable):
 
             >>> c = -a
             >>> b = c.old + 3
-            >>> print b
+            >>> print(b)
             [2]
-            >>> print str(b.getsctype()) == str(numerix.NUMERIX.obj2sctype(numerix.array(1)))
+            >>> print(str(b.getsctype()) == str(numerix.NUMERIX.obj2sctype(numerix.array(1))))
             True
 
         replacing with the same thing is no problem
 
             >>> a.value = (3)
             >>> b = c.old + 3
-            >>> print b
+            >>> print(b)
             [0]
 
         replacing with multiple copies causes the reference counting problem
 
             >>> a.value = (3)
             >>> b = (c + c).old + 3
-            >>> print b
+            >>> print(b)
             [-3]
 
         the order matters
 
             >>> b = (c + c).old + 3
             >>> a.value = (2)
-            >>> print b
+            >>> print(b)
             [-1]
         """
         baseClass = _MeshVariable._OperatorVariableClass(self,
@@ -147,18 +147,18 @@ class CellVariable(_MeshVariable):
             >>> from fipy import *
             >>> m = Grid2D(nx=3, ny=2)
             >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
-            >>> print v(((0., 1.1, 1.2), (0., 1., 1.)))
+            >>> print(v(((0., 1.1, 1.2), (0., 1., 1.))))
             [ 0.5  1.5  1.5]
-            >>> print v(((0., 1.1, 1.2), (0., 1., 1.)), order=1)
+            >>> print(v(((0., 1.1, 1.2), (0., 1., 1.)), order=1))
             [ 0.25  1.1   1.2 ]
             >>> m0 = Grid2D(nx=2, ny=2, dx=1., dy=1.)
             >>> m1 = Grid2D(nx=4, ny=4, dx=.5, dy=.5)
             >>> x, y = m0.cellCenters
             >>> v0 = CellVariable(mesh=m0, value=x * y)
-            >>> print v0(m1.cellCenters.globalValue)
+            >>> print(v0(m1.cellCenters.globalValue))
             [ 0.25  0.25  0.75  0.75  0.25  0.25  0.75  0.75  0.75  0.75  2.25  2.25
               0.75  0.75  2.25  2.25]
-            >>> print v0(m1.cellCenters.globalValue, order=1)
+            >>> print(v0(m1.cellCenters.globalValue, order=1))
             [ 0.125  0.25   0.5    0.625  0.25   0.375  0.875  1.     0.5    0.875
               1.875  2.25   0.625  1.     2.25   2.625]
 
@@ -199,7 +199,7 @@ class CellVariable(_MeshVariable):
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .1)
         >>> var = CellVariable(value = (1, 2, 6), mesh = mesh)
-        >>> print var.cellVolumeAverage
+        >>> print(var.cellVolumeAverage)
         3.0
         """
 
@@ -254,14 +254,14 @@ class CellVariable(_MeshVariable):
 
         >>> from fipy import Grid2D
         >>> m = Grid2D(nx=2, ny=2, dx=0.1, dy=2.0)
-        >>> print numerix.allclose(CellVariable(mesh=m, value=(0, 1, 3, 6)).leastSquaresGrad.globalValue, \
+        >>> print(numerix.allclose(CellVariable(mesh=m, value=(0, 1, 3, 6)).leastSquaresGrad.globalValue, \
         ...                                     [[8.0, 8.0, 24.0, 24.0],
-        ...                                      [1.2, 2.0, 1.2, 2.0]])
+        ...                                      [1.2, 2.0, 1.2, 2.0]]))
         True
 
         >>> from fipy import Grid1D
-        >>> print numerix.allclose(CellVariable(mesh=Grid1D(dx=(2.0, 1.0, 0.5)),
-        ...                                     value=(0, 1, 2)).leastSquaresGrad.globalValue, [[0.461538461538, 0.8, 1.2]])
+        >>> print(numerix.allclose(CellVariable(mesh=Grid1D(dx=(2.0, 1.0, 0.5)),
+        ...                                     value=(0, 1, 2)).leastSquaresGrad.globalValue, [[0.461538461538, 0.8, 1.2]]))
         True
         """
 
@@ -290,21 +290,21 @@ class CellVariable(_MeshVariable):
         >>> var = CellVariable(mesh = mesh, value = (L, R))
         >>> faceValue = var.arithmeticFaceValue[mesh.interiorFaces.value]
         >>> answer = (R - L) * (0.5 / 1.) + L
-        >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+        >>> print(numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10))
         True
 
         >>> mesh = Grid1D(dx = (2., 4.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
         >>> faceValue = var.arithmeticFaceValue[mesh.interiorFaces.value]
         >>> answer = (R - L) * (1.0 / 3.0) + L
-        >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+        >>> print(numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10))
         True
 
         >>> mesh = Grid1D(dx = (10., 100.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
         >>> faceValue = var.arithmeticFaceValue[mesh.interiorFaces.value]
         >>> answer = (R - L) * (5.0 / 55.0) + L
-        >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+        >>> print(numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10))
         True
         """
         if not hasattr(self, '_arithmeticFaceValue'):
@@ -331,11 +331,11 @@ class CellVariable(_MeshVariable):
                     \end{cases}
 
         >>> from fipy import *
-        >>> print CellVariable(mesh=Grid1D(nx=2), value=(1, 2)).minmodFaceValue
+        >>> print(CellVariable(mesh=Grid1D(nx=2), value=(1, 2)).minmodFaceValue)
         [1 1 2]
-        >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, -2)).minmodFaceValue
+        >>> print(CellVariable(mesh=Grid1D(nx=2), value=(-1, -2)).minmodFaceValue)
         [-1 -1 -2]
-        >>> print CellVariable(mesh=Grid1D(nx=2), value=(-1, 2)).minmodFaceValue
+        >>> print(CellVariable(mesh=Grid1D(nx=2), value=(-1, 2)).minmodFaceValue)
         [-1  0  2]
         """
         if not hasattr(self, '_minmodFaceValue'):
@@ -362,21 +362,21 @@ class CellVariable(_MeshVariable):
         >>> var = CellVariable(mesh = mesh, value = (L, R))
         >>> faceValue = var.harmonicFaceValue[mesh.interiorFaces.value]
         >>> answer = L * R / ((R - L) * (0.5 / 1.) + L)
-        >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+        >>> print(numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10))
         True
 
         >>> mesh = Grid1D(dx = (2., 4.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
         >>> faceValue = var.harmonicFaceValue[mesh.interiorFaces.value]
         >>> answer = L * R / ((R - L) * (1.0 / 3.0) + L)
-        >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+        >>> print(numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10))
         True
 
         >>> mesh = Grid1D(dx = (10., 100.))
         >>> var = CellVariable(mesh = mesh, value = (L, R))
         >>> faceValue = var.harmonicFaceValue[mesh.interiorFaces.value]
         >>> answer = L * R / ((R - L) * (5.0 / 55.0) + L)
-        >>> print numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10)
+        >>> print(numerix.allclose(faceValue, answer, atol = 1e-10, rtol = 1e-10))
         True
         """
         if not hasattr(self, '_harmonicFaceValue'):
@@ -420,21 +420,21 @@ class CellVariable(_MeshVariable):
         >>> var1 = CellVariable(mesh = mesh, value = (2, 3), hasOld = 1)
         >>> var2 = CellVariable(mesh = mesh, value = (3, 4))
         >>> v = var1 * var2
-        >>> print v
+        >>> print(v)
         [ 6 12]
         >>> var1.value = ((3, 2))
-        >>> print v
+        >>> print(v)
         [9 8]
-        >>> print v.old
+        >>> print(v.old)
         [ 6 12]
 
         The following small test is to correct for a bug when the
         operator does not just use variables.
 
         >>> v1 = var1 * 3
-        >>> print v1
+        >>> print(v1)
         [9 6]
-        >>> print v1.old
+        >>> print(v1.old)
         [6 9]
         """
         if self._old is None:
@@ -526,31 +526,31 @@ class CellVariable(_MeshVariable):
             >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
             >>> v.constrain(0., where=m.facesLeft)
             >>> v.faceGrad.constrain([1.], where=m.facesRight)
-            >>> print v.faceGrad
+            >>> print(v.faceGrad)
             [[ 1.  1.  1.  1.]]
-            >>> print v.faceValue
+            >>> print(v.faceValue)
             [ 0.   1.   2.   2.5]
 
         Changing the constraint changes the dependencies
 
             >>> v.constrain(1., where=m.facesLeft)
-            >>> print v.faceGrad
+            >>> print(v.faceGrad)
             [[-1.  1.  1.  1.]]
-            >>> print v.faceValue
+            >>> print(v.faceValue)
             [ 1.   1.   2.   2.5]
 
         Constraints can be `Variable`
 
             >>> c = Variable(0.)
             >>> v.constrain(c, where=m.facesLeft)
-            >>> print v.faceGrad
+            >>> print(v.faceGrad)
             [[ 1.  1.  1.  1.]]
-            >>> print v.faceValue
+            >>> print(v.faceValue)
             [ 0.   1.   2.   2.5]
             >>> c.value = 1.
-            >>> print v.faceGrad
+            >>> print(v.faceGrad)
             [[-1.  1.  1.  1.]]
-            >>> print v.faceValue
+            >>> print(v.faceValue)
             [ 1.   1.   2.   2.5]
 
         Constraints can have a `Variable` mask.
@@ -558,10 +558,10 @@ class CellVariable(_MeshVariable):
             >>> v = CellVariable(mesh=m)
             >>> mask = FaceVariable(mesh=m, value=m.facesLeft)
             >>> v.constrain(1., where=mask)
-            >>> print v.faceValue
+            >>> print(v.faceValue)
             [ 1.  0.  0.  0.]
             >>> mask[:] = mask | m.facesRight
-            >>> print v.faceValue
+            >>> print(v.faceValue)
             [ 1.  0.  0.  1.]
 
         """
@@ -589,10 +589,10 @@ class CellVariable(_MeshVariable):
         >>> v = CellVariable(mesh=m, value=m.cellCenters[0])
         >>> c = Constraint(0., where=m.facesLeft)
         >>> v.constrain(c)
-        >>> print v.faceValue
+        >>> print(v.faceValue)
         [ 0.   1.   2.   2.5]
         >>> v.release(constraint=c)
-        >>> print v.faceValue
+        >>> print(v.faceValue)
         [ 0.5  1.   2.   2.5]
         """
         try:
@@ -607,7 +607,7 @@ class CellVariable(_MeshVariable):
         >>> from fipy import *
         >>> m = Grid1D(nx=6)
         >>> q = CellVariable(mesh=m, elementshape=(2,))
-        >>> print numerix.allequal(q.faceGrad.globalValue.shape, (1, 2, 7))
+        >>> print(numerix.allequal(q.faceGrad.globalValue.shape, (1, 2, 7)))
         True
         >>> from fipy import *
         >>> m = Grid2D(nx=3, ny=3)
@@ -616,7 +616,7 @@ class CellVariable(_MeshVariable):
         >>> v[0] = x
         >>> v[1] = y
         >>> v[2] = x**2
-        >>> print v.faceGrad.allclose([[[ 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.,  1.,  1.,
+        >>> print(v.faceGrad.allclose([[[ 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.,  1.,  1.,
         ...                               0.,  0.,  1.,  1.,  0.,  0.,  1.,  1.,  0. ],
         ...                             [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,
         ...                               0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0. ],
@@ -627,9 +627,9 @@ class CellVariable(_MeshVariable):
         ...                             [ 0.,  0.,  0.,  1.,  1.,  1.,  1.,  1.,  1.,  0.,  0.,  0.,  0.5, 0.5,
         ...                               0.5, 0.5, 1.,  1.,  1.,  1.,  0.5, 0.5, 0.5, 0.5],
         ...                             [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,
-        ...                               0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0. ]]])
+        ...                               0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0. ]]]))
         True
-        >>> print v.grad
+        >>> print(v.grad)
         [[[ 0.5  1.   0.5  0.5  1.   0.5  0.5  1.   0.5]
           [ 0.   0.   0.   0.   0.   0.   0.   0.   0. ]
           [ 1.   3.   2.   1.   3.   2.   1.   3.   2. ]]
@@ -651,4 +651,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

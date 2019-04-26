@@ -51,7 +51,7 @@ The analytical solution test for this problem is given by:
 >>> CC = 1. - numerix.exp(-convCoeff[axis] * y / diffCoeff)
 >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = AA + BB * CC / DD
->>> print var.allclose(analyticalArray, atol = 1e-5)
+>>> print(var.allclose(analyticalArray, atol = 1e-5))
 1
 
 >>> if __name__ == '__main__':
@@ -65,3 +65,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

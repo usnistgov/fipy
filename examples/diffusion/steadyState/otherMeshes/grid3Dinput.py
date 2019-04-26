@@ -9,7 +9,7 @@ Test case for the Grid3D.
    >>> a = numerix.array(var.globalValue)
    >>> b = numerix.array(var2.globalValue)
    >>> c = numerix.ravel(numerix.array((b, b, b)))
-   >>> print numerix.allclose(a, c)
+   >>> print(numerix.allclose(a, c))
    1
 
 """
@@ -65,3 +65,4 @@ if __name__ == '__main__':
     viewer = Viewer(var2)
     viewer.plot()
     raw_input("finished")
+

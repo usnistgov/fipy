@@ -49,7 +49,7 @@ for the initial position of the interface:
 >>> d[:, 2] = numerix.where(numerix.logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:, 0])
 >>> argmins = numerix.argmin(numerix.absolute(d), axis = 1)
 >>> answer = numerix.take(d.ravel(), numerix.arange(len(argmins))*3 + argmins)
->>> print var.allclose(answer, atol = 1e-1) #doctest: +LSM
+>>> print(var.allclose(answer, atol = 1e-1)) #doctest: +LSM
 1
 
 Advect the interface and check the position.
@@ -69,7 +69,7 @@ Advect the interface and check the position.
 >>> answer = answer - distanceMoved
 >>> answer = numerix.where(answer < 0., 0., answer)
 >>> var.setValue(numerix.where(var < 0., 0., var))
->>> print var.allclose(answer, atol = 1e-1) #doctest: +LSM
+>>> print(var.allclose(answer, atol = 1e-1)) #doctest: +LSM
 1
 
 """
@@ -79,5 +79,6 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
     raw_input('finished')
+
 
 

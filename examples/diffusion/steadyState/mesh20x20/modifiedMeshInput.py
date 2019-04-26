@@ -67,7 +67,7 @@ The result is again tested in the same way:
 ...     Lx = 20
 ...     x = mesh.cellCenters[0] # doctest: +GMSH
 ...     analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx # doctest: +GMSH
-...     print var.allclose(analyticalArray, atol = 0.025) # doctest: +GMSH
+...     print(var.allclose(analyticalArray, atol = 0.025)) # doctest: +GMSH
 1
 
 >>> max(mesh._nonOrthogonality) < 0.51 # doctest: +GMSH
@@ -87,4 +87,5 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+
 
