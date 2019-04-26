@@ -35,7 +35,7 @@ class _NumberDict(DictWithDefault._DictWithDefault):
         return repr(self.data)
 
     def __coerce__(self, other):
-        if type(other) == type({}):
+        if isinstance(other, type({})):
             new = _NumberDict()
             new.data = other
             other = new

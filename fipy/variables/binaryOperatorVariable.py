@@ -40,7 +40,7 @@ def _BinaryOperatorVariable(operatorClass=None):
             if isinstance(self.var[1], Variable):
                 val1 = self.var[1].value
             else:
-                if type(self.var[1]) is type(''):
+                if isinstance(self.var[1], type('')):
                     self.var[1] = physicalField.PhysicalField(value=self.var[1])
                 val1 = self.var[1]
 

@@ -125,7 +125,7 @@ class PhysicalField(object):
                 value = value.value
         elif unit is not None:
             unit = _findUnit(unit)
-        elif type(value) is type(''):
+        elif isinstance(value, type('')):
             s = value.strip()
             match = PhysicalField._number.match(s)
             if match is None:
@@ -243,7 +243,7 @@ class PhysicalField(object):
         if _isVariable(other):
             return sign2(other) + self.__class__(value = sign1(selfValue), unit = self.unit)
 
-        if type(other) is type(''):
+        if isinstance(other, type('')):
             other = PhysicalField(value = other)
 
         if not isinstance(other,PhysicalField):
@@ -313,7 +313,7 @@ class PhysicalField(object):
         """
         if _isVariable(other):
             return other.__mul__(self)
-        if type(other) is type(''):
+        if isinstance(other, type('')):
             other = PhysicalField(value = other)
         if not isinstance(other,PhysicalField):
             return self.__class__(value = self.value*other, unit = self.unit)
@@ -352,7 +352,7 @@ class PhysicalField(object):
         """
         if _isVariable(other):
             return other.__rtruediv__(self)
-        if type(other) is type(''):
+        if isinstance(other, type('')):
             other = self.__class__(value = other)
         if not isinstance(other,PhysicalField):
             value = self.value/other
@@ -371,7 +371,7 @@ class PhysicalField(object):
     def __rtruediv__(self, other):
         if _isVariable(other):
             return other.__truediv__(self)
-        if type(other) is type(''):
+        if isinstance(other, type('')):
             other = PhysicalField(value = other)
         if not isinstance(other,PhysicalField):
             value = other/self.value
@@ -396,7 +396,7 @@ class PhysicalField(object):
         """
         if _isVariable(other):
             return other.__rmod__(self)
-        if type(other) is type(''):
+        if isinstance(other, type('')):
             other = self.__class__(value = other)
         if not isinstance(other,PhysicalField):
             value = self.value % other
@@ -416,7 +416,7 @@ class PhysicalField(object):
             >>> print PhysicalField(10., 'm')**2
             100.0 m**2
         """
-        if type(other) is type(''):
+        if isinstance(other, type('')):
             other = PhysicalField(value = other)
         return self.__class__(value = pow(self.value, float(other)), unit = pow(self.unit, other))
 
@@ -470,7 +470,7 @@ class PhysicalField(object):
             other = other.value
 
         if not isinstance(other, PhysicalField):
-            if type(other) is type(''):
+            if isinstance(other, type('')):
                 other = PhysicalField(other)
             elif numerix.alltrue(other == 0) or self.unit.isDimensionlessOrAngle():
                 other = PhysicalField(value = other, unit = self.unit)
@@ -504,7 +504,7 @@ class PhysicalField(object):
                 ...
             TypeError: Incompatible units
         """
-        if type(value) is type(''):
+        if isinstance(value, type('')):
             value = PhysicalField(value)
         if isinstance(value, PhysicalField) or _isVariable(value):
             value = self._inMyUnits(value).value
@@ -533,7 +533,7 @@ class PhysicalField(object):
                 ...
             TypeError: Incompatible units
         """
-        if type(value) is type(''):
+        if isinstance(value, type('')):
             value = PhysicalField(value)
         if isinstance(value, PhysicalField) or _isVariable(value):
             value = self._inMyUnits(value).value
@@ -1373,7 +1373,7 @@ class PhysicalUnit:
 
         .. _Numeric: http://www.numpy.org
         """
-        if type(names) == type(''):
+        if isinstance(names, type('')):
             self.names = _NumberDict()
             self.names[names] = 1
         else:
@@ -1596,7 +1596,7 @@ class PhysicalUnit:
         """
         if self.offset != 0:
             raise TypeError, "cannot exponentiate units with non-zero offset"
-        if type(other) == type(0):
+        if isinstance(other, type(0)):
             return PhysicalUnit(other*self.names, pow(self.factor, other),
                                 self.powers*other)
 
@@ -1836,7 +1836,7 @@ def _findUnit(unit):
     """
 ##     print unit, type(unit)
 
-    if type(unit) == type(''):
+    if isinstance(unit, type('')):
         name = unit.strip()
         if len(name) == 0 or unit == '1':
             unit = _unity
@@ -1959,7 +1959,7 @@ for unit in _base_units:
 def _addUnit(name, unit):
     if name in _unit_table:
         raise KeyError, 'Unit ' + name + ' already defined'
-    if type(unit) == type(''):
+    if isinstance(unit, type('')):
         unit = eval(unit, _unit_table)
         for cruft in ['__builtins__', '__args__']:
             try: del _unit_table[cruft]

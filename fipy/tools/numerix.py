@@ -170,9 +170,9 @@ def reshape(arr, shape):
 
     if _isPhysical(arr):
         return arr.reshape(shape)
-    elif type(arr) is type(array((0))):
+    elif isinstance(arr, type(array((0)))):
         return NUMERIX.reshape(arr, tuple(shape))
-    elif type(arr) is type(MA.array((0))):
+    elif isinstance(arr, type(MA.array((0)))):
         return MA.reshape(arr, shape)
     else:
         return NUMERIX.reshape(array(arr), tuple(shape))
@@ -230,7 +230,7 @@ def sum(arr, axis=0):
     """
     if _isPhysical(arr):
         return arr.sum(axis)
-    elif type(arr) is type(MA.array((0))):
+    elif isinstance(arr, type(MA.array((0)))):
         return MA.sum(arr, axis)
     else:
         if type(arr) in (float, int) or len(arr) == 0 or 0 in arr.shape:
@@ -590,7 +590,7 @@ def take(a, indices, axis=0, fill_value=None):
 
     if _isPhysical(a):
         taken = a.take(indices, axis=axis)
-    elif type(indices) is type(MA.array((0))):
+    elif isinstance(indices, type(MA.array((0)))):
         ## Replaces `MA.take`. `MA.take` does not always work when
         ## `indices` is a masked array.
         ##
@@ -614,12 +614,12 @@ def take(a, indices, axis=0, fill_value=None):
 
     elif type(a) in (type(array((0))), type(()), type([])):
         taken = NUMERIX.take(a, indices, axis=axis)
-    elif type(a) is type(MA.array((0))):
+    elif isinstance(a, type(MA.array((0)))):
         taken = MA.take(a, indices, axis=axis)
     else:
         raise TypeError, 'cannot take from %s object: %s' % (type(a), `a`)
 
-    if fill_value is not None and type(taken) is type(MA.array((0))):
+    if fill_value is not None and isinstance(taken, type(MA.array((0)))):
         taken = taken.filled(fill_value=fill_value)
 
     return taken

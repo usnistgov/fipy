@@ -205,7 +205,7 @@ class _AbstractGridBuilder(object):
         >>> gb3._calcGlobalNumFaces([2, 3, 2])
         52
         """
-        assert type(ns) is list
+        assert isinstance(ns, list)
 
         # `permutations` is the cleanest way to do this, but it's new in
         # python 2.6, so we can't rely on it.

@@ -32,7 +32,7 @@ class _ScipyMatrix(_SparseMatrix):
 
     def __getitem__(self, index):
         m = self.matrix[index]
-        if type(m) is type(0) or type(m) is type(0.):
+        if isinstance(m, type(0)) or isinstance(m, type(0.)):
             return m
         else:
             return _ScipyMatrix(matrix=m)
@@ -140,7 +140,7 @@ class _ScipyMatrix(_SparseMatrix):
                 raise TypeError
 
     def __rmul__(self, other):
-        if type(numerix.ones(1, 'l')) == type(other):
+        if isinstance(numerix.ones(1, 'l'), type(other)):
             y = self.matrix.transpose() * other.copy()
             return y
         else:

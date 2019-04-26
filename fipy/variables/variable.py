@@ -627,7 +627,7 @@ class Variable(object):
                 if isinstance(v, PF):
                     v = self._value.value
                 if type(value) in (type(1), type(1.)):
-                    if type(v) is type(numerix.array(1)):
+                    if isinstance(v, type(numerix.array(1))):
                         if v.shape is not ():
 ##                        if len(v) > 1:
                             value = numerix.resize(value, v.shape).astype(v.dtype)

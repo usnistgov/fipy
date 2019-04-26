@@ -494,7 +494,7 @@ class AbstractMesh(object):
     @property
     def _numberOfFacesPerCell(self):
         cellFaceIDs = self.cellFaceIDs
-        if type(cellFaceIDs) is type(MA.array(0)):
+        if isinstance(cellFaceIDs, type(MA.array(0))):
             ## bug in count returns float values when there is no mask
             return numerix.array(cellFaceIDs.count(axis=0), 'l')
         else:
@@ -991,7 +991,7 @@ class AbstractMesh(object):
         """
         cvi = self._orderedCellVertexIDs.swapaxes(0,1)
         from fipy.tools import numerix
-        if type(cvi) is numerix.ma.masked_array:
+        if isinstance(cvi, numerix.ma.masked_array):
             counts = cvi.count(axis=1)[:,None]
             cells = numerix.ma.concatenate((counts,cvi),axis=1).compressed()
         else:

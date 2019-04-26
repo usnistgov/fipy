@@ -28,7 +28,7 @@ class PIDStepper(Stepper):
         self.nrej = 0
 
     def _step(self, dt, dtPrev, sweepFn, failFn, *args, **kwargs):
-        while 1:
+        while True:
             self.error[2] = sweepFn(vardata=self.vardata, dt=dt, *args, **kwargs)
 
             # omitting nsa > nsaMax check since it's unclear from
