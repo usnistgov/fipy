@@ -595,14 +595,14 @@ sweeps.
 ...     for step in range(steps):
 ...         # only move forward in time once per time step
 ...         phi[0].updateOld()
-...
+... 
 ...         # but "sweep" many times per time step
 ...         for sweep in range(sweeps):
 ...             res = eq.sweep(var=phi[0],
 ...                            dt=timeStepDuration)
 ...         if __name__ == '__main__':
 ...             viewer.plot()
-...
+... 
 ...     # copy the final result into the appropriate display variable
 ...     phi[sweeps].setValue(phi[0])
 ...     if __name__ == '__main__':
@@ -839,3 +839,4 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+

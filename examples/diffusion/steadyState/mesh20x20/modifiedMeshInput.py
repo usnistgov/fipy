@@ -54,13 +54,13 @@ The result is again tested in the same way:
 ...                    value = abs(errorArray))
 ...     errorViewer = Viewer(vars = errorVar)
 ...     errorViewer.plot()
-...
+... 
 ...     NonOrthoVar = CellVariable(name = "non-orthogonality",
 ...                           mesh = mesh,
 ...                           value = mesh._nonOrthogonality)
 ...     NOViewer = Viewer(vars = NonOrthoVar)
-...
-...
+... 
+... 
 ...     NOViewer.plot()
 ...     raw_input("finished")
 ... else:
@@ -87,3 +87,4 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+

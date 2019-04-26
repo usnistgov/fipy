@@ -43,7 +43,7 @@ We start with a binary substitutional system
 ...         self.equation = equation
 ...         CellVariable.__init__(self, mesh = mesh, value = value,
 ...                               name = name, hasOld = hasOld)
-...
+... 
 ...     def copy(self):
 ...         return self.__class__(mesh = self.mesh,
 ...                               value = self.value,
@@ -94,22 +94,22 @@ and create the diffusion equations for the different species as in
 ...     for component in substitutionals + interstitials:
 ...         enthalpy += component * component.standardPotential
 ...         barrier += component * component.barrier
-...
+... 
 ...     mXi = -(30 * phase * (1 - phase) * enthalpy
 ...             +  4 * (0.5 - phase) * barrier)
 ...     dmXidXi = (-60 * (0.5 - phase) * enthalpy + 4 * barrier)
 ...     S1 = dmXidXi * phase * (1 - phase) + mXi * (1 - 2 * phase)
 ...     S0 = mXi * phase * (1 - phase) - phase * S1
-...
+... 
 ...     phase.equation -= S0 + ImplicitSourceTerm(coeff = S1)
-...
+... 
 ...     for Cj in substitutionals:
 ...         CkSum = ComponentVariable(mesh = mesh, value = 0.)
 ...         CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
 ...         for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
 ...             CkSum += Ck
 ...             CkFaceSum += Ck.harmonicFaceValue
-...
+... 
 ...         counterDiffusion = CkSum.faceGrad
 ...         phaseTransformation = (pPrime(phase.harmonicFaceValue) \
 ...                 * Cj.standardPotential
@@ -121,11 +121,11 @@ and create the diffusion equations for the different species as in
 ...                 * (phaseTransformation + electromigration)
 ...         convectionCoeff *= \
 ...             (Cj.diffusivity / (1. - CkFaceSum))
-...
+... 
 ...         Cj.equation = (TransientTerm()
 ...                        == DiffusionTerm(coeff=Cj.diffusivity)
 ...                        + PowerLawConvectionTerm(coeff=convectionCoeff))
-...
+... 
 ...     for Cj in interstitials:
 ...         phaseTransformation = (pPrime(phase.harmonicFaceValue) \
 ...             * Cj.standardPotential \
@@ -135,7 +135,7 @@ and create the diffusion equations for the different species as in
 ...         convectionCoeff = Cj.diffusivity \
 ...             * (1 + Cj.harmonicFaceValue) \
 ...             * (phaseTransformation + electromigration)
-...
+... 
 ...         Cj.equation = (TransientTerm()
 ...                        == DiffusionTerm(coeff=Cj.diffusivity)
 ...                        + PowerLawConvectionTerm(coeff=convectionCoeff))
@@ -397,3 +397,4 @@ if __name__ == "__main__":
 ##
 ##     raw_input("finished")
 ##
+

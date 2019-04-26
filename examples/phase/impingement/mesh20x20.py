@@ -96,12 +96,12 @@ so that it can be reused later.
 .. index:: TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm
 
 >>> def buildPhaseEquation(phase, theta):
-...
+... 
 ...     mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 ...     thetaMag = theta.old.grad.mag
 ...     implicitSource = mPhiVar * (phase - (mPhiVar < 0))
 ...     implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
-...
+... 
 ...     return TransientTerm(phaseTransientCoeff) == \
 ...               ExplicitDiffusionTerm(alpha**2) \
 ...               - ImplicitSourceTerm(implicitSource) \
@@ -244,3 +244,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

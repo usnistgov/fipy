@@ -142,7 +142,7 @@ we update the display and output data about the progression of the solution
 ...         print 'element id:',maxarg
 ...         print 'value at element ',maxarg,' is ',var[maxarg]
 ...         print 'solution value',answer[maxarg]
-...
+... 
 ...         viewer.plot()
 
 We compare the analytical solution with the numerical result,
@@ -158,3 +158,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

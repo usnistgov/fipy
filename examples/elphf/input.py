@@ -57,7 +57,7 @@ We create four components
     ...         self.valence = valence
     ...         self.equation = equation
     ...         CellVariable.__init__(self, mesh = mesh, value = value, name = name, hasOld = hasOld)
-    ...
+    ... 
     ...     def copy(self):
     ...         return self.__class__(mesh = self.mesh, value = self.value,
     ...                               name = self.name,
@@ -168,7 +168,7 @@ and we create the diffusion equation for the solute as in
     ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
     ...         CkSum += Ck
     ...         CkFaceSum += Ck.harmonicFaceValue
-    ...
+    ... 
     ...     counterDiffusion = CkSum.faceGrad
     ...     # phaseTransformation = (pPrime(phase.harmonicFaceValue) * Cj.standardPotential
     ...     #         + gPrime(phase.harmonicFaceValue) * Cj.barrier) * phase.faceGrad
@@ -180,7 +180,7 @@ and we create the diffusion equation for the solute as in
     ...     convectionCoeff = counterDiffusion + \
     ...         solvent.harmonicFaceValue * (phaseTransformation + electromigration)
     ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
-    ...
+    ... 
     ...     Cj.equation = (TransientTerm()
     ...                    == DiffusionTerm(coeff=Cj.diffusivity)
     ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
@@ -353,4 +353,5 @@ if __name__ == '__main__':
     # profile.stop()
 
     raw_input("finished")
+
 

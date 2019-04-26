@@ -38,7 +38,7 @@ We examine a fixed distribution of electrons with :math:`z_{\text{e}^{-}} = -1`.
 ...         self.diffusivity = diffusivity
 ...         self.valence = valence
 ...         self.equation = equation
-...
+... 
 ...     def copy(self):
 ...         return self.__class__(mesh = self.mesh,
 ...                               value = self.value,
@@ -188,3 +188,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input("finished")
+

@@ -29,7 +29,7 @@ Again, one component in this ternary system will be designated the "solvent"
     ...         self.diffusivity = Variable(diffusivity)
     ...         self.valence = valence
     ...         self.equation = equation
-    ...
+    ... 
     ...     def copy(self):
     ...         return self.__class__(mesh = self.mesh,
     ...                               value = self.value,
@@ -74,10 +74,10 @@ We create one diffusion equation for each substitutional component
     ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
     ...         CkSum += Ck
     ...         CkFaceSum += Ck.harmonicFaceValue
-    ...
+    ... 
     ...     convectionCoeff = CkSum.faceGrad \
     ...                       * (Cj.diffusivity / (1. - CkFaceSum))
-    ...
+    ... 
     ...     Cj.equation = (TransientTerm()
     ...                    == DiffusionTerm(coeff=Cj.diffusivity)
     ...                    + PowerLawConvectionTerm(coeff = convectionCoeff))
@@ -134,3 +134,4 @@ if __name__ == '__main__':
     # profile.stop()
 
     raw_input("finished")
+
