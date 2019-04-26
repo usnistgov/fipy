@@ -125,12 +125,13 @@ resemble the image below.
 .. .. bibmissing:: /documentation/refs.bib
     :sort:
 """
+from __future__ import absolute_import
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, DistanceVariable, SurfactantVariable, Grid2D, TransientTerm, AdvectionTerm, GeneralSolver, Viewer, MultiViewer
 from fipy.tools import numerix
-from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
-from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from .metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+from .adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 def runSimpleTrenchSystem(faradaysConstant=9.6e4,
                           gasConstant=8.314,
@@ -243,7 +244,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     metalVar.constrain(metalConcentration, mesh.facesTop)
 
-    from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
+    from .surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
     bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkCatalystVar,
         distanceVar = distanceVar,
@@ -256,7 +257,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     if displayViewers:
         try:
-            from mayaviSurfactantViewer import MayaviSurfactantViewer
+            from .mayaviSurfactantViewer import MayaviSurfactantViewer
             viewer = MayaviSurfactantViewer(distanceVar, catalystVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'catalyst coverage')
         except:
             viewer = MultiViewer(viewers=(

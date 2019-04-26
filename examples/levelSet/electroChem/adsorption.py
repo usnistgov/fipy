@@ -62,11 +62,12 @@ Compare the analytical and numerical results:
 
 
 """
+from __future__ import absolute_import
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, DistanceVariable, SurfactantVariable, Grid1D
 from fipy.tools import numerix, serialComm
-from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from .adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 # parameter values
 
@@ -97,7 +98,7 @@ bulkVar = CellVariable(mesh = mesh, value = cinf)
 
 surfactantVar = SurfactantVariable(distanceVar = distanceVar)
 
-from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
+from .surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 bulkEqn = buildSurfactantBulkDiffusionEquation(bulkVar,
                                           distanceVar = distanceVar,
                                           surfactantVar = surfactantVar,
