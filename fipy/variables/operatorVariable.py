@@ -80,10 +80,10 @@ def _OperatorVariableClass(baseClass=object):
                                                                for i in range(len(self.var))]))
 
             try:
-                instructions = dis.get_instructions(self.op.func_code)
+                instructions = dis.get_instructions(self.op.__code__)
                 parseInstructions = self._py3kInstructions
             except AttributeError:
-                instructions = [ord(byte) for byte in self.op.func_code.co_code]
+                instructions = [ord(byte) for byte in self.op.__code__.co_code]
                 parseInstructions = self._py2kInstructions
 
             return parseInstructions(instructions, style=style, argDict=argDict, id=id, freshen=freshen)
@@ -154,14 +154,14 @@ def _OperatorVariableClass(baseClass=object):
                     else:
                         return s
                 elif dis.opname[bytecode] == 'LOAD_CONST':
-                    stack.append(self.op.func_code.co_consts[_popIndex()])
+                    stack.append(self.op.__code__.co_consts[_popIndex()])
                 elif dis.opname[bytecode] == 'LOAD_ATTR':
-                    stack.append(stack.pop() + "." + self.op.func_code.co_names[_popIndex()])
+                    stack.append(stack.pop() + "." + self.op.__code__.co_names[_popIndex()])
                 elif dis.opname[bytecode] == 'COMPARE_OP':
                     stack.append(stack.pop(-2) + " " + dis.cmp_op[_popIndex()] + " " + stack.pop())
                 elif dis.opname[bytecode] == 'LOAD_GLOBAL':
                     counter = _popIndex()
-                    stack.append(self.op.func_code.co_names[counter])
+                    stack.append(self.op.__code__.co_names[counter])
                 elif dis.opname[bytecode] == 'LOAD_FAST':
                     stack.append(self.__var(_popIndex(), style=style, argDict=argDict, id=id, freshen=freshen))
                 elif dis.opname[bytecode] == 'CALL_FUNCTION':
@@ -174,7 +174,7 @@ def _OperatorVariableClass(baseClass=object):
                         args.insert(0, stack.pop())
                     stack.append(stack.pop() + "(" + ", ".join(args) + ")")
                 elif dis.opname[bytecode] == 'LOAD_DEREF':
-                    free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
+                    free = self.op.__code__.co_cellvars + self.op.__code__.co_freevars
                     stack.append(free[_popIndex()])
                 elif bytecode in self._unop:
                     stack.append(self._unop[bytecode] + '(' + stack.pop() + ')')
