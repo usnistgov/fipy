@@ -458,7 +458,7 @@ class PhysicalField(object):
         """
         return numerix.sign(self.value)
 
-    def __nonzero__(self):
+    def __bool__(self):
         """
         Test if the quantity is zero.
 

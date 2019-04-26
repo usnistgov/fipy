@@ -1304,7 +1304,7 @@ class Variable(object):
     def __int__(self):
         return int(self.value)
 
-    def __nonzero__(self):
+    def __bool__(self):
         """
             >>> print(bool(Variable(value=0)))
             0
