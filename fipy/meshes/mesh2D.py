@@ -99,7 +99,7 @@ class Mesh2D(Mesh):
         # so the cross product will be zero.
 
         faceDisplacementVectors = \
-          numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)),
+          numerix.where(numerix.array(list(zip(exteriorFaceArray, exteriorFaceArray))),
                         0.0,
                         numerix.take(self._scaledCellCenters.swapaxes(0, 1),
                                      unmaskedFaceCellIDs[1,:]) \

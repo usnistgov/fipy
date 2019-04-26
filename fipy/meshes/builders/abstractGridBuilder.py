@@ -109,10 +109,10 @@ class _AbstractGridBuilder(object):
         else:
             spatialNums = [n + 1 for n in newNs]
 
-        spatialDict = dict(zip(["numVerticalCols",
+        spatialDict = dict(list(zip(["numVerticalCols",
                                 "numHorizontalRows",
                                 "numLayersDeep"][:len(spatialNums)],
-                               spatialNums))
+                               spatialNums)))
 
         numVertices = reduce(self._mult, spatialNums)
         numCells = reduce(self._mult, newNs)
