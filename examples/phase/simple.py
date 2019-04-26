@@ -81,7 +81,7 @@ If we are running interactively, we'll want a viewer to see the results
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = (phase,))
 ...     viewer.plot()
-...     raw_input("Initial condition. Press <return> to proceed...")
+...     input("Initial condition. Press <return> to proceed...")
 
 .. image:: simple/step.*
    :width: 50%
@@ -155,7 +155,7 @@ we obtain the surprising result that :math:`\phi` is zero everywhere.
 0
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Fully explicit source. Press <return> to proceed...")
+...     input("Fully explicit source. Press <return> to proceed...")
 
 .. image:: simple/explicit.*
    :width: 50%
@@ -190,7 +190,7 @@ After 13 time steps, the solution has converged to the analytical solution
 >>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 1
 >>> if __name__ == '__main__':
-...     raw_input("Relaxation, explicit. Press <return> to proceed...")
+...     input("Relaxation, explicit. Press <return> to proceed...")
 
 .. image:: simple/relaxation.*
    :width: 50%
@@ -258,7 +258,7 @@ iterations at the same time step to reach a converged solution).
 1
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Kobayashi, semi-implicit. Press <return> to proceed...")
+...     input("Kobayashi, semi-implicit. Press <return> to proceed...")
 
 In general, the best convergence is obtained when the linearization gives a
 good representation of the relationship between the source and the
@@ -311,7 +311,7 @@ tangent to the source, we reach convergence in only 5 sweeps
 1
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Tangent, semi-implicit. Press <return> to proceed...")
+...     input("Tangent, semi-implicit. Press <return> to proceed...")
 
 Although, for this simple problem, there is no appreciable difference in
 run-time between the fully explicit source and the optimized semi-implicit
@@ -468,7 +468,7 @@ True
 True
 
 >>> if __name__ == '__main__':
-...     raw_input("Dimensional, semi-implicit. Press <return> to proceed...")
+...     input("Dimensional, semi-implicit. Press <return> to proceed...")
 
 .. image:: simple/dimensional.*
    :width: 90%
@@ -486,4 +486,5 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     input('finished')
+
 

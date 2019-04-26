@@ -72,7 +72,7 @@ We can test the value of the bottom-right corner cell.
 1
 
 >>> if __name__ == '__main__':
-...     raw_input("Implicit transient diffusion. Press <return> to proceed...")
+...     input("Implicit transient diffusion. Press <return> to proceed...")
 
 -----
 
@@ -92,7 +92,7 @@ and test the value of the bottom-right corner cell.
 1
 
 >>> if __name__ == '__main__':
-...     raw_input("Implicit steady-state diffusion. Press <return> to proceed...")
+...     input("Implicit steady-state diffusion. Press <return> to proceed...")
 """
 
 __docformat__ = 'restructuredtext'
@@ -103,4 +103,5 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+
 

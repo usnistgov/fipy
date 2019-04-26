@@ -74,7 +74,7 @@ We check the answer against the analytical result
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input('finished')
+...     input('finished')
 """
 
 __docformat__ = 'restructuredtext'
@@ -82,4 +82,5 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+
 

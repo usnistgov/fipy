@@ -25,7 +25,7 @@ The variable is initially a line varying form `valueLeft` to `valueRight`.
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var, datamin=0., datamax=1.)
 ...     viewer.plot()
-...     raw_input("press key to continue")
+...     input("press key to continue")
 
 
 A `TransientTerm` is used to provide some fixed point, otherwise the
@@ -50,4 +50,5 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
     input("finished")
+
 

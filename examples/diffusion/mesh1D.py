@@ -151,7 +151,7 @@ We then solve the equation by repeatedly looping in time:
 1
 
 >>> if __name__ == '__main__':
-...     raw_input("Explicit transient diffusion. Press <return> to proceed...")
+...     input("Explicit transient diffusion. Press <return> to proceed...")
 
 .. image:: mesh1Dexplicit.*
    :width: 90%
@@ -195,7 +195,7 @@ and rerun with much larger time steps
 1
 
 >>> if __name__ == '__main__':
-...     raw_input("Implicit transient diffusion. Press <return> to proceed...")
+...     input("Implicit transient diffusion. Press <return> to proceed...")
 
 .. image:: mesh1Dimplicit.*
    :width: 90%
@@ -239,7 +239,7 @@ of the fully implicit scheme to drive down the error
 1
 
 >>> if __name__ == '__main__':
-...     raw_input("Crank-Nicholson transient diffusion. Press <return> to proceed...")
+...     input("Crank-Nicholson transient diffusion. Press <return> to proceed...")
 
 -----
 
@@ -270,7 +270,7 @@ of :math:`10^{-10}`.
 1
 
 >>> if __name__ == '__main__':
-...     raw_input("Implicit steady-state diffusion. Press <return> to proceed...")
+...     input("Implicit steady-state diffusion. Press <return> to proceed...")
 
 .. image:: mesh1DsteadyState.*
    :width: 90%
@@ -315,7 +315,7 @@ condition will automatically update,
 ...         viewer.plot()
 
 >>> if __name__ == '__main__':
-...     raw_input("Time-dependent boundary condition. Press <return> to proceed...")
+...     input("Time-dependent boundary condition. Press <return> to proceed...")
 
 .. image:: mesh1DtimedBC.*
    :width: 90%
@@ -407,7 +407,7 @@ And finally, we can plot the result
 
 >>> if __name__ == '__main__':
 ...     Viewer(vars=(phi, phiAnalytical)).plot()
-...     raw_input("Non-uniform steady-state diffusion. Press <return> to proceed...")
+...     input("Non-uniform steady-state diffusion. Press <return> to proceed...")
 
 
 .. image:: mesh1Dnon-uniform.*
@@ -488,7 +488,7 @@ and finally, plot
 
 >>> if __name__ == '__main__':
 ...     Viewer(vars=(phiT, phiF)).plot()
-...     raw_input("Non-uniform thermal conductivity. Press <return> to proceed...")
+...     input("Non-uniform thermal conductivity. Press <return> to proceed...")
 
 .. image:: mesh1Dalpha.*
    :width: 90%
@@ -607,7 +607,7 @@ sweeps.
 ...     phi[sweeps].setValue(phi[0])
 ...     if __name__ == '__main__':
 ...         viewer.plot()
-...         raw_input("Implicit variable diffusivity. %d sweep(s). \
+...         input("Implicit variable diffusivity. %d sweep(s). \
 ... Residual = %f. Press <return> to proceed..." % (sweeps, (abs(res))))
 
 As can be seen, sweeping does not dramatically change the result, but the
@@ -638,7 +638,7 @@ can just solve for it directly
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Implicit variable diffusivity - steady-state. \
+...     input("Implicit variable diffusivity - steady-state. \
 ... Press <return> to proceed...")
 
 .. image:: mesh1Dvariable.*
@@ -681,7 +681,7 @@ conditions, and solve
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 >>> if __name__ == '__main__':
-...     raw_input("No-flux - transient. \
+...     input("No-flux - transient. \
 ... Press <return> to proceed...")
 
 .. image:: mesh1D-noflux_transient.*
@@ -708,7 +708,7 @@ and solve the steady-state problem
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 >>> if __name__ == '__main__':
-...     raw_input("No-flux - stead-state failure. \
+...     input("No-flux - stead-state failure. \
 ... Press <return> to proceed...")
 
 >>> print(numerix.allclose(phi, 0.0)) #doctest: +PYSPARSE_SOLVER
@@ -769,7 +769,7 @@ The solution is to run the transient problem and to take one enormous time step
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 >>> if __name__ == '__main__':
-...     raw_input("No-flux - steady-state. \
+...     input("No-flux - steady-state. \
 ... Press <return> to proceed...")
 
 >>> print(numerix.allclose(phi, 0.2, atol=1e-5))
@@ -839,6 +839,7 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+
 
 
 

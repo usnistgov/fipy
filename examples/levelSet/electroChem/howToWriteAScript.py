@@ -416,7 +416,7 @@ to tell if something has changed or been broken.
 1
 
 >>> if __name__ == '__main__':
-...     raw_input('finished')
+...     input('finished')
 """
 __docformat__ = 'restructuredtext'
 
@@ -426,6 +426,7 @@ def _run():
 
 if __name__ == '__main__':
     _run()
+
 
 
 

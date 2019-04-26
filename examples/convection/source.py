@@ -32,7 +32,7 @@ includes a test against the analytical result.
 >>> if __name__ == "__main__":
 ...     viewer = Viewer(vars=(phi, solution))
 ...     viewer.plot()
-...     raw_input("press key to continue")
+...     input("press key to continue")
 
 >>> phi.constrain(phi0, mesh.facesLeft)
 >>> ## fake outflow condition
@@ -46,7 +46,7 @@ True
 >>> if __name__ == "__main__":
 ...     viewer = Viewer(vars=(phi, solution))
 ...     viewer.plot()
-...     raw_input("finished")
+...     input("finished")
 
 
 """
@@ -55,4 +55,5 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+
 

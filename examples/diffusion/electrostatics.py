@@ -73,7 +73,7 @@ If we are running the example interactively, we view the result
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=(charge, potential, analytical))
 ...     viewer.plot()
-...     raw_input("Press any key to continue...")
+...     input("Press any key to continue...")
 
 .. image:: electrostatics/uniform.*
    :width: 90%
@@ -118,7 +118,7 @@ and again view the result
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Press any key to continue...")
+...     input("Press any key to continue...")
 
 .. image:: electrostatics/right.*
    :width: 90%
@@ -179,4 +179,5 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     input("finished")
+
 

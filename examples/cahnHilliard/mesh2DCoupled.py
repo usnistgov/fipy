@@ -113,7 +113,7 @@ evolution of their problem.
 ...         viewer.plot()
 
 >>> if __name__ == '__main__':
-...     raw_input("Coupled equations. Press <return> to proceed...")
+...     input("Coupled equations. Press <return> to proceed...")
 
 .. image:: mesh2DCoupled.*
    :width: 90%
@@ -176,4 +176,5 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     input('finished')
+
 

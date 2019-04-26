@@ -55,7 +55,7 @@ We can now create a :class:`Viewer <~fipy.viewers.viewer.AbstractViewer>` to see
 ...     try:
 ...         viewer = Viewer(vars=phi, datamin=-1, datamax=1.)
 ...         viewer.plotMesh()
-...         raw_input("Irregular circular mesh. Press <return> to proceed...")
+...         input("Irregular circular mesh. Press <return> to proceed...")
 ...     except:
 ...         print("Unable to create a viewer for an irregular mesh (try Matplotlib2DViewer or MayaviViewer)")
 
@@ -142,7 +142,7 @@ vertical positions
 1
 
 >>> if __name__ == '__main__':
-...     raw_input("Transient diffusion. Press <return> to proceed...")
+...     input("Transient diffusion. Press <return> to proceed...")
 
 -----
 
@@ -160,7 +160,7 @@ Display the results if run as a script.
 
 >>> if viewer is not None:
 ...     viewer.plot()
-...     raw_input("Steady-state diffusion. Press <return> to proceed...")
+...     input("Steady-state diffusion. Press <return> to proceed...")
 
 .. image:: circleSteadyState.*
    :width: 90%
@@ -172,4 +172,5 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+
 

@@ -217,7 +217,7 @@ If running interactively, we create viewers to display the results
     ...     phaseViewer.plot()
     ...     concViewer.plot()
     ...     potentialViewer.plot()
-    ...     raw_input("Press a key to continue")
+    ...     input("Press a key to continue")
 
 Again, this problem does not have an analytical solution, so after
 iterating to equilibrium
@@ -353,6 +353,7 @@ if __name__ == '__main__':
     # profile.stop()
 
     input("finished")
+
 
 
 

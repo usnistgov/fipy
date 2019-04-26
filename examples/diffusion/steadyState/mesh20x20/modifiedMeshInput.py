@@ -62,7 +62,7 @@ The result is again tested in the same way:
 ... 
 ... 
 ...     NOViewer.plot()
-...     raw_input("finished")
+...     input("finished")
 ... else:
 ...     Lx = 20
 ...     x = mesh.cellCenters[0] # doctest: +GMSH
@@ -87,5 +87,6 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+
 
 

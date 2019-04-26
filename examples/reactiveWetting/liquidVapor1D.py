@@ -250,7 +250,7 @@ Viewers are also defined.
 ...     viewers = Viewer(density), Viewer(velocity), Viewer(potentialNC)
 ...     for viewer in viewers:
 ...         viewer.plot()
-...     raw_input('Arrange viewers, then press <return> to proceed...')
+...     input('Arrange viewers, then press <return> to proceed...')
 ...     for viewer in viewers:
 ...         viewer.plot()
 
@@ -326,7 +326,7 @@ equation. This currently doesn't work properly in :term:`FiPy`.
 ...     timestep += 1
 
 >>> if __name__ == '__main__':
-...     raw_input('finished')
+...     input('finished')
 
 >>> print(freeEnergy < 1.5e9)
 True
@@ -340,5 +340,6 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+
 
 

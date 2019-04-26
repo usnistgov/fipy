@@ -98,7 +98,7 @@ A 2D version of the 1D example.
 ...     viewers = Viewer(density), Viewer(velocityVector), Viewer(potentialNC)
 ...     for viewer in viewers:
 ...         viewer.plot()
-...     raw_input('arrange viewers')
+...     input('arrange viewers')
 ...     for viewer in viewers:
 ...         viewer.plot()
 
@@ -172,7 +172,7 @@ A 2D version of the 1D example.
 ...     timestep += 1
 
 >>> if __name__ == '__main__':
-...     raw_input('finished')
+...     input('finished')
 
 """
 
@@ -181,5 +181,6 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+
 
 

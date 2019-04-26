@@ -99,7 +99,7 @@ If we are running the example interactively, we view the result
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = (charge, potential))
 ...     viewer.plot()
-...     raw_input("Press any key to continue...")
+...     input("Press any key to continue...")
 
 Next, we segregate all of the electrons to right side of the domain
 
@@ -140,7 +140,7 @@ and again view the result
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Press any key to continue...")
+...     input("Press any key to continue...")
 
 Finally, we segregate all of the electrons to left side of the domain
 
@@ -188,5 +188,6 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     input("finished")
+
 
 

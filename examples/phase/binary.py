@@ -503,7 +503,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ...     diffRes = diffusionEq.sweep(var=C, dt=dt, solver=solver)
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Stationary phase field. Press <return> to proceed...")
+...     input("Stationary phase field. Press <return> to proceed...")
 
 .. image:: binary/stationary.*
    :width: 90%
@@ -589,7 +589,7 @@ time step of about :math:`\unit{10^{-5}}{\second}`.
 ...         viewer.plot()
 
 >>> if __name__ == '__main__':
-...     raw_input("Moving phase field. Press <return> to proceed...")
+...     input("Moving phase field. Press <return> to proceed...")
 
 .. image:: binary/moving.*
    :width: 90%
@@ -621,4 +621,5 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+
 
