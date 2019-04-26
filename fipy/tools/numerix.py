@@ -617,7 +617,7 @@ def take(a, indices, axis=0, fill_value=None):
     elif isinstance(a, type(MA.array((0)))):
         taken = MA.take(a, indices, axis=axis)
     else:
-        raise TypeError, 'cannot take from %s object: %s' % (type(a), `a`)
+        raise TypeError, 'cannot take from %s object: %s' % (type(a), repr(a))
 
     if fill_value is not None and isinstance(taken, type(MA.array((0)))):
         taken = taken.filled(fill_value=fill_value)

@@ -61,7 +61,7 @@ class BoundaryCondition(object):
             return None
 
     def __repr__(self):
-        return "%s(faces = %s, value = %s)" % (self.__class__.__name__, `self.faces`, `self.value`)
+        return "%s(faces = %s, value = %s)" % (self.__class__.__name__, repr(self.faces), repr(self.value))
 
     def _resetBoundaryConditionApplied(self):
         self.boundaryConditionApplied = False
