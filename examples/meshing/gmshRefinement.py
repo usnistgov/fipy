@@ -86,5 +86,5 @@ for refinement in range(10):
 #     resviewer = Viewer(vars=res1a, log=True, datamin=1e-6, datamax=1e-2, cmap=cm.gray)
 #     monviewer = Viewer(vars=monitor, log=True, datamin=1e-3, datamax=1)
 
-    raw_input("refinement %d, res0: %g, res: %g:%g, N: %d, min: %g, max: %g, avg: %g. Press <return> to proceed..." \
+    input("refinement %d, res0: %g, res: %g:%g, N: %d, min: %g, max: %g, avg: %g. Press <return> to proceed..." \
               % (refinement, res0, res1, res1a.cellVolumeAverage, mesh.numberOfCells, numerix.sqrt(min(mesh.cellVolumes)), numerix.sqrt(max(mesh.cellVolumes)), numerix.mean(numerix.sqrt(mesh.cellVolumes))))

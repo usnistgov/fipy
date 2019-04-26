@@ -43,5 +43,5 @@ if __name__ == '__main__':
 
     viewer = Viewer(vars=var, datamin=0., datamax=1.)
     viewer.plot()
-    raw_input("finished")
+    input("finished")
 

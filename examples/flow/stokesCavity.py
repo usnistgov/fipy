@@ -307,7 +307,7 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript(__name__))
-    raw_input('finished')
+    input('finished')
 
 
 

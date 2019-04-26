@@ -58,5 +58,5 @@ if __name__ == '__main__':
     Lx = nx * dx
     analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     print(var.allclose(analyticalArray))
-    raw_input("finished")
+    input("finished")
 
