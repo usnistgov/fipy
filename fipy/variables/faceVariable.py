@@ -59,7 +59,7 @@ class FaceVariable(_MeshVariable):
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(nx=3, ny=2)
         >>> from builtins import range
-        >>> var = CellVariable(mesh=mesh, value=range(3*2))
+        >>> var = CellVariable(mesh=mesh, value=list(range(3*2)))
         >>> print(var.faceGrad.divergence)
         [ 4.  3.  2. -2. -3. -4.]
 
