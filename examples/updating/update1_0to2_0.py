@@ -30,7 +30,7 @@ The following items **must** be changed in your scripts
 
    instead of
 
-   >>> x = mesh.getCellCenters()[...,0]
+   >>> x = mesh.getCellCenters()[..., 0]
 
    This seemingly arbitrary change simplifies a great many things in :term:`FiPy`, but
    the one most noticeable to the user is that you can now write
@@ -39,8 +39,8 @@ The following items **must** be changed in your scripts
 
    instead of
 
-   >>> x = mesh.getCellCenters()[...,0]
-   >>> y = mesh.getCellCenters()[...,1]
+   >>> x = mesh.getCellCenters()[..., 0]
+   >>> y = mesh.getCellCenters()[..., 1]
 
    Unfortunately, we cannot reliably automate this conversion, but we find that
    searching for "``...,``" and "``:,``" finds almost everything. Please don't
@@ -114,7 +114,7 @@ The following items **must** be changed in your scripts
    instead of
 
    >>> exteriorFaces = mesh.getExteriorFaces()
-   >>> X = exteriorFaces.getCenters()[...,0]
+   >>> X = exteriorFaces.getCenters()[..., 0]
    >>> FixedValue(faces=exteriorFaces.where(X**2 < 1e-6), value=...)
 
    With the old syntax, a different call to
@@ -286,3 +286,4 @@ to indicate that we may not maintain the old syntax indefinitely.
 .. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
 """
 __docformat__ = 'restructuredtext'
+

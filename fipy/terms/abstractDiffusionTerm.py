@@ -256,7 +256,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
         Diffusion will only be in the y-direction
 
-        >>> coeff = Variable([[0. , 0.], [0. , 1.]])
+        >>> coeff = Variable([[0., 0.], [0., 1.]])
         >>> eq = DiffusionTerm(coeff)
         >>> eq.solve(v, solver=DummySolver())
         >>> print v
@@ -438,3 +438,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

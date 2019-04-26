@@ -113,8 +113,8 @@ where :math:`\beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2}`,
 >>> Ddia = (1.+ c * beta)
 
 >>> Doff = c * DbetaDpsi
->>> I0 = Variable(value=((1,0), (0,1)))
->>> I1 = Variable(value=((0,-1), (1,0)))
+>>> I0 = Variable(value=((1, 0), (0, 1)))
+>>> I1 = Variable(value=((0, -1), (1, 0)))
 >>> D = alpha**2 * Ddia * (Ddia * I0 + Doff * I1)
 
 With these expressions defined, we can construct the phase field equation
@@ -342,4 +342,5 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+
 

@@ -31,7 +31,7 @@ given by:
 with coefficients :math:`D = 1` and :math:`\vec{u} = (10, 0)`, or
 
 >>> diffCoeff = 1.
->>> convCoeff = (10.,0.)
+>>> convCoeff = (10., 0.)
 
 We define a 1D mesh
 
@@ -132,7 +132,7 @@ or
 .. index:: numerix
 
 >>> axis = 0
->>> x = mesh.getCellCenters()[:,axis]
+>>> x = mesh.getCellCenters()[:, axis]
 >>> from fipy.tools import numerix
 >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
 >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
@@ -298,3 +298,4 @@ def _test():
 if __name__ == "__main__":
     _test()
     raw_input('finished')
+

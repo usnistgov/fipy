@@ -97,8 +97,8 @@ decoupling.
 
 Build the Stokes equations in the cell centers.
 
->>> xVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.grad.dot([1.,0.])
->>> yVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.grad.dot([0.,1.])
+>>> xVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.grad.dot([1., 0.])
+>>> yVelocityEq = DiffusionTerm(coeff=viscosity) - pressure.grad.dot([0., 1.])
 
 In this example the SIMPLE algorithm is used to couple the
 pressure and momentum equations. Let us assume we have solved the
@@ -278,10 +278,10 @@ factor to relax the solution. This argument cannot be passed to
 ... 
 ...     if __name__ == '__main__':
 ...         if sweep%10 == 0:
-...             print 'sweep:',sweep,', x residual:',xres, \
-...                                  ', y residual',yres, \
-...                                  ', p residual:',pres, \
-...                                  ', continuity:',max(abs(rhs))
+...             print 'sweep:', sweep, ', x residual:', xres, \
+...                                  ', y residual', yres, \
+...                                  ', p residual:', pres, \
+...                                  ', continuity:', max(abs(rhs))
 ... 
 ...             viewer.plot()
 
@@ -292,11 +292,11 @@ factor to relax the solution. This argument cannot be passed to
 
 Test values in the last cell.
 
->>> print numerix.allclose(pressure.globalValue[...,-1], 162.790867927) #doctest: +NOT_PYAMGX_SOLVER
+>>> print numerix.allclose(pressure.globalValue[..., -1], 162.790867927) #doctest: +NOT_PYAMGX_SOLVER
 1
->>> print numerix.allclose(xVelocity.globalValue[...,-1], 0.265072740929) #doctest: +NOT_PYAMGX_SOLVER
+>>> print numerix.allclose(xVelocity.globalValue[..., -1], 0.265072740929) #doctest: +NOT_PYAMGX_SOLVER
 1
->>> print numerix.allclose(yVelocity.globalValue[...,-1], -0.150290488304) #doctest: +NOT_PYAMGX_SOLVER
+>>> print numerix.allclose(yVelocity.globalValue[..., -1], -0.150290488304) #doctest: +NOT_PYAMGX_SOLVER
 1
 
 .. .. bibmissing:: /documentation/refs.bib
@@ -308,4 +308,5 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript(__name__))
     raw_input('finished')
+
 

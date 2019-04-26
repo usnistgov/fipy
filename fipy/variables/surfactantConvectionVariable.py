@@ -30,7 +30,7 @@ class SurfactantConvectionVariable(FaceVariable):
            >>> distanceVar = DistanceVariable(mesh, value = (-.5, .5, 1.5))
            >>> ## answer = numerix.zeros((2, mesh.numberOfFaces),'d')
            >>> answer = FaceVariable(mesh=mesh, rank=1, value=0.).globalValue
-           >>> answer[0,7] = -1
+           >>> answer[0, 7] = -1
            >>> print numerix.allclose(SurfactantConvectionVariable(distanceVar).globalValue, answer)
            True
 
@@ -38,7 +38,7 @@ class SurfactantConvectionVariable(FaceVariable):
 
            >>> mesh = Grid2D(nx = 3, ny = 1, dx = .5, dy = .25)
            >>> distanceVar = DistanceVariable(mesh, value = (-.25, .25, .75))
-           >>> answer[0,7] = -.5
+           >>> answer[0, 7] = -.5
            >>> print numerix.allclose(SurfactantConvectionVariable(distanceVar).globalValue, answer)
            True
 
@@ -47,24 +47,24 @@ class SurfactantConvectionVariable(FaceVariable):
            >>> mesh = Grid2D(nx = 2, ny = 2, dx = 1., dy = 1.)
            >>> distanceVar = DistanceVariable(mesh, value = (-1.5, -.5, -.5, .5))
             >>> answer = FaceVariable(mesh=mesh, rank=1, value=0.).globalValue
-           >>> answer[1,2] = -.5
-           >>> answer[1,3] = -1
-           >>> answer[0,7] = -.5
-           >>> answer[0,10] = -1
+           >>> answer[1, 2] = -.5
+           >>> answer[1, 3] = -1
+           >>> answer[0, 7] = -.5
+           >>> answer[0, 10] = -1
            >>> print numerix.allclose(SurfactantConvectionVariable(distanceVar).globalValue, answer)
            True
 
         Larger grid:
 
            >>> mesh = Grid2D(nx = 3, ny = 3, dx = 1., dy = 1.)
-           >>> distanceVar = DistanceVariable(mesh, value = (1.5, .5 , 1.5,
-           ...                                           .5 , -.5, .5 ,
-           ...                                           1.5, .5 , 1.5))
+           >>> distanceVar = DistanceVariable(mesh, value = (1.5, .5, 1.5,
+           ...                                           .5, -.5, .5,
+           ...                                           1.5, .5, 1.5))
             >>> answer = FaceVariable(mesh=mesh, rank=1, value=0.).globalValue
-           >>> answer[1,4] = .25
-           >>> answer[1,7] = -.25
-           >>> answer[0,17] = .25
-           >>> answer[0,18] = -.25
+           >>> answer[1, 4] = .25
+           >>> answer[1, 7] = -.25
+           >>> answer[0, 17] = .25
+           >>> answer[0, 18] = -.25
            >>> print numerix.allclose(SurfactantConvectionVariable(distanceVar).globalValue, answer)
            True
 
@@ -112,3 +112,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

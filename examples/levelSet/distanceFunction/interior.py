@@ -26,11 +26,11 @@ Do the tests:
 ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
 >>> v1 = evalCell(dY, dX, dx, dy)[1]
 >>> v2 = max(-dY*3, -dX*3)
->>> values = numerix.array((  v1  ,   dY  ,   dY  ,  dY  ,  v1  ,
-...                           dX  ,  -mm ,   -dY ,  -mm ,   dX  ,
-...                           dX  ,  -dX ,   -v1 ,  -dX ,   dX  ,
-...                           dX  ,  -mm ,   -dY ,  -mm ,   dX  ,
-...                           v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
+>>> values = numerix.array((  v1,   dY,   dY,  dY,  v1,
+...                           dX,  -mm,   -dY,  -mm,   dX,
+...                           dX,  -dX,   -v1,  -dX,   dX,
+...                           dX,  -mm,   -dY,  -mm,   dX,
+...                           v1,   dY,   dY,  dY,  v1  ))
 >>> print var.allclose(values, atol = 1e-10) #doctest: +LSM
 1
 
@@ -66,3 +66,4 @@ if __name__ == '__main__':
     viewer = Viewer(vars=var, datamin=-5., datamax=5.)
     viewer.plot()
     raw_input('finished')
+

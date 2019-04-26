@@ -102,24 +102,24 @@ class _BinaryTerm(_AbstractBinaryTerm):
         [ 1.  1.  1.  1.  1.  1.]
         >>> print CellVariable(mesh=m, value=RHSvector)
         [ 1.  1.  1.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.numpyArray, [[ 2,-1, 0, 0, 0, 0.],
-        ...                                            [-1, 3,-1, 0, 0, 0.],
-        ...                                            [ 0,-1, 3,-1, 0, 0.],
-        ...                                            [ 0, 0,-1, 3,-1, 0.],
-        ...                                            [ 0, 0, 0,-1, 3,-1.],
-        ...                                            [ 0, 0, 0, 0,-1, 2.]])
+        >>> print numerix.allequal(matrix.numpyArray, [[ 2, -1, 0, 0, 0, 0.],
+        ...                                            [-1, 3, -1, 0, 0, 0.],
+        ...                                            [ 0, -1, 3, -1, 0, 0.],
+        ...                                            [ 0, 0, -1, 3, -1, 0.],
+        ...                                            [ 0, 0, 0, -1, 3, -1.],
+        ...                                            [ 0, 0, 0, 0, -1, 2.]])
         True
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=v1, SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
         >>> print var
         [ 0.  0.  0.  0.  0.  0.]
         >>> print CellVariable(mesh=m, value=RHSvector)
         [ 0.  0.  0.  0.  0.  0.]
-        >>> print numerix.allequal(matrix.numpyArray, [[ 2,-2, 0, 0, 0, 0.],
-        ...                                            [-2, 4,-2, 0, 0, 0.],
-        ...                                            [ 0,-2, 4,-2, 0, 0.],
-        ...                                            [ 0, 0,-2, 4,-2, 0.],
-        ...                                            [ 0, 0, 0,-2, 4,-2.],
-        ...                                            [ 0, 0, 0, 0,-2, 2.]])
+        >>> print numerix.allequal(matrix.numpyArray, [[ 2, -2, 0, 0, 0, 0.],
+        ...                                            [-2, 4, -2, 0, 0, 0.],
+        ...                                            [ 0, -2, 4, -2, 0, 0.],
+        ...                                            [ 0, 0, -2, 4, -2, 0.],
+        ...                                            [ 0, 0, 0, -2, 4, -2.],
+        ...                                            [ 0, 0, 0, 0, -2, 2.]])
         True
         >>> value = eq.justResidualVector(dt=1.)
         >>> print CellVariable(mesh=m, value=value)
@@ -187,7 +187,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
 
         >>> v[0] = 1.
         >>> v[1] = 2.
-        >>> (TransientTerm(v) == ImplicitSourceTerm(-v * numerix.identity(2)[...,numerix.newaxis])).solve(v, dt=1.)
+        >>> (TransientTerm(v) == ImplicitSourceTerm(-v * numerix.identity(2)[..., numerix.newaxis])).solve(v, dt=1.)
         >>> print v
         [[ 0.5  0.5  0.5  0.5  0.5  0.5]
          [ 1.   1.   1.   1.   1.   1. ]]
@@ -195,7 +195,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> print v
         [[ 1.  1.  1.  1.  1.  1.]
          [ 2.  2.  2.  2.  2.  2.]]
-        >>> (TransientTerm(v * numerix.identity(2)[...,numerix.newaxis]) == v).solve(v, dt=1.)
+        >>> (TransientTerm(v * numerix.identity(2)[..., numerix.newaxis]) == v).solve(v, dt=1.)
         >>> print v
         [[ 2.  2.  2.  2.  2.  2.]
          [ 3.  3.  3.  3.  3.  3.]]
@@ -211,8 +211,8 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> v[0] = 1
         >>> v[1] = 2
         >>> coeff = FaceVariable(mesh=m, elementshape=(1, 2, 2))
-        >>> coeff[0,0,1] = 1
-        >>> coeff[0,1,0] = 2
+        >>> coeff[0, 0, 1] = 1
+        >>> coeff[0, 1, 0] = 2
         >>> eqn = TransientTerm() + CentralDifferenceConvectionTerm(coeff=coeff)
         >>> eqn.cacheMatrix()
         >>> eqn.cacheRHSvector()
@@ -265,8 +265,8 @@ class _BinaryTerm(_AbstractBinaryTerm):
         >>> X = m.faceCenters[0]
         >>> v[0] = 1
         >>> v[1] = 2
-        >>> coeff[0,0,1] = numerix.sign(X - 3)
-        >>> coeff[0,1,0] = -2 * numerix.sign(X - 3)
+        >>> coeff[0, 0, 1] = numerix.sign(X - 3)
+        >>> coeff[0, 1, 0] = -2 * numerix.sign(X - 3)
         >>> eqn = TransientTerm() + UpwindConvectionTerm(coeff=coeff)
         >>> eqn.cacheMatrix()
         >>> eqn.cacheRHSvector()
@@ -299,3 +299,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

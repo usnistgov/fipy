@@ -10,7 +10,7 @@ given by:
 with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 
 >>> diffCoeff = 1.
->>> convCoeff = ((10.,),(0.,))
+>>> convCoeff = ((10.,), (0.,))
 
 We define a 2D cylindrical mesh representing an annulus. The mesh is a
 pseudo-1D mesh, but is a good test case for the :class:`~fipy.meshes.cylindricalGrid2D.CylindricalGrid2D`
@@ -101,3 +101,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

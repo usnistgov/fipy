@@ -76,8 +76,8 @@ class PeriodicGrid3D(_BasePeriodicGrid3D):
         True
 
         >>> print numerix.allclose(mesh.cellFaceIDs,
-        ...                        [[14,15,17,18],
-        ...                         [15, 14, 18,17],
+        ...                        [[14, 15, 17, 18],
+        ...                         [15, 14, 18, 17],
         ...                         [8, 9, 10, 11],
         ...                         [10, 11, 8, 9],
         ...                         [0, 1, 2, 3],
@@ -181,3 +181,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

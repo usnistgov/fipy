@@ -396,9 +396,9 @@ or
 
 >>> x = mesh.cellCenters[0]
 >>> phiAnalytical.setValue(x)
->>> phiAnalytical.setValue(10 * x - 9. * L / 4. ,
+>>> phiAnalytical.setValue(10 * x - 9. * L / 4.,
 ...                        where=(L / 4. <= x) & (x < 3. * L / 4.))
->>> phiAnalytical.setValue(x + 18. * L / 4. ,
+>>> phiAnalytical.setValue(x + 18. * L / 4.,
 ...                        where=3. * L / 4. <= x)
 >>> print phi.allclose(phiAnalytical, atol = 1e-8, rtol = 1e-8)
 1
@@ -590,7 +590,7 @@ used as part of the exit condition.
 We now repeatedly run the problem with increasing numbers of
 sweeps.
 
->>> for sweeps in range(1,5):
+>>> for sweeps in range(1, 5):
 ...     phi[0].setValue(valueRight)
 ...     for step in range(steps):
 ...         # only move forward in time once per time step
@@ -839,4 +839,5 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+
 

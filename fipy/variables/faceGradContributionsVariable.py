@@ -23,15 +23,15 @@ class _FaceGradContributions(FaceVariable):
     >>> print numerix.allequal(_FaceGradContributions(v0).globalValue.shape, (2, 24))
     True
     >>> print _FaceGradContributions(v0).allclose([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., -0.5, 1.,  2.,
-    ...                                              2.5,-0.5, 1.,  2.,  2.5,-0.5, 1.,  2.,  2.5],
-    ...                                            [-0.5,-1.5,-2.5, 0.5, 1.5, 2.5, 0.5, 1.5, 2.5, 0.5, 1.5, 2.5, 0.,  0.,  0.,
+    ...                                              2.5, -0.5, 1.,  2.,  2.5, -0.5, 1.,  2.,  2.5],
+    ...                                            [-0.5, -1.5, -2.5, 0.5, 1.5, 2.5, 0.5, 1.5, 2.5, 0.5, 1.5, 2.5, 0.,  0.,  0.,
     ...                                              0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0. ]])
     True
-    >>> print (_FaceGradContributions(v0).globalValue == out.globalValue[:,0]).all()
+    >>> print (_FaceGradContributions(v0).globalValue == out.globalValue[:, 0]).all()
     True
-    >>> print (_FaceGradContributions(v1).globalValue == out.globalValue[:,1]).all()
+    >>> print (_FaceGradContributions(v1).globalValue == out.globalValue[:, 1]).all()
     True
-    >>> print (_FaceGradContributions(v2).globalValue == out.globalValue[:,2]).all()
+    >>> print (_FaceGradContributions(v2).globalValue == out.globalValue[:, 2]).all()
     True
 
     """
@@ -50,3 +50,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

@@ -276,10 +276,10 @@ def _testBinOp(self):
     """
     Test of _getRepresentation
 
-        >>> v1 = Variable((1,2,3,4))
-        >>> v2 = Variable((5,6,7,8))
-        >>> v3 = Variable((9,10,11,12))
-        >>> v4 = Variable((13,14,15,16))
+        >>> v1 = Variable((1, 2, 3, 4))
+        >>> v2 = Variable((5, 6, 7, 8))
+        >>> v3 = Variable((9, 10, 11, 12))
+        >>> v4 = Variable((13, 14, 15, 16))
 
         >>> (v1 * v2)._getRepresentation()
         '(Variable(value=array([1, 2, 3, 4])) * Variable(value=array([5, 6, 7, 8])))'
@@ -404,8 +404,8 @@ def _testBinOp(self):
 
     `CellVariable` * rank-1 `FaceVariable`
 
-        >>> vfv = FaceVariable(mesh=mesh, value=((0,1,2,3,1,2,3,6,2,1),
-        ...                                      (1,2,3,4,3,4,5,9,6,3)), rank=1)
+        >>> vfv = FaceVariable(mesh=mesh, value=((0, 1, 2, 3, 1, 2, 3, 6, 2, 1),
+        ...                                      (1, 2, 3, 4, 3, 4, 5, 9, 6, 3)), rank=1)
         >>> vfvXcv = vfv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
@@ -430,7 +430,7 @@ def _testBinOp(self):
 
     `CellVariable` * Vector
 
-        >>> cvXv2 = cv * (3,2)
+        >>> cvXv2 = cv * (3, 2)
         >>> print cvXv2
         [[0 3 6]
          [0 2 4]]
@@ -442,7 +442,7 @@ def _testBinOp(self):
         1
         >>> print cvXv2.rank
         1
-        >>> v2Xcv = (3,2) * cv
+        >>> v2Xcv = (3, 2) * cv
         >>> print v2Xcv
         [[0 3 6]
          [0 2 4]]
@@ -455,22 +455,22 @@ def _testBinOp(self):
         >>> print v2Xcv.rank
         1
 
-        >>> cvXv3 = cv * (3,2,1)
+        >>> cvXv3 = cv * (3, 2, 1)
         >>> print cvXv3
         [0 2 2]
         >>> print isinstance(cvXv3, CellVariable)
         1
-        >>> v3Xcv = (3,2,1) * cv
+        >>> v3Xcv = (3, 2, 1) * cv
         >>> print v3Xcv
         [0 2 2]
         >>> print isinstance(v3Xcv, CellVariable)
         1
 
-        >>> cvXv4 = cv * (3,2,1,0) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> cvXv4 = cv * (3, 2, 1, 0) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         TypeError: can't multiply sequence to non-int
-        >>> v4Xcv = (3,2,1,0) * cv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v4Xcv = (3, 2, 1, 0) * cv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         TypeError: can't multiply sequence to non-int
@@ -504,11 +504,11 @@ def _testBinOp(self):
 
     `CellVariable` * `Variable` Vector
 
-        >>> cvXv2v = cv * Variable(value=(3,2))
+        >>> cvXv2v = cv * Variable(value=(3, 2))
         >>> print cvXv2v
         [[0 3 6]
          [0 2 4]]
-        >>> cvXv2v = cv * Variable(value=((3,),(2,)))
+        >>> cvXv2v = cv * Variable(value=((3,), (2,)))
         >>> print cvXv2v
         [[0 3 6]
          [0 2 4]]
@@ -516,8 +516,8 @@ def _testBinOp(self):
         1
         >>> print cvXv2v.rank
         1
-        >>> v2vXcv = Variable(value=(3,2)) * cv
-        >>> v2vXcv = Variable(value=((3,),(2,))) * cv
+        >>> v2vXcv = Variable(value=(3, 2)) * cv
+        >>> v2vXcv = Variable(value=((3,), (2,))) * cv
         >>> print v2vXcv
         [[0 3 6]
          [0 2 4]]
@@ -526,22 +526,22 @@ def _testBinOp(self):
         >>> print v2vXcv.rank
         1
 
-        >>> cvXv3v = cv * Variable(value=(3,2,1))
+        >>> cvXv3v = cv * Variable(value=(3, 2, 1))
         >>> print cvXv3v
         [0 2 2]
         >>> print isinstance(cvXv3v, CellVariable)
         1
-        >>> v3vXcv = Variable(value=(3,2,1)) * cv
+        >>> v3vXcv = Variable(value=(3, 2, 1)) * cv
         >>> print v3vXcv
         [0 2 2]
         >>> print isinstance(v3vXcv, CellVariable)
         1
 
-        >>> cvXv4v = cv * Variable(value=(3,2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> cvXv4v = cv * Variable(value=(3, 2, 1, 0)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v4vXcv = Variable(value=(3,2,1,0)) * cv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v4vXcv = Variable(value=(3, 2, 1, 0)) * cv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
@@ -611,11 +611,11 @@ def _testBinOp(self):
 
     `FaceVariable` * Vector
 
-        >>> fvXv2 = fv * (3,2)
+        >>> fvXv2 = fv * (3, 2)
         >>> print fvXv2
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
-        >>> fvXv2 = fv * ((3,),(2,))
+        >>> fvXv2 = fv * ((3,), (2,))
         >>> print fvXv2
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
@@ -623,11 +623,11 @@ def _testBinOp(self):
         1
         >>> print fvXv2.rank
         1
-        >>> v2Xfv = (3,2) * fv
+        >>> v2Xfv = (3, 2) * fv
         >>> print v2Xfv
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
-        >>> v2Xfv = ((3,),(2,)) * fv
+        >>> v2Xfv = ((3,), (2,)) * fv
         >>> print v2Xfv
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
@@ -636,21 +636,21 @@ def _testBinOp(self):
         >>> print v2Xfv.rank
         1
 
-        >>> fvXv3 = fv * (3,2,1) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> fvXv3 = fv * (3, 2, 1) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v3Xfv = (3,2,1) * fv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3Xfv = (3, 2, 1) * fv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
 
-        >>> fvXv10 = fv * (9,8,7,6,5,4,3,2,1,0)
+        >>> fvXv10 = fv * (9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
         >>> print fvXv10
         [ 0  8 14 18 20 20 18 14  8  0]
         >>> print isinstance(fvXv10, FaceVariable)
         1
-        >>> v10Xfv = (9,8,7,6,5,4,3,2,1,0) * fv
+        >>> v10Xfv = (9, 8, 7, 6, 5, 4, 3, 2, 1, 0) * fv
         >>> print v10Xfv
         [ 0  8 14 18 20 20 18 14  8  0]
         >>> print isinstance(v10Xfv, FaceVariable)
@@ -671,11 +671,11 @@ def _testBinOp(self):
 
     `FaceVariable` * `Variable` Vector
 
-        >>> fvXv2v = fv * Variable(value=(3,2))
+        >>> fvXv2v = fv * Variable(value=(3, 2))
         >>> print fvXv2v
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
-        >>> fvXv2v = fv * Variable(value=((3,),(2,)))
+        >>> fvXv2v = fv * Variable(value=((3,), (2,)))
         >>> print fvXv2v
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
@@ -683,11 +683,11 @@ def _testBinOp(self):
         1
         >>> print fvXv2v.rank
         1
-        >>> v2vXfv = Variable(value=(3,2)) * fv
+        >>> v2vXfv = Variable(value=(3, 2)) * fv
         >>> print v2vXfv
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
-        >>> v2vXfv = Variable(value=((3,),(2,))) * fv
+        >>> v2vXfv = Variable(value=((3,), (2,))) * fv
         >>> print v2vXfv
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
@@ -696,21 +696,21 @@ def _testBinOp(self):
         >>> print v2vXfv.rank
         1
 
-        >>> fvXv3v = fv * Variable(value=(3,2,1)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> fvXv3v = fv * Variable(value=(3, 2, 1)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v3vXfv = Variable(value=(3,2,1)) * fv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3vXfv = Variable(value=(3, 2, 1)) * fv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
 
-        >>> fvXv10v = fv * Variable(value=(9,8,7,6,5,4,3,2,1,0))
+        >>> fvXv10v = fv * Variable(value=(9, 8, 7, 6, 5, 4, 3, 2, 1, 0))
         >>> print fvXv10v
         [ 0  8 14 18 20 20 18 14  8  0]
         >>> print isinstance(fvXv10v, FaceVariable)
         1
-        >>> v10vXfv = Variable(value=(9,8,7,6,5,4,3,2,1,0)) * fv
+        >>> v10vXfv = Variable(value=(9, 8, 7, 6, 5, 4, 3, 2, 1, 0)) * fv
         >>> print v10vXfv
         [ 0  8 14 18 20 20 18 14  8  0]
         >>> print isinstance(v10vXfv, FaceVariable)
@@ -761,11 +761,11 @@ def _testBinOp(self):
 
     rank-1 `CellVariable` * Vector
 
-        >>> vcvXv2 = vcv * (3,2)
+        >>> vcvXv2 = vcv * (3, 2)
         >>> print vcvXv2
         [[0 3 6]
          [2 4 6]]
-        >>> vcvXv2 = vcv * ((3,),(2,))
+        >>> vcvXv2 = vcv * ((3,), (2,))
         >>> print vcvXv2
         [[0 3 6]
          [2 4 6]]
@@ -773,11 +773,11 @@ def _testBinOp(self):
         1
         >>> print vcvXv2.rank
         1
-        >>> v2Xvcv = (3,2) * vcv
+        >>> v2Xvcv = (3, 2) * vcv
         >>> print v2Xvcv
         [[0 3 6]
          [2 4 6]]
-        >>> v2Xvcv = ((3,),(2,)) * vcv
+        >>> v2Xvcv = ((3,), (2,)) * vcv
         >>> print v2Xvcv
         [[0 3 6]
          [2 4 6]]
@@ -786,7 +786,7 @@ def _testBinOp(self):
         >>> print v2Xvcv.rank
         1
 
-        >>> vcvXv3 = vcv * (3,2,1)
+        >>> vcvXv3 = vcv * (3, 2, 1)
         >>> print vcvXv3
         [[0 2 2]
          [3 4 3]]
@@ -794,7 +794,7 @@ def _testBinOp(self):
         1
         >>> print vcvXv3.rank
         1
-        >>> v3Xvcv = (3,2,1) * vcv
+        >>> v3Xvcv = (3, 2, 1) * vcv
         >>> print v3Xvcv
         [[0 2 2]
          [3 4 3]]
@@ -803,11 +803,11 @@ def _testBinOp(self):
         >>> print v3Xvcv.rank
         1
 
-        >>> vcvXv4 = vcv * (3,2,1,0) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> vcvXv4 = vcv * (3, 2, 1, 0) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v4Xvcv = (3,2,1,0) * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v4Xvcv = (3, 2, 1, 0) * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
@@ -833,11 +833,11 @@ def _testBinOp(self):
 
     rank-1 `CellVariable` * `Variable` Vector
 
-        >>> vcvXv2v = vcv * Variable(value=(3,2))
+        >>> vcvXv2v = vcv * Variable(value=(3, 2))
         >>> print vcvXv2v
         [[0 3 6]
          [2 4 6]]
-        >>> vcvXv2v = vcv * Variable(value=((3,),(2,)))
+        >>> vcvXv2v = vcv * Variable(value=((3,), (2,)))
         >>> print vcvXv2v
         [[0 3 6]
          [2 4 6]]
@@ -845,11 +845,11 @@ def _testBinOp(self):
         1
         >>> print vcvXv2v.rank
         1
-        >>> v2vXvcv = Variable(value=(3,2)) * vcv
+        >>> v2vXvcv = Variable(value=(3, 2)) * vcv
         >>> print v2vXvcv
         [[0 3 6]
          [2 4 6]]
-        >>> v2vXvcv = Variable(value=((3,),(2,))) * vcv
+        >>> v2vXvcv = Variable(value=((3,), (2,))) * vcv
         >>> print v2vXvcv
         [[0 3 6]
          [2 4 6]]
@@ -858,7 +858,7 @@ def _testBinOp(self):
         >>> print v2vXvcv.rank
         1
 
-        >>> vcvXv3v = vcv * Variable(value=(3,2,1))
+        >>> vcvXv3v = vcv * Variable(value=(3, 2, 1))
         >>> print vcvXv3v
         [[0 2 2]
          [3 4 3]]
@@ -866,7 +866,7 @@ def _testBinOp(self):
         1
         >>> print vcvXv3v.rank
         1
-        >>> v3vXvcv = Variable(value=(3,2,1)) * vcv
+        >>> v3vXvcv = Variable(value=(3, 2, 1)) * vcv
         >>> print v3vXvcv
         [[0 2 2]
          [3 4 3]]
@@ -875,11 +875,11 @@ def _testBinOp(self):
         >>> print v3vXvcv.rank
         1
 
-        >>> vcvXv4v = vcv * Variable(value=(3,2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> vcvXv4v = vcv * Variable(value=(3, 2, 1, 0)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v4vXvcv = Variable(value=(3,2,1,0)) * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v4vXvcv = Variable(value=(3, 2, 1, 0)) * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
@@ -917,7 +917,7 @@ def _testBinOp(self):
 
     rank-1 `FaceVariable` * Vector
 
-        >>> vfvXv2 = vfv * (3,2)
+        >>> vfvXv2 = vfv * (3, 2)
         >>> print vfvXv2
         [[ 0  3  6  9  3  6  9 18  6  3]
          [ 2  4  6  8  6  8 10 18 12  6]]
@@ -925,7 +925,7 @@ def _testBinOp(self):
         1
         >>> print vfvXv2.rank
         1
-        >>> v2Xvfv = (3,2) * vfv
+        >>> v2Xvfv = (3, 2) * vfv
         >>> print v2Xvfv
         [[ 0  3  6  9  3  6  9 18  6  3]
          [ 2  4  6  8  6  8 10 18 12  6]]
@@ -934,17 +934,17 @@ def _testBinOp(self):
         >>> print v2Xvfv.rank
         1
 
-        >>> vfvXv3 = vfv * (2,1,0) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> vfvXv3 = vfv * (2, 1, 0) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v3Xvfv = (2,1,0) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3Xvfv = (2, 1, 0) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
 
 
-        >>> vfvXv10 = vfv * (9,8,7,6,5,4,3,2,1,0)
+        >>> vfvXv10 = vfv * (9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
         >>> print vfvXv10
         [[ 0  8 14 18  5  8  9 12  2  0]
          [ 9 16 21 24 15 16 15 18  6  0]]
@@ -952,7 +952,7 @@ def _testBinOp(self):
         1
         >>> print vfvXv10.rank
         1
-        >>> v10Xvfv = (9,8,7,6,5,4,3,2,1,0) * vfv
+        >>> v10Xvfv = (9, 8, 7, 6, 5, 4, 3, 2, 1, 0) * vfv
         >>> print v10Xvfv
         [[ 0  8 14 18  5  8  9 12  2  0]
          [ 9 16 21 24 15 16 15 18  6  0]]
@@ -982,7 +982,7 @@ def _testBinOp(self):
 
     rank-1 `FaceVariable` * `Variable` Vector
 
-        >>> vfvXv2v = vfv * Variable(value=(3,2))
+        >>> vfvXv2v = vfv * Variable(value=(3, 2))
         >>> print vfvXv2v
         [[ 0  3  6  9  3  6  9 18  6  3]
          [ 2  4  6  8  6  8 10 18 12  6]]
@@ -990,7 +990,7 @@ def _testBinOp(self):
         1
         >>> print vfvXv2v.rank
         1
-        >>> v2vXvfv = Variable(value=(3,2)) * vfv
+        >>> v2vXvfv = Variable(value=(3, 2)) * vfv
         >>> print v2vXvfv
         [[ 0  3  6  9  3  6  9 18  6  3]
          [ 2  4  6  8  6  8 10 18 12  6]]
@@ -999,17 +999,17 @@ def _testBinOp(self):
         >>> print v2vXvfv.rank
         1
 
-        >>> vfvXv3v = vfv * Variable(value=(2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> vfvXv3v = vfv * Variable(value=(2, 1, 0)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v3vXvfv = Variable(value=(2,1,0)) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3vXvfv = Variable(value=(2, 1, 0)) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
 
 
-        >>> vfvXv10v = vfv * Variable(value=(9,8,7,6,5,4,3,2,1,0))
+        >>> vfvXv10v = vfv * Variable(value=(9, 8, 7, 6, 5, 4, 3, 2, 1, 0))
         >>> print vfvXv10v
         [[ 0  8 14 18  5  8  9 12  2  0]
          [ 9 16 21 24 15 16 15 18  6  0]]
@@ -1017,7 +1017,7 @@ def _testBinOp(self):
         1
         >>> print vfvXv10v.rank
         1
-        >>> v10vXvfv = Variable(value=(9,8,7,6,5,4,3,2,1,0)) * vfv
+        >>> v10vXvfv = Variable(value=(9, 8, 7, 6, 5, 4, 3, 2, 1, 0)) * vfv
         >>> print v10vXvfv
         [[ 0  8 14 18  5  8  9 12  2  0]
          [ 9 16 21 24 15 16 15 18  6  0]]
@@ -1042,12 +1042,12 @@ def _testBinOp(self):
 
     Scalar * `Variable` Vector
 
-        >>> sXv2v = 3 * Variable(value=(3,2))
+        >>> sXv2v = 3 * Variable(value=(3, 2))
         >>> print sXv2v
         [9 6]
         >>> print isinstance(sXv2v, Variable)
         1
-        >>> v2vXs = Variable(value=(3,2)) * 3
+        >>> v2vXs = Variable(value=(3, 2)) * 3
         >>> print v2vXs
         [9 6]
         >>> print isinstance(v2vXs, Variable)
@@ -1070,22 +1070,22 @@ def _testBinOp(self):
 
     Vector * `Variable` Vector
 
-        >>> vXv2v = (3, 2) * Variable(value=(3,2))
+        >>> vXv2v = (3, 2) * Variable(value=(3, 2))
         >>> print vXv2v
         [9 4]
         >>> print isinstance(vXv2v, Variable)
         1
-        >>> v2vXv = Variable(value=(3,2)) * (3, 2)
+        >>> v2vXv = Variable(value=(3, 2)) * (3, 2)
         >>> print v2vXv
         [9 4]
         >>> print isinstance(v2vXv, Variable)
         1
 
-        >>> vXv3v = (3, 2, 1) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> vXv3v = (3, 2, 1) * Variable(value=(3, 2)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v3vXv = Variable(value=(3,2)) * (3, 2, 1) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3vXv = Variable(value=(3, 2)) * (3, 2, 1) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
@@ -1101,12 +1101,12 @@ def _testBinOp(self):
 
     `Variable` Scalar * `Variable` Vector
 
-        >>> svXv2v = Variable(value=3) * Variable(value=(3,2))
+        >>> svXv2v = Variable(value=3) * Variable(value=(3, 2))
         >>> print svXv2v
         [9 6]
         >>> print isinstance(svXv2v, Variable)
         1
-        >>> v2vXsv = Variable(value=(3,2)) * Variable(value=3)
+        >>> v2vXsv = Variable(value=(3, 2)) * Variable(value=3)
         >>> print v2vXsv
         [9 6]
         >>> print isinstance(v2vXsv, Variable)
@@ -1115,13 +1115,13 @@ def _testBinOp(self):
 
     `Variable` Vector * `Variable` Vector
 
-        >>> v2vXv2v = Variable(value=(3, 2)) * Variable(value=(3,2))
+        >>> v2vXv2v = Variable(value=(3, 2)) * Variable(value=(3, 2))
         >>> print v2vXv2v
         [9 4]
         >>> print isinstance(v2vXv2v, Variable)
         1
 
-        >>> v3vXv2v = Variable(value=(3, 2, 1)) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3vXv2v = Variable(value=(3, 2, 1)) * Variable(value=(3, 2)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
@@ -1200,3 +1200,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

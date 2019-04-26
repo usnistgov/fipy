@@ -612,9 +612,9 @@ class UniformGrid2D(UniformGrid):
             ...                        mesh.vertexCoords) # doctest: +PROCESSOR_0
             True
 
-            >>> faces = numerix.array([[0, 1, 2, 4, 5, 6, 8, 9,10, 0, 1, 2, 3,
+            >>> faces = numerix.array([[0, 1, 2, 4, 5, 6, 8, 9, 10, 0, 1, 2, 3,
             ...                         4, 5, 6, 7],
-            ...                        [1, 2, 3, 5, 6, 7, 9,10,11, 4, 5, 6, 7,
+            ...                        [1, 2, 3, 5, 6, 7, 9, 10, 11, 4, 5, 6, 7,
             ...                         8, 9, 10, 11]])
             >>> print numerix.allequal(faces,
             ...                        mesh.faceVertexIDs) # doctest: +PROCESSOR_0
@@ -628,7 +628,7 @@ class UniformGrid2D(UniformGrid):
             ...                        mesh.cellFaceIDs) # doctest: +PROCESSOR_0
             True
 
-            >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
+            >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9, 12, 13, 16))
             >>> print numerix.allequal(externalFaces,
             ...                        numerix.nonzero(mesh.exteriorFaces)) # doctest: +PROCESSOR_0
             True
@@ -650,7 +650,7 @@ class UniformGrid2D(UniformGrid):
             True
 
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
-            >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
+            >>> faceCenters = (faceCoords[..., 0,:] + faceCoords[..., 1,:]) / 2.
             >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
             True
 
@@ -735,8 +735,8 @@ class UniformGrid2D(UniformGrid):
             >>> cellAreaProjections = numerix.array((((  0,  0,  0,  0,  0,  0),
             ...                                       ( dy, dy, dy, dy, dy, dy),
             ...                                       (  0,  0,  0,  0,  0,  0),
-            ...                                       (-dy,-dy,-dy,-dy,-dy,-dy)),
-            ...                                      ((-dx,-dx,-dx,-dx,-dx,-dx),
+            ...                                       (-dy, -dy, -dy, -dy, -dy, -dy)),
+            ...                                      ((-dx, -dx, -dx, -dx, -dx, -dx),
             ...                                       (  0,  0,  0,  0,  0,  0),
             ...                                       ( dx, dx, dx, dx, dx, dx),
             ...                                       (  0,  0,  0,  0,  0,  0))))
@@ -806,3 +806,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

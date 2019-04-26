@@ -179,7 +179,7 @@ class AbstractViewer(object):
             ...                 limits={'xmin': 10, 'xmax': 90},
             ...                 datamin=-0.9, datamax=2.0,
             ...                 title="VIEWERSUBSTITUTION test")
-            >>> for kval in numerix.arange(0,0.3,0.03):
+            >>> for kval in numerix.arange(0, 0.3, 0.03):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
@@ -281,3 +281,4 @@ class AbstractViewer(object):
         return s
 
     _test3D = staticmethod(_test3D)
+

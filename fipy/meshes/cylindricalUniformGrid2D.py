@@ -98,7 +98,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             ...                        mesh.cellFaceIDs) # doctest: +PROCESSOR_0
             True
 
-            >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
+            >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9, 12, 13, 16))
             >>> print numerix.allequal(externalFaces,
             ...                        numerix.nonzero(mesh.exteriorFaces)) # doctest: +PROCESSOR_0
             True
@@ -117,7 +117,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             True
 
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
-            >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
+            >>> faceCenters = (faceCoords[..., 0,:] + faceCoords[..., 1,:]) / 2.
             >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
             True
 
@@ -149,7 +149,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> print isinstance(mesh.cellVolumes, numerix.ndarray)
             True
 
-            >>> globalValue = fp.CellVariable(mesh=mesh,value=mesh.cellVolumes).globalValue
+            >>> globalValue = fp.CellVariable(mesh=mesh, value=mesh.cellVolumes).globalValue
             >>> print numerix.allclose(testCellVolumes, globalValue, atol = 1e-10, rtol = 1e-10)
             True
 
@@ -217,10 +217,10 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> cellAreaProjections = numerix.array((((0,) * 6, (dy,) * 6, (0,) * 6, (-dy,) * 6),
             ...                                      ((-dx,) * 6, (0,) * 6, (dx,) * 6, (0,) * 6)))
 
-            >>> cellAreaProjections[:,0] = cellAreaProjections[:,0] * mesh.cellCenters[0] # doctest: +PROCESSOR_0
-            >>> cellAreaProjections[:,1] = cellAreaProjections[:,1] * (mesh.cellCenters[0] + mesh.dx / 2.) # doctest: +PROCESSOR_0
-            >>> cellAreaProjections[:,2] = cellAreaProjections[:,2] * mesh.cellCenters[0] # doctest: +PROCESSOR_0
-            >>> cellAreaProjections[:,3] = cellAreaProjections[:,3] * (mesh.cellCenters[0] - mesh.dx / 2.) # doctest: +PROCESSOR_0
+            >>> cellAreaProjections[:, 0] = cellAreaProjections[:, 0] * mesh.cellCenters[0] # doctest: +PROCESSOR_0
+            >>> cellAreaProjections[:, 1] = cellAreaProjections[:, 1] * (mesh.cellCenters[0] + mesh.dx / 2.) # doctest: +PROCESSOR_0
+            >>> cellAreaProjections[:, 2] = cellAreaProjections[:, 2] * mesh.cellCenters[0] # doctest: +PROCESSOR_0
+            >>> cellAreaProjections[:, 3] = cellAreaProjections[:, 3] * (mesh.cellCenters[0] - mesh.dx / 2.) # doctest: +PROCESSOR_0
             >>> print numerix.allclose(cellAreaProjections, mesh._cellAreaProjections, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
@@ -300,3 +300,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

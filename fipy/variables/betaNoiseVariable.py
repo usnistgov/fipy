@@ -52,9 +52,9 @@ class BetaNoiseVariable(NoiseVariable):
 
     >>> from fipy.tools.numerix import arange
 
-    >>> for a in arange(0.5,5,0.5):
+    >>> for a in arange(0.5, 5, 0.5):
     ...     alpha.value = a
-    ...     for b in arange(0.5,5,0.5):
+    ...     for b in arange(0.5, 5, 0.5):
     ...         beta.value = b
     ...         if __name__ == '__main__':
     ...             import sys
@@ -98,3 +98,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

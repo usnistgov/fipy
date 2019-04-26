@@ -51,9 +51,9 @@ class GammaNoiseVariable(NoiseVariable):
 
     >>> from fipy.tools.numerix import arange
 
-    >>> for shape in arange(1,8,1):
+    >>> for shape in arange(1, 8, 1):
     ...     alpha.value = shape
-    ...     for rate in arange(0.5,2.5,0.5):
+    ...     for rate in arange(0.5, 2.5, 0.5):
     ...         beta.value = rate
     ...         if __name__ == '__main__':
     ...             import sys
@@ -97,3 +97,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

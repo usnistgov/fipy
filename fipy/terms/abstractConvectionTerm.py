@@ -58,8 +58,8 @@ class _AbstractConvectionTerm(FaceTerm):
             >>> __ConvectionTerm(coeff=vfv2)
             __ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
                    [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, nx=2, dy=1.0, ny=1)))
-            >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = ((0,),(0,)))).solve(var=cv2, solver=DummySolver(), dt=1.)
-            >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (0,0))).solve(var=cv2, solver=DummySolver(), dt=1.)
+            >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = ((0,), (0,)))).solve(var=cv2, solver=DummySolver(), dt=1.)
+            >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (0, 0))).solve(var=cv2, solver=DummySolver(), dt=1.)
 
 
         :Parameters:
@@ -194,3 +194,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

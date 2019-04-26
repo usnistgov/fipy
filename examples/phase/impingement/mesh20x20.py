@@ -118,13 +118,13 @@ evaluation of the face gradient without the modular operators.
 .. index:: exp
 
 >>> def buildThetaEquation(phase, theta):
-...
+... 
 ...     phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
 ...     phaseModSq = phaseMod * phaseMod
 ...     expo = epsilon * beta * theta.grad.mag
 ...     expo = (expo < 100.) * (expo - 100.) + 100.
 ...     pFunc = 1. + numerix.exp(-expo) * (mu / epsilon - 1.)
-...
+... 
 ...     phaseFace = phase.arithmeticFaceValue
 ...     phaseSq = phaseFace * phaseFace
 ...     gradMag = theta.faceGrad.mag
@@ -132,10 +132,10 @@ evaluation of the face gradient without the modular operators.
 ...     gradMag += (gradMag < eps) * eps
 ...     IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
 ...     diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
-...
+... 
 ...     thetaGradDiff = theta.faceGrad - theta.faceGradNoMod
 ...     sourceCoeff = (diffusionCoeff * thetaGradDiff).divergence
-...
+... 
 ...     return TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
 ...                DiffusionTerm(diffusionCoeff) \
 ...                + sourceCoeff
@@ -244,4 +244,5 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+
 

@@ -30,7 +30,7 @@ Take the tangent of a int.
 
 Take the tangent of an array.
 
-   >>> print tan(array((0,0,0)))
+   >>> print tan(array((0, 0, 0)))
    [ 0.  0.  0.]
 
 """
@@ -275,11 +275,11 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
 
 
           >>> from fipy import Variable
-          >>> print tostring(Variable((1,0,11.2345)), precision=1)
+          >>> print tostring(Variable((1, 0, 11.2345)), precision=1)
           [  1.    0.   11.2]
-          >>> print tostring(array((1,2)), precision=5)
+          >>> print tostring(array((1, 2)), precision=5)
           [1 2]
-          >>> print tostring(array((1.12345,2.79)), precision=2)
+          >>> print tostring(array((1.12345, 2.79)), precision=2)
           [ 1.12  2.79]
           >>> print tostring(1)
           1
@@ -355,8 +355,8 @@ def dot(a1, a2, axis=0):
     >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(nx=2, ny=1)
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> v1 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
-    >>> v2 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
+    >>> v1 = CellVariable(mesh=mesh, value=((0, 1), (2, 3)), rank=1)
+    >>> v2 = CellVariable(mesh=mesh, value=((0, 1), (2, 3)), rank=1)
     >>> dot(v1, v2)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
     >>> dot(v2, v1)._variableClass
@@ -369,7 +369,7 @@ def dot(a1, a2, axis=0):
     <class 'fipy.variables.cellVariable.CellVariable'>
     >>> print dot(v1, v1)
     [ 4 10]
-    >>> v3 = array(((0,1),(2,3)))
+    >>> v3 = array(((0, 1), (2, 3)))
     >>> print isinstance(dot(v3, v3), type(array(1)))
     1
     >>> print dot(v3, v3)
@@ -953,7 +953,7 @@ def _indexShape(index, arrayShape):
     an error is raised"
 
         >>> _indexShape(index=(1, 2, 3, 4),
-        ...             arrayShape=(10,20,30))
+        ...             arrayShape=(10, 20, 30))
         Traceback (most recent call last):
             ...
         IndexError: invalid index
@@ -964,8 +964,8 @@ def _indexShape(index, arrayShape):
     "All selection tuple objects must be convertible to intp arrays, or slice
     objects, or the Ellipsis (``...``) object"
 
-        >>> _indexShape(index=NUMERIX.index_exp[...,2,"text"],
-        ...             arrayShape=(10,20,30,40,50))            #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> _indexShape(index=NUMERIX.index_exp[..., 2, "text"],
+        ...             arrayShape=(10, 20, 30, 40, 50))            #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         ValueError: setting an array element with a sequence.
@@ -985,9 +985,9 @@ def _indexShape(index, arrayShape):
 
     ..
 
-        >>> ind = zeros((2,3,5), float)
-        >>> allequal(_indexShape(index=NUMERIX.index_exp[...,ind],
-        ...                      arrayShape=(10,20,30,40,50)),
+        >>> ind = zeros((2, 3, 5), float)
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[..., ind],
+        ...                      arrayShape=(10, 20, 30, 40, 50)),
         ...          (10, 20, 30, 40, 2, 3, 5))
         True
 
@@ -996,25 +996,25 @@ def _indexShape(index, arrayShape):
     with as many full slice (':') objects as needed to make the length of the
     selection tuple N."
 
-        >>> _indexShape(index=NUMERIX.index_exp[...,2,...,4],
-        ...             arrayShape=(10,20,30,40,50))
+        >>> _indexShape(index=NUMERIX.index_exp[..., 2, ..., 4],
+        ...             arrayShape=(10, 20, 30, 40, 50))
         (10, 20, 40)
 
     "If the selection tuple is smaller than N, then as many ':' objects as
     needed are added to the end of the selection tuple so that the modified
     selection tuple has length N."
 
-        >>> _indexShape(index=NUMERIX.index_exp[:,2],
-        ...             arrayShape=(10,20,30,40,50))
+        >>> _indexShape(index=NUMERIX.index_exp[:, 2],
+        ...             arrayShape=(10, 20, 30, 40, 50))
         (10, 30, 40, 50)
 
     "The shape of all the integer indexing arrays must be broadcastable to the
     same shape"
 
-        >>> ind1 = zeros((2,3,4), intp)
-        >>> ind2 = zeros((2,3,5), intp)
-        >>> _indexShape(index=NUMERIX.index_exp[:,ind1,ind2],
-        ...             arrayShape=(10,20,30,40,50))
+        >>> ind1 = zeros((2, 3, 4), intp)
+        >>> ind2 = zeros((2, 3, 5), intp)
+        >>> _indexShape(index=NUMERIX.index_exp[:, ind1, ind2],
+        ...             arrayShape=(10, 20, 30, 40, 50))
         Traceback (most recent call last):
             ...
         ValueError: shape mismatch: objects cannot be broadcast to a single shape
@@ -1023,27 +1023,27 @@ def _indexShape(index, arrayShape):
     exactly what you would expect (concatenation of repeated application of
     basic slicing)."
 
-        >>> ind = zeros((2,3,4), intp)
-        >>> allequal(_indexShape(index=NUMERIX.index_exp[...,ind,:],
-        ...                      arrayShape=(10,20,30)),
+        >>> ind = zeros((2, 3, 4), intp)
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[..., ind,:],
+        ...                      arrayShape=(10, 20, 30)),
         ...          (10, 2, 3, 4, 30))
         True
 
     "If the index subspaces are right next to each other, then the broadcasted
     indexing space directly replaces all of the indexed subspaces in X."
 
-        >>> ind1 = zeros((2,3,4), intp)
-        >>> ind2 = zeros((2,3,4), intp)
-        >>> allequal(_indexShape(index=NUMERIX.index_exp[:,ind1,ind2],
-        ...                      arrayShape=(10,20,30,40,50)),
+        >>> ind1 = zeros((2, 3, 4), intp)
+        >>> ind2 = zeros((2, 3, 4), intp)
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[:, ind1, ind2],
+        ...                      arrayShape=(10, 20, 30, 40, 50)),
         ...          (10, 2, 3, 4, 40, 50))
         True
 
     "If the indexing subspaces are separated (by slice objects), then the
     broadcasted indexing space is first, followed by the sliced subspace of X."
 
-        >>> allequal(_indexShape(index=NUMERIX.index_exp[:,ind1,:,ind2,:],
-        ...                      arrayShape=(10,20,30,40,50)),
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[:, ind1,:, ind2,:],
+        ...                      arrayShape=(10, 20, 30, 40, 50)),
         ...          (2, 3, 4, 10, 30, 50))
         True
 
@@ -1259,4 +1259,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

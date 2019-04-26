@@ -27,11 +27,11 @@ class _FaceGradVariable(FaceVariable):
     ...                             [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,
     ...                               0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0. ]])
     True
-    >>> print (v0.faceGrad.globalValue == v.faceGrad.globalValue[:,0]).all()
+    >>> print (v0.faceGrad.globalValue == v.faceGrad.globalValue[:, 0]).all()
     True
-    >>> print (v1.faceGrad.globalValue  == v.faceGrad.globalValue[:,1]).all()
+    >>> print (v1.faceGrad.globalValue  == v.faceGrad.globalValue[:, 1]).all()
     True
-    >>> print (v2.faceGrad.globalValue  == v.faceGrad.globalValue[:,2]).all()
+    >>> print (v2.faceGrad.globalValue  == v.faceGrad.globalValue[:, 2]).all()
     True
 
     """
@@ -147,3 +147,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

@@ -134,7 +134,7 @@ class Mesh2D(Mesh):
           - `layers`: the number of layers in the extruded mesh (number of times extrudeFunc will be called)
 
         >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
-        >>> print NonUniformGrid2D(nx=2,ny=2).extrude(layers=2).cellCenters
+        >>> print NonUniformGrid2D(nx=2, ny=2).extrude(layers=2).cellCenters
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]
          [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]]
@@ -280,7 +280,7 @@ class Mesh2D(Mesh):
             1
 
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
-            >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
+            >>> faceCenters = (faceCoords[..., 0,:] + faceCoords[..., 1,:]) / 2.
             >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
             True
 
@@ -414,8 +414,8 @@ class Mesh2D(Mesh):
             >>> cellAreaProjections = MA.masked_values((((  0,  0,  0,  0,  0,  0,  nx * area,         0),
             ...                                          ( dy, dy, dy, dy, dy, dy,          0, nx * area),
             ...                                          (  0,  0,  0,  0,  0,  0,        -dy,       -dy),
-            ...                                          (-dy,-dy,-dy,-dy,-dy,-dy,      -1000,     -1000)),
-            ...                                         ((-dx,-dx,-dx,-dx,-dx,-dx, -ny * area,       -dx),
+            ...                                          (-dy, -dy, -dy, -dy, -dy, -dy,      -1000,     -1000)),
+            ...                                         ((-dx, -dx, -dx, -dx, -dx, -dx, -ny * area,       -dx),
             ...                                          (  0,  0,  0,  0,  0,  0,         dx, ny * area),
             ...                                          ( dx, dx, dx, dx, dx, dx,          0,         0),
             ...                                          (  0,  0,  0,  0,  0,  0,      -1000,     -1000))), -1000)
@@ -448,3 +448,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

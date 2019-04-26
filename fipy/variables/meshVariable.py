@@ -617,9 +617,9 @@ def _testDot(self):
     >>> s2 = CellVariable(mesh=mesh, value=3)
 
     >>> v1 = CellVariable(mesh=mesh, rank=1,
-    ...                   value=numerix.array([2,3])[..., numerix.newaxis])
+    ...                   value=numerix.array([2, 3])[..., numerix.newaxis])
     >>> v2 = CellVariable(mesh=mesh, rank=1,
-    ...                   value=numerix.array([3,4])[..., numerix.newaxis])
+    ...                   value=numerix.array([3, 4])[..., numerix.newaxis])
 
     >>> t21 = CellVariable(mesh=mesh, rank=2,
     ...                    value=numerix.array([[2, 3],
@@ -641,7 +641,7 @@ def _testDot(self):
 
     >>> def P(a):
     ...     a = a.globalValue
-    ...     print a[...,0], tuple(numerix.asarray(a.shape, dtype='int32'))
+    ...     print a[..., 0], tuple(numerix.asarray(a.shape, dtype='int32'))
 
     >>> P(v1.dot(v2))
     18 (6,)
@@ -695,3 +695,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

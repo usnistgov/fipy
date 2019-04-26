@@ -254,7 +254,7 @@ class CellVariable(_MeshVariable):
 
         >>> from fipy import Grid2D
         >>> m = Grid2D(nx=2, ny=2, dx=0.1, dy=2.0)
-        >>> print numerix.allclose(CellVariable(mesh=m, value=(0,1,3,6)).leastSquaresGrad.globalValue, \
+        >>> print numerix.allclose(CellVariable(mesh=m, value=(0, 1, 3, 6)).leastSquaresGrad.globalValue, \
         ...                                     [[8.0, 8.0, 24.0, 24.0],
         ...                                      [1.2, 2.0, 1.2, 2.0]])
         True
@@ -422,7 +422,7 @@ class CellVariable(_MeshVariable):
         >>> v = var1 * var2
         >>> print v
         [ 6 12]
-        >>> var1.value = ((3,2))
+        >>> var1.value = ((3, 2))
         >>> print v
         [9 8]
         >>> print v.old
@@ -651,3 +651,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

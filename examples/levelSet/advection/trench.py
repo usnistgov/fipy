@@ -43,10 +43,10 @@ for the initial position of the interface:
 
 >>> r1 =  -numerix.sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
 >>> r2 =  numerix.sqrt((x - Lx / 2)**2 + (y - 3 * Ly / 5)**2)
->>> d = numerix.zeros((len(x),3), 'd')
->>> d[:,0] = numerix.where(x >= Lx / 2, y - Ly / 5, r1)
->>> d[:,1] = numerix.where(x <= Lx / 2, y - 3 * Ly / 5, r2)
->>> d[:,2] = numerix.where(numerix.logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
+>>> d = numerix.zeros((len(x), 3), 'd')
+>>> d[:, 0] = numerix.where(x >= Lx / 2, y - Ly / 5, r1)
+>>> d[:, 1] = numerix.where(x <= Lx / 2, y - 3 * Ly / 5, r2)
+>>> d[:, 2] = numerix.where(numerix.logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:, 0])
 >>> argmins = numerix.argmin(numerix.absolute(d), axis = 1)
 >>> answer = numerix.take(d.ravel(), numerix.arange(len(argmins))*3 + argmins)
 >>> print var.allclose(answer, atol = 1e-1) #doctest: +LSM
@@ -79,4 +79,5 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
     raw_input('finished')
+
 

@@ -313,20 +313,20 @@ iterating to equilibrium
 
 we confirm that the far-field phases have remained separated
 
-    >>> ends = take(phase, (0,-1))
+    >>> ends = take(phase, (0, -1))
     >>> allclose(ends, (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
     1
 
 and that the concentration fields has appropriately segregated into into
 their respective phases
 
-    >>> ends = take(interstitials[0], (0,-1))
+    >>> ends = take(interstitials[0], (0, -1))
     >>> allclose(ends, (0.4, 0.3), rtol = 3e-3, atol = 3e-3)
     1
-    >>> ends = take(substitutionals[0], (0,-1))
+    >>> ends = take(substitutionals[0], (0, -1))
     >>> allclose(ends, (0.3, 0.4), rtol = 3e-3, atol = 3e-3)
     1
-    >>> ends = take(substitutionals[1], (0,-1))
+    >>> ends = take(substitutionals[1], (0, -1))
     >>> allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
     1
 """
@@ -353,5 +353,6 @@ if __name__ == '__main__':
     # profile.stop()
 
     raw_input("finished")
+
 
 

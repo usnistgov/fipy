@@ -53,7 +53,7 @@ class VTKCellViewer(VTKViewer):
         >>> numerix.allclose(c.scalars.to_array(),
         ...                  v2.value) # doctest: +TVTK, +SERIAL
         True
-        >>> numerix.allclose(c.get_array("v1.grad").to_array().swapaxes(0,1)[0],
+        >>> numerix.allclose(c.get_array("v1.grad").to_array().swapaxes(0, 1)[0],
         ...                  v3.value) # doctest: +TVTK, +SERIAL
         True
         >>> r.get_vectors_name_in_file(0) == v3.name  # doctest: +TVTK, +PROCESSOR_0
@@ -76,7 +76,7 @@ class VTKCellViewer(VTKViewer):
         >>> numerix.allclose(c.scalars.to_array(),
         ...                  v2.value) # doctest: +TVTK, +SERIAL
         True
-        >>> numerix.allclose(c.get_array("v1.grad").to_array().swapaxes(0,1)[0:2],
+        >>> numerix.allclose(c.get_array("v1.grad").to_array().swapaxes(0, 1)[0:2],
         ...                  v3.value) # doctest: +TVTK, +SERIAL
         True
         >>> r.get_vectors_name_in_file(0) == v3.name  # doctest: +TVTK, +PROCESSOR_0
@@ -101,7 +101,7 @@ class VTKCellViewer(VTKViewer):
         >>> numerix.allclose(c.scalars.to_array(),
         ...                  v2.value) # doctest: +TVTK, +SERIAL
         True
-        >>> numerix.allclose(c.get_array("v1.grad").to_array().swapaxes(0,1)[0:2],
+        >>> numerix.allclose(c.get_array("v1.grad").to_array().swapaxes(0, 1)[0:2],
         ...                  v3.value) # doctest: +TVTK, +SERIAL
         True
         >>> r.get_vectors_name_in_file(0) == v3.name  # doctest: +TVTK, +PROCESSOR_0
@@ -124,7 +124,7 @@ class VTKCellViewer(VTKViewer):
         >>> numerix.allclose(c.scalars.to_array(),
         ...                  v2.value) # doctest: +TVTK, +SERIAL
         True
-        >>> numerix.allclose(c.get_array("v1.grad").to_array().swapaxes(0,1),
+        >>> numerix.allclose(c.get_array("v1.grad").to_array().swapaxes(0, 1),
         ...                  v3.value) # doctest: +TVTK, +SERIAL
         True
         >>> r.get_scalars_name_in_file(0) == v2.name  # doctest: +TVTK, +PROCESSOR_0
@@ -141,4 +141,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 

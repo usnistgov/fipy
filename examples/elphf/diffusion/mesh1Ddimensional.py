@@ -12,7 +12,7 @@ but we demonstrate FiPy's facility to use dimensional quantities.
 We solve the problem on a 40 mm long 1D mesh
 
     >>> nx = 40
-    >>> dx = PhysicalField(1.,"mm")
+    >>> dx = PhysicalField(1., "mm")
     >>> L = nx * dx
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
@@ -134,4 +134,5 @@ if __name__ == '__main__':
     # profile.stop()
 
     raw_input("finished")
+
 

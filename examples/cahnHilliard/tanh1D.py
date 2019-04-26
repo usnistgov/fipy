@@ -138,10 +138,10 @@ we update the display and output data about the progression of the solution
 ...     if __name__ == '__main__':
 ...         diff = abs(answer - numerix.array(var))
 ...         maxarg = numerix.argmax(diff)
-...         print 'maximum error:',diff[maxarg]
-...         print 'element id:',maxarg
-...         print 'value at element ',maxarg,' is ',var[maxarg]
-...         print 'solution value',answer[maxarg]
+...         print 'maximum error:', diff[maxarg]
+...         print 'element id:', maxarg
+...         print 'value at element ', maxarg, ' is ', var[maxarg]
+...         print 'solution value', answer[maxarg]
 ... 
 ...         viewer.plot()
 
@@ -158,4 +158,5 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+
 

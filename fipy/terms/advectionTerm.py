@@ -85,7 +85,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
     standing on a harpsichord singing 'trivial test cases are here again')
 
     >>> vel = numerix.array((-1, 2, -3))
-    >>> coeff = CellVariable(mesh = mesh, value = numerix.array((4,6,1)))
+    >>> coeff = CellVariable(mesh = mesh, value = numerix.array((4, 6, 1)))
     >>> v, L, b = AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
     >>> print numerix.allclose(b, -vel * numerix.array((2, numerix.sqrt(5**2 + 2**2), 5)), atol = 1e-10) # doctest: +PROCESSOR_0
     True
@@ -95,7 +95,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
     >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = 1., dy = 1., nx = 2, ny = 2)
     >>> vel = numerix.array((3, -5, -6, -3))
-    >>> coeff = CellVariable(mesh = mesh, value = numerix.array((3 , 1, 6, 7)))
+    >>> coeff = CellVariable(mesh = mesh, value = numerix.array((3, 1, 6, 7)))
     >>> v, L, b = AdvectionTerm(vel)._buildMatrix(coeff, SparseMatrix)
     >>> answer = -vel * numerix.array((2, numerix.sqrt(2**2 + 6**2), 1, 0))
     >>> print numerix.allclose(b, answer, atol = 1e-10) # doctest: +PROCESSOR_0
@@ -211,3 +211,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

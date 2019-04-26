@@ -81,10 +81,10 @@ Make the equation, viewer and solve.
 >>> for i in range(20):
 ...     var.updateOld() # doctest: +GMSH
 ...     res = 1.
-...
+... 
 ...     while res > 1e-2:
 ...         res = eqn.sweep(var, dt=dt) # doctest: +GMSH
-...
+... 
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 ...     time += dt
@@ -104,3 +104,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

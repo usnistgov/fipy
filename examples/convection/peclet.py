@@ -11,7 +11,7 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 >>> L = 1.
 >>> nx = 1000
 >>> dx =  L / nx
->>> mesh = Grid1D(dx=dx , nx=nx)
+>>> mesh = Grid1D(dx=dx, nx=nx)
 
 >>> valueLeft = 0.
 >>> valueRight = 1.
@@ -57,3 +57,4 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
+

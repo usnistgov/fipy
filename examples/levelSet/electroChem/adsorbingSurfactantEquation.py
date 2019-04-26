@@ -63,9 +63,9 @@ class AdsorbingSurfactantEquation():
     ...                                value = (-dx*3/2, -dx/2, dx/2,
     ...                                          3*dx/2,  5*dx/2),
     ...                                hasOld = 1)
-    >>> surfactantVar = SurfactantVariable(value = (0, 0, initialValue, 0 ,0),
+    >>> surfactantVar = SurfactantVariable(value = (0, 0, initialValue, 0, 0),
     ...                                    distanceVar = distanceVar)
-    >>> bulkVar = CellVariable(mesh = mesh, value = (c , c, c, c, c))
+    >>> bulkVar = CellVariable(mesh = mesh, value = (c, c, c, c, c))
     >>> eqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
     ...                                   distanceVar = distanceVar,
     ...                                   bulkVar = bulkVar,
@@ -97,9 +97,9 @@ class AdsorbingSurfactantEquation():
     >>> distanceVar = DistanceVariable(mesh = mesh,
     ...                                value = dx * (numerix.arange(5) - 1.5),
     ...                                hasOld = 1)
-    >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0),
+    >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0, 0),
     ...                           distanceVar = distanceVar)
-    >>> var1 = SurfactantVariable(value = (0, 0, theta1, 0 ,0),
+    >>> var1 = SurfactantVariable(value = (0, 0, theta1, 0, 0),
     ...                           distanceVar = distanceVar)
     >>> bulkVar0 = CellVariable(mesh = mesh, value = (c0, c0, c0, c0, c0))
     >>> bulkVar1 = CellVariable(mesh = mesh, value = (c1, c1, c1, c1, c1))
@@ -144,7 +144,7 @@ class AdsorbingSurfactantEquation():
     coefficient to zero leads to the solver not converging and an eventual
     failure.
 
-    >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0),
+    >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0, 0),
     ...                           distanceVar = distanceVar)
     >>> bulkVar0 = CellVariable(mesh = mesh, value = (c0, c0, c0, c0, c0))
 
@@ -338,3 +338,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

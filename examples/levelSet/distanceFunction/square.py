@@ -29,11 +29,11 @@ Do the tests:
 >>> v3 = evalCell(v2, v1, dx, dy)[0]
 >>> v4 = dx * dy / numerix.sqrt(dx**2 + dy**2) / 2
 >>> arr = numerix.array((
-...     v3           , v2      , -3. * dy / 2.   , v2      , v3,
-...     v1           , val     , -dy / 2.        , val     , v1           ,
-...     -3. * dx / 2., -dx / 2., v4              , -dx / 2., -3. * dx / 2.,
-...     v1           , val     , -dy / 2.        , val     , v1           ,
-...     v3           , v2      , -3. * dy / 2.   , v2      , v3           ))
+...     v3, v2, -3. * dy / 2., v2, v3,
+...     v1, val, -dy / 2., val, v1,
+...     -3. * dx / 2., -dx / 2., v4, -dx / 2., -3. * dx / 2.,
+...     v1, val, -dy / 2., val, v1,
+...     v3, v2, -3. * dy / 2., v2, v3           ))
 >>> print var.allclose(arr) #doctest: +LSM
 1
 
@@ -68,3 +68,4 @@ if __name__ == '__main__':
     viewer = Viewer(vars=var, maxval=-5., minval=5.)
     viewer.plot()
     raw_input('finished')
+

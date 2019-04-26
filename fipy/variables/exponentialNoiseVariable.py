@@ -47,7 +47,7 @@ class ExponentialNoiseVariable(NoiseVariable):
 
     >>> from fipy.tools.numerix import arange, exp
 
-    >>> for mu in arange(0.5,3,0.5):
+    >>> for mu in arange(0.5, 3, 0.5):
     ...     mean.value = (mu)
     ...     expdist.value = ((1/mean)*exp(-x/mean))
     ...     if __name__ == '__main__':
@@ -89,3 +89,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

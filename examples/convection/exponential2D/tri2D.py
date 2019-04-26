@@ -22,7 +22,7 @@ This example solves the steady-state convection-diffusion equation as described 
 >>> var.constrain(valueRight, mesh.facesRight)
 
 >>> diffCoeff = 1.
->>> convCoeff = (10.,0.)
+>>> convCoeff = (10., 0.)
 
 >>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
@@ -50,3 +50,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

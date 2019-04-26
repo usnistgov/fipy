@@ -199,7 +199,7 @@ class NonUniformGrid3D(Mesh):
             True
 
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
-            >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:] + faceCoords[...,2,:] + faceCoords[...,3,:]) / 4.
+            >>> faceCenters = (faceCoords[..., 0,:] + faceCoords[..., 1,:] + faceCoords[..., 2,:] + faceCoords[..., 3,:]) / 4.
             >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
             True
 
@@ -334,7 +334,7 @@ class NonUniformGrid3D(Mesh):
             >>> cellVertexIDs = numerix.array((17, 16, 13, 12, 5, 4, 1, 0))
             >>> cellVertexIDs = numerix.array((cellVertexIDs, cellVertexIDs + 1, cellVertexIDs + 2,
             ...                                cellVertexIDs + 4, cellVertexIDs + 5, cellVertexIDs + 6))
-            >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
+            >>> cellVertexIDs = cellVertexIDs.swapaxes(0, 1)
 
 
             >>> print numerix.allclose(mesh._cellVertexIDs, cellVertexIDs) # doctest: +PROCESSOR_0
@@ -372,3 +372,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

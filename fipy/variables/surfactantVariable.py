@@ -38,7 +38,7 @@ class SurfactantVariable(CellVariable):
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
         >>> distanceVariable = DistanceVariable(mesh = mesh,
         ...                                     value = (1.5, 0.5, 1.5,
-        ...                                              0.5,-0.5, 0.5,
+        ...                                              0.5, -0.5, 0.5,
         ...                                              1.5, 0.5, 1.5))
         >>> surfactantVariable = SurfactantVariable(value = 1,
         ...                                         distanceVar = distanceVariable)
@@ -117,3 +117,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

@@ -587,7 +587,7 @@ class UniformGrid3D(UniformGrid):
 
             >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values((( 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 0, 1, 2, 3, 4, 5, 0, 0, 1, 2, 3, 3, 4, 5),
-            ...                                 (-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 3, 4, 5,-1,-1,-1,-1, 1, 2,-1,-1, 4, 5,-1)), -1)
+            ...                                 (-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, 4, 5, -1, -1, -1, -1, 1, 2, -1, -1, 4, 5, -1)), -1)
             >>> print numerix.allequal(faceCellIds, mesh.faceCellIDs) # doctest: +PROCESSOR_0
             True
 
@@ -601,19 +601,19 @@ class UniformGrid3D(UniformGrid):
             1
 
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
-            >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:] + faceCoords[...,2,:] + faceCoords[...,3,:]) / 4.
+            >>> faceCenters = (faceCoords[..., 0,:] + faceCoords[..., 1,:] + faceCoords[..., 2,:] + faceCoords[..., 3,:]) / 4.
             >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
             True
 
-            >>> faceNormals = numerix.array((( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1, 1, 1, 1,-1, 1, 1, 1),
-            ...                              ( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1,-1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),
-            ...                              (-1,-1,-1,-1,-1,-1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
+            >>> faceNormals = numerix.array((( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 1, 1, 1, -1, 1, 1, 1),
+            ...                              ( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),
+            ...                              (-1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
             >>> print numerix.allclose(faceNormals, mesh.faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
-            >>> cellToFaceOrientations = numerix.array((( 1,-1,-1, 1,-1,-1),
+            >>> cellToFaceOrientations = numerix.array((( 1, -1, -1, 1, -1, -1),
             ...                                         ( 1, 1, 1, 1, 1, 1),
-            ...                                         ( 1, 1, 1,-1,-1,-1),
+            ...                                         ( 1, 1, 1, -1, -1, -1),
             ...                                         ( 1, 1, 1, 1, 1, 1),
             ...                                         ( 1, 1, 1, 1, 1, 1),
             ...                                         ( 1, 1, 1, 1, 1, 1)))
@@ -625,7 +625,7 @@ class UniformGrid3D(UniformGrid):
             True
 
             >>> cellCenters = numerix.array(((   dx/2., 3.*dx/2., 5.*dx/2.,   dx/2., 3.*dx/2., 5.*dx/2.),
-            ...                              (   dy/2.,    dy/2.,    dy/2.,3.*dy/2., 3.*dy/2., 3.*dy/2.),
+            ...                              (   dy/2.,    dy/2.,    dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2.),
             ...                              (   dz/2.,    dz/2.,    dz/2.,   dz/2.,    dz/2.,    dz/2.)))
             >>> print numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10)
             True
@@ -701,7 +701,7 @@ class UniformGrid3D(UniformGrid):
             >>> print numerix.allclose(cellNormals, mesh._cellNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
 
-            >>> cellAreaProjections = numerix.array((((-yz,-yz,-yz,-yz,-yz,-yz),
+            >>> cellAreaProjections = numerix.array((((-yz, -yz, -yz, -yz, -yz, -yz),
             ...                                       ( yz, yz, yz, yz, yz, yz),
             ...                                       (  0,  0,  0,  0,  0,  0),
             ...                                       (  0,  0,  0,  0,  0,  0),
@@ -709,7 +709,7 @@ class UniformGrid3D(UniformGrid):
             ...                                       (  0,  0,  0,  0,  0,  0)),
             ...                                      ((  0,  0,  0,  0,  0,  0),
             ...                                       (  0,  0,  0,  0,  0,  0),
-            ...                                       (-xz,-xz,-xz,-xz,-xz,-xz),
+            ...                                       (-xz, -xz, -xz, -xz, -xz, -xz),
             ...                                       ( xz, xz, xz, xz, xz, xz),
             ...                                       (  0,  0,  0,  0,  0,  0),
             ...                                       (  0,  0,  0,  0,  0,  0)),
@@ -717,7 +717,7 @@ class UniformGrid3D(UniformGrid):
             ...                                       (  0,  0,  0,  0,  0,  0),
             ...                                       (  0,  0,  0,  0,  0,  0),
             ...                                       (  0,  0,  0,  0,  0,  0),
-            ...                                       (-xy,-xy,-xy,-xy,-xy,-xy),
+            ...                                       (-xy, -xy, -xy, -xy, -xy, -xy),
             ...                                       ( xy, xy, xy, xy, xy, xy))))
             >>> print numerix.allclose(cellAreaProjections, mesh._cellAreaProjections, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
             True
@@ -725,7 +725,7 @@ class UniformGrid3D(UniformGrid):
             >>> cellVertexIDs = numerix.array((17, 16, 13, 12, 5, 4, 1, 0))
             >>> cellVertexIDs = numerix.array((cellVertexIDs, cellVertexIDs + 1, cellVertexIDs + 2,
             ...                                cellVertexIDs + 4, cellVertexIDs + 5, cellVertexIDs + 6))
-            >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
+            >>> cellVertexIDs = cellVertexIDs.swapaxes(0, 1)
             >>> print numerix.allclose(mesh._cellVertexIDs, cellVertexIDs) # doctest: +PROCESSOR_0
             True
 
@@ -747,16 +747,16 @@ class UniformGrid3D(UniformGrid):
             >>> cellVertexIDs = numerix.array((9, 8, 7, 6, 3, 2, 1, 0))
             >>> cellVertexIDs = numerix.array((cellVertexIDs, cellVertexIDs + 2, cellVertexIDs + 6,
             ...                                cellVertexIDs + 8, cellVertexIDs + 12, cellVertexIDs + 14))
-            >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
+            >>> cellVertexIDs = cellVertexIDs.swapaxes(0, 1)
             >>> print numerix.allclose(mesh._cellVertexIDs, cellVertexIDs) # doctest: +PROCESSOR_0
             True
 
-            >>> cellToCellIDs = MA.masked_values(((-1,-1,-1,-1,-1,-1),
-            ...                                   (-1,-1,-1,-1,-1,-1),
-            ...                                   (-1, 0,-1, 2,-1, 4),
-            ...                                   ( 1,-1, 3,-1, 5,-1),
-            ...                                   (-1,-1, 0, 1, 2, 3),
-            ...                                   ( 2, 3, 4, 5,-1,-1)), -1)
+            >>> cellToCellIDs = MA.masked_values(((-1, -1, -1, -1, -1, -1),
+            ...                                   (-1, -1, -1, -1, -1, -1),
+            ...                                   (-1, 0, -1, 2, -1, 4),
+            ...                                   ( 1, -1, 3, -1, 5, -1),
+            ...                                   (-1, -1, 0, 1, 2, 3),
+            ...                                   ( 2, 3, 4, 5, -1, -1)), -1)
             >>> print numerix.allequal(mesh._cellToCellIDs, cellToCellIDs) # doctest: +PROCESSOR_0
             True
 
@@ -795,16 +795,16 @@ class UniformGrid3D(UniformGrid):
             >>> cellVertexIDs = numerix.array((13, 12, 9, 8, 5, 4, 1, 0))
             >>> cellVertexIDs = numerix.array((cellVertexIDs, cellVertexIDs + 1, cellVertexIDs + 2,
             ...                                cellVertexIDs + 8, cellVertexIDs + 9, cellVertexIDs + 10))
-            >>> cellVertexIDs = cellVertexIDs.swapaxes(0,1)
+            >>> cellVertexIDs = cellVertexIDs.swapaxes(0, 1)
             >>> print numerix.allclose(mesh._cellVertexIDs, cellVertexIDs) # doctest: +PROCESSOR_0
             True
 
-            >>> cellToCellIDs = MA.masked_values(((-1, 0, 1,-1, 3, 4),
-            ...                                   ( 1, 2,-1, 4, 5,-1),
-            ...                                   (-1,-1,-1,-1,-1,-1),
-            ...                                   (-1,-1,-1,-1,-1,-1),
-            ...                                   (-1,-1,-1, 0, 1, 2),
-            ...                                   ( 3, 4, 5,-1,-1,-1)), -1)
+            >>> cellToCellIDs = MA.masked_values(((-1, 0, 1, -1, 3, 4),
+            ...                                   ( 1, 2, -1, 4, 5, -1),
+            ...                                   (-1, -1, -1, -1, -1, -1),
+            ...                                   (-1, -1, -1, -1, -1, -1),
+            ...                                   (-1, -1, -1, 0, 1, 2),
+            ...                                   ( 3, 4, 5, -1, -1, -1)), -1)
             >>> print numerix.allequal(mesh._cellToCellIDs, cellToCellIDs) # doctest: +PROCESSOR_0
             True
 
@@ -886,12 +886,12 @@ class UniformGrid3D(UniformGrid):
             >>> print numerix.allequal(vertices, mesh.vertexCoords) # doctest: +PROCESSOR_0
             True
 
-            >>> cellToCellIDs = MA.masked_values(((-1, 0, 1, 2,-1, 4, 5, 6,-1, 8, 9,10,-1,12,13,14,-1,16,17,18,-1,20,21,22),
-            ...                                   ( 1, 2, 3,-1, 5, 6, 7,-1, 9,10,11,-1,13,14,15,-1,17,18,19,-1,21,22,23,-1),
-            ...                                   (-1,-1,-1,-1, 0, 1, 2, 3, 4, 5, 6, 7,-1,-1,-1,-1,12,13,14,15,16,17,18,19),
-            ...                                   ( 4, 5, 6, 7, 8, 9,10,11,-1,-1,-1,-1,16,17,18,19,20,21,22,23,-1,-1,-1,-1),
-            ...                                   (-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11),
-            ...                                   (12,13,14,15,16,17,18,19,20,21,22,23,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1)), -1)
+            >>> cellToCellIDs = MA.masked_values(((-1, 0, 1, 2, -1, 4, 5, 6, -1, 8, 9, 10, -1, 12, 13, 14, -1, 16, 17, 18, -1, 20, 21, 22),
+            ...                                   ( 1, 2, 3, -1, 5, 6, 7, -1, 9, 10, 11, -1, 13, 14, 15, -1, 17, 18, 19, -1, 21, 22, 23, -1),
+            ...                                   (-1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, -1, -1, -1, -1, 12, 13, 14, 15, 16, 17, 18, 19),
+            ...                                   ( 4, 5, 6, 7, 8, 9, 10, 11, -1, -1, -1, -1, 16, 17, 18, 19, 20, 21, 22, 23, -1, -1, -1, -1),
+            ...                                   (-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
+            ...                                   (12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)), -1)
             >>> print numerix.allequal(mesh._cellToCellIDs, cellToCellIDs) # doctest: +PROCESSOR_0
             True
 
@@ -923,3 +923,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

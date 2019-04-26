@@ -56,7 +56,7 @@ class GaussianNoiseVariable(NoiseVariable):
     >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = arange(0.1, 5., 0.1)**2, dy = arange(0.1, 3., 0.1)**3)
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> volumes = CellVariable(mesh=mesh,value=mesh.cellVolumes)
+    >>> volumes = CellVariable(mesh=mesh, value=mesh.cellVolumes)
     >>> noise = GaussianNoiseVariable(mesh = mesh, mean = mean,
     ...                               variance = variance / volumes)
 
@@ -132,3 +132,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

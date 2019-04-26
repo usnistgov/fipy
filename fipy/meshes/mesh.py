@@ -593,7 +593,7 @@ class Mesh(AbstractMesh):
             1
 
             >>> faceCoords = numerix.take(vertices, MA.filled(faces, 0), axis=1)
-            >>> faceCenters = faceCoords[...,0,:] + faceCoords[...,1,:] + faceCoords[...,2,:] + faceCoords[...,3,:]
+            >>> faceCenters = faceCoords[..., 0,:] + faceCoords[..., 1,:] + faceCoords[..., 2,:] + faceCoords[..., 3,:]
             >>> numVex = numerix.array((4., 4., 4., 4., 4., 4., 3., 3., 4., 4.))
             >>> faceCenters /= numVex
             >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
@@ -789,3 +789,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

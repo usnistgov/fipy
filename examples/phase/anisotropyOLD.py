@@ -141,7 +141,7 @@ is constructed by first obtaining :math:`\nabla \phi`
 
 using :meth:`getFaceGrad`. The axes are rotated ninety degrees.
 
->>> dxi = phase.faceGrad.dot(((0, 1),(-1,0)))
+>>> dxi = phase.faceGrad.dot(((0, 1), (-1, 0)))
 >>> anisotropySource = (A * dxi).divergence
 
 The phase equation can now be constructed.
@@ -202,3 +202,4 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     raw_input('finished')
+

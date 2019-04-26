@@ -52,7 +52,7 @@ class Variable(object):
             Variable(value=array(3))
             >>> Variable(value=3, unit="m")
             Variable(value=PhysicalField(3,'m'))
-            >>> Variable(value=3, unit="m", array=numerix.zeros((3,2), 'l'))
+            >>> Variable(value=3, unit="m", array=numerix.zeros((3, 2), 'l'))
             Variable(value=PhysicalField(array([[3, 3],
                    [3, 3],
                    [3, 3]]),'m'))
@@ -132,13 +132,13 @@ class Variable(object):
         """
         Attempt to convert the `Variable` to a numerix `array` object
 
-            >>> v = Variable(value=[2,3])
+            >>> v = Variable(value=[2, 3])
             >>> print numerix.array(v)
             [2 3]
 
         A dimensional `Variable` will convert to the numeric value in its base units
 
-            >>> v = Variable(value=[2,3], unit="mm")
+            >>> v = Variable(value=[2, 3], unit="mm")
             >>> numerix.array(v)
             array([ 0.002,  0.003])
         """
@@ -176,7 +176,7 @@ class Variable(object):
 
         Check that this works for arrays.
 
-            >>> a = Variable(value=numerix.array((0,1,2)))
+            >>> a = Variable(value=numerix.array((0, 1, 2)))
             >>> b = a.copy()
             >>> b
             Variable(value=array([0, 1, 2]))
@@ -264,7 +264,7 @@ class Variable(object):
         hour/minute/second.  The original object will not be changed.
 
         >>> t = Variable(value=314159., unit='s')
-        >>> print numerix.allclose([e.allclose(v) for (e, v) in zip(t.inUnitsOf('d','h','min','s'),
+        >>> print numerix.allclose([e.allclose(v) for (e, v) in zip(t.inUnitsOf('d', 'h', 'min', 's'),
         ...                                                         ['3.0 d', '15.0 h', '15.0 min', '59.0 s'])],
         ...                        True)
         1
@@ -359,16 +359,16 @@ class Variable(object):
              >>> (Variable((1)))._getCstring(argDict={})
              'var'
 
-             >>> (Variable((1,2,3,4)))._getCstring(argDict={})
+             >>> (Variable((1, 2, 3, 4)))._getCstring(argDict={})
              'var[i]'
 
-             >>> (Variable(((1,2),(3,4))))._getCstring(argDict={})
+             >>> (Variable(((1, 2), (3, 4))))._getCstring(argDict={})
              'var[i + j * ni]'
 
-             >>> Variable((((1,2),(3,4)),((5,6),(7,8))))._getCstring(argDict={})
+             >>> Variable((((1, 2), (3, 4)), ((5, 6), (7, 8))))._getCstring(argDict={})
              'var[i + j * ni + k * ni * nj]'
 
-             >>> (Variable(1) * Variable((1,2,3)))._getCstring(argDict={})
+             >>> (Variable(1) * Variable((1, 2, 3)))._getCstring(argDict={})
              '(var0 * var1[i])'
 
          freshen is ignored
@@ -519,7 +519,7 @@ class Variable(object):
         """
         Constrain the `Variable` to have a `value` at an index or mask location specified by `where`.
 
-        >>> v = Variable((0,1,2,3))
+        >>> v = Variable((0, 1, 2, 3))
         >>> v.constrain(2, numerix.array((True, False, False, False)))
         >>> print v
         [2 1 2 3]
@@ -571,7 +571,7 @@ class Variable(object):
     def release(self, constraint):
         """Remove `constraint` from `self`
 
-        >>> v = Variable((0,1,2,3))
+        >>> v = Variable((0, 1, 2, 3))
         >>> v.constrain(2, numerix.array((True, False, False, False)))
         >>> v[:] = 10
         >>> from fipy.boundaryConditions.constraint import Constraint
@@ -654,12 +654,12 @@ class Variable(object):
         """
         Set the value of the Variable. Can take a masked array.
 
-            >>> a = Variable((1,2,3))
+            >>> a = Variable((1, 2, 3))
             >>> a.setValue(5, where=(1, 0, 1))
             >>> print a
             [5 2 5]
 
-            >>> b = Variable((4,5,6))
+            >>> b = Variable((4, 5, 6))
             >>> a.setValue(b, where=(1, 0, 1))
             >>> print a
             [4 2 6]
@@ -669,13 +669,13 @@ class Variable(object):
             >>> print a
             [3 3 3]
 
-            >>> b = numerix.array((3,4,5))
+            >>> b = numerix.array((3, 4, 5))
             >>> a.value = b
             >>> a[:] = 1
             >>> print b
             [3 4 5]
 
-            >>> a.setValue((4,5,6), where=(1, 0)) #doctest: +IGNORE_EXCEPTION_DETAIL
+            >>> a.setValue((4, 5, 6), where=(1, 0)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
                 ....
             ValueError: shape mismatch: objects cannot be broadcast to a single shape
@@ -729,14 +729,14 @@ class Variable(object):
         ()
         >>> numerix.allequal(Variable(value=(3,)).shape, (1,))
         True
-        >>> numerix.allequal(Variable(value=(3,4)).shape, (2,))
+        >>> numerix.allequal(Variable(value=(3, 4)).shape, (2,))
         True
 
         >>> Variable(value="3 m").shape
         ()
         >>> numerix.allequal(Variable(value=(3,), unit="m").shape, (1,))
         True
-        >>> numerix.allequal(Variable(value=(3,4), unit="m").shape, (2,))
+        >>> numerix.allequal(Variable(value=(3, 4), unit="m").shape, (2,))
         True
         """
         if self._value is not None:
@@ -755,7 +755,7 @@ class Variable(object):
             True
             >>> Variable(1.).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1.))
             True
-            >>> Variable((1,1.)).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array((1., 1.)))
+            >>> Variable((1, 1.)).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array((1., 1.)))
             True
 
         """
@@ -836,11 +836,11 @@ class Variable(object):
         """
         Gets the stack from _getCstring() which calls _getRepresentation()
 
-            >>> (Variable((1,2,3,4)) * Variable((5,6,7,8)))._getCstring()
+            >>> (Variable((1, 2, 3, 4)) * Variable((5, 6, 7, 8)))._getCstring()
             '(var0[i] * var1[i])'
-            >>> (Variable(((1,2),(3,4))) * Variable(((5,6),(7,8))))._getCstring()
+            >>> (Variable(((1, 2), (3, 4))) * Variable(((5, 6), (7, 8))))._getCstring()
             '(var0[i + j * ni] * var1[i + j * ni])'
-            >>> (Variable((1,2)) * Variable((5,6)) * Variable((7,8)))._getCstring()
+            >>> (Variable((1, 2)) * Variable((5, 6)) * Variable((7, 8)))._getCstring()
             '((var00[i] * var01[i]) * var1[i])'
 
         The following test was implemented due to a problem with
@@ -1404,8 +1404,8 @@ class Variable(object):
         """
         "Evaluate" the `Variable` and return the specified element
 
-            >>> a = Variable(value=((3.,4.),(5.,6.)), unit="m") + "4 m"
-            >>> print a[1,1]
+            >>> a = Variable(value=((3., 4.), (5., 6.)), unit="m") + "4 m"
+            >>> print a[1, 1]
             10.0 m
 
         It is an error to slice a `Variable` whose `value` is not sliceable
@@ -1493,52 +1493,52 @@ class Variable(object):
 
         >>> from fipy.tools.numerix import *
 
-        >>> arccos(Variable(value=(0,0.5,1.0)))
+        >>> arccos(Variable(value=(0, 0.5, 1.0)))
         arccos(Variable(value=array([ 0. ,  0.5,  1. ])))
 
         .. attention::
 
            the next should really return radians, but doesn't
 
-        >>> print tostring(arccos(Variable(value=(0,0.5,1.0))), precision=3)
+        >>> print tostring(arccos(Variable(value=(0, 0.5, 1.0))), precision=3)
         [ 1.571  1.047  0.   ]
 
         Inverse hyperbolic cosine of :math:`x`, :math:`\cosh^{-1} x`
 
-        >>> arccosh(Variable(value=(1,2,3)))
+        >>> arccosh(Variable(value=(1, 2, 3)))
         arccosh(Variable(value=array([1, 2, 3])))
-        >>> print tostring(arccosh(Variable(value=(1,2,3))), precision=3)
+        >>> print tostring(arccosh(Variable(value=(1, 2, 3))), precision=3)
         [ 0.     1.317  1.763]
 
         Inverse sine of :math:`x`, :math:`\sin^{-1} x`
 
-        >>> arcsin(Variable(value=(0,0.5,1.0)))
+        >>> arcsin(Variable(value=(0, 0.5, 1.0)))
         arcsin(Variable(value=array([ 0. ,  0.5,  1. ])))
 
         .. attention::
 
            the next should really return radians, but doesn't
 
-        >>> print tostring(arcsin(Variable(value=(0,0.5,1.0))), precision=3)
+        >>> print tostring(arcsin(Variable(value=(0, 0.5, 1.0))), precision=3)
         [ 0.     0.524  1.571]
 
         Inverse hyperbolic sine of :math:`x`, :math:`\sinh^{-1} x`
 
-        >>> arcsinh(Variable(value=(1,2,3)))
+        >>> arcsinh(Variable(value=(1, 2, 3)))
         arcsinh(Variable(value=array([1, 2, 3])))
-        >>> print tostring(arcsinh(Variable(value=(1,2,3))), precision=3)
+        >>> print tostring(arcsinh(Variable(value=(1, 2, 3))), precision=3)
         [ 0.881  1.444  1.818]
 
         Inverse tangent of :math:`x`, :math:`\tan^{-1} x`
 
-        >>> arctan(Variable(value=(0,0.5,1.0)))
+        >>> arctan(Variable(value=(0, 0.5, 1.0)))
         arctan(Variable(value=array([ 0. ,  0.5,  1. ])))
 
         .. attention::
 
            the next should really return radians, but doesn't
 
-        >>> print tostring(arctan(Variable(value=(0,0.5,1.0))), precision=3)
+        >>> print tostring(arctan(Variable(value=(0, 0.5, 1.0))), precision=3)
         [ 0.     0.464  0.785]
 
         Inverse tangent of a ratio :math:`x/y`, :math:`\tan^{-1} \frac{x}{y}`
@@ -1555,58 +1555,58 @@ class Variable(object):
 
         Inverse hyperbolic tangent of :math:`x`, :math:`\tanh^{-1} x`
 
-        >>> arctanh(Variable(value=(0,0.25,0.5)))
+        >>> arctanh(Variable(value=(0, 0.25, 0.5)))
         arctanh(Variable(value=array([ 0.  ,  0.25,  0.5 ])))
-        >>> print tostring(arctanh(Variable(value=(0,0.25,0.5))), precision=3)
+        >>> print tostring(arctanh(Variable(value=(0, 0.25, 0.5))), precision=3)
         [ 0.     0.255  0.549]
 
         Cosine of :math:`x`, :math:`\cos x`
 
-        >>> cos(Variable(value=(0,2*pi/6,pi/2), unit="rad"))
+        >>> cos(Variable(value=(0, 2*pi/6, pi/2), unit="rad"))
         cos(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  1.57079633]),'rad')))
-        >>> print tostring(cos(Variable(value=(0,2*pi/6,pi/2), unit="rad")), suppress_small=1)
+        >>> print tostring(cos(Variable(value=(0, 2*pi/6, pi/2), unit="rad")), suppress_small=1)
         [ 1.   0.5  0. ]
 
         Hyperbolic cosine of :math:`x`, :math:`\cosh x`
 
-        >>> cosh(Variable(value=(0,1,2)))
+        >>> cosh(Variable(value=(0, 1, 2)))
         cosh(Variable(value=array([0, 1, 2])))
-        >>> print tostring(cosh(Variable(value=(0,1,2))), precision=3)
+        >>> print tostring(cosh(Variable(value=(0, 1, 2))), precision=3)
         [ 1.     1.543  3.762]
 
         Tangent of :math:`x`, :math:`\tan x`
 
-        >>> tan(Variable(value=(0,pi/3,2*pi/3), unit="rad"))
+        >>> tan(Variable(value=(0, pi/3, 2*pi/3), unit="rad"))
         tan(Variable(value=PhysicalField(array([ 0.        ,  1.04719755,  2.0943951 ]),'rad')))
-        >>> print tostring(tan(Variable(value=(0,pi/3,2*pi/3), unit="rad")), precision=3)
+        >>> print tostring(tan(Variable(value=(0, pi/3, 2*pi/3), unit="rad")), precision=3)
         [ 0.     1.732 -1.732]
 
         Hyperbolic tangent of :math:`x`, :math:`\tanh x`
 
-        >>> tanh(Variable(value=(0,1,2)))
+        >>> tanh(Variable(value=(0, 1, 2)))
         tanh(Variable(value=array([0, 1, 2])))
-        >>> print tostring(tanh(Variable(value=(0,1,2))), precision=3)
+        >>> print tostring(tanh(Variable(value=(0, 1, 2))), precision=3)
         [ 0.     0.762  0.964]
 
         Base-10 logarithm of :math:`x`, :math:`\log_{10} x`
 
-        >>> log10(Variable(value=(0.1,1,10)))
+        >>> log10(Variable(value=(0.1, 1, 10)))
         log10(Variable(value=array([  0.1,   1. ,  10. ])))
-        >>> print log10(Variable(value=(0.1,1,10)))
+        >>> print log10(Variable(value=(0.1, 1, 10)))
         [-1.  0.  1.]
 
         Sine of :math:`x`, :math:`\sin x`
 
-        >>> sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
+        >>> sin(Variable(value=(0, pi/6, pi/2), unit="rad"))
         sin(Variable(value=PhysicalField(array([ 0.        ,  0.52359878,  1.57079633]),'rad')))
-        >>> print sin(Variable(value=(0,pi/6,pi/2), unit="rad"))
+        >>> print sin(Variable(value=(0, pi/6, pi/2), unit="rad"))
         [ 0.   0.5  1. ]
 
         Hyperbolic sine of :math:`x`, :math:`\sinh x`
 
-        >>> sinh(Variable(value=(0,1,2)))
+        >>> sinh(Variable(value=(0, 1, 2)))
         sinh(Variable(value=array([0, 1, 2])))
-        >>> print tostring(sinh(Variable(value=(0,1,2))), precision=3)
+        >>> print tostring(sinh(Variable(value=(0, 1, 2))), precision=3)
         [ 0.     1.175  3.627]
 
         Square root of :math:`x`, :math:`\sqrt{x}`
@@ -1618,23 +1618,23 @@ class Variable(object):
 
         The largest integer :math:`\le x`, :math:`\lfloor x \rfloor`
 
-        >>> floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        >>> floor(Variable(value=(-1.5, 2, 2.5), unit="m**2"))
         floor(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
-        >>> print floor(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        >>> print floor(Variable(value=(-1.5, 2, 2.5), unit="m**2"))
         [-2.  2.  2.] m**2
 
         The largest integer :math:`\ge x`, :math:`\lceil x \rceil`
 
-        >>> ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        >>> ceil(Variable(value=(-1.5, 2, 2.5), unit="m**2"))
         ceil(Variable(value=PhysicalField(array([-1.5,  2. ,  2.5]),'m**2')))
-        >>> print ceil(Variable(value=(-1.5,2,2.5), unit="m**2"))
+        >>> print ceil(Variable(value=(-1.5, 2, 2.5), unit="m**2"))
         [-1.  2.  3.] m**2
 
         Natural logarithm of :math:`x`, :math:`\ln x \equiv \log_e x`
 
-        >>> log(Variable(value=(0.1,1,10)))
+        >>> log(Variable(value=(0.1, 1, 10)))
         log(Variable(value=array([  0.1,   1. ,  10. ])))
-        >>> print tostring(log(Variable(value=(0.1,1,10))), precision=3)
+        >>> print tostring(log(Variable(value=(0.1, 1, 10))), precision=3)
         [-2.303  0.     2.303]
 
         Complex conjugate of :math:`z = x + i y`, :math:`z^\star = x - i y`
@@ -1654,3 +1654,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

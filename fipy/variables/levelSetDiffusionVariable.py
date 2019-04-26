@@ -25,7 +25,7 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh = mesh, value = (-1, 1, 1))
     >>> from fipy.variables.faceVariable import FaceVariable
-    >>> answer = FaceVariable(mesh=mesh, value=(0,1,1,0,1,1,0,0,1,1))
+    >>> answer = FaceVariable(mesh=mesh, value=(0, 1, 1, 0, 1, 1, 0, 0, 1, 1))
     >>> print _LevelSetDiffusionVariable(var, 1).allclose(answer)
     True
     """
@@ -81,3 +81,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

@@ -486,8 +486,8 @@ class Term(object):
         >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
         >>> print numerix.allequal(numpyMatrix, [[-1, 1, 0],
-        ...                                      [ 1,-2, 1],
-        ...                                      [ 0, 1,-1]])
+        ...                                      [ 1, -2, 1],
+        ...                                      [ 0, 1, -1]])
         ... # doctest: +PROCESSOR_0
         True
         >>> print numerix.allequal(solver.RHSvector, [0, 0, 0]) # doctest: +PROCESSOR_0
@@ -497,8 +497,8 @@ class Term(object):
         >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
         >>> print numerix.allequal(numpyMatrix, [[-1, 1, 0],
-        ...                                      [ 1,-2, 1],
-        ...                                      [ 0, 1,-1]])
+        ...                                      [ 1, -2, 1],
+        ...                                      [ 0, 1, -1]])
         ... # doctest: +PROCESSOR_0
         True
         >>> print numerix.allequal(solver.RHSvector, [0, 0, 0]) # doctest: +PROCESSOR_0
@@ -520,9 +520,9 @@ class Term(object):
         SolutionVariableRequiredError: The solution variable needs to be specified.
         >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print numerix.allequal(numpyMatrix, [[ 2,-1, 0],
-        ...                                      [-1, 3,-1],
-        ...                                      [ 0,-1, 2]])
+        >>> print numerix.allequal(numpyMatrix, [[ 2, -1, 0],
+        ...                                      [-1, 3, -1],
+        ...                                      [ 0, -1, 2]])
         ... # doctest: +PROCESSOR_0
         True
         >>> print numerix.allequal(solver.RHSvector, [1, 2, 3]) # doctest: +PROCESSOR_0
@@ -531,18 +531,18 @@ class Term(object):
         >>> eq = TransientTerm(coeff=1., var=A) == DiffusionTerm(coeff=1., var=A)
         >>> solver = eq._prepareLinearSystem(var=None, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print numerix.allequal(numpyMatrix, [[ 2,-1, 0],
-        ...                                      [-1, 3,-1],
-        ...                                      [ 0,-1, 2]])
+        >>> print numerix.allequal(numpyMatrix, [[ 2, -1, 0],
+        ...                                      [-1, 3, -1],
+        ...                                      [ 0, -1, 2]])
         ... # doctest: +PROCESSOR_0
         True
         >>> print numerix.allequal(solver.RHSvector, [1, 2, 3]) # doctest: +PROCESSOR_0
         True
         >>> solver = eq._prepareLinearSystem(var=A, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print numerix.allequal(numpyMatrix, [[ 2,-1, 0],
-        ...                                      [-1, 3,-1],
-        ...                                      [ 0,-1, 2]])
+        >>> print numerix.allequal(numpyMatrix, [[ 2, -1, 0],
+        ...                                      [-1, 3, -1],
+        ...                                      [ 0, -1, 2]])
         ... # doctest: +PROCESSOR_0
         True
         >>> print numerix.allequal(solver.RHSvector, [1, 2, 3]) # doctest: +PROCESSOR_0
@@ -578,9 +578,9 @@ class Term(object):
         True
         >>> solver = eq._prepareLinearSystem(var=B, solver=None, boundaryConditions=(), dt=1.)
         >>> numpyMatrix = solver.matrix.numpyArray
-        >>> print numerix.allequal(numpyMatrix, [[ 1,-1, 0],
-        ...                                      [-1, 2,-1],
-        ...                                      [ 0,-1, 1]])
+        >>> print numerix.allequal(numpyMatrix, [[ 1, -1, 0],
+        ...                                      [-1, 2, -1],
+        ...                                      [ 0, -1, 1]])
         ... # doctest: +PROCESSOR_0
         True
         >>> print numerix.allequal(solver.RHSvector, [0, 0, 0]) # doctest: +PROCESSOR_0
@@ -747,7 +747,7 @@ class Term(object):
         >>> v = CellVariable(mesh=m, elementshape=(2,))
         >>> v.constrain([[0], [1]], m.facesLeft)
         >>> v.constrain([[1], [0]], m.facesRight)
-        >>> eqn = TransientTerm() == DiffusionTerm([[[0.01, -1],[1, 0.01]]])
+        >>> eqn = TransientTerm() == DiffusionTerm([[[0.01, -1], [1, 0.01]]])
         >>> res = eqn.sweep(var=v, dt=1.)
 
         """
@@ -764,3 +764,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

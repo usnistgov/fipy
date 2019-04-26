@@ -166,7 +166,7 @@ class TransientTerm(CellTerm):
         [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
         >>> v[0] = 1.
         >>> v[1] = 0.5
-        >>> eq = TransientTerm(((1., 2.), (3. , 4.)))
+        >>> eq = TransientTerm(((1., 2.), (3., 4.)))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve(v, dt=1.)
@@ -195,3 +195,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

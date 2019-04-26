@@ -51,7 +51,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
         >>> from fipy.variables.cellVariable import CellVariable
-        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
+        >>> v, L, b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
         ...                        ((-1.,  1.),
@@ -71,7 +71,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> print numerix.allclose(A, (( 1., -1.),
         ...                            (-1.,  1.))) # doctest: +PROCESSOR_0
         True
-        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
+        >>> v, L, b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
         ...                        ((-1.,  1.),
@@ -88,7 +88,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         ...                        (( 1., -1.),
         ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
-        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
+        >>> v, L, b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
         ...                        ((-1.,  1.),
@@ -106,7 +106,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         ...                        (( 1., -1.),
         ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
-        >>> v,L,b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
+        >>> v, L, b = term._buildMatrix(var=CellVariable(mesh=mesh), SparseMatrix=_MeshMatrix)
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
         ...                        ((-1.,  1.),
@@ -115,7 +115,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> print numerix.allclose(b, (0., 0.)) # doctest: +PROCESSOR_0
         True
 
-        >>> term = DiffusionTerm(coeff = ((1,2),))
+        >>> term = DiffusionTerm(coeff = ((1, 2),))
 
         >>> term = DiffusionTerm(coeff = FaceVariable(mesh = mesh, value = (1,), rank=1))
         >>> term = DiffusionTerm(coeff = CellVariable(mesh=mesh, value=(1,), rank=1))
@@ -133,7 +133,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         ...                        (( 1., -1.),
         ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
-        >>> v,L,b = term._buildMatrix(var=var,
+        >>> v, L, b = term._buildMatrix(var=var,
         ...                         SparseMatrix=_MeshMatrix)
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
@@ -162,7 +162,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         ...                         (-1.,  1.))) # doctest: +PROCESSOR_0
         True
 
-        >>> v,L,b = term._buildMatrix(var=var, SparseMatrix=_MeshMatrix,
+        >>> v, L, b = term._buildMatrix(var=var, SparseMatrix=_MeshMatrix,
         ...                         boundaryConditions=(bcLeft2, bcRight2))
         >>> A = L.numpyArray
         >>> print numerix.allclose(A,
@@ -191,7 +191,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         ...                         ( 1., -1.))) # doctest: +PROCESSOR_0
         True
 
-        >>> v,L,b = term._buildMatrix(var=var,
+        >>> v, L, b = term._buildMatrix(var=var,
         ...                         SparseMatrix=_MeshMatrix,
         ...                         boundaryConditions = (bcLeft2, bcRight2))
         >>> A = L.numpyArray
@@ -223,7 +223,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         ...                         (-2.,  2.))) # doctest: +PROCESSOR_0
         True
 
-        >>> v,L,b = term._buildMatrix(var=var,
+        >>> v, L, b = term._buildMatrix(var=var,
         ...                         SparseMatrix=_MeshMatrix,
         ...                         boundaryConditions = (bcLeft2, bcRight2))
         >>> A = L.numpyArray
@@ -354,3 +354,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

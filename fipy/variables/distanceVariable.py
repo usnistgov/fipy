@@ -325,7 +325,7 @@ class DistanceVariable(CellVariable):
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
         >>> distanceVariable = DistanceVariable(mesh = mesh,
         ...                                     value = (1.5, 0.5, 1.5,
-        ...                                              0.5,-0.5, 0.5,
+        ...                                              0.5, -0.5, 0.5,
         ...                                              1.5, 0.5, 1.5))
         >>> answer = CellVariable(mesh=mesh,
         ...                       value=(0, 1, 0, 1, 0, 1, 0, 1, 0))
@@ -527,3 +527,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

@@ -92,7 +92,7 @@ class NonUniformGrid2D(Mesh2D):
             ...                        mesh.cellFaceIDs) # doctest: +PROCESSOR_0
             True
 
-            >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
+            >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9, 12, 13, 16))
             >>> print numerix.allequal(externalFaces,
             ...                        numerix.nonzero(mesh.exteriorFaces)) # doctest: +PROCESSOR_0
             True
@@ -114,7 +114,7 @@ class NonUniformGrid2D(Mesh2D):
             True
 
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
-            >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
+            >>> faceCenters = (faceCoords[..., 0,:] + faceCoords[..., 1,:]) / 2.
             >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
             True
 
@@ -207,8 +207,8 @@ class NonUniformGrid2D(Mesh2D):
             >>> cellAreaProjections = numerix.array((((  0,  0,  0,  0,  0,  0),
             ...                                       ( dy, dy, dy, dy, dy, dy),
             ...                                       (  0,  0,  0,  0,  0,  0),
-            ...                                       (-dy,-dy,-dy,-dy,-dy,-dy)),
-            ...                                      ((-dx,-dx,-dx,-dx,-dx,-dx),
+            ...                                       (-dy, -dy, -dy, -dy, -dy, -dy)),
+            ...                                      ((-dx, -dx, -dx, -dx, -dx, -dx),
             ...                                       (  0,  0,  0,  0,  0,  0),
             ...                                       ( dx, dx, dx, dx, dx, dx),
             ...                                       (  0,  0,  0,  0,  0,  0))))
@@ -249,3 +249,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
