@@ -43,7 +43,7 @@ def execButNoTest(name='__main__'):
         raise ValueError("no tests found")
 
     for t in tests:
-        exec t
+        exec(t)
 
 _doctestSkippers = list()
 
