@@ -29,7 +29,7 @@ class VTKCellViewer(VTKViewer):
 
         >>> try:
         ...     from tvtk.api import tvtk
-        ... except ImportError, e:
+        ... except ImportError as e:
         ...     from enthought.tvtk.api import tvtk
         ... # doctest: +TVTK
 
@@ -141,3 +141,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
