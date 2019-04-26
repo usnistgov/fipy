@@ -350,15 +350,15 @@ class _PysparseMeshMatrix(_PysparseMatrixFromShape):
 
         >>> m = _PysparseMatrixFromShape(rows=3, cols=3, storeZeros=True)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
-        >>> print(not hasattr(m.matrix, 'storeZeros') or numerix.allequal(m.matrix.keys(), [(0, 1), (1, 0), (2, 2)]))
+        >>> print(not hasattr(m.matrix, 'storeZeros') or numerix.allequal(list(m.matrix.keys()), [(0, 1), (1, 0), (2, 2)]))
         True
-        >>> print(not hasattr(m.matrix, 'storeZeros') or numerix.allequal(m.matrix.values(), [1., 2., 0.]))
+        >>> print(not hasattr(m.matrix, 'storeZeros') or numerix.allequal(list(m.matrix.values()), [1., 2., 0.]))
         True
         >>> m = _PysparseMatrixFromShape(rows=3, cols=3, storeZeros=False)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
-        >>> print(numerix.allequal(m.matrix.keys(), [(0, 1), (1, 0)]))
+        >>> print(numerix.allequal(list(m.matrix.keys()), [(0, 1), (1, 0)]))
         True
-        >>> print(numerix.allequal(m.matrix.values(), numerix.array([1.0, 2.0])))
+        >>> print(numerix.allequal(list(m.matrix.values()), numerix.array([1.0, 2.0])))
         True
 
         """
@@ -400,5 +400,6 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
 
 
