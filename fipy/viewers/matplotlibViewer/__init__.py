@@ -93,6 +93,7 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
     ...                            cmap = plt.cm.OrRd)
 
     >>> viewer = MultiViewer(viewers=(viewer1, viewer2, viewer3))
+    >>> from builtins import range
     >>> for kval in range(10):
     ...     k.setValue(kval)
     ...     viewer.plot()

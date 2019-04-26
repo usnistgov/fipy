@@ -4,6 +4,7 @@ Input file for chemotaxis modeling.
 
 Here are some test cases for the model.
 
+    >>> from builtins import range
     >>> for i in range(10):
     ...     for var, eqn in eqs:
     ...         var.updateOld()
@@ -118,4 +119,3 @@ if __name__ == '__main__':
         TMViewer.plot()
 
     eval(input("finished"))
-

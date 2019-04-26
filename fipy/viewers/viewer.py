@@ -204,6 +204,7 @@ class AbstractViewer(object):
             ...                 limits={'ymin': 0.1, 'ymax': 0.9},
             ...                 datamin=-0.9, datamax=2.0,
             ...                 title="VIEWERSUBSTITUTION test")
+            >>> from builtins import range
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
@@ -277,6 +278,7 @@ class AbstractViewer(object):
             ...                     limits={'ymin': 0.1, 'ymax': 0.9},
             ...                     datamin=-0.9, datamax=2.0,
             ...                     title="VIEWERSUBSTITUTION test")
+            >>> from builtins import range
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
@@ -286,4 +288,3 @@ class AbstractViewer(object):
         return s
 
     _test3D = staticmethod(_test3D)
-

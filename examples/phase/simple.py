@@ -78,6 +78,7 @@ If we are running interactively, we'll want a viewer to see the results
 .. index::
    module: fipy.viewers
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = (phase,))
 ...     viewer.plot()
@@ -153,6 +154,7 @@ we obtain the surprising result that :math:`\phi` is zero everywhere.
 
 >>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 0
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 ...     input("Fully explicit source. Press <return> to proceed...")
@@ -180,6 +182,7 @@ transient term from Equation :eq:`eq-phase:simple`
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
 
+>>> from builtins import range
 >>> for i in range(13):
 ...     eq.solve(var = phase, dt=1.)
 ...     if __name__ == '__main__':
@@ -189,6 +192,7 @@ After 13 time steps, the solution has converged to the analytical solution
 
 >>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 1
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     input("Relaxation, explicit. Press <return> to proceed...")
 
@@ -252,10 +256,12 @@ iterations at the same time step to reach a converged solution).
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
 
+>>> from builtins import range
 >>> for i in range(8):
 ...     eq.solve(var = phase)
 >>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 1
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 ...     input("Kobayashi, semi-implicit. Press <return> to proceed...")
@@ -305,10 +311,12 @@ tangent to the source, we reach convergence in only 5 sweeps
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
 
+>>> from builtins import range
 >>> for i in range(5):
 ...     eq.solve(var = phase)
 >>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 1
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 ...     input("Tangent, semi-implicit. Press <return> to proceed...")
@@ -401,6 +409,7 @@ point. We now use the :meth:`~fipy.terms.term.Term.sweep` method instead of
 .. index:: sweep
 
 >>> timeStep = 1e-6
+>>> from builtins import range
 >>> for i in range(10):
 ...     phase.updateOld()
 ...     res = 1e+10
@@ -467,6 +476,7 @@ True
 >>> print(abs(1 - d_fit / delta) < 2e-2) # doctest: +SCIPY
 True
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     input("Dimensional, semi-implicit. Press <return> to proceed...")
 
@@ -488,5 +498,3 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     eval(input('finished'))
-
-

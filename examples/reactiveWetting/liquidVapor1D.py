@@ -246,6 +246,7 @@ volume. The initial condition for the density is defined by
 
 Viewers are also defined.
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewers = Viewer(density), Viewer(velocity), Viewer(potentialNC)
 ...     for viewer in viewers:
@@ -325,6 +326,7 @@ equation. This currently doesn't work properly in :term:`FiPy`.
 ... 
 ...     timestep += 1
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     input('finished')
 
@@ -341,6 +343,3 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-
-
-

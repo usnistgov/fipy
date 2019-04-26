@@ -18,6 +18,7 @@ and `steps` is the number of time steps.
 
 A loop is required to execute the necessary time steps:
 
+    >>> from builtins import range
     >>> for step in range(steps):
     ...     eq.solve(var, solver=solver, dt=timeStepDuration)
 
@@ -79,4 +80,3 @@ if __name__ == '__main__':
     viewer = Viewer(vars = var)
     viewer.plot()
     eval(input('finished'))
-

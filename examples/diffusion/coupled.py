@@ -58,6 +58,7 @@ explicit coupling for the cross-coupled terms.
 
 >>> vi = Viewer((v0, v1))
 
+>>> from builtins import range
 >>> for t in range(100):
 ...     v0.updateOld()
 ...     v1.updateOld()
@@ -81,6 +82,7 @@ increase the time steps:
 
 >>> eqn = eqn0 & eqn1
 
+>>> from builtins import range
 >>> for t in range(1):
 ...     v0.updateOld()
 ...     v1.updateOld()
@@ -100,6 +102,7 @@ It is also possible to pose the same equations in vector form:
 
 >>> vi = Viewer((v[0], v[1]))
 
+>>> from builtins import range
 >>> for t in range(1):
 ...     v.updateOld()
 ...     eqn.solve(var=v, dt=1.e-3)

@@ -171,6 +171,7 @@ data and compares it with the `theta` variable.
 
 We step the solution in time, plotting as we go if running interactively,
 
+>>> from builtins import range
 >>> for i in range(steps):
 ...     theta.updateOld()
 ...     thetaEq.solve(theta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
@@ -200,6 +201,7 @@ data. First, reset the variables to their original values.
 
 Step through half the time steps.
 
+>>> from builtins import range
 >>> for i in range(steps // 2):
 ...     theta.updateOld()
 ...     thetaEq.solve(theta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
@@ -228,6 +230,7 @@ and then recall them to test the data pickling mechanism
 
 and finish the iterations,
 
+>>> from builtins import range
 >>> for i in range(steps // 2):
 ...     newTheta.updateOld()
 ...     newThetaEq.solve(newTheta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
@@ -247,6 +250,3 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     eval(input('finished'))
-
-
-

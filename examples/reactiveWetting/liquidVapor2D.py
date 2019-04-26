@@ -94,6 +94,7 @@ A 2D version of the 1D example.
 >>> density[:] = (liquidDensity + vaporDensity) / 2 * \
 ...    (1  + 0.01 * (2 * numerix.random.random(mesh.numberOfCells) - 1))
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewers = Viewer(density), Viewer(velocityVector), Viewer(potentialNC)
 ...     for viewer in viewers:
@@ -171,6 +172,7 @@ A 2D version of the 1D example.
 ... 
 ...     timestep += 1
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     input('finished')
 
@@ -182,6 +184,3 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-
-
-

@@ -103,6 +103,7 @@ If we are running interactively, we create a viewer to see the results
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
+>>> from builtins import range
 >>> for i in range(40):
 ...     for Cj in substitutionals:
 ...         Cj.equation.solve(var=Cj,
@@ -136,5 +137,3 @@ if __name__ == '__main__':
     # profile.stop()
 
     eval(input("finished"))
-
-

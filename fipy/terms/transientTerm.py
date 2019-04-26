@@ -59,6 +59,7 @@ class TransientTerm(CellTerm):
     A number of sweeps at each time step are required to let the
     relaxation take effect.
 
+    >>> from builtins import range
     >>> for step in range(steps):
     ...     var.updateOld()
     ...     for sweep in range(sweeps):
@@ -198,5 +199,3 @@ def _test():
 
 if __name__ == "__main__":
     _test()
-
-

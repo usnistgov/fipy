@@ -232,6 +232,7 @@ factor to relax the solution. This argument cannot be passed to
 
 .. index:: sweep, cacheMatrix, getMatrix, cacheRHSvector, getRHSvector
 
+>>> from builtins import range
 >>> for sweep in range(sweeps):
 ... 
 ...     ## solve the Stokes equations to get starred values
@@ -310,6 +311,3 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript(__name__))
     eval(input('finished'))
-
-
-

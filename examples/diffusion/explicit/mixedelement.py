@@ -62,6 +62,7 @@ against the expected profile:
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var)
 
+>>> from builtins import range
 >>> for step in range(steps):
 ...     eqn.solve(var, dt=timeStepDuration)
 ...     if (step % 100) == 0 and (__name__ == '__main__'):
@@ -72,6 +73,7 @@ We check the answer against the analytical result
 >>> print(var.allclose(varAnalytical, atol=atol)) # doctest: +SCIPY
 1
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 ...     input('finished')
@@ -83,5 +85,3 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-
-

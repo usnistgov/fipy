@@ -7,6 +7,7 @@ Advect the interface and check the position.
 
    >>> distanceVariable.calcDistanceFunction() #doctest: +LSM
    >>> initialSurfactant = numerix.sum(surfactantVariable)
+   >>> from builtins import range
    >>> for step in range(steps):
    ...     distanceVariable.updateOld()
    ...     surfactantEquation.solve(surfactantVariable, dt=1)
@@ -92,4 +93,3 @@ if __name__ == '__main__':
     surfactantViewer.plot()
     print(surfactantVariable)
     eval(input('finished'))
-

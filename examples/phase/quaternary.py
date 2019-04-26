@@ -358,6 +358,7 @@ and again iterate to equilibrium
 
 
 >>> dt = 10000
+>>> from builtins import range
 >>> for i in range(5):
 ...     for field in [phase] + substitutionals + interstitials:
 ...         field.updateOld()
@@ -423,5 +424,3 @@ if __name__ == "__main__":
 ##
 ##     raw_input("finished")
 ##
-
-

@@ -70,6 +70,7 @@ which has been satisfactorily obtained
 
 If we are running the example interactively, we view the result
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=(charge, potential, analytical))
 ...     viewer.plot()
@@ -116,6 +117,7 @@ which now has the analytical solution
 
 and again view the result
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 ...     input("Press any key to continue...")
@@ -181,5 +183,3 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     eval(input("finished"))
-
-

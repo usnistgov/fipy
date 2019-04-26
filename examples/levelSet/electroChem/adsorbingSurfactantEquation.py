@@ -121,6 +121,7 @@ class AdsorbingSurfactantEquation(object):
     ...                                    otherBulkVar = bulkVar0,
     ...                                    otherRateConstant = k0)
 
+    >>> from builtins import range
     >>> for step in range(totalSteps):
     ...     eqn0.solve(var0, dt = dt)
     ...     eqn1.solve(var1, dt = dt)
@@ -133,6 +134,7 @@ class AdsorbingSurfactantEquation(object):
     ...                  numerix.array((0, 0, answer1, 0, 0)), rtol = 1e-2))
     1
     >>> dt = 0.1
+    >>> from builtins import range
     >>> for step in range(10):
     ...     eqn0.solve(var0, dt = dt)
     ...     eqn1.solve(var1, dt = dt)
@@ -203,6 +205,7 @@ class AdsorbingSurfactantEquation(object):
 
     >>> dt = 0.1
 
+    >>> from builtins import range
     >>> for i in range(50):
     ...     disVar.calcDistanceFunction()
     ...     extVar.value = (numerix.array(accVar.interfaceVar))
@@ -342,5 +345,3 @@ def _test():
 
 if __name__ == "__main__":
     _test()
-
-

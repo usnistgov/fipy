@@ -45,6 +45,7 @@ class Mpi4pyCommWrapper(CommWrapper):
         a rank-dimensional list of sendobj objects.
         
         >>> m4count = self.mpi4py_comm.allgather(self.mpi4py_comm.Get_rank())
+        >>> from builtins import range
         >>> for i in range(self.mpi4py_comm.Get_size()):
         ...     assert m4count[i] == i
 

@@ -836,6 +836,7 @@ class PhysicalField(object):
         hour/minute/second.  The original object will not be changed.
 
         >>> t = PhysicalField(314159., 's')
+        >>> from builtins import zip
         >>> print(numerix.allclose([e.allclose(v) for (e, v) in zip(t.inUnitsOf('d', 'h', 'min', 's'),
         ...                                                         ['3.0 d', '15.0 h', '15.0 min', '59.0 s'])],
         ...                        True))
@@ -1688,6 +1689,7 @@ class PhysicalUnit(object):
 
             >>> a = PhysicalField("1. K").unit
             >>> b = PhysicalField("1. degF").unit
+            >>> from builtins import str
             >>> [str(numerix.round_(element, 6)) for element in b.conversionTupleTo(a)]
             ['0.555556', '459.67']
         """
@@ -2204,6 +2206,3 @@ def _test():
 if __name__ == "__main__":
 ##     print _getUnitStrings()
     _test()
-
-
-

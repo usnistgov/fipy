@@ -51,6 +51,7 @@ Using this mesh, we can construct a solution variable
 We can now create a :class:`Viewer <~fipy.viewers.viewer.AbstractViewer>` to see the mesh
 
 >>> viewer = None
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     try:
 ...         viewer = Viewer(vars=phi, datamin=-1, datamax=1.)
@@ -82,6 +83,7 @@ We first step through the transient problem
 
 >>> timeStepDuration = 10 * 0.9 * cellSize**2 / (2 * D)
 >>> steps = 10
+>>> from builtins import range
 >>> for step in range(steps):
 ...     eq.solve(var=phi,
 ...              dt=timeStepDuration) # doctest: +GMSH
@@ -141,6 +143,7 @@ vertical positions
 >>> print(phi.allclose(phiAnalytical, atol = 7e-2)) # doctest: +GMSH, +SCIPY
 1
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     input("Transient diffusion. Press <return> to proceed...")
 
@@ -158,6 +161,7 @@ The values at the elements should be equal to their `x` coordinate
 
 Display the results if run as a script.
 
+>>> from builtins import input
 >>> if viewer is not None:
 ...     viewer.plot()
 ...     input("Steady-state diffusion. Press <return> to proceed...")
@@ -173,5 +177,3 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-
-

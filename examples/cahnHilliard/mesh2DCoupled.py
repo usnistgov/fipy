@@ -112,6 +112,7 @@ evolution of their problem.
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     input("Coupled equations. Press <return> to proceed...")
 
@@ -178,5 +179,3 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     eval(input('finished'))
-
-

@@ -85,6 +85,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
 
     >>> ionVar.constrain(cinf, mesh.facesRight)
 
+    >>> from builtins import range
     >>> for i in range(10):
     ...     eqn.solve(ionVar, dt = 1000)
 
@@ -139,4 +140,3 @@ def _test():
 
 if __name__ == "__main__":
     _test()
-

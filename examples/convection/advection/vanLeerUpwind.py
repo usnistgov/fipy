@@ -13,6 +13,7 @@ correctly. We advect the wave on different meshes one periodic and one
 non-periodic but twice as long. The results are then compared. The
 periodic wave wraps around the mesh.
 
+>>> from builtins import range
 >>> for step in range(steps):
 ...     eq1.solve(var=var1, dt=dt, solver=DefaultAsymmetricSolver(tolerance=1e-11, iterations=10000))
 ...     eq2.solve(var=var2, dt=dt, solver=DefaultAsymmetricSolver(tolerance=1e-11, iterations=10000))
@@ -89,4 +90,3 @@ if __name__ == '__main__':
     print('maximum absolute difference between periodic and non-periodic grids:', abs(var1[old_div(nx, 4):old_div(3 * nx, 4)] - newVar2).max())
 
     eval(input('finished'))
-

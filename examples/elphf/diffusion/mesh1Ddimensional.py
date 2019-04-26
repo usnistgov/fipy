@@ -93,6 +93,7 @@ Now, we iterate the problem to equilibrium, plotting as we go
 
     >>> solver = LinearLUSolver()
 
+    >>> from builtins import range
     >>> for i in range(40):
     ...     for Cj in substitutionals:
     ...         Cj.updateOld()
@@ -136,6 +137,3 @@ if __name__ == '__main__':
     # profile.stop()
 
     eval(input("finished"))
-
-
-

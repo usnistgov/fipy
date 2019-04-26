@@ -27,6 +27,8 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 >>> convCoeff = 1.0
 >>> peclet = 1e-3
 >>> allcloseList = []
+>>> from builtins import input
+>>> from builtins import str
 >>> while peclet < 1e4:
 ...     var[:] = valueLeft
 ...     diffCoeff = convCoeff * dx / peclet
@@ -58,6 +60,3 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-
-
-

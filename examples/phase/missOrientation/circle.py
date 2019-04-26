@@ -39,6 +39,7 @@ Here the phase equation is solved with an explicit technique.
 
 The solution is allowed to evolve for ``steps = 100`` time steps.
 
+>>> from builtins import range
 >>> for step in range(steps):
 ...     phaseEq.solve(phase, dt = timeStepDuration)
 
@@ -108,4 +109,3 @@ if __name__ == '__main__':
         phaseEq.solve(phase, dt = timeStepDuration)
         phaseViewer.plot()
     eval(input('finished'))
-

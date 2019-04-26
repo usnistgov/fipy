@@ -181,6 +181,7 @@ and orientation variables.
 we iterate the solution in time, plotting as we go if running interactively,
 
 >>> steps = 10
+>>> from builtins import range
 >>> for i in range(steps):
 ...     theta.updateOld()
 ...     thetaEq.solve(theta, dt = timeStepDuration)
@@ -212,4 +213,3 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     eval(input('finished'))
-

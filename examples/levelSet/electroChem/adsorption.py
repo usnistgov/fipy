@@ -46,6 +46,7 @@ True
 Start time stepping:
 
 >>> currentTime = 0.
+>>> from builtins import range
 >>> for i in range(totalTimeSteps):
 ...     surfEqn.solve(surfactantVar, dt = dt)
 ...     bulkEqn.solve(bulkVar, dt = dt)

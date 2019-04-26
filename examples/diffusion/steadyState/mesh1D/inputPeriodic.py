@@ -22,6 +22,7 @@ The variable is initially a line varying form `valueLeft` to `valueRight`.
 >>> var = CellVariable(name = "solution variable", mesh = mesh,
 ...                                                value = initialArray)
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var, datamin=0., datamax=1.)
 ...     viewer.plot()
@@ -52,5 +53,3 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
     eval(input("finished"))
-
-

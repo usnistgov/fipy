@@ -53,6 +53,7 @@ class CellVariable(_MeshVariable):
             >>> b = c.old + 3
             >>> print(b)
             [2]
+            >>> from builtins import str
             >>> print(str(b.getsctype()) == str(numerix.NUMERIX.obj2sctype(numerix.array(1))))
             True
 
@@ -654,5 +655,3 @@ def _test():
 
 if __name__ == "__main__":
     _test()
-
-

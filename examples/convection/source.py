@@ -29,6 +29,7 @@ includes a test against the analytical result.
 >>> phi = CellVariable(name=r"$\phi$", mesh=mesh, value=phi0)
 >>> solution = CellVariable(name=r"solution", mesh=mesh, value=phi0 * numerix.exp(-alpha * mesh.cellCenters[0]))
 
+>>> from builtins import input
 >>> if __name__ == "__main__":
 ...     viewer = Viewer(vars=(phi, solution))
 ...     viewer.plot()
@@ -43,6 +44,7 @@ includes a test against the analytical result.
 >>> print(numerix.allclose(phi, phi0 * numerix.exp(-alpha * mesh.cellCenters[0]), atol=1e-3))
 True
 
+>>> from builtins import input
 >>> if __name__ == "__main__":
 ...     viewer = Viewer(vars=(phi, solution))
 ...     viewer.plot()
@@ -56,5 +58,3 @@ __docformat__ = 'restructuredtext'
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-
-

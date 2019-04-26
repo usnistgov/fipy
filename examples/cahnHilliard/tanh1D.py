@@ -130,6 +130,7 @@ We iterate the solution to equilibrium and, if we are running interactively,
 we update the display and output data about the progression of the solution
 
 >>> dexp=-5
+>>> from builtins import range
 >>> for step in range(100):
 ...     dt = numerix.exp(dexp)
 ...     dt = min(10, dt)
@@ -160,6 +161,3 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     eval(input('finished'))
-
-
-

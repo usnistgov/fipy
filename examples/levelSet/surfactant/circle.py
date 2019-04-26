@@ -21,6 +21,7 @@ The result can be tested with the following code:
 
 
 >>> surfactantBefore = numerix.sum(surfactantVariable * mesh.cellVolumes)
+>>> from builtins import range
 >>> for step in range(steps):
 ...     distanceVariable.updateOld()
 ...     surfactantEquation.solve(surfactantVariable, dt=1.)
@@ -123,4 +124,3 @@ if __name__ == '__main__':
     print('error:', error)
 
     eval(input('finished'))
-

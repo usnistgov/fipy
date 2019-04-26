@@ -1485,6 +1485,7 @@ class Gmsh2D(Mesh2D):
 
     >>> std = []
     >>> bkg = None
+    >>> from builtins import range
     >>> for refine in range(4):
     ...     square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
     ...     x, y = square.cellCenters # doctest: +GMSH
@@ -1691,8 +1692,10 @@ class Gmsh2D(Mesh2D):
 
         We need to do a little fancy footwork to account for multiple processes
 
+        >>> from builtins import range
         >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallelComm.Nproc)]
         >>> numtags = 2 + 1 + len(partitions)
+        >>> from builtins import str
         >>> partitions = " ".join([str(i) for i in [parallelComm.Nproc] + partitions])
 
         >>> output = f.write('''$MeshFormat
@@ -2010,8 +2013,10 @@ class Gmsh3D(Mesh):
 
         We need to do a little fancy footwork to account for multiple processes
 
+        >>> from builtins import range
         >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallelComm.Nproc)]
         >>> numtags = 2 + 1 + len(partitions)
+        >>> from builtins import str
         >>> partitions = " ".join([str(i) for i in [parallelComm.Nproc] + partitions])
 
         >>> output = f.write('''$MeshFormat
@@ -2294,4 +2299,3 @@ def _test():
 
 if __name__ == "__main__":
     _test()
-
