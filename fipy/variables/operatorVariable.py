@@ -247,7 +247,7 @@ def _OperatorVariableClass(baseClass=object):
             Allows _OperatorVariables to be pickled
             """
             state =  self.__getstate__()
-            if 'mesh' in state.keys():
+            if 'mesh' in list(state.keys()):
                 args = (state['mesh'],)
             else:
                 args = ()

@@ -1617,7 +1617,7 @@ class PhysicalUnit:
                 p = self.powers // rounded
                 if reduce(lambda a, b: a and b,
                           map(lambda x, e=rounded: x%e == 0,
-                              self.names.values())):
+                              list(self.names.values()))):
                     names = self.names // rounded
                 else:
                     names = _NumberDict()
@@ -1799,7 +1799,7 @@ class PhysicalUnit:
         """
         num = ''
         denom = ''
-        for unit in self.names.keys():
+        for unit in list(self.names.keys()):
             power = self.names[unit]
             if power < 0:
                 denom = denom + '/' + unit
@@ -1998,7 +1998,7 @@ _addUnit('Sv', 'J/kg')               # Sievert
 
 del _unit_table['kg']
 
-for unit in _unit_table.keys():
+for unit in list(_unit_table.keys()):
     _addPrefixed(unit)
 
 # Fundamental constants
@@ -2116,7 +2116,7 @@ def _getUnitStrings():
 
     def _getSortedUnitStrings(unitDict):
         strings = []
-        keys = unitDict.keys()
+        keys = list(unitDict.keys())
         keys.sort(key=str.lower)
         for key in keys:
             if key in unitDict:
@@ -2151,7 +2151,7 @@ def _getUnitStrings():
 
     units.append("\nUnits derived from SI (accepting SI prefixes)::\n")
     derived = {}
-    for key in working_table.keys():
+    for key in list(working_table.keys()):
         if key in working_table:
             unit = working_table[key]
             if isinstance(unit, PhysicalUnit) and unit.factor == 1:
@@ -2162,7 +2162,7 @@ def _getUnitStrings():
 
     units.append("\nOther units that accept SI prefixes::\n")
     prefixed = {}
-    for key in working_table.keys():
+    for key in list(working_table.keys()):
         if key in working_table:
             unit = working_table[key]
             isPrefixed = 1
