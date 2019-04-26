@@ -48,10 +48,6 @@ before_install:
   - conda info -a
   - pip install scikit-fmm
 install:
-  - if [[ $PY3K -eq 1 ]]; then
-      2to3 --write . &> /dev/null;
-      2to3 --write --doctests_only . &> /dev/null;
-    fi
   - python setup.py install
 before_script:
   # lack of display causes tests to abort at VtkViewer

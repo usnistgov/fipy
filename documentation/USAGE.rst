@@ -902,14 +902,7 @@ Running under Python 3
 
 It is possible to run :term:`FiPy` scripts under :term:`Python 3`, but
 there is admittedly little advantage in doing so at this time. We still
-develop and use :term:`FiPy` under :term:`Python` 2.x. To use, you must
-first convert :term:`FiPy`'s code to :term:`Python 3` syntax. From within
-the main :term:`FiPy` directory::
-
-    $ 2to3 --write .
-    $ 2to3 --write --doctests_only .
-
-You can expect some harmless warnings from this conversion.
+develop and use :term:`FiPy` under :term:`Python` 2.x.
 
 The minimal prerequisites are:
 

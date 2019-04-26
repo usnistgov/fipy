@@ -50,6 +50,8 @@ commands:
         default: ""
 
     steps:
+      - checkout
+
       - restore_conda_cache
 
       - attach_workspace:
@@ -74,54 +76,6 @@ commands:
       - store_artifacts:
           path: test-reports
           destination: test-reports
-
-  test_fipy2:
-    description: "Run FiPy Tests with python 2.x"
-
-    parameters:
-      mpirun:
-        type: string
-        default: ""
-
-    steps:
-      - run:
-          name: Install libGLU
-          command: |
-            apt-get --yes update
-            apt-get --yes install libglu1-mesa
-
-      - checkout
-
-      - test_fipy:
-          mpirun: << parameters.mpirun >>
-
-  test_fipy3:
-    description: "Run FiPy Tests with Py3k"
-
-    parameters:
-      mpirun:
-        type: string
-        default: ""
-
-    steps:
-      - run:
-          name: Install libGL
-          command: |
-            apt-get --yes update
-            apt-get --yes install libglu1-mesa
-            apt-get --yes install libgl1-mesa-glx
-            apt-get --yes install libxrender1
-
-      - checkout
-
-      - run:
-          name: 2to3
-          command: |
-            2to3 --write . &> /dev/null;
-            2to3 --write --doctests_only . &> /dev/null;
-
-      - test_fipy:
-          mpirun: << parameters.mpirun >>
 
   # localize changes to cache name to these two commands
   save_conda_cache:
@@ -149,6 +103,9 @@ commands:
           command: |
             apt-get --yes update
             apt-get --yes install build-essential
+            apt-get --yes install libglu1-mesa
+            apt-get --yes install libgl1-mesa-glx
+            apt-get --yes install libxrender1
             conda config --set always_yes yes --set changeps1 no
             conda update -q conda
             conda config --remove channels defaults
@@ -209,7 +166,7 @@ jobs:
     <<: *defaults2
 
     steps:
-      - test_fipy2
+      - test_fipy
     environment:
       FIPY_SOLVERS: pysparse
 
@@ -217,7 +174,7 @@ jobs:
     <<: *defaults2
 
     steps:
-      - test_fipy2
+      - test_fipy
     environment:
       FIPY_SOLVERS: pysparse
       FIPY_INLINE: 1
@@ -226,7 +183,7 @@ jobs:
     <<: *defaults2
 
     steps:
-      - test_fipy2
+      - test_fipy
     environment:
       FIPY_SOLVERS: scipy
 
@@ -234,7 +191,7 @@ jobs:
     <<: *defaults2
 
     steps:
-      - test_fipy2
+      - test_fipy
     environment:
       FIPY_SOLVERS: trilinos
 
@@ -242,7 +199,7 @@ jobs:
     <<: *defaults2
 
     steps:
-      - test_fipy2:
+      - test_fipy:
           mpirun: "mpirun -np 2"
     environment:
       FIPY_SOLVERS: trilinos
@@ -252,7 +209,7 @@ jobs:
     <<: *defaults3
 
     steps:
-      - test_fipy3
+      - test_fipy
     environment:
       FIPY_SOLVERS: scipy
 
