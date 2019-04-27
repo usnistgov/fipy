@@ -37,6 +37,8 @@ from builtins import range
 from builtins import map
 from builtins import str
 from past.utils import old_div
+from future.utils import string_types
+
 __docformat__ = 'restructuredtext'
 
 import re
@@ -135,7 +137,7 @@ class PhysicalField(object):
                 value = value.value
         elif unit is not None:
             unit = _findUnit(unit)
-        elif isinstance(value, type('')):
+        elif isinstance(value, string_types):
             s = value.strip()
             match = PhysicalField._number.match(s)
             if match is None:
@@ -253,7 +255,7 @@ class PhysicalField(object):
         if _isVariable(other):
             return sign2(other) + self.__class__(value = sign1(selfValue), unit = self.unit)
 
-        if isinstance(other, type('')):
+        if isinstance(other, string_types):
             other = PhysicalField(value = other)
 
         if not isinstance(other, PhysicalField):
@@ -323,7 +325,7 @@ class PhysicalField(object):
         """
         if _isVariable(other):
             return other.__mul__(self)
-        if isinstance(other, type('')):
+        if isinstance(other, string_types):
             other = PhysicalField(value = other)
         if not isinstance(other, PhysicalField):
             return self.__class__(value = self.value*other, unit = self.unit)
@@ -362,7 +364,7 @@ class PhysicalField(object):
         """
         if _isVariable(other):
             return other.__rtruediv__(self)
-        if isinstance(other, type('')):
+        if isinstance(other, string_types):
             other = self.__class__(value = other)
         if not isinstance(other, PhysicalField):
             value = old_div(self.value,other)
@@ -381,7 +383,7 @@ class PhysicalField(object):
     def __rtruediv__(self, other):
         if _isVariable(other):
             return other.__truediv__(self)
-        if isinstance(other, type('')):
+        if isinstance(other, string_types):
             other = PhysicalField(value = other)
         if not isinstance(other, PhysicalField):
             value = old_div(other,self.value)
@@ -406,7 +408,7 @@ class PhysicalField(object):
         """
         if _isVariable(other):
             return other.__rmod__(self)
-        if isinstance(other, type('')):
+        if isinstance(other, string_types):
             other = self.__class__(value = other)
         if not isinstance(other, PhysicalField):
             value = self.value % other
@@ -426,7 +428,7 @@ class PhysicalField(object):
             >>> print(PhysicalField(10., 'm')**2)
             100.0 m**2
         """
-        if isinstance(other, type('')):
+        if isinstance(other, string_types):
             other = PhysicalField(value = other)
         return self.__class__(value = pow(self.value, float(other)), unit = pow(self.unit, other))
 
@@ -482,7 +484,7 @@ class PhysicalField(object):
             other = other.value
 
         if not isinstance(other, PhysicalField):
-            if isinstance(other, type('')):
+            if isinstance(other, string_types):
                 other = PhysicalField(other)
             elif numerix.alltrue(other == 0) or self.unit.isDimensionlessOrAngle():
                 other = PhysicalField(value = other, unit = self.unit)
@@ -516,7 +518,7 @@ class PhysicalField(object):
                 ...
             TypeError: Incompatible units
         """
-        if isinstance(value, type('')):
+        if isinstance(value, string_types):
             value = PhysicalField(value)
         if isinstance(value, PhysicalField) or _isVariable(value):
             value = self._inMyUnits(value).value
@@ -545,7 +547,7 @@ class PhysicalField(object):
                 ...
             TypeError: Incompatible units
         """
-        if isinstance(value, type('')):
+        if isinstance(value, string_types):
             value = PhysicalField(value)
         if isinstance(value, PhysicalField) or _isVariable(value):
             value = self._inMyUnits(value).value
@@ -1385,7 +1387,7 @@ class PhysicalUnit(object):
 
         .. _Numeric: http://www.numpy.org
         """
-        if isinstance(names, type('')):
+        if isinstance(names, string_types):
             self.names = _NumberDict()
             self.names[names] = 1
         else:
@@ -1847,7 +1849,7 @@ def _findUnit(unit):
     """
 ##     print unit, type(unit)
 
-    if isinstance(unit, type('')):
+    if isinstance(unit, string_types):
         name = unit.strip()
         if len(name) == 0 or unit == '1':
             unit = _unity
@@ -1970,7 +1972,7 @@ for unit in _base_units:
 def _addUnit(name, unit):
     if name in _unit_table:
         raise KeyError('Unit ' + name + ' already defined')
-    if isinstance(unit, type('')):
+    if isinstance(unit, string_types):
         unit = eval(unit, _unit_table)
         for cruft in ['__builtins__', '__args__']:
             try: del _unit_table[cruft]

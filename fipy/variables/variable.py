@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from builtins import object
 from builtins import str
 from past.utils import old_div
+from future.utils import string_types
 __docformat__ = 'restructuredtext'
 
 import os
@@ -641,7 +642,10 @@ class Variable(object):
 ##                        if len(v) > 1:
                             value = numerix.resize(value, v.shape).astype(v.dtype)
 
-            if unit is not None or type(value) in [type(''), type(()), type([])]:
+            if (unit is not None
+                or isinstance(value, string_types)
+                or isinstance(value, tuple)
+                or isinstance(value, list)):
                 value = PF(value=value, unit=unit, array=array)
             elif array is not None:
                 array[:] = value
