@@ -1,7 +1,10 @@
+from __future__ import unicode_literals
 from fipy.tools.comms.commWrapper import CommWrapper
 from fipy.tools import numerix
 
 __all__ = ["Mpi4pyCommWrapper"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class Mpi4pyCommWrapper(CommWrapper):
     """MPI Communicator wrapper

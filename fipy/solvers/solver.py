@@ -12,6 +12,8 @@ can abort whenever it has problems with::
 
 """
 from __future__ import division
+from __future__ import unicode_literals
+from builtins import object
 from builtins import str
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
@@ -22,6 +24,8 @@ __all__ = ["SolverConvergenceWarning", "MaximumIterationWarning",
            "PreconditionerWarning", "IllConditionedPreconditionerWarning",
            "PreconditionerNotPositiveDefiniteWarning", "MatrixIllConditionedWarning",
            "StagnatedSolverWarning", "ScalarQuantityOutOfRangeWarning", "Solver"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class SolverConvergenceWarning(Warning):
     def __init__(self, solver, iter, relres):

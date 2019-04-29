@@ -3,6 +3,7 @@ from a repository that username has access to. Supports Github API v3.
 Adapted from: https://gist.github.com/patrickfuller/e2ea8a94badc5b6967ef3ca0a9452a43
 """
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import os
 import textwrap

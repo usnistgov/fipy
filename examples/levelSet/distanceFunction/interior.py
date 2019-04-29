@@ -35,6 +35,7 @@ Do the tests:
 1
 
 """
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -66,6 +67,6 @@ if __name__ == '__main__':
     var.calcDistanceFunction(order=1)
     viewer = Viewer(vars=var, datamin=-5., datamax=5.)
     viewer.plot()
-    input('finished')
+    eval(input('finished'))
 
 

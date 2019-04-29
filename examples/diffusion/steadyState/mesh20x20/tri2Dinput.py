@@ -13,6 +13,7 @@ The result is again tested in the same way:
     1
 
 """
+from __future__ import unicode_literals
 
 from builtins import input
 from fipy import CellVariable, Tri2D, DiffusionTerm, Viewer
@@ -38,5 +39,5 @@ if __name__ == '__main__':
     DiffusionTerm().solve(var)
     viewer = Viewer(vars = var)
     viewer.plot()
-    input("finished")
+    eval(input("finished"))
 

@@ -69,6 +69,7 @@ resemble the image below.
 """
 from __future__ import absolute_import
 from __future__ import division
+from __future__ import unicode_literals
 from builtins import input
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
@@ -212,4 +213,4 @@ __all__ = ["runGold"]
 
 if __name__ == '__main__':
     runGold(numberOfSteps = 300, cellSize = 0.05e-7, displayViewers=False)
-    input("finished")
+    eval(input("finished"))

@@ -1,6 +1,8 @@
 from __future__ import print_function
+from __future__ import unicode_literals
 from builtins import str
 from setuptools.command.test import test as _test
+from future.utils import text_to_native_str
 
 class test(_test):
     description = str(_test.description) + ", for FiPy and its examples"
@@ -30,6 +32,7 @@ class test(_test):
         ('skfmm', None, "run FiPy using the Scikit-fmm level set solver (default)"),
         ('lsmlib', None, "run FiPy using the LSMLIB level set solver (default)"),
        ]
+    user_options = [((text_to_native_str(n[0]),) + n[1:]) for n in user_options]
 
 
     def initialize_options(self):

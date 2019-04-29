@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from builtins import range
 from builtins import zip
 __docformat__ = 'restructuredtext'
@@ -50,7 +52,7 @@ class _DOffsets(object):
         if type(offset) in [int, float]:
             offset = [offset]
 
-        for d, n, i in zip(ds, ns, range(len(ds))):
+        for d, n, i in zip(ds, ns, list(range(len(ds)))):
             if numerix.getShape(d) is not ():
                 offsetList.append(numerix.sum(d[0:offset[i]]))
                 newDs.append(d[offset[i]:offset[i] + n])

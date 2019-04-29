@@ -31,6 +31,8 @@ recommended values from CODATA_. Other conversion factors
 .. _Appendix B of NIST Special Publication 811: http://physics.nist.gov/Pubs/SP811/appenB9.html
 """
 from __future__ import division
+from __future__ import unicode_literals
+from builtins import object
 from builtins import range
 from builtins import map
 from builtins import str
@@ -47,6 +49,8 @@ from fipy.tools.dimensions.NumberDict import _NumberDict
 from functools import reduce
 
 __all__ = ["PhysicalField", "PhysicalUnit"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 # Class definitions
 
@@ -923,7 +927,7 @@ class PhysicalField(object):
             new_value = self.value
         num = ''
         denom = ''
-        for i in xrange(9):
+        for i in range(9):
             unit = _base_names[i]
             power = self.unit.powers[i]
             if power < 0:
@@ -1361,7 +1365,7 @@ class PhysicalField(object):
         other = self._inMyUnits(other)
         return MA.allequal(self.value, other.value)
 
-class PhysicalUnit:
+class PhysicalUnit(object):
     """
     A `PhysicalUnit` represents the units of a `PhysicalField`.
     """
@@ -1820,7 +1824,7 @@ class PhysicalUnit:
             num = '1'
         else:
             num = num[1:]
-        return num + denom
+        return text_to_native_str(num + denom)
 
 # Helper functions
 
@@ -2123,7 +2127,7 @@ def _getUnitStrings():
 
     def _getSortedUnitStrings(unitDict):
         strings = []
-        keys = list(unitDict.keys())
+        keys = [str(key) for key in unitDict.keys()]
         keys.sort(key=str.lower)
         for key in keys:
             if key in unitDict:

@@ -47,11 +47,13 @@ modeling. The following code opens the file :file:`mesh1D.gz` extracts the
 data and compares it with the ``theta`` variable.
 
 >>> import os
->>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
+>>> from future.utils import text_to_native_str
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz'))
 >>> print(phase.allclose(testData))
 1
 """
 from __future__ import division
+from __future__ import unicode_literals
 from builtins import input
 from builtins import range
 from past.utils import old_div
@@ -97,5 +99,5 @@ if __name__ == '__main__':
    for step in range(steps):
       phaseEq.solve(phase, dt = timeStepDuration)
       phaseViewer.plot()
-   input('finished')
+   eval(input('finished'))
 

@@ -1,9 +1,12 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 import os
 from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
 
 __all__ = ["PysparseSolver"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class PysparseSolver(_PysparseMatrixSolver):
     """

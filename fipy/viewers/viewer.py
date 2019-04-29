@@ -1,7 +1,11 @@
 from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import object
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 import sys
 

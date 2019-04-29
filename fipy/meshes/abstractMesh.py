@@ -1,9 +1,13 @@
 from __future__ import division
+from __future__ import unicode_literals
+from builtins import object
 from builtins import range
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractMesh"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 from fipy.tools import serialComm
 from fipy.tools import numerix

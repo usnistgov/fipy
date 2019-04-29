@@ -1,8 +1,11 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.abstractMesh import AbstractMesh
 
 __all__ = ["UniformGrid"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class UniformGrid(AbstractMesh):
     """Wrapped scaled geometry properties"""

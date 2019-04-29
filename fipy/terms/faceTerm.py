@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -9,6 +10,8 @@ from fipy.tools import numerix
 from fipy.tools import inline
 
 __all__ = ["FaceTerm"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class FaceTerm(_NonDiffusionTerm):
     """
@@ -53,7 +56,7 @@ class FaceTerm(_NonDiffusionTerm):
                 self._viewer.title = r"%s %s" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
                 self._viewer.plot(matrix=LL, RHSvector=bb)
                 from fipy import raw_input
-                input()
+                eval(input())
 
             L += LL
             b += bb

@@ -1,7 +1,9 @@
 from __future__ import division
+from __future__ import unicode_literals
 from builtins import range
 from builtins import str
 from past.utils import old_div
+from future.utils import text_to_native_str
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -91,7 +93,7 @@ class _TrilinosMatrix(_SparseMatrix):
 
     @property
     def _range(self):
-        return (range(self.rowMap.NumGlobalElements()), self.rowMap.MyGlobalElements())
+        return (list(range(self.rowMap.NumGlobalElements())), self.rowMap.MyGlobalElements())
 
     def __setitem__(self, index, value):
         self.matrix[index] = value
@@ -445,7 +447,7 @@ class _TrilinosMatrix(_SparseMatrix):
         Exports the matrix to a Matrix Market file of the given filename.
         """
         self.fillComplete()
-        EpetraExt.RowMatrixToMatrixMarketFile(filename, self.matrix)
+        EpetraExt.RowMatrixToMatrixMarketFile(text_to_native_str(filename), self.matrix)
 
     @property
     def numpyArray(self):
@@ -610,7 +612,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
     @property
     def _globalCommonColIDs(self):
-        return range(0, self.numberOfVariables, self.mesh.globalNumberOfCells)
+        return list(range(0, self.numberOfVariables, self.mesh.globalNumberOfCells))
 
     @property
     def _globalOverlappingColIDs(self):

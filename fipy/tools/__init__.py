@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from builtins import range
 def _parallelImport():
     try:
@@ -96,6 +97,8 @@ __all__ = ["serialComm",
            "Vitals",
            "serial",
            "parallel"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 import os
 if 'FIPY_INCLUDE_NUMERIX_ALL' in os.environ:

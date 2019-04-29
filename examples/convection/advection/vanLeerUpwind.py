@@ -29,6 +29,7 @@ should do better than this.
 """
 from __future__ import print_function
 from __future__ import division
+from __future__ import unicode_literals
 
 from builtins import input
 from builtins import range
@@ -87,5 +88,5 @@ if __name__ == '__main__':
 
     print('maximum absolute difference between periodic and non-periodic grids:', abs(var1[old_div(nx, 4):old_div(3 * nx, 4)] - newVar2).max())
 
-    input('finished')
+    eval(input('finished'))
 

@@ -36,7 +36,9 @@ Take the tangent of an array.
 """
 from __future__ import print_function
 from __future__ import division
+from __future__ import unicode_literals
 
+from builtins import range
 from builtins import str
 from builtins import zip
 from past.utils import old_div
@@ -84,6 +86,8 @@ __all__.extend(sorted(["getUnit", "put", "reshape", "getShape",
                        "isclose", "take", "indices", "empty", "loadtxt",
                        "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"],
                       key=str.lower))
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 def _isPhysical(arr):
     """
@@ -824,7 +828,7 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
             vals = line.split(delimiter)
             if converterseq is None:
                converterseq = [converters.get(j, defconv) \
-                               for j in xrange(len(vals))]
+                               for j in range(len(vals))]
             if usecols is not None:
                 row = [converterseq[j](vals[j]) for j in usecols]
             else:

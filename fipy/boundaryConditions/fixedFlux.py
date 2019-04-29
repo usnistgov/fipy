@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -7,6 +8,8 @@ from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.tools import vector
 
 __all__ = ["FixedFlux"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class FixedFlux(BoundaryCondition):
     r"""

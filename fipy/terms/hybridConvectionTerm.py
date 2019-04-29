@@ -1,4 +1,5 @@
 from __future__ import division
+from __future__ import unicode_literals
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
@@ -7,6 +8,8 @@ from fipy.terms.asymmetricConvectionTerm import _AsymmetricConvectionTerm
 from fipy.variables.faceVariable import FaceVariable
 
 __all__ = ["HybridConvectionTerm"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class _HybridConvectionTermAlpha(FaceVariable):
     def __init__(self, P):

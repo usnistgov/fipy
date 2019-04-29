@@ -330,6 +330,7 @@ their respective phases
     >>> allclose(ends, (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
     1
 """
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -353,7 +354,7 @@ if __name__ == '__main__':
 
     # profile.stop()
 
-    input("finished")
+    eval(input("finished"))
 
 
 

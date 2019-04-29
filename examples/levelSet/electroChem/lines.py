@@ -1,7 +1,9 @@
+from __future__ import unicode_literals
+from builtins import object
 from builtins import range
 __all__ = []
 
-class _Vertex:
+class _Vertex(object):
     def __init__(self, ID, x, y):
         self.ID = ID
         self.up = None
@@ -50,7 +52,7 @@ class _Vertex:
         self.setInLineTrue()
         self.down = vertex
 
-class _Line:
+class _Line(object):
     def __init__(self, seedVertex):
         if seedVertex.getUp() is not None or \
            seedVertex.getDown() is not None or \

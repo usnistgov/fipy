@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import unicode_literals
 from mpi4py import MPI
 
 m4comm = MPI.COMM_WORLD

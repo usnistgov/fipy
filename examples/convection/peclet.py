@@ -52,6 +52,7 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 [True, True, True, True, True, True, True]
 
 """
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

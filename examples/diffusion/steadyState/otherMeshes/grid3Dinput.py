@@ -13,6 +13,7 @@ Test case for the Grid3D.
    1
 
 """
+from __future__ import unicode_literals
 
 from builtins import input
 from fipy import CellVariable, Grid2D, Grid3D, DiffusionTerm, Viewer
@@ -65,5 +66,5 @@ if __name__ == '__main__':
     eqn.solve(var2)
     viewer = Viewer(var2)
     viewer.plot()
-    input("finished")
+    eval(input("finished"))
 

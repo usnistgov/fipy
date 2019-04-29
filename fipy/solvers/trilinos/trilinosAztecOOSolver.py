@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 import os
@@ -8,6 +9,8 @@ from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
 
 __all__ = ["TrilinosAztecOOSolver"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class TrilinosAztecOOSolver(TrilinosSolver):
 

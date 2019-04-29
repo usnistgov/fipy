@@ -7,6 +7,7 @@ This script attempts to make it do so.
 
 Co-opted from 2to3
 """
+from __future__ import unicode_literals
 
 import sys
 from lib2to3.main import main

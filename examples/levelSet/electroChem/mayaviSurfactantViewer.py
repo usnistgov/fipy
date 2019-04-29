@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from builtins import range
 __docformat__ = 'restructuredtext'
 
@@ -106,7 +107,7 @@ class MayaviSurfactantViewer(AbstractViewer):
 
         from .lines import _getOrderedLines
 
-        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.mesh._cellDistances.min() * 10)
+        lines = _getOrderedLines(list(range(2 * len(IDs))), coordinates, thresholdDistance = self.distanceVar.mesh._cellDistances.min() * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
 

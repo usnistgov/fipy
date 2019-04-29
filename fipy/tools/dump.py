@@ -1,6 +1,10 @@
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
 __docformat__ = 'restructuredtext'
 
-import cPickle
+import io
+import pickle
 import os
 import sys
 import gzip
@@ -8,6 +12,8 @@ import gzip
 from fipy.tools import parallelComm
 
 __all__ = ["write", "read"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 # TODO: add test to show that round trip pickle of mesh doesn't work properly
 # FIXME: pickle fails to work properly on numpy 1.1 (run gapFillMesh.py)
@@ -44,7 +50,7 @@ def write(data, filename = None, extension = '', communicator=parallelComm):
         fileStream = open(os.devnull, mode='w')
         (f, _filename) = (None, os.devnull)
 
-    cPickle.dump(data, fileStream, 0)
+    pickle.dump(data, fileStream, 0)
     fileStream.close()
 
     if filename is None:
@@ -75,14 +81,9 @@ def read(filename, fileobject=None, communicator=parallelComm, mesh_unmangle=Fal
     if communicator.Nproc > 1:
         data = communicator.bcast(data, root=0)
 
-    if sys.version_info < (3, 0):
-        import StringIO
-        f = StringIO.StringIO(data)
-    else:
-        import io
-        f = io.BytesIO(data)
+    f = io.BytesIO(data)
 
-    unpickler = cPickle.Unpickler(f)
+    unpickler = pickle.Unpickler(f)
 
     if mesh_unmangle:
         def find_class(module, name):

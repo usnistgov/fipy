@@ -1,9 +1,12 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
 
 __all__ = ["CellVariable"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class CellVariable(_MeshVariable):
     """

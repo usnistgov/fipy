@@ -1,4 +1,5 @@
 """setuptools command to prepare FiPy for release"""
+from __future__ import unicode_literals
 
 from distutils.core import Command
 import glob

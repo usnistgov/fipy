@@ -2,6 +2,7 @@
 2D rectangular Mesh with constant spacing in x and constant spacing in y
 """
 from __future__ import division
+from __future__ import unicode_literals
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
@@ -17,6 +18,8 @@ from fipy.meshes.representations.gridRepresentation import _Grid2DRepresentation
 from fipy.meshes.topologies.gridTopology import _Grid2DTopology
 
 __all__ = ["UniformGrid2D"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class UniformGrid2D(UniformGrid):
     """

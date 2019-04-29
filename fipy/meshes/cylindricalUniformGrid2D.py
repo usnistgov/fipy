@@ -2,6 +2,7 @@
 2D cylindrical rectangular Mesh with constant spacing in x and constant spacing in y
 """
 from __future__ import division
+from __future__ import unicode_literals
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
@@ -10,6 +11,8 @@ from fipy.tools import numerix
 from fipy.tools import parallelComm
 
 __all__ = ["CylindricalUniformGrid2D"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class CylindricalUniformGrid2D(UniformGrid2D):
     r"""

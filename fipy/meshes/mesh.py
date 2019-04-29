@@ -1,4 +1,5 @@
 from __future__ import division
+from __future__ import unicode_literals
 from builtins import range
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
@@ -13,6 +14,8 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import serialComm
 
 __all__ = ["MeshAdditionError", "Mesh"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class MeshAdditionError(Exception):
     pass
@@ -149,7 +152,7 @@ class Mesh(AbstractMesh):
         faceOrigins = numerix.repeat(faceVertexCoords[:, 0], faceVertexIDs.shape[0], axis=0)
         faceOrigins = numerix.reshape(faceOrigins, MA.shape(faceVertexCoords))
         faceVertexCoords = faceVertexCoords - faceOrigins
-        left = range(faceVertexIDs.shape[0])
+        left = list(range(faceVertexIDs.shape[0]))
         right = left[1:] + [left[0]]
         cross = numerix.sum(numerix.cross(faceVertexCoords,
                                           numerix.take(faceVertexCoords, right, 1),

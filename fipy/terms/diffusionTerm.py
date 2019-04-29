@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.diffusionTermNoCorrection import DiffusionTermNoCorrection
@@ -5,6 +6,8 @@ from fipy.terms.diffusionTermCorrection import DiffusionTermCorrection
 from fipy.tools import numerix
 
 __all__ = ["DiffusionTerm", "DiffusionTermCorrection", "DiffusionTermNoCorrection"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class DiffusionTerm(DiffusionTermNoCorrection):
     r"""

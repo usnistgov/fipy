@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 from builtins import zip
 from builtins import range
 __docformat__ = 'restructuredtext'
@@ -213,7 +215,7 @@ class _AbstractGridBuilder(object):
         # `permutations` is the cleanest way to do this, but it's new in
         # python 2.6, so we can't rely on it.
         if hasattr(itertools, "permutations"):
-            nIter = list(itertools.permutations(range(len(ns))))
+            nIter = list(itertools.permutations(list(range(len(ns)))))
 
             # ensure len(nIter) == len(ns) && nIter[i][0] unique
             if len(ns) == 3:

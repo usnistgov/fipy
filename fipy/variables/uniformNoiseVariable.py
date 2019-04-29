@@ -1,9 +1,12 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random
 from fipy.variables.noiseVariable import NoiseVariable
 
 __all__ = ["UniformNoiseVariable"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class UniformNoiseVariable(NoiseVariable):
     r"""

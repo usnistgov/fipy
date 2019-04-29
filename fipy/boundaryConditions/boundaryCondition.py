@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -5,6 +7,8 @@ from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 __all__ = ["BoundaryCondition"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class BoundaryCondition(object):
     """

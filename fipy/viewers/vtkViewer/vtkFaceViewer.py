@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.faceVariable import FaceVariable
@@ -5,6 +6,8 @@ from fipy.variables.faceVariable import FaceVariable
 from fipy.viewers.vtkViewer.vtkViewer import VTKViewer
 
 __all__ = ["VTKFaceViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class VTKFaceViewer(VTKViewer):
     """Renders `_MeshVariable` data in VTK format

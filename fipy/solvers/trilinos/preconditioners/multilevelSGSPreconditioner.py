@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import ML
@@ -5,6 +6,8 @@ from PyTrilinos import ML
 from fipy.solvers.trilinos.preconditioners.preconditioner import Preconditioner
 
 __all__ = ["MultilevelSGSPreconditioner"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class MultilevelSGSPreconditioner(Preconditioner):
     """
@@ -24,6 +27,6 @@ class MultilevelSGSPreconditioner(Preconditioner):
             return
 
         self.Prec = ML.MultiLevelPreconditioner(matrix, False)
-        self.Prec.SetParameterList({"output": 0, "smoother: type" : "symmetric Gauss-Seidel"})
+        self.Prec.SetParameterList({text_to_native_str("output"): 0, text_to_native_str("smoother: type") : text_to_native_str("symmetric Gauss-Seidel")})
         self.Prec.ComputePreconditioner()
         solver.SetPrecOperator(self.Prec)

@@ -118,6 +118,7 @@ we verify that the concentrations have become uniform
    The absolute tolerance `atol` must be in units compatible with the value to
    be checked, but the relative tolerance `rtol` is dimensionless.
 """
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -134,7 +135,7 @@ if __name__ == '__main__':
 
     # profile.stop()
 
-    input("finished")
+    eval(input("finished"))
 
 
 

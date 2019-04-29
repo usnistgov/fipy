@@ -17,6 +17,7 @@ A simple analytical answer can be used to test the result:
 
 """
 from __future__ import division
+from __future__ import unicode_literals
 
 from builtins import input
 from past.utils import old_div
@@ -54,5 +55,5 @@ var.constrain(valueLeft, mesh.facesLeft)
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    input('finished')
+    eval(input('finished'))
 

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from builtins import str
 __docformat__ = 'restructuredtext'
 
@@ -134,3 +135,5 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         return viewers[0]
 
 __all__.extend(["MeshDimensionError", "DummyViewer", "Viewer"])
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]

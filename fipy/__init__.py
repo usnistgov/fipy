@@ -31,6 +31,7 @@ electrodeposition process :cite:`NIST:damascene:2001`.
 .. _MSED:                 http://www.nist.gov/mml/msed/
 .. _NIST:                 http://www.nist.gov/
 """
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.boundaryConditions import *
@@ -89,6 +90,9 @@ else:
         raw_input = mpi_raw_input
 
     __all__.extend(['raw_input', 'raw_input_original'])
+
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 _saved_stdout = sys.stdout
 

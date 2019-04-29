@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from builtins import zip
 __docformat__ = 'restructuredtext'
 
@@ -6,6 +7,8 @@ from fipy.tools import numerix
 from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer, _ColorBar
 
 __all__ = ["Matplotlib2DViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class AbstractMatplotlib2DViewer(AbstractMatplotlibViewer):
     def figaspect(self, figaspect):

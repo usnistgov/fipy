@@ -197,11 +197,13 @@ extracts the data and compares it with the ``theta`` variable.
 .. index:: loadtxt
 
 >>> import os
->>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
+>>> from future.utils import text_to_native_str
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz'))
 >>> testData = CellVariable(mesh=mesh, value=testData)
 >>> print(theta.allclose(testData))
 1
 """
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -209,5 +211,5 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    input('finished')
+    eval(input('finished'))
 

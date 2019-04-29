@@ -1,4 +1,5 @@
 from __future__ import division
+from __future__ import unicode_literals
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
@@ -6,6 +7,8 @@ from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools.numerix import exp, take, where
 
 __all__ = ["ScharfetterGummelFaceVariable"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class ScharfetterGummelFaceVariable(_CellToFaceVariable):
     def __init__(self, var, boundaryConditions=()):

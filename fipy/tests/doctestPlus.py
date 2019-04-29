@@ -1,10 +1,14 @@
 from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import object
 import sys
 import time
 import doctest
 import inspect
 
 __all__ = ["execButNoTest", "register_skipper", "report_skips", "testmod"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 _DocTestTimes = []
 
@@ -86,7 +90,7 @@ def report_skips():
         print("\n".join(skips), file=sys.stderr)
         print("!" * 79, file=sys.stderr)
 
-class _DoctestSkipper:
+class _DoctestSkipper(object):
     def __init__(self, flag, test, why, skipWarning):
         self.flag = flag
         self.why = why

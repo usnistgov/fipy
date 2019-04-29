@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -81,7 +82,7 @@ class _UnaryTerm(Term):
              and "terms" in os.environ['FIPY_DISPLAY_MATRIX'].lower().split()):
              self._viewer.title = "%s %s" % (var.name, repr(self))
              self._viewer.plot(matrix=matrix, RHSvector=RHSvector)
-             input()
+             eval(input())
 
         return (var, matrix, RHSvector)
 

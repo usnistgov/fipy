@@ -6,6 +6,7 @@ True
 
 """
 from __future__ import division
+from __future__ import unicode_literals
 
 from builtins import range
 from builtins import input
@@ -49,5 +50,5 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    input('finished')
+    eval(input('finished'))
 

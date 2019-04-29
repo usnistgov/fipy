@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import unicode_literals
 from builtins import zip
 from builtins import str
 import os
@@ -10,6 +11,8 @@ from xml.dom.minidom import Document
 import fipy
 
 __all__ = ["Vitals"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class Vitals(Document):
     """Returns XML formatted information about current FiPy environment

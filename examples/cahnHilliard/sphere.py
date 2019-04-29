@@ -109,6 +109,7 @@ evolution of their problem.
    :alt: Cahn-Hilliard phase separation on the surface of a sphere with a rendering of the mesh
 
 """
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -116,5 +117,5 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    input('finished')
+    eval(input('finished'))
 

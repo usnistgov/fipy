@@ -3,6 +3,7 @@ This example shows the failure of advecting a square pulse with a first
 order implicit upwind scheme.
 """
 from __future__ import division
+from __future__ import unicode_literals
 
 from builtins import range
 from builtins import input
@@ -39,11 +40,11 @@ if __name__ == '__main__':
 
     viewer = Viewer(vars=(var,))
     viewer.plot()
-    input("press key to continue")
+    eval(input("press key to continue"))
     for step in range(steps):
         eq.solve(var,
                  dt = timeStepDuration,
                  solver = LinearLUSolver(tolerance = 1.e-15))
         viewer.plot()
     viewer.plot()
-    input('finished')
+    eval(input('finished'))

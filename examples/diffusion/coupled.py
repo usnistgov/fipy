@@ -112,6 +112,7 @@ separate governing equations and to couple them. If they represent two
 components of a vector field, then the vector formulation is obviously more
 natural. FiPy will solve the same matrix system either way.
 """
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -119,4 +120,4 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    input('finished')
+    eval(input('finished'))

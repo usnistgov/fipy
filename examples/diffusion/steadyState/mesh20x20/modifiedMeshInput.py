@@ -80,6 +80,7 @@ main FiPy test suite. If you run it directly from the directory it is
 in it will not be able to find the mesh file.
 
 """
+from __future__ import unicode_literals
 
 
 __docformat__ = 'restructuredtext'

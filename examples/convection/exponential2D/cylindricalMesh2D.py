@@ -96,6 +96,7 @@ If the problem is run interactively, we can view the result:
 ...     viewer = Viewer(vars=var)
 ...     viewer.plot()
 """
+from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
@@ -103,6 +104,6 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    input('finished')
+    eval(input('finished'))
 
 

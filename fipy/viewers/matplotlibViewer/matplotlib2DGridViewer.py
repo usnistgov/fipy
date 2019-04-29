@@ -1,8 +1,11 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["Matplotlib2DGridViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
     """

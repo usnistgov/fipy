@@ -19,6 +19,7 @@ Run::
 to see available options.
 """
 from __future__ import division
+from __future__ import unicode_literals
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
@@ -43,6 +44,8 @@ except ImportError as e:
 from fipy.tools.numerix import array, concatenate, where, zeros
 
 __all__ = ["MayaviDaemon"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 ######################################################################
 class MayaviDaemon(Mayavi):

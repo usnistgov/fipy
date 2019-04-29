@@ -418,6 +418,7 @@ to tell if something has changed or been broken.
 >>> if __name__ == '__main__':
 ...     input('finished')
 """
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 def _run():

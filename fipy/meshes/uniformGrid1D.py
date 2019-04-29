@@ -2,6 +2,7 @@
 1D Mesh
 """
 from __future__ import division
+from __future__ import unicode_literals
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
@@ -16,6 +17,8 @@ from fipy.meshes.representations.gridRepresentation import _Grid1DRepresentation
 from fipy.meshes.topologies.gridTopology import _Grid1DTopology
 
 __all__ = ["UniformGrid1D"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class UniformGrid1D(UniformGrid):
     """

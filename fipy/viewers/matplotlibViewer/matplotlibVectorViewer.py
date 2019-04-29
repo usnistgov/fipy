@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -7,6 +8,8 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["MatplotlibVectorViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class MatplotlibVectorViewer(AbstractMatplotlib2DViewer):
     """Displays a vector plot of a 2D rank-1 `CellVariable` or

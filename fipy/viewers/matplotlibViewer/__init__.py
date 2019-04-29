@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.matplotlibViewer.matplotlib1DViewer import *
@@ -8,6 +9,8 @@ from fipy.viewers.matplotlibViewer.matplotlibVectorViewer import *
 from fipy.viewers.matplotlibViewer.matplotlibStreamViewer import *
 
 __all__ = ["MatplotlibViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 __all__.extend(matplotlib1DViewer.__all__)
 __all__.extend(matplotlib2DGridViewer.__all__)
 __all__.extend(matplotlib2DGridContourViewer.__all__)

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from fipy.meshes.factoryMeshes import *
 from fipy.meshes.periodicGrid1D import *
 from fipy.meshes.periodicGrid2D import *

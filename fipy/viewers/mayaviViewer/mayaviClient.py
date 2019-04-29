@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import unicode_literals
 from builtins import str
 __docformat__ = 'restructuredtext'
 
@@ -10,6 +11,8 @@ import time
 from fipy.viewers.viewer import AbstractViewer
 
 __all__ = ["MayaviClient"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class MayaviClient(AbstractViewer):
     """

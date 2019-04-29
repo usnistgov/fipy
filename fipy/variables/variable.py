@@ -1,4 +1,6 @@
 from __future__ import division
+from __future__ import unicode_literals
+from builtins import object
 from builtins import str
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
@@ -11,6 +13,8 @@ from fipy.tools import parser
 from fipy.tools import inline
 
 __all__ = ["Variable"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class Variable(object):
     """
@@ -359,19 +363,21 @@ class Variable(object):
     def _getCstring(self, argDict={}, id="", freshen=None):
          """
          Generate the string and dictionary to be used in inline
-             >>> (Variable((1)))._getCstring(argDict={})
+             >>> from future.utils import text_to_native_str as ttns
+
+             >>> ttns((Variable((1)))._getCstring(argDict={}))
              'var'
 
-             >>> (Variable((1, 2, 3, 4)))._getCstring(argDict={})
+             >>> ttns((Variable((1, 2, 3, 4)))._getCstring(argDict={}))
              'var[i]'
 
-             >>> (Variable(((1, 2), (3, 4))))._getCstring(argDict={})
+             >>> ttns((Variable(((1, 2), (3, 4))))._getCstring(argDict={}))
              'var[i + j * ni]'
 
-             >>> Variable((((1, 2), (3, 4)), ((5, 6), (7, 8))))._getCstring(argDict={})
+             >>> ttns(Variable((((1, 2), (3, 4)), ((5, 6), (7, 8))))._getCstring(argDict={}))
              'var[i + j * ni + k * ni * nj]'
 
-             >>> (Variable(1) * Variable((1, 2, 3)))._getCstring(argDict={})
+             >>> ttns((Variable(1) * Variable((1, 2, 3)))._getCstring(argDict={}))
              '(var0 * var1[i])'
 
          freshen is ignored
@@ -839,11 +845,13 @@ class Variable(object):
         """
         Gets the stack from _getCstring() which calls _getRepresentation()
 
-            >>> (Variable((1, 2, 3, 4)) * Variable((5, 6, 7, 8)))._getCstring()
+            >>> from future.utils import text_to_native_str as ttns
+
+            >>> ttns((Variable((1, 2, 3, 4)) * Variable((5, 6, 7, 8)))._getCstring())
             '(var0[i] * var1[i])'
-            >>> (Variable(((1, 2), (3, 4))) * Variable(((5, 6), (7, 8))))._getCstring()
+            >>> ttns((Variable(((1, 2), (3, 4))) * Variable(((5, 6), (7, 8))))._getCstring())
             '(var0[i + j * ni] * var1[i + j * ni])'
-            >>> (Variable((1, 2)) * Variable((5, 6)) * Variable((7, 8)))._getCstring()
+            >>> ttns((Variable((1, 2)) * Variable((5, 6)) * Variable((7, 8)))._getCstring())
             '((var00[i] * var01[i]) * var1[i])'
 
         The following test was implemented due to a problem with

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import numpy
 from scipy.sparse import csr_matrix
 
@@ -8,6 +9,8 @@ from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
 from fipy.tools import numerix
 
 __all__ = ["PyAMGXSolver"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class PyAMGXSolver(Solver):
 

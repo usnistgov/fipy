@@ -1,8 +1,11 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
+
+__all__ = []
 
 class _InterfaceFlagVariable(CellVariable):
     def __init__(self, distanceVar):

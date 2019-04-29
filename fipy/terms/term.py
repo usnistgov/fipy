@@ -1,4 +1,6 @@
 from __future__ import division
+from __future__ import unicode_literals
+from builtins import object
 from builtins import input
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
@@ -10,6 +12,8 @@ from fipy.terms import AbstractBaseClassError
 from fipy.terms import SolutionVariableRequiredError
 
 __all__ = ["Term"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class Term(object):
     """
@@ -145,7 +149,7 @@ class Term(object):
                 RHSvector = solver.RHSvector
             self._viewer.plot(matrix=solver.matrix, RHSvector=RHSvector)
             from fipy import raw_input
-            input()
+            eval(input())
 
         return solver
 

@@ -1,5 +1,7 @@
 from __future__ import print_function
 from __future__ import division
+from __future__ import unicode_literals
+from builtins import object
 from builtins import zip
 from builtins import range
 from builtins import str
@@ -28,6 +30,8 @@ from fipy.tools.debug import PRINT
 __all__ = ["openMSHFile", "openPOSFile",
            "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D",
            "GmshGrid2D", "GmshGrid3D"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 DEBUG = False
 
@@ -236,7 +240,7 @@ def openPOSFile(name, communicator=parallelComm, mode='w'):
                    communicator=communicator,
                    mode=mode)
 
-class GmshFile:
+class GmshFile(object):
     def __init__(self, filename, communicator, mode, fileIsTemporary=False):
         self.filename = filename
         self.communicator = communicator

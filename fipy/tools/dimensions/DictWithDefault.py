@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 # A dictionary with default values for non-existing entries
 
 __all__ = []

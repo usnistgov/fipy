@@ -1,5 +1,8 @@
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
 from docutils import nodes
-import urlparse
+import urllib.parse
 
 from sphinx.builders.html import StandaloneHTMLBuilder
 
@@ -14,7 +17,7 @@ class RedirectingHTMLBuilder(StandaloneHTMLBuilder):
         for node in doctree.traverse(nodes.reference):
             try:
                 uri = node['refuri']
-                uri = urlparse.urlparse(uri)
+                uri = urllib.parse.urlparse(uri)
                 if uri.scheme in ["http", "https"]:
                     if not uri.netloc.endswith("nist.gov"):
                         node['refuri'] = "/cgi-bin/redirect.py?url=" + uri.geturl()

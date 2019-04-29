@@ -1,4 +1,6 @@
 from __future__ import division
+from __future__ import unicode_literals
+from builtins import object
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
@@ -16,7 +18,7 @@ register_skipper(flag="NOTLINUXSCIPY",
                  test=lambda : platform.system() != "Linux" or solver != 'scipy',
                  why="`scipy` solvers on Linux fail intermittently: #575")
 
-class AdsorbingSurfactantEquation():
+class AdsorbingSurfactantEquation(object):
     r"""
 
     The `AdsorbingSurfactantEquation` object solves the

@@ -7,5 +7,6 @@ packages, *e.g.* :mod:`fipy.package.subpackage` located in
 their own chapters; rather, their contents will be described in the chapter
 for their containing package.
 """
+from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'

@@ -1,5 +1,7 @@
 from __future__ import print_function
 from __future__ import division
+from __future__ import unicode_literals
+from builtins import object
 from builtins import zip
 from past.utils import old_div
 from matplotlib import cm
@@ -16,6 +18,8 @@ from scipy.io import mmio
 from fipy.tools import numerix
 
 __all__ = ["MatplotlibSparseMatrixViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class SignedLogFormatter(ticker.LogFormatter):
     """Format signed values for log axis
@@ -163,7 +167,7 @@ class SignedLogLocator(ticker.LogLocator):
 
         return nonsingular(vmin, vmax)
 
-class MatplotlibSparseMatrixViewer:
+class MatplotlibSparseMatrixViewer(object):
     def __init__(self, title="Sparsity"):
         self.title = title
 

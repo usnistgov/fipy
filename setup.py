@@ -6,6 +6,7 @@ Center for Theoretical and Computational Materials Science (CTCMS), in the
 Material Measurement Laboratory (MML) at the National Institute of
 Standards and Technology (NIST).
 """
+from __future__ import unicode_literals
 
 from setuptools import setup, find_packages
 

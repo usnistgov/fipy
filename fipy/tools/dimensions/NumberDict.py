@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 # Dictionary containing numbers
 #
 # These objects are meant to be used like arrays with generalized

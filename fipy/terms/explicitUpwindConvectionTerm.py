@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.abstractUpwindConvectionTerm import _AbstractUpwindConvectionTerm
@@ -5,6 +6,8 @@ from fipy.tools import numerix
 from fipy.terms import TransientTermError
 
 __all__ = ["ExplicitUpwindConvectionTerm"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class ExplicitUpwindConvectionTerm(_AbstractUpwindConvectionTerm):
     r"""

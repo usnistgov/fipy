@@ -615,6 +615,7 @@ expected values.
 
 .. _CFL limit: http://en.wikipedia.org/wiki/Courant-Friedrichs-Lewy_condition
 """
+from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

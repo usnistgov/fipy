@@ -6,6 +6,7 @@ Meshes contain cells, faces, and vertices.
 This is built for a non-mixed element mesh.
 """
 from __future__ import division
+from __future__ import unicode_literals
 from builtins import range
 from builtins import zip
 from past.utils import old_div
@@ -32,6 +33,8 @@ def _orderVertices(vertexCoords, vertices):
     return numerix.take(vertices, sortorder)
 
 __all__ = ["Mesh2D"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class Mesh2D(Mesh):
     def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serialComm, _RepresentationClass=_MeshRepresentation, _TopologyClass=_Mesh2DTopology):

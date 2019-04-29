@@ -1,9 +1,12 @@
+from __future__ import unicode_literals
 from fipy.solvers.scipy.scipySolver import _ScipySolver
 from pyamg import solve
 import os
 from fipy.tools import numerix
 
 __all__ = ["LinearGeneralSolver"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearGeneralSolver(_ScipySolver):
     """

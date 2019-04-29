@@ -1,8 +1,11 @@
 from __future__ import division
+from __future__ import unicode_literals
 from past.utils import old_div
 from fipy.steppers.stepper import Stepper
 
 __all__ = ["PIDStepper"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class PIDStepper(Stepper):
     """

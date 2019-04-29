@@ -26,6 +26,7 @@ Here are some test cases for the model.
 
 """
 from __future__ import division
+from __future__ import unicode_literals
 
 from builtins import input
 from builtins import range
@@ -116,5 +117,5 @@ if __name__ == '__main__':
         KMViewer.plot()
         TMViewer.plot()
 
-    input("finished")
+    eval(input("finished"))
 
