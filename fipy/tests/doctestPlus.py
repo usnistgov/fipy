@@ -265,17 +265,17 @@ def testmod(m=None, name=None, globs=None, verbose=None,
     else:
         runner = doctest.DocTestRunner(verbose=verbose, optionflags=optionflags)
 
+    from fipy.tools import numerix
+    printoptions = numerix.get_printoptions()
+    if "legacy" in printoptions:
+        numerix.set_printoptions(legacy="1.13")
+
     for test in finder.find(m, name, globs=globs, extraglobs=extraglobs):
         runner.run(test)
 
     if report:
         runner.summarize()
         report_skips()
-
-    from fipy.tools import numerix
-    printoptions = numerix.get_printoptions()
-    if "legacy" in printoptions:
-        numerix.set_printoptions(legacy="1.13")
 
     results = doctest.TestResults(runner.failures, runner.tries)
 
