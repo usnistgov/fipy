@@ -93,14 +93,14 @@ class GapFillMesh(Gmsh2D):
         """
 
         # Calculate the fine region cell counts.
-        nx = desiredDomainWidth // cellSize
-        ny = desiredFineRegionHeight // cellSize
+        nx = int(desiredDomainWidth / cellSize)
+        ny = int(desiredFineRegionHeight / cellSize)
 
         # Calculate the actual mesh dimensions
         actualFineRegionHeight = ny * cellSize
         actualDomainWidth = nx * cellSize
         boundaryLayerHeight = desiredDomainHeight - actualFineRegionHeight - transitionRegionHeight
-        numberOfBoundaryLayerCells = boundaryLayerHeight // actualDomainWidth
+        numberOfBoundaryLayerCells = int(boundaryLayerHeight / actualDomainWidth)
 
         # Build the fine region mesh.
         self.fineMesh = Grid2D(nx=nx, ny=ny, dx=cellSize, dy=cellSize, communicator=serialComm)
@@ -149,4 +149,3 @@ def _test():
 
 if __name__ == "__main__":
     _test()
-
