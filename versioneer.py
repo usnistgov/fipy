@@ -277,15 +277,10 @@ https://creativecommons.org/publicdomain/zero/1.0/ .
 """
 
 from __future__ import print_function
-from builtins import object
-from future import standard_library
-standard_library.install_aliases()
-from builtins import range
-from builtins import str
 try:
     import configparser
 except ImportError:
-    import configparser as configparser
+    import ConfigParser as configparser
 import errno
 import json
 import os
@@ -294,7 +289,7 @@ import subprocess
 import sys
 
 
-class VersioneerConfig(object):
+class VersioneerConfig:
     """Container for Versioneer configuration parameters."""
 
 
