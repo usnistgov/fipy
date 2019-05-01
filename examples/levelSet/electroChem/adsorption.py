@@ -126,7 +126,7 @@ x = mesh.cellCenters[0, 1:] - dx
 
 def concentrationFunc(theta):
     tmp = (1 + rateConstant * siteDensity * (1 - theta) * L / diffusion)
-    return cinf * (1 + rateConstant * siteDensity * (1 - theta) * x / diffusion) / tmp)
+    return cinf * (1 + rateConstant * siteDensity * (1 - theta) * x / diffusion) / tmp
 
 def currentTimeFunc(theta):
     tmp = -diffusion * numerix.log(1 - theta) + rateConstant * siteDensity * L * theta
