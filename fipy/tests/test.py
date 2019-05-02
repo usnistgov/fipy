@@ -3,9 +3,17 @@ from __future__ import unicode_literals
 from builtins import str
 from setuptools.command.test import test as _test
 from future.utils import text_to_native_str
-from ._nativize import nativize_all
+from future.utils import string_types
 
 __all__ = [text_to_native_str("test")]
+
+def _nativize_all(t):
+    def _nativize(s):
+        if isinstance(s, string_types):
+            s = text_to_native_str(s)
+        return s
+
+    return tuple([_nativize(s) for s in t])
 
 class test(_test):
     description = str(_test.description) + ", for FiPy and its examples"
@@ -35,7 +43,7 @@ class test(_test):
         ('skfmm', None, "run FiPy using the Scikit-fmm level set solver (default)"),
         ('lsmlib', None, "run FiPy using the LSMLIB level set solver (default)"),
        ]
-    user_options = [nativize_all(u) for u in user_options]
+    user_options = [_nativize_all(u) for u in user_options]
 
     def initialize_options(self):
         _test.initialize_options(self)
