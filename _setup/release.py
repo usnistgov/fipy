@@ -7,9 +7,10 @@ import os
 import shutil
 
 from setuptools.sandbox import run_setup
+from future.utils import text_to_native_str
 
 
-__all__ = ["release"]
+__all__ = [text_to_native_str("release")]
 
 
 class release(Command):

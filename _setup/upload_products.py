@@ -2,8 +2,11 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from distutils.core import Command
 import os
+from future.utils import text_to_native_str
 
-__all__ = ["upload_products"]
+from ._nativize import nativize_all
+
+__all__ = [text_to_native_str("upload_products")]
 
 class upload_products(Command):
     description = "upload FiPy compressed archives to website(s)"
@@ -13,6 +16,7 @@ class upload_products(Command):
                     ('tarball', None, "upload the .tar.gz source distribution"),
                     ('winzip', None, "upload the .win32.zip distribution"),
                    ]
+    user_options = [nativize_all(u) for u in user_options]
 
     def initialize_options (self):
         self.pdf = 0

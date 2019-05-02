@@ -1,8 +1,11 @@
 from __future__ import unicode_literals
 from distutils.core import Command
 import os
+from future.utils import text_to_native_str
 
-__all__ = ["build_docs"]
+from ._nativize import nativize_all
+
+__all__ = [text_to_native_str("build_docs")]
 
 class build_docs(Command):
 
@@ -14,6 +17,7 @@ class build_docs(Command):
                     ('html', None, "compile the HTML variant of the documentation"),
                     ('cathartic', None, "rewrite all the files (default is to only rewrite changed files)"),
                    ]
+    user_options = [nativize_all(u) for u in user_options]
 
     def initialize_options (self):
         self.pdf = 0

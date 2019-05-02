@@ -3,8 +3,11 @@ from __future__ import unicode_literals
 from builtins import input
 import os
 from distutils.core import Command
+from future.utils import text_to_native_str
 
-__all__ = ["copy_script"]
+from ._nativize import nativize_all
+
+__all__ = [text_to_native_str("copy_script")]
 
 class copy_script(Command):
     description = "copy an example script into a new editable file"
@@ -18,6 +21,7 @@ class copy_script(Command):
         ('To=', None,
          "path and file name to save script to")
      ]
+    user_options = [nativize_all(u) for u in user_options]
 
     def initialize_options(self):
         self.From = None
