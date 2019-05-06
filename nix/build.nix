@@ -18,6 +18,7 @@ in
        pypkgs.matplotlib
        pypkgs.tkinter
        nixpkgs.pkgs.git
+       pypkgs.future
      ];
      src=./..;
      doCheck=false;
