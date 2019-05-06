@@ -215,81 +215,81 @@ htmlhelp_basename = 'FiPydoc'
 
 # -- Options for LaTeX output --------------------------------------------------
 
-common_preamble = r"""
-    \usepackage[amssymb]{SIunits}
-    \usepackage{changepage}
+common_preamble = """
+    \\usepackage[amssymb]{SIunits}
+    \\usepackage{changepage}
 
-    \DeclareMathOperator{\erf}{erf}
-    \providecommand{\abs}[1]{\lvert#1\rvert}
+    \\DeclareMathOperator{\\erf}{erf}
+    \\providecommand{\\abs}[1]{\\lvert#1\\rvert}
     """
 
 latex_elements = {
-    'fncychap': r"""
-    \usepackage[PetersLenny]{fncychap}
+    'fncychap': """
+    \\usepackage[PetersLenny]{fncychap}
     """,
-    'preamble': common_preamble + r"""
+    'preamble': common_preamble + """
 
-    \makeatletter
-    \renewcommand{\maketitle}{%
-      \begin{titlepage}%
-        \let\footnotesize\small
-        \let\footnoterule\relax
-        \noindent\rule{\textwidth}{1pt}\par
-          \begingroup % for PDF information dictionary
-           \def\endgraf{ }\def\and{\& }%
-           \pdfstringdefDisableCommands{\def\\{, }}% overwrite hyperref setup
-           \hypersetup{pdfauthor={\@author}, pdftitle={\@title}}%
-          \endgroup
-        \changepage{1in}{}{1in}{0.5in}{}{-0.5in}{}{}{}
-        \begin{flushright}%
-          \fipylogo\par%
-          \vskip 3em%
-          {\rm\Huge\py@HeaderFamily \@title \par}%
-          {\em\LARGE\py@HeaderFamily \py@release\releaseinfo \par}
-          \vfill
-          {\large\py@HeaderFamily \@author \par}
-          \vfill
-          {\py@authoraddress \par}
-          \vfill
-          {%\large
-           \@date \par
-           \vfill
-           \vfill
-           \vfill
-           \vfill
-           \vfill
-           \vfill
-           \includegraphics[trim=5 2 5 5,scale=1.]{nistident_flright_vec}\par
+    \\makeatletter
+    \\renewcommand{\\maketitle}{%
+      \\begin{titlepage}%
+        \\let\\footnotesize\\small
+        \\let\\footnoterule\\relax
+        \\noindent\\rule{\\textwidth}{1pt}\\par
+          \\begingroup % for PDF information dictionary
+           \\def\\endgraf{ }\\def\\and{\\& }%
+           \\pdfstringdefDisableCommands{\\def\\\\{, }}% overwrite hyperref setup
+           \\hypersetup{pdfauthor={\\@author}, pdftitle={\\@title}}%
+          \\endgroup
+        \\changepage{1in}{}{1in}{0.5in}{}{-0.5in}{}{}{}
+        \\begin{flushright}%
+          \\fipylogo\\par%
+          \\vskip 3em%
+          {\\rm\\Huge\\py@HeaderFamily \\@title \\par}%
+          {\\em\\LARGE\\py@HeaderFamily \\py@release\\releaseinfo \\par}
+          \\vfill
+          {\\large\\py@HeaderFamily \\@author \\par}
+          \\vfill
+          {\\py@authoraddress \\par}
+          \\vfill
+          {%\\large
+           \\@date \\par
+           \\vfill
+           \\vfill
+           \\vfill
+           \\vfill
+           \\vfill
+           \\vfill
+           \\includegraphics[trim=5 2 5 5,scale=1.]{nistident_flright_vec}\\par
           }%
-        \end{flushright}%\par
-        \@thanks
-      \end{titlepage}%
-      \clearpage%
-      \changepage{}{}{}{}{}{}{}{}{}
-      \vspace*{\fill}
-      \input LICENSE
-      \rule{\textwidth}{0.1pt}
-      \input DISCLAIMER
-      \clearpage
-      \setcounter{footnote}{0}%
-      \let\thanks\relax\let\maketitle\relax
-      %\gdef\@thanks{}\gdef\@author{}\gdef\@title{}
+        \\end{flushright}%\\par
+        \\@thanks
+      \\end{titlepage}%
+      \\clearpage%
+      \\changepage{}{}{}{}{}{}{}{}{}
+      \\vspace*{\\fill}
+      \\input LICENSE
+      \\rule{\\textwidth}{0.1pt}
+      \\input DISCLAIMER
+      \\clearpage
+      \\setcounter{footnote}{0}%
+      \\let\\thanks\\relax\\let\\maketitle\\relax
+      %\\gdef\\@thanks{}\\gdef\\@author{}\\gdef\\@title{}
     }
-    \makeatother
+    \\makeatother
 
-    \definecolor{redish}{rgb}{0.894,0.122,0.122}
-    \definecolor{bluish}{rgb}{0.216,0.188,0.533}
+    \\definecolor{redish}{rgb}{0.894,0.122,0.122}
+    \\definecolor{bluish}{rgb}{0.216,0.188,0.533}
 
-    \authoraddress{Materials Science and Engineering Division \\
-    and the Center for Theoretical and Computational Materials Science \\
+    \\authoraddress{Materials Science and Engineering Division \\\\
+    and the Center for Theoretical and Computational Materials Science \\\\
     Material Measurement Laboratory}
 
-    \newcommand{\fipylogo}{\scalebox{10}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}}
+    \\newcommand{\\fipylogo}{\\scalebox{10}{\\rotatebox{4}{\\textcolor{redish}{\\( \\varphi \\)}}\\kern-.70em\\raisebox{-.15em}{\\textcolor{bluish}{\\( \\pi\\)}}}}
 
-    \ChNameVar{\fontsize{14}{16}\usefont{OT1}{phv}{m}{n}\selectfont}
-    \ChNumVar{\fontsize{60}{62}\usefont{OT1}{ptm}{m}{n}\selectfont}
-    \ChTitleVar{\Huge\bfseries\rm}
-    \ChRuleWidth{1pt}
+    \\ChNameVar{\\fontsize{14}{16}\\usefont{OT1}{phv}{m}{n}\\selectfont}
+    \\ChNumVar{\\fontsize{60}{62}\\usefont{OT1}{ptm}{m}{n}\\selectfont}
+    \\ChTitleVar{\\Huge\\bfseries\\rm}
+    \\ChRuleWidth{1pt}
     """
 }
 

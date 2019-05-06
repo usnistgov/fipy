@@ -292,7 +292,7 @@ The canonical form of the substitutional diffusion equations is
            }^{\\text{phase transformation}}
            +
            \\overbrace{
-               \\g\\sum_{\\substack{i=M+1\\\\ i \\neq j}}^{N-1} \\nabla C_i
+               \\sum_{\\substack{i=M+1\\\\ i \\neq j}}^{N-1} \\nabla C_i
            }^{\\text{counter diffusion}}
         \\right\\}
     }_{\\text{convection}}
