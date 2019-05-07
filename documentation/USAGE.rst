@@ -938,6 +938,10 @@ command in the base directory::
 
    $ pip install sphinxcontrib-bibtex
 
+   Some documentation uses `numpydoc` styling::
+
+   $ pip install numpydoc
+
    Some embeded figures require `matplotlib`, `pandas`, and `imagemagick`::
 
    $ conda install --channel conda-forge matplotlib pandas imagemagick
