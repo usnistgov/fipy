@@ -335,7 +335,6 @@ def skip_numpy_not_numerix(app, what, name, obj, skip, options):
     import types
     if ((type(obj) in [types.FunctionType,
                        types.BuiltinFunctionType,
-                       type,
                        type])
         and not (obj.__module__.startswith("fipy")
                  or obj.__module__.startswith("package"))):
