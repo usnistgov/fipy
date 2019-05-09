@@ -18,6 +18,7 @@ in
        pypkgs.matplotlib
        pypkgs.tkinter
        nixpkgs.pkgs.git
+       nixpkgs.imagemagick
      ];
      src=./..;
      doCheck=false;
@@ -41,6 +42,8 @@ in
        # pip install --user sphinx
        # pip install --user sphinxcontrib-bibtex
        # pip install --user git+https://github.com/thewtex/sphinx-contrib.git#subdirectory=traclinks
+       # required for embedded plots in documentation
+       # pip install --user pandas
        # python setup.py build_docs --html
 
        ## To build PyAMG add nixpkgs.gcc to buildInputs and then
