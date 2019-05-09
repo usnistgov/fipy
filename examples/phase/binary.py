@@ -223,8 +223,8 @@ Using the same gradient energy coefficient and phase field mobility
 
 we define the phase field equation
 
->>> phaseEq = TransientTerm(1/Mphi) == DiffusionTerm(coeff=kappa) \
-...     + S0 + ImplicitSourceTerm(coeff=S1)
+>>> phaseEq = (TransientTerm(1/Mphi) == DiffusionTerm(coeff=kappa)
+...            + S0 + ImplicitSourceTerm(coeff=S1))
 
 -----
 

@@ -388,8 +388,8 @@ deduce the liquidus and solidus compositions as
 
 .. index:: exp
 
->>> Cl = (1. - numerix.exp(-enthalpyA * Vm / (R * T))) \
-...   / (numerix.exp(-enthalpyB * Vm / (R * T)) - numerix.exp(-enthalpyA * Vm / (R * T)))
+>>> Cl = ((1. - numerix.exp(-enthalpyA * Vm / (R * T)))
+...       / (numerix.exp(-enthalpyB * Vm / (R * T)) - numerix.exp(-enthalpyA * Vm / (R * T))))
 >>> Cs = numerix.exp(-enthalpyB * Vm / (R * T)) * Cl
 
 The phase fraction is predicted by the lever rule
