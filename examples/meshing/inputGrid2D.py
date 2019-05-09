@@ -60,4 +60,4 @@ def _run():
 
 if __name__ == '__main__':
     _run()
-    eval(input("finished"))
+    input("finished")

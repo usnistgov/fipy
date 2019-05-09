@@ -66,5 +66,5 @@ if __name__ == '__main__':
     eqn.solve(var2)
     viewer = Viewer(var2)
     viewer.plot()
-    eval(input("finished"))
+    input("finished")
 

@@ -46,5 +46,5 @@ if __name__ == '__main__':
     viewer.plot()
 
     print(var.allclose(mesh.cellCenters[0], atol = 10))
-    eval(input("finished"))
+    input("finished")
 

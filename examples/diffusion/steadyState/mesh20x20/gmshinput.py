@@ -52,4 +52,4 @@ if __name__ == '__main__':
     viewer.plot()
     NOViewer.plot()
 
-    eval(input("finished"))
+    input("finished")

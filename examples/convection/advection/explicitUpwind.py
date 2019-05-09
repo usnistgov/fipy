@@ -44,4 +44,4 @@ if __name__ == '__main__':
                  solver = LinearLUSolver(tolerance=1.e-15, iterations=2000))
         viewer.plot()
     viewer.plot()
-    eval(input('finished'))
+    input('finished')

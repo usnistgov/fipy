@@ -117,4 +117,4 @@ if __name__ == '__main__':
         KMViewer.plot()
         TMViewer.plot()
 
-    eval(input("finished"))
+    input("finished")

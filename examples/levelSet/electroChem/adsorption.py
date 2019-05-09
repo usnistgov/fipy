@@ -155,4 +155,4 @@ if __name__ == "__main__":
         bulkEqn.solve(bulkVar, dt = dt)
         currentTime += dt
 
-    eval(input("finished"))
+    input("finished")

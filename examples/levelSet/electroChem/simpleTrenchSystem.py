@@ -303,4 +303,4 @@ __all__ = ["runSimpleTrenchSystem"]
 
 if __name__ == '__main__':
     runSimpleTrenchSystem(numberOfSteps = 800, cellSize = 0.05e-7)
-    eval(input("finished"))
+    input("finished")

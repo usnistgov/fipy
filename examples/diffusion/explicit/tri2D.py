@@ -79,4 +79,4 @@ if __name__ == '__main__':
     print(var)
     viewer = Viewer(vars = var)
     viewer.plot()
-    eval(input('finished'))
+    input('finished')

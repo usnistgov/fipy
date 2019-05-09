@@ -299,6 +299,6 @@ def _test():
 
 if __name__ == "__main__":
     _test()
-    eval(input('finished'))
+    input('finished')
 
 

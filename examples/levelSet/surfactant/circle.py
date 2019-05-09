@@ -122,4 +122,4 @@ if __name__ == '__main__':
 
     print('error:', error)
 
-    eval(input('finished'))
+    input('finished')

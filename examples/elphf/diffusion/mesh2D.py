@@ -171,4 +171,4 @@ if __name__ == '__main__':
 
     # profile.stop()
 
-    eval(input("finished"))
+    input("finished")

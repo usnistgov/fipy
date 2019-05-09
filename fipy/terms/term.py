@@ -148,7 +148,7 @@ class Term(object):
                 RHSvector = solver.RHSvector
             self._viewer.plot(matrix=solver.matrix, RHSvector=RHSvector)
             from fipy import raw_input
-            eval(input())
+            input()
 
         return solver
 

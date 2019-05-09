@@ -91,4 +91,4 @@ if __name__ == '__main__':
     distanceViewer.plot()
     surfactantViewer.plot()
     print(surfactantVariable)
-    eval(input('finished'))
+    input('finished')

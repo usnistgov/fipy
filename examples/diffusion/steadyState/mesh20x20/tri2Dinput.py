@@ -39,5 +39,5 @@ if __name__ == '__main__':
     DiffusionTerm().solve(var)
     viewer = Viewer(vars = var)
     viewer.plot()
-    eval(input("finished"))
+    input("finished")
 
