@@ -900,18 +900,22 @@ Nothing different needs to be done when
 Running under Python 3
 ----------------------
 
-It is possible to run :term:`FiPy` scripts under :term:`Python 3`, but
-there is admittedly little advantage in doing so at this time. We still
-develop and use :term:`FiPy` under :term:`Python` 2.x.
+Thanks to the future_ package and to the contributions of pya_ and
+woodscn_, :term:`FiPy` runs under both :term:`Python 3` and :term:`Python`
+2.7, without conversion or modification.  Because the only supported solver
+under :term:`Python 3` is :term:`SciPy`, which is not very fast, there is
+admittedly little advantage in doing so at this time.  We still use
+:term:`FiPy` under :term:`Python` 2.x for our own work.
 
 The minimal prerequisites are:
 
- * :term:`NumPy` version 1.5 or greater.
- * :term:`SciPy` version 0.9 or greater.
- * :term:`Matplotlib` version 1.2 or greater (this hasn't been
-   released yet, and we haven't been able to successfully test the
-   :mod:`~.fipy.viewers.matplotlibViewer` classes with their
-   development code).
+ * :term:`NumPy`
+ * :term:`SciPy`
+ * :term:`Matplotlib`
+
+.. _future: http://python-future.org
+.. _pya: https://github.com/pya
+.. _woodscn: https://github.com/pya
 
 ------
 Manual
