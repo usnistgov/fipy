@@ -14,7 +14,8 @@ this example solves a steady-state convection-diffusion equation, but adds a con
 
 We define a 1D mesh
 
-.. index:: Grid1D
+.. index::
+   single: Grid1D
 
 >>> from fipy import CellVariable, Grid1D, DiffusionTerm, ExponentialConvectionTerm, DefaultAsymmetricSolver, Viewer
 >>> from fipy.tools import numerix
@@ -28,7 +29,8 @@ We define a 1D mesh
 
 The solution variable is initialized to ``valueLeft``:
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> var = CellVariable(name="variable", mesh=mesh)
 
@@ -52,7 +54,8 @@ We define the convection-diffusion equation with source
 ...       + ExponentialConvectionTerm(coeff=convCoeff)
 ...       + sourceCoeff)
 
-.. .. index:: DefaultAsymmetricSolver
+.. .. index::
+..    single: DefaultAsymmetricSolver
 
 >>> eq.solve(var=var,
 ...          solver=DefaultAsymmetricSolver(tolerance=1.e-15, iterations=10000))
@@ -66,7 +69,8 @@ and test the solution against the analytical result:
 
 or
 
-.. index:: exp
+.. index::
+   single: exp
 
 >>> axis = 0
 >>> x = mesh.cellCenters[axis]

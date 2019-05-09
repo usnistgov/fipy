@@ -1121,7 +1121,7 @@ class AbstractMesh(object):
 
     @property
     def aspect2D(self):
-        """The physical y:x aspect ratio of a 2D mesh
+        """The physical y vs x aspect ratio of a 2D mesh
         """
         if self.dim != 2:
             raise NotImplementedError
