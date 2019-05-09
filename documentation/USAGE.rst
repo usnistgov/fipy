@@ -907,6 +907,12 @@ under :term:`Python 3` is :term:`SciPy`, which is not very fast, there is
 admittedly little advantage in doing so at this time.  We still use
 :term:`FiPy` under :term:`Python` 2.x for our own work.
 
+Because :term:`Python` itself will `drop support for Python 2.7 on January
+1, 2020`_ and many of the prerequisites for :term:`FiPy` have `pledged to
+drop support for Python 2.7 no later than 2020`_, we will prioritize adding
+support for better :term:`Python 3` solvers, probably starting with
+petsc4py_.
+
 The minimal prerequisites are:
 
  * :term:`NumPy`
@@ -916,6 +922,9 @@ The minimal prerequisites are:
 .. _future: http://python-future.org
 .. _pya: https://github.com/pya
 .. _woodscn: https://github.com/pya
+.. _drop support for Python 2.7 on January 1, 2020: https://www.python.org/dev/peps/pep-0373/#update
+.. _pledged to drop support for Python 2.7 no later than 2020: https://python3statement.org
+.. _petsc4py: https://petsc4py.readthedocs.io
 
 ------
 Manual
