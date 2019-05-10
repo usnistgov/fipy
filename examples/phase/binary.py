@@ -343,11 +343,9 @@ or
 >>> Ds = Variable(value=1e-9) # cm**2 / s
 >>> D = (Ds - Dl) * phase.arithmeticFaceValue + Dl
 
->>> phaseTransformationVelocity = \
-...  ((enthalpyB - enthalpyA) * p(phase).faceGrad
-...   + 0.5 * (WB - WA) * g(phase).faceGrad) \
-...   * D * (1. - C).harmonicFaceValue * Vm / (R * T)
-
+>>> phaseTransformationVelocity = (((enthalpyB - enthalpyA) * p(phase).faceGrad
+...                                + 0.5 * (WB - WA) * g(phase).faceGrad)
+...                                * D * (1. - C).harmonicFaceValue * Vm / (R * T))
 
 .. index:: PowerLawConvectionTerm
 
@@ -379,8 +377,8 @@ deduce the liquidus and solidus compositions as
 
 .. index:: exp
 
->>> Cl = (1. - numerix.exp(-enthalpyA * Vm / (R * T))) \
-...   / (numerix.exp(-enthalpyB * Vm / (R * T)) - numerix.exp(-enthalpyA * Vm / (R * T)))
+>>> Cl = ((1. - numerix.exp(-enthalpyA * Vm / (R * T)))
+...       / (numerix.exp(-enthalpyB * Vm / (R * T)) - numerix.exp(-enthalpyA * Vm / (R * T))))
 >>> Cs = numerix.exp(-enthalpyB * Vm / (R * T)) * Cl
 
 The phase fraction is predicted by the lever rule
