@@ -1,9 +1,12 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.vtkViewer.vtkCellViewer import VTKCellViewer
 from fipy.viewers.vtkViewer.vtkFaceViewer import VTKFaceViewer
 
 __all__ = ["VTKViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 __all__.extend(vtkCellViewer.__all__)
 __all__.extend(vtkFaceViewer.__all__)
 

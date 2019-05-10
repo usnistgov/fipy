@@ -37,7 +37,7 @@ We test the solution against the analytical result:
 >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
 >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD
->>> print var.allclose(analyticalArray, rtol = 1e-2, atol = 1e-2)
+>>> print(var.allclose(analyticalArray, rtol = 1e-2, atol = 1e-2))
 1
 
 If the problem is run interactively, we can view the result:
@@ -46,11 +46,14 @@ If the problem is run interactively, we can view the result:
 ...     viewer = Viewer(vars = var)
 ...     viewer.plot()
 """
+from __future__ import unicode_literals
 
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')
+

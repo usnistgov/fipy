@@ -75,7 +75,7 @@ or
 >>> analytical.setValue(alpha4 / 6. * x**3 + alpha3 / 2. * x**2 + \
 ...                     (alpha2 - alpha4 / 2. * L**2 - alpha3 * L) * x + alpha1)
 
->>> print var.allclose(analytical, rtol=1e-4)
+>>> print(var.allclose(analytical, rtol=1e-4))
 1
 
 If the problem is run interactively, we can view the result:
@@ -93,9 +93,12 @@ If the problem is run interactively, we can view the result:
    :alt: solution to biharmonic equation
 
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    raw_input('finished')
+    input('finished')
+

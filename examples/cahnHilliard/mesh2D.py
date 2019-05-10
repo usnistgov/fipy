@@ -99,7 +99,7 @@ evolution of their problem.
 ...     elif (max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3) and elapsed > 10.:
 ...         break
 
->>> print (max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3)
+>>> print((max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3))
 True
 
 .. image:: mesh2D.*
@@ -108,10 +108,13 @@ True
    :alt: evolution of Cahn-Hilliard phase separation at t = 30, 100 and 1000
 
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')
+

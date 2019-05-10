@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import str
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -97,7 +99,7 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
     import pkg_resources
     for ep in pkg_resources.iter_entry_points(group='fipy.viewers',
                                               name=FIPY_VIEWER):
-        enpts.append((ep.name,ep))
+        enpts.append((ep.name, ep))
 
     for name, ep in sorted(enpts):
 
@@ -115,17 +117,17 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
                 viewers.append(viewer)
 
             break
-        except Exception, s:
+        except Exception as s:
             errors.append("%s: %s" % (name, s))
 
     if len(attempts) == 0:
         if FIPY_VIEWER is not None:
-            raise ImportError, "`%s` viewer not found" % FIPY_VIEWER
+            raise ImportError("`%s` viewer not found" % FIPY_VIEWER)
         else:
-            raise ImportError, "No viewers found. Run `python setup.py egg_info` or similar."
+            raise ImportError("No viewers found. Run `python setup.py egg_info` or similar.")
 
     if len(vars) > 0:
-        raise ImportError, "Failed to import a viewer: %s" % str(errors)
+        raise ImportError("Failed to import a viewer: %s" % str(errors))
 
     if len(viewers) > 1:
         return MultiViewer(viewers = viewers)
@@ -133,3 +135,5 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         return viewers[0]
 
 __all__.extend(["MeshDimensionError", "DummyViewer", "Viewer"])
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]

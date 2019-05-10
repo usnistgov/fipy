@@ -1,8 +1,11 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.abstractUpwindConvectionTerm import _AbstractUpwindConvectionTerm
 
 __all__ = ["UpwindConvectionTerm"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class UpwindConvectionTerm(_AbstractUpwindConvectionTerm):
     r"""
@@ -56,25 +59,25 @@ class UpwindConvectionTerm(_AbstractUpwindConvectionTerm):
             >>> var[:] = 0
             >>> eqn = UpwindConvectionTerm(coeff=convCoeff) == dTerm
             >>> eqn.solve(var)
-            >>> print var.allclose(analytical)
+            >>> print(var.allclose(analytical))
             1
 
             >>> var[:] = 0
             >>> eqn = TransientTerm(1e-10) == UpwindConvectionTerm(coeff=-convCoeff) +  dTerm
             >>> eqn.solve(var, dt = 1e+10)
-            >>> print var.allclose(analytical)
+            >>> print(var.allclose(analytical))
             1
 
             >>> var[:] = 0
             >>> eqn = 0 == UpwindConvectionTerm(coeff=-convCoeff) +  dTerm
             >>> eqn.solve(var)
-            >>> print var.allclose(analytical)
+            >>> print(var.allclose(analytical))
             1
 
             >>> var[:] = 0
             >>> eqn = 0 == -UpwindConvectionTerm(coeff=convCoeff) +  dTerm
             >>> eqn.solve(var)
-            >>> print var.allclose(analytical)
+            >>> print(var.allclose(analytical))
             1
 
         """
@@ -86,3 +89,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

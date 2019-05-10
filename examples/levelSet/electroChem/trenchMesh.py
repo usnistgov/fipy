@@ -1,9 +1,12 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import parallelComm
-from gapFillMesh import GapFillMesh
+from .gapFillMesh import GapFillMesh
 
 class TrenchMesh(GapFillMesh):
 
@@ -25,9 +28,9 @@ class TrenchMesh(GapFillMesh):
     >>> (f, filename) = dump.write(mesh) # doctest: +GMSH
     >>> if parallelComm.Nproc == 1:
     ...     mesh = dump.read(filename, f) # doctest: +GMSH
-    >>> print mesh.globalNumberOfCells - len(numerix.nonzero(mesh.electrolyteMask)[0]) # doctest: +GMSH, +SERIAL
+    >>> print(mesh.globalNumberOfCells - len(numerix.nonzero(mesh.electrolyteMask)[0])) # doctest: +GMSH, +SERIAL
     150
-    >>> print 400 < mesh.globalNumberOfCells < 800 # doctest: +GMSH
+    >>> print(400 < mesh.globalNumberOfCells < 800) # doctest: +GMSH
     True
 
     >>> from fipy.variables.cellVariable import CellVariable
@@ -50,9 +53,9 @@ class TrenchMesh(GapFillMesh):
     >>> localErrors = (centers - var)**2 / centers**2 # doctest: +GMSH
     >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.numberOfCells) # doctest: +GMSH
     >>> argmax = numerix.argmax(localErrors) # doctest: +GMSH
-    >>> print numerix.sqrt(localErrors[argmax]) < 0.051 # doctest: +GMSH
+    >>> print(numerix.sqrt(localErrors[argmax]) < 0.051) # doctest: +GMSH
     1
-    >>> print globalError < 0.02 # doctest: +GMSH
+    >>> print(globalError < 0.02) # doctest: +GMSH
     1
 
     """
@@ -131,3 +134,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

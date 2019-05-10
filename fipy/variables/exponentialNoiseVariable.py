@@ -1,9 +1,15 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random
 from fipy.variables.noiseVariable import NoiseVariable
 
 __all__ = ["ExponentialNoiseVariable"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class ExponentialNoiseVariable(NoiseVariable):
     r"""
@@ -47,16 +53,16 @@ class ExponentialNoiseVariable(NoiseVariable):
 
     >>> from fipy.tools.numerix import arange, exp
 
-    >>> for mu in arange(0.5,3,0.5):
+    >>> for mu in arange(0.5, 3, 0.5):
     ...     mean.value = (mu)
     ...     expdist.value = ((1/mean)*exp(-x/mean))
     ...     if __name__ == '__main__':
     ...         import sys
-    ...         print >>sys.stderr, "mean: %g" % mean
+    ...         print("mean: %g" % mean, file=sys.stderr)
     ...         viewer.plot()
     ...         histoplot.plot()
 
-    >>> print abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15
+    >>> print(abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15)
     1
 
     .. image:: fipy/variables/exp.*
@@ -89,3 +95,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+

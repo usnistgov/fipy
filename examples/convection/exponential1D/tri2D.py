@@ -45,17 +45,20 @@ The analytical solution test for this problem is given by:
 >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD
 
->>> print var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6)
+>>> print(var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6))
 1
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = var)
 ...     viewer.plot()
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')
+

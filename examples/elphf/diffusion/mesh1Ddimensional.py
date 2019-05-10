@@ -12,7 +12,7 @@ but we demonstrate FiPy's facility to use dimensional quantities.
 We solve the problem on a 40 mm long 1D mesh
 
     >>> nx = 40
-    >>> dx = PhysicalField(1.,"mm")
+    >>> dx = PhysicalField(1., "mm")
     >>> L = nx * dx
     >>> mesh = Grid1D(dx = dx, nx = nx)
 
@@ -29,7 +29,7 @@ Again, one component in this ternary system will be designated the "solvent"
     ...         self.diffusivity = Variable(diffusivity)
     ...         self.valence = valence
     ...         self.equation = equation
-    ...
+    ... 
     ...     def copy(self):
     ...         return self.__class__(mesh = self.mesh,
     ...                               value = self.value,
@@ -74,10 +74,10 @@ We create one diffusion equation for each substitutional component
     ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
     ...         CkSum += Ck
     ...         CkFaceSum += Ck.harmonicFaceValue
-    ...
+    ... 
     ...     convectionCoeff = CkSum.faceGrad \
     ...                       * (Cj.diffusivity / (1. - CkFaceSum))
-    ...
+    ... 
     ...     Cj.equation = (TransientTerm()
     ...                    == DiffusionTerm(coeff=Cj.diffusivity)
     ...                    + PowerLawConvectionTerm(coeff = convectionCoeff))
@@ -93,6 +93,7 @@ Now, we iterate the problem to equilibrium, plotting as we go
 
     >>> solver = LinearLUSolver()
 
+    >>> from builtins import range
     >>> for i in range(40):
     ...     for Cj in substitutionals:
     ...         Cj.updateOld()
@@ -106,11 +107,11 @@ Now, we iterate the problem to equilibrium, plotting as we go
 Since there is nothing to maintain the concentration separation in this problem,
 we verify that the concentrations have become uniform
 
-    >>> print substitutionals[0].scaled.allclose("0.45 mol/m**3",
-    ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
+    >>> print(substitutionals[0].scaled.allclose("0.45 mol/m**3",
+    ...     atol = "1e-7 mol/m**3", rtol = 1e-7))
     1
-    >>> print substitutionals[1].scaled.allclose("0.45 mol/m**3",
-    ...     atol = "1e-7 mol/m**3", rtol = 1e-7)
+    >>> print(substitutionals[1].scaled.allclose("0.45 mol/m**3",
+    ...     atol = "1e-7 mol/m**3", rtol = 1e-7))
     1
 
 .. note::
@@ -118,6 +119,8 @@ we verify that the concentrations have become uniform
    The absolute tolerance `atol` must be in units compatible with the value to
    be checked, but the relative tolerance `rtol` is dimensionless.
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 
@@ -133,4 +136,4 @@ if __name__ == '__main__':
 
     # profile.stop()
 
-    raw_input("finished")
+    input("finished")

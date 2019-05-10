@@ -1,11 +1,15 @@
 r"""
 Test
 
->>> print (0.4 < max(q.globalValue[0]) < 0.5)
+>>> print((0.4 < max(q.globalValue[0]) < 0.5))
 True
 
 """
+from __future__ import division
+from __future__ import unicode_literals
 
+from builtins import range
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, FaceVariable, Grid1D, TransientTerm, CentralDifferenceConvectionTerm
@@ -45,4 +49,5 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')
+

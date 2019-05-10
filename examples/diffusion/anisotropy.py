@@ -78,13 +78,14 @@ Make the equation, viewer and solve.
 >>> time = 0
 >>> dt=0.00025
 
+>>> from builtins import range
 >>> for i in range(20):
 ...     var.updateOld() # doctest: +GMSH
 ...     res = 1.
-...
+... 
 ...     while res > 1e-2:
 ...         res = eqn.sweep(var, dt=dt) # doctest: +GMSH
-...
+... 
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 ...     time += dt
@@ -93,14 +94,16 @@ Compare with the analytical solution (within 5% accuracy).
 
 >>> X, Y = numerix.dot(mesh.cellCenters, CellVariable(mesh=mesh, rank=2, value=rotationMatrix)) # doctest: +GMSH
 >>> solution = mass * numerix.exp(-(X**2 / gamma_prime[0][0] + Y**2 / gamma_prime[1][1]) / (4 * time)) / (4 * numerix.pi * time * numerix.sqrt(gamma_prime[0][0] * gamma_prime[1][1])) # doctest: +GMSH
->>> print max(abs((var - solution) / max(solution))) < 0.08 # doctest: +GMSH
+>>> print(max(abs((var - solution) / max(solution))) < 0.08) # doctest: +GMSH
 True
 
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')

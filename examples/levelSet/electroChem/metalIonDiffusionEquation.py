@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 
@@ -82,6 +84,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
 
     >>> ionVar.constrain(cinf, mesh.facesRight)
 
+    >>> from builtins import range
     >>> for i in range(10):
     ...     eqn.solve(ionVar, dt = 1000)
 
@@ -89,7 +92,7 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> gradient = cinf / (omega * diffusion / v + L)
     >>> answer = gradient * (x - L - dx * 3 / 2) + cinf
     >>> answer[x < dx] = 1
-    >>> print ionVar.allclose(answer)
+    >>> print(ionVar.allclose(answer))
     1
 
     Testing the interface source term
@@ -104,10 +107,10 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> source = depositionRate * distance.cellInterfaceAreas / mesh.cellVolumes / ionVar
     >>> sqrt = numerix.sqrt(2)
     >>> ans = CellVariable(mesh=mesh, value=(0, 1 / sqrt, 1 / sqrt, 0))
-    >>> print numerix.allclose(source, ans)
+    >>> print(numerix.allclose(source, ans))
     True
     >>> distance[:] = (-1.5, -0.5, -0.5, 0.5)
-    >>> print numerix.allclose(source, (0, 0, 0, sqrt))
+    >>> print(numerix.allclose(source, (0, 0, 0, sqrt)))
     True
 
     :Parameters:

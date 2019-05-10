@@ -9,7 +9,13 @@
 # versioneer-0.18 (https://github.com/warner/python-versioneer)
 
 """Git implementation of _version.py."""
+from __future__ import print_function
+from __future__ import unicode_literals
 
+
+from builtins import object
+from builtins import range
+from builtins import str
 import errno
 import os
 import re
@@ -30,7 +36,7 @@ def get_keywords():
     return keywords
 
 
-class VersioneerConfig:
+class VersioneerConfig(object):
     """Container for Versioneer configuration parameters."""
 
 

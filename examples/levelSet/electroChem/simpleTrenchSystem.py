@@ -125,12 +125,18 @@ resemble the image below.
 .. .. bibmissing:: /documentation/refs.bib
     :sort:
 """
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import input
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, DistanceVariable, SurfactantVariable, Grid2D, TransientTerm, AdvectionTerm, GeneralSolver, Viewer, MultiViewer
 from fipy.tools import numerix
-from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
-from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from .metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+from .adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 def runSimpleTrenchSystem(faradaysConstant=9.6e4,
                           gasConstant=8.314,
@@ -206,19 +212,16 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
         mesh = mesh,
         value = metalConcentration)
 
-    expoConstant = -transferCoefficient * faradaysConstant \
-                   / (gasConstant * temperature)
+    expoConstant = -transferCoefficient * faradaysConstant / (gasConstant * temperature)
 
     tmp = currentDensity1 * catalystVar.interfaceVar
 
     exchangeCurrentDensity = currentDensity0 + tmp
 
     expo = numerix.exp(expoConstant * overpotential)
-    currentDensity = expo * exchangeCurrentDensity * metalVar \
-                     / metalConcentration
+    currentDensity = expo * exchangeCurrentDensity * metalVar / metalConcentration
 
-    depositionRateVariable = currentDensity * molarVolume \
-                             / (charge * faradaysConstant)
+    depositionRateVariable = currentDensity * molarVolume / (charge * faradaysConstant)
 
     extensionVelocityVariable = CellVariable(
         name = 'extension velocity',
@@ -243,7 +246,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     metalVar.constrain(metalConcentration, mesh.facesTop)
 
-    from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
+    from .surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
     bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
         bulkVar = bulkCatalystVar,
         distanceVar = distanceVar,
@@ -256,7 +259,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
 
     if displayViewers:
         try:
-            from mayaviSurfactantViewer import MayaviSurfactantViewer
+            from .mayaviSurfactantViewer import MayaviSurfactantViewer
             viewer = MayaviSurfactantViewer(distanceVar, catalystVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'catalyst coverage')
         except:
             viewer = MultiViewer(viewers=(
@@ -292,7 +295,7 @@ def runSimpleTrenchSystem(faradaysConstant=9.6e4,
     try:
         import os
         filepath = os.path.splitext(__file__)[0] + '.gz'
-        print catalystVar.allclose(numerix.loadtxt(filepath), rtol = 1e-4)
+        print(catalystVar.allclose(numerix.loadtxt(filepath), rtol = 1e-4))
     except:
         return 0
 
@@ -300,4 +303,4 @@ __all__ = ["runSimpleTrenchSystem"]
 
 if __name__ == '__main__':
     runSimpleTrenchSystem(numberOfSteps = 800, cellSize = 0.05e-7)
-    raw_input("finished")
+    input("finished")

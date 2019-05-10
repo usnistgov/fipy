@@ -43,22 +43,23 @@ for the initial position of the interface:
 
 >>> r1 =  -numerix.sqrt((x - Lx / 2)**2 + (y - Ly / 5)**2)
 >>> r2 =  numerix.sqrt((x - Lx / 2)**2 + (y - 3 * Ly / 5)**2)
->>> d = numerix.zeros((len(x),3), 'd')
->>> d[:,0] = numerix.where(x >= Lx / 2, y - Ly / 5, r1)
->>> d[:,1] = numerix.where(x <= Lx / 2, y - 3 * Ly / 5, r2)
->>> d[:,2] = numerix.where(numerix.logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:,0])
+>>> d = numerix.zeros((len(x), 3), 'd')
+>>> d[:, 0] = numerix.where(x >= Lx / 2, y - Ly / 5, r1)
+>>> d[:, 1] = numerix.where(x <= Lx / 2, y - 3 * Ly / 5, r2)
+>>> d[:, 2] = numerix.where(numerix.logical_and(Ly / 5 <= y, y <= 3 * Ly / 5), x - Lx / 2, d[:, 0])
 >>> argmins = numerix.argmin(numerix.absolute(d), axis = 1)
 >>> answer = numerix.take(d.ravel(), numerix.arange(len(argmins))*3 + argmins)
->>> print var.allclose(answer, atol = 1e-1) #doctest: +LSM
+>>> print(var.allclose(answer, atol = 1e-1)) #doctest: +LSM
 1
 
 Advect the interface and check the position.
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var, datamin=-0.1, datamax=0.1)
-...
+... 
 ...     viewer.plot()
 
+>>> from builtins import range
 >>> for step in range(steps):
 ...     var.updateOld()
 ...     advEqn.solve(var, dt = timeStepDuration)
@@ -69,13 +70,15 @@ Advect the interface and check the position.
 >>> answer = answer - distanceMoved
 >>> answer = numerix.where(answer < 0., 0., answer)
 >>> var.setValue(numerix.where(var < 0., 0., var))
->>> print var.allclose(answer, atol = 1e-1) #doctest: +LSM
+>>> print(var.allclose(answer, atol = 1e-1)) #doctest: +LSM
 1
 
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    raw_input('finished')
+    input('finished')

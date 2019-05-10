@@ -20,7 +20,7 @@ Take the tangent of such a variable. The returned value is itself a
    >>> v = tan(var)
    >>> v
    tan(Variable(value=array(0)))
-   >>> print float(v)
+   >>> print(float(v))
    0.0
 
 Take the tangent of a int.
@@ -30,11 +30,17 @@ Take the tangent of a int.
 
 Take the tangent of an array.
 
-   >>> print tan(array((0,0,0)))
+   >>> print(tan(array((0, 0, 0))))
    [ 0.  0.  0.]
 
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import unicode_literals
 
+from builtins import range
+from builtins import str
+from builtins import zip
 __docformat__ = 'restructuredtext'
 
 import numpy as NUMERIX
@@ -79,6 +85,8 @@ __all__.extend(sorted(["getUnit", "put", "reshape", "getShape",
                        "isclose", "take", "indices", "empty", "loadtxt",
                        "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"],
                       key=str.lower))
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 def _isPhysical(arr):
     """
@@ -87,7 +95,7 @@ def _isPhysical(arr):
     from fipy.variables.variable import Variable
     from fipy.tools.dimensions.physicalField import PhysicalField
 
-    return isinstance(arr,Variable) or isinstance(arr,PhysicalField)
+    return isinstance(arr, Variable) or isinstance(arr, PhysicalField)
 
 def getUnit(arr):
     if hasattr(arr, "getUnit") and callable(arr.getUnit):
@@ -110,21 +118,21 @@ def put(arr, ids, values):
        >>> ids = MA.masked_values((2, maskValue), maskValue)
        >>> values = MA.masked_values((4, maskValue), maskValue)
        >>> put(arr, ids, values) ## this should work
-       >>> print arr
+       >>> print(arr)
        [0 0 4]
 
        >>> arr = MA.masked_values((maskValue, 5, 10), maskValue)
        >>> ids = MA.masked_values((2, maskValue), maskValue)
        >>> values = MA.masked_values((4, maskValue), maskValue)
        >>> put(arr, ids, values)
-       >>> print arr ## works as expected
+       >>> print(arr) ## works as expected
        [-- 5 4]
 
        >>> arr = MA.masked_values((maskValue, 5, 10), maskValue)
        >>> ids = MA.masked_values((maskValue, 2), maskValue)
        >>> values = MA.masked_values((4, maskValue), maskValue)
        >>> put(arr, ids, values)
-       >>> print arr ## should be [-- 5 --] maybe??
+       >>> print(arr) ## should be [-- 5 --] maybe??
        [-- 5 999999]
 
     """
@@ -170,9 +178,9 @@ def reshape(arr, shape):
 
     if _isPhysical(arr):
         return arr.reshape(shape)
-    elif type(arr) is type(array((0))):
+    elif isinstance(arr, type(array((0)))):
         return NUMERIX.reshape(arr, tuple(shape))
-    elif type(arr) is type(MA.array((0))):
+    elif isinstance(arr, type(MA.array((0)))):
         return MA.reshape(arr, shape)
     else:
         return NUMERIX.reshape(array(arr), tuple(shape))
@@ -203,7 +211,7 @@ def getShape(arr):
     elif type(arr) in (type(1), type(1.)):
         return ()
     else:
-        raise AttributeError, "No attribute 'shape'"
+        raise AttributeError("No attribute 'shape'")
 
 def rank(a):
     """
@@ -230,7 +238,7 @@ def sum(arr, axis=0):
     """
     if _isPhysical(arr):
         return arr.sum(axis)
-    elif type(arr) is type(MA.array((0))):
+    elif isinstance(arr, type(MA.array((0)))):
         return MA.sum(arr, axis)
     else:
         if type(arr) in (float, int) or len(arr) == 0 or 0 in arr.shape:
@@ -275,23 +283,23 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
 
 
           >>> from fipy import Variable
-          >>> print tostring(Variable((1,0,11.2345)), precision=1)
+          >>> print(tostring(Variable((1, 0, 11.2345)), precision=1))
           [  1.    0.   11.2]
-          >>> print tostring(array((1,2)), precision=5)
+          >>> print(tostring(array((1, 2)), precision=5))
           [1 2]
-          >>> print tostring(array((1.12345,2.79)), precision=2)
+          >>> print(tostring(array((1.12345, 2.79)), precision=2))
           [ 1.12  2.79]
-          >>> print tostring(1)
+          >>> print(tostring(1))
           1
-          >>> print tostring(array(1))
+          >>> print(tostring(array(1)))
           1
-          >>> print tostring(array([1.23345]), precision=2)
+          >>> print(tostring(array([1.23345]), precision=2))
           [ 1.23]
-          >>> print tostring(array([1]), precision=2)
+          >>> print(tostring(array([1]), precision=2))
           [1]
-          >>> print tostring(1.123456, precision=2)
+          >>> print(tostring(1.123456, precision=2))
           1.12
-          >>> print tostring(array(1.123456), precision=3)
+          >>> print(tostring(array(1.123456), precision=3))
           1.123
 
 
@@ -335,7 +343,7 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
             from numpy.core.arrayprint import _formatInteger
             return _formatInteger(arr, format='%d')
     else:
-        raise TypeError, 'cannot convert ' + str(arr) + ' to string'
+        raise TypeError('cannot convert ' + str(arr) + ' to string')
 
 #########################
 #                       #
@@ -355,24 +363,24 @@ def dot(a1, a2, axis=0):
     >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(nx=2, ny=1)
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> v1 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
-    >>> v2 = CellVariable(mesh=mesh, value=((0,1),(2,3)), rank=1)
+    >>> v1 = CellVariable(mesh=mesh, value=((0, 1), (2, 3)), rank=1)
+    >>> v2 = CellVariable(mesh=mesh, value=((0, 1), (2, 3)), rank=1)
     >>> dot(v1, v2)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
     >>> dot(v2, v1)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
-    >>> print rank(dot(v2, v1))
+    >>> print(rank(dot(v2, v1)))
     0
-    >>> print dot(v1, v2)
+    >>> print(dot(v1, v2))
     [ 4 10]
     >>> dot(v1, v1)._variableClass
     <class 'fipy.variables.cellVariable.CellVariable'>
-    >>> print dot(v1, v1)
+    >>> print(dot(v1, v1))
     [ 4 10]
-    >>> v3 = array(((0,1),(2,3)))
-    >>> print type(dot(v3, v3)) is type(array(1))
+    >>> v3 = array(((0, 1), (2, 3)))
+    >>> print(isinstance(dot(v3, v3), type(array(1))))
     1
-    >>> print dot(v3, v3)
+    >>> print(dot(v3, v3))
     [ 4 10]
     """
 
@@ -420,7 +428,7 @@ if inline.doInline:
         a2, unit2, mask2 = dimensionlessUnmasked(a2)
 
         NJ, ni = NUMERIX.shape(a1)
-        result1 = NUMERIX.zeros((ni,),'d')
+        result1 = NUMERIX.zeros((ni,), 'd')
 
         inline._runInline("""
             int j;
@@ -430,7 +438,7 @@ if inline.doInline:
                 result1[i] += a1[i + j * ni] * a2[i + j * ni];
             }
             result1[i] = sqrt(result1[i]);
-        """,result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
+        """, result1=result1, a1=a1, a2=a2, ni=ni, NJ=NJ)
 
         if NUMERIX.any(mask1) or NUMERIX.any(mask2):
             result1 = MA.array(result1, mask=NUMERIX.logical_or(mask1, mask2))
@@ -456,11 +464,11 @@ def nearest(data, points, max_mem=1e8):
     >>> from fipy import *
     >>> m0 = Grid2D(dx=(.1, 1., 10.), dy=(.1, 1., 10.))
     >>> m1 = Grid2D(nx=2, ny=2, dx=5., dy=5.)
-    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue)
+    >>> print(nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue))
     [4 5 7 8]
-    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=100)
+    >>> print(nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=100))
     [4 5 7 8]
-    >>> print nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=10000)
+    >>> print(nearest(m0.cellCenters.globalValue, m1.cellCenters.globalValue, max_mem=10000))
     [4 5 7 8]
     """
     data = asanyarray(data)
@@ -499,7 +507,7 @@ def nearest(data, points, max_mem=1e8):
         # (D, M) -> (D, C)
         chunkOfPoints = points[..., chunk]
         # (D, C) -> (D, 1, C)
-        chunkOfPoints = chunkOfPoints[..., newaxis, :]
+        chunkOfPoints = chunkOfPoints[..., newaxis,:]
         # (D, 1, C) -> (D, N, C)
         chunkOfPoints = NUMERIX.repeat(chunkOfPoints, N, axis=1)
 
@@ -590,7 +598,7 @@ def take(a, indices, axis=0, fill_value=None):
 
     if _isPhysical(a):
         taken = a.take(indices, axis=axis)
-    elif type(indices) is type(MA.array((0))):
+    elif isinstance(indices, type(MA.array((0)))):
         ## Replaces `MA.take`. `MA.take` does not always work when
         ## `indices` is a masked array.
         ##
@@ -614,18 +622,18 @@ def take(a, indices, axis=0, fill_value=None):
 
     elif type(a) in (type(array((0))), type(()), type([])):
         taken = NUMERIX.take(a, indices, axis=axis)
-    elif type(a) is type(MA.array((0))):
+    elif isinstance(a, type(MA.array((0)))):
         taken = MA.take(a, indices, axis=axis)
     else:
-        raise TypeError, 'cannot take from %s object: %s' % (type(a), `a`)
+        raise TypeError('cannot take from %s object: %s' % (type(a), repr(a)))
 
-    if fill_value is not None and type(taken) is type(MA.array((0))):
+    if fill_value is not None and isinstance(taken, type(MA.array((0)))):
         taken = taken.filled(fill_value=fill_value)
 
     return taken
 
 if not hasattr(NUMERIX, 'empty'):
-    print 'defining empty'
+    print('defining empty')
     if inline.doInline:
         def empty(shape, dtype='d', order='C'):
             """
@@ -685,7 +693,7 @@ while (return_val.refcount() > 1) {
 """
 
             return weave.inline(code,
-                         local_dict.keys(),
+                         list(local_dict.keys()),
                          local_dict=local_dict,
                          type_converters=weave.converters.blitz,
                          compiler='gcc',
@@ -812,26 +820,26 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
                 converterseq = [_getconv(dtype.fields[name][0]) \
                                 for name in dtype.names]
 
-        for i,line in enumerate(fh):
+        for i, line in enumerate(fh):
             if i<skiprows: continue
             line = line[:line.find(comments)].strip()
             if not len(line): continue
             vals = line.split(delimiter)
             if converterseq is None:
-               converterseq = [converters.get(j,defconv) \
-                               for j in xrange(len(vals))]
+               converterseq = [converters.get(j, defconv) \
+                               for j in range(len(vals))]
             if usecols is not None:
                 row = [converterseq[j](vals[j]) for j in usecols]
             else:
-                row = [converterseq[j](val) for j,val in enumerate(vals)]
+                row = [converterseq[j](val) for j, val in enumerate(vals)]
             if dtype.names is not None:
                 row = tuple(row)
             X.append(row)
 
         X = array(X, dtype)
-        r,c = X.shape
+        r, c = X.shape
         if r==1 or c==1:
-            X.shape = max([r,c]),
+            X.shape = max([r, c]),
         if unpack: return X.T
         else:  return X
 
@@ -861,9 +869,9 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
         if _string_like(fname):
             if fname.endswith('.gz'):
                 import gzip
-                fh = gzip.open(fname,'wb')
+                fh = gzip.open(fname, 'wb')
             else:
-                fh = file(fname,'w')
+                fh = file(fname, 'w')
         elif hasattr(fname, 'seek'):
             fh = fname
         else:
@@ -938,7 +946,7 @@ def _compressIndexSubspaces(index, i, broadcastshape = ()):
 
             broadcastshape = _broadcastShape(broadcastshape, element.shape)
             if broadcastshape is None:
-                raise ValueError, "shape mismatch: objects cannot be broadcast to a single shape"
+                raise ValueError("shape mismatch: objects cannot be broadcast to a single shape")
         skip += 1
 
     return broadcastshape, skip
@@ -953,7 +961,7 @@ def _indexShape(index, arrayShape):
     an error is raised"
 
         >>> _indexShape(index=(1, 2, 3, 4),
-        ...             arrayShape=(10,20,30))
+        ...             arrayShape=(10, 20, 30))
         Traceback (most recent call last):
             ...
         IndexError: invalid index
@@ -964,8 +972,8 @@ def _indexShape(index, arrayShape):
     "All selection tuple objects must be convertible to intp arrays, or slice
     objects, or the Ellipsis (``...``) object"
 
-        >>> _indexShape(index=NUMERIX.index_exp[...,2,"text"],
-        ...             arrayShape=(10,20,30,40,50))            #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> _indexShape(index=NUMERIX.index_exp[..., 2, "text"],
+        ...             arrayShape=(10, 20, 30, 40, 50))            #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         ValueError: setting an array element with a sequence.
@@ -985,9 +993,9 @@ def _indexShape(index, arrayShape):
 
     ..
 
-        >>> ind = zeros((2,3,5), float)
-        >>> allequal(_indexShape(index=NUMERIX.index_exp[...,ind],
-        ...                      arrayShape=(10,20,30,40,50)),
+        >>> ind = zeros((2, 3, 5), float)
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[..., ind],
+        ...                      arrayShape=(10, 20, 30, 40, 50)),
         ...          (10, 20, 30, 40, 2, 3, 5))
         True
 
@@ -996,25 +1004,25 @@ def _indexShape(index, arrayShape):
     with as many full slice (':') objects as needed to make the length of the
     selection tuple N."
 
-        >>> _indexShape(index=NUMERIX.index_exp[...,2,...,4],
-        ...             arrayShape=(10,20,30,40,50))
+        >>> _indexShape(index=NUMERIX.index_exp[..., 2, ..., 4],
+        ...             arrayShape=(10, 20, 30, 40, 50))
         (10, 20, 40)
 
     "If the selection tuple is smaller than N, then as many ':' objects as
     needed are added to the end of the selection tuple so that the modified
     selection tuple has length N."
 
-        >>> _indexShape(index=NUMERIX.index_exp[:,2],
-        ...             arrayShape=(10,20,30,40,50))
+        >>> _indexShape(index=NUMERIX.index_exp[:, 2],
+        ...             arrayShape=(10, 20, 30, 40, 50))
         (10, 30, 40, 50)
 
     "The shape of all the integer indexing arrays must be broadcastable to the
     same shape"
 
-        >>> ind1 = zeros((2,3,4), intp)
-        >>> ind2 = zeros((2,3,5), intp)
-        >>> _indexShape(index=NUMERIX.index_exp[:,ind1,ind2],
-        ...             arrayShape=(10,20,30,40,50))
+        >>> ind1 = zeros((2, 3, 4), intp)
+        >>> ind2 = zeros((2, 3, 5), intp)
+        >>> _indexShape(index=NUMERIX.index_exp[:, ind1, ind2],
+        ...             arrayShape=(10, 20, 30, 40, 50))
         Traceback (most recent call last):
             ...
         ValueError: shape mismatch: objects cannot be broadcast to a single shape
@@ -1023,27 +1031,27 @@ def _indexShape(index, arrayShape):
     exactly what you would expect (concatenation of repeated application of
     basic slicing)."
 
-        >>> ind = zeros((2,3,4), intp)
-        >>> allequal(_indexShape(index=NUMERIX.index_exp[...,ind,:],
-        ...                      arrayShape=(10,20,30)),
+        >>> ind = zeros((2, 3, 4), intp)
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[..., ind,:],
+        ...                      arrayShape=(10, 20, 30)),
         ...          (10, 2, 3, 4, 30))
         True
 
     "If the index subspaces are right next to each other, then the broadcasted
     indexing space directly replaces all of the indexed subspaces in X."
 
-        >>> ind1 = zeros((2,3,4), intp)
-        >>> ind2 = zeros((2,3,4), intp)
-        >>> allequal(_indexShape(index=NUMERIX.index_exp[:,ind1,ind2],
-        ...                      arrayShape=(10,20,30,40,50)),
+        >>> ind1 = zeros((2, 3, 4), intp)
+        >>> ind2 = zeros((2, 3, 4), intp)
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[:, ind1, ind2],
+        ...                      arrayShape=(10, 20, 30, 40, 50)),
         ...          (10, 2, 3, 4, 40, 50))
         True
 
     "If the indexing subspaces are separated (by slice objects), then the
     broadcasted indexing space is first, followed by the sliced subspace of X."
 
-        >>> allequal(_indexShape(index=NUMERIX.index_exp[:,ind1,:,ind2,:],
-        ...                      arrayShape=(10,20,30,40,50)),
+        >>> allequal(_indexShape(index=NUMERIX.index_exp[:, ind1,:, ind2,:],
+        ...                      arrayShape=(10, 20, 30, 40, 50)),
         ...          (2, 3, 4, 10, 30, 50))
         True
 
@@ -1078,9 +1086,9 @@ def _indexShape(index, arrayShape):
         # "If the length of the selection tuple is larger than N (=X.ndim) an error
         # is raised."
         if len(arrayShape) == 0:
-            raise IndexError, "0-d arrays can't be indexed"
+            raise IndexError("0-d arrays can't be indexed")
         else:
-            raise IndexError, "invalid index"
+            raise IndexError("invalid index")
     else:
         # "If the selection tuple is smaller than N, then as many ':' objects as
         # needed are added to the end of the selection tuple so that the modified
@@ -1128,7 +1136,7 @@ def _indexShape(index, arrayShape):
             indexShape += ((stop - start) // stride,)
             j += 1
         else:
-            raise IndexError, "invalid index"
+            raise IndexError("invalid index")
 
     if arrayindex is not None:
         indexShape = indexShape[:arrayindex] + broadcastshape + indexShape[arrayindex:]
@@ -1159,10 +1167,10 @@ def _broadcastShapes(shape1, shape2):
         if s == 0 or o == 0:
             return 0
         else:
-            return max(s,o)
+            return max(s, o)
 
-    if logical_and.reduce([(s == o or s == 1 or o == 1) for s,o in zip(shape1, shape2)]):
-        broadcastshape = tuple([maxzero(s,o) for s,o in zip(shape1, shape2)])
+    if logical_and.reduce([(s == o or s == 1 or o == 1) for s, o in zip(shape1, shape2)]):
+        broadcastshape = tuple([maxzero(s, o) for s, o in zip(shape1, shape2)])
     else:
         broadcastshape = None
 
@@ -1259,3 +1267,6 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+
+

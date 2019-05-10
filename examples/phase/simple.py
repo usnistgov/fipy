@@ -78,10 +78,11 @@ If we are running interactively, we'll want a viewer to see the results
 .. index::
    module: fipy.viewers
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = (phase,))
 ...     viewer.plot()
-...     raw_input("Initial condition. Press <return> to proceed...")
+...     input("Initial condition. Press <return> to proceed...")
 
 .. image:: simple/step.*
    :width: 50%
@@ -151,11 +152,12 @@ After solving this equation
 
 we obtain the surprising result that :math:`\phi` is zero everywhere.
 
->>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+>>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 0
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Fully explicit source. Press <return> to proceed...")
+...     input("Fully explicit source. Press <return> to proceed...")
 
 .. image:: simple/explicit.*
    :width: 50%
@@ -180,6 +182,7 @@ transient term from Equation :eq:`eq-phase:simple`
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
 
+>>> from builtins import range
 >>> for i in range(13):
 ...     eq.solve(var = phase, dt=1.)
 ...     if __name__ == '__main__':
@@ -187,10 +190,11 @@ transient term from Equation :eq:`eq-phase:simple`
 
 After 13 time steps, the solution has converged to the analytical solution
 
->>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+>>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 1
+>>> from builtins import input
 >>> if __name__ == '__main__':
-...     raw_input("Relaxation, explicit. Press <return> to proceed...")
+...     input("Relaxation, explicit. Press <return> to proceed...")
 
 .. image:: simple/relaxation.*
    :width: 50%
@@ -252,13 +256,15 @@ iterations at the same time step to reach a converged solution).
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
 
+>>> from builtins import range
 >>> for i in range(8):
 ...     eq.solve(var = phase)
->>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+>>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 1
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Kobayashi, semi-implicit. Press <return> to proceed...")
+...     input("Kobayashi, semi-implicit. Press <return> to proceed...")
 
 In general, the best convergence is obtained when the linearization gives a
 good representation of the relationship between the source and the
@@ -305,13 +311,15 @@ tangent to the source, we reach convergence in only 5 sweeps
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
 
+>>> from builtins import range
 >>> for i in range(5):
 ...     eq.solve(var = phase)
->>> print phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4)
+>>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
 1
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Tangent, semi-implicit. Press <return> to proceed...")
+...     input("Tangent, semi-implicit. Press <return> to proceed...")
 
 Although, for this simple problem, there is no appreciable difference in
 run-time between the fully explicit source and the optimized semi-implicit
@@ -401,6 +409,7 @@ point. We now use the :meth:`~fipy.terms.term.Term.sweep` method instead of
 .. index:: sweep
 
 >>> timeStep = 1e-6
+>>> from builtins import range
 >>> for i in range(10):
 ...     phase.updateOld()
 ...     res = 1e+10
@@ -437,7 +446,7 @@ A hyperbolic tangent is not an exact steady-state solution given the
 quintic polynomial we chose for the :math:`p` function, but it gives a
 reasonable approximation.
 
->>> print phase.allclose(analyticalArray, rtol = 5, atol = 2e-3)
+>>> print(phase.allclose(analyticalArray, rtol = 5, atol = 2e-3))
 1
 
 If we had made another common choice of :math:`p(\phi) = \phi^2(3 - 2\phi)`,
@@ -459,16 +468,17 @@ thickness
 ...                                   args=(phase.globalValue, x.globalValue, elapsed)) # doctest: +SCIPY
 ... except ImportError:
 ...     V_fit = d_fit = 0
-...     print "The SciPy library is unavailable to fit the interface \
-... thickness and velocity"
+...     print("The SciPy library is unavailable to fit the interface \
+... thickness and velocity")
 
->>> print abs(1 - V_fit / velocity) < 4.1e-2 # doctest: +SCIPY
+>>> print(abs(1 - V_fit / velocity) < 4.1e-2) # doctest: +SCIPY
 True
->>> print abs(1 - d_fit / delta) < 2e-2 # doctest: +SCIPY
+>>> print(abs(1 - d_fit / delta) < 2e-2) # doctest: +SCIPY
 True
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
-...     raw_input("Dimensional, semi-implicit. Press <return> to proceed...")
+...     input("Dimensional, semi-implicit. Press <return> to proceed...")
 
 .. image:: simple/dimensional.*
    :width: 90%
@@ -478,6 +488,8 @@ True
 .. .. bibmissing:: /documentation/refs.bib
     :sort:
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 
@@ -485,4 +497,4 @@ if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')

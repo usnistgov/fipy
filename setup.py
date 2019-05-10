@@ -6,6 +6,7 @@ Center for Theoretical and Computational Materials Science (CTCMS), in the
 Material Measurement Laboratory (MML) at the National Institute of
 Standards and Technology (NIST).
 """
+from __future__ import unicode_literals
 
 from setuptools import setup, find_packages
 
@@ -26,19 +27,19 @@ try:
     FILE = open("README.rst", "r")
     LONG_DESCRIPTION = "\n" + FILE.read() + "\n"
     FILE.close()
-except IOError, _:
+except IOError as _:
     LONG_DESCRIPTION = ""
 
 try:
     FILE = open("LICENSE.rst", "r")
     LICENSE = "\n" + "".join([" " * 8 + l for l in FILE])
     FILE.close()
-except IOError, _:
+except IOError as _:
     LICENSE = ""
 
 DIST = setup(
     name="FiPy",
-    install_requires=["numpy", "scipy", "matplotlib"],
+    install_requires=["numpy", "scipy", "matplotlib", "future"],
     version=versioneer.get_version(),
     author="Jonathan Guyer, Daniel Wheeler, & Jim Warren",
     author_email="fipy@nist.gov",

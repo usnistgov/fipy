@@ -96,12 +96,12 @@ so that it can be reused later.
 .. index:: TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm
 
 >>> def buildPhaseEquation(phase, theta):
-...
+... 
 ...     mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 ...     thetaMag = theta.old.grad.mag
 ...     implicitSource = mPhiVar * (phase - (mPhiVar < 0))
 ...     implicitSource += (2 * s + epsilon**2 * thetaMag) * thetaMag
-...
+... 
 ...     return TransientTerm(phaseTransientCoeff) == \
 ...               ExplicitDiffusionTerm(alpha**2) \
 ...               - ImplicitSourceTerm(implicitSource) \
@@ -118,13 +118,13 @@ evaluation of the face gradient without the modular operators.
 .. index:: exp
 
 >>> def buildThetaEquation(phase, theta):
-...
+... 
 ...     phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
 ...     phaseModSq = phaseMod * phaseMod
 ...     expo = epsilon * beta * theta.grad.mag
 ...     expo = (expo < 100.) * (expo - 100.) + 100.
 ...     pFunc = 1. + numerix.exp(-expo) * (mu / epsilon - 1.)
-...
+... 
 ...     phaseFace = phase.arithmeticFaceValue
 ...     phaseSq = phaseFace * phaseFace
 ...     gradMag = theta.faceGrad.mag
@@ -132,10 +132,10 @@ evaluation of the face gradient without the modular operators.
 ...     gradMag += (gradMag < eps) * eps
 ...     IGamma = (gradMag > 1. / gamma) * (1 / gradMag - gamma) + gamma
 ...     diffusionCoeff = phaseSq * (s * IGamma + epsilon**2)
-...
+... 
 ...     thetaGradDiff = theta.faceGrad - theta.faceGradNoMod
 ...     sourceCoeff = (diffusionCoeff * thetaGradDiff).divergence
-...
+... 
 ...     return TransientTerm(thetaTransientCoeff * phaseModSq * pFunc) == \
 ...                DiffusionTerm(diffusionCoeff) \
 ...                + sourceCoeff
@@ -166,10 +166,12 @@ data and compares it with the `theta` variable.
 .. index:: loadtxt
 
 >>> import os
->>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz').flat
+>>> from future.utils import text_to_native_str
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz')).flat
 
 We step the solution in time, plotting as we go if running interactively,
 
+>>> from builtins import range
 >>> for i in range(steps):
 ...     theta.updateOld()
 ...     thetaEq.solve(theta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
@@ -180,7 +182,7 @@ We step the solution in time, plotting as we go if running interactively,
 
 The solution is compared against Ryo Kobayashi's test data
 
->>> print theta.allclose(testData, rtol=1e-7, atol=1e-7)
+>>> print(theta.allclose(testData, rtol=1e-7, atol=1e-7))
 1
 
 The following code shows how to restart a simulation from some saved
@@ -199,6 +201,7 @@ data. First, reset the variables to their original values.
 
 Step through half the time steps.
 
+>>> from builtins import range
 >>> for i in range(steps // 2):
 ...     theta.updateOld()
 ...     thetaEq.solve(theta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
@@ -207,7 +210,7 @@ Step through half the time steps.
 We confirm that the solution has not yet converged to that given by
 Ryo Kobayashi's FORTRAN code:
 
->>> print theta.allclose(testData)
+>>> print(theta.allclose(testData))
 0
 
 We save the variables to disk.
@@ -227,6 +230,7 @@ and then recall them to test the data pickling mechanism
 
 and finish the iterations,
 
+>>> from builtins import range
 >>> for i in range(steps // 2):
 ...     newTheta.updateOld()
 ...     newThetaEq.solve(newTheta, dt=timeStepDuration, solver=GeneralSolver(iterations=2000, tolerance=1e-15))
@@ -234,13 +238,15 @@ and finish the iterations,
 
 The solution is compared against Ryo Kobayashi's test data
 
->>> print newTheta.allclose(testData, rtol=1e-7)
+>>> print(newTheta.allclose(testData, rtol=1e-7))
 1
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')

@@ -1,4 +1,4 @@
-r""" Solve a phase-field evolution and diffusion of four species in one-dimension.
+""" Solve a phase-field evolution and diffusion of four species in one-dimension.
 
 The same procedure used to construct the two-component phase field
 diffusion problem in :mod:`examples.phase.binary` can be used to build up a
@@ -14,20 +14,20 @@ system of multiple components. Once again, we'll focus on 1D.
 >>> L = nx * dx
 >>> mesh = Grid1D(dx = dx, nx = nx)
 
-We consider a free energy density :math:`f(\phi, C_0,\ldots,C_N, T)`
-that is a function of phase :math:`\phi`
+We consider a free energy density :math:`f(\\phi, C_0,\\ldots,C_N, T)`
+that is a function of phase :math:`\\phi`
 
 .. index:: CellVariable
 
 >>> phase = CellVariable(mesh=mesh, name='phase', value=1., hasOld=1)
 
-interstitial components :math:`C_0 \ldots C_M`
+interstitial components :math:`C_0 \\ldots C_M`
 
 >>> interstitials = [
 ...     CellVariable(mesh=mesh, name='C0', hasOld=1)
 ... ]
 
-substitutional components :math:`C_{M+1} \ldots C_{N-1}`
+substitutional components :math:`C_{M+1} \\ldots C_{N-1}`
 
 >>> substitutionals = [
 ...     CellVariable(mesh=mesh, name='C1', hasOld=1),
@@ -35,7 +35,7 @@ substitutional components :math:`C_{M+1} \ldots C_{N-1}`
 ... ]
 
 a "solvent" :math:`C_N` that is constrained by the concentrations of the
-other substitutional species, such that :math:`C_N = 1 - \sum_{j=M}^{N-1}
+other substitutional species, such that :math:`C_N = 1 - \\sum_{j=M}^{N-1}
 C_j`,
 
 >>> solvent = 1
@@ -51,8 +51,8 @@ The free energy density of such a system can be written as
 
 .. math::
 
-   f(\phi, C_0, \ldots, C_N, T)
-   &= \sum_{j=0}^N C_j \left[ \mu^\circ_j(\phi, T) + R T \ln \frac{C_j}{\rho} \right]
+   f(\\phi, C_0, \\ldots, C_N, T)
+   &= \\sum_{j=0}^N C_j \\left[ \\mu^\\circ_j(\\phi, T) + R T \\ln \\frac{C_j}{\\rho} \\right]
 
 where
 
@@ -62,8 +62,8 @@ is the gas constant. As in the binary case,
 
 .. math::
 
-   \mu^\circ_j(\phi, T) = p(\phi) \mu_j^{\circ S}(T)
-   + \left(1 - p(\phi)\right) \mu_j^{\circ L}(T) + \frac{W_j}{2} g(\phi)
+   \\mu^\\circ_j(\\phi, T) = p(\\phi) \\mu_j^{\\circ S}(T)
+   + \\left(1 - p(\\phi)\\right) \\mu_j^{\\circ L}(T) + \\frac{W_j}{2} g(\\phi)
 
 is constructed with the free energies of the pure components in each
 phase, given the "tilting" function
@@ -77,8 +77,8 @@ and the "double well" function
 ...     return (phi * (1 - phi))**2
 
 We consider a very simplified model that has partial molar volumes
-:math:`\bar{V}_0 = \cdots = \bar{V}_{M} = 0` for the "interstitials" and
-:math:`\bar{V}_{M+1} = \cdots = \bar{V}_{N} = 1` for the "substitutionals".
+:math:`\\bar{V}_0 = \\cdots = \\bar{V}_{M} = 0` for the "interstitials" and
+:math:`\\bar{V}_{M+1} = \\cdots = \\bar{V}_{N} = 1` for the "substitutionals".
 This approximation has been used in a number of models where density
 effects are ignored, including the treatment of electrons in
 electrodeposition processes :cite:`ElPhFI` :cite:`ElPhFII`. Under these
@@ -86,41 +86,41 @@ constraints
 
 .. math::
 
-   \frac{\partial f}{\partial \phi}
-   &= \sum_{j=0}^N C_j \frac{\partial f_j}{\partial \phi}
-   \nonumber \\
-   &= \sum_{j=0}^N C_j \left[
-       \mu_j^{\circ SL}(T) p'(\phi) + \frac{W_j}{2} g'(\phi)
-   \right]
-   \\
-   \frac{\partial f}{\partial C_j}
-   &= \left[\mu^\circ_j(\phi, T) + R T \ln \frac{C_j}{\rho} \right]
-   \nonumber \\
-   &= \mu_j(\phi, C_j , T)
-   \qquad\text{for \( j = 0\ldots M \)}
+   \\frac{\\partial f}{\\partial \\phi}
+   &= \\sum_{j=0}^N C_j \\frac{\\partial f_j}{\\partial \\phi}
+   \\nonumber \\\\
+   &= \\sum_{j=0}^N C_j \\left[
+       \\mu_j^{\\circ SL}(T) p'(\\phi) + \\frac{W_j}{2} g'(\\phi)
+   \\right]
+   \\\\
+   \\frac{\\partial f}{\\partial C_j}
+   &= \\left[\\mu^\\circ_j(\\phi, T) + R T \\ln \\frac{C_j}{\\rho} \\right]
+   \\nonumber \\\\
+   &= \\mu_j(\\phi, C_j , T)
+   \\qquad\\text{for \\( j = 0\\ldots M \\)}
 
 and
 
 .. math::
 
-   \frac{\partial f}{\partial C_j}
-   &= \left[\mu^\circ_j(\phi, T) + R T \ln \frac{C_j}{\rho} \right]
-   - \left[\mu^\circ_N(\phi, T) + R T \ln \frac{C_N}{\rho} \right]
-   \nonumber \\
-   &= \left[\mu_j(\phi, C_j, T) - \mu_N(\phi, C_N, T) \right]
-   \qquad\text{for \( j = M+1\ldots N-1 \)}
+   \\frac{\\partial f}{\\partial C_j}
+   &= \\left[\\mu^\\circ_j(\\phi, T) + R T \\ln \\frac{C_j}{\\rho} \\right]
+   - \\left[\\mu^\\circ_N(\\phi, T) + R T \\ln \\frac{C_N}{\\rho} \\right]
+   \\nonumber \\\\
+   &= \\left[\\mu_j(\\phi, C_j, T) - \\mu_N(\\phi, C_N, T) \\right]
+   \\qquad\\text{for \\( j = M+1\\ldots N-1 \\)}
 
-where :math:`\mu_j^{\circ SL}(T) \equiv \mu_j^{\circ S}(T) - \mu_j^{\circ
-L}(T)` and where :math:`\mu_j` is the classical chemical potential of
-component :math:`j` for the binary species and :math:`\rho = 1 +
-\sum_{j=0}^{M} C_j` is the total molar density.
+where :math:`\\mu_j^{\\circ SL}(T) \\equiv \\mu_j^{\\circ S}(T) - \\mu_j^{\\circ
+L}(T)` and where :math:`\\mu_j` is the classical chemical potential of
+component :math:`j` for the binary species and :math:`\\rho = 1 +
+\\sum_{j=0}^{M} C_j` is the total molar density.
 
 >>> rho = 1.
 >>> for Cj in interstitials:
 ...     rho += Cj
 
-:math:`p'(\phi)` and :math:`g'(\phi)` are the partial derivatives of of :math:`p`
-and :math:`g` with respect to :math:`\phi`
+:math:`p'(\\phi)` and :math:`g'(\\phi)` are the partial derivatives of of :math:`p`
+and :math:`g` with respect to :math:`\\phi`
 
 >>> def pPrime(phi):
 ...     return 30. * g(phi)
@@ -171,11 +171,11 @@ We create the phase equation
 
 .. math::
 
-   \frac{1}{M_\phi}\frac{\partial \phi}{\partial t}
-   = \kappa_\phi \nabla^2 \phi
-   - \sum_{j=0}^N C_j \left[
-              \mu_j^{\circ SL}(T) p'(\phi) + \frac{W_j}{2} g'(\phi)
-          \right]
+   \\frac{1}{M_\\phi}\\frac{\\partial \\phi}{\\partial t}
+   = \\kappa_\\phi \\nabla^2 \\phi
+   - \\sum_{j=0}^N C_j \\left[
+              \\mu_j^{\\circ SL}(T) p'(\\phi) + \\frac{W_j}{2} g'(\\phi)
+          \\right]
 
 with a semi-implicit source just as in :mod:`examples.phase.simple` and
 :mod:`examples.phase.binary`
@@ -193,8 +193,8 @@ with a semi-implicit source just as in :mod:`examples.phase.simple` and
 
 >>> phase.mobility = 1.
 >>> phase.gradientEnergy = 25
->>> phase.equation = TransientTerm(coeff=1/phase.mobility) \
-...   == DiffusionTerm(coeff=phase.gradientEnergy) \
+>>> phase.equation = TransientTerm(coeff=1/phase.mobility) \\
+...   == DiffusionTerm(coeff=phase.gradientEnergy) \\
 ...      + S0 + ImplicitSourceTerm(coeff = S1)
 
 We could construct the diffusion equations one-by-one, in the manner of
@@ -205,62 +205,62 @@ interstitial diffusion equations, we arrange in canonical form as before:
 
 .. math::
 
-   \underbrace{
-       \frac{\partial C_j}{\partial t}
-       \vphantom{\left\{
-           \overbrace{
-               \left[
-                   \mu_j^{\circ SL} \nabla p(\phi)
-               \right]
-           }^{\text{phase transformation}}
-       \right\}}
-   }_{\text{transient}}
-   &= \underbrace{
-       D_j\nabla^2 C_j
-       \vphantom{\left\{
-           \overbrace{
-               \left[
-                   \mu_j^{\circ SL} \nabla p(\phi)
-               \right]
-           }^{\text{phase transformation}}
-       \right\}}
-   }_{\text{diffusion}} \\
-   & \qquad + \underbrace{
-       D_j\nabla\cdot
-       \frac{C_j}{1 + \sum_{\substack{k=0\\ k \neq j}}^{M} C_k}
-       \left\{
-           \overbrace{
-               \frac{\rho}{R T}
-               \left[
-                   \mu_j^{\circ SL} \nabla p(\phi)
-                   + \frac{W_j}{2} \nabla g(\phi)
-               \right]
-           }^{\text{phase transformation}}
+   \\underbrace{
+       \\frac{\\partial C_j}{\\partial t}
+       \\vphantom{\\left\\{
+           \\overbrace{
+               \\left[
+                   \\mu_j^{\\circ SL} \\nabla p(\\phi)
+               \\right]
+           }^{\\text{phase transformation}}
+       \\right\\}}
+   }_{\\text{transient}}
+   &= \\underbrace{
+       D_j\\nabla^2 C_j
+       \\vphantom{\\left\\{
+           \\overbrace{
+               \\left[
+                   \\mu_j^{\\circ SL} \\nabla p(\\phi)
+               \\right]
+           }^{\\text{phase transformation}}
+       \\right\\}}
+   }_{\\text{diffusion}} \\\\
+   & \\qquad + \\underbrace{
+       D_j\\nabla\\cdot
+       \\frac{C_j}{1 + \\sum_{\\substack{k=0\\\\ k \\neq j}}^{M} C_k}
+       \\left\\{
+           \\overbrace{
+               \\frac{\\rho}{R T}
+               \\left[
+                   \\mu_j^{\\circ SL} \\nabla p(\\phi)
+                   + \\frac{W_j}{2} \\nabla g(\\phi)
+               \\right]
+           }^{\\text{phase transformation}}
            -
-           \overbrace{
-               \sum_{\substack{i=0\\ i \neq j}}^{M} \nabla C_i
-           }^{\text{counter diffusion}}
-       \right\}
-   }_{\text{convection}}
+           \\overbrace{
+               \\sum_{\\substack{i=0\\\\ i \\neq j}}^{M} \\nabla C_i
+           }^{\\text{counter diffusion}}
+       \\right\\}
+   }_{\\text{convection}}
 
 
 .. index:: PowerLawConvectionTerm
 
 >>> for Cj in interstitials:
-...     phaseTransformation = (rho.harmonicFaceValue / (R * T)) \
+...     phaseTransformation = (rho.harmonicFaceValue / (R * T)) \\
 ...       * (Cj.standardPotential * p(phase).faceGrad
 ...          + 0.5 * Cj.barrier * g(phase).faceGrad)
-...
+... 
 ...     CkSum = CellVariable(mesh=mesh, value=0.)
 ...     for Ck in [Ck for Ck in interstitials if Ck is not Cj]:
 ...         CkSum += Ck
-...
+... 
 ...     counterDiffusion = CkSum.faceGrad
-...
+... 
 ...     convectionCoeff = counterDiffusion + phaseTransformation
 ...     convectionCoeff *= (Cj.diffusivity
 ...                         / (1. + CkSum.harmonicFaceValue))
-...
+... 
 ...     Cj.equation = (TransientTerm()
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
@@ -271,47 +271,47 @@ The canonical form of the substitutional diffusion equations is
 
 .. math::
 
-   \underbrace{
-        \frac{\partial C_j}{\partial t}
-   }_{\text{transient}}
-    &= \underbrace{
-        D_{j}\nabla^2 C_j
-        \vphantom{\frac{\partial C_j}{\partial t}}
-    }_{\text{diffusion}} \\
-    & \qquad + \underbrace{
-        D_{j}\nabla\cdot
-        \frac{C_j}{1 - \sum_{\substack{k=M+1\\ k \neq j}}^{N-1} C_k}
-        \left\{
-           \overbrace{
-                \frac{C_N}{R T}
-                \left[
-                    \left(\mu_j^{\circ SL} - \mu_N^{\circ SL}\right) \nabla p(\phi)
-                    + \frac{W_j - W_N}{2} \nabla g(\phi)
-                \right]
-                \vphantom{\sum_{\substack{i=M+1\\ i \neq j}}^{N-1} \nabla C_i}
-           }^{\text{phase transformation}}
+   \\underbrace{
+        \\frac{\\partial C_j}{\\partial t}
+   }_{\\text{transient}}
+    &= \\underbrace{
+        D_{j}\\nabla^2 C_j
+        \\vphantom{\\frac{\\partial C_j}{\\partial t}}
+    }_{\\text{diffusion}} \\\\
+    & \\qquad + \\underbrace{
+        D_{j}\\nabla\\cdot
+        \\frac{C_j}{1 - \\sum_{\\substack{k=M+1\\\\ k \\neq j}}^{N-1} C_k}
+        \\left\\{
+           \\overbrace{
+                \\frac{C_N}{R T}
+                \\left[
+                    \\left(\\mu_j^{\\circ SL} - \\mu_N^{\\circ SL}\\right) \\nabla p(\\phi)
+                    + \\frac{W_j - W_N}{2} \\nabla g(\\phi)
+                \\right]
+                \\vphantom{\\sum_{\\substack{i=M+1\\\\ i \\neq j}}^{N-1} \\nabla C_i}
+           }^{\\text{phase transformation}}
            +
-           \overbrace{
-               \sum_{\substack{i=M+1\\ i \neq j}}^{N-1} \nabla C_i
-           }^{\text{counter diffusion}}
-        \right\}
-    }_{\text{convection}}
+           \\overbrace{
+               \\sum_{\\substack{i=M+1\\\\ i \\neq j}}^{N-1} \\nabla C_i
+           }^{\\text{counter diffusion}}
+        \\right\\}
+    }_{\\text{convection}}
 
 >>> for Cj in substitutionals:
-...     phaseTransformation = (solvent.harmonicFaceValue / (R * T)) \
+...     phaseTransformation = (solvent.harmonicFaceValue / (R * T)) \\
 ...       * ((Cj.standardPotential - solvent.standardPotential) * p(phase).faceGrad
 ...          + 0.5 * (Cj.barrier - solvent.barrier) * g(phase).faceGrad)
-...
+... 
 ...     CkSum = CellVariable(mesh=mesh, value=0.)
 ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
 ...         CkSum += Ck
-...
+... 
 ...     counterDiffusion = CkSum.faceGrad
-...
+... 
 ...     convectionCoeff = counterDiffusion + phaseTransformation
 ...     convectionCoeff *= (Cj.diffusivity
 ...                         / (1. - CkSum.harmonicFaceValue))
-...
+... 
 ...     Cj.equation = (TransientTerm()
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
@@ -322,11 +322,11 @@ We start with a sharp phase boundary
 
 .. math::
 
-   \xi =
-   \begin{cases}
-       1& \text{for $x \le L/2$,} \\
-       0& \text{for $x > L/2$,}
-   \end{cases}
+   \\xi =
+   \\begin{cases}
+       1& \\text{for $x \\le L/2$,} \\\\
+       0& \\text{for $x > L/2$,}
+   \\end{cases}
 
 >>> x = mesh.cellCenters[0]
 >>> phase.setValue(1.)
@@ -358,6 +358,7 @@ and again iterate to equilibrium
 
 
 >>> dt = 10000
+>>> from builtins import range
 >>> for i in range(5):
 ...     for field in [phase] + substitutionals + interstitials:
 ...         field.updateOld()
@@ -379,9 +380,9 @@ We can confirm that the far-field phases have remained separated
 .. .. index:: allclose
 
 >>> X = mesh.faceCenters[0]
->>> print numerix.allclose(phase.faceValue[X.value==0], 1.0, rtol = 1e-5, atol = 1e-5)
+>>> print(numerix.allclose(phase.faceValue[X.value==0], 1.0, rtol = 1e-5, atol = 1e-5))
 True
->>> print numerix.allclose(phase.faceValue[X.value==L], 0.0, rtol = 1e-5, atol = 1e-5)
+>>> print(numerix.allclose(phase.faceValue[X.value==L], 0.0, rtol = 1e-5, atol = 1e-5))
 True
 
 and that the concentration fields have appropriately segregated into
@@ -391,18 +392,23 @@ their equilibrium values in each phase
 >>> for Cj in interstitials + substitutionals:
 ...     equilibrium &= numerix.allclose(Cj.faceValue[X.value==0], Cj.S, rtol = 3e-3, atol = 3e-3).value
 ...     equilibrium &= numerix.allclose(Cj.faceValue[X.value==L], Cj.L, rtol = 3e-3, atol = 3e-3).value
->>> print equilibrium
+>>> print(equilibrium)
 True
 
 .. .. bibmissing:: /documentation/refs.bib
     :sort:
 """
+
+from __future__ import unicode_literals
+
 __docformat__ = 'restructuredtext'
+
+from builtins import input
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    raw_input("finished")
+    input("finished")
 
 ## if __name__ == '__main__':
 ##     ## from fipy.tools.profiler.profiler import Profiler

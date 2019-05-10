@@ -1,9 +1,13 @@
+from __future__ import division
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import parallelComm
 from fipy.tools import numerix
 
 __all__ = ["Grid3D", "Grid2D", "Grid1D", "CylindricalGrid2D", "CylindricalGrid1D"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 def _dnl(dx, nx, Lx):
     """
@@ -18,15 +22,15 @@ def _dnl(dx, nx, Lx):
       - `nx`: number of cells
       - `Lx`: the domain length
 
-    >>> print _dnl(None, None, None)
+    >>> print(_dnl(None, None, None))
     (None, 1)
-    >>> print _dnl(None, 1.1, 2.)
+    >>> print(_dnl(None, 1.1, 2.))
     (2.0, 1)
-    >>> print _dnl(3., None, 7.5)
+    >>> print(_dnl(3., None, 7.5))
     (3.75, 2)
-    >>> print "(%1.1f, %i)" % _dnl(2.2, 4, None)
+    >>> print("(%1.1f, %i)" % _dnl(2.2, 4, None))
     (2.2, 4)
-    >>> print _dnl(1., 6, 15.)
+    >>> print(_dnl(1., 6, 15.))
     (2.5, 6)
     """
     if Lx is None:
@@ -34,7 +38,7 @@ def _dnl(dx, nx, Lx):
             nx = 1
     else:
         if nx is None:
-            nx = int(Lx / dx) or 1
+            nx = Lx // dx or 1
         dx = Lx / int(nx)
 
     return dx, int(nx)
@@ -106,7 +110,7 @@ def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communic
           serial mesh when running in parallel. Mostly used for test
           purposes.
 
-    >>> print Grid2D(Lx=3., nx=2).dx
+    >>> print(Grid2D(Lx=3., nx=2).dx)
     1.5
 
     """
@@ -159,7 +163,7 @@ def CylindricalGrid2D(dr=None, dz=None,
                       dx=1., dy=1.,
                       nx=None, ny=None,
                       Lx=None, Ly=None,
-                      origin=((0,),(0,)),
+                      origin=((0,), (0,)),
                       overlap=2,
                       communicator=parallelComm):
 
@@ -256,3 +260,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

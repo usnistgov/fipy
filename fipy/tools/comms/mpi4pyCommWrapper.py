@@ -1,7 +1,10 @@
+from __future__ import unicode_literals
 from fipy.tools.comms.commWrapper import CommWrapper
 from fipy.tools import numerix
 
 __all__ = ["Mpi4pyCommWrapper"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class Mpi4pyCommWrapper(CommWrapper):
     """MPI Communicator wrapper
@@ -42,6 +45,7 @@ class Mpi4pyCommWrapper(CommWrapper):
         a rank-dimensional list of sendobj objects.
         
         >>> m4count = self.mpi4py_comm.allgather(self.mpi4py_comm.Get_rank())
+        >>> from builtins import range
         >>> for i in range(self.mpi4py_comm.Get_size()):
         ...     assert m4count[i] == i
 

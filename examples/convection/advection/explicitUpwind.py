@@ -2,7 +2,11 @@
 This example shows the failure of advecting a square pulse with a first
 order explicit upwind scheme.
 """
+from __future__ import division
+from __future__ import unicode_literals
 
+from builtins import input
+from builtins import range
 from fipy import CellVariable, Grid1D, TransientTerm, ExplicitUpwindConvectionTerm, LinearLUSolver, Viewer
 from fipy.tools import numerix
 
@@ -40,4 +44,4 @@ if __name__ == '__main__':
                  solver = LinearLUSolver(tolerance=1.e-15, iterations=2000))
         viewer.plot()
     viewer.plot()
-    raw_input('finished')
+    input('finished')

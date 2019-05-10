@@ -1,4 +1,5 @@
 """setuptools command to prepare FiPy for release"""
+from __future__ import unicode_literals
 
 from distutils.core import Command
 import glob
@@ -6,9 +7,10 @@ import os
 import shutil
 
 from setuptools.sandbox import run_setup
+from future.utils import text_to_native_str
 
 
-__all__ = ["release"]
+__all__ = [text_to_native_str("release")]
 
 
 class release(Command):
@@ -35,7 +37,7 @@ class release(Command):
 
         try:
             os.remove("MANIFEST")
-        except OSError, _:
+        except OSError as _:
             pass
 
     def _build_unix_distribution(self):

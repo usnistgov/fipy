@@ -12,11 +12,14 @@ A simple analytical answer can be used to test the result:
    >>> x = mesh.cellCenters[0]
    >>> values = numerix.where(x < 3. * L / 4., 10 * x - 9. * L / 4., x + 18. * L / 4.)
    >>> values = numerix.where(x < L / 4., x, values)
-   >>> print var.allclose(values, atol = 1e-8, rtol = 1e-8)
+   >>> print(var.allclose(values, atol = 1e-8, rtol = 1e-8))
    1
 
 """
+from __future__ import division
+from __future__ import unicode_literals
 
+from builtins import input
 from fipy import FaceVariable, Tri2D, CellVariable, DiffusionTerm, Viewer
 from fipy.tools import numerix
 
@@ -51,4 +54,5 @@ var.constrain(valueLeft, mesh.facesLeft)
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    raw_input('finished')
+    input('finished')
+

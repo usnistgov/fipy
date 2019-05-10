@@ -1,6 +1,11 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import object
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 import sys
 
@@ -23,7 +28,7 @@ class AbstractViewer(object):
             (default) value of `None` will autoscale.
         """
         if self.__class__ is AbstractViewer:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
         self.vars = self._getSuitableVars(vars)
 
@@ -165,7 +170,7 @@ class AbstractViewer(object):
                 extensions = " (%s)" % extensions
             snapshot = self._doctest_raw_input("Enter a filename%s to save a snapshot (leave blank to skip): " % extensions).strip()
             self.plot(snapshot)
-            print opinion
+            print(opinion)
 
 
     def _test1D(**kwargs):
@@ -179,7 +184,7 @@ class AbstractViewer(object):
             ...                 limits={'xmin': 10, 'xmax': 90},
             ...                 datamin=-0.9, datamax=2.0,
             ...                 title="VIEWERSUBSTITUTION test")
-            >>> for kval in numerix.arange(0,0.3,0.03):
+            >>> for kval in numerix.arange(0, 0.3, 0.03):
             ...     k.setValue(kval)
             ...     viewer.plot()
             >>> viewer._promptForOpinion()
@@ -199,6 +204,7 @@ class AbstractViewer(object):
             ...                 limits={'ymin': 0.1, 'ymax': 0.9},
             ...                 datamin=-0.9, datamax=2.0,
             ...                 title="VIEWERSUBSTITUTION test")
+            >>> from builtins import range
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
@@ -272,6 +278,7 @@ class AbstractViewer(object):
             ...                     limits={'ymin': 0.1, 'ymax': 0.9},
             ...                     datamin=-0.9, datamax=2.0,
             ...                     title="VIEWERSUBSTITUTION test")
+            >>> from builtins import range
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()

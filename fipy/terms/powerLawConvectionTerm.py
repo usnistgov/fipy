@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.asymmetricConvectionTerm import _AsymmetricConvectionTerm
@@ -7,6 +9,8 @@ from fipy.tools import inline
 from fipy.tools import numerix
 
 __all__ = ["PowerLawConvectionTerm"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class _PowerLawConvectionTermAlpha(FaceVariable):
     """
@@ -19,7 +23,7 @@ class _PowerLawConvectionTermAlpha(FaceVariable):
         >>> P = FaceVariable(mesh=mesh, value=(1e-3, 1e+71, 1e-3, 1e-3))
         >>>
         >>> alpha = PowerLawConvectionTerm([1])._alpha(P)
-        >>> print numerix.allclose(alpha, [ 0.5,  1.,   0.5 , 0.5])
+        >>> print(numerix.allclose(alpha, [ 0.5,  1.,   0.5, 0.5]))
         True
     """
     def __init__(self, P):
@@ -69,7 +73,7 @@ class _PowerLawConvectionTermAlpha(FaceVariable):
 
             tmp = (1. - P / 10.)
             tmpSqr = tmp * tmp
-            alpha = numerix.where(  (10. >= P) & (P > eps), ((P-1.) + tmpSqr*tmpSqr*tmp) / P, alpha)
+            alpha = numerix.where(  (10. >= P) & (P > eps),  ((P-1.) + tmpSqr*tmpSqr*tmp) / P, alpha)
 
             tmp = (1. + P / 10.)
             tmpSqr = tmp * tmp
@@ -101,3 +105,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+

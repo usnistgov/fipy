@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __all__ = []
 
 from fipy.tests.doctestPlus import _LateImportDocTestSuite
@@ -15,7 +16,7 @@ elif solver == 'pysparse':
 elif solver == 'pyamgx':
     docTestModuleNames = ('scipyMatrix',)
 else:
-    raise ImportError, 'Unknown solver package %s' % solver
+    raise ImportError('Unknown solver package %s' % solver)
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames=docTestModuleNames, base=__name__)

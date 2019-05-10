@@ -58,6 +58,7 @@ explicit coupling for the cross-coupled terms.
 
 >>> vi = Viewer((v0, v1))
 
+>>> from builtins import range
 >>> for t in range(100):
 ...     v0.updateOld()
 ...     v1.updateOld()
@@ -81,6 +82,7 @@ increase the time steps:
 
 >>> eqn = eqn0 & eqn1
 
+>>> from builtins import range
 >>> for t in range(1):
 ...     v0.updateOld()
 ...     v1.updateOld()
@@ -100,6 +102,7 @@ It is also possible to pose the same equations in vector form:
 
 >>> vi = Viewer((v[0], v[1]))
 
+>>> from builtins import range
 >>> for t in range(1):
 ...     v.updateOld()
 ...     eqn.solve(var=v, dt=1.e-3)
@@ -112,10 +115,12 @@ separate governing equations and to couple them. If they represent two
 components of a vector field, then the vector formulation is obviously more
 natural. FiPy will solve the same matrix system either way.
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')

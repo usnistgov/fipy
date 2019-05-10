@@ -1,8 +1,11 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
 
 __all__ = ["NoiseVariable"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class NoiseVariable(CellVariable):
     r"""
@@ -20,7 +23,7 @@ class NoiseVariable(CellVariable):
     """
     def __init__(self, mesh, name = '', hasOld = 0):
         if self.__class__ is NoiseVariable:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
         CellVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
         self.scramble()

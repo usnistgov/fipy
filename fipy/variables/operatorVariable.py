@@ -1,3 +1,7 @@
+from __future__ import unicode_literals
+from builtins import zip
+from builtins import str
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -35,10 +39,10 @@ def _OperatorVariableClass(baseClass=object):
             self.comment = inlineComment
 
         def __setitem__(self, index, value):
-            raise TypeError, "The value of an `_OperatorVariable` cannot be assigned"
+            raise TypeError("The value of an `_OperatorVariable` cannot be assigned")
 
         def setValue(self, value, unit=None, where=None):
-            raise TypeError, "The value of an `_OperatorVariable` cannot be assigned"
+            raise TypeError("The value of an `_OperatorVariable` cannot be assigned")
 
         def _calcValue(self):
             if not self.canInline:
@@ -80,10 +84,10 @@ def _OperatorVariableClass(baseClass=object):
                                                                for i in range(len(self.var))]))
 
             try:
-                instructions = dis.get_instructions(self.op.func_code)
+                instructions = dis.get_instructions(self.op.__code__)
                 parseInstructions = self._py3kInstructions
             except AttributeError:
-                instructions = [ord(byte) for byte in self.op.func_code.co_code]
+                instructions = [ord(byte) for byte in self.op.__code__.co_code]
                 parseInstructions = self._py2kInstructions
 
             return parseInstructions(instructions, style=style, argDict=argDict, id=id, freshen=freshen)
@@ -109,7 +113,7 @@ def _OperatorVariableClass(baseClass=object):
                     result = "<...>"
 
             elif style == "TeX":
-                raise Exception, "TeX style not yet implemented"
+                raise Exception("TeX style not yet implemented")
             elif style == "C":
                 if not v._isCached():
                     result = v._getCstring(argDict, id=id + str(i), freshen=freshen)
@@ -122,7 +126,7 @@ def _OperatorVariableClass(baseClass=object):
                                                                id=id + str(i),
                                                                freshen=False)
             else:
-                raise SyntaxError, "Unknown style: %s" % style
+                raise SyntaxError("Unknown style: %s" % style)
 
             return result
 
@@ -154,14 +158,14 @@ def _OperatorVariableClass(baseClass=object):
                     else:
                         return s
                 elif dis.opname[bytecode] == 'LOAD_CONST':
-                    stack.append(self.op.func_code.co_consts[_popIndex()])
+                    stack.append(self.op.__code__.co_consts[_popIndex()])
                 elif dis.opname[bytecode] == 'LOAD_ATTR':
-                    stack.append(stack.pop() + "." + self.op.func_code.co_names[_popIndex()])
+                    stack.append(stack.pop() + "." + self.op.__code__.co_names[_popIndex()])
                 elif dis.opname[bytecode] == 'COMPARE_OP':
                     stack.append(stack.pop(-2) + " " + dis.cmp_op[_popIndex()] + " " + stack.pop())
                 elif dis.opname[bytecode] == 'LOAD_GLOBAL':
                     counter = _popIndex()
-                    stack.append(self.op.func_code.co_names[counter])
+                    stack.append(self.op.__code__.co_names[counter])
                 elif dis.opname[bytecode] == 'LOAD_FAST':
                     stack.append(self.__var(_popIndex(), style=style, argDict=argDict, id=id, freshen=freshen))
                 elif dis.opname[bytecode] == 'CALL_FUNCTION':
@@ -174,7 +178,7 @@ def _OperatorVariableClass(baseClass=object):
                         args.insert(0, stack.pop())
                     stack.append(stack.pop() + "(" + ", ".join(args) + ")")
                 elif dis.opname[bytecode] == 'LOAD_DEREF':
-                    free = self.op.func_code.co_cellvars + self.op.func_code.co_freevars
+                    free = self.op.__code__.co_cellvars + self.op.__code__.co_freevars
                     stack.append(free[_popIndex()])
                 elif bytecode in self._unop:
                     stack.append(self._unop[bytecode] + '(' + stack.pop() + ')')
@@ -247,7 +251,7 @@ def _OperatorVariableClass(baseClass=object):
             Allows _OperatorVariables to be pickled
             """
             state =  self.__getstate__()
-            if 'mesh' in state.keys():
+            if 'mesh' in list(state.keys()):
                 args = (state['mesh'],)
             else:
                 args = ()
@@ -276,33 +280,35 @@ def _testBinOp(self):
     """
     Test of _getRepresentation
 
-        >>> v1 = Variable((1,2,3,4))
-        >>> v2 = Variable((5,6,7,8))
-        >>> v3 = Variable((9,10,11,12))
-        >>> v4 = Variable((13,14,15,16))
+        >>> v1 = Variable((1, 2, 3, 4))
+        >>> v2 = Variable((5, 6, 7, 8))
+        >>> v3 = Variable((9, 10, 11, 12))
+        >>> v4 = Variable((13, 14, 15, 16))
 
-        >>> (v1 * v2)._getRepresentation()
+        >>> from future.utils import text_to_native_str as ttns
+
+        >>> ttns((v1 * v2)._getRepresentation())
         '(Variable(value=array([1, 2, 3, 4])) * Variable(value=array([5, 6, 7, 8])))'
 
-        >>> (v1 * v2)._getRepresentation(style='C', id="")
+        >>> ttns((v1 * v2)._getRepresentation(style='C', id=""))
         '(var0[i] * var1[i])'
 
-        >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C', id="")
+        >>> ttns((v1 * v2 + v3 * v4)._getRepresentation(style='C', id=""))
         '((var00[i] * var01[i]) + (var10[i] * var11[i]))'
 
-        >>> (v1 - v2)._getRepresentation(style='C', id="")
+        >>> ttns((v1 - v2)._getRepresentation(style='C', id=""))
         '(var0[i] - var1[i])'
 
-        >>> (v1 / v2)._getRepresentation(style='C', id="")
+        >>> ttns((v1 / v2)._getRepresentation(style='C', id=""))
         '(var0[i] / var1[i])'
 
-        >>> (v1 - 1)._getRepresentation(style='C', id="")
+        >>> ttns((v1 - 1)._getRepresentation(style='C', id=""))
         '(var0[i] - var1)'
 
-        >>> (5 * v2)._getRepresentation(style='C', id="")
+        >>> ttns((5 * v2)._getRepresentation(style='C', id=""))
         '(var0[i] * var1)'
 
-        >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id="")
+        >>> ttns((v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id=""))
         '(((var000[i] / var001[i]) - (var010[i] * var011[i])) + (var10[i] * var11[i]))'
 
     Check that unit works for a binOp
@@ -318,7 +324,7 @@ def _testBinOp(self):
     Check that getTypeCode() works as expected.
 
         >>> a = Variable(1.) * Variable(1)
-        >>> print a.getsctype() == numerix.float64
+        >>> print(a.getsctype() == numerix.float64)
         1
 
     The following test is to correct an `--inline` bug that was
@@ -339,19 +345,19 @@ def _testBinOp(self):
         >>> from fipy import numerix
         >>> def doBCs(binOp):
         ...     unOp1 = -binOp
-        ...     print binOp.value
+        ...     print(binOp.value)
         >>> var = Variable(1.)
         >>> binOp = 1. * var
         >>> unOp = -binOp
-        >>> print unOp.value
+        >>> print(unOp.value)
         -1.0
         >>> doBCs(binOp)
         1.0
         >>> var.value = (0.5)
-        >>> print unOp.value
+        >>> print(unOp.value)
         -0.5
         >>> unOp2 = -binOp
-        >>> print binOp.value
+        >>> print(binOp.value)
         0.5
 
         >>> from fipy.variables.cellVariable import CellVariable
@@ -365,9 +371,9 @@ def _testBinOp(self):
 
         >>> cv = CellVariable(mesh=mesh, value=(0, 1, 2))
         >>> cvXcv = cv * cv
-        >>> print cvXcv
+        >>> print(cvXcv)
         [0 1 4]
-        >>> print isinstance(cvXcv, CellVariable)
+        >>> print(isinstance(cvXcv, CellVariable))
         1
 
     `CellVariable` * FaceVariable
@@ -386,26 +392,26 @@ def _testBinOp(self):
 
         >>> vcv = CellVariable(mesh=mesh, value=((0, 1, 2), (1, 2, 3)), rank=1)
         >>> vcvXcv = vcv * cv
-        >>> print vcvXcv
+        >>> print(vcvXcv)
         [[0 1 4]
          [0 2 6]]
-        >>> print isinstance(vcvXcv, CellVariable)
+        >>> print(isinstance(vcvXcv, CellVariable))
         1
-        >>> print vcvXcv.rank
+        >>> print(vcvXcv.rank)
         1
         >>> cvXvcv = cv * vcv
-        >>> print cvXvcv
+        >>> print(cvXvcv)
         [[0 1 4]
          [0 2 6]]
-        >>> print isinstance(cvXvcv, CellVariable)
+        >>> print(isinstance(cvXvcv, CellVariable))
         1
-        >>> print cvXvcv.rank
+        >>> print(cvXvcv.rank)
         1
 
     `CellVariable` * rank-1 `FaceVariable`
 
-        >>> vfv = FaceVariable(mesh=mesh, value=((0,1,2,3,1,2,3,6,2,1),
-        ...                                      (1,2,3,4,3,4,5,9,6,3)), rank=1)
+        >>> vfv = FaceVariable(mesh=mesh, value=((0, 1, 2, 3, 1, 2, 3, 6, 2, 1),
+        ...                                      (1, 2, 3, 4, 3, 4, 5, 9, 6, 3)), rank=1)
         >>> vfvXcv = vfv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
@@ -418,59 +424,59 @@ def _testBinOp(self):
     `CellVariable` * Scalar
 
         >>> cvXs = cv * 3
-        >>> print cvXs
+        >>> print(cvXs)
         [0 3 6]
-        >>> print isinstance(cvXs, CellVariable)
+        >>> print(isinstance(cvXs, CellVariable))
         1
         >>> sXcv = 3 * cv
-        >>> print sXcv
+        >>> print(sXcv)
         [0 3 6]
-        >>> print isinstance(sXcv, CellVariable)
+        >>> print(isinstance(sXcv, CellVariable))
         1
 
     `CellVariable` * Vector
 
-        >>> cvXv2 = cv * (3,2)
-        >>> print cvXv2
+        >>> cvXv2 = cv * (3, 2)
+        >>> print(cvXv2)
         [[0 3 6]
          [0 2 4]]
         >>> cvXv2 = cv * [[3], [2]]
-        >>> print cvXv2
+        >>> print(cvXv2)
         [[0 3 6]
          [0 2 4]]
-        >>> print isinstance(cvXv2, CellVariable)
+        >>> print(isinstance(cvXv2, CellVariable))
         1
-        >>> print cvXv2.rank
+        >>> print(cvXv2.rank)
         1
-        >>> v2Xcv = (3,2) * cv
-        >>> print v2Xcv
+        >>> v2Xcv = (3, 2) * cv
+        >>> print(v2Xcv)
         [[0 3 6]
          [0 2 4]]
         >>> v2Xcv = [[3], [2]] * cv
-        >>> print v2Xcv
+        >>> print(v2Xcv)
         [[0 3 6]
          [0 2 4]]
-        >>> print isinstance(v2Xcv, CellVariable)
+        >>> print(isinstance(v2Xcv, CellVariable))
         1
-        >>> print v2Xcv.rank
-        1
-
-        >>> cvXv3 = cv * (3,2,1)
-        >>> print cvXv3
-        [0 2 2]
-        >>> print isinstance(cvXv3, CellVariable)
-        1
-        >>> v3Xcv = (3,2,1) * cv
-        >>> print v3Xcv
-        [0 2 2]
-        >>> print isinstance(v3Xcv, CellVariable)
+        >>> print(v2Xcv.rank)
         1
 
-        >>> cvXv4 = cv * (3,2,1,0) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> cvXv3 = cv * (3, 2, 1)
+        >>> print(cvXv3)
+        [0 2 2]
+        >>> print(isinstance(cvXv3, CellVariable))
+        1
+        >>> v3Xcv = (3, 2, 1) * cv
+        >>> print(v3Xcv)
+        [0 2 2]
+        >>> print(isinstance(v3Xcv, CellVariable))
+        1
+
+        >>> cvXv4 = cv * (3, 2, 1, 0) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         TypeError: can't multiply sequence to non-int
-        >>> v4Xcv = (3,2,1,0) * cv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v4Xcv = (3, 2, 1, 0) * cv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
             ...
         TypeError: can't multiply sequence to non-int
@@ -479,69 +485,69 @@ def _testBinOp(self):
     `CellVariable` * `Variable` Scalar
 
         >>> cvXsv = cv * Variable(value=3)
-        >>> print cvXsv
+        >>> print(cvXsv)
         [0 3 6]
-        >>> print isinstance(cvXsv, CellVariable)
+        >>> print(isinstance(cvXsv, CellVariable))
         1
         >>> svXcv = Variable(value=3) * cv
-        >>> print svXcv
+        >>> print(svXcv)
         [0 3 6]
-        >>> print isinstance(svXcv, CellVariable)
+        >>> print(isinstance(svXcv, CellVariable))
         1
 
     `binOp` `CellVariable` * `binOp` `Variable` Scalar
 
         >>> cvcvXsvsv = (cv * cv) * (Variable(value=3) * Variable(value=3))
-        >>> print cvcvXsvsv
+        >>> print(cvcvXsvsv)
         [ 0  9 36]
-        >>> print isinstance(cvcvXsvsv, CellVariable)
+        >>> print(isinstance(cvcvXsvsv, CellVariable))
         1
         >>> svsvXcvcv = (Variable(value=3) * Variable(value=3)) * (cv * cv)
-        >>> print svsvXcvcv
+        >>> print(svsvXcvcv)
         [ 0  9 36]
-        >>> print isinstance(svsvXcvcv, CellVariable)
+        >>> print(isinstance(svsvXcvcv, CellVariable))
         1
 
     `CellVariable` * `Variable` Vector
 
-        >>> cvXv2v = cv * Variable(value=(3,2))
-        >>> print cvXv2v
+        >>> cvXv2v = cv * Variable(value=(3, 2))
+        >>> print(cvXv2v)
         [[0 3 6]
          [0 2 4]]
-        >>> cvXv2v = cv * Variable(value=((3,),(2,)))
-        >>> print cvXv2v
+        >>> cvXv2v = cv * Variable(value=((3,), (2,)))
+        >>> print(cvXv2v)
         [[0 3 6]
          [0 2 4]]
-        >>> print isinstance(cvXv2v, CellVariable)
+        >>> print(isinstance(cvXv2v, CellVariable))
         1
-        >>> print cvXv2v.rank
+        >>> print(cvXv2v.rank)
         1
-        >>> v2vXcv = Variable(value=(3,2)) * cv
-        >>> v2vXcv = Variable(value=((3,),(2,))) * cv
-        >>> print v2vXcv
+        >>> v2vXcv = Variable(value=(3, 2)) * cv
+        >>> v2vXcv = Variable(value=((3,), (2,))) * cv
+        >>> print(v2vXcv)
         [[0 3 6]
          [0 2 4]]
-        >>> print isinstance(v2vXcv, CellVariable)
+        >>> print(isinstance(v2vXcv, CellVariable))
         1
-        >>> print v2vXcv.rank
+        >>> print(v2vXcv.rank)
         1
 
-        >>> cvXv3v = cv * Variable(value=(3,2,1))
-        >>> print cvXv3v
+        >>> cvXv3v = cv * Variable(value=(3, 2, 1))
+        >>> print(cvXv3v)
         [0 2 2]
-        >>> print isinstance(cvXv3v, CellVariable)
+        >>> print(isinstance(cvXv3v, CellVariable))
         1
-        >>> v3vXcv = Variable(value=(3,2,1)) * cv
-        >>> print v3vXcv
+        >>> v3vXcv = Variable(value=(3, 2, 1)) * cv
+        >>> print(v3vXcv)
         [0 2 2]
-        >>> print isinstance(v3vXcv, CellVariable)
+        >>> print(isinstance(v3vXcv, CellVariable))
         1
 
-        >>> cvXv4v = cv * Variable(value=(3,2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> cvXv4v = cv * Variable(value=(3, 2, 1, 0)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v4vXcv = Variable(value=(3,2,1,0)) * cv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v4vXcv = Variable(value=(3, 2, 1, 0)) * cv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
@@ -550,20 +556,20 @@ def _testBinOp(self):
     `CellVariable` * CellGradVariable
 
         >>> cvXcgv = cv * cv.grad
-        >>> print cvXcgv
+        >>> print(cvXcgv)
         [[ 0.  1.  1.]
          [ 0.  0.  0.]]
-        >>> print isinstance(cvXcgv, CellVariable)
+        >>> print(isinstance(cvXcgv, CellVariable))
         1
-        >>> print cvXcgv.rank
+        >>> print(cvXcgv.rank)
         1
 
     `FaceVariable` * FaceVariable
 
         >>> fvXfv = fv * fv
-        >>> print fvXfv
+        >>> print(fvXfv)
         [ 0  1  4  9 16 25 36 49 64 81]
-        >>> print isinstance(fvXfv, FaceVariable)
+        >>> print(isinstance(fvXfv, FaceVariable))
         1
 
     `FaceVariable` * rank-1 `CellVariable`
@@ -580,140 +586,140 @@ def _testBinOp(self):
     `FaceVariable` * rank-1 `FaceVariable`
 
         >>> vfvXfv = vfv * fv
-        >>> print vfvXfv
+        >>> print(vfvXfv)
         [[ 0  1  4  9  4 10 18 42 16  9]
          [ 0  2  6 12 12 20 30 63 48 27]]
-        >>> print isinstance(vfvXfv, FaceVariable)
+        >>> print(isinstance(vfvXfv, FaceVariable))
         1
-        >>> print vfvXfv.rank
+        >>> print(vfvXfv.rank)
         1
         >>> fvXvfv = fv * vfv
-        >>> print fvXvfv
+        >>> print(fvXvfv)
         [[ 0  1  4  9  4 10 18 42 16  9]
          [ 0  2  6 12 12 20 30 63 48 27]]
-        >>> print isinstance(fvXvfv, FaceVariable)
+        >>> print(isinstance(fvXvfv, FaceVariable))
         1
-        >>> print fvXvfv.rank
+        >>> print(fvXvfv.rank)
         1
 
     `FaceVariable` * Scalar
 
         >>> fvXs = fv * 3
-        >>> print fvXs
+        >>> print(fvXs)
         [ 0  3  6  9 12 15 18 21 24 27]
-        >>> print isinstance(fvXs, FaceVariable)
+        >>> print(isinstance(fvXs, FaceVariable))
         1
         >>> sXfv = 3 * fv
-        >>> print sXfv
+        >>> print(sXfv)
         [ 0  3  6  9 12 15 18 21 24 27]
-        >>> print isinstance(sXfv, FaceVariable)
+        >>> print(isinstance(sXfv, FaceVariable))
         1
 
     `FaceVariable` * Vector
 
-        >>> fvXv2 = fv * (3,2)
-        >>> print fvXv2
+        >>> fvXv2 = fv * (3, 2)
+        >>> print(fvXv2)
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
-        >>> fvXv2 = fv * ((3,),(2,))
-        >>> print fvXv2
+        >>> fvXv2 = fv * ((3,), (2,))
+        >>> print(fvXv2)
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
-        >>> print isinstance(fvXv2, FaceVariable)
+        >>> print(isinstance(fvXv2, FaceVariable))
         1
-        >>> print fvXv2.rank
+        >>> print(fvXv2.rank)
         1
-        >>> v2Xfv = (3,2) * fv
-        >>> print v2Xfv
+        >>> v2Xfv = (3, 2) * fv
+        >>> print(v2Xfv)
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
-        >>> v2Xfv = ((3,),(2,)) * fv
-        >>> print v2Xfv
+        >>> v2Xfv = ((3,), (2,)) * fv
+        >>> print(v2Xfv)
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
-        >>> print isinstance(v2Xfv, FaceVariable)
+        >>> print(isinstance(v2Xfv, FaceVariable))
         1
-        >>> print v2Xfv.rank
+        >>> print(v2Xfv.rank)
         1
 
-        >>> fvXv3 = fv * (3,2,1) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> fvXv3 = fv * (3, 2, 1) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v3Xfv = (3,2,1) * fv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3Xfv = (3, 2, 1) * fv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
 
-        >>> fvXv10 = fv * (9,8,7,6,5,4,3,2,1,0)
-        >>> print fvXv10
+        >>> fvXv10 = fv * (9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+        >>> print(fvXv10)
         [ 0  8 14 18 20 20 18 14  8  0]
-        >>> print isinstance(fvXv10, FaceVariable)
+        >>> print(isinstance(fvXv10, FaceVariable))
         1
-        >>> v10Xfv = (9,8,7,6,5,4,3,2,1,0) * fv
-        >>> print v10Xfv
+        >>> v10Xfv = (9, 8, 7, 6, 5, 4, 3, 2, 1, 0) * fv
+        >>> print(v10Xfv)
         [ 0  8 14 18 20 20 18 14  8  0]
-        >>> print isinstance(v10Xfv, FaceVariable)
+        >>> print(isinstance(v10Xfv, FaceVariable))
         1
 
     `FaceVariable` * `Variable` Scalar
 
         >>> fvXsv = fv * Variable(value=3)
-        >>> print fvXsv
+        >>> print(fvXsv)
         [ 0  3  6  9 12 15 18 21 24 27]
-        >>> print isinstance(fvXsv, FaceVariable)
+        >>> print(isinstance(fvXsv, FaceVariable))
         1
         >>> svXfv = Variable(value=3) * fv
-        >>> print svXfv
+        >>> print(svXfv)
         [ 0  3  6  9 12 15 18 21 24 27]
-        >>> print isinstance(svXfv, FaceVariable)
+        >>> print(isinstance(svXfv, FaceVariable))
         1
 
     `FaceVariable` * `Variable` Vector
 
-        >>> fvXv2v = fv * Variable(value=(3,2))
-        >>> print fvXv2v
+        >>> fvXv2v = fv * Variable(value=(3, 2))
+        >>> print(fvXv2v)
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
-        >>> fvXv2v = fv * Variable(value=((3,),(2,)))
-        >>> print fvXv2v
+        >>> fvXv2v = fv * Variable(value=((3,), (2,)))
+        >>> print(fvXv2v)
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
-        >>> print isinstance(fvXv2v, FaceVariable)
+        >>> print(isinstance(fvXv2v, FaceVariable))
         1
-        >>> print fvXv2v.rank
+        >>> print(fvXv2v.rank)
         1
-        >>> v2vXfv = Variable(value=(3,2)) * fv
-        >>> print v2vXfv
+        >>> v2vXfv = Variable(value=(3, 2)) * fv
+        >>> print(v2vXfv)
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
-        >>> v2vXfv = Variable(value=((3,),(2,))) * fv
-        >>> print v2vXfv
+        >>> v2vXfv = Variable(value=((3,), (2,))) * fv
+        >>> print(v2vXfv)
         [[ 0  3  6  9 12 15 18 21 24 27]
          [ 0  2  4  6  8 10 12 14 16 18]]
-        >>> print isinstance(v2vXfv, FaceVariable)
+        >>> print(isinstance(v2vXfv, FaceVariable))
         1
-        >>> print v2vXfv.rank
+        >>> print(v2vXfv.rank)
         1
 
-        >>> fvXv3v = fv * Variable(value=(3,2,1)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> fvXv3v = fv * Variable(value=(3, 2, 1)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v3vXfv = Variable(value=(3,2,1)) * fv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3vXfv = Variable(value=(3, 2, 1)) * fv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
 
-        >>> fvXv10v = fv * Variable(value=(9,8,7,6,5,4,3,2,1,0))
-        >>> print fvXv10v
+        >>> fvXv10v = fv * Variable(value=(9, 8, 7, 6, 5, 4, 3, 2, 1, 0))
+        >>> print(fvXv10v)
         [ 0  8 14 18 20 20 18 14  8  0]
-        >>> print isinstance(fvXv10v, FaceVariable)
+        >>> print(isinstance(fvXv10v, FaceVariable))
         1
-        >>> v10vXfv = Variable(value=(9,8,7,6,5,4,3,2,1,0)) * fv
-        >>> print v10vXfv
+        >>> v10vXfv = Variable(value=(9, 8, 7, 6, 5, 4, 3, 2, 1, 0)) * fv
+        >>> print(v10vXfv)
         [ 0  8 14 18 20 20 18 14  8  0]
-        >>> print isinstance(v10vXfv, FaceVariable)
+        >>> print(isinstance(v10vXfv, FaceVariable))
         1
 
 
@@ -721,12 +727,12 @@ def _testBinOp(self):
     rank-1 `CellVariable` * rank-1 `CellVariable`
 
         >>> vcvXvcv = vcv * vcv
-        >>> print vcvXvcv
+        >>> print(vcvXvcv)
         [[0 1 4]
          [1 4 9]]
-        >>> print isinstance(vcvXvcv, CellVariable)
+        >>> print(isinstance(vcvXvcv, CellVariable))
         1
-        >>> print vcvXvcv.rank
+        >>> print(vcvXvcv.rank)
         1
 
     rank-1 `CellVariable` * rank-1 `FaceVariable`
@@ -743,71 +749,71 @@ def _testBinOp(self):
     rank-1 `CellVariable` * Scalar
 
         >>> vcvXs = vcv * 3
-        >>> print vcvXs
+        >>> print(vcvXs)
         [[0 3 6]
          [3 6 9]]
-        >>> print isinstance(vcvXs, CellVariable)
+        >>> print(isinstance(vcvXs, CellVariable))
         1
-        >>> print vcvXs.rank
+        >>> print(vcvXs.rank)
         1
         >>> sXvcv = 3 * vcv
-        >>> print sXvcv
+        >>> print(sXvcv)
         [[0 3 6]
          [3 6 9]]
-        >>> print isinstance(vcvXs, CellVariable)
+        >>> print(isinstance(vcvXs, CellVariable))
         1
-        >>> print vcvXs.rank
+        >>> print(vcvXs.rank)
         1
 
     rank-1 `CellVariable` * Vector
 
-        >>> vcvXv2 = vcv * (3,2)
-        >>> print vcvXv2
+        >>> vcvXv2 = vcv * (3, 2)
+        >>> print(vcvXv2)
         [[0 3 6]
          [2 4 6]]
-        >>> vcvXv2 = vcv * ((3,),(2,))
-        >>> print vcvXv2
+        >>> vcvXv2 = vcv * ((3,), (2,))
+        >>> print(vcvXv2)
         [[0 3 6]
          [2 4 6]]
-        >>> print isinstance(vcvXv2, CellVariable)
+        >>> print(isinstance(vcvXv2, CellVariable))
         1
-        >>> print vcvXv2.rank
+        >>> print(vcvXv2.rank)
         1
-        >>> v2Xvcv = (3,2) * vcv
-        >>> print v2Xvcv
+        >>> v2Xvcv = (3, 2) * vcv
+        >>> print(v2Xvcv)
         [[0 3 6]
          [2 4 6]]
-        >>> v2Xvcv = ((3,),(2,)) * vcv
-        >>> print v2Xvcv
+        >>> v2Xvcv = ((3,), (2,)) * vcv
+        >>> print(v2Xvcv)
         [[0 3 6]
          [2 4 6]]
-        >>> print isinstance(v2Xvcv, CellVariable)
+        >>> print(isinstance(v2Xvcv, CellVariable))
         1
-        >>> print v2Xvcv.rank
+        >>> print(v2Xvcv.rank)
         1
 
-        >>> vcvXv3 = vcv * (3,2,1)
-        >>> print vcvXv3
+        >>> vcvXv3 = vcv * (3, 2, 1)
+        >>> print(vcvXv3)
         [[0 2 2]
          [3 4 3]]
         >>> isinstance(vcvXv3, CellVariable)
         1
-        >>> print vcvXv3.rank
+        >>> print(vcvXv3.rank)
         1
-        >>> v3Xvcv = (3,2,1) * vcv
-        >>> print v3Xvcv
+        >>> v3Xvcv = (3, 2, 1) * vcv
+        >>> print(v3Xvcv)
         [[0 2 2]
          [3 4 3]]
         >>> isinstance(v3Xvcv, CellVariable)
         1
-        >>> print v3Xvcv.rank
+        >>> print(v3Xvcv.rank)
         1
 
-        >>> vcvXv4 = vcv * (3,2,1,0) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> vcvXv4 = vcv * (3, 2, 1, 0) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v4Xvcv = (3,2,1,0) * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v4Xvcv = (3, 2, 1, 0) * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
@@ -815,71 +821,71 @@ def _testBinOp(self):
     rank-1 `CellVariable` * `Variable` Scalar
 
         >>> vcvXsv = vcv * Variable(value=3)
-        >>> print vcvXsv
+        >>> print(vcvXsv)
         [[0 3 6]
          [3 6 9]]
-        >>> print isinstance(vcvXsv, CellVariable)
+        >>> print(isinstance(vcvXsv, CellVariable))
         1
-        >>> print vcvXsv.rank
+        >>> print(vcvXsv.rank)
         1
         >>> svXvcv = Variable(value=3) * vcv
-        >>> print svXvcv
+        >>> print(svXvcv)
         [[0 3 6]
          [3 6 9]]
-        >>> print isinstance(svXvcv, CellVariable)
+        >>> print(isinstance(svXvcv, CellVariable))
         1
-        >>> print svXvcv.rank
+        >>> print(svXvcv.rank)
         1
 
     rank-1 `CellVariable` * `Variable` Vector
 
-        >>> vcvXv2v = vcv * Variable(value=(3,2))
-        >>> print vcvXv2v
+        >>> vcvXv2v = vcv * Variable(value=(3, 2))
+        >>> print(vcvXv2v)
         [[0 3 6]
          [2 4 6]]
-        >>> vcvXv2v = vcv * Variable(value=((3,),(2,)))
-        >>> print vcvXv2v
+        >>> vcvXv2v = vcv * Variable(value=((3,), (2,)))
+        >>> print(vcvXv2v)
         [[0 3 6]
          [2 4 6]]
-        >>> print isinstance(vcvXv2v, CellVariable)
+        >>> print(isinstance(vcvXv2v, CellVariable))
         1
-        >>> print vcvXv2v.rank
+        >>> print(vcvXv2v.rank)
         1
-        >>> v2vXvcv = Variable(value=(3,2)) * vcv
-        >>> print v2vXvcv
+        >>> v2vXvcv = Variable(value=(3, 2)) * vcv
+        >>> print(v2vXvcv)
         [[0 3 6]
          [2 4 6]]
-        >>> v2vXvcv = Variable(value=((3,),(2,))) * vcv
-        >>> print v2vXvcv
+        >>> v2vXvcv = Variable(value=((3,), (2,))) * vcv
+        >>> print(v2vXvcv)
         [[0 3 6]
          [2 4 6]]
-        >>> print isinstance(v2vXvcv, CellVariable)
+        >>> print(isinstance(v2vXvcv, CellVariable))
         1
-        >>> print v2vXvcv.rank
+        >>> print(v2vXvcv.rank)
         1
 
-        >>> vcvXv3v = vcv * Variable(value=(3,2,1))
-        >>> print vcvXv3v
+        >>> vcvXv3v = vcv * Variable(value=(3, 2, 1))
+        >>> print(vcvXv3v)
         [[0 2 2]
          [3 4 3]]
         >>> isinstance(vcvXv3v, CellVariable)
         1
-        >>> print vcvXv3v.rank
+        >>> print(vcvXv3v.rank)
         1
-        >>> v3vXvcv = Variable(value=(3,2,1)) * vcv
-        >>> print v3vXvcv
+        >>> v3vXvcv = Variable(value=(3, 2, 1)) * vcv
+        >>> print(v3vXvcv)
         [[0 2 2]
          [3 4 3]]
         >>> isinstance(v3vXvcv, CellVariable)
         1
-        >>> print v3vXvcv.rank
+        >>> print(v3vXvcv.rank)
         1
 
-        >>> vcvXv4v = vcv * Variable(value=(3,2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> vcvXv4v = vcv * Variable(value=(3, 2, 1, 0)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v4vXvcv = Variable(value=(3,2,1,0)) * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v4vXvcv = Variable(value=(3, 2, 1, 0)) * vcv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
@@ -888,169 +894,169 @@ def _testBinOp(self):
     rank-1 `FaceVariable` * rank-1 FaceVariable
 
         >>> vfvXvfv = vfv * vfv
-        >>> print vfvXvfv
+        >>> print(vfvXvfv)
         [[ 0  1  4  9  1  4  9 36  4  1]
          [ 1  4  9 16  9 16 25 81 36  9]]
         >>> isinstance(vfvXvfv, FaceVariable)
         1
-        >>> print vfvXvfv.rank
+        >>> print(vfvXvfv.rank)
         1
 
     rank-1 `FaceVariable` * Scalar
 
         >>> vfvXs = vfv * 3
-        >>> print vfvXs
+        >>> print(vfvXs)
         [[ 0  3  6  9  3  6  9 18  6  3]
          [ 3  6  9 12  9 12 15 27 18  9]]
-        >>> print isinstance(vfvXs, FaceVariable)
+        >>> print(isinstance(vfvXs, FaceVariable))
         1
-        >>> print vfvXs.rank
+        >>> print(vfvXs.rank)
         1
         >>> sXvfv = 3 * vfv
-        >>> print sXvfv
+        >>> print(sXvfv)
         [[ 0  3  6  9  3  6  9 18  6  3]
          [ 3  6  9 12  9 12 15 27 18  9]]
-        >>> print isinstance(sXvfv, FaceVariable)
+        >>> print(isinstance(sXvfv, FaceVariable))
         1
-        >>> print sXvfv.rank
+        >>> print(sXvfv.rank)
         1
 
     rank-1 `FaceVariable` * Vector
 
-        >>> vfvXv2 = vfv * (3,2)
-        >>> print vfvXv2
+        >>> vfvXv2 = vfv * (3, 2)
+        >>> print(vfvXv2)
         [[ 0  3  6  9  3  6  9 18  6  3]
          [ 2  4  6  8  6  8 10 18 12  6]]
-        >>> print isinstance(vfvXv2, FaceVariable)
+        >>> print(isinstance(vfvXv2, FaceVariable))
         1
-        >>> print vfvXv2.rank
+        >>> print(vfvXv2.rank)
         1
-        >>> v2Xvfv = (3,2) * vfv
-        >>> print v2Xvfv
+        >>> v2Xvfv = (3, 2) * vfv
+        >>> print(v2Xvfv)
         [[ 0  3  6  9  3  6  9 18  6  3]
          [ 2  4  6  8  6  8 10 18 12  6]]
-        >>> print isinstance(v2Xvfv, FaceVariable)
+        >>> print(isinstance(v2Xvfv, FaceVariable))
         1
-        >>> print v2Xvfv.rank
+        >>> print(v2Xvfv.rank)
         1
 
-        >>> vfvXv3 = vfv * (2,1,0) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> vfvXv3 = vfv * (2, 1, 0) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v3Xvfv = (2,1,0) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3Xvfv = (2, 1, 0) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
 
 
-        >>> vfvXv10 = vfv * (9,8,7,6,5,4,3,2,1,0)
-        >>> print vfvXv10
+        >>> vfvXv10 = vfv * (9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+        >>> print(vfvXv10)
         [[ 0  8 14 18  5  8  9 12  2  0]
          [ 9 16 21 24 15 16 15 18  6  0]]
         >>> isinstance(vfvXv10, FaceVariable)
         1
-        >>> print vfvXv10.rank
+        >>> print(vfvXv10.rank)
         1
-        >>> v10Xvfv = (9,8,7,6,5,4,3,2,1,0) * vfv
-        >>> print v10Xvfv
+        >>> v10Xvfv = (9, 8, 7, 6, 5, 4, 3, 2, 1, 0) * vfv
+        >>> print(v10Xvfv)
         [[ 0  8 14 18  5  8  9 12  2  0]
          [ 9 16 21 24 15 16 15 18  6  0]]
         >>> isinstance(v10Xvfv, FaceVariable)
         1
-        >>> print v10Xvfv.rank
+        >>> print(v10Xvfv.rank)
         1
 
     rank-1 `FaceVariable` * `Variable` Scalar
 
         >>> vfvXsv = vfv * Variable(value=3)
-        >>> print vfvXsv
+        >>> print(vfvXsv)
         [[ 0  3  6  9  3  6  9 18  6  3]
          [ 3  6  9 12  9 12 15 27 18  9]]
-        >>> print isinstance(vfvXsv, FaceVariable)
+        >>> print(isinstance(vfvXsv, FaceVariable))
         1
-        >>> print vfvXsv.rank
+        >>> print(vfvXsv.rank)
         1
         >>> svXvfv = Variable(value=3) * vfv
-        >>> print svXvfv
+        >>> print(svXvfv)
         [[ 0  3  6  9  3  6  9 18  6  3]
          [ 3  6  9 12  9 12 15 27 18  9]]
-        >>> print isinstance(svXvfv, FaceVariable)
+        >>> print(isinstance(svXvfv, FaceVariable))
         1
-        >>> print svXvfv.rank
+        >>> print(svXvfv.rank)
         1
 
     rank-1 `FaceVariable` * `Variable` Vector
 
-        >>> vfvXv2v = vfv * Variable(value=(3,2))
-        >>> print vfvXv2v
+        >>> vfvXv2v = vfv * Variable(value=(3, 2))
+        >>> print(vfvXv2v)
         [[ 0  3  6  9  3  6  9 18  6  3]
          [ 2  4  6  8  6  8 10 18 12  6]]
-        >>> print isinstance(vfvXv2v, FaceVariable)
+        >>> print(isinstance(vfvXv2v, FaceVariable))
         1
-        >>> print vfvXv2v.rank
+        >>> print(vfvXv2v.rank)
         1
-        >>> v2vXvfv = Variable(value=(3,2)) * vfv
-        >>> print v2vXvfv
+        >>> v2vXvfv = Variable(value=(3, 2)) * vfv
+        >>> print(v2vXvfv)
         [[ 0  3  6  9  3  6  9 18  6  3]
          [ 2  4  6  8  6  8 10 18 12  6]]
-        >>> print isinstance(v2vXvfv, FaceVariable)
+        >>> print(isinstance(v2vXvfv, FaceVariable))
         1
-        >>> print v2vXvfv.rank
+        >>> print(v2vXvfv.rank)
         1
 
-        >>> vfvXv3v = vfv * Variable(value=(2,1,0)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> vfvXv3v = vfv * Variable(value=(2, 1, 0)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v3vXvfv = Variable(value=(2,1,0)) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3vXvfv = Variable(value=(2, 1, 0)) * vfv #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
 
 
-        >>> vfvXv10v = vfv * Variable(value=(9,8,7,6,5,4,3,2,1,0))
-        >>> print vfvXv10v
+        >>> vfvXv10v = vfv * Variable(value=(9, 8, 7, 6, 5, 4, 3, 2, 1, 0))
+        >>> print(vfvXv10v)
         [[ 0  8 14 18  5  8  9 12  2  0]
          [ 9 16 21 24 15 16 15 18  6  0]]
         >>> isinstance(vfvXv10v, FaceVariable)
         1
-        >>> print vfvXv10v.rank
+        >>> print(vfvXv10v.rank)
         1
-        >>> v10vXvfv = Variable(value=(9,8,7,6,5,4,3,2,1,0)) * vfv
-        >>> print v10vXvfv
+        >>> v10vXvfv = Variable(value=(9, 8, 7, 6, 5, 4, 3, 2, 1, 0)) * vfv
+        >>> print(v10vXvfv)
         [[ 0  8 14 18  5  8  9 12  2  0]
          [ 9 16 21 24 15 16 15 18  6  0]]
         >>> isinstance(v10vXvfv, FaceVariable)
         1
-        >>> print v10vXvfv.rank
+        >>> print(v10vXvfv.rank)
         1
 
 
     Scalar * `Variable` Scalar
 
         >>> sXsv = 3 * Variable(value=3)
-        >>> print sXsv
+        >>> print(sXsv)
         9
-        >>> print isinstance(sXsv, Variable)
+        >>> print(isinstance(sXsv, Variable))
         1
         >>> svXs = Variable(value=3) * 3
-        >>> print svXs
+        >>> print(svXs)
         9
-        >>> print isinstance(svXs, Variable)
+        >>> print(isinstance(svXs, Variable))
         1
 
     Scalar * `Variable` Vector
 
-        >>> sXv2v = 3 * Variable(value=(3,2))
-        >>> print sXv2v
+        >>> sXv2v = 3 * Variable(value=(3, 2))
+        >>> print(sXv2v)
         [9 6]
-        >>> print isinstance(sXv2v, Variable)
+        >>> print(isinstance(sXv2v, Variable))
         1
-        >>> v2vXs = Variable(value=(3,2)) * 3
-        >>> print v2vXs
+        >>> v2vXs = Variable(value=(3, 2)) * 3
+        >>> print(v2vXs)
         [9 6]
-        >>> print isinstance(v2vXs, Variable)
+        >>> print(isinstance(v2vXs, Variable))
         1
 
 
@@ -1058,34 +1064,34 @@ def _testBinOp(self):
     Vector * `Variable` Scalar
 
         >>> vXsv = (3, 2) * Variable(value=3)
-        >>> print vXsv
+        >>> print(vXsv)
         [9 6]
-        >>> print isinstance(vXsv, Variable)
+        >>> print(isinstance(vXsv, Variable))
         1
         >>> svXv = Variable(value=3) * (3, 2)
-        >>> print svXv
+        >>> print(svXv)
         [9 6]
-        >>> print isinstance(svXv, Variable)
+        >>> print(isinstance(svXv, Variable))
         1
 
     Vector * `Variable` Vector
 
-        >>> vXv2v = (3, 2) * Variable(value=(3,2))
-        >>> print vXv2v
+        >>> vXv2v = (3, 2) * Variable(value=(3, 2))
+        >>> print(vXv2v)
         [9 4]
-        >>> print isinstance(vXv2v, Variable)
+        >>> print(isinstance(vXv2v, Variable))
         1
-        >>> v2vXv = Variable(value=(3,2)) * (3, 2)
-        >>> print v2vXv
+        >>> v2vXv = Variable(value=(3, 2)) * (3, 2)
+        >>> print(v2vXv)
         [9 4]
-        >>> print isinstance(v2vXv, Variable)
+        >>> print(isinstance(v2vXv, Variable))
         1
 
-        >>> vXv3v = (3, 2, 1) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> vXv3v = (3, 2, 1) * Variable(value=(3, 2)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
-        >>> v3vXv = Variable(value=(3,2)) * (3, 2, 1) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3vXv = Variable(value=(3, 2)) * (3, 2, 1) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
@@ -1094,34 +1100,34 @@ def _testBinOp(self):
     `Variable` Scalar * `Variable` Scalar
 
         >>> svXsv = Variable(value=3) * Variable(value=3)
-        >>> print svXsv
+        >>> print(svXsv)
         9
-        >>> print isinstance(svXsv, Variable)
+        >>> print(isinstance(svXsv, Variable))
         1
 
     `Variable` Scalar * `Variable` Vector
 
-        >>> svXv2v = Variable(value=3) * Variable(value=(3,2))
-        >>> print svXv2v
+        >>> svXv2v = Variable(value=3) * Variable(value=(3, 2))
+        >>> print(svXv2v)
         [9 6]
-        >>> print isinstance(svXv2v, Variable)
+        >>> print(isinstance(svXv2v, Variable))
         1
-        >>> v2vXsv = Variable(value=(3,2)) * Variable(value=3)
-        >>> print v2vXsv
+        >>> v2vXsv = Variable(value=(3, 2)) * Variable(value=3)
+        >>> print(v2vXsv)
         [9 6]
-        >>> print isinstance(v2vXsv, Variable)
+        >>> print(isinstance(v2vXsv, Variable))
         1
 
 
     `Variable` Vector * `Variable` Vector
 
-        >>> v2vXv2v = Variable(value=(3, 2)) * Variable(value=(3,2))
-        >>> print v2vXv2v
+        >>> v2vXv2v = Variable(value=(3, 2)) * Variable(value=(3, 2))
+        >>> print(v2vXv2v)
         [9 4]
-        >>> print isinstance(v2vXv2v, Variable)
+        >>> print(isinstance(v2vXv2v, Variable))
         1
 
-        >>> v3vXv2v = Variable(value=(3, 2, 1)) * Variable(value=(3,2)) #doctest: +IGNORE_EXCEPTION_DETAIL
+        >>> v3vXv2v = Variable(value=(3, 2, 1)) * Variable(value=(3, 2)) #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
               ...
         TypeError: can't multiply sequence to non-int
@@ -1138,13 +1144,13 @@ def _testBinOp(self):
 
         >>> coeff = Variable()
         >>> alpha = Alpha(-coeff / 1)
-        >>> print numerix.allclose(alpha.value, 0.0)
+        >>> print(numerix.allclose(alpha.value, 0.0))
         True
         >>> coeff.value = (-10.0)
-        >>> print numerix.allclose(alpha.value, 10)
+        >>> print(numerix.allclose(alpha.value, 10))
         True
         >>> coeff.value = (10.0)
-        >>> print numerix.allclose(alpha.value, -10)
+        >>> print(numerix.allclose(alpha.value, -10))
         True
 
     Test to prevent divide by zero evaluation before value is
@@ -1158,7 +1164,7 @@ def _testBinOp(self):
 
     Following is a test case for an error when turning a binOp into an array
 
-        >>> print numerix.array(Variable(value=numerix.array([ 1.,])) * [ 1.,])
+        >>> print(numerix.array(Variable(value=numerix.array([ 1.,])) * [ 1.,]))
         [ 1.]
 
     It seems that numpy's __rmul__ coercion is very strange
@@ -1171,10 +1177,10 @@ def _testBinOp(self):
         >>> v0 = Variable(numerix.ones(2, 'd'))
         >>> v1 = Variable(numerix.ones(2, 'd'))
         >>> v = v1 * v0
-        >>> print v
+        >>> print(v)
         [ 1.  1.]
         >>> v0[1] = 0.5
-        >>> print v
+        >>> print(v)
         [ 1.   0.5]
 
     Test inline indexing
@@ -1182,12 +1188,12 @@ def _testBinOp(self):
         >>> mesh = Grid2D(nx=3, ny=3)
         >>> v1 = CellVariable(mesh=mesh, value=numerix.arange(9))
         >>> a = v1 * (1, -1)
-        >>> print a
+        >>> print(a)
         [[ 0  1  2  3  4  5  6  7  8]
          [ 0 -1 -2 -3 -4 -5 -6 -7 -8]]
         >>> x, y = mesh.cellCenters
         >>> v1[(x == 0.5) & (y == 0.5)] = 0
-        >>> print a
+        >>> print(a)
         [[ 0  1  2  3  4  5  6  7  8]
          [ 0 -1 -2 -3 -4 -5 -6 -7 -8]]
 
@@ -1200,3 +1206,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+

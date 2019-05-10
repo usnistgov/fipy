@@ -57,6 +57,7 @@ and solve the equation by repeatedly looping in time:
 
 >>> timeStepDuration = 10 * 0.9 * dx**2 / (2 * D)
 >>> steps = 10
+>>> from builtins import range
 >>> for step in range(steps):
 ...     eq.solve(var=phi,
 ...              dt=timeStepDuration)
@@ -70,11 +71,12 @@ and solve the equation by repeatedly looping in time:
 
 We can test the value of the bottom-right corner cell.
 
->>> print numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2)
+>>> print(numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2))
 1
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
-...     raw_input("Implicit transient diffusion. Press <return> to proceed...")
+...     input("Implicit transient diffusion. Press <return> to proceed...")
 
 -----
 
@@ -91,12 +93,14 @@ We can also solve the steady-state problem directly
 
 and test the value of the bottom-right corner cell.
 
->>> print numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2)
+>>> print(numerix.allclose(phi(((L,), (0,))), valueBottomRight, atol = 1e-2))
 1
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
-...     raw_input("Implicit steady-state diffusion. Press <return> to proceed...")
+...     input("Implicit steady-state diffusion. Press <return> to proceed...")
 """
+from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

@@ -1,3 +1,10 @@
+from __future__ import print_function
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import object
+from builtins import zip
+from builtins import range
+from builtins import str
 __docformat__ = 'restructuredtext'
 
 import os
@@ -22,6 +29,8 @@ from fipy.tools.debug import PRINT
 __all__ = ["openMSHFile", "openPOSFile",
            "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D",
            "GmshGrid2D", "GmshGrid3D"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 DEBUG = False
 
@@ -41,7 +50,7 @@ register_skipper(flag="GMSH",
 def parprint(str):
     if DEBUG:
         if parallelComm.procID == 0:
-            print >> sys.stderr, str
+            print(str, file=sys.stderr)
 
 class GmshException(Exception):
     pass
@@ -59,7 +68,7 @@ def gmshVersion(communicator=parallelComm):
         while True:
             try:
                 p = Popen(["gmsh", "--version"], stderr=PIPE)
-            except OSError, e:
+            except OSError as e:
                 verStr = None
                 break
 
@@ -230,7 +239,7 @@ def openPOSFile(name, communicator=parallelComm, mode='w'):
                    communicator=communicator,
                    mode=mode)
 
-class GmshFile:
+class GmshFile(object):
     def __init__(self, filename, communicator, mode, fileIsTemporary=False):
         self.filename = filename
         self.communicator = communicator
@@ -262,7 +271,7 @@ class GmshFile:
         elif (vertices == 5 and dimensions == 3):
             return 7 ## pyramid
         else:
-            raise MeshExportError, "Element type unsupported by Gmsh"
+            raise MeshExportError("Element type unsupported by Gmsh")
 
     def _orderVertices(self, vertexCoords, vertices):
         coordinates = nx.take(vertexCoords, vertices, axis=1)
@@ -506,7 +515,7 @@ class MSHFile(GmshFile):
         newF = os.fdopen(newF, 'w')
         try:
             self._seekForHeader(title)
-        except Exception, e:
+        except Exception as e:
             newF.close()
             os.unlink(newPath)
             raise
@@ -611,7 +620,7 @@ class MSHFile(GmshFile):
 
         facesToVertices = nx.array(uniqueFaces, dtype=nx.INT_DTYPE)
 
-        return facesToVertices.swapaxes(0,1)[::-1], cellsToFaces.swapaxes(0,1).copy('C'), facesDict
+        return facesToVertices.swapaxes(0, 1)[::-1], cellsToFaces.swapaxes(0, 1).copy('C'), facesDict
 
     def _translateNodesToVertices(self, entitiesNodes, vertexMap):
         """Translates entitiesNodes from Gmsh node IDs to `vertexCoords` indices.
@@ -675,7 +684,7 @@ class MSHFile(GmshFile):
         self.elemsPath = self._isolateData("Elements")
         try:
             self.namesPath = self._isolateData("PhysicalNames")
-        except EOFError, e:
+        except EOFError as e:
             self.namesPath = None
 
         try:
@@ -795,7 +804,7 @@ class MSHFile(GmshFile):
 
             self.physicalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
             self.geometricalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
-            for face in facesDict.keys():
+            for face in list(facesDict.keys()):
                 # not all faces are necessarily tagged
                 if face in faceEntitiesDict:
                     self.physicalFaceMap[facesDict[face]] = faceEntitiesDict[face][0]
@@ -813,7 +822,7 @@ class MSHFile(GmshFile):
         maxVerts = max([len(v) for v in cellsToVertIDs])
         # ticket:539 - NumPy 1.7 casts to array before concatenation and empty array defaults to float
         cellsToVertIDs = [nx.concatenate((v, nx.array([-1] * (maxVerts-len(v)), dtype=nx.INT_DTYPE))) for v in cellsToVertIDs]
-        cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0,1)
+        cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0, 1)
 
         parprint("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF,
@@ -880,7 +889,7 @@ class MSHFile(GmshFile):
                 self.fileobj.write(str(coords[2, i]))
                 self.fileobj.write (" \n")
             else:
-                raise MeshExportError, "Mesh has fewer than 2 or more than 3 dimensions"
+                raise MeshExportError("Mesh has fewer than 2 or more than 3 dimensions")
 
         self.fileobj.write("$EndNodes\n")
 
@@ -987,7 +996,7 @@ class MSHFile(GmshFile):
         nodesFile.close()
 
         # transpose for FiPy
-        transCoords = vertexCoords.swapaxes(0,1)
+        transCoords = vertexCoords.swapaxes(0, 1)
         return transCoords, vertGIDtoIdx
 
     def _parseElementFile(self):
@@ -1035,7 +1044,7 @@ class MSHFile(GmshFile):
             currLineInts = [int(x) for x in el.split()]
             elemType     = currLineInts[1]
 
-            if elemType in self.numFacesPerCell.keys():
+            if elemType in list(self.numFacesPerCell.keys()):
                 # element is a cell
 
                 (cellOffset,
@@ -1069,7 +1078,7 @@ class MSHFile(GmshFile):
                     cellsData.add(currLine=currLineInts, elType=elemType,
                                   physicalEntity=physicalEntity,
                                   geometricalEntity=geometricalEntity)
-            elif elemType in self.numVertsPerFace.keys():
+            elif elemType in list(self.numVertsPerFace.keys()):
                 # element is a face
 
                 (faceOffset,
@@ -1129,11 +1138,11 @@ class MSHFile(GmshFile):
         self.geometricalFaceMap = FaceVariable(mesh=mesh, value=self.geometricalFaceMap)
 
         physicalCells = dict()
-        for name in self.physicalNames[self.dimensions].keys():
+        for name in list(self.physicalNames[self.dimensions].keys()):
             physicalCells[name] = (self.physicalCellMap == self.physicalNames[self.dimensions][name])
 
         physicalFaces = dict()
-        for name in self.physicalNames[self.dimensions-1].keys():
+        for name in list(self.physicalNames[self.dimensions-1].keys()):
             physicalFaces[name] = (self.physicalFaceMap == self.physicalNames[self.dimensions-1][name])
 
         return (self.physicalCellMap,
@@ -1430,7 +1439,7 @@ class Gmsh2D(Mesh2D):
     ...           & ~((x > -side/2) & (x < side/2)
     ...               & (y > -side/2) & (y < side/2))) # doctest: +GMSH
 
-    >>> print (middle == squaredCircle.physicalCells["Middle"]).all() # doctest: +GMSH
+    >>> print((middle == squaredCircle.physicalCells["Middle"]).all()) # doctest: +GMSH
     True
 
     >>> X, Y = squaredCircle.faceCenters # doctest: +GMSH
@@ -1439,7 +1448,7 @@ class Gmsh2D(Mesh2D):
     ...       & (X**2 + Y**2 < (2.01*radius)**2)
     ...       & (X <= 0) & (Y >= 0)) # doctest: +GMSH
 
-    >>> print (NW == squaredCircle.physicalFaces["NW"]).all() # doctest: +GMSH
+    >>> print((NW == squaredCircle.physicalFaces["NW"]).all()) # doctest: +GMSH
     True
 
     It is possible to direct Gmsh to give the mesh different densities in
@@ -1475,6 +1484,7 @@ class Gmsh2D(Mesh2D):
 
     >>> std = []
     >>> bkg = None
+    >>> from builtins import range
     >>> for refine in range(4):
     ...     square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
     ...     x, y = square.cellCenters # doctest: +GMSH
@@ -1483,12 +1493,12 @@ class Gmsh2D(Mesh2D):
 
     Check that the mesh is monotonically approaching the desired density
 
-    >>> print numerix.greater(std[:-1], std[1:]).all() # doctest: +GMSH
+    >>> print(numerix.greater(std[:-1], std[1:]).all()) # doctest: +GMSH
     True
 
     and that the final density is close enough to the desired density
 
-    >>> print std[-1] < 0.2 # doctest: +GMSH
+    >>> print(std[-1] < 0.2) # doctest: +GMSH
     True
 
     The initial mesh doesn't have to be from Gmsh
@@ -1505,7 +1515,7 @@ class Gmsh2D(Mesh2D):
     >>> bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
     >>> std2 = (numerix.sqrt(2 * square.cellVolumes) / bkg).std() # doctest: +GMSH
 
-    >>> print std1 > std2 # doctest: +GMSH
+    >>> print(std1 > std2) # doctest: +GMSH
     True
 
     :Parameters:
@@ -1591,7 +1601,7 @@ class Gmsh2D(Mesh2D):
         ... Plane Surface(11) = {10};
         ... ''') # doctest: +GMSH
 
-        >>> print circ.cellVolumes[0] > 0 # doctest: +GMSH
+        >>> print(circ.cellVolumes[0] > 0) # doctest: +GMSH
         True
 
         Now we'll test Gmsh2D again, but on a rectangle.
@@ -1611,7 +1621,7 @@ class Gmsh2D(Mesh2D):
         ... Plane Surface(11) = {10};
         ... ''') # doctest: +GMSH
 
-        >>> print rect.cellVolumes[0] > 0 # doctest: +GMSH
+        >>> print(rect.cellVolumes[0] > 0) # doctest: +GMSH
         True
 
         Testing multiple shape types within a mesh;
@@ -1633,18 +1643,18 @@ class Gmsh2D(Mesh2D):
         ... Recombine Surface{11};
         ... ''') # doctest: +GMSH
 
-        >>> print circle.cellVolumes[0] > 0 # doctest: +GMSH
+        >>> print(circle.cellVolumes[0] > 0) # doctest: +GMSH
         True
 
         >>> from fipy.tools import dump
         >>> f, tmpfile = dump.write(circle) # doctest: +GMSH
         >>> pickle_circle = dump.read(tmpfile, f) # doctest: +GMSH
 
-        >>> print (pickle_circle.cellVolumes == circle.cellVolumes).all()
+        >>> print((pickle_circle.cellVolumes == circle.cellVolumes).all())
         ... # doctest: +GMSH, +SERIAL
         True
 
-        >>> print (pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all()
+        >>> print((pickle_circle._globalOverlappingCellIDs == circle._globalOverlappingCellIDs).all())
         ... # doctest: +GMSH, +SERIAL
         True
 
@@ -1681,8 +1691,10 @@ class Gmsh2D(Mesh2D):
 
         We need to do a little fancy footwork to account for multiple processes
 
+        >>> from builtins import range
         >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallelComm.Nproc)]
         >>> numtags = 2 + 1 + len(partitions)
+        >>> from builtins import str
         >>> partitions = " ".join([str(i) for i in [parallelComm.Nproc] + partitions])
 
         >>> output = f.write('''$MeshFormat
@@ -1708,7 +1720,7 @@ class Gmsh2D(Mesh2D):
 
         >>> os.remove(mshFile)
 
-        >>> print nx.allclose(sqrTri.cellVolumes, [1., 0.5]) # doctest: +GMSH
+        >>> print(nx.allclose(sqrTri.cellVolumes, [1., 0.5])) # doctest: +GMSH
         True
 
 
@@ -1728,7 +1740,7 @@ class Gmsh2D(Mesh2D):
         >>> f.close() # doctest: +GMSH
 
         >>> f = open(posFile, mode='r')
-        >>> print "".join(f.readlines()) # doctest: +GMSH
+        >>> print("".join(f.readlines())) # doctest: +GMSH
         $PostFormat
         1.4 0 8
         $EndPostFormat
@@ -1857,18 +1869,18 @@ class Gmsh2DIn3DSpace(Gmsh2D):
         ... Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};
         ... ''').extrude(extrudeFunc=lambda r: 1.1 * r) # doctest: +GMSH
 
-        >>> print sphere.cellVolumes[0] > 0 # doctest: +GMSH
+        >>> print(sphere.cellVolumes[0] > 0) # doctest: +GMSH
         True
 
         >>> from fipy.tools import dump
         >>> f, tmpfile = dump.write(sphere) # doctest: +GMSH
         >>> pickle_sphere = dump.read(tmpfile, f) # doctest: +GMSH
 
-        >>> print (pickle_sphere.cellVolumes == sphere.cellVolumes).all()
+        >>> print((pickle_sphere.cellVolumes == sphere.cellVolumes).all())
         ... # doctest: +GMSH, +SERIAL
         True
 
-        >>> print (pickle_sphere._globalOverlappingCellIDs == sphere._globalOverlappingCellIDs).all()
+        >>> print((pickle_sphere._globalOverlappingCellIDs == sphere._globalOverlappingCellIDs).all())
         ... # doctest: +GMSH, +SERIAL
         True
         """
@@ -1978,18 +1990,18 @@ class Gmsh3D(Mesh):
         ... Volume(34) = {33};
         ... ''') # doctest: +GMSH
 
-        >>> print prism.cellVolumes[0] > 0 # doctest: +GMSH
+        >>> print(prism.cellVolumes[0] > 0) # doctest: +GMSH
         True
 
         >>> from fipy.tools import dump
         >>> f, tmpfile = dump.write(prism) # doctest: +GMSH
         >>> pickle_prism = dump.read(tmpfile, f) # doctest: +GMSH
 
-        >>> print (pickle_prism.cellVolumes == prism.cellVolumes).all()
+        >>> print((pickle_prism.cellVolumes == prism.cellVolumes).all())
         ... # doctest: +GMSH, +SERIAL
         True
 
-        >>> print (pickle_prism._globalOverlappingCellIDs == prism._globalOverlappingCellIDs).all()
+        >>> print((pickle_prism._globalOverlappingCellIDs == prism._globalOverlappingCellIDs).all())
         ... # doctest: +GMSH, +SERIAL
         True
 
@@ -2000,8 +2012,10 @@ class Gmsh3D(Mesh):
 
         We need to do a little fancy footwork to account for multiple processes
 
+        >>> from builtins import range
         >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallelComm.Nproc)]
         >>> numtags = 2 + 1 + len(partitions)
+        >>> from builtins import str
         >>> partitions = " ".join([str(i) for i in [parallelComm.Nproc] + partitions])
 
         >>> output = f.write('''$MeshFormat
@@ -2031,7 +2045,7 @@ class Gmsh3D(Mesh):
 
         >>> os.remove(mshFile)
 
-        >>> print nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3]) # doctest: +GMSH
+        >>> print(nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3])) # doctest: +GMSH
         True
 
         Write tetrahedron, prism, and pyramid volumes out as a POS file
@@ -2052,7 +2066,7 @@ class Gmsh3D(Mesh):
         >>> f = open(posFile, mode='r') # doctest: +GMSH
         >>> l = f.readlines() # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
-        >>> print "".join(l[:5]) # doctest: +GMSH
+        >>> print("".join(l[:5])) # doctest: +GMSH
         $PostFormat
         1.4 0 8
         $EndPostFormat
@@ -2060,7 +2074,7 @@ class Gmsh3D(Mesh):
         volume 1
         <BLANKLINE>
 
-        >>> print l[-1] # doctest: +GMSH
+        >>> print(l[-1]) # doctest: +GMSH
         $EndView
         <BLANKLINE>
 
@@ -2100,7 +2114,7 @@ class Gmsh3D(Mesh):
         ...  0.0 0.0 0.0 0.0 -1.0
         ...  0.6666666666666666 0.6666666666666666 0.6666666666666666 0.6666666666666666 0.6666666666666666
         ...  ''', sep=" ")
-        >>> print numerix.allclose(a1, a2) # doctest: +GMSH
+        >>> print(numerix.allclose(a1, a2)) # doctest: +GMSH
         True
 
         >>> if parallelComm.procID == 0:
@@ -2122,7 +2136,7 @@ class GmshGrid2D(Gmsh2D):
 
     @property
     def _meshSpacing(self):
-        return nx.array((self.dx,self.dy))[...,nx.newaxis]
+        return nx.array((self.dx, self.dy))[..., nx.newaxis]
 
     def _makeGridGeo(self, dx, dy, nx, ny):
         height = ny * dy
@@ -2195,7 +2209,7 @@ class GmshGrid3D(Gmsh3D):
 
     @property
     def _meshSpacing(self):
-        return nx.array((self.dx,self.dy,self.dz))[...,nx.newaxis]
+        return nx.array((self.dx, self.dy, self.dz))[..., nx.newaxis]
 
     def _makeGridGeo(self, dx, dy, dz, nx, ny, nz):
         height = ny * dy

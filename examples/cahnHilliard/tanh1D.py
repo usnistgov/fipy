@@ -130,6 +130,7 @@ We iterate the solution to equilibrium and, if we are running interactively,
 we update the display and output data about the progression of the solution
 
 >>> dexp=-5
+>>> from builtins import range
 >>> for step in range(100):
 ...     dt = numerix.exp(dexp)
 ...     dt = min(10, dt)
@@ -138,23 +139,25 @@ we update the display and output data about the progression of the solution
 ...     if __name__ == '__main__':
 ...         diff = abs(answer - numerix.array(var))
 ...         maxarg = numerix.argmax(diff)
-...         print 'maximum error:',diff[maxarg]
-...         print 'element id:',maxarg
-...         print 'value at element ',maxarg,' is ',var[maxarg]
-...         print 'solution value',answer[maxarg]
-...
+...         print('maximum error:', diff[maxarg])
+...         print('element id:', maxarg)
+...         print('value at element ', maxarg, ' is ', var[maxarg])
+...         print('solution value', answer[maxarg])
+... 
 ...         viewer.plot()
 
 We compare the analytical solution with the numerical result,
 
->>> print var.allclose(answer, atol=1e-4)
+>>> print(var.allclose(answer, atol=1e-4))
 1
 
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')

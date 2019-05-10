@@ -106,8 +106,8 @@ Build the mesh:
 
 .. index:: Grid2D
 
->>> from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
->>> from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+>>> from .metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+>>> from .adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 >>> from fipy import serialComm
 >>> mesh = Grid2D(dx=cellSize,
@@ -337,7 +337,7 @@ at :math:`\phi = 0` is given by,
 
 The surfactant bulk diffusion equation is set up with the following commands.
 
->>> from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
+>>> from .surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 >>> bulkCatalystEquation = buildSurfactantBulkDiffusionEquation(
 ...     bulkVar=bulkCatalystVar,
 ...     distanceVar=distanceVar,
@@ -354,7 +354,7 @@ If running interactively, create viewers.
 
 >>> if __name__ == '__main__':
 ...     try:
-...         from mayaviSurfactantViewer import MayaviSurfactantViewer
+...         from .mayaviSurfactantViewer import MayaviSurfactantViewer
 ...         viewer = MayaviSurfactantViewer(distanceVar,
 ...                                         catalystVar.interfaceVar,
 ...                                         zoomFactor=1e6,
@@ -383,6 +383,7 @@ is calculated with the CFL number and the maximum extension velocity.
 :math:`v_\text{ext}` throughout the whole domain using
 :math:`\nabla\phi\cdot\nabla v_\text{ext} = 0`.
 
+>>> from builtins import range
 >>> for step in range(numberOfSteps):
 ...
 ...     if viewer is not None:
@@ -412,12 +413,14 @@ to tell if something has changed or been broken.
 >>> filepath = os.path.join(os.path.split(__file__)[0],
 ...                         "simpleTrenchSystem.gz")
 >>> ##numerix.savetxt(filepath, numerix.array(catalystVar))
->>> print catalystVar.allclose(numerix.loadtxt(filepath), rtol=1e-4) #doctest: +LSMLIB
+>>> print(catalystVar.allclose(numerix.loadtxt(filepath), rtol=1e-4)) #doctest: +LSMLIB
 1
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
-...     raw_input('finished')
+...     input('finished')
 """
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 def _run():

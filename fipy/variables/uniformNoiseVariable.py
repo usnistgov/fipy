@@ -1,9 +1,12 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random
 from fipy.variables.noiseVariable import NoiseVariable
 
 __all__ = ["UniformNoiseVariable"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class UniformNoiseVariable(NoiseVariable):
     r"""
@@ -25,6 +28,7 @@ class UniformNoiseVariable(NoiseVariable):
     ...                     datamin=0, datamax=1)
     ...     histoplot = Viewer(vars=histogram)
 
+    >>> from builtins import range
     >>> for i in range(10):
     ...     noise.scramble()
     ...     if __name__ == '__main__':

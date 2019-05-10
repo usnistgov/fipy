@@ -1,8 +1,12 @@
+from __future__ import unicode_literals
+from builtins import zip
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
 
 __all__ = ["Matplotlib1DViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class Matplotlib1DViewer(AbstractMatplotlibViewer):
     """
@@ -92,7 +96,7 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
             vars = [var for var in vars if var.mesh is vars[0].mesh]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "Can only plot 1D data"
+            raise MeshDimensionError("Can only plot 1D data")
         return vars
 
     def _plot(self):

@@ -141,7 +141,7 @@ is constructed by first obtaining :math:`\nabla \phi`
 
 using :meth:`getFaceGrad`. The axes are rotated ninety degrees.
 
->>> dxi = phase.faceGrad.dot(((0, 1),(-1,0)))
+>>> dxi = phase.faceGrad.dot(((0, 1), (-1, 0)))
 >>> anisotropySource = (A * dxi).divergence
 
 The phase equation can now be constructed.
@@ -174,6 +174,7 @@ the phase and temperature fields
 we iterate the solution in time, plotting as we go if running interactively,
 
 >>> steps = 10
+>>> from builtins import range
 >>> for i in range(steps):
 ...     phase.updateOld()
 ...     temperature.updateOld()
@@ -191,14 +192,17 @@ the data and compares it with the `phase` variable.
 .. index:: loadtxt, allclose
 
 >>> import os
->>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
->>> print phase.allclose(testData)
+>>> from future.utils import text_to_native_str
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz'))
+>>> print(phase.allclose(testData))
 1
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')

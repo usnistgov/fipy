@@ -1,6 +1,7 @@
 """
 2D rectangular Mesh
 """
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 
@@ -11,6 +12,8 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import parallelComm
 
 __all__ = ["CylindricalNonUniformGrid2D"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class CylindricalNonUniformGrid2D(NonUniformGrid2D):
     """
@@ -54,7 +57,7 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
 
     def __mul__(self, factor):
         if numerix.shape(factor) is ():
-            factor = numerix.resize(factor, (2,1))
+            factor = numerix.resize(factor, (2, 1))
 
         return CylindricalNonUniformGrid2D(dx=self.args['dx'] * numerix.array(factor[0]), nx=self.args['nx'],
                                            dy=self.args['dy'] * numerix.array(factor[1]), ny=self.args['ny'],
@@ -78,63 +81,63 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             >>> vertices = numerix.array(((0., 1., 2., 3., 0., 1., 2., 3., 0., 1., 2., 3.),
             ...                           (0., 0., 0., 0., 1., 1., 1., 1., 2., 2., 2., 2.)))
             >>> vertices *= numerix.array(((dx,), (dy,)))
-            >>> print numerix.allequal(vertices,
-            ...                        mesh.vertexCoords) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal(vertices,
+            ...                        mesh.vertexCoords)) # doctest: +PROCESSOR_0
             True
 
             >>> faces = numerix.array(((1, 2, 3, 4, 5, 6, 8, 9, 10, 0, 5, 6, 7, 4, 9, 10, 11),
             ...                        (0, 1, 2, 5, 6, 7, 9, 10, 11, 4, 1, 2, 3, 8, 5, 6, 7)))
-            >>> print numerix.allequal(faces,
-            ...                        mesh.faceVertexIDs) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal(faces,
+            ...                        mesh.faceVertexIDs)) # doctest: +PROCESSOR_0
             True
 
             >>> cells = numerix.array(((0, 1, 2, 3, 4, 5),
             ...                        (10, 11, 12, 14, 15, 16),
             ...                        (3, 4, 5, 6, 7, 8),
             ...                        (9, 10, 11, 13, 14, 15)))
-            >>> print numerix.allequal(cells,
-            ...                        mesh.cellFaceIDs) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal(cells,
+            ...                        mesh.cellFaceIDs)) # doctest: +PROCESSOR_0
             True
 
-            >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9 , 12, 13, 16))
-            >>> print numerix.allequal(externalFaces,
-            ...                        numerix.nonzero(mesh.exteriorFaces)) # doctest: +PROCESSOR_0
+            >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9, 12, 13, 16))
+            >>> print(numerix.allequal(externalFaces,
+            ...                        numerix.nonzero(mesh.exteriorFaces))) # doctest: +PROCESSOR_0
             True
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 14, 15))
-            >>> print numerix.allequal(internalFaces,
-            ...                        numerix.nonzero(mesh.interiorFaces)) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal(internalFaces,
+            ...                        numerix.nonzero(mesh.interiorFaces))) # doctest: +PROCESSOR_0
             True
 
             >>> from fipy.tools.numerix import MA
             >>> faceCellIds = MA.masked_values(((0, 1, 2, 0, 1, 2, 3, 4, 5, 0, 0, 1, 2, 3, 3, 4, 5),
             ...                                 (-1, -1, -1, 3, 4, 5, -1, -1, -1, -1, 1, 2, -1, -1, 4, 5, -1)), -1)
-            >>> print numerix.allequal(faceCellIds, mesh.faceCellIDs) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal(faceCellIds, mesh.faceCellIDs)) # doctest: +PROCESSOR_0
             True
 
             >>> faceAreas = numerix.array((dx, dx, dx, dx, dx, dx, dx, dx, dx,
             ...                            dy, dy, dy, dy, dy, dy, dy, dy))
             >>> faceAreas = faceAreas * mesh.faceCenters[0] 
-            >>> print numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print(numerix.allclose(faceAreas, mesh._faceAreas, atol = 1e-10, rtol = 1e-10)) # doctest: +PROCESSOR_0
             True
             >>> ignore = numerix.allclose(faceAreas, mesh._faceAreas).value # doctest: +PROCESSOR_NOT_0
 
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
-            >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
-            >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> faceCenters = (faceCoords[..., 0,:] + faceCoords[..., 1,:]) / 2.
+            >>> print(numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)) # doctest: +PROCESSOR_0
             True
             >>> ignore = numerix.allclose(faceCenters, mesh.faceCenters).value # doctest: +PROCESSOR_NOT_0
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.),
             ...                              (-1., -1., -1., 1., 1., 1., 1., 1., 1., 0., 0., 0., 0., 0., 0., 0., 0.)))
-            >>> print numerix.allclose(faceNormals, mesh.faceNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print(numerix.allclose(faceNormals, mesh.faceNormals, atol = 1e-10, rtol = 1e-10)) # doctest: +PROCESSOR_0
             True
 
             >>> cellToFaceOrientations = numerix.array(((1,  1,  1, -1, -1, -1),
             ...                                         (1,  1,  1,  1,  1,  1),
             ...                                         (1,  1,  1,  1,  1,  1),
             ...                                         (1, -1, -1,  1, -1, -1)))
-            >>> print numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal(cellToFaceOrientations, mesh._cellToFaceOrientations)) # doctest: +PROCESSOR_0
             True
 
             >>> type(mesh.cellCenters)
@@ -142,21 +145,21 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
 
            >>> testCellVolumes = mesh.cellCenters[0].globalValue * numerix.array((dx*dy, dx*dy, dx*dy, dx*dy, dx*dy, dx*dy))
 
-            >>> print isinstance(mesh.cellVolumes, numerix.ndarray)
+            >>> print(isinstance(mesh.cellVolumes, numerix.ndarray))
             True
 
             >>> globalValue = fp.CellVariable(mesh=mesh, value=mesh.cellVolumes).globalValue
-            >>> print numerix.allclose(testCellVolumes, globalValue, atol = 1e-10, rtol = 1e-10)
+            >>> print(numerix.allclose(testCellVolumes, globalValue, atol = 1e-10, rtol = 1e-10))
             True
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2.),
             ...                              (dy/2., dy/2., dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2.)))
-            >>> print numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10)
+            >>> print(numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10))
             True
 
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dy / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2., dx / 2.),
             ...                                         (-1, -1, -1, dy / 2., dy / 2., dy / 2., -1, -1, -1, -1, dx / 2., dx / 2., -1, -1, dx / 2., dx / 2., -1)), -1)
-            >>> print numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print(numerix.allclose(faceToCellDistances, mesh._faceToCellDistances, atol = 1e-10, rtol = 1e-10)) # doctest: +PROCESSOR_0
             True
 
             >>> cellDistances = numerix.array((dy / 2., dy / 2., dy / 2.,
@@ -166,47 +169,47 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             ...                                dx / 2.,
             ...                                dx / 2., dx, dx,
             ...                                dx / 2.))
-            >>> print numerix.allclose(cellDistances, mesh._cellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print(numerix.allclose(cellDistances, mesh._cellDistances, atol = 1e-10, rtol = 1e-10)) # doctest: +PROCESSOR_0
             True
 
             >>> faceToCellDistanceRatios = faceToCellDistances[0] / cellDistances
-            >>> print numerix.allclose(faceToCellDistanceRatios, mesh._faceToCellDistanceRatio, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print(numerix.allclose(faceToCellDistanceRatios, mesh._faceToCellDistanceRatio, atol = 1e-10, rtol = 1e-10)) # doctest: +PROCESSOR_0
             True
 
             >>> areaProjections = faceNormals * faceAreas
-            >>> print numerix.allclose(areaProjections, mesh._areaProjections, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print(numerix.allclose(areaProjections, mesh._areaProjections, atol = 1e-10, rtol = 1e-10)) # doctest: +PROCESSOR_0
             True
             >>> ignore = numerix.allclose(areaProjections, mesh._areaProjections).value # doctest: +PROCESSOR_NOT_0
 
             >>> tangents1 = numerix.array(((1., 1., 1., -1., -1., -1., -1., -1., -1., 0., 0., 0., 0., 0., 0., 0., 0.),
             ...                            (0., 0., 0., 0., 0., 0., 0., 0., 0., -1., 1., 1., 1., -1., 1., 1., 1.)))
-            >>> print numerix.allclose(tangents1, mesh._faceTangents1, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print(numerix.allclose(tangents1, mesh._faceTangents1, atol = 1e-10, rtol = 1e-10)) # doctest: +PROCESSOR_0
             True
 
             >>> tangents2 = numerix.zeros((2, 17), 'd')
-            >>> print numerix.allclose(tangents2, mesh._faceTangents2, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print(numerix.allclose(tangents2, mesh._faceTangents2, atol = 1e-10, rtol = 1e-10)) # doctest: +PROCESSOR_0
             True
 
             >>> cellToCellIDs = MA.masked_values(((-1, -1, -1, 0, 1, 2),
             ...                                   (1, 2, -1, 4, 5, -1),
             ...                                   (3, 4, 5, -1, -1, -1),
             ...                                   (-1, 0, 1, -1, 3, 4)), -1)
-            >>> print numerix.allequal(cellToCellIDs, mesh._cellToCellIDs) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal(cellToCellIDs, mesh._cellToCellIDs)) # doctest: +PROCESSOR_0
             True
 
             >>> cellToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2.,      dy,      dy,      dy),
             ...                                         (     dx,      dx, dx / 2.,      dx,      dx, dx / 2.),
             ...                                         (     dy,      dy,      dy, dy / 2., dy / 2., dy / 2.),
             ...                                         (dx / 2.,      dx,      dx, dx / 2.,      dx,      dx)), -1)
-            >>> print numerix.allclose(cellToCellDistances, mesh._cellToCellDistances, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print(numerix.allclose(cellToCellDistances, mesh._cellToCellDistances, atol = 1e-10, rtol = 1e-10)) # doctest: +PROCESSOR_0
             True
 
             >>> interiorCellIDs = numerix.array(())
-            >>> print numerix.allequal(interiorCellIDs, mesh._interiorCellIDs) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal(interiorCellIDs, mesh._interiorCellIDs)) # doctest: +PROCESSOR_0
             True
 
             >>> exteriorCellIDs = numerix.array((0, 1, 2, 3, 4, 5))
-            >>> print numerix.allequal(exteriorCellIDs, mesh._exteriorCellIDs) # doctest: +PROCESSOR_0
+            >>> print(numerix.allequal(exteriorCellIDs, mesh._exteriorCellIDs)) # doctest: +PROCESSOR_0
             True
 
             >>> cellNormals = numerix.array(((( 0,  0,  0,  0,  0,  0),
@@ -217,22 +220,22 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             ...                               ( 0,  0,  0,  0,  0,  0),
             ...                               ( 1,  1,  1,  1,  1,  1),
             ...                               ( 0,  0,  0,  0,  0,  0))))
-            >>> print numerix.allclose(cellNormals, mesh._cellNormals, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> print(numerix.allclose(cellNormals, mesh._cellNormals, atol = 1e-10, rtol = 1e-10)) # doctest: +PROCESSOR_0
             True
 
             >>> cellAreaProjections = numerix.array((((  0,  0,  0,  0,  0,  0),
             ...                                       ( dy, dy, dy, dy, dy, dy),
             ...                                       (  0,  0,  0,  0,  0,  0),
-            ...                                       (-dy,-dy,-dy,-dy,-dy,-dy)),
-            ...                                      ((-dx,-dx,-dx,-dx,-dx,-dx),
+            ...                                       (-dy, -dy, -dy, -dy, -dy, -dy)),
+            ...                                      ((-dx, -dx, -dx, -dx, -dx, -dx),
             ...                                       (  0,  0,  0,  0,  0,  0),
             ...                                       ( dx, dx, dx, dx, dx, dx),
             ...                                       (  0,  0,  0,  0,  0,  0))))
-            >>> cellAreaProjections[:,0] = cellAreaProjections[:,0] * mesh.cellCenters[0] # doctest: +PROCESSOR_0
-            >>> cellAreaProjections[:,1] = cellAreaProjections[:,1] * (mesh.cellCenters[0] + mesh.dx / 2.) # doctest: +PROCESSOR_0
-            >>> cellAreaProjections[:,2] = cellAreaProjections[:,2] * mesh.cellCenters[0] # doctest: +PROCESSOR_0
-            >>> cellAreaProjections[:,3] = cellAreaProjections[:,3] * (mesh.cellCenters[0] - mesh.dx / 2.) # doctest: +PROCESSOR_0
-            >>> print numerix.allclose(cellAreaProjections, mesh._cellAreaProjections, atol = 1e-10, rtol = 1e-10) # doctest: +PROCESSOR_0
+            >>> cellAreaProjections[:, 0] = cellAreaProjections[:, 0] * mesh.cellCenters[0] # doctest: +PROCESSOR_0
+            >>> cellAreaProjections[:, 1] = cellAreaProjections[:, 1] * (mesh.cellCenters[0] + mesh.dx / 2.) # doctest: +PROCESSOR_0
+            >>> cellAreaProjections[:, 2] = cellAreaProjections[:, 2] * mesh.cellCenters[0] # doctest: +PROCESSOR_0
+            >>> cellAreaProjections[:, 3] = cellAreaProjections[:, 3] * (mesh.cellCenters[0] - mesh.dx / 2.) # doctest: +PROCESSOR_0
+            >>> print(numerix.allclose(cellAreaProjections, mesh._cellAreaProjections, atol = 1e-10, rtol = 1e-10)) # doctest: +PROCESSOR_0
             True
 
             >>> cellVertexIDs = MA.masked_values(((5, 6, 7, 9, 10, 11),
@@ -240,41 +243,41 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             ...                                   (1, 2, 3, 5,  6,  7),
             ...                                   (0, 1, 2, 4,  5,  6)), -1000)
 
-            >>> print numerix.allclose(mesh._cellVertexIDs, cellVertexIDs) # doctest: +PROCESSOR_0
+            >>> print(numerix.allclose(mesh._cellVertexIDs, cellVertexIDs)) # doctest: +PROCESSOR_0
             True
 
             >>> from fipy.tools import dump
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allclose(mesh.cellCenters, unpickledMesh.cellCenters)
+            >>> print(numerix.allclose(mesh.cellCenters, unpickledMesh.cellCenters))
             True
 
-            >>> mesh = CylindricalNonUniformGrid2D(dx=(1., 2.), dy=(1.,)) + ((1.,),(0.,))
-            >>> print mesh.cellCenters
+            >>> mesh = CylindricalNonUniformGrid2D(dx=(1., 2.), dy=(1.,)) + ((1.,), (0.,))
+            >>> print(mesh.cellCenters)
             [[ 1.5  3. ]
              [ 0.5  0.5]]
-            >>> print fp.CellVariable(mesh=mesh, value=mesh.cellVolumes).globalValue
+            >>> print(fp.CellVariable(mesh=mesh, value=mesh.cellVolumes).globalValue)
             [ 1.5  6. ]
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell
         volumes were being returned as binOps rather than arrays.
 
             >>> m = CylindricalNonUniformGrid2D(dx=(1., 2.), dy=(1., 2.))
-            >>> print isinstance(m.cellVolumes, numerix.ndarray)
+            >>> print(isinstance(m.cellVolumes, numerix.ndarray))
             True
-            >>> print isinstance(m._faceAreas, numerix.ndarray)
+            >>> print(isinstance(m._faceAreas, numerix.ndarray))
             True
 
         If the above types aren't correct, the divergence operator's value can be a binOp
 
-            >>> print isinstance(fp.CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray)
+            >>> print(isinstance(fp.CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray))
             True
 
         Test for https://github.com/usnistgov/fipy/issues/393. exteriorFaces were
         ndarrays rather than FaceVariables.
 
-            >>> print isinstance(m.facesTop, fp.FaceVariable)
+            >>> print(isinstance(m.facesTop, fp.FaceVariable))
             True
 
 
@@ -286,3 +289,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+

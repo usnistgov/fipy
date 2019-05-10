@@ -1,9 +1,15 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random
 from fipy.variables.noiseVariable import NoiseVariable
 
 __all__ = ["GammaNoiseVariable"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class GammaNoiseVariable(NoiseVariable):
     r"""
@@ -51,17 +57,17 @@ class GammaNoiseVariable(NoiseVariable):
 
     >>> from fipy.tools.numerix import arange
 
-    >>> for shape in arange(1,8,1):
+    >>> for shape in arange(1, 8, 1):
     ...     alpha.value = shape
-    ...     for rate in arange(0.5,2.5,0.5):
+    ...     for rate in arange(0.5, 2.5, 0.5):
     ...         beta.value = rate
     ...         if __name__ == '__main__':
     ...             import sys
-    ...             print >>sys.stderr, "alpha: %g, beta: %g" % (alpha, beta)
+    ...             print("alpha: %g, beta: %g" % (alpha, beta), file=sys.stderr)
     ...             viewer.plot()
     ...             histoplot.plot()
 
-    >>> print abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15
+    >>> print(abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15)
     1
 
     .. image:: fipy/variables/gamma.*
@@ -97,3 +103,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+

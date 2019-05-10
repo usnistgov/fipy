@@ -22,6 +22,7 @@ conservation of surfactant:
 >>> surfactantBefore = numerix.sum(surfactantVariable * mesh.cellVolumes)
 >>> totalTime = 0
 >>> steps = 5
+>>> from builtins import range
 >>> for step in range(steps):
 ...     velocity.setValue(surfactantVariable.interfaceVar * k)
 ...     distanceVariable.extendVariable(velocity)
@@ -32,7 +33,7 @@ conservation of surfactant:
 ...     totalTime += timeStepDuration #doctest: +LSM
 >>> surfactantEquation.solve(surfactantVariable, dt=1)
 >>> surfactantAfter = numerix.sum(surfactantVariable * mesh.cellVolumes)
->>> print surfactantBefore.allclose(surfactantAfter)
+>>> print(surfactantBefore.allclose(surfactantAfter))
 1
 
 Next test for the correct local value of surfactant:
@@ -41,7 +42,7 @@ Next test for the correct local value of surfactant:
 >>> answer = initialSurfactantValue * initialRadius / finalRadius
 >>> coverage = surfactantVariable.interfaceVar
 >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
->>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.04
+>>> print(numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.04)
 1
 
 Test for the correct position of the interface:
@@ -50,10 +51,15 @@ Test for the correct position of the interface:
 >>> radius = numerix.sqrt((x - L / 2)**2 + (y - L / 2)**2)
 >>> solution = radius - distanceVariable
 >>> error = (solution / finalRadius - 1)**2 * (coverage > 1e-3)
->>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.02 #doctest: +LSM
+>>> print(numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)) < 0.02) #doctest: +LSM
 1
 
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import input
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
@@ -109,7 +115,7 @@ if __name__ == '__main__':
     totalTime = 0
 
     for step in range(steps):
-        print 'step',step
+        print('step', step)
         velocity.setValue(surfactantVariable.interfaceVar * k)
         distanceVariable.extendVariable(velocity)
         timeStepDuration = cfl * dx / velocity.max()
@@ -127,9 +133,9 @@ if __name__ == '__main__':
         answer = initialSurfactantValue * initialRadius / finalRadius
         coverage = surfactantVariable.interfaceVar
         error = (coverage / answer - 1)**2 * (coverage > 1e-3)
-        print 'error', numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0))
+        print('error', numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)))
 
 
 
 
-    raw_input('finished')
+    input('finished')

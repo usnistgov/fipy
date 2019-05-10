@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 import os
@@ -8,6 +9,8 @@ from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
 
 __all__ = ["TrilinosAztecOOSolver"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class TrilinosAztecOOSolver(TrilinosSolver):
 
@@ -25,7 +28,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         """
         if self.__class__ is TrilinosAztecOOSolver:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
         TrilinosSolver.__init__(self, tolerance=tolerance,
                                 iterations=iterations, precon=None)
@@ -63,12 +66,12 @@ class TrilinosAztecOOSolver(TrilinosSolver):
                        AztecOO.AZ_ill_cond : 'AztecOO.AZ_ill_cond',
                        AztecOO.AZ_maxits : 'AztecOO.AZ_maxits'}
 
-            PRINT('failure',failure[status[AztecOO.AZ_why]])
+            PRINT('failure', failure[status[AztecOO.AZ_why]])
 
-            PRINT('AztecOO.AZ_r:',status[AztecOO.AZ_r])
-            PRINT('AztecOO.AZ_scaled_r:',status[AztecOO.AZ_scaled_r])
-            PRINT('AztecOO.AZ_rec_r:',status[AztecOO.AZ_rec_r])
-            PRINT('AztecOO.AZ_solve_time:',status[AztecOO.AZ_solve_time])
-            PRINT('AztecOO.AZ_Aztec_version:',status[AztecOO.AZ_Aztec_version])
+            PRINT('AztecOO.AZ_r:', status[AztecOO.AZ_r])
+            PRINT('AztecOO.AZ_scaled_r:', status[AztecOO.AZ_scaled_r])
+            PRINT('AztecOO.AZ_rec_r:', status[AztecOO.AZ_rec_r])
+            PRINT('AztecOO.AZ_solve_time:', status[AztecOO.AZ_solve_time])
+            PRINT('AztecOO.AZ_Aztec_version:', status[AztecOO.AZ_Aztec_version])
 
         return output

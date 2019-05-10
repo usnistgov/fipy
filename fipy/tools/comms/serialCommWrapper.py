@@ -1,6 +1,9 @@
+from __future__ import unicode_literals
 from fipy.tools.comms.commWrapper import CommWrapper
 
 __all__ = ["SerialCommWrapper"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class SerialCommWrapper(CommWrapper):
     @property

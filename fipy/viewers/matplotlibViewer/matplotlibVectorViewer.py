@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -7,6 +8,8 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["MatplotlibVectorViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class MatplotlibVectorViewer(AbstractMatplotlib2DViewer):
     """Displays a vector plot of a 2D rank-1 `CellVariable` or
@@ -104,7 +107,7 @@ class MatplotlibVectorViewer(AbstractMatplotlib2DViewer):
                          or isinstance(var, CellVariable)) and var.rank == 1)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "The mesh must be a Mesh2D instance"
+            raise MeshDimensionError("The mesh must be a Mesh2D instance")
         # this viewer can only display one variable
         return [vars[0]]
 

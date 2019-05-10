@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -7,6 +8,8 @@ from fipy.boundaryConditions.fixedValue import FixedValue
 from fipy.tools import vector
 
 __all__ = ["FixedFlux"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class FixedFlux(BoundaryCondition):
     r"""
@@ -18,7 +21,7 @@ class FixedFlux(BoundaryCondition):
 
     """
 
-    def __init__(self,faces,value):
+    def __init__(self, faces, value):
         """
         Creates a `FixedFlux` object.
 
@@ -27,7 +30,7 @@ class FixedFlux(BoundaryCondition):
             - `value`: The value to impose.
 
         """
-        BoundaryCondition.__init__(self,faces,value)
+        BoundaryCondition.__init__(self, faces, value)
         ## The extra index [self.faces.value] makes self.contribution the same length as self.adjacentCellIDs
         self.contribution = (self.value * self.faces.mesh._faceAreas)[self.faces.value]
 
@@ -41,7 +44,7 @@ class FixedFlux(BoundaryCondition):
           - `coeff`:        *unused*
         """
 
-        bb = numerix.zeros((Ncells,),'d')
+        bb = numerix.zeros((Ncells,), 'd')
 
         if not self.boundaryConditionApplied:
             vector.putAdd(bb, self.adjacentCellIDs, -self.contribution)

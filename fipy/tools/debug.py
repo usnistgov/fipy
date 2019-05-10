@@ -1,4 +1,9 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import range
 __all__ = ["PRINT"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 def PRINT(label, arg="", stall=True):
     import sys
@@ -7,7 +12,7 @@ def PRINT(label, arg="", stall=True):
 
     for procID in range(parallelComm.Nproc):
         if procID == parallelComm.procID:
-            print >>sys.stderr, parallelComm.procID, label, arg
+            print(parallelComm.procID, label, arg, file=sys.stderr)
         sys.stderr.flush()
         if stall:
             time.sleep(0.1)

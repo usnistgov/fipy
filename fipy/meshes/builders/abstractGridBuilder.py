@@ -1,3 +1,7 @@
+from __future__ import unicode_literals
+from builtins import object
+from builtins import zip
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -6,6 +10,7 @@ import itertools
 
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import numerix
+from functools import reduce
 
 class _AbstractGridBuilder(object):
 
@@ -108,10 +113,10 @@ class _AbstractGridBuilder(object):
         else:
             spatialNums = [n + 1 for n in newNs]
 
-        spatialDict = dict(zip(["numVerticalCols",
+        spatialDict = dict(list(zip(["numVerticalCols",
                                 "numHorizontalRows",
                                 "numLayersDeep"][:len(spatialNums)],
-                               spatialNums))
+                               spatialNums)))
 
         numVertices = reduce(self._mult, spatialNums)
         numCells = reduce(self._mult, newNs)
@@ -205,12 +210,12 @@ class _AbstractGridBuilder(object):
         >>> gb3._calcGlobalNumFaces([2, 3, 2])
         52
         """
-        assert type(ns) is list
+        assert isinstance(ns, list)
 
         # `permutations` is the cleanest way to do this, but it's new in
         # python 2.6, so we can't rely on it.
         if hasattr(itertools, "permutations"):
-            nIter = list(itertools.permutations(range(len(ns))))
+            nIter = list(itertools.permutations(list(range(len(ns)))))
 
             # ensure len(nIter) == len(ns) && nIter[i][0] unique
             if len(ns) == 3:

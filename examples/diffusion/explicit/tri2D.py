@@ -18,6 +18,7 @@ and `steps` is the number of time steps.
 
 A loop is required to execute the necessary time steps:
 
+    >>> from builtins import range
     >>> for step in range(steps):
     ...     eq.solve(var, solver=solver, dt=timeStepDuration)
 
@@ -25,11 +26,15 @@ The result is again tested in the same way:
 
     >>> Lx = nx * dx
     >>> x = mesh.cellCenters[0]
-    >>> print var.allclose(answer, rtol = 1e-8)
+    >>> print(var.allclose(answer, rtol = 1e-8))
     1
 
 """
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from builtins import input
+from builtins import range
 from fipy import CellVariable, Tri2D, TransientTerm, ExplicitDiffusionTerm, DefaultSolver, Viewer
 from fipy.tools import numerix
 
@@ -71,7 +76,7 @@ if __name__ == '__main__':
 
     for step in range(steps):
         eq.solve(var, solver = solver, dt = timeStepDuration)
-    print var
+    print(var)
     viewer = Viewer(vars = var)
     viewer.plot()
-    raw_input('finished')
+    input('finished')

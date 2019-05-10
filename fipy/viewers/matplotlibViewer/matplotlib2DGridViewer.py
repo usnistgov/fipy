@@ -1,8 +1,11 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["Matplotlib2DGridViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
     """
@@ -82,7 +85,7 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
               and var.rank == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "Matplotlib2DGridViewer can only display a rank-0 CellVariable with a UniformGrid2D mesh"
+            raise MeshDimensionError("Matplotlib2DGridViewer can only display a rank-0 CellVariable with a UniformGrid2D mesh")
         # this viewer can only display one variable
         return [vars[0]]
 

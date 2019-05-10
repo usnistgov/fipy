@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 import copy
 
 __all__ = ["AggregationAMGPreconditioner",
@@ -9,8 +11,10 @@ __all__ = ["AggregationAMGPreconditioner",
            "MultiColorDILUPreconditioner",
            "PolynomialPreconditioner",
            "MultiColorGSPreconditioner"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
-class Preconditioner:
+class Preconditioner(object):
     def __init__(self, preconditioner_type, **kwargs):
         self.config_dict = {
             "solver": preconditioner_type,

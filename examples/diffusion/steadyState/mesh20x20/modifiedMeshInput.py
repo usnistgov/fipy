@@ -42,6 +42,7 @@ The result is again tested in the same way:
 
 >>> DiffusionTerm().solve(var) # doctest: +GMSH
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = var)
 ...     viewer.plot()
@@ -54,20 +55,20 @@ The result is again tested in the same way:
 ...                    value = abs(errorArray))
 ...     errorViewer = Viewer(vars = errorVar)
 ...     errorViewer.plot()
-...
+... 
 ...     NonOrthoVar = CellVariable(name = "non-orthogonality",
 ...                           mesh = mesh,
 ...                           value = mesh._nonOrthogonality)
 ...     NOViewer = Viewer(vars = NonOrthoVar)
-...
-...
+... 
+... 
 ...     NOViewer.plot()
-...     raw_input("finished")
+...     input("finished")
 ... else:
 ...     Lx = 20
 ...     x = mesh.cellCenters[0] # doctest: +GMSH
 ...     analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx # doctest: +GMSH
-...     print var.allclose(analyticalArray, atol = 0.025) # doctest: +GMSH
+...     print(var.allclose(analyticalArray, atol = 0.025)) # doctest: +GMSH
 1
 
 >>> max(mesh._nonOrthogonality) < 0.51 # doctest: +GMSH
@@ -80,6 +81,7 @@ main FiPy test suite. If you run it directly from the directory it is
 in it will not be able to find the mesh file.
 
 """
+from __future__ import unicode_literals
 
 
 __docformat__ = 'restructuredtext'

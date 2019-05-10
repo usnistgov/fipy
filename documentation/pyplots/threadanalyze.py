@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from matplotlib import pyplot as plt
 import pandas as pd
 

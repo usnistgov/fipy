@@ -1,3 +1,7 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import zip
+from builtins import str
 import os
 import platform
 import subprocess
@@ -7,6 +11,8 @@ from xml.dom.minidom import Document
 import fipy
 
 __all__ = ["Vitals"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class Vitals(Document):
     """Returns XML formatted information about current FiPy environment
@@ -66,7 +72,7 @@ class Vitals(Document):
 
     def dictToXML(self, d, name):
         elem = self.createElement(name)
-        for key, value in d.items():
+        for key, value in list(d.items()):
             keyelem = self.createElement(key)
             keyelem.appendChild(self.createTextNode(str(value)))
             elem.appendChild(keyelem)
@@ -130,4 +136,4 @@ if __name__ == "__main__":
     solar.appendChild(v.svn("/Users/guyer/Documents/research/codes/solar-dimensionless"))
     v.appendChild(solar)
 
-    print v
+    print(v)

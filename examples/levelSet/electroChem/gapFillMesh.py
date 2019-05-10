@@ -9,6 +9,8 @@ boundary layer. This region consists of very large elements and is
 only used for the diffusion in the boundary layer.
 
 """
+from __future__ import division
+from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 
@@ -35,7 +37,7 @@ class GapFillMesh(Gmsh2D):
     >>> if parallelComm.Nproc == 1:
     ...     mesh = dump.read(filename, f) # doctest: +GMSH
 
-    >>> print 136 < mesh.globalNumberOfCells < 300 # doctest: +GMSH
+    >>> print(136 < mesh.globalNumberOfCells < 300) # doctest: +GMSH
     True
 
     >>> from fipy.variables.cellVariable import CellVariable
@@ -60,9 +62,9 @@ class GapFillMesh(Gmsh2D):
     >>> globalError = numerix.sqrt(numerix.sum(localErrors) / mesh.numberOfCells) # doctest: +GMSH
     >>> argmax = numerix.argmax(localErrors) # doctest: +GMSH
 
-    >>> print numerix.sqrt(localErrors[argmax]) < 0.1 # doctest: +GMSH
+    >>> print(numerix.sqrt(localErrors[argmax]) < 0.1) # doctest: +GMSH
     1
-    >>> print globalError < 0.05 # doctest: +GMSH
+    >>> print(globalError < 0.05) # doctest: +GMSH
     1
 
     """

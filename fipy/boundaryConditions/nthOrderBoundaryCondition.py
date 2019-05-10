@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -7,6 +8,8 @@ from fipy.boundaryConditions.fixedFlux import FixedFlux
 from fipy.boundaryConditions.fixedValue import FixedValue
 
 __all__ = ["NthOrderBoundaryCondition"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class NthOrderBoundaryCondition(BoundaryCondition):
     """
@@ -34,7 +37,7 @@ class NthOrderBoundaryCondition(BoundaryCondition):
         """
         self.order = order
         self.derivative = {}
-        BoundaryCondition.__init__(self,faces,value)
+        BoundaryCondition.__init__(self, faces, value)
 
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Leave **L** and **b** unchanged

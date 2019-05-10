@@ -1,6 +1,9 @@
+from __future__ import unicode_literals
+from builtins import object
+from builtins import range
 __all__ = []
 
-class _Vertex:
+class _Vertex(object):
     def __init__(self, ID, x, y):
         self.ID = ID
         self.up = None
@@ -49,7 +52,7 @@ class _Vertex:
         self.setInLineTrue()
         self.down = vertex
 
-class _Line:
+class _Line(object):
     def __init__(self, seedVertex):
         if seedVertex.getUp() is not None or \
            seedVertex.getDown() is not None or \
@@ -128,9 +131,11 @@ def _getOrderedLines(IDs, coordinates, thresholdDistance = 0.0):
        [[4, 5, 3, 1], [0, 2, 6]]
        >>> _getOrderedLines((4, 5, 3, 2, 1, 0, 9, 8, 7, 6), ((0, 0), (1, 0), (0, 1.1), (1, 1.1), (0, 3), (1, 3), (-1, 4), (2, 4), (-2, 4), (3, 4)))
        [[4, 5, 2, 3], [7, 9, 1, 0, 8, 6]]
-       >>> _getOrderedLines(range(7), ((-7, 0), (-6, 0), (-5, 0), (0, 0), (5, 0), (6, 0), (7, 0)))
+       >>> from builtins import range
+       >>> _getOrderedLines(list(range(7)), ((-7, 0), (-6, 0), (-5, 0), (0, 0), (5, 0), (6, 0), (7, 0)))
        [[0, 1, 2], [3], [4, 5, 6]]
-       >>> _getOrderedLines(range(7), ((-7, 0), (-6, 0), (-5, 0), (0, 0), (5, 0), (6, 0), (7, 0)), thresholdDistance = 5.5)
+       >>> from builtins import range
+       >>> _getOrderedLines(list(range(7)), ((-7, 0), (-6, 0), (-5, 0), (0, 0), (5, 0), (6, 0), (7, 0)), thresholdDistance = 5.5)
        [[0, 1, 2, 3, 4, 5, 6]]
     """
 
@@ -141,7 +146,7 @@ def _getOrderedLines(IDs, coordinates, thresholdDistance = 0.0):
     for ID in IDs:
         distances = numerix.zeros(len(IDs), 'd')
         for i in range(len(coordinates[0,:])):
-            distances += (coordinates[:,i] - coordinates[ID,i])**2
+            distances += (coordinates[:, i] - coordinates[ID, i])**2
         vertices.append(_Vertex(ID, coordinates[ID, 0], coordinates[ID, 1]))
         closeIDs[ID,:] = numerix.argsort(distances)
 
@@ -149,7 +154,7 @@ def _getOrderedLines(IDs, coordinates, thresholdDistance = 0.0):
     for ID in IDs:
         i = 1
         closeVertices = []
-        while i < 3 or vertices[ID].distance(vertices[closeIDs[ID,i]]) < thresholdDistance:
+        while i < 3 or vertices[ID].distance(vertices[closeIDs[ID, i]]) < thresholdDistance:
             closeVertices.append(vertices[closeIDs[ID, i]])
             i += 1
 
