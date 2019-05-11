@@ -229,7 +229,17 @@ latex_elements = {
     'preamble': common_preamble + """
 
     \\makeatletter
-    \\renewcommand{\\maketitle}{%
+    \\newcommand{\\sphinxbackoftitlepage}{%
+      \\changepage{}{}{}{}{}{}{}{}{}
+      \\vspace*{\\fill}
+      \\input LICENSE
+      \\rule{\\textwidth}{0.1pt}
+      \\input DISCLAIMER
+    }
+    \\renewcommand{\\sphinxmaketitle}{%
+      \\let\\spx@tempa\\relax
+      \\ifHy@pageanchor\\def\\spx@tempa{\\Hy@pageanchortrue}\\fi
+      \\hypersetup{pageanchor=false}% avoid duplicate destination warnings
       \\begin{titlepage}%
         \\let\\footnotesize\\small
         \\let\\footnoterule\\relax
@@ -263,16 +273,13 @@ latex_elements = {
         \\end{flushright}%\\par
         \\@thanks
       \\end{titlepage}%
-      \\clearpage%
-      \\changepage{}{}{}{}{}{}{}{}{}
-      \\vspace*{\\fill}
-      \\input LICENSE
-      \\rule{\\textwidth}{0.1pt}
-      \\input DISCLAIMER
-      \\clearpage
       \\setcounter{footnote}{0}%
       \\let\\thanks\\relax\\let\\maketitle\\relax
       %\\gdef\\@thanks{}\\gdef\\@author{}\\gdef\\@title{}
+      \\clearpage
+      \\ifdefined\\sphinxbackoftitlepage\\sphinxbackoftitlepage\\fi
+      \\if@openright\\cleardoublepage\\else\\clearpage\\fi
+      \\spx@tempa
     }
     \\makeatother
 
