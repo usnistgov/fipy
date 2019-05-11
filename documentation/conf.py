@@ -126,7 +126,10 @@ autosummary_generate = ['examples/diffusion/index.rst',
                         'examples/reactiveWetting/index.rst',
                         'examples/updating/index.rst']
 
-autodoc_member_order = 'alphabetical'
+autodoc_default_options = {
+    'member-order': 'alphabetical',
+    'special-members': None,
+}
 
 autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'PyTrilinos.NOX']
 
