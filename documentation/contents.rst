@@ -10,16 +10,10 @@ FiPy Contents
 
    introduction
    ../examples/README
-   ../LICENSE
-   ADMINISTRATA
-   CREDITS
-   EFFICIENCY
-   PUBLICATIONS
-   VKML
-   ../DISCLAIMER
-   manual
+   API
    references
-   ../CHANGELOG
+   ../LICENSE
+   ../DISCLAIMER
 
 .. toctree::
    :hidden:
@@ -30,3 +24,4 @@ FiPy Contents
    ../fipy/generated/fipy
    external_definitions
    ../nix/README
+   manual

@@ -7,12 +7,16 @@ Introduction
 
    ../README
    ../INSTALLATION
+   ADMINISTRATA
    SOLVERS
    VIEWERS
    USAGE
+   FAQ
+   EFFICIENCY
    numerical/index
    design
-   FAQ
-   glossary
-   ADMINISTRATA
+   VKML
+   CREDITS
+   PUBLICATIONS
    ../CHANGELOG
+   glossary
