@@ -34,6 +34,12 @@ electrodeposition process :cite:`NIST:damascene:2001`.
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
+import warnings
+
+_msg = "The `develop` branch is deprecated. Please check out `master`."
+warnings.filterwarnings('default', _msg, DeprecationWarning)
+warnings.warn(_msg, DeprecationWarning, stacklevel=2)
+
 from fipy.boundaryConditions import *
 from fipy.meshes import *
 from fipy.solvers import *
