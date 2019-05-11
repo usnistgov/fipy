@@ -15,3 +15,4 @@ Introduction
    FAQ
    glossary
    ADMINISTRATA
+   ../CHANGELOG
