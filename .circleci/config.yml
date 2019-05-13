@@ -86,6 +86,33 @@ commands:
           path: test-reports
           destination: test-reports
 
+  build_html_docs:
+    description: "Build HTML Docs"
+
+    steps:
+      - run:
+          name: Build Docs
+          command: |
+            python setup.py build_docs --html
+
+  build_pdf_docs:
+    description: "Build HTML Docs"
+
+    steps:
+      - run:
+          name: Install LaTeX
+          command: |
+            apt-get --yes update
+            apt-get --yes install texlive-latex-base
+            apt-get --yes install texlive-fonts-recommended
+            apt-get --yes install texlive-fonts-extra
+            apt-get --yes install texlive-latex-extra
+
+      - run:
+          name: Build Docs
+          command: |
+            python setup.py build_docs --pdf
+
   # localize changes to cache name to these two commands
   save_conda_cache:
     steps:
@@ -273,6 +300,34 @@ jobs:
             conda install --channel conda-forge black
             black --target-version py27 --fast --diff --check setup.py
 
+  build-27-docs:
+    <<: *defaults2
+
+    steps:
+      - checkout
+
+      - restore_conda_cache
+
+      - attach_workspace:
+          at: ~/project
+
+      - build_html_docs
+
+      - build_latex_docs
+
+  build-36-docs:
+    <<: *defaults3
+
+    steps:
+      - checkout
+
+      - restore_conda_cache
+
+      - attach_workspace:
+          at: ~/project
+
+      - build_html_docs
+
 workflows:
   version: 2
 
@@ -280,6 +335,12 @@ workflows:
     jobs:
       - conda2_env
       - conda3_env
+      - build-27-docs:
+          requires:
+            - conda2_env
+      - build-36-docs:
+          requires:
+            - conda3_env
       - pylint:
           requires:
             - conda2_env
