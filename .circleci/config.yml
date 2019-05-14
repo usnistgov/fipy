@@ -93,6 +93,7 @@ commands:
       - run:
           name: Build Docs
           command: |
+            source activate ~/project/test-environment
             python setup.py build_docs --html
 
   build_pdf_docs:
@@ -111,6 +112,7 @@ commands:
       - run:
           name: Build Docs
           command: |
+            source activate ~/project/test-environment
             python setup.py build_docs --pdf
 
   # localize changes to cache name to these two commands
