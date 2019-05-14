@@ -94,10 +94,14 @@ commands:
           name: Build Docs
           command: |
             source activate ~/project/test-environment
+            # (try) to keep MayaviViewer docs from seg faulting
+            export DISPLAY=:99.0
+            sh -e /etc/init.d/xvfb start
+            sleep 3
             python setup.py build_docs --html
 
   build_pdf_docs:
-    description: "Build HTML Docs"
+    description: "Build PDF Docs"
 
     steps:
       - run:
@@ -113,6 +117,10 @@ commands:
           name: Build Docs
           command: |
             source activate ~/project/test-environment
+            # (try) to keep MayaviViewer docs from seg faulting
+            export DISPLAY=:99.0
+            sh -e /etc/init.d/xvfb start
+            sleep 3
             python setup.py build_docs --pdf
 
   # localize changes to cache name to these two commands
