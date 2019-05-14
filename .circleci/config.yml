@@ -317,6 +317,10 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: fetch tags
+          command: git fetch origin --tags
+
       - restore_conda_cache
 
       - attach_workspace:
@@ -340,6 +344,10 @@ jobs:
 
     steps:
       - checkout
+
+      - run:
+          name: fetch tags
+          command: git fetch origin --tags
 
       - restore_conda_cache
 
