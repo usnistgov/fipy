@@ -322,7 +322,7 @@ jobs:
 
       - build_html_docs
 
-      - build_latex_docs
+      - build_pdf_docs
 
   build-36-docs:
     <<: *defaults3
