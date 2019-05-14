@@ -959,4 +959,9 @@ command in the base directory::
 
    $ conda install --channel conda-forge matplotlib pandas imagemagick
 
+   The PDF file requires `SIunits.sty`_ available, e.g., from
+   `texlive-science`_.
+
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
+.. _SIunits.sty: https://ctan.org/pkg/siunits
+.. _texlive_science: https://packages.debian.org/stretch/texlive-science

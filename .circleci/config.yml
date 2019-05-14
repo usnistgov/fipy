@@ -109,6 +109,7 @@ commands:
             apt-get --yes install texlive-fonts-recommended
             apt-get --yes install texlive-fonts-extra
             apt-get --yes install texlive-latex-extra
+            apt-get --yes install texlive-science
 
       - run:
           name: Build Docs
