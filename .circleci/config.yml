@@ -91,21 +91,10 @@ commands:
 
     steps:
       - run:
-          name: Install X Virtual Frame Buffer
-          command: |
-            apt-get --yes update
-            apt-get --yes install xvfb
-
-      - run:
-          name: Running X virtual framebuffer
-          command: Xvfb -ac :99 -screen 0 1280x1024x16 +extension RANDR > /dev/null 2>&1
-          background: true
-
-      - run:
           name: Build Docs
           command: |
             source activate ~/project/test-environment
-            export DISPLAY=:99.0
+            export ETS_TOOLKIT=null
             python setup.py build_docs --html
 
   build_pdf_docs:
@@ -122,21 +111,10 @@ commands:
             apt-get --yes install texlive-latex-extra
 
       - run:
-          name: Install X Virtual Frame Buffer
-          command: |
-            apt-get --yes update
-            apt-get --yes install xvfb
-
-      - run:
-          name: Running X virtual framebuffer
-          command: Xvfb -ac :99 -screen 0 1280x1024x16 +extension RANDR > /dev/null 2>&1
-          background: true
-
-      - run:
           name: Build Docs
           command: |
             source activate ~/project/test-environment
-            export DISPLAY=:99.0
+            export ETS_TOOLKIT=null
             python setup.py build_docs --pdf
 
   # localize changes to cache name to these two commands
