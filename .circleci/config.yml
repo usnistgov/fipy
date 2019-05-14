@@ -97,6 +97,9 @@ commands:
             export ETS_TOOLKIT=null
             python setup.py build_docs --html
 
+      - store_artifacts:
+          path: ~/project/documentation/_build/html
+
   build_pdf_docs:
     description: "Build PDF Docs"
 
@@ -117,6 +120,9 @@ commands:
             source activate ~/project/test-environment
             export ETS_TOOLKIT=null
             python setup.py build_docs --pdf
+
+      - store_artifacts:
+          path: ~/project/documentation/_build/latex/fipy.pdf
 
   # localize changes to cache name to these two commands
   save_conda_cache:
