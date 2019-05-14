@@ -315,7 +315,7 @@ jobs:
           name: install sphinx
           command: |
             source activate ~/project/test-environment
-            conda install --channel conda-forge sphinx
+            conda install --channel conda-forge sphinx future
             pip install sphinxcontrib-bibtex
             pip install numpydoc
             conda install --channel conda-forge matplotlib pandas imagemagick
@@ -339,7 +339,7 @@ jobs:
           name: install sphinx
           command: |
             source activate ~/project/test-environment
-            conda install --channel conda-forge sphinx
+            conda install --channel conda-forge sphinx future
             pip install sphinxcontrib-bibtex
             pip install numpydoc
             conda install --channel conda-forge matplotlib pandas imagemagick
