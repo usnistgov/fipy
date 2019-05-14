@@ -94,7 +94,7 @@ commands:
           name: Install X Virtual Frame Buffer
           command: |
             apt-get --yes update
-            apt-get --yes install xvbf
+            apt-get --yes install xvfb
 
       - run:
           name: Running X virtual framebuffer
@@ -125,7 +125,7 @@ commands:
           name: Install X Virtual Frame Buffer
           command: |
             apt-get --yes update
-            apt-get --yes install xvbf
+            apt-get --yes install xvfb
 
       - run:
           name: Running X virtual framebuffer
