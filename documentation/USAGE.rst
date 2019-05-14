@@ -964,4 +964,4 @@ command in the base directory::
 
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
 .. _SIunits.sty: https://ctan.org/pkg/siunits
-.. _texlive_science: https://packages.debian.org/stretch/texlive-science
+.. _texlive-science: https://packages.debian.org/stretch/texlive-science
