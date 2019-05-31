@@ -299,6 +299,9 @@ class GmshFile(object):
 
     def __del__(self):
         if self.fileIsTemporary:
+            # Windows raises "The process cannot access the file because it
+            # is being used by another process" if file is open on unlink
+            self.close()
             os.unlink(self.filename)
 
 class POSFile(GmshFile):
