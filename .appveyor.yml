@@ -66,6 +66,8 @@ install:
     # Configure the VM.
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe install --quiet --name root python fipy
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe uninstall --quiet fipy
+    # FIXME: fipy recipe on conda-forge doesn't have gmsh
+    - cmd: if "%TARGET_ARCH%" == "x64" conda.exe install --quiet --name root gmsh
 
     - cmd: if "%TARGET_ARCH%" == "x86" conda.exe install --quiet --name root python numpy scipy matplotlib
     - cmd: if "%TARGET_ARCH%" == "x86" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root mayavi weave
