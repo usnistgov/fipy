@@ -67,7 +67,11 @@ def gmshVersion(communicator=parallelComm):
     if communicator.procID == 0:
         while True:
             try:
-                p = Popen(["gmsh", "--version"], stderr=PIPE)
+                # gmsh returns version in stderr (Why?!?)
+                # spyder on Windows throws
+                #   OSError: [WinError 6] The handle is invalid
+                # if we don't PIPE stdout, too
+                p = Popen(["gmsh", "--version"], stderr=PIPE, stdout=PIPE)
             except OSError as e:
                 verStr = None
                 break
