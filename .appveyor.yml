@@ -74,7 +74,7 @@ install:
             Add-Type -A 'System.IO.Compression.FileSystem';
             [IO.Compression.ZipFile]::ExtractToDirector('gmsh-4.3.0-Windows64.zip', '.');
         }
-    - cmd: if "%TARGET_ARCH%" == "x64" setx path "%cd%\gmsh-4.3.0-Windows64;%path%"
+    - cmd: if "%TARGET_ARCH%" == "x64" copy gmsh-4.3.0-Windows64\gmsh.exe %CONDA_INSTALL_LOCN%\Scripts\
 
     - cmd: if "%TARGET_ARCH%" == "x86" conda.exe install --quiet --name root python numpy scipy matplotlib
     - cmd: if "%TARGET_ARCH%" == "x86" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root mayavi weave
