@@ -66,6 +66,11 @@ install:
     # Configure the VM.
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe install --quiet --name root python fipy
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe uninstall --quiet fipy
+    # FIXME: fipy recipe on conda-forge doesn't have gmsh
+    - cmd: if "%TARGET_ARCH%" == "x64" |
+        powershell -Command curl https://gmsh.info/bin/Windows/gmsh-4.3.0-Windows64.zip -OutFile gmsh-4.3.0-Windows64.zip
+        powershell -nologo -noprofile -Command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirector('gmsh-4.3.0-Windows64.zip', '.'); }"
+        setx path "%cd%\gmsh-4.3.0-Windows64;%path%"
 
     - cmd: if "%TARGET_ARCH%" == "x86" conda.exe install --quiet --name root python numpy scipy matplotlib
     - cmd: if "%TARGET_ARCH%" == "x86" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root mayavi weave
