@@ -69,7 +69,7 @@ install:
     # FIXME: fipy recipe on conda-forge doesn't have gmsh
     - ps: |
         $ErrorActionPreference = "Stop";
-        if ($TARGET_ARCH -eq "x64") {
+        if ($env:TARGET_ARCH -eq "x64") {
             (new-object net.webclient).DownloadFile('https://gmsh.info/bin/Windows/gmsh-4.3.0-Windows64.zip', 'gmsh-4.3.0-Windows64.zip');
             Add-Type -A 'System.IO.Compression.FileSystem';
             [IO.Compression.ZipFile]::ExtractToDirectory('gmsh-4.3.0-Windows64.zip', '.');
