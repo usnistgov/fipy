@@ -74,7 +74,7 @@ install:
             Add-Type -A 'System.IO.Compression.FileSystem';
             [IO.Compression.ZipFile]::ExtractToDirector('gmsh-4.3.0-Windows64.zip', '.');
         }
-        $blockRDp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+    - ps: $blockRDp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
     - cmd: if "%TARGET_ARCH%" == "x64" copy gmsh-4.3.0-Windows64\gmsh.exe %CONDA_INSTALL_LOCN%\Scripts\
 
     - cmd: if "%TARGET_ARCH%" == "x86" conda.exe install --quiet --name root python numpy scipy matplotlib
