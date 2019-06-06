@@ -87,6 +87,7 @@ install:
             echo "$(ls) $env:CONDA_INSTALL_LOCN\Scripts\"
         }
     - ps: $blockRDp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+    # comment
 
     - cmd: if "%TARGET_ARCH%" == "x86" conda.exe install --quiet --name root python numpy scipy matplotlib
     - cmd: if "%TARGET_ARCH%" == "x86" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root mayavi weave
