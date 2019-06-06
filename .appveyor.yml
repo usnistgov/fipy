@@ -66,9 +66,9 @@ install:
     # Configure the VM.
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe install --quiet --name root python fipy
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe uninstall --quiet fipy
-    # FIXME: fipy recipe on conda-forge doesn't have gmsh
     - cmd: echo "TARGET_ARCH: %TARGET_ARCH%"
     - cmd: echo "working directory: %cd%"
+    # FIXME: fipy recipe on conda-forge doesn't have gmsh
     - ps: |
         $ErrorActionPreference = "Stop";
         echo "env:TARGET_ARCH: $env:TARGET_ARCH"
