@@ -74,7 +74,7 @@ install:
         if ($env:TARGET_ARCH -eq "x64") {
             echo "working directory is $(get-location)"
             echo "getting gmsh"
-            (new-object net.webclient).DownloadFile('https://gmsh.info/bin/Windows/gmsh-4.3.0-Windows64.zip', 'gmsh-4.3.0-Windows64.zip')
+            Invoke-WebRequest -Uri 'https://gmsh.info/bin/Windows/gmsh-4.3.0-Windows64.zip' -OutFile gmsh-4.3.0-Windows64.zip
             echo "got gmsh"
             echo "$(ls)"
             Add-Type -A 'System.IO.Compression.FileSystem'
