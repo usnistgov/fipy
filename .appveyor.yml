@@ -74,11 +74,11 @@ install:
         if ($env:TARGET_ARCH -eq "x64") {
             echo "working directory is $(get-location)"
             echo "getting gmsh"
-            (new-object net.webclient).DownloadFile('https://gmsh.info/bin/Windows/gmsh-4.3.0-Windows64.zip', '$(get-location)\gmsh-4.3.0-Windows64.zip')
+            (new-object net.webclient).DownloadFile('https://gmsh.info/bin/Windows/gmsh-4.3.0-Windows64.zip', 'gmsh-4.3.0-Windows64.zip')
             echo "got gmsh"
             Add-Type -A 'System.IO.Compression.FileSystem'
             echo "unzipping gmsh"
-            [IO.Compression.ZipFile]::ExtractToDirectory('$(get-location)\gmsh-4.3.0-Windows64.zip', '$(get-location)')
+            [IO.Compression.ZipFile]::ExtractToDirectory('gmsh-4.3.0-Windows64.zip', '.')
             echo "unzipped gmsh"
         }
     - ps: $blockRDp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
