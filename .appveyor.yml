@@ -80,7 +80,7 @@ install:
             Add-Type -A 'System.IO.Compression.FileSystem'
             echo "unzipping gmsh"
             echo "$(ls)"
-            [IO.Compression.ZipFile]::ExtractToDirectory('$(get-location)\gmsh-4.3.0-Windows64.zip', '$(get-location)')
+            Expand-Archive gmsh-4.3.0-Windows64.zip -DestinationPath .
             echo "unzipped gmsh"
             copy gmsh-4.3.0-Windows64\gmsh.exe $env:CONDA_INSTALL_LOCN\Scripts\
             echo "copied gmsh"
