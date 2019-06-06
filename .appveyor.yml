@@ -87,7 +87,7 @@ build: off
 
 test_script:
     - python setup.py egg_info
-    - if !%FIPY_INLINE%==! python setup.py test 1> NUL 2>&1
+    - if defined FIPY_INLINE python setup.py test 1> NUL 2>&1
     - python setup.py test
     - conda env export
 # deploy_script:
