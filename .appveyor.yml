@@ -67,12 +67,17 @@ install:
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe install --quiet --name root python fipy
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe uninstall --quiet fipy
     # FIXME: fipy recipe on conda-forge doesn't have gmsh
+    - cmd: echo "TARGET_ARCH: %TARGET_ARCH%"
+    - cmd: echo "working directory: %cd%"
     - ps: |
         $ErrorActionPreference = "Stop";
+        echo "env:TARGET_ARCH: $env:TARGET_ARCH"
         if ($env:TARGET_ARCH -eq "x64") {
+            echo "getting gmsh"
             (new-object net.webclient).DownloadFile('https://gmsh.info/bin/Windows/gmsh-4.3.0-Windows64.zip', 'gmsh-4.3.0-Windows64.zip');
             Add-Type -A 'System.IO.Compression.FileSystem';
             [IO.Compression.ZipFile]::ExtractToDirectory('gmsh-4.3.0-Windows64.zip', '.');
+            echo "got gmsh"
         }
     - ps: $blockRDp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
     - cmd: if "%TARGET_ARCH%" == "x64" copy gmsh-4.3.0-Windows64\gmsh.exe %CONDA_INSTALL_LOCN%\Scripts\
