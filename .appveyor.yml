@@ -66,29 +66,15 @@ install:
     # Configure the VM.
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe install --quiet --name root python fipy
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe uninstall --quiet fipy
-    - cmd: echo "working directory is %cd%"
     # FIXME: fipy recipe on conda-forge doesn't have gmsh
     - ps: |
         $ErrorActionPreference = "Stop";
-        echo "env..TARGET_ARCH  is $env:TARGET_ARCH"
         if ($env:TARGET_ARCH -eq "x64") {
-            echo "working directory is $(get-location)"
-            echo "getting gmsh"
             Invoke-WebRequest -Uri 'https://gmsh.info/bin/Windows/gmsh-4.3.0-Windows64.zip' -OutFile gmsh-4.3.0-Windows64.zip
-            echo "got gmsh"
-            echo "$(ls)"
             Add-Type -A 'System.IO.Compression.FileSystem'
-            echo "unzipping gmsh"
-            echo "$(ls)"
             Expand-Archive gmsh-4.3.0-Windows64.zip -DestinationPath .
-            echo "unzipped gmsh"
             copy gmsh-4.3.0-Windows64\gmsh.exe $env:CONDA_INSTALL_LOCN\Scripts\
-            echo "copied gmsh"
-            echo "$(ls) $env:CONDA_INSTALL_LOCN\Scripts\"
         }
-    - ps: $blockRDp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-    # comment
-
     - cmd: if "%TARGET_ARCH%" == "x86" conda.exe install --quiet --name root python numpy scipy matplotlib
     - cmd: if "%TARGET_ARCH%" == "x86" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root mayavi weave
     - cmd: if "%TARGET_ARCH%" == "x86" if "%FIPY_SOLVERS%" == "pysparse" conda.exe install --quiet --name root pysparse
