@@ -66,10 +66,10 @@ install:
     # Configure the VM.
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe install --quiet --name root python fipy
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe uninstall --quiet fipy
-    # FIXME: fipy recipe on conda-forge doesn't have gmsh
+    # FIXME: fipy recipe on conda-forge doesn't have gmsh compatible with Python 2.7
     - ps: |
         $ErrorActionPreference = "Stop";
-        if ($env:TARGET_ARCH -eq "x64") {
+        if (($env:TARGET_ARCH -eq "x64") -and ($env:CONDA_PY -eq "27")) {
             Invoke-WebRequest -Uri 'https://gmsh.info/bin/Windows/gmsh-4.3.0-Windows64.zip' -OutFile gmsh-4.3.0-Windows64.zip
             Add-Type -A 'System.IO.Compression.FileSystem'
             Expand-Archive gmsh-4.3.0-Windows64.zip -DestinationPath .
