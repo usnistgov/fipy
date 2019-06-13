@@ -158,11 +158,11 @@ or a
 .. _GitHub:        https://github.com/usnistgov/fipy
 .. |gitter|        image:: https://badges.gitter.im/usnistgov/fipy.svg
 .. _gitter:        https://gitter.im/usnistgov/fipy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
-.. |CircleCI|      image:: https://img.shields.io/circleci/project/github/usnistgov/fipy/develop.svg?label=Linux
+.. |CircleCI|      image:: https://img.shields.io/circleci/project/github/usnistgov/fipy/master.svg?label=Linux
 .. _CircleCI:      https://circleci.com/gh/usnistgov/fipy
-.. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/develop.svg?label=macOS
+.. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/master.svg?label=macOS
 .. _TravisCI:      https://travis-ci.org/usnistgov/fipy
-.. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=develop&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
+.. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=master&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
 .. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy
 .. |OpenHub|       image:: https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif
 .. _OpenHub:       https://www.openhub.net/p/fipy
@@ -175,4 +175,4 @@ or a
 .. |Codacy|         image:: https://api.codacy.com/project/badge/Grade/d02921bb54b14e88a1e2e1f5520133f4
 .. _Codacy:         https://www.codacy.com/app/tkphd/fipy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=usnistgov/fipy&amp;utm_campaign=Badge_Grade
 .. |Binder|        image:: https://mybinder.org/badge.svg
-.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/develop?filepath=examples%2Findex.ipynb
+.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/master?filepath=examples%2Findex.ipynb
