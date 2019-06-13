@@ -132,8 +132,7 @@ Obtaining FiPy
 --------------
 
 :term:`FiPy` is freely available for download via Git_ or as a
-compressed archive from
-<http://www.ctcms.nist.gov/fipy/download>. Please see
+`compressed archive`_. Please see
 :ref:`documentation:GIT` for instructions on obtaining :term:`FiPy`
 with Git_.
 
@@ -145,7 +144,7 @@ with Git_.
    this issue automatically).
 
 .. _Git:       https://github.com/usnistgov/fipy
-.. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
+.. _compressed archive:      https://github.com/usnistgov/fipy/releases
 
 ---------------
 Installing FiPy
