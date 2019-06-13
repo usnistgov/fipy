@@ -3,6 +3,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
+from fipy.tools.decorators import deprecate
 
 __all__ = ["CellVariable"]
 from future.utils import text_to_native_str
@@ -402,6 +403,7 @@ class CellVariable(_MeshVariable):
         return self._faceGrad
 
     @property
+    @deprecate(new_name="grad.arithmeticFaceValue", version=3.3)
     def faceGradAverage(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `FaceVariable` using averaging
