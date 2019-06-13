@@ -61,7 +61,7 @@ class MayaviDaemon(Mayavi):
         Parameters
         ----------
 
-        - argv : `list` of `strings`
+        argv : `list` of `strings`
 
           The list of command line arguments.
         """

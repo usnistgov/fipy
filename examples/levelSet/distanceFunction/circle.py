@@ -24,7 +24,8 @@ script. Firstly, setup the parameters.
 
 Construct the mesh.
 
-.. index:: Grid2D
+.. index::
+   single: Grid2D
 
 >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, communicator=serialComm)
 

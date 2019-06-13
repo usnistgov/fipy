@@ -12,7 +12,8 @@ on a 1D mesh of length
 
 We create an appropriate mesh
 
-.. index:: Grid1D
+.. index::
+   single: Grid1D
 
 >>> from fipy import CellVariable, Grid1D, NthOrderBoundaryCondition, DiffusionTerm, Viewer, GeneralSolver
 
@@ -22,7 +23,8 @@ We create an appropriate mesh
 
 and initialize the solution variable to 0
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> var = CellVariable(mesh=mesh, name='solution variable')
 
@@ -42,7 +44,8 @@ or
 >>> alpha3 = 4.
 >>> alpha4 = -3.
 
-.. index:: NthOrderBoundaryCondition
+.. index::
+   single: NthOrderBoundaryCondition
 
 >>> BCs = (NthOrderBoundaryCondition(faces=mesh.facesLeft, value=alpha3, order=2),
 ...        NthOrderBoundaryCondition(faces=mesh.facesRight, value=alpha4, order=3))

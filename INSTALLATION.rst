@@ -108,7 +108,8 @@ Recommended Method
      to run and visualize :term:`FiPy` simulations. On Windows_, there
      are fewer packages available via conda_, particularly amongst the
      sparse matrix :ref:`SOLVERS`, but the system still should be
-     functional.
+     functional. Significantly, you will need to download and install
+     :ref:`Gmsh` manually when using Python 2.7.
 
 .. attention::
 

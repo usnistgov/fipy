@@ -49,7 +49,7 @@ class FaceVariable(_MeshVariable):
 
         Returns
         -------
-        divergence : CellVariable
+        divergence : fipy.variables.cellVariable.CellVariable
             one rank lower than `self`
 
         Examples

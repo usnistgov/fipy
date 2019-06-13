@@ -36,6 +36,7 @@ py:class fipy.terms.term.implicitSourceTerm.ImplicitSourceTerm
 
 # fipy.tests
 py:class _SelectiveDocTestParser
+py:class setuptools.command.test.test
 
 # fipy.tools
 py:class PhysicalQuantity
@@ -76,6 +77,13 @@ py:class examples.levelSet.electroChem.adsorbingSurfactantEquation.AdsorbingSurf
 py:func examples.levelSet.electroChem.leveler.runLeveler
 py:func examples.levelSet.electroChem.simpleTrenchSystem.runSimpleTrenchSystem
 
+# numpy-like documentation
+
+py:class function
+py:class optional
+py:class array_like
+py:class ndarray
+
 # other
 py:mod weave
 py:mod weave.blitz
@@ -92,6 +100,7 @@ py:func numerix.max
 py:func numerix.min
 py:mod Numeric
 py:func streamplot
+py:class future.types.newobject.newobject
 
 # Python exceptions
 py:class exceptions.Exception

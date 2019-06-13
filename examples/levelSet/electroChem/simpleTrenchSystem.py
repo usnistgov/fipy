@@ -15,7 +15,8 @@ at the command line. The results of the simulation will be displayed and the wor
 `finished` in the terminal at the end of the simulation. To run with a different
 number of time steps change the ``numberOfSteps`` argument as follows,
 
-.. index:: runSimpleTrenchSystem
+.. index::
+   single: runSimpleTrenchSystem
 
 >>> runSimpleTrenchSystem(numberOfSteps=2, displayViewers=False) #doctest: +LSMLIB
 1
@@ -52,7 +53,8 @@ example in order not to complicate the mesh. Further examples will
 simulate more realistic boundary layer depths but will also have more
 complex meshes requiring the :command:`gmsh` software.
 
-.. index:: gmsh
+.. index::
+   module: gmsh
 
 .. this is kind of nasty, but reST tables can't handle what we need, particularly decimal alignment
 

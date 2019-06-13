@@ -86,6 +86,44 @@ commands:
           path: test-reports
           destination: test-reports
 
+  build_html_docs:
+    description: "Build HTML Docs"
+
+    steps:
+      - run:
+          name: Build Docs
+          command: |
+            source activate ~/project/test-environment
+            export ETS_TOOLKIT=null
+            python setup.py build_docs --html
+
+      - store_artifacts:
+          path: ~/project/documentation/_build/html
+
+  build_pdf_docs:
+    description: "Build PDF Docs"
+
+    steps:
+      - run:
+          name: Install LaTeX
+          command: |
+            apt-get --yes update
+            apt-get --yes install texlive-latex-base
+            apt-get --yes install texlive-fonts-recommended
+            apt-get --yes install texlive-fonts-extra
+            apt-get --yes install texlive-latex-extra
+            apt-get --yes install texlive-science
+
+      - run:
+          name: Build Docs
+          command: |
+            source activate ~/project/test-environment
+            export ETS_TOOLKIT=null
+            python setup.py build_docs --pdf
+
+      - store_artifacts:
+          path: ~/project/documentation/_build/latex/fipy.pdf
+
   # localize changes to cache name to these two commands
   save_conda_cache:
     steps:
@@ -273,6 +311,60 @@ jobs:
             conda install --channel conda-forge black
             black --target-version py27 --fast --diff --check setup.py
 
+  build-27-docs:
+    <<: *defaults2
+
+    steps:
+      - checkout
+
+      - run:
+          name: fetch tags
+          command: git fetch origin --tags
+
+      - restore_conda_cache
+
+      - attach_workspace:
+          at: ~/project
+
+      - run:
+          name: install sphinx
+          command: |
+            source activate ~/project/test-environment
+            conda install --channel conda-forge sphinx future
+            pip install sphinxcontrib-bibtex
+            pip install numpydoc
+            conda install --channel conda-forge matplotlib pandas imagemagick
+
+      - build_html_docs
+
+      - build_pdf_docs
+
+  build-36-docs:
+    <<: *defaults3
+
+    steps:
+      - checkout
+
+      - run:
+          name: fetch tags
+          command: git fetch origin --tags
+
+      - restore_conda_cache
+
+      - attach_workspace:
+          at: ~/project
+
+      - run:
+          name: install sphinx
+          command: |
+            source activate ~/project/test-environment
+            conda install --channel conda-forge sphinx future
+            pip install sphinxcontrib-bibtex
+            pip install numpydoc
+            conda install --channel conda-forge matplotlib pandas imagemagick
+
+      - build_html_docs
+
 workflows:
   version: 2
 
@@ -280,6 +372,12 @@ workflows:
     jobs:
       - conda2_env
       - conda3_env
+      - build-27-docs:
+          requires:
+            - conda2_env
+      - build-36-docs:
+          requires:
+            - conda3_env
       - pylint:
           requires:
             - conda2_env

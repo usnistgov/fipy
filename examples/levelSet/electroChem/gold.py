@@ -15,7 +15,8 @@ at the command line. The results of the simulation will be displayed and the wor
 only run for 10 time steps. To run with a different number of time steps change
 the ``numberOfSteps`` argument as follows,
 
-.. index:: runGold
+.. index::
+   single: runGold
 
 >>> runGold(numberOfSteps=10, displayViewers=False) # doctest: +GMSH, +LSM
 1
@@ -25,7 +26,8 @@ results displayed on the screen. This example has a more realistic
 default boundary layer depth and thus requires `gmsh` to construct a
 more complex mesh.
 
-.. index:: gmsh
+.. index::
+   module: gmsh
 
 There are a few differences between the gold superfill model presented
 in this example and in :mod:`examples.levelSet.electroChem.simpleTrenchSystem`.

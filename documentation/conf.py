@@ -33,7 +33,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
               'sphinx.ext.imgconverter',
-              'numpydoc',
+              'sphinx.ext.napoleon',
               'redirecting_html',
               'sphinxcontrib.bibtex',
               'matplotlib.sphinxext.plot_directive']
@@ -92,8 +92,6 @@ exclude_patterns = ['fipy/generated/modules.rst',
                     'documentation/_templates',
                     'documentation/tutorial/package/generated/modules.rst',
                     'documentation/sphinxext',
-                    'documentation/sphinxext/bibtex/bibstuff/examples/*.rst',
-                    '**/.svn',
                     '**/.git',
                     'worktrees']
 
@@ -128,9 +126,14 @@ autosummary_generate = ['examples/diffusion/index.rst',
                         'examples/reactiveWetting/index.rst',
                         'examples/updating/index.rst']
 
-autodoc_member_order = 'alphabetical'
+autodoc_default_options = {
+    'member-order': 'alphabetical',
+    'special-members': None,
+}
 
 autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'PyTrilinos.NOX']
+
+napoleon_numpy_docstring = True
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -229,7 +232,17 @@ latex_elements = {
     'preamble': common_preamble + """
 
     \\makeatletter
-    \\renewcommand{\\maketitle}{%
+    \\newcommand{\\sphinxbackoftitlepage}{%
+      \\changepage{}{}{}{}{}{}{}{}{}
+      \\vspace*{\\fill}
+      \\input LICENSE
+      \\rule{\\textwidth}{0.1pt}
+      \\input DISCLAIMER
+    }
+    \\renewcommand{\\sphinxmaketitle}{%
+      \\let\\spx@tempa\\relax
+      \\ifHy@pageanchor\\def\\spx@tempa{\\Hy@pageanchortrue}\\fi
+      \\hypersetup{pageanchor=false}% avoid duplicate destination warnings
       \\begin{titlepage}%
         \\let\\footnotesize\\small
         \\let\\footnoterule\\relax
@@ -263,16 +276,13 @@ latex_elements = {
         \\end{flushright}%\\par
         \\@thanks
       \\end{titlepage}%
-      \\clearpage%
-      \\changepage{}{}{}{}{}{}{}{}{}
-      \\vspace*{\\fill}
-      \\input LICENSE
-      \\rule{\\textwidth}{0.1pt}
-      \\input DISCLAIMER
-      \\clearpage
       \\setcounter{footnote}{0}%
       \\let\\thanks\\relax\\let\\maketitle\\relax
       %\\gdef\\@thanks{}\\gdef\\@author{}\\gdef\\@title{}
+      \\clearpage
+      \\ifdefined\\sphinxbackoftitlepage\\sphinxbackoftitlepage\\fi
+      \\if@openright\\cleardoublepage\\else\\clearpage\\fi
+      \\spx@tempa
     }
     \\makeatother
 
@@ -325,7 +335,7 @@ imgmath_latex_preamble = common_preamble
 
 # refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/2/', None),
+    'python': ('https://docs.python.org/3/', None),
     'numpy': ('https://docs.scipy.org/doc/numpy/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
     'matplotlib': ('https://matplotlib.org/', None)}

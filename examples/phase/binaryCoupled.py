@@ -3,7 +3,8 @@
 It is straightforward to extend a phase field model to include binary alloys.
 As in :mod:`examples.phase.simple`, we will examine a 1D problem
 
-.. index:: Grid1D
+.. index::
+   single: Grid1D
 
 >>> from fipy import CellVariable, Variable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer
 >>> from fipy.tools import numerix
@@ -27,7 +28,8 @@ The Helmholtz free energy functional can be written as the integral
 
 over the volume :math:`\\mathcal{V}` as a function of phase :math:`\\phi` [#phi]_
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> phase = CellVariable(name="phase", mesh=mesh, hasOld=1)
 
@@ -37,7 +39,8 @@ composition :math:`C`
 
 and temperature :math:`T` [#T]_
 
-.. index:: Variable
+.. index::
+   single: Variable
 
 >>> T = Variable(name="temperature")
 
@@ -386,7 +389,8 @@ deduce the liquidus and solidus compositions as
    - \\exp\\left(-\\frac{L_A\\left(T - T_M^A\\right)}{T_M^A}\\frac{V_m}{R T}\\right)} \\\\
    C_S &= \\exp\\left(-\\frac{L_B\\left(T - T_M^B\\right)}{T_M^B}\\frac{V_m}{R T}\\right) C_L
 
-.. index:: exp
+.. index::
+   single: exp
 
 >>> Cl = ((1. - numerix.exp(-enthalpyA * Vm / (R * T)))
 ...       / (numerix.exp(-enthalpyB * Vm / (R * T)) - numerix.exp(-enthalpyA * Vm / (R * T))))
@@ -419,7 +423,9 @@ We'll need a function to return the two conditions for equilibrium
    \\frac{L_B\\left(T - T_M^B\\right)}{T_M^B} V_m
    + R T \\ln C_S - R T \\ln C_L
 
-.. index:: log, array
+.. index::
+   single: log
+   single: array
 
 >>> def equilibrium(C):
 ...     return [numerix.array(enthalpyA * Vm
@@ -449,7 +455,8 @@ and we'll have much better luck if we also supply the Jacobian
 ...     return R * T * numerix.array([[-1. / (1 - C[0]), 1. / (1 - C[1])],
 ...                                   [ 1. / C[0],      -1. / C[1]]])
 
-.. index:: SciPy
+.. index::
+   module: scipy
 
 >>> try:
 ...     from scipy.optimize import fsolve # doctest: +SCIPY
@@ -493,7 +500,10 @@ non-linear problem to convergence. We use the "residual" of the equations
 (a measure of how well they think they have solved the given set of linear
 equations) as a test for how long to sweep.
 
-.. index:: LinearLUSolver, solve, sweep
+.. index::
+   single: LinearLUSolver
+   single: solve
+   single: sweep
 
 We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.

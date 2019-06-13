@@ -75,13 +75,15 @@ To start, some parameters are declared.
 
 Build the mesh.
 
-.. index:: Grid2D
+.. index::
+   single: Grid2D
 
 >>> mesh = Grid2D(nx=N, ny=N, dx=dL, dy=dL)
 
 Declare the variables.
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> pressure = CellVariable(mesh=mesh, name='pressure')
 >>> pressureCorrection = CellVariable(mesh=mesh)
@@ -230,7 +232,12 @@ vector are required by the SIMPLE algorithm. Additionally, the
 factor to relax the solution. This argument cannot be passed to
 :meth:`~fipy.terms.term.Term.solve`.
 
-.. index:: sweep, cacheMatrix, getMatrix, cacheRHSvector, getRHSvector
+.. index::
+   single: sweep
+   single: cacheMatrix
+   single: matrix
+   single: cacheRHSvector
+   single: RHSvector
 
 >>> from builtins import range
 >>> for sweep in range(sweeps):

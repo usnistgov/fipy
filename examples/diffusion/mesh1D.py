@@ -93,7 +93,9 @@ something like::
 
 plus additional code for the boundary conditions. In :term:`FiPy`, you would write
 
-.. index:: ExplicitDiffusionTerm, TransientTerm
+.. index::
+   single: ExplicitDiffusionTerm
+   single: TransientTerm
 
 >>> eqX = TransientTerm() == ExplicitDiffusionTerm(coeff=D)
 
@@ -362,7 +364,8 @@ Because :term:`FiPy` considers diffusion to be a flux from one cell to the next,
 through the intervening face, we must define the non-uniform diffusion
 coefficient on the mesh faces
 
-.. index:: FaceVariable
+.. index::
+   single: FaceVariable
 
 >>> D = FaceVariable(mesh=mesh, value=1.0)
 >>> X = mesh.faceCenters[0]
