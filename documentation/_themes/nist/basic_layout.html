@@ -105,11 +105,6 @@
     {%- endfor %}
 {%- endmacro %}
 
-{%- if html_tag %}
-{{ html_tag }}
-{%- else %}
-<html xmlns="http://www.w3.org/1999/xhtml"{% if language is not none %} lang="{{ language }}"{% endif %}>
-{%- endif %}
 <!--[if IEMobile 7]><html class="iem7 no-js"  lang="en" dir="ltr"><![endif]-->
 <!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7 no-js"  lang="en" dir="ltr"><![endif]-->
 <!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8 no-js"  lang="en" dir="ltr"><![endif]-->
@@ -117,7 +112,6 @@
 <!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html class="no-js"  lang="en" dir="ltr" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# book: http://ogp.me/ns/book# profile: http://ogp.me/ns/profile# video: http://ogp.me/ns/video# product: http://ogp.me/ns/product# content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#"><!--<![endif]-->
 
   <head>
-<!--[if IE]><![endif]-->
 <meta charset="utf-8" />
 <link rel="shortcut icon" href="https://www.nist.gov/sites/all/themes/nist_style/favicon.ico" type="image/vnd.microsoft.icon" />
 <script type="text/x-mathjax-config">MathJax.Hub.Config({
@@ -167,7 +161,6 @@ ga('NISTGSA.send', 'pageview');</script>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     {%- endif %}
     {%- if use_meta_charset or html5_doctype %}
-    <meta charset="{{ encoding }}" />
     {%- else %}
     <meta http-equiv="Content-Type" content="text/html; charset={{ encoding }}" />
     {%- endif %}
