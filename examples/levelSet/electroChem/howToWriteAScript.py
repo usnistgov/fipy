@@ -88,7 +88,9 @@ Build the mesh:
 >>> numberOfSteps = parse('--numberOfSteps', action='store',
 ...     type='int', default=2)
 
-.. index:: sqrt, exp
+.. index::
+   single: sqrt
+   single: exp
 
 >>> from fipy import *
 
@@ -104,7 +106,8 @@ Build the mesh:
 ...          + int((trenchDepth + boundaryLayerDepth) / cellSize)
 >>> xCells = int(trenchSpacing / 2 / cellSize)
 
-.. index:: Grid2D
+.. index::
+   single: Grid2D
 
 >>> from .metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 >>> from .adsorbingSurfactantEquation import AdsorbingSurfactantEquation
@@ -127,7 +130,8 @@ interface at :math:`\phi = 0`) and :math:`|\nabla\phi| = 1`.
 First, create the :math:`\phi` variable, which is initially set to -1 everywhere.
 Create an initial variable,
 
-.. index:: DistanceVariable
+.. index::
+   single: DistanceVariable
 
 >>> narrowBandWidth = numberOfCellsInNarrowBand * cellSize
 >>> distanceVar = DistanceVariable(
@@ -157,7 +161,8 @@ variables need to be created that govern the concentrations of various species.
 Create the catalyst surfactant coverage, :math:`\theta`, variable.
 This variable influences the deposition rate.
 
-.. index:: SurfactantVariable
+.. index::
+   single: SurfactantVariable
 
 >>> catalystVar = SurfactantVariable(
 ...     name="catalyst variable",
@@ -167,7 +172,8 @@ This variable influences the deposition rate.
 Create the bulk catalyst concentration, :math:`c_{\theta}`,
 in the electrolyte,
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> bulkCatalystVar = CellVariable(
 ...     name='bulk catalyst variable',
@@ -269,7 +275,8 @@ The variable :math:`\phi` is advected by the
 
 and is set up with the following commands:
 
-.. index:: AdvectionTerm
+.. index::
+   single: AdvectionTerm
 
 >>> advectionEquation = TransientTerm() + AdvectionTerm(extensionVelocityVariable)
 
@@ -350,7 +357,8 @@ The surfactant bulk diffusion equation is set up with the following commands.
 
 If running interactively, create viewers.
 
-.. index:: MayaviSurfactantViewer
+.. index::
+   single: MayaviSurfactantViewer
 
 >>> if __name__ == '__main__':
 ...     try:
@@ -406,7 +414,8 @@ The following is a short test case. It uses saved data from a
 simulation with 5 time steps. It is not a test for accuracy but a way
 to tell if something has changed or been broken.
 
-.. index:: loadtxt
+.. index::
+   single: loadtxt
 
 >>> import os
 

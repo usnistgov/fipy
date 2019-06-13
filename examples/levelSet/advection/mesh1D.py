@@ -32,7 +32,8 @@ script. Firstly, setup the parameters.
 
 Construct the mesh.
 
-.. index:: Grid1D
+.. index::
+   single: Grid1D
 
 >>> mesh = Grid1D(dx=dx, nx=nx, communicator=serialComm)
 

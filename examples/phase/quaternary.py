@@ -4,7 +4,8 @@ The same procedure used to construct the two-component phase field
 diffusion problem in :mod:`examples.phase.binary` can be used to build up a
 system of multiple components. Once again, we'll focus on 1D.
 
-.. index:: Grid1D
+.. index::
+   single: Grid1D
 
 >>> from fipy import CellVariable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, PowerLawConvectionTerm, DefaultAsymmetricSolver, Viewer
 >>> from fipy.tools import numerix
@@ -17,7 +18,8 @@ system of multiple components. Once again, we'll focus on 1D.
 We consider a free energy density :math:`f(\\phi, C_0,\\ldots,C_N, T)`
 that is a function of phase :math:`\\phi`
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> phase = CellVariable(mesh=mesh, name='phase', value=1., hasOld=1)
 
@@ -149,7 +151,8 @@ and a liquid phase rich in the two substitutional species.
 ...     rhoS += Cj.S
 ...     rhoL += Cj.L
 
-.. index:: log
+.. index::
+   single: log
 
 >>> for Cj in interstitials + substitutionals + [solvent]:
 ...     Cj.standardPotential = R * T * (numerix.log(Cj.L/rhoL)
@@ -244,7 +247,8 @@ interstitial diffusion equations, we arrange in canonical form as before:
    }_{\\text{convection}}
 
 
-.. index:: PowerLawConvectionTerm
+.. index::
+   single: PowerLawConvectionTerm
 
 >>> for Cj in interstitials:
 ...     phaseTransformation = (rho.harmonicFaceValue / (R * T)) \\
@@ -341,7 +345,7 @@ the solidus and liquidus concentrations
 If we're running interactively, we create a viewer
 
 .. index::
-   :module: viewers
+   module: viewers
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=([phase]
@@ -352,7 +356,8 @@ If we're running interactively, we create a viewer
 
 and again iterate to equilibrium
 
-.. .. index:: DefaultAsymmetricSolver
+.. .. index::
+..    single: DefaultAsymmetricSolver
 
 >>> solver = DefaultAsymmetricSolver(tolerance=1e-10)
 
@@ -377,7 +382,8 @@ and again iterate to equilibrium
 
 We can confirm that the far-field phases have remained separated
 
-.. .. index:: allclose
+.. .. index::
+..    single: allclose
 
 >>> X = mesh.faceCenters[0]
 >>> print(numerix.allclose(phase.faceValue[X.value==0], 1.0, rtol = 1e-5, atol = 1e-5))

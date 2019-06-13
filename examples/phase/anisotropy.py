@@ -90,7 +90,12 @@ where :math:`\beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2}`,
 + \arctan \frac{\partial \phi / \partial y}{\partial \phi / \partial x}`,
 :math:`\theta` is the orientation, and :math:`N` is the symmetry.
 
-.. index:: :math:`\pi`, pi, arctan, arctan2, tan
+.. index::
+   single: :math:`\pi`
+   single: pi
+   single: arctan
+   single: arctan2
+   single: tan
 
 >>> alpha = 0.015
 >>> c = 0.02

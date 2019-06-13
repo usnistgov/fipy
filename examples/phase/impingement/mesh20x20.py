@@ -14,7 +14,9 @@ with different initial conditions and a 2D mesh:
 >>> numberOfSteps = parse('--numberOfSteps', action = 'store',
 ...                       type = 'int', default = 10)
 
-.. index:: sqrt, Grid2D
+.. index::
+   single: sqrt
+   single: Grid2D
 
 >>> from fipy import CellVariable, ModularVariable, Grid2D, TransientTerm, DiffusionTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, GeneralSolver, Viewer
 >>> from fipy.tools import numerix, dump
@@ -60,14 +62,18 @@ The system is held isothermal at
 
 and is initialized to liquid everywhere
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> phase = CellVariable(name='phase field', mesh=mesh)
 
 The orientation is initialized to a uniform value to denote the
 randomly oriented liquid phase
 
-.. index:: ModularVariable, :math:`\pi`, pi
+.. index::
+    single: ModularVariable
+    single: :math:`\pi`
+    single: pi
 
 >>> theta = ModularVariable(
 ...     name='theta',
@@ -93,7 +99,10 @@ linearized in the manner demonstrated in :mod:`examples.phase.simple`
 (Kobayashi, semi-implicit). Here we use a function to build the equation,
 so that it can be reused later.
 
-.. index:: TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm
+.. index::
+   single: TransientTerm
+   single: ExplicitDiffusionTerm
+   single: ImplicitSourceTerm
 
 >>> def buildPhaseEquation(phase, theta):
 ... 
@@ -115,7 +124,8 @@ detail is that a source must be added to correct for the
 discretization of ``theta`` on the circle.  The source term requires the
 evaluation of the face gradient without the modular operators.
 
-.. index:: exp
+.. index::
+   single: exp
 
 >>> def buildThetaEquation(phase, theta):
 ... 
@@ -163,7 +173,8 @@ The solution will be tested against data that was created with ``steps
 modeling. The following code opens the file :file:`mesh20x20.gz` extracts the
 data and compares it with the `theta` variable.
 
-.. index:: loadtxt
+.. index::
+   single: loadtxt
 
 >>> import os
 >>> from future.utils import text_to_native_str

@@ -47,13 +47,15 @@ We create a 1D solution mesh
 >>> nx = 400
 >>> dx = L / nx
 
-.. index:: Grid1D
+.. index::
+   single: Grid1D
 
 >>> mesh = Grid1D(dx = dx, nx = nx)
 
 We create the phase field variable
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> phase = CellVariable(name = "phase",
 ...                      mesh = mesh)
@@ -112,7 +114,9 @@ The analytical solution for this steady-state phase field problem, in an infinit
 
 or
 
-.. index:: tanh, sqrt
+.. index::
+   single: tanh
+   single: sqrt
 
 >>> x = mesh.cellCenters[0]
 >>> analyticalArray = 0.5*(1 - numerix.tanh((x - L/2)/(2*numerix.sqrt(kappa/W))))
@@ -175,7 +179,8 @@ answer, i.e., the solution is allowed to relax in time from the initial
 condition to the desired equilibrium solution.  To do so, we reintroduce the
 transient term from Equation :eq:`eq-phase:simple`
 
-.. index:: TransientTerm
+.. index::
+   single: TransientTerm
 
 >>> eq = TransientTerm() == DiffusionTerm(coeff=kappa) + S0
 
@@ -231,7 +236,8 @@ There are an infinite number of choices for this linearization, but
 many do not converge very well. One choice is that used by Ryo
 Kobayashi:
 
-.. index:: ImplicitSourceTerm
+.. index::
+   single: ImplicitSourceTerm
 
 >>> S0 = mPhi * phase * (mPhi > 0)
 >>> S1 = mPhi * ((mPhi < 0) - phase)
@@ -351,7 +357,8 @@ and thus must redeclare :math:`\phi` on the new mesh
 We choose the parameter values appropriate for nickel, given in
 :cite:`Warren:1995`
 
-.. index:: Variable
+.. index::
+   single: Variable
 
 >>> Lv = 2350 # J / cm**3
 >>> Tm = 1728. # K
@@ -406,7 +413,8 @@ from the kinetics of moving it, we first equilibrate at the melting
 point. We now use the :meth:`~fipy.terms.term.Term.sweep` method instead of
 :meth:`~fipy.terms.term.Term.solve` because we require the residual.
 
-.. index:: sweep
+.. index::
+   single: sweep
 
 >>> timeStep = 1e-6
 >>> from builtins import range
@@ -456,7 +464,8 @@ If SciPy is available, another way to compare against the expected result
 is to do a least-squared fit to determine the interface velocity and
 thickness
 
-.. index:: SciPy
+.. index::
+   module: scipy
 
 >>> try:
 ...     def tanhResiduals(p, y, x, t):

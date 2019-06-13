@@ -15,7 +15,8 @@ at the command line. The results of the simulation will be displayed and the wor
 only run for 200 time steps. To run with a different number of time steps change
 the ``numberOfSteps`` argument as follows,
 
-.. index:: runLeveler
+.. index::
+   single: runLeveler
 
 >>> runLeveler(numberOfSteps=10, displayViewers=False, cellSize=0.25e-7) # doctest: +GMSH, +LSM
 1
@@ -24,7 +25,8 @@ Change the ``displayViewers`` argument to ``True`` if you wish to see the
 results displayed on the screen. This example requires :term:`gmsh` to
 construct the mesh.
 
-.. index:: gmsh
+.. index::
+   module: gmsh
 
 This example models the case when suppressor, accelerator and leveler
 additives are present in the electrolyte. The suppressor is
