@@ -49,10 +49,10 @@ def Grid3D(dx=1., dy=1., dz=1.,
            overlap=2, communicator=parallelComm):
 
     r""" Factory function to select between UniformGrid3D and
-    NonUniformGrid3D. If `L{xyz}` is specified, the length of the domain is
-    always `L{xyx}` regardless of `d{xyz}`, unless `d{xyz}` is a list of
-    spacings, in which case `L{xyz}` will be the sum of `d{xyz}` and
-    `n{xyz}` will be the count of `d{xyz}`.
+    NonUniformGrid3D. If `L{x,y,z}` is specified, the length of the domain
+    is always `L{x,y,z}` regardless of `d{x,y,z}`, unless `d{x,y,z}` is a
+    list of spacings, in which case `L{x,y,z}` will be the sum of
+    `d{x,y,z}` and `n{x,y,z}` will be the count of `d{x,y,z}`.
 
     :Parameters:
 
@@ -93,10 +93,10 @@ def Grid3D(dx=1., dy=1., dz=1.,
 
 def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communicator=parallelComm):
     r""" Factory function to select between UniformGrid2D and
-    NonUniformGrid2D. If `L{xy}` is specified, the length of the domain is
-    always `L{xy}` regardless of `d{xy}`, unless `d{xy}` is a list of
-    spacings, in which case `L{xy}` will be the sum of `d{xy}` and `n{xy}`
-    will be the count of `d{xy}`.
+    NonUniformGrid2D. If `L{x,y}` is specified, the length of the domain is
+    always `L{x,y}` regardless of `d{x,y}`, unless `d{x,y}` is a list of
+    spacings, in which case `L{x,y}` will be the sum of `d{x,y}` and
+    `n{x,y}` will be the count of `d{x,y}`.
 
     :Parameters:
 
