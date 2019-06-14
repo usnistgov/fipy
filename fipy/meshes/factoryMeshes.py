@@ -13,10 +13,8 @@ def _dnl(dx, nx, Lx):
     """
     Initialize arguments for grid classes based on an over determined set
     of initial arguments.  The order of precedence is `nx` then `Lx` then
-    `dx`, unless `dx` is a list.  i.e. If `Lx` is specified the length of
-    the domain is always `Lx` regardless of `dx`, unless `dx` is a list of
-    spacings, in which case `Lx` will be the sum of `dx` and `nx` will be
-    the count of `dx`.
+    `dx`.  i.e. If `Lx` is specified the length of
+    the domain is always `Lx` regardless of `dx`.
 
     :Parameters:
 
@@ -34,8 +32,6 @@ def _dnl(dx, nx, Lx):
     (2.2, 4)
     >>> print(_dnl(1., 6, 15.))
     (2.5, 6)
-    >>> print(_dnl([0.5, 1., 1., 2.5], 6, 15.))
-    ([0.5, 1., 1., 2.5], 4)
     """
     if Lx is None:
         if nx is None:
