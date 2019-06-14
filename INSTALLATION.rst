@@ -39,7 +39,7 @@ Binder_. The default notebook gives a rudimentary introduction to :term:`FiPy`
 syntax and, like any `Jupyter Notebook`_ interface, tab completion will help
 you explore the package interactively.
 
-.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/develop
+.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/master
 .. _Jupyter Notebook:    http://jupyter.org
 
 ------------------

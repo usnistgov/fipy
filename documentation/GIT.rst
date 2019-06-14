@@ -51,11 +51,6 @@ in the base directory of the working copy. The main branches for FiPy are:
     and should pass all of the tests (or should be documented that it does
     not).
 
-``develop``
-    designates the latest state of code destined for the next release. This
-    code should be stable and pass all tests, but may be awaiting new
-    features or bug fixes before merging to ``master`` and formal release.
-
 Past releases of FiPy are tagged as
 
 ``x.y.z``
@@ -72,10 +67,15 @@ Any other branches will not generally be of interest to most users.
 .. note::
 
    For some time now, we have done all significant development work on
-   branches, only merged back to ``develop`` when the tests pass
-   successfully.  Although we cannot guarantee that ``develop`` will never
+   branches, only merged back to ``master`` when the tests pass
+   successfully.  Although we cannot guarantee that ``master`` will never
    be broken, you can always check our :ref:`CONTINUOUSINTEGRATION` status
    to find the most recent revision that it is running acceptably.
+
+   Historically, we merged to ``develop`` before merging to ``master``.  We
+   no longer do this, although for time being, ``develop`` is kept
+   synchronized with ``master``.  In a future release, we will remove the
+   ``develop`` branch altogether.
 
 For those who are interested in learning more about Git, a wide variety of
 online sources are available, starting with the `official Git website`_.
