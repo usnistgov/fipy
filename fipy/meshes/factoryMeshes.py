@@ -11,10 +11,10 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 def _dnl(dx, nx, Lx):
     """
-    Initialize arguments for grid classes based on an over determined
-    set of initial arguments. The order of precedence is `nx` then
-    `Lx` then `dx`. i.e. If `Lx` is specified the length of the domain
-    is always `Lx` regardless of `dx`.
+    Initialize arguments for grid classes based on an over determined set
+    of initial arguments.  The order of precedence is `nx` then `Lx` then
+    `dx`.  i.e. If `Lx` is specified the length of
+    the domain is always `Lx` regardless of `dx`.
 
     :Parameters:
 
@@ -49,8 +49,10 @@ def Grid3D(dx=1., dy=1., dz=1.,
            overlap=2, communicator=parallelComm):
 
     r""" Factory function to select between UniformGrid3D and
-    NonUniformGrid3D.  If `Lx` is specified the length of the domain
-    is always `Lx` regardless of `dx`.
+    NonUniformGrid3D. If `L{x,y,z}` is specified, the length of the domain
+    is always `L{x,y,z}` regardless of `d{x,y,z}`, unless `d{x,y,z}` is a
+    list of spacings, in which case `L{x,y,z}` will be the sum of
+    `d{x,y,z}` and `n{x,y,z}` will be the count of `d{x,y,z}`.
 
     :Parameters:
 
@@ -91,8 +93,10 @@ def Grid3D(dx=1., dy=1., dz=1.,
 
 def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communicator=parallelComm):
     r""" Factory function to select between UniformGrid2D and
-    NonUniformGrid2D.  If `Lx` is specified the length of the domain
-    is always `Lx` regardless of `dx`.
+    NonUniformGrid2D. If `L{x,y}` is specified, the length of the domain is
+    always `L{x,y}` regardless of `d{x,y}`, unless `d{x,y}` is a list of
+    spacings, in which case `L{x,y}` will be the sum of `d{x,y}` and
+    `n{x,y}` will be the count of `d{x,y}`.
 
     :Parameters:
 
@@ -131,8 +135,10 @@ def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communic
 
 def Grid1D(dx=1., nx=None, Lx=None, overlap=2, communicator=parallelComm):
     r""" Factory function to select between UniformGrid1D and
-    NonUniformGrid1D.  If `Lx` is specified the length of the domain
-    is always `Lx` regardless of `dx`.
+    NonUniformGrid1D. If `Lx` is specified the length of the domain is
+    always `Lx` regardless of `dx`, unless `dx` is a list of spacings, in
+    which case `Lx` will be the sum of `dx` and `nx` will be the count of
+    `dx`.
 
     :Parameters:
 
@@ -168,8 +174,9 @@ def CylindricalGrid2D(dr=None, dz=None,
                       communicator=parallelComm):
 
     r""" Factory function to select between CylindricalUniformGrid2D and
-    CylindricalNonUniformGrid2D. If `Lx` is specified the length of
-    the domain is always `Lx` regardless of `dx`.
+    CylindricalNonUniformGrid2D. If `Lr` is specified the length of the
+    domain is always `Lr` regardless of `dr`, unless `dr` is a list of
+    spacings, in which case `Lr` will be the sum of `dr`.
 
     :Parameters:
 
@@ -221,8 +228,9 @@ def CylindricalGrid1D(dr=None, nr=None, Lr=None,
                       origin=(0,), overlap=2, communicator=parallelComm):
 
     r""" Factory function to select between CylindricalUniformGrid1D and
-    CylindricalNonUniformGrid1D. If `Lx` is specified the length of
-    the domain is always `Lx` regardless of `dx`.
+    CylindricalNonUniformGrid1D. If `Lr` is specified the length of the
+    domain is always `Lr` regardless of `dr`, unless `dr` is a list of
+    spacings, in which case `Lr` will be the sum of `dr`.
 
     :Parameters:
 
