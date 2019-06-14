@@ -99,11 +99,6 @@ class AbstractMesh(object):
     cellVolumes                = property(lambda s: s._scaledCellVolumes)
 
     @property
-    @deprecate(new_name="faceNormals", version=3.1)
-    def _faceNormals(self):
-        return self.faceNormals
-
-    @property
     def cellCenters(self):
         from fipy.variables.cellVariable import CellVariable
         return CellVariable(mesh=self, value=self._scaledCellCenters,
