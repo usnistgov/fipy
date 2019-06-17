@@ -21,8 +21,10 @@ args = sys.argv[1:]
 
 print("size\tcpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)")
 
+pyth = sys.executable or "python"
+
 for size in numerix.arange(2, 6.5, 0.5):
-    p = Popen(["python", benchmarker] + args
+    p = Popen([pyth, benchmarker] + args
               + ["--numberOfElements=%d" % int(10**size),
                  "--numberOfSteps=0"],
               stdout=PIPE,
@@ -30,7 +32,7 @@ for size in numerix.arange(2, 6.5, 0.5):
 
     cpu0, rsz0, vsz0 = monitor(p)
 
-    p = Popen(["python", benchmarker,
+    p = Popen([pyth, benchmarker,
                "--numberOfElements=%d" % int(10**size),
                "--numberOfSteps=%d" % steps,
                "--cpuBaseLine=%f" % cpu0] + args,

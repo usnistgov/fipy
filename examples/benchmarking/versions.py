@@ -51,6 +51,8 @@ env['PYTHONPATH'] = dir
 benchmarker = os.path.join(os.path.dirname(__file__),
                            "benchmarker.py")
 
+pyth = sys.executable or "python"
+
 try:
     client.checkout(url, dir)
 
@@ -66,14 +68,14 @@ try:
         try:
             client.update(dir, revision=entry.revision)
 
-            p = Popen(["python", benchmarker] + args
+            p = Popen([pyth, benchmarker] + args
                       + ["--numberOfSteps=0"],
                       stdout=PIPE,
                       stderr=PIPE)
 
             cpu0, rsz0, vsz0 = monitor(p)
 
-            p = Popen(["python", benchmarker] + args
+            p = Popen([pyth, benchmarker] + args
                       + ["--cpuBaseLine=%f" % cpu0],
                       stdout=PIPE,
                       stderr=PIPE,
