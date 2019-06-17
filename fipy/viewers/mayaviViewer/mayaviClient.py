@@ -5,6 +5,7 @@ __docformat__ = 'restructuredtext'
 
 import os
 import subprocess
+import sys
 import tempfile
 import time
 
@@ -78,7 +79,9 @@ class MayaviClient(AbstractViewer):
                        or resource_filename(Requirement.parse("FiPy"),
                                             "fipy/viewers/mayaviViewer/mayaviDaemon.py"))
 
-        cmd = ["python",
+        pyth = sys.executable or "python"
+
+        cmd = [pyth,
                daemon_file,
                "--lock",
                self.vtklockfname,
