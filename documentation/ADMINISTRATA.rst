@@ -198,7 +198,6 @@ Release from master
 ::
 
     $ git checkout master
-    $ git merge master
 
 Resolve any conflicts and tag the release::
 
