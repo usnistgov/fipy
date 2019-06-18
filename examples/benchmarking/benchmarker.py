@@ -101,7 +101,9 @@ f = open(path, "w")
 f.write(script)
 f.close()
 
-p = Popen(("python", path) + args, stdout=PIPE)
+pyth = sys.executable or "python"
+
+p = Popen((pyth, path) + args, stdout=PIPE)
 
 rsz, vsz, cpu = monitor(p)
 
