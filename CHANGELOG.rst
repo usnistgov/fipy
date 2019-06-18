@@ -11,6 +11,51 @@ Change Log
 Version |release|
 -----------------
 
+This release brings support for Python 2 and Python 3 from the same source,
+without any translation.  Thanks to `@pya <https://github.com/pya>`_ and
+`@woodscn <https://github.com/woodscn>`_ for getting things started.
+
+Pulls
+-----
+
+- Fix gmsh on windows
+  (`#648 <https://github.com/usnistgov/fipy/pull/648>`_)
+- Fix sphinx documentation
+  (`#647 <https://github.com/usnistgov/fipy/pull/647>`_)
+- Migrate to Py3k
+  (`#645 <https://github.com/usnistgov/fipy/pull/645>`_)
+- gmshMesh.py compatibility with Gmsh > 3.0.6
+  (`#644 <https://github.com/usnistgov/fipy/pull/644>`_)
+  Thanks to `@xfong <https://github.com/xfong>`_.
+
+Fixes
+-----
+
+- `#655 <https://github.com/usnistgov/fipy/issues/655>`_`_:
+  When Python 2 and 3 are installed, Mayavi wont work.
+  Thanks to `@Hendrik410 <https://github.com/Hendrik410>`_.
+- `#646 <https://github.com/usnistgov/fipy/issues/646>`_:
+  Deprecate develop branch
+- `#601 <https://github.com/usnistgov/fipy/issues/601>`_:
+  contents.rst and manual.rst are a recursive mess
+- `#597 <https://github.com/usnistgov/fipy/issues/597>`_:
+  Use GitHub link for the compressed archive in documentation
+- `#557 <https://github.com/usnistgov/fipy/issues/557>`_:
+  faceGradAverage is stupid
+- `#552 <https://github.com/usnistgov/fipy/issues/552>`_:
+  documentation integration
+- `#458 <https://github.com/usnistgov/fipy/issues/458>`_:
+  Documentation wrong for precedence of 'Lx' and 'dx' for
+  NonUniformGrids
+- `#457 <https://github.com/usnistgov/fipy/issues/457>`_:
+  Special methods are not included in Sphinx documentation
+- `#432 <https://github.com/usnistgov/fipy/issues/432>`_:
+  Python 3 issues
+
+-----------
+Version 3.2
+-----------
+
 This is predominantly a `DevOps`_ release.  The focus has been on making
 FiPy easier to install with :term:`conda`.  It's also possible to install a
 minimal set of prerequisites with :term:`pip`.  Further, :term:`FiPy` is
