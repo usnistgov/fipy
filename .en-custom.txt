@@ -47,8 +47,13 @@ IFPACK
 indices
 inlining
 intp
+IPython
+jupyter
 KLU
 LSMLIB
+matplotlib
+mayavi
+mayavi2
 mesh-element--by--mesh-element
 mol
 MPI
@@ -66,6 +71,7 @@ or's
 PBICGSTAB
 PCG
 PID
+PNG
 pre-assembled
 preconditioner
 pyAMG
