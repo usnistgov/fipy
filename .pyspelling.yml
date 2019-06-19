@@ -1,0 +1,22 @@
+spellchecker: hunspell
+
+matrix:
+- name: Python Source
+  sources:
+  - fipy/matrices/trilinosMatrix.py
+   # fipy/**/*.py
+  pipeline:
+  - pyspelling.filters.python:
+      comments: false
+  - pyspelling.filters.context:
+      context_visible_first: true
+      delimiters:
+      # Ignore text between inline back ticks
+      - open: '(?P<open>`+)'
+        close: '(?P=open)'
+      # Ignore doctest blocks
+      #  Source consists of a PS1 line followed by zero or more PS2 lines.
+      #  Want consists of any non-blank lines that do not start with PS1.
+      - open: '(?P<source>(?:^(?P<indent>[ ]*)>>> .*)(?:\n(?=P<indent>)\.\.\. .*)*)\n?'
+        content: ''
+        close: '(?P<want>(?:(?![ ]*$)(?![ ]*>>> ).*$\n?)*)'
