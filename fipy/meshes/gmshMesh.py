@@ -61,7 +61,7 @@ class MeshExportError(GmshException):
 def gmshVersion(communicator=parallelComm):
     """Determine the version of Gmsh.
 
-    We can't trust the generated .msh file for the correct version number, so
+    We can't trust the generated `.msh` file for the correct version number, so
     we have to retrieve it from the gmsh binary.
     """
     if communicator.procID == 0:
@@ -95,17 +95,17 @@ def _gmshVersion(communicator=parallelComm):
     return StrictVersion(version)
 
 def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parallelComm, order=1, mode='r', background=None):
-    """Open a Gmsh MSH file
+    """Open a Gmsh `MSH` file
 
     :Parameters:
       - `filename`: a string indicating gmsh output file
       - `dimensions`: an integer indicating dimension of mesh
       - `coordDimensions`: an integer indicating dimension of shapes
       - `order`: ???
-      - `mode`: a string beginning with 'r' for reading and 'w' for writing.
+      - `mode`: a string beginning with `r` for reading and `w` for writing.
         The file will be created if it doesn't exist when opened for writing;
         it will be truncated when opened for writing.
-        Add a 'b' to the mode for binary files.
+        Add a `b` to the mode for binary files.
       - `background`: a `CellVariable` that specifies the desired characteristic
         lengths of the mesh cells
     """
@@ -234,7 +234,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                    fileIsTemporary=fileIsTemporary)
 
 def openPOSFile(name, communicator=parallelComm, mode='w'):
-    """Open a Gmsh POS post-processing file
+    """Open a Gmsh `POS` post-processing file
     """
     if not mode.startswith('w'):
         raise ValueError("mode string must begin with 'w', not '%s'" % mode[0])
@@ -465,8 +465,8 @@ class MSHFile(GmshFile):
     its contents for use by a `Mesh` constructor.
 
     Can handle a partitioned mesh based on `parallelComm.Nproc`. If partitioning,
-    the msh file must either be previously partitioned with the number of
-    partitions matching `Nproc`, or the mesh must be specified with a geo file
+    the `.msh` file must either be previously partitioned with the number of
+    partitions matching `Nproc`, or the mesh must be specified with a `.geo` file
     or multiline string.
 
     Does not support gmsh versions < 2. If partitioning, gmsh
@@ -487,11 +487,11 @@ class MSHFile(GmshFile):
           - `dimensions`: an integer indicating dimension of mesh
           - `coordDimensions`: an integer indicating dimension of shapes
           - `communicator`: ???
-          - `gmshOutput`: output (if any) from Gmsh run that created .msh file
-          - `mode`: a string beginning with 'r' for reading and 'w' for writing.
+          - `gmshOutput`: output (if any) from Gmsh run that created `.msh` file
+          - `mode`: a string beginning with `r` for reading and `w` for writing.
             The file will be created if it doesn't exist when opened for writing;
             it will be truncated when opened for writing.
-            Add a 'b' to the mode for binary files.
+            Add a `b` to the mode for binary files.
           - `fileIsTemporary`: if `True`, `filename` should be cleaned up on deletion
         """
         self.dimensions = dimensions
@@ -505,7 +505,7 @@ class MSHFile(GmshFile):
 
     def _getMetaData(self):
         """
-        Extracts gmshVersion, file-type, and data-size in that
+        Extracts `gmshVersion`, file-type, and data-size in that
         order.
         """
         self._seekForHeader("MeshFormat")
@@ -630,7 +630,7 @@ class MSHFile(GmshFile):
         return facesToVertices.swapaxes(0, 1)[::-1], cellsToFaces.swapaxes(0, 1).copy('C'), facesDict
 
     def _translateNodesToVertices(self, entitiesNodes, vertexMap):
-        """Translates entitiesNodes from Gmsh node IDs to `vertexCoords` indices.
+        """Translates e`ntitiesNodes` from Gmsh node IDs to `vertexCoords` indices.
         """
         entitiesVertices = []
 
@@ -671,20 +671,20 @@ class MSHFile(GmshFile):
 
     def read(self):
         """
-        0. Build cellsToVertices
-        1. Recover needed vertexCoords and mapping from file using
-           cellsToVertices
-        2. Build cellsToVertIDs proper from vertexCoords and vertex map
+        0. Build `cellsToVertices`
+        1. Recover needed `vertexCoords` and mapping from file using
+           `cellsToVertices`
+        2. Build `cellsToVertIDs` proper from `vertexCoords` and vertex map
         3. Build faces
-        4. Build cellsToFaces
+        4. Build `cellsToFaces`
 
         Isolate relevant data into three files, store in
-        `self.nodesPath` for $Nodes,
-        `self.elemsPath` for $Elements.
-        `self.namesFile` for $PhysicalNames.
+        `self.nodesPath` for `$Nodes`,
+        `self.elemsPath` for `$Elements`.
+        `self.namesFile` for `$PhysicalNames`.
 
-        Returns vertexCoords, facesToVertexID, cellsToFaceID,
-                cellGlobalIDMap, ghostCellGlobalIDMap.
+        Returns `vertexCoords`, `facesToVertexID`, `cellsToFaceID`,
+                `cellGlobalIDMap`, `ghostCellGlobalIDMap`.
         """
         self.version, self.fileType, self.dataSize = self._getMetaData()
         self.nodesPath = self._isolateData("Nodes")
@@ -915,7 +915,7 @@ class MSHFile(GmshFile):
             for faceNum in cellFaceIDs[..., i]:
                 """For more complicated meshes, some cells may have fewer
                 faces than others. If this is the case, ignore the
-                '--' entries."""
+                `--` entries."""
                 if faceNum is nx.MA.masked:
                     continue
                 for vertexNum in faceVertexIDs[..., faceNum]:
@@ -966,10 +966,10 @@ class MSHFile(GmshFile):
     def _vertexCoordsAndMap(self, cellsToGmshVerts):
         """
         Returns `vertexCoords` and mapping from Gmsh ID to `vertexCoords`
-        indices (same as in MSHFile).
+        indices (same as in `MSHFile`).
 
-        Unlike parent, doesn't use genfromtxt
-        because we want to avoid loading the entire msh file into memory.
+        Unlike parent, doesn't use `genfromtxt`
+        because we want to avoid loading the entire `.msh` file into memory.
         """
         allVerts     = [v for c in cellsToGmshVerts for v in c] # flatten
         allVerts     = nx.unique(nx.array(allVerts, dtype=nx.INT_DTYPE)) # remove dups
@@ -1134,7 +1134,7 @@ class MSHFile(GmshFile):
         return physicalNames
 
     def makeMapVariables(self, mesh):
-        """Utility function to make MeshVariables that define different domains in the mesh
+        """Utility function to make `MeshVariables` that define different domains in the mesh
         """
         from fipy.variables.cellVariable import CellVariable
         from fipy.variables.faceVariable import FaceVariable
@@ -1239,11 +1239,12 @@ class _ElementData(object):
     """
     Bookkeeping for cells. Declared as own class for generality.
 
-    "nodes": A Python list of the vertices that make up this element
-    "shapes": A shapeTypes Python list
-    "idmap": A Python list which maps vertexCoords idx -> global ID
-    "physicalEntities": A Python list of the Gmsh physical entities each element is in
-    "geometricalEntities": A Python list of the Gmsh geometrical entities each element is in
+    :Properties:
+    - `nodes`: A Python list of the vertices that make up this element
+    - `shapes`: A `shapeTypes` Python list
+    - `idmap`: A Python list which maps `vertexCoords` index to global ID
+    - `physicalEntities`: A Python list of the Gmsh physical entities each element is in
+    - `geometricalEntities`: A Python list of the Gmsh geometrical entities each element is in
     """
     def __init__(self):
         self.nodes = []
@@ -1269,13 +1270,15 @@ class _GmshTopology(_MeshTopology):
         global parallel mesh. Does not include the IDs of boundary cells.
 
         E.g., would return [0, 1, 4, 5] for mesh A
-
+        
+        ```
             A        B
         ------------------
         | 4 | 5 || 6 | 7 |
         ------------------
         | 0 | 1 || 2 | 3 |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -1289,12 +1292,14 @@ class _GmshTopology(_MeshTopology):
 
         E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
 
+        ```
             A        B
         ------------------
         | 4 | 5 || 6 | 7 |
         ------------------
         | 0 | 1 || 2 | 3 |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -1308,12 +1313,14 @@ class _GmshTopology(_MeshTopology):
 
         E.g., would return [0, 1, 2, 3] for mesh A
 
+        ```
             A        B
         ------------------
         | 3 | 4 || 4 | 5 |
         ------------------
         | 0 | 1 || 1 | 2 |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -1327,12 +1334,14 @@ class _GmshTopology(_MeshTopology):
 
         E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
 
+        ```
             A        B
         ------------------
         | 3 | 4 || 5 |   |
         ------------------
         | 0 | 1 || 2 |   |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -1526,8 +1535,8 @@ class Gmsh2D(Mesh2D):
     True
 
     :Parameters:
-      - `arg`: a string giving (i) the path to an MSH file, (ii) a path to a
-         Gmsh geometry (".geo") file, or (iii) a Gmsh geometry script
+      - `arg`: a string giving (i) the path to an `MSH` file, (ii) a path to a
+         Gmsh geometry (`.geo`) file, or (iii) a Gmsh geometry script
       - `coordDimensions`: an integer indicating dimension of shapes
       - `order`: ???
       - `background`: a `CellVariable` that specifies the desired characteristic
@@ -1589,7 +1598,7 @@ class Gmsh2D(Mesh2D):
 
     def _test(self):
         """
-        First, we'll test Gmsh2D on a small circle with triangular
+        First, we'll test `Gmsh2D` on a small circle with triangular
         cells.
 
         >>> circ = Gmsh2D('''
@@ -1611,7 +1620,7 @@ class Gmsh2D(Mesh2D):
         >>> print(circ.cellVolumes[0] > 0) # doctest: +GMSH
         True
 
-        Now we'll test Gmsh2D again, but on a rectangle.
+        Now we'll test `Gmsh2D` again, but on a rectangle.
 
         >>> rect = Gmsh2D('''
         ... cellSize = 0.5;
@@ -1731,7 +1740,7 @@ class Gmsh2D(Mesh2D):
         True
 
 
-        Write square and triangle volumes out as a POS file
+        Write square and triangle volumes out as a `POS` file
 
         >>> from fipy import CellVariable
         >>> vol = CellVariable(mesh=sqrTri, value=sqrTri.cellVolumes) # doctest: +GMSH
@@ -1821,8 +1830,8 @@ class Gmsh2DIn3DSpace(Gmsh2D):
     """Create a topologically 2D Mesh in 3D coordinates using Gmsh
 
     :Parameters:
-      - `arg`: a string giving (i) the path to an MSH file, (ii) a path to a
-         Gmsh geometry (".geo") file, or (iii) a Gmsh geometry script
+      - `arg`: a string giving (i) the path to an `MSH` file, (ii) a path to a
+         Gmsh geometry (`.geo`) file, or (iii) a Gmsh geometry script
       - `coordDimensions`: an integer indicating dimension of shapes
       - `order`: ???
       - `background`: a `CellVariable` that specifies the desired characteristic
@@ -1838,7 +1847,7 @@ class Gmsh2DIn3DSpace(Gmsh2D):
 
     def _test(self):
         """
-        Stolen from the cahnHilliard sphere example.
+        Stolen from the Cahn-Hilliard sphere example.
 
         >>> sphere = Gmsh2DIn3DSpace('''
         ... radius = 5.0;
@@ -1897,8 +1906,8 @@ class Gmsh3D(Mesh):
     """Create a 3D Mesh using Gmsh
 
     :Parameters:
-      - `arg`: a string giving (i) the path to an MSH file, (ii) a path to a
-         Gmsh geometry (".geo") file, or (iii) a Gmsh geometry script
+      - `arg`: a string giving (i) the path to an `MSH` file, (ii) a path to a
+         Gmsh geometry (`.geo`) file, or (iii) a Gmsh geometry script
       - `order`: ???
       - `background`: a `CellVariable` that specifies the desired characteristic
         lengths of the mesh cells
@@ -2055,7 +2064,7 @@ class Gmsh3D(Mesh):
         >>> print(nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3])) # doctest: +GMSH
         True
 
-        Write tetrahedron, prism, and pyramid volumes out as a POS file
+        Write tetrahedron, prism, and pyramid volumes out as a `POS` file
 
         >>> from fipy import CellVariable
         >>> vol = CellVariable(mesh=tetPriPyr, value=tetPriPyr.cellVolumes, name="volume") # doctest: +GMSH
@@ -2129,7 +2138,8 @@ class Gmsh3D(Mesh):
         """
 
 class GmshGrid2D(Gmsh2D):
-    """Should serve as a drop-in replacement for Grid2D."""
+    """Should serve as a drop-in replacement for `Grid2D`
+    """
     def __init__(self, dx=1., dy=1., nx=1, ny=None,
                  coordDimensions=2, communicator=parallelComm, order=1):
         self.dx = dx
@@ -2173,7 +2183,7 @@ class GmshGrid2D(Gmsh2D):
 
     def _test(self):
         """
-        Here we do some rudimentary comparisons between GmshGrid and Grid, just
+        Here we do some rudimentary comparisons between `GmshGrid` and `Grid`, just
         to ensure they're performing similarly.
 
         >>> from fipy import *
@@ -2198,7 +2208,8 @@ class GmshGrid2D(Gmsh2D):
         """
 
 class GmshGrid3D(Gmsh3D):
-    """Should serve as a drop-in replacement for Grid3D."""
+    """Should serve as a drop-in replacement for `Grid3D`
+    """
     def __init__(self, dx=1., dy=1., dz=1., nx=1, ny=None, nz=None,
                  communicator=parallelComm, order=1):
         self.dx = dx
@@ -2251,7 +2262,7 @@ class GmshGrid3D(Gmsh3D):
 
     def _test(self):
         """
-        Here we do some rudimentary comparisons between GmshGrid and Grid, just
+        Here we do some rudimentary comparisons between `GmshGrid` and `Grid`, just
         to ensure they're performing similarly.
 
         >>> from fipy import *

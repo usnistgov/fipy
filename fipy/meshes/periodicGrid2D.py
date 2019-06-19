@@ -48,7 +48,7 @@ class _BasePeriodicGrid2D(NonUniformGrid2D):
 
 class PeriodicGrid2D(_BasePeriodicGrid2D):
     """
-    Creates a periodic2D grid mesh with horizontal faces numbered
+    Creates a periodic 2D grid mesh with horizontal faces numbered
     first and then vertical faces. Vertices and cells are numbered
     in the usual way.
 

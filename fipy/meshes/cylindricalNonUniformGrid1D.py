@@ -80,7 +80,7 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
         """
         These tests are not useful as documentation, but are here to ensure
         everything works as expected. Fixed a bug where the following throws
-        an error on solve() when nx is a float.
+        an error on solve() when `nx` is a float.
 
             >>> from fipy import CellVariable, DiffusionTerm
             >>> mesh = CylindricalNonUniformGrid1D(nx=3., dx=(1., 2., 3.))
@@ -88,7 +88,7 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
             >>> DiffusionTerm().solve(var)
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell
-        volumes were being returned as binOps rather than arrays.
+        volumes were being returned as `binOps` rather than arrays.
 
             >>> m = CylindricalNonUniformGrid1D(dx=(1., 2., 3., 4.), nx=4)
             >>> print(isinstance(m.cellVolumes, numerix.ndarray))
@@ -96,7 +96,7 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
             >>> print(isinstance(m._faceAreas, numerix.ndarray))
             True
 
-        If the above types aren't correct, the divergence operator's value can be a binOp
+        If the above types aren't correct, the divergence operator's value can be a `binOp`
 
             >>> print(isinstance(CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray))
             True

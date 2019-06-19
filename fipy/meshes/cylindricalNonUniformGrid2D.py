@@ -261,7 +261,7 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             [ 1.5  6. ]
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell
-        volumes were being returned as binOps rather than arrays.
+        volumes were being returned as `binOps` rather than arrays.
 
             >>> m = CylindricalNonUniformGrid2D(dx=(1., 2.), dy=(1., 2.))
             >>> print(isinstance(m.cellVolumes, numerix.ndarray))
@@ -269,13 +269,13 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
             >>> print(isinstance(m._faceAreas, numerix.ndarray))
             True
 
-        If the above types aren't correct, the divergence operator's value can be a binOp
+        If the above types aren't correct, the divergence operator's value can be a `binOp`
 
             >>> print(isinstance(fp.CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray))
             True
 
-        Test for https://github.com/usnistgov/fipy/issues/393. exteriorFaces were
-        ndarrays rather than FaceVariables.
+        Test for https://github.com/usnistgov/fipy/issues/393. `exteriorFaces` were
+        `ndarrays` rather than `FaceVariables`.
 
             >>> print(isinstance(m.facesTop, fp.FaceVariable))
             True

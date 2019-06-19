@@ -280,7 +280,7 @@ class AbstractMesh(object):
             cell-to-cell distance in either mesh) to be considered the same
 
         :Returns:
-          A `dict` with 3 elements: the new mesh vertexCoords, faceVertexIDs, and cellFaceIDs.
+          A `dict` with 3 elements: the new mesh `vertexCoords`, `faceVertexIDs`, and `cellFaceIDs`.
         """
 
         selfc = self._concatenableMesh
@@ -296,30 +296,28 @@ class AbstractMesh(object):
 
         ## compute vertex correlates
 
-        """
-        from fipy.tools.debug import PRINT
-        PRINT("selfNumFaces", selfNumFaces)
-        PRINT("otherNumFaces", otherNumVertices)
-        PRINT("selfNumVertices", selfNumVertices)
-        PRINT("otherNumVertices", otherNumVertices)
-
-        from fipy.tools.debug import PRINT
-        from fipy.tools.debug import PRINT
-        PRINT("otherExt", otherc.exteriorFaces.value)
-        raw_input()
-        PRINT("selfExt", selfc.exteriorFaces.value)
-
-        PRINT("self filled", selfc.faceVertexIDs.filled())
-        PRINT("othe filled", otherc.faceVertexIDs.filled())
-        raw_input()
-
-        PRINT("selfc.faceVertexIDs.filled()\n",selfc.faceVertexIDs.filled())
-        PRINT("flat\n",selfc.faceVertexIDs.filled()[...,
-            selfc.exteriorFaces.value].flatten())
-        PRINT("selfc.exteriorFaces.value\n",selfc.exteriorFaces.value)
-        PRINT("extfaces type", type(selfc.exteriorFaces))
-        PRINT("extfaces mesh", selfc.exteriorFaces.mesh)
-        """
+#         from fipy.tools.debug import PRINT
+#         PRINT("selfNumFaces", selfNumFaces)
+#         PRINT("otherNumFaces", otherNumVertices)
+#         PRINT("selfNumVertices", selfNumVertices)
+#         PRINT("otherNumVertices", otherNumVertices)
+# 
+#         from fipy.tools.debug import PRINT
+#         from fipy.tools.debug import PRINT
+#         PRINT("otherExt", otherc.exteriorFaces.value)
+#         raw_input()
+#         PRINT("selfExt", selfc.exteriorFaces.value)
+# 
+#         PRINT("self filled", selfc.faceVertexIDs.filled())
+#         PRINT("othe filled", otherc.faceVertexIDs.filled())
+#         raw_input()
+# 
+#         PRINT("selfc.faceVertexIDs.filled()\n",selfc.faceVertexIDs.filled())
+#         PRINT("flat\n",selfc.faceVertexIDs.filled()[...,
+#             selfc.exteriorFaces.value].flatten())
+#         PRINT("selfc.exteriorFaces.value\n",selfc.exteriorFaces.value)
+#         PRINT("extfaces type", type(selfc.exteriorFaces))
+#         PRINT("extfaces mesh", selfc.exteriorFaces.mesh)
 
         ## only try to match along the operation manifold
         if hasattr(self, "opManifold"):
@@ -520,12 +518,14 @@ class AbstractMesh(object):
 
         E.g., would return [0, 1, 4, 5] for mesh A
 
+        ```
             A        B
         ------------------
         | 4 | 5 || 6 | 7 |
         ------------------
         | 0 | 1 || 2 | 3 |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -539,12 +539,14 @@ class AbstractMesh(object):
 
         E.g., would return [0, 1, 2, 4, 5, 6] for mesh A
 
+        ```
             A        B
         ------------------
         | 4 | 5 || 6 | 7 |
         ------------------
         | 0 | 1 || 2 | 3 |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -558,12 +560,14 @@ class AbstractMesh(object):
 
         E.g., would return [0, 1, 2, 3] for mesh A
 
+        ```
             A        B
         ------------------
         | 3 | 4 || 4 | 5 |
         ------------------
         | 0 | 1 || 1 | 2 |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -577,12 +581,14 @@ class AbstractMesh(object):
 
         E.g., would return [0, 1, 2, 3, 4, 5] for mesh A
 
+        ```
             A        B
         ------------------
         | 3 | 4 || 5 |   |
         ------------------
         | 0 | 1 || 2 |   |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -597,6 +603,7 @@ class AbstractMesh(object):
         E.g., would return [0, 1, 4, 5, 8, 9, 12, 13, 14, 17, 18, 19]
         for mesh A
 
+        ```
             A   ||   B
         --8---9---10--11--
        17   18  19  20   21
@@ -604,6 +611,7 @@ class AbstractMesh(object):
        12   13  14  15   16
         --0---1----2---3--
                 ||
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -618,6 +626,7 @@ class AbstractMesh(object):
         E.g., would return [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13,
         14, 15, 17, 18, 19, 20] for mesh A
 
+        ```
             A   ||   B
         --8---9---10--11--
        17   18  19  20   21
@@ -625,6 +634,7 @@ class AbstractMesh(object):
        12   13  14  15   16
         --0---1----2---3--
                 ||
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -639,6 +649,7 @@ class AbstractMesh(object):
         E.g., would return [0, 1, 3, 4, 6, 7, 9, 10, 11, 13, 14, 15]
         for mesh A
 
+        ```
             A   ||   B
         --6---7-----7---8--
        13   14 15/14 15   16
@@ -646,6 +657,7 @@ class AbstractMesh(object):
         9   10 11/10 11   12
         --0---1-----1---2--
                 ||
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -660,6 +672,7 @@ class AbstractMesh(object):
         E.g., would return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
         12, 13, 14, 15, 16] for mesh A
 
+        ```
             A   ||   B
         --6---7----8------
        13   14  15  16   |
@@ -667,6 +680,7 @@ class AbstractMesh(object):
         9   10  11  12   |
         --0---1----2------
                 ||
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -675,7 +689,7 @@ class AbstractMesh(object):
     @property
     def facesLeft(self):
         """
-        Return face on left boundary of Grid1D as list with the
+        Return face on left boundary of `Mesh` as list with the
         x-axis running from left to right.
 
             >>> from fipy import Grid2D, Grid3D
@@ -697,7 +711,7 @@ class AbstractMesh(object):
     @property
     def facesRight(self):
         """
-        Return list of faces on right boundary of Grid3D with the
+        Return list of faces on right boundary of `Mesh` with the
         x-axis running from left to right.
 
             >>> from fipy import Grid2D, Grid3D, numerix
@@ -719,7 +733,7 @@ class AbstractMesh(object):
     @property
     def facesBottom(self):
         """
-        Return list of faces on bottom boundary of Grid3D with the
+        Return list of faces on bottom boundary of 2D or 3D `Mesh` with the
         y-axis running from bottom to top.
 
             >>> from fipy import Grid2D, Grid3D, numerix
@@ -743,7 +757,7 @@ class AbstractMesh(object):
     @property
     def facesTop(self):
         """
-        Return list of faces on top boundary of Grid3D with the
+        Return list of faces on top boundary of 2D or 3D `Mesh` with the
         y-axis running from bottom to top.
 
             >>> from fipy import Grid2D, Grid3D, numerix
@@ -767,7 +781,7 @@ class AbstractMesh(object):
     @property
     def facesBack(self):
         """
-        Return list of faces on back boundary of Grid3D with the
+        Return list of faces on back boundary of 3D `Mesh` with the
         z-axis running from front to back.
 
             >>> from fipy import Grid3D, numerix
@@ -784,7 +798,7 @@ class AbstractMesh(object):
     @property
     def facesFront(self):
         """
-        Return list of faces on front boundary of Grid3D with the
+        Return list of faces on front boundary of 3D `Mesh` with the
         z-axis running from front to back.
 
             >>> from fipy import Grid3D, numerix

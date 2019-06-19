@@ -70,7 +70,7 @@ class UniformGrid2D(UniformGrid):
          self.origin) = builder.gridData
 
     """
-    Topology set and calc
+    Topology set and calculate
     """
 
     @property
@@ -216,7 +216,7 @@ class UniformGrid2D(UniformGrid):
         return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
 
     """
-    Geometry set and calc
+    Geometry set and calculate
     """
 
     @property
@@ -794,7 +794,7 @@ class UniformGrid2D(UniformGrid):
             ...                        faceCellIDs)) # doctest: +PROCESSOR_0
             True
 
-        Following test added to change nx, ny argument to integer when its a float to prevent
+        Following test added to change `nx`, `ny` argument to integer when its a float to prevent
         warnings from the solver.
 
             >>> from fipy import *

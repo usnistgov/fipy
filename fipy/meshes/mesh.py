@@ -55,7 +55,7 @@ class Mesh(AbstractMesh):
         self._setGeometry(scaleLength = 1.)
 
     """
-    Topology set and calc
+    Topology set and calculate
     """
 
     def _setTopology(self):
@@ -117,7 +117,7 @@ class Mesh(AbstractMesh):
                         self._cellToCellIDs)
 
     """
-    Geometry set and calc
+    Geometry set and calculate
     """
 
     def _setGeometry(self, scaleLength = 1.):
@@ -411,7 +411,7 @@ class Mesh(AbstractMesh):
 
     def _handleFaceConnection(self):
         """
-        The _faceCellToCellNormals were added to ensure faceNormals == _faceCellToCellNormals for periodic grids.
+        The `_faceCellToCellNormals` were added to ensure `faceNormals == _faceCellToCellNormals` for periodic grids.
 
         >>> from fipy import *
         >>> m = PeriodicGrid2DLeftRight(nx=2, ny=2)
@@ -423,7 +423,7 @@ class Mesh(AbstractMesh):
         self._faceCellToCellNormals = self._calcFaceCellToCellNormals()
         self._setFaceDependentScaledValues()
 
-    """calc Topology methods"""
+    """calculate Topology methods"""
 
     def _calcFaceCellIDs(self):
         array = MA.array(MA.indices(self.cellFaceIDs.shape, 'l')[1],
@@ -478,58 +478,56 @@ class Mesh(AbstractMesh):
             length = min(numerix.sum(MA.getmaskarray(cellVertexIDs), axis=0))
         return cellVertexIDs[length:][::-1]
 
-    """
-    Below is an ordered version of _getCellVertexIDs()
-    It works for the test case in this file (other than the ordering, obviously)
-    I've left it in as it may be useful when we need ordered vertices for cells
-
-    def _getOrderedCellVertexIDs(self):
-
-        ## Get all the vertices from all the faces for each cell
-        from fipy.tools.numerix import take
-        cellFaceVertices = take(self.faceVertexIDs, self.cellFaceIDs)
-
-        ## get a sorted list of vertices for each cell
-        NCells = self.numberOfCells
-        cellVertexIDs = MA.reshape(cellFaceVertices.flat, (NCells, -1))
-        newmask = MA.getmaskarray(cellVertexIDs).copy()
-
-        for i in range(len(cellVertexIDs[0]) - 1):
-            for j in range(len(cellVertexIDs[0]))[i + 1:]:
-
-                newmask[:,j] = MA.where(newmask[:,j],
-                                        newmask[:,j],
-                                        MA.where(MA.filled(cellVertexIDs)[:,i] == MA.filled(cellVertexIDs)[:,j],
-                                                 1,
-                                                 newmask[:,j]))
-
-
-        cellVertexIDs = MA.masked_array(cellVertexIDs, newmask)
-
-        for i in range(len(cellVertexIDs[0]) - 1):
-            j = i + 1
-            while j < len(cellVertexIDs[0]):
-                tmp = cellVertexIDs[:]
-                tmp[:, i] = MA.where(MA.getmaskarray(cellVertexIDs[:,i]),
-                                     MA.where(MA.getmaskarray(cellVertexIDs[:, j]),
-                                              cellVertexIDs[:, i],
-                                              cellVertexIDs[:, j]),
-                                     cellVertexIDs[:, i])
-
-                tmp[:, j] = MA.where(MA.getmaskarray(cellVertexIDs[:,i]),
-                                     MA.where(MA.getmaskarray(cellVertexIDs[:, j]),
-                                              cellVertexIDs[:,j],
-                                              cellVertexIDs[:,i]),
-                                     cellVertexIDs[:, j])
-
-                cellVertexIDs = tmp[:]
-
-                j += 1
-
-
-        length = len(cellVertexIDs[0]) - min(numerix.sum(MA.getmaskarray(cellVertexIDs), axis = 1))
-        return cellVertexIDs[:, :length]
-    """
+#     Below is an ordered version of _getCellVertexIDs()
+#     It works for the test case in this file (other than the ordering, obviously)
+#     I've left it in as it may be useful when we need ordered vertices for cells
+# 
+#     def _getOrderedCellVertexIDs(self):
+# 
+#         ## Get all the vertices from all the faces for each cell
+#         from fipy.tools.numerix import take
+#         cellFaceVertices = take(self.faceVertexIDs, self.cellFaceIDs)
+# 
+#         ## get a sorted list of vertices for each cell
+#         NCells = self.numberOfCells
+#         cellVertexIDs = MA.reshape(cellFaceVertices.flat, (NCells, -1))
+#         newmask = MA.getmaskarray(cellVertexIDs).copy()
+# 
+#         for i in range(len(cellVertexIDs[0]) - 1):
+#             for j in range(len(cellVertexIDs[0]))[i + 1:]:
+# 
+#                 newmask[:,j] = MA.where(newmask[:,j],
+#                                         newmask[:,j],
+#                                         MA.where(MA.filled(cellVertexIDs)[:,i] == MA.filled(cellVertexIDs)[:,j],
+#                                                  1,
+#                                                  newmask[:,j]))
+# 
+# 
+#         cellVertexIDs = MA.masked_array(cellVertexIDs, newmask)
+# 
+#         for i in range(len(cellVertexIDs[0]) - 1):
+#             j = i + 1
+#             while j < len(cellVertexIDs[0]):
+#                 tmp = cellVertexIDs[:]
+#                 tmp[:, i] = MA.where(MA.getmaskarray(cellVertexIDs[:,i]),
+#                                      MA.where(MA.getmaskarray(cellVertexIDs[:, j]),
+#                                               cellVertexIDs[:, i],
+#                                               cellVertexIDs[:, j]),
+#                                      cellVertexIDs[:, i])
+# 
+#                 tmp[:, j] = MA.where(MA.getmaskarray(cellVertexIDs[:,i]),
+#                                      MA.where(MA.getmaskarray(cellVertexIDs[:, j]),
+#                                               cellVertexIDs[:,j],
+#                                               cellVertexIDs[:,i]),
+#                                      cellVertexIDs[:, j])
+# 
+#                 cellVertexIDs = tmp[:]
+# 
+#                 j += 1
+# 
+# 
+#         length = len(cellVertexIDs[0]) - min(numerix.sum(MA.getmaskarray(cellVertexIDs), axis = 1))
+#         return cellVertexIDs[:, :length]
 
 
     """scaling"""
@@ -769,7 +767,7 @@ class Mesh(AbstractMesh):
             >>> print(numerix.allclose(bigMesh.cellVolumes, volumes))
             True
 
-            Following test was added due to a bug in adding UniformGrids.
+            Following test was added due to a bug in adding `UniformGrids`.
 
             >>> from fipy.meshes.uniformGrid1D import UniformGrid1D
             >>> a = UniformGrid1D(nx=10) + (10,)
