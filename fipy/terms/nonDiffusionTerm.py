@@ -24,7 +24,7 @@ class _NonDiffusionTerm(_UnaryTerm):
 
     def __mul__(self, other):
         r"""
-        Mutiply a term
+        Multiply a term
 
             >>> 2. * __NonDiffusionTerm(coeff=0.5)
             __NonDiffusionTerm(coeff=1.0)
@@ -92,7 +92,7 @@ class _NonDiffusionTerm(_UnaryTerm):
            >>> 10. + __NonDiffusionTerm(coeff=1.)
            (__NonDiffusionTerm(coeff=1.0) + 10.0)
 
-        Posate a `Term`.
+        Positive of a `Term`.
 
            >>> +__NonDiffusionTerm(coeff=1.)
            __NonDiffusionTerm(coeff=1.0)

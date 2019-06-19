@@ -176,7 +176,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         True
 
         Test, 4th order, 1 dimension, x = 0; fixed flux 3, fixed curvature 2,
-        x = 2, fixed value 4, fixed 3rd order -1
+        x = 2, fixed value 4, fixed 3rd order `-1`
 
         >>> bcLeft2 =  NthOrderBoundaryCondition(mesh.facesLeft, 2., 2)
         >>> bcRight2 =  NthOrderBoundaryCondition(mesh.facesRight, -1., 3)
@@ -206,7 +206,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         True
 
 
-        Test when dx = 0.5.
+        Test when `dx = 0.5`.
 
         >>> mesh = Grid1D(dx = .5, nx = 2)
 
@@ -237,7 +237,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> print(numerix.allclose(b, (-8., 4.))) # doctest: +PROCESSOR_0
         True
 
-        The following tests are to check that DiffusionTerm can take any of the four
+        The following tests are to check that `DiffusionTerm` can take any of the four
         main Variable types.
 
         >>> from fipy.meshes.tri2D import Tri2D
