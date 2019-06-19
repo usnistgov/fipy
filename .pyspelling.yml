@@ -32,3 +32,6 @@ matrix:
       # Ignore reStructuredText roles
       - open: ':(?:(attr|meth|math|mod)):`'
         close: '`'
+      # Ignore reStructuredText literals
+      - open: '::$'
+        close: '(?P<literal>(?:((?P<indent>[ ]+).*$)|(\n))+)'
