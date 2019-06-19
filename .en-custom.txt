@@ -1,4 +1,6 @@
 arg
+broadcastable
+broadcasted
 Cahn-Hilliard
 discretizations
 docstring
@@ -18,11 +20,14 @@ globals
 gmsh
 gmsh's
 gon
+gzip
+gzipped
 hedron
 hexahedron
 i.e.
 iff
 indices
+intp
 localNonOverlappingCellIDs
 localNonOverlappingColIDs
 localNonOverlappingRowIDs
@@ -32,6 +37,8 @@ localOverlappingRowIDs
 multiline
 Neumann
 numerix
+numpy
+NumPy
 or's
 PID
 pre-assembled
@@ -46,12 +53,17 @@ Runge-Kutta
 scipy
 SciPy
 sub-categories
+svn
 TODO
 trilinos
 tuple
 TVTK
+unpickle
+unpickled
+unpickling
 vertices
 VTK
+whitespace
 XY
 XZ
 YZ
@@ -60,3 +72,4 @@ YZ
 3D
 3x2x1
 --
+'s
