@@ -353,12 +353,12 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
 
 def dot(a1, a2, axis=0):
     """
-    return array of vector dot-products of v1 and v2
-    for arrays a1 and a2 of vectors v1 and v2
+    return array of vector dot-products of `v1` and `v2`
+    for arrays `a1` and `a2` of vectors `v1` and `v2`
 
     We can't use :func:`numpy.dot` on an array of vectors
 
-    Test that Variables are returned as Variables.
+    Test that `Variables` are returned as `Variables`.
 
     >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(nx=2, ny=1)
@@ -404,9 +404,9 @@ def dot(a1, a2, axis=0):
 if inline.doInline:
     def sqrtDot(a1, a2):
         """Return array of square roots of vector dot-products
-        for arrays a1 and a2 of vectors v1 and v2
+        for arrays `a1` and `a2` of vectors `v1` and `v2`
 
-        Usually used with v1==v2 to return magnitude of v1.
+        Usually used with `v1==v2` to return magnitude of `v1`.
         """
         from fipy.tools.dimensions import physicalField
         unit1 = unit2 = physicalField._unity
@@ -451,9 +451,9 @@ if inline.doInline:
 else:
     def sqrtDot(a1, a2):
         """Return array of square roots of vector dot-products
-        for arrays a1 and a2 of vectors v1 and v2
+        for arrays `a1` and `a2` of vectors `v1` and `v2`
 
-        Usually used with v1==v2 to return magnitude of v1.
+        Usually used with `v1==v2` to return magnitude of `v1`.
         """
         ## We can't use Numeric.dot on an array of vectors
         return sqrt(dot(a1, a2))
@@ -540,7 +540,7 @@ def allequal(first, second):
 
 def allclose(first, second, rtol=1.e-5, atol=1.e-8):
     r"""
-    Tests whether or not `first` and `second` are equal, subect to the given
+    Tests whether or not `first` and `second` are equal, subject to the given
     relative and absolute tolerances, such that::
 
        |first - second| < atol + rtol * |second|
@@ -640,8 +640,8 @@ if not hasattr(NUMERIX, 'empty'):
             `ones()` and `zeros()` are really slow ways to create arrays. NumPy
             provides a routine:
 
-                empty((d1,...,dn),dtype=float,order='C') will return a new array of
-                shape (d1,...,dn) and given type with all its entries
+                `empty((d1,...,dn),dtype=float,order='C')` will return a new array of
+                shape `(d1,...,dn)` and given type with all its entries
                 uninitialized. This can be faster than zeros.
 
             We approximate this routine when unavailable, but note that `order` is
@@ -708,8 +708,8 @@ while (return_val.refcount() > 1) {
             `ones()` and `zeros()` are really slow ways to create arrays. NumPy
             provides a routine:
 
-                empty((d1,...,dn),dtype=float,order='C') will return a new array of
-                shape (d1,...,dn) and given type with all its entries
+                `empty((d1,...,dn),dtype=float,order='C')` will return a new array of
+                shape `(d1,...,dn)` and given type with all its entries
                 uninitialized. This can be faster than zeros.
 
             We approximate this routine when unavailable, but note that `order` is
@@ -753,17 +753,17 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
         The data must be regular, same number of values in every row
 
         fname can be a filename or a file handle.  Support for gzipped files is
-        automatic, if the filename ends in .gz
+        automatic, if the filename ends in `.gz`
 
-        See scipy.loadmat to read and write matfiles.
+        See `scipy.loadmat` to read and write `matfiles`.
 
-        Example usage:
+        Example usage::
 
           X = loadtxt('test.dat')  # data in two columns
           t = X[:,0]
           y = X[:,1]
 
-        Alternatively, you can do the same with "unpack"; see below
+        Alternatively, you can do the same with "unpack"; see below::
 
           X = loadtxt('test.dat')    # a matrix of data
           x = loadtxt('test.dat')    # a single column of data
@@ -783,16 +783,16 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
 
         converters, if not None, is a dictionary mapping column number to
         a function that will convert that column to a float.  E.g., if
-        column 0 is a date string: converters={0:datestr2num}
+        column 0 is a date string: `converters={0:datestr2num}`
 
         skiprows is the number of rows from the top to skip
 
         usecols, if not None, is a sequence of integer column indexes to
-        extract where 0 is the first column, e.g. usecols=(1,4,5) to extract
+        extract where 0 is the first column, e.g. `usecols=(1,4,5)` to extract
         just the 2nd, 5th and 6th columns
 
         unpack, if True, will transpose the matrix allowing you to unpack
-        into named arguments on the left hand side
+        into named arguments on the left hand side::
 
             t,y = load('test.dat', unpack=True) # for  two column data
             x,y,z = load('somefile.dat', usecols=(3,5,7), unpack=True)
@@ -851,18 +851,18 @@ if not (hasattr(NUMERIX, 'savetxt') and hasattr(NUMERIX, 'loadtxt')):
         Save the data in X to file fname using fmt string to convert the
         data to strings
 
-        fname can be a filename or a file handle.  If the filename ends in .gz,
-        the file is automatically saved in compressed gzip format.  The load()
+        `fname` can be a file name or a file handle.  If the file name ends in `.gz`,
+        the file is automatically saved in compressed gzip format.  The `load()`
         command understands gzipped files transparently.
 
-        Example usage:
+        Example usage::
 
-        save('test.out', X)         # X is an array
-        save('test1.out', (x,y,z))  # x,y,z equal sized 1D arrays
-        save('test2.out', x)        # x is 1D
-        save('test3.out', x, fmt='%1.4e')  # use exponential notation
+            save('test.out', X)         # X is an array
+            save('test1.out', (x,y,z))  # x,y,z equal sized 1D arrays
+            save('test2.out', x)        # x is 1D
+            save('test3.out', x, fmt='%1.4e')  # use exponential notation
 
-        delimiter is used to separate the fields, e.g. delimiter ',' for
+        delimiter is used to separate the fields, e.g. delimiter `,` for
         comma-separated values
         """
 
@@ -897,7 +897,7 @@ def L1norm(arr):
 
     :Returns:
       :math:`\|\mathtt{arr}\|_1 = \sum_{j=1}^{n} |\mathtt{arr}_j|` is the
-      :math:`L^1`-norm of :math:`\mathtt{arr}`.
+      :math:`L^1` norm of :math:`\mathtt{arr}`.
     """
     return add.reduce(abs(arr))
 
@@ -908,7 +908,7 @@ def L2norm(arr):
 
     :Returns:
       :math:`\|\mathtt{arr}\|_2 = \sqrt{\sum_{j=1}^{n} |\mathtt{arr}_j|^2}` is
-      the :math:`L^2`-norm of :math:`\mathtt{arr}`.
+      the :math:`L^2` norm of :math:`\mathtt{arr}`.
     """
     return sqrt(add.reduce(arr**2))
 
@@ -920,7 +920,7 @@ def LINFnorm(arr):
     :Returns:
       :math:`\|\mathtt{arr}\|_\infty = [\sum_{j=1}^{n}
       |\mathtt{arr}_j|^\infty]^\infty = \over{\max}{j} |\mathtt{arr}_j|` is the
-      :math:`L^\infty`-norm of :math:`\mathtt{arr}`.
+      :math:`L^\infty` norm of :math:`\mathtt{arr}`.
     """
     return max(abs(arr))
 
@@ -1000,15 +1000,15 @@ def _indexShape(index, arrayShape):
         True
 
     "Exactly one Ellipsis object will be expanded, any other Ellipsis objects
-    will be treated as full slice (':') objects. The Ellipsis object is replaced
-    with as many full slice (':') objects as needed to make the length of the
+    will be treated as full slice (`:`) objects. The Ellipsis object is replaced
+    with as many full slice (`:`) objects as needed to make the length of the
     selection tuple N."
 
         >>> _indexShape(index=NUMERIX.index_exp[..., 2, ..., 4],
         ...             arrayShape=(10, 20, 30, 40, 50))
         (10, 20, 40)
 
-    "If the selection tuple is smaller than N, then as many ':' objects as
+    "If the selection tuple is smaller than N, then as many `:` objects as
     needed are added to the end of the selection tuple so that the modified
     selection tuple has length N."
 
@@ -1027,7 +1027,7 @@ def _indexShape(index, arrayShape):
             ...
         ValueError: shape mismatch: objects cannot be broadcast to a single shape
 
-    "In simple cases (i.e. one indexing array and N - 1 slice objects) it does
+    "In simple cases (i.e. one indexing array and `N - 1` slice objects) it does
     exactly what you would expect (concatenation of repeated application of
     basic slicing)."
 
@@ -1147,7 +1147,7 @@ def _broadcastShapes(shape1, shape2):
     """
     Determine if `shape1` and `shape2` can broadcast to each other, padding if
     necessary, and return their (padded) shapes and the broadcast shape. If the
-    shapes cannot broadcast, return a broadcastshape of `None`.
+    shapes cannot broadcast, return a broadcast shape of `None`.
 
     Broadcasting zero length arrays must also be accounted for.
 
@@ -1194,7 +1194,7 @@ if not hasattr(NUMERIX, "in1d"):
         """
         Test whether each element of a 1D array is also present in a second array.
 
-        Returns a boolean array the same length as `ar1` that is True
+        Returns a Boolean array the same length as `ar1` that is True
         where an element of `ar1` is in `ar2` and False otherwise.
 
         Parameters

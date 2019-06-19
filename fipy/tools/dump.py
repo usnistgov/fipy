@@ -26,7 +26,7 @@ def write(data, filename = None, extension = '', communicator=parallelComm):
       - `data`: The object to be pickled.
       - `filename`: The name of the file to place the pickled object. If `filename` is `None`
         then a temporary file will be used and the file object and file name will be returned as a tuple
-      - `extension`: Used if filename is not given.
+      - `extension`: Used if `filename` is not given.
       - `communicator`: Object with `procID` and `Nproc` attributes.
 
     Test to check pickling and unpickling.

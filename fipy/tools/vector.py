@@ -13,7 +13,7 @@ __all__ = [text_to_native_str(n) for n in __all__]
 # Factored out for fipy.variables.surfactantConvectionVariable._ConvectionCoeff
 # for some reason
 def _putAdd(vector, ids, additionVector, mask=False):
-    """This is a temporary replacement for Numeric.put as it was not doing
+    """This is a temporary replacement for `Numeric.put` as it was not doing
     what we thought it was doing.
     """
     additionVector = numerix.array(additionVector)
@@ -42,7 +42,7 @@ if inline.doInline:
     ## FIXME: inline version doesn't account for all of the conditions that Python
     ## version does.
     def putAdd(vector, ids, additionVector):
-        """ This is a temporary replacement for Numeric.put as it was not doing
+        """ This is a temporary replacement for `Numeric.put` as it was not doing
         what we thought it was doing.
         """
         inline._runInline("""
@@ -55,7 +55,7 @@ if inline.doInline:
         ni = len(ids.flat))
 else:
     def putAdd(vector, ids, additionVector):
-        """ This is a temporary replacement for Numeric.put as it was not doing
+        """ This is a temporary replacement for `Numeric.put` as it was not doing
         what we thought it was doing.
         """
         _putAdd(vector, ids, additionVector)
