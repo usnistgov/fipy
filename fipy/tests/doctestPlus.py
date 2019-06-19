@@ -189,28 +189,28 @@ def testmod(m=None, name=None, globs=None, verbose=None,
 
     See help(doctest) for an overview.
 
-    Optional keyword arg "name" gives the name of the module; by default
-    use m.__name__.
+    Optional keyword arg `name` gives the name of the module; by default
+    use `m.__name__`.
 
-    Optional keyword arg "globs" gives a dict to be used as the globals
-    when executing examples; by default, use m.__dict__.  A copy of this
+    Optional keyword arg `globs` gives a dict to be used as the globals
+    when executing examples; by default, use `m.__dict__`.  A copy of this
     dict is actually used for each docstring, so that each docstring's
     examples start with a clean slate.
 
-    Optional keyword arg "extraglobs" gives a dictionary that should be
+    Optional keyword arg `extraglobs` gives a dictionary that should be
     merged into the globals that are used to execute examples.  By
     default, no extra globals are used.  This is new in 2.4.
 
-    Optional keyword arg "verbose" prints lots of stuff if true, prints
-    only failures if false; by default, it's true iff "-v" is in sys.argv.
+    Optional keyword arg `verbose` prints lots of stuff if true, prints
+    only failures if false; by default, it's true iff `-v` is in `sys.argv`.
 
-    Optional keyword arg "report" prints a summary at the end when true,
+    Optional keyword arg `report` prints a summary at the end when true,
     else prints nothing at the end.  In verbose mode, the summary is
     detailed, else very brief (in fact, empty if all tests passed).
 
-    Optional keyword arg "optionflags" or's together module constants,
+    Optional keyword arg `optionflags` or's together module constants,
     and defaults to 0.  This is new in 2.3.  Possible values (see the
-    docs for details):
+    docs for details)::
 
         DONT_ACCEPT_TRUE_FOR_1
         DONT_ACCEPT_BLANKLINE
@@ -223,7 +223,7 @@ def testmod(m=None, name=None, globs=None, verbose=None,
         REPORT_NDIFF
         REPORT_ONLY_FIRST_FAILURE
 
-    as well as FiPy's flags
+    as well as FiPy's flags::
 
         GMSH
         SCIPY

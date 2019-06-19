@@ -3,7 +3,7 @@ spellchecker: hunspell
 matrix:
 - name: python
   sources:
-  - fipy/steppers/*
+  - fipy/tests/*
   dictionary:
     wordlists:
     - .en-custom.txt
