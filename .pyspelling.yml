@@ -15,7 +15,7 @@ matrix:
       context_visible_first: true
       delimiters:
       # Ignore text between inline back ticks
-      - open: '(?P<open>`+)'
+      - open: '(- )?(?P<open>`+)'
         close: '(?P=open)'
       # Ignore doctest blocks
       #  Source consists of a PS1 line followed by zero or more PS2 lines.
