@@ -29,15 +29,15 @@ class _AbstractGridBuilder(object):
 
         :Note:
             - `spatialNums` is a list whose elements are analogous to
-                * numberOfHorizontalRows
-                * numberOfVerticalColumns
-                * numberOfLayersDeep
+                * `numberOfHorizontalRows`
+                * `numberOfVerticalColumns`
+                * `numberOfLayersDeep`
               though `spatialNums` may be of length 1, 2, or 3 depending on
               dimensionality.
 
         :Parameters:
-            - `ds` - A list containing grid spacing information, e.g. [dx, dy]
-            - `ns` - A list containing number of grid points, e.g. [nx, ny, nz]
+            - `ds`: A list containing grid spacing information, e.g. `[dx, dy]`
+            - `ns`: A list containing number of grid points, e.g. `[nx, ny, nz]`
             - `overlap`
         """
 
@@ -145,7 +145,7 @@ class _AbstractGridBuilder(object):
     @property
     def gridData(self):
         """
-        `_getSpecificGridData must be defined by children.
+        `_getSpecificGridData` must be defined by children.
         """
         return self._basicGridData + self._specificGridData
 

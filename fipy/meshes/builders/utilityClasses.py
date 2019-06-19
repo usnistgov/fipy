@@ -36,15 +36,15 @@ class _DOffsets(object):
     def calcDOffsets(ds, ns, offset):
         """
         :Parameters:
-            - `ds`: A list, e.g. [dx, dy]
-            - `ns`: A list, e.g. [nx, ny, nz]
+            - `ds`: A list, e.g. `[dx, dy]`
+            - `ns`: A list, e.g. `[nx, ny, nz]`
             - `offset`
 
         :Returns:
             - `offsetList`: a list which contains the analogous scalars to
               `XOffset`, `YOffset`, and `ZOffset`, whichever are applicable for
               the dimensionality.
-            - `newDs`: a list containing proper [dx, [dy, ...]] values
+            - `newDs`: a list containing proper `[dx, [dy, ...]]` values
         """
         offsetList = []
         newDs = []
@@ -68,7 +68,7 @@ class _DOffsets(object):
 
 class _AbstractNumPts(object):
     """
-    Interface definition for NumPtsCalculators.
+    Interface definition for `NumPts` calculators.
     """
 
     @staticmethod
@@ -99,7 +99,7 @@ class _NonuniformNumPts(_AbstractNumPts):
 
         Used by the `Grid` meshes.
 
-        This tests a bug that was occurring with PeriodicGrid1D when
+        This tests a bug that was occurring with `PeriodicGrid1D` when
         using a numpy float as the argument for the grid spacing.
 
            >>> from fipy.meshes.periodicGrid1D import PeriodicGrid1D
