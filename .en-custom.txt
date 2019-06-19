@@ -2,6 +2,7 @@ advection
 Amesos
 AMG
 AMGX
+arctangent
 arg
 AztecOO
 autoscale
@@ -12,8 +13,10 @@ bitwise
 broadcastable
 broadcasted
 Cahn-Hilliard
+cd
 CGS
 Cholesky
+CODATA
 discretization
 discretizations
 docstring
@@ -21,6 +24,8 @@ docstrings
 docstring's
 doctest
 doctests
+Epetra
+exponentiated
 e.g.
 FGMRES
 FiPy
@@ -35,6 +40,7 @@ gzip
 gzipped
 hedron
 hexahedron
+Hinsen
 i.e.
 iff
 IFPACK
@@ -44,10 +50,14 @@ intp
 KLU
 LSMLIB
 mesh-element--by--mesh-element
+mol
+MPI
+mpi4py
 multiline
 multi-variable
 neighbors'
 Neumann
+NIST
 numerix
 numpy
 NumPy
@@ -69,8 +79,10 @@ Runge-Kutta
 Scikit-fmm
 scipy
 SciPy
+sctype
 sliceable
 smoothers
+sr
 SSOR
 subviewers
 sub-categories
@@ -79,6 +91,7 @@ TODO
 trilinos
 tuple
 TVTK
+typecode
 ufuncs
 unpickle
 unpickled
