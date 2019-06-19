@@ -11,6 +11,11 @@ localOverlappingCellIDs
 localOverlappingColIDs
 localOverlappingRowIDs
 indices
+pre-assembled
+pysparse
+pytrilinos
 PyTrilinos
-Trilinos
+scipy
+SciPy
+trilinos
 tuple

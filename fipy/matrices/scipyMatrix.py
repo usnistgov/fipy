@@ -13,7 +13,7 @@ class _ScipyMatrix(_SparseMatrix):
 
     """class wrapper for a scipy sparse matrix.
 
-    `_ScipyMatrix` is always NxN.
+    `_ScipyMatrix` is always `NxN`.
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
@@ -268,8 +268,8 @@ class _ScipyMeshMatrix(_ScipyMatrixFromShape):
         :Parameters:
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
-          - `numberOfVariables`: The columns of the matrix is determined by numberOfVariables * self.mesh.numberOfCells.
-          - `numberOfEquations`: The rows of the matrix is determined by numberOfEquations * self.mesh.numberOfCells.
+          - `numberOfVariables`: The columns of the matrix is determined by `numberOfVariables * self.mesh.numberOfCells`.
+          - `numberOfEquations`: The rows of the matrix is determined by `numberOfEquations * self.mesh.numberOfCells`.
           - `storeZeros`: Instructs scipy to store zero values if possible.
 
 
@@ -295,36 +295,33 @@ class _ScipyMeshMatrix(_ScipyMatrixFromShape):
           The trilinos matrix.
 
         """
-        """
-        A = self.matrix.copy()
-        values, irow, jcol = A.find()
-
-        if not hasattr(self, 'trilinosMatrix'):
-            if A.shape[0] == 0:
-                bandwidth = 0
-            else:
-                bandwidth = int(numerix.ceil(float(len(values)) / float(A.shape[0])))
-            from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrixKeepStencil
-            self.trilinosMatrix = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth, numberOfVariables=self.numberOfVariables)
-
-        self.trilinosMatrix.addAt(values, irow, jcol)
-        self.trilinosMatrix.finalize()
-
-        return self.trilinosMatrix
-        """
+#         A = self.matrix.copy()
+#         values, irow, jcol = A.find()
+# 
+#         if not hasattr(self, 'trilinosMatrix'):
+#             if A.shape[0] == 0:
+#                 bandwidth = 0
+#             else:
+#                 bandwidth = int(numerix.ceil(float(len(values)) / float(A.shape[0])))
+#             from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrixKeepStencil
+#             self.trilinosMatrix = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth, numberOfVariables=self.numberOfVariables)
+# 
+#         self.trilinosMatrix.addAt(values, irow, jcol)
+#         self.trilinosMatrix.finalize()
+# 
+#         return self.trilinosMatrix
 
         raise NotImplementedError
 
     def flush(self):
         """
         Deletes the copy of the scipy matrix held and calls `self.trilinosMatrix.flush()` if necessary.
-
-        if hasattr(self, 'trilinosMatrix'):
-            if hasattr(self.matrix, 'storeZeros'):
-                self.trilinosMatrix.flush(cacheStencil=self.matrix.storeZeros)
-            else:
-                self.trilinosMatrix.flush(cacheStencil=False)
         """
+#         if hasattr(self, 'trilinosMatrix'):
+#             if hasattr(self.matrix, 'storeZeros'):
+#                 self.trilinosMatrix.flush(cacheStencil=self.matrix.storeZeros)
+#             else:
+#                 self.trilinosMatrix.flush(cacheStencil=False)
 
         if (not hasattr(self, 'cache')) or (self.cache is False):
             del self.matrix
@@ -357,7 +354,7 @@ class _ScipyIdentityMatrix(_ScipyMatrixFromShape):
     """
     def __init__(self, size):
         """
-        Create a sparse matrix with '1' in the diagonal
+        Create a sparse matrix with `1` in the diagonal
 
             >>> print(_ScipyIdentityMatrix(size=3))
              1.000000      ---        ---    
@@ -371,7 +368,7 @@ class _ScipyIdentityMatrix(_ScipyMatrixFromShape):
 class _ScipyIdentityMeshMatrix(_ScipyIdentityMatrix):
     def __init__(self, mesh):
         """
-        Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
+        Create a sparse matrix associated with a `Mesh` with `1` in the diagonal
 
             >>> from fipy import Grid1D
             >>> from fipy.tools import serialComm

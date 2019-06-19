@@ -1,10 +1,9 @@
 spellchecker: hunspell
 
 matrix:
-- name: Python Source
+- name: python
   sources:
-  - fipy/matrices/trilinosMatrix.py
-   # fipy/**/*.py
+  - fipy/matrices/*.py
   dictionary:
     wordlists:
     - .en-custom.txt

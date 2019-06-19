@@ -32,7 +32,7 @@ from fipy.tools import numerix, parallelComm
 # FiPy constructs its matrices, I do not anticipate any of these occurring.
 
 class _TrilinosMatrix(_SparseMatrix):
-    """class wrapper for a PyTrilinos Epetra.CrsMatrix.
+    """class wrapper for a PyTrilinos `Epetra.CrsMatrix`.
 
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
@@ -443,7 +443,7 @@ class _TrilinosMatrix(_SparseMatrix):
 
     def exportMmf(self, filename):
         """
-        Exports the matrix to a Matrix Market file of the given filename.
+        Exports the matrix to a Matrix Market file of the given `filename`.
         """
         self.fillComplete()
         EpetraExt.RowMatrixToMatrixMarketFile(text_to_native_str(filename), self.matrix)
@@ -509,14 +509,14 @@ class _TrilinosMatrix(_SparseMatrix):
 class _TrilinosMatrixFromShape(_TrilinosMatrix):
     def __init__(self, rows, cols, bandwidth=1, sizeHint=None,
                  rowMap=None, colMap=None, domainMap=None):
-        """Instantiates and wraps an Epetra.CrsMatrix
+        """Instantiates and wraps an `Epetra.CrsMatrix`
 
         :Parameters:
           - `rows`: The number of matrix rows
           - `cols`: The number of matrix columns
           - `bandwidth`: The proposed band width of the matrix.
           - `sizeHint`: estimate of the number of non-zeros
-          - `map`: The Epetra `Map` for the rows that this processor holds
+          - `map`: The `Epetra.Map` for the rows that this processor holds
         """
         size = max(rows, cols)
         if sizeHint is not None and bandwidth == 0:
@@ -556,8 +556,8 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
           - `mesh`: The `Mesh` to assemble the matrix for.
           - `bandwidth`: The proposed band width of the matrix.
           - `sizeHint`: estimate of the number of non-zeros
-          - `numberOfVariables`: The columns of the matrix is determined by numberOfVariables * self.mesh.globalNumberOfCells.
-          - `numberOfEquations`: The rows of the matrix is determined by numberOfEquations * self.mesh.globalNumberOfCells.
+          - `numberOfVariables`: The columns of the matrix is determined by `numberOfVariables * self.mesh.globalNumberOfCells`.
+          - `numberOfEquations`: The rows of the matrix is determined by `numberOfEquations * self.mesh.globalNumberOfCells`.
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
@@ -725,7 +725,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
             True
 
         Should be able to multiply an overlapping value obtained from a
-        CellVariable. This is required to make the '--no-pysparse' flag
+        `CellVariable`. This is required to make the `--no-pysparse` flag
         work correctly.
 
             >>> from fipy import *
@@ -1271,7 +1271,7 @@ class _TrilinosIdentityMatrix(_TrilinosMatrixFromShape):
     """
     def __init__(self, size):
         """
-        Create a sparse matrix with '1' in the diagonal
+        Create a sparse matrix with `1` in the diagonal
 
             >>> print(_TrilinosIdentityMatrix(size=3))
              1.000000      ---        ---    
@@ -1285,7 +1285,7 @@ class _TrilinosIdentityMatrix(_TrilinosMatrixFromShape):
 class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
     def __init__(self, mesh):
         """
-        Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
+        Create a sparse matrix associated with a `Mesh` with `1` in the diagonal
 
             >>> from fipy import Grid1D
             >>> mesh = Grid1D(nx=3)

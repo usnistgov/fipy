@@ -240,7 +240,7 @@ class _PysparseMatrix(_SparseMatrix):
 
     def exportMmf(self, filename):
         """
-        Exports the matrix to a Matrix Market file of the given filename.
+        Exports the matrix to a Matrix Market file of the given `filename`.
         """
         self.matrix.export_mtx(filename)
 
@@ -278,8 +278,8 @@ class _PysparseMeshMatrix(_PysparseMatrixFromShape):
           - `bandwidth`: The proposed band width of the matrix.
           - `sizeHint`: estimate of the number of non-zeros
           - `matrix`: pre-assembled `ll_mat` to use for storage
-          - `numberOfVariables`: The columns of the matrix is determined by numberOfVariables * self.mesh.numberOfCells.
-          - `numberOfEquations`: The rows of the matrix is determined by numberOfEquations * self.mesh.numberOfCells.
+          - `numberOfVariables`: The columns of the matrix is determined by `numberOfVariables * self.mesh.numberOfCells`.
+          - `numberOfEquations`: The rows of the matrix is determined by `numberOfEquations * self.mesh.numberOfCells`.
           - `storeZeros`: Instructs pysparse to store zero values if possible.
         """
         self.mesh = mesh
@@ -371,7 +371,7 @@ class _PysparseIdentityMatrix(_PysparseMatrixFromShape):
     Represents a sparse identity matrix for pysparse.
     """
     def __init__(self, size):
-        """Create a sparse matrix with '1' in the diagonal
+        """Create a sparse matrix with `1` in the diagonal
 
             >>> print(_PysparseIdentityMatrix(size=3))
              1.000000      ---        ---    
@@ -384,7 +384,7 @@ class _PysparseIdentityMatrix(_PysparseMatrixFromShape):
 
 class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
     def __init__(self, mesh):
-        """Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
+        """Create a sparse matrix associated with a `Mesh` with `1` in the diagonal
 
             >>> from fipy import Grid1D
             >>> from fipy.tools import serialComm
