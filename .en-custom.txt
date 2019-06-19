@@ -26,6 +26,7 @@ multiline
 Neumann
 numerix
 pre-assembled
+preconditioner
 pysparse
 pytrilinos
 PyTrilinos
