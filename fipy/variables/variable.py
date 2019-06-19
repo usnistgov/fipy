@@ -1505,7 +1505,7 @@ class Variable(object):
         self.__init__(**dict)
 
     def _test(self):
-        """
+        r"""
         Inverse cosine of :math:`x`, :math:`\cos^{-1} x`
 
         >>> from fipy.tools.numerix import *
