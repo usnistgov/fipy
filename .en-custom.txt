@@ -11,10 +11,12 @@ localOverlappingCellIDs
 localOverlappingColIDs
 localOverlappingRowIDs
 indices
+Neumann
 pre-assembled
 pysparse
 pytrilinos
 PyTrilinos
+RHS
 scipy
 SciPy
 trilinos

@@ -39,7 +39,7 @@ class FixedFlux(BoundaryCondition):
 
         :Parameters:
           - `SparseMatrix`: *unused* (empty matrix)
-          - `Ncells`:       Size of **b**-vector
+          - `Ncells`:       Size of **b** vector
           - `MaxFaces`:     *unused*
           - `coeff`:        *unused*
         """
@@ -60,8 +60,8 @@ class FixedFlux(BoundaryCondition):
 
     def _test(self):
         """
-        The following tests check that self.contributions is the same length as
-        self.adjacentCellIDs.
+        The following tests check that `self.contributions` is the same length as
+        `self.adjacentCellIDs`.
 
            >>> from fipy import *
            >>> m = Grid1D(nx = 10)

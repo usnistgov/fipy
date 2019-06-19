@@ -3,7 +3,7 @@ spellchecker: hunspell
 matrix:
 - name: python
   sources:
-  - fipy/matrices/*.py
+  - fipy/boundaryConditions/*.py
   dictionary:
     wordlists:
     - .en-custom.txt
@@ -23,3 +23,6 @@ matrix:
       - open: '(?P<source>(?:^(?P<indent>[ ]*)>>> .*)(?:\n(?=P<indent>)\.\.\. .*)*)\n?'
         content: ''
         close: '(?P<want>(?:(?![ ]*$)(?![ ]*>>> ).*$\n?)*)'
+      # Ignore reStructuredText roles
+      - open: ':(?:(meth|math)):`'
+        close: '`'
