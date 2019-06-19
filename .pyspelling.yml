@@ -5,6 +5,9 @@ matrix:
   sources:
   - fipy/matrices/trilinosMatrix.py
    # fipy/**/*.py
+  dictionary:
+    wordlists:
+    - .en-custom.txt
   pipeline:
   - pyspelling.filters.python:
       comments: false
