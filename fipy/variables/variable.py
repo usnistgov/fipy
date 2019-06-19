@@ -323,7 +323,7 @@ class Variable(object):
 
     def _getCIndexString(self, shape):
         r"""
-        Test for inline issue. (1, ni) shapes were not handled correctly.
+        Test for inline issue. `(1, ni)` shapes were not handled correctly.
 
         >>> from fipy import *
         >>> mesh = Tri2D(dx=1., dy=1., nx=1, ny=1)
@@ -762,7 +762,7 @@ class Variable(object):
     def getsctype(self, default=None):
         """
 
-        Returns the Numpy sctype of the underlying array.
+        Returns the Numpy `sctype of the underlying array.
 
             >>> Variable(1).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
             True
@@ -847,7 +847,7 @@ class Variable(object):
 
     def _execInline(self, comment=None):
         """
-        Gets the stack from _getCstring() which calls _getRepresentation()
+        Gets the stack from `_getCstring()` which calls `_getRepresentation()`
 
             >>> from future.utils import text_to_native_str as ttns
 
@@ -989,7 +989,7 @@ class Variable(object):
     def _UnaryOperatorVariable(self, op, operatorClass=None, opShape=None, canInline=True, unit=None,
                                valueMattersForUnit=False):
         """
-        Check that unit works for unOp
+        Check that unit works for `unOp`
 
             >>> (-Variable(value="1 m")).unit
             <PhysicalUnit m>
@@ -1137,7 +1137,7 @@ class Variable(object):
         """
 
         Following test it to fix a bug with C inline string using
-        abs() instead of fabs()
+        `abs()` instead of `fabs()`
 
             >>> print(abs(Variable(2.3) - Variable(1.2)))
             1.1

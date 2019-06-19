@@ -237,7 +237,7 @@ def _OperatorVariableClass(baseClass=object):
 
         @property
         def _varProxy(self):
-            """list of dimensional scalars that stand in for self.var
+            """list of dimensional scalars that stand in for `self.var`
 
             Used for determining units of result without doing expensive computation"""
 
@@ -248,7 +248,7 @@ def _OperatorVariableClass(baseClass=object):
 
         def __reduce__(self):
             """
-            Allows _OperatorVariables to be pickled
+            Allows `_OperatorVariables` to be pickled
             """
             state =  self.__getstate__()
             if 'mesh' in list(state.keys()):
@@ -278,7 +278,7 @@ def _OperatorVariableClass(baseClass=object):
 
 def _testBinOp(self):
     """
-    Test of _getRepresentation
+    Test of `_getRepresentation`
 
         >>> v1 = Variable((1, 2, 3, 4))
         >>> v2 = Variable((5, 6, 7, 8))
@@ -311,7 +311,7 @@ def _testBinOp(self):
         >>> ttns((v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id=""))
         '(((var000[i] / var001[i]) - (var010[i] * var011[i])) + (var10[i] * var11[i]))'
 
-    Check that unit works for a binOp
+    Check that unit works for a `binOp`
 
         >>> (Variable(value="1 m") * Variable(value="1 s")).unit == Variable(value="1 s*m").unit
         True
@@ -321,7 +321,7 @@ def _testBinOp(self):
 
         >>> a = -(numerix.sin(Variable() * Variable()))
 
-    Check that getTypeCode() works as expected.
+    Check that `getTypeCode()` works as expected.
 
         >>> a = Variable(1.) * Variable(1)
         >>> print(a.getsctype() == numerix.float64)
@@ -367,7 +367,7 @@ def _testBinOp(self):
         >>> mesh = Grid2D(nx=3)
 
 
-    `CellVariable` * CellVariable
+    `CellVariable` * `CellVariable`
 
         >>> cv = CellVariable(mesh=mesh, value=(0, 1, 2))
         >>> cvXcv = cv * cv
@@ -376,7 +376,7 @@ def _testBinOp(self):
         >>> print(isinstance(cvXcv, CellVariable))
         1
 
-    `CellVariable` * FaceVariable
+    `CellVariable` * `FaceVariable`
 
         >>> fv = FaceVariable(mesh=mesh, value=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
         >>> fvXcv = fv * cv #doctest: +IGNORE_EXCEPTION_DETAIL
@@ -553,7 +553,7 @@ def _testBinOp(self):
         TypeError: can't multiply sequence to non-int
 
 
-    `CellVariable` * CellGradVariable
+    `CellVariable` * `CellGradVariable`
 
         >>> cvXcgv = cv * cv.grad
         >>> print(cvXcgv)
@@ -564,7 +564,7 @@ def _testBinOp(self):
         >>> print(cvXcgv.rank)
         1
 
-    `FaceVariable` * FaceVariable
+    `FaceVariable` * `FaceVariable`
 
         >>> fvXfv = fv * fv
         >>> print(fvXfv)
@@ -891,7 +891,7 @@ def _testBinOp(self):
         TypeError: can't multiply sequence to non-int
 
 
-    rank-1 `FaceVariable` * rank-1 FaceVariable
+    rank-1 `FaceVariable` * rank-1 `FaceVariable`
 
         >>> vfvXvfv = vfv * vfv
         >>> print(vfvXvfv)
@@ -1162,12 +1162,12 @@ def _testBinOp(self):
         >>> from fipy import numerix
         >>> v = numerix.exp(-T / (1. *  T))
 
-    Following is a test case for an error when turning a binOp into an array
+    Following is a test case for an error when turning a `binOp` into an array
 
         >>> print(numerix.array(Variable(value=numerix.array([ 1.,])) * [ 1.,]))
         [ 1.]
 
-    It seems that numpy's __rmul__ coercion is very strange
+    It seems that numpy's `__rmul__` coercion is very strange
 
         >>> type(numerix.array([1., 2.]) * Variable([1., 2.])) # doctest: +ELLIPSIS
         <class 'fipy.variables.binaryOperatorVariable...binOp'>

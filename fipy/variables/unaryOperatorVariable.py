@@ -5,7 +5,7 @@ __all__ = []
 
 def _UnaryOperatorVariable(operatorClass=None):
     """
-    Test BinOp pickling
+    Test `binOp` pickling
 
     >>> from fipy import Grid1D, FaceVariable, CellVariable, dump, Variable
     >>> import os, sys

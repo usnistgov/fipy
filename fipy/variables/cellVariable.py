@@ -135,10 +135,10 @@ class CellVariable(_MeshVariable):
 
     def __call__(self, points=None, order=0, nearestCellIDs=None):
         r"""
-        Interpolates the CellVariable to a set of points using a
-        method that has a memory requirement on the order of Ncells by
-        Npoints in general, but uses only Ncells when the
-        CellVariable's mesh is a UniformGrid object.
+        Interpolates the `CellVariable` to a set of points using a
+        method that has a memory requirement on the order of `Ncells` by
+        `Npoints` in general, but uses only `Ncells` when the
+        `CellVariable`'s mesh is a `UniformGrid` object.
 
         :Parameters:
 

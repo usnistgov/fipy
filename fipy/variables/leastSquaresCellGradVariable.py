@@ -10,7 +10,7 @@ from fipy.tools import numerix
 
 class _LeastSquaresCellGradVariable(CellVariable):
     """
-    Look at CellVariable.leastSquarseGrad for documentation
+    Look at `CellVariable.leastSquarseGrad` for documentation
      """
     def __init__(self, var, name = ''):
         CellVariable.__init__(self, mesh=var.mesh, name=name, rank=var.rank + 1)

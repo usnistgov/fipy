@@ -122,7 +122,7 @@ class DistanceVariable(CellVariable):
     1
 
     The `extendVariable` method solves the following equation for a given
-    extensionVariable.
+    `extensionVariable`.
 
     .. math::
 
