@@ -98,7 +98,7 @@ class TSVViewer(AbstractViewer):
     def plot(self, filename=None):
         """
         "plot" the coordinates and values of the variables to `filename`.
-        If `filename` is not provided, "plots" to stdout.
+        If `filename` is not provided, "plots" to `stdout`.
 
         >>> from fipy.meshes import Grid1D
         >>> m = Grid1D(nx = 3, dx = 0.4)
