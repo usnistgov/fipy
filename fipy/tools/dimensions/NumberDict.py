@@ -18,12 +18,10 @@ class _NumberDict(DictWithDefault._DictWithDefault):
 
     """Dictionary storing numerical values
 
-    Constructor: _NumberDict()
-
     An instance of this class acts like an array of number with
     generalized (non-integer) indices. A value of zero is assumed
-    for undefined entries. _NumberDict instances support addition,
-    and subtraction with other _NumberDict instances, and multiplication
+    for undefined entries. `_NumberDict` instances support addition,
+    and subtraction with other `_NumberDict` instances, and multiplication
     and division by scalars.
     """
 

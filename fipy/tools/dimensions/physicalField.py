@@ -646,7 +646,7 @@ class PhysicalField(object):
 
     def __float__(self):
         """
-        Return a dimensionless PhysicalField quantity as a float.
+        Return a dimensionless `PhysicalField` quantity as a float.
 
             >>> float(PhysicalField("2. m/m"))
             2.0
@@ -664,7 +664,7 @@ class PhysicalField(object):
                 ...
             TypeError: Not possible to convert a PhysicalField with dimensions to float
 
-        Just as a Numeric_ `array` cannot be cast to float, neither can PhysicalField arrays
+        Just as a Numeric_ `array` cannot be cast to float, neither can `PhysicalField` arrays
 
             >>> float(PhysicalField(((2., 3.), (4., 5.)), "m/m")) # doctest: +ELLIPSIS
             Traceback (most recent call last):
@@ -680,7 +680,7 @@ class PhysicalField(object):
 
     def __gt__(self, other):
         """
-        Compare `self` to `other`, returning an array of boolean values
+        Compare `self` to `other`, returning an array of Boolean values
         corresponding to the test against each element.
 
             >>> a = PhysicalField(((3., 4.), (5., 6.)), "m")
@@ -864,7 +864,7 @@ class PhysicalField(object):
     def getsctype(self, default=None):
         """
 
-        Returns the Numpy sctype of the underlying array.
+        Returns the NumPy sctype of the underlying array.
 
             >>> PhysicalField(1, 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
             True
@@ -1036,7 +1036,7 @@ class PhysicalField(object):
             >>> print(PhysicalField(30., "deg").sin())
             0.5
 
-        The units of the PhysicalField must be an angle
+        The units of the `PhysicalField` must be an angle
 
             >>> PhysicalField(30., "m").sin()
             Traceback (most recent call last):
@@ -1886,7 +1886,7 @@ def _Scale(quantity, scaling):
         >>> print(numerix.round_(_Scale(PhysicalField("1. inch"), PhysicalField("1. mm")), 6))
         25.4
 
-    or a value-unit string convertable to a `PhysicalField`
+    or a value-unit string convertible to a `PhysicalField`
 
         >>> print(numerix.round_(_Scale("1. inch", PhysicalField("1. mm")), 6))
         25.4
