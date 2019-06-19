@@ -20,6 +20,7 @@ matrix:
       # Ignore doctest blocks
       #  Source consists of a PS1 line followed by zero or more PS2 lines.
       #  Want consists of any non-blank lines that do not start with PS1.
+      #  Adapted from doctest.py: DocTestParser._EXAMPLE_RE
       - open: '(?P<source>(?:^(?P<indent>[ ]*)>>> .*)(?:\n(?=P<indent>)\.\.\. .*)*)\n?'
         content: ''
         close: '(?P<want>(?:(?![ ]*$)(?![ ]*>>> ).*$\n?)*)'
