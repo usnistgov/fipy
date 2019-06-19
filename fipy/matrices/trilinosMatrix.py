@@ -795,6 +795,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         5 cells, 3 variables, 1 processor
 
+        ```
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
 
@@ -813,6 +814,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
+        ```
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]))  # doctest: +SERIAL
         True
@@ -824,6 +826,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         5 cells, 2 equations, 1 processor
 
+        ```
         0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9   row IDs
 
@@ -842,6 +845,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
 
         0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
+        ```
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])) # doctest: +SERIAL
         True
@@ -853,6 +857,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         5 cells, 3 variables, 2 processors
 
+        ```
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
 
@@ -879,6 +884,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         0  1           4  5           8  9            _localNonOverlappingColIDs:0
               2  3  4        7  8  9       12 13 14   _localNonOverlappingColIDs:1
+        ```
 
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13])) # doctest: +PROCESSOR_0_OF_2
@@ -899,6 +905,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         5 cells, 2 equations, 2 processors
 
+        ```
         0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9   row IDs
 
@@ -925,6 +932,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         0  1           4  5            _localNonOverlappingRowIDs:0
               2  3  4        7  8  9   _localNonOverlappingRowIDs:1
+        ```
 
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 5, 6, 7, 8])) # doctest: +PROCESSOR_0_OF_2
@@ -952,6 +960,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         5 cells, 3 variables, serial
 
+        ```
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
 
@@ -970,6 +979,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
+        ```
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]))
         True
@@ -981,6 +991,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         5 cells, 2 equations, serial
 
+        ```
         0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9   row IDs
 
@@ -999,6 +1010,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
 
         0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
+        ```
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
         True
@@ -1017,6 +1029,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         7 cells, 3 variables, 1 processor
 
+        ```
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
 
@@ -1035,6 +1048,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localNonOverlappingCellIDs:0
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _localNonOverlappingColIDs:0
+        ```
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
         ...                              11, 12, 13, 14, 15, 16, 17, 18, 19, 20])) # doctest: +SERIAL
@@ -1049,6 +1063,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         7 cells, 2 equations, 1 processor
 
+        ```
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
 
@@ -1067,6 +1082,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localNonOverlappingCellIDs:0
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   _localNonOverlappingRowIDs:0
+        ```
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])) # doctest: +SERIAL
         True
@@ -1078,6 +1094,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         7 cells, 3 variables, 2 processors
 
+        ```
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
 
@@ -1104,6 +1121,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         0  1  2              5  6  7             10 11 12               _localNonOverlappingColIDs:0
                  2  3  4  5           8  9 10 11          14 15 16 17   _localNonOverlappingColIDs:1
+        ```
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18])) # doctest: +PROCESSOR_0_OF_2
         True
@@ -1122,6 +1140,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         7 cells, 2 equations, 2 processors
 
+        ```
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
 
@@ -1148,6 +1167,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         0  1  2              5  6  7               _localNonOverlappingRowIDs:0
                  2  3  4  5           8  9 10 11   _localNonOverlappingRowIDs:1
+        ```
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11])) # doctest: +PROCESSOR_0_OF_2
         True
@@ -1167,6 +1187,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         7 cells, 3 variables, 3 processors
 
+        ```
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
 
@@ -1201,6 +1222,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1                 4  5                 8  9                  _localNonOverlappingColIDs:0
               2  3                 8  9                14 15            _localNonOverlappingColIDs:1
                     2  3  4              7  8  9             12 13 14   _localNonOverlappingColIDs:2
+        ```
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 7, 8, 9, 10, 14, 15, 16, 17])) # doctest: +PROCESSOR_0_OF_3
         True
@@ -1226,6 +1248,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         7 cells, 2 equations, 3 processors
 
+        ```
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
 
@@ -1260,7 +1283,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1                 4  5                  _localNonOverlappingRowIDs:0
               2  3                 8  9            _localNonOverlappingRowIDs:1
                     2  3  4              7  8  9   _localNonOverlappingRowIDs:2
-
+        ```
         """
         pass
 
