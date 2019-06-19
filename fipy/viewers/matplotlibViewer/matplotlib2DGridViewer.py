@@ -28,17 +28,18 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
           limits : dict
             a (deprecated) alternative to limit keyword arguments
           cmap
-            The colormap. Defaults to `matplotlib.cm.jet`
+            The :class:`~matplotlib.colors.Colormap`.
+            Defaults to `matplotlib.cm.jet`
           xmin, xmax, ymin, ymax, datamin, datamax
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
           colorbar
-            plot a colorbar in specified orientation if not `None`
+            plot a color bar in specified orientation if not `None`
           axes
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
           figaspect
             desired aspect ratio of figure. If arg is a number, use that aspect
-            ratio. If arg is 'auto', the aspect ratio will be determined from
+            ratio. If arg is `auto`, the aspect ratio will be determined from
             the Variable's mesh.
         """
         kwlimits.update(limits)

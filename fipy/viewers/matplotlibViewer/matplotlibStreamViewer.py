@@ -52,7 +52,7 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
           figaspect
             desired aspect ratio of figure. If arg is a number, use that aspect
-            ratio. If arg is 'auto', the aspect ratio will be determined from
+            ratio. If arg is `auto`, the aspect ratio will be determined from
             the Variable's mesh.
           *density* : float or 2-tuple
               Controls the closeness of streamlines. When `density = 1`, the domain
@@ -66,7 +66,7 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
               Streamline color. When given an array with the type as vars,
               *color* values are converted to colors using *cmap*.
           *cmap* : :class:`~matplotlib.colors.Colormap`
-              Colormap used to plot streamlines and arrows. Only necessary when using
+              :class:`~matplotlib.colors.Colormap` used to plot streamlines and arrows. Only necessary when using
               an `MeshVariable` input for *color*.
           *norm* : :class:`~matplotlib.colors.Normalize`
               Normalize object used to scale luminance data to 0, 1. If None, stretch

@@ -27,7 +27,7 @@ class VTKViewer(AbstractViewer):
     """Renders `_MeshVariable` data in VTK format
     """
     def __init__(self, vars, title=None, limits={}, **kwlimits):
-        """Creates a VTKViewer
+        """Creates a `VTKViewer`
 
         :Parameters:
           vars

@@ -25,20 +25,21 @@ class SignedLogFormatter(ticker.LogFormatter):
 
     formatted values range from large positive to small positive to small negative to large negative.
 
-    if attribute decadeOnly is True, only the decades will be labelled.
+    if attribute `decadeOnly` is True, only the decades will be labeled.
     """
     def __init__(self, base=10.0, labelOnlyBase=True, threshold=0.):
         """
         base is used to locate the decade tick,
-        which will be the only one to be labeled if labelOnlyBase
-        is False
+        which will be the only one to be labeled if `labelOnlyBase`
+        is `False`
         """
         self._base = base+0.0
         self.labelOnlyBase=labelOnlyBase
         self.threshold = threshold
 
     def __call__(self, x, pos=None):
-        'Return the format for tick val x at position pos'
+        """Return the format for tick val x at position `pos`
+        """
         vmin, vmax = self.axis.get_view_interval()
         d = abs(vmax - vmin)
         b=self._base

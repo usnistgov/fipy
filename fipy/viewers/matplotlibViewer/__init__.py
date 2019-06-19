@@ -38,9 +38,9 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
         viewers will use `datamin` and `datamax`. Any limit set to a
         (default) value of `None` will autoscale.
       cmap
-        the colormap. Defaults to `matplotlib.cm.jet`
+        the :class:`~matplotlib.colors.Colormap`. Defaults to `matplotlib.cm.jet`
       colorbar
-        plot a colorbar in specified orientation if not `None`
+        plot a color bar in specified orientation if not `None`
       axes
         if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
 

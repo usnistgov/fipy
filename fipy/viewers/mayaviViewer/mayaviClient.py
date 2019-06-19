@@ -43,7 +43,7 @@ class MayaviClient(AbstractViewer):
             (default) value of `None` will autoscale.
           daemon_file
             the path to the script to run the separate Mayavi viewer process.
-            Defaults to "fipy/viewers/mayaviViewer/mayaviDaemon.py"
+            Defaults to `fipy/viewers/mayaviViewer/mayaviDaemon.py`
           fps
             frames per second to attempt to display
         """

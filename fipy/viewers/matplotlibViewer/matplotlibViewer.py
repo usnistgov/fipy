@@ -26,9 +26,9 @@ def _isnotebook():
         return False      # Probably standard Python interpreter
 
 def _isretina():
-    """return True if jupyter notebook configuration
-    InlineBackend.figure_formats contains 'retina' or
-    InlineBackend.figure_format is set to 'retina'
+    """return `True` if jupyter notebook configuration
+    `InlineBackend.figure_formats` contains `retina` or
+    `InlineBackend.figure_format` is set to `retina`
     """
     isretina = False
 
@@ -76,9 +76,10 @@ class AbstractMatplotlibViewer(AbstractViewer):
             viewers will use `datamin` and `datamax`. Any limit set to a
             (default) value of `None` will autoscale.
           cmap
-            the colormap. Defaults to `matplotlib.cm.jet`
+            the :class:`~matplotlib.colors.Colormap`.
+            Defaults to `matplotlib.cm.jet`
           colorbar
-            plot a colorbar in specified orientation if not `None`
+            plot a color bar in specified orientation if not `None`
           axes
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
           log
@@ -188,7 +189,7 @@ class AbstractMatplotlibViewer(AbstractViewer):
 #         return [".%s" % key for key in filetypes.keys()]
 
     def _repr_png_(self):
-        """Render as a PNG for IPython notebook, per display_protocol.ipynb
+        """Render as a PNG for IPython notebook, per `display_protocol.ipynb`
 
         Invoke with `display(myViewer)`
         """
