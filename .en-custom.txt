@@ -25,6 +25,7 @@ indices
 multiline
 Neumann
 numerix
+PID
 pre-assembled
 preconditioner
 pysparse
@@ -33,6 +34,7 @@ PyTrilinos
 Py3k
 refactor
 RHS
+Runge-Kutta
 scipy
 SciPy
 sub-categories
