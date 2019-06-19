@@ -23,7 +23,7 @@ class PyAMGXSolver(Solver):
           - `iterations`: The maximum number of iterative steps to perform.
           - `precon`: Preconditioner to use.
           - `smoother`: Smoother to use.
-          - `kwargs` - Keyword arguments specifying other solver options (see AMGX Reference Manual).
+          - `kwargs`: Keyword arguments specifying other solver options (see AMGX Reference Manual).
         """
         # update solver config:
         config_dict["solver"]["tolerance"] = tolerance

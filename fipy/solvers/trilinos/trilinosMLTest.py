@@ -28,7 +28,7 @@ class TrilinosMLTest(TrilinosSolver):
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterations to perform per test.
-          - `MLOptions`: Options to pass to ML. A dictionary of {option:value} pairs. This will be passed to ML.SetParameterList.
+          - `MLOptions`: Options to pass to ML. A dictionary of {option:value} pairs. This will be passed to `ML.SetParameterList`.
           - `testUnsupported`: test smoothers that are not currently implemented in preconditioner objects.
 
         For detailed information on the possible parameters for ML, see

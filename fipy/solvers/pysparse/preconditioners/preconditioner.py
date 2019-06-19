@@ -20,7 +20,7 @@ class Preconditioner(object):
 
     def _applyToMatrix(self, matrix):
         """
-        Returns the function used for PySparse
+        Returns the function used for Pysparse
         preconditioning.
         """
         raise NotImplementedError

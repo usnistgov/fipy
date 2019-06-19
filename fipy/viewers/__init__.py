@@ -39,8 +39,8 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
 
     The `Viewer` factory will search the module tree and return an instance of
     the first `Viewer` it finds that supports the dimensions of `vars`. Setting
-    the '`FIPY_VIEWER`' environment variable to either '`matplotlib`', '`mayavi`',
-    '`tsv`', or '`vtk`' will specify the viewer.
+    the `FIPY_VIEWER` environment variable to either `matplotlib`, `mayavi`,
+    `tsv`, or `vtk` will specify the viewer.
 
     The `kwlimits` or `limits` parameters can be used to constrain the view. For example::
 
