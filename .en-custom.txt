@@ -1,3 +1,4 @@
+advection
 Amesos
 AMG
 AMGX
@@ -7,11 +8,13 @@ autoscale
 BiCG
 Bicgstab
 biconjugate
+bitwise
 broadcastable
 broadcasted
 Cahn-Hilliard
 CGS
 Cholesky
+discretization
 discretizations
 docstring
 docstrings
@@ -42,6 +45,7 @@ KLU
 LSMLIB
 mesh-element--by--mesh-element
 multiline
+multi-variable
 neighbors'
 Neumann
 numerix
@@ -79,6 +83,7 @@ ufuncs
 unpickle
 unpickled
 unpickling
+upwinding
 vertices
 VTK
 whitespace
