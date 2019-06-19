@@ -17,6 +17,8 @@ cd
 CGS
 Cholesky
 CODATA
+CTCMS
+dendritic
 discretization
 discretizations
 docstring
@@ -24,12 +26,15 @@ docstrings
 docstring's
 doctest
 doctests
+electrodeposition
+eluting
 Epetra
 exponentiated
 e.g.
 FGMRES
 FiPy
 FiPy's
+FV
 Gauss-Seidel
 globals
 GMRES
@@ -55,9 +60,11 @@ matplotlib
 mayavi
 mayavi2
 mesh-element--by--mesh-element
+MML
 mol
 MPI
 mpi4py
+MSED
 multiline
 multi-variable
 neighbors'
@@ -70,6 +77,9 @@ numpy's
 or's
 PBICGSTAB
 PCG
+PDE
+PDEs
+photovoltaics
 PID
 PNG
 pre-assembled
@@ -90,6 +100,7 @@ sliceable
 smoothers
 sr
 SSOR
+stents
 subviewers
 sub-categories
 svn
@@ -103,6 +114,9 @@ unpickle
 unpickled
 unpickling
 upwinding
+vcs
+VCS
+Versioneer
 vertices
 VTK
 whitespace
