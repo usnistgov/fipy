@@ -30,7 +30,7 @@ matrix:
         content: ''
         close: '(?P<want>(?:(?![ ]*$)(?![ ]*>>> ).*$\n?)*)'
       # Ignore reStructuredText roles
-      - open: ':(?:(attr|func|meth|math|mod)):`'
+      - open: ':(?:(attr|func|meth|math|mod|py:attr)):`'
         close: '`'
       # Ignore reStructuredText literals
       - open: '::$'
