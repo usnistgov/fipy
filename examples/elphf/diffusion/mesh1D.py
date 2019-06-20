@@ -1,5 +1,5 @@
 r"""
-A simple 1D example to test the setup of the multi-component diffusion
+A simple 1D example to test the setup of the multicomponent diffusion
 equations.  The diffusion equation for each species in single-phase
 multicomponent system can be expressed as
 
