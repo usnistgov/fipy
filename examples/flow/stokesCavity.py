@@ -1,7 +1,7 @@
 r"""Solve the Navier-Stokes equation in the viscous limit.
 
 Many thanks to Benny Malengier <bm@cage.ugent.be> for reworking this example and
-actually making it work correctly... see changeset:3799
+actually making it work correctly... see `#209 <https://github.com/usnistgov/fipy/issues/209>`_
 
 This example is an implementation of a rudimentary Stokes solver on a collocated
 grid.  It solves the Navier-Stokes equation in the viscous limit,

@@ -32,7 +32,7 @@ and boundary conditions
 
 .. Further details of the numerical method for this problem can be found in
    "Extending Phase Field Models of Solidification to Polycrystalline
-   Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
+   Materials", J. A. Warren *et al.*, *Acta Materialia*, **51** (2003)
    6035-6058.
 
 Here the phase equation is solved with an explicit technique.

@@ -287,7 +287,7 @@ class AdsorbingSurfactantEquation(object):
         :Parameters:
            - `var`: A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
            - `solver`: The iterative solver to be used to solve the linear system of equations.
-           - `boundaryConditions`: A tuple of boundaryConditions.
+           - `boundaryConditions`: A tuple of `BoundaryConditions`.
            - `dt`: The time step size.
 
 	"""
@@ -321,7 +321,7 @@ class AdsorbingSurfactantEquation(object):
 
            - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
            - `solver`: The iterative solver to be used to solve the linear system of equations.
-           - `boundaryConditions`: A tuple of boundaryConditions.
+           - `boundaryConditions`: A tuple of `BoundaryConditions`.
            - `dt`: The time step size.
            - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
 

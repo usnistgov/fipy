@@ -230,7 +230,7 @@ we define the phase field equation
 >>> phaseEq = (TransientTerm(1/Mphi, var=phase) == DiffusionTerm(coeff=kappa, var=phase)
 ...            + S0 + ImplicitSourceTerm(coeff=S1, var=phase))
 
------
+----
 
 When coding explicitly, it is typical to simply write a function to
 evaluate the chemical potentials :math:`\\mu_A` and :math:`\\mu_B` and then
@@ -367,7 +367,7 @@ or
 
 >>> eq = phaseEq & diffusionEq
 
------
+----
 
 We initialize the phase field to a step function in the middle of the domain
 
@@ -549,7 +549,7 @@ while conserving mass overall
 >>> print(Cavg.allclose(0.5, atol=1e-8))
 1
 
------
+----
 
 We now quench by ten degrees
 

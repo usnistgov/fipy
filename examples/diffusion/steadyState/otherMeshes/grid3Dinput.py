@@ -2,7 +2,7 @@
 ##from fipy.tools.profiler.profiler import calibrate_profiler
 
 """
-Test case for the Grid3D.
+Test case for the `Grid3D`.
 
    >>> DiffusionTerm().solve(var)
    >>> DiffusionTerm().solve(var2)

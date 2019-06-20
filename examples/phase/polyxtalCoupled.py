@@ -149,7 +149,7 @@ where
    P(w) = 1 - \exp{(-\beta w)} + \frac{\mu}{\epsilon} \exp{(-\beta w)}
 
 The ``theta`` equation is built in the following way. The details for
-this equation are fairly involved, see J.A. Warren *et al.*. The main
+this equation are fairly involved, see J. A. Warren *et al.*. The main
 detail is that a source must be added to correct for the
 discretization of ``theta`` on the circle.
 

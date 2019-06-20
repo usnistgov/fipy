@@ -168,7 +168,7 @@ and a liquid phase rich in the two substitutional species.
 
 >>> solvent.barrier = R * T
 
------
+----
 
 We create the phase equation
 
@@ -269,7 +269,7 @@ interstitial diffusion equations, we arrange in canonical form as before:
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
------
+----
 
 The canonical form of the substitutional diffusion equations is
 
@@ -320,7 +320,7 @@ The canonical form of the substitutional diffusion equations is
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 
------
+----
 
 We start with a sharp phase boundary
 

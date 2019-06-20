@@ -2,7 +2,7 @@ r"""
 
 This example creates a trench with the following zero level set:
 
-.. math
+.. math::
 
    \phi \left( x, y \right) = 0 & \text{when $y = L_y / 5$ and $x \ge L_x / 2$} \\
    \phi \left( x, y \right) = 0 & \text{when $L_y / 5 \le y \le 3 Ly / 5$ and $x = L_x / 2$$} \\

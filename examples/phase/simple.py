@@ -332,7 +332,7 @@ run-time between the fully explicit source and the optimized semi-implicit
 source, the benefit of 60% fewer sweeps should be obvious for larger
 systems and longer iterations.
 
------
+----
 
 This example has focused on just the region of the phase field interface in
 equilibrium. Problems of interest, though, usually involve the dynamics of one phase
