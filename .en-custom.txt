@@ -24,8 +24,10 @@ broadcasted
 Cahn-Hilliard
 Calphad
 cd
+CEAC
 CFL
 CGS
+chemotaxis
 Cholesky
 CODATA
 colocated
@@ -41,10 +43,13 @@ docstrings
 docstring's
 doctest
 doctests
+Dolfyn
 electrodeposition
 eluting
 Epetra
 equilibrate
+Eqs.
+Eq.
 et
 exponentiated
 e.g.
@@ -82,6 +87,7 @@ jupyter
 KLU
 Kobayashi
 Kobayashi's
+LHS
 linearization
 linearize
 linearizing
@@ -105,6 +111,7 @@ multicomponent
 multigrid
 multiline
 multi-variable
+namespace
 Navier-Stokes
 neighbors'
 Neumann
@@ -135,8 +142,10 @@ PyTrilinos
 Py3k
 redeclare
 refactor
+reST
 Rhie-Chow
 RHS
+RMS
 Rossow
 Runge-Kutta
 Ryo
@@ -158,6 +167,8 @@ sub-categories
 superceded
 superfill
 svn
+timestep
+timesteps
 TODO
 trilinos
 tuple
@@ -183,5 +194,9 @@ YZ
 2D
 3D
 3x2x1
+-
+-periodicity
+-valued
 --
+----
 's
