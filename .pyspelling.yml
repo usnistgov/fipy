@@ -36,3 +36,28 @@ matrix:
       # Ignore reStructuredText literals
       - open: '::$'
         close: '(?P<literal>(?:((?P<indent>[ ]+).*$)|(\n))+)'
+      # Ignore reStructuredText math directive
+      - open: '\.\. math::.*$\n*'
+        content: '(?P<first>(^(?P<indent>[ ]+).*$\n))(?P<other>(^([ \t]+.*|[ \t]*)$\n)*)'
+        close: '(^(?![ \t]+.*$))'
+      # Ignore reStructuredText directives
+      - open: '\.\.\s+(image|literalinclude|tabularcolumns)::'
+        close: '\n'
+      # Ignore reStructuredText bibmissing
+      - open: '\.\. \.\.\s+bibmissing::'
+        close: '\n'
+      # Ignore reStructuredText index
+      - open: '\.\.\s+index::'
+        close: '(?P<indexing>(?:((?P<indent>[ ]+).*$)|(\n))+)'
+      # Ignore reStructuredText hyperlinks
+      - open: '\s'
+        content: '\w*'
+        close: '_'
+      # Ignore reStructredText hyperlink target
+      - open: '\.\.[ \t]+_[^:]*:'
+        close: '$'
+      # Ignore positive and negative numbers
+      - open: '\s'
+        content: '[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?'
+        close: '\s'
+  - pyspelling.filters.url:
