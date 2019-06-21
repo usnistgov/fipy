@@ -119,7 +119,7 @@ Command-line Flags
 ==================
 
 You can add any of the following case-insensitive flags after the name of a
-script you call from the command line, e.g::
+script you call from the command line, e.g.::
 
     $ python myFiPyScript --someflag
 
@@ -642,7 +642,7 @@ can often be substituted for the flux in an equation
     &= \int_{S \notin S_R} \hat{n} \cdot \left(\vec{a}\phi + b\nabla\phi\right) \, dS
     + \int_{S \in S_R} g \, dS
 
-At faces identifed by ``mask``,
+At faces identified by ``mask``,
 
 >>> a = FaceVariable(mesh=mesh, value=..., rank=1)
 >>> a.setValue(0., where=mask)
@@ -721,7 +721,7 @@ An equation of the form
 
 >>> eqn = TransientTerm() == DiffusionTerm(coeff=Gamma0)
 
-can be constrained to have a Robin condition at faces identifed by
+can be constrained to have a Robin condition at faces identified by
 ``mask`` by making the following modifications
 
 >>> Gamma = FaceVariable(mesh=mesh, value=Gamma0)
@@ -799,7 +799,7 @@ at a position given by ``mask`` with the following alterations
 The parameter ``largeValue`` must be chosen to be large enough to
 completely dominate the matrix diagonal and the RHS vector in cells
 that are masked. The ``mask`` variable would typically be a
-``FaceVariable`` boolean constructed using the face center values.
+``FaceVariable`` Boolean constructed using the face center values.
 
 Internal Robin condition
 ------------------------

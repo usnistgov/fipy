@@ -3,7 +3,7 @@ Overview
 ========
 
 | |CircleCI|_ |TravisCI|_ |AppVeyor|_
-| |GitHub|_ |PyPi|_  |Codacy|_ |CondaForge|_ |Binder|_
+| |GitHub|_ |PyPI|_  |Codacy|_ |CondaForge|_ |Binder|_
 | |gitter|_ |Depsy|_ |OpenHub|_
 
 .. only:: latex
@@ -166,8 +166,8 @@ or a
 .. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy
 .. |OpenHub|       image:: https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif
 .. _OpenHub:       https://www.openhub.net/p/fipy
-.. |PyPi|          image:: https://img.shields.io/pypi/v/fipy.svg
-.. _PyPi:          https://pypi.python.org/pypi/FiPy
+.. |PyPI|          image:: https://img.shields.io/pypi/v/fipy.svg
+.. _PyPI:          https://pypi.python.org/pypi/FiPy
 .. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
 .. _CondaForge:    https://anaconda.org/guyer/fipy
 .. |Depsy|         image:: http://depsy.org/api/package/pypi/FiPy/badge.svg
