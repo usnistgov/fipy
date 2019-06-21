@@ -9,7 +9,7 @@ __all__ = [text_to_native_str(n) for n in __all__]
 class LinearPCGSolver(ScipyLinearPCGSolver):
     """
     The `LinearPCGSolver` is an interface to the PCG solver in Scipy,
-    using the pyAMG `SmoothedAggregationPreconditioner` by default.
+    using the PyAMG `SmoothedAggregationPreconditioner` by default.
     """
 
     def __init__(self, tolerance=1e-15, iterations=2000, precon=SmoothedAggregationPreconditioner()):

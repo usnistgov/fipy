@@ -9,7 +9,7 @@ __all__ = [text_to_native_str(n) for n in __all__]
 class LinearGMRESSolver(ScipyLinearGMRESSolver):
     """
     The `LinearGMRESSolver` is an interface to the GMRES solver in
-    Scipy, using the pyAMG `SmoothedAggregationPreconditioner` by
+    Scipy, using the PyAMG `SmoothedAggregationPreconditioner` by
     default.
     """
 
