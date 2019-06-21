@@ -31,7 +31,7 @@ Pulls
 Fixes
 -----
 
-- `#655 <https://github.com/usnistgov/fipy/issues/655>`_`_:
+- `#655 <https://github.com/usnistgov/fipy/issues/655>`_:
   When Python 2 and 3 are installed, Mayavi wont work.
   Thanks to `@Hendrik410 <https://github.com/Hendrik410>`_.
 - `#646 <https://github.com/usnistgov/fipy/issues/646>`_:
