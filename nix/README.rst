@@ -1,5 +1,3 @@
-.. _nixinstall:
-
 Nix Installation
 ================
 
