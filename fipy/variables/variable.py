@@ -67,7 +67,7 @@ class Variable(object):
         Parameters
         ----------
         value : int or float or `array_like`
-	    unit : str or ~fipy.tools.dimensions.physicalField.PhysicalUnit
+        unit : str or ~fipy.tools.dimensions.physicalField.PhysicalUnit
             The physical units of the variable
         array : ndarray, optional
             The storage array for the `Variable`

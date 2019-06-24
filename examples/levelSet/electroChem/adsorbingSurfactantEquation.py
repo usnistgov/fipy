@@ -303,7 +303,7 @@ class AdsorbingSurfactantEquation(object):
         dt : float
             The time step size.
 
-	"""
+        """
         self.dt.setValue(dt)
         if solver is None:
             import fipy.solvers.solver
@@ -345,7 +345,7 @@ class AdsorbingSurfactantEquation(object):
             Usually a value between `0` and `1` or `None` in the case of no
             under-relaxation
 
-	"""
+        """
         self.dt.setValue(dt)
         if solver is None:
             from fipy.solvers import DefaultAsymmetricSolver

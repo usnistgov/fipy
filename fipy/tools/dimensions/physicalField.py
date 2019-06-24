@@ -816,7 +816,7 @@ class PhysicalField(object):
 
     def inUnitsOf(self, *units):
         """
-	Returns one or more `PhysicalField` objects that express the same
+        Returns one or more `PhysicalField` objects that express the same
         physical quantity in different units.  The units are specified by
         strings containing their names.  The units must be compatible with
         the unit of the object.  If one unit is specified, the return value
@@ -827,7 +827,7 @@ class PhysicalField(object):
         1
 
         If several units are specified, the return value is a tuple of
-	`PhysicalField` instances with with one element per unit such that
+        `PhysicalField` instances with with one element per unit such that
         the sum of all quantities in the tuple equals the the original
         quantity and all the values except for the last one are integers.
         This is used to convert to irregular unit systems like

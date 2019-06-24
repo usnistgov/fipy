@@ -35,7 +35,7 @@ class _BasePeriodicGrid2D(NonUniformGrid2D):
         ...                         [3, 4, 6, 7],
         ...                         [0, 1, 3, 4]]
         >>> print(numerix.allclose(m._orderedCellVertexIDs, orderedCellVertexIDs))  # doctest: +PROCESSOR_0
-	True
+        True
         >>> print(CellVariable(mesh=m, value=m.cellCenters[0]))
         [-0.5  0.5 -0.5  0.5]
         """

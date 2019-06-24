@@ -236,7 +236,7 @@ class DistanceVariable(CellVariable):
             The name of the variable.
         value : float or array_like
             The initial value.
-	    unit : str or ~fipy.tools.dimensions.physicalField.PhysicalUnit
+        unit : str or ~fipy.tools.dimensions.physicalField.PhysicalUnit
             The physical units of the variable
         hasOld : bool
             Whether the variable maintains an old value.

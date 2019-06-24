@@ -35,7 +35,7 @@ class _MeshVariable(Variable):
         elementshape : :obj:`tuple` of :obj:`int`
             the shape of each element of this variable
             Default: `rank * (mesh.dim,)`
-	    unit : str or ~fipy.tools.dimensions.physicalField.PhysicalUnit
+        unit : str or ~fipy.tools.dimensions.physicalField.PhysicalUnit
             The physical units of the variable
         """
         if isinstance(value, (list, tuple)):
