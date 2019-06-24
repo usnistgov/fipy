@@ -356,8 +356,8 @@ If we're running interactively, we create a viewer
 
 and again iterate to equilibrium
 
-.. .. index::
-..    single: DefaultAsymmetricSolver
+.. index::
+   single: DefaultAsymmetricSolver
 
 >>> solver = DefaultAsymmetricSolver(tolerance=1e-10)
 
@@ -382,8 +382,8 @@ and again iterate to equilibrium
 
 We can confirm that the far-field phases have remained separated
 
-.. .. index::
-..    single: allclose
+.. index::
+   single: allclose
 
 >>> X = mesh.faceCenters[0]
 >>> print(numerix.allclose(phase.faceValue[X.value==0], 1.0, rtol = 1e-5, atol = 1e-5))
