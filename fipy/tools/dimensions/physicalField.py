@@ -1382,7 +1382,7 @@ class PhysicalUnit(object):
             Name of the unit
         factor : float
             Multiplier between the unit and the fundamental SI unit
-        powers`: :obj:`array_like` of :obj:`float`
+        powers`: `array_like` of :obj:`float`
             Nine elements representing the fundamental SI units of
             ["m", "kg", "s", "A", "K", "mol", "cd", "rad", "sr"]
         offset : float

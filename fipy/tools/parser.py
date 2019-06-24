@@ -19,7 +19,7 @@ def parse(larg, action = None, type = None, default = None):
     ----------
     larg : str
         Argument to be parsed.
-    action : {'store', 'store_true', 'store_false', 'store_const', 'append', 'count', 'callback'}
+    action : {`'store'`, `'store_true'`, `'store_false'`, `'store_const'`, `'append'`, `'count'`, `'callback'`}
         Basic type of action to be taken when this argument is encountered at the command line.
         See https://docs.python.org/2/library/argparse.html#action
     type : type

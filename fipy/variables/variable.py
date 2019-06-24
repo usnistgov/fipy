@@ -66,7 +66,7 @@ class Variable(object):
 
         Parameters
         ----------
-        value : int or float or array_like
+        value : int or float or `array_like`
 	    unit : str or ~fipy.tools.dimensions.physicalField.PhysicalUnit
             The physical units of the variable
         array : ndarray, optional
@@ -569,9 +569,9 @@ class Variable(object):
 
         Parameters
         ----------
-        value : float or array_like
+        value : float or `array_like`
             The value of the constraint
-        where : :obj:`array_like` of :obj:`bool`
+        where : `array_like` of :obj:`bool`
             The constraint mask or index specifying the location of the
             constraint
         """

@@ -72,7 +72,7 @@ def read(filename, fileobject=None, communicator=parallelComm, mesh_unmangle=Fal
         Name of the file to unpickle the object from.
     fileobject : file
         Used to remove temporary files
-    communicator : ~fipy.tools.comms.CommWrapper
+    communicator : ~fipy.tools.comms.commWrapper.CommWrapper
         A duck-typed object with `procID` and `Nproc` attributes is sufficient
     mesh_unmangle : bool
         Whether to correct improper pickling of non-uniform meshes (ticket:243)

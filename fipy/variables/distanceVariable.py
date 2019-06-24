@@ -296,7 +296,7 @@ class DistanceVariable(CellVariable):
 
         Parameters
         ----------
-        order : {1, 2}
+        order : {`1`, `2`}
             The order of accuracy for the distance function calculation
         """
 

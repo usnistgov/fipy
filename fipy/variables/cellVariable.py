@@ -164,7 +164,7 @@ class CellVariable(_MeshVariable):
         ----------
         points : tuple or :obj:`list` of :obj:`tuple`
             A point or set of points in the format (X, Y, Z)
-        order : {0, 1}
+        order : {`0`, `1`}
             The order of interpolation, default is 0
         nearestCellIDs : array_like
             Optional argument if user can calculate own
