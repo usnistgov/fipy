@@ -170,7 +170,7 @@ developing such a language interpreter is time not spent actually
 doing research.
 
 In contrast, a number of very powerful scripting languages, such as
- Tcl, Java, Python, Ruby, and even the venerable BASIC, have open
+Tcl, Java, Python, Ruby, and even the venerable BASIC, have open
 source interpreters that can be embedded directly in an application,
 giving scientific codes immediate access to a high-level scripting
 language designed by someone who actually knew what they were doing.
