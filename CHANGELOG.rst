@@ -18,6 +18,8 @@ without any translation.  Thanks to `@pya <https://github.com/pya>`_ and
 Pulls
 -----
 
+- Automate spell check
+  (`#657 <https://github.com/usnistgov/fipy/pull/657>`_)
 - Fix gmsh on windows
   (`#648 <https://github.com/usnistgov/fipy/pull/648>`_)
 - Fix sphinx documentation
