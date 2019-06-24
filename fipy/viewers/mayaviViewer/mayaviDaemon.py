@@ -60,10 +60,8 @@ class MayaviDaemon(Mayavi):
 
         Parameters
         ----------
-
-        argv : `list` of `strings`
-
-          The list of command line arguments.
+        argv : :obj:`list` of :obj:`str`
+            The command line arguments
         """
         from optparse import OptionParser
         usage = "usage: %prog [options]"

@@ -36,23 +36,22 @@ class TSVViewer(AbstractViewer):
         Creates a `TSVViewer`.
 
         Any cell centers that lie outside the limits provided will not be included.
-        Any values that lie outside the *datamin* or *datamax* will be
+        Any values that lie outside the `datamin` or `datamax` will be
         replaced with `nan`.
 
         All variables must have the same mesh.
 
         It tries to do something reasonable with rank-1 `CellVariable` and `FaceVariable` objects.
 
-
-        :Parameters:
-          vars
-            a `CellVariable`, a `FaceVariable`, a tuple of `CellVariable`
-            objects, or a tuple of `FaceVariable` objects to plot
-          title
+        Parameters
+        ----------
+        vars : ~fipy.variables.cellVariable.CellVariable or ~fipy.variables.faceVariable.FaceVariable or list
+            the `MeshVariable` objects to display.
+        title : str, optional
             displayed at the top of the `Viewer` window
-          limits : dict
+        limits : dict, optional
             a (deprecated) alternative to limit keyword arguments
-          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+        float xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
         """
@@ -120,8 +119,9 @@ class TSVViewer(AbstractViewer):
         0.05    0.45    -2      35      -3.33333333333333
         0.15    0.45    5       35      5
 
-        :Parameters:
-          filename
+        Parameters
+        ----------
+        filename : str
             If not `None`, the name of a file to save the image into.
         """
 

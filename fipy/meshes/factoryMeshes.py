@@ -16,12 +16,6 @@ def _dnl(dx, nx, Lx):
     `dx`.  i.e. If `Lx` is specified the length of
     the domain is always `Lx` regardless of `dx`.
 
-    :Parameters:
-
-      - `dx`: grid spacing
-      - `nx`: number of cells
-      - `Lx`: the domain length
-
     >>> print(_dnl(None, None, None))
     (None, 1)
     >>> print(_dnl(None, 1.1, 2.))
@@ -32,6 +26,15 @@ def _dnl(dx, nx, Lx):
     (2.2, 4)
     >>> print(_dnl(1., 6, 15.))
     (2.5, 6)
+
+    Parameters
+    ----------
+    dx : float
+        Grid spacing
+    nx : int
+        Number of cells
+    Lx : float
+        The domain length
     """
     if Lx is None:
         if nx is None:
@@ -54,25 +57,34 @@ def Grid3D(dx=1., dy=1., dz=1.,
     list of spacings, in which case `L{x,y,z}` will be the sum of
     `d{x,y,z}` and `n{x,y,z}` will be the count of `d{x,y,z}`.
 
-    :Parameters:
-
-      - `dx`: grid spacing in the horizontal direction
-      - `dy`: grid spacing in the vertical direction
-      - `dz`: grid spacing in the z-direction
-      - `nx`: number of cells in the horizontal direction
-      - `ny`: number of cells in the vertical direction
-      - `nz`: number of cells in the z-direction
-      - `Lx`: the domain length in the horizontal direction
-      - `Ly`: the domain length in the vertical direction
-      - `Lz`: the domain length in the z-direction
-      - `overlap`: the number of overlapping cells for parallel
-        simulations. Generally 2 is adequate. Higher order equations or
-        discretizations require more.
-      - `communicator`: either `fipy.tools.parallelComm` or
-        `fipy.tools.serialComm`. Select `fipy.tools.serialComm` to create a
-        serial mesh when running in parallel. Mostly used for test
-        purposes.
-
+    Parameters
+    ----------
+    dx : float
+        Grid spacing in the horizontal direction
+    dy : float
+        Grid spacing in the vertical direction
+    dz : float
+        Grid spacing in the depth direction
+    nx : int
+        Number of cells in the horizontal direction
+    ny : int
+        Number of cells in the vertical direction
+    nz : int
+        Number of cells in the depth direction
+    Lx : float
+        Domain length in the horizontal direction
+    Ly : float
+        Domain length in the vertical direction
+    Lz : float
+        Domain length in the depth direction
+    overlap : int
+        Number of overlapping cells for parallel simulations.  Generally 2
+        is adequate.  Higher order equations or discretizations require
+        more.
+    communicator : ~fipy.tools.comms.commWrapper.CommWrapper
+        Generally, `fipy.tools.serialComm` or `fipy.tools.parallelComm`.
+        Select `~fipy.tools.serialComm` to create a serial mesh when
+        running in parallel; mostly used for test purposes.
     """
 
     if numerix.getShape(dx) == () \
@@ -98,25 +110,31 @@ def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communic
     spacings, in which case `L{x,y}` will be the sum of `d{x,y}` and
     `n{x,y}` will be the count of `d{x,y}`.
 
-    :Parameters:
-
-        - `dx`: grid spacing in the horizontal direction
-        - `dy`: grid spacing in the vertical direction
-        - `nx`: number of cells in the horizontal direction
-        - `ny`: number of cells in the vertical direction
-        - `Lx`: the domain length in the horizontal direction
-        - `Ly`: the domain length in the vertical direction
-        - `overlap`: the number of overlapping cells for parallel
-          simulations. Generally 2 is adequate. Higher order equations or
-          discretizations require more.
-        - `communicator`: either `fipy.tools.parallelComm` or
-          `fipy.tools.serialComm`. Select `fipy.tools.serialComm` to create a
-          serial mesh when running in parallel. Mostly used for test
-          purposes.
-
     >>> print(Grid2D(Lx=3., nx=2).dx)
     1.5
 
+    Parameters
+    ----------
+    dx : float
+        Grid spacing in the horizontal direction
+    dy : float
+        Grid spacing in the vertical direction
+    nx : int
+        Number of cells in the horizontal direction
+    ny : int
+        Number of cells in the vertical direction
+    Lx : float
+        Domain length in the horizontal direction
+    Ly : float
+        Domain length in the vertical direction
+    overlap : int
+        Number of overlapping cells for parallel simulations.  Generally 2
+        is adequate.  Higher order equations or discretizations require
+        more.
+    communicator : ~fipy.tools.comms.commWrapper.CommWrapper
+        Generally, `fipy.tools.serialComm` or `fipy.tools.parallelComm`.
+        Select `~fipy.tools.serialComm` to create a serial mesh when
+        running in parallel; mostly used for test purposes.
     """
 
     if numerix.getShape(dx) == () and numerix.getShape(dy) == ():
@@ -140,19 +158,22 @@ def Grid1D(dx=1., nx=None, Lx=None, overlap=2, communicator=parallelComm):
     which case `Lx` will be the sum of `dx` and `nx` will be the count of
     `dx`.
 
-    :Parameters:
-
-      - `dx`: grid spacing in the horizontal direction
-      - `nx`: number of cells in the horizontal direction
-      - `Lx`: the domain length in the horizontal direction
-      - `overlap`: the number of overlapping cells for parallel
-        simulations. Generally 2 is adequate. Higher order equations or
-        discretizations require more.
-      - `communicator`: either `fipy.tools.parallelComm` or
-        `fipy.tools.serialComm`. Select `fipy.tools.serialComm` to create a
-        serial mesh when running in parallel. Mostly used for test
-        purposes.
-
+    Parameters
+    ----------
+    dx : float
+        Grid spacing in the horizontal direction
+    nx : int
+        Number of cells in the horizontal direction
+    Lx : float
+        Domain length in the horizontal direction
+    overlap : int
+        Number of overlapping cells for parallel simulations.  Generally 2
+        is adequate.  Higher order equations or discretizations require
+        more.
+    communicator : ~fipy.tools.comms.commWrapper.CommWrapper
+        Generally, `fipy.tools.serialComm` or `fipy.tools.parallelComm`.
+        Select `~fipy.tools.serialComm` to create a serial mesh when
+        running in parallel; mostly used for test purposes.
     """
 
     if numerix.getShape(dx) == ():
@@ -178,28 +199,29 @@ def CylindricalGrid2D(dr=None, dz=None,
     domain is always `Lr` regardless of `dr`, unless `dr` is a list of
     spacings, in which case `Lr` will be the sum of `dr`.
 
-    :Parameters:
-
-      - `dr` or `dx`: grid spacing in the radial direction
-      - `dz` or `dy`: grid spacing in the vertical direction
-      - `nr` or `nx`: number of cells in the radial direction
-      - `nz` or `ny`: number of cells in the vertical direction
-      - `Lr` or `Lx`: the domain length in the radial direction
-      - `Lz` or `Ly`: the domain length in the vertical direction
-      - `origin` : position of the mesh's origin in the form ((x,),(y,))
-      - `overlap`: the number of overlapping cells for parallel
+    Parameters
+    ----------
+    dr : float
+        Grid spacing in the radial direction. Alternative: `dx`.
+    dz : float
+        grid spacing in the vertical direction. Alternative: `dy`.
+    nr : int
+        Number of cells in the radial direction. Alternative: `nx`.
+    nz : int
+        Number of cells in the vertical direction. Alternative: `ny`.
+    Lr : float
+        Domain length in the radial direction. Alternative: `Lx`.
+    Lz : float
+        Domain length in the vertical direction. Alternative: `Ly`.
+    overlap : int
+        the number of overlapping cells for parallel
         simulations. Generally 2 is adequate. Higher order equations or
         discretizations require more.
-      - `communicator`: either `fipy.tools.parallelComm` or
-        `fipy.tools.serialComm`. Select `fipy.tools.serialComm` to create a
-        serial mesh when running in parallel. Mostly used for test
-        purposes.
-
+    communicator : ~fipy.tools.comms.commWrapper.CommWrapper
+        Generally, `fipy.tools.serialComm` or `fipy.tools.parallelComm`.
+        Select `~fipy.tools.serialComm` to create a serial mesh when
+        running in parallel; mostly used for test purposes.
     """
-
-
-
-
     if dr is not None:
         dx = dr
 
@@ -232,20 +254,22 @@ def CylindricalGrid1D(dr=None, nr=None, Lr=None,
     domain is always `Lr` regardless of `dr`, unless `dr` is a list of
     spacings, in which case `Lr` will be the sum of `dr`.
 
-    :Parameters:
-
-      - `dr` or `dx`: grid spacing in the radial direction
-      - `nr` or `nx`: number of cells in the radial direction
-      - `Lr` or `Lx`: the domain length in the radial direction
-      - `origin` : position of the mesh's origin in the form (x,)
-      - `overlap`: the number of overlapping cells for parallel
+    Parameters
+    ----------
+    dr : float
+        Grid spacing in the radial direction. Alternative: `dx`.
+    nr : int
+        Number of cells in the radial direction. Alternative: `nx`.
+    Lr : float
+        Domain length in the radial direction. Alternative: `Lx`.
+    overlap : int
+        the number of overlapping cells for parallel
         simulations. Generally 2 is adequate. Higher order equations or
         discretizations require more.
-      - `communicator`: either `fipy.tools.parallelComm` or
-        `fipy.tools.serialComm`. Select `fipy.tools.serialComm` to create a
-        serial mesh when running in parallel. Mostly used for test
-        purposes.
-
+    communicator : ~fipy.tools.comms.commWrapper.CommWrapper
+        Generally, `fipy.tools.serialComm` or `fipy.tools.parallelComm`.
+        Select `~fipy.tools.serialComm` to create a serial mesh when
+        running in parallel; mostly used for test purposes.
     """
 
     if dr is not None:

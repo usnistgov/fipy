@@ -108,10 +108,14 @@ class GaussianNoiseVariable(NoiseVariable):
     """
     def __init__(self, mesh, name = '', mean = 0., variance = 1., hasOld = 0):
         """
-        :Parameters:
-            - `mesh`: The mesh on which to define the noise.
-            - `mean`: The mean of the noise distribution, :math:`\mu`.
-            - `variance`: The variance of the noise distribution, :math:`\sigma^2`.
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The mesh on which to define the noise.
+        mean : float
+            The mean of the noise distribution, :math:`\mu`.
+        variance : float
+            The variance of the noise distribution, :math:`\sigma^2`.
         """
         self.mean = mean
         self.variance = variance

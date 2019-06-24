@@ -29,8 +29,9 @@ class LinearPCGSolver(PysparseSolver):
 
     def __init__(self, precon=SsorPreconditioner(), *args, **kwargs):
         """
-        :Parameters:
-          - `precon`: Preconditioner to use
+        Parameters
+        ----------
+        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner, optional
         """
         super(LinearPCGSolver, self).__init__(precon=precon, *args, **kwargs)
         self.solveFnc = itsolvers.pcg

@@ -1376,15 +1376,18 @@ class PhysicalUnit(object):
         This class is not generally not instantiated by users of this module,
         but rather it is created in the process of constructing a `PhysicalField`.
 
-        :Parameters:
-          - `names`: the name of the unit
-          - `factor`: the multiplier between the unit and the fundamental SI unit
-          - `powers`: a nine-element `list`, `tuple`, or Numeric_ `array` representing
-            the fundamental SI units of ["m", "kg", "s", "A", "K", "mol", "cd", "rad", "sr"]
-          - `offset`: the displacement between the zero-point of the unit and the zero-point
-            of the corresponding fundamental SI unit.
-
-        .. _Numeric: http://www.numpy.org
+        Parameters
+        ----------
+        names : str
+            Name of the unit
+        factor : float
+            Multiplier between the unit and the fundamental SI unit
+        powers`: :obj:`array_like` of :obj:`float`
+            Nine elements representing the fundamental SI units of
+            ["m", "kg", "s", "A", "K", "mol", "cd", "rad", "sr"]
+        offset : float
+            Displacement between the zero-point of the unit and the
+            zero-point of the corresponding fundamental SI unit.
         """
         if isinstance(names, string_types):
             self.names = _NumberDict()

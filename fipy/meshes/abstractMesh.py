@@ -43,8 +43,9 @@ class AbstractMesh(object):
         """
         Sets scale of geometry.
 
-        :Parameters:
-          - `scaleLength`: The desired scale length.
+        Parameters
+        ----------
+        scaleLength : float
         """
         self._scale['length'] = scaleLength
 
@@ -274,13 +275,18 @@ class AbstractMesh(object):
     def _getAddedMeshValues(self, other, resolution=1e-2):
         """Calculate the parameters to define a concatenation of `other` with `self`
 
-        :Parameters:
-          - `other`: The :class:`~fipy.meshes.Mesh` to concatenate with `self`
-          - `resolution`: How close vertices have to be (relative to the smallest
+        Parameters
+        ----------
+        other : ~fipy.meshes.mesh.Mesh
+             The `Mesh` to concatenate with `self`
+        resolution : float
+            How close vertices have to be (relative to the smallest
             cell-to-cell distance in either mesh) to be considered the same
 
-        :Returns:
-          A `dict` with 3 elements: the new mesh `vertexCoords`, `faceVertexIDs`, and `cellFaceIDs`.
+        Returns
+        -------
+        dict
+            (`vertexCoords`, `faceVertexIDs`, `cellFaceIDs`) for the new mesh.
         """
 
         selfc = self._concatenableMesh

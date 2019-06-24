@@ -16,12 +16,15 @@ class AggregationAMGSolver(PyAMGXSolver):
                  smoother=BlockJacobiSmoother(),
                  **kwargs):
         """
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-          - `precon`: Preconditioner to use.
-          - `smoother`: Smoother to use.
-          - `kwargs`: Keyword arguments specifying other AMGX solver options.
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon : ~fipy.solvers.pyamgx.preconditioners.preconditioners.Preconditioner, optional
+        **kwargs
+            Other AMGX solver options
         """
         config_dict = {
             "config_version": 2,

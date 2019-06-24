@@ -135,10 +135,6 @@ class Mesh2D(Mesh):
         This function returns a new 3D mesh. The 2D mesh is extruded
         using the `extrudeFunc` and the number of layers.
 
-        :Parameters:
-          - `extrudeFunc`: function that takes the vertex coordinates and returns the displaced values
-          - `layers`: the number of layers in the extruded mesh (number of times `extrudeFunc` will be called)
-
         >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
         >>> print(NonUniformGrid2D(nx=2, ny=2).extrude(layers=2).cellCenters)
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5]
@@ -153,6 +149,14 @@ class Mesh2D(Mesh):
         ...                                                      [ 0.5,        0.5,        0.5,        0.5,        1.5,        1.5,        1.5,
         ...                                                      1.5       ]]))
         True
+
+        Parameters
+        ----------
+        extrudeFunc : function
+            Takes the vertex coordinates and returns the displaced values
+        layers : int
+            Number of layers in the extruded mesh (number of times
+            `extrudeFunc` will be called)
         """
 
         return self._extrude(self, extrudeFunc, layers)

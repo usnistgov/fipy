@@ -33,26 +33,27 @@ class MatplotlibVectorViewer(AbstractMatplotlib2DViewer):
     def __init__(self, vars, title=None, scale=None, sparsity=None, log=False, limits={}, axes=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DViewer`.
 
-        :Parameters:
-          vars
-            a rank-1 `CellVariable` or `FaceVariable` object.
-          title
+        Parameters
+        ----------
+        vars : ~fipy.variables.cellVariable.CellVariable or ~fipy.variables.faceVariable.FaceVariable
+            rank-1 `Variable` to display
+        title : str, optional
             displayed at the top of the `Viewer` window
-          scale
+        scale : float, optional
             if not `None`, scale all arrow lengths by this value
-          sparsity
+        sparsity : int, optional
             if not `None`, then this number of arrows will be
             randomly chosen (weighted by the cell volume or face area)
-          log
+        log : bool, optional
             if `True`, arrow length goes at the base-10 logarithm of the magnitude
-          limits : dict
+        limits : dict, optional
             a (deprecated) alternative to limit keyword arguments
-          xmin, xmax, ymin, ymax, datamin, datamax
+        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
-          axes
+        axes : ~matplotlib.axes.Axes, optional
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
-          figaspect
+        figaspect : float, optional
             desired aspect ratio of figure. If arg is a number, use that aspect
             ratio. If arg is `auto`, the aspect ratio will be determined from
             the Variable's mesh.

@@ -17,10 +17,14 @@ class LinearGMRESSolver(_ScipyKrylovSolver):
 
     def __init__(self, tolerance=1e-15, iterations=2000, precon=None):
         """
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-          - `precon`: Preconditioner to use.
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon
+            Preconditioner to use.
         """
 
         super(LinearGMRESSolver, self).__init__(tolerance=tolerance, iterations=iterations, precon=precon)

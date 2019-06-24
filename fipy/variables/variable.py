@@ -64,12 +64,17 @@ class Variable(object):
                    [3, 3],
                    [3, 3]]),'m'))
 
-        :Parameters:
-          - `value`: the initial value
-          - `unit`: the physical units of the `Variable`
-          - `array`: the storage array for the `Variable`
-          - `name`: the user-readable name of the `Variable`
-          - `cached`: whether to cache or always recalculate the value
+        Parameters
+        ----------
+        value : int or float or array_like
+	    unit : str or ~fipy.tools.dimensions.physicalField.PhysicalUnit
+            The physical units of the variable
+        array : ndarray, optional
+            The storage array for the `Variable`
+        name : str
+            The user-readable name of the `Variable`
+        cached : bool
+            whether to cache or always recalculate the value
         """
 
         self.requiredVariables = []
@@ -562,10 +567,13 @@ class Variable(object):
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.   1.   1.5  0.   1.   1.5]
          [ 0.5  0.5  1.   1.   1.5  1.5 -1.   0.5  0.5 -1.   1.5  1.5]]
 
-        :Parameters:
-          - `value`: the value of the constraint
-          - `where`: the constraint mask or index specifying the location of the constraint
-
+        Parameters
+        ----------
+        value : float or array_like
+            The value of the constraint
+        where : :obj:`array_like` of :obj:`bool`
+            The constraint mask or index specifying the location of the
+            constraint
         """
 
         from fipy.boundaryConditions.constraint import Constraint
@@ -762,7 +770,7 @@ class Variable(object):
     def getsctype(self, default=None):
         """
 
-        Returns the Numpy `sctype of the underlying array.
+        Returns the Numpy `sctype` of the underlying array.
 
             >>> Variable(1).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
             True
@@ -994,12 +1002,18 @@ class Variable(object):
             >>> (-Variable(value="1 m")).unit
             <PhysicalUnit m>
 
-        :Parameters:
-          - `op`: the operator function to apply (takes one argument for `self`)
-          - `operatorClass`: the `Variable` class that the binary operator should inherit from
-          - `opShape`: the shape that should result from the operation
-          - `valueMattersForUnit`: whether value of `self` should be used when determining unit,
-                                    e.g., ???
+        Parameters
+        ----------
+        op : func
+            The operator function to apply (takes one argument for `self`)
+        operatorClass : class
+            The `Variable` class that the binary operator should inherit
+            from
+        opShape : :obj:`tuple` of :obj:`int`
+            The shape that should result from the operation
+        valueMattersForUnit : bool
+            Whether value of `self` should be used when determining unit,
+            e.g., ???
         """
         operatorClass = operatorClass or self._OperatorVariableClass()
         from fipy.variables import unaryOperatorVariable
@@ -1041,15 +1055,23 @@ class Variable(object):
     def _BinaryOperatorVariable(self, op, other, operatorClass=None, opShape=None, canInline=True, unit=None,
                                 value0mattersForUnit=False, value1mattersForUnit=False):
         """
-        :Parameters:
-          - `op`: the operator function to apply (takes two arguments for `self` and `other`)
-          - `other`: the quantity to be operated with
-          - `operatorClass`: the `Variable` class that the binary operator should inherit from
-          - `opShape`: the shape that should result from the operation
-          - `value0mattersForUnit`: whether value of `self` should be used when determining unit,
-                                    e.g., `__rpow__`
-          - `value1mattersForUnit`: whether value of `other` should be used when determining unit,
-                                    e.g., `__pow__`
+        Parameters
+        ----------
+        op : func
+            The operator function to apply (takes two arguments for `self` and `other`)
+        other : ~fipy.variables.variable.Variable
+            The quantity to be operated with
+        operatorClass : class
+            The `Variable` class that the binary operator should inherit
+            from
+        opShape : :obj:`tuple` of :obj:`int`
+            The shape that should result from the operation
+        value0MattersForUnit : bool
+            Whether value of `self` should be used when determining unit,
+            e.g., `__rpow__`
+        value1MattersForUnit : bool
+            Whether value of `self` should be used when determining unit,
+            e.g., `__pow__`
         """
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant

@@ -29,8 +29,9 @@ class LinearCGSSolver(PysparseSolver):
 
     def __init__(self, precon=None, *args, **kwargs):
         """
-        :Parameters:
-          - `precon`: Preconditioner to use
+        Parameters
+        ----------
+        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner, optional
         """
         import warnings
         warnings.warn("The Pysparse CGS solver may return incorrect results for some matrices", UserWarning)

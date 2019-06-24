@@ -21,15 +21,22 @@ class _MeshVariable(Variable):
     def __init__(self, mesh, name='', value=0., rank=None, elementshape=None,
                  unit=None, cached=1):
         """
-        :Parameters:
-          - `mesh`: the mesh that defines the geometry of this `Variable`
-          - `name`: the user-readable name of the `Variable`
-          - `value`: the initial value
-          - `rank`: the rank (number of dimensions) of each element of this
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            the mesh that defines the geometry of this `Variable`
+        name : str
+            the user-readable name of the `Variable`
+        value : float or array_like
+            the initial value
+        rank : int
+            the rank (number of dimensions) of each element of this
             `Variable`. Default: 0
-          - `elementshape`: the shape of each element of this variable
-             Default: `rank * (mesh.dim,)`
-          - `unit`: the physical units of the `Variable`
+        elementshape : :obj:`tuple` of :obj:`int`
+            the shape of each element of this variable
+            Default: `rank * (mesh.dim,)`
+	    unit : str or ~fipy.tools.dimensions.physicalField.PhysicalUnit
+            The physical units of the variable
         """
         if isinstance(value, (list, tuple)):
             value = numerix.array(value)

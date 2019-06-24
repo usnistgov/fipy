@@ -36,47 +36,55 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
                  **kwlimits):
         """Creates a `MatplotlibStreamViewer`.
 
-        :Parameters:
-          vars
-            a rank-1 `CellVariable` or `FaceVariable` object.
-          title
+        Parameters
+        ----------
+        vars : ~fipy.variables.cellVariable.CellVariable or ~fipy.variables.faceVariable.FaceVariable
+            rank-1 `Variable` to display
+        title : str, optional
             displayed at the top of the `Viewer` window
-          log
+        log : bool, optional
             if `True`, arrow length goes at the base-10 logarithm of the magnitude
-          limits : dict
+        limits : dict, optional
             a (deprecated) alternative to limit keyword arguments
-          xmin, xmax, ymin, ymax, datamin, datamax
+        float xmin, xmax, ymin, ymax, datamin, datamax : float
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
-          axes
+        axes : ~matplotlib.axes.Axes, optional
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
-          figaspect
+        figaspect : float, optional
             desired aspect ratio of figure. If arg is a number, use that aspect
             ratio. If arg is `auto`, the aspect ratio will be determined from
             the Variable's mesh.
-          *density* : float or 2-tuple
-              Controls the closeness of streamlines. When `density = 1`, the domain
-              is divided into a 25x25 grid---*density* linearly scales this grid.
-              Each cell in the grid can have, at most, one traversing streamline.
-              For different densities in each direction, use [density_x, density_y].
-          linewidth : Numeric or rank-0 `MeshVariable`
-            vary linewidth when given a `CellVariable` or `FaceVariable` of same
-            type as vars.
-          *color* : matplotlib color code, or rank-0 `MeshVariable`
-              Streamline color. When given an array with the type as vars,
-              *color* values are converted to colors using *cmap*.
-          *cmap* : :class:`~matplotlib.colors.Colormap`
-              :class:`~matplotlib.colors.Colormap` used to plot streamlines and arrows. Only necessary when using
-              an `MeshVariable` input for *color*.
-          *norm* : :class:`~matplotlib.colors.Normalize`
-              Normalize object used to scale luminance data to 0, 1. If None, stretch
-              (min, max) to (0, 1). Only necessary when *color* is an `MeshVariable`.
-          *arrowsize* : float
-              Factor scale arrow size.
-          *arrowstyle* : str
-              Arrow style specification.
-              See :class:`~matplotlib.patches.FancyArrowPatch`.
-          *minlength* : float
+        density : float or (float, float), optional
+            Controls the closeness of streamlines.  When ``density = 1``,
+            the domain is divided into a 30x30 grid.  *density* linearly
+            scales this grid.  Each cell in the grid can have, at most, one
+            traversing streamline.  For different densities in each
+            direction, use a tuple (density_x, density_y).
+        linewidth : array_like or ~fipy.variables.cellVariable.CellVariable or ~fipy.variables.faceVariable.FaceVariable, optional
+            The width of the stream lines.  With a rank-0 `CellVariable` or
+            `FaceVariable` the line width can be varied across the grid.
+            The MeshVariable must have the same type and be defined on
+            the same `Mesh` as *vars*.
+        color : str or ~fipy.variables.cellVariable.CellVariable or ~fipy.variables.faceVariable.FaceVariable, optional
+            The streamline color as a matplotlib color code or a field of
+            numbers.  If given a rank-0 `CellVariable` or `FaceVariable`,
+            its values are converted to colors using *cmap* and *norm*.
+            The MeshVariable must have the same type and be defined on the
+            same `Mesh` as *vars*.
+        cmap : ~matplotlib.colors.Colormap, optional
+            Colormap used to plot streamlines and arrows.  This is only
+            used if *color* is a MeshVariable.
+        norm : ~matplotlib.colors.Normalize, optional
+            Normalize object used to scale luminance data to 0, 1.  If
+            ``None``, stretch (min, max) to (0, 1).  Only necessary when
+            *color* is a MeshVariable.
+        arrowsize : float, optional
+            Scaling factor for the arrow size.
+        arrowstyle : str, optional
+            Arrow style specification.
+            See `~matplotlib.patches.FancyArrowPatch`.
+        minlength : float, optional
               Minimum length of streamline in axes coordinates.
 
         """

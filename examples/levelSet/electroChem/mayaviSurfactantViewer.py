@@ -55,19 +55,23 @@ class MayaviSurfactantViewer(AbstractViewer):
             >>> viewer._promptForOpinion()
             >>> del viewer
 
-        :Parameters:
-
-          - `distanceVar`: a `DistanceVariable` object.
-          - `levelSetValue`: the value of the contour to be displayed
-          - `title`: displayed at the top of the `Viewer` window
-          - `animate`: whether to show only the initial condition and the
-          - `limits`: a dictionary with possible keys `xmin`, `xmax`,
-            `ymin`, `ymax`, `zmin`, `zmax`, `datamin`, `datamax`.  A 1D
-            `Viewer` will only use `xmin` and `xmax`, a 2D viewer will also
-            use `ymin` and `ymax`, and so on.  All viewers will use
-            `datamin` and `datamax`.  Any limit set to a (default) value of
-            `None` will autoscale.
+        Parameters
+        ----------
+        distanceVar : ~fipy.variables.distanceVariable.DistanceVariable
+        levelSetValue : float
+            the value of the contour to be displayed
+        title : str
+            displayed at the top of the `Viewer` window
+        animate : bool
+            whether to show only the initial condition and the
             moving top boundary or to show all contours (Default)
+        limits : dict, optional
+            a (deprecated) alternative to limit keyword arguments
+        float xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
+            displayed range of data. A 1D `Viewer` will only use `xmin` and
+            `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
+            viewers will use `datamin` and `datamax`. Any limit set to a
+            (default) value of `None` will autoscale.
         """
 
         kwlimits.update(limits)

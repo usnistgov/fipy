@@ -21,8 +21,10 @@ class _ScipyMatrix(_SparseMatrix):
     def __init__(self, matrix):
         """Creates a `_ScipyMatrix`.
 
-        :Parameters:
-          - `matrix`: The starting `spmatrix`
+        Parameters
+        ----------
+        matrix : ~scipy.sparse.csr_matrix
+            The internal SciPy matrix
         """
         self.matrix = matrix
 
@@ -248,11 +250,14 @@ class _ScipyMatrixFromShape(_ScipyMatrix):
     def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
         """Instantiates and wraps a scipy sparse matrix
 
-        :Parameters:
-          - `mesh`: The `Mesh` to assemble the matrix for.
-          - `bandwidth`: The proposed band width of the matrix.
-          - `storeZeros`: Instructs scipy to store zero values if possible.
-
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        bandwidth : int
+            The proposed band width of the matrix.
+        storeZeros : bool
+            Instructs scipy to store zero values if possible.
         """
         if matrix is None:
             matrix = sp.csr_matrix((size, size))
@@ -265,14 +270,18 @@ class _ScipyMeshMatrix(_ScipyMatrixFromShape):
 
         """Creates a `_ScipyMatrixFromShape` associated with a `Mesh`.
 
-        :Parameters:
-          - `mesh`: The `Mesh` to assemble the matrix for.
-          - `bandwidth`: The proposed band width of the matrix.
-          - `numberOfVariables`: The columns of the matrix is determined by `numberOfVariables * self.mesh.numberOfCells`.
-          - `numberOfEquations`: The rows of the matrix is determined by `numberOfEquations * self.mesh.numberOfCells`.
-          - `storeZeros`: Instructs scipy to store zero values if possible.
-
-
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        bandwidth : int
+            The proposed band width of the matrix.
+        numberOfVariables : int
+            The columns of the matrix is determined by `numberOfVariables * self.mesh.numberOfCells`.
+        numberOfEquations : int
+            The rows of the matrix is determined by `numberOfEquations * self.mesh.numberOfCells`.
+        storeZeros : bool
+            Instructs scipy to store zero values if possible.
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
@@ -291,9 +300,9 @@ class _ScipyMeshMatrix(_ScipyMatrixFromShape):
         """Transforms a scipy matrix into a trilinos matrix and maintains the
         trilinos matrix as an attribute.
 
-        :Returns:
-          The trilinos matrix.
-
+        Returns
+        -------
+        ~fipy.matrices.trilinosMatrix._TrilinosMatrix
         """
 #         A = self.matrix.copy()
 #         values, irow, jcol = A.find()

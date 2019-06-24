@@ -43,14 +43,19 @@ def buildSurfactantBulkDiffusionEquation(bulkVar = None,
 
        D \hat{n} \cdot \nabla c = -k c (1 - \theta) \qquad \text{at $\phi = 0$}.
 
-    :Parameters:
-      - `bulkVar`: The bulk surfactant concentration variable.
-      - `distanceVar`: A `DistanceVariable` object
-      - `surfactantVar`: A `SurfactantVariable` object
-      - `otherSurfactantVar`: Any other surfactants that may remove this one.
-      - `diffusionCoeff`: A float or a `FaceVariable`.
-      - `transientCoeff`: In general 1 is used.
-      - `rateConstant`: The adsorption coefficient.
+    Parameters
+    ----------
+    bulkVar : ~fipy.variables.cellVariable.CellVariable
+        The bulk surfactant concentration variable.
+    distanceVar : ~fipy.variables.distanceVariable.DistanceVariable
+    surfactantVar : ~fipy.variables.surfactantVariable.SurfactantVariable
+    otherSurfactantVar : ~fipy.variables.surfactantVariable.SurfactantVariable
+        Any other surfactants that may remove this one.
+    diffusionCoeff : float or ~fipy.variables.faceVariable.FaceVariable
+    transientCoeff : float
+        In general 1 is used.
+    rateConstant : float
+        The adsorption coefficient.
 
     """
 

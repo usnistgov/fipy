@@ -25,17 +25,24 @@ class TrilinosMLTest(TrilinosSolver):
 
     def __init__(self, tolerance=1e-10, iterations=5, MLOptions={}, testUnsupported = False):
         """
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterations to perform per test.
-          - `MLOptions`: Options to pass to ML. A dictionary of {option:value} pairs. This will be passed to `ML.SetParameterList`.
-          - `testUnsupported`: test smoothers that are not currently implemented in preconditioner objects.
-
         For detailed information on the possible parameters for ML, see
         http://trilinos.sandia.gov/packages/ml/documentation.html
 
         Currently, passing options to Aztec through ML is not supported.
-         """
+
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        MLOptions : dict
+            Options to pass to ML.
+            This will be passed to `ML.SetParameterList`.
+        testUnsupported : bool
+            Test smoothers that are not currently implemented in
+            preconditioner objects.
+        """
 
         TrilinosSolver.__init__(self, tolerance=tolerance,
                                 iterations=iterations)

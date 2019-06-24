@@ -35,16 +35,22 @@ class _DOffsets(object):
     @staticmethod
     def calcDOffsets(ds, ns, offset):
         """
-        :Parameters:
-            - `ds`: A list, e.g. `[dx, dy]`
-            - `ns`: A list, e.g. `[nx, ny, nz]`
-            - `offset`
+        Parameters
+        ----------
+        ds : list
+            Spacing in each grid direction, e.g. `[dx, dy]`
+        ns : list
+            Number of grid spacings in each direction, e.g. `[nx, ny]`
+        offset : list
+            Displacement of grid spacings, e.g., `[Ox, Oy]`
 
-        :Returns:
-            - `offsetList`: a list which contains the analogous scalars to
-              `XOffset`, `YOffset`, and `ZOffset`, whichever are applicable for
-              the dimensionality.
-            - `newDs`: a list containing proper `[dx, [dy, ...]]` values
+        Returns
+        -------
+        offsetList : list
+            Contains the analogous scalars to `XOffset`, `YOffset`, and
+            `ZOffset`, whichever are applicable for the dimensionality.
+        newDs : list
+            proper `[dx, [dy, ...]]` values
         """
         offsetList = []
         newDs = []

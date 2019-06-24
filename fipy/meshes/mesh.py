@@ -311,8 +311,10 @@ class Mesh(AbstractMesh):
         """
         Set the scale by length.
 
-        :Parameters:
-          - `val`: The new scale length.
+        Parameters
+        ----------
+        val : float
+            The new scale length.
         """
 
         self._scale['length'] = PhysicalField(value=val)

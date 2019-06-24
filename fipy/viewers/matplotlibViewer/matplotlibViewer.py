@@ -61,29 +61,30 @@ class AbstractMatplotlibViewer(AbstractViewer):
         """
         Create a `AbstractMatplotlibViewer`.
 
-        :Parameters:
-          vars
-            a `CellVariable` or tuple of `CellVariable` objects to plot
-          title
+        Parameters
+        ----------
+        vars : ~fipy.variables.cellVariable.CellVariable or list
+            the `Variable` objects to display.
+        title : str, optional
             displayed at the top of the `Viewer` window
-          figaspect
+        figaspect : float, optional
             desired aspect ratio of figure. If arg is a number, use that aspect
-            ratio. If arg is an array, figaspect will determine the width and
-            height for a figure that would fit array preserving aspect ratio.
-          xmin, xmax, ymin, ymax, datamin, datamax
-            displayed range of data. A 1D `Viewer` will only use `xmin` and
-            `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
-            viewers will use `datamin` and `datamax`. Any limit set to a
+            ratio. If arg is `auto`, the aspect ratio will be determined from
+            the Variable's mesh.
+        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
+            displayed range of data. A 1D `Viewer` will only use *xmin* and
+            *xmax*, a 2D viewer will also use *ymin* and *ymax*. All
+            viewers will use *datamin* and *datamax*. Any limit set to a
             (default) value of `None` will autoscale.
-          cmap
+        cmap : ~matplotlib.colors.Colormap, optional
             the :class:`~matplotlib.colors.Colormap`.
             Defaults to `matplotlib.cm.jet`
-          colorbar
+        colorbar : bool, optional
             plot a color bar in specified orientation if not `None`
-          axes
+        axes : ~matplotlib.axes.Axes, optional
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
-          log
-            whether to logarithmically scale the data
+        log : bool, optional
+          whether to logarithmically scale the data
         """
         if self.__class__ is AbstractMatplotlibViewer:
             raise NotImplementedError("can't instantiate abstract base class")

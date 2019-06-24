@@ -74,10 +74,10 @@ def _OperatorVariableClass(baseClass=object):
         def _getRepresentation(self, style="__repr__", argDict={}, id=id, freshen=False):
             """
 
-            :Parameters:
-
-              - `style`: one of `'__repr__'`, `'name'`, `'TeX'`, `'C'`
-
+            Parameters
+            ----------
+            style : {'__repr__', 'name', 'TeX', 'C'}
+               desired formatting for representation
             """
             if isinstance(self.op, numerix.ufunc):
                 return "%s(%s)" % (self.op.__name__, ", ".join([self.__var(i, style, argDict, id, freshen)

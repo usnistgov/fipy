@@ -25,15 +25,17 @@ class NthOrderBoundaryCondition(BoundaryCondition):
         """
         Creates an `NthOrderBoundaryCondition`.
 
-        :Parameters:
-          - `faces`: A `list` or `tuple` of `Face` objects to which this condition applies.
-          - `value`: The value to impose.
-          - `order`: The order of the boundary condition. An `order` of `0`
+        Parameters
+        ----------
+        faces : :obj:`~fipy.variables.faceVariable.FaceVariable` of :obj:`bool`
+            Mask of faces where this condition applies.
+        value : float
+            Value to impose.
+        order : int
+            Order of the boundary condition. An `order` of `0`
             corresponds to a `FixedValue` and an `order` of `1` corresponds to
             a `FixedFlux`. Even and odd orders behave like `FixedValue` and `FixedFlux` objects,
             respectively, but apply to higher order terms.
-
-
         """
         self.order = order
         self.derivative = {}
@@ -42,11 +44,16 @@ class NthOrderBoundaryCondition(BoundaryCondition):
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Leave **L** and **b** unchanged
 
-        :Parameters:
-          - `SparseMatrix`: *unused*
-          - `Ncells`:       *unused*
-          - `MaxFaces`:     *unused*
-          - `coeff`:        *unused*
+        Parameters
+        ----------
+        SparseMatrix
+            *unused*
+        Ncells
+            *unused*
+        MaxFaces
+            *unused*
+        coeff
+            *unused*
         """
         return (0, 0)
 

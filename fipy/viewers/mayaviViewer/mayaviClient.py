@@ -28,23 +28,23 @@ class MayaviClient(AbstractViewer):
     __doc__ += AbstractViewer._test3D(viewer="MayaviClient")
 
     def __init__(self, vars, title=None, daemon_file=None, fps=1.0, **kwlimits):
-        """
-        Create a `MayaviClient`.
+        """Create a `MayaviClient`.
 
-        :Parameters:
-          vars
-            a `CellVariable` or tuple of `CellVariable` objects to plot
-          title
+        Parameters
+        ----------
+        vars : ~fipy.variables.cellVariable.CellVariable or list
+            `CellVariable` objects to plot
+        title : str, optional
             displayed at the top of the `Viewer` window
-          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+        float xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
             displayed range of data. A 1D `Viewer` will only use `xmin` and
             `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
             viewers will use `datamin` and `datamax`. Any limit set to a
             (default) value of `None` will autoscale.
-          daemon_file
+        daemon_file : str, optional
             the path to the script to run the separate Mayavi viewer process.
             Defaults to `fipy/viewers/mayaviViewer/mayaviDaemon.py`
-          fps
+        fps : float, optional
             frames per second to attempt to display
         """
         self.fps = fps
@@ -121,12 +121,15 @@ class MayaviClient(AbstractViewer):
            `MayaviClient` does not need the generality of multiple keys
            because it is always 3D
 
-        :Parameters:
-          key
-            a key string that identifies the limit of interest
+        Parameters
+        ----------
+        key : str
+            dictionary key that identifies the limit of interest
 
-        :Returns:
-          the value of the limit or `None`
+        Returns
+        -------
+        float or None
+            the value of the limit
         """
         lim = AbstractViewer._getLimit(self, key, default=None)
         if lim is not None:

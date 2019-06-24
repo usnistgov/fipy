@@ -40,9 +40,12 @@ class _TrilinosMatrix(_SparseMatrix):
     def __init__(self, matrix, bandwidth=None,
                  rowMap=None, colMap=None, domainMap=None):
         """
-        :Parameters:
-          - `matrix`: The starting `Epetra.CrsMatrix` if there is one.
-          - `bandwidth`: The proposed band width of the matrix.
+        Parameters
+        ----------
+        matrix : Epetra.CrsMatrix
+            The internal Trilinos matrix
+        bandwidth : int
+            The proposed band width of the matrix.
         """
         self.matrix = matrix
 
@@ -511,12 +514,18 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
                  rowMap=None, colMap=None, domainMap=None):
         """Instantiates and wraps an `Epetra.CrsMatrix`
 
-        :Parameters:
-          - `rows`: The number of matrix rows
-          - `cols`: The number of matrix columns
-          - `bandwidth`: The proposed band width of the matrix.
-          - `sizeHint`: estimate of the number of non-zeros
-          - `map`: The `Epetra.Map` for the rows that this processor holds
+        Parameters
+        ----------
+        rows : int
+            The number of matrix rows
+        cols : int
+            The number of matrix columns
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros
+        map : Epetra.Map
+            The map for the rows that this processor holds
         """
         size = max(rows, cols)
         if sizeHint is not None and bandwidth == 0:
@@ -552,12 +561,18 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
     def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=1, numberOfEquations=1):
         """Creates a `_TrilinosMatrixFromShape` associated with a `Mesh`
 
-        :Parameters:
-          - `mesh`: The `Mesh` to assemble the matrix for.
-          - `bandwidth`: The proposed band width of the matrix.
-          - `sizeHint`: estimate of the number of non-zeros
-          - `numberOfVariables`: The columns of the matrix is determined by `numberOfVariables * self.mesh.globalNumberOfCells`.
-          - `numberOfEquations`: The rows of the matrix is determined by `numberOfEquations * self.mesh.globalNumberOfCells`.
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros
+        numberOfVariables : int
+            The columns of the matrix is determined by `numberOfVariables * self.mesh.globalNumberOfCells`.
+        numberOfEquations : int
+            The rows of the matrix is determined by `numberOfEquations * self.mesh.globalNumberOfCells`.
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
@@ -648,15 +663,20 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
     def _globalNonOverlapping(self, vector, id1, id2):
         """Transforms and subsets local overlapping values and coordinates to global non-overlapping
 
-        :Parameters:
-          - `vector`: The overlapping values to insert.
-          - `id1`: The local overlapping row indices.
-          - `id2`: The local overlapping column indices.
+        Parameters
+        ----------
+        vector : array_like
+            The overlapping values to insert.
+        id1 : array_like
+            The local overlapping row indices.
+        id2 : array_like
+            The local overlapping column indices.
 
-        :Returns:
-          Tuple of (non-overlapping vector,
-                    global non-overlapping row indices,
-                    global non-overlapping column indices)
+        Returns
+        -------
+        tuple of (non-overlapping vector,
+                  global non-overlapping row indices,
+                  global non-overlapping column indices)
         """
         id1, id2, mask = self._getStencil(id1, id2)
         vector = vector[mask]
@@ -1334,8 +1354,11 @@ class _TrilinosMeshMatrixKeepStencil(_TrilinosMeshMatrix):
         """Deletes the matrix but maintains the stencil used
         `_globalNonOverlapping()` in as it can be expensive to construct.
 
-        :Parameters:
-          - `cacheStencil`: Boolean value to determine whether to keep the stencil (tuple of IDs and a mask) even after deleting the matrix.
+        Parameters
+        ----------
+        cacheStencil : bool
+            Whether to determine whether to keep the stencil (tuple of IDs
+            and a mask) even after deleting the matrix.
 
         """
 

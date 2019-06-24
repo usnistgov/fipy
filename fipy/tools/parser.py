@@ -15,12 +15,17 @@ def parse(larg, action = None, type = None, default = None):
     be ignored. See the documentation for `optparse` for more
     details. Returns the argument value.
 
-    :Parameters:
-      - `larg`: The argument to be parsed.
-      - `action`: `store` or `store_true` are possibilities
-      - `type`: Type of the argument. `int` or `float` are possibilities.
-      - `default`: Default value.
-
+    Parameters
+    ----------
+    larg : str
+        Argument to be parsed.
+    action : {'store', 'store_true', 'store_false', 'store_const', 'append', 'count', 'callback'}
+        Basic type of action to be taken when this argument is encountered at the command line.
+        See https://docs.python.org/2/library/argparse.html#action
+    type : type
+        Type to which the command-line argument should be converted
+    default
+        Value produced if the argument is absent from the command line
     """
     sarg = None
     tmpparser = optparse.OptionParser(option_list = [

@@ -80,8 +80,10 @@ class Base(object):
         This is one thing that you can instruct any object that derives from
         :class:`Base` to do, by calling ``myObjectDerivedFromBase.``:meth:`method1`
 
-        :Parameters:
-          - `self`: this special argument refers to the object that is being created.
+        Parameters
+        ----------
+        self : object
+            This special argument refers to the object that is being created.
 
             .. attention::
 

@@ -17,8 +17,12 @@ class Object(Base):
 
             obj = Object(arg1=something, arg3=somethingElse, ...)
 
-        :Parameters:
-          - `arg1`: this argument is required. :term:`Python` supports named arguments,
+        .. _`Python Reference Manual: Special Method Names`: https://docs.python.org/3/reference/datamodel.html#special-method-names
+
+        Parameters
+        ----------
+        arg1
+            this argument is required. :term:`Python` supports named arguments,
             so you must either list the value for `arg1`  first::
 
                 obj = Object(val1, val2)
@@ -27,14 +31,14 @@ class Object(Base):
 
                 obj = Object(arg2=val2, arg1=val1)
 
-          - `arg2`: this argument may be omitted, in which case it will be
+        arg2
+            this argument may be omitted, in which case it will be
             assigned a default value of ``None``.  If you do not use named
             arguments (and we recommend that you do), all required
             arguments must be specified before any optional arguments.
-          - `arg3`: this argument may be omitted, in which case it will be
+        arg3
+            this argument may be omitted, in which case it will be
             assigned a default value of ``'string'``.
-
-        .. _`Python Reference Manual: Special Method Names`: http://www.python.org/doc/ref/specialnames.html
         """
         pass
 

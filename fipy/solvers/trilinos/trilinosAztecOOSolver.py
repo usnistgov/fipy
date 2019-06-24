@@ -21,11 +21,13 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
     def __init__(self, tolerance=1e-10, iterations=1000, precon=JacobiPreconditioner()):
         """
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-          - `precon`: Preconditioner object to use.
-
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon : ~fipy.solvers.trilinos.preconditioners.preconditioner.Preconditioner
         """
         if self.__class__ is TrilinosAztecOOSolver:
             raise NotImplementedError("can't instantiate abstract base class")

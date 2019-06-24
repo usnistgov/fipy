@@ -38,11 +38,16 @@ class FixedValue(BoundaryCondition):
         A `tuple` of (`LL`, `bb`) is calculated, to be added to the
         Term's (:math:`\mathsf{L}`, :math:`\mathsf{b}`) matrices.
 
-        :Parameters:
-          - `SparseMatrix`: Sparse matrix class to use
-          - `Ncells`:       Size of matrices
-          - `MaxFaces`:     bandwidth of :math:`\mathsf{L}`
-          - `coeff`:        contribution to adjacent cell diagonal and
+        Parameters
+        ----------
+        SparseMatrix : ~fipy.matrices.sparseMatrix._SparseMatrix
+        Ncells : int
+            Size of matrices
+        MaxFaces : int
+            Maximum number of faces per cell (determines bandwidth of
+            :math:`\mathsf{L}`)
+        coeff : list
+            Contribution to adjacent cell diagonal and
             :math:`\mathsf{b}` vector by this exterior face
         """
         faces = self.faces.value

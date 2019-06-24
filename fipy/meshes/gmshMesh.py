@@ -97,17 +97,23 @@ def _gmshVersion(communicator=parallelComm):
 def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parallelComm, order=1, mode='r', background=None):
     """Open a Gmsh `MSH` file
 
-    :Parameters:
-      - `filename`: a string indicating gmsh output file
-      - `dimensions`: an integer indicating dimension of mesh
-      - `coordDimensions`: an integer indicating dimension of shapes
-      - `order`: ???
-      - `mode`: a string beginning with `r` for reading and `w` for writing.
+    Parameters
+    ----------
+    filename : str
+        Gmsh output file
+    dimensions : int
+        Dimension of mesh
+    coordDimensions : int
+        Dimension of shapes
+    order
+        ???
+    mode : str
+        Beginning with `r` for reading and `w` for writing.
         The file will be created if it doesn't exist when opened for writing;
         it will be truncated when opened for writing.
         Add a `b` to the mode for binary files.
-      - `background`: a `CellVariable` that specifies the desired characteristic
-        lengths of the mesh cells
+    background : ~fipy.variables.cellVariable.CellVariable
+        Specifies the desired characteristic lengths of the mesh cells
     """
 
     if order > 1:
@@ -482,17 +488,27 @@ class MSHFile(GmshFile):
                        mode='r',
                        fileIsTemporary=False):
         """
-        :Parameters:
-          - `filename`: a string indicating gmsh output file
-          - `dimensions`: an integer indicating dimension of mesh
-          - `coordDimensions`: an integer indicating dimension of shapes
-          - `communicator`: ???
-          - `gmshOutput`: output (if any) from Gmsh run that created `.msh` file
-          - `mode`: a string beginning with `r` for reading and `w` for writing.
+        Parameters
+        ----------
+        filename : str\
+            Gmsh output file
+        dimensions : iht
+            Dimension of mesh
+        coordDimensions : int
+            Dimension of shapes
+        communicator : ~fipy.tools.comms.commWrapper.CommWrapper
+            Generally, `fipy.tools.serialComm` or `fipy.tools.parallelComm`.
+            Select `~fipy.tools.serialComm` to create a serial mesh when
+            running in parallel; mostly used for test purposes.
+        gmshOutput : str
+            Output (if any) from Gmsh run that created `.msh` file
+        mode : str
+            Beginning with `r` for reading and `w` for writing.
             The file will be created if it doesn't exist when opened for writing;
             it will be truncated when opened for writing.
             Add a `b` to the mode for binary files.
-          - `fileIsTemporary`: if `True`, `filename` should be cleaned up on deletion
+        fileIsTemporary : bool
+            If `True`, `filename` should be cleaned up on deletion
         """
         self.dimensions = dimensions
         self.coordDimensions = coordDimensions
@@ -1534,13 +1550,17 @@ class Gmsh2D(Mesh2D):
     >>> print(std1 > std2) # doctest: +GMSH
     True
 
-    :Parameters:
-      - `arg`: a string giving (i) the path to an `MSH` file, (ii) a path to a
-         Gmsh geometry (`.geo`) file, or (iii) a Gmsh geometry script
-      - `coordDimensions`: an integer indicating dimension of shapes
-      - `order`: ???
-      - `background`: a `CellVariable` that specifies the desired characteristic
-        lengths of the mesh cells
+    Parameters
+    ----------
+    arg : str
+        (i) the path to an `MSH` file, (ii) a path to a
+        Gmsh geometry (`.geo`) file, or (iii) a Gmsh geometry script
+    coordDimensions : int
+        Dimension of shapes
+    order
+        ???
+    background : ~fipy.variables.cellVariable.CellVariable
+        Specifies the desired characteristic lengths of the mesh cells
     """
 
     def __init__(self,
@@ -1829,13 +1849,17 @@ class Gmsh2D(Mesh2D):
 class Gmsh2DIn3DSpace(Gmsh2D):
     """Create a topologically 2D Mesh in 3D coordinates using Gmsh
 
-    :Parameters:
-      - `arg`: a string giving (i) the path to an `MSH` file, (ii) a path to a
-         Gmsh geometry (`.geo`) file, or (iii) a Gmsh geometry script
-      - `coordDimensions`: an integer indicating dimension of shapes
-      - `order`: ???
-      - `background`: a `CellVariable` that specifies the desired characteristic
-        lengths of the mesh cells
+    Parameters
+    ----------
+    arg : str
+        (i) the path to an `MSH` file, (ii) a path to a
+        Gmsh geometry (`.geo`) file, or (iii) a Gmsh geometry script
+    coordDimensions : int
+        Dimension of shapes
+    order
+        ???
+    background : ~fipy.variables.cellVariable.CellVariable
+        Specifies the desired characteristic lengths of the mesh cells
     """
     def __init__(self, arg, communicator=parallelComm, order=1, background=None):
         Gmsh2D.__init__(self,
@@ -1905,12 +1929,15 @@ class Gmsh2DIn3DSpace(Gmsh2D):
 class Gmsh3D(Mesh):
     """Create a 3D Mesh using Gmsh
 
-    :Parameters:
-      - `arg`: a string giving (i) the path to an `MSH` file, (ii) a path to a
-         Gmsh geometry (`.geo`) file, or (iii) a Gmsh geometry script
-      - `order`: ???
-      - `background`: a `CellVariable` that specifies the desired characteristic
-        lengths of the mesh cells
+    Parameters
+    ----------
+    arg : str
+        (i) the path to an `MSH` file, (ii) a path to a
+        Gmsh geometry (`.geo`) file, or (iii) a Gmsh geometry script
+    order
+        ???
+    background : ~fipy.variables.cellVariable.CellVariable
+        Specifies the desired characteristic lengths of the mesh cells
     """
     def __init__(self, arg, communicator=parallelComm, order=1, background=None):
         self.mshFile  = openMSHFile(arg,
