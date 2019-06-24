@@ -61,6 +61,18 @@ matrix:
       - open: '\s'
         content: '[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?'
         close: '\s'
+      # Ignore NumPy docstring Parameters
+      - open: '(^(?P<indent>[ \t]*)Parameters\n)(^(?P=indent)----------\n)'
+        content: '^(?P=indent)(.*\n)*'
+        close: '(^[ \t]*$)'
+      # Ignore NumPy docstring Returns
+      - open: '(^(?P<indent>[ \t]*)Returns\n)(^(?P=indent)-------\n)'
+        content: '^(?P=indent)(.*\n)*'
+        close: '(^[ \t]*$)'
+      # Ignore NumPy docstring See Also
+      - open: '(^(?P<indent>[ \t]*)See Also\n)(^(?P=indent)--------\n)'
+        content: '^(?P=indent)(.*\n)*'
+        close: '(^[ \t]*$)'
   - pyspelling.filters.url:
 - name: reST
   sources:
