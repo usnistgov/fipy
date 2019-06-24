@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 r"""
 
 This example tests diffusion-convection for increasing Péclet numbers.
