@@ -962,6 +962,15 @@ command in the base directory::
    The PDF file requires `SIunits.sty`_ available, e.g., from
    `texlive-science`_.
 
+   Spelling is checked automatically in the course of
+   :ref:`CONTINUOUSINTEGRATION`. If you wish to check manually, you will
+   need `pyspelling`, `hunspell`, and the `libreoffice` dictionaries::
+
+   $ conda install --channel conda-forge hunspell
+   $ pip install pyspelling
+   $ wget -O en_US.aff  https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
+   $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
+
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
 .. _SIunits.sty: https://ctan.org/pkg/siunits
 .. _texlive-science: https://packages.debian.org/stretch/texlive-science
