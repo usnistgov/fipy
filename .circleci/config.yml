@@ -311,6 +311,28 @@ jobs:
             conda install --channel conda-forge black
             black --target-version py27 --fast --diff --check setup.py
 
+  pyspelling:
+    <<: *defaults3
+
+    steps:
+      - checkout
+
+      - restore_conda_cache
+
+      - attach_workspace:
+          at: ~/project
+
+      - run:
+          name: Spell Check
+          command: |
+            source activate ~/project/test-environment
+            conda install --channel conda-forge hunspell
+            pip install pyspelling
+            cd fipy
+            wget -O en_US.aff  https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
+            wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
+            pyspelling
+
   build-27-docs:
     <<: *defaults2
 
@@ -385,6 +407,9 @@ workflows:
           requires:
             - conda2_env
       - black:
+          requires:
+            - conda3_env
+      - pyspelling:
           requires:
             - conda3_env
       - test-27-pysparse:

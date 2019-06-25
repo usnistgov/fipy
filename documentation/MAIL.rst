@@ -16,7 +16,7 @@ we encourage you to sign up for the mailing list by sending a
 	``subscribe``
 
 Once you are subscribed, you can post messages to the list simply by
-addressing email to mailto:fipy@nist.gov. If you are new to mailing
+addressing email to <mailto:fipy@nist.gov>. If you are new to mailing
 lists, you may want to read the following resource about asking
 effective questions:  http://www.catb.org/~esr/faqs/smart-questions.html
 

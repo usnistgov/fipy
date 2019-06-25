@@ -51,10 +51,8 @@ class CylindricalUniformGrid2D(UniformGrid2D):
         areas[3] = self.dy * (self._cellCenters[0] - self.dx / 2)
         return areas
 
-    """
-    def _calcAreaProjections(self):
-        return self._getAreaProjectionsPy()
-    """
+#     def _calcAreaProjections(self):
+#         return self._getAreaProjectionsPy()
 
     def _calcAreaProjections(self):
         return self.faceNormals * self._faceAreas
@@ -274,7 +272,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             ...                        faceCellIDs)) # doctest: +PROCESSOR_0
             True
 
-        Following test added to change nx, ny argument to integer when its a float to prevent
+        Following test added to change `nx`, `ny` argument to integer when its a float to prevent
         warnings from the solver.
 
             >>> from fipy import *
@@ -283,7 +281,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> DiffusionTerm().solve(var, solver=DummySolver())
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell
-        volumes were being returned as binOps rather than arrays.
+        volumes were being returned as `binOps` rather than arrays.
 
             >>> m = CylindricalUniformGrid2D(dx=1., dy=1, nx=4, ny=4)
             >>> print(isinstance(m.cellVolumes, numerix.ndarray))
@@ -291,7 +289,7 @@ class CylindricalUniformGrid2D(UniformGrid2D):
             >>> print(isinstance(m._faceAreas, numerix.ndarray))
             True
 
-        If the above types aren't correct, the divergence operator's value can be a binOp
+        If the above types aren't correct, the divergence operator's value can be a `binOp`
 
             >>> print(isinstance(CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray))
             True

@@ -29,7 +29,7 @@ class _Grid1DBuilder(_AbstractGridBuilder):
         return (self.ns[0],)
 
     def _calcPhysicalShape(self):
-        """Return physical dimensions of Grid1D."""
+        """Return physical dimensions of `Grid1D`."""
         from fipy.tools.dimensions.physicalField import PhysicalField
         return PhysicalField(value = (self.ns[0] * self.ds[0] * self.scale,))
 
@@ -51,8 +51,8 @@ class _Grid1DBuilder(_AbstractGridBuilder):
     @staticmethod
     def createCells(nx):
         """
-        cells = (f1, f2) going left to right.
-        f1 etc. refer to the faces
+        `cells = (f1, f2)` going left to right.
+        `f1` etc. refer to the faces
         """
         f1 = numerix.arange(nx)
         f2 = f1 + 1

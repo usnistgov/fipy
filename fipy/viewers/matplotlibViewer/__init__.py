@@ -25,25 +25,6 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
     instance of the first `MatplotlibViewer` it finds of the correct dimension
     and rank.
 
-    :Parameters:
-      vars
-        a `CellVariable` or tuple of `CellVariable` objects to plot
-      title
-        displayed at the top of the `Viewer` window
-      limits : dict
-        a (deprecated) alternative to limit keyword arguments
-      xmin, xmax, ymin, ymax, datamin, datamax
-        displayed range of data. A 1D `Viewer` will only use `xmin` and
-        `xmax`, a 2D viewer will also use `ymin` and `ymax`. All
-        viewers will use `datamin` and `datamax`. Any limit set to a
-        (default) value of `None` will autoscale.
-      cmap
-        the colormap. Defaults to `matplotlib.cm.jet`
-      colorbar
-        plot a colorbar in specified orientation if not `None`
-      axes
-        if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
-
     It is possible to view different
     :class:`~fipy.variables.variable.Variable`\s against different Matplotlib_
     `Axes`
@@ -101,6 +82,28 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
     >>> viewer._promptForOpinion()
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
+
+    Parameters
+    ----------
+    vars : ~fipy.variables.cellVariable.CellVariable or list
+        the `Variable` objects to display.
+    title : str, optional
+        displayed at the top of the `Viewer` window
+    limits : dict
+        a (deprecated) alternative to limit keyword arguments
+    float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
+        displayed range of data. A 1D `Viewer` will only use *xmin* and
+        *xmax*, a 2D viewer will also use *ymin* and *ymax*. All
+        viewers will use *datamin* and *datamax*. Any limit set to a
+        (default) value of `None` will autoscale.
+    cmap : ~matplotlib.colors.Colormap, optional
+        the :class:`~matplotlib.colors.Colormap`.
+        Defaults to `matplotlib.cm.jet`
+    colorbar : bool, optional
+        plot a color bar in specified orientation if not `None`
+    axes : ~matplotlib.axes.Axes, optional
+        if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
+
     """
     if type(vars) not in [type([]), type(())]:
         vars = [vars]

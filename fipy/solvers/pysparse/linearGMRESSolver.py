@@ -27,8 +27,9 @@ class LinearGMRESSolver(PysparseSolver):
 
     def __init__(self, precon=JacobiPreconditioner(), *args, **kwargs):
         """
-        :Parameters:
-          - `precon`: Preconditioner to use
+        Parameters
+        ----------
+        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner, optional
         """
         super(LinearGMRESSolver, self).__init__(precon=precon, *args, **kwargs)
         self.solveFnc = itsolvers.gmres

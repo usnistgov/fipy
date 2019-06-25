@@ -17,7 +17,7 @@ class Tri2D(Mesh2D):
     """
     This class creates a mesh made out of triangles.  It does this by
     starting with a standard Cartesian mesh (`Grid2D`) and dividing each cell
-    in that mesh (hereafter referred to as a 'box') into four equal
+    in that mesh (hereafter referred to as a "box") into four equal
     parts with the dividing lines being the diagonals.
     """
 
@@ -29,14 +29,17 @@ class Tri2D(Mesh2D):
         with the vertices at the corners of boxes and then the vertices at the
         centers of boxes.  Cells on the right of boxes are numbered first, then
         cells on the top of boxes, then cells on the left of boxes, then cells
-        on the bottom of boxes.  Within each of the 'sub-categories' in the
+        on the bottom of boxes.  Within each of the "sub-categories" in the
         above, the vertices, cells and faces are numbered in the usual way.
 
-        :Parameters:
-          - `dx, dy`: The X and Y dimensions of each 'box'.
+        Parameters
+        ----------
+        float dx, dy : float
+            The X and Y dimensions of each "box".
             If `dx` <> `dy`, the line segments connecting the cell
             centers will not be orthogonal to the faces.
-          - `nx, ny`: The number of boxes in the X direction and the Y direction.
+        int nx, ny : int
+            The number of boxes in the X direction and the Y direction.
             The total number of boxes will be equal to `nx * ny`, and the total
             number of cells will be equal to `4 * nx * ny`.
         """
@@ -97,10 +100,8 @@ class Tri2D(Mesh2D):
         return numerix.concatenate((boxCorners, boxCenters), axis=1)
 
     def _createFaces(self):
-        """
-        v1, v2 refer to the cells.
-        Horizontal faces are first
-        """
+        ## v1, v2 refer to the cells.
+        ## Horizontal faces are first
         v1 = numerix.arange(self.numberOfCornerVertices)
         v2 = v1 + 1
         horizontalFaces = vector.prune(numerix.array((v1, v2)), self.nx + 1, self.nx, axis=1)
@@ -134,10 +135,8 @@ class Tri2D(Mesh2D):
         return numerix.concatenate((horizontalFaces, verticalFaces, lowerLeftFaces, lowerRightFaces, upperLeftFaces, upperRightFaces), axis=1)
 
     def _createCells(self):
-        """
-        cells = (f1, f2, f3, f4) going anticlockwise.
-        f1 etc. refer to the faces
-        """
+        ## cells = (f1, f2, f3, f4) going anticlockwise.
+        ## f1 etc. refer to the faces
         bottomFaces = numerix.arange(0, self.numberOfHorizontalFaces - self.nx)
         topFaces = numerix.arange(self.nx, self.numberOfHorizontalFaces)
         leftFaces = vector.prune(numerix.arange(self.numberOfHorizontalFaces, self.numberOfHorizontalFaces + self.numberOfVerticalFaces), self.nx + 1, self.nx)
@@ -155,7 +154,7 @@ class Tri2D(Mesh2D):
 
     @property
     def physicalShape(self):
-        """Return physical dimensions of Grid2D.
+        """Return physical dimensions of `Grid2D`.
         """
         return PhysicalField(value = (self.nx * self.dx * self.scale,
                                       self.ny * self.dy * self.scale))

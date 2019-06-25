@@ -17,7 +17,7 @@ class SurfactantConvectionVariable(FaceVariable):
     """
 
     Convection coefficient for the `ConservativeSurfactantEquation`.
-    The coeff only has a value for a negative `distanceVar`.
+    The coefficient only has a value for a negative `distanceVar`.
 
     """
 

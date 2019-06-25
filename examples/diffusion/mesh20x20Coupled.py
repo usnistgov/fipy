@@ -76,7 +76,7 @@ We can test the value of the bottom-right corner cell.
 >>> if __name__ == '__main__':
 ...     input("Implicit transient diffusion. Press <return> to proceed...")
 
------
+----
 
 We can also solve the steady-state problem directly
 

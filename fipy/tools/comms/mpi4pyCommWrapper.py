@@ -39,10 +39,10 @@ class Mpi4pyCommWrapper(CommWrapper):
         return self.mpi4py_comm.bcast(obj=obj, root=root)
 
     def allgather(self, obj):
-        """mpi4py allgather
+        """mpi4py `allgather`
         
-        Communicates copies of each sendobj to every rank in the comm, creating
-        a rank-dimensional list of sendobj objects.
+        Communicates copies of each `sendobj` to every rank in the comm, creating
+        a rank-dimensional list of `sendobj` objects.
         
         >>> m4count = self.mpi4py_comm.allgather(self.mpi4py_comm.Get_rank())
         >>> from builtins import range

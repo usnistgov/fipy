@@ -66,7 +66,7 @@ We can now create a :class:`Viewer <~fipy.viewers.viewer.AbstractViewer>` to see
 
 We set up a transient diffusion equation
 
-.. index:
+.. index::
    object: fipy.terms.transientTerm.TransientTerm
    object: fipy.terms.implicitDiffusionTerm.DiffusionTerm
 
@@ -94,7 +94,7 @@ We first step through the transient problem
    :width: 90%
    :align: center
 
------
+----
 
 If we wanted to plot or analyze the results of this calculation with
 another application, we could export tab-separated-values with
@@ -112,7 +112,7 @@ The values are listed at the :class:`~fipy.meshes.cell.Cell` centers.
 Particularly for irregular meshes, no specific ordering should be relied upon.
 Vector quantities are listed in multiple columns, one for each mesh dimension.
 
------
+----
 
 This problem again has an analytical solution that depends on the error
 function, but it's a bit more complicated due to the varying boundary
@@ -147,7 +147,7 @@ vertical positions
 >>> if __name__ == '__main__':
 ...     input("Transient diffusion. Press <return> to proceed...")
 
------
+----
 
 As in the earlier examples, we can also directly solve the steady-state
 diffusion problem.

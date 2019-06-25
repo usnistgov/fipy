@@ -646,7 +646,7 @@ class PhysicalField(object):
 
     def __float__(self):
         """
-        Return a dimensionless PhysicalField quantity as a float.
+        Return a dimensionless `PhysicalField` quantity as a float.
 
             >>> float(PhysicalField("2. m/m"))
             2.0
@@ -664,7 +664,7 @@ class PhysicalField(object):
                 ...
             TypeError: Not possible to convert a PhysicalField with dimensions to float
 
-        Just as a Numeric_ `array` cannot be cast to float, neither can PhysicalField arrays
+        Just as a Numeric_ `array` cannot be cast to float, neither can `PhysicalField` arrays
 
             >>> float(PhysicalField(((2., 3.), (4., 5.)), "m/m")) # doctest: +ELLIPSIS
             Traceback (most recent call last):
@@ -680,7 +680,7 @@ class PhysicalField(object):
 
     def __gt__(self, other):
         """
-        Compare `self` to `other`, returning an array of boolean values
+        Compare `self` to `other`, returning an array of Boolean values
         corresponding to the test against each element.
 
             >>> a = PhysicalField(((3., 4.), (5., 6.)), "m")
@@ -816,7 +816,7 @@ class PhysicalField(object):
 
     def inUnitsOf(self, *units):
         """
-	Returns one or more `PhysicalField` objects that express the same
+        Returns one or more `PhysicalField` objects that express the same
         physical quantity in different units.  The units are specified by
         strings containing their names.  The units must be compatible with
         the unit of the object.  If one unit is specified, the return value
@@ -827,7 +827,7 @@ class PhysicalField(object):
         1
 
         If several units are specified, the return value is a tuple of
-	`PhysicalField` instances with with one element per unit such that
+        `PhysicalField` instances with with one element per unit such that
         the sum of all quantities in the tuple equals the the original
         quantity and all the values except for the last one are integers.
         This is used to convert to irregular unit systems like
@@ -864,7 +864,7 @@ class PhysicalField(object):
     def getsctype(self, default=None):
         """
 
-        Returns the Numpy sctype of the underlying array.
+        Returns the NumPy sctype of the underlying array.
 
             >>> PhysicalField(1, 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
             True
@@ -1036,7 +1036,7 @@ class PhysicalField(object):
             >>> print(PhysicalField(30., "deg").sin())
             0.5
 
-        The units of the PhysicalField must be an angle
+        The units of the `PhysicalField` must be an angle
 
             >>> PhysicalField(30., "m").sin()
             Traceback (most recent call last):
@@ -1376,15 +1376,18 @@ class PhysicalUnit(object):
         This class is not generally not instantiated by users of this module,
         but rather it is created in the process of constructing a `PhysicalField`.
 
-        :Parameters:
-          - `names`: the name of the unit
-          - `factor`: the multiplier between the unit and the fundamental SI unit
-          - `powers`: a nine-element `list`, `tuple`, or Numeric_ `array` representing
-            the fundamental SI units of ["m", "kg", "s", "A", "K", "mol", "cd", "rad", "sr"]
-          - `offset`: the displacement between the zero-point of the unit and the zero-point
-            of the corresponding fundamental SI unit.
-
-        .. _Numeric: http://www.numpy.org
+        Parameters
+        ----------
+        names : str
+            Name of the unit
+        factor : float
+            Multiplier between the unit and the fundamental SI unit
+        powers`: `array_like` of :obj:`float`
+            Nine elements representing the fundamental SI units of
+            ["m", "kg", "s", "A", "K", "mol", "cd", "rad", "sr"]
+        offset : float
+            Displacement between the zero-point of the unit and the
+            zero-point of the corresponding fundamental SI unit.
         """
         if isinstance(names, string_types):
             self.names = _NumberDict()
@@ -1886,7 +1889,7 @@ def _Scale(quantity, scaling):
         >>> print(numerix.round_(_Scale(PhysicalField("1. inch"), PhysicalField("1. mm")), 6))
         25.4
 
-    or a value-unit string convertable to a `PhysicalField`
+    or a value-unit string convertible to a `PhysicalField`
 
         >>> print(numerix.round_(_Scale("1. inch", PhysicalField("1. mm")), 6))
         25.4

@@ -69,7 +69,7 @@ class SkewedGrid2D(Mesh2D):
 
     @property
     def physicalShape(self):
-        """Return physical dimensions of Grid2D.
+        """Return physical dimensions of `Grid2D`.
         """
         return PhysicalField(value = (self.nx * self.dx * self.scale, self.ny * self.dy * self.scale))
 

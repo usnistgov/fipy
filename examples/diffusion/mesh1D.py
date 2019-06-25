@@ -162,7 +162,7 @@ We then solve the equation by repeatedly looping in time:
    :align: center
    :alt: solution to diffusion problem evolved by explicit time steps
 
------
+----
 
 Although explicit finite differences are easy to program, we have just seen
 that this 1D transient diffusion problem is limited to taking rather small
@@ -249,7 +249,7 @@ of the fully implicit scheme to drive down the error
 >>> if __name__ == '__main__':
 ...     input("Crank-Nicholson transient diffusion. Press <return> to proceed...")
 
------
+----
 
 As mentioned above, there is no stable limit to how large a time step can
 be taken for the implicit diffusion problem. In fact, if the time evolution
@@ -286,7 +286,7 @@ of :math:`10^{-10}`.
    :align: center
    :alt: steady-state solution to diffusion problem
 
-------
+----
 
 Often, boundary conditions may be functions of another variable in the
 system or of time.
@@ -332,7 +332,7 @@ condition will automatically update,
    :align: center
    :alt: solution to diffusion problem with a time-dependent Dirichlet boundary condition
 
-------
+----
 
 Many interesting problems do not have simple, uniform diffusivities. We consider a
 steady-state diffusion problem
@@ -427,7 +427,7 @@ And finally, we can plot the result
    :align: center
    :alt: steady-state solution to diffusion problem with a non-uniform diffusivity
 
-------
+----
 
 Note that for problems involving heat transfer and other similar
 conservation equations, it is important to ensure that we begin with
@@ -508,7 +508,7 @@ and finally, plot
    :align: center
    :alt: representation of difference between non-uniform alpha and D
 
-------
+----
 
 Often, the diffusivity is not only non-uniform, but also depends on
 the value of the variable, such that
@@ -662,7 +662,7 @@ can just solve for it directly
    :align: center
    :alt: solution to a diffusion problem a non-linear diffusivity
 
-------
+----
 
 Fully implicit solutions are not without their pitfalls, particularly in steady
 state. Consider a localized block of material diffusing in a closed box.
@@ -800,7 +800,7 @@ True
    :align: center
    :alt: steady-state solution for no-flux boundary conditions
 
-------
+----
 
 If this example had been written primarily as a script, instead of as
 documentation, we would delete every line that does not begin with

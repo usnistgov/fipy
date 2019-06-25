@@ -57,7 +57,7 @@ The initial conditions for this problem are set such that
 
 .. Further details of the numerical method for this problem can be found in
    "Extending Phase Field Models of Solidification to Polycrystalline
-   Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003)
+   Materials", J. A. Warren *et al.*, *Acta Materialia*, **51** (2003)
    6035-6058.
 
 Here the phase and orientation equations are solved with an
@@ -135,7 +135,7 @@ The ``phase`` equation is constructed.
 ...      + (mPhiVar > 0) * mPhiVar * phase
 
 The ``theta`` equation is built in the following way. The details for
-this equation are fairly involved, see J.A. Warren *et al.*. The main
+this equation are fairly involved, see J. A. Warren *et al.*. The main
 detail is that a source must be added to correct for the
 discretization of ``theta`` on the circle.
 

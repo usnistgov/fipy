@@ -27,16 +27,17 @@ class VTKViewer(AbstractViewer):
     """Renders `_MeshVariable` data in VTK format
     """
     def __init__(self, vars, title=None, limits={}, **kwlimits):
-        """Creates a VTKViewer
+        """Creates a `VTKViewer`
 
-        :Parameters:
-          vars
-            a `_MeshVariable` or a tuple of them
-          title
+        Parameters
+        ----------
+        vars : ~fipy.variables.cellVariable.CellVariable or ~fipy.variables.faceVariable.FaceVariable or list
+            the `MeshVariable` objects to display.
+        title : str, optional
             displayed at the top of the `Viewer` window
-          limits : dict
+        limits : dict, optional
             a (deprecated) alternative to limit keyword arguments
-          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+        float xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
         """

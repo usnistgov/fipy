@@ -139,7 +139,7 @@ All of the error checking, dimension measuring, and space allocation
 is handled automatically by low-level code that is intrinsic to the
 high-level matrix multiplication operator.  The high-level code
 "knows" that matrices are involved, how to get their shapes, and to
-interpret '``*``' as a matrix multiplier instead of an arithmetic
+interpret "``*``" as a matrix multiplier instead of an arithmetic
 one.  All of this allows the programmer to think about the operation
 of interest and not worry about introducing bugs in low-level code
 that is not unique to their application.
@@ -160,7 +160,7 @@ application to explore changes to the parameters, code is added to
 read an input file containing a list of numbers.  Eventually, the
 point is reached where it is impossible to remember which parameter
 comes in which order or what physical units are required, so code is
-added to, for example, interpret a line beginning with '``#``' as a
+added to, for example, interpret a line beginning with "``#``" as a
 comment.  At this point, the scientist has begun developing a
 scripting language without even knowing it.  Unfortunately for them,
 very few scientists have actually studied computer science or actually

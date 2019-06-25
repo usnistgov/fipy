@@ -20,11 +20,13 @@ class LinearBicgstabSolver(TrilinosAztecOOSolver):
 
     def __init__(self, tolerance=1e-10, iterations=1000, precon=JacobiPreconditioner()):
         """
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-          - `precon`: Preconditioner to use.
-
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon : ~fipy.solvers.trilinos.preconditioners.preconditioner.Preconditioner
         """
         TrilinosAztecOOSolver.__init__(self, tolerance=tolerance,
                                        iterations=iterations, precon=precon)

@@ -76,7 +76,7 @@ class UniformGrid1D(UniformGrid):
         self._setTopology()
 
     """
-    Topology set and calc
+    Topology set and calculate
     """
 
     def _setTopology(self):
@@ -212,7 +212,7 @@ class UniformGrid1D(UniformGrid):
         return numerix.ones(self.numberOfCells, 'd') * self.dx
 
     """
-    Scaled geometry set and calc
+    Scaled geometry set and calculate
     """
 
     @property

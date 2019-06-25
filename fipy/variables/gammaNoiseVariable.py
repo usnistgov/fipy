@@ -83,10 +83,14 @@ class GammaNoiseVariable(NoiseVariable):
     """
     def __init__(self, mesh, shape, rate, name = '', hasOld = 0):
         r"""
-        :Parameters:
-            - `mesh`: The mesh on which to define the noise.
-            - `shape`: The shape parameter, :math:`\alpha`.
-            - `rate`: The rate or inverse scale parameter, :math:`\beta`.
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The mesh on which to define the noise.
+        shape : float
+            The shape parameter, :math:`\alpha`.
+        rate : float
+            The rate or inverse scale parameter, :math:`\beta`.
 
         """
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)

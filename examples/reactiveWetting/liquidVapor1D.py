@@ -255,9 +255,9 @@ Viewers are also defined.
 ...     for viewer in viewers:
 ...         viewer.plot()
 
-The following section defines the required control parameters. The ``cfl``
-parameter limits the size of the time step so that ``dt = cfl * dx /
-max(velocity)``.
+The following section defines the required control parameters. The `cfl`
+parameter limits the size of the time step so that 
+`dt = cfl * dx / max(velocity)`.
 
 >>> cfl = 0.1
 >>> tolerance = 1e-1

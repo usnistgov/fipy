@@ -17,13 +17,18 @@ class PyAMGXSolver(Solver):
     def __init__(self, config_dict, tolerance=1e-10, iterations=2000,
                  precon=None, smoother=None, **kwargs):
         """
-        :Parameters:
-          - `config_dict`: Dictionary specifying AMGX configuration options.
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-          - `precon`: Preconditioner to use.
-          - `smoother`: Smoother to use.
-          - `kwargs` - Keyword arguments specifying other solver options (see AMGX Reference Manual).
+        Parameters
+        ----------
+        config_dict : dict
+            AMGX configuration options
+        tolerance : float
+            Required error tolerance.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon : ~fipy.solvers.pyamgx.preconditioners.preconditioners.Preconditioner, optional
+        smoother : ~fipy.solvers.pyamgx.smoothers.smoothers.Smoother, optional
+        **kwargs
+            Other AMGX solver options
         """
         # update solver config:
         config_dict["solver"]["tolerance"] = tolerance

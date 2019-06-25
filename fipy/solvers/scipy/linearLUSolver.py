@@ -18,7 +18,7 @@ class LinearLUSolver(_ScipySolver):
     """
     The `LinearLUSolver` solves a linear system of equations using
     LU-factorization.  The `LinearLUSolver` is a wrapper class for the
-    the Scipy `scipy.sparse.linalg.splu` moduleq.
+    the Scipy `scipy.sparse.linalg.splu` module.
     """
 
     def _solve_(self, L, x, b):

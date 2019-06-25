@@ -23,10 +23,14 @@ class LinearLUSolver(TrilinosSolver):
 
     def __init__(self, tolerance=1e-10, iterations=10, precon=None, maxIterations=10):
         """
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon
+            *ignored*
         """
 
         iterations = min(iterations, maxIterations)

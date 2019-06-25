@@ -12,7 +12,7 @@ from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
 
 class _CoupledBinaryTerm(_AbstractBinaryTerm):
     """
-    Test to ensure that _getTransientGeomCoeff and _getDiffusionGeomCoeff return sensible results for coupled equations.
+    Test to ensure that `_getTransientGeomCoeff` and `_getDiffusionGeomCoeff` return sensible results for coupled equations.
 
     >>> from fipy import *
     >>> m = Grid1D(nx=1)

@@ -9,8 +9,8 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class SsorPreconditioner(Preconditioner):
     """
-    SSOR preconditioner for PySparse.
-    Really just a wrapper class for pysparse.precon.jacobi.
+    SSOR preconditioner for Pysparse.
+    Really just a wrapper class for `pysparse.precon.jacobi`.
     """
     def _applyToMatrix(self, A):
         """

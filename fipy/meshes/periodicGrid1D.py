@@ -1,5 +1,5 @@
 """
-Peridoic 1D Mesh
+Periodic 1D Mesh
 """
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
@@ -65,7 +65,7 @@ class PeriodicGrid1D(NonUniformGrid1D):
     def cellCenters(self):
         """Defined outside of a geometry class since we need the `CellVariable`
         version of `cellCenters`; that is, the `cellCenters` defined in
-        fipy.meshes.mesh and not in any geometry (since a `CellVariable` requires
+        :mod:`fipy.meshes.mesh` and not in any geometry (since a `CellVariable` requires
         a reference to a mesh)."""
         return super(PeriodicGrid1D, self).cellCenters \
                 % numerix.sum(self.globalNumberOfCells * self.args['dx'])

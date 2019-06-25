@@ -79,7 +79,7 @@ class TrenchMesh(GapFillMesh):
 
         `cellSize` - The cell Size.
 
-        `aspectRatio` - trenchDepth / trenchWidth
+        `aspectRatio` - `trenchDepth` / `trenchWidth`
 
         `angle` - The angle for the taper of the trench.
 

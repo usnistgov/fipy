@@ -17,8 +17,10 @@ class _PysparseMatrix(_SparseMatrix):
         Allows basic python operations __add__, __sub__ etc.
         Facilitate matrix populating in an easy way.
 
-        :Parameters:
-          - `matrix`: The starting `spmatrix`
+        Parameters
+        ----------
+        matrix : ~pysparse.spmatrix.ll_mat
+            The internal Pysparse matrix
         """
         self.matrix = matrix
 
@@ -240,23 +242,29 @@ class _PysparseMatrix(_SparseMatrix):
 
     def exportMmf(self, filename):
         """
-        Exports the matrix to a Matrix Market file of the given filename.
+        Exports the matrix to a Matrix Market file of the given `filename`.
         """
         self.matrix.export_mtx(filename)
 
 class _PysparseMatrixFromShape(_PysparseMatrix):
 
     def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
-        """Instantiates and wraps a pysparse `ll_mat` matrix
+        """Instantiates and wraps a Pysparse `ll_mat` matrix
 
-        :Parameters:
-          - `rows`: The number of matrix rows
-          - `cols`: The number of matrix columns
-          - `bandwidth`: The proposed band width of the matrix.
-          - `sizeHint`: estimate of the number of non-zeros
-          - `matrix`: pre-assembled `ll_mat` to use for storage
-          - `storeZeros`: Instructs pysparse to store zero values if possible.
-
+        Parameters
+        ----------
+        rows : int
+            The number of matrix rows
+        cols : int
+            The number of matrix columns
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros
+        matrix : ~pysparse.spmatrix.ll_mat
+            Pre-assembled Pysparse matrix to use for storage
+        storeZeros : bool
+            Instructs pysparse to store zero values if possible.
         """
         sizeHint = sizeHint or max(rows, cols) * bandwidth
         if matrix is None:
@@ -273,14 +281,22 @@ class _PysparseMeshMatrix(_PysparseMatrixFromShape):
 
         """Creates a `_PysparseMatrixFromShape` associated with a `Mesh`. Allows for different number of equations and/or variables
 
-        :Parameters:
-          - `mesh`: The `Mesh` to assemble the matrix for.
-          - `bandwidth`: The proposed band width of the matrix.
-          - `sizeHint`: estimate of the number of non-zeros
-          - `matrix`: pre-assembled `ll_mat` to use for storage
-          - `numberOfVariables`: The columns of the matrix is determined by numberOfVariables * self.mesh.numberOfCells.
-          - `numberOfEquations`: The rows of the matrix is determined by numberOfEquations * self.mesh.numberOfCells.
-          - `storeZeros`: Instructs pysparse to store zero values if possible.
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros
+        matrix : ~pysparse.spmatrix.ll_mat
+            Pre-assembled Pysparse matrix to use for storage
+        numberOfVariables : int
+            The columns of the matrix is determined by `numberOfVariables * self.mesh.numberOfCells`.
+        numberOfEquations : int
+            The rows of the matrix is determined by `numberOfEquations * self.mesh.numberOfCells`.
+        storeZeros : bool
+            Instructs Pysparse to store zero values if possible.
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
@@ -297,12 +313,13 @@ class _PysparseMeshMatrix(_PysparseMatrixFromShape):
             return _PysparseMatrixFromShape.__mul__(self, other)
 
     def asTrilinosMeshMatrix(self):
-        """Transforms a pysparse matrix into a trilinos matrix and maintains the
-        trilinos matrix as an attribute.
+        """Transforms a Pysparse matrix into a Trilinos matrix
 
-        :Returns:
-          The trilinos matrix.
+        Maintains the Trilinos matrix as an attribute.
 
+        Returns
+        -------
+        ~fipy.matrices.trilinosMatrix._TrilinosMatrix
         """
         A = self.matrix.copy()
         values, irow, jcol = A.find()
@@ -371,7 +388,7 @@ class _PysparseIdentityMatrix(_PysparseMatrixFromShape):
     Represents a sparse identity matrix for pysparse.
     """
     def __init__(self, size):
-        """Create a sparse matrix with '1' in the diagonal
+        """Create a sparse matrix with `1` in the diagonal
 
             >>> print(_PysparseIdentityMatrix(size=3))
              1.000000      ---        ---    
@@ -384,7 +401,7 @@ class _PysparseIdentityMatrix(_PysparseMatrixFromShape):
 
 class _PysparseIdentityMeshMatrix(_PysparseIdentityMatrix):
     def __init__(self, mesh):
-        """Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
+        """Create a sparse matrix associated with a `Mesh` with `1` in the diagonal
 
             >>> from fipy import Grid1D
             >>> from fipy.tools import serialComm

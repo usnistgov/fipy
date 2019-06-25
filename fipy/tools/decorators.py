@@ -70,7 +70,7 @@ class _Deprecate(object):
 
     See Also
     --------
-    numerix.deprecate
+    `numerix.deprecate`
 
     """
     def __init__(self, old_name=None, new_name=None, message=None,

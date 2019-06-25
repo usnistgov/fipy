@@ -34,9 +34,10 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
         """
         Creates a `_LevelSetDiffusionVariable`.
 
-        :Parameters:
-          - `distanceVariable` : A `DistanceVariable` object
-          - `diffusionCoeff` : The `coeff` value.
+        Parameters
+        ----------
+        distanceVariable : ~fipy.variables.distanceVariable.DistanceVariable
+        diffusionCoeff : float or ~fipy.variables.faceVariable.FaceVariable
 
         """
         _CellToFaceVariable.__init__(self, distanceVariable)

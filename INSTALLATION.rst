@@ -109,7 +109,7 @@ Recommended Method
      are fewer packages available via conda_, particularly amongst the
      sparse matrix :ref:`SOLVERS`, but the system still should be
      functional. Significantly, you will need to download and install
-     :ref:`Gmsh` manually when using Python 2.7.
+     :term:`Gmsh` manually when using Python 2.7.
 
 .. attention::
 
@@ -357,5 +357,7 @@ Our preferred development environment is set up with::
 ---
 Nix
 ---
+
+.. _nixinstall:
 
 .. include:: nix/README.rst

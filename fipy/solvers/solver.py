@@ -73,11 +73,15 @@ class Solver(object):
         """
         Create a `Solver` object.
 
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-          - `precon`: Preconditioner to use. This parameter is only available for Trilinos solvers.
-
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon
+            Preconditioner to use.  Not all solver suites support
+            preconditioners.
         """
         if self.__class__ is Solver:
             raise NotImplementedError("can't instantiate abstract base class")

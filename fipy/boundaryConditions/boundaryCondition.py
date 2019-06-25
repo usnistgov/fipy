@@ -19,9 +19,12 @@ class BoundaryCondition(object):
 
     def __init__(self, faces, value):
         """
-        :Parameters:
-            - `faces`: A `list` or `tuple` of exterior `Face` objects to which this condition applies.
-            - `value`: The value to impose.
+        Parameters
+        ----------
+        faces : :obj:`~fipy.variables.faceVariable.FaceVariable` of :obj:`bool`
+            Mask of faces where this condition applies.
+        value : float
+            Value to impose.
         """
         if self.__class__ is BoundaryCondition:
             raise NotImplementedError("can't instantiate abstract base class")
@@ -44,14 +47,19 @@ class BoundaryCondition(object):
 
         `_buildMatrix()` is called by each `Term` of each `Equation`.
 
-        :Parameters:
-          - `SparseMatrix`: Sparse matrix class to use
-          - `Ncells`:       Number of cells (to build **L** and **b**)
-          - `MaxFaces`:     Maximum number of faces per cell (to build **L**)
-          - `coeff`:        Contribution due to this face
-
         A `tuple` of (`LL`, `bb`) is calculated, to be added to the Term's
         (**L**, **b**) matrices.
+
+        Parameters
+        ----------
+        SparseMatrix : ~fipy.matrices.sparseMatrix._SparseMatrix
+        Ncells : int
+            Size of matrices
+        MaxFaces : int
+            Maximum number of faces per cell (determines bandwidth of
+            :math:`\mathsf{L}`)
+        coeff : list
+            Contribution due to this face
         """
         raise NotImplementedError
 

@@ -53,8 +53,8 @@ The boundary conditions for this problem are
 
    \left.
        \begin{aligned}
-	   \phi &= \frac{1}{2} \\
-	   \frac{\partial^2 \phi}{\partial x^2} &= 0
+       \phi &= \frac{1}{2} \\
+       \frac{\partial^2 \phi}{\partial x^2} &= 0
        \end{aligned}
    \right\} \qquad \text{on $x = 0$}
 
@@ -64,8 +64,8 @@ and
 
    \left.
        \begin{aligned}
-	   \phi &= 1 \\
-	   \frac{\partial^2 \phi}{\partial x^2} &= 0
+       \phi &= 1 \\
+       \frac{\partial^2 \phi}{\partial x^2} &= 0
        \end{aligned}
    \right\} \qquad \text{on $x = L$}
 

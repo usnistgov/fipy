@@ -25,7 +25,8 @@ class _Grid3DBuilder(_AbstractGridBuilder):
         return (self.ns[0], self.ns[1], self.ns[2])
 
     def _calcPhysicalShape(self):
-        """Return physical dimensions of Grid1D."""
+        """Return physical dimensions of `Grid3D`
+        """
         from fipy.tools.dimensions.physicalField import PhysicalField
         return PhysicalField(value = (self.ns[0] * self.ds[0] * self.scale,
                                       self.ns[1] * self.ds[1] * self.scale,

@@ -162,8 +162,8 @@ ImportError: No module named grid2DGistViewer
 
 ::
 
-...     viewer = Grid2DGistViewer(var)
-...     viewer.plot()
+    ...     viewer = Grid2DGistViewer(var)
+    ...     viewer.plot()
 
 ----
 

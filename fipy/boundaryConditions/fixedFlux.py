@@ -23,12 +23,12 @@ class FixedFlux(BoundaryCondition):
 
     def __init__(self, faces, value):
         """
-        Creates a `FixedFlux` object.
-
-        :Parameters:
-            - `faces`: A `list` or `tuple` of `Face` objects to which this condition applies.
-            - `value`: The value to impose.
-
+        Parameters
+        ----------
+        faces : :obj:`~fipy.variables.faceVariable.FaceVariable` of :obj:`bool`
+            Mask of faces where this condition applies.
+        value : float
+            Value to impose.
         """
         BoundaryCondition.__init__(self, faces, value)
         ## The extra index [self.faces.value] makes self.contribution the same length as self.adjacentCellIDs
@@ -37,11 +37,16 @@ class FixedFlux(BoundaryCondition):
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
         """Leave **L** unchanged and add gradient to **b**
 
-        :Parameters:
-          - `SparseMatrix`: *unused* (empty matrix)
-          - `Ncells`:       Size of **b**-vector
-          - `MaxFaces`:     *unused*
-          - `coeff`:        *unused*
+        Parameters
+        ----------
+        SparseMatrix : ~fipy.matrices.sparseMatrix._SparseMatrix
+            *unused* (empty matrix)
+        Ncells : int
+            Size of **b** vector
+        MaxFaces
+            *unused*
+        coeff : list
+            *unused*
         """
 
         bb = numerix.zeros((Ncells,), 'd')
@@ -60,8 +65,8 @@ class FixedFlux(BoundaryCondition):
 
     def _test(self):
         """
-        The following tests check that self.contributions is the same length as
-        self.adjacentCellIDs.
+        The following tests check that `self.contributions` is the same length as
+        `self.adjacentCellIDs`.
 
            >>> from fipy import *
            >>> m = Grid1D(nx = 10)

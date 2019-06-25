@@ -13,7 +13,7 @@ def _suite():
         'meshes.test',
         'variables.test',
         'viewers.test',
-	'boundaryConditions.test',
+        'boundaryConditions.test',
     ), base = __name__)
 
 if __name__ == '__main__':

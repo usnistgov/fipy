@@ -228,18 +228,26 @@ class AdsorbingSurfactantEquation(object):
                  otherBulkVar = None,
                  otherRateConstant = None,
                  consumptionCoeff = None):
-        """
-        Create a `AdsorbingSurfactantEquation` object.
+        """Create a `AdsorbingSurfactantEquation` object.
 
-        :Parameters:
-          - `surfactantVar`: The `SurfactantVariable` to be solved for.
-          - `distanceVar`: The `DistanceVariable` that marks the interface.
-          - `bulkVar`: The value of the `surfactantVar` in the bulk.
-          - `rateConstant`: The adsorption rate of the `surfactantVar`.
-          - `otherVar`: Another `SurfactantVariable` with more surface affinity.
-          - `otherBulkVar`: The value of the `otherVar` in the bulk.
-          - `otherRateConstant`: The adsorption rate of the `otherVar`.
-          - `consumptionCoeff`: The rate that the `surfactantVar` is consumed during deposition.
+        Parameters
+        ----------
+        surfactantVar : ~fipy.variables.surfactantVariable.SurfactantVariable
+            The `SurfactantVariable` to be solved for.
+        distanceVar : ~fipy.variables.distanceVariable.DistanceVariable
+            The `DistanceVariable` that marks the interface.
+        bulkVar : ~fipy.variables.cellVariable.CellVariable
+            The value of the `surfactantVar` in the bulk.
+        rateConstant : float
+            The adsorption rate of the `surfactantVar`.
+        otherVar : ~fipy.variables.surfactantVariable.SurfactantVariable
+            Another `SurfactantVariable` with more surface affinity.
+        otherBulkVar : ~fipy.variables.cellVariable.CellVariable
+            The value of the `otherVar` in the bulk.
+        otherRateConstant : float
+            The adsorption rate of the `otherVar`.
+        consumptionCoeff : float
+            The rate that the `surfactantVar` is consumed during deposition.
 
         """
 
@@ -281,16 +289,21 @@ class AdsorbingSurfactantEquation(object):
             self.eq += ImplicitSourceTerm(consumptionCoeff)
 
     def solve(self, var, boundaryConditions=(), solver=None, dt=None):
+        """Builds and solves the `AdsorbingSurfactantEquation`'s linear system once.
+
+        Parameters
+        ----------
+        var : ~fipy.variables.surfactantVariable.SurfactantVariable
+            A `SurfactantVariable` to be solved for.  Provides the initial
+            condition, the old value and holds the solution on completion.
+        solver : ~f[py.solvers.solver.Solver
+            The iterative solver to be used to solve the linear system of
+            equations.
+        boundaryConditions : :obj:`tuple` of ~fipy.boundaryConditions.boundaryCondition.BoundaryCondition
+        dt : float
+            The time step size.
+
         """
-        Builds and solves the `AdsorbingSurfactantEquation`'s linear system once.
-
-        :Parameters:
-           - `var`: A `SurfactantVariable` to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations.
-           - `boundaryConditions`: A tuple of boundaryConditions.
-           - `dt`: The time step size.
-
-	"""
         self.dt.setValue(dt)
         if solver is None:
             import fipy.solvers.solver
@@ -312,20 +325,27 @@ class AdsorbingSurfactantEquation(object):
                       dt=1.)
 
     def sweep(self, var, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
-        r"""
-        Builds and solves the `AdsorbingSurfactantEquation`'s linear
-        system once. This method also recalculates and returns the
+        r"""Builds and solves the linear system once
+
+        This method also recalculates and returns the
         residual as well as applying under-relaxation.
 
-        :Parameters:
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            The `Variable` to be solved for.  Provides the initial
+            condition, the old value and holds the solution on completion.
+        solver : ~fipy.solvers.solver.Solver
+            The iterative solver to be used to solve the linear system of
+            equations.
+        boundaryConditions : :obj`tuple` of ~fipy.boundaryConditions.boundaryCondition.BoundaryCondition
+        dt : float
+            The time step size.
+        underRelaxation : float
+            Usually a value between `0` and `1` or `None` in the case of no
+            under-relaxation
 
-           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations.
-           - `boundaryConditions`: A tuple of boundaryConditions.
-           - `dt`: The time step size.
-           - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
-
-	"""
+        """
         self.dt.setValue(dt)
         if solver is None:
             from fipy.solvers import DefaultAsymmetricSolver

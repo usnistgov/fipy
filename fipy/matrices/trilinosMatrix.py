@@ -32,7 +32,7 @@ from fipy.tools import numerix, parallelComm
 # FiPy constructs its matrices, I do not anticipate any of these occurring.
 
 class _TrilinosMatrix(_SparseMatrix):
-    """class wrapper for a PyTrilinos Epetra.CrsMatrix.
+    """class wrapper for a PyTrilinos `Epetra.CrsMatrix`.
 
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
@@ -40,9 +40,12 @@ class _TrilinosMatrix(_SparseMatrix):
     def __init__(self, matrix, bandwidth=None,
                  rowMap=None, colMap=None, domainMap=None):
         """
-        :Parameters:
-          - `matrix`: The starting `Epetra.CrsMatrix` if there is one.
-          - `bandwidth`: The proposed band width of the matrix.
+        Parameters
+        ----------
+        matrix : Epetra.CrsMatrix
+            The internal Trilinos matrix
+        bandwidth : int
+            The proposed band width of the matrix.
         """
         self.matrix = matrix
 
@@ -443,7 +446,7 @@ class _TrilinosMatrix(_SparseMatrix):
 
     def exportMmf(self, filename):
         """
-        Exports the matrix to a Matrix Market file of the given filename.
+        Exports the matrix to a Matrix Market file of the given `filename`.
         """
         self.fillComplete()
         EpetraExt.RowMatrixToMatrixMarketFile(text_to_native_str(filename), self.matrix)
@@ -509,14 +512,20 @@ class _TrilinosMatrix(_SparseMatrix):
 class _TrilinosMatrixFromShape(_TrilinosMatrix):
     def __init__(self, rows, cols, bandwidth=1, sizeHint=None,
                  rowMap=None, colMap=None, domainMap=None):
-        """Instantiates and wraps an Epetra.CrsMatrix
+        """Instantiates and wraps an `Epetra.CrsMatrix`
 
-        :Parameters:
-          - `rows`: The number of matrix rows
-          - `cols`: The number of matrix columns
-          - `bandwidth`: The proposed band width of the matrix.
-          - `sizeHint`: estimate of the number of non-zeros
-          - `map`: The Epetra `Map` for the rows that this processor holds
+        Parameters
+        ----------
+        rows : int
+            The number of matrix rows
+        cols : int
+            The number of matrix columns
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros
+        map : Epetra.Map
+            The map for the rows that this processor holds
         """
         size = max(rows, cols)
         if sizeHint is not None and bandwidth == 0:
@@ -552,12 +561,18 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
     def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=1, numberOfEquations=1):
         """Creates a `_TrilinosMatrixFromShape` associated with a `Mesh`
 
-        :Parameters:
-          - `mesh`: The `Mesh` to assemble the matrix for.
-          - `bandwidth`: The proposed band width of the matrix.
-          - `sizeHint`: estimate of the number of non-zeros
-          - `numberOfVariables`: The columns of the matrix is determined by numberOfVariables * self.mesh.globalNumberOfCells.
-          - `numberOfEquations`: The rows of the matrix is determined by numberOfEquations * self.mesh.globalNumberOfCells.
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros
+        numberOfVariables : int
+            The columns of the matrix is determined by `numberOfVariables * self.mesh.globalNumberOfCells`.
+        numberOfEquations : int
+            The rows of the matrix is determined by `numberOfEquations * self.mesh.globalNumberOfCells`.
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
@@ -648,15 +663,20 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
     def _globalNonOverlapping(self, vector, id1, id2):
         """Transforms and subsets local overlapping values and coordinates to global non-overlapping
 
-        :Parameters:
-          - `vector`: The overlapping values to insert.
-          - `id1`: The local overlapping row indices.
-          - `id2`: The local overlapping column indices.
+        Parameters
+        ----------
+        vector : array_like
+            The overlapping values to insert.
+        id1 : array_like
+            The local overlapping row indices.
+        id2 : array_like
+            The local overlapping column indices.
 
-        :Returns:
-          Tuple of (non-overlapping vector,
-                    global non-overlapping row indices,
-                    global non-overlapping column indices)
+        Returns
+        -------
+        tuple of (non-overlapping vector,
+                  global non-overlapping row indices,
+                  global non-overlapping column indices)
         """
         id1, id2, mask = self._getStencil(id1, id2)
         vector = vector[mask]
@@ -725,7 +745,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
             True
 
         Should be able to multiply an overlapping value obtained from a
-        CellVariable. This is required to make the '--no-pysparse' flag
+        `CellVariable`. This is required to make the `--no-pysparse` flag
         work correctly.
 
             >>> from fipy import *
@@ -795,6 +815,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         5 cells, 3 variables, 1 processor
 
+        ```
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
 
@@ -813,6 +834,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
+        ```
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]))  # doctest: +SERIAL
         True
@@ -824,6 +846,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         5 cells, 2 equations, 1 processor
 
+        ```
         0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9   row IDs
 
@@ -842,6 +865,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
 
         0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
+        ```
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])) # doctest: +SERIAL
         True
@@ -853,6 +877,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         5 cells, 3 variables, 2 processors
 
+        ```
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
 
@@ -879,6 +904,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         0  1           4  5           8  9            _localNonOverlappingColIDs:0
               2  3  4        7  8  9       12 13 14   _localNonOverlappingColIDs:1
+        ```
 
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13])) # doctest: +PROCESSOR_0_OF_2
@@ -899,6 +925,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         5 cells, 2 equations, 2 processors
 
+        ```
         0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9   row IDs
 
@@ -925,6 +952,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         0  1           4  5            _localNonOverlappingRowIDs:0
               2  3  4        7  8  9   _localNonOverlappingRowIDs:1
+        ```
 
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 5, 6, 7, 8])) # doctest: +PROCESSOR_0_OF_2
@@ -952,6 +980,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         5 cells, 3 variables, serial
 
+        ```
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
 
@@ -970,6 +999,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
+        ```
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]))
         True
@@ -981,6 +1011,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         5 cells, 2 equations, serial
 
+        ```
         0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9   row IDs
 
@@ -999,6 +1030,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
 
         0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
+        ```
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
         True
@@ -1017,6 +1049,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         7 cells, 3 variables, 1 processor
 
+        ```
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
 
@@ -1035,6 +1068,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localNonOverlappingCellIDs:0
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _localNonOverlappingColIDs:0
+        ```
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
         ...                              11, 12, 13, 14, 15, 16, 17, 18, 19, 20])) # doctest: +SERIAL
@@ -1049,6 +1083,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         7 cells, 2 equations, 1 processor
 
+        ```
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
 
@@ -1067,6 +1102,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localNonOverlappingCellIDs:0
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   _localNonOverlappingRowIDs:0
+        ```
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])) # doctest: +SERIAL
         True
@@ -1078,6 +1114,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         7 cells, 3 variables, 2 processors
 
+        ```
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
 
@@ -1104,6 +1141,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         0  1  2              5  6  7             10 11 12               _localNonOverlappingColIDs:0
                  2  3  4  5           8  9 10 11          14 15 16 17   _localNonOverlappingColIDs:1
+        ```
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18])) # doctest: +PROCESSOR_0_OF_2
         True
@@ -1122,6 +1160,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         7 cells, 2 equations, 2 processors
 
+        ```
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
 
@@ -1148,6 +1187,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         0  1  2              5  6  7               _localNonOverlappingRowIDs:0
                  2  3  4  5           8  9 10 11   _localNonOverlappingRowIDs:1
+        ```
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11])) # doctest: +PROCESSOR_0_OF_2
         True
@@ -1167,6 +1207,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         7 cells, 3 variables, 3 processors
 
+        ```
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
 
@@ -1201,6 +1242,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1                 4  5                 8  9                  _localNonOverlappingColIDs:0
               2  3                 8  9                14 15            _localNonOverlappingColIDs:1
                     2  3  4              7  8  9             12 13 14   _localNonOverlappingColIDs:2
+        ```
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 7, 8, 9, 10, 14, 15, 16, 17])) # doctest: +PROCESSOR_0_OF_3
         True
@@ -1226,6 +1268,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         7 cells, 2 equations, 3 processors
 
+        ```
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
 
@@ -1260,7 +1303,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         0  1                 4  5                  _localNonOverlappingRowIDs:0
               2  3                 8  9            _localNonOverlappingRowIDs:1
                     2  3  4              7  8  9   _localNonOverlappingRowIDs:2
-
+        ```
         """
         pass
 
@@ -1271,7 +1314,7 @@ class _TrilinosIdentityMatrix(_TrilinosMatrixFromShape):
     """
     def __init__(self, size):
         """
-        Create a sparse matrix with '1' in the diagonal
+        Create a sparse matrix with `1` in the diagonal
 
             >>> print(_TrilinosIdentityMatrix(size=3))
              1.000000      ---        ---    
@@ -1285,7 +1328,7 @@ class _TrilinosIdentityMatrix(_TrilinosMatrixFromShape):
 class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
     def __init__(self, mesh):
         """
-        Create a sparse matrix associated with a `Mesh` with '1' in the diagonal
+        Create a sparse matrix associated with a `Mesh` with `1` in the diagonal
 
             >>> from fipy import Grid1D
             >>> mesh = Grid1D(nx=3)
@@ -1311,8 +1354,11 @@ class _TrilinosMeshMatrixKeepStencil(_TrilinosMeshMatrix):
         """Deletes the matrix but maintains the stencil used
         `_globalNonOverlapping()` in as it can be expensive to construct.
 
-        :Parameters:
-          - `cacheStencil`: Boolean value to determine whether to keep the stencil (tuple of IDs and a mask) even after deleting the matrix.
+        Parameters
+        ----------
+        cacheStencil : bool
+            Whether to determine whether to keep the stencil (tuple of IDs
+            and a mask) even after deleting the matrix.
 
         """
 

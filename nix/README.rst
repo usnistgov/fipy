@@ -1,5 +1,3 @@
-.. _nixinstall:
-
 Nix Installation
 ================
 
@@ -49,8 +47,8 @@ Python 2. To install with Python 3, use::
 Additional Packages
 -------------------
 
-To install additional packages available from Nixpkgs include them in
-the ``buildInputs`` list in ``nix/build.nix`` (in the ``nix``
+To install additional packages available from Nixpkgs_ include them in
+the `buildInputs` list in `nix/build.nix` (in the `nix`
 subdirectory of the base :term:`FiPy` directory).
 
 Using Pip
@@ -68,3 +66,4 @@ The ``.local`` directory will persist after the Nix shell has been
 closed.
 
 .. _Nix: https://nixos.org/nix/
+.. _Nixpkgs:  https://nixos.org/nixpkgs/

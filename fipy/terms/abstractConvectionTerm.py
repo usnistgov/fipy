@@ -64,8 +64,9 @@ class _AbstractConvectionTerm(FaceTerm):
             >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (0, 0))).solve(var=cv2, solver=DummySolver(), dt=1.)
 
 
-        :Parameters:
-          - `coeff` : The `Term`'s coefficient value.
+        Parameters
+        ----------
+        coeff : The `Term`'s coefficient value.
         """
         if self.__class__ is _AbstractConvectionTerm:
             raise AbstractBaseClassError

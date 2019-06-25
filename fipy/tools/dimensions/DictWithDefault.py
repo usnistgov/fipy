@@ -6,10 +6,7 @@ __all__ = []
 import copy
 
 class _DictWithDefault(dict):
-
     """Dictionary with default values
-
-    Constructor:  _DictWithDefault(|default|)
 
     Instances of this class act like standard Python dictionaries,
     except that they return a *copy* of |default| for a key that

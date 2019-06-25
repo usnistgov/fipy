@@ -39,8 +39,8 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
 
     The `Viewer` factory will search the module tree and return an instance of
     the first `Viewer` it finds that supports the dimensions of `vars`. Setting
-    the '`FIPY_VIEWER`' environment variable to either '`matplotlib`', '`mayavi`',
-    '`tsv`', or '`vtk`' will specify the viewer.
+    the `FIPY_VIEWER` environment variable to either `matplotlib`, `mayavi`,
+    `tsv`, or `vtk` will specify the viewer.
 
     The `kwlimits` or `limits` parameters can be used to constrain the view. For example::
 
@@ -56,21 +56,21 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
     will be truncated at an upper value of 3, but will have no lower
     limit.
 
-    :Parameters:
-      vars
-        a `CellVariable` or tuple of `CellVariable` objects to plot
-      title
+    Parameters
+    ----------
+    vars : ~fipy.variables.cellVariable.CellVariable or list
+        the `Variable` objects to display.
+    title : str, optional
         displayed at the top of the `Viewer` window
-      limits : dict
+    limits : dict
         a (deprecated) alternative to limit keyword arguments
-      FIPY_VIEWER
+    FIPY_VIEWER
         a specific viewer to attempt (possibly multiple times for multiple variables)
-      xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+    float xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
         displayed range of data. A 1D `Viewer` will only use `xmin` and
         `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
         viewers will use `datamin` and `datamax`. Any limit set to a
         (default) value of `None` will autoscale.
-
     """
     import os
 

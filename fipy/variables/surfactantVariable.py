@@ -60,10 +60,13 @@ class SurfactantVariable(CellVariable):
         ...                  (0, numerix.sqrt(2), numerix.sqrt(2), 0)))
         1
 
-        :Parameters:
-          - `value`: The initial value.
-          - `distanceVar`: A `DistanceVariable` object.
-          - `name`: The name of the variable.
+        Parameters
+        ----------
+        value : float or array_like
+            The initial value.
+        distanceVar : ~fipy.variables.distanceVariable.DistanceVariable
+        name : str
+            The name of the variable.
 
         """
 

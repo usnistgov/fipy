@@ -102,32 +102,32 @@ class TrilinosSolver(Solver):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
-	    residual, globalMatrix = self._calcResidualVectorNonOverlapping_()
+            residual, globalMatrix = self._calcResidualVectorNonOverlapping_()
 
             overlappingResidual = Epetra.Vector(globalMatrix.colMap)
             overlappingResidual.Import(residual,
-				       Epetra.Import(globalMatrix.colMap,
-						     globalMatrix.domainMap),
-				       Epetra.Insert)
+                                       Epetra.Import(globalMatrix.colMap,
+                                                     globalMatrix.domainMap),
+                                       Epetra.Insert)
 
             return overlappingResidual
 
     def _calcResidualVectorNonOverlapping_(self):
-	globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
-	# If A is an Epetra.Vector with map M
-	# and B is an Epetra.Vector with map M
+        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
+        # If A is an Epetra.Vector with map M
+        # and B is an Epetra.Vector with map M
         # and C = A - B
         # then C is an Epetra.Vector with *no map* !!!?!?!
-	residual = globalMatrix * nonOverlappingVector
-	residual -= nonOverlappingRHSvector
-	return residual, globalMatrix
+        residual = globalMatrix * nonOverlappingVector
+        residual -= nonOverlappingRHSvector
+        return residual, globalMatrix
 
     def _calcResidual(self, residualFn=None):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
             comm = self.var.mesh.communicator
-	    residual, globalMatrix = self._calcResidualVectorNonOverlapping_()
+            residual, globalMatrix = self._calcResidualVectorNonOverlapping_()
             return comm.Norm2(residual)
 
     def _calcRHSNorm(self):

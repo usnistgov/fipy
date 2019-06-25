@@ -89,8 +89,8 @@ class TransientTerm(CellTerm):
 
     def _getTransientGeomCoeff(self, var):
         """
-        Test to ensure that _getTransientGeomCoeff is not returning None when a
-        TransientTerm is defined.
+        Test to ensure that `_getTransientGeomCoeff` is not returning None when a
+        `TransientTerm` is defined.
 
         >>> from fipy import *
         >>> m = Grid1D(nx=1)

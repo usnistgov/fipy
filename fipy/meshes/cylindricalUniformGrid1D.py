@@ -67,7 +67,7 @@ class CylindricalUniformGrid1D(UniformGrid1D):
             >>> DiffusionTerm().solve(var)
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell
-        volumes were being returned as binOps rather than arrays.
+        volumes were being returned as `binOps` rather than arrays.
 
             >>> m = CylindricalUniformGrid1D(dx=1., nx=4)
             >>> print(isinstance(m.cellVolumes, numerix.ndarray))
@@ -75,7 +75,7 @@ class CylindricalUniformGrid1D(UniformGrid1D):
             >>> print(isinstance(m._faceAreas, numerix.ndarray))
             True
 
-        If the above types aren't correct, the divergence operator's value can be a binOp
+        If the above types aren't correct, the divergence operator's value can be a `binOp`
 
             >>> print(isinstance(CellVariable(mesh=m).arithmeticFaceValue.divergence.value, numerix.ndarray))
             True

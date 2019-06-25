@@ -23,11 +23,14 @@ class LinearJORSolver(PysparseSolver):
         """
         The `Solver` class should not be invoked directly.
 
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-          - `relaxation`: The relaxation.
-
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        relaxation : float
+            Fraction of update to apply
         """
         super(LinearJORSolver, self).__init__(tolerance=tolerance,
                                               iterations=iterations)

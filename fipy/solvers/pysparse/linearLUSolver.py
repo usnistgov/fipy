@@ -36,12 +36,14 @@ class LinearLUSolver(PysparseSolver):
         """
         Creates a `LinearLUSolver`.
 
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The number of LU decompositions to perform.
-            For large systems a number of iterations is generally required.
-          - `precon`: not used but maintains a common interface.
-
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
+            *ignored*
         """
 
         iterations = min(iterations, maxIterations)

@@ -169,8 +169,8 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
     def _getCoefficientMatrixForTests(self, SparseMatrix, var, coeff):
         """
-        This method was introduced because __getCoefficientMatrix is private, but
-        the tests in DiffusionTerm need to call it.
+        This method was introduced because `__getCoefficientMatrix` is private, but
+        the tests in `DiffusionTerm` need to call it.
         """
         return self.__getCoefficientMatrix(SparseMatrix, var, coeff)
 
