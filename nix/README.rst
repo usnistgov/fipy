@@ -34,7 +34,9 @@ Once you have a working Nix installation use::
 in the base :term:`FiPy` directory to install :term:`FiPy` with
 Python 2. To install with Python 3, use::
 
-    $ nix-shell --pure nix/py3.nix
+    $ nix-shell --pure --argstr python_version 37
+
+to use Python version 3.7.
 
 ``nix-shell`` drops the user into a shell with a working version of
 :term:`FiPy`. To test your installation use::
@@ -50,8 +52,8 @@ Additional Packages
 -------------------
 
 To install additional packages available from Nixpkgs include them in
-the ``buildInputs`` list in ``nix/build.nix`` (in the ``nix``
-subdirectory of the base :term:`FiPy` directory).
+the ``buildInputs`` list in ``default`` (in the base :term:`FiPy`
+directory).
 
 Using Pip
 ---------
