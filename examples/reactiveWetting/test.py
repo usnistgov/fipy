@@ -1,4 +1,4 @@
-"""Run all the test cases in examples/reactiveWetting/
+"""Run all the test cases in `examples/reactiveWetting/`
 """
 from __future__ import unicode_literals
 

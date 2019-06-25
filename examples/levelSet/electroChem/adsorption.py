@@ -21,7 +21,7 @@ an interface limited (:math:`M \gg 1`) or diffusion limited (:math:`M \ll 1`)
 regime. There are analytical solutions for both regimes. The dimensionless
 number is given by:
 
-.. math
+.. math::
 
    M = \frac{D}{L^2 k cinf}.
 

@@ -23,10 +23,11 @@ class Term(object):
         """
         Create a `Term`.
 
-        :Parameters:
-          - `coeff`: The coefficient for the term. A `CellVariable` or number.
-            `FaceVariable` objects are also acceptable for diffusion or convection terms.
-
+        Parameters
+        ----------
+        coeff : float or ~fipy.variables.cellVariable.CellVariable or ~fipy.variables.faceVariable.FaceVariable
+            Coefficient for the term.  `FaceVariable` objects are only
+            acceptable for diffusion or convection terms.
         """
 
         if self.__class__ is Term:
@@ -158,13 +159,18 @@ class Term(object):
         does not return the residual. It should be used when the
         residual is not required.
 
-        :Parameters:
-
-           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
-           - `boundaryConditions`: A tuple of boundaryConditions.
-           - `dt`: The time step size.
-
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            `Variable` to be solved for.  Provides the initial condition,
+            the old value and holds the solution on completion.
+        solver : ~fipy.solvers.solver.Solver
+            Iterative solver to be used to solve the linear system of
+            equations.  The default sovler depends on the solver package
+            selected.
+        boundaryConditions : :obj:`tuple` of :obj:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition`
+        dt : float
+            Timestep size.
         """
 
         solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
@@ -177,20 +183,33 @@ class Term(object):
         also recalculates and returns the residual as well as applying
         under-relaxation.
 
-        :Parameters:
-
-           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
-           - `boundaryConditions`: A tuple of boundaryConditions.
-           - `dt`: The time step size.
-           - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
-           - `residualFn`: A function that takes var, matrix, and RHSvector arguments, used to customize the residual calculation.
-           - `cacheResidual`: If `True`, calculate and store the residual vector
-              :math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}` in the `residualVector` member of `Term`
-           - `cacheError`: If `True`, use the residual vector :math:`\vec{r}`
-              to solve :math:`\mathsf{L}\vec{e}=\vec{r}` for the error vector :math:`\vec{e}`
-              and store it in the `errorVector` member of `Term`
-
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            `Variable` to be solved for.  Provides the initial condition,
+            the old value and holds the solution on completion.
+        solver : ~fipy.solvers.solver.Solver
+            Iterative solver to be used to solve the linear system of
+            equations.  The default sovler depends on the solver package
+            selected.
+        boundaryConditions : :obj:`tuple` of :obj:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition`
+        dt : float
+            Timestep size.
+        underRelaxation : float
+            Usually a value between `0` and `1` or `None` in the case of no
+            under-relaxation
+        residualFn : function
+            Takes `var`, `matrix`, and `RHSvector` arguments, used to
+            customize the residual calculation.
+        cacheResidual : bool
+            If `True`, calculate and store the residual vector
+            :math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}` in the
+            `residualVector` member of `Term`
+        cacheError : bool
+            If `True`, use the residual vector :math:`\vec{r}` to solve
+            :math:`\mathsf{L}\vec{e}=\vec{r}` for the error vector
+            :math:`\vec{e}` and store it in the `errorVector` member of
+            `Term`
         """
         solver = self._prepareLinearSystem(var=var, solver=solver, boundaryConditions=boundaryConditions, dt=dt)
         solver._applyUnderRelaxation(underRelaxation=underRelaxation)
@@ -215,19 +234,10 @@ class Term(object):
         return residual
 
     def justResidualVector(self, var=None, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
-        r"""
-        Builds the `Term`'s linear system once. This method
-        also recalculates and returns the residual as well as applying
-        under-relaxation.
+        r"""Builds the `Term`'s linear system once.
 
-        :Parameters:
-
-           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
-           - `boundaryConditions`: A tuple of boundaryConditions.
-           - `dt`: The time step size.
-           - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
-           - `residualFn`: A function that takes var, matrix, and RHSvector arguments used to customize the residual calculation.
+        This method also recalculates and returns the residual as well as
+        applying under-relaxation.
 
         `justResidualVector` returns the overlapping local value in parallel (not the non-overlapping value).
 
@@ -237,6 +247,24 @@ class Term(object):
         >>> len(DiffusionTerm().justResidualVector(v)) == m.numberOfCells
         True
 
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            `Variable` to be solved for.  Provides the initial condition,
+            the old value and holds the solution on completion.
+        solver : ~fipy.solvers.solver.Solver
+            Iterative solver to be used to solve the linear system of
+            equations.  The default sovler depends on the solver package
+            selected.
+        boundaryConditions : :obj:`tuple` of :obj:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition`
+        dt : float
+            Timestep size.
+        underRelaxation : float
+            Usually a value between `0` and `1` or `None` in the case of no
+            under-relaxation
+        residualFn : function
+            Takes `var`, `matrix`, and `RHSvector` arguments, used to
+            customize the residual calculation.
         """
         solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
         solver._applyUnderRelaxation(underRelaxation)
@@ -244,20 +272,29 @@ class Term(object):
         return solver._calcResidualVector(residualFn=residualFn)
 
     def residualVectorAndNorm(self, var=None, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None):
-        r"""
-        Builds the `Term`'s linear system once. This method
-        also recalculates and returns the residual as well as applying
-        under-relaxation.
+        r"""Builds the `Term`'s linear system once.
 
-        :Parameters:
+        This method also recalculates and returns the residual as well as
+        applying under-relaxation.
 
-           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
-           - `boundaryConditions`: A tuple of boundaryConditions.
-           - `dt`: The time step size.
-           - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
-           - `residualFn`: A function that takes var, matrix, and RHSvector arguments used to customize the residual calculation.
-
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            `Variable` to be solved for.  Provides the initial condition,
+            the old value and holds the solution on completion.
+        solver : ~fipy.solvers.solver.Solver
+            Iterative solver to be used to solve the linear system of
+            equations.  The default sovler depends on the solver package
+            selected.
+        boundaryConditions : :obj:`tuple` of :obj:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition`
+        dt : float
+            Timestep size.
+        underRelaxation : float
+            Usually a value between `0` and `1` or `None` in the case of no
+            under-relaxation
+        residualFn : function
+            Takes `var`, `matrix`, and `RHSvector` arguments, used to
+            customize the residual calculation.
         """
         vector = self.justResidualVector(var=var, solver=solver, boundaryConditions=boundaryConditions, dt=dt,
                                          underRelaxation=underRelaxation, residualFn=residualFn)
@@ -267,19 +304,10 @@ class Term(object):
         return vector, L2norm
 
     def justErrorVector(self, var=None, solver=None, boundaryConditions=(), dt=1., underRelaxation=None, residualFn=None):
-        r"""
-        Builds the `Term`'s linear system once. This method
-        also recalculates and returns the error as well as applying
-        under-relaxation.
+        r"""Builds the `Term`'s linear system once.
 
-        :Parameters:
-
-           - `var`: The variable to be solved for. Provides the initial condition, the old value and holds the solution on completion.
-           - `solver`: The iterative solver to be used to solve the linear system of equations. Defaults to `LinearPCGSolver` for Pysparse and `LinearLUSolver` for Trilinos.
-           - `boundaryConditions`: A tuple of boundaryConditions.
-           - `dt`: The time step size.
-           - `underRelaxation`: Usually a value between `0` and `1` or `None` in the case of no under-relaxation
-           - `residualFn`: A function that takes var, matrix, and RHSvector arguments used to customize the residual calculation.
+        This method also recalculates and returns the error as well as
+        applying under-relaxation.
 
         `justErrorVector` returns the overlapping local value in parallel (not the non-overlapping value).
 
@@ -289,6 +317,25 @@ class Term(object):
         >>> v = CellVariable(mesh=m)
         >>> len(DiffusionTerm().justErrorVector(v, solver=DummySolver())) == m.numberOfCells
         True
+
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            `Variable` to be solved for.  Provides the initial condition,
+            the old value and holds the solution on completion.
+        solver : ~fipy.solvers.solver.Solver
+            Iterative solver to be used to solve the linear system of
+            equations.  The default sovler depends on the solver package
+            selected.
+        boundaryConditions : :obj:`tuple` of :obj:`~fipy.boundaryConditions.boundaryCondition.BoundaryCondition`
+        dt : float
+            Timestep size.
+        underRelaxation : float
+            Usually a value between `0` and `1` or `None` in the case of no
+            under-relaxation
+        residualFn : function
+            Takes `var`, `matrix`, and `RHSvector` arguments, used to
+            customize the residual calculation.
 
         """
         solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
@@ -312,7 +359,7 @@ class Term(object):
     def matrix(self):
         r"""
         Return the matrix calculated in `solve()` or `sweep()`. The
-        cacheMatrix() method should be called before `solve()` or
+        `cacheMatrix()` method should be called before `solve()` or
         `sweep()` to cache the matrix.
         """
         if not self._cacheMatrix:
@@ -335,7 +382,7 @@ class Term(object):
     def RHSvector(self):
         r"""
         Return the RHS vector calculated in `solve()` or `sweep()`. The
-        cacheRHSvector() method should be called before `solve()` or
+        `cacheRHSvector()` method should be called before `solve()` or
         `sweep()` to cache the vector.
         """
         if not self._cacheRHSvector:

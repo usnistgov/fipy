@@ -1,5 +1,3 @@
-.. _nixinstall:
-
 Nix Installation
 ================
 
@@ -51,9 +49,9 @@ to use Python version 3.7.
 Additional Packages
 -------------------
 
-To install additional packages available from Nixpkgs include them in
-the ``buildInputs`` list in ``default`` (in the base :term:`FiPy`
-directory).
+To install additional packages available from Nixpkgs_ include them in
+the `buildInputs` list in `default.nix` (in the `nix` subdirectory of
+the base :term:`FiPy` directory).
 
 Using Pip
 ---------
@@ -70,3 +68,4 @@ The ``.local`` directory will persist after the Nix shell has been
 closed.
 
 .. _Nix: https://nixos.org/nix/
+.. _Nixpkgs:  https://nixos.org/nixpkgs/

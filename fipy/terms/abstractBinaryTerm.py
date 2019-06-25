@@ -54,7 +54,7 @@ class _AbstractBinaryTerm(Term):
         return (-self.term) + (-self.other)
 
     def _calcVars(self):
-        """Collect (non-redundant) list of all CellVariables
+        """Collect (non-redundant) list of all `CellVariables`
         this binary term solves for.
 
         note: cannot use a set because its order can be different

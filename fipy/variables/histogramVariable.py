@@ -15,12 +15,16 @@ class HistogramVariable(CellVariable):
         r"""
         Produces a histogram of the values of the supplied distribution.
 
-        :Parameters:
-
-            - `distribution`: The collection of values to sample.
-            - `dx`: the bin size
-            - `nx`: the number of bins
-            - `offset`: the position of the first bin
+        Parameters
+        ----------
+        distribution : array_like or ~fipy.variables.Variable
+            The collection of values to sample.
+        dx : float
+            The bin size
+        nx : int
+            The number of bins
+        offset : float
+            The position of the first bin
         """
         CellVariable.__init__(self, mesh = Grid1D(dx = dx, nx = nx) + (offset,))
         self.distribution = self._requires(distribution)

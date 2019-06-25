@@ -24,26 +24,28 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DViewer`.
 
-        :Parameters:
-          vars
-            a `CellVariable` object.
-          title
+        Parameters
+        ----------
+        vars : ~fipy.variables.cellVariable.CellVariable
+            the `Variable` to display.
+        title : str, optional
             displayed at the top of the `Viewer` window
-          limits : dict
-            a (deprecated) alternative to limit keyword arguments
-          xmin, xmax, ymin, ymax, datamin, datamax
+        limits : dict
+          a (deprecated) alternative to limit keyword arguments
+        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
-          cmap
-            the colormap. Defaults to `matplotlib.cm.jet`
-          colorbar
-            plot a colorbar in specified orientation if not `None`
-          axes
+        cmap : ~matplotlib.colors.Colormap, optional
+            the :class:`~matplotlib.colors.Colormap`.
+            Defaults to `matplotlib.cm.jet`
+        colorbar : bool, optional
+            plot a color bar if not `None`
+        axes : ~matplotlib.axes.Axes, optional
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
-          figaspect
-            desired aspect ratio of figure. If arg is a number, use that aspect
-            ratio. If arg is 'auto', the aspect ratio will be determined from
-            the Variable's mesh.
+        figaspect : float, optional
+            desired aspect ratio of figure. If a number, use that aspect
+            ratio. If `auto`, the aspect ratio will be determined from
+            the *vars*'s mesh.
         """
         kwlimits.update(limits)
         AbstractMatplotlib2DViewer.__init__(self, vars=vars, title=title,

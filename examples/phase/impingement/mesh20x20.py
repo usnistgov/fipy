@@ -119,7 +119,7 @@ so that it can be reused later.
 >>> phaseEq = buildPhaseEquation(phase, theta)
 
 The ``theta`` equation is built in the following way. The details for
-this equation are fairly involved, see J.A. Warren *et al.*. The main
+this equation are fairly involved, see J. A. Warren *et al.*. The main
 detail is that a source must be added to correct for the
 discretization of ``theta`` on the circle.  The source term requires the
 evaluation of the face gradient without the modular operators.

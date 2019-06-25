@@ -78,9 +78,12 @@ class ExponentialNoiseVariable(NoiseVariable):
     """
     def __init__(self, mesh, mean=0.0, name = '', hasOld = 0):
         r"""
-        :Parameters:
-            - `mesh`: The mesh on which to define the noise.
-            - `mean`: The mean of the distribution :math:`\mu`.
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The mesh on which to define the noise.
+        mean : float
+            The mean of the distribution :math:`\mu`.
         """
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
         self.mean = self._requires(mean)

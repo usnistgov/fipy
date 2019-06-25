@@ -1,5 +1,5 @@
 ----------------------
-Cahn Hilliard Examples
+Cahn-Hilliard Examples
 ----------------------
 
 .. autosummary::

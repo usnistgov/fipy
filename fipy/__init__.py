@@ -126,7 +126,7 @@ def test(*args):
     r"""
     Test `Fipy`. Equivalent to::
 
-    $ python setup.py test --modules
+        $ python setup.py test --modules
 
     Use
 
@@ -141,7 +141,7 @@ def test(*args):
 
     At the command line this would be::
 
-    $ python setup.py test --modules --trilinos --inline
+        $ python setup.py test --modules --trilinos --inline
 
     """
 

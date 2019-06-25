@@ -6,7 +6,7 @@ modeling gold superfill. The material properties and experimental
 parameters used are roughly those that have been previously
 published :cite:`NIST:damascene:2005`.
 
-To run this example from the base fipy directory type::
+To run this example from the base FiPy directory type::
 
     $ python examples/levelSet/electroChem/gold.py
 

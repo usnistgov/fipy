@@ -12,9 +12,9 @@ class _InterfaceFlagVariable(CellVariable):
         """
         Creates an `_InterfaceFlagVariable` object.
 
-        :Parameters:
-          - `distanceVar` : A `DistanceVariable` object.
-
+        Parameters
+        ----------
+        distanceVar : ~fipy.variables.distanceVariable.DistanceVariable
         """
         CellVariable.__init__(self, distanceVar.mesh, hasOld=False)
         self.distanceVar = self._requires(distanceVar)

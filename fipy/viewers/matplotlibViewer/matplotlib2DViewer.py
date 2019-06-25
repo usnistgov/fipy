@@ -30,26 +30,27 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DViewer`.
 
-
-        :Parameters:
-          vars
-            a `CellVariable` object.
-          title
+        Parameters
+        ----------
+        vars : ~fipy.variables.cellVariable.CellVariable
+            the `Variable` to display.
+        title : str, optional
             displayed at the top of the `Viewer` window
-          limits : dict
+        limits : dict, optional
             a (deprecated) alternative to limit keyword arguments
-          cmap
-            the colormap. Defaults to `matplotlib.cm.jet`
-          xmin, xmax, ymin, ymax, datamin, datamax
+        cmap : ~matplotlib.colors.Colormap, optional
+            the :class:`~matplotlib.colors.Colormap`.
+            Defaults to `matplotlib.cm.jet`
+        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
-          colorbar
-            plot a colorbar in specified orientation if not `None`
-          axes
+        colorbar : bool, optional
+            plot a color bar in specified orientation if not `None`
+        axes : ~matplotlib.axes.Axes, optional
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
-          figaspect
+        figaspect : float, optional
             desired aspect ratio of figure. If arg is a number, use that aspect
-            ratio. If arg is 'auto', the aspect ratio will be determined from
+            ratio. If arg is `auto`, the aspect ratio will be determined from
             the Variable's mesh.
         """
         kwlimits.update(limits)

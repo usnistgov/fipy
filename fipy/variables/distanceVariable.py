@@ -122,7 +122,7 @@ class DistanceVariable(CellVariable):
     1
 
     The `extendVariable` method solves the following equation for a given
-    extensionVariable.
+    `extensionVariable`.
 
     .. math::
 
@@ -228,12 +228,18 @@ class DistanceVariable(CellVariable):
         """
         Creates a `distanceVariable` object.
 
-        :Parameters:
-          - `mesh`: The mesh that defines the geometry of this variable.
-          - `name`: The name of the variable.
-	  - `value`: The initial value.
-	  - `unit`: the physical units of the variable
-          - `hasOld`: Whether the variable maintains an old value.
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The mesh that defines the geometry of this variable.
+        name : str
+            The name of the variable.
+        value : float or array_like
+            The initial value.
+        unit : str or ~fipy.tools.dimensions.physicalField.PhysicalUnit
+            The physical units of the variable
+        hasOld : bool
+            Whether the variable maintains an old value.
 
         """
         CellVariable.__init__(self, mesh, name = name, value = value, unit = unit, hasOld = hasOld)
@@ -248,10 +254,10 @@ class DistanceVariable(CellVariable):
         Calculates the extension of `extensionVariable` from the zero
         level set.
 
-        :Parameters:
-          - `extensionVariable`: The variable to extend from the zero
-            level set.
-
+        Parameters
+        ----------
+        extensionVariable : ~fipy.variables.cellVariable.CellVariable
+            The variable to extend from the zero level set.
         """
 
         dx, shape = self.getLSMshape()
@@ -288,10 +294,10 @@ class DistanceVariable(CellVariable):
         """
         Calculates the `distanceVariable` as a distance function.
 
-        :Parameters:
-          - `order`: The order of accuracy for the distance function
-            calculation, either 1 or 2.
-
+        Parameters
+        ----------
+        order : {`1`, `2`}
+            The order of accuracy for the distance function calculation
         """
 
         dx, shape = self.getLSMshape()

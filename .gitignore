@@ -12,3 +12,7 @@ examples/reactiveWetting/generated/
 *.logamgx
 *.dump.gz
 worktrees/
+.ipynb_checkpoints/
+dictionary.dic
+en_US.aff
+en_US.dic

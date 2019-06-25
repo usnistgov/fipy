@@ -113,13 +113,19 @@ def buildMetalIonDiffusionEquation(ionVar = None,
     >>> print(numerix.allclose(source, (0, 0, 0, sqrt)))
     True
 
-    :Parameters:
-      - `ionVar`: The metal ion concentration variable.
-      - `distanceVar`: A `DistanceVariable` object.
-      - `depositionRate`: A float or a `CellVariable` representing the interface deposition rate.
-      - `transientCoeff`: The transient coefficient.
-      - `diffusionCoeff`: The diffusion coefficient
-      - `metalIonMolarVolume`: Molar volume of the metal ions.
+    Parameters
+    ----------
+    ionVar : ~fipy.variables.cellVariable.CellVariable
+         The metal ion concentration variable.
+    distanceVar : ~fipy.variables.distanceVariable.DistanceVariable
+    depositionRate : float or ~fipy.variables.cellVariable.CellVariable
+         Represents the interface deposition rate.
+    transientCoeff : float
+         The transient coefficient.
+    diffusionCoeff : float or ~fipy.variables.faceVariable.FaceVariable
+         The diffusion coefficient
+    metalIonMolarVolume : float
+         Molar volume of the metal ions.
 
     """
 

@@ -29,10 +29,12 @@ class _Grid1DTopology(_GridTopology):
 
         E.g., would return [0, 1] for mesh A
 
+        ```
             A        B
         ------------------
         | 0 | 1 || 2 | 3 |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -48,10 +50,12 @@ class _Grid1DTopology(_GridTopology):
 
         E.g., would return [0, 1, 2] for mesh A
 
+        ```
             A        B
         ------------------
         | 0 | 1 || 2 | 3 |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -65,10 +69,12 @@ class _Grid1DTopology(_GridTopology):
 
         E.g., would return [0, 1] for mesh A
 
+        ```
             A        B
         ------------------
         | 0 | 1 || 1 | 2 |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -83,10 +89,12 @@ class _Grid1DTopology(_GridTopology):
 
         E.g., would return [0, 1, 2] for mesh A
 
+        ```
             A        B
         ------------------
         | 0 | 1 || 2 |   |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -100,10 +108,12 @@ class _Grid1DTopology(_GridTopology):
 
         E.g., would return [0, 1, 2] for mesh A
 
+        ```
             A    ||   B
         ------------------
         0   1    2   3   4
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -118,10 +128,12 @@ class _Grid1DTopology(_GridTopology):
 
         E.g., would return [0, 1, 2, 3] for mesh A
 
+        ```
             A    ||   B
         ------------------
         0   1    2   3   4
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -135,10 +147,12 @@ class _Grid1DTopology(_GridTopology):
 
         E.g., would return [0, 1, 2] for mesh A
 
+        ```
             A    ||   B
         ------------------
         0   1   2/1  2   3
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -153,10 +167,12 @@ class _Grid1DTopology(_GridTopology):
 
         E.g., would return [0, 1, 2, 3] for mesh A
 
+        ```
             A   ||   B
         ------------------
         0   1   2   3    |
         ------------------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -182,6 +198,7 @@ class _Grid2DTopology(_GridTopology):
 
         E.g., would return [0, 1] for mesh A
 
+        ```
         ---------
         | 4 | 5 |
         ---------  B
@@ -189,6 +206,7 @@ class _Grid2DTopology(_GridTopology):
         =========
         | 0 | 1 |  A
         ---------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -203,6 +221,7 @@ class _Grid2DTopology(_GridTopology):
 
         E.g., would return [0, 1, 2, 3] for mesh A
 
+        ```
         ---------
         | 4 | 5 |
         ---------  B
@@ -210,6 +229,7 @@ class _Grid2DTopology(_GridTopology):
         =========
         | 0 | 1 |  A
         ---------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -223,6 +243,7 @@ class _Grid2DTopology(_GridTopology):
 
         E.g., would return [0, 1] for mesh A
 
+        ```
         ---------
         | 4 | 5 |
         ---------  B
@@ -230,6 +251,7 @@ class _Grid2DTopology(_GridTopology):
         =========
         | 0 | 1 |  A
         ---------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """
@@ -244,6 +266,7 @@ class _Grid2DTopology(_GridTopology):
 
         E.g., would return [0, 1, 2, 3] for mesh A
 
+        ```
         ---------
         |   |   |
         ---------  B
@@ -251,6 +274,7 @@ class _Grid2DTopology(_GridTopology):
         =========
         | 0 | 1 |  A
         ---------
+        ```
 
         .. note:: Trivial except for parallel meshes
         """

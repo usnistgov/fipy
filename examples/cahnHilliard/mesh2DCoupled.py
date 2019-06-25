@@ -120,7 +120,7 @@ evolution of their problem.
    :width: 90%
    :align: center
 
------
+----
 
 These equations can also be solved in :term:`FiPy` using a vector
 equation. The variables :math:`\phi` and :math:`\psi` are now stored in

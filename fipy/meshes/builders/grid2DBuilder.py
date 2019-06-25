@@ -48,7 +48,8 @@ class _Grid2DBuilder(_AbstractGridBuilder):
         return (self.ns[0], self.ns[1])
 
     def _calcPhysicalShape(self):
-        """Return physical dimensions of Grid2D."""
+        """Return physical dimensions of `Grid2D`
+        """
         from fipy.tools.dimensions.physicalField import PhysicalField
 
         if self._dsUniformLen():
@@ -82,7 +83,7 @@ class _Grid2DBuilder(_AbstractGridBuilder):
     @staticmethod
     def createFaces(nx, numVerts, numVertCols):
         """
-        v1, v2 refer to the vertices.
+        `v1`, `v2` refer to the vertices.
         Horizontal faces are first
 
         Ugly return to avoid side-effects.
@@ -122,8 +123,8 @@ class _Grid2DBuilder(_AbstractGridBuilder):
         @staticmethod
         def createCells(nx, ny, numFaces, numHorizFaces, numVertCols):
             """
-            cells = (f1, f2, f3, f4) going anticlock wise.
-            f1 etc. refer to the faces
+            `cells = (f1, f2, f3, f4)` going anticlockwise.
+            `f1` etc. refer to the faces
             """
             cellFaceIDs = numerix.zeros((4, nx * ny), 'l')
 
@@ -146,8 +147,8 @@ class _Grid2DBuilder(_AbstractGridBuilder):
         @staticmethod
         def createCells(nx, ny, numFaces, numHorizFaces, numVertCols):
             """
-            cells = (f1, f2, f3, f4) going anticlock wise.
-            f1 etc. refer to the faces
+            `cells = (f1, f2, f3, f4)` going anticlockwise.
+            `f1` etc. refer to the faces
             """
             cellFaceIDs = numerix.zeros((4, nx * ny), 'l')
             faceIDs = numerix.arange(numFaces)

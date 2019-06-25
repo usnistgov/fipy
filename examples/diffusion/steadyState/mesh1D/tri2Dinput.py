@@ -1,6 +1,6 @@
 r"""
 
-To run this example from the base fipy directory type::
+To run this example from the base FiPy directory type::
 
     $ python examples/diffusion/steadyState/mesh1D/tri2Dinput.py
 

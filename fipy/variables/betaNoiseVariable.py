@@ -84,11 +84,14 @@ class BetaNoiseVariable(NoiseVariable):
     """
     def __init__(self, mesh, alpha, beta, name = '', hasOld = 0):
         r"""
-        :Parameters:
-            - `mesh`: The mesh on which to define the noise.
-            - `alpha`: The parameter :math:`\alpha`.
-            - `beta`: The parameter :math:`\beta`.
-
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The mesh on which to define the noise.
+        alpha : float
+            The parameter :math:`\alpha`.
+        beta : float
+            The parameter :math:`\beta`.
         """
         NoiseVariable.__init__(self, mesh = mesh, name = name, hasOld = hasOld)
         self.alpha = self._requires(alpha)

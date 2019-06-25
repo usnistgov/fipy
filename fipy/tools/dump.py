@@ -22,13 +22,6 @@ def write(data, filename = None, extension = '', communicator=parallelComm):
     Pickle an object and write it to a file. Wrapper for
     `cPickle.dump()`.
 
-    :Parameters:
-      - `data`: The object to be pickled.
-      - `filename`: The name of the file to place the pickled object. If `filename` is `None`
-        then a temporary file will be used and the file object and file name will be returned as a tuple
-      - `extension`: Used if filename is not given.
-      - `communicator`: Object with `procID` and `Nproc` attributes.
-
     Test to check pickling and unpickling.
 
         >>> from fipy.meshes import Grid1D
@@ -38,6 +31,18 @@ def write(data, filename = None, extension = '', communicator=parallelComm):
         >>> print(old.numberOfCells == new.numberOfCells)
         True
 
+    Parameters
+    ----------
+    data
+        Object to be pickled.
+    filename : str
+        Name of the file to place the pickled object.  If `filename` is
+        `None` then a temporary file will be used and the file object and
+        file name will be returned as a tuple
+    extension : str
+        Used if `filename` is not given.
+    communicator : ~fipy.tools.comms.commWrapper.CommWrapper
+        A duck-typed object with `procID` and `Nproc` attributes is sufficient
     """
     if communicator.procID == 0:
         if filename is None:
@@ -61,12 +66,16 @@ def read(filename, fileobject=None, communicator=parallelComm, mesh_unmangle=Fal
     Read a pickled object from a file. Returns the unpickled object.
     Wrapper for `cPickle.load()`.
 
-    :Parameters:
-      - `filename`: The name of the file to unpickle the object from.
-      - `fileobject`: Used to remove temporary files
-      - `communicator`: Object with `procID` and `Nproc` attributes.
-      - `mesh_unmangle`: Correct improper pickling of non-uniform meshes (ticket:243)
-
+    Parameters
+    ----------
+    filename : str
+        Name of the file to unpickle the object from.
+    fileobject : file
+        Used to remove temporary files
+    communicator : ~fipy.tools.comms.commWrapper.CommWrapper
+        A duck-typed object with `procID` and `Nproc` attributes is sufficient
+    mesh_unmangle : bool
+        Whether to correct improper pickling of non-uniform meshes (ticket:243)
     """
     if communicator.procID == 0:
         fileStream = gzip.GzipFile(filename = filename, mode = 'r', fileobj = None)

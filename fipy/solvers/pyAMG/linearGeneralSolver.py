@@ -10,7 +10,7 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearGeneralSolver(_ScipySolver):
     """
-    The `LinearGeneralSolver` is an interface to the generic pyAMG,
+    The `LinearGeneralSolver` is an interface to the generic PyAMG,
     which solves the arbitrary system Ax=b with the best out-of-the box
     choice for a solver. See `pyAMG.solve` for details.
     """

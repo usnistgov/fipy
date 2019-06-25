@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
+
 r"""
 
-This example tests diffusion-convection for increasing Peclet numbers.
+This example tests diffusion-convection for increasing Péclet numbers.
 This test case has been introduced because :class:`~fipy.solvers.pysparse.linearCGSSolver.LinearCGSSolver` was not
-working with Peclet numbers over 1. :class:`~fipy.solvers.pysparse.linearLUSolver.LinearLUSolver` is now the default
+working with Péclet numbers over 1. :class:`~fipy.solvers.pysparse.linearLUSolver.LinearLUSolver` is now the default
 for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :class:`~fipy.solvers.pysparse.linearGMRESSolver.LinearGMRESSolver` does not work.
 
 >>> from fipy import CellVariable, Grid1D, TransientTerm, DiffusionTerm, PowerLawConvectionTerm, Viewer

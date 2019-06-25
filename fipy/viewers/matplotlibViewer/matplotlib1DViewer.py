@@ -21,24 +21,25 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
     def __init__(self, vars, title=None, xlog=False, ylog=False, limits={}, legend='upper left', axes=None, **kwlimits):
         """
 
-        :Parameters:
-          vars
-            a `CellVariable` or tuple of `CellVariable` objects to plot
-          title
+        Parameters
+        ----------
+        vars : ~fipy.variables.cellVariable.CellVariable or list
+            `CellVariable` objects to plot
+        title : str, optional
             displayed at the top of the `Viewer` window
-          xlog
+        xlog : bool
             log scaling of x axis if `True`
-          ylog
+        ylog : bool
             log scaling of y axis if `True`
-          limits : dict
+        limits : dict
             a (deprecated) alternative to limit keyword arguments
-          xmin, xmax, datamin, datamax
+        float xmin, xmax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
             (*ymin* and *ymax* are synonyms for *datamin* and *datamax*).
-          legend
+        legend : str
             place a legend at the specified position, if not `None`
-          axes
+        axes : ~matplotlib.axes.Axes
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         """
         kwlimits.update(limits)

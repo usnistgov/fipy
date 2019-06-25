@@ -24,31 +24,33 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, number=10, levels=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DContourViewer`.
 
-        :Parameters:
-          vars
-            a `CellVariable` object.
-          title
+        Parameters
+        ----------
+        vars : ~fipy.variables.cellVariable.CellVariable
+            `Variable` to display
+        title : str, optional
             displayed at the top of the `Viewer` window
-          limits : dict
+        limits : dict, optional
             a (deprecated) alternative to limit keyword arguments
-          xmin, xmax, ymin, ymax, datamin, datamax
+        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
-          cmap
-            the colormap. Defaults to `matplotlib.cm.jet`
-          colorbar
-            plot a colorbar in specified orientation if not `None`
-          axes
+        cmap : ~matplotlib.colors.Colormap, optional
+            the Colormap.
+            Defaults to `matplotlib.cm.jet`
+        colorbar : bool, optional
+            plot a color bar in specified orientation if not `None`
+        axes : ~matplotlib.axes.Axes, optional
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
-          number
+        number : int, optional
             contour `number` automatically-chosen levels
-          *levels* [level0, level1, ..., leveln]
-            A list of floating point numbers indicating the level
+        levels : :obj:`list` of :obj:`float`, optional
+            A list of numbers indicating the level
             curves to draw; e.g. to draw just the zero contour pass
             ``levels=[0]``
-          figaspect
+        figaspect : float
             desired aspect ratio of figure. If arg is a number, use that aspect
-            ratio. If arg is 'auto', the aspect ratio will be determined from
+            ratio. If arg is `auto`, the aspect ratio will be determined from
             the Variable's mesh.
 
         """

@@ -112,11 +112,6 @@ def _getOrderedLines(IDs, coordinates, thresholdDistance = 0.0):
     This function takes a set of IDs and corresponding coordinates and makes
     a set of closed curves.
 
-    :Parameters:
-
-      - `IDs`: An array of integers.
-      - `coordinates`: An array of coordinates of the same length as IDs.
-
     The following are a general set of test cases.
 
        >>> _getOrderedLines((0, 1, 2, 3), ((0, 0), (2, 0), (0, 1), (2, 1)))
@@ -137,6 +132,12 @@ def _getOrderedLines(IDs, coordinates, thresholdDistance = 0.0):
        >>> from builtins import range
        >>> _getOrderedLines(list(range(7)), ((-7, 0), (-6, 0), (-5, 0), (0, 0), (5, 0), (6, 0), (7, 0)), thresholdDistance = 5.5)
        [[0, 1, 2, 3, 4, 5, 6]]
+
+    Parameters
+    ----------
+    IDs : ndarray of int
+    coordinates : ndarray
+        An array of coordinates of the same length as IDs.
     """
 
     from fipy.tools import numerix

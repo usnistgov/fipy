@@ -255,9 +255,10 @@ directory. The type of image is determined by the file extension
 ":file:`.ext`". Different viewers have different capabilities:
 
 :term:`Matplotlib`
-  accepts ":file:`.eps`," ":file:`.jpg`" (`Joint Photographic Experts
-  Group <http://www.jpeg.org/>`_), and ":file:`.png`" (`Portable Network
-  Graphics <http://www.w3.org/Graphics/PNG/>`_).
+  accepts ":file:`.eps`," ":file:`.jpg`"
+  (`Joint Photographic Experts Group <http://www.jpeg.org/>`_), 
+  and ":file:`.png`"
+  (`Portable Network Graphics <http://www.w3.org/Graphics/PNG/>`_).
 
   .. attention::
 

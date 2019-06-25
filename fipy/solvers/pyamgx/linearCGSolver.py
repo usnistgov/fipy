@@ -15,11 +15,15 @@ class LinearCGSolver(PyAMGXSolver):
     def __init__(self, tolerance=1e-10, iterations=2000, precon=BlockJacobiPreconditioner(),
             **kwargs):
         """
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-          - `precon`: Preconditioner to use.
-          - `kwargs`: Keyword arguments specifying other AMGX solver options.
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon : ~fipy.solvers.pyamgx.preconditioners.preconditioners.Preconditioner, optional
+        **kwargs
+            Other AMGX solver options
         """
         config_dict = {
             "config_version": 2,

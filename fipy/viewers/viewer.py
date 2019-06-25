@@ -16,16 +16,15 @@ class AbstractViewer(object):
     def __init__(self, vars, title=None, **kwlimits):
         """Create a `AbstractViewer` object.
 
-        :Parameters:
-          vars
-            a `CellVariable` or tuple of `CellVariable` objects to plot
-          title
+        Parameters
+        ----------
+        vars : ~fipy.variables.cellVariable.CellVariable or list
+            the `CellVariable` objects to display.
+        title : str, optional
             displayed at the top of the `Viewer` window
-          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
-            displayed range of data. A 1D `Viewer` will only use `xmin` and
-            `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
-            viewers will use `datamin` and `datamax`. Any limit set to a
-            (default) value of `None` will autoscale.
+        float xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
+            displayed range of data. Any limit set to
+            a (default) value of `None` will autoscale.
         """
         if self.__class__ is AbstractViewer:
             raise NotImplementedError("can't instantiate abstract base class")
@@ -52,10 +51,11 @@ class AbstractViewer(object):
         """
         Update the limits.
 
-        :Parameters:
-          limits : dict
+        Parameters
+        ----------
+        limits : dict, optional
             a (deprecated) alternative to limit keyword arguments
-          xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax
+        float xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
             displayed range of data. A 1D `Viewer` will only use `xmin` and
             `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
             viewers will use `datamin` and `datamax`. Any limit set to a
@@ -69,13 +69,15 @@ class AbstractViewer(object):
         """
         Return the limit associated with the first available key in `keys`
 
-        :Parameters:
-          keys
-            a `tuple`, `list`, or single key string that identifies
-            the limit of interest
+        Parameters
+        ----------
+        keys : str or :obj:`tuple` of :obj:`str`
+            dictionary keys that identify the limits of interest
 
-        :Returns:
-          the value of the limit or `None`
+        Returns
+        -------
+        float or None
+            the value of the limit
         """
         if not (isinstance(keys, list) or isinstance(keys, tuple)):
             keys = (keys,)
@@ -91,8 +93,9 @@ class AbstractViewer(object):
         """
         Update the display of the viewed variables.
 
-        :Parameters:
-          filename
+        Parameters
+        ----------
+        filename : str
             If not `None`, the name of a file to save the image into.
         """
 
@@ -102,8 +105,9 @@ class AbstractViewer(object):
         """
         Display a representation of the mesh
 
-        :Parameters:
-          filename
+        Parameters
+        ----------
+        filename : str
             If not `None`, the name of a file to save the image into.
         """
         pass

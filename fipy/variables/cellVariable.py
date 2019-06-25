@@ -135,17 +135,10 @@ class CellVariable(_MeshVariable):
 
     def __call__(self, points=None, order=0, nearestCellIDs=None):
         r"""
-        Interpolates the CellVariable to a set of points using a
-        method that has a memory requirement on the order of Ncells by
-        Npoints in general, but uses only Ncells when the
-        CellVariable's mesh is a UniformGrid object.
-
-        :Parameters:
-
-           - `points`: A point or set of points in the format (X, Y, Z)
-           - `order`: The order of interpolation, 0 or 1, default is 0
-           - `nearestCellIDs` : Optional argument if user can calculate own
-             nearest cell IDs array, shape should be same as points
+        Interpolates the `CellVariable` to a set of points using a
+        method that has a memory requirement on the order of `Ncells` by
+        `Npoints` in general, but uses only `Ncells` when the
+        `CellVariable`'s mesh is a `UniformGrid` object.
 
         Tests
 
@@ -167,6 +160,15 @@ class CellVariable(_MeshVariable):
             [ 0.125  0.25   0.5    0.625  0.25   0.375  0.875  1.     0.5    0.875
               1.875  2.25   0.625  1.     2.25   2.625]
 
+        Parameters
+        ----------
+        points : tuple or :obj:`list` of :obj:`tuple`
+            A point or set of points in the format (X, Y, Z)
+        order : {`0`, `1`}
+            The order of interpolation, default is 0
+        nearestCellIDs : array_like
+            Optional argument if user can calculate own
+            nearest cell IDs array, shape should be same as points
         """
         if points is not None:
 

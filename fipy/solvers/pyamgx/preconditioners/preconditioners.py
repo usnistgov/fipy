@@ -23,8 +23,10 @@ class Preconditioner(object):
         self.config_dict.update(kwargs)
     def __call__(self, **kwargs):
         """
-        :Parameters:
-            - kwargs: Keyword arguments specifying AMGX solver options.
+        Parameters
+        ----------
+        **kwargs
+            Other AMGX solver options
         """
         self.config_dict.update(kwargs)
         return copy.copy(self.config_dict)

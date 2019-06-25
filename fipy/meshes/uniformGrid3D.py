@@ -80,7 +80,7 @@ class UniformGrid3D(UniformGrid):
          self.origin) = builder.gridData
 
     """
-    Topology set and calc
+    Topology set and calculate
     """
 
     @property
@@ -168,7 +168,7 @@ class UniformGrid3D(UniformGrid):
         return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
 
     """
-    Geometry set and calc
+    Geometry set and calculate
     """
 
     @property
@@ -477,7 +477,7 @@ class UniformGrid3D(UniformGrid):
        return _Grid3DBuilder.createFaces(self.nx, self.ny, self.nz)[1]
 
     def _calcOrderedCellVertexIDs(self):
-        """Correct ordering for VTK_VOXEL"""
+        """Correct ordering for `VTK_VOXEL`"""
         ids = numerix.zeros((8, self.nx, self.ny, self.nz), 'l')
         indices = numerix.indices((self.nx, self.ny, self.nz))
         ids[1] = indices[0] + (indices[1] + (indices[2] + 1) * (self.ny + 1) + 1) * (self.nx + 1)
@@ -740,7 +740,7 @@ class UniformGrid3D(UniformGrid):
             >>> print(numerix.allequal(mesh.cellCenters, unpickledMesh.cellCenters))
             True
 
-            # Bug #130 & #135 and issue #470 are because we only checked a mesh with nz of 1
+            # Bug #130 & #135 and issue #470 are because we only checked a mesh with `nz` of 1
 
             >>> nx = 1
             >>> ny = 2
@@ -840,7 +840,7 @@ class UniformGrid3D(UniformGrid):
 
             # issue 470
             # 3x2x1 mesh above did not exhibit the failure of
-            # _cellToCellIDs and _cellToCellDistances to present proper results
+            # `_cellToCellIDs` and `_cellToCellDistances` to present proper results
 
             >>> dx = 0.5
             >>> dy = 2.

@@ -13,8 +13,9 @@ class MultiViewer(AbstractViewer):
     """
     def __init__(self, viewers):
         """
-        :Parameters:
-          viewers : list
+        Parameters
+        ----------
+        viewers : :obj:`list` of ~fipy.viewers.viewer.Viewer
             the viewers to bind together
         """
         if type(viewers) not in [type([]), type(())]:

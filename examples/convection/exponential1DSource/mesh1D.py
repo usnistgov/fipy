@@ -54,8 +54,8 @@ We define the convection-diffusion equation with source
 ...       + ExponentialConvectionTerm(coeff=convCoeff)
 ...       + sourceCoeff)
 
-.. .. index::
-..    single: DefaultAsymmetricSolver
+.. index::
+   single: DefaultAsymmetricSolver
 
 >>> eq.solve(var=var,
 ...          solver=DefaultAsymmetricSolver(tolerance=1.e-15, iterations=10000))

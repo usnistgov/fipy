@@ -86,7 +86,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
     True
 
     Another trivial test case (more trivial than a trivial test case
-    standing on a harpsichord singing 'trivial test cases are here again')
+    standing on a harpsichord singing "trivial test cases are here again")
 
     >>> vel = numerix.array((-1, 2, -3))
     >>> coeff = CellVariable(mesh = mesh, value = numerix.array((4, 6, 1)))

@@ -72,7 +72,7 @@ The governing equation for temperature is given by:
 
 ..  Further details of the numerical method for this problem can be found in
     "Extending Phase Field Models of Solidification to Polycrystalline
-    Materials", J.A. Warren *et al.*, *Acta Materialia*, **51** (2003) 6035-6058.
+    Materials", J. A. Warren *et al.*, *Acta Materialia*, **51** (2003) 6035-6058.
 
 Here the phase and temperature equations are solved with an explicit
 and implicit technique, respectively.

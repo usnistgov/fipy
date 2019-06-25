@@ -54,7 +54,7 @@ class _BasePeriodicGrid3D(NonUniformGrid3D):
 
 class PeriodicGrid3D(_BasePeriodicGrid3D):
     """
-    Creates a periodic3D grid mesh with horizontal faces numbered
+    Creates a periodic 3D grid mesh with horizontal faces numbered
     first and then vertical faces. Vertices and cells are numbered
     in the usual way.
 

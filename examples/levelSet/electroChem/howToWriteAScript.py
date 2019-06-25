@@ -5,7 +5,7 @@ create a new superfill script if the existing suite of scripts do
 not meet the required needs. It provides the functionality of
 :mod:`examples.levelSet.electroChem.simpleTrenchSystem`.
 
-To run this example from the base fipy directory type::
+To run this example from the base FiPy directory type::
 
     $ python examples/levelSet/electroChem/howToWriteAScript.py --numberOfElements=10000 --numberOfSteps=800
 

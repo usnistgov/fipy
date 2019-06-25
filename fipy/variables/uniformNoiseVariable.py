@@ -47,10 +47,14 @@ class UniformNoiseVariable(NoiseVariable):
     """
     def __init__(self, mesh, name = '', minimum = 0., maximum = 1., hasOld = 0):
         """
-        :Parameters:
-            - `mesh`: The mesh on which to define the noise.
-            - `minimum`: The minimum (not-inclusive) value of the distribution.
-            - `maximum`: The maximum (not-inclusive) value of the distribution.
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The mesh on which to define the noise.
+        minimum : float
+            The minimum (not-inclusive) value of the distribution.
+        maximum : float
+            The maximum (not-inclusive) value of the distribution.
         """
         self.minimum = minimum
         self.maximum = maximum

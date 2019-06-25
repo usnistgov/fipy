@@ -35,7 +35,7 @@ to this list.
 
 * T. P. Moffat, D. Wheeler, S.-K. Kim & D. Josell,
   "Curvature enhanced adsorbate coverage mechanism for bottom-up
-  superfilling and bump control in damascene processing,"
+  superfilling and bump control in Damascene processing,"
   *Electrochimica Acta* **53** (1) pp. 145-154 (2007),
   `doi:10.1016/j.electacta.2007.03.025 <http://dx.doi.org/10.1016/j.electacta.2007.03.025>`_.
 

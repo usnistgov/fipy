@@ -26,10 +26,14 @@ class PysparseSolver(_PysparseMatrixSolver):
         preconditioning. If you are writing a solver which
         doesn't use preconditioning, this must be overridden.
 
-        :Parameters:
-            - `L`: a `fipy.matrices.pysparseMatrix._PysparseMeshMatrix`.
-            - `x`: a `numpy.ndarray`.
-            - `b`: a `numpy.ndarray`.
+        Parameters
+        ----------
+        L : ~fipy.matrices.pysparseMatrix._PysparseMeshMatrix
+            Matrix
+        x : ndarray
+            Solution vector
+        b : ndarray
+            Right hand side vector
         """
 
         A = L.matrix
