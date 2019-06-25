@@ -24,7 +24,8 @@ script. Firstly, setup the parameters.
 
 Construct the mesh.
 
-.. index:: Grid2D
+.. index::
+   single: Grid2D
 
 >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny, communicator=serialComm)
 
@@ -65,24 +66,28 @@ The result can be tested with the following commands.
 >>> trialValues = CellVariable(mesh=mesh, value= \
 ...     numerix.array((
 ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK,
-...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
+...     MASK,  MASK, MASK, MASK, -3*dY, -3*dY, -3*dY, MASK, MASK, MASK, MASK,
 ...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,
 ...     MASK,  MASK,   v2,  -m1,   m1,   dY,   m1,  -m1,   v2, MASK, MASK,
-...     MASK, -dX*3,  -dX,   m1,   v3,   v4,   v3,   m1,  -dX,-dX*3, MASK,
-...     MASK, -dX*3,  -dX,   dX,   v5, MASK,   v5,   dX,  -dX,-dX*3, MASK,
-...     MASK, -dX*3,  -dX,   m1,   v3,   v4,   v3,   m1,  -dX,-dX*3, MASK,
+...     MASK, -dX*3,  -dX,   m1,   v3,   v4,   v3,   m1,  -dX, -dX*3, MASK,
+...     MASK, -dX*3,  -dX,   dX,   v5, MASK,   v5,   dX,  -dX, -dX*3, MASK,
+...     MASK, -dX*3,  -dX,   m1,   v3,   v4,   v3,   m1,  -dX, -dX*3, MASK,
 ...     MASK,  MASK,   v2,  -m1,   m1,   dY,   m1,  -m1,   v2, MASK, MASK,
 ...     MASK,  MASK, MASK,   v1,  -dY,  -dY,  -dY,   v1, MASK, MASK, MASK,
-...     MASK,  MASK, MASK, MASK,-3*dY,-3*dY,-3*dY, MASK, MASK, MASK, MASK,
+...     MASK,  MASK, MASK, MASK, -3*dY, -3*dY, -3*dY, MASK, MASK, MASK, MASK,
 ...     MASK,  MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK, MASK), 'd'))
 
 >>> var[numerix.array(trialValues == MASK)] = MASK
->>> print numerix.allclose(var, trialValues) #doctest: +LSM
+>>> print(numerix.allclose(var, trialValues)) #doctest: +LSM
 True
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    raw_input("finished")
+    input("finished")
+
+

@@ -11,7 +11,7 @@ declaration of ``mesh``.
 >>> mesh = Gmsh2DIn3DSpace('''
 ...     radius = 5.0;
 ...     cellSize = 0.3;
-...
+... 
 ...     // create inner 1/8 shell
 ...     Point(1) = {0, 0, 0, cellSize};
 ...     Point(2) = {-radius, 0, 0, cellSize};
@@ -22,7 +22,7 @@ declaration of ``mesh``.
 ...     Circle(3) = {4, 1, 3};
 ...     Line Loop(1) = {1, -3, 2} ;
 ...     Ruled Surface(1) = {1};
-...
+... 
 ...     // create remaining 7/8 inner shells
 ...     t1[] = Rotate {{0,0,1},{0,0,0},Pi/2} {Duplicata{Surface{1};}};
 ...     t2[] = Rotate {{0,0,1},{0,0,0},Pi} {Duplicata{Surface{1};}};
@@ -31,7 +31,7 @@ declaration of ``mesh``.
 ...     t5[] = Rotate {{0,0,1},{0,0,0},Pi/2} {Duplicata{Surface{t4[0]};}};
 ...     t6[] = Rotate {{0,0,1},{0,0,0},Pi} {Duplicata{Surface{t4[0]};}};
 ...     t7[] = Rotate {{0,0,1},{0,0,0},Pi*3/2} {Duplicata{Surface{t4[0]};}};
-...
+... 
 ...     // create entire inner and outer shell
 ...     Surface Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};
 ... ''', order=2).extrude(extrudeFunc=lambda r: 1.1 * r) # doctest: +GMSH
@@ -109,10 +109,13 @@ evolution of their problem.
    :alt: Cahn-Hilliard phase separation on the surface of a sphere with a rendering of the mesh
 
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')
+

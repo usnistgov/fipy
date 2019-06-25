@@ -43,7 +43,7 @@ We start with a binary substitutional system
 ...         self.equation = equation
 ...         CellVariable.__init__(self, mesh = mesh, value = value,
 ...                               name = name, hasOld = hasOld)
-...
+... 
 ...     def copy(self):
 ...         return self.__class__(mesh = self.mesh,
 ...                               value = self.value,
@@ -94,22 +94,22 @@ and create the diffusion equations for the different species as in
 ...     for component in substitutionals + interstitials:
 ...         enthalpy += component * component.standardPotential
 ...         barrier += component * component.barrier
-...
+... 
 ...     mXi = -(30 * phase * (1 - phase) * enthalpy
 ...             +  4 * (0.5 - phase) * barrier)
 ...     dmXidXi = (-60 * (0.5 - phase) * enthalpy + 4 * barrier)
 ...     S1 = dmXidXi * phase * (1 - phase) + mXi * (1 - 2 * phase)
 ...     S0 = mXi * phase * (1 - phase) - phase * S1
-...
+... 
 ...     phase.equation -= S0 + ImplicitSourceTerm(coeff = S1)
-...
+... 
 ...     for Cj in substitutionals:
 ...         CkSum = ComponentVariable(mesh = mesh, value = 0.)
 ...         CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
 ...         for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
 ...             CkSum += Ck
 ...             CkFaceSum += Ck.harmonicFaceValue
-...
+... 
 ...         counterDiffusion = CkSum.faceGrad
 ...         phaseTransformation = (pPrime(phase.harmonicFaceValue) \
 ...                 * Cj.standardPotential
@@ -121,11 +121,11 @@ and create the diffusion equations for the different species as in
 ...                 * (phaseTransformation + electromigration)
 ...         convectionCoeff *= \
 ...             (Cj.diffusivity / (1. - CkFaceSum))
-...
+... 
 ...         Cj.equation = (TransientTerm()
 ...                        == DiffusionTerm(coeff=Cj.diffusivity)
 ...                        + PowerLawConvectionTerm(coeff=convectionCoeff))
-...
+... 
 ...     for Cj in interstitials:
 ...         phaseTransformation = (pPrime(phase.harmonicFaceValue) \
 ...             * Cj.standardPotential \
@@ -135,7 +135,7 @@ and create the diffusion equations for the different species as in
 ...         convectionCoeff = Cj.diffusivity \
 ...             * (1 + Cj.harmonicFaceValue) \
 ...             * (phaseTransformation + electromigration)
-...
+... 
 ...         Cj.equation = (TransientTerm()
 ...                        == DiffusionTerm(coeff=Cj.diffusivity)
 ...                        + PowerLawConvectionTerm(coeff=convectionCoeff))
@@ -174,6 +174,7 @@ This problem does not have an analytical solution, so after
 iterating to equilibrium
 
 >>> dt = 10000
+>>> from builtins import range
 >>> for i in range(5):
 ...     for field in [phase] + substitutionals + interstitials:
 ...         field.updateOld()
@@ -191,13 +192,13 @@ iterating to equilibrium
 
 we confirm that the far-field phases have remained separated
 
->>> numerix.allclose(phase(((0.,L),)), (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
+>>> numerix.allclose(phase(((0., L),)), (1.0, 0.0), rtol = 1e-5, atol = 1e-5)
 1
 
 and that the solute concentration field has appropriately segregated into
 solute-rich and solute-poor phases.
 
->>> print numerix.allclose(substitutionals[0](((0.,L),)), (0.7, 0.3), rtol = 2e-3, atol = 2e-3)
+>>> print(numerix.allclose(substitutionals[0](((0., L),)), (0.7, 0.3), rtol = 2e-3, atol = 2e-3))
 1
 
 The same system of equations can model a quaternary substitutional system as
@@ -255,6 +256,7 @@ We make new equations
 and again iterate to equilibrium
 
 >>> dt = 10000
+>>> from builtins import range
 >>> for i in range(5):
 ...     for field in [phase] + substitutionals + interstitials:
 ...         field.updateOld()
@@ -346,6 +348,7 @@ We make new equations
 and again iterate to equilibrium
 
 >>> dt = 10000
+>>> from builtins import range
 >>> for i in range(5):
 ...     for field in [phase] + substitutionals + interstitials:
 ...         field.updateOld()
@@ -376,12 +379,14 @@ their respective phases
 >>> numerix.allclose(substitutionals[1](((0., L),)), (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
 1
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    raw_input("finished")
+    input("finished")
 
 ## if __name__ == '__main__':
 ##     ## from fipy.tools.profiler.profiler import Profiler

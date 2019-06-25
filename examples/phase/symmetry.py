@@ -63,24 +63,27 @@ The following code tests the results with a different algorithm:
 >>> bottomRight = numerix.zeros((N // 2, N // 2), 'd')
 >>> topLeft = numerix.zeros((N // 2, N // 2), 'd')
 >>> topRight = numerix.zeros((N // 2, N // 2), 'd')
+>>> from builtins import range
 >>> for j in range(N // 2):
 ...     for i in range(N // 2):
 ...         x = dx * (i + 0.5)
 ...         y = dx * (j + 0.5)
 ...         testResult[i, j] = x * y
-...         bottomRight[i,j] = var(((L - x,), (y,)))
-...         topLeft[i,j] = var(((x,), (L - y,)))
-...         topRight[i,j] = var(((L - x,), (L - y,)))
+...         bottomRight[i, j] = var(((L - x,), (y,)))
+...         topLeft[i, j] = var(((x,), (L - y,)))
+...         topRight[i, j] = var(((L - x,), (L - y,)))
 >>> numerix.allclose(testResult, bottomRight, atol = 1e-10)
 1
->>> numerix.allclose(testResult,topLeft, atol = 1e-10)
+>>> numerix.allclose(testResult, topLeft, atol = 1e-10)
 1
->>> numerix.allclose(testResult,topRight, atol = 1e-10)
+>>> numerix.allclose(testResult, topRight, atol = 1e-10)
 1
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
-    raw_input("finished")
+    input("finished")

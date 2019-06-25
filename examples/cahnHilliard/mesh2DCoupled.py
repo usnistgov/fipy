@@ -112,8 +112,9 @@ evolution of their problem.
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
-...     raw_input("Coupled equations. Press <return> to proceed...")
+...     input("Coupled equations. Press <return> to proceed...")
 
 .. image:: mesh2DCoupled.*
    :width: 90%
@@ -165,14 +166,16 @@ a vector format.
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
->>> print numerix.allclose(var, (phi, psi))
+>>> print(numerix.allclose(var, (phi, psi)))
 True
 
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')

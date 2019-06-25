@@ -90,7 +90,12 @@ where :math:`\beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2}`,
 + \arctan \frac{\partial \phi / \partial y}{\partial \phi / \partial x}`,
 :math:`\theta` is the orientation, and :math:`N` is the symmetry.
 
-.. index:: :math:`\pi`, pi, arctan, arctan2, tan
+.. index::
+   single: :math:`\pi`
+   single: pi
+   single: arctan
+   single: arctan2
+   single: tan
 
 >>> alpha = 0.015
 >>> c = 0.02
@@ -104,8 +109,8 @@ where :math:`\beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2}`,
 >>> DbetaDpsi = -N * 2 * Phi / (1 + PhiSq)
 >>> Ddia = (1.+ c * beta)
 >>> Doff = c * DbetaDpsi
->>> I0 = Variable(value=((1,0), (0,1)))
->>> I1 = Variable(value=((0,-1), (1,0)))
+>>> I0 = Variable(value=((1, 0), (0, 1)))
+>>> I1 = Variable(value=((0, -1), (1, 0)))
 >>> D = alpha**2 * (1.+ c * beta) * (Ddia * I0 + Doff * I1)
 
 With these expressions defined, we can construct the phase field equation
@@ -151,22 +156,22 @@ existing viewers to create a specialized display:
 ...                 Matplotlib2DGridViewer.__init__(self, vars=(dT,), title=title,
 ...                                                 cmap=pylab.cm.hot,
 ...                                                 limits=limits, **kwlimits)
-...
+... 
 ...             def _plot(self):
 ...                 Matplotlib2DGridViewer._plot(self)
-...
+... 
 ...                 if self.contour is not None:
 ...                     for c in self.contour.collections:
 ...                         c.remove()
-...
+... 
 ...                 mesh = self.phase.mesh
 ...                 shape = mesh.shape
 ...                 x, y = mesh.cellCenters
 ...                 z = self.phase.value
 ...                 x, y, z = [a.reshape(shape, order="FORTRAN") for a in (x, y, z)]
-...
+... 
 ...                 self.contour = self.axes.contour(x, y, z, (0.5,))
-...
+... 
 ...         viewer = DendriteViewer(phase=phase, dT=dT,
 ...                                 title=r"%s & %s" % (phase.name, dT.name),
 ...                                 datamin=-0.1, datamax=0.05)
@@ -182,6 +187,7 @@ and iterate the solution in time, plotting as we go,
 ...     steps = 10000
 ... else:
 ...     steps = 10
+>>> from builtins import range
 >>> for i in range(steps):
 ...     phase.updateOld()
 ...     dT.updateOld()
@@ -203,10 +209,12 @@ We note that this FiPy simulation is written in about 50 lines of code (excludin
 custom viewer), compared with over 800 lines of (fairly lucid) FORTRAN code used for
 the figures in :cite:`WarrenPolycrystal`.
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')

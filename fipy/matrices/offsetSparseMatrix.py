@@ -1,6 +1,9 @@
+from __future__ import unicode_literals
 from fipy.tools import numerix
 
 __all__ = ["OffsetSparseMatrix"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 def OffsetSparseMatrix(SparseMatrix, numberOfVariables, numberOfEquations):
     """

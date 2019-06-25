@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm
@@ -5,6 +6,8 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
 __all__ = ["TransientTerm"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class TransientTerm(CellTerm):
     r"""
@@ -56,6 +59,7 @@ class TransientTerm(CellTerm):
     A number of sweeps at each time step are required to let the
     relaxation take effect.
 
+    >>> from builtins import range
     >>> for step in range(steps):
     ...     var.updateOld()
     ...     for sweep in range(sweeps):
@@ -64,7 +68,7 @@ class TransientTerm(CellTerm):
     Compare the final result with the analytical solution.
 
     >>> from fipy.tools import numerix
-    >>> print var.allclose(numerix.sqrt(k * dt * steps + phi0**2))
+    >>> print(var.allclose(numerix.sqrt(k * dt * steps + phi0**2)))
     1
     """
 
@@ -79,7 +83,7 @@ class TransientTerm(CellTerm):
     def _calcGeomCoeff(self, var):
         self._checkCoeff(var)
         if var.rank != 0 and not isinstance(self.coeff, CellVariable):
-            return self.coeff[...,numerix.newaxis] * numerix.resize(var.mesh.cellVolumes, var.shape)
+            return self.coeff[..., numerix.newaxis] * numerix.resize(var.mesh.cellVolumes, var.shape)
         else:
             return self.coeff * numerix.resize(var.mesh.cellVolumes, var.shape)
 
@@ -92,19 +96,19 @@ class TransientTerm(CellTerm):
         >>> m = Grid1D(nx=1)
         >>> var = CellVariable(mesh=m)
         >>> eq = TransientTerm(1) == ImplicitSourceTerm(1)
-        >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
+        >>> print(CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var)))
         [ 1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var, dt=1.)
-        >>> print eq.matrix.numpyArray
+        >>> print(eq.matrix.numpyArray)
         [[ 1.]]
 
         >>> eq = TransientTerm(-1) == ImplicitSourceTerm(1)
-        >>> print CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var))
+        >>> print(CellVariable(mesh=m, value=eq._getTransientGeomCoeff(var)))
         [-1.]
         >>> eq.cacheMatrix()
         >>> eq.solve(var, dt=1.)
-        >>> print eq.matrix.numpyArray
+        >>> print(eq.matrix.numpyArray)
         [[-2.]]
 
         """
@@ -119,9 +123,9 @@ class TransientTerm(CellTerm):
 
     def _checkDt(self, dt):
         if dt is None:
-            raise TypeError, "`dt` must be specified."
+            raise TypeError("`dt` must be specified.")
         if numerix.getShape(dt) != ():
-            raise TypeError, "`dt` must be a single number, not a " + type(dt).__name__
+            raise TypeError("`dt` must be a single number, not a " + type(dt).__name__)
         return float(dt)
 
     def _test(self):
@@ -133,9 +137,9 @@ class TransientTerm(CellTerm):
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve(v, dt=1.)
-        >>> print numerix.allequal(eq.matrix.numpyArray.shape, (12, 12))
+        >>> print(numerix.allequal(eq.matrix.numpyArray.shape, (12, 12)))
         True
-        >>> print len(CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel())
+        >>> print(len(CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()))
         12
 
         >>> v[0] = 1.
@@ -149,7 +153,7 @@ class TransientTerm(CellTerm):
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve(v, dt=1.)
-        >>> print eq.matrix.numpyArray
+        >>> print(eq.matrix.numpyArray)
         [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
          [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
          [ 0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.]
@@ -162,15 +166,15 @@ class TransientTerm(CellTerm):
          [ 0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.]
          [ 0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.]
          [ 0.  0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.]]
-        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()
+        >>> print(CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel())
         [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
         >>> v[0] = 1.
         >>> v[1] = 0.5
-        >>> eq = TransientTerm(((1., 2.), (3. , 4.)))
+        >>> eq = TransientTerm(((1., 2.), (3., 4.)))
         >>> eq.cacheMatrix()
         >>> eq.cacheRHSvector()
         >>> eq.solve(v, dt=1.)
-        >>> print eq.matrix.numpyArray
+        >>> print(eq.matrix.numpyArray)
         [[ 1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.  0.]
          [ 0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.  0.]
          [ 0.  0.  1.  0.  0.  0.  0.  0.  2.  0.  0.  0.]
@@ -183,7 +187,7 @@ class TransientTerm(CellTerm):
          [ 0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.  0.]
          [ 0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.  0.]
          [ 0.  0.  0.  0.  0.  3.  0.  0.  0.  0.  0.  4.]]
-        >>> print CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel()
+        >>> print(CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eq.RHSvector, (2, -1))).globalValue.ravel())
         [ 2.  2.  2.  2.  2.  2.  5.  5.  5.  5.  5.  5.]
 
         """

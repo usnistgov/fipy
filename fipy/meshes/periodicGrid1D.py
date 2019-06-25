@@ -1,6 +1,7 @@
 """
 Peridoic 1D Mesh
 """
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -10,6 +11,8 @@ from fipy.meshes.builders import _PeriodicGrid1DBuilder
 from fipy.meshes.topologies.gridTopology import _PeriodicGrid1DTopology
 
 __all__ = ["PeriodicGrid1D"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class PeriodicGrid1D(NonUniformGrid1D):
     """
@@ -18,31 +21,31 @@ class PeriodicGrid1D(NonUniformGrid1D):
 
         >>> mesh = PeriodicGrid1D(dx = (1, 2, 3))
 
-        >>> print numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0],
-        ...                        [3]) # doctest: +PROCESSOR_0
+        >>> print(numerix.allclose(numerix.nonzero(mesh.exteriorFaces)[0],
+        ...                        [3])) # doctest: +PROCESSOR_0
         True
 
-        >>> print numerix.allclose(mesh.faceCellIDs.filled(-999),
+        >>> print(numerix.allclose(mesh.faceCellIDs.filled(-999),
         ...                        [[2, 0, 1, 2],
-        ...                         [0, 1, 2, -999]]) # doctest: +PROCESSOR_0
+        ...                         [0, 1, 2, -999]])) # doctest: +PROCESSOR_0
         True
 
-        >>> print numerix.allclose(mesh._cellDistances,
-        ...                        [ 2., 1.5, 2.5, 1.5]) # doctest: +PROCESSOR_0
+        >>> print(numerix.allclose(mesh._cellDistances,
+        ...                        [ 2., 1.5, 2.5, 1.5])) # doctest: +PROCESSOR_0
         True
 
-        >>> print numerix.allclose(mesh._cellToCellDistances,
+        >>> print(numerix.allclose(mesh._cellToCellDistances,
         ...                        [[ 2.,   1.5,  2.5],
-        ...                         [ 1.5,  2.5,  2. ]]) # doctest: +PROCESSOR_0
+        ...                         [ 1.5,  2.5,  2. ]])) # doctest: +PROCESSOR_0
         True
 
-        >>> print numerix.allclose(mesh.faceNormals,
-        ...                        [[ 1.,  1.,  1.,  1.]]) # doctest: +PROCESSOR_0
+        >>> print(numerix.allclose(mesh.faceNormals,
+        ...                        [[ 1.,  1.,  1.,  1.]])) # doctest: +PROCESSOR_0
         True
 
-        >>> print numerix.allclose(mesh._cellVertexIDs,
+        >>> print(numerix.allclose(mesh._cellVertexIDs,
         ...                        [[1, 2, 2],
-        ...                        [0, 1, 0]]) # doctest: +PROCESSOR_0
+        ...                        [0, 1, 0]])) # doctest: +PROCESSOR_0
         True
     """
     def __init__(self, dx = 1., nx = None, overlap=2, *args, **kwargs):
@@ -73,7 +76,7 @@ class PeriodicGrid1D(NonUniformGrid1D):
 
         >>> from fipy import *
         >>> m = PeriodicGrid1D(nx=2) + [[-1]]
-        >>> print CellVariable(mesh=m, value=m.cellCenters[0])
+        >>> print(CellVariable(mesh=m, value=m.cellCenters[0]))
         [-0.5  0.5]
 
         """
@@ -90,3 +93,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

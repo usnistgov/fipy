@@ -11,6 +11,10 @@ can abort whenever it has problems with::
     $ python -Werror::fipy.PreconditionerWarning myscript.py
 
 """
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import object
+from builtins import str
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -19,6 +23,8 @@ __all__ = ["SolverConvergenceWarning", "MaximumIterationWarning",
            "PreconditionerWarning", "IllConditionedPreconditionerWarning",
            "PreconditionerNotPositiveDefiniteWarning", "MatrixIllConditionedWarning",
            "StagnatedSolverWarning", "ScalarQuantityOutOfRangeWarning", "Solver"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class SolverConvergenceWarning(Warning):
     def __init__(self, solver, iter, relres):
@@ -74,7 +80,7 @@ class Solver(object):
 
         """
         if self.__class__ is Solver:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
         self.tolerance = tolerance
         self.iterations = iterations

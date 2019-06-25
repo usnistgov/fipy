@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -5,6 +7,8 @@ from fipy.tools import numerix
 from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["Matplotlib2DGridContourViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
     """Displays a contour plot of a 2D `CellVariable` object.
@@ -58,7 +62,7 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
               and isinstance(var, CellVariable))]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "The mesh must be a Grid2D instance"
+            raise MeshDimensionError("The mesh must be a Grid2D instance")
         # this viewer can only display one variable
         return [vars[0]]
 

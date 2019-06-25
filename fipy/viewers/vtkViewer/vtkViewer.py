@@ -1,6 +1,9 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = ["VTKViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 from fipy.viewers.viewer import AbstractViewer
 from fipy.tests.doctestPlus import register_skipper
@@ -10,7 +13,7 @@ def _checkForTVTK():
     try:
         try:
             from tvtk.api import tvtk
-        except ImportError, e:
+        except ImportError as e:
             from enthought.tvtk.api import tvtk
     except Exception:
         hasTVTK = False
@@ -83,12 +86,12 @@ class VTKViewer(AbstractViewer):
 
         try:
             from tvtk.misc import write_data
-        except ImportError, e:
+        except ImportError as e:
             from enthought.tvtk.misc import write_data
         write_data(self.dataset, filename)
 
-    def _getSuitableVars(self,vars):
-        if type(vars) not in [type([]),type(())]:
+    def _getSuitableVars(self, vars):
+        if type(vars) not in [type([]), type(())]:
             vars = [vars]
         cls = self._variableClass
         vars = [var for var in vars if isinstance(var, cls)]

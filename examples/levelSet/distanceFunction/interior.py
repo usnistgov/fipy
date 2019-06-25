@@ -26,15 +26,17 @@ Do the tests:
 ...     return ((-bb - sqr) / 2. / aa,  (-bb + sqr) / 2. / aa)
 >>> v1 = evalCell(dY, dX, dx, dy)[1]
 >>> v2 = max(-dY*3, -dX*3)
->>> values = numerix.array((  v1  ,   dY  ,   dY  ,  dY  ,  v1  ,
-...                           dX  ,  -mm ,   -dY ,  -mm ,   dX  ,
-...                           dX  ,  -dX ,   -v1 ,  -dX ,   dX  ,
-...                           dX  ,  -mm ,   -dY ,  -mm ,   dX  ,
-...                           v1  ,   dY  ,   dY  ,  dY  ,  v1  ))
->>> print var.allclose(values, atol = 1e-10) #doctest: +LSM
+>>> values = numerix.array((  v1,   dY,   dY,  dY,  v1,
+...                           dX,  -mm,   -dY,  -mm,   dX,
+...                           dX,  -dX,   -v1,  -dX,   dX,
+...                           dX,  -mm,   -dY,  -mm,   dX,
+...                           v1,   dY,   dY,  dY,  v1  ))
+>>> print(var.allclose(values, atol = 1e-10)) #doctest: +LSM
 1
 
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 from fipy import Grid2D, DistanceVariable, Viewer
@@ -65,4 +67,6 @@ if __name__ == '__main__':
     var.calcDistanceFunction(order=1)
     viewer = Viewer(vars=var, datamin=-5., datamax=5.)
     viewer.plot()
-    raw_input('finished')
+    input('finished')
+
+

@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -58,8 +60,8 @@ class _AbstractConvectionTerm(FaceTerm):
             >>> __ConvectionTerm(coeff=vfv2)
             __ConvectionTerm(coeff=FaceVariable(value=array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.],
                    [ 0.,  0.,  0.,  0.,  0.,  0.,  0.]]), mesh=UniformGrid2D(dx=1.0, nx=2, dy=1.0, ny=1)))
-            >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = ((0,),(0,)))).solve(var=cv2, solver=DummySolver(), dt=1.)
-            >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (0,0))).solve(var=cv2, solver=DummySolver(), dt=1.)
+            >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = ((0,), (0,)))).solve(var=cv2, solver=DummySolver(), dt=1.)
+            >>> (TransientTerm() - ExplicitUpwindConvectionTerm(coeff = (0, 0))).solve(var=cv2, solver=DummySolver(), dt=1.)
 
 
         :Parameters:
@@ -116,7 +118,7 @@ class _AbstractConvectionTerm(FaceTerm):
         ...  - ConvectionTerm(coeff=[[1]])
         ...  - ImplicitSourceTerm(coeff=m.x)).solve(v, dt=1.)
 
-        >>> print numerix.allclose(v, v0)
+        >>> print(numerix.allclose(v, v0))
         True
 
         """
@@ -177,7 +179,7 @@ class _AbstractConvectionTerm(FaceTerm):
             self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
 
         ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
-        L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0,1).ravel())
+        L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0, 1).ravel())
         b += numerix.reshape(self.constraintB.value, ids.shape).sum(0).ravel()
 
         return (var, L, b)
@@ -194,3 +196,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+

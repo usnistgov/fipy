@@ -4,6 +4,7 @@ Input file for chemotaxis modeling.
 
 Here are some test cases for the model.
 
+    >>> from builtins import range
     >>> for i in range(10):
     ...     for var, eqn in eqs:
     ...         var.updateOld()
@@ -11,21 +12,25 @@ Here are some test cases for the model.
     ...         eqn.solve(var, dt = 1.0)
 
     >>> accuracy = 1e-2
-    >>> print KMVar.allclose(params['KM'], atol = accuracy)
+    >>> print(KMVar.allclose(params['KM'], atol = accuracy))
     1
-    >>> print TMVar.allclose(params['TM'], atol = accuracy)
+    >>> print(TMVar.allclose(params['TM'], atol = accuracy))
     1
-    >>> print TCVar.allclose(params['TC'], atol = accuracy)
+    >>> print(TCVar.allclose(params['TC'], atol = accuracy))
     1
-    >>> print P2Var.allclose(params['P2'], atol = accuracy)
+    >>> print(P2Var.allclose(params['P2'], atol = accuracy))
     1
-    >>> print P3Var.allclose(params['P3'], atol = accuracy)
+    >>> print(P3Var.allclose(params['P3'], atol = accuracy))
     1
-    >>> print KCVar.allclose(params['KC'], atol = accuracy)
+    >>> print(KCVar.allclose(params['KC'], atol = accuracy))
     1
 
 """
+from __future__ import division
+from __future__ import unicode_literals
 
+from builtins import input
+from builtins import range
 from examples.chemotaxis.parameters import parameters
 from fipy import CellVariable, Grid2D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer
 
@@ -112,4 +117,4 @@ if __name__ == '__main__':
         KMViewer.plot()
         TMViewer.plot()
 
-    raw_input("finished")
+    input("finished")

@@ -15,7 +15,8 @@ at the command line. The results of the simulation will be displayed and the wor
 only run for 200 time steps. To run with a different number of time steps change
 the ``numberOfSteps`` argument as follows,
 
-.. index:: runLeveler
+.. index::
+   single: runLeveler
 
 >>> runLeveler(numberOfSteps=10, displayViewers=False, cellSize=0.25e-7) # doctest: +GMSH, +LSM
 1
@@ -24,7 +25,8 @@ Change the ``displayViewers`` argument to ``True`` if you wish to see the
 results displayed on the screen. This example requires :term:`gmsh` to
 construct the mesh.
 
-.. index:: gmsh
+.. index::
+   module: gmsh
 
 This example models the case when suppressor, accelerator and leveler
 additives are present in the electrolyte. The suppressor is
@@ -176,15 +178,19 @@ can be obtained by running this example.
 .. .. bibmissing:: /documentation/refs.bib
     :sort:
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, TransientTerm, FirstOrderAdvectionTerm, GeneralSolver, Viewer
 from fipy.tools import numerix
-from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
-from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
-from trenchMesh import TrenchMesh
-from gapFillDistanceVariable import GapFillDistanceVariable
-from metalIonDiffusionEquation import buildMetalIonDiffusionEquation
+from .surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
+from .adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from .trenchMesh import TrenchMesh
+from .gapFillDistanceVariable import GapFillDistanceVariable
+from .metalIonDiffusionEquation import buildMetalIonDiffusionEquation
 
 def runLeveler(kLeveler=0.018,
                bulkLevelerConcentration=0.02,
@@ -358,7 +364,7 @@ def runLeveler(kLeveler=0.018,
     if displayViewers:
         try:
             raise Exception
-            from mayaviSurfactantViewer import MayaviSurfactantViewer
+            from .mayaviSurfactantViewer import MayaviSurfactantViewer
             viewers = (
                 MayaviSurfactantViewer(distanceVar, acceleratorVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'accelerator coverage'),
                 MayaviSurfactantViewer(distanceVar, levelerVar.interfaceVar, zoomFactor = 1e6, datamax=0.5, datamin=0.0, smooth = 1, title = 'leveler coverage'))

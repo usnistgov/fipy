@@ -1,8 +1,11 @@
+from __future__ import unicode_literals
 from fipy.tools.parser import _parseSolver
 from fipy.tools  import parallelComm as _parallelComm
 
 from fipy.solvers.solver import *
 __all__ = list(solver.__all__)
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 solver = _parseSolver()
 
@@ -127,7 +130,7 @@ elif solver is None:
 
 
 else:
-    raise ImportError, 'Unknown solver package %s' % solver
+    raise ImportError('Unknown solver package %s' % solver)
 
 
 from fipy.tests.doctestPlus import register_skipper

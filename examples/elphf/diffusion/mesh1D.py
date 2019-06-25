@@ -40,7 +40,7 @@ One component in this ternary system will be designated the "solvent"
 ...         self.diffusivity = diffusivity
 ...         self.valence = valence
 ...         self.equation = equation
-...
+... 
 ...     def copy(self):
 ...         return self.__class__(mesh = self.mesh,
 ...                               value = self.value,
@@ -85,10 +85,10 @@ We create one diffusion equation for each substitutional component
 ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
 ...         CkSum += Ck
 ...         CkFaceSum += Ck.harmonicFaceValue
-...
+... 
 ...     convectionCoeff = CkSum.faceGrad \
 ...                       * (Cj.diffusivity / (1. - CkFaceSum))
-...
+... 
 ...     Cj.equation = (TransientTerm()
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
@@ -103,6 +103,7 @@ If we are running interactively, we create a viewer to see the results
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
+>>> from builtins import range
 >>> for i in range(40):
 ...     for Cj in substitutionals:
 ...         Cj.equation.solve(var=Cj,
@@ -114,11 +115,13 @@ Now, we iterate the problem to equilibrium, plotting as we go
 Since there is nothing to maintain the concentration separation in this problem,
 we verify that the concentrations have become uniform
 
->>> print substitutionals[0].allclose(0.45, rtol = 1e-7, atol = 1e-7)
+>>> print(substitutionals[0].allclose(0.45, rtol = 1e-7, atol = 1e-7))
 True
->>> print substitutionals[1].allclose(0.45, rtol = 1e-7, atol = 1e-7)
+>>> print(substitutionals[1].allclose(0.45, rtol = 1e-7, atol = 1e-7))
 True
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
@@ -133,4 +136,4 @@ if __name__ == '__main__':
 
     # profile.stop()
 
-    raw_input("finished")
+    input("finished")

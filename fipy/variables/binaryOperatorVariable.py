@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -20,15 +21,15 @@ def _BinaryOperatorVariable(operatorClass=None):
         ...         os.close(f)
         ...         os.remove(n)
         >>> for v in tmp:
-        ...     print v.__class__
+        ...     print(v.__class__)
         <class 'fipy.variables.cellVariable.CellVariable'>
         <class 'fipy.variables.faceVariable.FaceVariable'>
         <class 'fipy.variables.variable.Variable'>
-        >>> print tmp[0].allclose(4.)
+        >>> print(tmp[0].allclose(4.))
         True
-        >>> print tmp[1].allclose(9.)
+        >>> print(tmp[1].allclose(9.))
         True
-        >>> print tmp[2].allclose(16)
+        >>> print(tmp[2].allclose(16))
         True
 
     """
@@ -40,7 +41,7 @@ def _BinaryOperatorVariable(operatorClass=None):
             if isinstance(self.var[1], Variable):
                 val1 = self.var[1].value
             else:
-                if type(self.var[1]) is type(''):
+                if isinstance(self.var[1], type('')):
                     self.var[1] = physicalField.PhysicalField(value=self.var[1])
                 val1 = self.var[1]
 
@@ -72,3 +73,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -31,7 +32,7 @@ class _Grid3DBuilder(_AbstractGridBuilder):
                                       self.ns[2] * self.ds[2] * self.scale))
 
     def _calcMeshSpacing(self):
-        return numerix.array((self.ds[0], self.ds[1], self.ds[2]))[...,numerix.newaxis]
+        return numerix.array((self.ds[0], self.ds[1], self.ds[2]))[..., numerix.newaxis]
 
     @property
     def _specificGridData(self):

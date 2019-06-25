@@ -22,7 +22,7 @@ mod:`examples.diffusion.convection.exponential1D.mesh1D` but uses the
 >>> var.constrain(valueRight, mesh.facesRight)
 
 >>> diffCoeff = 1.
->>> convCoeff = (10.,0.)
+>>> convCoeff = (10., 0.)
 
 >>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + PowerLawConvectionTerm(coeff=convCoeff))
@@ -37,17 +37,21 @@ The analytical solution test for this problem is given by:
 >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
 >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD
->>> print var.allclose(analyticalArray, rtol = 1e-2, atol = 1e-2)
+>>> print(var.allclose(analyticalArray, rtol = 1e-2, atol = 1e-2))
 1
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = var)
 ...     viewer.plot()
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')
+
+

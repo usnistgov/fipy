@@ -1,9 +1,12 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random, sqrt
 from fipy.variables.noiseVariable import NoiseVariable
 
 __all__ = ["GaussianNoiseVariable"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class GaussianNoiseVariable(NoiseVariable):
     r"""
@@ -56,7 +59,7 @@ class GaussianNoiseVariable(NoiseVariable):
     >>> from fipy.meshes import Grid2D
     >>> mesh = Grid2D(dx = arange(0.1, 5., 0.1)**2, dy = arange(0.1, 3., 0.1)**3)
     >>> from fipy.variables.cellVariable import CellVariable
-    >>> volumes = CellVariable(mesh=mesh,value=mesh.cellVolumes)
+    >>> volumes = CellVariable(mesh=mesh, value=mesh.cellVolumes)
     >>> noise = GaussianNoiseVariable(mesh = mesh, mean = mean,
     ...                               variance = variance / volumes)
 
@@ -78,13 +81,14 @@ class GaussianNoiseVariable(NoiseVariable):
     ...                     datamin=-5, datamax=5)
     ...     histoplot = Viewer(vars=(histogram, gauss))
 
+    >>> from builtins import range
     >>> for i in range(10):
     ...     noise.scramble()
     ...     if __name__ == '__main__':
     ...         viewer.plot()
     ...         histoplot.plot()
 
-    >>> print abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15
+    >>> print(abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15)
     1
 
     Note that the noise exhibits larger amplitude in the small cells than in the large ones

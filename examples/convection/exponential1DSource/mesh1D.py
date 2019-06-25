@@ -14,7 +14,8 @@ this example solves a steady-state convection-diffusion equation, but adds a con
 
 We define a 1D mesh
 
-.. index:: Grid1D
+.. index::
+   single: Grid1D
 
 >>> from fipy import CellVariable, Grid1D, DiffusionTerm, ExponentialConvectionTerm, DefaultAsymmetricSolver, Viewer
 >>> from fipy.tools import numerix
@@ -28,7 +29,8 @@ We define a 1D mesh
 
 The solution variable is initialized to ``valueLeft``:
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> var = CellVariable(name="variable", mesh=mesh)
 
@@ -52,7 +54,8 @@ We define the convection-diffusion equation with source
 ...       + ExponentialConvectionTerm(coeff=convCoeff)
 ...       + sourceCoeff)
 
-.. .. index:: DefaultAsymmetricSolver
+.. .. index::
+..    single: DefaultAsymmetricSolver
 
 >>> eq.solve(var=var,
 ...          solver=DefaultAsymmetricSolver(tolerance=1.e-15, iterations=10000))
@@ -66,7 +69,8 @@ and test the solution against the analytical result:
 
 or
 
-.. index:: exp
+.. index::
+   single: exp
 
 >>> axis = 0
 >>> x = mesh.cellCenters[axis]
@@ -75,7 +79,7 @@ or
 >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
 >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = AA + BB * CC / DD
->>> print var.allclose(analyticalArray, rtol=1e-4, atol=1e-4)
+>>> print(var.allclose(analyticalArray, rtol=1e-4, atol=1e-4))
 1
 
 If the problem is run interactively, we can view the result:
@@ -87,10 +91,13 @@ If the problem is run interactively, we can view the result:
 ...     viewer = Viewer(vars=var)
 ...     viewer.plot()
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')
+

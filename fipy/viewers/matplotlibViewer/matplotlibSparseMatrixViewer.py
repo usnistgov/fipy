@@ -1,3 +1,8 @@
+from __future__ import print_function
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import object
+from builtins import zip
 from matplotlib import cm
 from matplotlib import pyplot
 from matplotlib import rcParams
@@ -12,6 +17,8 @@ from scipy.io import mmio
 from fipy.tools import numerix
 
 __all__ = ["MatplotlibSparseMatrixViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class SignedLogFormatter(ticker.LogFormatter):
     """Format signed values for log axis
@@ -122,7 +129,7 @@ class SignedLogLocator(ticker.LogLocator):
                     subs = numerix.array(list(subs) + list(numerix.log(numerix.arange(2.0, b)) / numerix.log(b)))
 
             stride = 1
-            while numdec/stride+1 > self.numticks:
+            while numdec // stride + 1 > self.numticks:
                 stride += 1
 
             for decadeStart in numerix.arange(numerix.floor(self.threshold),
@@ -154,12 +161,12 @@ class SignedLogLocator(ticker.LogLocator):
         if remainder < 0.5:
             exponent -= 1
         scale = 10**(-exponent)
-        vmin = numerix.floor(scale*vmin)/scale
-        vmax = numerix.ceil(scale*vmax)/scale
+        vmin = numerix.floor(scale*vmin) / scale
+        vmax = numerix.ceil(scale*vmax) / scale
 
         return nonsingular(vmin, vmax)
 
-class MatplotlibSparseMatrixViewer:
+class MatplotlibSparseMatrixViewer(object):
     def __init__(self, title="Sparsity"):
         self.title = title
 
@@ -182,12 +189,12 @@ class MatplotlibSparseMatrixViewer:
         import os
 
         if "print" in os.environ['FIPY_DISPLAY_MATRIX'].lower().split():
-            print "-"*75
-            print self.title
-            print "-"*75
-            print "L:"
-            print matrix
-            print "b:", RHSvector
+            print("-"*75)
+            print(self.title)
+            print("-"*75)
+            print("L:")
+            print(matrix)
+            print("b:", RHSvector)
 
         (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
         matrix.exportMmf(mtxName)

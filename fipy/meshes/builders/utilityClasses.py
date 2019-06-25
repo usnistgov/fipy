@@ -1,3 +1,7 @@
+from __future__ import unicode_literals
+from builtins import object
+from builtins import range
+from builtins import zip
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -48,7 +52,7 @@ class _DOffsets(object):
         if type(offset) in [int, float]:
             offset = [offset]
 
-        for d, n, i in zip(ds, ns, range(len(ds))):
+        for d, n, i in zip(ds, ns, list(range(len(ds)))):
             if numerix.getShape(d) is not ():
                 offsetList.append(numerix.sum(d[0:offset[i]]))
                 newDs.append(d[offset[i]:offset[i] + n])
@@ -108,7 +112,7 @@ class _NonuniformNumPts(_AbstractNumPts):
         else:
             n = int(n or len(d))
             if n != len(d) and len(d) != 1:
-                raise IndexError, "n%s != len(d%s)" % (axis, axis)
+                raise IndexError("n%s != len(d%s)" % (axis, axis))
 
         return n
 
@@ -119,7 +123,7 @@ class _UniformNumPts(_AbstractNumPts):
 
     @staticmethod
     def calcNs(ns, ds):
-        return map(lambda x: int(x), ns)
+        return [int(x) for x in ns]
 
 if __name__ == '__main__':
     import doctest

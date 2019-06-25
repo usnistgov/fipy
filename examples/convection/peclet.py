@@ -11,7 +11,7 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 >>> L = 1.
 >>> nx = 1000
 >>> dx =  L / nx
->>> mesh = Grid1D(dx=dx , nx=nx)
+>>> mesh = Grid1D(dx=dx, nx=nx)
 
 >>> valueLeft = 0.
 >>> valueRight = 1.
@@ -27,6 +27,8 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 >>> convCoeff = 1.0
 >>> peclet = 1e-3
 >>> allcloseList = []
+>>> from builtins import input
+>>> from builtins import str
 >>> while peclet < 1e4:
 ...     var[:] = valueLeft
 ...     diffCoeff = convCoeff * dx / peclet
@@ -45,13 +47,14 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 ...     allcloseList.append(var.allclose(CC / DD, rtol = 1e-2, atol = 1e-2).value)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
-...         raw_input("Peclet number: " + str(peclet) + ", press key")
+...         input("Peclet number: " + str(peclet) + ", press key")
 ...     peclet *= 10
 
->>> print allcloseList
+>>> print(allcloseList)
 [True, True, True, True, True, True, True]
 
 """
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

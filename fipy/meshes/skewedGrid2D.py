@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -8,6 +11,8 @@ from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes import Grid2D
 
 __all__ = ["SkewedGrid2D"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class SkewedGrid2D(Mesh2D):
     """
@@ -46,7 +51,7 @@ class SkewedGrid2D(Mesh2D):
         changedVertices = numerix.zeros(vertices.shape, 'd')
 
         for i in range(len(vertices[0])):
-            if((i % (nx+1)) != 0 and (i % (nx+1)) != nx and (i / nx+1) != 0 and (i / nx+1) != ny):
+            if((i % (nx+1)) != 0 and (i % (nx+1)) != nx and (i // nx + 1) != 0 and (i // nx + 1) != ny):
                 changedVertices[0, i] = vertices[0, i] + (rand * ((random.random() * 2) - 1))
                 changedVertices[1, i] = vertices[1, i] + (rand * ((random.random() * 2) - 1))
             else:
@@ -70,7 +75,7 @@ class SkewedGrid2D(Mesh2D):
 
     @property
     def _meshSpacing(self):
-        return numerix.array((self.dx,self.dy))[...,numerix.newaxis]
+        return numerix.array((self.dx, self.dy))[..., numerix.newaxis]
 
     @property
     def shape(self):

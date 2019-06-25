@@ -66,14 +66,20 @@ install:
     # Configure the VM.
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe install --quiet --name root python fipy
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe uninstall --quiet fipy
-
+    # FIXME: fipy recipe on conda-forge doesn't have gmsh compatible with Python 2.7
+    - ps: |
+        $ErrorActionPreference = "Stop";
+        if (($env:TARGET_ARCH -eq "x64") -and ($env:CONDA_PY -eq "27")) {
+            Invoke-WebRequest -Uri 'https://gmsh.info/bin/Windows/gmsh-4.3.0-Windows64.zip' -OutFile gmsh-4.3.0-Windows64.zip
+            Add-Type -A 'System.IO.Compression.FileSystem'
+            Expand-Archive gmsh-4.3.0-Windows64.zip -DestinationPath .
+            copy gmsh-4.3.0-Windows64\gmsh.exe $env:CONDA_INSTALL_LOCN\Scripts\
+        }
     - cmd: if "%TARGET_ARCH%" == "x86" conda.exe install --quiet --name root python numpy scipy matplotlib
     - cmd: if "%TARGET_ARCH%" == "x86" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root mayavi weave
     - cmd: if "%TARGET_ARCH%" == "x86" if "%FIPY_SOLVERS%" == "pysparse" conda.exe install --quiet --name root pysparse
 
-    - cmd: if "%CONDA_PY%" == "36" 2to3 --write . 1> NUL 2>&1
-    - cmd: if "%CONDA_PY%" == "36" 2to3 --write --doctests_only . 1> NUL 2>&1
-
+    - cmd: pip install future
     - cmd: pip install scikit-fmm
 
 # Skip .NET project specific build phase.
@@ -81,7 +87,7 @@ build: off
 
 test_script:
     - python setup.py egg_info
-    - if !%FIPY_INLINE%==! python setup.py test 1> NUL 2>&1
+    - if defined FIPY_INLINE python setup.py test 1> NUL 2>&1
     - python setup.py test
     - conda env export
 # deploy_script:

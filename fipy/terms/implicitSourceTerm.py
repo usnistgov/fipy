@@ -1,9 +1,12 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.sourceTerm import SourceTerm
 from fipy.tools import numerix
 
 __all__ = ["ImplicitSourceTerm"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class ImplicitSourceTerm(SourceTerm):
     r"""
@@ -27,18 +30,18 @@ class ImplicitSourceTerm(SourceTerm):
             >>> v = CellVariable(mesh=m, value=1.)
             >>> eq = TransientTerm() == ImplicitSourceTerm(v)
             >>> eq.solve(v, dt=1.)
-            >>> print v
+            >>> print(v)
             [ 2.]
             >>> v.setValue(-1.)
             >>> eq.solve(v, dt=1.)
-            >>> print v
+            >>> print(v)
             [-0.5]
 
         """
 
         coeff = self._getGeomCoeff(var)
         diagonalSign = self._getDiagonalSign(transientGeomCoeff, diffusionGeomCoeff)
-        combinedSign = numerix.array(diagonalSign)[...,numerix.newaxis] * numerix.sign(coeff)
+        combinedSign = numerix.array(diagonalSign)[..., numerix.newaxis] * numerix.sign(coeff)
 
         return {'diagonal' : (combinedSign >= 0),
                 'old value' : numerix.zeros(var.shape, 'd'),
@@ -51,3 +54,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

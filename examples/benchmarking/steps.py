@@ -1,3 +1,6 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import range
 import os
 import sys
 import re
@@ -18,17 +21,19 @@ benchmarker = os.path.join(os.path.dirname(__file__),
 
 args = sys.argv[1:]
 
-p = Popen(["python", benchmarker] + args
+pyth = sys.executable or "python"
+
+p = Popen([pyth, benchmarker] + args
           + ["--numberOfSteps=0"],
           stdout=PIPE,
           stderr=PIPE)
 
 cpu0, rsz0, vsz0 = monitor(p)
 
-print "step\tcpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)"
+print("step\tcpu / (s / step / cell)\trsz / (B / cell)\tvsz / (B / cell)")
 
 for block in range(blocks):
-    p = Popen(["python", benchmarker,
+    p = Popen([pyth, benchmarker,
                "--startingStep=%d" % (block * steps),
                "--cpuBaseLine=%f" % cpu0] + args,
               stdout=PIPE,
@@ -36,4 +41,4 @@ for block in range(blocks):
 
     cpu, rsz, vsz = monitor(p)
 
-    print "%d\t%g\t%g\t%g" % (block * steps, cpu, rsz, vsz)
+    print("%d\t%g\t%g\t%g" % (block * steps, cpu, rsz, vsz))

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -25,8 +26,8 @@ class _LevelSetDiffusionVariable(_CellToFaceVariable):
     >>> from fipy.variables.cellVariable import CellVariable
     >>> var = CellVariable(mesh = mesh, value = (-1, 1, 1))
     >>> from fipy.variables.faceVariable import FaceVariable
-    >>> answer = FaceVariable(mesh=mesh, value=(0,1,1,0,1,1,0,0,1,1))
-    >>> print _LevelSetDiffusionVariable(var, 1).allclose(answer)
+    >>> answer = FaceVariable(mesh=mesh, value=(0, 1, 1, 0, 1, 1, 0, 0, 1, 1))
+    >>> print(_LevelSetDiffusionVariable(var, 1).allclose(answer))
     True
     """
     def __init__(self, distanceVariable = None, diffusionCoeff = None):
@@ -81,3 +82,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+

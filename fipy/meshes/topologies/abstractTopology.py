@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix

@@ -1,13 +1,19 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import str
 __docformat__ = 'restructuredtext'
 
 import os
 import subprocess
+import sys
 import tempfile
 import time
 
 from fipy.viewers.viewer import AbstractViewer
 
 __all__ = ["MayaviClient"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class MayaviClient(AbstractViewer):
     """
@@ -73,7 +79,9 @@ class MayaviClient(AbstractViewer):
                        or resource_filename(Requirement.parse("FiPy"),
                                             "fipy/viewers/mayaviViewer/mayaviDaemon.py"))
 
-        cmd = ["python",
+        pyth = sys.executable or "python"
+
+        cmd = [pyth,
                daemon_file,
                "--lock",
                self.vtklockfname,
@@ -142,13 +150,13 @@ class MayaviClient(AbstractViewer):
                 plotted = True
 
             if (time.time() - start > 30. / self.fps) and not plotted:
-                print "viewer: NOT READY"
+                print("viewer: NOT READY")
                 start = time.time()
         if not plotted:
-            print "viewer: SKIPPED"
+            print("viewer: SKIPPED")
 
     def _validFileExtensions(self):
-        return [".png",".jpg",".bmp",".tiff",".ps",".eps",".pdf",".rib",".oogl",".iv",".vrml",".obj"]
+        return [".png", ".jpg", ".bmp", ".tiff", ".ps", ".eps", ".pdf", ".rib", ".oogl", ".iv", ".vrml", ".obj"]
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

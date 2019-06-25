@@ -1,3 +1,6 @@
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy.viewers.viewer import AbstractViewer
@@ -92,19 +95,19 @@ class MayaviSurfactantViewer(AbstractViewer):
         ##minX = self.distanceVar.mesh.faceCenters[0].min()
 
         IDs = numerix.nonzero(self.distanceVar._cellInterfaceFlag)[0]
-        coordinates = numerix.take(numerix.array(self.distanceVar.mesh.cellCenters).swapaxes(0,1), IDs)
+        coordinates = numerix.take(numerix.array(self.distanceVar.mesh.cellCenters).swapaxes(0, 1), IDs)
 
-        coordinates -= numerix.take(numerix.array(self.distanceVar.grad * self.distanceVar).swapaxes(0,1), IDs)
+        coordinates -= numerix.take(numerix.array(self.distanceVar.grad * self.distanceVar).swapaxes(0, 1), IDs)
 
         coordinates *= self.zoomFactor
 
         shiftedCoords = coordinates.copy()
-        shiftedCoords[:,0] = -coordinates[:,0] ##+ (maxX - minX)
+        shiftedCoords[:, 0] = -coordinates[:, 0] ##+ (maxX - minX)
         coordinates = numerix.concatenate((coordinates, shiftedCoords))
 
-        from lines import _getOrderedLines
+        from .lines import _getOrderedLines
 
-        lines = _getOrderedLines(range(2 * len(IDs)), coordinates, thresholdDistance = self.distanceVar.mesh._cellDistances.min() * 10)
+        lines = _getOrderedLines(list(range(2 * len(IDs))), coordinates, thresholdDistance = self.distanceVar.mesh._cellDistances.min() * 10)
 
         data = numerix.take(self.surfactantVar, IDs)
 
@@ -128,9 +131,9 @@ class MayaviSurfactantViewer(AbstractViewer):
                         tmp[1:-1] = tmp[2:] * 0.25 + tmp[:-2] * 0.25 + tmp[1:-1] * 0.5
                         if len(arr.shape) > 1:
                             for i in range(len(arr[0])):
-                                arrI = arr[:,i].copy()
-                                numerix.put(arrI, line, tmp[:,i])
-                                arr[:,i] = arrI
+                                arrI = arr[:, i].copy()
+                                numerix.put(arrI, line, tmp[:, i])
+                                arr[:, i] = arrI
                         else:
                             numerix.put(arrI, line, tmp)
 
@@ -140,17 +143,17 @@ class MayaviSurfactantViewer(AbstractViewer):
             name = None
 
         coords = numerix.zeros((coordinates.shape[0], 3), 'd')
-        coords[:,:coordinates.shape[1]] = coordinates
+        coords[:, :coordinates.shape[1]] = coordinates
 
         import pyvtk
 
         ## making lists as pyvtk doesn't know what to do with numpy arrays
 
         coords = list(coords)
-        coords = map(lambda coord: [float(coord[0]),float(coord[1]), float(coord[2])], coords)
+        coords = [[float(coord[0]), float(coord[1]), float(coord[2])] for coord in coords]
 
         data = list(data)
-        data = map(lambda item: float(item), data)
+        data = [float(item) for item in data]
 
         return (pyvtk.UnstructuredGrid(points = coords,
                                        poly_line = lines),

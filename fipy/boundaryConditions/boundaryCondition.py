@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import object
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -5,6 +7,8 @@ from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 __all__ = ["BoundaryCondition"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class BoundaryCondition(object):
     """
@@ -13,14 +17,14 @@ class BoundaryCondition(object):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self,faces,value):
+    def __init__(self, faces, value):
         """
         :Parameters:
             - `faces`: A `list` or `tuple` of exterior `Face` objects to which this condition applies.
             - `value`: The value to impose.
         """
         if self.__class__ is BoundaryCondition:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
         self.faces = faces
         if not (isinstance(value, PhysicalField) or isinstance(value, Variable)):
@@ -29,7 +33,7 @@ class BoundaryCondition(object):
 
         if not (self.faces | self.faces.mesh.exteriorFaces
                 == self.faces.mesh.exteriorFaces).value.all():
-            raise IndexError, 'Face list has interior faces'
+            raise IndexError('Face list has interior faces')
 
         self.adjacentCellIDs = self.faces.mesh._adjacentCellIDs[0][self.faces.value]
         self.boundaryConditionApplied = False
@@ -61,7 +65,7 @@ class BoundaryCondition(object):
             return None
 
     def __repr__(self):
-        return "%s(faces = %s, value = %s)" % (self.__class__.__name__, `self.faces`, `self.value`)
+        return "%s(faces = %s, value = %s)" % (self.__class__.__name__, repr(self.faces), repr(self.value))
 
     def _resetBoundaryConditionApplied(self):
         self.boundaryConditionApplied = False

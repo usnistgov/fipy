@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -25,7 +27,7 @@ class _UnaryTerm(Term):
         """
         The representation of a `Term` object is given by,
 
-           >>> print __UnaryTerm(123.456)
+           >>> print(__UnaryTerm(123.456))
            __UnaryTerm(coeff=123.456)
 
         """
@@ -73,14 +75,14 @@ class _UnaryTerm(Term):
             RHSvector = RHSvector - matrix * self.var.value
             matrix = SparseMatrix(mesh=var.mesh)
         else:
-            RHSvector = numerix.zeros(len(var.ravel()),'d')
+            RHSvector = numerix.zeros(len(var.ravel()), 'd')
             matrix = SparseMatrix(mesh=var.mesh)
 
         if ('FIPY_DISPLAY_MATRIX' in os.environ
              and "terms" in os.environ['FIPY_DISPLAY_MATRIX'].lower().split()):
              self._viewer.title = "%s %s" % (var.name, repr(self))
              self._viewer.plot(matrix=matrix, RHSvector=RHSvector)
-             raw_input()
+             input()
 
         return (var, matrix, RHSvector)
 
@@ -89,7 +91,7 @@ class _UnaryTerm(Term):
         ids = numerix.resize(ids, shape)
         X, Y =  numerix.indices(shape[:-1])
         X *= var.mesh.numberOfCells
-        ids += X[...,numerix.newaxis]
+        ids += X[..., numerix.newaxis]
         return ids
 
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
@@ -119,17 +121,17 @@ class _UnaryTerm(Term):
         >>> v1 = CellVariable(mesh=m, value=0.)
         >>> eq = TransientTerm(var=v0) & DiffusionTerm(coeff=4., var=v1)
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var.globalValue
+        >>> print(var.globalValue)
         [ 1.  1.  1.  0.  0.  0.]
-        >>> print RHSvector.globalValue
+        >>> print(RHSvector.globalValue)
         [ 1.  1.  1.  0.  0.  0.]
-        >>> print numerix.allequal(matrix.numpyArray,
+        >>> print(numerix.allequal(matrix.numpyArray,
         ...                        [[ 1,  0,  0,  0,  0,  0],
         ...                         [ 0,  1,  0,  0,  0,  0],
         ...                         [ 0,  0,  1,  0,  0,  0],
         ...                         [ 0,  0,  0, -4,  4,  0],
         ...                         [ 0,  0,  0,  4, -8,  4],
-        ...                         [ 0,  0,  0,  0,  4, -4]])
+        ...                         [ 0,  0,  0,  0,  4, -4]]))
         True
 
         >>> m = Grid1D(nx=6)
@@ -139,11 +141,11 @@ class _UnaryTerm(Term):
         >>> eq1 = TransientTerm(var=v1) - DiffusionTerm(coeff=3., var=v0) - DiffusionTerm(coeff=4., var=v1)
         >>> eq = eq0 & eq1
         >>> var, matrix, RHSvector = eq._buildAndAddMatrices(var=eq._verifyVar(None), SparseMatrix=DefaultSolver()._matrixClass, dt=1.)
-        >>> print var.globalValue
+        >>> print(var.globalValue)
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
-        >>> print RHSvector.globalValue
+        >>> print(RHSvector.globalValue)
         [ 0.  0.  0.  0.  0.  0.  1.  1.  1.  1.  1.  1.]
-        >>> print numerix.allequal(matrix.numpyArray,
+        >>> print(numerix.allequal(matrix.numpyArray,
         ...                        [[-1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         ...                         [ 1, -2,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0],
         ...                         [ 0,  1, -2,  1,  0,  0,  0,  0,  0,  0,  0,  0],
@@ -155,7 +157,7 @@ class _UnaryTerm(Term):
         ...                         [ 0, -3,  6, -3,  0,  0,  0, -4,  9, -4,  0,  0],
         ...                         [ 0,  0, -3,  6, -3,  0,  0,  0, -4,  9, -4,  0],
         ...                         [ 0,  0,  0, -3,  6, -3,  0,  0,  0, -4,  9, -4],
-        ...                         [ 0,  0,  0,  0, -3,  3,  0,  0,  0,  0, -4,  5]])
+        ...                         [ 0,  0,  0,  0, -3,  3,  0,  0,  0,  0, -4,  5]]))
         True
 
         >>> m = Grid1D(nx=3)
@@ -168,16 +170,16 @@ class _UnaryTerm(Term):
         >>> eq0.cacheMatrix()
         >>> diffTerm.cacheMatrix()
         >>> (eq0 & eq1).solve(dt=1.)
-        >>> print numerix.allequal(eq0.matrix.numpyArray,
+        >>> print(numerix.allequal(eq0.matrix.numpyArray,
         ...                        [[ 2, -1,  0,  2, -2,  0],
         ...                         [-1,  3, -1, -2,  4, -2],
         ...                         [ 0, -1,  2,  0, -2,  2],
         ...                         [ 0,  0,  0,  0,  0,  0],
         ...                         [ 0,  0,  0,  0,  0,  0],
-        ...                         [ 0,  0,  0,  0,  0,  0]])
+        ...                         [ 0,  0,  0,  0,  0,  0]]))
         True
         >>> ## This correctly returns None because we lost the handle to the DiffusionTerm when it's negated.
-        >>> print diffTerm.matrix
+        >>> print(diffTerm.matrix)
         None
 
         """
@@ -194,3 +196,4 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+

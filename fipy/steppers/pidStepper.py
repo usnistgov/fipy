@@ -1,6 +1,10 @@
+from __future__ import division
+from __future__ import unicode_literals
 from fipy.steppers.stepper import Stepper
 
 __all__ = ["PIDStepper"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class PIDStepper(Stepper):
     """
@@ -28,7 +32,7 @@ class PIDStepper(Stepper):
         self.nrej = 0
 
     def _step(self, dt, dtPrev, sweepFn, failFn, *args, **kwargs):
-        while 1:
+        while True:
             self.error[2] = sweepFn(vardata=self.vardata, dt=dt, *args, **kwargs)
 
             # omitting nsa > nsaMax check since it's unclear from

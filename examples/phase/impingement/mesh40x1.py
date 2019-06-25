@@ -4,7 +4,8 @@ In this example we solve a coupled phase and orientation equation on a one
 dimensional grid. This is another aspect of the model of Warren, Kobayashi,
 Lobkovsky and Carter :cite:`WarrenPolycrystal`
 
-.. index:: Grid1D
+.. index::
+   single: Grid1D
 
 >>> from fipy import CellVariable, ModularVariable, Grid1D, TransientTerm, DiffusionTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, GeneralSolver, Viewer
 >>> from fipy.tools import numerix
@@ -81,7 +82,8 @@ The system is held isothermal at
 
 and is initially solid everywhere
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> phase = CellVariable(
 ...     name='phase field',
@@ -111,7 +113,10 @@ The left and right halves of the domain are given different orientations.
 
 The ``phase`` equation is built in the following way.
 
-.. index:: TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm
+.. index::
+   single: TransientTerm
+   single: ExplicitDiffusionTerm
+   single: ImplicitSourceTerm
 
 >>> mPhiVar = phase - 0.5 + temperature * phase * (1 - phase)
 
@@ -134,7 +139,8 @@ this equation are fairly involved, see J.A. Warren *et al.*. The main
 detail is that a source must be added to correct for the
 discretization of ``theta`` on the circle.
 
-.. index:: exp
+.. index::
+   single: exp
 
 >>> phaseMod = phase + ( phase < thetaSmallValue ) * thetaSmallValue
 >>> phaseModSq = phaseMod * phaseMod
@@ -169,7 +175,9 @@ and orientation variables.
 .. index::
    module: fipy.viewers
 
-.. index:: :math:`\pi`, pi
+.. index::
+   single: :math:`\pi`
+   single: pi
 
 >>> if __name__ == '__main__':
 ...     phaseViewer = Viewer(vars=phase, datamin=0., datamax=1.)
@@ -181,6 +189,7 @@ and orientation variables.
 we iterate the solution in time, plotting as we go if running interactively,
 
 >>> steps = 10
+>>> from builtins import range
 >>> for i in range(steps):
 ...     theta.updateOld()
 ...     thetaEq.solve(theta, dt = timeStepDuration)
@@ -194,18 +203,22 @@ with ``steps = 10`` with a FORTRAN code written by Ryo Kobayashi for
 phase field modeling. The following code opens the file :file:`mesh40x1.gz`
 extracts the data and compares it with the ``theta`` variable.
 
-.. index:: loadtxt
+.. index::
+   single: loadtxt
 
 >>> import os
->>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
+>>> from future.utils import text_to_native_str
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz'))
 >>> testData = CellVariable(mesh=mesh, value=testData)
->>> print theta.allclose(testData)
+>>> print(theta.allclose(testData))
 1
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')

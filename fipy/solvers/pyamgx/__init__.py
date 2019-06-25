@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import atexit
 
 import pyamgx
@@ -24,6 +25,8 @@ __all__ = ["DefaultSolver",
            "DefaultAsymmetricSolver",
            "GeneralSolver"
           ]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 __all__.extend(linearCGSolver.__all__)
 __all__.extend(linearFGMRESSolver.__all__)

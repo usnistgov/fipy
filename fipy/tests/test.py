@@ -1,4 +1,19 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import str
 from setuptools.command.test import test as _test
+from future.utils import text_to_native_str
+from future.utils import string_types
+
+__all__ = [text_to_native_str("test")]
+
+def _nativize_all(t):
+    def _nativize(s):
+        if isinstance(s, string_types):
+            s = text_to_native_str(s)
+        return s
+
+    return tuple([_nativize(s) for s in t])
 
 class test(_test):
     description = str(_test.description) + ", for FiPy and its examples"
@@ -14,9 +29,9 @@ class test(_test):
         ('pysparse', None, "run FiPy using Pysparse solvers (default)"),
         ('scipy', None, "run FiPy using SciPy solvers"),
         ('Scipy', None, "run FiPy using SciPy solvers"),
-        ('no-pysparse',None, "run FiPy without using the Pysparse solvers"),
-        ('pyamg',None, "run FiPy without using the PyAMG solvers"),
-        ('pyamgx',None, "run FiPy using the pyamgx solvers"),
+        ('no-pysparse', None, "run FiPy without using the Pysparse solvers"),
+        ('pyamg', None, "run FiPy without using the PyAMG solvers"),
+        ('pyamgx', None, "run FiPy using the pyamgx solvers"),
         ('all', None, "run all non-interactive FiPy tests (default)"),
         ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
         ('examples', None, "test FiPy examples"),
@@ -28,7 +43,7 @@ class test(_test):
         ('skfmm', None, "run FiPy using the Scikit-fmm level set solver (default)"),
         ('lsmlib', None, "run FiPy using the LSMLIB level set solver (default)"),
        ]
-
+    user_options = [_nativize_all(u) for u in user_options]
 
     def initialize_options(self):
         _test.initialize_options(self)
@@ -92,13 +107,13 @@ class test(_test):
             yield self.test_suite
 
         if self.viewers:
-            print "*" * 60
-            print "*" + "".center(58) + "*"
-            print "*" + "ATTENTION".center(58) + "*"
-            print "*" + "".center(58) + "*"
-            print "*" + "Some of the following tests require user interaction".center(58) + "*"
-            print "*" + "".center(58) + "*"
-            print "*" * 60
+            print("*" * 60)
+            print("*" + "".center(58) + "*")
+            print("*" + "ATTENTION".center(58) + "*")
+            print("*" + "".center(58) + "*")
+            print("*" + "Some of the following tests require user interaction".center(58) + "*")
+            print("*" + "".center(58) + "*")
+            print("*" * 60)
 
             yield "fipy.viewers.testinteractive._suite"
         if self.modules:
@@ -114,50 +129,50 @@ class test(_test):
                 mod = __import__(pkg)
 
                 if hasattr(mod, '__version__'):
-                    print pkg,'version',mod.__version__
+                    print(pkg, 'version', mod.__version__)
                 else:
-                    print pkg,'version not available'
+                    print(pkg, 'version not available')
 
-            except ImportError, e:
-                print pkg,'is not installed'
+            except ImportError as e:
+                print(pkg, 'is not installed')
 
-            except Exception, e:
-                print pkg, 'version check failed:', e
+            except Exception as e:
+                print(pkg, 'version check failed:', e)
 
         ## PyTrilinos
         try:
             import PyTrilinos
-            print PyTrilinos.version()
-        except ImportError, e:
-            print 'PyTrilinos is not installed'
-        except Exception, e:
-            print 'PyTrilinos version check failed:', e
+            print(PyTrilinos.version())
+        except ImportError as e:
+            print('PyTrilinos is not installed')
+        except Exception as e:
+            print('PyTrilinos version check failed:', e)
 
         ## Mayavi uses a non-standard approach for storing its version number.
         try:
             from mayavi.__version__ import __version__ as mayaviversion
-            print 'mayavi version', mayaviversion
-        except ImportError, e:
+            print('mayavi version', mayaviversion)
+        except ImportError as e:
             try:
                 from enthought.mayavi.__version__ import __version__ as mayaviversion
-                print 'enthought.mayavi version', mayaviversion
-            except ImportError, e:
-                print 'enthought.mayavi is not installed'
-            except Exception, e:
-                print 'enthought.mayavi version check failed:', e
-        except Exception, e:
-            print 'mayavi version check failed:', e
+                print('enthought.mayavi version', mayaviversion)
+            except ImportError as e:
+                print('enthought.mayavi is not installed')
+            except Exception as e:
+                print('enthought.mayavi version check failed:', e)
+        except Exception as e:
+            print('mayavi version check failed:', e)
 
         ## Gmsh version
         try:
             from fipy.meshes.gmshMesh import gmshVersion
             gmshversion = gmshVersion()
             if gmshversion is None:
-                print 'gmsh is not installed'
+                print('gmsh is not installed')
             else:
-                print 'gmsh version',gmshversion
-        except Exception, e:
-            print 'gmsh version check failed:', e
+                print('gmsh version', gmshversion)
+        except Exception as e:
+            print('gmsh version check failed:', e)
 
     def run_tests(self):
         import sys
@@ -173,8 +188,8 @@ class test(_test):
                 except:
                     pass
                 import PyTrilinos
-            except ImportError, a:
-                print >>sys.stderr, "!!! Trilinos library is not installed"
+            except ImportError as a:
+                print("!!! Trilinos library is not installed", file=sys.stderr)
                 return
 
         if self.pyamgx:
@@ -194,15 +209,15 @@ class test(_test):
                 else:
                     atexit._exithandlers.remove(
                         (pyamgx.finalize, (), {}))
-            except ImportError, e:
-                print >>sys.stederr, "!!! pyamgx package is not installed"
+            except ImportError as e:
+                print("!!! pyamgx package is not installed", file=sys.stederr)
                 return
 
         if self.inline:
             try:
                 import weave
-            except ImportError, a:
-                print >>sys.stderr, "!!! weave library is not installed"
+            except ImportError as a:
+                print("!!! weave library is not installed", file=sys.stderr)
                 return
 
         if self.pythoncompiled is not None:
@@ -226,7 +241,7 @@ class test(_test):
                 None, None, [unittest.__file__]+self.test_args,
                 testLoader = loader_class()
                 )
-        except SystemExit, exitErr:
+        except SystemExit as exitErr:
             # unittest.main(..., exit=...) not available until Python 2.7
             from fipy.tests.doctestPlus import report_skips
             report_skips()

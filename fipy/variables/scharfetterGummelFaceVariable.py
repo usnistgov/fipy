@@ -1,9 +1,13 @@
+from __future__ import division
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable
 from fipy.tools.numerix import exp, take, where
 
 __all__ = ["ScharfetterGummelFaceVariable"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class ScharfetterGummelFaceVariable(_CellToFaceVariable):
     def __init__(self, var, boundaryConditions=()):
@@ -11,8 +15,8 @@ class ScharfetterGummelFaceVariable(_CellToFaceVariable):
         self.bcs = boundaryConditions
 
     def _calcValue_(self, alpha, id1, id2):
-        cell1 = take(self.var,id1)
-        cell2 = take(self.var,id2)
+        cell1 = take(self.var, id1)
+        cell2 = take(self.var, id2)
         delta = cell1 - cell2
 
         eps = 1e-14

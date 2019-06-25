@@ -19,6 +19,7 @@ in
        pypkgs.tkinter
        nixpkgs.pkgs.git
        nixpkgs.imagemagick
+       pypkgs.future
      ];
      src=./..;
      doCheck=false;

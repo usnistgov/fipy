@@ -1,4 +1,8 @@
+from __future__ import unicode_literals
+from builtins import range
 __all__ = ["doInline"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 import inspect
 import os
@@ -65,7 +69,7 @@ def _operatorVariableComment(canInline=True, level=3):
         return ""
 
 def _runInline(code_in, converters=None, verbose=0, comment=None, **args):
-    argsKeys = args.keys()
+    argsKeys = list(args.keys())
     dimList = ['i', 'j', 'k']
 
     if 'ni' in argsKeys:
@@ -86,7 +90,7 @@ def _runInline(code_in, converters=None, verbose=0, comment=None, **args):
         for dim in range(dimensions):
             d = dimList[dim]
             declarations.append(d)
-            loops += "\t" * dim + "for(%s=0;%s<n%s;%s++) {\n" % (d,d,d,d)
+            loops += "\t" * dim + "for(%s=0;%s<n%s;%s++) {\n" % (d, d, d, d)
             enders += "\n" + "\t" * (dimensions - dim -1) + "}"
         code = 'int ' + ','.join(declarations) + ';\n' + loops + "\t" * dimensions + code_in + enders
 
@@ -97,12 +101,12 @@ def _runInline(code_in, converters=None, verbose=0, comment=None, **args):
 
     import weave
 
-    for key in args.keys():
+    for key in list(args.keys()):
         if hasattr(args[key], 'dtype') and args[key].dtype.char == '?':
             args[key] = args[key].astype('B')
 
     weave.inline(code,
-                 args.keys(),
+                 list(args.keys()),
                  local_dict=args,
                  type_converters=None, #weave.converters.blitz,
                  compiler = 'gcc',
@@ -148,12 +152,12 @@ for(i=0; i < ni; i++) {
 
     import weave
 
-    for key in args.keys():
+    for key in list(args.keys()):
         if hasattr(args[key], 'dtype') and args[key].dtype.char == '?':
             args[key] = args[key].astype('B')
 
     weave.inline(code,
-                 args.keys(),
+                 list(args.keys()),
                  local_dict=args,
                  type_converters=None, #weave.converters.blitz,
                  compiler = 'gcc',

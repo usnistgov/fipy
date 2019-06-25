@@ -1,6 +1,10 @@
+from __future__ import unicode_literals
+from builtins import object
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractMatplotlibViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 from fipy.viewers.viewer import AbstractViewer
 
@@ -81,7 +85,7 @@ class AbstractMatplotlibViewer(AbstractViewer):
             whether to logarithmically scale the data
         """
         if self.__class__ is AbstractMatplotlibViewer:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
 
         AbstractViewer.__init__(self, vars=vars, title=title, **kwlimits)
 

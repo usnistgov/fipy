@@ -13,21 +13,27 @@ correctly. We advect the wave on different meshes one periodic and one
 non-periodic but twice as long. The results are then compared. The
 periodic wave wraps around the mesh.
 
+>>> from builtins import range
 >>> for step in range(steps):
 ...     eq1.solve(var=var1, dt=dt, solver=DefaultAsymmetricSolver(tolerance=1e-11, iterations=10000))
 ...     eq2.solve(var=var2, dt=dt, solver=DefaultAsymmetricSolver(tolerance=1e-11, iterations=10000))
 
->>> print numerix.allclose(var1.globalValue[nx // 2:3 * nx // 4],
-...                        var2.globalValue[:nx // 4], atol=1e-6)
+>>> print(numerix.allclose(var1.globalValue[nx // 2:3 * nx // 4],
+...                        var2.globalValue[:nx // 4], atol=1e-6))
 1
 
 Currently after 20 steps the wave has lost 23% of its height. Van Leer
 should do better than this.
 
->>> print var1.max() > 0.77
+>>> print(var1.max() > 0.77)
 1
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import unicode_literals
 
+from builtins import input
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, Grid1D, PeriodicGrid1D, TransientTerm, VanLeerConvectionTerm, DefaultAsymmetricSolver, Viewer
@@ -77,9 +83,9 @@ if __name__ == '__main__':
         viewer1.plot()
         viewer2.plot()
 
-    newVar2[:nx / 4] = var2[nx / 4:]
-    newVar2[nx / 4:] = var2[:nx / 4]
+    newVar2[:nx // 4] = var2[nx // 4:]
+    newVar2[nx // 4:] = var2[:nx // 4]
 
-    print 'maximum absolute difference between periodic and non-periodic grids:',abs(var1[nx / 4:3 * nx / 4] - newVar2).max()
+    print('maximum absolute difference between periodic and non-periodic grids:', abs(var1[nx // 4:(3 * nx) // 4] - newVar2).max())
 
-    raw_input('finished')
+    input('finished')

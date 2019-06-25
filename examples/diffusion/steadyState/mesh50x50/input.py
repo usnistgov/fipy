@@ -12,11 +12,13 @@ The result is again tested in the same way:
     >>> Lx = nx * dx
     >>> x = mesh.cellCenters[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
-    >>> print var.allclose(analyticalArray, rtol = 1e-9)
+    >>> print(var.allclose(analyticalArray, rtol = 1e-9))
     1
 
 """
+from __future__ import unicode_literals
 
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, Grid2D, DiffusionTerm, Viewer
@@ -43,4 +45,5 @@ if __name__ == '__main__':
 
     viewer = Viewer(vars=var, datamin=0., datamax=1.)
     viewer.plot()
-    raw_input("finished")
+    input("finished")
+

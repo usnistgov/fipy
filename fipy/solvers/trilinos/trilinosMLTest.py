@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import Epetra
@@ -11,6 +13,8 @@ from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.tools import numerix
 
 __all__ = ["TrilinosMLTest"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class TrilinosMLTest(TrilinosSolver):
 
@@ -64,6 +68,6 @@ class TrilinosMLTest(TrilinosSolver):
         Prec.ComputePreconditioner()
 
         Prec.TestSmoothers()
-        raw_input("Results of preconditioner tests shown above. Currently, the first tests in the 'Gauss-Seidel (sym)','Aztec preconditioner', and 'Aztec as solver' sections indicate the expected performance of the MultilevelSGSPreconditioner, MultilevelDDPreconditioner, and MultilevelSolverSmootherPreconditioner classes, respectively.\n\nPress enter to quit.")
+        input("Results of preconditioner tests shown above. Currently, the first tests in the 'Gauss-Seidel (sym)','Aztec preconditioner', and 'Aztec as solver' sections indicate the expected performance of the MultilevelSGSPreconditioner, MultilevelDDPreconditioner, and MultilevelSolverSmootherPreconditioner classes, respectively.\n\nPress enter to quit.")
         import sys
         sys.exit(0)

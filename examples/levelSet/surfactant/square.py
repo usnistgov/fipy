@@ -7,16 +7,22 @@ Advect the interface and check the position.
 
    >>> distanceVariable.calcDistanceFunction() #doctest: +LSM
    >>> initialSurfactant = numerix.sum(surfactantVariable)
+   >>> from builtins import range
    >>> for step in range(steps):
    ...     distanceVariable.updateOld()
    ...     surfactantEquation.solve(surfactantVariable, dt=1)
    ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration) #doctest: +LSM
-   >>> print numerix.allclose(initialSurfactant, numerix.sum(surfactantVariable)) #doctest: +LSM
+   >>> print(numerix.allclose(initialSurfactant, numerix.sum(surfactantVariable))) #doctest: +LSM
    1
 
 
 
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import input
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
@@ -29,8 +35,8 @@ cfl = 0.1
 distanceToTravel = L / 5.
 boxSize = .2
 
-nx = int(L / dx)
-ny = int(L / dx)
+nx = L // dx
+ny = L // dx
 
 steps = int(distanceToTravel / dx / cfl)
 
@@ -73,7 +79,7 @@ if __name__ == '__main__':
     distanceVariable.calcDistanceFunction()
 
     for step in range(steps):
-        print numerix.sum(surfactantVariable)
+        print(numerix.sum(surfactantVariable))
         distanceVariable.updateOld()
         surfactantEquation.solve(surfactantVariable, dt=1)
         advectionEquation.solve(distanceVariable, dt = timeStepDuration)
@@ -84,5 +90,5 @@ if __name__ == '__main__':
 
     distanceViewer.plot()
     surfactantViewer.plot()
-    print surfactantVariable
-    raw_input('finished')
+    print(surfactantVariable)
+    input('finished')

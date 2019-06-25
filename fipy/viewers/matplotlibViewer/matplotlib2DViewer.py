@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import zip
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -5,6 +7,8 @@ from fipy.tools import numerix
 from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer, _ColorBar
 
 __all__ = ["Matplotlib2DViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class AbstractMatplotlib2DViewer(AbstractMatplotlibViewer):
     def figaspect(self, figaspect):
@@ -64,12 +68,12 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
 
         polys = []
 
-        for x, y in zip(xCoords.swapaxes(0,1), yCoords.swapaxes(0,1)):
+        for x, y in zip(xCoords.swapaxes(0, 1), yCoords.swapaxes(0, 1)):
             if hasattr(x, 'mask'):
                 x = x.compressed()
             if hasattr(y, 'mask'):
                 y = y.compressed()
-            polys.append(zip(x,y))
+            polys.append(list(zip(x, y)))
 
         from matplotlib.collections import PolyCollection
         self.collection = PolyCollection(polys)
@@ -98,7 +102,7 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
               and var.rank == 0)]
         if len(vars) == 0:
             from fipy.viewers import MeshDimensionError
-            raise MeshDimensionError, "Matplotlib2DViewer can only display a rank-0, 2D CellVariable"
+            raise MeshDimensionError("Matplotlib2DViewer can only display a rank-0, 2D CellVariable")
         # this viewer can only display one variable
         return [vars[0]]
 

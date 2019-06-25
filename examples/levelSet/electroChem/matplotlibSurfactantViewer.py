@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import zip
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -26,7 +29,8 @@ class MatplotlibSurfactantViewer(AbstractMatplotlibViewer):
             >>> v = CellVariable(mesh=m, value=x**2 + y**2 - 10**2)
             >>> s = CellVariable(mesh=m, value=sin(x / 10) * cos(y / 30))
             >>> viewer = MatplotlibSurfactantViewer(distanceVar=v, surfactantVar=s)
-            >>> for r in range(1,200):
+            >>> from builtins import range
+            >>> for r in range(1, 200):
             ...     v.setValue(x**2 + y**2 - r**2)
             ...     viewer.plot()
 
@@ -119,16 +123,16 @@ class MatplotlibSurfactantViewer(AbstractMatplotlibViewer):
         zc = CS.collections[0]
 
         verts = numerix.array(zc.get_verts())
-        IDs = numerix.array([mesh._getNearestCellID(vert[...,numerix.newaxis]) for vert in verts])
+        IDs = numerix.array([mesh._getNearestCellID(vert[..., numerix.newaxis]) for vert in verts])
 
         colors = pylab.cm.jet(( self.surfactantVar[IDs] - zmin) / (zmax - zmin))
-        segments = zip(verts[:-1], verts[1:])
+        segments = list(zip(verts[:-1], verts[1:]))
         LC = matplotlib.collections.LineCollection(segments, colors=colors)
 
 #         CS.ax.add_collection(LC)
 
-        verts = numerix.array((-verts[...,0], verts[..., 1])).swapaxes(0,1)
-        segments = zip(verts[:-1], verts[1:])
+        verts = numerix.array((-verts[..., 0], verts[..., 1])).swapaxes(0, 1)
+        segments = list(zip(verts[:-1], verts[1:]))
         LC = matplotlib.collections.LineCollection(segments, colors=colors)
 
 #         CS.ax.add_collection(LC)

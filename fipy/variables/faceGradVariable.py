@@ -1,3 +1,5 @@
+from __future__ import division
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -22,16 +24,16 @@ class _FaceGradVariable(FaceVariable):
     >>> v2 = CellVariable(mesh=m, value=x**2)
     >>> numerix.allequal(v.faceGrad.globalValue.shape, (2, 3, 24))
     True
-    >>> print v0.faceGrad.allclose([[ 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.,  1.,  1.,
+    >>> print(v0.faceGrad.allclose([[ 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.5, 1.,  0.5, 0.,  1.,  1.,
     ...                               0.,  0.,  1.,  1.,  0.,  0.,  1.,  1.,  0. ],
     ...                             [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,
-    ...                               0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0. ]])
+    ...                               0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0. ]]))
     True
-    >>> print (v0.faceGrad.globalValue == v.faceGrad.globalValue[:,0]).all()
+    >>> print((v0.faceGrad.globalValue == v.faceGrad.globalValue[:, 0]).all())
     True
-    >>> print (v1.faceGrad.globalValue  == v.faceGrad.globalValue[:,1]).all()
+    >>> print((v1.faceGrad.globalValue  == v.faceGrad.globalValue[:, 1]).all())
     True
-    >>> print (v2.faceGrad.globalValue  == v.faceGrad.globalValue[:,2]).all()
+    >>> print((v2.faceGrad.globalValue  == v.faceGrad.globalValue[:, 2]).all())
     True
 
     """
@@ -82,7 +84,7 @@ class _FaceGradVariable(FaceVariable):
             ITEM(val, i, vec) =  ITEM(normals, i, vec) * N;
             ITEM(val, i, vec) += ITEM(tangents1, i, vec) * (t1grad1 + t1grad2) / 2.;
             ITEM(val, i, vec) += ITEM(tangents2, i, vec) * (t2grad1 + t2grad2) / 2.;
-        """,tangents1 = tangents1,
+        """, tangents1 = tangents1,
             tangents2 = tangents2,
             cellGrad = self.var.grad.numericValue,
             normals = faceNormals,
@@ -102,7 +104,7 @@ class _FaceGradVariable(FaceVariable):
         dAP = self.mesh._cellDistances
         id1, id2 = self.mesh._adjacentCellIDs
 
-        N2 = numerix.take(self.var.value,id2, axis=-1)
+        N2 = numerix.take(self.var.value, id2, axis=-1)
 
         faceMask = numerix.array(self.mesh.exteriorFaces)
 
@@ -119,7 +121,7 @@ class _FaceGradVariable(FaceVariable):
 
         N2[s] = self.var.faceValue[s]
 
-        N = (N2 - numerix.take(self.var,id1, axis=-1)) / dAP
+        N = (N2 - numerix.take(self.var, id1, axis=-1)) / dAP
 
         normals = self.mesh._orientedFaceNormals
 
@@ -130,7 +132,7 @@ class _FaceGradVariable(FaceVariable):
         grad1 = numerix.take(cellGrad, id1, axis=-1)
         grad2 = numerix.take(cellGrad, id2, axis=-1)
 
-        s = (slice(0,None,None),) + (numerix.newaxis,) * (len(grad1.shape) - 2) + (slice(0,None,None),)
+        s = (slice(0, None, None),) + (numerix.newaxis,) * (len(grad1.shape) - 2) + (slice(0, None, None),)
         t1grad1 = numerix.sum(tangents1[s] * grad1, 0)
         t1grad2 = numerix.sum(tangents1[s] * grad2, 0)
         t2grad1 = numerix.sum(tangents2[s] * grad1, 0)
@@ -147,3 +149,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+

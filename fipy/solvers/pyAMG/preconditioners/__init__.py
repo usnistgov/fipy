@@ -1,1 +1,2 @@
+from __future__ import unicode_literals
 from fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner import SmoothedAggregationPreconditioner

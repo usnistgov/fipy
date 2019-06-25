@@ -17,7 +17,8 @@ with coefficients :math:`D = 1` and :math:`\vec{u} = 10\hat{\i}`, or
 
 We define a 1D mesh
 
-.. index:: Grid1D
+.. index::
+   single: Grid1D
 
 >>> from fipy import CellVariable, Grid1D, DiffusionTerm, ExponentialConvectionTerm, Viewer
 >>> from fipy.tools import numerix
@@ -73,14 +74,15 @@ and test the solution against the analytical result
 
 or
 
-.. index:: exp
+.. index::
+   single: exp
 
 >>> axis = 0
 >>> x = mesh.cellCenters[axis]
 >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
 >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD
->>> print var.allclose(analyticalArray)
+>>> print(var.allclose(analyticalArray))
 1
 
 If the problem is run interactively, we can view the result:
@@ -92,10 +94,13 @@ If the problem is run interactively, we can view the result:
 ...     viewer = Viewer(vars=var)
 ...     viewer.plot()
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')
+

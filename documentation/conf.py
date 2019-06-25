@@ -11,6 +11,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+from __future__ import unicode_literals
 import sys, os
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -32,10 +33,9 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
               'sphinx.ext.imgconverter',
-              'numpydoc',
+              'sphinx.ext.napoleon',
               'redirecting_html',
               'sphinxcontrib.bibtex',
-              'matplotlib.sphinxext.only_directives',
               'matplotlib.sphinxext.plot_directive']
 
 # Add any paths that contain templates here, relative to this directory.
@@ -92,8 +92,6 @@ exclude_patterns = ['fipy/generated/modules.rst',
                     'documentation/_templates',
                     'documentation/tutorial/package/generated/modules.rst',
                     'documentation/sphinxext',
-                    'documentation/sphinxext/bibtex/bibstuff/examples/*.rst',
-                    '**/.svn',
                     '**/.git',
                     'worktrees']
 
@@ -128,9 +126,14 @@ autosummary_generate = ['examples/diffusion/index.rst',
                         'examples/reactiveWetting/index.rst',
                         'examples/updating/index.rst']
 
-autodoc_member_order = 'alphabetical'
+autodoc_default_options = {
+    'member-order': 'alphabetical',
+    'special-members': None,
+}
 
 autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'PyTrilinos.NOX']
+
+napoleon_numpy_docstring = True
 
 # -- Options for HTML output ---------------------------------------------------
 
@@ -214,81 +217,88 @@ htmlhelp_basename = 'FiPydoc'
 
 # -- Options for LaTeX output --------------------------------------------------
 
-common_preamble = r"""
-    \usepackage[amssymb]{SIunits}
-    \usepackage{changepage}
+common_preamble = """
+    \\usepackage[amssymb]{SIunits}
+    \\usepackage{changepage}
 
-    \DeclareMathOperator{\erf}{erf}
-    \providecommand{\abs}[1]{\lvert#1\rvert}
+    \\DeclareMathOperator{\\erf}{erf}
+    \\providecommand{\\abs}[1]{\\lvert#1\\rvert}
     """
 
 latex_elements = {
-    'fncychap': r"""
-    \usepackage[PetersLenny]{fncychap}
+    'fncychap': """
+    \\usepackage[PetersLenny]{fncychap}
     """,
-    'preamble': common_preamble + r"""
+    'preamble': common_preamble + """
 
-    \makeatletter
-    \renewcommand{\maketitle}{%
-      \begin{titlepage}%
-        \let\footnotesize\small
-        \let\footnoterule\relax
-        \noindent\rule{\textwidth}{1pt}\par
-          \begingroup % for PDF information dictionary
-           \def\endgraf{ }\def\and{\& }%
-           \pdfstringdefDisableCommands{\def\\{, }}% overwrite hyperref setup
-           \hypersetup{pdfauthor={\@author}, pdftitle={\@title}}%
-          \endgroup
-        \changepage{1in}{}{1in}{0.5in}{}{-0.5in}{}{}{}
-        \begin{flushright}%
-          \fipylogo\par%
-          \vskip 3em%
-          {\rm\Huge\py@HeaderFamily \@title \par}%
-          {\em\LARGE\py@HeaderFamily \py@release\releaseinfo \par}
-          \vfill
-          {\large\py@HeaderFamily \@author \par}
-          \vfill
-          {\py@authoraddress \par}
-          \vfill
-          {%\large
-           \@date \par
-           \vfill
-           \vfill
-           \vfill
-           \vfill
-           \vfill
-           \vfill
-           \includegraphics[trim=5 2 5 5,scale=1.]{nistident_flright_vec}\par
-          }%
-        \end{flushright}%\par
-        \@thanks
-      \end{titlepage}%
-      \clearpage%
-      \changepage{}{}{}{}{}{}{}{}{}
-      \vspace*{\fill}
-      \input LICENSE
-      \rule{\textwidth}{0.1pt}
-      \input DISCLAIMER
-      \clearpage
-      \setcounter{footnote}{0}%
-      \let\thanks\relax\let\maketitle\relax
-      %\gdef\@thanks{}\gdef\@author{}\gdef\@title{}
+    \\makeatletter
+    \\newcommand{\\sphinxbackoftitlepage}{%
+      \\changepage{}{}{}{}{}{}{}{}{}
+      \\vspace*{\\fill}
+      \\input LICENSE
+      \\rule{\\textwidth}{0.1pt}
+      \\input DISCLAIMER
     }
-    \makeatother
+    \\renewcommand{\\sphinxmaketitle}{%
+      \\let\\spx@tempa\\relax
+      \\ifHy@pageanchor\\def\\spx@tempa{\\Hy@pageanchortrue}\\fi
+      \\hypersetup{pageanchor=false}% avoid duplicate destination warnings
+      \\begin{titlepage}%
+        \\let\\footnotesize\\small
+        \\let\\footnoterule\\relax
+        \\noindent\\rule{\\textwidth}{1pt}\\par
+          \\begingroup % for PDF information dictionary
+           \\def\\endgraf{ }\\def\\and{\\& }%
+           \\pdfstringdefDisableCommands{\\def\\\\{, }}% overwrite hyperref setup
+           \\hypersetup{pdfauthor={\\@author}, pdftitle={\\@title}}%
+          \\endgroup
+        \\changepage{1in}{}{1in}{0.5in}{}{-0.5in}{}{}{}
+        \\begin{flushright}%
+          \\fipylogo\\par%
+          \\vskip 3em%
+          {\\rm\\Huge\\py@HeaderFamily \\@title \\par}%
+          {\\em\\LARGE\\py@HeaderFamily \\py@release\\releaseinfo \\par}
+          \\vfill
+          {\\large\\py@HeaderFamily \\@author \\par}
+          \\vfill
+          {\\py@authoraddress \\par}
+          \\vfill
+          {%\\large
+           \\@date \\par
+           \\vfill
+           \\vfill
+           \\vfill
+           \\vfill
+           \\vfill
+           \\vfill
+           \\includegraphics[trim=5 2 5 5,scale=1.]{nistident_flright_vec}\\par
+          }%
+        \\end{flushright}%\\par
+        \\@thanks
+      \\end{titlepage}%
+      \\setcounter{footnote}{0}%
+      \\let\\thanks\\relax\\let\\maketitle\\relax
+      %\\gdef\\@thanks{}\\gdef\\@author{}\\gdef\\@title{}
+      \\clearpage
+      \\ifdefined\\sphinxbackoftitlepage\\sphinxbackoftitlepage\\fi
+      \\if@openright\\cleardoublepage\\else\\clearpage\\fi
+      \\spx@tempa
+    }
+    \\makeatother
 
-    \definecolor{redish}{rgb}{0.894,0.122,0.122}
-    \definecolor{bluish}{rgb}{0.216,0.188,0.533}
+    \\definecolor{redish}{rgb}{0.894,0.122,0.122}
+    \\definecolor{bluish}{rgb}{0.216,0.188,0.533}
 
-    \authoraddress{Materials Science and Engineering Division \\
-    and the Center for Theoretical and Computational Materials Science \\
+    \\authoraddress{Materials Science and Engineering Division \\\\
+    and the Center for Theoretical and Computational Materials Science \\\\
     Material Measurement Laboratory}
 
-    \newcommand{\fipylogo}{\scalebox{10}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}}
+    \\newcommand{\\fipylogo}{\\scalebox{10}{\\rotatebox{4}{\\textcolor{redish}{\\( \\varphi \\)}}\\kern-.70em\\raisebox{-.15em}{\\textcolor{bluish}{\\( \\pi\\)}}}}
 
-    \ChNameVar{\fontsize{14}{16}\usefont{OT1}{phv}{m}{n}\selectfont}
-    \ChNumVar{\fontsize{60}{62}\usefont{OT1}{ptm}{m}{n}\selectfont}
-    \ChTitleVar{\Huge\bfseries\rm}
-    \ChRuleWidth{1pt}
+    \\ChNameVar{\\fontsize{14}{16}\\usefont{OT1}{phv}{m}{n}\\selectfont}
+    \\ChNumVar{\\fontsize{60}{62}\\usefont{OT1}{ptm}{m}{n}\\selectfont}
+    \\ChTitleVar{\\Huge\\bfseries\\rm}
+    \\ChRuleWidth{1pt}
     """
 }
 
@@ -325,7 +335,7 @@ imgmath_latex_preamble = common_preamble
 
 # refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/2/', None),
+    'python': ('https://docs.python.org/3/', None),
     'numpy': ('https://docs.scipy.org/doc/numpy/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
     'matplotlib': ('https://matplotlib.org/', None)}
@@ -334,8 +344,7 @@ def skip_numpy_not_numerix(app, what, name, obj, skip, options):
     import types
     if ((type(obj) in [types.FunctionType,
                        types.BuiltinFunctionType,
-                       types.ClassType,
-                       types.TypeType])
+                       type])
         and not (obj.__module__.startswith("fipy")
                  or obj.__module__.startswith("package"))):
             skip = True

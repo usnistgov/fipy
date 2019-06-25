@@ -1,3 +1,6 @@
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import object
 __docformat__ = 'restructuredtext'
 
 import platform
@@ -14,7 +17,7 @@ register_skipper(flag="NOTLINUXSCIPY",
                  test=lambda : platform.system() != "Linux" or solver != 'scipy',
                  why="`scipy` solvers on Linux fail intermittently: #575")
 
-class AdsorbingSurfactantEquation():
+class AdsorbingSurfactantEquation(object):
     r"""
 
     The `AdsorbingSurfactantEquation` object solves the
@@ -63,17 +66,17 @@ class AdsorbingSurfactantEquation():
     ...                                value = (-dx*3/2, -dx/2, dx/2,
     ...                                          3*dx/2,  5*dx/2),
     ...                                hasOld = 1)
-    >>> surfactantVar = SurfactantVariable(value = (0, 0, initialValue, 0 ,0),
+    >>> surfactantVar = SurfactantVariable(value = (0, 0, initialValue, 0, 0),
     ...                                    distanceVar = distanceVar)
-    >>> bulkVar = CellVariable(mesh = mesh, value = (c , c, c, c, c))
+    >>> bulkVar = CellVariable(mesh = mesh, value = (c, c, c, c, c))
     >>> eqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
     ...                                   distanceVar = distanceVar,
     ...                                   bulkVar = bulkVar,
     ...                                   rateConstant = k)
     >>> eqn.solve(surfactantVar, dt = dt)
     >>> answer = (initialValue + dt * k * c) / (1 + dt * k * c)
-    >>> print numerix.allclose(surfactantVar.interfaceVar,
-    ...                  numerix.array((0, 0, answer, 0, 0)))
+    >>> print(numerix.allclose(surfactantVar.interfaceVar,
+    ...                  numerix.array((0, 0, answer, 0, 0))))
     1
 
     The following test case is for two surfactant variables. One has more
@@ -97,9 +100,9 @@ class AdsorbingSurfactantEquation():
     >>> distanceVar = DistanceVariable(mesh = mesh,
     ...                                value = dx * (numerix.arange(5) - 1.5),
     ...                                hasOld = 1)
-    >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0),
+    >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0, 0),
     ...                           distanceVar = distanceVar)
-    >>> var1 = SurfactantVariable(value = (0, 0, theta1, 0 ,0),
+    >>> var1 = SurfactantVariable(value = (0, 0, theta1, 0, 0),
     ...                           distanceVar = distanceVar)
     >>> bulkVar0 = CellVariable(mesh = mesh, value = (c0, c0, c0, c0, c0))
     >>> bulkVar1 = CellVariable(mesh = mesh, value = (c1, c1, c1, c1, c1))
@@ -117,18 +120,20 @@ class AdsorbingSurfactantEquation():
     ...                                    otherBulkVar = bulkVar0,
     ...                                    otherRateConstant = k0)
 
+    >>> from builtins import range
     >>> for step in range(totalSteps):
     ...     eqn0.solve(var0, dt = dt)
     ...     eqn1.solve(var1, dt = dt)
     >>> answer0 = 1 - numerix.exp(-k0 * c0 * dt * totalSteps)
     >>> answer1 = (1 - numerix.exp(-k1 * c1 * dt * totalSteps)) * (1 - answer0)
-    >>> print numerix.allclose(var0.interfaceVar,
-    ...                  numerix.array((0, 0, answer0, 0, 0)), rtol = 1e-2)
+    >>> print(numerix.allclose(var0.interfaceVar,
+    ...                  numerix.array((0, 0, answer0, 0, 0)), rtol = 1e-2))
     1
-    >>> print numerix.allclose(var1.interfaceVar,
-    ...                  numerix.array((0, 0, answer1, 0, 0)), rtol = 1e-2)
+    >>> print(numerix.allclose(var1.interfaceVar,
+    ...                  numerix.array((0, 0, answer1, 0, 0)), rtol = 1e-2))
     1
     >>> dt = 0.1
+    >>> from builtins import range
     >>> for step in range(10):
     ...     eqn0.solve(var0, dt = dt)
     ...     eqn1.solve(var1, dt = dt)
@@ -137,14 +142,14 @@ class AdsorbingSurfactantEquation():
     >>> check = var0.interfaceVar + var1.interfaceVar
     >>> answer = CellVariable(mesh=mesh, value=check)
     >>> answer[x==1.25] = 1.
-    >>> print check.allequal(answer)
+    >>> print(check.allequal(answer))
     True
 
     The following test case is to fix a bug where setting the adsorption
     coefficient to zero leads to the solver not converging and an eventual
     failure.
 
-    >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0 ,0),
+    >>> var0 = SurfactantVariable(value = (0, 0, theta0, 0, 0),
     ...                           distanceVar = distanceVar)
     >>> bulkVar0 = CellVariable(mesh = mesh, value = (c0, c0, c0, c0, c0))
 
@@ -158,7 +163,7 @@ class AdsorbingSurfactantEquation():
     >>> answer = CellVariable(mesh=mesh, value=var0.interfaceVar)
     >>> answer[x==1.25] = 0.
 
-    >>> print var0.interfaceVar.allclose(answer)
+    >>> print(var0.interfaceVar.allclose(answer))
     True
 
     The following test case is to fix a bug that allows the accelerator to
@@ -199,6 +204,7 @@ class AdsorbingSurfactantEquation():
 
     >>> dt = 0.1
 
+    >>> from builtins import range
     >>> for i in range(50):
     ...     disVar.calcDistanceFunction()
     ...     extVar.value = (numerix.array(accVar.interfaceVar))
@@ -210,7 +216,7 @@ class AdsorbingSurfactantEquation():
 
     >>> # The following test fails sometimes on linux with scipy solvers
     >>> # See issue #575. We ignore for now.
-    >>> print (accVar >= -1e-10).all() #doctest: +NOTLINUXSCIPY
+    >>> print((accVar >= -1e-10).all()) #doctest: +NOTLINUXSCIPY
     True
     """
     def __init__(self,

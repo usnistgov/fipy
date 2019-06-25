@@ -1,9 +1,13 @@
+from __future__ import division
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
 __all__ = ["SurfactantVariable"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class SurfactantVariable(CellVariable):
     """
@@ -29,7 +33,7 @@ class SurfactantVariable(CellVariable):
         ...                                     value = (-1.5, -0.5, 0.5, 941.5))
         >>> surfactantVariable = SurfactantVariable(value = 1,
         ...                                         distanceVar = distanceVariable)
-        >>> print numerix.allclose(surfactantVariable, (0, 0., 1., 0))
+        >>> print(numerix.allclose(surfactantVariable, (0, 0., 1., 0)))
         1
 
         A 2D test case:
@@ -38,11 +42,11 @@ class SurfactantVariable(CellVariable):
         >>> mesh = Grid2D(dx = 1., dy = 1., nx = 3, ny = 3)
         >>> distanceVariable = DistanceVariable(mesh = mesh,
         ...                                     value = (1.5, 0.5, 1.5,
-        ...                                              0.5,-0.5, 0.5,
+        ...                                              0.5, -0.5, 0.5,
         ...                                              1.5, 0.5, 1.5))
         >>> surfactantVariable = SurfactantVariable(value = 1,
         ...                                         distanceVar = distanceVariable)
-        >>> print numerix.allclose(surfactantVariable, (0, 1, 0, 1, 0, 1, 0, 1, 0))
+        >>> print(numerix.allclose(surfactantVariable, (0, 1, 0, 1, 0, 1, 0, 1, 0)))
         1
 
         Another 2D test case:
@@ -52,8 +56,8 @@ class SurfactantVariable(CellVariable):
         ...                                     value = (-0.5, 0.5, 0.5, 1.5))
         >>> surfactantVariable = SurfactantVariable(value = 1,
         ...                                         distanceVar = distanceVariable)
-        >>> print numerix.allclose(surfactantVariable,
-        ...                  (0, numerix.sqrt(2), numerix.sqrt(2), 0))
+        >>> print(numerix.allclose(surfactantVariable,
+        ...                  (0, numerix.sqrt(2), numerix.sqrt(2), 0)))
         1
 
         :Parameters:
@@ -117,3 +121,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+

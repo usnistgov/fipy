@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 import sys
@@ -8,6 +10,8 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
 
 __all__ = ["TSVViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class TSVViewer(AbstractViewer):
     """
@@ -63,7 +67,7 @@ class TSVViewer(AbstractViewer):
 
     def _plot(self, values, f, dim):
         for index in range(values.shape[-1]):
-            lineValues = values[...,index]
+            lineValues = values[..., index]
 
             # omit any elements whose cell centers lie outside of the specified limits
             skip = False

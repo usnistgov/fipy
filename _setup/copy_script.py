@@ -1,7 +1,13 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from builtins import input
 import os
 from distutils.core import Command
+from future.utils import text_to_native_str
 
-__all__ = ["copy_script"]
+from ._nativize import nativize_all
+
+__all__ = [text_to_native_str("copy_script")]
 
 class copy_script(Command):
     description = "copy an example script into a new editable file"
@@ -15,6 +21,7 @@ class copy_script(Command):
         ('To=', None,
          "path and file name to save script to")
      ]
+    user_options = [nativize_all(u) for u in user_options]
 
     def initialize_options(self):
         self.From = None
@@ -31,13 +38,13 @@ class copy_script(Command):
             ans = "junk"
 
             while (len(ans) > 0) and ("yes".find(ans.lower()) is not 0) and ("no".find(ans.lower()) is not 0):
-                ans = raw_input("The file '%s' already exists. Overwrite? [n] "%self.To)
+                ans = input("The file '%s' already exists. Overwrite? [n] "%self.To)
 
             if ans is '':
                 ans = 'no'
 
             if ("no".find(ans.lower()) is 0):
-                self.To = raw_input("Please give a name for the ouput file: ")
+                self.To = input("Please give a name for the ouput file: ")
                 self.finalize_options()
 
     def run(self):
@@ -51,4 +58,4 @@ class copy_script(Command):
         f.write(script)
         f.close()
 
-        print "Script code exported from '%s' to '%s'"%(self.From, self.To)
+        print("Script code exported from '%s' to '%s'"%(self.From, self.To))

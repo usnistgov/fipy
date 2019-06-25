@@ -1,7 +1,10 @@
+from __future__ import unicode_literals
 from fipy.variables.meshVariable import _MeshVariable
 from fipy.tools import numerix
 
 __all__ = ["FaceVariable"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class FaceVariable(_MeshVariable):
     @property
@@ -46,7 +49,7 @@ class FaceVariable(_MeshVariable):
 
         Returns
         -------
-        divergence : CellVariable
+        divergence : fipy.variables.cellVariable.CellVariable
             one rank lower than `self`
 
         Examples
@@ -55,15 +58,16 @@ class FaceVariable(_MeshVariable):
         >>> from fipy.meshes import Grid2D
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(nx=3, ny=2)
-        >>> var = CellVariable(mesh=mesh, value=range(3*2))
-        >>> print var.faceGrad.divergence
+        >>> from builtins import range
+        >>> var = CellVariable(mesh=mesh, value=list(range(3*2)))
+        >>> print(var.faceGrad.divergence)
         [ 4.  3.  2. -2. -3. -4.]
 
         """
         if not hasattr(self, '_divergence'):
             from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
 
-            s = (slice(0,None,None),) + (numerix.newaxis,) * (len(self.shape) - 2) + (slice(0,None,None),)
+            s = (slice(0, None, None),) + (numerix.newaxis,) * (len(self.shape) - 2) + (slice(0, None, None),)
             self._divergence = _AddOverFacesVariable((self * self.mesh._orientedAreaProjections[s]).sum(0))
 
         return self._divergence

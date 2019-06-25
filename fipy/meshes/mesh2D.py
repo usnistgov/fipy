@@ -5,6 +5,10 @@ Meshes contain cells, faces, and vertices.
 
 This is built for a non-mixed element mesh.
 """
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import range
+from builtins import zip
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -28,6 +32,8 @@ def _orderVertices(vertexCoords, vertices):
     return numerix.take(vertices, sortorder)
 
 __all__ = ["Mesh2D"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class Mesh2D(Mesh):
     def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serialComm, _RepresentationClass=_MeshRepresentation, _TopologyClass=_Mesh2DTopology):
@@ -42,12 +48,12 @@ class Mesh2D(Mesh):
 
     def _calcFaceAreas(self):
         faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
-        tangent = faceVertexCoords[:,1] - faceVertexCoords[:,0]
+        tangent = faceVertexCoords[:, 1] - faceVertexCoords[:, 0]
         return numerix.sqrtDot(tangent, tangent)
 
     def _calcFaceNormals(self):
         faceVertexCoords = numerix.take(self.vertexCoords, self.faceVertexIDs, axis=1)
-        t1 = faceVertexCoords[:,1,:] - faceVertexCoords[:,0,:]
+        t1 = faceVertexCoords[:, 1,:] - faceVertexCoords[:, 0,:]
         faceNormals = t1.copy()
         mag = numerix.sqrt(t1[1]**2 + t1[0]**2)
         faceNormals[0] = -t1[1] / mag
@@ -99,20 +105,20 @@ class Mesh2D(Mesh):
         # so the cross product will be zero.
 
         faceDisplacementVectors = \
-          numerix.where(numerix.array(zip(exteriorFaceArray, exteriorFaceArray)),
+          numerix.where(numerix.array(list(zip(exteriorFaceArray, exteriorFaceArray))),
                         0.0,
-                        numerix.take(self._scaledCellCenters.swapaxes(0,1),
-                                     unmaskedFaceCellIDs[1, :]) \
-                          - numerix.take(self._scaledCellCenters.swapaxes(0,1),
-                        unmaskedFaceCellIDs[0, :]))
+                        numerix.take(self._scaledCellCenters.swapaxes(0, 1),
+                                     unmaskedFaceCellIDs[1,:]) \
+                          - numerix.take(self._scaledCellCenters.swapaxes(0, 1),
+                        unmaskedFaceCellIDs[0,:]))
 
-        faceDisplacementVectors = faceDisplacementVectors.swapaxes(0,1)
+        faceDisplacementVectors = faceDisplacementVectors.swapaxes(0, 1)
 
-        faceCrossProducts = (faceDisplacementVectors[0, :] * self.faceNormals[1,:]) \
-          - (faceDisplacementVectors[1, :] * self.faceNormals[0, :])
+        faceCrossProducts = (faceDisplacementVectors[0,:] * self.faceNormals[1,:]) \
+          - (faceDisplacementVectors[1,:] * self.faceNormals[0,:])
 
-        faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[0, :] ** 2) \
-          + (faceDisplacementVectors[1, :] ** 2)) ** 0.5, 1.e-100)
+        faceDisplacementVectorLengths = numerix.maximum(((faceDisplacementVectors[0,:] ** 2) \
+          + (faceDisplacementVectors[1,:] ** 2)) ** 0.5, 1.e-100)
 
         faceWeightedNonOrthogonalities = abs(faceCrossProducts / faceDisplacementVectorLengths) * self._faceAreas
 
@@ -124,7 +130,7 @@ class Mesh2D(Mesh):
 
         return (cellTotalWeightedValues / cellTotalFaceAreas)
 
-    def extrude(self, extrudeFunc=lambda x: x + numerix.array((0, 0, 1))[:,numerix.newaxis] , layers=1):
+    def extrude(self, extrudeFunc=lambda x: x + numerix.array((0, 0, 1))[:, numerix.newaxis] , layers=1):
         """
         This function returns a new 3D mesh. The 2D mesh is extruded
         using the extrudeFunc and the number of layers.
@@ -134,18 +140,18 @@ class Mesh2D(Mesh):
           - `layers`: the number of layers in the extruded mesh (number of times extrudeFunc will be called)
 
         >>> from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
-        >>> print NonUniformGrid2D(nx=2,ny=2).extrude(layers=2).cellCenters
+        >>> print(NonUniformGrid2D(nx=2, ny=2).extrude(layers=2).cellCenters)
         [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5]
          [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]
          [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]]
 
         >>> from fipy.meshes.tri2D import Tri2D
-        >>> print Tri2D().extrude(layers=2).cellCenters.allclose([[ 0.83333333, 0.5,        0.16666667, 0.5,       0.83333333, 0.5,
+        >>> print(Tri2D().extrude(layers=2).cellCenters.allclose([[ 0.83333333, 0.5,        0.16666667, 0.5,       0.83333333, 0.5,
         ...                                                      0.16666667, 0.5       ],
         ...                                                       [ 0.5,        0.83333333, 0.5,        0.16666667, 0.5,        0.83333333,
         ...                                                      0.5,        0.16666667],
         ...                                                      [ 0.5,        0.5,        0.5,        0.5,        1.5,        1.5,        1.5,
-        ...                                                      1.5       ]])
+        ...                                                      1.5       ]]))
         True
         """
 
@@ -210,7 +216,7 @@ class Mesh2D(Mesh):
                 cells = numerix.concatenate((c0, c0 + NCells, mesh.cellFaceIDs + 2 * NCells), axis = 0)
             else:
                 newCells = numerix.concatenate((c0, c0 + initialFaceCount, mesh.cellFaceIDs + faceCount), axis=0)
-                newCells[0] = cells[1,-NCells:]
+                newCells[0] = cells[1, -NCells:]
                 cells = numerix.concatenate((cells, newCells), axis=1)
 
             ## keep a count of things for the next layer
@@ -224,7 +230,7 @@ class Mesh2D(Mesh):
     def _VTKCellType(self):
         try:
             from tvtk.api import tvtk
-        except ImportError, e:
+        except ImportError as e:
             from enthought.tvtk.api import tvtk
         return tvtk.Polygon().cell_type
 
@@ -257,13 +263,13 @@ class Mesh2D(Mesh):
             >>> mesh = Mesh2D(vertexCoords = vertices, faceVertexIDs = faces, cellFaceIDs = cells)
 
             >>> externalFaces = numerix.array((0, 1, 2, 6, 7, 8, 9, 13, 17, 19))
-            >>> print numerix.allequal(externalFaces,
-            ...                        numerix.nonzero(mesh.exteriorFaces))
+            >>> print(numerix.allequal(externalFaces,
+            ...                        numerix.nonzero(mesh.exteriorFaces)))
             1
 
             >>> internalFaces = numerix.array((3, 4, 5, 10, 11, 12, 14, 15, 16, 18))
-            >>> print numerix.allequal(internalFaces,
-            ...                        numerix.nonzero(mesh.interiorFaces))
+            >>> print(numerix.allequal(internalFaces,
+            ...                        numerix.nonzero(mesh.interiorFaces)))
             1
 
             >>> faceCellIds = MA.masked_values((( 0,  1,  2, 0,  1, 2,  3,  4,  5,
@@ -280,8 +286,8 @@ class Mesh2D(Mesh):
             1
 
             >>> faceCoords = numerix.take(vertices, faces, axis=1)
-            >>> faceCenters = (faceCoords[...,0,:] + faceCoords[...,1,:]) / 2.
-            >>> print numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10)
+            >>> faceCenters = (faceCoords[..., 0,:] + faceCoords[..., 1,:]) / 2.
+            >>> print(numerix.allclose(faceCenters, mesh.faceCenters, atol = 1e-10, rtol = 1e-10))
             True
 
             >>> faceNormals = numerix.array(((0., 0., 0., 0., 0., 0., 0., 0., 0.,
@@ -310,7 +316,7 @@ class Mesh2D(Mesh):
 
             >>> cellCenters = numerix.array(((dx/2., 3.*dx/2., 5.*dx/2., dx/2., 3.*dx/2., 5.*dx/2., 3.*dx+dx/3., 3.*dx+dx/3.),
             ...                              (dy/2., dy/2., dy/2., 3.*dy/2., 3.*dy/2., 3.*dy/2., 2.*dy/3., 4.*dy/3.)))
-            >>> print numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10)
+            >>> print(numerix.allclose(cellCenters, mesh.cellCenters, atol = 1e-10, rtol = 1e-10))
             True
 
             >>> faceToCellDistances = MA.masked_values(((dy / 2., dy / 2., dy / 2.,
@@ -414,8 +420,8 @@ class Mesh2D(Mesh):
             >>> cellAreaProjections = MA.masked_values((((  0,  0,  0,  0,  0,  0,  nx * area,         0),
             ...                                          ( dy, dy, dy, dy, dy, dy,          0, nx * area),
             ...                                          (  0,  0,  0,  0,  0,  0,        -dy,       -dy),
-            ...                                          (-dy,-dy,-dy,-dy,-dy,-dy,      -1000,     -1000)),
-            ...                                         ((-dx,-dx,-dx,-dx,-dx,-dx, -ny * area,       -dx),
+            ...                                          (-dy, -dy, -dy, -dy, -dy, -dy,      -1000,     -1000)),
+            ...                                         ((-dx, -dx, -dx, -dx, -dx, -dx, -ny * area,       -dx),
             ...                                          (  0,  0,  0,  0,  0,  0,         dx, ny * area),
             ...                                          ( dx, dx, dx, dx, dx, dx,          0,         0),
             ...                                          (  0,  0,  0,  0,  0,  0,      -1000,     -1000))), -1000)
@@ -435,7 +441,7 @@ class Mesh2D(Mesh):
             >>> (f, filename) = dump.write(mesh, extension = '.gz')
             >>> unpickledMesh = dump.read(filename, f)
 
-            >>> print numerix.allequal(mesh.cellCenters, unpickledMesh.cellCenters)
+            >>> print(numerix.allequal(mesh.cellCenters, unpickledMesh.cellCenters))
             True
 
 
@@ -448,3 +454,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+

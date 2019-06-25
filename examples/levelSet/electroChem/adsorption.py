@@ -46,6 +46,7 @@ True
 Start time stepping:
 
 >>> currentTime = 0.
+>>> from builtins import range
 >>> for i in range(totalTimeSteps):
 ...     surfEqn.solve(surfactantVar, dt = dt)
 ...     bulkEqn.solve(bulkVar, dt = dt)
@@ -62,11 +63,17 @@ Compare the analytical and numerical results:
 
 
 """
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import input
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, DistanceVariable, SurfactantVariable, Grid1D
 from fipy.tools import numerix, serialComm
-from adsorbingSurfactantEquation import AdsorbingSurfactantEquation
+from .adsorbingSurfactantEquation import AdsorbingSurfactantEquation
 
 # parameter values
 
@@ -97,7 +104,7 @@ bulkVar = CellVariable(mesh = mesh, value = cinf)
 
 surfactantVar = SurfactantVariable(distanceVar = distanceVar)
 
-from surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
+from .surfactantBulkDiffusionEquation import buildSurfactantBulkDiffusionEquation
 bulkEqn = buildSurfactantBulkDiffusionEquation(bulkVar,
                                           distanceVar = distanceVar,
                                           surfactantVar = surfactantVar,
@@ -115,7 +122,7 @@ surfEqn = AdsorbingSurfactantEquation(surfactantVar = surfactantVar,
 
 ## Build the analytical solutions,
 
-x = mesh.cellCenters[0,1:] - dx
+x = mesh.cellCenters[0, 1:] - dx
 
 def concentrationFunc(theta):
     tmp = (1 + rateConstant * siteDensity * (1 - theta) * L / diffusion)
@@ -141,11 +148,11 @@ if __name__ == "__main__":
         ## evaluate the analytical and numerical solution and plot
 
         theta = surfactantVar.interfaceVar[1]
-        print "theta:",theta
+        print("theta:", theta)
 
         ## do a time step
         surfEqn.solve(surfactantVar, dt = dt)
         bulkEqn.solve(bulkVar, dt = dt)
         currentTime += dt
 
-    raw_input("finished")
+    input("finished")

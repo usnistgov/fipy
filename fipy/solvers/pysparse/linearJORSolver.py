@@ -1,9 +1,15 @@
+from __future__ import print_function
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 from fipy.matrices.pysparseMatrix import _PysparseMatrixFromShape
 
 __all__ = ["LinearJORSolver"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearJORSolver(PysparseSolver):
     """
@@ -50,4 +56,4 @@ class LinearJORSolver(PysparseSolver):
 
             tol = max(abs(residual))
 
-            print iteration,tol
+            print(iteration, tol)

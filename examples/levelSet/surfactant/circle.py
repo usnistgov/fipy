@@ -21,22 +21,28 @@ The result can be tested with the following code:
 
 
 >>> surfactantBefore = numerix.sum(surfactantVariable * mesh.cellVolumes)
+>>> from builtins import range
 >>> for step in range(steps):
 ...     distanceVariable.updateOld()
 ...     surfactantEquation.solve(surfactantVariable, dt=1.)
 ...     advectionEquation.solve(distanceVariable, dt = timeStepDuration)
 >>> surfactantEquation.solve(surfactantVariable, dt=1.)
 >>> surfactantAfter = numerix.sum(surfactantVariable * mesh.cellVolumes)
->>> print surfactantBefore.allclose(surfactantAfter)
+>>> print(surfactantBefore.allclose(surfactantAfter))
 1
 >>> areas = (distanceVariable.cellInterfaceAreas < 1e-6) * 1e+10 + distanceVariable.cellInterfaceAreas
 >>> answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
 >>> coverage = surfactantVariable * mesh.cellVolumes / areas
 >>> error = (coverage / answer - 1)**2 * (coverage > 1e-3)
->>> print numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0))
+>>> print(numerix.sqrt(numerix.sum(error) / numerix.sum(error > 0)))
 0.00813776069241
 
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import input
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
@@ -88,7 +94,7 @@ if __name__ == '__main__':
     distanceViewer.plot()
     surfactantViewer.plot()
 
-    print 'total surfactant before:', numerix.sum(surfactantVariable * mesh.cellVolumes)
+    print('total surfactant before:', numerix.sum(surfactantVariable * mesh.cellVolumes))
 
     for step in range(steps):
         distanceVariable.updateOld()
@@ -99,7 +105,7 @@ if __name__ == '__main__':
     surfactantEquation.solve(surfactantVariable, dt=1.)
 
 
-    print 'total surfactant after:', numerix.sum(surfactantVariable * mesh.cellVolumes)
+    print('total surfactant after:', numerix.sum(surfactantVariable * mesh.cellVolumes))
 
     areas = (distanceVariable.cellInterfaceAreas < 1e-6) * 1e+10 + distanceVariable.cellInterfaceAreas
     answer = initialSurfactantValue * initialRadius / (initialRadius +  distanceToTravel)
@@ -114,6 +120,6 @@ if __name__ == '__main__':
 
     error = numerix.sqrt(error / size)
 
-    print 'error:', error
+    print('error:', error)
 
-    raw_input('finished')
+    input('finished')

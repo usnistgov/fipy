@@ -18,6 +18,8 @@ Run::
 
 to see available options.
 """
+from __future__ import division
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 # Standard imports.
@@ -31,7 +33,7 @@ try:
     from mayavi.sources.vtk_file_reader import VTKFileReader
     from pyface.timer.api import Timer
     from mayavi import mlab
-except ImportError, e:
+except ImportError as e:
     from enthought.mayavi.plugins.app import Mayavi
     from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
     from enthought.pyface.timer.api import Timer
@@ -41,6 +43,8 @@ except ImportError, e:
 from fipy.tools.numerix import array, concatenate, where, zeros
 
 __all__ = ["MayaviDaemon"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 ######################################################################
 class MayaviDaemon(Mayavi):
@@ -57,7 +61,7 @@ class MayaviDaemon(Mayavi):
         Parameters
         ----------
 
-        - argv : `list` of `strings`
+        argv : `list` of `strings`
 
           The list of command line arguments.
         """

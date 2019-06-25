@@ -39,7 +39,7 @@ Binder_. The default notebook gives a rudimentary introduction to :term:`FiPy`
 syntax and, like any `Jupyter Notebook`_ interface, tab completion will help
 you explore the package interactively.
 
-.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/develop
+.. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/master
 .. _Jupyter Notebook:    http://jupyter.org
 
 ------------------
@@ -108,7 +108,8 @@ Recommended Method
      to run and visualize :term:`FiPy` simulations. On Windows_, there
      are fewer packages available via conda_, particularly amongst the
      sparse matrix :ref:`SOLVERS`, but the system still should be
-     functional.
+     functional. Significantly, you will need to download and install
+     :ref:`Gmsh` manually when using Python 2.7.
 
 .. attention::
 
@@ -131,8 +132,7 @@ Obtaining FiPy
 --------------
 
 :term:`FiPy` is freely available for download via Git_ or as a
-compressed archive from
-<http://www.ctcms.nist.gov/fipy/download>. Please see
+`compressed archive`_. Please see
 :ref:`documentation:GIT` for instructions on obtaining :term:`FiPy`
 with Git_.
 
@@ -144,7 +144,7 @@ with Git_.
    this issue automatically).
 
 .. _Git:       https://github.com/usnistgov/fipy
-.. _compressed archive:      http://www.ctcms.nist.gov/fipy/download/
+.. _compressed archive:      https://github.com/usnistgov/fipy/releases
 
 ---------------
 Installing FiPy

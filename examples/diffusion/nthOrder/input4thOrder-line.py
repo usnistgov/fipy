@@ -8,10 +8,14 @@
    example, multigrid preconditioners such as those provided by Trilinos allow
    a more accurate solution.
 
-   >>> print var.allclose(mesh.cellCenters[0], atol = 10)
+   >>> print(var.allclose(mesh.cellCenters[0], atol = 10))
    1
 
 """
+from __future__ import print_function
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, Grid1D, LinearLUSolver, NthOrderBoundaryCondition, DiffusionTerm, Viewer
@@ -41,5 +45,6 @@ if __name__ == '__main__':
     viewer = Viewer(var)
     viewer.plot()
 
-    print var.allclose(mesh.cellCenters[0], atol = 10)
-    raw_input("finished")
+    print(var.allclose(mesh.cellCenters[0], atol = 10))
+    input("finished")
+

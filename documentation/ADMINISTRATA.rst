@@ -13,7 +13,7 @@ conducted on a branch and submitted as a `pull request`_. If there is
 already a reported GitHub_ issue_, name the branch accordingly::
 
     $ BRANCH=issue12345-Summary_of_what_branch_addresses
-    $ git checkout -b $BRANCH develop
+    $ git checkout -b $BRANCH master
 
 Edit and add to branch::
 
@@ -22,17 +22,17 @@ Edit and add to branch::
     $ emacs ...
     $ git commit -m "refactoring_stage_B"
 
-Merging changes from develop to the branch
-------------------------------------------
+Merging changes from master to the branch
+-----------------------------------------
 
-Make sure ``develop`` is up to date::
+Make sure ``master`` is up to date::
 
     $ git fetch origin
 
-Merge updated state of ``develop`` to the branch::
+Merge updated state of ``master`` to the branch::
 
-    $ git diff origin/develop
-    $ git merge origin/develop
+    $ git diff origin/master
+    $ git merge origin/master
 
 Resolve any conflicts and test::
 
@@ -51,7 +51,7 @@ Push the code to your fork on GitHub_::
 
     $ git push <MYFORK> $BRANCH
 
-Now `create a pull request`_ from your ``$BRANCH`` against the ``develop``
+Now `create a pull request`_ from your ``$BRANCH`` against the ``master``
 branch of ``usnistgov/fipy``.  The `pull request`_ should initiate
 automated testing.  Check the `Continuous Integration`_ status.  Fix (or,
 if absolutely necessary, document) any failures.
@@ -77,8 +77,8 @@ can `request a pull request review`_ or send a message to the mailing list
 about it if you like, but the FiPy developers should automatically see the
 pull request and respond to it without further action on your part.
 
-Refactoring complete: merge branch to develop
----------------------------------------------
+Refactoring complete: merge branch to master
+--------------------------------------------
 
 .. attention::
 
@@ -125,16 +125,16 @@ Windows
 Windows builds are performed on AppVeyor_. This CI is configured in
 `{FiPySource}/.appveyor.yml`_.
 
-.. |CircleCI|      image:: https://img.shields.io/circleci/project/github/usnistgov/fipy/develop.svg?label=Linux
+.. |CircleCI|      image:: https://img.shields.io/circleci/project/github/usnistgov/fipy/master.svg?label=Linux
 .. _CircleCI:      https://circleci.com/gh/usnistgov/fipy
-.. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/develop.svg?label=macOS
+.. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/master.svg?label=macOS
 .. _TravisCI:      https://travis-ci.org/usnistgov/fipy
-.. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=develop&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
+.. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=master&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
 .. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy
 
-.. _{FiPySource}/.circleci/config.yml: https://github.com/usnistgov/fipy/blob/develop/.circleci/config.yml
-.. _{FiPySource}/.travis.yml: https://github.com/usnistgov/fipy/blob/develop/.travis.yml
-.. _{FiPySource}/.appveyor.yml: https://github.com/usnistgov/fipy/blob/develop/.appveyor.yml
+.. _{FiPySource}/.circleci/config.yml: https://github.com/usnistgov/fipy/blob/master/.circleci/config.yml
+.. _{FiPySource}/.travis.yml: https://github.com/usnistgov/fipy/blob/master/.travis.yml
+.. _{FiPySource}/.appveyor.yml: https://github.com/usnistgov/fipy/blob/master/.appveyor.yml
 
 
 ================
@@ -149,9 +149,9 @@ Making a Release
 Source
 ------
 
-Make sure ``develop`` is ready for release::
+Make sure ``master`` is ready for release::
 
-   $ git checkout develop
+   $ git checkout master
 
 Check the issue_ list and update the :ref:`CHANGELOG`::
 
@@ -198,7 +198,7 @@ Release from master
 ::
 
     $ git checkout master
-    $ git merge develop
+    $ git merge master
 
 Resolve any conflicts and tag the release::
 

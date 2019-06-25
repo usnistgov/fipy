@@ -18,7 +18,7 @@ One component in this ternary system will be designated the "solvent"
     ...         self.diffusivity = diffusivity
     ...         self.valence = valence
     ...         self.equation = equation
-    ...
+    ... 
     ...     def copy(self):
     ...         return self.__class__(mesh = self.mesh, value = self.value,
     ...                               name = self.name,
@@ -78,7 +78,7 @@ We create one diffusion equation for each substitutional component
     ...     for Ck in [Ck for Ck in substitutionals if Ck is not Cj]:
     ...         CkSum += Ck
     ...         CkFaceSum += Ck.harmonicFaceValue
-    ...
+    ... 
     ...     counterDiffusion = CkSum.faceGrad
     ...     phaseTransformation = \
     ...         (pPrime(phase.harmonicFaceValue) * Cj.standardPotential \
@@ -89,7 +89,7 @@ We create one diffusion equation for each substitutional component
     ...         + solvent.harmonicFaceValue \
     ...             * (phaseTransformation + electromigration)
     ...     convectionCoeff *= (Cj.diffusivity / (1. - CkFaceSum))
-    ...
+    ... 
     ...     Cj.equation = (TransientTerm()
     ...                    == DiffusionTerm(coeff=Cj.diffusivity)
     ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
@@ -109,6 +109,7 @@ If we are running interactively, we create a viewer to see the results
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
+    >>> from builtins import range
     >>> for i in range(steps):
     ...     for Cj in substitutionals:
     ...         Cj.equation.solve(var = Cj,
@@ -136,6 +137,7 @@ concentration step in one corner.
 
 We iterate the problem to equilibrium again
 
+    >>> from builtins import range
     >>> for i in range(steps):
     ...     for Cj in substitutionals:
     ...         Cj.equation.solve(var = Cj,
@@ -153,6 +155,8 @@ and verify that the correct uniform concentrations are achieved
 
 
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
@@ -167,4 +171,4 @@ if __name__ == '__main__':
 
     # profile.stop()
 
-    raw_input("finished")
+    input("finished")

@@ -38,7 +38,7 @@ We examine a fixed distribution of electrons with :math:`z_{\text{e}^{-}} = -1`.
 ...         self.diffusivity = diffusivity
 ...         self.valence = valence
 ...         self.equation = equation
-...
+... 
 ...     def copy(self):
 ...         return self.__class__(mesh = self.mesh,
 ...                               value = self.value,
@@ -91,15 +91,16 @@ We verify that the correct equilibrium is attained
 >>> x = mesh.cellCenters[0]
 >>> analyticalArray = (x**2)/2 - 2*x
 
->>> print potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5)
+>>> print(potential.allclose(analyticalArray, rtol = 2e-5, atol = 2e-5))
 1
 
 If we are running the example interactively, we view the result
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = (charge, potential))
 ...     viewer.plot()
-...     raw_input("Press any key to continue...")
+...     input("Press any key to continue...")
 
 Next, we segregate all of the electrons to right side of the domain
 
@@ -138,9 +139,10 @@ We verify that the correct equilibrium is attained
 
 and again view the result
 
+>>> from builtins import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
-...     raw_input("Press any key to continue...")
+...     input("Press any key to continue...")
 
 Finally, we segregate all of the electrons to left side of the domain
 
@@ -181,10 +183,12 @@ and again view the result
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input("finished")
+    input("finished")

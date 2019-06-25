@@ -1,3 +1,7 @@
+from __future__ import print_function
+from __future__ import division
+from __future__ import unicode_literals
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 import os
@@ -10,6 +14,8 @@ from fipy.tools import numerix
 DEBUG = False
 
 __all__ = ["LinearLUSolver"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearLUSolver(PysparseSolver):
     """
@@ -54,7 +60,7 @@ class LinearLUSolver(PysparseSolver):
 
         if DEBUG:
             import sys
-            print >> sys.stderr, L.matrix
+            print(L.matrix, file=sys.stderr)
 
         error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
 
@@ -64,7 +70,7 @@ class LinearLUSolver(PysparseSolver):
             if (numerix.sqrt(numerix.sum(errorVector**2)) / error0)  <= self.tolerance:
                 break
 
-            xError = numerix.zeros(len(b),'d')
+            xError = numerix.zeros(len(b), 'd')
             LU.solve(errorVector, xError)
             x[:] = x - xError
 

@@ -1,8 +1,11 @@
+from __future__ import unicode_literals
 from pysparse import precon
 
 from fipy.solvers.pysparse.preconditioners.preconditioner import Preconditioner
 
 __all__ = ["SsorPreconditioner"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class SsorPreconditioner(Preconditioner):
     """

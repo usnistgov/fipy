@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.faceVariable import FaceVariable
@@ -5,6 +6,8 @@ from fipy.variables.faceVariable import FaceVariable
 from fipy.viewers.vtkViewer.vtkViewer import VTKViewer
 
 __all__ = ["VTKFaceViewer"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class VTKFaceViewer(VTKViewer):
     """Renders `_MeshVariable` data in VTK format
@@ -29,7 +32,7 @@ class VTKFaceViewer(VTKViewer):
 
         >>> try:
         ...     from tvtk.api import tvtk
-        ... except ImportError, e:
+        ... except ImportError as e:
         ...     from enthought.tvtk.api import tvtk
         ... # doctest: +TVTK
 
@@ -51,7 +54,7 @@ class VTKFaceViewer(VTKViewer):
         >>> r.file_name = fname # doctest: +TVTK
         >>> r.update() # doctest: +TVTK
         >>> p = r.output.point_data # doctest: +TVTK
-        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0,1)[0],
+        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0, 1)[0],
         ...                  v3.value) # doctest: +TVTK, +SERIAL
         True
         >>> numerix.allclose(p.get_array("v1.harmonicFaceValue").to_array(),
@@ -83,7 +86,7 @@ class VTKFaceViewer(VTKViewer):
         >>> r.file_name = fname # doctest: +TVTK
         >>> r.update() # doctest: +TVTK
         >>> p = r.output.point_data # doctest: +TVTK
-        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0,1)[0:2],
+        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0, 1)[0:2],
         ...                  v3.value) # doctest: +TVTK, +SERIAL
         True
         >>> numerix.allclose(p.get_array("v1.harmonicFaceValue").to_array(),
@@ -117,7 +120,7 @@ class VTKFaceViewer(VTKViewer):
         >>> r.file_name = fname # doctest: +TVTK
         >>> r.update() # doctest: +TVTK
         >>> p = r.output.point_data # doctest: +TVTK
-        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0,1)[0:2],
+        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0, 1)[0:2],
         ...                  v3.value) # doctest: +TVTK, +SERIAL
         True
         >>> numerix.allclose(p.get_array("v1.harmonicFaceValue").to_array(),
@@ -149,7 +152,7 @@ class VTKFaceViewer(VTKViewer):
         >>> r.file_name = fname # doctest: +TVTK
         >>> r.update() # doctest: +TVTK
         >>> p = r.output.point_data # doctest: +TVTK
-        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0,1),
+        >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0, 1),
         ...                  v3.value) # doctest: +TVTK, +SERIAL
         True
         >>> numerix.allclose(p.get_array("v1.harmonicFaceValue").to_array(),
@@ -175,3 +178,5 @@ def _test():
 
 if __name__ == "__main__":
     _test()
+
+

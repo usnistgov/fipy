@@ -113,8 +113,8 @@ where :math:`\beta = \frac{ 1 - \Phi^2 } { 1 + \Phi^2}`,
 >>> Ddia = (1.+ c * beta)
 
 >>> Doff = c * DbetaDpsi
->>> I0 = Variable(value=((1,0), (0,1)))
->>> I1 = Variable(value=((0,-1), (1,0)))
+>>> I0 = Variable(value=((1, 0), (0, 1)))
+>>> I1 = Variable(value=((0, -1), (1, 0)))
 >>> D = alpha**2 * Ddia * (Ddia * I0 + Doff * I1)
 
 With these expressions defined, we can construct the phase field equation
@@ -204,6 +204,7 @@ color scheme of grain orientation won't be very informative "out of the box".
 Because all of Python is accessible and FiPy is object oriented, it is not hard
 to adapt one of the existing viewers to create a specialized display:
 
+>>> from builtins import zip
 >>> if __name__ == "__main__":
 ...     try:
 ...         class OrientationViewer(Matplotlib2DGridViewer):
@@ -211,7 +212,7 @@ to adapt one of the existing viewers to create a specialized display:
 ...                 self.phase = phase
 ...                 Matplotlib2DGridViewer.__init__(self, vars=(orientation,), title=title,
 ...                                                 limits=limits, colorbar=None, **kwlimits)
-...
+... 
 ...                 # make room for non-existent colorbar
 ...                 # stolen from matplotlib.colorbar.make_axes
 ...                 # https://github.com/matplotlib/matplotlib/blob
@@ -225,7 +226,7 @@ to adapt one of the existing viewers to create a specialized display:
 ...                 panchor = (1.0, 0.5)
 ...                 self.axes.set_position(pb1)
 ...                 self.axes.set_anchor(panchor)
-...
+... 
 ...                 # make the gnomon
 ...                 fig = self.axes.get_figure()
 ...                 self.gnomon = fig.add_axes([0.85, 0.425, 0.15, 0.15], polar=True)
@@ -243,44 +244,44 @@ to adapt one of the existing viewers to create a specialized display:
 ...                 for c, t, bar in zip(colors[0], theta, bars):
 ...                     bar.set_facecolor(c)
 ...                     bar.set_edgecolor(c)
-...
+... 
 ...             def _reshape(self, var):
 ...                 '''return values of var in an 2D array'''
 ...                 return numerix.reshape(numerix.array(var),
 ...                                        var.mesh.shape[::-1])[::-1]
-...
+... 
 ...             @staticmethod
 ...             def _orientation_and_phase_to_rgb(orientation, phase):
 ...                 from matplotlib import colors
-...
+... 
 ...                 hsv = numerix.empty(orientation.shape + (3,))
 ...                 hsv[..., 0] = (orientation / numerix.pi + 1) / 2.
 ...                 hsv[..., 1] = 1.
 ...                 hsv[..., 2] = phase
-...
+... 
 ...                 return colors.hsv_to_rgb(hsv)
-...
+... 
 ...             @property
 ...             def _data(self):
 ...                 '''convert phase and orientation to rgb image array
-...
+... 
 ...                 orientation (-pi, pi) -> hue (0, 1)
 ...                 phase (0, 1) -> value (0, 1)
 ...                 '''
 ...                 orientation = self._reshape(self.vars[0])
 ...                 phase = self._reshape(self.phase)
-...
+... 
 ...                 return self._orientation_and_phase_to_rgb(orientation, phase)
-...
+... 
 ...             def _plot(self):
 ...                 self.image.set_data(self._data)
-...
+... 
 ...         from matplotlib import pyplot
 ...         pyplot.ion()
 ...         w, h = pyplot.figaspect(1.)
 ...         fig = pyplot.figure(figsize=(2*w, h))
 ...         timer = fig.text(0.1, 0.9, "t = %.3f" % 0, fontsize=18)
-...
+... 
 ...         viewer = MultiViewer(viewers=(MatplotlibViewer(vars=dT,
 ...                                                        cmap=pyplot.cm.hot,
 ...                                                        datamin=-0.5,
@@ -336,10 +337,12 @@ The non-uniform temperature results from the release of latent
 heat at the solidifying interface. The dendrite arms grow fastest
 where the temperature gradient is steepest.
 """
+from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus
     exec(fipy.tests.doctestPlus._getScript())
 
-    raw_input('finished')
+    input('finished')
