@@ -64,7 +64,8 @@ install:
     - cmd: conda.exe config --add channels conda-forge
 
     # Configure the VM.
-    - cmd: if "%TARGET_ARCH%" == "x64" conda.exe install --quiet --name root python fipy
+    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root python=2.7 fipy
+    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "36" conda.exe install --quiet --name root python=3.6 fipy
     - cmd: if "%TARGET_ARCH%" == "x64" conda.exe uninstall --quiet fipy
     # FIXME: fipy recipe on conda-forge doesn't have gmsh compatible with Python 2.7
     - ps: |
