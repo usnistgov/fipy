@@ -386,6 +386,41 @@ jobs:
 
       - build_html_docs
 
+  build-binaries:
+    <<: *defaults3
+
+    steps:
+      - checkout
+
+      - run:
+          name: fetch tags
+          command: git fetch origin --tags
+
+      - restore_conda_cache
+
+      - attach_workspace:
+          at: ~/project
+
+      - run:
+          name: install sphinx
+          command: |
+            source activate ~/project/test-environment
+            python setup.py bdist_egg
+            python setup.py release
+            FIPY_VERSION=`python setup.py --version`
+            mkdir tmp
+            cd tmp
+            cp ../dist/FiPy-${FIPY_VERSION}.tar.gz .
+            tar zxvf FiPy-${FIPY_VERSION}.tar.gz
+            cd FiPy-${FIPY_VERSION}
+            python setup.py install
+            cd ..
+            python -c "import fipy; fipy.test()"
+
+      - store_artifacts:
+          path: ~/project/dist
+
+
 workflows:
   version: 2
 
@@ -429,3 +464,17 @@ workflows:
       - test-36-scipy:
           requires:
             - conda3_env
+      - build_binaries:
+          requires:
+            - conda3_env
+            - build-27-docs
+            - build-36-docs
+            - pylint
+            - flake8
+            - black
+            - pyspelling
+            - test-27-pysparse
+            - test-27-scipy
+            - test-27-trilinos
+            - test-27-parallel
+            - test-36-scipy
