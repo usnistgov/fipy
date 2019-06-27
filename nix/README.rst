@@ -53,6 +53,7 @@ To install additional packages available from Nixpkgs_ include them in
 the `buildInputs` list in `default.nix` (in the `nix` subdirectory of
 the base :term:`FiPy` directory).
 
+
 Using Pip
 ---------
 
