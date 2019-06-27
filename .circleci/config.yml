@@ -464,7 +464,7 @@ workflows:
       - test-36-scipy:
           requires:
             - conda3_env
-      - build_binaries:
+      - build-binaries:
           requires:
             - conda3_env
             - build-27-docs
