@@ -17,9 +17,8 @@ let
   skfmm = import ./nix/skfmm.nix { inherit nixpkgs pypkgs; };
 in
   pypkgs.buildPythonPackage rec {
-    pname = "fipy";
-    version = "3.1.3.dev";
-    env = nixpkgs.buildEnv { name=pname; paths=buildInputs; };
+    name = "fipy";
+    env = nixpkgs.buildEnv { name=name; paths=buildInputs; };
     buildInputs = [
       pypkgs.pip
       pypkgs.python
@@ -35,12 +34,10 @@ in
       pypkgs.future
     ];
     src=builtins.filterSource (path: type: type != "directory" || baseNameOf path != ".git") ./.;
-    # src=./..;
     doCheck=false;
     meta = {
       homepage = "https://www.ctcms.nist.gov/fipy/";
       description = "A Finite Volume PDE Solver Using Python";
-      version = version;
       license = nixpkgs.stdenv.lib.licenses.free;
     };
     catchConflicts=false;
