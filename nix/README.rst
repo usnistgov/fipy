@@ -30,11 +30,12 @@ Once you have a working Nix installation use::
     $ nix-shell --pure
 
 in the base :term:`FiPy` directory to install :term:`FiPy` with
-Python 2. To install with Python 3, use::
+Python 2 by default. To use with another version of Python use
 
-    $ nix-shell --pure --argstr python_version 37
+    $ nix-shell --pure --argstr python_version xy
 
-to use Python version 3.7.
+for version x.y of Python. Currently, only tested with versions 2.7,
+3.6 and 3.7.
 
 ``nix-shell`` drops the user into a shell with a working version of
 :term:`FiPy`. To test your installation use::

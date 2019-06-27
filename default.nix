@@ -2,7 +2,7 @@
 #
 #     $ nix-shell --pure --argstr python_version 36
 #
-# to use Python version 3.6.
+# to use Python version 3.6 for example. Tested with 2.7, 3.6 and 3.7.
 
 
 { nixpkgs ? (import ./nix/nixpkgs_version.nix), python_version ? "27" }:
