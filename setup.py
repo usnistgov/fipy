@@ -23,12 +23,21 @@ import ez_setup
 
 ez_setup.use_setuptools()
 
-try:
-    FILE = open("README.rst", "r")
-    LONG_DESCRIPTION = "\n" + FILE.read() + "\n"
-    FILE.close()
-except IOError as _:
-    LONG_DESCRIPTION = ""
+LONG_DESCRIPTION = """
+FiPy is an object oriented, partial differential equation (PDE) solver,
+written in Python, based on a standard finite volume (FV) approach.  This
+combination provides a tool that is extensible, powerful and freely
+available.  A significant advantage to Python is the existing suite of
+tools for array calculations, sparse matrices and data rendering.
+
+The FiPy framework includes terms for transient diffusion, convection and
+standard sources, enabling the solution of arbitrary combinations of
+coupled elliptic, hyperbolic and parabolic PDEs.  Currently implemented
+models include phase field treatments of polycrystalline, dendritic, and
+electrochemical phase transformations, as well as drug eluting stents,
+reactive wetting, photovoltaics and a level set treatment of the
+electrodeposition process.
+"""
 
 try:
     FILE = open("LICENSE.rst", "r")
