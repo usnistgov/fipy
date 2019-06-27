@@ -36,9 +36,8 @@ commands:
       - run:
           name: Create Conda Environment
           command: |
-            conda create -v --quiet --prefix << parameters.env >> --show-channel-urls --channel conda-forge << parameters.packages >>
+            conda create -v --quiet --prefix << parameters.env >> --show-channel-urls --channel conda-forge --only-deps << parameters.packages >>
             source activate ~/project/<< parameters.env >>
-            conda uninstall --quiet fipy
             pip install future
             pip install scikit-fmm
 
