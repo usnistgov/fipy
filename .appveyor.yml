@@ -85,10 +85,18 @@ install:
 # Skip .NET project specific build phase.
 build: off
 
+build_script:
+    - python setup.py release --windows
+
 test_script:
     - python setup.py egg_info
     - if defined FIPY_INLINE python setup.py test 1> NUL 2>&1
     - python setup.py test
     - conda env export
+
+artifacts:
+  - path: dist\FiPy-*.zip
+    name: Win Installer
+
 # deploy_script:
 #     - cmd: upload_or_check_non_existence .\recipe guyer --channel=main

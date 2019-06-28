@@ -9,6 +9,7 @@ import shutil
 from setuptools.sandbox import run_setup
 from future.utils import text_to_native_str
 
+from ._nativize import nativize_all
 
 __all__ = [text_to_native_str("release")]
 
@@ -22,13 +23,21 @@ class release(Command):
 
     # List of option tuples: long name, short name (None if no short
     # name), and help string.
-    user_options = []
+    user_options = [('unix', None, "create a tarball source distribution"),
+                    ('windows', None, "create an executable installer for MS Windows"),
+                    ('all', None, "create unix and Windows distributions"),
+                   ]
+    user_options = [nativize_all(u) for u in user_options]
 
     def initialize_options(self):
-        pass
+        self.unix = 0
+        self.windows = 0
+        self.all = 0
 
     def finalize_options(self):
-        pass
+        if self.all:
+            self.unix = 1
+            self.windows = 1
 
     def _remove_manifest(self):
         """Remove MANIFEST file
@@ -78,5 +87,7 @@ class release(Command):
         os.remove("MANIFEST.in")
 
     def run(self):
-        self._build_unix_distribution()
-        self._build_windows_distribution()
+        if self.unix:
+            self._build_unix_distribution()
+        if self.windows:
+            self._build_windows_distribution()

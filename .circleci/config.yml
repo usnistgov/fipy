@@ -433,7 +433,7 @@ jobs:
           command: |
             source activate ~/project/test-environment-36
             python setup.py bdist_egg
-            python setup.py release
+            python setup.py release --unix
             FIPY_VERSION=`python setup.py --version`
             mkdir tmp
             cd tmp
