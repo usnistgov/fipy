@@ -429,7 +429,7 @@ jobs:
           at: ~/project
 
       - run:
-          name: install sphinx
+          name: build and test tarball
           command: |
             source activate ~/project/test-environment-36
             python setup.py bdist_egg
