@@ -227,38 +227,38 @@ jobs:
     <<: *defaults2
 
     steps:
-      - test_fipy
+      - test_fipy:
+          condaenv: test-environment-27
     environment:
       FIPY_SOLVERS: pysparse
-      condaenv: test-environment-27 
 
   test-27-inline:
     <<: *defaults2
 
     steps:
-      - test_fipy
+      - test_fipy:
+          condaenv: test-environment-27
     environment:
       FIPY_SOLVERS: pysparse
       FIPY_INLINE: 1
-      condaenv: test-environment-27 
 
   test-27-scipy:
     <<: *defaults2
 
     steps:
-      - test_fipy
+      - test_fipy:
+          condaenv: test-environment-27
     environment:
       FIPY_SOLVERS: scipy
-      condaenv: test-environment-27 
 
   test-27-trilinos:
     <<: *defaults2
 
     steps:
-      - test_fipy
+      - test_fipy:
+          condaenv: test-environment-27
     environment:
       FIPY_SOLVERS: trilinos
-      condaenv: test-environment-27 
 
   test-27-parallel:
     <<: *defaults2
@@ -266,19 +266,19 @@ jobs:
     steps:
       - test_fipy:
           mpirun: "mpirun -np 2"
+          condaenv: test-environment-27
     environment:
       FIPY_SOLVERS: trilinos
       OMP_NUM_THREADS: 1
-      condaenv: test-environment-27 
 
   test-36-scipy:
     <<: *defaults3
 
     steps:
-      - test_fipy
+      - test_fipy:
+          condaenv: test-environment-36
     environment:
       FIPY_SOLVERS: scipy
-      condaenv: test-environment-36
 
   pylint:
     <<: *defaults2
