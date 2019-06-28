@@ -39,13 +39,6 @@ reactive wetting, photovoltaics and a level set treatment of the
 electrodeposition process.
 """
 
-try:
-    FILE = open("LICENSE.rst", "r")
-    LICENSE = "\n" + "".join([" " * 8 + l for l in FILE])
-    FILE.close()
-except IOError as _:
-    LICENSE = ""
-
 VERSION = versioneer.get_version()
 
 DIST = setup(
@@ -56,7 +49,7 @@ DIST = setup(
     author="Jonathan Guyer, Daniel Wheeler, & Jim Warren",
     author_email="fipy@nist.gov",
     url="http://www.ctcms.nist.gov/fipy/",
-    license=LICENSE,
+    license="NIST Public Domain",
     description="A finite volume PDE solver in Python",
     long_description=LONG_DESCRIPTION,
     cmdclass=dict(
