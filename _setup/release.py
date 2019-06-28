@@ -71,14 +71,8 @@ class release(Command):
 
         self._remove_manifest()
 
-        # At least on macOS, gets built as *.macosx-10.6-x86_64.exe
-        wininst = glob.glob(os.path.join("dist",
-                                         "FiPy-{}.*.exe".format(version)))[0]
-        fname = "FiPy-{}.win32.exe".format(version)
-        os.symlink(wininst, fname)
         shutil.copyfile("MANIFEST-WINDOWS.in", "MANIFEST.in")
         run_setup("setup.py", ["sdist", "--dist-dir=dist-windows", "--formats=zip"])
-        os.unlink(fname)
         shutil.move(
             os.path.join("dist-windows", "FiPy-{}.zip".format(version)),
             os.path.join("dist", "FiPy-{}.win32.zip".format(version)),
