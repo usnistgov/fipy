@@ -46,10 +46,13 @@ try:
 except IOError as _:
     LICENSE = ""
 
+VERSION = versioneer.get_version()
+
 DIST = setup(
     name="FiPy",
     install_requires=["numpy", "scipy", "matplotlib", "future"],
-    version=versioneer.get_version(),
+    version=VERSION,
+    download_url="https://github.com/usnistgov/fipy/archive/{}.zip".format(VERSION),
     author="Jonathan Guyer, Daniel Wheeler, & Jim Warren",
     author_email="fipy@nist.gov",
     url="http://www.ctcms.nist.gov/fipy/",
