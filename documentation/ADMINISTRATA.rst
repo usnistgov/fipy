@@ -200,21 +200,21 @@ Release from master
     $ git checkout master
 
 Resolve any conflicts and tag the release as appropriate (see `Git
-practices`_ above).
+practices`_ above)::
 
     $ git tag --annotate x.y master
 
-Push the tag to GitHub_
+Push the tag to GitHub_::
 
     $ git push --tags origin master
 
 Upon successful completion of the `Continuous Integration`_ systems, fetch
 the tagged build products and place in :file:`dist/`:
 
-  FiPy-x.y.tar.gz
+  :file:`FiPy-x.y.tar.gz`
     From CircleCI_ `build-binaries` Artifacts
 
-  FiPy-x.y.win32.zip
+  :file:`FiPy-x.y.win32.zip`
     From AppVeyor_ Artifacts
 
 Clean the working copy::
