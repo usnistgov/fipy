@@ -38,6 +38,8 @@ Fixes
   Thanks to `@Hendrik410 <https://github.com/Hendrik410>`_.
 - `#646 <https://github.com/usnistgov/fipy/issues/646>`_:
   Deprecate develop branch
+- `#643 <https://github.com/usnistgov/fipy/issues/643>`_:
+  Automate release process
 - `#601 <https://github.com/usnistgov/fipy/issues/601>`_:
   :file:`contents.rst` and :file:`manual.rst` are a recursive mess
 - `#597 <https://github.com/usnistgov/fipy/issues/597>`_:
@@ -53,6 +55,8 @@ Fixes
   Special methods are not included in Sphinx documentation
 - `#432 <https://github.com/usnistgov/fipy/issues/432>`_:
   Python 3 issues
+- `#340 <https://github.com/usnistgov/fipy/issues/340>`_:
+  Don't upload packages to PyPi, just add the master url
 
 -----------
 Version 3.2
