@@ -24,7 +24,7 @@ commands:
     description: "Create conda environment"
 
     parameters:
-      env:
+      condaenv:
         type: string
         default: "cache"
 
@@ -36,8 +36,8 @@ commands:
       - run:
           name: Create Conda Environment
           command: |
-            conda create -v --quiet --prefix << parameters.env >> --show-channel-urls --channel conda-forge --only-deps << parameters.packages >>
-            source activate ~/project/<< parameters.env >>
+            conda create -v --quiet --prefix << parameters.condaenv >> --show-channel-urls --channel conda-forge --only-deps << parameters.packages >>
+            source activate ~/project/<< parameters.condaenv >>
             pip install future
             pip install scikit-fmm
 
@@ -48,6 +48,9 @@ commands:
       mpirun:
         type: string
         default: ""
+      condaenv:
+        type: string
+        default: "test-environment-27"
 
     steps:
       - run:
@@ -69,7 +72,7 @@ commands:
           name: Run Tests
           no_output_timeout: 30m
           command: |
-            source activate ~/project/test-environment
+            source activate ~/project/<< parameters.condaenv >>
             python setup.py egg_info
             if [[ ! -z "${FIPY_INLINE}" ]]; then
               << parameters.mpirun >> python setup.py test > /dev/null 2>&1 || true;
@@ -79,7 +82,7 @@ commands:
       - run:
           name: Output Environment
           command: |
-            conda env export --prefix ~/project/test-environment
+            conda env export --prefix ~/project/<< parameters.condaenv >>
 
       - store_artifacts:
           path: test-reports
@@ -88,11 +91,16 @@ commands:
   build_html_docs:
     description: "Build HTML Docs"
 
+    parameters:
+      condaenv:
+        type: string
+        default: "test-environment-27"
+
     steps:
       - run:
           name: Build Docs
           command: |
-            source activate ~/project/test-environment
+            source activate ~/project/<< parameters.condaenv >>
             export ETS_TOOLKIT=null
             python setup.py build_docs --html
 
@@ -101,6 +109,11 @@ commands:
 
   build_pdf_docs:
     description: "Build PDF Docs"
+
+    parameters:
+      condaenv:
+        type: string
+        default: "test-environment-27"
 
     steps:
       - run:
@@ -116,7 +129,7 @@ commands:
       - run:
           name: Build Docs
           command: |
-            source activate ~/project/test-environment
+            source activate ~/project/<< parameters.condaenv >>
             export ETS_TOOLKIT=null
             python setup.py build_docs --pdf
 
@@ -170,6 +183,9 @@ commands:
       packages:
         type: string
         default: ""
+      condaenv:
+        type: string
+        default: "test-environment-27"
 
     steps:
       # Download and cache dependencies
@@ -178,7 +194,7 @@ commands:
       - install_dependencies
 
       - createenv:
-          env: "test-environment"
+          condaenv: << parameters.condaenv >>
           packages: << parameters.packages >>
 
       - remove_extracted_conda_packages
@@ -188,7 +204,7 @@ commands:
       - persist_to_workspace:
           root: ~/project
           paths:
-            - test-environment
+            - << parameters.condaenv >>
 
 jobs:
   conda2_env:
@@ -197,6 +213,7 @@ jobs:
     steps:
       - install_conda_packages:
           packages: "python=2.7 fipy"
+          condaenv: "test-environment-27"
 
   conda3_env:
     <<: *defaults3
@@ -204,6 +221,7 @@ jobs:
     steps:
       - install_conda_packages:
           packages: "python=3.6 fipy"
+          condaenv: "test-environment-36"
 
   test-27-pysparse:
     <<: *defaults2
@@ -212,6 +230,7 @@ jobs:
       - test_fipy
     environment:
       FIPY_SOLVERS: pysparse
+      condaenv: test-environment-27 
 
   test-27-inline:
     <<: *defaults2
@@ -221,6 +240,7 @@ jobs:
     environment:
       FIPY_SOLVERS: pysparse
       FIPY_INLINE: 1
+      condaenv: test-environment-27 
 
   test-27-scipy:
     <<: *defaults2
@@ -229,6 +249,7 @@ jobs:
       - test_fipy
     environment:
       FIPY_SOLVERS: scipy
+      condaenv: test-environment-27 
 
   test-27-trilinos:
     <<: *defaults2
@@ -237,6 +258,7 @@ jobs:
       - test_fipy
     environment:
       FIPY_SOLVERS: trilinos
+      condaenv: test-environment-27 
 
   test-27-parallel:
     <<: *defaults2
@@ -247,6 +269,7 @@ jobs:
     environment:
       FIPY_SOLVERS: trilinos
       OMP_NUM_THREADS: 1
+      condaenv: test-environment-27 
 
   test-36-scipy:
     <<: *defaults3
@@ -255,6 +278,7 @@ jobs:
       - test_fipy
     environment:
       FIPY_SOLVERS: scipy
+      condaenv: test-environment-36
 
   pylint:
     <<: *defaults2
@@ -270,7 +294,7 @@ jobs:
       - run:
           name: Lint
           command: |
-            source activate ~/project/test-environment
+            source activate ~/project/test-environment-27
             pip install pylint
             pylint setup.py
 
@@ -288,7 +312,7 @@ jobs:
       - run:
           name: Lint
           command: |
-            source activate ~/project/test-environment
+            source activate ~/project/test-environment-27
             pip install flake8
             flake8 setup.py
 
@@ -306,7 +330,7 @@ jobs:
       - run:
           name: Lint
           command: |
-            source activate ~/project/test-environment
+            source activate ~/project/test-environment-36
             conda install --channel conda-forge black
             black --target-version py27 --fast --diff --check setup.py
 
@@ -324,7 +348,7 @@ jobs:
       - run:
           name: Spell Check
           command: |
-            source activate ~/project/test-environment
+            source activate ~/project/test-environment-36
             conda install --channel conda-forge hunspell
             pip install pyspelling
             cd fipy
@@ -350,15 +374,17 @@ jobs:
       - run:
           name: install sphinx
           command: |
-            source activate ~/project/test-environment
+            source activate ~/project/test-environment-27
             conda install --channel conda-forge sphinx future
             pip install sphinxcontrib-bibtex
             pip install numpydoc
             conda install --channel conda-forge matplotlib pandas imagemagick
 
       - build_html_docs
+          condaenv: test-environment-27
 
       - build_pdf_docs
+          condaenv: test-environment-27
 
   build-36-docs:
     <<: *defaults3
@@ -378,13 +404,14 @@ jobs:
       - run:
           name: install sphinx
           command: |
-            source activate ~/project/test-environment
+            source activate ~/project/test-environment-36
             conda install --channel conda-forge sphinx future
             pip install sphinxcontrib-bibtex
             pip install numpydoc
             conda install --channel conda-forge matplotlib pandas imagemagick
 
       - build_html_docs
+          condaenv: test-environment-36
 
   build-binaries:
     <<: *defaults3
@@ -404,7 +431,7 @@ jobs:
       - run:
           name: install sphinx
           command: |
-            source activate ~/project/test-environment
+            source activate ~/project/test-environment-36
             python setup.py bdist_egg
             python setup.py release
             FIPY_VERSION=`python setup.py --version`
