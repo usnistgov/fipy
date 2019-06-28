@@ -199,9 +199,23 @@ Release from master
 
     $ git checkout master
 
-Resolve any conflicts and tag the release::
+Resolve any conflicts and tag the release as appropriate (see `Git
+practices`_ above).
 
     $ git tag --annotate x.y master
+
+Push the tag to GitHub_
+
+    $ git push --tags origin master
+
+Upon successful completion of the `Continuous Integration`_ systems, fetch
+the tagged build products and place in :file:`dist/`:
+
+  FiPy-x.y.tar.gz
+    From CircleCI_ `build-binaries` Artifacts
+
+  FiPy-x.y.win32.zip
+    From AppVeyor_ Artifacts
 
 Clean the working copy::
 
@@ -216,57 +230,29 @@ Build the documentation and the web pages::
     $ python setup.py bdist_egg
     $ python setup.py build_docs --pdf --html --cathartic
 
-Build the compressed distributions::
-
-    $ python setup.py release
-
-Test the installed compressed distribution::
-
-    $ conda create -n <testenvironment> --channel conda-forge python=<PYVERSION> fipy
-    $ source activate <testenvironment>
-    $ conda remove --channel conda-forge fipy
-    $ mkdir tmp
-    $ cd tmp
-    $ cp ../dist/FiPy-${FIPY_VERSION}.tar.gz .
-    $ tar zxvf FiPy-${FIPY_VERSION}.tar.gz
-    $ cd FiPy-${FIPY_VERSION}
-    $ python setup.py install
-    $ cd ..
-    $ python -c "import fipy; fipy.test()"
-    $ source deactivate
-    $ conda env remove -n <testenvironment>
-    $ cd ..
-    $ \rm -rf tmp
-
 ------
 Upload
 ------
 
-Tag the repository as appropriate (see `Git practices`_ above).
+Attach :file:`dist/FiPy-x.y.tar.gz`, :file:`dist/FiPy-x.y.win32.zip`, and
+:file:`documentation/_build/latex/fipy-x.y.pdf` to a `GitHub release`_
+associated with tag x.y.
 
 Upload the build products to PyPI with twine_::
 
     $ twine upload dist/FiPy-${FIPY_VERSION}.tar.gz
 
-Upload the build products and documentation from :file:`dist/` and
-the web site to CTCMS ::
+Upload the web site to CTCMS ::
 
     $ export FIPY_WWWHOST=bunter:/u/WWW/wd15/fipy
     $ export FIPY_WWWACTIVATE=updatewww
-    $ python setup.py upload_products --pdf --html --tarball --winzip
+    $ python setup.py upload_products --html
 
 .. warning:: Some versions of ``rsync`` on Mac OS X have caused problems
    when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
    does not have this problem.
 
---------------
-Push to GitHub
---------------
-
-We delay pushing tagged ``master`` to GitHub_ until now to avoid needing
-to rewrite history if anything went wrong in the release::
-
-    $ git push --tags origin master
+.. _GitHub release: https://github.com/usnistgov/fipy/releases
 
 ----------------------------
 Update conda-forge feedstock
