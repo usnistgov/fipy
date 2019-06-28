@@ -380,10 +380,10 @@ jobs:
             pip install numpydoc
             conda install --channel conda-forge matplotlib pandas imagemagick
 
-      - build_html_docs
+      - build_html_docs:
           condaenv: test-environment-27
 
-      - build_pdf_docs
+      - build_pdf_docs:
           condaenv: test-environment-27
 
   build-36-docs:
@@ -410,7 +410,7 @@ jobs:
             pip install numpydoc
             conda install --channel conda-forge matplotlib pandas imagemagick
 
-      - build_html_docs
+      - build_html_docs:
           condaenv: test-environment-36
 
   build-binaries:
