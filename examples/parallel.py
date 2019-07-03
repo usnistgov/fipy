@@ -65,11 +65,8 @@ lengths = [parallelComm.MaxAll(len(s)) for s in results]
 formats = ["{{{0}:^{1}}}".format(i, l) for i, l in enumerate(lengths)]
 
 if parallelComm.procID == 0:
-    print "    ".join(formats).format(*titles)
+    print("    ".join(formats).format(*titles))
     
 parallelComm.Barrier()
 
-print " :: ".join(formats).format(*results)
-
-
-print(" :: ".join((mpi4py_info, trilinos_info, fipy_info)))
+print(" :: ".join(formats).format(*results))
