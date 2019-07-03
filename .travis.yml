@@ -11,7 +11,9 @@ env:
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=scipy
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=trilinos
   - TRAVIS_PYTHON_VERSION=2.7 MPIRUN="mpirun -np 2" FIPY_SOLVERS=trilinos
+  - TRAVIS_PYTHON_VERSION=2.7 MPIRUN= FIPY_SOLVERS=petsc
   - TRAVIS_PYTHON_VERSION=3.6 MPIRUN= FIPY_SOLVERS=scipy
+  - TRAVIS_PYTHON_VERSION=3.6 MPIRUN= FIPY_SOLVERS=petsc
 cache: apt
 branches:
   except:
@@ -41,7 +43,7 @@ before_install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge --only-deps python=$TRAVIS_PYTHON_VERSION fipy;
+  - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge --only-deps python=$TRAVIS_PYTHON_VERSION fipy petsc4py;
   - source activate test-environment
   # Useful for debugging any issues with conda
   - conda info -a

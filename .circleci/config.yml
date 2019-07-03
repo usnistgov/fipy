@@ -212,7 +212,7 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=2.7 fipy"
+          packages: "python=2.7 fipy petsc4py"
           condaenv: "test-environment-27"
 
   conda3_env:
@@ -220,7 +220,7 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=3.6 fipy"
+          packages: "python=3.6 fipy petsc4py"
           condaenv: "test-environment-36"
 
   test-27-pysparse:
@@ -271,6 +271,15 @@ jobs:
       FIPY_SOLVERS: trilinos
       OMP_NUM_THREADS: 1
 
+  test-27-petsc:
+    <<: *defaults2
+
+    steps:
+      - test_fipy:
+          condaenv: test-environment-27
+    environment:
+      FIPY_SOLVERS: petsc
+
   test-36-scipy:
     <<: *defaults3
 
@@ -279,6 +288,15 @@ jobs:
           condaenv: test-environment-36
     environment:
       FIPY_SOLVERS: scipy
+
+  test-36-petsc:
+    <<: *defaults3
+
+    steps:
+      - test_fipy:
+          condaenv: test-environment-36
+    environment:
+      FIPY_SOLVERS: petsc
 
   pylint:
     <<: *defaults2
@@ -488,7 +506,13 @@ workflows:
       - test-27-parallel:
           requires:
             - conda2_env
+      - test-27-petsc:
+          requires:
+            - conda2_env
       - test-36-scipy:
+          requires:
+            - conda3_env
+      - test-36-petsc:
           requires:
             - conda3_env
       - build-binaries:
@@ -503,4 +527,6 @@ workflows:
             - test-27-scipy
             - test-27-trilinos
             - test-27-parallel
+            - test-27-petsc
             - test-36-scipy
+            - test-36-petsc
