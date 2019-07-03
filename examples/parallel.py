@@ -61,7 +61,7 @@ except Exception as e:
 
     
     
-lengths = [parallelComm.MaxAll([len(s)]) for s in results]
+lengths = [parallelComm.MaxAll(len(s)) for s in results]
 formats = ["{{{0}:^{1}}}".format(i, l) for i, l in enumerate(lengths)]
 
 if parallelComm.procID == 0:
