@@ -24,11 +24,6 @@ environment:
       CONDA_INSTALL_LOCN: C:\\Miniconda-x64
       FIPY_SOLVERS: scipy
 
-    - TARGET_ARCH: x64
-      CONDA_PY: 27
-      CONDA_INSTALL_LOCN: C:\\Miniconda-x64
-      FIPY_SOLVERS: petsc
-
 #    - TARGET_ARCH: x86
 #      CONDA_PY: 36
 #      CONDA_INSTALL_LOCN: C:\\Miniconda36
@@ -38,11 +33,6 @@ environment:
       CONDA_PY: 36
       CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
       FIPY_SOLVERS: scipy
-
-    - TARGET_ARCH: x64
-      CONDA_PY: 36
-      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
-      FIPY_SOLVERS: petsc
 
 # We always use a 64-bit machine, but can build x86 distributions
 # with the TARGET_ARCH variable.
@@ -74,8 +64,8 @@ install:
     - cmd: conda.exe config --add channels conda-forge
 
     # Configure the VM.
-    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root --only-deps python=2.7 fipy petsc4py
-    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "36" conda.exe install --quiet --name root --only-deps python=3.6 fipy petsc4py
+    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root --only-deps python=2.7 fipy
+    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "36" conda.exe install --quiet --name root --only-deps python=3.6 fipy
     # FIXME: fipy recipe on conda-forge doesn't have gmsh compatible with Python 2.7
     - ps: |
         $ErrorActionPreference = "Stop";
