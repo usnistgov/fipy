@@ -139,22 +139,32 @@ commands:
 
   # localize changes to cache name to these two commands
   save_conda_cache:
+    parameters:
+      condaenv:
+        type: string
+        default: "test-environment-27"
+
     steps:
       - save_cache:
           paths:
             - /opt/conda
             - /root/.cache/pip
-          key: v9-dependencies-{{ arch }}
+          key: v10-dependencies-{{ arch }}-{{ parameters.condaenv }}-{{ checksum "/opt/conda/envs/test-environment/conda-meta/history" }}
 
   restore_conda_cache:
     description: "Restore cache holding conda and pip"
 
+    parameters:
+      condaenv:
+        type: string
+        default: "test-environment-27"
+
     steps:
       - restore_cache:
           keys:
-          - v9-dependencies-{{ arch }}
+          - v10-dependencies-{{ arch }}-{{ parameters.condaenv }}-{{ checksum "/opt/conda/envs/test-environment/conda-meta/history" }}
           # fallback to using the latest cache if no exact match is found
-          - v9-dependencies-
+          - v10-dependencies-
 
   install_dependencies:
     steps:
@@ -190,7 +200,8 @@ commands:
 
     steps:
       # Download and cache dependencies
-      - restore_conda_cache
+      - restore_conda_cache:
+          condaenv: << parameters.condaenv >>
 
       - install_dependencies
 
@@ -200,7 +211,8 @@ commands:
 
       - remove_extracted_conda_packages
 
-      - save_conda_cache
+      - save_conda_cache:
+          condaenv: << parameters.condaenv >>
 
       - persist_to_workspace:
           root: ~/project
@@ -302,10 +314,16 @@ jobs:
   pylint:
     <<: *defaults2
 
+    parameters:
+      condaenv:
+        type: string
+        default: "test-environment-27"
+
     steps:
       - checkout
 
-      - restore_conda_cache
+      - restore_conda_cache:
+          condaenv: << parameters.condaenv >>
 
       - attach_workspace:
           at: ~/project
@@ -313,17 +331,23 @@ jobs:
       - run:
           name: Lint
           command: |
-            source activate ~/project/test-environment-27
+            source activate ~/project/<< parameters.condaenv >>
             pip install pylint
             pylint setup.py
 
   flake8:
     <<: *defaults2
 
+    parameters:
+      condaenv:
+        type: string
+        default: "test-environment-27"
+
     steps:
       - checkout
 
-      - restore_conda_cache
+      - restore_conda_cache:
+          condaenv: << parameters.condaenv >>
 
       - attach_workspace:
           at: ~/project
@@ -331,17 +355,23 @@ jobs:
       - run:
           name: Lint
           command: |
-            source activate ~/project/test-environment-27
+            source activate ~/project/<< parameters.condaenv >>
             pip install flake8
             flake8 setup.py
 
   black:
     <<: *defaults3
 
+    parameters:
+      condaenv:
+        type: string
+        default: "test-environment-36"
+
     steps:
       - checkout
 
-      - restore_conda_cache
+      - restore_conda_cache:
+          condaenv: << parameters.condaenv >>
 
       - attach_workspace:
           at: ~/project
@@ -349,17 +379,23 @@ jobs:
       - run:
           name: Lint
           command: |
-            source activate ~/project/test-environment-36
+            source activate ~/project/<< parameters.condaenv >>
             conda install --channel conda-forge black
             black --target-version py27 --fast --diff --check setup.py
 
   pyspelling:
     <<: *defaults3
 
+    parameters:
+      condaenv:
+        type: string
+        default: "test-environment-36"
+
     steps:
       - checkout
 
-      - restore_conda_cache
+      - restore_conda_cache:
+          condaenv: << parameters.condaenv >>
 
       - attach_workspace:
           at: ~/project
@@ -367,7 +403,7 @@ jobs:
       - run:
           name: Spell Check
           command: |
-            source activate ~/project/test-environment-36
+            source activate ~/project/<< parameters.condaenv >>
             conda install --channel conda-forge hunspell
             pip install pyspelling
             cd fipy
@@ -378,6 +414,11 @@ jobs:
   build-27-docs:
     <<: *defaults2
 
+    parameters:
+      condaenv:
+        type: string
+        default: "test-environment-27"
+
     steps:
       - checkout
 
@@ -385,7 +426,8 @@ jobs:
           name: fetch tags
           command: git fetch origin --tags
 
-      - restore_conda_cache
+      - restore_conda_cache:
+          condaenv: << parameters.condaenv >>
 
       - attach_workspace:
           at: ~/project
@@ -393,21 +435,26 @@ jobs:
       - run:
           name: install sphinx
           command: |
-            source activate ~/project/test-environment-27
+            source activate ~/project/<< parameters.condaenv >>
             conda install --channel conda-forge sphinx future
             pip install sphinxcontrib-bibtex
             pip install numpydoc
             conda install --channel conda-forge matplotlib pandas imagemagick
 
       - build_html_docs:
-          condaenv: test-environment-27
+          condaenv: << parameters.condaenv >>
 
       - build_pdf_docs:
-          condaenv: test-environment-27
+          condaenv: << parameters.condaenv >>
 
   build-36-docs:
     <<: *defaults3
 
+    parameters:
+      condaenv:
+        type: string
+        default: "test-environment-36"
+
     steps:
       - checkout
 
@@ -415,7 +462,8 @@ jobs:
           name: fetch tags
           command: git fetch origin --tags
 
-      - restore_conda_cache
+      - restore_conda_cache:
+          condaenv: << parameters.condaenv >>
 
       - attach_workspace:
           at: ~/project
@@ -423,17 +471,22 @@ jobs:
       - run:
           name: install sphinx
           command: |
-            source activate ~/project/test-environment-36
+            source activate ~/project/<< parameters.condaenv >>
             conda install --channel conda-forge sphinx future
             pip install sphinxcontrib-bibtex
             pip install numpydoc
             conda install --channel conda-forge matplotlib pandas imagemagick
 
       - build_html_docs:
-          condaenv: test-environment-36
+          condaenv: << parameters.condaenv >>
 
   build-binaries:
     <<: *defaults3
+
+    parameters:
+      condaenv:
+        type: string
+        default: "test-environment-36"
 
     steps:
       - checkout
@@ -442,7 +495,8 @@ jobs:
           name: fetch tags
           command: git fetch origin --tags
 
-      - restore_conda_cache
+      - restore_conda_cache:
+          condaenv: << parameters.condaenv >>
 
       - attach_workspace:
           at: ~/project
@@ -450,7 +504,7 @@ jobs:
       - run:
           name: build and test tarball
           command: |
-            source activate ~/project/test-environment-36
+            source activate ~/project/<< parameters.condaenv >>
             python setup.py bdist_egg
             python setup.py release --unix
             FIPY_VERSION=`python setup.py --version`
