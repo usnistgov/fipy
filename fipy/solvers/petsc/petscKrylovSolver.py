@@ -58,7 +58,7 @@ class PETScKrylovSolver(PETScSolver):
 
         """
         if self.__class__ is PETScKrylovSolver:
-            raise NotImplementedError, "can't instantiate abstract base class"
+            raise NotImplementedError("can't instantiate abstract base class")
             
         PETScSolver.__init__(self, tolerance=tolerance,
                              iterations=iterations, precon=precon)
