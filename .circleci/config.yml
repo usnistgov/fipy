@@ -64,7 +64,8 @@ commands:
 
       - checkout
 
-      - restore_conda_cache
+      - restore_conda_cache:
+          condaenv: << parameters.condaenv >>
 
       - attach_workspace:
           at: ~/project
@@ -149,7 +150,7 @@ commands:
           paths:
             - /opt/conda
             - /root/.cache/pip
-          key: v10-dependencies-{{ arch }}-{{ parameters.condaenv }}-{{ checksum "/opt/conda/envs/test-environment/conda-meta/history" }}
+          key: v10-dependencies-{{ arch }}-{{ << parameters.condaenv >> }}-{{ checksum "/opt/conda/envs/test-environment/conda-meta/history" }}
 
   restore_conda_cache:
     description: "Restore cache holding conda and pip"
@@ -162,7 +163,7 @@ commands:
     steps:
       - restore_cache:
           keys:
-          - v10-dependencies-{{ arch }}-{{ parameters.condaenv }}-{{ checksum "/opt/conda/envs/test-environment/conda-meta/history" }}
+          - v10-dependencies-{{ arch }}-{{ << parameters.condaenv >> }}-{{ checksum "/opt/conda/envs/test-environment/conda-meta/history" }}
           # fallback to using the latest cache if no exact match is found
           - v10-dependencies-
 
