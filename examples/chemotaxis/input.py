@@ -33,7 +33,7 @@ from builtins import range
 from examples.chemotaxis.parameters import parameters
 
 from fipy import input
-from fipy import CellVariable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer
+from fipy import CellVariable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer, numerix
 
 params = parameters['case 2']
 

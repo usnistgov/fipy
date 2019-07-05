@@ -32,7 +32,7 @@ from __future__ import unicode_literals
 from builtins import range
 from examples.chemotaxis.parameters import parameters
 from fipy import input
-from fipy import CellVariable, Grid2D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer
+from fipy import CellVariable, Grid2D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer, numerix
 
 params = parameters['case 2']
 
