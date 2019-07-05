@@ -333,34 +333,56 @@ class _PETScMatrix(_SparseMatrix):
         return ids
 
     @property
-    def numpyArray(self):
-        import tempfile
-        import os
-        from scipy.io import mmio
-        from fipy.tools import parallelComm
+    def _scipy_csr(self):
+        """Return the petsc-ordered CSR matrix
+        """
+        from scipy import sparse
+        mpi4pycomm = self.matrix.comm.tompi4py()
 
-        if parallelComm.procID == 0:
-            (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
-        else:
-            mtxName = None
+        self.matrix.assemblyBegin()
+        self.matrix.assemblyEnd()
 
-        mtxName = parallelComm.bcast(mtxName)
+        indptr, indices, data = self.matrix.getValuesCSR()
 
-        self.exportMmf(mtxName)
+        # getValuesCSR() returns entries local to node
+        # with node-relative indptr.
+        # sparse.csr_matrix() requires all elements for construction
+        # and global indptr
 
-        parallelComm.Barrier()
-        mtx = mmio.mmread(mtxName)
-        parallelComm.Barrier()
+        offset = numerix.cumsum([0] + mpi4pycomm.allgather(len(data)))
+        offset = mpi4pycomm.scatter(offset[:-1])
 
-        if parallelComm.procID == 0:
-            os.remove(mtxName)
+        indices = numerix.concatenate(mpi4pycomm.allgather(indices))
+        data = numerix.concatenate(mpi4pycomm.allgather(data))
 
-        coo = mtx.tocoo()
+        # strip local end markers and append global end marker
+        indptr = mpi4pycomm.allgather(indptr[:-1] + offset) + [[len(data)]]
+        indptr = numerix.concatenate(indptr)
+
         (rows, globalRows), (cols, globalCols) = self.matrix.getSizes()
-        numpyArray = numerix.zeros((globalRows, globalCols), 'd')
-        numpyArray[self._petsc2app(coo.row), 
-                   self._petsc2app(coo.col)] = coo.data
-        return numpyArray
+
+        return sparse.csr_matrix((data, indices, indptr),
+                                 shape=(globalRows, globalCols))
+
+    @property
+    def _scipy_coo(self):
+        """Return the application-ordered COO matrix
+        """
+        from scipy import sparse
+
+        coo = self._scipy_csr.tocoo()
+        return sparse.coo_matrix((coo.data,
+                                  (self._petsc2app(coo.row),
+                                   self._petsc2app(coo.col))),
+                                 shape=coo.shape)
+
+    @property
+    def numpyArray(self):
+        # self.matrix.getDenseArray() raises
+        # [0] MatDenseGetArray() line 1782 in .../src/mat/impls/dense/seq/dense.c
+        # [0] No support for this operation for this object type
+        # [0] Cannot locate function MatDenseGetArray_C in object
+        return self._scipy_coo.toarray()
                 
     def matvec(self, x):
         """
@@ -372,12 +394,9 @@ class _PETScMatrix(_SparseMatrix):
         """
         Exports the matrix to a Matrix Market file of the given filename.
         """
-        viewer = PETSc.Viewer().createASCII(name=filename, mode='w', 
-                                            format=PETSc.Viewer.Format.ASCII_MATRIXMARKET)
-        self.matrix.assemblyBegin()
-        self.matrix.assemblyEnd()
-        viewer.view(obj=self.matrix)
-        viewer.destroy()
+        from scipy.io import mmio
+
+        mmio.mmwrite(filename, self._scipy_coo)
     
 class _PETScMatrixFromShape(_PETScMatrix):
     

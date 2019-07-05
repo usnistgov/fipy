@@ -242,6 +242,14 @@ class _ScipyMatrix(_SparseMatrix):
         """
         return self * x
 
+    def exportMmf(self, filename):
+        """
+        Exports the matrix to a Matrix Market file of the given filename.
+        """
+        from scipy.io import mmio
+
+        mmio.mmwrite(filename, self.matrix)
+
     def __getitem__(self, indices):
         return self.matrix[indices]
 
