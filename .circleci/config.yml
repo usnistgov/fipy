@@ -144,7 +144,7 @@ commands:
           paths:
             - /opt/conda
             - /root/.cache/pip
-          key: v8-dependencies-{{ arch }}
+          key: v9-dependencies-{{ arch }}
 
   restore_conda_cache:
     description: "Restore cache holding conda and pip"
@@ -152,9 +152,9 @@ commands:
     steps:
       - restore_cache:
           keys:
-          - v8-dependencies-{{ arch }}
+          - v9-dependencies-{{ arch }}
           # fallback to using the latest cache if no exact match is found
-          - v8-dependencies-
+          - v9-dependencies-
 
   install_dependencies:
     steps:
