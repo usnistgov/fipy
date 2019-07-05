@@ -38,7 +38,7 @@ commands:
           command: |
             conda create -v --quiet --prefix << parameters.condaenv >> --show-channel-urls --channel conda-forge --only-deps << parameters.packages >>
             source activate ~/project/<< parameters.condaenv >>
-            conda install --quiet --channel conda-forge petsc4py
+            conda install --quiet --channel conda-forge petsc4py blas=*=mkl
             pip install future
             pip install scikit-fmm
 
@@ -226,7 +226,7 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=2.7 fipy"
+          packages: "python=2.7 fipy blas=*=mkl"
           condaenv: "test-environment-27"
 
   conda3_env:
@@ -234,7 +234,7 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=3.6 fipy"
+          packages: "python=3.6 fipy blas=*=mkl"
           condaenv: "test-environment-36"
 
   test-27-pysparse:
