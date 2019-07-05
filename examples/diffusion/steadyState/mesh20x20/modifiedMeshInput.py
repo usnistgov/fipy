@@ -61,19 +61,14 @@ True
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var)
 ...     viewer.plot()
-...     
+...
 ...     errorViewer = Viewer(vars=errorVar)
 ...     errorViewer.plot()
 ...
 ...     NOViewer = Viewer(vars=NonOrthoVar)
 ...     NOViewer.plot()
-...     
-...     raw_input("finished")
-
-Note that this test case will only work if you run it by running the
-main FiPy test suite. If you run it directly from the directory it is
-in it will not be able to find the mesh file.
-
+...
+...     input("finished")
 """
 from __future__ import unicode_literals
 

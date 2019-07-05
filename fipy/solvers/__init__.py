@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from builtins import str
 import os
 
 from fipy.tools.parser import _parseSolver
