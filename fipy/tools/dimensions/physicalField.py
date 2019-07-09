@@ -2132,7 +2132,7 @@ def _getUnitStrings():
 
     def _getSortedUnitStrings(unitDict):
         strings = []
-        keys = [str(key) for key in unitDict.keys()]
+        keys = [str(key) for key in list(unitDict.keys())]
         keys.sort(key=str.lower)
         for key in keys:
             if key in unitDict:

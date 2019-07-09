@@ -1,3 +1,6 @@
+from __future__ import division
+from builtins import zip
+from builtins import range
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -181,7 +184,7 @@ class _PETScMatrix(_SparseMatrix):
 
     @property
     def _range(self):
-        return range(self._shape[1]), range(self._shape[0])
+        return list(range(self._shape[1])), list(range(self._shape[0]))
         
     def put(self, vector, id1, id2):
         """
@@ -390,7 +393,7 @@ class _PETScMatrixFromShape(_PETScMatrix):
         """
         bandwidth = bandwidth 
         if (bandwidth == 0) and (sizeHint is not None):
-            bandwidth = sizeHint / max(rows, cols)
+            bandwidth = sizeHint // max(rows, cols)
         if matrix is None:
             matrix = PETSc.Mat()
             matrix.create(comm)
@@ -495,7 +498,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
 
     @property
     def _globalCommonColIDs(self):
-        return range(0, self.numberOfVariables, self.mesh.globalNumberOfCells)
+        return list(range(0, self.numberOfVariables, self.mesh.globalNumberOfCells))
                      
     @property
     def _globalOverlappingColIDs(self):
