@@ -58,17 +58,17 @@ class _PETScMatrix(_SparseMatrix):
         
             >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-            >>> print L + _PETScIdentityMatrix(size=3)
+            >>> print(L + _PETScIdentityMatrix(size=3))
              1.000000  10.000000   3.000000  
                 ---     4.141593      ---    
              2.500000      ---     1.000000  
              
-            >>> print L + 0
+            >>> print(L + 0)
                 ---    10.000000   3.000000  
                 ---     3.141593      ---    
              2.500000      ---        ---    
             
-            >>> print L + 3
+            >>> print(L + 3)
             Traceback (most recent call last):
             ...
             AttributeError: 'int' object has no attribute 'matrix'
@@ -192,7 +192,7 @@ class _PETScMatrix(_SparseMatrix):
         
             >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-            >>> print L
+            >>> print(L)
                 ---    10.000000   3.000000  
                 ---     3.141593      ---    
              2.500000      ---        ---    
@@ -273,12 +273,12 @@ class _PETScMatrix(_SparseMatrix):
         
             >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=1)
             >>> L.putDiagonal([3.,10.,numerix.pi])
-            >>> print L
+            >>> print(L)
              3.000000      ---        ---    
                 ---    10.000000      ---    
                 ---        ---     3.141593  
             >>> L.putDiagonal([10.,3.])
-            >>> print L
+            >>> print(L)
             10.000000      ---        ---    
                 ---     3.000000      ---    
                 ---        ---     3.141593  
@@ -311,7 +311,7 @@ class _PETScMatrix(_SparseMatrix):
             >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
-            >>> print L
+            >>> print(L)
             12.300000  10.000000   3.000000  
                 ---     3.141593   2.960000  
              2.500000      ---     2.200000  
@@ -722,11 +722,11 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
         # FIXME: are these names even right? is this a good test?
         
         >>> col, row, val = m.matrix.getValuesCSR()
-        >>> print numerix.allequal(col, [0, 1, 2, 3])
+        >>> print(numerix.allequal(col, [0, 1, 2, 3]))
         True
-        >>> print numerix.allequal(row, [1, 0, 2])
+        >>> print(numerix.allequal(row, [1, 0, 2]))
         True
-        >>> print numerix.allclose(val, [1., 2., 0.])
+        >>> print(numerix.allclose(val, [1., 2., 0.]))
         True
         """
         pass
@@ -738,7 +738,7 @@ class _PETScIdentityMatrix(_PETScMatrixFromShape):
     def __init__(self, size, bandwidth=1, comm=PETSc.COMM_SELF):
         """Create a sparse matrix with '1' in the diagonal
         
-            >>> print _PETScIdentityMatrix(size=3)
+            >>> print(_PETScIdentityMatrix(size=3))
              1.000000      ---        ---    
                 ---     1.000000      ---    
                 ---        ---     1.000000  
@@ -754,7 +754,7 @@ class _PETScIdentityMeshMatrix(_PETScIdentityMatrix):
             >>> from fipy import Grid1D
             >>> from fipy.tools import serialComm
             >>> mesh = Grid1D(nx=3, communicator=serialComm)
-            >>> print _PETScIdentityMeshMatrix(mesh=mesh)
+            >>> print(_PETScIdentityMeshMatrix(mesh=mesh))
              1.000000      ---        ---    
                 ---     1.000000      ---    
                 ---        ---     1.000000  
