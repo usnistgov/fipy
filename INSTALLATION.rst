@@ -360,4 +360,4 @@ Nix
 
 .. _nixinstall:
 
-.. include:: nix/README.rst
+.. include:: documentation/NIX-README.rst
