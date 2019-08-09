@@ -41,6 +41,7 @@ version of :term:`FiPy`. To test your installation use::
    :term:`Trilinos` is currently not available as part of the Nix
    :term:`FiPy` installation.
 
+
 Additional Packages
 -------------------
 
