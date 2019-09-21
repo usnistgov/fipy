@@ -521,7 +521,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ...         initialRes = res
 ...     res = res / initialRes
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 ...     input("Stationary phase field. Press <return> to proceed...")
@@ -609,7 +609,7 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input("Moving phase field. Press <return> to proceed...")
 

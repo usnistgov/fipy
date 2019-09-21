@@ -72,9 +72,9 @@ resemble the image below.
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
 
+from fipy import input
 from fipy import CellVariable, SurfactantVariable, TransientTerm, FirstOrderAdvectionTerm, MultiViewer, Viewer
 from fipy.tools import numerix
 from .trenchMesh import TrenchMesh

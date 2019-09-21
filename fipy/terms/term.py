@@ -1,11 +1,11 @@
 from __future__ import division
 from __future__ import unicode_literals
 from builtins import object
-from builtins import input
 __docformat__ = 'restructuredtext'
 
 import os
 
+from fipy import input
 from fipy.tools import numerix
 from fipy.terms import AbstractBaseClassError
 from fipy.terms import SolutionVariableRequiredError

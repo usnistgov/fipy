@@ -29,7 +29,7 @@ for :class:`~fipy.terms.convectionTerm.ConvectionTerm`. For ``nx = 1000`` the :c
 >>> convCoeff = 1.0
 >>> peclet = 1e-3
 >>> allcloseList = []
->>> from builtins import input
+>>> from fipy import input
 >>> from builtins import str
 >>> while peclet < 1e4:
 ...     var[:] = valueLeft

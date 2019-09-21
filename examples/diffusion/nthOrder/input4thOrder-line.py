@@ -15,9 +15,9 @@
 from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
 
+from fipy import input
 from fipy import CellVariable, Grid1D, LinearLUSolver, NthOrderBoundaryCondition, DiffusionTerm, Viewer
 
 Lx = 1.

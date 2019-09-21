@@ -55,10 +55,10 @@ data and compares it with the ``theta`` variable.
 """
 from __future__ import division
 from __future__ import unicode_literals
-from builtins import input
 from builtins import range
 __docformat__ = 'restructuredtext'
 
+from fipy import input
 from fipy import CellVariable, ModularVariable, Grid1D, TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, Viewer
 from fipy.tools import numerix
 

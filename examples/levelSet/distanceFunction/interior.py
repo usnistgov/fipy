@@ -36,9 +36,9 @@ Do the tests:
 
 """
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
 
+from fipy import input
 from fipy import Grid2D, DistanceVariable, Viewer
 from fipy.tools import numerix, serialComm
 

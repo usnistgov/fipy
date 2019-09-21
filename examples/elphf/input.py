@@ -210,7 +210,7 @@ And Poisson's equation
 
 If running interactively, we create viewers to display the results
 
-    >>> from builtins import input
+    >>> from fipy import input
     >>> if __name__ == '__main__':
     ...     phaseViewer = Viewer(vars=phase, datamin=0, datamax=1)
     ...     concViewer = Viewer(vars=[solvent] + substitutionals + interstitials, ylog=True)
@@ -334,8 +334,9 @@ their respective phases
     1
 """
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
+
+from fipy import input
 
 ## def _test():
 ##     import doctest

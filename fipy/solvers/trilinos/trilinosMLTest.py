@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import Epetra
@@ -9,6 +8,7 @@ from PyTrilinos import AztecOO
 from PyTrilinos import ML
 from PyTrilinos import IFPACK
 
+from fipy import input
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.tools import numerix
 

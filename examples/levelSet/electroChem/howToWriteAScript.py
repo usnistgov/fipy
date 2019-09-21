@@ -425,7 +425,7 @@ to tell if something has changed or been broken.
 >>> print(catalystVar.allclose(numerix.loadtxt(filepath), rtol=1e-4)) #doctest: +LSMLIB
 1
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input('finished')
 """

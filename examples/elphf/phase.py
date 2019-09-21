@@ -166,8 +166,9 @@ If we are running interactively, we plot the error
    :alt: error in solution to steady-state phase field equation
 """
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
+
+from fipy import input
 
 if __name__ == '__main__':
 ##     from fipy.tools.profiler.profiler import Profiler

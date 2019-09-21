@@ -153,7 +153,7 @@ We then solve the equation by repeatedly looping in time:
 >>> print(phi.allclose(phiAnalytical, atol = 7e-4)) # doctest: +SCIPY
 1
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input("Explicit transient diffusion. Press <return> to proceed...")
 
@@ -199,7 +199,7 @@ and rerun with much larger time steps
 >>> print(phi.allclose(phiAnalytical, atol = 2e-2)) # doctest: +SCIPY
 1
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input("Implicit transient diffusion. Press <return> to proceed...")
 
@@ -245,7 +245,7 @@ of the fully implicit scheme to drive down the error
 >>> print(phi.allclose(phiAnalytical, atol = 3e-3)) # doctest: +SCIPY
 1
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input("Crank-Nicholson transient diffusion. Press <return> to proceed...")
 
@@ -277,7 +277,7 @@ of :math:`10^{-10}`.
 ...                    rtol = 1e-10, atol = 1e-10))
 1
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input("Implicit steady-state diffusion. Press <return> to proceed...")
 
@@ -323,7 +323,7 @@ condition will automatically update,
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input("Time-dependent boundary condition. Press <return> to proceed...")
 
@@ -416,7 +416,7 @@ or
 
 And finally, we can plot the result
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     Viewer(vars=(phi, phiAnalytical)).plot()
 ...     input("Non-uniform steady-state diffusion. Press <return> to proceed...")
@@ -498,7 +498,7 @@ Comparing to the correct analytical solution, :math:`\phi = x`
 
 and finally, plot
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     Viewer(vars=(phiT, phiF)).plot()
 ...     input("Non-uniform thermal conductivity. Press <return> to proceed...")
@@ -603,7 +603,7 @@ used as part of the exit condition.
 We now repeatedly run the problem with increasing numbers of
 sweeps.
 
->>> from builtins import input
+>>> from fipy import input
 >>> from builtins import range
 >>> for sweeps in range(1, 5):
 ...     phi[0].setValue(valueRight)
@@ -651,7 +651,7 @@ can just solve for it directly
 >>> print(phi[0].allclose(phiAnalytical, atol = 1e-1))
 1
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 ...     input("Implicit variable diffusivity - steady-state. \
@@ -697,7 +697,7 @@ conditions, and solve
 ...     eq.solve(var=phi, dt=dt)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input("No-flux - transient. \
 ... Press <return> to proceed...")
@@ -725,7 +725,7 @@ and solve the steady-state problem
 >>> DiffusionTerm(coeff=D).solve(var=phi) #doctest: +PYSPARSE_SOLVER
 >>> if __name__ == '__main__':
 ...     viewer.plot()
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input("No-flux - stead-state failure. \
 ... Press <return> to proceed...")
@@ -787,7 +787,7 @@ The solution is to run the transient problem and to take one enormous time step
 >>> (TransientTerm() == DiffusionTerm(D)).solve(var=phi, dt=1e6*dt)
 >>> if __name__ == '__main__':
 ...     viewer.plot()
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input("No-flux - steady-state. \
 ... Press <return> to proceed...")
@@ -834,7 +834,7 @@ remaining lines, leaving::
      #
      if __name__ == '__main__':
          viewer.plot()
-         raw_input("Implicit variable diffusivity - steady-state. \
+         input("Implicit variable diffusivity - steady-state. \
      Press <return> to proceed...")
 
 Your own scripts will tend to look like this, although you can always write

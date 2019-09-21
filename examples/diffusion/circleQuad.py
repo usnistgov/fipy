@@ -51,7 +51,7 @@ Using this mesh, we can construct a solution variable
 We can now create a :class:`Viewer <~fipy.viewers.viewer.AbstractViewer>` to see the mesh
 
 >>> viewer = None
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     try:
 ...         viewer = Viewer(vars=phi, datamin=-1, datamax=1.)
@@ -143,7 +143,7 @@ vertical positions
 >>> print(phi.allclose(phiAnalytical, atol = 7e-2)) # doctest: +GMSH, +SCIPY
 1
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input("Transient diffusion. Press <return> to proceed...")
 
@@ -161,7 +161,7 @@ The values at the elements should be equal to their `x` coordinate
 
 Display the results if run as a script.
 
->>> from builtins import input
+>>> from fipy import input
 >>> if viewer is not None:
 ...     viewer.plot()
 ...     input("Steady-state diffusion. Press <return> to proceed...")
