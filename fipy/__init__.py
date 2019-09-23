@@ -32,7 +32,10 @@ electrodeposition process :cite:`NIST:damascene:2001`.
 .. _NIST:                 http://www.nist.gov/
 """
 from __future__ import unicode_literals
+from builtins import input
 __docformat__ = 'restructuredtext'
+
+import sys
 
 from fipy.boundaryConditions import *
 from fipy.meshes import *
@@ -55,41 +58,21 @@ __all__.extend(viewers.__all__)
 
 # fipy needs to export raw_input whether or not parallel
 
-import sys
-if sys.version_info >= (3, 0):
-    input = input
-    input_original = input
+input_original = input
 
-    if parallelComm.Nproc > 1:
-        def mpi_input(prompt=""):
-            parallelComm.Barrier()
+if parallelComm.Nproc > 1:
+    def mpi_input(prompt=""):
+        parallelComm.Barrier()
+        sys.stdout.flush()
+        if parallelComm.procID == 0:
+            sys.stdout.write(prompt)
             sys.stdout.flush()
-            if parallelComm.procID == 0:
-                sys.stdout.write(prompt)
-                sys.stdout.flush()
-                return sys.stdin.readline()
-            else:
-                return ""
-        input = mpi_input
+            return sys.stdin.readline()
+        else:
+            return ""
+    input = mpi_input
 
-    __all__.extend(['input', 'input_original'])
-else:
-    raw_input = raw_input
-    raw_input_original = raw_input
-
-    if parallelComm.Nproc > 1:
-        def mpi_raw_input(prompt=""):
-            parallelComm.Barrier()
-            sys.stdout.flush()
-            if parallelComm.procID == 0:
-                sys.stdout.write(prompt)
-                sys.stdout.flush()
-                return sys.stdin.readline()
-            else:
-                return ""
-        raw_input = mpi_raw_input
-
-    __all__.extend(['raw_input', 'raw_input_original'])
+__all__.extend(['input', 'input_original'])
 
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]

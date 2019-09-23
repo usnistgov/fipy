@@ -35,10 +35,9 @@ tolerance of `1e-10`.
 from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
-
-from builtins import input
 __docformat__ = 'restructuredtext'
 
+from fipy import input
 from fipy import Tri2D, CellVariable, DiffusionTerm, Viewer
 
 nx = 50

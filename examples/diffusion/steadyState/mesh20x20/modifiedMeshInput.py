@@ -42,7 +42,7 @@ The result is again tested in the same way:
 
 >>> DiffusionTerm().solve(var) # doctest: +GMSH
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = var)
 ...     viewer.plot()

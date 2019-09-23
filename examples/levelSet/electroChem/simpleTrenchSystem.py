@@ -131,10 +131,10 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
-from builtins import input
 from builtins import range
 __docformat__ = 'restructuredtext'
 
+from fipy import input
 from fipy import CellVariable, DistanceVariable, SurfactantVariable, Grid2D, TransientTerm, AdvectionTerm, GeneralSolver, Viewer, MultiViewer
 from fipy.tools import numerix
 from .metalIonDiffusionEquation import buildMetalIonDiffusionEquation

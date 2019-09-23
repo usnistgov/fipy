@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
 
 import os
 
+from fipy import input
 from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 from fipy.tools import vector
 from fipy.tools import numerix

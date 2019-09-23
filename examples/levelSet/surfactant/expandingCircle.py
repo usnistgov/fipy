@@ -58,10 +58,10 @@ Test for the correct position of the interface:
 from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
-from builtins import input
 from builtins import range
 __docformat__ = 'restructuredtext'
 
+from fipy import input
 from fipy import CellVariable, SurfactantVariable, Grid2D, DistanceVariable, TransientTerm, ExplicitUpwindConvectionTerm, AdvectionTerm, Viewer
 from fipy.tools import numerix
 

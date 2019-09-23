@@ -22,7 +22,7 @@ The result is again tested in the same way:
 """
 from __future__ import unicode_literals
 
-from builtins import input
+from fipy import input
 from fipy import CellVariable, Tri2D, DiffusionTerm, Viewer
 
 nx = 50

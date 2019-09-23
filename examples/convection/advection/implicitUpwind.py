@@ -6,7 +6,7 @@ from __future__ import division
 from __future__ import unicode_literals
 
 from builtins import range
-from builtins import input
+from fipy import input
 from fipy import CellVariable, Grid1D, TransientTerm, PowerLawConvectionTerm, LinearLUSolver, Viewer
 from fipy.tools import numerix
 

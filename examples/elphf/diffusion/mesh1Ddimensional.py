@@ -120,9 +120,9 @@ we verify that the concentrations have become uniform
    be checked, but the relative tolerance `rtol` is dimensionless.
 """
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
 
+from fipy import input
 
 if __name__ == '__main__':
     ## from fipy.tools.profiler.profiler import Profiler

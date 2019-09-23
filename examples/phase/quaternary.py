@@ -409,7 +409,7 @@ from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 
-from builtins import input
+from fipy import input
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

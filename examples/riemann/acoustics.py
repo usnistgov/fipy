@@ -9,9 +9,9 @@ from __future__ import division
 from __future__ import unicode_literals
 
 from builtins import range
-from builtins import input
 __docformat__ = 'restructuredtext'
 
+from fipy import input
 from fipy import CellVariable, FaceVariable, Grid1D, TransientTerm, CentralDifferenceConvectionTerm
 from fipy.tools import numerix
 

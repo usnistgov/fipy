@@ -5,8 +5,8 @@ order explicit upwind scheme.
 from __future__ import division
 from __future__ import unicode_literals
 
-from builtins import input
 from builtins import range
+from fipy import input
 from fipy import CellVariable, Grid1D, TransientTerm, ExplicitUpwindConvectionTerm, LinearLUSolver, Viewer
 from fipy.tools import numerix
 
