@@ -337,11 +337,28 @@ class _PETScMatrix(_SparseMatrix):
         """Return the petsc-ordered CSR matrix
         """
         from scipy import sparse
+        mpi4pycomm = self.matrix.comm.tompi4py()
 
         self.matrix.assemblyBegin()
         self.matrix.assemblyEnd()
 
         indptr, indices, data = self.matrix.getValuesCSR()
+
+        # getValuesCSR() returns entries local to node
+        # with node-relative indptr.
+        # sparse.csr_matrix() requires all elements for construction
+        # and global indptr
+
+        offset = numerix.cumsum([0] + mpi4pycomm.allgather(len(data)))
+        offset = mpi4pycomm.scatter(offset[:-1])
+
+        indices = numerix.concatenate(mpi4pycomm.allgather(indices))
+        data = numerix.concatenate(mpi4pycomm.allgather(data))
+
+        # strip local end markers and append global end marker
+        indptr = mpi4pycomm.allgather(indptr[:-1] + offset) + [[len(data)]]
+        indptr = numerix.concatenate(indptr)
+
         (rows, globalRows), (cols, globalCols) = self.matrix.getSizes()
 
         return sparse.csr_matrix((data, indices, indptr),
@@ -361,6 +378,10 @@ class _PETScMatrix(_SparseMatrix):
 
     @property
     def numpyArray(self):
+        # self.matrix.getDenseArray() raises
+        # [0] MatDenseGetArray() line 1782 in .../src/mat/impls/dense/seq/dense.c
+        # [0] No support for this operation for this object type
+        # [0] Cannot locate function MatDenseGetArray_C in object
         return self._scipy_coo.toarray()
                 
     def matvec(self, x):
