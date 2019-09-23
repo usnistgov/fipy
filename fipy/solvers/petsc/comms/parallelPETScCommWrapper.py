@@ -77,8 +77,8 @@ class ParallelPETScCommWrapper(PETScCommWrapper):
     def bcast(self, obj=None, root=0):
         return self.mpi4py_comm.bcast(obj=obj, root=root)
 
-    def allgather(self, sendobj=None, recvobj=None):
-        return self.mpi4py_comm.allgather(sendobj=sendobj, recvobj=recvobj)
+    def allgather(self, sendobj=None):
+        return self.mpi4py_comm.allgather(sendobj=sendobj)
 
     def sum(self, a, axis=None):
         return self.mpi4py_comm.allreduce(numerix.array(a).sum(axis=axis), op=MPI.SUM)
