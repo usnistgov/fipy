@@ -143,6 +143,8 @@ def _OperatorVariableClass(baseClass=object):
             def _popIndex():
                 return bytecodes.pop(0) + bytecodes.pop(0) * 256
 
+            allbytecodes = bytecodes[:]
+
             stack = []
 
             while len(bytecodes) > 0:
@@ -185,10 +187,11 @@ def _OperatorVariableClass(baseClass=object):
                 elif bytecode in self._binop:
                     stack.append(stack.pop(-2) + " " + self._binop[bytecode] + " " + stack.pop())
                 else:
-                    raise SyntaxError("Unknown bytecode: %s in %s of %s" % (
+                    raise SyntaxError("Unknown bytecode: %s in %s of %s, got %s" % (
                        repr(bytecode),
                        repr([bytecode] + bytecodes),
-                       repr(_getByteCode())))
+                       repr(allbytecodes),
+                       repr(stack)))
 
         def _py3kInstructions(self, instructions, style, argDict, id, freshen):
             stack = []
