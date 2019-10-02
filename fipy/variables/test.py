@@ -20,7 +20,6 @@ def _suite():
             'fipy.variables.gammaNoiseVariable',
             'fipy.variables.gaussianNoiseVariable',
             'fipy.variables.uniformNoiseVariable',
-            'fipy.variables.cellVolumeAverageVariable',
             'fipy.variables.modularVariable',
             'fipy.variables.binaryOperatorVariable',
             'fipy.variables.unaryOperatorVariable',
