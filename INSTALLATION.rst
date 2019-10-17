@@ -342,7 +342,7 @@ Our preferred development environment is set up with::
    $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy
    $ source activate <MYFIPYENV>
    $ pip install scikit-fmm
-   $ conda remove --channel conda-forge fipy
+   $ conda remove --channel conda-forge --force fipy
    $ git clone https://github.com/usnistgov/fipy.git
    $ cd fipy
    $ python setup.py develop
