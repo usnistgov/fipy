@@ -117,7 +117,7 @@ Recommended Method
    its :ref:`examples <part:examples>`.  These can be obtained by
    `cloning the repository`_ or downloading a `compressed archive`_.
 
-.. _install Miniconda: http://conda.pydata.org/docs/install/quick.html
+.. _install Miniconda: https://conda.io/projects/conda/en/latest/user-guide/install
 .. _guyer: https://anaconda.org/guyer
 .. _conda-forge: https://conda-forge.github.io/
 .. _Mac OS X: http://www.apple.com/macosx/
