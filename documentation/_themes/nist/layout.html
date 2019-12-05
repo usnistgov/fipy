@@ -23,36 +23,21 @@
       <div class="page-info">
         <a id="main-content"></a>
       </div>
-      
+
       <div class="document">
     {%- block document %}
         <div class="documentwrapper">
 
       <div id="content" class="column">
-        <section class="panel-display panel--generic  clearfix no-menu">
+      <div id="block-nist-www-content" class="nist-block">
+        <section class="nist-page__content usa-section clearfix">
 
-  
-  
-          <div class="panel-region--preface">
-          <div class="inner region-inner inside">
-          <div class="nist-breadcrumb"><a class="nist-breadcrumb__link"  href="https://www.nist.gov/services-resources/software">Software</a></div>
-            
-          <div class="pane-social-share pane pane--social-share-social-share" >
-      
-                  <h2 class="pane__title">Share</h2>
-            
-        
-        <div class="social-share clearfix"><a 
-        href="http://facebook.com/sharer.php?u=https%3A%2F%2Fwww.nist.gov%2Fctcms%2Ffipy&amp;t=FiPy" class="social-share-facebook" title="Facebook">Facebook</a>&nbsp;<a href="https://plus.google.com/share?url=https%3A%2F%2Fwww.nist.gov%2Fctcms%2Ffipy" class="social-share-googleplus" title="Google Plus">Google Plus</a>&nbsp;<a href="http://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.nist.gov%2Fctcms%2Ffipy&amp;text=FiPy" class="social-share-twitter" title="Twitter">Twitter</a>&nbsp;</div>
-        
-        </div>
-          </div>
-        </div>
-        
-        <section class="content-area-container clearfix right-sidebar">
-        
+        {% block nistsoftwarebutton %} {% endblock %}
 
-  <div class="panel-region--content">
+        <div class="grid-container margin-top-4">
+        <div class="grid-row grid-gap-6">
+
+  <div class="nist-page__region nist-page__region--content tablet-lg:grid-col-8">
               <div class="body" role="main">
 		{% block body %} {% endblock %}
               {%- if show_copyright %}
@@ -72,29 +57,24 @@
                 </div>
               </div>
   </div>  
-  <div class="panel-region--right-sidebar">
+  <aside class="nist-page__region nist-page__region--sidebar-second tablet-lg:grid-col-4">
   {%- block sidebar1 %}{{ sidebar() }}{% endblock %}
       <div class="clearer"></div>
-  </div>
-        </section>
+  </aside>
+        </div>
+      </div>
 
-  
-
-  
       <div class="panel-region--postface">
       <div class="inner region-inner inside">
         
 <div class="pane pane--nist-node-date-pane" >
-  
-            
-    
-    
+
     </div>
       </div>
     </div>
-  
 
         </section>
+        </div>
       </div>
 
       </div>
@@ -105,8 +85,6 @@
 
   </div>
 
-    
-
 </div>
 {% endblock %}
 {% block sidebarlogo %}
@@ -115,5 +93,4 @@
 Version {{ release }}
 {% endblock %}
 {% block footer %}
-{{ super() }}
 {% endblock %}

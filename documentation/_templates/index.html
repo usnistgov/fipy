@@ -1,4 +1,18 @@
 {% extends "layout.html" %}
+{% block nistsoftwarebutton %}
+  <div class="grid-container margin-top-4">
+  <div class="nist-page__region nist-page__region--content-top">
+
+      <div
+      data-layout-content-preview-placeholder-label="&quot;NIST Software Button&quot; block"
+      class="nist-block">
+          <a class="usa-button usa-button--accent-cool"
+          href="https://www.nist.gov/services-resources/software">Software</a>
+      </div>
+
+  </div>
+  </div>
+{% endblock %}
 {% block body %}
   <h1>FiPy: A Finite Volume PDE Solver Using Python</h1>
   <p><a class="reference external"
@@ -134,9 +148,9 @@
      </td></tr>
    </table>
 
-   <h2><a href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy/releases">Download</a></h2>
+   <h2 class="contentstablelink"><a href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy/releases">Download</a></h2>
 
-   <h2><a href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy">FiPy@GitHub</a></h2>
+   <h2 class="contentstablelink"><a href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy">FiPy@GitHub</a></h2>
    <table class="contentstable" align="center"><tr>
      <td width="50%">
        <p class="biglink"><a class="biglink" 
