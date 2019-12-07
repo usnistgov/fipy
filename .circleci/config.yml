@@ -32,13 +32,11 @@ commands:
         type: string
         default: ""
 
-    working_directory: ~/condaenv
-
     steps:
       - run:
           name: Create Conda Environment
           command: |
-            conda create -v --quiet --prefix << parameters.condaenv >> --show-channel-urls --channel conda-forge --only-deps << parameters.packages >>
+            conda create -v --quiet --prefix ~/condaenv/<< parameters.condaenv >> --show-channel-urls --channel conda-forge --only-deps << parameters.packages >>
             source activate ~/condaenv/<< parameters.condaenv >>
             pip install future
             pip install scikit-fmm
