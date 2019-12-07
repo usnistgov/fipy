@@ -375,7 +375,7 @@ jobs:
           command: |
             source activate ~/project/test-environment-27
             conda install --channel conda-forge sphinx future
-            pip install sphinxcontrib-bibtex <=0.4.2
+            pip install 'sphinxcontrib-bibtex<=0.4.2'
             pip install numpydoc
             conda install --channel conda-forge matplotlib pandas imagemagick
 
