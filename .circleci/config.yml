@@ -205,7 +205,7 @@ commands:
       - save_conda_cache
 
       - persist_to_workspace:
-          root: ~/condaenv
+          root: ~/project
           paths:
             - << parameters.condaenv >>
 
