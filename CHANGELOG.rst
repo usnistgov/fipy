@@ -56,7 +56,7 @@ Fixes
 - `#432 <https://github.com/usnistgov/fipy/issues/432>`_:
   Python 3 issues
 - `#340 <https://github.com/usnistgov/fipy/issues/340>`_:
-  Don't upload packages to PyPi, just add the master url
+  Don't upload packages to PyPI, just add the master url
 
 -----------
 Version 3.2
