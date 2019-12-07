@@ -32,8 +32,6 @@ commands:
         type: string
         default: ""
 
-    working_directory: ~/condaenv
-
     steps:
       - run:
           name: Create Conda Environment
