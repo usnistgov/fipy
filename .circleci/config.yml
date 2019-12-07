@@ -36,8 +36,8 @@ commands:
       - run:
           name: Create Conda Environment
           command: |
-            conda create -v --quiet --prefix ~/condaenv/<< parameters.condaenv >> --show-channel-urls --channel conda-forge --only-deps << parameters.packages >>
-            source activate ~/condaenv/<< parameters.condaenv >>
+            conda create -v --quiet --prefix << parameters.condaenv >> --show-channel-urls --channel conda-forge --only-deps << parameters.packages >>
+            source activate ~/project/<< parameters.condaenv >>
             pip install future
             pip install scikit-fmm
 
@@ -72,7 +72,7 @@ commands:
           name: Run Tests
           no_output_timeout: 30m
           command: |
-            source activate ~/condaenv/<< parameters.condaenv >>
+            source activate ~/project/<< parameters.condaenv >>
             python setup.py egg_info
             if [[ ! -z "${FIPY_INLINE}" ]]; then
               << parameters.mpirun >> python setup.py test > /dev/null 2>&1 || true;
@@ -82,7 +82,7 @@ commands:
       - run:
           name: Output Environment
           command: |
-            conda env export --prefix ~/condaenv/<< parameters.condaenv >>
+            conda env export --prefix ~/project/<< parameters.condaenv >>
 
       - store_artifacts:
           path: test-reports
@@ -100,7 +100,7 @@ commands:
       - run:
           name: Build Docs
           command: |
-            source activate ~/condaenv/<< parameters.condaenv >>
+            source activate ~/project/<< parameters.condaenv >>
             export ETS_TOOLKIT=null
             python setup.py build_docs --html
 
@@ -129,7 +129,7 @@ commands:
       - run:
           name: Build Docs
           command: |
-            source activate ~/condaenv/<< parameters.condaenv >>
+            source activate ~/project/<< parameters.condaenv >>
             export ETS_TOOLKIT=null
             python setup.py build_docs --pdf
 
@@ -295,7 +295,7 @@ jobs:
       - run:
           name: Lint
           command: |
-            source activate ~/condaenv/test-environment-27
+            source activate ~/project/test-environment-27
             pip install pylint
             pylint setup.py
 
@@ -313,7 +313,7 @@ jobs:
       - run:
           name: Lint
           command: |
-            source activate ~/condaenv/test-environment-27
+            source activate ~/project/test-environment-27
             pip install flake8
             flake8 setup.py
 
@@ -331,7 +331,7 @@ jobs:
       - run:
           name: Lint
           command: |
-            source activate ~/condaenv/test-environment-36
+            source activate ~/project/test-environment-36
             conda install --channel conda-forge black
             black --target-version py27 --fast --diff --check setup.py
 
@@ -349,7 +349,7 @@ jobs:
       - run:
           name: Spell Check
           command: |
-            source activate ~/condaenv/test-environment-36
+            source activate ~/project/test-environment-36
             conda install --channel conda-forge hunspell
             pip install pyspelling
             wget -O en_US.aff  https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
@@ -374,7 +374,7 @@ jobs:
       - run:
           name: install sphinx
           command: |
-            source activate ~/condaenv/test-environment-27
+            source activate ~/project/test-environment-27
             conda install --channel conda-forge sphinx future
             pip install sphinxcontrib-bibtex
             pip install numpydoc
@@ -404,7 +404,7 @@ jobs:
       - run:
           name: install sphinx
           command: |
-            source activate ~/condaenv/test-environment-36
+            source activate ~/project/test-environment-36
             conda install --channel conda-forge sphinx future
             pip install sphinxcontrib-bibtex
             pip install numpydoc
@@ -431,7 +431,7 @@ jobs:
       - run:
           name: build and test tarball
           command: |
-            source activate ~/condaenv/test-environment-36
+            source activate ~/project/test-environment-36
             python setup.py bdist_egg
             python setup.py release --unix
             FIPY_VERSION=`python setup.py --version`
