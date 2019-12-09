@@ -301,8 +301,10 @@ class _PETScMatrix(_SparseMatrix):
         return vector
 
     def takeDiagonal(self):
-        ids = numerix.arange(self._shape[0])
-        return self.take(ids, ids)
+        self.matrix.assemblyBegin()
+        self.matrix.assemblyEnd()
+
+        return self.matrix.getDiagonal()
 
     def addAt(self, vector, id1, id2):
         """
