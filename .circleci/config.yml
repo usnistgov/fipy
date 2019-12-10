@@ -351,7 +351,6 @@ jobs:
             source activate ~/project/test-environment-36
             conda install --channel conda-forge hunspell
             pip install pyspelling
-            cd fipy
             wget -O en_US.aff  https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
             wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
             pyspelling
@@ -376,7 +375,7 @@ jobs:
           command: |
             source activate ~/project/test-environment-27
             conda install --channel conda-forge sphinx future
-            pip install sphinxcontrib-bibtex
+            pip install 'sphinxcontrib-bibtex<=0.4.2'
             pip install numpydoc
             conda install --channel conda-forge matplotlib pandas imagemagick
 
