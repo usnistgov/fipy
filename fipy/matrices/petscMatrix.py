@@ -304,7 +304,7 @@ class _PETScMatrix(_SparseMatrix):
         self.matrix.assemblyBegin()
         self.matrix.assemblyEnd()
 
-        return self.matrix.getDiagonal()
+        return self.matrix.getDiagonal().array
 
     def addAt(self, vector, id1, id2):
         """
@@ -724,7 +724,17 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
                                             comm=self.matrix.comm)
                 self.matrix.mult(x, y)
                 return self._petsc2fipyGhost(vec=y)
-        
+
+    def takeDiagonal(self):
+        self.matrix.assemblyBegin()
+        self.matrix.assemblyEnd()
+
+        y = PETSc.Vec().createGhost(ghosts=self._ghosts.astype('int32'),
+                                    size=(len(self._localNonOverlappingColIDs), None),
+                                    comm=self.matrix.comm)
+        self.matrix.getDiagonal(result=y)
+        return self._petsc2fipyGhost(vec=y)
+
     def flush(self):
         """
         Deletes the copy of the PETSc matrix held.
