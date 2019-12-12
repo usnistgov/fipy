@@ -12,6 +12,7 @@ in
       jupyter
       pip
       pkgs.imagemagick
+      pkgs.git
     ] ++ old.propagatedBuildInputs;
     postShellHook = ''
       jupyter nbextension install --py widgetsnbextension --user
@@ -25,7 +26,7 @@ in
 
       ## To build the docs
       # pip install --user sphinx
-      # pip install --user sphinxcontrib-bibtex
+      # pip install --user "sphinxcontrib-bibtex<=0.4.2"
       # pip install --user git+https://github.com/thewtex/sphinx-contrib.git#subdirectory=traclinks
       # required for embedded plots in documentation
       # pip install --user pandas
