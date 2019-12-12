@@ -10,6 +10,7 @@ let
       jupyter nbextension install --py widgetsnbextension --user
       jupyter nbextension enable widgetsnbextension --user --py
     '' else "";
+    filter_pyamg = builtins.filter (x: ! ((pkgs.lib.hasInfix "pyamg" x.name) && pkgs.stdenv.isDarwin));
 in
   (pythonPackages.fipy.overridePythonAttrs (old: rec {
     src = builtins.filterSource (path: type: type != "directory" || baseNameOf path != ".git") ./.;
@@ -17,7 +18,10 @@ in
       pip
       pkgs.imagemagick
       pkgs.git
-    ] ++ old.propagatedBuildInputs ++ not_darwin_inputs;
+    ] ++ propagatedBuildInputs ++ not_darwin_inputs;
+
+    propagatedBuildInputs = (filter_pyamg old.propagatedBuildInputs);
+
     postShellHook = not_darwin_pre_shell_hook + ''
       SOURCE_DATE_EPOCH=$(date +%s)
       export PYTHONUSERBASE=$PWD/.local
