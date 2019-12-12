@@ -19,7 +19,7 @@ class LinearLUSolver(PETScSolver):
 
     """
       
-    def __init__(self, tolerance=1e-10, iterations=1000, precon="lu"):
+    def __init__(self, tolerance=1e-10, iterations=10, precon="lu"):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
