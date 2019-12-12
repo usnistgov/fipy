@@ -62,5 +62,5 @@ class LinearLUSolver(PETScSolver):
         if 'FIPY_VERBOSE_SOLVER' in os.environ:
             from fipy.tools.debug import PRINT        
             PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
-            PRINT('residual:', errorVector.narm(1))
+            PRINT('residual:', errorVector.norm(1))
 
