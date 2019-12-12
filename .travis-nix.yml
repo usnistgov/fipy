@@ -1,11 +1,11 @@
-# inspired by http://conda.pydata.org/docs/travis.html
-#
-# language: python causes grief on osx
+---
 language: nix
 os:
    - osx
 env:
-  - TRAVIS_PYTHON_VERSION=3.6 FIPY_SOLVERS=scipy
+  global:
+    - FIPY_SOLVERS=scipy
+    - STORE=$HOME/nix-store
 cache:
   directories:
     - $STORE
