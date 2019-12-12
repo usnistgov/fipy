@@ -1586,6 +1586,10 @@ class Gmsh2D(Mesh2D):
                                    mode='r',
                                    background=background)
 
+        # openMSHFile may have "downgraded" the communicator
+        # if, e.g., too many overlaps were requested
+        communicator = self.mshFile.communicator
+
         (verts,
          faces,
          cells,
@@ -1962,6 +1966,10 @@ class Gmsh3D(Mesh):
                                     overlap=overlap,
                                     mode='r',
                                     background=background)
+
+        # openMSHFile may have "downgraded" the communicator
+        # if, e.g., too many overlaps were requested
+        communicator = self.mshFile.communicator
 
         (verts,
          faces,
