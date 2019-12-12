@@ -1,7 +1,7 @@
 let
     pkgs = import (builtins.fetchGit {
       url = "https://github.com/NixOS/nixpkgs.git";
-      rev = "92e1376cc3e37ee72f1417df05032556d39853c1";
+      rev = "c2ae05d5973cc4f8842755f2807ac10e31bb2aa8";
       ref = "master";
     }) { };
     pythonPackages = pkgs.python3Packages;
