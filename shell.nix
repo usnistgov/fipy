@@ -5,19 +5,20 @@ let
       ref = "master";
     }) { };
     pythonPackages = pkgs.python3Packages;
+    not_darwin_inputs = pkgs.lib.optionals (! pkgs.stdenv.isDarwin ) [ pythonPackages.jupyter ];
+    not_darwin_pre_shell_hook = pkgs.lib.optionals (! pkgs.stdenv.isDarwin) ''
+      jupyter nbextension install --py widgetsnbextension --user
+      jupyter nbextension enable widgetsnbextension --user --py
+    '';
 in
   (pythonPackages.fipy.overridePythonAttrs (old: rec {
     src = builtins.filterSource (path: type: type != "directory" || baseNameOf path != ".git") ./.;
     nativeBuildInputs = with pythonPackages; [
-      jupyter
       pip
       pkgs.imagemagick
       pkgs.git
-    ] ++ old.propagatedBuildInputs;
-    postShellHook = ''
-      jupyter nbextension install --py widgetsnbextension --user
-      jupyter nbextension enable widgetsnbextension --user --py
-
+    ] ++ old.propagatedBuildInputs ++ not_darwin_inputs;
+    postShellHook = not_darwin_pre_shell_hook + ''
       SOURCE_DATE_EPOCH=$(date +%s)
       export PYTHONUSERBASE=$PWD/.local
       export USER_SITE=`python -c "import site; print(site.USER_SITE)"`
