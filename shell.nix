@@ -6,10 +6,10 @@ let
     }) { };
     pythonPackages = pkgs.python3Packages;
     not_darwin_inputs = pkgs.lib.optionals (! pkgs.stdenv.isDarwin ) [ pythonPackages.jupyter ];
-    not_darwin_pre_shell_hook = pkgs.lib.optionals (! pkgs.stdenv.isDarwin) ''
+    not_darwin_pre_shell_hook = if (! pkgs.stdenv.isDarwin) then ''
       jupyter nbextension install --py widgetsnbextension --user
       jupyter nbextension enable widgetsnbextension --user --py
-    '';
+    '' else "";
 in
   (pythonPackages.fipy.overridePythonAttrs (old: rec {
     src = builtins.filterSource (path: type: type != "directory" || baseNameOf path != ".git") ./.;
