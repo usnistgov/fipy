@@ -248,7 +248,7 @@ class _ScipyMatrix(_SparseMatrix):
         """
         from scipy.io import mmio
 
-        mmio.write(filename, self.matrix)
+        mmio.mmwrite(filename, self.matrix)
 
     def __getitem__(self, indices):
         return self.matrix[indices]

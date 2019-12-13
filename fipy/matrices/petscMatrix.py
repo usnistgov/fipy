@@ -398,7 +398,7 @@ class _PETScMatrix(_SparseMatrix):
         """
         from scipy.io import mmio
 
-        mmio.write(filename, self._scipy_coo)
+        mmio.mmwrite(filename, self._scipy_coo)
     
 class _PETScMatrixFromShape(_PETScMatrix):
     
