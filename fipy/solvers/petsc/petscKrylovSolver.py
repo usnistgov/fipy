@@ -11,7 +11,8 @@ __all__ = ["PETScKrylovSolver"]
 class PETScKrylovSolver(PETScSolver):
 
     """
-    .. attention:: This class is abstract, always create on of its subclasses. It provides the code to call all solvers from the Trilinos AztecOO package.
+    .. attention:: This class is abstract, always create on of its subclasses.
+    It provides the code to call all Krylov solvers from the PETSc package.
 
     """
       
