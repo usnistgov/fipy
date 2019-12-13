@@ -8,6 +8,27 @@ from fipy.solvers.petsc.petscSolver import PETScSolver
 
 __all__ = ["PETScKrylovSolver"]
 
+_reason = {1: "KSP_CONVERGED_RTOL_NORMAL",
+           9: "KSP_CONVERGED_ATOL_NORMAL",
+           2: "KSP_CONVERGED_RTOL",
+           3: "KSP_CONVERGED_ATOL",
+           4: "KSP_CONVERGED_ITS",
+           5: "KSP_CONVERGED_CG_NEG_CURVE",
+           6: "KSP_CONVERGED_CG_CONSTRAINED",
+           7: "KSP_CONVERGED_STEP_LENGTH",
+           8: "KSP_CONVERGED_HAPPY_BREAKDOWN",
+           -2: "KSP_DIVERGED_NULL",
+           -3: "KSP_DIVERGED_ITS",
+           -4: "KSP_DIVERGED_DTOL",
+           -5: "KSP_DIVERGED_BREAKDOWN",
+           -6: "KSP_DIVERGED_BREAKDOWN_BICG",
+           -7: "KSP_DIVERGED_NONSYMMETRIC",
+           -8: "KSP_DIVERGED_INDEFINITE_PC",
+           -9: "KSP_DIVERGED_NANORINF",
+           -10: "KSP_DIVERGED_INDEFINITE_MAT",
+           -11: "KSP_DIVERGED_PC_FAILED",
+           0: "KSP_CONVERGED_ITERATING"}
+
 class PETScKrylovSolver(PETScSolver):
 
     """
@@ -42,3 +63,8 @@ class PETScKrylovSolver(PETScSolver):
         ksp.setOperators(L)
         ksp.setFromOptions()
         ksp.solve(b, x)
+
+        if 'FIPY_VERBOSE_SOLVER' in os.environ:
+            from fipy.tools.debug import PRINT
+            PRINT('convergence: %s' % _reason[ksp.reason])
+            PRINT('iterations: %d / %d' % (ksp.its, self.iterations))
