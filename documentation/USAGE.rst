@@ -196,9 +196,10 @@ package.
 
    If present, causes the graphical display of the solution matrix of each
    equation at each call of :meth:`~Term.solve` or :meth:`~Term.sweep`.
-   Setting the value to "``terms``," causes the display of the matrix for each
+   Setting the value to "``terms``" causes the display of the matrix for each
    :class:`Term` that composes the equation. Requires the :term:`Matplotlib`
-   package.
+   package. Setting the value to "``print``" causes the matrix to be
+   printed to the console.
 
 .. envvar:: FIPY_INLINE
 
