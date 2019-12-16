@@ -248,7 +248,7 @@ package.
 Solving in Parallel
 -------------------
 
-:term:`FiPy` can use :term:`Trilinos` to solve equations in
+:term:`FiPy` can use :ref:`PETSC` or :ref:`TRILINOS` to solve equations in
 parallel. Most mesh classes in :mod:`fipy.meshes` can solve in
 parallel. This includes all "``...Grid...``" and "``...Gmsh...``"
 class meshes. Currently, the only remaining serial-only meshes are
@@ -274,10 +274,10 @@ class meshes. Currently, the only remaining serial-only meshes are
 
 .. tip::
 
-   Parallel efficiency is greatly improved by installing
-   :term:`Pysparse` in addition to :term:`Trilinos`. If
+   :term:`Trilinos` parallel efficiency is greatly improved by also
+   installing :term:`Pysparse`. If
    :term:`Pysparse` is not installed be sure to use the
-   ``--no-pysparse`` flag when running in parallel.
+   ``--no-pysparse`` flag when running in parallel with :term:.
 
 It should not generally be necessary to change anything in your script.
 Simply invoke::
@@ -303,19 +303,21 @@ sure, you can run a diagnostic script::
 
 which should print out::
 
-    mpi4py: processor 0 of 3 :: PyTrilinos: processor 0 of 3 :: FiPy: 5 cells on processor 0 of 3
-    mpi4py: processor 1 of 3 :: PyTrilinos: processor 1 of 3 :: FiPy: 7 cells on processor 1 of 3
-    mpi4py: processor 2 of 3 :: PyTrilinos: processor 2 of 3 :: FiPy: 6 cells on processor 2 of 3
+         mpi4py            PyTrilinos           petsc4py                   FiPy            
+    processor 0 of 3 :: processor 0 of 3 :: processor 0 of 3 :: 5 cells on processor 0 of 3
+    processor 1 of 3 :: processor 1 of 3 :: processor 1 of 3 :: 7 cells on processor 1 of 3
+    processor 2 of 3 :: processor 2 of 3 :: processor 2 of 3 :: 6 cells on processor 2 of 3
 
 If there is a problem with your parallel environment, it should be clear
 that there is either a problem importing one of the required packages or
 that there is some problem with the MPI environment. For example::
 
-    mpi4py: processor 2 of 3 :: PyTrilinos: processor 0 of 1 :: FiPy: 10 cells on processor 0 of 1
+         mpi4py            PyTrilinos           petsc4py                   FiPy            
+    processor 0 of 3 :: processor 0 of 3 :: processor 0 of 3 :: 10 cells on processor 0 of 1
     [my.machine.com:69815] WARNING: There were 4 Windows created but not freed.
-    mpi4py: processor 1 of 3 :: PyTrilinos: processor 0 of 1 :: FiPy: 10 cells on processor 0 of 1
+    processor 1 of 3 :: processor 1 of 3 :: processor 1 of 3 :: 7 cells on processor 0 of 1
     [my.machine.com:69814] WARNING: There were 4 Windows created but not freed.
-    mpi4py: processor 0 of 3 :: PyTrilinos: processor 0 of 1 :: FiPy: 10 cells on processor 0 of 1
+    processor 2 of 3 :: processor 2 of 3 :: processor 2 of 3 :: 6 cells on processor 0 of 1
     [my.machine.com:69813] WARNING: There were 4 Windows created but not freed.
 
 indicates :ref:`MPI4PY` is properly communicating with MPI and is running

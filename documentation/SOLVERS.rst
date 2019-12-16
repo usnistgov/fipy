@@ -47,6 +47,25 @@ solver suite for generic solvers is :ref:`PYSPARSE` followed by
 
 .. _Python 3.x:   http://docs.python.org/py3k/
 
+.. _PETSC:
+
+-----
+PETSc
+-----
+
+https://www.mcs.anl.gov/petsc
+
+:term:`PETSc` (the Portable, Extensible Toolkit for Scientific Computation)
+is a suite of data structures and routines for the scalable (parallel)
+solution of scientific applications modeled by partial differential
+equations.  It employs the MPI standard for all message-passing
+communication (see :ref:`PARALLEL` for more details).
+
+.. attention: :term:`PETSc` requires the petsc4py_ and :ref:`mpi4py`
+   interfaces.
+
+.. _petsc4py: https://petsc4py.readthedocs.io/
+
 .. _PYSPARSE:
 
 --------
@@ -179,7 +198,7 @@ in-depth documentation.
 mpi4py
 ======
 
-http://mpi4py.scipy.org/
+https://mpi4py.readthedocs.io/
 
 For :ref:`PARALLEL`, :term:`FiPy` requires ``mpi4py``, in addition to
-:term:`Trilinos`.
+:term:`PETSc` or :term:`Trilinos`.

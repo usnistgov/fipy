@@ -89,6 +89,12 @@ Glossary
       "Python Data Analysis Library" provides high-performance data structures
       for flexible, extensible analysis. See http://pandas.pydata.org.
 
+   PETSc
+      The Portable, Extensible Toolkit for Scientific Computation is a
+      suite of data structures and routines for the scalable (parallel)
+      solution of scientific applications modeled by partial differential
+      equations. See https://www.mcs.anl.gov/petsc and :ref:`PETSC`.
+
    pip
       "pip installs python" is a tool for installing and managing Python
       packages, such as those found in :term:`PyPI`.
