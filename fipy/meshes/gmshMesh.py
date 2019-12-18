@@ -92,7 +92,15 @@ def gmshVersion(communicator=parallelComm):
 
 def _gmshVersion(communicator=parallelComm):
     version = gmshVersion(communicator) or "0.0"
-    return StrictVersion(version)
+    try:
+        version = StrictVersion(version)
+    except ValueError:
+        # gmsh returns the version string in stderr,
+        # which means it's often unparsable due to irrelevant warnings
+        # assume it's OK and move on
+        version = StrictVersion("3.0")
+
+    return version
 
 def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parallelComm, overlap=1, mode='r', background=None):
     """Open a Gmsh `MSH` file
