@@ -159,6 +159,7 @@ class _PETScMatrix(_SparseMatrix):
             if shape == ():
                 result = self.copy()
                 result.matrix = self.matrix * other
+                return result
             elif shape == (N,):
                 y = PETSc.Vec().createWithArray(other, comm=self.matrix.comm)
                 result = y.duplicate()
@@ -715,6 +716,7 @@ class _PETScMeshMatrix(_PETScMatrixFromShape):
             if shape == ():
                 result = self.copy()
                 result.matrix = self.matrix * other
+                return result
             else:
                 x = other[self._localNonOverlappingColIDs]
                 x = PETSc.Vec().createWithArray(x, comm=self.matrix.comm)
