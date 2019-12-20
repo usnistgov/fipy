@@ -50,9 +50,9 @@ def write(data, filename = None, extension = '', communicator=parallelComm):
             (f, _filename) =  tempfile.mkstemp(extension)
         else:
             (f, _filename) = (None, filename)
-        fileStream = gzip.GzipFile(filename = _filename, mode = 'w', fileobj = None)
+        fileStream = gzip.GzipFile(filename=_filename, mode='wb', fileobj=None)
     else:
-        fileStream = open(os.devnull, mode='w')
+        fileStream = open(os.devnull, mode='wb')
         (f, _filename) = (None, os.devnull)
 
     pickle.dump(data, fileStream, 0)
@@ -78,7 +78,7 @@ def read(filename, fileobject=None, communicator=parallelComm, mesh_unmangle=Fal
         Whether to correct improper pickling of non-uniform meshes (ticket:243)
     """
     if communicator.procID == 0:
-        fileStream = gzip.GzipFile(filename = filename, mode = 'r', fileobj = None)
+        fileStream = gzip.GzipFile(filename=filename, mode='r', fileobj=None)
         data = fileStream.read()
         fileStream.close()
         if fileobject is not None:
