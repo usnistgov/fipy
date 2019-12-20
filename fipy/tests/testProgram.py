@@ -41,4 +41,12 @@ class _TestProgram(unittest.TestProgram):
         except getopt.error as msg:
             self.usageExit(msg)
 
+    def runTests(self):
+        from fipy.tools import numerix
+        printoptions = numerix.get_printoptions()
+        if "legacy" in printoptions:
+            numerix.set_printoptions(legacy="1.13")
+
+        super(_TestProgram, self).runTests()
+
 main = _TestProgram
