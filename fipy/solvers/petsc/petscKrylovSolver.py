@@ -66,5 +66,11 @@ class PETScKrylovSolver(PETScSolver):
 
         if 'FIPY_VERBOSE_SOLVER' in os.environ:
             from fipy.tools.debug import PRINT
+#             L.view()
+#             b.view()
+            PRINT('solver:', ksp.type)
+            PRINT('precon:', ksp.getPC().type)
             PRINT('convergence: %s' % _reason[ksp.reason])
             PRINT('iterations: %d / %d' % (ksp.its, self.iterations))
+            PRINT('norm:', ksp.norm)
+            PRINT('norm_type:', ksp.norm_type)

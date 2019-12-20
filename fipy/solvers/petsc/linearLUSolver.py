@@ -60,7 +60,11 @@ class LinearLUSolver(PETScSolver):
             x -= xError
             
         if 'FIPY_VERBOSE_SOLVER' in os.environ:
-            from fipy.tools.debug import PRINT        
+            from fipy.tools.debug import PRINT
+#             L.view()
+#             b.view()
+            PRINT('solver:', ksp.type)
+            PRINT('precon:', ksp.getPC().type)
             PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
             PRINT('residual:', errorVector.norm(1))
 
