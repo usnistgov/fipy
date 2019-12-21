@@ -61,10 +61,8 @@ solution of scientific applications modeled by partial differential
 equations.  It employs the MPI standard for all message-passing
 communication (see :ref:`PARALLEL` for more details).
 
-.. attention: :term:`PETSc` requires the petsc4py_ and :ref:`mpi4py`
+.. attention:: :term:`PETSc` requires the :term:`petsc4py` and :ref:`mpi4py`
    interfaces.
-
-.. _petsc4py: https://petsc4py.readthedocs.io/
 
 .. _PYSPARSE:
 

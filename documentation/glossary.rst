@@ -95,6 +95,10 @@ Glossary
       solution of scientific applications modeled by partial differential
       equations. See https://www.mcs.anl.gov/petsc and :ref:`PETSC`.
 
+   petsc4py
+      :term:`Python` wrapper for :term:`PETSc`. See
+      https://petsc4py.readthedocs.io/.
+
    pip
       "pip installs python" is a tool for installing and managing Python
       packages, such as those found in :term:`PyPI`.

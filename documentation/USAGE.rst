@@ -277,7 +277,7 @@ class meshes. Currently, the only remaining serial-only meshes are
    :term:`Trilinos` parallel efficiency is greatly improved by also
    installing :term:`Pysparse`. If
    :term:`Pysparse` is not installed be sure to use the
-   ``--no-pysparse`` flag when running in parallel with :term:.
+   ``--no-pysparse`` flag when running in parallel with :term:`Trilinos`.
 
 It should not generally be necessary to change anything in your script.
 Simply invoke::
