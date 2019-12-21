@@ -44,6 +44,8 @@ def write(data, filename = None, extension = '', communicator=parallelComm):
     communicator : ~fipy.tools.comms.commWrapper.CommWrapper
         A duck-typed object with `procID` and `Nproc` attributes is sufficient
     """
+    b = pickle.dumps(data, 0)
+
     if communicator.procID == 0:
         if filename is None:
             import tempfile
@@ -52,12 +54,10 @@ def write(data, filename = None, extension = '', communicator=parallelComm):
             (f, _filename) = (None, filename)
         fileStream = gzip.GzipFile(filename = _filename, mode = 'wb', fileobj = None)
 
-        pickle.dump(data, fileStream, 0)
+        fileStream.write(b)
         fileStream.close()
     else:
         (f, _filename) = (None, os.devnull)
-
-    communicator.Barrier()
 
     if filename is None:
         return (f, _filename)
