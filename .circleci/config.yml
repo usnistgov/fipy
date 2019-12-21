@@ -265,7 +265,7 @@ jobs:
     environment:
       FIPY_SOLVERS: scipy
 
-  test-27-trilinos:
+  test-27-trilinos-serial:
     <<: *defaults2
 
     steps:
@@ -274,7 +274,7 @@ jobs:
     environment:
       FIPY_SOLVERS: trilinos
 
-  test-27-parallel:
+  test-27-trilinos-parallel:
     <<: *defaults2
 
     steps:
@@ -285,7 +285,7 @@ jobs:
       FIPY_SOLVERS: trilinos
       OMP_NUM_THREADS: 1
 
-  test-27-petsc:
+  test-27-petsc-serial:
     <<: *defaults2
 
     steps:
@@ -293,6 +293,17 @@ jobs:
           condaenv: test-environment-27
     environment:
       FIPY_SOLVERS: petsc
+
+  test-27-petsc-parallel:
+    <<: *defaults2
+
+    steps:
+      - test_fipy:
+          mpirun: "mpirun -np 2"
+          condaenv: test-environment-27
+    environment:
+      FIPY_SOLVERS: petsc
+      OMP_NUM_THREADS: 1
 
   test-36-scipy:
     <<: *defaults3
@@ -303,7 +314,7 @@ jobs:
     environment:
       FIPY_SOLVERS: scipy
 
-  test-36-petsc:
+  test-36-petsc-serial:
     <<: *defaults3
 
     steps:
@@ -311,6 +322,17 @@ jobs:
           condaenv: test-environment-36
     environment:
       FIPY_SOLVERS: petsc
+
+  test-36-petsc-parallel:
+    <<: *defaults3
+
+    steps:
+      - test_fipy:
+          mpirun: "mpirun -np 2"
+          condaenv: test-environment-36
+    environment:
+      FIPY_SOLVERS: petsc
+      OMP_NUM_THREADS: 1
 
   pylint:
     <<: *defaults2
@@ -553,22 +575,28 @@ workflows:
 #       - test-27-inline:
 #           requires:
 #             - conda2_env
-      - test-27-scipy:
+#       - test-27-scipy:
+#           requires:
+#             - conda2_env
+      - test-27-trilinos-serial:
           requires:
             - conda2_env
-      - test-27-trilinos:
+      - test-27-trilinos-parallel:
           requires:
             - conda2_env
-      - test-27-parallel:
+      - test-27-petsc-serial:
           requires:
             - conda2_env
-      - test-27-petsc:
+      - test-27-petsc-parallel:
           requires:
             - conda2_env
       - test-36-scipy:
           requires:
             - conda3_env
-      - test-36-petsc:
+      - test-36-petsc-serial:
+          requires:
+            - conda3_env
+      - test-36-petsc-parallel:
           requires:
             - conda3_env
       - build-binaries:
@@ -580,9 +608,10 @@ workflows:
             - black
             - pyspelling
             - test-27-pysparse
-            - test-27-scipy
-            - test-27-trilinos
-            - test-27-parallel
-            - test-27-petsc
+            - test-27-trilinos-serial
+            - test-27-trilinos-parallel
+            - test-27-petsc-serial
+            - test-27-petsc-parallel
             - test-36-scipy
-            - test-36-petsc
+            - test-36-petsc-serial
+            - test-36-petsc-parallel
