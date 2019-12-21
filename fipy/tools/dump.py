@@ -50,13 +50,14 @@ def write(data, filename = None, extension = '', communicator=parallelComm):
             (f, _filename) =  tempfile.mkstemp(extension)
         else:
             (f, _filename) = (None, filename)
-        fileStream = gzip.GzipFile(filename = _filename, mode = 'w', fileobj = None)
+        fileStream = gzip.GzipFile(filename = _filename, mode = 'wb', fileobj = None)
+
+        pickle.dump(data, fileStream, 0)
+        fileStream.close()
     else:
-        fileStream = open(os.devnull, mode='w')
         (f, _filename) = (None, os.devnull)
 
-    pickle.dump(data, fileStream, 0)
-    fileStream.close()
+    communicator.Barrier()
 
     if filename is None:
         return (f, _filename)
