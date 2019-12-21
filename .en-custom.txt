@@ -62,6 +62,7 @@ conjunctionality
 Crank-Nicolson
 Croft's
 crystallographically
+CSR
 css
 CTCMS
 CVs
@@ -107,6 +108,7 @@ Fick's
 fipy
 FiPy
 FiPy's
+FIXME
 FV
 FVM
 Gauss-Seidel
@@ -236,6 +238,7 @@ pdf
 Péclet
 PEG-SPS-Cl
 Peric
+PETSc
 photovoltaics
 PID
 PNG
@@ -345,6 +348,7 @@ YZ
 Zhitenev
 1D
 2D
+2x4
 2.x
 3D
 3x2x1
