@@ -58,7 +58,7 @@ https://www.mcs.anl.gov/petsc
 :term:`PETSc` (the Portable, Extensible Toolkit for Scientific Computation)
 is a suite of data structures and routines for the scalable (parallel)
 solution of scientific applications modeled by partial differential
-equations.  It employs the MPI standard for all message-passing
+equations.  It employs the :ref:`MPI` standard for all message-passing
 communication (see :ref:`PARALLEL` for more details).
 
 .. attention:: :term:`PETSc` requires the :term:`petsc4py` and :ref:`mpi4py`
@@ -149,54 +149,39 @@ solutions to some difficult problems that :term:`Pysparse` and
    for most problems, and is **not** recommended for a basic install
    of :term:`FiPy`.
 
-:term:`Trilinos` requires `cmake <http://www.cmake.org/>`_, :term:`NumPy`,
-and `swig <http://www.swig.org/>`_. The following are the minimal steps to
-build and install :term:`Trilinos` (with :term:`PyTrilinos`) for
-:term:`FiPy`::
+.. attention::
 
-    $ cd trilinos-X.Y/
-    $ SOURCE_DIR=`pwd`
-    $ mkdir BUILD_DIR
-    $ cd BUILD_DIR
-    $ cmake \
-    >   -D CMAKE_BUILD_TYPE:STRING=RELEASE \
-    >   -D Trilinos_ENABLE_PyTrilinos:BOOL=ON \
-    >   -D BUILD_SHARED_LIBS:BOOL=ON \
-    >   -D Trilinos_ENABLE_ALL_OPTIONAL_PACKAGES:BOOL=ON \
-    >   -D TPL_ENABLE_MPI:BOOL=ON \
-    >   -D Trilinos_ENABLE_TESTS:BOOL=ON \
-    >   -D DART_TESTING_TIMEOUT:STRING=600 \
-    >   ${SOURCE_DIR}
-    $ make
-    $ make install
+   :term:`Trilinos` *must* be compiled with :ref:`MPI` support for
+   :ref:`PARALLEL`.
 
-Depending on your platform, other options may be helpful or necessary;
-see the :term:`Trilinos` user guide available from
-http://trilinos.sandia.gov/documentation.html, or
-http://trilinos.sandia.gov/packages/pytrilinos/faq.html for more
-in-depth documentation.
+.. tip::
+
+   :term:`Trilinos` parallel efficiency is greatly improved by also
+   installing :term:`Pysparse`.  If :term:`Pysparse` is not installed, be
+   sure to use the ``--no-pysparse`` flag.
 
 .. note::
 
-    Trilinos can be installed in a non-standard location by adding the
-    :samp:`-D CMAKE_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` and
-    :samp:`-D PyTrilinos_INSTALL_PREFIX:PATH=${{INSTALL_DIR}}` flags
-    to the configure step. If :term:`Trilinos` is installed in a
-    non-standard location, the path to the :term:`PyTrilinos`
-    site-packages directory should be added to the :envvar:`PYTHONPATH`
-    environment variable; this should be of the form
-    :file:`${{INSTALL_DIR}}/lib/${{PYTHON_VERSION}}/site-packages/`. Also,
-    the path to the :term:`Trilinos` ``lib`` directory should be added to
-    the :envvar:`LD_LIBRARY_PATH` (on Linux) or :envvar:`DYLD_LIBRARY_PATH`
-    (on Mac OS X) environment variable; this should be of the form
-    :file:`${{INSTALL_DIR}}/lib``.
+    :term:`Trilinos` solvers frequently give intermediate output that
+    :term:`FiPy` cannot suppress. The most commonly encountered
+    messages are
 
-.. _MPI4PY:
+     ``Gen_Prolongator warning : Max eigen <= 0.0``
+        which is not significant to :term:`FiPy`.
 
-mpi4py
-======
+     ``Aztec status AZ_loss: loss of precision``
+        which indicates that there was some difficulty in solving the
+        problem to the requested tolerance due to precision limitations,
+        but usually does not prevent the solver from finding an adequate
+        solution.
 
-https://mpi4py.readthedocs.io/
+     ``Aztec status AZ_ill_cond: GMRES hessenberg ill-conditioned``
+        which indicates that GMRES is having trouble with the problem, and
+        may indicate that trying a different solver or preconditioner may
+        give more accurate results if GMRES fails.
 
-For :ref:`PARALLEL`, :term:`FiPy` requires ``mpi4py``, in addition to
-:term:`PETSc` or :term:`Trilinos`.
+     ``Aztec status AZ_breakdown: numerical breakdown``
+        which usually indicates serious problems solving the equation which
+        forced the solver to stop before reaching an adequate solution.
+        Different solvers, different preconditioners, or a less restrictive
+        tolerance may help.
