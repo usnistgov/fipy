@@ -38,7 +38,7 @@ if platform.dist()[0] == 'debian':
             from mpi4py import MPI
             del MPI
         except ImportError:
-            raise Exception("Could not import mpi4py. The package mpi4py is a required package if you are using Trilinos on a Debian platform with Trilinos version 10.0.4 due to a Trilinos bug (see <http://matforge.org/fipy/ticket/420>). Try installing using 'easy_install mpi4py'.")
+            raise Exception("Could not import mpi4py. The package mpi4py is a required package if you are using Trilinos on a Debian platform with Trilinos version 10.0.4 due to a Trilinos bug (see <https://github.com/usnistgov/fipy/issues/301>). Try installing using 'easy_install mpi4py'.")
     del PyTrilinos
     
 del platform
