@@ -124,7 +124,7 @@ Recommended Method
 .. _Linux: http://www.linux.org/
 .. _Windows: http://www.microsoft.com/windows/
 .. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
-.. _CondaForge:    https://anaconda.org/guyer/fipy
+.. _CondaForge:    https://anaconda.org/conda-forge/fipy
 
 
 --------------
