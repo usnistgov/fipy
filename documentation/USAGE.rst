@@ -267,6 +267,13 @@ class meshes. Currently, the only remaining serial-only meshes are
 
    See :ref:`THREADS_VS_RANKS` for more information.
 
+.. note::
+
+   `Trilinos 12.12 has support for Python 3`_, but
+   `PyTrilinos on conda-forge`_ presently only provides 12.10, which is
+   limited to Python 2.x. :ref:`PETSC` is available for both :term:`Python
+   3` and :term:`Python` 2.7.
+
 It should not generally be necessary to change anything in your script.
 Simply invoke::
 
@@ -325,6 +332,9 @@ up into separate sub-domains and solves them (somewhat) independently.
 :term:`FiPy` generally "does the right thing", but if you find that
 you need to do something with the entire solution, you can use
 ``var.``:attr:`~fipy.variables.cellVariable.CellVariable.globalValue`.
+
+.. _Trilinos 12.12 has support for Python 3 : https://github.com/trilinos/Trilinos/issues/3203
+.. _PyTrilinos on conda-forge: https://anaconda.org/conda-forge/pytrilinos
 
 .. _THREADS_VS_RANKS:
 
