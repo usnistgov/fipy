@@ -75,7 +75,7 @@ class PETScSolver(Solver):
             
             residual.ghostUpdate()
             with residual.localForm() as lf:
-                residual = numerix.asarray(lf)
+                residual = numerix.array(lf)
             return residual
 
     def _calcResidualVector_(self):
