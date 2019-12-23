@@ -44,20 +44,19 @@ def write(data, filename = None, extension = '', communicator=parallelComm):
     communicator : ~fipy.tools.comms.commWrapper.CommWrapper
         A duck-typed object with `procID` and `Nproc` attributes is sufficient
     """
-    b = pickle.dumps(data, 0)
-
     if communicator.procID == 0:
         if filename is None:
             import tempfile
             (f, _filename) =  tempfile.mkstemp(extension)
         else:
             (f, _filename) = (None, filename)
-        fileStream = gzip.GzipFile(filename = _filename, mode = 'wb', fileobj = None)
-
-        fileStream.write(b)
-        fileStream.close()
+        fileStream = gzip.GzipFile(filename=_filename, mode='wb', fileobj=None)
     else:
+        fileStream = open(os.devnull, mode='wb')
         (f, _filename) = (None, os.devnull)
+
+    pickle.dump(data, fileStream, 0)
+    fileStream.close()
 
     if filename is None:
         return (f, _filename)
@@ -79,7 +78,7 @@ def read(filename, fileobject=None, communicator=parallelComm, mesh_unmangle=Fal
         Whether to correct improper pickling of non-uniform meshes (ticket:243)
     """
     if communicator.procID == 0:
-        fileStream = gzip.GzipFile(filename = filename, mode = 'r', fileobj = None)
+        fileStream = gzip.GzipFile(filename=filename, mode='r', fileobj=None)
         data = fileStream.read()
         fileStream.close()
         if fileobject is not None:
