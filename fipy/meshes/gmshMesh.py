@@ -92,7 +92,15 @@ def gmshVersion(communicator=parallelComm):
 
 def _gmshVersion(communicator=parallelComm):
     version = gmshVersion(communicator) or "0.0"
-    return StrictVersion(version)
+    try:
+        version = StrictVersion(version)
+    except ValueError:
+        # gmsh returns the version string in stderr,
+        # which means it's often unparsable due to irrelevant warnings
+        # assume it's OK and move on
+        version = StrictVersion("3.0")
+
+    return version
 
 def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parallelComm, order=1, mode='r', background=None):
     """Open a Gmsh `MSH` file
@@ -164,8 +172,8 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             gmshFlags = ["-%d" % dimensions, "-nopopup"]
 
             if communicator.Nproc > 1:
-                if version < StrictVersion("2.5"):
-                    warnstr = "Cannot partition with Gmsh version < 2.5. " \
+                if not (StrictVersion("2.5") < version <= StrictVersion("4.0")):
+                    warnstr = "Cannot partition with Gmsh version < 2.5 or >= 4.0. " \
                                + "Reverting to serial."
                     warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
                     communicator = serialComm
@@ -176,6 +184,11 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                         raise ValueError("'dimensions' must be specified to generate a mesh from a geometry script")
                 else: # gmsh version is adequate for partitioning
                     gmshFlags += ["-part", "%d" % communicator.Nproc]
+                    if version >= StrictVersion("4.0"):
+                        # Gmsh 4.x needs to be told to generate ghost cells
+                        # Unfortunately, the ghosts are broken
+                        # https://gitlab.onelab.info/gmsh/gmsh/issues/733
+                        gmshFlags += ["-part_ghosts"]
 
             gmshFlags += ["-format", "msh2"]
 
@@ -1514,23 +1527,24 @@ class Gmsh2D(Mesh2D):
 
     >>> from fipy import CellVariable, numerix
 
-    >>> std = []
+    >>> error = []
     >>> bkg = None
     >>> from builtins import range
     >>> for refine in range(4):
     ...     square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
     ...     x, y = square.cellCenters # doctest: +GMSH
     ...     bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
-    ...     std.append((numerix.sqrt(2 * square.cellVolumes) / bkg).std()) # doctest: +GMSH
+    ...     error.append(((2 * numerix.sqrt(square.cellVolumes) / bkg - 1)**2).cellVolumeAverage) # doctest: +GMSH
 
-    Check that the mesh is monotonically approaching the desired density
+    Check that the mesh is (semi)monotonically approaching the desired density
+    (the first step may increase, depending on the number of partitions)
 
-    >>> print(numerix.greater(std[:-1], std[1:]).all()) # doctest: +GMSH
+    >>> print(numerix.greater(error[:-1], error[1:]).all()) # doctest: +GMSH
     True
 
     and that the final density is close enough to the desired density
 
-    >>> print(std[-1] < 0.2) # doctest: +GMSH
+    >>> print(error[-1] < 0.02) # doctest: +GMSH
     True
 
     The initial mesh doesn't have to be from Gmsh
@@ -1577,6 +1591,10 @@ class Gmsh2D(Mesh2D):
                                    order=order,
                                    mode='r',
                                    background=background)
+
+        # openMSHFile may have "downgraded" the communicator
+        # if, e.g., too many overlaps were requested
+        communicator = self.mshFile.communicator
 
         (verts,
          faces,
@@ -1947,6 +1965,10 @@ class Gmsh3D(Mesh):
                                     mode='r',
                                     background=background)
 
+        # openMSHFile may have "downgraded" the communicator
+        # if, e.g., too many overlaps were requested
+        communicator = self.mshFile.communicator
+
         (verts,
          faces,
          cells,
@@ -2225,7 +2247,7 @@ class GmshGrid2D(Gmsh2D):
         >>> yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size # doctest: +GMSH
         True
 
-        >>> mesh = GmshGrid2D(nx=2, ny=2) # doctest: +GMSH
+        >>> mesh = GmshGrid2D(nx=2, ny=2, communicator=serialComm) # doctest: +GMSH
 
         >>> mesh.numberOfCells == 4 # doctest: +GMSH
         True
@@ -2310,7 +2332,8 @@ class GmshGrid3D(Gmsh3D):
         >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas) # doctest: +GMSH
         True
 
-        >>> mesh = GmshGrid3D(nx=2, ny=2, nz=2) # doctest: +GMSH
+        >>> mesh = GmshGrid3D(nx=2, ny=2, nz=2,
+        ...                   communicator=serialComm) # doctest: +GMSH
 
         >>> ccs = [[ 0.5,  0.5,  0.5,  0.5,  1.5,  1.5,  1.5,  1.5],
         ...    [ 0.5,  0.5,  1.5,  1.5,  0.5,  0.5,  1.5,  1.5],
