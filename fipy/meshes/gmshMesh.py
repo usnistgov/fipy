@@ -1529,15 +1529,16 @@ class Gmsh2D(Mesh2D):
     >>> std = []
     >>> bkg = None
     >>> from builtins import range
-    >>> for refine in range(4):
+    >>> for refine in range(6):
     ...     square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
     ...     x, y = square.cellCenters # doctest: +GMSH
     ...     bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
     ...     std.append((numerix.sqrt(2 * square.cellVolumes) / bkg).std()) # doctest: +GMSH
 
-    Check that the mesh is monotonically approaching the desired density
+    Check that the mesh is (semi)monotonically approaching the desired density
+    (the first step may increase, depending on the number of partitions)
 
-    >>> print(numerix.greater(std[:-1], std[1:]).all()) # doctest: +GMSH
+    >>> print(numerix.greater(std[:-2], std[2:]).all()) # doctest: +GMSH
     True
 
     and that the final density is close enough to the desired density
