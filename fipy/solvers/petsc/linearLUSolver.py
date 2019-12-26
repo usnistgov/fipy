@@ -35,9 +35,9 @@ class LinearLUSolver(PETScSolver):
         ksp.create(PETSc.COMM_WORLD)
         ksp.setType("preonly")
         ksp.getPC().setType(self.preconditioner)
-        # TODO: SuperLU invoked with PCFactorSetMatSolverPackage(pc, MATSOLVERSUPERLU)
+        # TODO: SuperLU invoked with PCFactorSetMatSolverType(pc, MATSOLVERSUPERLU)
         #       see: http://www.mcs.anl.gov/petsc/petsc-dev/src/ksp/ksp/examples/tutorials/ex52.c.html
-        # PETSc.PC().setFactorSolverPackage("superlu")
+        # PETSc.PC().setFactorSolverType("superlu")
         
         L.assemblyBegin()
         L.assemblyEnd()
