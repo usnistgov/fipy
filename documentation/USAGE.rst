@@ -333,6 +333,10 @@ up into separate sub-domains and solves them (somewhat) independently.
 you need to do something with the entire solution, you can use
 ``var.``:attr:`~fipy.variables.cellVariable.CellVariable.globalValue`.
 
+.. note:: One option for debugging in parallel is::
+
+   $ mpirun -np {# of processors} xterm -hold -e "python -m ipdb myScript.py"
+
 .. _Trilinos 12.12 has support for Python 3 : https://github.com/trilinos/Trilinos/issues/3203
 .. _PyTrilinos on conda-forge: https://anaconda.org/conda-forge/pytrilinos
 
