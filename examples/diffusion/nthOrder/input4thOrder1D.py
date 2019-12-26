@@ -56,13 +56,17 @@ We initialize the steady-state equation
 
 >>> eq = DiffusionTerm(coeff=(1, 1)) == 0
 
-and use the :class:`~fipy.solvers.pysparse.linearLUSolver.LinearLUSolver` for stability.
+>>> import fipy.solvers.solver
+>>> if fipy.solvers.solver  == 'petsc':
+...     precon = 'lu'
+... else:
+...     precon = None
 
 We perform one implicit timestep to achieve steady state
 
 >>> eq.solve(var=var,
 ...          boundaryConditions=BCs,
-...          solver=GeneralSolver())
+...          solver=GeneralSolver(precon=precon))
 
 The analytical solution is:
 
