@@ -64,6 +64,12 @@ communication (see :ref:`PARALLEL` for more details).
 .. attention:: :term:`PETSc` requires the :term:`petsc4py` and :ref:`mpi4py`
    interfaces.
 
+.. note:: :term:`FiPy` does not implement any precoditioner objects for
+   :term:`PETSc`. Simply pass one of the `PCType strings`_ in the
+   `precon=` argument when declaring the solver.
+
+.. _PCType strings: https://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCType.html
+
 .. _PYSPARSE:
 
 --------
