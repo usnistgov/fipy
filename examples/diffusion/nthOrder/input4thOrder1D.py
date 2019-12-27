@@ -58,15 +58,15 @@ We initialize the steady-state equation
 
 >>> import fipy.solvers.solver
 >>> if fipy.solvers.solver  == 'petsc':
-...     precon = 'lu'
+...     solver = GeneralSolver(precon='lu')
 ... else:
-...     precon = None
+...     solver = GeneralSolver()
 
 We perform one implicit timestep to achieve steady state
 
 >>> eq.solve(var=var,
 ...          boundaryConditions=BCs,
-...          solver=GeneralSolver(precon=precon))
+...          solver=solver)
 
 The analytical solution is:
 
