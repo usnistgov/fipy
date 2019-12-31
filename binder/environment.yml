@@ -3,13 +3,15 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python >=3.6
+  - python =2.7
   - numpy
   - scipy
-  - gmsh
+  - gmsh <4.0
+  - pysparse
+  - pytrilinos
   - mpi4py
-  - petsc4py
   - matplotlib
   - mayavi
+  - weave
   - pip:
     - "--editable=../"
