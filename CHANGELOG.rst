@@ -11,6 +11,27 @@ Change Log
 Version |release|
 -----------------
 
+This release adds support for the :term:`PETSc` solvers for
+:ref:`PARALLEL`.
+
+Pulls
+-----
+
+- Fix nist header footer
+  (`#680 <https://github.com/usnistgov/fipy/pull/680>`_)
+- Add support for PETSc solvers
+  (`#659 <https://github.com/usnistgov/fipy/pull/659>`_)
+- Update the Nix recipe
+  (`#658 <https://github.com/usnistgov/fipy/pull/658>`_)
+
+Fixes
+-----
+
+- `#669 <https://github.com/usnistgov/fipy/issues/669>`_:
+  input() deadlock on parallel runs
+- `#643 <https://github.com/usnistgov/fipy/issues/643>`_:
+  Automate release process
+
 -----------
 Version 3.3
 -----------
