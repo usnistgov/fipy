@@ -261,7 +261,8 @@ class meshes. Currently, the only remaining serial-only meshes are
 
 .. tip::
 
-   You are strongly advised to force the use of only one :ref:`OpenMP` thread::
+   You are strongly advised to force the use of only one :ref:`OpenMP`
+   thread with :ref:`Trilinos`::
 
        $ export OMP_NUM_THREADS=1
 
@@ -387,6 +388,12 @@ analysis.
 It may be possible to configure PyTrilinos to use only one :ref:`OpenMP` thread,
 but this is not the configuration of the version available from conda-forge_
 and building Trilinos is |NotFun (TM)|_.
+
+.. attention:: The situation with :ref:`PETSc` is less clear and bears further analysis.
+   Thus far, we have seen little speedup with parallelism.  Using a few
+   :ref:`OpenMP` threads per :ref:`MPI` rank seems to improve things a bit.
+   We will provide updates as we learn how to optimize this new (to us)
+   solver package.
 
 .. _Global Interpreter Lock:     https://docs.python.org/2.7/c-api/init.html#thread-state-and-the-global-interpreter-lock
 .. _just over two minutes:       https://circleci.com/gh/guyer/fipy/461
@@ -893,7 +900,12 @@ support for better :term:`Python 3` solvers, starting with
 
 Because the faster :term:`PySparse` and :term:`Trilinos` solvers are not
 available under :term:`Python 3`, we will maintain :term:`Python` 2.x
-support as long as practical.
+support as long as practical. Be aware that the conda-forge_ packages that
+:term:`FiPy` depends upon are not well-maintained on :term:`Python` 2.x
+and our support for that configuration is rapidly becoming impractical,
+despite the present performance benefits. Hopefully, we will learn
+how to optimize our use of :ref:`PETSc` and/or :ref:`Trilinos` 12.12 will
+become available on conda-forge_.
 
 .. _future: http://python-future.org
 .. _pya: https://github.com/pya
