@@ -17,7 +17,7 @@ This release adds support for the :term:`PETSc` solvers for
 Pulls
 -----
 
-- Fix nist header footer
+- Fix NIST header footer
   (`#680 <https://github.com/usnistgov/fipy/pull/680>`_)
 - Add support for PETSc solvers
   (`#659 <https://github.com/usnistgov/fipy/pull/659>`_)
