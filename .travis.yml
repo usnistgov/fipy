@@ -47,10 +47,8 @@ before_install:
   - conda update -q conda
   - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge --only-deps python=$TRAVIS_PYTHON_VERSION fipy;
   - source activate test-environment
-  - conda install --quiet --channel conda-forge petsc4py mpi4py
   # Useful for debugging any issues with conda
   - conda info -a
-  - pip install future
   - pip install scikit-fmm
 install:
   - python setup.py install
