@@ -224,7 +224,7 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=2.7 fipy gmsh"
+          packages: "python=2.7 fipy"
           condaenv: "test-environment-27"
 
   conda3_env:
@@ -232,7 +232,7 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=3.6 fipy gmsh"
+          packages: "python=3.6 fipy"
           condaenv: "test-environment-36"
 
   test-27-pysparse:
