@@ -45,8 +45,9 @@ before_install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge --only-deps python=$TRAVIS_PYTHON_VERSION fipy;
+  - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy;
   - source activate test-environment
+  - conda remove --quiet --channel conda-forge --force fipy
   # Useful for debugging any issues with conda
   - conda info -a
   - pip install scikit-fmm
