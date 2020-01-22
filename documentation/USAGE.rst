@@ -314,10 +314,12 @@ A few things can be observed in this plot:
 - :ref:`PETSc` and :ref:`Trilinos` have fairly comparable performance, but
   lag :ref:`PySparse` by a considerable margin.  The :ref:`SciPy` solvers
   are even worse.  Some of this discrepancy may be because the different
-  packages are not all doing the same thing.  The meaning of the solution
-  tolerance depends on the normalization it uses and it is not always
-  obvious which of several possibilities a particular package employs.  We
-  will endeavor to normalize the normalizations in a future release.
+  packages are not all doing the same thing.  Different solver packages
+  have different default solvers and preconditioners.  Moreover, the
+  meaning of the solution tolerance depends on the normalization the solver
+  uses and it is not always obvious which of several possibilities a
+  particular package employs.  We will endeavor to normalize the
+  normalizations in a future release.
 
 - :ref:`PETSc` with one thread is faster than with two threads until the
   number of tasks reaches about 10 and is faster than with four threads
@@ -332,8 +334,8 @@ These results are likely both problem and architecture dependent.  You
 should develop an understanding of the scaling behavior of your own codes
 before doing "production" runs.
 
-To confirm that :term:`FiPy` is properly configured to solve in parallel,
-the easiest way to tell is to run one of the examples, e.g.,::
+The easiest way to confirm that :term:`FiPy` is properly configured to
+solve in parallel is to run one of the examples, e.g.,::
 
     $ mpirun -np 2 examples/diffusion/mesh1D.py
 
