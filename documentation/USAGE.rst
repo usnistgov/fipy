@@ -296,6 +296,11 @@ cores) for a `Method of Manufactured Solutions Allen-Cahn problem`_.
 
    Scaling behavior of different solver packages
 
+"Speedup" relative to :ref:`PySparse` (bigger numbers are better) versus
+number of tasks (processes) on a log-log plot.  The number of threads per
+:term:`MPI` rank is indicated by the line style (see legend).
+:term:`OpenMP` threads :math:`\times` :term:`MPI` ranks = Slurm_ tasks.
+
 A few things can be observed in this plot:
 
 - Both :ref:`PETSc` and :ref:`Trilinos` exhibit power law scaling, but the
@@ -314,9 +319,14 @@ A few things can be observed in this plot:
   obvious which of several possibilities a particular package employs.  We
   will endeavor to normalize the normalizations in a future release.
 
-- There may be a *modest* benefit, *when using a large number of cpus*, to
-  allow two to four :term:`OpenMP` threads per :term:`MPI` rank.  See
-  :ref:`THREADS_VS_RANKS` for caveats more information.
+- :ref:`PETSc` with one thread is faster than with two threads until the
+  number of tasks reaches about 10 and is faster than with four threads
+  until the number of tasks reaches more than 20.  :ref:`Trilinos` with one
+  thread is faster than with two threads until the number of tasks is more
+  than 30.  We don't fully understand the reasons for this, but there may be
+  a *modest* benefit, *when using a large number of cpus*, to allow two to
+  four :term:`OpenMP` threads per :term:`MPI` rank.  See
+  :ref:`THREADS_VS_RANKS` for caveats and more information.
 
 These results are likely both problem and architecture dependent.  You
 should develop an understanding of the scaling behavior of your own codes
@@ -416,7 +426,11 @@ slots for a `Method of Manufactured Solutions Allen-Cahn problem`_.
 
 .. plot:: documentation/pyplots/cpus_vs_threads.py
 
-   :term:`OpenMP` threads :math:`\times` :term:`MPI` cpus = tasks.
+   Effect of having more :term:`OpenMP` threads for each :term:`MPI` rank
+
+"Speedup" relative to one thread (bigger numbers are better) versus number
+of threads for 32 Slurm_ tasks on a log-log plot.  :term:`OpenMP` threads
+:math:`\times` :term:`MPI` ranks = Slurm_ tasks.
 
 See https://www.mail-archive.com/fipy@nist.gov/msg03393.html for further
 analysis.
