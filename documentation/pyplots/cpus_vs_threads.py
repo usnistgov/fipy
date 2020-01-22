@@ -6,8 +6,6 @@ import numpy as np
 
 df = pd.read_csv("threading.csv", comment='#')
 
-print len(df)
-
 df = df[(df['totaltime'] == 8.0) & (df['nx'] == 400)]
 
 df = df[df['nthreads'] * df['ncpus'] == df['nslots']]
@@ -26,7 +24,7 @@ for solver, group1 in df.groupby('solver'):
     
     ax.errorbar(av.index, av, yerr=st, 
                 marker=markers[solver], color=colors[solver], linewidth=2,
-                label=solver)
+                markersize=12, label=solver)
                     
 plt.xscale('log')
 plt.yscale('log')
@@ -34,7 +32,7 @@ plt.yscale('log')
 for axis in [ax.xaxis, ax.yaxis]:
     axis.set_major_formatter(ticker.FuncFormatter(lambda y,pos: ('{{:.{:1d}f}}'.format(int(np.maximum(-np.log10(y),0)))).format(y)))
 
-plt.legend(loc="upper right")
+plt.legend(loc="upper right", frameon=False, handlelength=5)
 
 plt.xlabel("# threads")
 plt.ylabel(r'"speedup" ($t_1 / t_N$)')
