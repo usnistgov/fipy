@@ -2258,7 +2258,7 @@ class GmshGrid2D(Gmsh2D):
         >>> yogmsh.cellCenters.value.size == yogrid.cellCenters.value.size # doctest: +GMSH
         True
 
-        >>> mesh = GmshGrid2D(nx=2, ny=2) # doctest: +GMSH
+        >>> mesh = GmshGrid2D(nx=2, ny=2, communicator=serialComm) # doctest: +GMSH
 
         >>> mesh.numberOfCells == 4 # doctest: +GMSH
         True
@@ -2343,7 +2343,8 @@ class GmshGrid3D(Gmsh3D):
         >>> numerix.allclose(yogmsh._faceAreas, yogrid._faceAreas) # doctest: +GMSH
         True
 
-        >>> mesh = GmshGrid3D(nx=2, ny=2, nz=2) # doctest: +GMSH
+        >>> mesh = GmshGrid3D(nx=2, ny=2, nz=2,
+        ...                   communicator=serialComm) # doctest: +GMSH
 
         >>> ccs = [[ 0.5,  0.5,  0.5,  0.5,  1.5,  1.5,  1.5,  1.5],
         ...    [ 0.5,  0.5,  1.5,  1.5,  0.5,  0.5,  1.5,  1.5],
