@@ -608,7 +608,7 @@ workflows:
       - build-binaries:
           requires:
             - conda3_env
-            - build-27-docs
+            - build-36-docs
             - pylint
             - flake8
             - black
