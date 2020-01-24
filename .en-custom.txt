@@ -60,6 +60,7 @@ CondaForge
 conda-forge
 conjunctionality
 cpu
+cpus
 Crank-Nicolson
 Croft's
 crystallographically
