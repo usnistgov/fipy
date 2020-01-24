@@ -1531,24 +1531,24 @@ class Gmsh2D(Mesh2D):
 
     >>> from fipy import CellVariable, numerix
 
-    >>> std = []
+    >>> error = []
     >>> bkg = None
     >>> from builtins import range
     >>> for refine in range(6):
     ...     square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
     ...     x, y = square.cellCenters # doctest: +GMSH
     ...     bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
-    ...     std.append((numerix.sqrt(2 * square.cellVolumes) / bkg).std()) # doctest: +GMSH
+    ...     error.append(((2 * numerix.sqrt(square.cellVolumes) / bkg - 1)**2).cellVolumeAverage) # doctest: +GMSH
 
     Check that the mesh is (semi)monotonically approaching the desired density
     (the first step may increase, depending on the number of partitions)
 
-    >>> print(numerix.greater(std[:-2], std[2:]).all()) # doctest: +GMSH
+    >>> print(numerix.greater(error[:-1], error[1:]).all()) # doctest: +GMSH
     True
 
     and that the final density is close enough to the desired density
 
-    >>> print(std[-1] < 0.2) # doctest: +GMSH
+    >>> print(error[-1] < 0.02) # doctest: +GMSH
     True
 
     The initial mesh doesn't have to be from Gmsh
