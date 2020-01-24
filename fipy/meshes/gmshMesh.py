@@ -1543,6 +1543,7 @@ class Gmsh2D(Mesh2D):
     Check that the mesh is (semi)monotonically approaching the desired density
     (the first step may increase, depending on the number of partitions)
 
+
     >>> print(numerix.greater(std[:-2], std[2:]).all()) # doctest: +GMSH
     True
 
