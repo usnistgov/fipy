@@ -81,7 +81,7 @@ Glossary
 
    mpi4py
       MPI for Python provides bindings of the Message Passing Interface
-      (:ref:`MPI`) standard for the Python programming language, allowing any
+      (:term:`MPI`) standard for the Python programming language, allowing any
       Python program to exploit multiple processors.  For :ref:`PARALLEL`,
       :term:`FiPy` requires :mod:`mpi4py`, in addition to :term:`PETSc` or
       :term:`Trilinos`. See

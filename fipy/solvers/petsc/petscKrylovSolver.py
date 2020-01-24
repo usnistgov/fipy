@@ -33,7 +33,7 @@ class PETScKrylovSolver(PETScSolver):
 
     """
     .. attention:: This class is abstract, always create one of its subclasses.
-    It provides the code to call all Krylov solvers from the PETSc package.
+       It provides the code to call all Krylov solvers from the PETSc package.
 
     """
       

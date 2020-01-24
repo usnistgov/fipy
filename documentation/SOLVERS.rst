@@ -58,10 +58,10 @@ https://www.mcs.anl.gov/petsc
 :term:`PETSc` (the Portable, Extensible Toolkit for Scientific Computation)
 is a suite of data structures and routines for the scalable (parallel)
 solution of scientific applications modeled by partial differential
-equations.  It employs the :ref:`MPI` standard for all message-passing
+equations.  It employs the :term:`MPI` standard for all message-passing
 communication (see :ref:`PARALLEL` for more details).
 
-.. attention:: :term:`PETSc` requires the :term:`petsc4py` and :ref:`mpi4py`
+.. attention:: :term:`PETSc` requires the :term:`petsc4py` and :term:`mpi4py`
    interfaces.
 
 .. note:: :term:`FiPy` does not implement any precoditioner objects for
@@ -157,7 +157,7 @@ solutions to some difficult problems that :term:`Pysparse` and
 
 .. attention::
 
-   :term:`Trilinos` *must* be compiled with :ref:`MPI` support for
+   :term:`Trilinos` *must* be compiled with :term:`MPI` support for
    :ref:`PARALLEL`.
 
 .. tip::
