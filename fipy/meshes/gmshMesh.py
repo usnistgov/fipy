@@ -1534,7 +1534,7 @@ class Gmsh2D(Mesh2D):
     >>> error = []
     >>> bkg = None
     >>> from builtins import range
-    >>> for refine in range(6):
+    >>> for refine in range(4):
     ...     square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
     ...     x, y = square.cellCenters # doctest: +GMSH
     ...     bkg = CellVariable(mesh=square, value=abs(x / 4) + 0.01) # doctest: +GMSH
@@ -1542,8 +1542,6 @@ class Gmsh2D(Mesh2D):
 
     Check that the mesh is (semi)monotonically approaching the desired density
     (the first step may increase, depending on the number of partitions)
-
-    >>> print([float(e) for e in error])
 
     >>> print(numerix.greater(error[:-1], error[1:]).all()) # doctest: +GMSH
     True
