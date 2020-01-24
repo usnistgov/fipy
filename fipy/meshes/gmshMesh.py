@@ -176,8 +176,8 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             gmshFlags = ["-%d" % dimensions, "-nopopup"]
 
             if communicator.Nproc > 1:
-                if version < StrictVersion("2.5"):
-                    warnstr = "Cannot partition with Gmsh version < 2.5. " \
+                if not (StrictVersion("2.5") < version <= StrictVersion("4.0")):
+                    warnstr = "Cannot partition with Gmsh version < 2.5 or >= 4.0. " \
                                + "Reverting to serial."
                     warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
                     communicator = serialComm
