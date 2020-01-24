@@ -188,6 +188,11 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                         raise ValueError("'dimensions' must be specified to generate a mesh from a geometry script")
                 else: # gmsh version is adequate for partitioning
                     gmshFlags += ["-part", "%d" % communicator.Nproc]
+                    if version >= StrictVersion("4.0"):
+                        # Gmsh 4.x needs to be told to generate ghost cells
+                        # Unfortunately, the ghosts are broken
+                        # https://gitlab.onelab.info/gmsh/gmsh/issues/733
+                        gmshFlags += ["-part_ghosts"]
 
             gmshFlags += ["-format", "msh2"]
 
