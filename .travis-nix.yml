@@ -1,0 +1,22 @@
+---
+language: nix
+os:
+   - osx
+env:
+  global:
+    - FIPY_SOLVERS=scipy
+    - STORE=$HOME/nix-store
+cache:
+  directories:
+    - $STORE
+before_install:
+  - sudo mkdir -p /etc/nix
+  - echo "binary-caches = https://cache.nixos.org/ file://$STORE" | sudo tee -a /etc/nix/nix.conf > /dev/null
+  - echo 'require-sigs = false' | sudo tee -a /etc/nix/nix.conf > /dev/null
+before_cache:
+  - mkdir -p $STORE
+  - nix copy --to file://$STORE -f shell.nix buildInputs
+install:
+  - nix-shell --pure --command "echo 'run nix-shell and exit'"
+script:
+  - nix-shell --command "python setup.py test";

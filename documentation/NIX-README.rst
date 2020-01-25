@@ -29,13 +29,10 @@ Once you have a working Nix installation use::
 
     $ nix-shell --pure
 
-in the base :term:`FiPy` directory to install :term:`FiPy` with
-Python 2. To install with Python 3, use::
-
-    $ nix-shell --pure nix/py3.nix
-
-``nix-shell`` drops the user into a shell with a working version of
-:term:`FiPy`. To test your installation use::
+in the base :term:`FiPy` directory to install :term:`FiPy` with Python
+3 by default. Modify the `shell.nix` file to use another version of
+Python. ``nix-shell`` drops the user into a shell with a working
+version of :term:`FiPy`. To test your installation use::
 
     $ nix-shell --pure --command "python setup.py test"
 
@@ -44,12 +41,13 @@ Python 2. To install with Python 3, use::
    :term:`Trilinos` is currently not available as part of the Nix
    :term:`FiPy` installation.
 
+
 Additional Packages
 -------------------
 
 To install additional packages available from Nixpkgs_ include them in
-the `buildInputs` list in `nix/build.nix` (in the `nix`
-subdirectory of the base :term:`FiPy` directory).
+the `nativeBuildInputs` list in `shell.nix`.
+
 
 Using Pip
 ---------
