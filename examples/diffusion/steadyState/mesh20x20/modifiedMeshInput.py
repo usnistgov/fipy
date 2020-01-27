@@ -46,7 +46,7 @@ The result is again tested in the same way:
 >>> from fipy import input
 >>> x = mesh.cellCenters[0] # doctest: +GMSH
 >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx # doctest: +GMSH
->>> print var.allclose(analyticalArray, atol=0.025) # doctest: +GMSH
+>>> print(var.allclose(analyticalArray, atol=0.025)) # doctest: +GMSH
 True
 
 >>> errorVar = abs(var - analyticalArray)
@@ -55,7 +55,7 @@ True
 >>> NonOrthoVar = CellVariable(name="non-orthogonality",
 ...                            mesh=mesh,
 ...                            value=mesh._nonOrthogonality)
->>> print max(NonOrthoVar) < 0.51 # doctest: +GMSH
+>>> print(max(NonOrthoVar) < 0.51) # doctest: +GMSH
 True
 
 >>> if __name__ == '__main__':
