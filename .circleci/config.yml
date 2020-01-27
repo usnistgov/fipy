@@ -454,9 +454,9 @@ workflows:
     jobs:
       - conda2_env
       - conda3_env
-      - build-27-docs:
-          requires:
-            - conda2_env
+#       - build-27-docs:
+#           requires:
+#             - conda2_env
       - build-36-docs:
           requires:
             - conda3_env
@@ -493,7 +493,7 @@ workflows:
       - build-binaries:
           requires:
             - conda3_env
-            - build-27-docs
+            - build-36-docs
             - pylint
             - flake8
             - black
