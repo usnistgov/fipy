@@ -187,6 +187,7 @@ Malengier
 Materialia
 matforge
 matplotlib
+matplotlib's
 maxima
 mayavi
 mayavi2
@@ -197,6 +198,7 @@ metallization
 micrographs
 Microstructology
 microstructure
+Miniconda
 minima
 MinMod
 misorientation
@@ -219,6 +221,7 @@ Navier-Stokes
 neighbors'
 Neumann
 NIST
+Nixpkgs
 NVIDIA
 numerix
 numpy
@@ -307,6 +310,7 @@ superfill
 superfilling
 svn
 SvnToGit
+symlog
 S.I.
 terms'
 Tcl

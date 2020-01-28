@@ -11,9 +11,56 @@ Change Log
 Version |release|
 -----------------
 
------------
-Version 3.3
------------
+This release adds support for the :term:`PETSc` solvers for
+:ref:`PARALLEL`.
+
+Pulls
+-----
+
+- Add support for PETSc solvers
+  (`#701 <https://github.com/usnistgov/fipy/pull/701>`_)
+- Assorted fixes while supporting PETSc
+  (`#700 <https://github.com/usnistgov/fipy/pull/700>`_)
+  - Fix print statements for Py3k
+  - Resolve Gmsh issues
+  - Dump only on processor 0
+  - Only write `timetests` on processor 0
+  - Fix conda-forge link
+  - Upload PDF
+  - Document `print` option of `FIPY_DISPLAY_MATRIX`
+  - Use legacy numpy formatting when testing individual modules
+  - Switch to matplotlib's built-in symlog scaling
+  - Clean up tests
+- Assorted fixes for benchmark 8
+  (`#699 <https://github.com/usnistgov/fipy/pull/699>`_)
+  - Stipulate `--force` option for `conda remove fipy`
+  - Update Miniconda installation url
+  - Replace `_CellVolumeAverageVariable` class with `Variable` expression
+  - Fix output for bad call stack
+- Make CircleCI build docs on Py3k
+  (`#698 <https://github.com/usnistgov/fipy/pull/698>`_)
+- Fix link to Nick Croft's thesis
+  (`#681 <https://github.com/usnistgov/fipy/pull/681>`_)
+- Fix NIST header footer
+  (`#680 <https://github.com/usnistgov/fipy/pull/680>`_)
+- Use Nixpkgs version of FiPy expression
+  (`#661 <https://github.com/usnistgov/fipy/pull/661>`_)
+- Update the Nix recipe
+  (`#658 <https://github.com/usnistgov/fipy/pull/658>`_)
+
+Fixes
+-----
+
+- `#692 <https://github.com/usnistgov/fipy/issues/692>`_:
+  Can't copy example scripts with the command line
+- `#669 <https://github.com/usnistgov/fipy/issues/669>`_:
+  input() deadlock on parallel runs
+- `#643 <https://github.com/usnistgov/fipy/issues/643>`_:
+  Automate release process
+
+------------------------
+Version 3.3 - 2019-06-28
+------------------------
 
 This release brings support for Python 2 and Python 3 from the same source,
 without any translation.  Thanks to `@pya <https://github.com/pya>`_ and
@@ -62,9 +109,9 @@ Fixes
 - `#340 <https://github.com/usnistgov/fipy/issues/340>`_:
   Don't upload packages to PyPI, just add the master url
 
------------
-Version 3.2
------------
+------------------------
+Version 3.2 - 2019-04-22
+------------------------
 
 This is predominantly a `DevOps`_ release.  The focus has been on making
 FiPy easier to install with :term:`conda`.  It's also possible to install a

@@ -76,7 +76,7 @@ matrix:
   - pyspelling.filters.url:
 - name: reST
   sources:
-  - ./**/*.rst|!./**/generated/*.rst|!./test-environment-*/**
+  - ./**/*.rst|!./**/generated/*.rst|!./test-environment-*/**|!./worktrees/**
   dictionary:
     wordlists:
     - .en-custom.txt
