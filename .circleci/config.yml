@@ -465,9 +465,6 @@ jobs:
       - build_html_docs:
           condaenv: << parameters.condaenv >>
 
-      - build_pdf_docs:
-          condaenv: << parameters.condaenv >>
-
   build-36-docs:
     <<: *defaults3
 
@@ -499,6 +496,9 @@ jobs:
             conda install --channel conda-forge matplotlib pandas imagemagick
 
       - build_html_docs:
+          condaenv: << parameters.condaenv >>
+
+      - build_pdf_docs:
           condaenv: << parameters.condaenv >>
 
   build-binaries:
