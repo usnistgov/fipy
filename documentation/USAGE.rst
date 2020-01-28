@@ -358,11 +358,11 @@ that there is either a problem importing one of the required packages or
 that there is some problem with the :term:`MPI` environment. For example::
 
          mpi4py            PyTrilinos           petsc4py                   FiPy            
-    processor 0 of 3 :: processor 0 of 3 :: processor 0 of 3 :: 10 cells on processor 0 of 1
+    processor 0 of 3 :: processor 0 of 1 :: processor 0 of 3 :: 10 cells on processor 0 of 1
     [my.machine.com:69815] WARNING: There were 4 Windows created but not freed.
-    processor 1 of 3 :: processor 1 of 3 :: processor 1 of 3 :: 10 cells on processor 0 of 1
+    processor 1 of 3 :: processor 0 of 1 :: processor 1 of 3 :: 10 cells on processor 0 of 1
     [my.machine.com:69814] WARNING: There were 4 Windows created but not freed.
-    processor 2 of 3 :: processor 2 of 3 :: processor 2 of 3 :: 10 cells on processor 0 of 1
+    processor 2 of 3 :: processor 0 of 1 :: processor 2 of 3 :: 10 cells on processor 0 of 1
     [my.machine.com:69813] WARNING: There were 4 Windows created but not freed.
 
 indicates :term:`mpi4py` is properly communicating with :term:`MPI` and is running
@@ -371,8 +371,9 @@ serial environments. As a result, :term:`FiPy` is limited to three separate
 serial operations, too. In this instance, the problem is that although
 :ref:`TRILINOS` was compiled with :term:`MPI` enabled, it was compiled against a
 different :term:`MPI` library than is currently available (and which :term:`mpi4py`
-was compiled against). The solution is to rebuild :ref:`TRILINOS` against
-the active :term:`MPI` libraries.
+was compiled against).  The solution, in this instance, is to solve with
+:ref:`PETSC` or to rebuild :ref:`TRILINOS` against the active :term:`MPI`
+libraries.
 
 When solving in parallel, :term:`FiPy` essentially breaks the problem
 up into separate sub-domains and solves them (somewhat) independently.
