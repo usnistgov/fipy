@@ -15,6 +15,8 @@ elif solver == 'pysparse':
     docTestModuleNames = ('pysparseMatrix',)
 elif solver == 'pyamgx':
     docTestModuleNames = ('scipyMatrix',)
+elif solver == 'petsc':
+    docTestModuleNames = ('petscMatrix',)
 else:
     raise ImportError('Unknown solver package %s' % solver)
 

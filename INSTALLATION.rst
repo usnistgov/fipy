@@ -223,8 +223,7 @@ If necessary, you can download_ and install it for your platform
 
 .. note::
 
-   :term:`FiPy` requires at least version 2.7.x of :term:`Python`. See
-   the specialized instructions if you plan on :ref:`RunningUnderPython3`.
+   :term:`FiPy` requires at least version 2.7.x of :term:`Python`.
 
 .. _download: http://www.python.org/download/
 

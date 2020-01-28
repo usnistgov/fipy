@@ -29,6 +29,7 @@ class test(_test):
         ('pysparse', None, "run FiPy using Pysparse solvers (default)"),
         ('scipy', None, "run FiPy using SciPy solvers"),
         ('Scipy', None, "run FiPy using SciPy solvers"),
+        ('petsc', None, "run FiPy using PETSc solvers"),
         ('no-pysparse', None, "run FiPy without using the Pysparse solvers"),
         ('pyamg', None, "run FiPy without using the PyAMG solvers"),
         ('pyamgx', None, "run FiPy using the pyamgx solvers"),
@@ -66,6 +67,7 @@ class test(_test):
         self.pyamg = False
         self.pyamgx = False
         self.scipy = False
+        self.petsc = False
         self.timetests = None
         self.skfmm = False
         self.lsmlib = False
@@ -123,7 +125,7 @@ class test(_test):
 
     def printPackageInfo(self):
 
-        for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'mpi4py', 'pyamgx']:
+        for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'mpi4py', 'petsc4py', 'pyamgx']:
 
             try:
                 mod = __import__(pkg)

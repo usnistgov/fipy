@@ -712,7 +712,7 @@ class AbstractMesh(object):
 
         """
         x = self.faceCenters[0]
-        return x == _madmin(x)
+        return x == self._minmin(x)
 
     @property
     def facesRight(self):
@@ -734,7 +734,7 @@ class AbstractMesh(object):
 
         """
         x = self.faceCenters[0]
-        return x == _madmax(x)
+        return x == self._maxmax(x)
 
     @property
     def facesBottom(self):
@@ -756,7 +756,7 @@ class AbstractMesh(object):
 
         """
         y = self.faceCenters[1]
-        return y == _madmin(y)
+        return y == self._minmin(y)
 
     facesDown = facesBottom
 
@@ -780,7 +780,7 @@ class AbstractMesh(object):
 
         """
         y = self.faceCenters[1]
-        return y == _madmax(y)
+        return y == self._maxmax(y)
 
     facesUp = facesTop
 
@@ -799,7 +799,7 @@ class AbstractMesh(object):
 
         """
         z = self.faceCenters[2]
-        return z == _madmax(z)
+        return z == self._maxmax(z)
 
     @property
     def facesFront(self):
@@ -816,7 +816,7 @@ class AbstractMesh(object):
 
         """
         z = self.faceCenters[2]
-        return z == _madmin(z)
+        return z == self._minmin(z)
 
     @property
     def _cellVertexIDs(self):
@@ -1148,18 +1148,25 @@ class AbstractMesh(object):
 
             return float((yCoords.max() - yCoords.min()) / (xCoords.max() - xCoords.min()))
 
+    def _minmin(self, x):
+        """return minimum of all the minima on all processors
+        """
+        if len(x) == 0:
+            minx = numerix.infty
+        else:
+            minx = min(x)
 
-def _madmin(x):
-    if len(x) == 0:
-        return 0
-    else:
-        return min(x)
+        return self.communicator.MinAll(minx)
 
-def _madmax(x):
-    if len(x) == 0:
-        return 0
-    else:
-        return max(x)
+    def _maxmax(self, x):
+        """return maximum of all the maxima on all processors
+        """
+        if len(x) == 0:
+            maxx = -numerix.infty
+        else:
+            maxx = max(x)
+
+        return self.communicator.MaxAll(maxx)
 
 def _test():
     import fipy.tests.doctestPlus

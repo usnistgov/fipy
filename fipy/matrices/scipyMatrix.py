@@ -237,10 +237,16 @@ class _ScipyMatrix(_SparseMatrix):
         return self.matrix.toarray()
 
     def matvec(self, x):
-        """
-        This method is required for scipy solvers.
+        """This method is required for scipy solvers.
         """
         return self * x
+
+    def exportMmf(self, filename):
+        """Exports the matrix to a Matrix Market file of the given `filename`.
+        """
+        from scipy.io import mmio
+
+        mmio.mmwrite(filename, self.matrix)
 
     def __getitem__(self, indices):
         return self.matrix[indices]

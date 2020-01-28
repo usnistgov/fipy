@@ -15,7 +15,8 @@ __all__ = [text_to_native_str(n) for n in __all__]
 class TrilinosAztecOOSolver(TrilinosSolver):
 
     """
-    .. attention:: This class is abstract, always create on of its subclasses. It provides the code to call all solvers from the Trilinos AztecOO package.
+    .. attention:: This class is abstract, always create on of its subclasses.
+       It provides the code to call all solvers from the Trilinos AztecOO package.
 
     """
 

@@ -6,6 +6,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import numerix
 from fipy.tools.numerix import random
 from fipy.tools.dimensions.physicalField import PhysicalField
+from fipy.tools import serialComm
 
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes import Grid2D
@@ -19,6 +20,8 @@ class SkewedGrid2D(Mesh2D):
     Creates a 2D grid mesh with horizontal faces numbered first and then
     vertical faces.  The points are skewed by a random amount (between `rand`
     and `-rand`) in the X and Y directions.
+
+    .. note:: This `Mesh` only operates in serial
     """
     def __init__(self, dx = 1., dy = 1., nx = None, ny = 1, rand = 0, *args, **kwargs):
         self.args = {
@@ -42,7 +45,7 @@ class SkewedGrid2D(Mesh2D):
         else:
             self.dy /= scale
 
-        self.grid = Grid2D(nx=nx, ny=ny, dx=dx, dy=dy)
+        self.grid = Grid2D(nx=nx, ny=ny, dx=dx, dy=dy, communicator=serialComm)
 
         self.numberOfVertices = self.grid._numberOfVertices
 
@@ -63,7 +66,7 @@ class SkewedGrid2D(Mesh2D):
 
         cells = self.grid.cellFaceIDs
 
-        Mesh2D.__init__(self, changedVertices, faces, cells, *args, **kwargs)
+        Mesh2D.__init__(self, changedVertices, faces, cells, communicator=serialComm, *args, **kwargs)
 
         self.scale = scale
 
