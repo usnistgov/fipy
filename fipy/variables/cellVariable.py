@@ -211,8 +211,8 @@ class CellVariable(_MeshVariable):
         """
 
         if not hasattr(self, 'volumeAverage'):
-            from fipy.variables.cellVolumeAverageVariable import _CellVolumeAverageVariable
-            self.volumeAverage = _CellVolumeAverageVariable(self)
+            volumes = CellVariable(mesh=self.mesh, value=self.mesh.cellVolumes)
+            self.volumeAverage = (self * volumes).sum() / volumes.sum()
 
         return self.volumeAverage
 

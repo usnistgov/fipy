@@ -1,5 +1,14 @@
 r"""Solve the Cahn-Hilliard problem in two dimensions.
 
+.. warning:: This formulation has
+   `serious performance problems`_
+   and is **not automatically tested**.  Specifically, for non-trivial mesh
+   sizes, :term:`PySparse` requires enormous amounts of memory,
+   :term:`Trilinos` cannot solve the coupled form, and :term:`PETSc` cannot
+   solve the vector form.
+
+.. _serious performance problems: https://github.com/usnistgov/fipy/issues/378
+
 The spinodal decomposition phenomenon is a spontaneous separation of
 an initially homogeneous mixture into two distinct regions of different
 properties (spin-up/spin-down, component A/component B). It is a
@@ -112,7 +121,7 @@ evolution of their problem.
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input("Coupled equations. Press <return> to proceed...")
 
@@ -171,8 +180,9 @@ True
 
 """
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
+
+from fipy import input
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

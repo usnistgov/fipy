@@ -74,6 +74,19 @@ Glossary
    MayaVi
       The predecessor to :term:`Mayavi`. Yes, it's confusing.
 
+   MPI
+      The Message Passing Interface is a standard that allows the use of
+      multiple processors. See
+      http://www.mpi-forum.org
+
+   mpi4py
+      MPI for Python provides bindings of the Message Passing Interface
+      (:term:`MPI`) standard for the Python programming language, allowing any
+      Python program to exploit multiple processors.  For :ref:`PARALLEL`,
+      :term:`FiPy` requires :mod:`mpi4py`, in addition to :term:`PETSc` or
+      :term:`Trilinos`. See
+      https://mpi4py.readthedocs.io.
+
    numarray
       An archaic predecessor to :term:`NumPy`.
 
@@ -85,9 +98,26 @@ Glossary
       facilities. See
       http://www.scipy.org/NumPy.
 
+   OpenMP
+      The Open Multi-Processing architecture is a specification for a set
+      of compiler directives, library routines, and environment variables
+      that can be used to specify high-level parallelism in Fortran and
+      C/C++ programs. See
+      https://www.openmp.org.
+
    pandas
       "Python Data Analysis Library" provides high-performance data structures
       for flexible, extensible analysis. See http://pandas.pydata.org.
+
+   PETSc
+      The Portable, Extensible Toolkit for Scientific Computation is a
+      suite of data structures and routines for the scalable (parallel)
+      solution of scientific applications modeled by partial differential
+      equations. See https://www.mcs.anl.gov/petsc and :ref:`PETSC`.
+
+   petsc4py
+      :term:`Python` wrapper for :term:`PETSc`. See
+      https://petsc4py.readthedocs.io/.
 
    pip
       "pip installs python" is a tool for installing and managing Python

@@ -1,7 +1,7 @@
 from __future__ import division
 from __future__ import unicode_literals
 from builtins import range
-from builtins import input
+from fipy import input
 from fipy import CellVariable, Gmsh2D, DiffusionTerm, Viewer
 from fipy.tools import numerix
 from matplotlib import cm

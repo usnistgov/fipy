@@ -11,7 +11,7 @@ from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
-from fipy.tools import numerix, parallelComm
+from fipy.tools import numerix
 
 # Current inadequacies of the matrix class:
 

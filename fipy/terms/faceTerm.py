@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
 
 import os
 
+from fipy import input
 from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 from fipy.tools import vector
 from fipy.tools import numerix
@@ -55,7 +55,7 @@ class FaceTerm(_NonDiffusionTerm):
             if 'FIPY_DISPLAY_MATRIX' in os.environ:
                 self._viewer.title = r"%s %s" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
                 self._viewer.plot(matrix=LL, RHSvector=bb)
-                from fipy import raw_input
+                from fipy import input
                 input()
 
             L += LL

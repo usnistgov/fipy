@@ -210,8 +210,9 @@ custom viewer), compared with over 800 lines of (fairly lucid) FORTRAN code used
 the figures in :cite:`WarrenPolycrystal`.
 """
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
+
+from fipy import input
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

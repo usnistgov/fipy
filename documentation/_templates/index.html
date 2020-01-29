@@ -1,4 +1,18 @@
 {% extends "layout.html" %}
+{% block nistsoftwarebutton %}
+  <div class="grid-container margin-top-4">
+  <div class="nist-page__region nist-page__region--content-top">
+
+      <div
+      data-layout-content-preview-placeholder-label="&quot;NIST Software Button&quot; block"
+      class="nist-block">
+          <a class="usa-button usa-button--accent-cool"
+          href="https://www.nist.gov/services-resources/software">Software</a>
+      </div>
+
+  </div>
+  </div>
+{% endblock %}
 {% block body %}
   <h1>FiPy: A Finite Volume PDE Solver Using Python</h1>
   <p><a class="reference external"
@@ -48,14 +62,14 @@
   href="documentation/references.html#nist-damascene-2001">[NIST:damascene:2001]</a>.</p>
   <p>
   <!-- Development & Quality Assurance Badges -->
-  <a href="https://circleci.com/gh/usnistgov/fipy"><img src="https://img.shields.io/circleci/project/github/usnistgov/fipy/.svg?label=Linux" alt="Linux status"></img></a>
+  <a href="https://circleci.com/gh/usnistgov/fipy"><img src="https://img.shields.io/circleci/project/github/usnistgov/fipy/master.svg?label=Linux" alt="Linux status"></img></a>
   <a href="https://travis-ci.org/usnistgov/fipy"><img src="https://img.shields.io/travis/usnistgov/fipy/master.svg?label=macOS" alt="macOS status"></img></a>
   <a href="https://ci.appveyor.com/project/guyer/fipy"><img src="https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=master&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending" alt="Windows status"></img></a>
   <br>
   <a href="https://github.com/usnistgov/fipy"><img src="https://img.shields.io/github/contributors/usnistgov/fipy.svg" alt="GitHub"></img></a>
   <a href="https://pypi.python.org/pypi/FiPy"><img src="https://img.shields.io/pypi/v/fipy.svg" alt="PyPi"></img></a>
   <a class="badge-align" href="https://www.codacy.com/app/tkphd/fipy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=usnistgov/fipy&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/d02921bb54b14e88a1e2e1f5520133f4"/></a>
-  <a href="https://anaconda.org/guyer/fipy"><img src="https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg" alt="CondaForge"></img></a>
+  <a href="https://anaconda.org/conda-forge/fipy"><img src="https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg" alt="CondaForge"></img></a>
   <a href="https://mybinder.org/v2/gh/usnistgov/fipy/master?filepath=examples%2Findex.ipynb"><img src="https://mybinder.org/badge.svg" alt="Binder"></img></a>
   <br>
   <!-- Community Badges -->
@@ -134,9 +148,9 @@
      </td></tr>
    </table>
 
-   <h2><a href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy/releases">Download</a></h2>
+   <h2 class="contentstablelink"><a href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy/releases">Download</a></h2>
 
-   <h2><a href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy">FiPy@GitHub</a></h2>
+   <h2 class="contentstablelink"><a href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy">FiPy@GitHub</a></h2>
    <table class="contentstable" align="center"><tr>
      <td width="50%">
        <p class="biglink"><a class="biglink" 

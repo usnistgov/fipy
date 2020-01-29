@@ -59,9 +59,12 @@ conda
 CondaForge
 conda-forge
 conjunctionality
+cpu
+cpus
 Crank-Nicolson
 Croft's
 crystallographically
+CSR
 css
 CTCMS
 CVs
@@ -107,6 +110,7 @@ Fick's
 fipy
 FiPy
 FiPy's
+FIXME
 FV
 FVM
 Gauss-Seidel
@@ -183,15 +187,19 @@ Malengier
 Materialia
 matforge
 matplotlib
-Mazur
+matplotlib's
+maxima
 mayavi
 mayavi2
+Mazur
 Merks
 mesh-element--by--mesh-element
 metallization
 micrographs
 Microstructology
 microstructure
+Miniconda
+minima
 MinMod
 misorientation
 MML
@@ -213,6 +221,7 @@ Navier-Stokes
 neighbors'
 Neumann
 NIST
+Nixpkgs
 NVIDIA
 numerix
 numpy
@@ -227,6 +236,7 @@ overbar
 overpotential
 O'Beirne
 parallelization
+parallelize
 Patankar
 PBICGSTAB
 PCG
@@ -236,6 +246,7 @@ pdf
 Péclet
 PEG-SPS-Cl
 Peric
+PETSc
 photovoltaics
 PID
 PNG
@@ -299,6 +310,7 @@ superfill
 superfilling
 svn
 SvnToGit
+symlog
 S.I.
 terms'
 Tcl
@@ -345,6 +357,7 @@ YZ
 Zhitenev
 1D
 2D
+2x4
 2.x
 3D
 3x2x1

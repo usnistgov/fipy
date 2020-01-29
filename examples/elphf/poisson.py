@@ -96,7 +96,7 @@ We verify that the correct equilibrium is attained
 
 If we are running the example interactively, we view the result
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = (charge, potential))
 ...     viewer.plot()
@@ -139,7 +139,7 @@ We verify that the correct equilibrium is attained
 
 and again view the result
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 ...     input("Press any key to continue...")
@@ -184,8 +184,9 @@ and again view the result
 ...     viewer.plot()
 """
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
+
+from fipy import input
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

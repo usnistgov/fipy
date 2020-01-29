@@ -34,7 +34,7 @@ declaration of ``mesh``.
 ... 
 ...     // create entire inner and outer shell
 ...     Surface Loop(100)={1,t1[0],t2[0],t3[0],t7[0],t4[0],t5[0],t6[0]};
-... ''', order=2).extrude(extrudeFunc=lambda r: 1.1 * r) # doctest: +GMSH
+... ''', overlap=2).extrude(extrudeFunc=lambda r: 1.1 * r) # doctest: +GMSH
 >>> phi = CellVariable(name=r"$\phi$", mesh=mesh) # doctest: +GMSH
 
 We start the problem with random fluctuations about
@@ -110,8 +110,9 @@ evolution of their problem.
 
 """
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
+
+from fipy import input
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

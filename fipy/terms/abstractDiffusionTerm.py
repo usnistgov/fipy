@@ -1,12 +1,12 @@
 from __future__ import division
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
 
 __all__ = []
 
 import os
 
+from fipy import input
 from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import numerix
 from fipy.terms import TermMultiplyError
@@ -241,7 +241,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             if 'FIPY_DISPLAY_MATRIX' in os.environ:
                 self._viewer.title = r"%s %s" % (boundaryCondition.__class__.__name__, self.__class__.__name__)
                 self._viewer.plot(matrix=LL, RHSvector=bb)
-                from fipy import raw_input
+                from fipy import input
                 input()
             self.__bcAdd(coefficientMatrix, boundaryB, LL, bb)
 
@@ -373,7 +373,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             del higherOrderBCs
             del mm
 
-            b = L * lowerOrderb + b
+            b = numerix.asarray(L * lowerOrderb) + b
             del lowerOrderb
 
             L = L * lowerOrderL

@@ -10,7 +10,7 @@ def _suite():
             'distanceFunction.test',
             'advection.test',
             'surfactant.test',
-            'electroChem.test',
+#             'electroChem.test',    # FIXME: These tests have serious issues - https://github.com/usnistgov/fipy/issues/682
         ), base = __name__)
 
 if __name__ == '__main__':

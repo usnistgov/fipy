@@ -8,7 +8,7 @@ def _suite():
             'mesh2D',
             'mesh3D',
             'sphere',
-            'mesh2DCoupled',
+#             'mesh2DCoupled',  # FIXME: this test is [borked](https://github.com/usnistgov/fipy/issues/378)
         ), base = __name__)
 
 if __name__ == '__main__':

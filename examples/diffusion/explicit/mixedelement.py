@@ -73,7 +73,7 @@ We check the answer against the analytical result
 >>> print(var.allclose(varAnalytical, atol=atol)) # doctest: +SCIPY
 1
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 ...     input('finished')

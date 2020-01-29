@@ -50,8 +50,9 @@ demonstrates how to create the required mesh.
 
 """
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
+
+from fipy import input
 
 if __name__ == '__main__':
     import fipy.tests.doctestPlus

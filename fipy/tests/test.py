@@ -29,6 +29,7 @@ class test(_test):
         ('pysparse', None, "run FiPy using Pysparse solvers (default)"),
         ('scipy', None, "run FiPy using SciPy solvers"),
         ('Scipy', None, "run FiPy using SciPy solvers"),
+        ('petsc', None, "run FiPy using PETSc solvers"),
         ('no-pysparse', None, "run FiPy without using the Pysparse solvers"),
         ('pyamg', None, "run FiPy without using the PyAMG solvers"),
         ('pyamgx', None, "run FiPy using the pyamgx solvers"),
@@ -66,6 +67,7 @@ class test(_test):
         self.pyamg = False
         self.pyamgx = False
         self.scipy = False
+        self.petsc = False
         self.timetests = None
         self.skfmm = False
         self.lsmlib = False
@@ -123,7 +125,7 @@ class test(_test):
 
     def printPackageInfo(self):
 
-        for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'mpi4py', 'pyamgx']:
+        for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'mpi4py', 'petsc4py', 'pyamgx']:
 
             try:
                 mod = __import__(pkg)
@@ -258,6 +260,25 @@ class test(_test):
             import numpy
             _DocTestTimes = numpy.rec.fromrecords(_DocTestTimes, formats='f8,S255', names='time,test')
             _DocTestTimes.sort(order=('time', 'test'))
-            numpy.savetxt(self.timetests, _DocTestTimes[::-1], fmt="%8.4f\t%s")
+
+            # Only write on proc 0.
+            # Doesn't use FiPy comms because this command can
+            # be run outside of FiPy (`python setup.py test`)
+            try:
+                from mpi4py import MPI
+                procID = MPI.COMM_WORLD.rank
+                barrier = MPI.COMM_WORLD.barrier
+            except:
+                procID = 0
+                def barrier(*args):
+                    pass
+
+            if procID == 0:
+                numpy.savetxt(self.timetests, _DocTestTimes[::-1],
+                              delimiter='\t',
+                              header="time\tmodule", comments='',
+                              fmt=("%.18e", "%s"))
+
+            barrier()
 
         raise exitErr

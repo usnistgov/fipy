@@ -1,11 +1,11 @@
 from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
 
 __all__ = []
 
 import os
 
+from fipy import input
 from fipy.tools import numerix
 from fipy.terms.term import Term
 

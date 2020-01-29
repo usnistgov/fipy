@@ -232,7 +232,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         ...  [  0,    0,    0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,  ],
         ...  [  0,    0,    0,    0,  -1.0, -1.0,   0,    0,    0,    0,    0,   1.0, ]]))
         True
-        >>> LHS =  CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.matrix * v.value.ravel(), (2, -1))).globalValue.ravel()
+        >>> LHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(numerix.asarray(eqn.matrix * v.value.ravel()), (2, -1))).globalValue.ravel()
         >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
         >>> print(numerix.allclose(LHS, RHS))
         True
@@ -257,7 +257,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         ...  [  0,    0,    0,  -1.0,   0,   1.0,   0,    0,    0,    0,   1.0,   0,  ],
         ...  [  0,    0,    0,    0,  -1.0, -1.0,   0,    0,    0,    0,    0,   1.0, ]]))
         True
-        >>> LHS =  CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.matrix * v.value.ravel(), (2, -1))).globalValue.ravel()
+        >>> LHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(numerix.asarray(eqn.matrix * v.value.ravel()), (2, -1))).globalValue.ravel()
         >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
         >>> print(numerix.allclose(LHS, RHS))
         True
@@ -286,7 +286,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
         ...  [  0,    0,    0,    0,   2.0, -2.0,   0,    0,    0,    0,   1.0,   0,  ],
         ...  [  0,    0,    0,    0,    0,   2.0,   0,    0,    0,    0,    0,   1.0, ]]))
         True
-        >>> LHS =  CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.matrix * v.value.ravel(), (2, -1))).globalValue.ravel()
+        >>> LHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(numerix.asarray(eqn.matrix * v.value.ravel()), (2, -1))).globalValue.ravel()
         >>> RHS = CellVariable(mesh=m, rank=1, elementshape=(2,), value=numerix.reshape(eqn.RHSvector, (2, -1))).globalValue.ravel()
         >>> print(numerix.allclose(LHS, RHS))
         True

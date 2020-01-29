@@ -7,7 +7,7 @@ Test case for the `Grid3D`. Diffusion problem with boundary conditions: 0 on fro
 """
 from __future__ import unicode_literals
 
-from builtins import input
+from fipy import input
 from fipy import CellVariable, Grid3D, Viewer
 
 nx = 10

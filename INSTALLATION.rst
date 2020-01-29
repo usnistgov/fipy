@@ -117,14 +117,14 @@ Recommended Method
    its :ref:`examples <part:examples>`.  These can be obtained by
    `cloning the repository`_ or downloading a `compressed archive`_.
 
-.. _install Miniconda: http://conda.pydata.org/docs/install/quick.html
+.. _install Miniconda: https://conda.io/projects/conda/en/latest/user-guide/install
 .. _guyer: https://anaconda.org/guyer
 .. _conda-forge: https://conda-forge.github.io/
 .. _Mac OS X: http://www.apple.com/macosx/
 .. _Linux: http://www.linux.org/
 .. _Windows: http://www.microsoft.com/windows/
 .. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
-.. _CondaForge:    https://anaconda.org/guyer/fipy
+.. _CondaForge:    https://anaconda.org/conda-forge/fipy
 
 
 --------------
@@ -223,8 +223,7 @@ If necessary, you can download_ and install it for your platform
 
 .. note::
 
-   :term:`FiPy` requires at least version 2.7.x of :term:`Python`. See
-   the specialized instructions if you plan on :ref:`RunningUnderPython3`.
+   :term:`FiPy` requires at least version 2.7.x of :term:`Python`.
 
 .. _download: http://www.python.org/download/
 
@@ -256,6 +255,8 @@ Gmsh
 http://www.geuz.org/gmsh/
 
 :term:`Gmsh` is an application that allows the creation of irregular meshes.
+When running in parallel, :term:`FiPy` requires a version of :term:`Gmsh`
+>= 2.5 and < 4.0.
 
 SciPy
 =====
@@ -340,7 +341,7 @@ Our preferred development environment is set up with::
    $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy
    $ source activate <MYFIPYENV>
    $ pip install scikit-fmm
-   $ conda remove --channel conda-forge fipy
+   $ conda remove --channel conda-forge --force fipy
    $ git clone https://github.com/usnistgov/fipy.git
    $ cd fipy
    $ python setup.py develop
@@ -360,4 +361,4 @@ Nix
 
 .. _nixinstall:
 
-.. include:: nix/README.rst
+.. include:: documentation/NIX-README.rst

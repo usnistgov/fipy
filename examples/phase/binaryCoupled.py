@@ -514,14 +514,16 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 >>> C.updateOld()
 >>> res = 1.
 >>> initialRes = None
+>>> sweep = 0
 
->>> while res > 1e-4:
+>>> while res > 1e-4 and sweep < 20:
 ...     res = eq.sweep(dt=dt, solver=solver)
 ...     if initialRes is None:
 ...         initialRes = res
 ...     res = res / initialRes
+...     sweep += 1
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 ...     input("Stationary phase field. Press <return> to proceed...")
@@ -604,12 +606,14 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 ...     phase.updateOld()
 ...     C.updateOld()
 ...     res = 1e+10
-...     while res > 1e-3:
+...     sweep = 0
+...     while res > 1e-3 and sweep < 20:
 ...         res = eq.sweep(dt=dt, solver=solver)
+...         sweep += 1
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
->>> from builtins import input
+>>> from fipy import input
 >>> if __name__ == '__main__':
 ...     input("Moving phase field. Press <return> to proceed...")
 

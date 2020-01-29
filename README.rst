@@ -169,7 +169,7 @@ or a
 .. |PyPI|          image:: https://img.shields.io/pypi/v/fipy.svg
 .. _PyPI:          https://pypi.python.org/pypi/FiPy
 .. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
-.. _CondaForge:    https://anaconda.org/guyer/fipy
+.. _CondaForge:    https://anaconda.org/conda-forge/fipy
 .. |Depsy|         image:: http://depsy.org/api/package/pypi/FiPy/badge.svg
 .. _Depsy:         http://depsy.org/package/python/FiPy
 .. |Codacy|         image:: https://api.codacy.com/project/badge/Grade/d02921bb54b14e88a1e2e1f5520133f4
