@@ -365,6 +365,26 @@ class Variable(object):
             else:
                 return '[i + j * ni + k * ni * nj]'
 
+    def _getCvalue(self):
+         """
+         Generate the value to be used in inline.
+         """
+         v = self.value
+
+         if type(v) not in (type(numerix.array(1)),):
+             varray = numerix.array(v)
+         else:
+             varray = v
+
+         if len(varray.shape) == 0:
+             if varray.dtype in (numerix.array(1).dtype,):
+                 return int(varray)
+             elif varray.dtype in (numerix.array(1.).dtype,):
+                 return float(varray)
+             else:
+                 return varray
+         else:
+             return varray
 
     def _getCstring(self, argDict={}, id="", freshen=None):
          """
@@ -404,23 +424,7 @@ class Variable(object):
          """
 
          identifier = 'var%s' % (id)
-
-         v = self.value
-
-         if type(v) not in (type(numerix.array(1)),):
-             varray = numerix.array(v)
-         else:
-             varray = v
-
-         if len(varray.shape) == 0:
-             if varray.dtype in (numerix.array(1).dtype,):
-                 argDict[identifier] = int(varray)
-             elif varray.dtype in (numerix.array(1.).dtype,):
-                 argDict[identifier] = float(varray)
-             else:
-                 argDict[identifier] = varray
-         else:
-             argDict[identifier] = varray
+         argDict[identifier] = self
 
          try:
              shape = self.opShape
@@ -881,8 +885,18 @@ class Variable(object):
         """
 
         from fipy.tools import inline
-        argDict = {}
-        string = self._getCstring(argDict=argDict, freshen=True) + ';'
+        try:
+            argDict = self._c_argDict
+            string  = self._c_string
+        except AttributeError:
+            argDict = {}
+            string = self._getCstring(argDict=argDict, freshen=True) + ';'
+            self._c_argDict = dict(argDict)
+            self._c_string  = string
+
+        # _getCstring only returns variables,
+        # we need the values for the C code
+        argDict = {k: v._getCvalue() for k,v in argDict.iteritems()}
 
         try:
             shape = self.opShape
