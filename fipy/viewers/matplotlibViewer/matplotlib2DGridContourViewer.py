@@ -80,7 +80,7 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
         shape = mesh.shape
         X, Y = mesh.cellCenters
         Z = self.vars[0].value
-        X, Y, Z = [v.reshape(shape, order="FORTRAN") for v in (X, Y, Z)]
+        X, Y, Z = [v.reshape(shape, order='F') for v in (X, Y, Z)]
 
         zmin, zmax = self._autoscale(vars=self.vars,
                                      datamin=self._getLimit(('datamin', 'zmin')),

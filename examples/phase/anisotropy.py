@@ -168,7 +168,7 @@ existing viewers to create a specialized display:
 ...                 shape = mesh.shape
 ...                 x, y = mesh.cellCenters
 ...                 z = self.phase.value
-...                 x, y, z = [a.reshape(shape, order="FORTRAN") for a in (x, y, z)]
+...                 x, y, z = [a.reshape(shape, order='F') for a in (x, y, z)]
 ... 
 ...                 self.contour = self.axes.contour(x, y, z, (0.5,))
 ... 
