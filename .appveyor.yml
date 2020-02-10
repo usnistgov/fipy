@@ -91,7 +91,7 @@ build_script:
 test_script:
     - python setup.py egg_info
     - if defined FIPY_INLINE python setup.py test 1> NUL 2>&1
-    - python -W error::DeprecationWarning setup.py test
+    - python setup.py test --deprecation-errors
     - conda env export
 
 artifacts:

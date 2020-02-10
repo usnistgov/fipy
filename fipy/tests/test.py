@@ -4,6 +4,7 @@ from builtins import str
 from setuptools.command.test import test as _test
 from future.utils import text_to_native_str
 from future.utils import string_types
+import warnings
 
 __all__ = [text_to_native_str("test")]
 
@@ -43,6 +44,7 @@ class test(_test):
         ('timetests=', None, "file in which to put time spent on each test"),
         ('skfmm', None, "run FiPy using the Scikit-fmm level set solver (default)"),
         ('lsmlib', None, "run FiPy using the LSMLIB level set solver (default)"),
+        ('deprecation-errors', None, "raise Exceptions for all DeprecationWarnings"),
        ]
     user_options = [_nativize_all(u) for u in user_options]
 
@@ -71,6 +73,7 @@ class test(_test):
         self.timetests = None
         self.skfmm = False
         self.lsmlib = False
+        self.deprecation_errors = False
 
     def finalize_options(self):
         noSuiteOrModule = (self.test_suite is None
@@ -237,6 +240,9 @@ class test(_test):
         printoptions = numerix.get_printoptions()
         if "legacy" in printoptions:
             numerix.set_printoptions(legacy="1.13")
+
+        if self.deprecation_errors:
+            warnings.simplefilter(action="error", category=DeprecationWarning)
 
         try:
             unittest.main(
