@@ -6,7 +6,7 @@ __docformat__ = 'restructuredtext'
 
 import os
 
-from pysparse import superlu
+from pysparse.direct import superlu
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 from fipy.tools import numerix

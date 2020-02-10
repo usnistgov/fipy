@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from pysparse import precon
+from pysparse.precon import precon
 
 from fipy.solvers.pysparse.preconditioners.preconditioner import Preconditioner
 

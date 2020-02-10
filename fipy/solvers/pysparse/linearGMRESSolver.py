@@ -32,4 +32,4 @@ class LinearGMRESSolver(PysparseSolver):
         precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner, optional
         """
         super(LinearGMRESSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = itsolvers.gmres
+        self.solveFnc = itsolvers.Gmres

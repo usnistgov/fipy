@@ -34,7 +34,7 @@ class LinearPCGSolver(PysparseSolver):
         precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner, optional
         """
         super(LinearPCGSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = itsolvers.pcg
+        self.solveFnc = itsolvers.Pcg
 
     def _canSolveAsymmetric(self):
         return False
