@@ -290,7 +290,7 @@ class UniformGrid2D(UniformGrid):
         centers[0] = (indices[0] + 0.5) * self.dx
         centers[1] = (indices[1] + 0.5) * self.dy
         ccs = centers.reshape((2, self.numberOfCells),
-                               order="FORTRAN") + self.origin
+                               order='F') + self.origin
         return ccs
 
     @property
@@ -376,7 +376,7 @@ class UniformGrid2D(UniformGrid):
             distances[3, 0, ...] = self.dx / 2.
             distances[1, -1, ...] = self.dx / 2.
 
-        return distances.reshape((4, self.numberOfCells), order="FORTRAN")
+        return distances.reshape((4, self.numberOfCells), order='F')
 
 
     @property
@@ -414,10 +414,10 @@ class UniformGrid2D(UniformGrid):
         Vcen[0, ...] = indices[0] * self.dx
         Vcen[1, ...] = (indices[1] + 0.5) * self.dy
 
-        return numerix.concatenate((Hcen.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"),
+        return numerix.concatenate((Hcen.reshape((2, self.numberOfHorizontalFaces), order='F'),
                                     Vcen.reshape((2,
                                         self.numberOfVerticalFaces),
-                                        order="FORTRAN")), axis=1) + self.origin
+                                        order='F')), axis=1) + self.origin
 
     def _translate(self, vector):
         return self.__class__(dx = self.args['dx'], nx = self.args['nx'],
@@ -525,8 +525,8 @@ class UniformGrid2D(UniformGrid):
                 Vids[1, 0] = -1
                 Vids[1, -1] = -1
 
-            return MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"),
-                                                         Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order="FORTRAN")), axis=1), value = -1)
+            return MA.masked_values(numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order='F'),
+                                                         Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces), order='F')), axis=1), value = -1)
 
     @property
     def _cellVertexIDs(self):
@@ -544,9 +544,9 @@ class UniformGrid2D(UniformGrid):
         Vids[0] = indices[0] + indices[1] * self.numberOfVerticalColumns
         Vids[1] = Vids[0] + self.numberOfVerticalColumns
 
-        return numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order="FORTRAN"),
+        return numerix.concatenate((Hids.reshape((2, self.numberOfHorizontalFaces), order='F'),
                                     Vids.reshape((2, self.numberOfFaces - self.numberOfHorizontalFaces),
-                                                 order="FORTRAN")),
+                                                 order='F')),
                                    axis=1)
 
     def _calcOrderedCellVertexIDs(self):
@@ -558,7 +558,7 @@ class UniformGrid2D(UniformGrid):
         ids[3] = indices[0] + indices[1] * self.numberOfVerticalColumns
         ids[0] = ids[3] + 1
 
-        return ids.reshape((4, self.numberOfCells), order="FORTRAN")
+        return ids.reshape((4, self.numberOfCells), order='F')
 
     def _getNearestCellID(self, points):
         """
