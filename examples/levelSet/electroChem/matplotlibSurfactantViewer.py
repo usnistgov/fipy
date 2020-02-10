@@ -112,9 +112,9 @@ class MatplotlibSurfactantViewer(AbstractMatplotlibViewer):
 
         maxX = max(X)
 
-        X = X.reshape(shape, order="FORTRAN")
-        Y = Y.reshape(shape, order="FORTRAN")
-        Z = self.distanceVar.value.reshape(shape, order="FORTRAN")
+        X = X.reshape(shape, order='F')
+        Y = Y.reshape(shape, order='F')
+        Z = self.distanceVar.value.reshape(shape, order='F')
 
         zmin, zmax = self._autoscale(vars=(self.surfactantVar,),
                                      datamin=self._getLimit(('datamin', 'zmin')),
