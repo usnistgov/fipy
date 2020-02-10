@@ -29,6 +29,8 @@ in
       export PYTHONPATH=$PYTHONPATH:$USER_SITE
       export PATH=$PATH:$PYTHONUSERBASE/bin
 
+      export OMPI_MCA_plm_rsh_agent=/usr/bin/ssh
+
       ## To build the docs
       # pip install --user sphinx
       # pip install --user "sphinxcontrib-bibtex<=0.4.2"
