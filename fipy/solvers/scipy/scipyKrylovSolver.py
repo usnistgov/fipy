@@ -24,7 +24,8 @@ class _ScipyKrylovSolver(_ScipySolver):
         x, info = self.solveFnc(A, b, x,
                                 tol=self.tolerance,
                                 maxiter=self.iterations,
-                                M=M)
+                                M=M,
+                                atol='legacy')
 
         if 'FIPY_VERBOSE_SOLVER' in os.environ:
             if info < 0:
