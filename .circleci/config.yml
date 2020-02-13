@@ -104,10 +104,10 @@ commands:
             source activate ~/project/<< parameters.condaenv >>
             export ETS_TOOLKIT=null
             python setup.py build_docs --html
-            tar -czf ~/project/documentation/_build/html.tar.gz -C ~/project/ .
+            tar -czf ~/project/html.tar.gz -C ~/project/ .
 
       - store_artifacts:
-          path: ~/project/documentation/_build/
+          path: ~/project/html.tar.gz
 
   build_pdf_docs:
     description: "Build PDF Docs"
