@@ -4,6 +4,7 @@ environment:
 
   matrix:
     - TARGET_ARCH: x64
+      image: Visual Studio 2015
       CONDA_PY: 27
       CONDA_INSTALL_LOCN: C:\\Miniconda-x64
       FIPY_SOLVERS: pysparse
@@ -20,6 +21,7 @@ environment:
 #      FIPY_SOLVERS: scipy
 
     - TARGET_ARCH: x64
+      image: Visual Studio 2015
       CONDA_PY: 27
       CONDA_INSTALL_LOCN: C:\\Miniconda-x64
       FIPY_SOLVERS: scipy
