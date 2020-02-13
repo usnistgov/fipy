@@ -104,7 +104,7 @@ commands:
             source activate ~/project/<< parameters.condaenv >>
             export ETS_TOOLKIT=null
             python setup.py build_docs --html
-            tar -czf ~/project/documentation/_build/html.tar.gz ~/project/documentation/_build/html
+            tar -czf ~/project/documentation/_build/html.tar.gz -C ~/project/ .
 
       - store_artifacts:
           path: ~/project/documentation/_build/
