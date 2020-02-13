@@ -18,8 +18,8 @@ def _nativize_all(t):
     return tuple([_nativize(s) for s in t])
 
 class DeprecationErroringTestProgram(unittest.TestProgram):
-    """TestProgram that overrides standard TestProgram's
-    inability to throw errors on DeprecationWarnings
+    """`TestProgram` that overrides inability of standard
+    `TestProgram` to throw errors on `DeprecationWarning`
     """
     def runTests(self):
         self.warnings = None
