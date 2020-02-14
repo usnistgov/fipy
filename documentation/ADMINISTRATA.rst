@@ -130,7 +130,7 @@ Windows builds are performed on AppVeyor_. This CI is configured in
 .. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/master.svg?label=macOS
 .. _TravisCI:      https://travis-ci.org/usnistgov/fipy
 .. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=master&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
-.. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy
+.. _AppVeyor:      https://ci.appveyor.com/project/usnistgov/fipy
 
 .. _{FiPySource}/.circleci/config.yml: https://github.com/usnistgov/fipy/blob/master/.circleci/config.yml
 .. _{FiPySource}/.travis.yml: https://github.com/usnistgov/fipy/blob/master/.travis.yml
@@ -214,21 +214,19 @@ the tagged build products and place in :file:`dist/`:
   :file:`FiPy-x.y.tar.gz`
     From CircleCI_ `build-binaries` Artifacts
 
+  :file:`~/project/documentation/_build/latex/fipy.pdf`
+    From CircleCI_ `build-36-docs` Artifacts
+
+  :file:`~/project/html.tar.gz`
+    From CircleCI_ `build-36-docs` Artifacts
+
   :file:`FiPy-x.y.win32.zip`
     From AppVeyor_ Artifacts
 
-Clean the working copy::
+From the :file:`{FiPySource}` directory, unpack :file:`dist/html.tar.gz`
+into file:`documentation/_build` with::
 
-    $ git clean -fd
-
-.. note::
-
-   Alternatively, clone into a clean repository.
-
-Build the documentation and the web pages::
-
-    $ python setup.py bdist_egg
-    $ python setup.py build_docs --pdf --html --cathartic
+    $ tar -xzf dist/html.tar.gz -C documentation/_build
 
 ------
 Upload
@@ -258,7 +256,13 @@ Upload the web site to CTCMS ::
 Update conda-forge feedstock
 ----------------------------
 
-Using a pull request, update the fipy-feedstock_ with:
+Once you push the tag to GitHub_, the fipy-feedstock_ should automatically
+receive a pull request.  Review and amend this pull request as necessary
+and ask the `feedstock maintainers`_ to merge it.
+
+This automated process only runs once an hour, so if you don't wish to wait
+(or it doesn't trigger for some reason), you can manually generate a pull
+request to update the fipy-feedstock_ with:
 
 * revised version number
 * revised sha256 (use ``openssl dgst -sha256 /path/to/fipy-x.y.tar.gz``)
@@ -282,3 +286,4 @@ Make an announcement to `fipy@nist.gov`_
 .. _twine: https://pypi.org/project/twine
 .. _fipy-feedstock: https://github.com/conda-forge/fipy-feedstock
 .. _fipy@nist.gov: mailto:fipy@nist.gov
+.. _feedstock maintainers: https://github.com/conda-forge/fipy-feedstock#feedstock-maintainers

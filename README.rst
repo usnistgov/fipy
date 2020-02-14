@@ -163,7 +163,7 @@ or a
 .. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/master.svg?label=macOS
 .. _TravisCI:      https://travis-ci.org/usnistgov/fipy
 .. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=master&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
-.. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy
+.. _AppVeyor:      https://ci.appveyor.com/project/usnistgov/fipy
 .. |OpenHub|       image:: https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif
 .. _OpenHub:       https://www.openhub.net/p/fipy
 .. |PyPI|          image:: https://img.shields.io/pypi/v/fipy.svg

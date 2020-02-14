@@ -104,6 +104,10 @@ commands:
             source activate ~/project/<< parameters.condaenv >>
             export ETS_TOOLKIT=null
             python setup.py build_docs --html
+            tar -czf ~/project/html.tar.gz -C ~/project/documentation/_build html
+
+      - store_artifacts:
+          path: ~/project/html.tar.gz
 
       - store_artifacts:
           path: ~/project/documentation/_build/html
@@ -465,9 +469,6 @@ jobs:
       - build_html_docs:
           condaenv: << parameters.condaenv >>
 
-      - build_pdf_docs:
-          condaenv: << parameters.condaenv >>
-
   build-36-docs:
     <<: *defaults3
 
@@ -499,6 +500,9 @@ jobs:
             conda install --channel conda-forge matplotlib pandas imagemagick
 
       - build_html_docs:
+          condaenv: << parameters.condaenv >>
+
+      - build_pdf_docs:
           condaenv: << parameters.condaenv >>
 
   build-binaries:
