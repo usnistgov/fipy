@@ -130,7 +130,7 @@ Windows builds are performed on AppVeyor_. This CI is configured in
 .. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/master.svg?label=macOS
 .. _TravisCI:      https://travis-ci.org/usnistgov/fipy
 .. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=master&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
-.. _AppVeyor:      https://ci.appveyor.com/project/guyer/fipy
+.. _AppVeyor:      https://ci.appveyor.com/project/usnistgov/fipy
 
 .. _{FiPySource}/.circleci/config.yml: https://github.com/usnistgov/fipy/blob/master/.circleci/config.yml
 .. _{FiPySource}/.travis.yml: https://github.com/usnistgov/fipy/blob/master/.travis.yml
