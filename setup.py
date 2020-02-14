@@ -18,11 +18,6 @@ from _setup.copy_script import copy_script
 from _setup.upload_products import upload_products
 from _setup.release import release
 
-# bootstrap setuptools for users that don't already have it
-import ez_setup
-
-ez_setup.use_setuptools()
-
 LONG_DESCRIPTION = """
 FiPy is an object oriented, partial differential equation (PDE) solver,
 written in Python, based on a standard finite volume (FV) approach.  This

@@ -4,6 +4,8 @@ from builtins import str
 from setuptools.command.test import test as _test
 from future.utils import text_to_native_str
 from future.utils import string_types
+import unittest
+import warnings
 
 __all__ = [text_to_native_str("test")]
 
@@ -14,6 +16,24 @@ def _nativize_all(t):
         return s
 
     return tuple([_nativize(s) for s in t])
+
+class DeprecationErroringTestProgram(unittest.TestProgram):
+    """`TestProgram` that overrides inability of standard
+    `TestProgram` to throw errors on `DeprecationWarning`
+    """
+    def runTests(self):
+        self.warnings = None
+
+        with warnings.catch_warnings():
+            warnings.simplefilter(action="error", category=DeprecationWarning)
+
+            # Don't raise noisy errors in
+            # tvtk/tvtk_classes.zip/tvtk_classes/abstract_array.py or
+            # tvtk/tvtk_classes.zip/tvtk_classes/algorithm.py
+            warnings.filterwarnings(action="default", category=DeprecationWarning,
+                                    message="invalid escape sequence.*")
+
+            super(DeprecationErroringTestProgram, self).runTests()
 
 class test(_test):
     description = str(_test.description) + ", for FiPy and its examples"
@@ -43,6 +63,7 @@ class test(_test):
         ('timetests=', None, "file in which to put time spent on each test"),
         ('skfmm', None, "run FiPy using the Scikit-fmm level set solver (default)"),
         ('lsmlib', None, "run FiPy using the LSMLIB level set solver (default)"),
+        ('deprecation-errors', None, "raise Exceptions for all DeprecationWarnings"),
        ]
     user_options = [_nativize_all(u) for u in user_options]
 
@@ -71,6 +92,7 @@ class test(_test):
         self.timetests = None
         self.skfmm = False
         self.lsmlib = False
+        self.deprecation_errors = False
 
     def finalize_options(self):
         noSuiteOrModule = (self.test_suite is None
@@ -229,7 +251,6 @@ class test(_test):
         self.printPackageInfo()
 
         from pkg_resources import EntryPoint
-        import unittest
         loader_ep = EntryPoint.parse("x="+self.test_loader)
         loader_class = loader_ep.load(require=False)
 
@@ -238,8 +259,13 @@ class test(_test):
         if "legacy" in printoptions:
             numerix.set_printoptions(legacy="1.13")
 
+        if self.deprecation_errors:
+            test_program_class = DeprecationErroringTestProgram
+        else:
+            test_program_class = unittest.TestProgram
+
         try:
-            unittest.main(
+            test_program_class(
                 None, None, [unittest.__file__]+self.test_args,
                 testLoader = loader_class()
                 )

@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.pysparse.preconditioners import JacobiPreconditioner
-from pysparse import itsolvers
+from pysparse.itsolvers import krylov
 
+from fipy.solvers.pysparse.preconditioners import JacobiPreconditioner
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 
 __all__ = ["LinearGMRESSolver"]
@@ -32,4 +32,4 @@ class LinearGMRESSolver(PysparseSolver):
         precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner, optional
         """
         super(LinearGMRESSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = itsolvers.gmres
+        self.solveFnc = krylov.gmres

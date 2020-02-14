@@ -3,7 +3,7 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from pysparse import itsolvers
+from pysparse.itsolvers import krylov
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 
@@ -36,4 +36,4 @@ class LinearCGSSolver(PysparseSolver):
         import warnings
         warnings.warn("The Pysparse CGS solver may return incorrect results for some matrices", UserWarning)
         super(LinearCGSSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = itsolvers.cgs
+        self.solveFnc = krylov.cgs

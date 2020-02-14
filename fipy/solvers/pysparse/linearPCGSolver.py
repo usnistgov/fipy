@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-from pysparse import itsolvers
+from pysparse.itsolvers import krylov
 
 from fipy.solvers.pysparse.preconditioners import SsorPreconditioner
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
@@ -34,7 +34,7 @@ class LinearPCGSolver(PysparseSolver):
         precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner, optional
         """
         super(LinearPCGSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = itsolvers.pcg
+        self.solveFnc = krylov.pcg
 
     def _canSolveAsymmetric(self):
         return False
