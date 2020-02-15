@@ -11,6 +11,28 @@ Change Log
 Version |release|
 -----------------
 
+This release is primarily for compatibility with :ref:`NumPy` 1.18.
+
+Pulls
+-----
+
+- Fix documentation
+  (`#711 <https://github.com/usnistgov/fipy/pull/711>`_)
+- build(nix): fix broken plm_rsh_agent error
+  (`#710 <https://github.com/usnistgov/fipy/pull/710>`_)
+- CIs error on deprecation warning
+  (`#708 <https://github.com/usnistgov/fipy/pull/708>`_)
+
+Fixes
+-----
+
+- `#703 <https://github.com/usnistgov/fipy/issues/703>`_:
+  FORTRAN array ordering is deprecated
+
+------------------------
+Version 3.4 - 2020-02-06
+------------------------
+
 This release adds support for the :term:`PETSc` solvers for
 :ref:`PARALLEL`.
 
