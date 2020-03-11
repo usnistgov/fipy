@@ -164,10 +164,9 @@ class _AbstractConvectionTerm(FaceTerm):
         mesh = var.mesh
 
         if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
-            
-            constraintMaskFixedGradient = var.faceGrad.constraintMask
-            constraintMaskFixedValue = var.arithmeticFaceValue.constraintMask
-            
+
+            constraintMask = var.faceGrad.constraintMask | var.arithmeticFaceValue.constraintMask
+
             weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 
             if 'implicit' in weight:
@@ -177,9 +176,9 @@ class _AbstractConvectionTerm(FaceTerm):
 
             exteriorCoeff =  self.coeff * mesh.exteriorFaces
 
-            self.constraintL = (constraintMaskFixedGradient * exteriorCoeff).divergence * mesh.cellVolumes
-            self.constraintB =  -(var.arithmeticFaceValue * constraintMaskFixedValue * exteriorCoeff).divergence * mesh.cellVolumes
-            
+            self.constraintL = (alpha * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
+            self.constraintB =  -((1 - alpha) * var.arithmeticFaceValue * constraintMask * exteriorCoeff).divergence * mesh.cellVolumes
+
         ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
         L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0, 1).ravel())
         b += numerix.reshape(self.constraintB.value, ids.shape).sum(0).ravel()
