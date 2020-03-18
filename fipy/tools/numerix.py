@@ -1030,7 +1030,7 @@ def invert_indices(arr, axis=-1):
     Given an array of indices, return the locations in the array along
     `axis` of each index.
 
-    >>> a = numpy.array([[0, 2], [1, 3], [0, 3], [3, 4]])
+    >>> a = array([[0, 2], [1, 3], [0, 3], [3, 4]])
     >>> print(invert_indices(a, axis=0))
     [[0 1 0 1 3]
      [2 -- -- 2 --]
