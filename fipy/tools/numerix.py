@@ -1019,14 +1019,21 @@ def invert_indices(arr, axis=-1):
      [2 -- -- 2 --]
      [-- -- -- 3 --]]
 
+    >>> a = MA.masked_values([[0, 2, -1], [1, 3, 4], [0, 3, -1], [3, -1, -1]], -1)
+    >>> print(invert_indices(a, axis=0))
+    [[0 1 0 1 1]
+     [2 -- -- 2 --]
+     [-- -- -- 3 --]]
+
     After https://stackoverflow.com/a/59686318/2019542
     """
     from scipy.sparse import coo_matrix
     from scipy.stats.mstats import argstoarray
 
-    fwd = NUMERIX.indices(arr.shape)[axis]
-    fwd = NUMERIX.stack((fwd, arr), axis=-1)
-    fwd = NUMERIX.reshape(fwd, (-1, 2))
+    fwd = MA.indices(arr.shape)[axis]
+    fwd = MA.stack((fwd, arr), axis=-1)
+    fwd = MA.reshape(fwd, (-1, 2))
+    fwd = MA.compress_rows(fwd)
     rev = coo_matrix(
         (NUMERIX.ones(len(fwd), dtype=int),
          (fwd[..., 0], fwd[..., 1])),
