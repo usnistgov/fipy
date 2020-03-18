@@ -1015,12 +1015,14 @@ def invert_indices(arr, axis=-1):
 
     >>> a = array([[0, 2], [1, 3], [0, 3], [3, 4]])
     >>> print(invert_indices(a, axis=0))
-    [[0 1 0 1 3]
-     [2 -- -- 2 --]
-     [-- -- -- 3 --]]
+    [[0 2 --]
+     [1 -- --]
+     [0 -- --]
+     [1 2 3]
+     [3 -- --]]
 
-    >>> a = MA.masked_values([[0, 2, -1], [1, 3, 4], [0, 3, -1], [3, -1, -1]], -1)
-    >>> print(invert_indices(a, axis=0))
+    >>> a = MA.masked_values([[0, 1, 0, 3], [2, 3, 3, -1], [-1, 4, -1, -1]], -1)
+    >>> print(invert_indices(a, axis=-1))
     [[0 1 0 1 1]
      [2 -- -- 2 --]
      [-- -- -- 3 --]]
@@ -1039,7 +1041,7 @@ def invert_indices(arr, axis=-1):
          (fwd[..., 0], fwd[..., 1])),
         shape=(arr.shape[axis], max(arr.flat)+1)
     ).tolil().T.rows
-    return argstoarray(*rev).T.astype(int)
+    return argstoarray(*rev).swapaxes(0, axis).astype(int)
 
 def _test():
     import fipy.tests.doctestPlus
