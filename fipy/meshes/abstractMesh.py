@@ -717,12 +717,12 @@ class AbstractMesh(object):
 
         >>> from fipy.meshes import Grid2D
         >>> m = Grid2D(nx=2, ny=2)
-        >>> print(m._cellVertexIDs)
+        >>> print(m._cellVertexIDs) # doctest: +SERIAL
         [[1 2 4 5]
          [4 5 7 8]
          [3 4 6 7]
          [0 1 3 4]]
-        >>> print(m._vertexCellIDs)
+        >>> print(m._vertexCellIDs) # doctest: +SERIAL
         [[0 0 1 0 0 1 2 2 3]
          [-- 1 -- 2 1 3 -- 3 --]
          [-- -- -- -- 2 -- -- -- --]
@@ -755,10 +755,10 @@ class AbstractMesh(object):
 
         >>> from fipy.meshes import Grid2D
         >>> m = Grid2D(nx=2, ny=2)
-        >>> print(m.faceVertexIDs)
+        >>> print(m.faceVertexIDs) # doctest: +SERIAL
         [[0 1 3 4 6 7 0 1 2 3 4 5]
          [1 2 4 5 7 8 3 4 5 6 7 8]]
-        >>> print(m._vertexFaceIDs)
+        >>> print(m._vertexFaceIDs) # doctest: +SERIAL
         [[0 0 1 2 2 3 4 4 5]
          [6 1 8 6 3 8 9 5 11]
          [-- 7 -- 9 7 11 -- 10 --]
