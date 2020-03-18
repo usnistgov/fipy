@@ -1007,6 +1007,48 @@ if not hasattr(NUMERIX, "in1d"):
         else:
             return flag[indx][rev_idx]
 
+def lists_to_masked(x):
+    """Convert list of lists of different length to Numpy masked array
+
+    See https://stackoverflow.com/questions/38619143/convert-python-sequence-to-numpy-array-filling-missing-values
+
+    >>> print(lists_to_masked([[0], [0, 1], [0, 1, 2]]))
+    [[0 0 0]
+     [-- 1 1]
+     [-- -- 2]]
+
+    After https://stackoverflow.com/a/59686318/2019542
+    """
+    import itertools
+
+    return MA.masked_values(list(itertools.zip_longest(*x, fillvalue=-1)), -1)
+
+
+def invert_indices(arr, axis=-1):
+    """Invert an index array
+
+    Given an array of indices, return the locations in the array along
+    `axis` of each index.
+
+    >>> a = numpy.array([[0, 2], [1, 3], [0, 3], [3, 4]])
+    >>> print(invert_indices(a, axis=0))
+    [[0 1 0 1 3]
+     [2 -- -- 2 --]
+     [-- -- -- 3 --]]
+
+    After https://stackoverflow.com/a/59686318/2019542
+    """
+    from scipy.sparse import coo_matrix
+
+    fwd = NUMERIX.indices(arr.shape)[axis]
+    fwd = NUMERIX.stack((fwd, arr), axis=-1)
+    fwd = NUMERIX.reshape(fwd, (-1, 2))
+    rev = coo_matrix(
+        (NUMERIX.ones(len(fwd), dtype=int),
+         (fwd[..., 0], fwd[..., 1])),
+        shape=(arr.shape[axis], max(arr.flat)+1)
+    ).tolil().T.rows
+    return lists_to_masked(rev)
 
 def _test():
     import fipy.tests.doctestPlus
