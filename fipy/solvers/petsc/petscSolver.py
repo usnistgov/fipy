@@ -4,6 +4,7 @@ from petsc4py import PETSc
 
 from fipy.solvers.solver import Solver
 from fipy.tools import numerix
+from fipy.matrices.petscMatrix import _PETScMeshMatrix
 
 class PETScSolver(Solver):
 
@@ -64,8 +65,7 @@ class PETScSolver(Solver):
             
     @property
     def _matrixClass(self):
-        from fipy.solvers import _MeshMatrix
-        return _MeshMatrix
+        return _PETScMeshMatrix
 
     def _calcResidualVector(self, residualFn=None):
         if residualFn is not None:

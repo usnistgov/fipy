@@ -155,8 +155,21 @@ class _PysparseMatrix(_SparseMatrix):
         return list(range(self._shape[1])), list(range(self._shape[0]))
 
     def put(self, vector, id1, id2):
-        """
-        Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
+        """Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
+
+        Parameters
+        ----------
+        vector : array_like
+            The values to insert.
+        id1 : array_like
+            The row indices.
+        id2 : array_like
+            The column indices.
+        overlapping : bool
+            Whether to insert ghosted values or not (Ignored. Default False).
+
+        Examples
+        --------
 
             >>> L = _PysparseMatrixFromShape(rows=3, cols=3)
             >>> L.put([3., 10., numerix.pi, 2.5], [0, 0, 1, 2], [2, 1, 1, 0])
@@ -202,8 +215,21 @@ class _PysparseMatrix(_SparseMatrix):
         return self.take(ids, ids)
 
     def addAt(self, vector, id1, id2):
-        """
-        Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
+        """Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
+
+        Parameters
+        ----------
+        vector : array_like
+            The values to insert.
+        id1 : array_like
+            The row indices.
+        id2 : array_like
+            The column indices.
+        overlapping : bool
+            Whether to add ghosted values or not (Ignored. Default False).
+
+        Examples
+        --------
 
             >>> L = _PysparseMatrixFromShape(rows=3, cols=3)
             >>> L.put([3., 10., numerix.pi, 2.5], [0, 0, 1, 2], [2, 1, 1, 0])
@@ -274,36 +300,174 @@ class _PysparseMatrixFromShape(_PysparseMatrix):
             else:
                 matrix = spmatrix.ll_mat(rows, cols, sizeHint)
 
-        _PysparseMatrix.__init__(self, matrix=matrix)
+        super(_PysparseMatrixFromShape, self).__init__(matrix=matrix)
 
-class _PysparseMeshMatrix(_PysparseMatrixFromShape):
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, numberOfVariables=1, numberOfEquations=1, storeZeros=True):
-
-        """Creates a `_PysparseMatrixFromShape` associated with a `Mesh`. Allows for different number of equations and/or variables
+class _PysparseBaseMeshMatrix(_PysparseMatrixFromShape):
+    def __init__(self, mesh, rows, cols, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+        """Creates a `_PysparseMatrixFromShape` associated with a `Mesh`.
 
         Parameters
         ----------
         mesh : ~fipy.meshes.mesh.Mesh
             The `Mesh` to assemble the matrix for.
+        rows : int
+            The number of local matrix rows.
+        cols : int
+            The number of local matrix columns.
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros.
+        matrix : ~pysparse.spmatrix.ll_mat
+            Pre-assembled SciPy matrix to use for storage.
+        storeZeros : bool
+            Instructs scipy to store zero values if possible.
+        """
+        self.mesh = mesh
+
+        super(_PysparseBaseMeshMatrix, self).__init__(rows=rows,
+                                                      cols=cols,
+                                                      bandwidth=bandwidth,
+                                                      sizeHint=sizeHint,
+                                                      matrix=matrix,
+                                                      storeZeros=storeZeros)
+
+    def _getGhostedValues(self, var):
+        """Obtain current ghost values from across processes
+
+        Nothing to do for serial matrix.
+
+        Returns
+        -------
+        ndarray
+            Ghosted values
+        """
+        return var.value
+
+    def put(self, vector, id1, id2, overlapping=False):
+        """Insert local overlapping values and coordinates into global
+
+        Parameters
+        ----------
+        vector : array_like
+            The overlapping values to insert.
+        id1 : array_like
+            The local overlapping row indices.
+        id2 : array_like
+            The local overlapping column indices.
+        overlapping : bool
+            Whether to insert ghosted values or not (Ignored)
+        """
+        super(_PysparseBaseMeshMatrix, self).put(vector=vector, id1=id1, id2=id2)
+
+    def addAt(self, vector, id1, id2, overlapping=False):
+        """Accumulate local overlapping values and coordinates into global
+
+        Parameters
+        ----------
+        vector : array_like
+            The overlapping values to insert.
+        id1 : array_like
+            The local overlapping row indices.
+        id2 : array_like
+            The local overlapping column indices.
+        overlapping : bool
+            Whether to add ghosted values or not (Ignored)
+        """
+        super(_PysparseBaseMeshMatrix, self).addAt(vector=vector, id1=id1, id2=id2)
+
+class _PysparseRowMeshMatrix(_PysparseBaseMeshMatrix):
+    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+        """Creates a `_PysparseBaseMeshMatrix` with rows associated with equations.
+
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        cols : int
+            The number of matrix columns.
+        numberOfEquations : int
+            The rows of the matrix are determined by
+            `numberOfEquations * mesh.numberOfCells`.
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros
+        matrix : ~pysparse.spmatrix.ll_mat
+            Pre-assembled Pysparse matrix to use for storage.
+        storeZeros : bool
+            Instructs Pysparse to store zero values if possible.
+        """
+        super(_PysparseRowMeshMatrix, self).__init__(mesh=mesh,
+                                                     rows=numberOfEquations * mesh.numberOfCells,
+                                                     cols=cols,
+                                                     bandwidth=bandwidth,
+                                                     sizeHint=sizeHint,
+                                                     matrix=matrix,
+                                                     storeZeros=storeZeros)
+
+class _PysparseColMeshMatrix(_PysparseBaseMeshMatrix):
+    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+        """Creates a `_PysparseBaseMeshMatrix` with columns associated with solution variables.
+
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        rows : int
+            The number of matrix rows.
+        numberOfVariables : int
+            The columns of the matrix are determined by
+            `numberOfVariables * mesh.globalNumberOfCells`.
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros
+        matrix : ~pysparse.spmatrix.ll_mat
+            Pre-assembled Pysparse matrix to use for storage.
+        storeZeros : bool
+            Instructs Pysparse to store zero values if possible.
+        """
+        super(_PysparseColMeshMatrix, self).__init__(mesh=mesh,
+                                                     rows=rows,
+                                                     cols=numberOfVariables * mesh.numberOfCells,
+                                                     bandwidth=bandwidth,
+                                                     sizeHint=sizeHint,
+                                                     matrix=matrix,
+                                                     storeZeros=storeZeros)
+
+class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
+    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, numberOfVariables=1, numberOfEquations=1, storeZeros=True):
+        """Creates a `_PysparseBaseMeshMatrix` with rows and columns associated with equations and solution variables.
+
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        numberOfVariables : int
+            The columns of the matrix are determined by
+            `numberOfVariables * mesh.numberOfCells`.
+        numberOfEquations : int
+            The rows of the matrix are determined by
+            `numberOfEquations * mesh.numberOfCells`.
         bandwidth : int
             The proposed band width of the matrix.
         sizeHint : int
             Estimate of the number of non-zeros
         matrix : ~pysparse.spmatrix.ll_mat
             Pre-assembled Pysparse matrix to use for storage
-        numberOfVariables : int
-            The columns of the matrix is determined by `numberOfVariables * self.mesh.numberOfCells`.
-        numberOfEquations : int
-            The rows of the matrix is determined by `numberOfEquations * self.mesh.numberOfCells`.
         storeZeros : bool
             Instructs Pysparse to store zero values if possible.
         """
-        self.mesh = mesh
         self.numberOfVariables = numberOfVariables
-        self.numberOfEquations = numberOfEquations
-        rows = numberOfEquations * self.mesh.numberOfCells
-        cols = numberOfVariables * self.mesh.numberOfCells
-        _PysparseMatrixFromShape.__init__(self, rows=rows, cols=cols, bandwidth=bandwidth, sizeHint=sizeHint, matrix=matrix, storeZeros=storeZeros)
+
+        super(_PysparseMeshMatrix, self).__init__(mesh=mesh,
+                                                  cols=numberOfVariables * mesh.numberOfCells,
+                                                  numberOfEquations=numberOfEquations,
+                                                  bandwidth=bandwidth,
+                                                  sizeHint=sizeHint,
+                                                  matrix=matrix,
+                                                  storeZeros=storeZeros)
 
     def __mul__(self, other):
         if isinstance(other, _PysparseMeshMatrix):

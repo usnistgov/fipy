@@ -62,7 +62,7 @@ class _ScipyMatrix(_SparseMatrix):
         """
         Add two sparse matrices
 
-            >>> L = _ScipyMatrixFromShape(size=3)
+            >>> L = _ScipyMatrixFromShape(rows=3, cols=3)
             >>> L.put([3., 10., numerix.pi, 2.5], [0, 0, 1, 2], [2, 1, 1, 0])
             >>> print(L + _ScipyIdentityMatrix(size=3))
              1.000000  10.000000   3.000000  
@@ -106,7 +106,7 @@ class _ScipyMatrix(_SparseMatrix):
         """
         Multiply a sparse matrix by another sparse matrix
 
-        >>> L1 = _ScipyMatrixFromShape(size=3)
+        >>> L1 = _ScipyMatrixFromShape(rows=3, cols=3)
         >>> L1.put([3., 10., numerix.pi, 2.5], [0, 0, 1, 2], [2, 1, 1, 0])
         >>> L2 = _ScipyIdentityMatrix(size=3)
         >>> L2.put([4.38, 12357.2, 1.1], [2, 1, 0], [1, 0, 2])
@@ -161,11 +161,24 @@ class _ScipyMatrix(_SparseMatrix):
     def _range(self):
         return list(range(self._shape[1])), list(range(self._shape[0]))
 
-    def put(self, vector, id1, id2):
-        """
-        Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
+    def put(self, vector, id1, id2, overlapping=False):
+        """Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
 
-            >>> L = _ScipyMatrixFromShape(size=3)
+        Parameters
+        ----------
+        vector : array_like
+            The values to insert.
+        id1 : array_like
+            The row indices.
+        id2 : array_like
+            The column indices.
+        overlapping : bool
+            Whether to insert ghosted values or not (Ignored. Default False).
+
+        Examples
+        --------
+
+            >>> L = _ScipyMatrixFromShape(rows=3, cols=3)
             >>> L.put([3., 10., numerix.pi, 2.5], [0, 0, 1, 2], [2, 1, 1, 0])
             >>> print(L)
                 ---    10.000000   3.000000  
@@ -184,7 +197,7 @@ class _ScipyMatrix(_SparseMatrix):
         """
         Put elements of `vector` along diagonal of matrix
 
-            >>> L = _ScipyMatrixFromShape(size=3)
+            >>> L = _ScipyMatrixFromShape(rows=3, cols=3)
             >>> L.putDiagonal([3., 10., numerix.pi])
             >>> print(L)
              3.000000      ---        ---    
@@ -208,10 +221,23 @@ class _ScipyMatrix(_SparseMatrix):
         return self.matrix.diagonal()
 
     def addAt(self, vector, id1, id2):
-        """
-        Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
+        """Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
 
-            >>> L = _ScipyMatrixFromShape(size=3)
+        Parameters
+        ----------
+        vector : array_like
+            The values to insert.
+        id1 : array_like
+            The row indices.
+        id2 : array_like
+            The column indices.
+        overlapping : bool
+            Whether to add ghosted values or not (Ignored. Default False).
+
+        Examples
+        --------
+
+            >>> L = _ScipyMatrixFromShape(rows=3, cols=3)
             >>> L.put([3., 10., numerix.pi, 2.5], [0, 0, 1, 2], [2, 1, 1, 0])
             >>> L.addAt([1.73, 2.2, 8.4, 3.9, 1.23], [1, 2, 0, 0, 1], [2, 2, 0, 0, 2])
             >>> print(L)
@@ -253,7 +279,7 @@ class _ScipyMatrix(_SparseMatrix):
 
 class _ScipyMatrixFromShape(_ScipyMatrix):
 
-    def __init__(self, size, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
         """Instantiates and wraps a scipy sparse matrix
 
         Parameters
@@ -262,38 +288,152 @@ class _ScipyMatrixFromShape(_ScipyMatrix):
             The `Mesh` to assemble the matrix for.
         bandwidth : int
             The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros
+        matrix : ~scipy.sparse.csr_matrix
+            Pre-assembled SciPy matrix to use for storage.
         storeZeros : bool
             Instructs scipy to store zero values if possible.
         """
         if matrix is None:
-            matrix = sp.csr_matrix((size, size))
+            matrix = sp.csr_matrix((rows, cols))
 
-        _ScipyMatrix.__init__(self, matrix=matrix)
+        super(_ScipyMatrixFromShape, self).__init__(matrix=matrix)
 
-class _ScipyMeshMatrix(_ScipyMatrixFromShape):
-
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, numberOfVariables=1, numberOfEquations=1, storeZeros=True):
-
+class _ScipyBaseMeshMatrix(_ScipyMatrixFromShape):
+    def __init__(self, mesh, rows, cols, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
         """Creates a `_ScipyMatrixFromShape` associated with a `Mesh`.
 
         Parameters
         ----------
         mesh : ~fipy.meshes.mesh.Mesh
             The `Mesh` to assemble the matrix for.
+        rows : int
+            The number of local matrix rows.
+        cols : int
+            The number of local matrix columns.
         bandwidth : int
             The proposed band width of the matrix.
-        numberOfVariables : int
-            The columns of the matrix is determined by `numberOfVariables * self.mesh.numberOfCells`.
-        numberOfEquations : int
-            The rows of the matrix is determined by `numberOfEquations * self.mesh.numberOfCells`.
+        sizeHint : int
+            Estimate of the number of non-zeros.
+        matrix : ~scipy.sparse.csr_matrix
+            Pre-assembled SciPy matrix to use for storage.
         storeZeros : bool
             Instructs scipy to store zero values if possible.
         """
         self.mesh = mesh
+
+        super(_ScipyBaseMeshMatrix, self).__init__(rows=rows,
+                                                   cols=cols,
+                                                   bandwidth=bandwidth,
+                                                   sizeHint=sizeHint,
+                                                   matrix=matrix,
+                                                   storeZeros=storeZeros)
+
+    def _getGhostedValues(self, var):
+        """Obtain current ghost values from across processes
+
+        Nothing to do for serial matrix.
+
+        Returns
+        -------
+        ndarray
+            Ghosted values
+        """
+        return var.value
+
+class _ScipyRowMeshMatrix(_ScipyBaseMeshMatrix):
+    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+        """Creates a `_ScipyBaseMeshMatrix` with rows associated with equations.
+
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        cols : int
+            The number of matrix columns.
+        numberOfEquations : int
+            The rows of the matrix are determined by
+            `numberOfEquations * mesh.numberOfCells`.
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros
+        matrix : ~scipy.sparse.csr_matrix
+            Pre-assembled SciPy matrix to use for storage.
+        storeZeros : bool
+            Instructs scipy to store zero values if possible.
+        """
+        super(_ScipyRowMeshMatrix, self).__init__(mesh=mesh,
+                                                  rows=numberOfEquations * mesh.numberOfCells,
+                                                  cols=cols,
+                                                  bandwidth=bandwidth,
+                                                  sizeHint=sizeHint,
+                                                  matrix=matrix,
+                                                  storeZeros=storeZeros)
+
+class _ScipyColMeshMatrix(_ScipyBaseMeshMatrix):
+    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+        """Creates a `_ScipyBaseMeshMatrix` with columns associated with solution variables.
+
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        rows : int
+            The number of matrix rows.
+        numberOfVariables : int
+            The columns of the matrix are determined by
+            `numberOfVariables * mesh.globalNumberOfCells`.
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros.
+        matrix : ~scipy.sparse.csr_matrix
+            Pre-assembled SciPy matrix to use for storage.
+        storeZeros : bool
+            Instructs scipy to store zero values if possible.
+        """
+        super(_ScipyColMeshMatrix, self).__init__(mesh=mesh,
+                                                  rows=rows,
+                                                  cols=numberOfVariables * mesh.numberOfCells,
+                                                  bandwidth=bandwidth,
+                                                  sizeHint=sizeHint,
+                                                  matrix=matrix,
+                                                  storeZeros=storeZeros)
+
+class _ScipyMeshMatrix(_ScipyRowMeshMatrix):
+    def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+        """Creates a `_ScipyBaseMeshMatrix` with rows and columns associated with equations and solution variables.
+
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        numberOfVariables : int
+            The columns of the matrix are determined by
+            `numberOfVariables * mesh.numberOfCells`.
+        numberOfEquations : int
+            The rows of the matrix are determined by
+            `numberOfEquations * mesh.numberOfCells`.
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros
+        matrix : ~scipy.sparse.csr_matrix
+            Pre-assembled SciPy matrix to use for storage.
+        storeZeros : bool
+            Instructs scipy to store zero values if possible.
+        """
         self.numberOfVariables = numberOfVariables
-        size = self.numberOfVariables * self.mesh.numberOfCells
-        assert numberOfEquations == self.numberOfVariables
-        _ScipyMatrixFromShape.__init__(self, size=size, matrix=matrix)
+
+        super(_ScipyMeshMatrix, self).__init__(mesh=mesh,
+                                               cols=numberOfVariables * mesh.numberOfCells,
+                                               bandwidth=bandwidth,
+                                               sizeHint=sizeHint,
+                                               matrix=matrix,
+                                               numberOfEquations=numberOfEquations,
+                                               storeZeros=storeZeros)
 
     def __mul__(self, other):
         if isinstance(other, _ScipyMeshMatrix):
@@ -310,33 +450,12 @@ class _ScipyMeshMatrix(_ScipyMatrixFromShape):
         -------
         ~fipy.matrices.trilinosMatrix._TrilinosMatrix
         """
-#         A = self.matrix.copy()
-#         values, irow, jcol = A.find()
-# 
-#         if not hasattr(self, 'trilinosMatrix'):
-#             if A.shape[0] == 0:
-#                 bandwidth = 0
-#             else:
-#                 bandwidth = int(numerix.ceil(float(len(values)) / float(A.shape[0])))
-#             from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrixKeepStencil
-#             self.trilinosMatrix = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth, numberOfVariables=self.numberOfVariables)
-# 
-#         self.trilinosMatrix.addAt(values, irow, jcol)
-#         self.trilinosMatrix.finalize()
-# 
-#         return self.trilinosMatrix
-
         raise NotImplementedError
 
     def flush(self):
         """
         Deletes the copy of the scipy matrix held and calls `self.trilinosMatrix.flush()` if necessary.
         """
-#         if hasattr(self, 'trilinosMatrix'):
-#             if hasattr(self.matrix, 'storeZeros'):
-#                 self.trilinosMatrix.flush(cacheStencil=self.matrix.storeZeros)
-#             else:
-#                 self.trilinosMatrix.flush(cacheStencil=False)
 
         if (not hasattr(self, 'cache')) or (self.cache is False):
             del self.matrix
@@ -345,14 +464,14 @@ class _ScipyMeshMatrix(_ScipyMatrixFromShape):
         """
         Tests
 
-        >>> m = _ScipyMatrixFromShape(size=3, storeZeros=True)
+        >>> m = _ScipyMatrixFromShape(rows=3, cols=3, storeZeros=True)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
         >>> nonZeroIdx = m.matrix.nonzero()
         >>> print(not hasattr(m.matrix, 'storeZeros') or numerix.allequal(nonZeroIdx, [(0, 1), (1, 0), (2, 2)]))
         True
         >>> print(not hasattr(m.matrix, 'storeZeros') or numerix.allequal(m.matrix[nonZeroIdx].toarray(), [1., 2., 0.]))
         True
-        >>> m = _ScipyMatrixFromShape(size=3, storeZeros=False)
+        >>> m = _ScipyMatrixFromShape(rows=3, cols=3, storeZeros=False)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
         >>> nonZeroIdx = m.matrix.nonzero()
         >>> print(numerix.allequal(nonZeroIdx, [(0, 1), (1, 0)]))
@@ -376,7 +495,7 @@ class _ScipyIdentityMatrix(_ScipyMatrixFromShape):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _ScipyMatrixFromShape.__init__(self, size=size, bandwidth = 1)
+        _ScipyMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth = 1)
         ids = numerix.arange(size)
         self.put(numerix.ones(size, 'd'), ids, ids)
 

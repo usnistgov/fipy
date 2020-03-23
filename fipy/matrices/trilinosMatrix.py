@@ -10,7 +10,8 @@ __all__ = []
 from PyTrilinos import Epetra
 from PyTrilinos import EpetraExt
 
-from fipy.matrices.sparseMatrix import _SparseMatrix
+from fipy.matrices.sparseMatrix import (_SparseMatrix, _RowMesh2Matrix,
+                                        _ColMesh2Matrix, _RowColMesh2Matrix)
 from fipy.tools import numerix
 
 # Current inadequacies of the matrix class:
@@ -37,8 +38,7 @@ class _TrilinosMatrix(_SparseMatrix):
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
-    def __init__(self, matrix, bandwidth=None,
-                 rowMap=None, colMap=None, domainMap=None):
+    def __init__(self, matrix, bandwidth=None):
         """
         Parameters
         ----------
@@ -48,11 +48,6 @@ class _TrilinosMatrix(_SparseMatrix):
             The proposed band width of the matrix.
         """
         self.matrix = matrix
-
-        self.rowMap = rowMap or matrix.RowMap()
-        self.colMap = colMap or self.rowMap
-        self.domainMap = domainMap or self.colMap
-        self.rangeMap = self.rowMap
 
         self.comm = matrix.Comm()
         if bandwidth is None:
@@ -65,6 +60,32 @@ class _TrilinosMatrix(_SparseMatrix):
         self._matrix = m
 
     matrix = property(lambda self: self._matrix, _setMatrix)
+
+    @property
+    def rowMap(self):
+        return self.matrix.RowMap()
+
+    @property
+    def colMap(self):
+        return self.rowMap
+
+    @property
+    def domainMap(self):
+        """Distribution of input vector `x` in `y = A*x`
+
+        The domain Map must be one-to-one: that is, each global index in
+        the Map must be uniquely owned by one and only one process.
+        """
+        return self.colMap
+
+    @property
+    def rangeMap(self):
+        """Distribution of output vector `y` in `y = A*x`
+
+        The range Map must be one-to-one: that is, each global index in
+        the Map must be uniquely owned by one and only one process.
+        """
+        return self.rowMap
 
     # All operations that require getting data out of the matrix may need to
     # call FillComplete to make sure they work.  There will be no warnings when
@@ -492,6 +513,8 @@ class _TrilinosMatrix(_SparseMatrix):
 ##            self._matrix.GlobalAssemble()
             totalElements = self.matrix.NumGlobalRows()
 
+            # Epetra.Map(numGlobalElements, indexBase, comm)
+            # implicit number of elements per processor
             DistributedMap = Epetra.Map(totalElements, 0, self.comm)
             RootToDist = Epetra.Import(DistributedMap, self.rangeMap)
 
@@ -510,8 +533,7 @@ class _TrilinosMatrix(_SparseMatrix):
         self.matrix.OptimizeStorage()
 
 class _TrilinosMatrixFromShape(_TrilinosMatrix):
-    def __init__(self, rows, cols, bandwidth=1, sizeHint=None,
-                 rowMap=None, colMap=None, domainMap=None):
+    def __init__(self, rows, cols, bandwidth=1, sizeHint=None, matrix=None):
         """Instantiates and wraps an `Epetra.CrsMatrix`
 
         Parameters
@@ -524,144 +546,137 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
             The proposed band width of the matrix.
         sizeHint : int
             Estimate of the number of non-zeros
-        map : Epetra.Map
-            The map for the rows that this processor holds
+        matrix : ~PyTrilinos.Epetra.CrsMatrix
+            Pre-assembled Trilinos matrix to use for storage.
         """
+        self.rows = rows
+        self.cols = cols
+
         size = max(rows, cols)
         if sizeHint is not None and bandwidth == 0:
             bandwidth = (sizeHint + size - 1) // (size or 1)
         else:
             bandwidth = bandwidth
 
-        if rowMap is None:
-            comm = Epetra.SerialComm()
-            # Matrix building gets done on all processors
-            rowMap = Epetra.Map(rows, rows, 0, comm)
-        else:
-            comm = rowMap.Comm()
-
-        if colMap is None:
-            colMap = Epetra.Map(cols, cols, 0, comm)
-
-        matrix = Epetra.CrsMatrix(Epetra.Copy, rowMap, (bandwidth*3)//2)
+        if matrix is None:
+            # On Mar 26, 2011, at 11:04 AM, Williams, Alan B <william@sandia.gov> wrote:
+            # 
+            # In almost every case, it is advisable to construct epetra
+            # matrices with only a row-map and allow the column-map to be
+            # generated internally.  Especially if you have a rectangular
+            # matrix, which is even trickier to get correct.
+            matrix = Epetra.CrsMatrix(Epetra.Copy, self.rowMap, (bandwidth*3)//2)
 
         # Leave extra bandwidth, to handle multiple insertions into the
         # same spot. It's memory-inefficient, but it'll get cleaned up when
         # FillComplete is called, and according to the Trilinos devs the
         # performance boost will be worth it.
 
-        _TrilinosMatrix.__init__(self,
-                                     matrix=matrix,
-                                     rowMap=rowMap,
-                                     colMap=colMap,
-                                     domainMap=domainMap,
-                                     bandwidth=bandwidth)
+        super(_TrilinosMatrixFromShape, self).__init__(matrix=matrix,
+                                                       bandwidth=bandwidth)
 
-class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, numberOfVariables=1, numberOfEquations=1):
-        """Creates a `_TrilinosMatrixFromShape` associated with a `Mesh`
+    @property
+    def rowMap(self):
+        comm = Epetra.SerialComm()
+        # Matrix building gets done on all processors
+        # Epetra.Map(numGlobalElements, numMyElements, indexBase, comm)
+        # If NumGlobalElements = NumMyElements (and not equal to zero) the map is
+        # defined to be a local replicated map
+        return Epetra.Map(self.rows, self.rows, 0, comm)
+
+    @property
+    def colMap(self):
+        comm = Epetra.SerialComm()
+        # Matrix building gets done on all processors
+        # Epetra.Map(numGlobalElements, numMyElements, indexBase, comm)
+        # If NumGlobalElements = NumMyElements (and not equal to zero) the map is
+        # defined to be a local replicated map
+        return Epetra.Map(self.cols, self.cols, 0, comm)
+
+class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
+    def __init__(self, mesh, rows, cols, m2m, bandwidth=0, sizeHint=None, matrix=None):
+        """Creates a `_TrilinosMatrixFromShape` associated with a `Mesh`.
 
         Parameters
         ----------
         mesh : ~fipy.meshes.mesh.Mesh
             The `Mesh` to assemble the matrix for.
+        rows : int
+            The number of local matrix rows.
+        cols : int
+            The number of local matrix columns.
+        m2m : ~fipy.matrices.sparseMatrix._Mesh2Matrix
+            Object to convert between mesh coordinates and matrix coordinates.
         bandwidth : int
             The proposed band width of the matrix.
         sizeHint : int
-            Estimate of the number of non-zeros
-        numberOfVariables : int
-            The columns of the matrix is determined by `numberOfVariables * self.mesh.globalNumberOfCells`.
-        numberOfEquations : int
-            The rows of the matrix is determined by `numberOfEquations * self.mesh.globalNumberOfCells`.
+            Estimate of the number of non-zeros.
+        matrix : ~PyTrilinos.Epetra.CrsMatrix
+            Pre-assembled Trilinos matrix to use for storage.
         """
         self.mesh = mesh
-        self.numberOfVariables = numberOfVariables
-        self.numberOfEquations = numberOfEquations
+        self._m2m = m2m
 
-        comm = mesh.communicator.epetra_comm
-        rowMap = Epetra.Map(-1, list(self._globalNonOverlappingRowIDs), 0, comm)
-        colMap = Epetra.Map(-1, list(self._globalOverlappingColIDs), 0, comm)
-        domainMap = rowMap
-
-        _TrilinosMatrixFromShape.__init__(self,
-                                 rows=self.numberOfEquations * self.mesh.globalNumberOfCells,
-                                 cols=self.numberOfVariables * self.mesh.globalNumberOfCells,
-                                 bandwidth=bandwidth,
-                                 sizeHint=sizeHint,
-                                 rowMap=rowMap,
-                                 colMap=colMap,
-                                 domainMap=domainMap)
-
-    def _cellIDsToGlobalRowIDs(self, IDs):
-         N = len(IDs)
-         M = self.numberOfEquations
-         return (numerix.vstack([IDs] * M) + numerix.indices((M, N))[0] * self.mesh.globalNumberOfCells).flatten()
-
-    def _cellIDsToGlobalColIDs(self, IDs):
-         N = len(IDs)
-         M = self.numberOfVariables
-         return (numerix.vstack([IDs] * M) + numerix.indices((M, N))[0] * self.mesh.globalNumberOfCells).flatten()
-
-    def _cellIDsToLocalRowIDs(self, IDs):
-         M = self.numberOfEquations
-         N = len(IDs)
-         return (numerix.vstack([IDs] * M) + numerix.indices((M, N))[0] * self.mesh.numberOfCells).flatten()
-
-    def _cellIDsToLocalColIDs(self, IDs):
-         M = self.numberOfVariables
-         N = len(IDs)
-         return (numerix.vstack([IDs] * M) + numerix.indices((M, N))[0] * self.mesh.numberOfCells).flatten()
+        super(_TrilinosBaseMeshMatrix, self).__init__(rows=rows,
+                                                      cols=cols,
+                                                      bandwidth=bandwidth,
+                                                      sizeHint=sizeHint,
+                                                      matrix=matrix)
 
     @property
-    def _globalNonOverlappingRowIDs(self):
-        return self._cellIDsToGlobalRowIDs(self.mesh._globalNonOverlappingCellIDs)
+    def rowMap(self):
+        comm = self.mesh.communicator.epetra_comm
+        # Epetra.Map(numGlobalElements, indexBase, comm)
+        # If NumGlobalElements = -1 and NumMyElements is passed in then
+        # NumGlobalElements will be computed as the sum of NumMyElements across
+        # all processors.
+        return Epetra.Map(-1, self.rows, 0, comm)
 
     @property
-    def _globalNonOverlappingColIDs(self):
-        return self._cellIDsToGlobalColIDs(self.mesh._globalNonOverlappingCellIDs)
-
-    @property
-    def _globalOverlappingRowIDs(self):
-        return self._cellIDsToGlobalRowIDs(self.mesh._globalOverlappingCellIDs)
-
-    @property
-    def _globalCommonColIDs(self):
-        return list(range(0, self.numberOfVariables, self.mesh.globalNumberOfCells))
-
-    @property
-    def _globalOverlappingColIDs(self):
-        return self._cellIDsToGlobalColIDs(self.mesh._globalOverlappingCellIDs)
-
-    @property
-    def _localNonOverlappingRowIDs(self):
-        return self._cellIDsToLocalRowIDs(self.mesh._localNonOverlappingCellIDs)
-
-    @property
-    def _localNonOverlappingColIDs(self):
-        return self._cellIDsToLocalColIDs(self.mesh._localNonOverlappingCellIDs)
+    def colMap(self):
+        comm = self.mesh.communicator.epetra_comm
+        # Epetra.Map(numGlobalElements, indexBase, comm)
+        # If NumGlobalElements = -1 and NumMyElements is passed in then
+        # NumGlobalElements will be computed as the sum of NumMyElements across
+        # all processors.
+        return Epetra.Map(-1, self.cols, 0, comm)
 
     def copy(self):
-        tmp = _TrilinosMatrixFromShape.copy(self)
+        tmp = super(_TrilinosBaseMeshMatrix, self).copy()
         copy = self.__class__(mesh=self.mesh, bandwidth=self.bandwidth)
         copy.matrix = tmp._matrix
         return copy
 
-    def asTrilinosMeshMatrix(self):
-        self.finalize()
-        return self
+    def _getGhostedValues(self, var):
+        """Obtain current ghost values from across processes
 
-    def _getStencil(self, id1, id2):
-        id1 = self._globalOverlappingRowIDs[id1]
-        id2 = self._globalOverlappingColIDs[id2]
+        Returns
+        -------
+        ndarray
+            Ghosted values
+        """
+        mesh = var.mesh
+        localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
 
-        mask = numerix.in1d(id1, self._globalNonOverlappingRowIDs)
-        id1 = id1[mask]
-        id2 = id2[mask]
+        ## The following conditional is required because empty indexing is not altogether functional.
+        ## This numpy.empty((0,))[[]] and this numpy.empty((0,))[...,[]] both work, but this
+        ## numpy.empty((3, 0))[...,[]] is broken.
+        if var.shape[-1] != 0:
+            s = (Ellipsis, localNonOverlappingCellIDs)
+        else:
+            s = (localNonOverlappingCellIDs,)
 
-        return id1, id2, mask
+        nonOverlappingVector = Epetra.Vector(self.domainMap,
+                                             var[s].ravel())
 
-    def _globalNonOverlapping(self, vector, id1, id2):
-        """Transforms and subsets local overlapping values and coordinates to global non-overlapping
+        overlappingVector.Import(nonOverlappingVector,
+                                 Epetra.Import(self.colMap, self.domainMap),
+                                 Epetra.Insert)
+
+        return numerix.reshape(numerix.array(overlappingVector), var.shape)
+
+    def put(self, vector, id1, id2, overlapping=False):
+        """Insert local overlapping values and coordinates into global
 
         Parameters
         ----------
@@ -671,16 +686,170 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
             The local overlapping row indices.
         id2 : array_like
             The local overlapping column indices.
-
-        Returns
-        -------
-        tuple of (non-overlapping vector,
-                  global non-overlapping row indices,
-                  global non-overlapping column indices)
+        overlapping : bool
+            Whether to insert ghosted values or not (default False)
         """
-        id1, id2, mask = self._getStencil(id1, id2)
-        vector = vector[mask]
-        return (vector, id1, id2)
+        vector, id1, id2 = self._m2m._globalVectorAndIDs(vector, id1, id2, overlapping)
+        super(_TrilinosBaseMeshMatrix, self).put(vector=vector, id1=id1, id2=id2)
+
+    def addAt(self, vector, id1, id2, overlapping=False):
+        """Accumulate local overlapping values and coordinates into global
+
+        Parameters
+        ----------
+        vector : array_like
+            The overlapping values to insert.
+        id1 : array_like
+            The local overlapping row indices.
+        id2 : array_like
+            The local overlapping column indices.
+        overlapping : bool
+            Whether to add ghosted values or not (default False)
+        """
+        vector, id1, id2 = self._m2m._globalVectorAndIDs(vector, id1, id2, overlapping)
+        super(_TrilinosBaseMeshMatrix, self).addAt(vector=vector, id1=id1, id2=id2)
+
+class _TrilinosRowMeshMatrix(_TrilinosBaseMeshMatrix):
+    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0, sizeHint=None, matrix=None, m2m=None):
+        """Creates a `_TrilinosMatrixFromShape` with rows associated with equations.
+
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        cols : int
+            The number of matrix columns
+        numberOfEquations : int
+            The local rows of the matrix are determined by
+            `numberOfEquations * mesh._localNonOverlappingCellIDs`.
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros.
+        matrix : ~PyTrilinos.Epetra.CrsMatrix
+            Pre-assembled Trilinos matrix to use for storage.
+        m2m : ~fipy.matrices.sparseMatrix._RowMesh2Matrix
+            Object to convert between mesh coordinates and matrix coordinates.
+        """
+        if m2m is None:
+            m2m = _RowMesh2Matrix(mesh=mesh, numberOfEquations=numberOfEquations)
+
+        super(_TrilinosRowMeshMatrix, self).__init__(mesh=mesh,
+                                                     rows=numberOfEquations * mesh.globalNumberOfCells,
+                                                     cols=cols,
+                                                     m2m=m2m,
+                                                     bandwidth=bandwidth,
+                                                     sizeHint=sizeHint,
+                                                     matrix=matrix)
+
+    @property
+    def rowMap(self):
+        comm = self.mesh.communicator.epetra_comm
+        # Epetra.Map(numGlobalElements, myGlobalElements, indexBase, comm)
+        # Specify -1 to have the constructor compute the number of global elements.
+        return Epetra.Map(-1, list(self._m2m._globalNonOverlappingRowIDs), 0, comm)
+
+    @property
+    def domainMap(self):
+        """Distribution of input vector `x` in `y = A*x`
+
+        The domain Map must be one-to-one: that is, each global index in
+        the Map must be uniquely owned by one and only one process.
+        """
+        return self.rowMap
+
+class _TrilinosColMeshMatrix(_TrilinosBaseMeshMatrix):
+    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0, sizeHint=None, matrix=None):
+        """Creates a `_TrilinosMatrixFromShape` with columns associated with solution variables.
+
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        rows : int
+            The number of matrix rows.
+        numberOfVariables : int
+            The local columns of the matrix are determined by
+            `numberOfVariables * mesh.globalNumberOfCells`.
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros.
+        matrix : ~PyTrilinos.Epetra.CrsMatrix
+            Pre-assembled Trilinos matrix to use for storage.
+        """
+        m2m = _ColMesh2Matrix(mesh=mesh, numberOfVariables=numberOfVariables)
+
+        super(_TrilinosColMeshMatrix, self).__init__(mesh=mesh,
+                                                     rows=rows,
+                                                     cols=numberOfVariables * mesh.globalNumberOfCells,
+                                                     m2m=m2m,
+                                                     bandwidth=bandwidth,
+                                                     sizeHint=sizeHint,
+                                                     matrix=matrix)
+
+    @property
+    def colMap(self):
+        comm = self.mesh.communicator.epetra_comm
+        # Epetra.Map(numGlobalElements, myGlobalElements, indexBase, comm)
+        # Specify -1 to have the constructor compute the number of global elements.
+        return Epetra.Map(-1, list(self._m2m._globalOverlappingColIDs), 0, comm)
+
+    @property
+    def domainMap(self):
+        """Distribution of input vector `x` in `y = A*x`
+
+        The domain Map must be one-to-one: that is, each global index in
+        the Map must be uniquely owned by one and only one process.
+        """
+        comm = self.mesh.communicator.epetra_comm
+        # Epetra.Map(numGlobalElements, myGlobalElements, indexBase, comm)
+        # Specify -1 to have the constructor compute the number of global elements.
+        return Epetra.Map(-1, list(self._m2m._globalNonOverlappingColIDs), 0, comm)
+
+class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
+    def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1, bandwidth=0, sizeHint=None, matrix=None):
+        """Creates a `_TrilinosRowMeshMatrix` with rows and columns associated with equations and solution variables.
+
+        Parameters
+        ----------
+        mesh : ~fipy.meshes.mesh.Mesh
+            The `Mesh` to assemble the matrix for.
+        numberOfVariables : int
+            The local columns of the matrix are determined by
+            `numberOfVariables * len(mesh._localNonOverlappingCellIDs)`.
+        numberOfEquations : int
+            The local rows of the matrix are determined by
+            `numberOfEquations * len(mesh._localNonOverlappingCellIDs)`.
+        bandwidth : int
+            The proposed band width of the matrix.
+        sizeHint : int
+            Estimate of the number of non-zeros
+        matrix : ~PyTrilinos.Epetra.CrsMatrix
+            Pre-assembled Trilinos matrix to use for storage.
+        """
+        m2m = _RowColMesh2Matrix(mesh=mesh,
+                                 numberOfVariables=numberOfVariables,
+                                 numberOfEquations=numberOfEquations)
+
+        super(_TrilinosMeshMatrix, self).__init__(mesh=mesh,
+                                                  cols=numberOfVariables * mesh.globalNumberOfCells,
+                                                  numberOfEquations=numberOfEquations,
+                                                  bandwidth=bandwidth,
+                                                  sizeHint=sizeHint,
+                                                  matrix=matrix,
+                                                  m2m=m2m)
+
+    @property
+    def colMap(self):
+        comm = self.mesh.communicator.epetra_comm
+        # Epetra.Map(numGlobalElements, myGlobalElements, indexBase, comm)
+        # Specify -1 to have the constructor compute the number of global elements.
+        return Epetra.Map(-1, list(self._m2m._globalOverlappingColIDs), 0, comm)
+
+    def asTrilinosMeshMatrix(self):
+        self.finalize()
+        return self
 
     def flush(self):
         pass
@@ -694,14 +863,6 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         return super(_TrilinosMeshMatrix, self).matrix
 
     matrix = property(_getMatrixProperty, _TrilinosMatrixFromShape._setMatrix)
-
-    def put(self, vector, id1, id2):
-        vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
-        _TrilinosMatrixFromShape.put(self, vector=vector, id1=id1, id2=id2)
-
-    def addAt(self, vector, id1, id2):
-        vector, id1, id2 = self._globalNonOverlapping(vector, id1, id2)
-        _TrilinosMatrixFromShape.addAt(self, vector=vector, id1=id1, id2=id2)
 
     def takeDiagonal(self):
         nonoverlapping_result = _TrilinosMatrixFromShape.takeDiagonal(self)
@@ -761,7 +922,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         N = self.matrix.NumMyCols()
 
         if isinstance(other, _TrilinosMatrix):
-            return _TrilinosMatrixFromShape.__mul__(self, other=other)
+            return super(_TrilinosMeshMatrix, self).__mul__(other=other)
         else:
             shape = numerix.shape(other)
 
@@ -778,7 +939,7 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
                     other_map = self.colMap
 
                 if other_map.SameAs(self.colMap):
-                    localNonOverlappingColIDs = self._localNonOverlappingColIDs
+                    localNonOverlappingColIDs = self._m2m._localNonOverlappingColIDs
 
                     other = Epetra.Vector(self.domainMap,
                                           other[localNonOverlappingColIDs])
@@ -806,12 +967,12 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
 
         >>> from fipy import *
         >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5), numberOfVariables=3, numberOfEquations=2)
-        >>> GOC = matrix._globalOverlappingColIDs
-        >>> GNOC = matrix._globalNonOverlappingColIDs
-        >>> LNOC = matrix._localNonOverlappingColIDs
-        >>> GOR = matrix._globalOverlappingRowIDs
-        >>> GNOR = matrix._globalNonOverlappingRowIDs
-        >>> LNOR = matrix._localNonOverlappingRowIDs
+        >>> GOC = matrix._m2m._globalOverlappingColIDs
+        >>> GNOC = matrix._m2m._globalNonOverlappingColIDs
+        >>> LNOC = matrix._m2m._localNonOverlappingColIDs
+        >>> GOR = matrix._m2m._globalOverlappingRowIDs
+        >>> GNOR = matrix._m2m._globalNonOverlappingRowIDs
+        >>> LNOR = matrix._m2m._localNonOverlappingRowIDs
 
         5 cells, 3 variables, 1 processor
 
@@ -971,12 +1132,12 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         True
 
         >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5, communicator=serialComm), numberOfVariables=3, numberOfEquations=2)
-        >>> GOC = matrix._globalOverlappingColIDs
-        >>> GNOC = matrix._globalNonOverlappingColIDs
-        >>> LNOC = matrix._localNonOverlappingColIDs
-        >>> GOR = matrix._globalOverlappingRowIDs
-        >>> GNOR = matrix._globalNonOverlappingRowIDs
-        >>> LNOR = matrix._localNonOverlappingRowIDs
+        >>> GOC = matrix._m2m._globalOverlappingColIDs
+        >>> GNOC = matrix._m2m._globalNonOverlappingColIDs
+        >>> LNOC = matrix._m2m._localNonOverlappingColIDs
+        >>> GOR = matrix._m2m._globalOverlappingRowIDs
+        >>> GNOR = matrix._m2m._globalNonOverlappingRowIDs
+        >>> LNOR = matrix._m2m._localNonOverlappingRowIDs
 
         5 cells, 3 variables, serial
 
@@ -1040,12 +1201,12 @@ class _TrilinosMeshMatrix(_TrilinosMatrixFromShape):
         True
 
         >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=7), numberOfVariables=3, numberOfEquations=2)
-        >>> GOC = matrix._globalOverlappingColIDs
-        >>> GNOC = matrix._globalNonOverlappingColIDs
-        >>> LNOC = matrix._localNonOverlappingColIDs
-        >>> GOR = matrix._globalOverlappingRowIDs
-        >>> GNOR = matrix._globalNonOverlappingRowIDs
-        >>> LNOR = matrix._localNonOverlappingRowIDs
+        >>> GOC = matrix._m2m._globalOverlappingColIDs
+        >>> GNOC = matrix._m2m._globalNonOverlappingColIDs
+        >>> LNOC = matrix._m2m._localNonOverlappingColIDs
+        >>> GOR = matrix._m2m._globalOverlappingRowIDs
+        >>> GNOR = matrix._m2m._globalNonOverlappingRowIDs
+        >>> LNOR = matrix._m2m._localNonOverlappingRowIDs
 
         7 cells, 3 variables, 1 processor
 
