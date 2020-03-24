@@ -198,11 +198,11 @@ class _AbstractConvectionTerm(FaceTerm):
     def _test(self):
         """Test cases for convection with constraints.
 
-        The following tests both a Dirichlet and a Nuemann type
-        boundary condition with convection using constraints. This
-        tests that the Nuemann boundary condition converges without
+        The following tests both a Dirichlet and a Neumann type
+        boundary condition with convection using constraints. It
+        checks that the Neumann boundary condition converges without
         multiple iterations of the solve step. The Dirichlet boundary
-        condition is second order accurate. The Nuemann is only first
+        condition is second order accurate. The Neumann is only first
         order accurate. These tests were prompted by
         https://github.com/usnistgov/fipy/pull/714.
 
@@ -213,13 +213,14 @@ class _AbstractConvectionTerm(FaceTerm):
         left and a fixed value on the right. Check that the order of
         accuracy is 2.
 
+
         >>> nx0 = 64
         >>> mesh = fp.Grid1D(nx=nx0, dx=1. / nx0)
         >>> var = fp.CellVariable(mesh)
         >>> var.constrain(1.0, mesh.facesLeft)
         >>> var.constrain(0.0, mesh.facesRight)
         >>> eqn = fp.CentralDifferenceConvectionTerm((1.0,)) - fp.DiffusionTerm()
-        >>> _ = eqn.sweep(var)
+        >>> _ = eqn.sweep(var, solver=fp.LinearLUSolver())
         >>> expected =  (np.exp(mesh.x) - np.exp(1.)) / (1 - np.exp(1.))
         >>> error0 = float(np.sqrt(((var.value - expected)**2 * mesh.dx).sum()))
 
@@ -229,13 +230,13 @@ class _AbstractConvectionTerm(FaceTerm):
         >>> var.constrain(1.0, mesh.facesLeft)
         >>> var.constrain(0.0, mesh.facesRight)
         >>> eqn = fp.CentralDifferenceConvectionTerm((1.0,)) - fp.DiffusionTerm()
-        >>> _ = eqn.sweep(var)
+        >>> _ = eqn.sweep(var, solver=fp.LinearLUSolver())
         >>> expected =  (np.exp(mesh.x) - np.exp(1.)) / (1 - np.exp(1.))
         >>> error1 = float(np.sqrt(((var.value - expected)**2 * mesh.dx).sum()))
 
-        >>> assert np.allclose(np.log(error1 / error0 )/ np.log(nx0 / nx1), 2.0, atol=0.02)
+        >>> assert np.allclose(np.log(error1 / error0 ) / np.log(nx0 / nx1), 2.0, atol=0.02)
 
-        Test Nuemann boundary condition with a fixed value on the left
+        Test Neumann boundary condition with a fixed value on the left
         and a gradient on the right. Check that the order of accuracy
         is 1.
 
@@ -247,7 +248,7 @@ class _AbstractConvectionTerm(FaceTerm):
         >>> var.constrain(1.0, mesh.facesLeft)
         >>> _  = var.faceGrad.constrain([dphi], mesh.facesRight),
         >>> eqn = fp.CentralDifferenceConvectionTerm((1.0,)) - fp.DiffusionTerm()
-        >>> _ = eqn.sweep(var)
+        >>> _ = eqn.sweep(var, solver=fp.LinearLUSolver())
         >>> expected = 1 + dphi * (np.exp(mesh.x) - 1) / np.exp(1.)
         >>> error0 = float(np.sqrt(((var.value - expected)**2 * mesh.dx).sum()))
 
@@ -257,11 +258,11 @@ class _AbstractConvectionTerm(FaceTerm):
         >>> var.constrain(1.0, mesh.facesLeft)
         >>> _ = var.faceGrad.constrain([dphi], mesh.facesRight),
         >>> eqn = fp.CentralDifferenceConvectionTerm((1.0,)) - fp.DiffusionTerm()
-        >>> _ = eqn.sweep(var)
+        >>> _ = eqn.sweep(var, solver=fp.LinearLUSolver())
         >>> expected = 1 + dphi * (np.exp(mesh.x) - 1) / np.exp(1.)
         >>> error1 = float(np.sqrt(((var.value - expected)**2 * mesh.dx).sum()))
 
-        >>> assert np.allclose(np.log(error1 / error0 )/ np.log(nx0 / nx1), 1.0, atol=0.002)
+        >>> assert np.allclose(np.log(error1 / error0 ) / np.log(nx0 / nx1), 1.0, atol=0.002)
 
         """
 
