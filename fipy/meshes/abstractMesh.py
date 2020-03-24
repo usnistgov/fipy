@@ -693,6 +693,80 @@ class AbstractMesh(object):
         return self.topology._localOverlappingFaceIDs
 
     @property
+    def _vertexCellIDs(self):
+        """Return cell IDs bounded by each vertex
+
+        Returns
+        -------
+        masked_array
+
+        Examples
+        --------
+
+        ```
+        6-------7-------8
+        |       |       |
+        |   2   |   3   |
+        |       |       |
+        3-------4-------5
+        |       |       |
+        |   0   |   1   |
+        |       |       |
+        0-------1-------2
+        ```
+
+        >>> from fipy.meshes import Grid2D
+        >>> m = Grid2D(nx=2, ny=2)
+        >>> print(m._cellVertexIDs) # doctest: +SERIAL
+        [[1 2 4 5]
+         [4 5 7 8]
+         [3 4 6 7]
+         [0 1 3 4]]
+        >>> print(m._vertexCellIDs) # doctest: +SERIAL
+        [[0 0 1 0 0 1 2 2 3]
+         [-- 1 -- 2 1 3 -- 3 --]
+         [-- -- -- -- 2 -- -- -- --]
+         [-- -- -- -- 3 -- -- -- --]]
+        """
+        return self.topology._vertexCellIDs
+
+    @property
+    def _vertexFaceIDs(self):
+        """Return face IDs bounded by each vertex
+
+        Returns
+        -------
+        masked_array
+
+        Examples
+        --------
+
+        ```
+        6---4---7---5---8
+        |       |       |
+        9       10      11
+        |       |       |
+        3---2---4---3---5
+        |       |       |
+        6       7       8
+        |       |       |
+        0---0---1---1---2
+        ```
+
+        >>> from fipy.meshes import Grid2D
+        >>> m = Grid2D(nx=2, ny=2)
+        >>> print(m.faceVertexIDs) # doctest: +SERIAL
+        [[0 1 3 4 6 7 0 1 2 3 4 5]
+         [1 2 4 5 7 8 3 4 5 6 7 8]]
+        >>> print(m._vertexFaceIDs) # doctest: +SERIAL
+        [[0 0 1 2 2 3 4 4 5]
+         [6 1 8 6 3 8 9 5 11]
+         [-- 7 -- 9 7 11 -- 10 --]
+         [-- -- -- -- 10 -- -- -- --]]
+        """
+        return self.topology._vertexFaceIDs
+
+    @property
     def facesLeft(self):
         """
         Return face on left boundary of `Mesh` as list with the

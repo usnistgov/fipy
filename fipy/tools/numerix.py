@@ -1007,6 +1007,41 @@ if not hasattr(NUMERIX, "in1d"):
         else:
             return flag[indx][rev_idx]
 
+def invert_indices(arr, axis=-1):
+    """Invert an index array
+
+    Given an array of indices, return the locations in the array along
+    `axis` of each index.
+
+    >>> a = array([[0, 2], [1, 3], [0, 3], [3, 4]])
+    >>> print(invert_indices(a, axis=0))
+    [[0 2 --]
+     [1 -- --]
+     [0 -- --]
+     [1 2 3]
+     [3 -- --]]
+
+    >>> a = MA.masked_values([[0, 1, 0, 3], [2, 3, 3, -1], [-1, 4, -1, -1]], -1)
+    >>> print(invert_indices(a, axis=-1))
+    [[0 1 0 1 1]
+     [2 -- -- 2 --]
+     [-- -- -- 3 --]]
+
+    After https://stackoverflow.com/a/59686318/2019542
+    """
+    from scipy.sparse import coo_matrix
+    from scipy.stats.mstats import argstoarray
+
+    fwd = MA.indices(arr.shape)[axis]
+    fwd = MA.stack((fwd, arr), axis=-1)
+    fwd = MA.reshape(fwd, (-1, 2))
+    fwd = MA.compress_rows(fwd)
+    rev = coo_matrix(
+        (NUMERIX.ones(len(fwd), dtype=int),
+         (fwd[..., 0], fwd[..., 1])),
+        shape=(arr.shape[axis], max(arr.flat)+1)
+    ).tolil().T.rows
+    return argstoarray(*rev).swapaxes(0, axis).astype(int)
 
 def _test():
     import fipy.tests.doctestPlus

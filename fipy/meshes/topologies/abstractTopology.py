@@ -192,6 +192,60 @@ class _AbstractTopology(object):
         """
         return numerix.arange(self.mesh.numberOfFaces)
 
+    @property
+    def _vertexCellIDs(self):
+        """Return cell IDs bounded by each vertex
+
+        E.g., would return
+
+        [[ 0  0  1  0  0  1  2  2  3]
+         [--  1 --  2  1  3 --  3 --]
+         [-- -- -- --  2 -- -- -- --]
+         [-- -- -- --  3 -- -- -- --]]
+
+        given
+
+        ```
+        6-------7-------8
+        |       |       |
+        |   2   |   3   |
+        |       |       |
+        3-------4-------5
+        |       |       |
+        |   0   |   1   |
+        |       |       |
+        0-------1-------2
+        ```
+        """
+        return numerix.invert_indices(self.mesh._cellVertexIDs)
+
+    @property
+    def _vertexFaceIDs(self):
+        """Return face IDs bounded by each vertex
+
+        E.g., would return
+
+        [[  0   0   1   2   2   3   4   4   5]
+         [  6   1   8   6   3   8   9   5  11]
+         [ --   7  --   9   7  11  --  10  --]
+         [ --  --  --  --  10  --  --  --  --]]
+
+        given
+
+        ```
+        6---4---7---5---8
+        |       |       |
+        9       10      11
+        |       |       |
+        3---2---4---3---5
+        |       |       |
+        6       7       8
+        |       |       |
+        0---0---1---1---2
+        ```
+        """
+        return numerix.invert_indices(self.mesh.faceVertexIDs)
+
     # abstract element types mutually understood by FiPy and other meshing systems
     # (VTK, Gmsh, etc.)
     _elementTopology = dict([(k, v) for (v, k) in enumerate(("vertex",
