@@ -272,6 +272,81 @@ class _PysparseMatrix(_SparseMatrix):
         """
         self.matrix.export_mtx(filename)
 
+    @property
+    def CSR(self):
+        """The Compact Sparse Row description of the local matrix
+
+        Returns
+        -------
+        ptrs : array_like of int
+            Locations in `cols` and `data` vectors that start a row,
+            terminated with len(data) + 1
+        cols : array_like of int
+            Sequence of non-sparse column indices.
+        data : array_like of float
+            Sequence of non-sparse values.
+
+        Examples
+        --------
+
+        >>> L = _PysparseMatrixFromShape(rows=3, cols=3, bandwidth=3)
+        >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+        >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
+        >>> ptrs, cols, data = L.CSR
+        >>> print(numerix.asarray(ptrs))
+        [0 3 5 7]
+        >>> print(numerix.asarray(cols))
+        [0 1 2 1 2 0 2]
+        >>> print(numerix.asarray(data))
+        [ 12.3         10.           3.           3.14159265   2.96
+           2.5          2.2       ]
+        """
+        rows, lildata = self.LIL
+
+        ptrs = [0] + [len(row) for row in rows if row]
+        ptrs = list(numerix.cumsum(ptrs))
+        cols = [col for row in rows for col in row]
+        data = [datum for row in lildata for datum in row]
+
+        return ptrs, cols, data
+
+    @property
+    def LIL(self):
+        """The List of Lists description of the local matrix
+
+        Returns
+        -------
+        rows : list of sequence of int
+            List of non-sparse column indices on each row.
+        data : list of sequence of float
+            List of non-sparse values on each row.
+
+        Examples
+        --------
+
+        >>> L = _PysparseMatrixFromShape(rows=3, cols=3, bandwidth=3)
+        >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+        >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
+        >>> rows, data = L.LIL
+        >>> from scipy.stats.mstats import argstoarray # doctest: +SCIPY
+        >>> print(argstoarray(*rows)) # doctest: +SCIPY
+        [[0.0 1.0 2.0]
+         [1.0 2.0 --]
+         [0.0 2.0 --]]
+        >>> print(argstoarray(*data)) # doctest: +SCIPY
+        [[12.3 10.0 3.0]
+         [3.141592653589793 2.96 --]
+         [2.5 2.2 --]]
+        """
+        nrows, _ = self.matrix.shape
+        rows = [[] for i in range(nrows)]
+        data = [[] for i in range(nrows)]
+        for (row, col), datum in self.matrix.items():
+            rows[row].append(col)
+            data[row].append(datum)
+
+        return rows, data
+
 class _PysparseMatrixFromShape(_PysparseMatrix):
 
     def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):

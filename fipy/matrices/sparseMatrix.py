@@ -119,6 +119,14 @@ class _SparseMatrix(object):
     def exportMmf(self, filename):
         pass
 
+    @property
+    def CSR(self):
+        pass
+
+    @property
+    def LIL(self):
+        pass
+
 ##     def __array__(self):
 ##      shape = self._shape
 ##      indices = numerix.indices(shape)
