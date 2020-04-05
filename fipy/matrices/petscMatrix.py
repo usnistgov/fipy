@@ -465,6 +465,55 @@ class _PETScMatrix(_SparseMatrix):
         from scipy.io import mmio
 
         mmio.mmwrite(filename, self._scipy_coo)
+
+    @property
+    def T(self):
+        """Transpose matrix
+
+        Returns
+        -------
+        ~fipy.matrices.petscMatrix._PETScMatrix
+
+        Examples
+        --------
+
+        >>> import fipy as fp
+
+        >>> mesh = fp.Grid1D(nx=10)
+        >>> ids = fp.CellVariable(mesh=mesh, value=mesh._globalOverlappingCellIDs)
+
+        >>> mat = _PETScColMeshMatrix(mesh=mesh, rows=1)
+        >>> mat.put(vector=ids.value,
+        ...         id1=[fp.parallelComm.procID] * mesh.numberOfCells,
+        ...         id2=mesh._localOverlappingCellIDs,
+        ...         overlapping=True)
+
+        >>> print(mat.T.numpyArray) # doctest: +SERIAL
+        [[ 0.]
+         [ 1.]
+         [ 2.]
+         [ 3.]
+         [ 4.]
+         [ 5.]
+         [ 6.]
+         [ 7.]
+         [ 8.]
+         [ 9.]]
+        >>> print(mat.T.numpyArray) # doctest: +PARALLEL_2
+        [[ 0.  0.]
+         [ 1.  0.]
+         [ 2.  0.]
+         [ 3.  3.]
+         [ 4.  4.]
+         [ 5.  5.]
+         [ 6.  6.]
+         [ 0.  7.]
+         [ 0.  8.]
+         [ 0.  9.]]
+        """
+        self.matrix.assemblyBegin()
+        self.matrix.assemblyEnd()
+        return _PETScMatrix(matrix=self.matrix.transpose())
     
 class _PETScMatrixFromShape(_PETScMatrix):
     

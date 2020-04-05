@@ -340,6 +340,42 @@ class _ScipyMatrix(_SparseMatrix):
 
         return lil.rows, lil.data
 
+    @property
+    def T(self):
+        """Transpose matrix
+
+        Returns
+        -------
+        ~fipy.matrices.scipyMatrix._ScipyMatrix
+
+        Examples
+        --------
+
+        >>> import fipy as fp
+
+        >>> mesh = fp.Grid1D(nx=10)
+        >>> ids = fp.CellVariable(mesh=mesh, value=mesh._globalOverlappingCellIDs)
+
+        >>> mat = _ScipyColMeshMatrix(mesh=mesh, rows=1)
+        >>> mat.put(vector=ids.value,
+        ...         id1=[fp.parallelComm.procID] * mesh.numberOfCells,
+        ...         id2=mesh._localOverlappingCellIDs,
+        ...         overlapping=True)
+
+        >>> print(mat.T.numpyArray)
+        [[ 0.]
+         [ 1.]
+         [ 2.]
+         [ 3.]
+         [ 4.]
+         [ 5.]
+         [ 6.]
+         [ 7.]
+         [ 8.]
+         [ 9.]]
+        """
+        return _ScipyMatrix(matrix=self.matrix.transpose(copy=True))
+
 class _ScipyMatrixFromShape(_ScipyMatrix):
 
     def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):

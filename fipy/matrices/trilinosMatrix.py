@@ -609,6 +609,102 @@ class _TrilinosMatrix(_SparseMatrix):
 
         return rows, data
 
+    @property
+    def T(self):
+        """Transpose matrix
+
+        After https://github.com/trilinos/Trilinos_tutorial/wiki/Tpetra_Exercises_Advanced_CrsMatrix_ExplicitTranspose#how-to-compute-the-transpose-of-a-crsmatrix
+
+        Sadly, `EpetraExt.RowMatrix_Transpose` isn't exposed in PyTrilinos.
+
+        Returns
+        -------
+        ~fipy.matrices.trilinosMatrix._TrilinosMatrix
+
+        Examples
+        --------
+
+        >>> import fipy as fp
+
+        >>> mesh = fp.Grid1D(nx=10)
+        >>> ids = fp.CellVariable(mesh=mesh, value=mesh._globalOverlappingCellIDs)
+
+        >>> mat = _TrilinosColMeshMatrix(mesh=mesh, rows=1)
+        >>> mat.put(vector=ids.value,
+        ...         id1=[fp.parallelComm.procID] * mesh.numberOfCells,
+        ...         id2=mesh._localOverlappingCellIDs,
+        ...         overlapping=True)
+
+        >>> print(mat.T.numpyArray) # doctest: +SERIAL
+        [[ 0.]
+         [ 1.]
+         [ 2.]
+         [ 3.]
+         [ 4.]
+         [ 5.]
+         [ 6.]
+         [ 7.]
+         [ 8.]
+         [ 9.]]
+        >>> print(mat.T.numpyArray) # doctest: +PARALLEL_2
+        [[ 0.  0.]
+         [ 1.  0.]
+         [ 2.  0.]
+         [ 3.  3.]
+         [ 4.  4.]
+         [ 5.  5.]
+         [ 6.  6.]
+         [ 0.  7.]
+         [ 0.  8.]
+         [ 0.  9.]]
+        """
+        self.finalize()
+
+        # transpose the maps
+        rowMap = self.matrix.ColMap()
+        colMap = self.matrix.RowMap()
+        domainMap = self.matrix.RangeMap()
+        rangeMap = self.matrix.DomainMap()
+
+        # 2. Create a new CrsMatrix AT, with A's column Map as AT's row Map.
+        numEntriesPerRow = self.matrix.NumGlobalNonzeros() // self.matrix.NumGlobalCols()
+        A_T = Epetra.CrsMatrix(Epetra.Copy,
+                               rowMap,
+                               # RuntimeError: InsertMyValues cannot be
+                               # called on Epetra_CrsMatrix that does not
+                               # have a column map
+                               colMap,
+                               numEntriesPerRow)
+
+        # 1. On each process, extract and transpose the local data.
+        for irow in range(self.matrix.NumMyRows()):
+            # "Returns a two-tuple of numpy arrays of the same size; the first is
+            # an array of integers that represent the nonzero columns on the
+            # matrix"
+            #
+            # No, it's not. Returns values *then* indices
+            val, jcol = self.matrix.ExtractMyRowCopy(irow)
+
+            # 3. Insert the transposed local data into AT.
+            # Note that the column Map owns all of AT's local data.  This
+            # means that Step 3 can use local indices.
+            A_T.InsertMyValues(jcol, [irow] * len(jcol), val)
+
+        # 4.  Fill complete AT (you'll need to supply the domain and range
+        # Map, because the row Map of AT is not one to one in general).
+        A_T.FillComplete(domainMap, rangeMap)
+
+        # 5.  If desired, redistribute AT (using an Export) to have a
+        # one-to-one row Map.
+        exporter = Epetra.Export(rowMap, rangeMap)
+        A_T_bis = Epetra.CrsMatrix(Epetra.Copy,
+                                   rangeMap,
+                                   numEntriesPerRow)
+        A_T_bis.Export(A_T, exporter, Epetra.Insert)
+        A_T_bis.FillComplete(domainMap, rangeMap)
+
+        return _TrilinosMatrix(matrix=A_T_bis)
+
 class _TrilinosMatrixFromShape(_TrilinosMatrix):
     def __init__(self, rows, cols, bandwidth=1, sizeHint=None, matrix=None):
         """Instantiates and wraps an `Epetra.CrsMatrix`

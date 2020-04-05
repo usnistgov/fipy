@@ -127,6 +127,10 @@ class _SparseMatrix(object):
     def LIL(self):
         pass
 
+    @property
+    def T(self):
+        pass
+
 ##     def __array__(self):
 ##      shape = self._shape
 ##      indices = numerix.indices(shape)

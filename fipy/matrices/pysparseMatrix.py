@@ -347,6 +347,51 @@ class _PysparseMatrix(_SparseMatrix):
 
         return rows, data
 
+    @property
+    def T(self):
+        """Transpose matrix
+
+        Returns
+        -------
+        ~fipy.matrices.pysparseMatrix._PysparseMatrix
+
+        Examples
+        --------
+
+        >>> import fipy as fp
+
+        >>> mesh = fp.Grid1D(nx=10)
+        >>> ids = fp.CellVariable(mesh=mesh, value=mesh._globalOverlappingCellIDs)
+
+        >>> mat = _PysparseColMeshMatrix(mesh=mesh, rows=1)
+        >>> mat.put(vector=ids.value,
+        ...         id1=[fp.parallelComm.procID] * mesh.numberOfCells,
+        ...         id2=mesh._localOverlappingCellIDs,
+        ...         overlapping=True)
+
+        >>> print(mat.T.numpyArray)
+        [[ 0.]
+         [ 1.]
+         [ 2.]
+         [ 3.]
+         [ 4.]
+         [ 5.]
+         [ 6.]
+         [ 7.]
+         [ 8.]
+         [ 9.]]
+        """
+        val, irow, jcol = self.matrix.find()
+        rows, cols = self.matrix.shape
+        if hasattr(self.matrix, 'storeZeros'):
+            A_T = spmatrix.ll_mat(cols, rows, self.matrix.nnz, self.matrix.storeZeros)
+        else:
+            A_T = spmatrix.ll_mat(cols, rows, self.matrix.nnz)
+
+        A_T.put(val, jcol, irow)
+
+        return _PysparseMatrix(matrix=A_T)
+
 class _PysparseMatrixFromShape(_PysparseMatrix):
 
     def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
