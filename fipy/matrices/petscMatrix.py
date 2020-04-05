@@ -337,16 +337,82 @@ class _PETScMatrix(_SparseMatrix):
         return ids
 
     @property
+    def CSR(self):
+        """The Compact Sparse Row description of the local matrix
+
+        Returns
+        -------
+        ptrs : array_like of int
+            Locations in `cols` and `data` vectors that start a row,
+            terminated with len(data) + 1
+        cols : array_like of int
+            Sequence of non-sparse column indices.
+        data : array_like of float
+            Sequence of non-sparse values.
+
+        Examples
+        --------
+
+        >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
+        >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+        >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
+        >>> ptrs, cols, data = L.CSR
+        >>> print(numerix.asarray(ptrs))
+        [0 3 5 7]
+        >>> print(numerix.asarray(cols))
+        [0 1 2 1 2 0 2]
+        >>> print(numerix.asarray(data))
+        [ 12.3         10.           3.           3.14159265   2.96
+           2.5          2.2       ]
+        """
+        self.matrix.assemblyBegin()
+        self.matrix.assemblyEnd()
+
+        return self.matrix.getValuesCSR()
+
+    @property
+    def LIL(self):
+        """The List of Lists description of the local matrix
+
+        Returns
+        -------
+        rows : list of sequence of int
+            List of non-sparse column indices on each row.
+        data : list of sequence of float
+            List of non-sparse values on each row.
+
+        Examples
+        --------
+
+        >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
+        >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+        >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
+        >>> rows, data = L.LIL
+        >>> from scipy.stats.mstats import argstoarray # doctest: +SCIPY
+        >>> print(argstoarray(*rows)) # doctest: +SCIPY
+        [[0.0 1.0 2.0]
+         [1.0 2.0 --]
+         [0.0 2.0 --]]
+        >>> print(argstoarray(*data)) # doctest: +SCIPY
+        [[12.3 10.0 3.0]
+         [3.141592653589793 2.96 --]
+         [2.5 2.2 --]]
+        """
+        ptrs, cols, csrdata = self.CSR
+
+        rows = [cols[start:stop] for start, stop in zip(ptrs[:-1], ptrs[1:])]
+        data = [csrdata[start:stop] for start, stop in zip(ptrs[:-1], ptrs[1:])]
+
+        return rows, data
+
+    @property
     def _scipy_csr(self):
         """Return the PETSc-ordered CSR matrix
         """
         from scipy import sparse
         mpi4pycomm = self.matrix.comm.tompi4py()
 
-        self.matrix.assemblyBegin()
-        self.matrix.assemblyEnd()
-
-        indptr, indices, data = self.matrix.getValuesCSR()
+        indptr, indices, data = self.CSR
 
         # getValuesCSR() returns entries local to node
         # with node-relative indptr.
