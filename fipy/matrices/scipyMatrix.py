@@ -463,6 +463,8 @@ class _ScipyRowMeshMatrix(_ScipyBaseMeshMatrix):
         storeZeros : bool
             Instructs scipy to store zero values if possible.
         """
+        self.numberOfEquations = numberOfEquations
+
         super(_ScipyRowMeshMatrix, self).__init__(mesh=mesh,
                                                   rows=numberOfEquations * mesh.numberOfCells,
                                                   cols=cols,
@@ -493,6 +495,8 @@ class _ScipyColMeshMatrix(_ScipyBaseMeshMatrix):
         storeZeros : bool
             Instructs scipy to store zero values if possible.
         """
+        self.numberOfVariables = numberOfVariables
+
         super(_ScipyColMeshMatrix, self).__init__(mesh=mesh,
                                                   rows=rows,
                                                   cols=numberOfVariables * mesh.numberOfCells,
