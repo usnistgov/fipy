@@ -367,9 +367,9 @@ class _PysparseMatrix(_SparseMatrix):
         >>> mat.put(vector=ids.value,
         ...         id1=[fp.parallelComm.procID] * mesh.numberOfCells,
         ...         id2=mesh._localOverlappingCellIDs,
-        ...         overlapping=True)
+        ...         overlapping=True) # doctest: +SERIAL
 
-        >>> print(mat.T.numpyArray)
+        >>> print(mat.T.numpyArray) # doctest: +SERIAL
         [[ 0.]
          [ 1.]
          [ 2.]
