@@ -1031,8 +1031,8 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         if not hasattr(self, '_matrix'):
             self._matrix = _TrilinosMeshMatrix(self.mesh,
                                                bandwidth=self.bandwidth,
-                                               numberOfVariables=self.numberOfVariables,
-                                               numberOfEquations=self.numberOfEquations).matrix
+                                               numberOfVariables=self._m2m.numberOfVariables,
+                                               numberOfEquations=self._m2m.numberOfEquations).matrix
         return super(_TrilinosMeshMatrix, self).matrix
 
     matrix = property(_getMatrixProperty, _TrilinosMatrixFromShape._setMatrix)
