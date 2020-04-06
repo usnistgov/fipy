@@ -161,15 +161,15 @@ class _Mesh2Matrix(object):
         self.numberOfEquations = numberOfEquations
         self.orderer = orderer
 
-    def _cellIDsToGlobalRowIDs(self, IDs):
+    def _cellIDsToGlobalIDs(self, IDs, M, L):
         N = len(IDs)
-        M = self.numberOfEquations
-        return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.globalNumberOfCells).flatten()
+        return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * L).flatten()
+
+    def _cellIDsToGlobalRowIDs(self, IDs):
+        return self._cellIDsToGlobalIDs(IDs, M=self.numberOfEquations, L=self.mesh.globalNumberOfCells)
 
     def _cellIDsToLocalRowIDs(self, IDs):
-        M = self.numberOfEquations
-        N = len(IDs)
-        return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.numberOfCells).flatten()
+        return self._cellIDsToGlobalIDs(IDs, M=self.numberOfEquations, L=self.mesh.numberOfCells)
 
     @property
     def _globalNonOverlappingRowIDs(self):
@@ -184,14 +184,10 @@ class _Mesh2Matrix(object):
         return self._cellIDsToLocalRowIDs(self.mesh._localNonOverlappingCellIDs)
 
     def _cellIDsToGlobalColIDs(self, IDs):
-        N = len(IDs)
-        M = self.numberOfVariables
-        return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.globalNumberOfCells).flatten()
+        return self._cellIDsToGlobalIDs(IDs, M=self.numberOfVariables, L=self.mesh.globalNumberOfCells)
 
     def _cellIDsToLocalColIDs(self, IDs):
-        M = self.numberOfVariables
-        N = len(IDs)
-        return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * self.mesh.numberOfCells).flatten()
+        return self._cellIDsToGlobalIDs(IDs, M=self.numberOfVariables, L=self.mesh.numberOfCells)
 
     @property
     def _globalNonOverlappingColIDs(self):
