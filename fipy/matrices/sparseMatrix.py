@@ -213,6 +213,21 @@ class _Mesh2Matrix(object):
     def _localNonOverlappingColIDs(self):
         return self._cellIDsToLocalColIDs(self.mesh._localNonOverlappingCellIDs)
 
+    def _getStencil_(self, id1, id2,
+                     globalOverlappihgIDs, globalNonOverlappihgIDs,
+                     overlapping=False):
+        id1 = globalOverlappihgIDs[id1]
+
+        if overlapping:
+            mask = numerix.ones(id1.shape, dtype=bool)
+        else:
+            mask = numerix.in1d(id1, globalNonOverlappihgIDs)
+
+        id1 = self.orderer(id1[mask])
+        id2 = numerix.asarray(id2)[mask]
+
+        return id1, id2, mask
+
     def _getStencil(self, id1, id2, overlapping=False):
         raise NotImplementedError
 
@@ -257,29 +272,17 @@ class _Mesh2Matrix(object):
 
 class _RowMesh2Matrix(_Mesh2Matrix):
     def _getStencil(self, id1, id2, overlapping=False):
-        id1 = self._globalOverlappingRowIDs[id1]
-
-        if overlapping:
-            mask = numerix.ones(id1.shape, dtype=bool)
-        else:
-            mask = numerix.in1d(id1, self._globalNonOverlappingRowIDs)
-
-        id1 = self.orderer(id1[mask])
-        id2 = numerix.asarray(id2)[mask]
-
-        return id1, id2, mask
+        return self._getStencil_(id1, id2,
+                                 self._globalOverlappingRowIDs,
+                                 self._globalNonOverlappingRowIDs,
+                                 overlapping)
 
 class _ColMesh2Matrix(_Mesh2Matrix):
     def _getStencil(self, id1, id2, overlapping=False):
-        id2 = self._globalOverlappingColIDs[id2]
-
-        if overlapping:
-            mask = numerix.ones(id2.shape, dtype=bool)
-        else:
-            mask = numerix.in1d(id2, self._globalNonOverlappingColIDs)
-
-        id1 = numerix.asarray(id1)[mask]
-        id2 = self.orderer(id2[mask])
+        id2, id1, mask = self._getStencil_(id2, id1,
+                                           self._globalOverlappingColIDs,
+                                           self._globalNonOverlappingColIDs,
+                                           overlapping)
 
         return id1, id2, mask
 
