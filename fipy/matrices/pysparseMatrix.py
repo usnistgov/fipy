@@ -518,6 +518,8 @@ class _PysparseRowMeshMatrix(_PysparseBaseMeshMatrix):
         storeZeros : bool
             Instructs Pysparse to store zero values if possible.
         """
+        self.numberOfEquations = numberOfEquations
+
         super(_PysparseRowMeshMatrix, self).__init__(mesh=mesh,
                                                      rows=numberOfEquations * mesh.numberOfCells,
                                                      cols=cols,
@@ -548,6 +550,8 @@ class _PysparseColMeshMatrix(_PysparseBaseMeshMatrix):
         storeZeros : bool
             Instructs Pysparse to store zero values if possible.
         """
+        self.numberOfVariables = numberOfVariables
+
         super(_PysparseColMeshMatrix, self).__init__(mesh=mesh,
                                                      rows=rows,
                                                      cols=numberOfVariables * mesh.numberOfCells,
@@ -616,8 +620,8 @@ class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
             bandwidth = 1
             from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrixKeepStencil
             self.trilinosMatrix = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth,
-                                                                 numberOfVariables=self._m2m.numberOfVariables,
-                                                                 numberOfEquations=self._m2m.numberOfEquations)
+                                                                 numberOfVariables=self.numberOfVariables,
+                                                                 numberOfEquations=self.numberOfEquations)
 
         self.trilinosMatrix.addAt(values, irow, jcol)
         self.trilinosMatrix.finalize()
