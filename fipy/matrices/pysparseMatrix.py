@@ -616,8 +616,8 @@ class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
             bandwidth = 1
             from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrixKeepStencil
             self.trilinosMatrix = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth,
-                                                                 numberOfVariables=self.numberOfVariables,
-                                                                 numberOfEquations=self.numberOfEquations)
+                                                                 numberOfVariables=self._m2m.numberOfVariables,
+                                                                 numberOfEquations=self._m2m.numberOfEquations)
 
         self.trilinosMatrix.addAt(values, irow, jcol)
         self.trilinosMatrix.finalize()
