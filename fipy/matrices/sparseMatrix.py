@@ -194,10 +194,6 @@ class _Mesh2Matrix(object):
         return self._cellIDsToGlobalColIDs(self.mesh._globalNonOverlappingCellIDs)
 
     @property
-    def _globalCommonColIDs(self):
-        return list(range(0, self.numberOfVariables, self.mesh.globalNumberOfCells))
-
-    @property
     def _globalOverlappingColIDs(self):
         return self._cellIDsToGlobalColIDs(self.mesh._globalOverlappingCellIDs)
 
