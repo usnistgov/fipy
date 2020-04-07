@@ -51,10 +51,12 @@ class _TrilinosMatrix(_SparseMatrix):
 
         self.comm = matrix.Comm()
         if bandwidth is None:
-            self.bandwidth = ((matrix.NumGlobalNonzeros() + matrix.NumGlobalRows() -1 )
+            self.bandwidth = ((matrix.NumGlobalNonzeros() + matrix.NumGlobalRows() - 1)
                               // matrix.NumGlobalRows())
         else:
             self.bandwidth = bandwidth
+
+        super(_TrilinosMatrix, self).__init__()
 
     def _setMatrix(self, m):
         self._matrix = m
@@ -148,12 +150,12 @@ class _TrilinosMatrix(_SparseMatrix):
                 if EpetraExt.Add(other.matrix, False, 1, tempMatrix, 1) != 0:
                     import warnings
                     warnings.warn("EpetraExt.Add returned error code in __iadd__, 1",
-                                   UserWarning, stacklevel=2)
+                                  UserWarning, stacklevel=2)
 
                 if EpetraExt.Add(self.matrix, False, 1, tempMatrix, 1) != 0:
                     import warnings
                     warnings.warn("EpetraExt.Add returned error code in __iadd__, 2",
-                                   UserWarning, stacklevel=2)
+                                  UserWarning, stacklevel=2)
 
                 self.matrix = tempMatrix
 
@@ -161,13 +163,13 @@ class _TrilinosMatrix(_SparseMatrix):
                 if EpetraExt.Add(other.matrix, False, 1, self.matrix, 1) != 0:
                     import warnings
                     warnings.warn("EpetraExt.Add returned error code in __iadd__",
-                                   UserWarning, stacklevel=2)
+                                  UserWarning, stacklevel=2)
 
         return self
 
 
     # To add two things while modifying neither, both must be FillCompleted
-    def _add(self, other, sign = 1):
+    def _add(self, other, sign=1):
         self.fillComplete()
         other.fillComplete()
 
@@ -322,7 +324,7 @@ class _TrilinosMatrix(_SparseMatrix):
             if self.matrix.ReplaceGlobalValues(id1, id2, vector) != 0:
                 import warnings
                 warnings.warn("ReplaceGlobalValues returned error code in put",
-                               UserWarning, stacklevel=2)
+                              UserWarning, stacklevel=2)
                 # Possible different algorithm, to guarantee success:
                 #
                 # Make a new matrix,
@@ -347,7 +349,7 @@ class _TrilinosMatrix(_SparseMatrix):
                 if self.matrix.ReplaceGlobalValues(id1, id2, vector) != 0:
                     import warnings
                     warnings.warn("ReplaceGlobalValues returned error code in put",
-                                   UserWarning, stacklevel=2)
+                                  UserWarning, stacklevel=2)
                     # Possible different algorithm, to guarantee that it does not fail:
                     #
                     # Make a new matrix,
@@ -380,7 +382,6 @@ class _TrilinosMatrix(_SparseMatrix):
                 ---        ---     3.141593  
         """
 
-
         if type(vector) in [type(1), type(1.)]:
             ids = numerix.arange(self.matrix.NumGlobalRows())
             tmp = numerix.zeros((self.matrix.NumGlobalRows), 'd')
@@ -396,8 +397,8 @@ class _TrilinosMatrix(_SparseMatrix):
 
     def take(self, id1, id2):
         import warnings
-        warnings.warn("""Trying to take from a Trilinos Matrix. That doesn't work.""",
-                         UserWarning, stacklevel=2)
+        warnings.warn("Trying to take from a Trilinos Matrix. That doesn't work.",
+                      UserWarning, stacklevel=2)
         raise TypeError
 
     def takeDiagonal(self):
@@ -436,7 +437,7 @@ class _TrilinosMatrix(_SparseMatrix):
             if self.matrix.SumIntoGlobalValues(id1, id2, vector) != 0:
                 import warnings
                 warnings.warn("Summing into unfilled matrix returned error code",
-                               UserWarning, stacklevel=2)
+                              UserWarning, stacklevel=2)
                 # Possible change to this part of the code to do the following:
                 #
                 # Make a new matrix,
@@ -450,7 +451,7 @@ class _TrilinosMatrix(_SparseMatrix):
 
 
     def addAtDiagonal(self, vector):
-        if type(vector) in [type(1), type(1.)]:
+        if isinstance(vector, (int, float)):
 
             if hasattr(self.matrix, 'GetMyRows'):
                 Nrows = self.matrix.GetMyRows()
@@ -480,7 +481,7 @@ class _TrilinosMatrix(_SparseMatrix):
         from fipy.tools import parallelComm
 
         if parallelComm.procID == 0:
-            (f, mtxName) = tempfile.mkstemp(suffix='.mtx')
+            (_, mtxName) = tempfile.mkstemp(suffix='.mtx')
         else:
             mtxName = None
 
@@ -497,7 +498,8 @@ class _TrilinosMatrix(_SparseMatrix):
 
         coo = mtx.tocoo()
         trilinosMatrix = self.matrix
-        numpyArray = numerix.zeros((trilinosMatrix.NumGlobalRows(), trilinosMatrix.NumGlobalCols()), 'd')
+        numpyArray = numerix.zeros((trilinosMatrix.NumGlobalRows(),
+                                    trilinosMatrix.NumGlobalCols()), 'd')
         numpyArray[coo.row, coo.col] = coo.data
         return numpyArray
 
@@ -733,7 +735,7 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
 
         if matrix is None:
             # On Mar 26, 2011, at 11:04 AM, Williams, Alan B <william@sandia.gov> wrote:
-            # 
+            #
             # In almost every case, it is advisable to construct epetra
             # matrices with only a row-map and allow the column-map to be
             # generated internally.  Especially if you have a rectangular
@@ -817,7 +819,7 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
     def copy(self):
         tmp = super(_TrilinosBaseMeshMatrix, self).copy()
         copy = self.__class__(mesh=self.mesh, bandwidth=self.bandwidth)
-        copy.matrix = tmp._matrix
+        copy.matrix = tmp.matrix
         return copy
 
     def _getGhostedValues(self, var):
@@ -831,9 +833,10 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
         mesh = var.mesh
         localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
 
-        ## The following conditional is required because empty indexing is not altogether functional.
-        ## This numpy.empty((0,))[[]] and this numpy.empty((0,))[...,[]] both work, but this
-        ## numpy.empty((3, 0))[...,[]] is broken.
+        ## The following conditional is required because empty indexing is
+        ## not altogether functional.  This numpy.empty((0,))[[]] and this
+        ## numpy.empty((0,))[...,[]] both work, but this numpy.empty((3,
+        ## 0))[...,[]] is broken.
         if var.shape[-1] != 0:
             s = (Ellipsis, localNonOverlappingCellIDs)
         else:
@@ -842,11 +845,12 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
         nonOverlappingVector = Epetra.Vector(self.domainMap,
                                              var[s].ravel())
 
+        overlappingVector = Epetra.Vector(self.colMap)
         overlappingVector.Import(nonOverlappingVector,
                                  Epetra.Import(self.colMap, self.domainMap),
                                  Epetra.Insert)
 
-        return numerix.reshape(numerix.array(overlappingVector), var.shape)
+        return numerix.reshape(numerix.asarray(overlappingVector), var.shape)
 
     def put(self, vector, id1, id2, overlapping=False):
         """Insert local overlapping values and coordinates into global
@@ -883,7 +887,8 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
         super(_TrilinosBaseMeshMatrix, self).addAt(vector=vector, id1=id1, id2=id2)
 
 class _TrilinosRowMeshMatrix(_TrilinosBaseMeshMatrix):
-    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0, sizeHint=None, matrix=None, m2m=None):
+    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0,
+                 sizeHint=None, matrix=None, m2m=None):
         """Creates a `_TrilinosMatrixFromShape` with rows associated with equations.
 
         Parameters
@@ -907,8 +912,9 @@ class _TrilinosRowMeshMatrix(_TrilinosBaseMeshMatrix):
         if m2m is None:
             m2m = _RowMesh2Matrix(mesh=mesh, numberOfEquations=numberOfEquations)
 
+        rows = numberOfEquations * mesh.globalNumberOfCells,
         super(_TrilinosRowMeshMatrix, self).__init__(mesh=mesh,
-                                                     rows=numberOfEquations * mesh.globalNumberOfCells,
+                                                     rows=rows,
                                                      cols=cols,
                                                      m2m=m2m,
                                                      bandwidth=bandwidth,
@@ -932,7 +938,8 @@ class _TrilinosRowMeshMatrix(_TrilinosBaseMeshMatrix):
         return self.rowMap
 
 class _TrilinosColMeshMatrix(_TrilinosBaseMeshMatrix):
-    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0, sizeHint=None, matrix=None):
+    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0,
+                 sizeHint=None, matrix=None):
         """Creates a `_TrilinosMatrixFromShape` with columns associated with solution variables.
 
         Parameters
@@ -953,9 +960,10 @@ class _TrilinosColMeshMatrix(_TrilinosBaseMeshMatrix):
         """
         m2m = _ColMesh2Matrix(mesh=mesh, numberOfVariables=numberOfVariables)
 
+        cols = numberOfVariables * mesh.globalNumberOfCells
         super(_TrilinosColMeshMatrix, self).__init__(mesh=mesh,
                                                      rows=rows,
-                                                     cols=numberOfVariables * mesh.globalNumberOfCells,
+                                                     cols=cols,
                                                      m2m=m2m,
                                                      bandwidth=bandwidth,
                                                      sizeHint=sizeHint,
@@ -981,8 +989,9 @@ class _TrilinosColMeshMatrix(_TrilinosBaseMeshMatrix):
         return Epetra.Map(-1, list(self._m2m._globalNonOverlappingColIDs), 0, comm)
 
 class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
-    def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1, bandwidth=0, sizeHint=None, matrix=None):
-        """Creates a `_TrilinosRowMeshMatrix` with rows and columns associated with equations and solution variables.
+    def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1,
+                 bandwidth=0, sizeHint=None, matrix=None):
+        """Creates a `_TrilinosRowMeshMatrix` associated with equations and variables.
 
         Parameters
         ----------
@@ -1005,8 +1014,9 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
                                  numberOfVariables=numberOfVariables,
                                  numberOfEquations=numberOfEquations)
 
+        cols = numberOfVariables * mesh.globalNumberOfCells
         super(_TrilinosMeshMatrix, self).__init__(mesh=mesh,
-                                                  cols=numberOfVariables * mesh.globalNumberOfCells,
+                                                  cols=cols,
                                                   numberOfEquations=numberOfEquations,
                                                   bandwidth=bandwidth,
                                                   sizeHint=sizeHint,
@@ -1139,7 +1149,9 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         """Tests
 
         >>> from fipy import *
-        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5), numberOfVariables=3, numberOfEquations=2)
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5),
+        ...                              numberOfVariables=3,
+        ...                              numberOfEquations=2)
         >>> GOC = matrix._m2m._globalOverlappingColIDs
         >>> GNOC = matrix._m2m._globalNonOverlappingColIDs
         >>> LNOC = matrix._m2m._localNonOverlappingColIDs
@@ -1153,28 +1165,47 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
 
-        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:0
+        _globalOverlappingCellIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalOverlappingColIDs:0
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
 
-        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalNonOverlappingCellIDs:0
+        _globalOverlappingColIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalNonOverlappingColIDs:0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
 
-        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:0
+        _globalNonOverlappingCellIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localOverlappingColIDs:0
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
 
-        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
+        _globalNonOverlappingColIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
+
+        _localOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
+
+        _localNonOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
+
+        _localNonOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
         ```
 
-        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]))  # doctest: +SERIAL
+        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                              8, 9, 10, 11, 12, 13, 14]))  # doctest: +SERIAL
         True
-        >>> print(numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])) # doctest: +SERIAL
+        >>> print(numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                               8, 9, 10, 11, 12, 13, 14])) # doctest: +SERIAL
         True
-        >>> print(numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])) # doctest: +SERIAL
+        >>> print(numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                               8, 9, 10, 11, 12, 13, 14])) # doctest: +SERIAL
         True
 
 
@@ -1184,21 +1215,37 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9   row IDs
 
-        0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:0
+        _globalOverlappingCellIDs
 
-        0  1  2  3  4  5  6  7  8  9   _globalOverlappingRowIDs:0
+        0  1  2  3  4  0  1  2  3  4   proc 0
 
-        0  1  2  3  4  0  1  2  3  4   _globalNonOverlappingCellIDs:0
+        _globalOverlappingRowIDs
 
-        0  1  2  3  4  5  6  7  8  9   _globalNonOverlappingRowIDs:0
+        0  1  2  3  4  5  6  7  8  9   proc 0
 
-        0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:0
+        _globalNonOverlappingCellIDs
 
-        0  1  2  3  4  5  6  7  8  9   _localOverlappingRowIDs:0
+        0  1  2  3  4  0  1  2  3  4   proc 0
 
-        0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
+        _globalNonOverlappingRowIDs
 
-        0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
+        0  1  2  3  4  5  6  7  8  9   proc 0
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4   proc 0
+
+        _localOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9   proc 0
+
+        _localNonOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4   proc 0
+
+        _localNonOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9   proc 0
         ```
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])) # doctest: +SERIAL
@@ -1215,45 +1262,65 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
 
-        0  1  2  3     0  1  2  3     0  1  2  3      _globalOverlappingCellIDs:0
-        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:1
+        _globalOverlappingCellIDs
 
-        0  1  2  3     5  6  7  8    10 11 12 13      _globalOverlappingColIDs:0
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalOverlappingColIDs:1
+        0  1  2  3     0  1  2  3     0  1  2  3      proc 0
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc  1
 
-        0  1           0  1           0  1            _globalNonOverlappingCellIDs:0
-              2  3  4        2  3  4        2  3  4   _globalNonOverlappingCellIDs:1
+        _globalOverlappingColIDs
 
-        0  1           5  6          10 11            _globalNonOverlappingColIDs:0
-              2  3  4        7  8  9       12 13 14   _globalNonOverlappingColIDs:1
+        0  1  2  3     5  6  7  8    10 11 12 13      proc 0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc  1
 
-        0  1  2  3     0  1  2  3     0  1  2  3      _localOverlappingCellIDs:0
-        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:1
+        _globalNonOverlappingCellIDs
 
-        0  1  2  3     4  5  6  7     8  9 10 11      _localOverlappingColIDs:0
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localOverlappingColIDs:1
+        0  1           0  1           0  1            proc 0
+              2  3  4        2  3  4        2  3  4   proc  1
 
-        0  1           0  1           0  1            _localNonOverlappingCellIDs:0
-              2  3  4        2  3  4        2  3  4   _localNonOverlappingCellIDs:1
+        _globalNonOverlappingColIDs
 
-        0  1           4  5           8  9            _localNonOverlappingColIDs:0
-              2  3  4        7  8  9       12 13 14   _localNonOverlappingColIDs:1
+        0  1           5  6          10 11            proc 0
+              2  3  4        7  8  9       12 13 14   proc  1
+
+        _localOverlappingCellIDs
+
+        0  1  2  3     0  1  2  3     0  1  2  3      proc 0
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc  1
+
+        _localOverlappingColIDs
+
+        0  1  2  3     4  5  6  7     8  9 10 11      proc 0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc  1
+
+        _localNonOverlappingCellIDs
+
+        0  1           0  1           0  1            proc 0
+              2  3  4        2  3  4        2  3  4   proc  1
+
+        _localNonOverlappingColIDs
+
+        0  1           4  5           8  9            proc 0
+              2  3  4        7  8  9       12 13 14   proc  1
         ```
 
 
-        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13])) # doctest: +PROCESSOR_0_OF_2
+        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 5, 6, 7,
+        ...                              8, 10, 11, 12, 13])) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])) # doctest: +PROCESSOR_1_OF_2
+        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                              8, 9, 10, 11, 12, 13, 14])) # doctest: +PROCESSOR_1_OF_2
         True
 
         >>> print(numerix.allequal(GNOC, [0, 1, 5, 6, 10, 11])) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print(numerix.allequal(GNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])) # doctest: +PROCESSOR_1_OF_2
+        >>> print(numerix.allequal(GNOC, [2, 3, 4, 7, 8, 9,
+        ...                               12, 13, 14])) # doctest: +PROCESSOR_1_OF_2
         True
 
         >>> print(numerix.allequal(LNOC, [0, 1, 4, 5, 8, 9])) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print(numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])) # doctest: +PROCESSOR_1_OF_2
+        >>> print(numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9,
+        ...                               12, 13, 14])) # doctest: +PROCESSOR_1_OF_2
         True
 
 
@@ -1263,35 +1330,52 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9   row IDs
 
-        0  1  2  3     0  1  2  3      _globalOverlappingCellIDs:0
-        0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:1
+        _globalOverlappingCellIDs
 
-        0  1  2  3     5  6  7  8      _globalOverlappingRowIDs:0
-        0  1  2  3  4  5  6  7  8  9   _globalOverlappingRowIDs:1
+        0  1  2  3     0  1  2  3      proc 0
+        0  1  2  3  4  0  1  2  3  4   proc  1
 
-        0  1           0  1            _globalNonOverlappingCellIDs:0
-              2  3  4        2  3  4   _globalNonOverlappingCellIDs:1
+        _globalOverlappingRowIDs
 
-        0  1           5  6            _globalNonOverlappingRowIDs:0
-              2  3  4        7  8  9   _globalNonOverlappingRowIDs:1
+        0  1  2  3     5  6  7  8      proc 0
+        0  1  2  3  4  5  6  7  8  9   proc  1
 
-        0  1  2  3     0  1  2  3      _localOverlappingCellIDs:0
-        0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:1
+        _globalNonOverlappingCellIDs
 
-        0  1  2  3     4  5  6  7      _localOverlappingRowIDs:0
-        0  1  2  3  4  5  6  7  8  9   _localOverlappingRowIDs:1
+        0  1           0  1            proc 0
+              2  3  4        2  3  4   proc  1
 
-        0  1           0  1            _localNonOverlappingCellIDs:0
-              2  3  4        2  3  4   _localNonOverlappingCellIDs:1
+        _globalNonOverlappingRowIDs
 
-        0  1           4  5            _localNonOverlappingRowIDs:0
-              2  3  4        7  8  9   _localNonOverlappingRowIDs:1
+        0  1           5  6            proc 0
+              2  3  4        7  8  9   proc  1
+
+        _localOverlappingCellIDs
+
+        0  1  2  3     0  1  2  3      proc 0
+        0  1  2  3  4  0  1  2  3  4   proc  1
+
+        _localOverlappingRowIDs
+
+        0  1  2  3     4  5  6  7      proc 0
+        0  1  2  3  4  5  6  7  8  9   proc  1
+
+        _localNonOverlappingCellIDs
+
+        0  1           0  1            proc 0
+              2  3  4        2  3  4   proc  1
+
+        _localNonOverlappingRowIDs
+
+        0  1           4  5            proc 0
+              2  3  4        7  8  9   proc  1
         ```
 
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 5, 6, 7, 8])) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])) # doctest: +PROCESSOR_1_OF_2
+        >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 5,
+        ...                              6, 7, 8, 9])) # doctest: +PROCESSOR_1_OF_2
         True
 
         >>> print(numerix.allequal(GNOR, [0, 1, 5, 6])) # doctest: +PROCESSOR_0_OF_2
@@ -1304,7 +1388,9 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         >>> print(numerix.allequal(LNOR, [2, 3, 4, 7, 8, 9])) # doctest: +PROCESSOR_1_OF_2
         True
 
-        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5, communicator=serialComm), numberOfVariables=3, numberOfEquations=2)
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5, communicator=serialComm),
+        ...                              numberOfVariables=3,
+        ...                              numberOfEquations=2)
         >>> GOC = matrix._m2m._globalOverlappingColIDs
         >>> GNOC = matrix._m2m._globalNonOverlappingColIDs
         >>> LNOC = matrix._m2m._localNonOverlappingColIDs
@@ -1318,21 +1404,37 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
 
-        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:0
+        _globalOverlappingCellIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalOverlappingColIDs:0
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
 
-        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _globalNonOverlappingCellIDs:0
+        _globalOverlappingColIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _globalNonOverlappingColIDs:0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
 
-        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:0
+        _globalNonOverlappingCellIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localOverlappingColIDs:0
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
 
-        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
+        _globalNonOverlappingColIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   _localNonOverlappingColIDs:0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
+
+        _localOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
+
+        _localNonOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
+
+        _localNonOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
         ```
 
         >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]))
@@ -1349,21 +1451,37 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  0  1  2  3  4   cell IDs
         0  1  2  3  4  5  6  7  8  9   row IDs
 
-        0  1  2  3  4  0  1  2  3  4   _globalOverlappingCellIDs:0
+        _globalOverlappingCellIDs
 
-        0  1  2  3  4  5  6  7  8  9   _globalOverlappingRowIDs:0
+        0  1  2  3  4  0  1  2  3  4   proc 0
 
-        0  1  2  3  4  0  1  2  3  4   _globalNonOverlappingCellIDs:0
+        _globalOverlappingRowIDs
 
-        0  1  2  3  4  5  6  7  8  9   _globalNonOverlappingRowIDs:0
+        0  1  2  3  4  5  6  7  8  9   proc 0
 
-        0  1  2  3  4  0  1  2  3  4   _localOverlappingCellIDs:0
+        _globalNonOverlappingCellIDs
 
-        0  1  2  3  4  5  6  7  8  9   _localOverlappingRowIDs:0
+        0  1  2  3  4  0  1  2  3  4   proc 0
 
-        0  1  2  3  4  0  1  2  3  4   _localNonOverlappingCellIDs:0
+        _globalNonOverlappingRowIDs
 
-        0  1  2  3  4  5  6  7  8  9   _localNonOverlappingRowIDs:0
+        0  1  2  3  4  5  6  7  8  9   proc 0
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4   proc 0
+
+        _localOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9   proc 0
+
+        _localNonOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4   proc 0
+
+        _localNonOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9   proc 0
         ```
 
         >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
@@ -1373,7 +1491,9 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         >>> print(numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
         True
 
-        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=7), numberOfVariables=3, numberOfEquations=2)
+        >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=7),
+        ...                              numberOfVariables=3,
+        ...                              numberOfEquations=2)
         >>> GOC = matrix._m2m._globalOverlappingColIDs
         >>> GNOC = matrix._m2m._globalNonOverlappingColIDs
         >>> LNOC = matrix._m2m._localNonOverlappingColIDs
@@ -1387,31 +1507,47 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
 
-        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _globalOverlappingCellIDs:0
+        _globalOverlappingCellIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _globalOverlappingColIDs:0
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
 
-        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _globalNonOverlappingCellIDs:0
+        _globalOverlappingColIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _globalNonOverlappingColIDs:0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   proc 0
 
-        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localOverlappingCellIDs:0
+        _globalNonOverlappingCellIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _localOverlappingColIDs:0
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
 
-        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localNonOverlappingCellIDs:0
+        _globalNonOverlappingColIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   _localNonOverlappingColIDs:0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   proc 0
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
+
+        _localOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   proc 0
+
+        _localNonOverlappingCellIDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
+
+        _localNonOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   proc 0
         ```
 
-        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-        ...                              11, 12, 13, 14, 15, 16, 17, 18, 19, 20])) # doctest: +SERIAL
+        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+        ...                              12, 13, 14, 15, 16, 17, 18, 19, 20])) # doctest: +SERIAL
         True
-        >>> print(numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-        ...                               11, 12, 13, 14, 15, 16, 17, 18, 19, 20])) # doctest: +SERIAL
+        >>> print(numerix.allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+        ...                               12, 13, 14, 15, 16, 17, 18, 19, 20])) # doctest: +SERIAL
         True
-        >>> print(numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-        ...                               11, 12, 13, 14, 15, 16, 17, 18, 19, 20])) # doctest: +SERIAL
+        >>> print(numerix.allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+        ...                               12, 13, 14, 15, 16, 17, 18, 19, 20])) # doctest: +SERIAL
         True
 
 
@@ -1421,28 +1557,47 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
 
-        0  1  2  3  4  5  6  0  1  2  3  4  5  6   _globalOverlappingCellIDs:0
+        _globalOverlappingCellIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13   _globalOverlappingRowIDs:0
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
 
-        0  1  2  3  4  5  6  0  1  2  3  4  5  6   _globalNonOverlappingCellIDs:0
+        _globalOverlappingRowIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13   _globalNonOverlappingRowIDs:0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   proc 0
 
-        0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localOverlappingCellIDs:0
+        _globalNonOverlappingCellIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13   _localOverlappingRowIDs:0
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
 
-        0  1  2  3  4  5  6  0  1  2  3  4  5  6   _localNonOverlappingCellIDs:0
+        _globalNonOverlappingRowIDs
 
-        0  1  2  3  4  5  6  7  8  9 10 11 12 13   _localNonOverlappingRowIDs:0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   proc 0
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
+
+        _localOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   proc 0
+
+        _localNonOverlappingCellIDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
+
+        _localNonOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   proc 0
         ```
 
-        >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])) # doctest: +SERIAL
+        >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                              8, 9, 10, 11, 12, 13])) # doctest: +SERIAL
         True
-        >>> print(numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])) # doctest: +SERIAL
+        >>> print(numerix.allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                               8, 9, 10, 11, 12, 13])) # doctest: +SERIAL
         True
-        >>> print(numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])) # doctest: +SERIAL
+        >>> print(numerix.allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                               8, 9, 10, 11, 12, 13])) # doctest: +SERIAL
         True
 
 
@@ -1452,44 +1607,66 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
 
-        0  1  2  3  4        0  1  2  3  4        0  1  2  3  4         _globalOverlappingCellIDs:0
-           1  2  3  4  5  6     1  2  3  4  5  6     1  2  3  4  5  6   _globalOverlappingCellIDs:1
+        _globalOverlappingCellIDs
 
-        0  1  2  3  4        7  8  9 10 11       14 15 16 17 18         _globalOverlappingColIDs:0
-           1  2  3  4  5  6     8  9 10 11 12 13    15 16 17 18 19 20   _globalOverlappingColIDs:1
+        0  1  2  3  4        0  1  2  3  4        0  1  2  3  4         proc 0
+           1  2  3  4  5  6     1  2  3  4  5  6     1  2  3  4  5  6   proc  1
 
-        0  1  2              0  1  2              0  1  2               _globalNonOverlappingCellIDs:0
-                 3  4  5  6           3  4  5  6           3  4  5  6   _globalNonOverlappingCellIDs:1
+        _globalOverlappingColIDs
 
-        0  1  2              7  8  9             14 15 16               _globalNonOverlappingColIDs:0
-                 3  4  5  6          10 11 12 13          17 18 19 20   _globalNonOverlappingColIDs:1
+        0  1  2  3  4        7  8  9 10 11       14 15 16 17 18         proc 0
+           1  2  3  4  5  6     8  9 10 11 12 13    15 16 17 18 19 20   proc  1
 
-        0  1  2  3  4        0  1  2  3  4        0  1  2  3  4         _localOverlappingCellIDs:0
-           0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5   _localOverlappingCellIDs:1
+        _globalNonOverlappingCellIDs
 
-        0  1  2  3  4        5  6  7  8  9       10 11 12 13 14         _localOverlappingColIDs:0
-           0  1  2  3  4  5     6  7  8  9 10 11    12 13 14 15 16 17   _localOverlappingColIDs:1
+        0  1  2              0  1  2              0  1  2               proc 0
+                 3  4  5  6           3  4  5  6           3  4  5  6   proc  1
 
-        0  1  2              0  1  2              0  1  2               _localNonOverlappingCellIDs:0
-                 2  3  4  5           2  3  4  5           2  3  4  5   _localNonOverlappingCellIDs:1
+        _globalNonOverlappingColIDs
 
-        0  1  2              5  6  7             10 11 12               _localNonOverlappingColIDs:0
-                 2  3  4  5           8  9 10 11          14 15 16 17   _localNonOverlappingColIDs:1
+        0  1  2              7  8  9             14 15 16               proc 0
+                 3  4  5  6          10 11 12 13          17 18 19 20   proc  1
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4        0  1  2  3  4        0  1  2  3  4         proc 0
+           0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5   proc  1
+
+        _localOverlappingColIDs
+
+        0  1  2  3  4        5  6  7  8  9       10 11 12 13 14         proc 0
+           0  1  2  3  4  5     6  7  8  9 10 11    12 13 14 15 16 17   proc  1
+
+        _localNonOverlappingCellIDs
+
+        0  1  2              0  1  2              0  1  2               proc 0
+                 2  3  4  5           2  3  4  5           2  3  4  5   proc  1
+
+        _localNonOverlappingColIDs
+
+        0  1  2              5  6  7             10 11 12               proc 0
+                 2  3  4  5           8  9 10 11          14 15 16 17   proc  1
         ```
 
-        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18])) # doctest: +PROCESSOR_0_OF_2
+        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 7, 8, 9, 10,
+        ...                              11, 14, 15, 16, 17, 18])) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print(numerix.allequal(GOC, [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20])) # doctest: +PROCESSOR_1_OF_2
-        True
-
-        >>> print(numerix.allequal(GNOC, [0, 1, 2, 7, 8, 9, 14, 15, 16])) # doctest: +PROCESSOR_0_OF_2
-        True
-        >>> print(numerix.allequal(GNOC, [3, 4, 5, 6, 10, 11, 12, 13, 17, 18, 19, 20])) # doctest: +PROCESSOR_1_OF_2
+        >>> print(numerix.allequal(GOC, [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12,
+        ...                              13, 15, 16, 17, 18, 19, 20])) # doctest: +PROCESSOR_1_OF_2
         True
 
-        >>> print(numerix.allequal(LNOC, [0, 1, 2, 5, 6, 7, 10, 11, 12])) # doctest: +PROCESSOR_0_OF_2
+        >>> print(numerix.allequal(GNOC, [0, 1, 2, 7, 8,
+        ...                               9, 14, 15, 16])) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print(numerix.allequal(LNOC, [2, 3, 4, 5, 8, 9, 10, 11, 14, 15, 16, 17])) # doctest: +PROCESSOR_1_OF_2
+        >>> print(numerix.allequal(GNOC, [3, 4, 5, 6, 10, 11, 12,
+        ...                               13, 17, 18, 19, 20])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+        >>> print(numerix.allequal(LNOC, [0, 1, 2, 5, 6,
+        ...                               7, 10, 11, 12])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(numerix.allequal(LNOC, [2, 3, 4, 5, 8, 9, 10,
+        ...                               11, 14, 15, 16, 17])) # doctest: +PROCESSOR_1_OF_2
         True
 
         7 cells, 2 equations, 2 processors
@@ -1498,34 +1675,52 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
 
-        0  1  2  3  4        0  1  2  3  4         _globalOverlappingCellIDs:0
-           1  2  3  4  5  6     1  2  3  4  5  6   _globalOverlappingCellIDs:1
+        _globalOverlappingCellIDs
 
-        0  1  2  3  4        7  8  9 10 11         _globalOverlappingRowIDs:0
-           1  2  3  4  5  6     8  9 10 11 12 13   _globalOverlappingRowIDs:1
+        0  1  2  3  4        0  1  2  3  4         proc 0
+           1  2  3  4  5  6     1  2  3  4  5  6   proc  1
 
-        0  1  2              0  1  2               _globalNonOverlappingCellIDs:0
-                 3  4  5  6           3  4  5  6   _globalNonOverlappingCellIDs:1
+        _globalOverlappingRowIDs
 
-        0  1  2              7  8  9               _globalNonOverlappingRowIDs:0
-                 3  4  5  6          10 11 12 13   _globalNonOverlappingRowIDs:1
+        0  1  2  3  4        7  8  9 10 11         proc 0
+           1  2  3  4  5  6     8  9 10 11 12 13   proc  1
 
-        0  1  2  3  4        0  1  2  3  4         _localOverlappingCellIDs:0
-           0  1  2  3  4  5     0  1  2  3  4  5   _localOverlappingCellIDs:1
+        _globalNonOverlappingCellIDs
 
-        0  1  2  3  4        5  6  7  8  9         _localOverlappingRowIDs:0
-           0  1  2  3  4  5     6  7  8  9 10 11   _localOverlappingRowIDs:1
+        0  1  2              0  1  2               proc 0
+                 3  4  5  6           3  4  5  6   proc  1
 
-        0  1  2              0  1  2               _localNonOverlappingCellIDs:0
-                 2  3  4  5           2  3  4  5   _localNonOverlappingCellIDs:1
+        _globalNonOverlappingRowIDs
 
-        0  1  2              5  6  7               _localNonOverlappingRowIDs:0
-                 2  3  4  5           8  9 10 11   _localNonOverlappingRowIDs:1
+        0  1  2              7  8  9               proc 0
+                 3  4  5  6          10 11 12 13   proc  1
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4        0  1  2  3  4         proc 0
+           0  1  2  3  4  5     0  1  2  3  4  5   proc  1
+
+        _localOverlappingRowIDs
+
+        0  1  2  3  4        5  6  7  8  9         proc 0
+           0  1  2  3  4  5     6  7  8  9 10 11   proc  1
+
+        _localNonOverlappingCellIDs
+
+        0  1  2              0  1  2               proc 0
+                 2  3  4  5           2  3  4  5   proc  1
+
+        _localNonOverlappingRowIDs
+
+        0  1  2              5  6  7               proc 0
+                 2  3  4  5           8  9 10 11   proc  1
         ```
 
-        >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 7, 8, 9, 10, 11])) # doctest: +PROCESSOR_0_OF_2
+        >>> print(numerix.allequal(GOR, [0, 1, 2, 3, 4, 7,
+        ...                              8, 9, 10, 11])) # doctest: +PROCESSOR_0_OF_2
         True
-        >>> print(numerix.allequal(GOR, [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13])) # doctest: +PROCESSOR_1_OF_2
+        >>> print(numerix.allequal(GOR, [1, 2, 3, 4, 5, 6, 8, 9,
+        ...                              10, 11, 12, 13])) # doctest: +PROCESSOR_1_OF_2
         True
 
         >>> print(numerix.allequal(GNOR, [0, 1, 2, 7, 8, 9])) # doctest: +PROCESSOR_0_OF_2
@@ -1545,58 +1740,79 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
 
-        0  1  2  3           0  1  2  3           0  1  2  3            _globalOverlappingCellIDs:0
-        0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5      _globalOverlappingCellIDs:1
-              2  3  4  5  6        2  3  4  5  6        2  3  4  5  6   _globalOverlappingCellIDs:2
+        _globalOverlappingCellIDs
 
-        0  1  2  3           7  8  9 10          14 15 16 17            _globalOverlappingColIDs:0
-        0  1  2  3  4  5     7  8  9 10 11 12    14 15 16 17 18 19      _globalOverlappingColIDs:1
-              2  3  4  5  6        9 10 11 12 13       16 17 18 19 20   _globalOverlappingColIDs:2
+        0  1  2  3           0  1  2  3           0  1  2  3            proc 0
+        0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5      proc  1
+              2  3  4  5  6        2  3  4  5  6        2  3  4  5  6   proc   2
 
-        0  1                 0  1                 0  1                  _globalNonOverlappingCellIDs:0
-              2  3                 2  3                 2  3            _globalNonOverlappingCellIDs:1
-                    4  5  6              4  5  6              4  5  6   _globalNonOverlappingCellIDs:2
+        _globalOverlappingColIDs
 
-        0  1                 7  8                14 15                  _globalNonOverlappingColIDs:0
-              2  3                 9 10                16 17            _globalNonOverlappingColIDs:1
-                    4  5  6             11 12 13             18 19 20   _globalNonOverlappingColIDs:2
+        0  1  2  3           7  8  9 10          14 15 16 17            proc 0
+        0  1  2  3  4  5     7  8  9 10 11 12    14 15 16 17 18 19      proc  1
+              2  3  4  5  6        9 10 11 12 13       16 17 18 19 20   proc   2
 
-        0  1  2  3           0  1  2  3           0  1  2  3            _localOverlappingCellIDs:0
-        0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5      _localOverlappingCellIDs:1
-              0  1  2  3  4        0  1  2  3  4        0  1  2  3  4   _localOverlappingCellIDs:2
+        _globalNonOverlappingCellIDs
 
-        0  1  2  3           4  5  6  7           8  9 10 11            _localOverlappingColIDs:0
-        0  1  2  3  4  5     6  7  8  9 10 11    12 13 14 15 16 17      _localOverlappingColIDs:1
-              0  1  2  3  4        5  6  7  8  9       10 11 12 13 14   _localOverlappingColIDs:2
+        0  1                 0  1                 0  1                  proc 0
+              2  3                 2  3                 2  3            proc  1
+                    4  5  6              4  5  6              4  5  6   proc   2
 
-        0  1                 0  1                 0  1                  _localNonOverlappingCellIDs:0
-              2  3                 2  3                 2  3            _localNonOverlappingCellIDs:1
-                    2  3  4              2  3  4              2  3  4   _localNonOverlappingCellIDs:2
+        _globalNonOverlappingColIDs
 
-        0  1                 4  5                 8  9                  _localNonOverlappingColIDs:0
-              2  3                 8  9                14 15            _localNonOverlappingColIDs:1
-                    2  3  4              7  8  9             12 13 14   _localNonOverlappingColIDs:2
+        0  1                 7  8                14 15                  proc 0
+              2  3                 9 10                16 17            proc  1
+                    4  5  6             11 12 13             18 19 20   proc   2
+
+        _localOverlappingCellIDs
+
+        0  1  2  3           0  1  2  3           0  1  2  3            proc 0
+        0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5      proc  1
+              0  1  2  3  4        0  1  2  3  4        0  1  2  3  4   proc   2
+
+        _localOverlappingColIDs
+
+        0  1  2  3           4  5  6  7           8  9 10 11            proc 0
+        0  1  2  3  4  5     6  7  8  9 10 11    12 13 14 15 16 17      proc  1
+              0  1  2  3  4        5  6  7  8  9       10 11 12 13 14   proc   2
+
+        _localNonOverlappingCellIDs
+
+        0  1                 0  1                 0  1                  proc 0
+              2  3                 2  3                 2  3            proc  1
+                    2  3  4              2  3  4              2  3  4   proc   2
+
+        _localNonOverlappingColIDs
+
+        0  1                 4  5                 8  9                  proc 0
+              2  3                 8  9                14 15            proc  1
+                    2  3  4              7  8  9             12 13 14   proc   2
         ```
 
-        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 7, 8, 9, 10, 14, 15, 16, 17])) # doctest: +PROCESSOR_0_OF_3
+        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 7, 8, 9,
+        ...                              10, 14, 15, 16, 17])) # doctest: +PROCESSOR_0_OF_3
         True
-        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19])) # doctest: +PROCESSOR_1_OF_3
+        >>> print(numerix.allequal(GOC, [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11,
+        ...                              12, 14, 15, 16, 17, 18, 19])) # doctest: +PROCESSOR_1_OF_3
         True
-        >>> print(numerix.allequal(GOC, [2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20])) # doctest: +PROCESSOR_2_OF_3
+        >>> print(numerix.allequal(GOC, [2, 3, 4, 5, 6, 9, 10, 11, 12,
+        ...                              13, 16, 17, 18, 19, 20])) # doctest: +PROCESSOR_2_OF_3
         True
 
         >>> print(numerix.allequal(GNOC, [0, 1, 7, 8, 14, 15])) # doctest: +PROCESSOR_0_OF_3
         True
         >>> print(numerix.allequal(GNOC, [2, 3, 9, 10, 16, 17])) # doctest: +PROCESSOR_1_OF_3
         True
-        >>> print(numerix.allequal(GNOC, [4, 5, 6, 11, 12, 13, 18, 19, 20])) # doctest: +PROCESSOR_2_OF_3
+        >>> print(numerix.allequal(GNOC, [4, 5, 6, 11, 12, 13,
+        ...                               18, 19, 20])) # doctest: +PROCESSOR_2_OF_3
         True
 
         >>> print(numerix.allequal(LNOC, [0, 1, 4, 5, 8, 9])) # doctest: +PROCESSOR_0_OF_3
         True
         >>> print(numerix.allequal(LNOC, [2, 3, 8, 9, 14, 15])) # doctest: +PROCESSOR_1_OF_3
         True
-        >>> print(numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9, 12, 13, 14])) # doctest: +PROCESSOR_2_OF_3
+        >>> print(numerix.allequal(LNOC, [2, 3, 4, 7, 8, 9,
+        ...                               12, 13, 14])) # doctest: +PROCESSOR_2_OF_3
         True
 
 
@@ -1606,37 +1822,53 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
 
-        0  1  2  3           0  1  2  3            _globalOverlappingCellIDs:0
-        0  1  2  3  4  5     0  1  2  3  4  5      _globalOverlappingCellIDs:1
-              2  3  4  5  6        2  3  4  5  6   _globalOverlappingCellIDs:2
+        _globalOverlappingCellIDs
 
-        0  1  2  3           7  8  9 10            _globalOverlappingRowIDs:0
-        0  1  2  3  4  5     7  8  9 10 11 12      _globalOverlappingRowIDs:1
-              2  3  4  5  6        9 10 11 12 13   _globalOverlappingRowIDs:2
+        0  1  2  3           0  1  2  3            proc 0
+        0  1  2  3  4  5     0  1  2  3  4  5      proc  1
+              2  3  4  5  6        2  3  4  5  6   proc   2
 
-        0  1                 0  1                  _globalNonOverlappingCellIDs:0
-              2  3                 2  3            _globalNonOverlappingCellIDs:1
-                    4  5  6              4  5  6   _globalNonOverlappingCellIDs:2
+        _globalOverlappingRowIDs
 
-        0  1                 7  8                  _globalNonOverlappingRowIDs:0
-              2  3                 9 10            _globalNonOverlappingRowIDs:1
-                    4  5  6             11 12 13   _globalNonOverlappingRowIDs:2
+        0  1  2  3           7  8  9 10            proc 0
+        0  1  2  3  4  5     7  8  9 10 11 12      proc  1
+              2  3  4  5  6        9 10 11 12 13   proc   2
 
-        0  1  2  3           0  1  2  3            _localOverlappingCellIDs:0
-        0  1  2  3  4  5     0  1  2  3  4  5      _localOverlappingCellIDs:1
-              0  1  2  3  4        0  1  2  3  4   _localOverlappingCellIDs:2
+        _globalNonOverlappingCellIDs
 
-        0  1  2  3           4  5  6  7            _localOverlappingRowIDs:0
-        0  1  2  3  4  5     6  7  8  9 10 11      _localOverlappingRowIDs:1
-              0  1  2  3  4        5  6  7  8  9   _localOverlappingRowIDs:2
+        0  1                 0  1                  proc 0
+              2  3                 2  3            proc  1
+                    4  5  6              4  5  6   proc   2
 
-        0  1                 0  1                  _localNonOverlappingCellIDs:0
-              2  3                 2  3            _localNonOverlappingCellIDs:1
-                    2  3  4              2  3  4   _localNonOverlappingCellIDs:2
+        _globalNonOverlappingRowIDs
 
-        0  1                 4  5                  _localNonOverlappingRowIDs:0
-              2  3                 8  9            _localNonOverlappingRowIDs:1
-                    2  3  4              7  8  9   _localNonOverlappingRowIDs:2
+        0  1                 7  8                  proc 0
+              2  3                 9 10            proc  1
+                    4  5  6             11 12 13   proc   2
+
+        _localOverlappingCellIDs
+
+        0  1  2  3           0  1  2  3            proc 0
+        0  1  2  3  4  5     0  1  2  3  4  5      proc  1
+              0  1  2  3  4        0  1  2  3  4   proc   2
+
+        _localOverlappingRowIDs
+
+        0  1  2  3           4  5  6  7            proc 0
+        0  1  2  3  4  5     6  7  8  9 10 11      proc  1
+              0  1  2  3  4        5  6  7  8  9   proc   2
+
+        _localNonOverlappingCellIDs
+
+        0  1                 0  1                  proc 0
+              2  3                 2  3            proc  1
+                    2  3  4              2  3  4   proc   2
+
+        _localNonOverlappingRowIDs
+
+        0  1                 4  5                  proc 0
+              2  3                 8  9            proc  1
+                    2  3  4              7  8  9   proc   2
         ```
         """
         pass
@@ -1706,5 +1938,3 @@ def _test():
 
 if __name__ == "__main__":
     _test()
-
-
