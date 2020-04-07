@@ -296,3 +296,733 @@ class _RowColMesh2Matrix(_RowMesh2Matrix):
         id2 = self.orderer(id2)
 
         return id1, id2, mask
+
+    def _test(self):
+        """Tests
+
+        >>> from fipy import Grid1D
+        >>> from fipy.tools.numerix import allequal
+
+        >>> m2m = _RowColMesh2Matrix(mesh=Grid1D(nx=5),
+        ...                          numberOfVariables=3,
+        ...                          numberOfEquations=2)
+        >>> GOC = m2m.globalOverlappingColIDs
+        >>> GNOC = m2m.globalNonOverlappingColIDs
+        >>> LNOC = m2m.localNonOverlappingColIDs
+        >>> GOR = m2m.globalOverlappingRowIDs
+        >>> GNOR = m2m.globalNonOverlappingRowIDs
+        >>> LNOR = m2m.localNonOverlappingRowIDs
+
+        5 cells, 3 variables, 1 processor
+
+        ```
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
+
+        _globalOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
+
+        globalOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
+
+        _globalNonOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
+
+        globalNonOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
+
+        localOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
+
+        _localNonOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
+
+        localNonOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
+        ```
+
+        >>> print(allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                      8, 9, 10, 11, 12, 13, 14]))  # doctest: +SERIAL
+        True
+        >>> print(allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                       8, 9, 10, 11, 12, 13, 14])) # doctest: +SERIAL
+        True
+        >>> print(allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                       8, 9, 10, 11, 12, 13, 14])) # doctest: +SERIAL
+        True
+
+
+        5 cells, 2 equations, 1 processor
+
+        ```
+        0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9   row IDs
+
+        _globalOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4   proc 0
+
+        globalOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9   proc 0
+
+        _globalNonOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4   proc 0
+
+        globalNonOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9   proc 0
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4   proc 0
+
+        _localOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9   proc 0
+
+        _localNonOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4   proc 0
+
+        localNonOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9   proc 0
+        ```
+
+        >>> print(allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])) # doctest: +SERIAL
+        True
+        >>> print(allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])) # doctest: +SERIAL
+        True
+        >>> print(allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])) # doctest: +SERIAL
+        True
+
+
+        5 cells, 3 variables, 2 processors
+
+        ```
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
+
+        _globalOverlappingCellIDs
+
+        0  1  2  3     0  1  2  3     0  1  2  3      proc 0
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc  1
+
+        globalOverlappingColIDs
+
+        0  1  2  3     5  6  7  8    10 11 12 13      proc 0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc  1
+
+        _globalNonOverlappingCellIDs
+
+        0  1           0  1           0  1            proc 0
+              2  3  4        2  3  4        2  3  4   proc  1
+
+        globalNonOverlappingColIDs
+
+        0  1           5  6          10 11            proc 0
+              2  3  4        7  8  9       12 13 14   proc  1
+
+        _localOverlappingCellIDs
+
+        0  1  2  3     0  1  2  3     0  1  2  3      proc 0
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc  1
+
+        localOverlappingColIDs
+
+        0  1  2  3     4  5  6  7     8  9 10 11      proc 0
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc  1
+
+        _localNonOverlappingCellIDs
+
+        0  1           0  1           0  1            proc 0
+              2  3  4        2  3  4        2  3  4   proc  1
+
+        localNonOverlappingColIDs
+
+        0  1           4  5           8  9            proc 0
+              2  3  4        7  8  9       12 13 14   proc  1
+        ```
+
+
+        >>> print(allequal(GOC, [0, 1, 2, 3, 5, 6, 7,
+        ...                      8, 10, 11, 12, 13])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                      8, 9, 10, 11, 12, 13, 14])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+        >>> print(allequal(GNOC, [0, 1, 5, 6, 10, 11])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(allequal(GNOC, [2, 3, 4, 7, 8, 9,
+        ...                       12, 13, 14])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+        >>> print(allequal(LNOC, [0, 1, 4, 5, 8, 9])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(allequal(LNOC, [2, 3, 4, 7, 8, 9,
+        ...                       12, 13, 14])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+
+        5 cells, 2 equations, 2 processors
+
+        ```
+        0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9   row IDs
+
+        _globalOverlappingCellIDs
+
+        0  1  2  3     0  1  2  3      proc 0
+        0  1  2  3  4  0  1  2  3  4   proc  1
+
+        globalOverlappingRowIDs
+
+        0  1  2  3     5  6  7  8      proc 0
+        0  1  2  3  4  5  6  7  8  9   proc  1
+
+        _globalNonOverlappingCellIDs
+
+        0  1           0  1            proc 0
+              2  3  4        2  3  4   proc  1
+
+        globalNonOverlappingRowIDs
+
+        0  1           5  6            proc 0
+              2  3  4        7  8  9   proc  1
+
+        _localOverlappingCellIDs
+
+        0  1  2  3     0  1  2  3      proc 0
+        0  1  2  3  4  0  1  2  3  4   proc  1
+
+        _localOverlappingRowIDs
+
+        0  1  2  3     4  5  6  7      proc 0
+        0  1  2  3  4  5  6  7  8  9   proc  1
+
+        _localNonOverlappingCellIDs
+
+        0  1           0  1            proc 0
+              2  3  4        2  3  4   proc  1
+
+        localNonOverlappingRowIDs
+
+        0  1           4  5            proc 0
+              2  3  4        7  8  9   proc  1
+        ```
+
+
+        >>> print(allequal(GOR, [0, 1, 2, 3, 5, 6, 7, 8])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(allequal(GOR, [0, 1, 2, 3, 4, 5,
+        ...                      6, 7, 8, 9])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+        >>> print(allequal(GNOR, [0, 1, 5, 6])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(allequal(GNOR, [2, 3, 4, 7, 8, 9])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+        >>> print(allequal(LNOR, [0, 1, 4, 5])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(allequal(LNOR, [2, 3, 4, 7, 8, 9])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+        >>> m2m = _RowColMesh2Matrix(mesh=Grid1D(nx=5, communicator=serialComm),
+        ...                          numberOfVariables=3,
+        ...                          numberOfEquations=2)
+        >>> GOC = m2m.globalOverlappingColIDs
+        >>> GNOC = m2m.globalNonOverlappingColIDs
+        >>> LNOC = m2m.localNonOverlappingColIDs
+        >>> GOR = m2m.globalOverlappingRowIDs
+        >>> GNOR = m2m.globalNonOverlappingRowIDs
+        >>> LNOR = m2m.localNonOverlappingRowIDs
+
+        5 cells, 3 variables, serial
+
+        ```
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   column IDs
+
+        _globalOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
+
+        globalOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
+
+        _globalNonOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
+
+        globalNonOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
+
+        localOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
+
+        _localNonOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
+
+        localNonOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
+        ```
+
+        >>> print(allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]))
+        True
+        >>> print(allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]))
+        True
+        >>> print(allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]))
+        True
+
+
+        5 cells, 2 equations, serial
+
+        ```
+        0  1  2  3  4  0  1  2  3  4   cell IDs
+        0  1  2  3  4  5  6  7  8  9   row IDs
+
+        _globalOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4   proc 0
+
+        globalOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9   proc 0
+
+        _globalNonOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4   proc 0
+
+        globalNonOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9   proc 0
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4   proc 0
+
+        _localOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9   proc 0
+
+        _localNonOverlappingCellIDs
+
+        0  1  2  3  4  0  1  2  3  4   proc 0
+
+        localNonOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9   proc 0
+        ```
+
+        >>> print(allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
+        True
+        >>> print(allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
+        True
+        >>> print(allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]))
+        True
+
+        >>> m2m = _RowColMesh2Matrix(mesh=Grid1D(nx=7),
+        ...                          numberOfVariables=3,
+        ...                          numberOfEquations=2)
+        >>> GOC = m2m.globalOverlappingColIDs
+        >>> GNOC = m2m.globalNonOverlappingColIDs
+        >>> LNOC = m2m.localNonOverlappingColIDs
+        >>> GOR = m2m.globalOverlappingRowIDs
+        >>> GNOR = m2m.globalNonOverlappingRowIDs
+        >>> LNOR = m2m.localNonOverlappingRowIDs
+
+        7 cells, 3 variables, 1 processor
+
+        ```
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
+
+        _globalOverlappingCellIDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
+
+        globalOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   proc 0
+
+        _globalNonOverlappingCellIDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
+
+        globalNonOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   proc 0
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
+
+        localOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   proc 0
+
+        _localNonOverlappingCellIDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
+
+        localNonOverlappingColIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   proc 0
+        ```
+
+        >>> print(allequal(GOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+        ...                      12, 13, 14, 15, 16, 17, 18, 19, 20])) # doctest: +SERIAL
+        True
+        >>> print(allequal(GNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+        ...                       12, 13, 14, 15, 16, 17, 18, 19, 20])) # doctest: +SERIAL
+        True
+        >>> print(allequal(LNOC, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+        ...                       12, 13, 14, 15, 16, 17, 18, 19, 20])) # doctest: +SERIAL
+        True
+
+
+        7 cells, 2 equations, 1 processor
+
+        ```
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
+
+        _globalOverlappingCellIDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
+
+        globalOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   proc 0
+
+        _globalNonOverlappingCellIDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
+
+        globalNonOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   proc 0
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
+
+        _localOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   proc 0
+
+        _localNonOverlappingCellIDs
+
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
+
+        localNonOverlappingRowIDs
+
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   proc 0
+        ```
+
+        >>> print(allequal(GOR, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                      8, 9, 10, 11, 12, 13])) # doctest: +SERIAL
+        True
+        >>> print(allequal(GNOR, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                       8, 9, 10, 11, 12, 13])) # doctest: +SERIAL
+        True
+        >>> print(allequal(LNOR, [0, 1, 2, 3, 4, 5, 6, 7,
+        ...                       8, 9, 10, 11, 12, 13])) # doctest: +SERIAL
+        True
+
+
+        7 cells, 3 variables, 2 processors
+
+        ```
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
+
+        _globalOverlappingCellIDs
+
+        0  1  2  3  4        0  1  2  3  4        0  1  2  3  4         proc 0
+           1  2  3  4  5  6     1  2  3  4  5  6     1  2  3  4  5  6   proc  1
+
+        globalOverlappingColIDs
+
+        0  1  2  3  4        7  8  9 10 11       14 15 16 17 18         proc 0
+           1  2  3  4  5  6     8  9 10 11 12 13    15 16 17 18 19 20   proc  1
+
+        _globalNonOverlappingCellIDs
+
+        0  1  2              0  1  2              0  1  2               proc 0
+                 3  4  5  6           3  4  5  6           3  4  5  6   proc  1
+
+        globalNonOverlappingColIDs
+
+        0  1  2              7  8  9             14 15 16               proc 0
+                 3  4  5  6          10 11 12 13          17 18 19 20   proc  1
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4        0  1  2  3  4        0  1  2  3  4         proc 0
+           0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5   proc  1
+
+        localOverlappingColIDs
+
+        0  1  2  3  4        5  6  7  8  9       10 11 12 13 14         proc 0
+           0  1  2  3  4  5     6  7  8  9 10 11    12 13 14 15 16 17   proc  1
+
+        _localNonOverlappingCellIDs
+
+        0  1  2              0  1  2              0  1  2               proc 0
+                 2  3  4  5           2  3  4  5           2  3  4  5   proc  1
+
+        localNonOverlappingColIDs
+
+        0  1  2              5  6  7             10 11 12               proc 0
+                 2  3  4  5           8  9 10 11          14 15 16 17   proc  1
+        ```
+
+        >>> print(allequal(GOC, [0, 1, 2, 3, 4, 7, 8, 9, 10,
+        ...                      11, 14, 15, 16, 17, 18])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(allequal(GOC, [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12,
+        ...                      13, 15, 16, 17, 18, 19, 20])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+        >>> print(allequal(GNOC, [0, 1, 2, 7, 8,
+        ...                       9, 14, 15, 16])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(allequal(GNOC, [3, 4, 5, 6, 10, 11, 12,
+        ...                       13, 17, 18, 19, 20])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+        >>> print(allequal(LNOC, [0, 1, 2, 5, 6,
+        ...                       7, 10, 11, 12])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(allequal(LNOC, [2, 3, 4, 5, 8, 9, 10,
+        ...                       11, 14, 15, 16, 17])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+        7 cells, 2 equations, 2 processors
+
+        ```
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
+
+        _globalOverlappingCellIDs
+
+        0  1  2  3  4        0  1  2  3  4         proc 0
+           1  2  3  4  5  6     1  2  3  4  5  6   proc  1
+
+        globalOverlappingRowIDs
+
+        0  1  2  3  4        7  8  9 10 11         proc 0
+           1  2  3  4  5  6     8  9 10 11 12 13   proc  1
+
+        _globalNonOverlappingCellIDs
+
+        0  1  2              0  1  2               proc 0
+                 3  4  5  6           3  4  5  6   proc  1
+
+        globalNonOverlappingRowIDs
+
+        0  1  2              7  8  9               proc 0
+                 3  4  5  6          10 11 12 13   proc  1
+
+        _localOverlappingCellIDs
+
+        0  1  2  3  4        0  1  2  3  4         proc 0
+           0  1  2  3  4  5     0  1  2  3  4  5   proc  1
+
+        _localOverlappingRowIDs
+
+        0  1  2  3  4        5  6  7  8  9         proc 0
+           0  1  2  3  4  5     6  7  8  9 10 11   proc  1
+
+        _localNonOverlappingCellIDs
+
+        0  1  2              0  1  2               proc 0
+                 2  3  4  5           2  3  4  5   proc  1
+
+        localNonOverlappingRowIDs
+
+        0  1  2              5  6  7               proc 0
+                 2  3  4  5           8  9 10 11   proc  1
+        ```
+
+        >>> print(allequal(GOR, [0, 1, 2, 3, 4, 7,
+        ...                      8, 9, 10, 11])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(allequal(GOR, [1, 2, 3, 4, 5, 6, 8, 9,
+        ...                      10, 11, 12, 13])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+        >>> print(allequal(GNOR, [0, 1, 2, 7, 8, 9])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(allequal(GNOR, [3, 4, 5, 6, 10, 11, 12, 13])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+        >>> print(allequal(LNOR, [0, 1, 2, 5, 6, 7])) # doctest: +PROCESSOR_0_OF_2
+        True
+        >>> print(allequal(LNOR, [2, 3, 4, 5, 8, 9, 10, 11])) # doctest: +PROCESSOR_1_OF_2
+        True
+
+
+        7 cells, 3 variables, 3 processors
+
+        ```
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   column IDs
+
+        _globalOverlappingCellIDs
+
+        0  1  2  3           0  1  2  3           0  1  2  3            proc 0
+        0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5      proc  1
+              2  3  4  5  6        2  3  4  5  6        2  3  4  5  6   proc   2
+
+        globalOverlappingColIDs
+
+        0  1  2  3           7  8  9 10          14 15 16 17            proc 0
+        0  1  2  3  4  5     7  8  9 10 11 12    14 15 16 17 18 19      proc  1
+              2  3  4  5  6        9 10 11 12 13       16 17 18 19 20   proc   2
+
+        _globalNonOverlappingCellIDs
+
+        0  1                 0  1                 0  1                  proc 0
+              2  3                 2  3                 2  3            proc  1
+                    4  5  6              4  5  6              4  5  6   proc   2
+
+        globalNonOverlappingColIDs
+
+        0  1                 7  8                14 15                  proc 0
+              2  3                 9 10                16 17            proc  1
+                    4  5  6             11 12 13             18 19 20   proc   2
+
+        _localOverlappingCellIDs
+
+        0  1  2  3           0  1  2  3           0  1  2  3            proc 0
+        0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5      proc  1
+              0  1  2  3  4        0  1  2  3  4        0  1  2  3  4   proc   2
+
+        localOverlappingColIDs
+
+        0  1  2  3           4  5  6  7           8  9 10 11            proc 0
+        0  1  2  3  4  5     6  7  8  9 10 11    12 13 14 15 16 17      proc  1
+              0  1  2  3  4        5  6  7  8  9       10 11 12 13 14   proc   2
+
+        _localNonOverlappingCellIDs
+
+        0  1                 0  1                 0  1                  proc 0
+              2  3                 2  3                 2  3            proc  1
+                    2  3  4              2  3  4              2  3  4   proc   2
+
+        localNonOverlappingColIDs
+
+        0  1                 4  5                 8  9                  proc 0
+              2  3                 8  9                14 15            proc  1
+                    2  3  4              7  8  9             12 13 14   proc   2
+        ```
+
+        >>> print(allequal(GOC, [0, 1, 2, 3, 7, 8, 9,
+        ...                      10, 14, 15, 16, 17])) # doctest: +PROCESSOR_0_OF_3
+        True
+        >>> print(allequal(GOC, [0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11,
+        ...                      12, 14, 15, 16, 17, 18, 19])) # doctest: +PROCESSOR_1_OF_3
+        True
+        >>> print(allequal(GOC, [2, 3, 4, 5, 6, 9, 10, 11, 12,
+        ...                      13, 16, 17, 18, 19, 20])) # doctest: +PROCESSOR_2_OF_3
+        True
+
+        >>> print(allequal(GNOC, [0, 1, 7, 8, 14, 15])) # doctest: +PROCESSOR_0_OF_3
+        True
+        >>> print(allequal(GNOC, [2, 3, 9, 10, 16, 17])) # doctest: +PROCESSOR_1_OF_3
+        True
+        >>> print(allequal(GNOC, [4, 5, 6, 11, 12, 13,
+        ...                       18, 19, 20])) # doctest: +PROCESSOR_2_OF_3
+        True
+
+        >>> print(allequal(LNOC, [0, 1, 4, 5, 8, 9])) # doctest: +PROCESSOR_0_OF_3
+        True
+        >>> print(allequal(LNOC, [2, 3, 8, 9, 14, 15])) # doctest: +PROCESSOR_1_OF_3
+        True
+        >>> print(allequal(LNOC, [2, 3, 4, 7, 8, 9,
+        ...                       12, 13, 14])) # doctest: +PROCESSOR_2_OF_3
+        True
+
+
+        7 cells, 2 equations, 3 processors
+
+        ```
+        0  1  2  3  4  5  6  0  1  2  3  4  5  6   cell IDs
+        0  1  2  3  4  5  6  7  8  9 10 11 12 13   row IDs
+
+        _globalOverlappingCellIDs
+
+        0  1  2  3           0  1  2  3            proc 0
+        0  1  2  3  4  5     0  1  2  3  4  5      proc  1
+              2  3  4  5  6        2  3  4  5  6   proc   2
+
+        globalOverlappingRowIDs
+
+        0  1  2  3           7  8  9 10            proc 0
+        0  1  2  3  4  5     7  8  9 10 11 12      proc  1
+              2  3  4  5  6        9 10 11 12 13   proc   2
+
+        _globalNonOverlappingCellIDs
+
+        0  1                 0  1                  proc 0
+              2  3                 2  3            proc  1
+                    4  5  6              4  5  6   proc   2
+
+        globalNonOverlappingRowIDs
+
+        0  1                 7  8                  proc 0
+              2  3                 9 10            proc  1
+                    4  5  6             11 12 13   proc   2
+
+        _localOverlappingCellIDs
+
+        0  1  2  3           0  1  2  3            proc 0
+        0  1  2  3  4  5     0  1  2  3  4  5      proc  1
+              0  1  2  3  4        0  1  2  3  4   proc   2
+
+        _localOverlappingRowIDs
+
+        0  1  2  3           4  5  6  7            proc 0
+        0  1  2  3  4  5     6  7  8  9 10 11      proc  1
+              0  1  2  3  4        5  6  7  8  9   proc   2
+
+        _localNonOverlappingCellIDs
+
+        0  1                 0  1                  proc 0
+              2  3                 2  3            proc  1
+                    2  3  4              2  3  4   proc   2
+
+        localNonOverlappingRowIDs
+
+        0  1                 4  5                  proc 0
+              2  3                 8  9            proc  1
+                    2  3  4              7  8  9   proc   2
+        ```
+        """
+        pass
