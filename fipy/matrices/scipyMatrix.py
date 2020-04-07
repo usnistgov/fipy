@@ -28,15 +28,14 @@ class _ScipyMatrix(_SparseMatrix):
         """
         self.matrix = matrix
 
-    def getCoupledClass(self):
-        return _CoupledScipyMeshMatrix
+        super(_ScipyMatrix, self).__init__()
 
     def copy(self):
         return _ScipyMatrix(matrix=self.matrix.copy())
 
     def __getitem__(self, index):
         m = self.matrix[index]
-        if isinstance(m, type(0)) or isinstance(m, type(0.)):
+        if isinstance(m, (type(0), type(0.))):
             return m
         else:
             return _ScipyMatrix(matrix=m)
@@ -47,7 +46,7 @@ class _ScipyMatrix(_SparseMatrix):
     def _iadd(self, other, sign=1):
         if hasattr(other, "matrix"):
             self.matrix = self.matrix + (sign * other.matrix)
-        elif type(other) in [float, int]:
+        elif isinstance(other, (float, int)):
             fillVec = numerix.repeat(other, self.matrix.nnz)
 
             self.matrix = self.matrix \
@@ -100,7 +99,7 @@ class _ScipyMatrix(_SparseMatrix):
         return -self + other
 
     def __isub__(self, other):
-            return self._iadd(other, sign=-1)
+        return self._iadd(other, sign=-1)
 
     def __mul__(self, other):
         """
@@ -127,8 +126,11 @@ class _ScipyMatrix(_SparseMatrix):
         or a vector by a sparse matrix
 
         >>> tmp = numerix.array((7.5, 16.28318531,  3.))
-        >>> numerix.allclose(numerix.array((1, 2, 3), 'd') * L1, tmp) ## The multiplication is broken. Numpy is calling __rmul__ for every element instead of with  the whole array.
+        >>> numerix.allclose(numerix.array((1, 2, 3), 'd') * L1, tmp)
         1
+
+        (The multiplication is broken.  Numpy is calling __rmul__ for every
+        element instead of with the whole array.)
         """
         N = self.matrix.shape[0]
 
@@ -185,7 +187,7 @@ class _ScipyMatrix(_SparseMatrix):
                 ---     3.141593      ---    
              2.500000      ---        ---    
         """
-        assert(len(id1) == len(id2) == len(vector))
+        assert len(id1) == len(id2) == len(vector)
 
         # done in such a way to vectorize everything
         tempVec = numerix.array(vector) - self.matrix[id1, id2].flat
@@ -209,7 +211,7 @@ class _ScipyMatrix(_SparseMatrix):
                 ---     3.000000      ---    
                 ---        ---     3.141593  
         """
-        if type(vector) in [int, float]:
+        if isinstance(vector, (int, float)):
             vector = numerix.repeat(vector, self._shape[0])
 
         self.matrix.setdiag(vector)
@@ -245,14 +247,14 @@ class _ScipyMatrix(_SparseMatrix):
                 ---     3.141593   2.960000  
              2.500000      ---     2.200000  
         """
-        assert(len(id1) == len(id2) == len(vector))
+        assert len(id1) == len(id2) == len(vector)
 
         temp = sp.csr_matrix((vector, (id1, id2)), self.matrix.shape)
 
         self.matrix = self.matrix + temp
 
     def addAtDiagonal(self, vector):
-        if type(vector) in [type(1), type(1.)]:
+        if isinstance(vector, (int, float)):
             vector = numerix.repeat(vector, self._shape[0])
 
         ids = numerix.arange(len(vector))
@@ -273,9 +275,6 @@ class _ScipyMatrix(_SparseMatrix):
         from scipy.io import mmio
 
         mmio.mmwrite(filename, self.matrix)
-
-    def __getitem__(self, indices):
-        return self.matrix[indices]
 
     @property
     def CSR(self):
@@ -400,7 +399,8 @@ class _ScipyMatrixFromShape(_ScipyMatrix):
         super(_ScipyMatrixFromShape, self).__init__(matrix=matrix)
 
 class _ScipyBaseMeshMatrix(_ScipyMatrixFromShape):
-    def __init__(self, mesh, rows, cols, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, mesh, rows, cols, bandwidth=0, sizeHint=None,
+                 matrix=None, storeZeros=True):
         """Creates a `_ScipyMatrixFromShape` associated with a `Mesh`.
 
         Parameters
@@ -442,7 +442,8 @@ class _ScipyBaseMeshMatrix(_ScipyMatrixFromShape):
         return var.value
 
 class _ScipyRowMeshMatrix(_ScipyBaseMeshMatrix):
-    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0,
+                 sizeHint=None, matrix=None, storeZeros=True):
         """Creates a `_ScipyBaseMeshMatrix` with rows associated with equations.
 
         Parameters
@@ -474,7 +475,8 @@ class _ScipyRowMeshMatrix(_ScipyBaseMeshMatrix):
                                                   storeZeros=storeZeros)
 
 class _ScipyColMeshMatrix(_ScipyBaseMeshMatrix):
-    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0,
+                 sizeHint=None, matrix=None, storeZeros=True):
         """Creates a `_ScipyBaseMeshMatrix` with columns associated with solution variables.
 
         Parameters
@@ -506,8 +508,9 @@ class _ScipyColMeshMatrix(_ScipyBaseMeshMatrix):
                                                   storeZeros=storeZeros)
 
 class _ScipyMeshMatrix(_ScipyRowMeshMatrix):
-    def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
-        """Creates a `_ScipyBaseMeshMatrix` with rows and columns associated with equations and solution variables.
+    def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1,
+                 bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+        """Creates a `_ScipyBaseMeshMatrix` associated with equations and variables.
 
         Parameters
         ----------
@@ -556,11 +559,9 @@ class _ScipyMeshMatrix(_ScipyRowMeshMatrix):
         raise NotImplementedError
 
     def flush(self):
+        """Deletes the scipy matrix and calls `self.trilinosMatrix.flush()` if necessary.
         """
-        Deletes the copy of the scipy matrix held and calls `self.trilinosMatrix.flush()` if necessary.
-        """
-
-        if (not hasattr(self, 'cache')) or (self.cache is False):
+        if not getattr(self, 'cache', False):
             del self.matrix
 
     def _test(self):
@@ -570,9 +571,12 @@ class _ScipyMeshMatrix(_ScipyRowMeshMatrix):
         >>> m = _ScipyMatrixFromShape(rows=3, cols=3, storeZeros=True)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
         >>> nonZeroIdx = m.matrix.nonzero()
-        >>> print(not hasattr(m.matrix, 'storeZeros') or numerix.allequal(nonZeroIdx, [(0, 1), (1, 0), (2, 2)]))
+        >>> print(not hasattr(m.matrix, 'storeZeros')
+        ...       or numerix.allequal(nonZeroIdx, [(0, 1), (1, 0), (2, 2)]))
         True
-        >>> print(not hasattr(m.matrix, 'storeZeros') or numerix.allequal(m.matrix[nonZeroIdx].toarray(), [1., 2., 0.]))
+        >>> print(not hasattr(m.matrix, 'storeZeros')
+        ...       or numerix.allequal(m.matrix[nonZeroIdx].toarray(),
+        ...                           [1., 2., 0.]))
         True
         >>> m = _ScipyMatrixFromShape(rows=3, cols=3, storeZeros=False)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
@@ -598,7 +602,7 @@ class _ScipyIdentityMatrix(_ScipyMatrixFromShape):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _ScipyMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth = 1)
+        _ScipyMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth=1)
         ids = numerix.arange(size)
         self.put(numerix.ones(size, 'd'), ids, ids)
 
@@ -623,5 +627,3 @@ def _test():
 
 if __name__ == "__main__":
     _test()
-
-
