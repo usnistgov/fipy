@@ -12,12 +12,12 @@ class _SparseMatrix(object):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, mesh=None, bandwidth=0, matrix=None, sizeHint=None):
-        pass
-
-    matrix     = None
+    matrix = None
     numpyArray = property()
-    _shape     = property()
+    _shape = property()
+
+    def __init__(self):
+        pass
 
     __array_priority__ = 100.0
 
@@ -28,10 +28,14 @@ class _SparseMatrix(object):
             return NotImplemented
 
     def copy(self):
-        pass
+        raise NotImplementedError
 
     def __getitem__(self, index):
-        pass
+        raise NotImplementedError
+
+    @property
+    def _range(self):
+        raise NotImplementedError
 
     def __str__(self):
         s = ''
@@ -59,32 +63,32 @@ class _SparseMatrix(object):
         return repr(self.matrix)
 
     def __setitem__(self, index, value):
-        pass
+        raise NotImplementedError
 
     def __add__(self, other):
-        pass
+        raise NotImplementedError
 
     __radd__ = __add__
 
     def __iadd__(self, other):
-        pass
+        raise NotImplementedError
 
     def __sub__(self, other):
-        pass
+        raise NotImplementedError
 
     # Ask about this rsub
     def __rsub__(self, other):
-        return -(__sub__(self, other))
+        return -(self.__sub__(other))
 
 
     def __isub__(self, other):
-        pass
+        raise NotImplementedError
 
     def __mul__(self, other):
-        pass
+        raise NotImplementedError
 
     def __rmul__(self, other):
-        pass
+        raise NotImplementedError
 
     def __neg__(self):
         return self * -1
@@ -95,41 +99,38 @@ class _SparseMatrix(object):
 ##     def __eq__(self,other):
 ## 	return self.matrix.__eq__(other.matrix)
 
-##     def transpose(self):
-##         pass
-
     def put(self, vector, id1, id2):
-        pass
+        raise NotImplementedError
 
     def putDiagonal(self, vector):
-        pass
+        raise NotImplementedError
 
     def take(self, id1, id2):
-        pass
+        raise NotImplementedError
 
     def takeDiagonal(self):
-        pass
+        raise NotImplementedError
 
     def addAt(self, vector, id1, id2):
-        pass
+        raise NotImplementedError
 
     def addAtDiagonal(self, vector):
-        pass
+        raise NotImplementedError
 
     def exportMmf(self, filename):
-        pass
+        raise NotImplementedError
 
     @property
     def CSR(self):
-        pass
+        raise NotImplementedError
 
     @property
     def LIL(self):
-        pass
+        raise NotImplementedError
 
     @property
     def T(self):
-        pass
+        raise NotImplementedError
 
 ##     def __array__(self):
 ##      shape = self._shape
@@ -138,6 +139,9 @@ class _SparseMatrix(object):
 ##      return numerix.reshape(numMatrix, shape)
 
 class _Mesh2Matrix(object):
+    _bodies = None
+    _ghosts = None
+
     def __init__(self, mesh, numberOfEquations=1, numberOfVariables=1,
                  orderer=lambda IDs: IDs):
         """Creates a mapping between mesh cells and matrix rows and columns
@@ -161,48 +165,53 @@ class _Mesh2Matrix(object):
         self.numberOfEquations = numberOfEquations
         self.orderer = orderer
 
-    def _cellIDsToGlobalIDs(self, IDs, M, L):
+    @staticmethod
+    def _cellIDsToGlobalIDs(IDs, M, L):
         N = len(IDs)
-        return (numerix.vstack([IDs] * M) + numerix.indices((M,N))[0] * L).flatten()
+        return (numerix.vstack([IDs] * M) + numerix.indices((M, N))[0] * L).flatten()
 
     def _cellIDsToGlobalRowIDs(self, IDs):
-        return self._cellIDsToGlobalIDs(IDs, M=self.numberOfEquations, L=self.mesh.globalNumberOfCells)
+        return self._cellIDsToGlobalIDs(IDs, M=self.numberOfEquations,
+                                        L=self.mesh.globalNumberOfCells)
 
     def _cellIDsToLocalRowIDs(self, IDs):
-        return self._cellIDsToGlobalIDs(IDs, M=self.numberOfEquations, L=self.mesh.numberOfCells)
+        return self._cellIDsToGlobalIDs(IDs, M=self.numberOfEquations,
+                                        L=self.mesh.numberOfCells)
 
     @property
-    def _globalNonOverlappingRowIDs(self):
+    def globalNonOverlappingRowIDs(self):
         return self._cellIDsToGlobalRowIDs(self.mesh._globalNonOverlappingCellIDs)
 
     @property
-    def _globalOverlappingRowIDs(self):
+    def globalOverlappingRowIDs(self):
         return self._cellIDsToGlobalRowIDs(self.mesh._globalOverlappingCellIDs)
 
     @property
-    def _localNonOverlappingRowIDs(self):
+    def localNonOverlappingRowIDs(self):
         return self._cellIDsToLocalRowIDs(self.mesh._localNonOverlappingCellIDs)
 
     def _cellIDsToGlobalColIDs(self, IDs):
-        return self._cellIDsToGlobalIDs(IDs, M=self.numberOfVariables, L=self.mesh.globalNumberOfCells)
+        return self._cellIDsToGlobalIDs(IDs, M=self.numberOfVariables,
+                                        L=self.mesh.globalNumberOfCells)
 
     def _cellIDsToLocalColIDs(self, IDs):
-        return self._cellIDsToGlobalIDs(IDs, M=self.numberOfVariables, L=self.mesh.numberOfCells)
+        return self._cellIDsToGlobalIDs(IDs, M=self.numberOfVariables,
+                                        L=self.mesh.numberOfCells)
 
     @property
-    def _globalNonOverlappingColIDs(self):
+    def globalNonOverlappingColIDs(self):
         return self._cellIDsToGlobalColIDs(self.mesh._globalNonOverlappingCellIDs)
 
     @property
-    def _globalOverlappingColIDs(self):
+    def globalOverlappingColIDs(self):
         return self._cellIDsToGlobalColIDs(self.mesh._globalOverlappingCellIDs)
 
     @property
-    def _localOverlappingColIDs(self):
+    def localOverlappingColIDs(self):
         return self._cellIDsToLocalColIDs(self.mesh._localOverlappingCellIDs)
 
     @property
-    def _localNonOverlappingColIDs(self):
+    def localNonOverlappingColIDs(self):
         return self._cellIDsToLocalColIDs(self.mesh._localNonOverlappingCellIDs)
 
     def _getStencil_(self, id1, id2,
@@ -223,7 +232,7 @@ class _Mesh2Matrix(object):
     def _getStencil(self, id1, id2, overlapping=False):
         raise NotImplementedError
 
-    def _globalVectorAndIDs(self, vector, id1, id2, overlapping=False):
+    def globalVectorAndIDs(self, vector, id1, id2, overlapping=False):
         """Transforms local overlapping values and coordinates to global
 
         Parameters
@@ -247,40 +256,40 @@ class _Mesh2Matrix(object):
         return (vector, id1, id2)
 
     @property
-    def _bodies(self):
-        if not hasattr(self, "_bodies_"):
-            self._bodies_ = numerix.in1d(self.mesh._globalOverlappingCellIDs,
-                                         self.mesh._globalNonOverlappingCellIDs)
-        return self._bodies_
+    def bodies(self):
+        if self._bodies is None:
+            self._bodies = numerix.in1d(self.mesh._globalOverlappingCellIDs,
+                                        self.mesh._globalNonOverlappingCellIDs)
+        return self._bodies
 
     @property
-    def _ghosts(self):
-        if not hasattr(self, "_ghosts_"):
-            self._ghosts_ = self.mesh._globalOverlappingCellIDs[~self._bodies]
-            self._ghosts_ = self._cellIDsToGlobalRowIDs(self._ghosts_)
-            self._ghosts_ = self.orderer(self._ghosts_)
+    def ghosts(self):
+        if self._ghosts is None:
+            self._ghosts = self.mesh._globalOverlappingCellIDs[~self.bodies]
+            self._ghosts = self._cellIDsToGlobalRowIDs(self._ghosts)
+            self._ghosts = self.orderer(self._ghosts)
 
-        return self._ghosts_
+        return self._ghosts
 
 class _RowMesh2Matrix(_Mesh2Matrix):
     def _getStencil(self, id1, id2, overlapping=False):
         return self._getStencil_(id1, id2,
-                                 self._globalOverlappingRowIDs,
-                                 self._globalNonOverlappingRowIDs,
+                                 self.globalOverlappingRowIDs,
+                                 self.globalNonOverlappingRowIDs,
                                  overlapping)
 
 class _ColMesh2Matrix(_Mesh2Matrix):
     def _getStencil(self, id1, id2, overlapping=False):
         id2, id1, mask = self._getStencil_(id2, id1,
-                                           self._globalOverlappingColIDs,
-                                           self._globalNonOverlappingColIDs,
+                                           self.globalOverlappingColIDs,
+                                           self.globalNonOverlappingColIDs,
                                            overlapping)
 
         return id1, id2, mask
 
 class _RowColMesh2Matrix(_RowMesh2Matrix):
     def _getStencil(self, id1, id2, overlapping=False):
-        id2 = self._globalOverlappingColIDs[id2]
+        id2 = self.globalOverlappingColIDs[id2]
 
         id1, id2, mask = super(_RowColMesh2Matrix, self)._getStencil(id1, id2, overlapping)
 
