@@ -196,7 +196,7 @@ class _PysparseMatrix(_SparseMatrix):
                 ---     3.000000      ---    
                 ---        ---     3.141593  
         """
-        if isinstance(vector, (type(1), type(1.))):
+        if isinstance(vector, (int, float)):
             ids = numerix.arange(self._shape[0])
             tmp = numerix.zeros((self._shape[0],), 'd')
             tmp[:] = vector
@@ -244,7 +244,7 @@ class _PysparseMatrix(_SparseMatrix):
                                   numerix.asarray(id2, dtype='int32'))
 
     def addAtDiagonal(self, vector):
-        if isinstance(vector, (type(1), type(1.))):
+        if isinstance(vector, (int, float)):
             ids = numerix.arange(self._shape[0])
             tmp = numerix.zeros((self._shape[0],), 'd')
             tmp[:] = vector
