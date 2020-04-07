@@ -866,7 +866,7 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
         overlapping : bool
             Whether to insert ghosted values or not (default False)
         """
-        vector, id1, id2 = self._m2m._globalVectorAndIDs(vector, id1, id2, overlapping)
+        vector, id1, id2 = self._m2m.globalVectorAndIDs(vector, id1, id2, overlapping)
         super(_TrilinosBaseMeshMatrix, self).put(vector=vector, id1=id1, id2=id2)
 
     def addAt(self, vector, id1, id2, overlapping=False):
@@ -883,7 +883,7 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
         overlapping : bool
             Whether to add ghosted values or not (default False)
         """
-        vector, id1, id2 = self._m2m._globalVectorAndIDs(vector, id1, id2, overlapping)
+        vector, id1, id2 = self._m2m.globalVectorAndIDs(vector, id1, id2, overlapping)
         super(_TrilinosBaseMeshMatrix, self).addAt(vector=vector, id1=id1, id2=id2)
 
 class _TrilinosRowMeshMatrix(_TrilinosBaseMeshMatrix):
@@ -926,7 +926,7 @@ class _TrilinosRowMeshMatrix(_TrilinosBaseMeshMatrix):
         comm = self.mesh.communicator.epetra_comm
         # Epetra.Map(numGlobalElements, myGlobalElements, indexBase, comm)
         # Specify -1 to have the constructor compute the number of global elements.
-        return Epetra.Map(-1, list(self._m2m._globalNonOverlappingRowIDs), 0, comm)
+        return Epetra.Map(-1, list(self._m2m.globalNonOverlappingRowIDs), 0, comm)
 
     @property
     def domainMap(self):
@@ -974,7 +974,7 @@ class _TrilinosColMeshMatrix(_TrilinosBaseMeshMatrix):
         comm = self.mesh.communicator.epetra_comm
         # Epetra.Map(numGlobalElements, myGlobalElements, indexBase, comm)
         # Specify -1 to have the constructor compute the number of global elements.
-        return Epetra.Map(-1, list(self._m2m._globalOverlappingColIDs), 0, comm)
+        return Epetra.Map(-1, list(self._m2m.globalOverlappingColIDs), 0, comm)
 
     @property
     def domainMap(self):
@@ -986,7 +986,7 @@ class _TrilinosColMeshMatrix(_TrilinosBaseMeshMatrix):
         comm = self.mesh.communicator.epetra_comm
         # Epetra.Map(numGlobalElements, myGlobalElements, indexBase, comm)
         # Specify -1 to have the constructor compute the number of global elements.
-        return Epetra.Map(-1, list(self._m2m._globalNonOverlappingColIDs), 0, comm)
+        return Epetra.Map(-1, list(self._m2m.globalNonOverlappingColIDs), 0, comm)
 
 class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
     def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1,
@@ -1028,7 +1028,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         comm = self.mesh.communicator.epetra_comm
         # Epetra.Map(numGlobalElements, myGlobalElements, indexBase, comm)
         # Specify -1 to have the constructor compute the number of global elements.
-        return Epetra.Map(-1, list(self._m2m._globalOverlappingColIDs), 0, comm)
+        return Epetra.Map(-1, list(self._m2m.globalOverlappingColIDs), 0, comm)
 
     def asTrilinosMeshMatrix(self):
         self.finalize()
@@ -1122,7 +1122,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
                     other_map = self.colMap
 
                 if other_map.SameAs(self.colMap):
-                    localNonOverlappingColIDs = self._m2m._localNonOverlappingColIDs
+                    localNonOverlappingColIDs = self._m2m.localNonOverlappingColIDs
 
                     other = Epetra.Vector(self.domainMap,
                                           other[localNonOverlappingColIDs])
@@ -1152,12 +1152,12 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5),
         ...                              numberOfVariables=3,
         ...                              numberOfEquations=2)
-        >>> GOC = matrix._m2m._globalOverlappingColIDs
-        >>> GNOC = matrix._m2m._globalNonOverlappingColIDs
-        >>> LNOC = matrix._m2m._localNonOverlappingColIDs
-        >>> GOR = matrix._m2m._globalOverlappingRowIDs
-        >>> GNOR = matrix._m2m._globalNonOverlappingRowIDs
-        >>> LNOR = matrix._m2m._localNonOverlappingRowIDs
+        >>> GOC = matrix._m2m.globalOverlappingColIDs
+        >>> GNOC = matrix._m2m.globalNonOverlappingColIDs
+        >>> LNOC = matrix._m2m.localNonOverlappingColIDs
+        >>> GOR = matrix._m2m.globalOverlappingRowIDs
+        >>> GNOR = matrix._m2m.globalNonOverlappingRowIDs
+        >>> LNOR = matrix._m2m.localNonOverlappingRowIDs
 
         5 cells, 3 variables, 1 processor
 
@@ -1169,7 +1169,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _globalOverlappingColIDs
+        globalOverlappingColIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
 
@@ -1177,7 +1177,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _globalNonOverlappingColIDs
+        globalNonOverlappingColIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
 
@@ -1185,7 +1185,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _localOverlappingColIDs
+        localOverlappingColIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
 
@@ -1193,7 +1193,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _localNonOverlappingColIDs
+        localNonOverlappingColIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
         ```
@@ -1219,7 +1219,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _globalOverlappingRowIDs
+        globalOverlappingRowIDs
 
         0  1  2  3  4  5  6  7  8  9   proc 0
 
@@ -1227,7 +1227,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _globalNonOverlappingRowIDs
+        globalNonOverlappingRowIDs
 
         0  1  2  3  4  5  6  7  8  9   proc 0
 
@@ -1243,7 +1243,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _localNonOverlappingRowIDs
+        localNonOverlappingRowIDs
 
         0  1  2  3  4  5  6  7  8  9   proc 0
         ```
@@ -1267,7 +1267,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3     0  1  2  3     0  1  2  3      proc 0
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc  1
 
-        _globalOverlappingColIDs
+        globalOverlappingColIDs
 
         0  1  2  3     5  6  7  8    10 11 12 13      proc 0
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc  1
@@ -1277,7 +1277,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1           0  1           0  1            proc 0
               2  3  4        2  3  4        2  3  4   proc  1
 
-        _globalNonOverlappingColIDs
+        globalNonOverlappingColIDs
 
         0  1           5  6          10 11            proc 0
               2  3  4        7  8  9       12 13 14   proc  1
@@ -1287,7 +1287,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3     0  1  2  3     0  1  2  3      proc 0
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc  1
 
-        _localOverlappingColIDs
+        localOverlappingColIDs
 
         0  1  2  3     4  5  6  7     8  9 10 11      proc 0
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc  1
@@ -1297,7 +1297,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1           0  1           0  1            proc 0
               2  3  4        2  3  4        2  3  4   proc  1
 
-        _localNonOverlappingColIDs
+        localNonOverlappingColIDs
 
         0  1           4  5           8  9            proc 0
               2  3  4        7  8  9       12 13 14   proc  1
@@ -1335,7 +1335,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3     0  1  2  3      proc 0
         0  1  2  3  4  0  1  2  3  4   proc  1
 
-        _globalOverlappingRowIDs
+        globalOverlappingRowIDs
 
         0  1  2  3     5  6  7  8      proc 0
         0  1  2  3  4  5  6  7  8  9   proc  1
@@ -1345,7 +1345,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1           0  1            proc 0
               2  3  4        2  3  4   proc  1
 
-        _globalNonOverlappingRowIDs
+        globalNonOverlappingRowIDs
 
         0  1           5  6            proc 0
               2  3  4        7  8  9   proc  1
@@ -1365,7 +1365,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1           0  1            proc 0
               2  3  4        2  3  4   proc  1
 
-        _localNonOverlappingRowIDs
+        localNonOverlappingRowIDs
 
         0  1           4  5            proc 0
               2  3  4        7  8  9   proc  1
@@ -1391,12 +1391,12 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=5, communicator=serialComm),
         ...                              numberOfVariables=3,
         ...                              numberOfEquations=2)
-        >>> GOC = matrix._m2m._globalOverlappingColIDs
-        >>> GNOC = matrix._m2m._globalNonOverlappingColIDs
-        >>> LNOC = matrix._m2m._localNonOverlappingColIDs
-        >>> GOR = matrix._m2m._globalOverlappingRowIDs
-        >>> GNOR = matrix._m2m._globalNonOverlappingRowIDs
-        >>> LNOR = matrix._m2m._localNonOverlappingRowIDs
+        >>> GOC = matrix._m2m.globalOverlappingColIDs
+        >>> GNOC = matrix._m2m.globalNonOverlappingColIDs
+        >>> LNOC = matrix._m2m.localNonOverlappingColIDs
+        >>> GOR = matrix._m2m.globalOverlappingRowIDs
+        >>> GNOR = matrix._m2m.globalNonOverlappingRowIDs
+        >>> LNOR = matrix._m2m.localNonOverlappingRowIDs
 
         5 cells, 3 variables, serial
 
@@ -1408,7 +1408,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _globalOverlappingColIDs
+        globalOverlappingColIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
 
@@ -1416,7 +1416,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _globalNonOverlappingColIDs
+        globalNonOverlappingColIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
 
@@ -1424,7 +1424,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _localOverlappingColIDs
+        localOverlappingColIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
 
@@ -1432,7 +1432,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _localNonOverlappingColIDs
+        localNonOverlappingColIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14   proc 0
         ```
@@ -1455,7 +1455,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _globalOverlappingRowIDs
+        globalOverlappingRowIDs
 
         0  1  2  3  4  5  6  7  8  9   proc 0
 
@@ -1463,7 +1463,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _globalNonOverlappingRowIDs
+        globalNonOverlappingRowIDs
 
         0  1  2  3  4  5  6  7  8  9   proc 0
 
@@ -1479,7 +1479,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  0  1  2  3  4   proc 0
 
-        _localNonOverlappingRowIDs
+        localNonOverlappingRowIDs
 
         0  1  2  3  4  5  6  7  8  9   proc 0
         ```
@@ -1494,12 +1494,12 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         >>> matrix = _TrilinosMeshMatrix(mesh=Grid1D(nx=7),
         ...                              numberOfVariables=3,
         ...                              numberOfEquations=2)
-        >>> GOC = matrix._m2m._globalOverlappingColIDs
-        >>> GNOC = matrix._m2m._globalNonOverlappingColIDs
-        >>> LNOC = matrix._m2m._localNonOverlappingColIDs
-        >>> GOR = matrix._m2m._globalOverlappingRowIDs
-        >>> GNOR = matrix._m2m._globalNonOverlappingRowIDs
-        >>> LNOR = matrix._m2m._localNonOverlappingRowIDs
+        >>> GOC = matrix._m2m.globalOverlappingColIDs
+        >>> GNOC = matrix._m2m.globalNonOverlappingColIDs
+        >>> LNOC = matrix._m2m.localNonOverlappingColIDs
+        >>> GOR = matrix._m2m.globalOverlappingRowIDs
+        >>> GNOR = matrix._m2m.globalNonOverlappingRowIDs
+        >>> LNOR = matrix._m2m.localNonOverlappingRowIDs
 
         7 cells, 3 variables, 1 processor
 
@@ -1511,7 +1511,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
 
-        _globalOverlappingColIDs
+        globalOverlappingColIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   proc 0
 
@@ -1519,7 +1519,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
 
-        _globalNonOverlappingColIDs
+        globalNonOverlappingColIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   proc 0
 
@@ -1527,7 +1527,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
 
-        _localOverlappingColIDs
+        localOverlappingColIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   proc 0
 
@@ -1535,7 +1535,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  5  6  0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
 
-        _localNonOverlappingColIDs
+        localNonOverlappingColIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20   proc 0
         ```
@@ -1561,7 +1561,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
 
-        _globalOverlappingRowIDs
+        globalOverlappingRowIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   proc 0
 
@@ -1569,7 +1569,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
 
-        _globalNonOverlappingRowIDs
+        globalNonOverlappingRowIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   proc 0
 
@@ -1585,7 +1585,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
         0  1  2  3  4  5  6  0  1  2  3  4  5  6   proc 0
 
-        _localNonOverlappingRowIDs
+        localNonOverlappingRowIDs
 
         0  1  2  3  4  5  6  7  8  9 10 11 12 13   proc 0
         ```
@@ -1612,7 +1612,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4        0  1  2  3  4        0  1  2  3  4         proc 0
            1  2  3  4  5  6     1  2  3  4  5  6     1  2  3  4  5  6   proc  1
 
-        _globalOverlappingColIDs
+        globalOverlappingColIDs
 
         0  1  2  3  4        7  8  9 10 11       14 15 16 17 18         proc 0
            1  2  3  4  5  6     8  9 10 11 12 13    15 16 17 18 19 20   proc  1
@@ -1622,7 +1622,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2              0  1  2              0  1  2               proc 0
                  3  4  5  6           3  4  5  6           3  4  5  6   proc  1
 
-        _globalNonOverlappingColIDs
+        globalNonOverlappingColIDs
 
         0  1  2              7  8  9             14 15 16               proc 0
                  3  4  5  6          10 11 12 13          17 18 19 20   proc  1
@@ -1632,7 +1632,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4        0  1  2  3  4        0  1  2  3  4         proc 0
            0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5   proc  1
 
-        _localOverlappingColIDs
+        localOverlappingColIDs
 
         0  1  2  3  4        5  6  7  8  9       10 11 12 13 14         proc 0
            0  1  2  3  4  5     6  7  8  9 10 11    12 13 14 15 16 17   proc  1
@@ -1642,7 +1642,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2              0  1  2              0  1  2               proc 0
                  2  3  4  5           2  3  4  5           2  3  4  5   proc  1
 
-        _localNonOverlappingColIDs
+        localNonOverlappingColIDs
 
         0  1  2              5  6  7             10 11 12               proc 0
                  2  3  4  5           8  9 10 11          14 15 16 17   proc  1
@@ -1680,7 +1680,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4        0  1  2  3  4         proc 0
            1  2  3  4  5  6     1  2  3  4  5  6   proc  1
 
-        _globalOverlappingRowIDs
+        globalOverlappingRowIDs
 
         0  1  2  3  4        7  8  9 10 11         proc 0
            1  2  3  4  5  6     8  9 10 11 12 13   proc  1
@@ -1690,7 +1690,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2              0  1  2               proc 0
                  3  4  5  6           3  4  5  6   proc  1
 
-        _globalNonOverlappingRowIDs
+        globalNonOverlappingRowIDs
 
         0  1  2              7  8  9               proc 0
                  3  4  5  6          10 11 12 13   proc  1
@@ -1710,7 +1710,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2              0  1  2               proc 0
                  2  3  4  5           2  3  4  5   proc  1
 
-        _localNonOverlappingRowIDs
+        localNonOverlappingRowIDs
 
         0  1  2              5  6  7               proc 0
                  2  3  4  5           8  9 10 11   proc  1
@@ -1746,7 +1746,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5      proc  1
               2  3  4  5  6        2  3  4  5  6        2  3  4  5  6   proc   2
 
-        _globalOverlappingColIDs
+        globalOverlappingColIDs
 
         0  1  2  3           7  8  9 10          14 15 16 17            proc 0
         0  1  2  3  4  5     7  8  9 10 11 12    14 15 16 17 18 19      proc  1
@@ -1758,7 +1758,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
               2  3                 2  3                 2  3            proc  1
                     4  5  6              4  5  6              4  5  6   proc   2
 
-        _globalNonOverlappingColIDs
+        globalNonOverlappingColIDs
 
         0  1                 7  8                14 15                  proc 0
               2  3                 9 10                16 17            proc  1
@@ -1770,7 +1770,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  5     0  1  2  3  4  5     0  1  2  3  4  5      proc  1
               0  1  2  3  4        0  1  2  3  4        0  1  2  3  4   proc   2
 
-        _localOverlappingColIDs
+        localOverlappingColIDs
 
         0  1  2  3           4  5  6  7           8  9 10 11            proc 0
         0  1  2  3  4  5     6  7  8  9 10 11    12 13 14 15 16 17      proc  1
@@ -1782,7 +1782,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
               2  3                 2  3                 2  3            proc  1
                     2  3  4              2  3  4              2  3  4   proc   2
 
-        _localNonOverlappingColIDs
+        localNonOverlappingColIDs
 
         0  1                 4  5                 8  9                  proc 0
               2  3                 8  9                14 15            proc  1
@@ -1828,7 +1828,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         0  1  2  3  4  5     0  1  2  3  4  5      proc  1
               2  3  4  5  6        2  3  4  5  6   proc   2
 
-        _globalOverlappingRowIDs
+        globalOverlappingRowIDs
 
         0  1  2  3           7  8  9 10            proc 0
         0  1  2  3  4  5     7  8  9 10 11 12      proc  1
@@ -1840,7 +1840,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
               2  3                 2  3            proc  1
                     4  5  6              4  5  6   proc   2
 
-        _globalNonOverlappingRowIDs
+        globalNonOverlappingRowIDs
 
         0  1                 7  8                  proc 0
               2  3                 9 10            proc  1
@@ -1864,7 +1864,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
               2  3                 2  3            proc  1
                     2  3  4              2  3  4   proc   2
 
-        _localNonOverlappingRowIDs
+        localNonOverlappingRowIDs
 
         0  1                 4  5                  proc 0
               2  3                 8  9            proc  1
@@ -1912,7 +1912,7 @@ class _TrilinosMeshMatrixKeepStencil(_TrilinosMeshMatrix):
 
     def _getStencil(self, id1, id2):
         if not hasattr(self, 'stencil'):
-            self.stencil = _TrilinosMeshMatrix._getStencil(self, id1, id2)
+            self.stencil = super(_TrilinosMeshMatrixKeepStencil, self)._getStencil(self, id1, id2)
 
         return self.stencil
 

@@ -573,7 +573,7 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
 
             from mpi4py import MPI
 
-            fipyIDs = self._m2m._globalNonOverlappingRowIDs
+            fipyIDs = self._m2m.globalNonOverlappingRowIDs
             N = len(fipyIDs)
 
             count = numerix.zeros((comm.Nproc,), dtype=int)
@@ -626,12 +626,12 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
 
         where the [a, b] are the global ghost indices
         """
-        corporeal = numerix.asarray(var[..., self._m2m._bodies]).ravel()
-        incorporeal = numerix.asarray(var[..., ~self._m2m._bodies]).ravel()
+        corporeal = numerix.asarray(var[..., self._m2m.bodies]).ravel()
+        incorporeal = numerix.asarray(var[..., ~self._m2m.bodies]).ravel()
         array = numerix.concatenate([corporeal, incorporeal])
 
         comm = self.mesh.communicator.petsc4py_comm
-        vec = PETSc.Vec().createGhostWithArray(ghosts=self._m2m._ghosts.astype('int32'),
+        vec = PETSc.Vec().createGhostWithArray(ghosts=self._m2m.ghosts.astype('int32'),
                                                array=array,
                                                comm=comm)
 
@@ -670,13 +670,13 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
         bodies = numerix.asarray(vec)
         if M > 1:
             bodies = numerix.reshape(bodies, (M, -1))
-        var[..., self._m2m._bodies] = bodies
+        var[..., self._m2m.bodies] = bodies
         vec.ghostUpdate()
         with vec.localForm() as lf:
-            if len(self._m2m._ghosts) > 0:
-                ids = numerix.arange(-len(self._m2m._ghosts), 0)
+            if len(self._m2m.ghosts) > 0:
+                ids = numerix.arange(-len(self._m2m.ghosts), 0)
                 ghosts = numerix.reshape(numerix.array(lf)[ids], (M, -1))
-                var[..., ~self._m2m._bodies] = ghosts
+                var[..., ~self._m2m.bodies] = ghosts
 
         return var.flatten()
 
@@ -705,7 +705,7 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
         overlapping : bool
             Whether to insert ghosted values or not (default False)
         """
-        vector, id1, id2 = self._m2m._globalVectorAndIDs(vector, id1, id2, overlapping)
+        vector, id1, id2 = self._m2m.globalVectorAndIDs(vector, id1, id2, overlapping)
         super(_PETScBaseMeshMatrix, self).put(vector=vector, id1=id1, id2=id2)
 
     def addAt(self, vector, id1, id2, overlapping=False):
@@ -722,7 +722,7 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
         overlapping : bool
             Whether to add ghosted values or not (default False)
         """
-        vector, id1, id2 = self._m2m._globalVectorAndIDs(vector, id1, id2, overlapping)
+        vector, id1, id2 = self._m2m.globalVectorAndIDs(vector, id1, id2, overlapping)
         super(_PETScBaseMeshMatrix, self).addAt(vector=vector, id1=id1, id2=id2)
 
 class _PETScRowMeshMatrix(_PETScBaseMeshMatrix):
@@ -872,11 +872,11 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
                 result.matrix = self.matrix * other
                 return result
             else:
-                x = other[self._m2m._localNonOverlappingColIDs]
+                x = other[self._m2m.localNonOverlappingColIDs]
                 x = PETSc.Vec().createWithArray(x, comm=self.matrix.comm)
 
-                y = PETSc.Vec().createGhost(ghosts=self._m2m._ghosts.astype('int32'),
-                                            size=(len(self._m2m._localNonOverlappingColIDs), None),
+                y = PETSc.Vec().createGhost(ghosts=self._m2m.ghosts.astype('int32'),
+                                            size=(len(self._m2m.localNonOverlappingColIDs), None),
                                             comm=self.matrix.comm)
                 self.matrix.mult(x, y)
                 return self._petsc2fipyGhost(vec=y)
@@ -885,8 +885,8 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
         self.matrix.assemblyBegin()
         self.matrix.assemblyEnd()
 
-        y = PETSc.Vec().createGhost(ghosts=self._m2m._ghosts.astype('int32'),
-                                    size=(len(self._m2m._localNonOverlappingColIDs), None),
+        y = PETSc.Vec().createGhost(ghosts=self._m2m.ghosts.astype('int32'),
+                                    size=(len(self._m2m.localNonOverlappingColIDs), None),
                                     comm=self.matrix.comm)
         self.matrix.getDiagonal(result=y)
         return self._petsc2fipyGhost(vec=y)
