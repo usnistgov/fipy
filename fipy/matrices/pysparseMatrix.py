@@ -24,26 +24,25 @@ class _PysparseMatrix(_SparseMatrix):
         """
         self.matrix = matrix
 
-    def getCoupledClass(self):
-        return _CoupledPysparseMeshMatrix
+        super(_PysparseMatrix, self).__init__()
 
     def copy(self):
         return _PysparseMatrix(matrix=self.matrix.copy())
 
     def __getitem__(self, index):
         m = self.matrix[index]
-        if isinstance(m, type(0)) or isinstance(m, type(0.)):
-            return m
-        else:
-            return _PysparseMatrix(matrix=m)
+        if not isinstance(m, (type(0), type(0.))):
+            m = _PysparseMatrix(matrix=m)
+        return m
+
+    @staticmethod
+    def _iadd(L, other, sign=1):
+        if other != 0:
+            L.shift(sign, other.matrix)
 
     def __iadd__(self, other):
         self._iadd(self.matrix, other)
         return self
-
-    def _iadd(self, L, other, sign = 1):
-        if other != 0:
-            L.shift(sign, other.matrix)
 
     def __add__(self, other):
         """
@@ -89,7 +88,7 @@ class _PysparseMatrix(_SparseMatrix):
         return -self + other
 
     def __isub__(self, other):
-            return self._iadd(self.matrix, other, -1)
+        return self._iadd(self.matrix, other, -1)
 
     def __mul__(self, other):
         """
@@ -116,10 +115,11 @@ class _PysparseMatrix(_SparseMatrix):
         or a vector by a sparse matrix
 
             >>> tmp = numerix.array((7.5, 16.28318531,  3.))
-            >>> numerix.allclose(numerix.array((1, 2, 3), 'd') * L1, tmp) ## The multiplication is broken. Numpy is calling __rmul__ for every element instead of with  the whole array.
+            >>> numerix.allclose(numerix.array((1, 2, 3), 'd') * L1, tmp)
             1
 
-
+        (The multiplication is broken.  Numpy is calling __rmul__ for every
+        element instead of with the whole array.)
         """
         N = self.matrix.shape[1]
 
@@ -196,7 +196,7 @@ class _PysparseMatrix(_SparseMatrix):
                 ---     3.000000      ---    
                 ---        ---     3.141593  
         """
-        if type(vector) in [type(1), type(1.)]:
+        if isinstance(vector, (type(1), type(1.))):
             ids = numerix.arange(self._shape[0])
             tmp = numerix.zeros((self._shape[0],), 'd')
             tmp[:] = vector
@@ -244,7 +244,7 @@ class _PysparseMatrix(_SparseMatrix):
                                   numerix.asarray(id2, dtype='int32'))
 
     def addAtDiagonal(self, vector):
-        if type(vector) in [type(1), type(1.)]:
+        if isinstance(vector, (type(1), type(1.))):
             ids = numerix.arange(self._shape[0])
             tmp = numerix.zeros((self._shape[0],), 'd')
             tmp[:] = vector
@@ -497,7 +497,8 @@ class _PysparseBaseMeshMatrix(_PysparseMatrixFromShape):
         super(_PysparseBaseMeshMatrix, self).addAt(vector=vector, id1=id1, id2=id2)
 
 class _PysparseRowMeshMatrix(_PysparseBaseMeshMatrix):
-    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0,
+                 sizeHint=None, matrix=None, storeZeros=True):
         """Creates a `_PysparseBaseMeshMatrix` with rows associated with equations.
 
         Parameters
@@ -529,7 +530,8 @@ class _PysparseRowMeshMatrix(_PysparseBaseMeshMatrix):
                                                      storeZeros=storeZeros)
 
 class _PysparseColMeshMatrix(_PysparseBaseMeshMatrix):
-    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0,
+                 sizeHint=None, matrix=None, storeZeros=True):
         """Creates a `_PysparseBaseMeshMatrix` with columns associated with solution variables.
 
         Parameters
@@ -561,8 +563,9 @@ class _PysparseColMeshMatrix(_PysparseBaseMeshMatrix):
                                                      storeZeros=storeZeros)
 
 class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
-    def __init__(self, mesh, bandwidth=0, sizeHint=None, matrix=None, numberOfVariables=1, numberOfEquations=1, storeZeros=True):
-        """Creates a `_PysparseBaseMeshMatrix` with rows and columns associated with equations and solution variables.
+    def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1,
+                 bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+        """Creates a `_PysparseBaseMeshMatrix` with associated with equations and variables.
 
         Parameters
         ----------
@@ -619,9 +622,10 @@ class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
                 bandwidth = int(numerix.ceil(float(len(values)) / float(A.shape[0])))
             bandwidth = 1
             from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrixKeepStencil
-            self.trilinosMatrix = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth,
-                                                                 numberOfVariables=self.numberOfVariables,
-                                                                 numberOfEquations=self.numberOfEquations)
+            tmp = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth,
+                                                 numberOfVariables=self.numberOfVariables,
+                                                 numberOfEquations=self.numberOfEquations)
+            self.trilinosMatrix = m
 
         self.trilinosMatrix.addAt(values, irow, jcol)
         self.trilinosMatrix.finalize()
@@ -638,8 +642,7 @@ class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
 
 
     def flush(self):
-        """
-        Deletes the copy of the pysparse matrix held and calls `self.trilinosMatrix.flush()` if necessary.
+        """Deletes the pysparse matrix and calls `self.trilinosMatrix.flush()` if necessary.
         """
 
         if hasattr(self, 'trilinosMatrix'):
@@ -657,9 +660,12 @@ class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
 
         >>> m = _PysparseMatrixFromShape(rows=3, cols=3, storeZeros=True)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
-        >>> print(not hasattr(m.matrix, 'storeZeros') or numerix.allequal(list(m.matrix.keys()), [(0, 1), (1, 0), (2, 2)]))
+        >>> print(not hasattr(m.matrix, 'storeZeros')
+        ...       or numerix.allequal(list(m.matrix.keys()),
+        ...                           [(0, 1), (1, 0), (2, 2)]))
         True
-        >>> print(not hasattr(m.matrix, 'storeZeros') or numerix.allequal(list(m.matrix.values()), [1., 2., 0.]))
+        >>> print(not hasattr(m.matrix, 'storeZeros')
+        ...       or numerix.allequal(list(m.matrix.values()), [1., 2., 0.]))
         True
         >>> m = _PysparseMatrixFromShape(rows=3, cols=3, storeZeros=False)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
@@ -683,7 +689,7 @@ class _PysparseIdentityMatrix(_PysparseMatrixFromShape):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PysparseMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth = 1)
+        _PysparseMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth=1)
         ids = numerix.arange(size)
         self.put(numerix.ones(size, 'd'), ids, ids)
 
@@ -707,6 +713,3 @@ def _test():
 
 if __name__ == "__main__":
     _test()
-
-
-
