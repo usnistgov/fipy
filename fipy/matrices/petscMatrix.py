@@ -12,33 +12,29 @@ from fipy.matrices.sparseMatrix import (_SparseMatrix, _RowMesh2Matrix,
                                         _ColMesh2Matrix, _RowColMesh2Matrix)
 
 class _PETScMatrix(_SparseMatrix):
-    
+
     def __init__(self, matrix):
         """Creates a wrapper for a PETSc matrix
 
         Allows basic python operations __add__, __sub__ etc.
         Facilitate matrix populating in an easy way.
-        
+
         :Parameters:
-          - `matrix`: The starting `PETSc.Mat` 
+          - `matrix`: The starting `PETSc.Mat`
         """
         self.matrix = matrix
-        
-    def getCoupledClass(self):
-        return _CoupledPETScMeshMatrix
-    
+
     def copy(self):
         return _PETScMatrix(matrix=self.matrix.copy())
-        
+
     def __getitem__(self, index):
         self.matrix.assemblyBegin()
         self.matrix.assemblyEnd()
         m = self.matrix[index]
-        if numerix.shape(m) == ():
-            return m
-        else:
-            return _PETScMatrix(matrix=m)
-    
+        if numerix.shape(m) != ():
+            m = _PETScMatrix(matrix=m)
+        return m
+
     def __str__(self):
         self.matrix.assemble()
 
@@ -56,19 +52,19 @@ class _PETScMatrix(_SparseMatrix):
     def __add__(self, other):
         """
         Add two sparse matrices
-        
+
             >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print(L + _PETScIdentityMatrix(size=3))
              1.000000  10.000000   3.000000  
                 ---     4.141593      ---    
              2.500000      ---     1.000000  
-             
+
             >>> print(L + 0)
                 ---    10.000000   3.000000  
                 ---     3.141593      ---    
              2.500000      ---        ---    
-            
+
             >>> print(L + 3)
             Traceback (most recent call last):
             ...
@@ -83,9 +79,9 @@ class _PETScMatrix(_SparseMatrix):
             other.matrix.assemblyBegin()
             other.matrix.assemblyEnd()
             return _PETScMatrix(matrix=self.matrix + other.matrix)
-        
+
     __radd__ = __add__
-    
+
     def __sub__(self, other):
 
         if other == 0:
@@ -99,7 +95,7 @@ class _PETScMatrix(_SparseMatrix):
 
     def __rsub__(self, other):
         return -self + other
-    
+
     def __isub__(self, other):
         if other != 0:
             self.matrix.assemblyBegin()
@@ -112,13 +108,13 @@ class _PETScMatrix(_SparseMatrix):
     def __mul__(self, other):
         """
         Multiply a sparse matrix by another sparse matrix
-        
+
             >>> L1 = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
             >>> L1.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L2 = _PETScIdentityMatrix(size=3, bandwidth=3)
             >>> L2.put([4.38], [2], [1])
             >>> L2.put([4.38,12357.2,1.1], [2,1,0], [1,0,2])
-            
+
             >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
             ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
             ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
@@ -128,17 +124,18 @@ class _PETScMatrix(_SparseMatrix):
 
         or a sparse matrix by a vector
 
-            >>> tmp = numerix.array((29., 6.28318531, 2.5))       
+            >>> tmp = numerix.array((29., 6.28318531, 2.5))
             >>> numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
             1
-            
+
         or a vector by a sparse matrix
 
-            >>> tmp = numerix.array((7.5, 16.28318531,  3.))  
-            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) ## The multiplication is broken. Numpy is calling __rmul__ for every element instead of with  the whole array.
+            >>> tmp = numerix.array((7.5, 16.28318531,  3.))
+            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp)
             1
 
-            
+        (The multiplication is broken.  Numpy is calling __rmul__ for every
+        element instead of with the whole array.)
         """
         N = self._shape[1]
 
@@ -168,7 +165,7 @@ class _PETScMatrix(_SparseMatrix):
                 return result
             else:
                 raise TypeError
-            
+
     def __rmul__(self, other):
         if type(numerix.ones(1, 'l')) == type(other):
             N = self._shape[1]
@@ -179,7 +176,7 @@ class _PETScMatrix(_SparseMatrix):
             return numerix.asarray(y)
         else:
             return self * other
-            
+
     @property
     def _shape(self):
         return self.matrix.sizes[0][0], self.matrix.sizes[1][1]
@@ -187,11 +184,11 @@ class _PETScMatrix(_SparseMatrix):
     @property
     def _range(self):
         return list(range(self._shape[1])), list(range(self._shape[0]))
-        
+
     def put(self, vector, id1, id2):
         """
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
-        
+
             >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print(L)
@@ -200,16 +197,16 @@ class _PETScMatrix(_SparseMatrix):
              2.500000      ---        ---    
         """
         self.matrix.setValuesCSR(*self._ijv2csr(id2, id1, vector))
-            
+
     def _ijv2csr(self, i, j, v):
         """Convert arrays of matrix indices and values into CSR format
-        
+
         see: http://netlib.org/linalg/html_templates/node91.html#SECTION00931100000000000000
 
         .. note::
            petsc4py only understands CSR formatted matrices (setValuesCSR and
            setValuesIJV both inexplicably call the same underlying routine).
-        
+
         Parameters
         ----------
         i : array_like
@@ -218,61 +215,36 @@ class _PETScMatrix(_SparseMatrix):
             row indices
         v : array_like
             non-zero values
-            
+
         Returns
         -------
         ptrs : array_like
-            locations in the val vector that start a row, 
+            locations in the val vector that start a row,
             terminated with len(val) + 1
         cols : array_like
             column indices
         data : array_like
             non-zero values
         """
-#         from fipy.tools.debug import PRINT
-#         PRINT("i:", i)
-#         PRINT("j:", j)
-#         PRINT("v:", v)
-        
         i = numerix.asarray(i)
         j = numerix.asarray(j)
         v = numerix.asarray(v)
         start_row, end_row = self.matrix.getOwnershipRange()
-#         PRINT("start_row:", start_row)
-#         PRINT("end_row:", end_row)
 
         ix = numerix.lexsort([i, j])
         ix = ix[(j[ix] >= start_row) & (j[ix] < end_row)]
         cols = i[ix]
-        row_ptr = numerix.searchsorted(j[ix], 
-#                                        numerix.arange(0, self._shape[1]+1))
+        row_ptr = numerix.searchsorted(j[ix],
                                        numerix.arange(start_row, end_row + 1))
         vals = v[ix]
-        
-#         PRINT("i[ix]:", i[ix])
-#         PRINT("j[ix]:", j[ix])
-#         PRINT("v[ix]:", v[ix])
 
-        
-        
-#         PRINT("size:", self._shape)
-#         PRINT("shape:", self._shape[0])
-#         
-#         PRINT("row_ptr:", row_ptr)
-#         PRINT("cols:", cols)
-#         PRINT("vals:", vals)
-#         
-#         PRINT("size:", self.matrix.sizes)
-#         PRINT("owns-rows:", self.matrix.getOwnershipRange())
-#         PRINT("owns-cols:", self.matrix.getOwnershipRangesColumn())
-        
         # note: PETSc (at least via pip) only seems to handle 32 bit addressing
         return row_ptr.astype('int32'), cols.astype('int32'), vals
 
     def putDiagonal(self, vector):
         """
         Put elements of `vector` along diagonal of matrix
-        
+
             >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=1)
             >>> L.putDiagonal([3.,10.,numerix.pi])
             >>> print(L)
@@ -285,7 +257,7 @@ class _PETScMatrix(_SparseMatrix):
                 ---     3.000000      ---    
                 ---        ---     3.141593  
         """
-        if type(vector) in [type(1), type(1.)]:
+        if isinstance(vector, (int, float)):
             ids = numerix.arange(self._shape[0])
             tmp = numerix.zeros((self._shape[0],), 'd')
             tmp[:] = vector
@@ -311,7 +283,7 @@ class _PETScMatrix(_SparseMatrix):
     def addAt(self, vector, id1, id2):
         """
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
-        
+
             >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
@@ -324,7 +296,7 @@ class _PETScMatrix(_SparseMatrix):
                                  addv=True)
 
     def addAtDiagonal(self, vector):
-        if type(vector) in [type(1), type(1.)]:
+        if isinstance(vector, (int, float)):
             ids = numerix.arange(self._shape[0])
             tmp = numerix.zeros((self._shape[0],), 'd')
             tmp[:] = vector
@@ -332,7 +304,7 @@ class _PETScMatrix(_SparseMatrix):
         else:
             ids = numerix.arange(len(vector))
             self.addAt(vector, ids, ids)
-            
+
     def _petsc2app(self, ids):
         return ids
 
@@ -453,7 +425,7 @@ class _PETScMatrix(_SparseMatrix):
         # [0] No support for this operation for this object type
         # [0] Cannot locate function MatDenseGetArray_C in object
         return self._scipy_coo.toarray()
-                
+
     def matvec(self, x):
         """This method is required for scipy solvers.
         """
@@ -514,9 +486,9 @@ class _PETScMatrix(_SparseMatrix):
         self.matrix.assemblyBegin()
         self.matrix.assemblyEnd()
         return _PETScMatrix(matrix=self.matrix.transpose())
-    
+
 class _PETScMatrixFromShape(_PETScMatrix):
-    
+
     def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None, comm=PETSc.COMM_SELF):
         """Instantiates and wraps a PETSc `Mat` matrix
 
@@ -535,7 +507,6 @@ class _PETScMatrixFromShape(_PETScMatrix):
         comm : ~PETSc.Comm
             The MPI communicator to use.
         """
-        bandwidth = bandwidth 
         if (bandwidth == 0) and (sizeHint is not None):
             bandwidth = sizeHint // max(rows, cols)
         if matrix is None:
@@ -546,7 +517,7 @@ class _PETScMatrixFromShape(_PETScMatrix):
             matrix.setSizes([[rows, None], [cols, None]])
             matrix.setType('aij') # sparse
             matrix.setPreallocationNNZ(None) # FIXME: ??? #bandwidth)
-                
+
         super(_PETScMatrixFromShape, self).__init__(matrix=matrix)
 
 class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
@@ -589,17 +560,17 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
     @property
     def _ao(self):
         """Application Ordering to relate FiPy matrix rows to PETSc matrix rows
-        
+
         FiPy naturally blocks matrix rows, one set of Equations (or Variables) at a time.
         PETSc requires that all rows pertaining to a particular MPI node be contiguous.
         This PETSc `AO` (Application Ordering) object converts between them.
-        
+
         Only needed for FiPy to PETSc. We can efficiently slice from PETSc to
-        FiPy, but PETSc requires us to know the row IDs. 
-        """ 
+        FiPy, but PETSc requires us to know the row IDs.
+        """
         if not hasattr(self, "_ao_"):
             comm = self.mesh.communicator
-            
+
             from mpi4py import MPI
 
             fipyIDs = self._m2m._globalNonOverlappingRowIDs
@@ -608,11 +579,11 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
             count = numerix.zeros((comm.Nproc,), dtype=int)
             count[comm.procID] = N
             comm.mpi4py_comm.Allreduce(sendbuf=MPI.IN_PLACE, recvbuf=count, op=MPI.MAX)
-            
+
             petscIDs = numerix.arange(N) + numerix.sum(count[:comm.procID])
-            
-            self._ao_ = PETSc.AO().createBasic(petsc=petscIDs.astype('int32'), 
-                                               app=fipyIDs.astype('int32'), 
+
+            self._ao_ = PETSc.AO().createBasic(petsc=petscIDs.astype('int32'),
+                                               app=fipyIDs.astype('int32'),
                                                comm=comm.petsc4py_comm)
         return self._ao_
 
@@ -629,30 +600,30 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
 
     def _fipy2petscGhost(self, var):
         """Convert a FiPy Variable to a PETSc `GhostVec`
-        
-        Moves the ghosts to the end, as necessary. 
+
+        Moves the ghosts to the end, as necessary.
         `var` may be coupled/vector and so moving the ghosts is a bit subtle.
-        
+
         Given a (2x4) vector variable `vij`
-        
+
         ```
         v00  v01 (v02)        processor 0
         v10  v11 (v12)
-        
+
             (v01) v02 v03     processor 1
             (v11) v12 v13
         ```
-            
+
         where i is the vector index and j is the global index.
         Elements in () are ghosted
-        
+
         We end up with the `GhostVec`
-        
+
         ```
         v00 v01 v10 v11 (v02) (v12)   [4, 6]  processor 0
         v02 v03 v12 v13 (v01) (v11)   [1, 3]  processor 1
         ```
-        
+
         where the [a, b] are the global ghost indices
         """
         corporeal = numerix.asarray(var[..., self._m2m._bodies]).ravel()
@@ -663,32 +634,32 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
         vec = PETSc.Vec().createGhostWithArray(ghosts=self._m2m._ghosts.astype('int32'),
                                                array=array,
                                                comm=comm)
-                                               
+
         return vec
 
     def _petsc2fipyGhost(self, vec):
         """Convert a PETSc `GhostVec` to a FiPy Variable (form)
-        
-        Moves the ghosts from the end, as necessary. 
+
+        Moves the ghosts from the end, as necessary.
         The return Variable may be coupled/vector and so moving the ghosts
         is a bit subtle.
-        
+
         Given an 8-element `GhostVec` `vj`
-        
+
         ```
         v0 v1 v2 v3 (v4) (v6)   [4, 6]  processor 0
         v4 v5 v6 v7 (v1) (v3)   [1, 3]  processor 1
         ```
-        
+
         where j is the global index and the `[a, b]` are the global ghost
         indices. Elements in () are ghosted
 
         We end up with the (2x4) FiPy Variable
-        
+
         ```
         v0  v1 (v4)        processor 0
         v2  v3 (v6)
-        
+
            (v1) v4 v4      processor 1
            (v3) v6 v7
         ```
@@ -755,7 +726,8 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
         super(_PETScBaseMeshMatrix, self).addAt(vector=vector, id1=id1, id2=id2)
 
 class _PETScRowMeshMatrix(_PETScBaseMeshMatrix):
-    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0, sizeHint=None, matrix=None, m2m=None):
+    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0,
+                 sizeHint=None, matrix=None, m2m=None):
         """Creates a `_PETScMatrixFromShape` with rows associated with equations.
 
         Parameters
@@ -820,8 +792,9 @@ class _PETScColMeshMatrix(_PETScBaseMeshMatrix):
                                                   matrix=matrix)
 
 class _PETScMeshMatrix(_PETScRowMeshMatrix):
-    def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1, bandwidth=0, sizeHint=None, matrix=None):
-        """Creates a `_PETScBaseMeshMatrix` with rows and columns associated with equations and solution variables.
+    def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1,
+                 bandwidth=0, sizeHint=None, matrix=None):
+        """Creates a `_PETScBaseMeshMatrix` associated with equations and variables.
 
         Parameters
         ----------
@@ -846,7 +819,7 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
                                  orderer=self._app2petsc)
 
         super(_PETScMeshMatrix, self).__init__(mesh=mesh,
-                                               cols=numberOfVariables * len(mesh._localNonOverlappingCellIDs), # self.mesh.globalNumberOfCells, # , # 
+                                               cols=numberOfVariables * len(mesh._localNonOverlappingCellIDs),
                                                numberOfEquations=numberOfEquations,
                                                bandwidth=bandwidth,
                                                sizeHint=sizeHint,
@@ -855,13 +828,13 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
 
     def __mul__(self, other):
         """Multiply a sparse matrix by another sparse matrix
-        
+
             >>> L1 = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
             >>> L1.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L2 = _PETScIdentityMatrix(size=3, bandwidth=3)
             >>> L2.put([4.38], [2], [1])
             >>> L2.put([4.38,12357.2,1.1], [2,1,0], [1,0,2])
-            
+
             >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
             ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
             ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
@@ -871,23 +844,24 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
 
         or a sparse matrix by a vector
 
-            >>> tmp = numerix.array((29., 6.28318531, 2.5))       
+            >>> tmp = numerix.array((29., 6.28318531, 2.5))
             >>> numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
             1
-            
+
         or a vector by a sparse matrix
 
-            >>> tmp = numerix.array((7.5, 16.28318531,  3.))  
-            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp) ## The multiplication is broken. Numpy is calling __rmul__ for every element instead of with  the whole array.
+            >>> tmp = numerix.array((7.5, 16.28318531,  3.))
+            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp)
             1
 
-            
+        (The multiplication is broken.  Numpy is calling __rmul__ for every
+        element instead of with the whole array.)
         """
         N = self._shape[1]
 
         self.matrix.assemblyBegin()
         self.matrix.assemblyEnd()
-        
+
         if isinstance(other, (_PETScMatrix, PETSc.Vec)):
             return _PETScMatrixFromShape.__mul__(self, other=other)
         else:
@@ -920,20 +894,20 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
     def flush(self):
         """Deletes the copy of the PETSc matrix held.
         """
-    
+
         if not getattr(self, 'cache', False):
             del self.matrix
 
     def _test(self):
         """Tests
-        
+
         >>> m = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=1)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
         >>> m.matrix.assemblyBegin()
         >>> m.matrix.assemblyEnd()
-        
+
         # FIXME: are these names even right? is this a good test?
-        
+
         >>> col, row, val = m.matrix.getValuesCSR()
         >>> print(numerix.allequal(col, [0, 1, 2, 3]))
         True
@@ -949,7 +923,7 @@ class _PETScIdentityMatrix(_PETScMatrixFromShape):
     """
     def __init__(self, size, bandwidth=1, comm=PETSc.COMM_SELF):
         """Create a sparse matrix with `1` in the diagonal
-        
+
             >>> print(_PETScIdentityMatrix(size=3))
              1.000000      ---        ---    
                 ---     1.000000      ---    
@@ -958,11 +932,11 @@ class _PETScIdentityMatrix(_PETScMatrixFromShape):
         _PETScMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth=bandwidth, comm=comm)
         ids = numerix.arange(size)
         self.put(numerix.ones(size, 'd'), ids, ids)
-        
+
 class _PETScIdentityMeshMatrix(_PETScIdentityMatrix):
     def __init__(self, mesh, bandwidth=1):
         """Create a sparse matrix associated with a `Mesh` with `1` in the diagonal
-        
+
             >>> from fipy import Grid1D
             >>> from fipy.tools import serialComm
             >>> mesh = Grid1D(nx=3, communicator=serialComm)
@@ -971,12 +945,12 @@ class _PETScIdentityMeshMatrix(_PETScIdentityMatrix):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PETScIdentityMatrix.__init__(self, size=mesh.numberOfCells, bandwidth=bandwidth, 
+        _PETScIdentityMatrix.__init__(self, size=mesh.numberOfCells, bandwidth=bandwidth,
                                       comm=mesh.communicator.petsc4py_comm)
 
-def _test(): 
+def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
-    
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     _test()
