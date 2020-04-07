@@ -625,7 +625,7 @@ class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
             tmp = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth,
                                                  numberOfVariables=self.numberOfVariables,
                                                  numberOfEquations=self.numberOfEquations)
-            self.trilinosMatrix = m
+            self.trilinosMatrix = tmp
 
         self.trilinosMatrix.addAt(values, irow, jcol)
         self.trilinosMatrix.finalize()
