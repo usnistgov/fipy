@@ -516,7 +516,7 @@ class _PETScMatrixFromShape(_PETScMatrix):
             # cols are owned by everyone
             matrix.setSizes([[rows, None], [cols, None]])
             matrix.setType('aij') # sparse
-            matrix.setPreallocationNNZ(None) # FIXME: ??? #bandwidth)
+            matrix.setPreallocationNNZ(bandwidth)
 
         super(_PETScMatrixFromShape, self).__init__(matrix=matrix)
 
