@@ -14,6 +14,7 @@ def _suite():
         'matplotlib2DViewer',
         'matplotlib2DGridViewer',
         'matplotlib2DGridContourViewer',
+        'matplotlibStreamViewer',
         'matplotlibVectorViewer',
         ), base = __name__)
 
