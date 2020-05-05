@@ -132,7 +132,11 @@ class AbstractMatplotlibViewer(AbstractViewer):
 
     def _make_mappable(self):
         import matplotlib
-        return matplotlib.cm.ScalarMappable(norm=self.norm, cmap=self.cmap)
+        mappable = matplotlib.cm.ScalarMappable(norm=self.norm, cmap=self.cmap)
+        # ignored, but needed for matplotlib < 3.0 (Py2k)
+        mappable.set_array(self.vars[0].value)
+
+        return mappable
 
     @property
     def mappable(self):
