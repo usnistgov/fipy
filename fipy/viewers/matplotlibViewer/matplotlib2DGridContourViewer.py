@@ -55,11 +55,11 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
         self._plot()
 
     def _getSuitableVars(self, vars):
-        from fipy.meshes.grid2D import Grid2D
+        from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
         from fipy.meshes.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in AbstractMatplotlib2DViewer._getSuitableVars(self, vars) \
-          if ((isinstance(var.mesh, Grid2D)
+          if ((isinstance(var.mesh, NonUniformGrid2D)
                or isinstance(var.mesh, UniformGrid2D))
               and isinstance(var, CellVariable))]
         if len(vars) == 0:
