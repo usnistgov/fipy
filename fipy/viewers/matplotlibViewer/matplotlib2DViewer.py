@@ -4,7 +4,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer, _ColorBar
+from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
 
 __all__ = ["Matplotlib2DViewer"]
 from future.utils import text_to_native_str
@@ -15,6 +15,16 @@ class AbstractMatplotlib2DViewer(AbstractMatplotlibViewer):
         if figaspect == 'auto':
             figaspect = self.vars[0].mesh.aspect2D
         return figaspect
+
+    def _plot(self):
+        zmin, zmax = self._autoscale(vars=self.vars,
+                                     datamin=self._getLimit(('datamin', 'zmin')),
+                                     datamax=self._getLimit(('datamax', 'zmax')))
+
+        self.norm.vmin = zmin
+        self.norm.vmax = zmax
+
+        self.mappable.set_norm(self.norm)
 
 class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
     """
@@ -108,6 +118,8 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
         return [vars[0]]
 
     def _plot(self):
+        super(Matplotlib2DViewer, self)._plot()
+
 ##         plt.clf()
 
 ##         ## Added garbage collection since matplotlib objects seem to hang
@@ -117,16 +129,10 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
 
         Z = self.vars[0].value
 
-        self.norm.vmin = self._getLimit(('datamin', 'zmin'))
-        self.norm.vmax = self._getLimit(('datamax', 'zmax'))
-
         rgba = self.cmap(self.norm(Z))
 
         self.collection.set_facecolors(rgba)
         self.collection.set_edgecolors(rgba)
-
-        if self.colorbar is not None:
-            self.colorbar.plot() #vmin=zmin, vmax=zmax)
 
 ##        plt.xlim(xmin=self._getLimit('xmin'),
 ##                 xmax=self._getLimit('xmax'))
