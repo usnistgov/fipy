@@ -152,11 +152,15 @@ class AbstractMatplotlibViewer(AbstractViewer):
             return isinstance(self.norm, colors.LogNorm)
 
         def fset(self, value):
+            zmin, zmax = self._autoscale(vars=self.vars,
+                                         datamin=self._getLimit(('datamin', 'zmin')),
+                                         datamax=self._getLimit(('datamax', 'zmax')))
+
             from matplotlib import colors
             if value:
-                self.norm = colors.LogNorm()
+                self.norm = colors.LogNorm(vmin=zmin, vmax=zmax)
             else:
-                self.norm = colors.Normalize()
+                self.norm = colors.Normalize(vmin=zmin, vmax=zmax)
 
             self.mappable.set_norm(self.norm)
 
