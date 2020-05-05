@@ -11,9 +11,18 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class AbstractMatplotlib2DViewer(AbstractMatplotlibViewer):
-    def figaspect(self, figaspect):
+    def figaspect(self, figaspect, colorbar):
         if figaspect == 'auto':
             figaspect = self.vars[0].mesh.aspect2D
+            # We can't make the colorbar, yet (as we don't even have a figure)
+            # so hardcode these values, based on
+            # https://matplotlib.org/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure.colorbar
+            #   fraction	0.15; fraction of original axes to use for colorbar
+            #   pad	        0.05 if vertical, 0.15 if horizontal; fraction of original axes between colorbar and new image axes
+            if colorbar == "vertical":
+                figaspect = figaspect * (1. - (0.15 + 0.05))
+            elif colorbar == "horizontal":
+                figaspect = figaspect / (1. - (0.15 + 0.15))
         return figaspect
 
     def _plot(self):

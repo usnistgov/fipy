@@ -96,7 +96,7 @@ class AbstractMatplotlibViewer(AbstractViewer):
         plt.ion()
 
         if axes is None:
-            w, h = plt.figaspect(self.figaspect(figaspect))
+            w, h = plt.figaspect(self.figaspect(figaspect, colorbar))
             self.fig = plt.figure(figsize=(w, h))
             self.axes = plt.gca()
         else:
@@ -127,7 +127,7 @@ class AbstractMatplotlibViewer(AbstractViewer):
         else:
             self.colorbar = None
 
-    def figaspect(self, figaspect):
+    def figaspect(self, figaspect, colorbar):
         return figaspect
 
     def _make_mappable(self):
