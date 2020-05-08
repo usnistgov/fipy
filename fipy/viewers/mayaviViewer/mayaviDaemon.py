@@ -193,9 +193,8 @@ class MayaviDaemon(Mayavi):
         if os.path.isfile(self.lockfname):
             self.update_pipeline(self.cellsource)
             self.update_pipeline(self.facesource)
-            lock = file(self.lockfname, 'r')
-            filename = lock.read()
-            lock.close()
+            with open(self.lockfname, 'r') as lock:
+                filename = lock.read()
             if len(filename) > 0:
                 mlab.savefig(filename)
             os.unlink(self.lockfname)

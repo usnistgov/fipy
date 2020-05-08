@@ -146,10 +146,9 @@ class MayaviClient(AbstractViewer):
                     self.vtkCellViewer.plot(filename=self.vtkcellfname)
                 if self.vtkFaceViewer is not None:
                     self.vtkFaceViewer.plot(filename=self.vtkfacefname)
-                lock = file(self.vtklockfname, 'w')
-                if filename is not None:
-                    lock.write(filename)
-                lock.close()
+                with open(self.vtklockfname, 'w') as lock:
+                    if filename is not None:
+                        lock.write(filename)
                 plotted = True
 
             if (time.time() - start > 30. / self.fps) and not plotted:
