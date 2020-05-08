@@ -33,6 +33,7 @@ try:
     from mayavi.sources.vtk_file_reader import VTKFileReader
     from pyface.timer.api import Timer
     from mayavi import mlab
+    from tvtk.api import tvtk
 except ImportError as e:
     from enthought.mayavi.plugins.app import Mayavi
     from enthought.mayavi.sources.vtk_file_reader import VTKFileReader
@@ -126,35 +127,51 @@ class MayaviDaemon(Mayavi):
 
         self.cellsource = self.setup_source(self.cellfname)
         if self.cellsource is not None:
-            tmp = [out.cell_data.scalars for out in self.cellsource.outputs \
+            # Newer versions of mayavi (> 4.7?) store AssignAttribute objects
+            # in outputs, so this clumsy bit is to extract the underlying
+            # DataSet objects.
+            # This is a clear sign that we're using this completely wrong,
+            # but, eh, who cares?
+            cellsourceoutputs = [out if isinstance(out, tvtk.DataSet)
+                                 else out.trait_get()['output']
+                                 for out in self.cellsource.outputs]
+            tmp = [out.cell_data.scalars for out in cellsourceoutputs \
                    if out.cell_data.scalars is not None]
             self.has_cell_scalars = (len(tmp) > 0)
-            tmp = [out.cell_data.vectors for out in self.cellsource.outputs \
+            tmp = [out.cell_data.vectors for out in cellsourceoutputs \
                    if out.cell_data.vectors is not None]
             self.has_cell_vectors = (len(tmp) > 0)
-            tmp = [out.cell_data.tensors for out in self.cellsource.outputs \
+            tmp = [out.cell_data.tensors for out in cellsourceoutputs \
                    if out.cell_data.tensors is not None]
             self.has_cell_tensors = (len(tmp) > 0)
 
             bounds = concatenate((bounds,
-                                  [out.bounds for out in self.cellsource.outputs]),
+                                  [out.bounds for out in cellsourceoutputs]),
                                  axis=0)
 
 
         self.facesource = self.setup_source(self.facefname)
         if self.facesource is not None:
-            tmp = [out.point_data.scalars for out in self.facesource.outputs \
+            # Newer versions of mayavi (> 4.7?) store AssignAttribute objects
+            # in outputs, so this clumsy bit is to extract the underlying
+            # DataSet objects.
+            # This is a clear sign that we're using this completely wrong,
+            # but, eh, who cares?
+            facesourceoutputs = [out if isinstance(out, tvtk.DataSet)
+                                 else out.trait_get()['output']
+                                 for out in self.facesource.outputs]
+            tmp = [out.point_data.scalars for out in facesourceoutputs \
                    if out.point_data.scalars is not None]
             self.has_face_scalars = (len(tmp) > 0)
-            tmp = [out.point_data.vectors for out in self.facesource.outputs \
+            tmp = [out.point_data.vectors for out in facesourceoutputs \
                    if out.point_data.vectors is not None]
             self.has_face_vectors = (len(tmp) > 0)
-            tmp = [out.point_data.tensors for out in self.facesource.outputs \
+            tmp = [out.point_data.tensors for out in facesourceoutputs \
                    if out.point_data.tensors is not None]
             self.has_face_tensors = (len(tmp) > 0)
 
             bounds = concatenate((bounds,
-                                  [out.bounds for out in self.facesource.outputs]),
+                                  [out.bounds for out in facesourceoutputs]),
                                  axis=0)
 
         boundsmin = bounds.min(axis=0)
