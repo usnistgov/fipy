@@ -118,61 +118,62 @@ class MayaviDaemon(Mayavi):
 
         self.fps = options.fps
 
+    @staticmethod
+    def _examine_data(source, datatype, bounds):
+        """Determine contents of source
+
+        Parameters
+        ----------
+        source : tvtk.DataSet
+        datatype : str
+            either "cell_data" or "point_data"
+        bounds : array_like
+            boundaries of existing data sets
+
+        Returns
+        -------
+        has : dict
+            whether each rank is present in data set
+        bounds : array_like
+            boundaries of data sets
+        """
+        ranks = ["scalars", "vectors", "tensors"]
+        has = dict((rank, False) for rank in ranks)
+
+        if source is not None:
+            # Newer versions of mayavi (> 4.7?) store AssignAttribute objects
+            # in outputs, so this clumsy bit is to extract the underlying
+            # DataSet objects.
+            # This is a clear sign that we're using this completely wrong,
+            # but, eh, who cares?
+            sourceoutputs = [out if isinstance(out, tvtk.DataSet)
+                             else out.trait_get()['output']
+                             for out in source.outputs]
+
+            for rank in ranks:
+                tmp = [out.trait_get()[datatype].trait_get()[rank]
+                       for out in sourceoutputs]
+                tmp = [out for out in tmp if out is not None]
+                has[rank] = (len(tmp) > 0)
+
+            bounds = concatenate((bounds,
+                                  [out.bounds for out in sourceoutputs]),
+                                 axis=0)
+
+        return has, bounds
+
     def run(self):
         MayaviDaemon._viewers.append(self)
 
         mlab.clf()
 
-        bounds = zeros((0, 6), 'l')
-
         self.cellsource = self.setup_source(self.cellfname)
-        if self.cellsource is not None:
-            # Newer versions of mayavi (> 4.7?) store AssignAttribute objects
-            # in outputs, so this clumsy bit is to extract the underlying
-            # DataSet objects.
-            # This is a clear sign that we're using this completely wrong,
-            # but, eh, who cares?
-            cellsourceoutputs = [out if isinstance(out, tvtk.DataSet)
-                                 else out.trait_get()['output']
-                                 for out in self.cellsource.outputs]
-            tmp = [out.cell_data.scalars for out in cellsourceoutputs \
-                   if out.cell_data.scalars is not None]
-            self.has_cell_scalars = (len(tmp) > 0)
-            tmp = [out.cell_data.vectors for out in cellsourceoutputs \
-                   if out.cell_data.vectors is not None]
-            self.has_cell_vectors = (len(tmp) > 0)
-            tmp = [out.cell_data.tensors for out in cellsourceoutputs \
-                   if out.cell_data.tensors is not None]
-            self.has_cell_tensors = (len(tmp) > 0)
-
-            bounds = concatenate((bounds,
-                                  [out.bounds for out in cellsourceoutputs]),
-                                 axis=0)
-
+        self.has_cell, bounds = self._examine_data(source=self.cellsource, datatype="cell_data",
+                                                   bounds=zeros((0, 6), 'l'))
 
         self.facesource = self.setup_source(self.facefname)
-        if self.facesource is not None:
-            # Newer versions of mayavi (> 4.7?) store AssignAttribute objects
-            # in outputs, so this clumsy bit is to extract the underlying
-            # DataSet objects.
-            # This is a clear sign that we're using this completely wrong,
-            # but, eh, who cares?
-            facesourceoutputs = [out if isinstance(out, tvtk.DataSet)
-                                 else out.trait_get()['output']
-                                 for out in self.facesource.outputs]
-            tmp = [out.point_data.scalars for out in facesourceoutputs \
-                   if out.point_data.scalars is not None]
-            self.has_face_scalars = (len(tmp) > 0)
-            tmp = [out.point_data.vectors for out in facesourceoutputs \
-                   if out.point_data.vectors is not None]
-            self.has_face_vectors = (len(tmp) > 0)
-            tmp = [out.point_data.tensors for out in facesourceoutputs \
-                   if out.point_data.tensors is not None]
-            self.has_face_tensors = (len(tmp) > 0)
-
-            bounds = concatenate((bounds,
-                                  [out.bounds for out in facesourceoutputs]),
-                                 axis=0)
+        self.has_face, bounds = self._examine_data(source=self.facesource, datatype="point_data",
+                                                   bounds=bounds)
 
         boundsmin = bounds.min(axis=0)
         boundsmax = bounds.max(axis=0)
@@ -261,37 +262,50 @@ class MayaviDaemon(Mayavi):
 
         return clip
 
-    def view_data(self):
-        """Sets up the mayavi pipeline for the visualization.
+    def _view_data(self, source, has, has_scale_bar, cell_data=False):
+        """Determine contents of source
+
+        Parameters
+        ----------
+        source : tvtk.DataSet
+        has : dict
+            whether each rank is present in data set
+        has_scale_bar : bool
+            whether a scale bar has already been created
+        cell_data : bool
+            whether source contains cell_data that may need conversion
+            to point_data
+
+        Returns
+        -------
+        has_scale_bar : bool
+            whether a scale bar has been created
         """
-        has_scale_bar = False
-        if self.cellsource is not None:
-            clip = self.clip_data(self.cellsource)
+        if source is not None:
+            clip = self.clip_data(source)
 
-            if self.has_cell_scalars:
-                s = mlab.pipeline.surface(clip, vmin=self.datamin, vmax=self.datamax)
-                s.module_manager.scalar_lut_manager.show_scalar_bar = True
-                has_scale_bar = True
-            p = mlab.pipeline.cell_to_point_data(clip)
-            if self.has_cell_vectors:
-                v = mlab.pipeline.vectors(p, vmin=self.datamin, vmax=self.datamax)
-                if not has_scale_bar:
-                    v.module_manager.scalar_lut_manager.show_scalar_bar = True
-                    has_scale_bar = True
-
-        if self.facesource is not None:
-            clip = self.clip_data(self.facesource)
-
-            if self.has_face_scalars:
+            if has["scalars"]:
                 s = mlab.pipeline.surface(clip, vmin=self.datamin, vmax=self.datamax)
                 if not has_scale_bar:
                     s.module_manager.scalar_lut_manager.show_scalar_bar = True
                     has_scale_bar = True
-            if self.has_face_vectors:
+            if cell_data:
+                clip = mlab.pipeline.cell_to_point_data(clip)
+            if has["vectors"]:
                 v = mlab.pipeline.vectors(clip, vmin=self.datamin, vmax=self.datamax)
                 if not has_scale_bar:
                     v.module_manager.scalar_lut_manager.show_scalar_bar = True
                     has_scale_bar = True
+
+        return has_scale_bar
+
+    def view_data(self):
+        """Sets up the mayavi pipeline for the visualization.
+        """
+        has_scale_bar = self._view_data(source=self.cellsource, has=self.has_cell,
+                                        has_scale_bar=False, cell_data=True)
+        has_scale_bar = self._view_data(source=self.facesource, has=self.has_face,
+                                        has_scale_bar=has_scale_bar)
 
 signal.signal(signal.SIGINT, MayaviDaemon._sigint_handler)
 try:
