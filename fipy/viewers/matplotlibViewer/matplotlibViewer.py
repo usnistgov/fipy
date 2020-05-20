@@ -96,16 +96,18 @@ class AbstractMatplotlibViewer(AbstractViewer):
         plt.ion()
 
         if axes is None:
-            w, h = plt.figaspect(self.figaspect(figaspect))
-            fig = plt.figure(figsize=(w, h))
+            w, h = plt.figaspect(self.figaspect(figaspect, colorbar))
+            self.fig = plt.figure(figsize=(w, h))
             self.axes = plt.gca()
         else:
             self.axes = axes
-            fig = axes.get_figure()
+            self.fig = axes.get_figure()
 
-        self.id = fig.number
+        self.id = self.fig.number
 
         self.axes.set_title(self.title)
+
+        self._mappable = None
 
         import matplotlib
         # Set the colormap and norm to correspond to the data for which
@@ -115,16 +117,32 @@ class AbstractMatplotlibViewer(AbstractViewer):
         else:
             self.cmap = cmap
 
-        if colorbar:
-            self.colorbar = _ColorBar(viewer=self)
-        else:
-            self.colorbar = None
-
         self.norm = None
         self.log = log
 
-    def figaspect(self, figaspect):
+        if colorbar:
+            self.colorbar = self.fig.colorbar(mappable=self.mappable,
+                                              orientation=colorbar,
+                                              label=self.vars[0].name)
+        else:
+            self.colorbar = None
+
+    def figaspect(self, figaspect, colorbar):
         return figaspect
+
+    def _make_mappable(self):
+        import matplotlib
+        mappable = matplotlib.cm.ScalarMappable(norm=self.norm, cmap=self.cmap)
+        # ignored, but needed for matplotlib < 3.0 (Py2k)
+        mappable.set_array(self.vars[0].value)
+
+        return mappable
+
+    @property
+    def mappable(self):
+        if self._mappable is None:
+            self._mappable = self._make_mappable()
+        return self._mappable
 
     def log():
         doc = "logarithmic data scaling"
@@ -134,14 +152,17 @@ class AbstractMatplotlibViewer(AbstractViewer):
             return isinstance(self.norm, colors.LogNorm)
 
         def fset(self, value):
+            zmin, zmax = self._autoscale(vars=self.vars,
+                                         datamin=self._getLimit(('datamin', 'zmin')),
+                                         datamax=self._getLimit(('datamax', 'zmax')))
+
             from matplotlib import colors
             if value:
-                self.norm = colors.LogNorm()
+                self.norm = colors.LogNorm(vmin=zmin, vmax=zmax)
             else:
-                self.norm = colors.Normalize()
+                self.norm = colors.Normalize(vmin=zmin, vmax=zmax)
 
-            if self.colorbar is not None:
-                self.colorbar.set_norm(self.norm)
+            self.mappable.set_norm(self.norm)
 
         return locals()
 
@@ -150,8 +171,6 @@ class AbstractMatplotlibViewer(AbstractViewer):
     def plot(self, filename = None):
         from matplotlib import pyplot as plt
 
-        fig = self.axes.get_figure()
-
         plt.ioff()
 
         self._plot()
@@ -159,7 +178,7 @@ class AbstractMatplotlibViewer(AbstractViewer):
         plt.draw()
 
         try:
-            fig.canvas.flush_events()
+            self.fig.canvas.flush_events()
         except NotImplementedError:
             pass
 
@@ -173,10 +192,10 @@ class AbstractMatplotlibViewer(AbstractViewer):
             clear_output(wait=True)
             display(self)
         else:
-            fig.show()
+            self.fig.show()
 
         if filename is not None:
-            fig.savefig(filename)
+            self.fig.savefig(filename)
 
     def _validFileExtensions(self):
         return ["""
@@ -196,50 +215,10 @@ class AbstractMatplotlibViewer(AbstractViewer):
         """
         from IPython.core.pylabtools import print_figure, retina_figure
 
-        fig = self.axes.get_figure()
         if _isretina():
-            return retina_figure(fig)
+            return retina_figure(self.fig)
         else:
-            return print_figure(fig, "png")
-
-class _ColorBar(object):
-    def __init__(self, viewer, vmin=-1, vmax=1, orientation="vertical"):
-        self.viewer = viewer
-
-        import matplotlib
-        cbax, kw = matplotlib.colorbar.make_axes(viewer.axes, orientation=orientation)
-
-        # ColorbarBase derives from ScalarMappable and puts a colorbar
-        # in a specified axes, so it has everything needed for a
-        # standalone colorbar.  There are many more kwargs, but the
-        # following gives a basic continuous colorbar with ticks
-        # and labels.
-        import matplotlib.colors as colors
-        norm = colors.Normalize(vmin=vmin, vmax=vmax)
-        self._cb = matplotlib.colorbar.ColorbarBase(cbax, norm=norm, cmap=viewer.cmap,
-                                                    orientation=orientation)
-        self._cb.set_label(viewer.vars[0].name)
-
-        self.formatter = None
-
-    def get_norm(self):
-        return self._cb.get_norm()
-
-    def set_norm(self, value):
-        self._cb.set_norm(value)
-        if self.formatter is None:
-            from matplotlib import colors, ticker
-            if isinstance(value, colors.LogNorm):
-                self._cb.formatter = ticker.LogFormatterMathtext()
-            else:
-                self._cb.formatter = ticker.ScalarFormatter()
-
-    norm = property(fget=get_norm, fset=set_norm, doc="data normalization")
-
-    def plot(self): #, vmin, vmax):
-        self._cb.set_norm(self.viewer.norm)
-        self._cb.cmap = self.viewer.cmap
-        self._cb.draw_all()
+            return print_figure(self.fig, "png")
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

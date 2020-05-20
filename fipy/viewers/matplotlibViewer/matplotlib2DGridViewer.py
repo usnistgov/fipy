@@ -47,14 +47,6 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
                                             cmap=cmap, colorbar=colorbar, axes=axes, figaspect=figaspect,
                                             **kwlimits)
 
-        xmin, ymin = self.vars[0].mesh.extents['min']
-        xmax, ymax = self.vars[0].mesh.extents['max']
-
-        self.image = self.axes.imshow(self._data,
-                                      extent=(xmin, xmax, ymin, ymax),
-                                      vmin=0, vmax=1,
-                                      cmap=self.cmap)
-
         self.axes.set_xlim(xmin=self._getLimit('xmin'),
                            xmax=self._getLimit('xmax'))
 
@@ -90,19 +82,24 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
         # this viewer can only display one variable
         return [vars[0]]
 
+    def _make_mappable(self):
+        xmin, ymin = self.vars[0].mesh.extents['min']
+        xmax, ymax = self.vars[0].mesh.extents['max']
+
+        self.image = self.axes.imshow(self._data,
+                                      extent=(xmin, xmax, ymin, ymax),
+                                      norm=self.norm,
+                                      cmap=self.cmap)
+        return self.image
+
     @property
     def _data(self):
         from fipy.tools.numerix import array, reshape
         return reshape(array(self.vars[0]), self.vars[0].mesh.shape[::-1])[::-1]
 
     def _plot(self):
-        self.norm.vmin = self._getLimit(('datamin', 'zmin'))
-        self.norm.vmax = self._getLimit(('datamax', 'zmax'))
-
-        self.image.set_data(self.norm(self._data))
-
-        if self.colorbar is not None:
-            self.colorbar.plot()
+        super(Matplotlib2DGridViewer, self)._plot()
+        self.image.set_data(self._data)
 
 def _test():
     from fipy.viewers.viewer import _test2D

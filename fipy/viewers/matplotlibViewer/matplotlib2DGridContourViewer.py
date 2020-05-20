@@ -55,11 +55,11 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
         self._plot()
 
     def _getSuitableVars(self, vars):
-        from fipy.meshes.grid2D import Grid2D
+        from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
         from fipy.meshes.uniformGrid2D import UniformGrid2D
         from fipy.variables.cellVariable import CellVariable
         vars = [var for var in AbstractMatplotlib2DViewer._getSuitableVars(self, vars) \
-          if ((isinstance(var.mesh, Grid2D)
+          if ((isinstance(var.mesh, NonUniformGrid2D)
                or isinstance(var.mesh, UniformGrid2D))
               and isinstance(var, CellVariable))]
         if len(vars) == 0:
@@ -69,6 +69,8 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
         return [vars[0]]
 
     def _plot(self):
+        super(Matplotlib2DGridContourViewer, self)._plot()
+
 ##         plt.clf()
 
 ##         ## Added garbage collection since matplotlib objects seem to hang
@@ -82,15 +84,10 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
         Z = self.vars[0].value
         X, Y, Z = [v.reshape(shape, order='F') for v in (X, Y, Z)]
 
-        zmin, zmax = self._autoscale(vars=self.vars,
-                                     datamin=self._getLimit(('datamin', 'zmin')),
-                                     datamax=self._getLimit(('datamax', 'zmax')))
-
-        self.norm.vmin = zmin
-        self.norm.vmax = zmax
-
         numberOfContours = 10
         smallNumber = 1e-7
+        zmin = self.norm.vmin
+        zmax = self.norm.vmax
         diff = zmax - zmin
 
         if diff < smallNumber:
@@ -105,10 +102,6 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
 
         self.axes.set_ylim(ymin=self._getLimit('ymin'),
                            ymax=self._getLimit('ymax'))
-
-        if self.colorbar is not None:
-            self.colorbar.plot()
-
 
 def _test():
     from fipy.viewers.viewer import _test2D
