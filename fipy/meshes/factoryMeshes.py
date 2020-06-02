@@ -5,7 +5,7 @@ __docformat__ = 'restructuredtext'
 from fipy.tools import parallelComm
 from fipy.tools import numerix
 
-__all__ = ["Grid3D", "Grid2D", "Grid1D", "CylindricalGrid2D", "CylindricalGrid1D"]
+__all__ = ["Grid3D", "Grid2D", "Grid1D", "CylindricalGrid2D", "CylindricalGrid1D", "SphericalGrid1D"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
@@ -286,6 +286,47 @@ def CylindricalGrid1D(dr=None, nr=None, Lr=None,
         from fipy.meshes.cylindricalNonUniformGrid1D import CylindricalNonUniformGrid1D
         return CylindricalNonUniformGrid1D(dx=dx, nx=nx, origin=origin, overlap=overlap, communicator=parallelComm)
 
+def SphericalGrid1D(dr=None, nr=None, Lr=None,
+                    dx=1., nx=None, Lx=None,
+                    origin=(0,), overlap=2, communicator=parallelComm):
+
+    r""" Factory function to select between `SphericalUniformGrid1D` and
+    `SphericalNonUniformGrid1D`. If `Lr` is specified the length of the
+    domain is always `Lr` regardless of `dr`, unless `dr` is a list of
+    spacings, in which case `Lr` will be the sum of `dr`.
+
+    Parameters
+    ----------
+    dr : float
+        Grid spacing in the radial direction. Alternative: `dx`.
+    nr : int
+        Number of cells in the radial direction. Alternative: `nx`.
+    Lr : float
+        Domain length in the radial direction. Alternative: `Lx`.
+    overlap : int
+        the number of overlapping cells for parallel
+        simulations. Generally 2 is adequate. Higher order equations or
+        discretizations require more.
+    communicator : ~fipy.tools.comms.commWrapper.CommWrapper
+        Generally, `fipy.tools.serialComm` or `fipy.tools.parallelComm`.
+        Select `~fipy.tools.serialComm` to create a serial mesh when
+        running in parallel; mostly used for test purposes.
+    """
+
+    if dr is not None:
+        dx = dr
+
+    nx = nr or nx
+    Lx = Lr or Lx
+
+    if numerix.getShape(dx) == ():
+        dx, nx = _dnl(dx, nx, Lx)
+        from fipy.meshes.sphericalUniformGrid1D import SphericalUniformGrid1D
+        return SphericalUniformGrid1D(dx=dx, nx=nx or 1, origin=origin, overlap=overlap, communicator=parallelComm)
+    else:
+        from fipy.meshes.sphericalNonUniformGrid1D import SphericalNonUniformGrid1D
+        return SphericalNonUniformGrid1D(dx=dx, nx=nx, origin=origin, overlap=overlap, communicator=parallelComm)
+    
 def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
