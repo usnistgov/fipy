@@ -31,7 +31,7 @@ class SphericalUniformGrid1D(UniformGrid1D):
                                       nx=self.args['nx'],
                                       origin=self.args['origin'] + numerix.array(vector),
                                       overlap=self.args['overlap'])
-    
+
     @property
     def _faceAreas(self):
         return self.faceCenters[0].value * self.faceCenters[0].value

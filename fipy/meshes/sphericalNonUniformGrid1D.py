@@ -26,7 +26,7 @@ class SphericalNonUniformGrid1D(NonUniformGrid1D):
         >>> print(mesh.cellCenters)
         [[ 0.5  2.   4.5]]
 
-        >>> print(numerix.allclose(mesh.cellVolumes, (0.5, 4., 13.5))) # doctest: +PROCESSOR_0
+        >>> print(numerix.allclose(mesh.cellVolumes, (0.5, 13., 94.5))) # doctest: +PROCESSOR_0
         True
 
         >>> mesh = SphericalNonUniformGrid1D(nx = 2, dx = (1, 2, 3))
@@ -37,7 +37,7 @@ class SphericalNonUniformGrid1D(NonUniformGrid1D):
         >>> mesh = SphericalNonUniformGrid1D(nx=2, dx=(1., 2.)) + ((1.,),)
         >>> print(mesh.cellCenters)
         [[ 1.5  3. ]]
-        >>> print(numerix.allclose(mesh.cellVolumes, (1.5, 6))) # doctest: +PROCESSOR_0
+        >>> print(numerix.allclose(mesh.cellVolumes, (3.5, 28))) # doctest: +PROCESSOR_0
         True
 
     """
