@@ -26,6 +26,8 @@ def _suite():
         'fipy.meshes.cylindricalUniformGrid2D',
         'fipy.meshes.cylindricalNonUniformGrid1D',
         'fipy.meshes.cylindricalNonUniformGrid2D',
+        'fipy.meshes.sphericalUniformGrid1D',
+        'fipy.meshes.sphericalNonUniformGrid1D',
         'fipy.meshes.factoryMeshes',
         'fipy.meshes.abstractMesh',
         'fipy.meshes.representations.gridRepresentation'))
