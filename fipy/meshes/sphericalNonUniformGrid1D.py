@@ -83,8 +83,9 @@ class SphericalNonUniformGrid1D(NonUniformGrid1D):
         an error on solve() when `nx` is a float.
 
             >>> from fipy import CellVariable, DiffusionTerm
-            >>> mesh = SphericalNonUniformGrid1D(nx=3., dx=(1., 2., 3.)) + ((0.01,))
+            >>> mesh = SphericalNonUniformGrid1D(nx=3., dx=(1., 2., 3.))
             >>> var = CellVariable(mesh=mesh)
+            >>> var.constrain(0., where=mesh.facesRight)
             >>> DiffusionTerm().solve(var)
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell

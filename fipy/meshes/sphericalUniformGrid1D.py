@@ -62,8 +62,9 @@ class SphericalUniformGrid1D(UniformGrid1D):
         everything works as expected. The following was broken, now fixed.
 
             >>> from fipy import *
-            >>> mesh = SphericalUniformGrid1D(nx=3., dx=1.) + ((0.01,))
+            >>> mesh = SphericalUniformGrid1D(nx=3., dx=1.)
             >>> var = CellVariable(mesh=mesh)
+            >>> var.constrain(0., where=mesh.facesRight)
             >>> DiffusionTerm().solve(var)
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell
