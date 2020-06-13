@@ -454,7 +454,7 @@ class _PETScMatrix(_SparseMatrix):
         >>> mesh = fp.Grid1D(nx=10)
         >>> ids = fp.CellVariable(mesh=mesh, value=mesh._globalOverlappingCellIDs)
 
-        >>> mat = _PETScColMeshMatrix(mesh=mesh, rows=1)
+        >>> mat = _PETScColMeshMatrix(mesh=mesh, rows=fp.parallelComm.Nproc)
         >>> mat.put(vector=ids.value,
         ...         id1=[fp.parallelComm.procID] * mesh.numberOfCells,
         ...         id2=mesh._localOverlappingCellIDs,
