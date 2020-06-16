@@ -79,7 +79,6 @@ are needed to run the test:
   ``PARALLEL_2``
     :term:`FiPy` must be running on two processors.
 
-
   ``PROCESSOR_0``
     Whether serial or parallel, the test will only be run on
     processor ID 0.
