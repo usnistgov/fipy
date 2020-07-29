@@ -272,7 +272,7 @@ request to update the fipy-feedstock_ with:
 Announce
 --------
 
-Make an announcement to `fipy@nist.gov`_
+Make an announcement to `fipy@list.nist.gov`_
 
 .. _GitHub: https://github.com/
 .. _fipy repository: https://github.com/usnistgov/fipy
@@ -285,5 +285,5 @@ Make an announcement to `fipy@nist.gov`_
 .. _Squash and merge: https://help.github.com/en/articles/about-pull-request-merges/#squash-and-merge-your-pull-request-commits
 .. _twine: https://pypi.org/project/twine
 .. _fipy-feedstock: https://github.com/conda-forge/fipy-feedstock
-.. _fipy@nist.gov: mailto:fipy@nist.gov
+.. _fipy@list.nist.gov: mailto:fipy@list.nist.gov
 .. _feedstock maintainers: https://github.com/conda-forge/fipy-feedstock#feedstock-maintainers
