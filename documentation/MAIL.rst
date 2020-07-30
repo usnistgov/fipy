@@ -19,7 +19,7 @@ Send a message to <mailto:fipy+help@list.nist.gov> to learn other mailing
 list configurations you can change.
 
 The list is hosted as a Google group.  If you are subscribed with a Google
-account, you can intract with the list, configure your subscription, and
+account, you can interact with the list, configure your subscription, and
 see the archives at https://list.nist.gov/fipy.
 
 List Archive
