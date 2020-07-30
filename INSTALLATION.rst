@@ -28,7 +28,7 @@ for details on how to use :term:`FiPy`.
       endorse the views expressed, or concur with the facts presented on
       these sites. Further, NIST does not endorse any commercial products
       that may be mentioned on these sites. Please address comments about
-      this page to fipy@nist.gov.
+      this page to fipy@list.nist.gov.
 
 -----------------------
 Pre-Installed on Binder

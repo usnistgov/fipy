@@ -72,4 +72,4 @@ please `contact us`_.
 
 .. _Python:         http://www.python.org/
 .. _doctest:        http://www.python.org/doc/current/lib/module-doctest.html
-.. _contact us:     mailto:fipy@nist.gov
+.. _contact us:     mailto:fipy@list.nist.gov
