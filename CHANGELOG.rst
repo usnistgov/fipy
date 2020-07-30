@@ -11,6 +11,37 @@ Change Log
 Version |release|
 -----------------
 
+This release fixes assorted viewer issues, fixes a problem with convection
+boundary conditions, and introduces spherical meshes.
+
+Pulls
+-----
+
+- Move mailing list
+  (`#747 <https://github.com/usnistgov/fipy/pull/747>`_)
+- Spherical1D (Uniform and NonUniform) meshes
+  (`#732 <https://github.com/usnistgov/fipy/pull/732>`_)
+  Thanks to `@klkuhlm <https://github.com/klkuhlm>`_.
+-  fix: fix neumann bcs using constraints with convection terms
+  (`#719 <https://github.com/usnistgov/fipy/pull/719>`_)
+  Thanks to `@atismer <https://github.com/atismer>`_.
+- Add vertex index inversions
+  (`#716 <https://github.com/usnistgov/fipy/pull/716>`_)
+
+Fixes
+-----
+
+- `#726 <https://github.com/usnistgov/fipy/issues/726>`_:
+  MayaviClient not compatible with Python 3
+- `#663 <https://github.com/usnistgov/fipy/issues/663>`_:
+  datamin/datamax argument ignored by viewer
+- `#662 <https://github.com/usnistgov/fipy/issues/662>`_:
+  Issues Scaling Colorbar with Datamin and Datamax Args
+
+--------------------------
+Version 3.4.1 - 2020-02-14
+--------------------------
+
 This release is primarily for compatibility with :ref:`NumPy` 1.18.
 
 Pulls
