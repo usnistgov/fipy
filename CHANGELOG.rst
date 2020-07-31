@@ -14,6 +14,17 @@ Version |release|
 This release fixes assorted viewer issues, fixes a problem with convection
 boundary conditions, and introduces spherical meshes.
 
+.. attention::
+
+   There are
+   `known <https://travis-ci.com/github/usnistgov/fipy/builds/177879719>`_
+   `failures <https://app.circleci.com/pipelines/github/usnistgov/fipy/248/workflows/4babcd98-aafc-4931-a353-64bbb3c93cb6>`_
+   with the VTK viewers (bitrot has started to set
+   in since the `demise of Python 2.7`_).  There's also a new parallel
+   failure in `NonUniformGrid1D` that we need to figure out.
+
+.. _demise of Python 2.7: https://www.python.org/dev/peps/pep-0373/#update
+
 Pulls
 -----
 
