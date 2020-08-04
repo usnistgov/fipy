@@ -612,16 +612,16 @@ workflows:
       - build-binaries:
           requires:
             - conda3_env
-            - build-36-docs
-            - pylint
-            - flake8
-            - black
-            - pyspelling
-            - test-27-pysparse
-            - test-27-trilinos-serial
-            - test-27-trilinos-parallel
-            - test-27-petsc-serial
-            - test-27-petsc-parallel
-            - test-36-scipy
-            - test-36-petsc-serial
-            - test-36-petsc-parallel
+#             - build-36-docs
+#             - pylint
+#             - flake8
+#             - black
+#             - pyspelling
+#             - test-27-pysparse
+#             - test-27-trilinos-serial
+#             - test-27-trilinos-parallel
+#             - test-27-petsc-serial
+#             - test-27-petsc-parallel
+#             - test-36-scipy
+#             - test-36-petsc-serial
+#             - test-36-petsc-parallel
