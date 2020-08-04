@@ -92,7 +92,20 @@ Recommended Method
       activate <MYFIPYENV>
       pip install fipy
 
+  .. attention::
+
+     Bit rot has started to set in for Python 2.7.  One consequence is that
+     :class:`~fipy.viewers.vtkViewer.VTKViewer`\s can raise errors
+     (probably other uses of :term:`Mayavi`, too).  You can remedy this by
+     creating your environment with::
+
+     $ conda create --name <MYFIPYENV> --channel conda-forge python=2.7 fipy "traitsui<7.0.0"
+
 * enable this new environment with::
+
+    $ conda activate <MYFIPYENV>
+
+  or
 
     $ source activate <MYFIPYENV>
 
