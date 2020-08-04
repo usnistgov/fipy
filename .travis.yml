@@ -48,7 +48,7 @@ before_install:
   - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy "gmsh<4.0";
   - source activate test-environment
   - conda remove --quiet --channel conda-forge --force fipy
-  - if [[ $PY3k -eq 0 ]]; then
+  - if [[ $PY3K -eq 0 ]]; then
       conda install --channel conda-forge "traitsui<7.0.0";
     fi
   # Useful for debugging any issues with conda
