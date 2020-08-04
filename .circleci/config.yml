@@ -70,6 +70,11 @@ commands:
           at: ~/project
 
       - run:
+          name: Output Environment
+          command: |
+            conda env export --prefix ~/project/<< parameters.condaenv >>
+
+      - run:
           name: Run Tests
           no_output_timeout: 30m
           command: |
@@ -79,11 +84,6 @@ commands:
               << parameters.mpirun >> python setup.py test > /dev/null 2>&1 || true;
             fi
             << parameters.mpirun >> python setup.py test --deprecation-errors
-
-      - run:
-          name: Output Environment
-          command: |
-            conda env export --prefix ~/project/<< parameters.condaenv >>
 
       - store_artifacts:
           path: test-reports
