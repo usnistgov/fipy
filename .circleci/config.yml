@@ -229,7 +229,7 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=2.7 fipy traitsui<=7.0.0"
+          packages: "python=2.7 fipy \"traitsui<=7.0.0\""
           condaenv: "test-environment-27"
 
   conda3_env:
