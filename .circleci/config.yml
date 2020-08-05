@@ -70,6 +70,11 @@ commands:
           at: ~/project
 
       - run:
+          name: Output Environment
+          command: |
+            conda env export --prefix ~/project/<< parameters.condaenv >>
+
+      - run:
           name: Run Tests
           no_output_timeout: 30m
           command: |
@@ -79,11 +84,6 @@ commands:
               << parameters.mpirun >> python setup.py test > /dev/null 2>&1 || true;
             fi
             << parameters.mpirun >> python setup.py test --deprecation-errors
-
-      - run:
-          name: Output Environment
-          command: |
-            conda env export --prefix ~/project/<< parameters.condaenv >>
 
       - store_artifacts:
           path: test-reports
@@ -229,7 +229,7 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=2.7 fipy"
+          packages: "python=2.7 fipy \"traitsui<7.0.0\""
           condaenv: "test-environment-27"
 
   conda3_env:
@@ -612,16 +612,16 @@ workflows:
       - build-binaries:
           requires:
             - conda3_env
-            - build-36-docs
-            - pylint
-            - flake8
-            - black
-            - pyspelling
-            - test-27-pysparse
-            - test-27-trilinos-serial
-            - test-27-trilinos-parallel
-            - test-27-petsc-serial
-            - test-27-petsc-parallel
-            - test-36-scipy
-            - test-36-petsc-serial
-            - test-36-petsc-parallel
+#             - build-36-docs
+#             - pylint
+#             - flake8
+#             - black
+#             - pyspelling
+#             - test-27-pysparse
+#             - test-27-trilinos-serial
+#             - test-27-trilinos-parallel
+#             - test-27-petsc-serial
+#             - test-27-petsc-parallel
+#             - test-36-scipy
+#             - test-36-petsc-serial
+#             - test-36-petsc-parallel

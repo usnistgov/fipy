@@ -115,9 +115,15 @@ Now, we iterate the problem to equilibrium, plotting as we go
 Since there is nothing to maintain the concentration separation in this problem,
 we verify that the concentrations have become uniform
 
->>> print(substitutionals[0].allclose(0.45, rtol = 1e-7, atol = 1e-7))
+.. note::
+
+   Between `petsc=3.13.2=h82b89f7_0` and `petsc=3.13.4=h82b89f7_0`, PETSc
+   ceased achieving 1e-7 tolerance when solving on 2 processors on Linux.
+   Solving on macOS is OK. Solving on 1, 3, or 4 processors is OK.
+
+>>> print(substitutionals[0].allclose(0.45, rtol = 2e-7, atol = 2e-7))
 True
->>> print(substitutionals[1].allclose(0.45, rtol = 1e-7, atol = 1e-7))
+>>> print(substitutionals[1].allclose(0.45, rtol = 2e-7, atol = 2e-7))
 True
 """
 from __future__ import unicode_literals
