@@ -214,9 +214,9 @@ package.
 
 .. envvar:: FIPY_SOLVERS
 
-   Forces the use of the specified suite of linear solvers. Valid
-   (case-insensitive) choices are "``pysparse``", "``trilinos``",
-   "``no-pysparse``", "``scipy``" and "``pyamg``".
+   Forces the use of the specified suite of linear solvers.  Valid
+   (case-insensitive) choices are "``petsc``", "``scipy``", "``pysparse``",
+   "``trilinos``", "``no-pysparse``", and "``pyamg``".
 
 .. envvar:: FIPY_VERBOSE_SOLVER
 
@@ -241,6 +241,14 @@ package.
    If present, causes lazily evaluated :term:`FiPy` 
    :class:`~fipy.variables.variable.Variable` objects to
    retain their value.
+
+.. envvar:: PETSC_OPTIONS
+
+   `PETSc configuration options`_.  Set to "`-help`" and run a script with
+   :ref:`PETSC` solvers in order to see what options are possible.  Ignored
+   if solver is not :ref:`PETSC`.
+
+.. _PETSc configuration options: https://docs.petsc.org/en/latest/manual/other/#sec-options
 
 .. _PARALLEL:
 
