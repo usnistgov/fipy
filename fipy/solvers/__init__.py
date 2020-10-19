@@ -50,6 +50,9 @@ if solver is None and _desired_solver in ["pysparse", None]:
 
 if solver is None and _desired_solver in ["petsc", None]:
     try:
+        import petsc4py
+        petsc4py.init()
+
         from fipy.solvers.petsc import *
         __all__.extend(petsc.__all__)
 
