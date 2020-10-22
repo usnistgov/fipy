@@ -28,8 +28,7 @@ class _PETScMatrix(_SparseMatrix):
         return _PETScMatrix(matrix=self.matrix.copy())
 
     def __getitem__(self, index):
-        self.matrix.assemblyBegin()
-        self.matrix.assemblyEnd()
+        self.matrix.assemble()
         m = self.matrix[index]
         if numerix.shape(m) != ():
             m = _PETScMatrix(matrix=m)
@@ -41,11 +40,9 @@ class _PETScMatrix(_SparseMatrix):
         return _SparseMatrix.__str__(self)
 
     def __iadd__(self, other):
-        self.matrix.assemblyBegin()
-        self.matrix.assemblyEnd()
+        self.matrix.assemble()
         if other != 0:
-            other.matrix.assemblyBegin()
-            other.matrix.assemblyEnd()
+            other.matrix.assemble()
             self.matrix = self.matrix + other.matrix
         return self
 
@@ -74,10 +71,8 @@ class _PETScMatrix(_SparseMatrix):
         if other == 0:
             return self
         else:
-            self.matrix.assemblyBegin()
-            self.matrix.assemblyEnd()
-            other.matrix.assemblyBegin()
-            other.matrix.assemblyEnd()
+            self.matrix.assemble()
+            other.matrix.assemble()
             return _PETScMatrix(matrix=self.matrix + other.matrix)
 
     __radd__ = __add__
@@ -87,10 +82,8 @@ class _PETScMatrix(_SparseMatrix):
         if other == 0:
             return self
         else:
-            self.matrix.assemblyBegin()
-            self.matrix.assemblyEnd()
-            other.matrix.assemblyBegin()
-            other.matrix.assemblyEnd()
+            self.matrix.assemble()
+            other.matrix.assemble()
             return _PETScMatrix(matrix=self.matrix - other.matrix)
 
     def __rsub__(self, other):
@@ -98,10 +91,8 @@ class _PETScMatrix(_SparseMatrix):
 
     def __isub__(self, other):
         if other != 0:
-            self.matrix.assemblyBegin()
-            self.matrix.assemblyEnd()
-            other.matrix.assemblyBegin()
-            other.matrix.assemblyEnd()
+            self.matrix.assemble()
+            other.matrix.assemble()
             self.matrix = self.matrix - other.matrix
         return self
 
@@ -139,12 +130,10 @@ class _PETScMatrix(_SparseMatrix):
         """
         N = self._shape[1]
 
-        self.matrix.assemblyBegin()
-        self.matrix.assemblyEnd()
+        self.matrix.assemble()
 
         if isinstance(other, _PETScMatrix):
-            other.matrix.assemblyBegin()
-            other.matrix.assemblyEnd()
+            other.matrix.assemble()
             copy = self.copy()
             copy.matrix = self.matrix.matMult(other.matrix)
             return copy
@@ -196,6 +185,7 @@ class _PETScMatrix(_SparseMatrix):
                 ---     3.141593      ---    
              2.500000      ---        ---    
         """
+        self.matrix.assemble(self.matrix.AssemblyType.FLUSH)
         self.matrix.setValuesCSR(*self._ijv2csr(id2, id1, vector))
 
     def _ijv2csr(self, i, j, v):
@@ -268,15 +258,13 @@ class _PETScMatrix(_SparseMatrix):
 
     def take(self, id1, id2):
         # FIXME: This is a terrible implementation
-        self.matrix.assemblyBegin()
-        self.matrix.assemblyEnd()
+        self.matrix.assemble()
         vector = [self.matrix[i, j] for i, j in zip(id1, id2)]
         vector = numerix.array(vector, 'd')
         return vector
 
     def takeDiagonal(self):
-        self.matrix.assemblyBegin()
-        self.matrix.assemblyEnd()
+        self.matrix.assemble()
 
         return self.matrix.getDiagonal().array
 
@@ -292,6 +280,7 @@ class _PETScMatrix(_SparseMatrix):
                 ---     3.141593   2.960000  
              2.500000      ---     2.200000  
         """
+        self.matrix.assemble(self.matrix.AssemblyType.FLUSH)
         self.matrix.setValuesCSR(*self._ijv2csr(id2, id1, vector),
                                  addv=True)
 
@@ -337,8 +326,7 @@ class _PETScMatrix(_SparseMatrix):
         [ 12.3         10.           3.           3.14159265   2.96
            2.5          2.2       ]
         """
-        self.matrix.assemblyBegin()
-        self.matrix.assemblyEnd()
+        self.matrix.assemble()
 
         return self.matrix.getValuesCSR()
 
@@ -483,8 +471,7 @@ class _PETScMatrix(_SparseMatrix):
          [ 0.  8.]
          [ 0.  9.]]
         """
-        self.matrix.assemblyBegin()
-        self.matrix.assemblyEnd()
+        self.matrix.assemble()
         return _PETScMatrix(matrix=self.matrix.transpose())
 
 class _PETScMatrixFromShape(_PETScMatrix):
@@ -859,8 +846,7 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
         """
         N = self._shape[1]
 
-        self.matrix.assemblyBegin()
-        self.matrix.assemblyEnd()
+        self.matrix.assemble()
 
         if isinstance(other, (_PETScMatrix, PETSc.Vec)):
             return _PETScMatrixFromShape.__mul__(self, other=other)
@@ -882,8 +868,7 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
                 return self._petsc2fipyGhost(vec=y)
 
     def takeDiagonal(self):
-        self.matrix.assemblyBegin()
-        self.matrix.assemblyEnd()
+        self.matrix.assemble()
 
         y = PETSc.Vec().createGhost(ghosts=self._m2m.ghosts.astype('int32'),
                                     size=(len(self._m2m.localNonOverlappingColIDs), None),
@@ -903,8 +888,7 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
 
         >>> m = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=1)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
-        >>> m.matrix.assemblyBegin()
-        >>> m.matrix.assemblyEnd()
+        >>> m.matrix.assemble()
 
         # FIXME: are these names even right? is this a good test?
 
