@@ -39,8 +39,7 @@ class LinearLUSolver(PETScSolver):
         #       see: http://www.mcs.anl.gov/petsc/petsc-dev/src/ksp/ksp/examples/tutorials/ex52.c.html
         # PETSc.PC().setFactorSolverType("superlu")
         
-        L.assemblyBegin()
-        L.assemblyEnd()
+        L.assemble()
         ksp.setOperators(L)
         ksp.setFromOptions()
         
