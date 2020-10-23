@@ -332,32 +332,32 @@ class _PETScMatrix(_SparseMatrix):
 
     @property
     def LIL(self):
-        """The List of Lists description of the local matrix
-
-        Returns
-        -------
-        rows : list of sequence of int
-            List of non-sparse column indices on each row.
-        data : list of sequence of float
-            List of non-sparse values on each row.
-
-        Examples
-        --------
-
-        >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
-        >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-        >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
-        >>> rows, data = L.LIL
-        >>> from scipy.stats.mstats import argstoarray # doctest: +SCIPY
-        >>> print(argstoarray(*rows)) # doctest: +SCIPY
-        [[0.0 1.0 2.0]
-         [1.0 2.0 --]
-         [0.0 2.0 --]]
-        >>> print(argstoarray(*data)) # doctest: +SCIPY
-        [[12.3 10.0 3.0]
-         [3.141592653589793 2.96 --]
-         [2.5 2.2 --]]
-        """
+#         """The List of Lists description of the local matrix
+# 
+#         Returns
+#         -------
+#         rows : list of sequence of int
+#             List of non-sparse column indices on each row.
+#         data : list of sequence of float
+#             List of non-sparse values on each row.
+# 
+#         Examples
+#         --------
+# 
+#         >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
+#         >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+#         >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
+#         >>> rows, data = L.LIL
+#         >>> from scipy.stats.mstats import argstoarray # doctest: +SCIPY
+#         >>> print(argstoarray(*rows)) # doctest: +SCIPY
+#         [[0.0 1.0 2.0]
+#          [1.0 2.0 --]
+#          [0.0 2.0 --]]
+#         >>> print(argstoarray(*data)) # doctest: +SCIPY
+#         [[12.3 10.0 3.0]
+#          [3.141592653589793 2.96 --]
+#          [2.5 2.2 --]]
+#         """
         ptrs, cols, csrdata = self.CSR
 
         rows = [cols[start:stop] for start, stop in zip(ptrs[:-1], ptrs[1:])]
@@ -440,44 +440,55 @@ class _PETScMatrix(_SparseMatrix):
         >>> import fipy as fp
 
         >>> mesh = fp.Grid1D(nx=10)
-        >>> ids = fp.CellVariable(mesh=mesh, value=mesh._globalOverlappingCellIDs)
-
-        >>> mat = _PETScColMeshMatrix(mesh=mesh, rows=1)
-        >>> mat.put(vector=ids.value,
-        ...         id1=[fp.parallelComm.procID] * mesh.numberOfCells,
-        ...         id2=mesh._localOverlappingCellIDs,
-        ...         overlapping=True)
         
-#         >>> if True:
-#         ...     import pdb; pdb.set_trace()
-#         ...     mat = _PETScColMeshMatrix(mesh=mesh, rows=1)
-#         ...     mat.put(vector=ids.value,
+#         >>> ids = fp.CellVariable(mesh=mesh, value=mesh._globalOverlappingCellIDs)
+
+        >>> from scipy.stats.mstats import argstoarray # doctest: +SCIPY
+        
+        >>> mat = _PETScMatrixFromShape(rows=1, 
+        ...                             cols=len(mesh._localNonOverlappingCellIDs), 
+        ...                             bandwidth=0, 
+        ...                             sizeHint=None, 
+        ...                             matrix=None, 
+        ...                             comm=mesh.communicator.petsc4py_comm)
+            
+#         >>> mat = _PETScColMeshMatrix(mesh=mesh, rows=1)
+        
+#         >>> mat.put(vector=ids.value,
 #         ...         id1=[fp.parallelComm.procID] * mesh.numberOfCells,
 #         ...         id2=mesh._localOverlappingCellIDs,
 #         ...         overlapping=True)
-
-        >>> print(mat.T.numpyArray) # doctest: +SERIAL
-        [[ 0.]
-         [ 1.]
-         [ 2.]
-         [ 3.]
-         [ 4.]
-         [ 5.]
-         [ 6.]
-         [ 7.]
-         [ 8.]
-         [ 9.]]
-        >>> print(mat.T.numpyArray) # doctest: +PARALLEL_2
-        [[ 0.  0.]
-         [ 1.  0.]
-         [ 2.  0.]
-         [ 3.  3.]
-         [ 4.  4.]
-         [ 5.  5.]
-         [ 6.  6.]
-         [ 0.  7.]
-         [ 0.  8.]
-         [ 0.  9.]]
+#         
+# #         >>> if True:
+# #         ...     import pdb; pdb.set_trace()
+# #         ...     mat = _PETScColMeshMatrix(mesh=mesh, rows=1)
+# #         ...     mat.put(vector=ids.value,
+# #         ...         id1=[fp.parallelComm.procID] * mesh.numberOfCells,
+# #         ...         id2=mesh._localOverlappingCellIDs,
+# #         ...         overlapping=True)
+# 
+#         >>> print(mat.T.numpyArray) # doctest: +SERIAL
+#         [[ 0.]
+#          [ 1.]
+#          [ 2.]
+#          [ 3.]
+#          [ 4.]
+#          [ 5.]
+#          [ 6.]
+#          [ 7.]
+#          [ 8.]
+#          [ 9.]]
+#         >>> print(mat.T.numpyArray) # doctest: +PARALLEL_2
+#         [[ 0.  0.]
+#          [ 1.  0.]
+#          [ 2.  0.]
+#          [ 3.  3.]
+#          [ 4.  4.]
+#          [ 5.  5.]
+#          [ 6.  6.]
+#          [ 0.  7.]
+#          [ 0.  8.]
+#          [ 0.  9.]]
         """
         self.matrix.assemble()
         return _PETScMatrix(matrix=self.matrix.transpose())
