@@ -47,26 +47,26 @@ class _PETScMatrix(_SparseMatrix):
         return self
 
     def __add__(self, other):
-        """
-        Add two sparse matrices
-
-            >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
-            >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-            >>> print(L + _PETScIdentityMatrix(size=3))
-             1.000000  10.000000   3.000000  
-                ---     4.141593      ---    
-             2.500000      ---     1.000000  
-
-            >>> print(L + 0)
-                ---    10.000000   3.000000  
-                ---     3.141593      ---    
-             2.500000      ---        ---    
-
-            >>> print(L + 3)
-            Traceback (most recent call last):
-            ...
-            AttributeError: 'int' object has no attribute 'matrix'
-        """
+#         """
+#         Add two sparse matrices
+# 
+#             >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
+#             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+#             >>> print(L + _PETScIdentityMatrix(size=3))
+#              1.000000  10.000000   3.000000  
+#                 ---     4.141593      ---    
+#              2.500000      ---     1.000000  
+# 
+#             >>> print(L + 0)
+#                 ---    10.000000   3.000000  
+#                 ---     3.141593      ---    
+#              2.500000      ---        ---    
+# 
+#             >>> print(L + 3)
+#             Traceback (most recent call last):
+#             ...
+#             AttributeError: 'int' object has no attribute 'matrix'
+#         """
 
         if other == 0:
             return self
@@ -97,37 +97,37 @@ class _PETScMatrix(_SparseMatrix):
         return self
 
     def __mul__(self, other):
-        """
-        Multiply a sparse matrix by another sparse matrix
-
-            >>> L1 = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
-            >>> L1.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-            >>> L2 = _PETScIdentityMatrix(size=3, bandwidth=3)
-            >>> L2.put([4.38], [2], [1])
-            >>> L2.put([4.38,12357.2,1.1], [2,1,0], [1,0,2])
-
-            >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
-            ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
-            ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
-
-            >>> numerix.allclose((L1 * L2).numpyArray, tmp)
-            1
-
-        or a sparse matrix by a vector
-
-            >>> tmp = numerix.array((29., 6.28318531, 2.5))
-            >>> numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
-            1
-
-        or a vector by a sparse matrix
-
-            >>> tmp = numerix.array((7.5, 16.28318531,  3.))
-            >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp)
-            1
-
-        (The multiplication is broken.  Numpy is calling __rmul__ for every
-        element instead of with the whole array.)
-        """
+#         """
+#         Multiply a sparse matrix by another sparse matrix
+# 
+#             >>> L1 = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
+#             >>> L1.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+#             >>> L2 = _PETScIdentityMatrix(size=3, bandwidth=3)
+#             >>> L2.put([4.38], [2], [1])
+#             >>> L2.put([4.38,12357.2,1.1], [2,1,0], [1,0,2])
+# 
+#             >>> tmp = numerix.array(((1.23572000e+05, 2.31400000e+01, 3.00000000e+00),
+#             ...                      (3.88212887e+04, 3.14159265e+00, 0.00000000e+00),
+#             ...                      (2.50000000e+00, 0.00000000e+00, 2.75000000e+00)))
+# 
+#             >>> numerix.allclose((L1 * L2).numpyArray, tmp)
+#             1
+# 
+#         or a sparse matrix by a vector
+# 
+#             >>> tmp = numerix.array((29., 6.28318531, 2.5))
+#             >>> numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
+#             1
+# 
+#         or a vector by a sparse matrix
+# 
+#             >>> tmp = numerix.array((7.5, 16.28318531,  3.))
+#             >>> numerix.allclose(numerix.array((1,2,3),'d') * L1, tmp)
+#             1
+# 
+#         (The multiplication is broken.  Numpy is calling __rmul__ for every
+#         element instead of with the whole array.)
+#         """
         N = self._shape[1]
 
         self.matrix.assemble()
@@ -175,16 +175,16 @@ class _PETScMatrix(_SparseMatrix):
         return list(range(self._shape[1])), list(range(self._shape[0]))
 
     def put(self, vector, id1, id2):
-        """
-        Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
-
-            >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
-            >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-            >>> print(L)
-                ---    10.000000   3.000000  
-                ---     3.141593      ---    
-             2.500000      ---        ---    
-        """
+#         """
+#         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
+# 
+#             >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
+#             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+#             >>> print(L)
+#                 ---    10.000000   3.000000  
+#                 ---     3.141593      ---    
+#              2.500000      ---        ---    
+#         """
         self.matrix.assemble(self.matrix.AssemblyType.FLUSH)
         self.matrix.setValuesCSR(*self._ijv2csr(id2, id1, vector))
 
@@ -232,21 +232,21 @@ class _PETScMatrix(_SparseMatrix):
         return row_ptr.astype('int32'), cols.astype('int32'), vals
 
     def putDiagonal(self, vector):
-        """
-        Put elements of `vector` along diagonal of matrix
-
-            >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=1)
-            >>> L.putDiagonal([3.,10.,numerix.pi])
-            >>> print(L)
-             3.000000      ---        ---    
-                ---    10.000000      ---    
-                ---        ---     3.141593  
-            >>> L.putDiagonal([10.,3.])
-            >>> print(L)
-            10.000000      ---        ---    
-                ---     3.000000      ---    
-                ---        ---     3.141593  
-        """
+#         """
+#         Put elements of `vector` along diagonal of matrix
+# 
+#             >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=1)
+#             >>> L.putDiagonal([3.,10.,numerix.pi])
+#             >>> print(L)
+#              3.000000      ---        ---    
+#                 ---    10.000000      ---    
+#                 ---        ---     3.141593  
+#             >>> L.putDiagonal([10.,3.])
+#             >>> print(L)
+#             10.000000      ---        ---    
+#                 ---     3.000000      ---    
+#                 ---        ---     3.141593  
+#         """
         if isinstance(vector, (int, float)):
             ids = numerix.arange(self._shape[0])
             tmp = numerix.zeros((self._shape[0],), 'd')
@@ -269,17 +269,17 @@ class _PETScMatrix(_SparseMatrix):
         return self.matrix.getDiagonal().array
 
     def addAt(self, vector, id1, id2):
-        """
-        Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
-
-            >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
-            >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-            >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
-            >>> print(L)
-            12.300000  10.000000   3.000000  
-                ---     3.141593   2.960000  
-             2.500000      ---     2.200000  
-        """
+#         """
+#         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
+# 
+#             >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
+#             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+#             >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
+#             >>> print(L)
+#             12.300000  10.000000   3.000000  
+#                 ---     3.141593   2.960000  
+#              2.500000      ---     2.200000  
+#         """
         self.matrix.assemble(self.matrix.AssemblyType.FLUSH)
         self.matrix.setValuesCSR(*self._ijv2csr(id2, id1, vector),
                                  addv=True)
@@ -299,33 +299,33 @@ class _PETScMatrix(_SparseMatrix):
 
     @property
     def CSR(self):
-        """The Compact Sparse Row description of the local matrix
-
-        Returns
-        -------
-        ptrs : array_like of int
-            Locations in `cols` and `data` vectors that start a row,
-            terminated with len(data) + 1
-        cols : array_like of int
-            Sequence of non-sparse column indices.
-        data : array_like of float
-            Sequence of non-sparse values.
-
-        Examples
-        --------
-
-        >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
-        >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-        >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
-        >>> ptrs, cols, data = L.CSR
-        >>> print(numerix.asarray(ptrs))
-        [0 3 5 7]
-        >>> print(numerix.asarray(cols))
-        [0 1 2 1 2 0 2]
-        >>> print(numerix.asarray(data))
-        [ 12.3         10.           3.           3.14159265   2.96
-           2.5          2.2       ]
-        """
+#         """The Compact Sparse Row description of the local matrix
+# 
+#         Returns
+#         -------
+#         ptrs : array_like of int
+#             Locations in `cols` and `data` vectors that start a row,
+#             terminated with len(data) + 1
+#         cols : array_like of int
+#             Sequence of non-sparse column indices.
+#         data : array_like of float
+#             Sequence of non-sparse values.
+# 
+#         Examples
+#         --------
+# 
+#         >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
+#         >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+#         >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
+#         >>> ptrs, cols, data = L.CSR
+#         >>> print(numerix.asarray(ptrs))
+#         [0 3 5 7]
+#         >>> print(numerix.asarray(cols))
+#         [0 1 2 1 2 0 2]
+#         >>> print(numerix.asarray(data))
+#         [ 12.3         10.           3.           3.14159265   2.96
+#            2.5          2.2       ]
+#         """
         self.matrix.assemble()
 
         return self.matrix.getValuesCSR()
@@ -447,6 +447,14 @@ class _PETScMatrix(_SparseMatrix):
         ...         id1=[fp.parallelComm.procID] * mesh.numberOfCells,
         ...         id2=mesh._localOverlappingCellIDs,
         ...         overlapping=True)
+        
+#         >>> if True:
+#         ...     import pdb; pdb.set_trace()
+#         ...     mat = _PETScColMeshMatrix(mesh=mesh, rows=1)
+#         ...     mat.put(vector=ids.value,
+#         ...         id1=[fp.parallelComm.procID] * mesh.numberOfCells,
+#         ...         id2=mesh._localOverlappingCellIDs,
+#         ...         overlapping=True)
 
         >>> print(mat.T.numpyArray) # doctest: +SERIAL
         [[ 0.]

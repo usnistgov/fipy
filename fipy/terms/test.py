@@ -7,25 +7,25 @@ import fipy.tests.testProgram
 def _suite():
 
     return _LateImportDocTestSuite(docTestModuleNames = (
-            'cellTerm',
-            'abstractDiffusionTerm',
+#             'cellTerm',
+#             'abstractDiffusionTerm',
             'diffusionTerm',
             'term',
-            'abstractConvectionTerm',
-            'transientTerm',
-            'powerLawConvectionTerm',
-            'exponentialConvectionTerm',
-            'upwindConvectionTerm',
-            'implicitSourceTerm',
-            'coupledBinaryTerm',
-            'abstractBinaryTerm',
-            'unaryTerm',
-            'nonDiffusionTerm',
-            'asymmetricConvectionTerm',
-            'binaryTerm',
-            'firstOrderAdvectionTerm',
-            'advectionTerm',
-            'vanLeerConvectionTerm'
+#             'abstractConvectionTerm',
+#             'transientTerm',
+#             'powerLawConvectionTerm',
+#             'exponentialConvectionTerm',
+#             'upwindConvectionTerm',
+#             'implicitSourceTerm',
+#             'coupledBinaryTerm',
+#             'abstractBinaryTerm',
+#             'unaryTerm',
+#             'nonDiffusionTerm',
+#             'asymmetricConvectionTerm',
+#             'binaryTerm',
+#             'firstOrderAdvectionTerm',
+#             'advectionTerm',
+#             'vanLeerConvectionTerm'
             ), base = __name__)
 
 if __name__ == '__main__':

@@ -6,14 +6,14 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportTestSuite(testModuleNames = (
-        'solvers.test',
+#         'solvers.test',
         'terms.test',
-        'tools.test',
+#         'tools.test',
         'matrices.test',
-        'meshes.test',
-        'variables.test',
-        'viewers.test',
-        'boundaryConditions.test',
+#         'meshes.test',
+#         'variables.test',
+#         'viewers.test',
+#         'boundaryConditions.test',
     ), base = __name__)
 
 if __name__ == '__main__':
