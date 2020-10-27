@@ -443,8 +443,16 @@ class _PETScMatrix(_SparseMatrix):
         
 #         >>> ids = fp.CellVariable(mesh=mesh, value=mesh._globalOverlappingCellIDs)
 
-        >>> from scipy.stats.mstats import argstoarray # doctest: +SCIPY
-        
+#         >>> from scipy.stats.mstats import argstoarray # doctest: +SCIPY
+
+# FAIL
+
+        >>> from scipy import integrate, optimize, signal, stats
+
+# OK
+
+        >>> from scipy import cluster, constants, fft, fftpack, interpolate, io, linalg, misc, ndimage, odr, sparse, spatial, special
+
         >>> mat = _PETScMatrixFromShape(rows=1, 
         ...                             cols=len(mesh._localNonOverlappingCellIDs), 
         ...                             bandwidth=0, 
