@@ -475,7 +475,8 @@ class _PETScMatrix(_SparseMatrix):
         return _PETScMatrix(matrix=self.matrix.transpose())
 
     def __del__(self):
-        self.matrix.destroy()
+        if self.matrix is not None:
+            self.matrix.destroy()
 
 class _PETScMatrixFromShape(_PETScMatrix):
 
