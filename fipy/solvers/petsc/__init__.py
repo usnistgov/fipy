@@ -1,3 +1,16 @@
+def _dealWithPETScImportPathologies():
+    ## The scipy import statement is added to allow PETSc to run
+    ## without having sporadic deadlocks. This is caused by weird
+    ## behavior in scipy and petsc4py depending on the order in which
+    ## modules are imported
+
+    try:
+        from scipy import stats
+    except:
+        pass
+
+# _dealWithPETScImportPathologies()
+
 from fipy.solvers.petsc.linearLUSolver import *
 from fipy.solvers.petsc.linearPCGSolver import *
 from fipy.solvers.petsc.linearGMRESSolver import *
