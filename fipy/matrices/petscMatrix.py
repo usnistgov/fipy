@@ -453,14 +453,7 @@ class _PETScMatrix(_SparseMatrix):
 
         >>> from scipy import cluster, constants, fft, fftpack, interpolate, io, linalg, misc, ndimage, odr, sparse, spatial, special
 
-        >>> mat = _PETScMatrixFromShape(rows=1, 
-        ...                             cols=len(mesh._localNonOverlappingCellIDs), 
-        ...                             bandwidth=0, 
-        ...                             sizeHint=None, 
-        ...                             matrix=None, 
-        ...                             comm=mesh.communicator.petsc4py_comm)
-            
-#         >>> mat = _PETScColMeshMatrix(mesh=mesh, rows=1)
+        >>> mat = _PETScColMeshMatrix(mesh=mesh, rows=1)
         
 #         >>> mat.put(vector=ids.value,
 #         ...         id1=[fp.parallelComm.procID] * mesh.numberOfCells,
