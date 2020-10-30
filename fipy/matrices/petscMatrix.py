@@ -151,6 +151,7 @@ class _PETScMatrix(_SparseMatrix):
                 y = PETSc.Vec().createWithArray(other, comm=self.matrix.comm)
                 result = y.duplicate()
                 self.matrix.mult(y, result)
+                y.destroy()
                 return result
             else:
                 raise TypeError
@@ -162,7 +163,10 @@ class _PETScMatrix(_SparseMatrix):
             y = x.duplicate()
             x[:] = other
             self.matrix.multTranspose(x, y)
-            return numerix.asarray(y)
+            arr = numerix.asarray(y)
+            x.destroy()
+            y.destroy()
+            return arr
         else:
             return self * other
 
@@ -682,7 +686,9 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
             Ghosted values
         """
         vec = self._fipy2petscGhost(var)
-        return self._petsc2fipyGhost(vec)
+        arr = self._petsc2fipyGhost(vec)
+        vec.destroy()
+        return arr
 
     def put(self, vector, id1, id2, overlapping=False):
         """Insert local overlapping values and coordinates into global
@@ -838,8 +844,10 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
         or a sparse matrix by a vector
 
             >>> tmp = numerix.array((29., 6.28318531, 2.5))
-            >>> numerix.allclose(L1 * numerix.array((1,2,3),'d'), tmp)
+            >>> vec = L1 * numerix.array((1,2,3),'d')
+            >>> numerix.allclose(vec, tmp)
             1
+            >>> _ = vec.destroy()
 
         or a vector by a sparse matrix
 
@@ -871,7 +879,10 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
                                             size=(len(self._m2m.localNonOverlappingColIDs), None),
                                             comm=self.matrix.comm)
                 self.matrix.mult(x, y)
-                return self._petsc2fipyGhost(vec=y)
+                arr = self._petsc2fipyGhost(vec=y)
+                x.destroy()
+                y.destroy()
+                return arr
 
     def takeDiagonal(self):
         self.matrix.assemble()
@@ -880,7 +891,9 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
                                     size=(len(self._m2m.localNonOverlappingColIDs), None),
                                     comm=self.matrix.comm)
         self.matrix.getDiagonal(result=y)
-        return self._petsc2fipyGhost(vec=y)
+        arr = self._petsc2fipyGhost(vec=y)
+        y.destroy()
+        return arr
 
     def flush(self):
         """Deletes the copy of the PETSc matrix held.

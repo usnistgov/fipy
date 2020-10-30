@@ -39,6 +39,10 @@ class PETScSolver(Solver):
 
     def _deleteGlobalMatrixAndVectors(self):
         self.matrix.flush()
+        if hasattr(self, "globalVectors"):
+            globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
+            overlappingVector.destroy()
+            overlappingRHSvector.destroy()
         del self.globalVectors
         
     def _solve(self):
@@ -71,25 +75,36 @@ class PETScSolver(Solver):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
-            residual, globalMatrix = self._calcResidualVector_()
+            residual = self._calcResidualVector_()
             
             residual.ghostUpdate()
             with residual.localForm() as lf:
-                residual = numerix.array(lf)
-            return residual
+                arr = numerix.array(lf)
+            residual.destroy()
+            return arr
 
     def _calcResidualVector_(self):
         globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
-        residual = globalMatrix * overlappingVector - overlappingRHSvector
-        return residual, globalMatrix
+        Lx = globalMatrix * overlappingVector
+        residual = Lx - overlappingRHSvector
+        Lx.destroy()
+        return residual
 
     def _calcResidual(self, residualFn=None):
         if residualFn is not None:
             return residualFn(self.var, self.matrix, self.RHSvector)
         else:
             comm = self.var.mesh.communicator
-            residual, globalMatrix = self._calcResidualVector_()
-            return comm.Norm2(residual)
+            residual = self._calcResidualVector_()
+            norm = comm.Norm2(residual)
+            residual.destroy()
+            return norm
         
     def _calcRHSNorm(self):
         return self.nonOverlappingRHSvector.Norm2()
+
+    def __del__(self):
+        if hasattr(self, "globalVectors"):
+            globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
+            overlappingVector.destroy()
+            overlappingRHSvector.destroy()
