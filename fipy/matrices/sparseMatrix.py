@@ -166,7 +166,9 @@ class _Mesh2Matrix(object):
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
         self.numberOfEquations = numberOfEquations
-        self.orderer = orderer
+
+        import weakref
+        self.orderer = weakref.WeakMethod(orderer)
 
     @staticmethod
     def _cellIDsToGlobalIDs(IDs, M, L):
@@ -227,7 +229,7 @@ class _Mesh2Matrix(object):
         else:
             mask = numerix.in1d(id1, globalNonOverlappihgIDs)
 
-        id1 = self.orderer(id1[mask])
+        id1 = self.orderer()(id1[mask])
         id2 = numerix.asarray(id2)[mask]
 
         return id1, id2, mask
@@ -270,7 +272,7 @@ class _Mesh2Matrix(object):
         if self._ghosts is None:
             self._ghosts = self.mesh._globalOverlappingCellIDs[~self.bodies]
             self._ghosts = self._cellIDsToGlobalRowIDs(self._ghosts)
-            self._ghosts = self.orderer(self._ghosts)
+            self._ghosts = self.orderer()(self._ghosts)
 
         return self._ghosts
 
@@ -296,7 +298,7 @@ class _RowColMesh2Matrix(_RowMesh2Matrix):
 
         id1, id2, mask = super(_RowColMesh2Matrix, self)._getStencil(id1, id2, overlapping)
 
-        id2 = self.orderer(id2)
+        id2 = self.orderer()(id2)
 
         return id1, id2, mask
 
