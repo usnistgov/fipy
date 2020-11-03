@@ -132,6 +132,15 @@ class _SparseMatrix(object):
     def T(self):
         raise NotImplementedError
 
+    def _matrix2mesh(self, ids):
+        """Convert matrix row indices to mesh cell indices
+        """
+        return ids
+
+    def _mesh2matrix(self, ids):
+        """Convert mesh cell indices to matrix row indices
+        """
+        return ids
 
 ##     def __array__(self):
 ##      shape = self._shape
@@ -143,30 +152,35 @@ class _Mesh2Matrix(object):
     _bodies = None
     _ghosts = None
 
-    def __init__(self, mesh, numberOfEquations=1, numberOfVariables=1,
-                 orderer=lambda IDs: IDs):
+    def __init__(self, mesh, matrix,
+                 numberOfEquations=1, numberOfVariables=1):
         """Creates a mapping between mesh cells and matrix rows and columns
 
         Parameters
         ----------
         mesh : ~fipy.meshes.mesh.Mesh
-            The `Mesh` to be mapped to a matrix
+            The `Mesh` to be mapped to a `_SparseMatrix`
+        matrix : ~fipy.matrices.sparseMatrix.SparseMatrix
+            The `_SparseMatrix` to be mapped to a `Mesh`
         numberOfVariables : int
             The local columns of the matrix are determined by
             `numberOfVariables * len(mesh._localNonOverlappingCellIDs)`.
         numberOfEquations : int
             The local rows of the matrix are determined by
             `numberOfEquations * len(mesh._localNonOverlappingCellIDs)`.
-        orderer : fn
-            Function that changes the order of IDs to satisfy matrix
-            construction requirements (Default returns IDs unchanged).
         """
         self.mesh = mesh
         self.numberOfVariables = numberOfVariables
         self.numberOfEquations = numberOfEquations
 
+        # Note: storing matrix directly results in a reference cycle
+        # between _PETScBaseMeshMatrix and _Mesh2Matrix, specifically
+        # between _PETScBaseMeshMatrix.matrix and _PETScBaseMeshMatrix._ao.
+        #
+        # See https://lists.mcs.anl.gov/pipermail/petsc-users/2020-October/042652.html
+        # and https://github.com/usnistgov/fipy/pull/761
         import weakref
-        self.orderer = weakref.WeakMethod(orderer)
+        self.matrix = weakref.ref(matrix)
 
     @staticmethod
     def _cellIDsToGlobalIDs(IDs, M, L):
@@ -227,7 +241,7 @@ class _Mesh2Matrix(object):
         else:
             mask = numerix.in1d(id1, globalNonOverlappihgIDs)
 
-        id1 = self.orderer()(id1[mask])
+        id1 = self.matrix()._mesh2matrix(id1[mask])
         id2 = numerix.asarray(id2)[mask]
 
         return id1, id2, mask
@@ -270,7 +284,7 @@ class _Mesh2Matrix(object):
         if self._ghosts is None:
             self._ghosts = self.mesh._globalOverlappingCellIDs[~self.bodies]
             self._ghosts = self._cellIDsToGlobalRowIDs(self._ghosts)
-            self._ghosts = self.orderer()(self._ghosts)
+            self._ghosts = self.matrix()._mesh2matrix(self._ghosts)
 
         return self._ghosts
 
@@ -296,7 +310,7 @@ class _RowColMesh2Matrix(_RowMesh2Matrix):
 
         id1, id2, mask = super(_RowColMesh2Matrix, self)._getStencil(id1, id2, overlapping)
 
-        id2 = self.orderer()(id2)
+        id2 = self.matrix()._mesh2matrix(id2)
 
         return id1, id2, mask
 

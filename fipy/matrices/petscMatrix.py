@@ -298,9 +298,6 @@ class _PETScMatrix(_SparseMatrix):
             ids = numerix.arange(len(vector))
             self.addAt(vector, ids, ids)
 
-    def _petsc2app(self, ids):
-        return ids
-
     @property
     def CSR(self):
         """The Compact Sparse Row description of the local matrix
@@ -406,8 +403,8 @@ class _PETScMatrix(_SparseMatrix):
 
         coo = self._scipy_csr.tocoo()
         return sparse.coo_matrix((coo.data,
-                                  (self._petsc2app(coo.row),
-                                   self._petsc2app(coo.col))),
+                                  (self._matrix2mesh(coo.row),
+                                   self._matrix2mesh(coo.col))),
                                  shape=coo.shape)
 
     @property
@@ -581,10 +578,14 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
 
         return self._ao_
 
-    def _petsc2app(self, ids):
+    def _matrix2mesh(self, ids):
+        """Convert matrix row indices to mesh cell indices
+        """
         return self._ao.petsc2app(ids)
 
-    def _app2petsc(self, ids):
+    def _mesh2matrix(self, ids):
+        """Convert mesh cell indices to matrix row indices
+        """
         return self._ao.app2petsc(ids.astype('int32'))
 
     def _fipy2petscGhost(self, var):
@@ -740,8 +741,8 @@ class _PETScRowMeshMatrix(_PETScBaseMeshMatrix):
             Object to convert between mesh coordinates and matrix coordinates.
         """
         if m2m is None:
-            m2m = _RowMesh2Matrix(mesh=mesh, numberOfEquations=numberOfEquations,
-                                  orderer=self._app2petsc)
+            m2m = _RowMesh2Matrix(mesh=mesh, matrix=self,
+                                  numberOfEquations=numberOfEquations)
 
         super(_PETScRowMeshMatrix, self).__init__(mesh=mesh,
                                                   rows=numberOfEquations * len(mesh._localNonOverlappingCellIDs),
@@ -771,8 +772,8 @@ class _PETScColMeshMatrix(_PETScBaseMeshMatrix):
         matrix : ~petsc4py.PETSc.Mat
             Pre-assembled PETSc matrix to use for storage.
         """
-        m2m = _ColMesh2Matrix(mesh=mesh, numberOfVariables=numberOfVariables,
-                              orderer=self._app2petsc)
+        m2m = _ColMesh2Matrix(mesh=mesh, matrix=self,
+                              numberOfVariables=numberOfVariables)
 
         super(_PETScColMeshMatrix, self).__init__(mesh=mesh,
                                                   rows=rows,
@@ -804,10 +805,9 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
         matrix : ~petsc4py.PETSc.Mat
             Pre-assembled PETSc matrix to use for storage.
         """
-        m2m = _RowColMesh2Matrix(mesh=mesh,
+        m2m = _RowColMesh2Matrix(mesh=mesh, matrix=self,
                                  numberOfVariables=numberOfVariables,
-                                 numberOfEquations=numberOfEquations,
-                                 orderer=self._app2petsc)
+                                 numberOfEquations=numberOfEquations)
 
         super(_PETScMeshMatrix, self).__init__(mesh=mesh,
                                                cols=numberOfVariables * len(mesh._localNonOverlappingCellIDs),

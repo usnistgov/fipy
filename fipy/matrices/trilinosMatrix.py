@@ -910,7 +910,8 @@ class _TrilinosRowMeshMatrix(_TrilinosBaseMeshMatrix):
             Object to convert between mesh coordinates and matrix coordinates.
         """
         if m2m is None:
-            m2m = _RowMesh2Matrix(mesh=mesh, numberOfEquations=numberOfEquations)
+            m2m = _RowMesh2Matrix(mesh=mesh, matrix=self,
+                                  numberOfEquations=numberOfEquations)
 
         rows = numberOfEquations * mesh.globalNumberOfCells
         super(_TrilinosRowMeshMatrix, self).__init__(mesh=mesh,
@@ -958,7 +959,8 @@ class _TrilinosColMeshMatrix(_TrilinosBaseMeshMatrix):
         matrix : ~PyTrilinos.Epetra.CrsMatrix
             Pre-assembled Trilinos matrix to use for storage.
         """
-        m2m = _ColMesh2Matrix(mesh=mesh, numberOfVariables=numberOfVariables)
+        m2m = _ColMesh2Matrix(mesh=mesh, matrix=self,
+                              numberOfVariables=numberOfVariables)
 
         cols = numberOfVariables * mesh.globalNumberOfCells
         super(_TrilinosColMeshMatrix, self).__init__(mesh=mesh,
@@ -1010,7 +1012,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         matrix : ~PyTrilinos.Epetra.CrsMatrix
             Pre-assembled Trilinos matrix to use for storage.
         """
-        m2m = _RowColMesh2Matrix(mesh=mesh,
+        m2m = _RowColMesh2Matrix(mesh=mesh, matrix=self,
                                  numberOfVariables=numberOfVariables,
                                  numberOfEquations=numberOfEquations)
 
