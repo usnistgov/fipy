@@ -41,9 +41,7 @@ if solver is None and _desired_solver in ["pysparse", None]:
             raise SerialSolverError()
         from fipy.solvers.pysparse import *
         __all__.extend(pysparse.__all__)
-        from fipy.matrices.pysparseMatrix import _PysparseRowMeshMatrix as _RowMeshMatrix
-        from fipy.matrices.pysparseMatrix import _PysparseColMeshMatrix as _ColMeshMatrix
-        from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix as _MeshMatrix
+        matrix_suite = "Pysparse"
         solver = "pysparse"
     except Exception as inst:
         _exceptions["pysparse"] = inst
@@ -65,9 +63,7 @@ if solver is None and _desired_solver in ["petsc", None]:
         else:
             parallelComm = SerialPETScCommWrapper()
 
-        from fipy.matrices.petscMatrix import _PETScRowMeshMatrix as _RowMeshMatrix
-        from fipy.matrices.petscMatrix import _PETScColMeshMatrix as _ColMeshMatrix
-        from fipy.matrices.petscMatrix import _PETScMeshMatrix as _MeshMatrix
+        matrix_suite = "PETSc"
         solver = "petsc"
     except Exception as inst:
         _exceptions["petsc"] = inst
@@ -88,18 +84,14 @@ if solver is None and _desired_solver in ["trilinos", "no-pysparse", None]:
 
         if _desired_solver != "no-pysparse":
             try:
-                from fipy.matrices.pysparseMatrix import _PysparseRowMeshMatrix as _RowMeshMatrix
-                from fipy.matrices.pysparseMatrix import _PysparseColMeshMatrix as _ColMeshMatrix
-                from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix as _MeshMatrix
+                matrix_suite = "Pysparse"
                 solver = "trilinos"
             except ImportError:
                 pass
                 
         if solver is None:
             # no-pysparse requested or pysparseMatrix failed to import
-            from fipy.matrices.trilinosMatrix import _TrilinosRowMeshMatrix as _RowMeshMatrix
-            from fipy.matrices.trilinosMatrix import _TrilinosColMeshMatrix as _ColMeshMatrix
-            from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix as _MeshMatrix
+            matrix_suite = "Trilinos"
             solver = "no-pysparse"
     except Exception as inst:
         _exceptions["trilinos"] = inst
@@ -110,9 +102,7 @@ if solver is None and _desired_solver in ["scipy", None]:
             raise SerialSolverError()
         from fipy.solvers.scipy import *
         __all__.extend(scipy.__all__)
-        from fipy.matrices.scipyMatrix import _ScipyRowMeshMatrix as _RowMeshMatrix
-        from fipy.matrices.scipyMatrix import _ScipyColMeshMatrix as _ColMeshMatrix
-        from fipy.matrices.scipyMatrix import _ScipyMeshMatrix as _MeshMatrix
+        matrix_suite = "Scipy"
         solver = "scipy"
     except Exception as inst:
         _exceptions["scipy"] = inst
@@ -123,9 +113,7 @@ if solver is None and _desired_solver in ["pyamg", None]:
             raise SerialSolverError()
         from fipy.solvers.pyAMG import *
         __all__.extend(pyAMG.__all__)
-        from fipy.matrices.scipyMatrix import _ScipyRowMeshMatrix as _RowMeshMatrix
-        from fipy.matrices.scipyMatrix import _ScipyColMeshMatrix as _ColMeshMatrix
-        from fipy.matrices.scipyMatrix import _ScipyMeshMatrix as _MeshMatrix
+        matrix_suite = "Scipy"
         solver = "pyamg"
     except Exception as inst:
         _exceptions["pyamg"] = inst
@@ -136,12 +124,20 @@ if solver is None and _desired_solver in ["pyamgx", None]:
             raise  SerialSolverError('pyamgx')
         from fipy.solvers.pyamgx import *
         __all__.extend(pyamgx.__all__)
-        from fipy.matrices.scipyMatrix import _ScipyRowMeshMatrix as _RowMeshMatrix
-        from fipy.matrices.scipyMatrix import _ScipyColMeshMatrix as _ColMeshMatrix
-        from fipy.matrices.scipyMatrix import _ScipyMeshMatrix as _MeshMatrix
+        matrix_suite = "Scipy"
         solver = "pyamgx"
     except Exception as inst:
         _exceptions["pyamgx"] = inst
+
+def _import_matrix(matrix_suite, matrix_kind):
+    from importlib import import_module
+
+    m = import_module("fipy.matrices.{}Matrix".format(matrix_suite.lower()))
+    return getattr(m, "_{}{}MeshMatrix".format(matrix_suite, matrix_kind))
+
+_RowMeshMatrix = _import_matrix(matrix_suite, "Row")
+_ColMeshMatrix = _import_matrix(matrix_suite, "Col")
+_MeshMatrix = _import_matrix(matrix_suite, "")
 
 if solver is None:
     if _desired_solver is None:
