@@ -132,8 +132,6 @@ class _SparseMatrix(object):
     def T(self):
         raise NotImplementedError
 
-    def destroy(self):
-        pass
 
 ##     def __array__(self):
 ##      shape = self._shape

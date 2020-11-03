@@ -478,13 +478,6 @@ class _PETScMatrix(_SparseMatrix):
         self.matrix.assemble()
         return _PETScMatrix(matrix=self.matrix.transpose())
 
-    def destroy(self):
-        if self.matrix is not None:
-            self.matrix.destroy()
-
-    def __del__(self):
-        self.destroy()
-
 class _PETScMatrixFromShape(_PETScMatrix):
 
     def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None, comm=PETSc.COMM_SELF):
@@ -587,11 +580,6 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
                                                comm=comm.petsc4py_comm)
 
         return self._ao_
-
-    def destroy(self):
-        if hasattr(self, "_ao_"):
-            self._ao_.destroy()
-        super(_PETScBaseMeshMatrix, self).destroy()
 
     def _petsc2app(self, ids):
         return self._ao.petsc2app(ids)
