@@ -15,6 +15,11 @@ def _checkForTVTK():
             from tvtk.api import tvtk
         except ImportError as e:
             from enthought.tvtk.api import tvtk
+
+        # With Python 2.7 end-of-life, bitrot has set in.  While tvtk is
+        # available from conda-forge, it can raise an exception when it
+        # internally does this import.
+        from collections.abc import Sequence
     except Exception:
         hasTVTK = False
     return hasTVTK
