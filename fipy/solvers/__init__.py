@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from builtins import str
 import os
+from importlib import import_module
 
 from fipy.tools.parser import _parseSolver
 
@@ -30,6 +31,21 @@ class SerialSolverError(Exception):
 
 _exceptions = {}
 
+def _import_matrix(suite, kind):
+    """`from fipy.matrices.suiteMatrix import _SuiteKindMatrix`
+    """
+    m = import_module("fipy.matrices.{}Matrix".format(suite.lower()))
+    return getattr(m, "_{}{}Matrix".format(suite, kind))
+
+def _import_mesh_matrices(suite):
+    """Import row-, column-, and general mesh matrices from `suite`
+    """
+    _RowMeshMatrix = _import_matrix(suite=suite, kind="RowMesh")
+    _ColMeshMatrix = _import_matrix(suite=suite, kind="ColMesh")
+    _MeshMatrix = _import_matrix(suite=suite, kind="Mesh")
+
+    return _RowMeshMatrix, _ColMeshMatrix, _MeshMatrix
+
 solver = None
 
 from fipy.tools.comms.dummyComm import DummyComm
@@ -41,7 +57,7 @@ if solver is None and _desired_solver in ["pysparse", None]:
             raise SerialSolverError()
         from fipy.solvers.pysparse import *
         __all__.extend(pysparse.__all__)
-        matrix_suite = "Pysparse"
+        _mesh_matrices = _import_mesh_matrices(suite="Pysparse")
         solver = "pysparse"
     except Exception as inst:
         _exceptions["pysparse"] = inst
@@ -63,7 +79,7 @@ if solver is None and _desired_solver in ["petsc", None]:
         else:
             parallelComm = SerialPETScCommWrapper()
 
-        matrix_suite = "PETSc"
+        _mesh_matrices = _import_mesh_matrices(suite="PETSc")
         solver = "petsc"
     except Exception as inst:
         _exceptions["petsc"] = inst
@@ -84,14 +100,14 @@ if solver is None and _desired_solver in ["trilinos", "no-pysparse", None]:
 
         if _desired_solver != "no-pysparse":
             try:
-                matrix_suite = "Pysparse"
+                _mesh_matrices = _import_mesh_matrices(suite="Pysparse")
                 solver = "trilinos"
             except ImportError:
                 pass
                 
         if solver is None:
             # no-pysparse requested or pysparseMatrix failed to import
-            matrix_suite = "Trilinos"
+            _mesh_matrices = _import_mesh_matrices(suite="Trilinos")
             solver = "no-pysparse"
     except Exception as inst:
         _exceptions["trilinos"] = inst
@@ -102,7 +118,7 @@ if solver is None and _desired_solver in ["scipy", None]:
             raise SerialSolverError()
         from fipy.solvers.scipy import *
         __all__.extend(scipy.__all__)
-        matrix_suite = "Scipy"
+        _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver = "scipy"
     except Exception as inst:
         _exceptions["scipy"] = inst
@@ -113,7 +129,7 @@ if solver is None and _desired_solver in ["pyamg", None]:
             raise SerialSolverError()
         from fipy.solvers.pyAMG import *
         __all__.extend(pyAMG.__all__)
-        matrix_suite = "Scipy"
+        _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver = "pyamg"
     except Exception as inst:
         _exceptions["pyamg"] = inst
@@ -124,20 +140,13 @@ if solver is None and _desired_solver in ["pyamgx", None]:
             raise  SerialSolverError('pyamgx')
         from fipy.solvers.pyamgx import *
         __all__.extend(pyamgx.__all__)
-        matrix_suite = "Scipy"
+        _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver = "pyamgx"
     except Exception as inst:
         _exceptions["pyamgx"] = inst
 
-def _import_matrix(matrix_suite, matrix_kind):
-    from importlib import import_module
-
-    m = import_module("fipy.matrices.{}Matrix".format(matrix_suite.lower()))
-    return getattr(m, "_{}{}MeshMatrix".format(matrix_suite, matrix_kind))
-
-_RowMeshMatrix = _import_matrix(matrix_suite, "Row")
-_ColMeshMatrix = _import_matrix(matrix_suite, "Col")
-_MeshMatrix = _import_matrix(matrix_suite, "")
+# don't unpack until here in order to keep code above more succinct
+_RowMeshMatrix, _ColMeshMatrix, _MeshMatrix = _mesh_matrices
 
 if solver is None:
     if _desired_solver is None:
