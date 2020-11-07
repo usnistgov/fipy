@@ -38,7 +38,7 @@ def _import_matrix(suite, kind):
     return getattr(m, "_{}{}Matrix".format(suite, kind))
 
 def _import_mesh_matrices(suite):
-    """Import row-, column-, and general mesh matrices from `suite`
+    """Import row, column, and general mesh matrices from `suite`
     """
     _RowMeshMatrix = _import_matrix(suite=suite, kind="RowMesh")
     _ColMeshMatrix = _import_matrix(suite=suite, kind="ColMesh")
