@@ -58,8 +58,7 @@ class PETScKrylovSolver(PETScSolver):
         if self.preconditioner is not None:
             ksp.getPC().setType(self.preconditioner)
         ksp.setTolerances(rtol=self.tolerance, max_it=self.iterations)
-        L.assemblyBegin()
-        L.assemblyEnd()
+        L.assemble()
         ksp.setOperators(L)
         ksp.setFromOptions()
         ksp.solve(b, x)

@@ -17,6 +17,11 @@ register_skipper(flag="PARALLEL",
                  why="only one processor found",
                  skipWarning=False)
 
+register_skipper(flag="PARALLEL_2",
+                 test=lambda: parallelComm.Nproc == 2,
+                 why="other than 2 processors found",
+                 skipWarning=False)
+
 register_skipper(flag="PROCESSOR_0",
                  test=lambda: parallelComm.procID == 0,
                  why="not running on processor 0",

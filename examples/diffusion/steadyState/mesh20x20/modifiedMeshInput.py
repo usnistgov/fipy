@@ -49,12 +49,12 @@ The result is again tested in the same way:
 >>> print(var.allclose(analyticalArray, atol=0.025)) # doctest: +GMSH
 True
 
->>> errorVar = abs(var - analyticalArray)
->>> errorVar.name = "absolute error"
+>>> errorVar = abs(var - analyticalArray) # doctest: +GMSH
+>>> errorVar.name = "absolute error" # doctest: +GMSH
 
 >>> NonOrthoVar = CellVariable(name="non-orthogonality",
 ...                            mesh=mesh,
-...                            value=mesh._nonOrthogonality)
+...                            value=mesh._nonOrthogonality) # doctest: +GMSH
 >>> print(max(NonOrthoVar) < 0.51) # doctest: +GMSH
 True
 

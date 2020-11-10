@@ -96,6 +96,7 @@ class TrilinosSolver(Solver):
     @property
     def _matrixClass(self):
         from fipy.solvers import _MeshMatrix
+        # could be Trilinos or Pysparse, depending on configuration
         return _MeshMatrix
 
     def _calcResidualVector(self, residualFn=None):
