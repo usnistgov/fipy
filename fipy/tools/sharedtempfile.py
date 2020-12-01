@@ -38,7 +38,8 @@ if utils.PY3:
         if parallelComm.procID != 0:
             f = _io.open(fname, mode, buffering=buffering,
                          newline=newline, encoding=encoding)
-            f = _TemporaryFileWrapper(f, fname, delete)
+            # let procID 0 handle delete
+            f = _TemporaryFileWrapper(f, fname, delete=False)
         
         return f
 else:
@@ -67,6 +68,7 @@ else:
         
         if parallelComm.procID != 0:
             f = open(fname, mode, bufsize)
-            f = _TemporaryFileWrapper(f, fname, delete)
+            # let procID 0 handle delete
+            f = _TemporaryFileWrapper(f, fname, delete=False)
         
         return f           
