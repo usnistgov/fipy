@@ -145,9 +145,6 @@ if solver is None and _desired_solver in ["pyamgx", None]:
     except Exception as inst:
         _exceptions["pyamgx"] = inst
 
-# don't unpack until here in order to keep code above more succinct
-_RowMeshMatrix, _ColMeshMatrix, _MeshMatrix = _mesh_matrices
-
 if solver is None:
     if _desired_solver is None:
         raise ImportError('Unable to load a solver: %s' % str(_exceptions))
@@ -156,6 +153,9 @@ if solver is None:
             raise ImportError('Unable to load solver %s: %s' % (_desired_solver, _exceptions[_desired_solver]))
         else:
             raise ImportError('Unknown solver package %s' % _desired_solver)
+
+# don't unpack until here in order to keep code above more succinct
+_RowMeshMatrix, _ColMeshMatrix, _MeshMatrix = _mesh_matrices
 
 from fipy.tests.doctestPlus import register_skipper
 
