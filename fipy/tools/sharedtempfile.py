@@ -18,6 +18,20 @@ if utils.PY3:
         ``name`` attribute.  The file will be automatically deleted when it
         is closed unless the `delete` argument is set to False.
 
+        >>> from fipy.tools import SharedTemporaryFile, parallelComm
+        >>> with SharedTemporaryFile(mode='w+', suffix=".tmp") as tmpFile:
+        ...     # write on processor 0
+        ...     if parallelComm.procID == 0:
+        ...         _ = tmpFile.write("shared text")
+        ...
+        ...     parallelComm.Barrier()
+        ...
+        ...     # read on all processors
+        ...     _ = tmpFile.seek(0)
+        ...     txt = tmpFile.read()
+        >>> print(txt)
+        shared text
+
         Parameters
         ----------
         prefix, suffix, dir : str
@@ -74,6 +88,20 @@ else:
         ``name`` attribute.  The file will be automatically deleted when it
         is closed unless the `delete` argument is set to False.
 
+        >>> from fipy.tools import SharedTemporaryFile, parallelComm
+        >>> with SharedTemporaryFile(mode='w+', suffix=".tmp") as tmpFile:
+        ...     # write on processor 0
+        ...     if parallelComm.procID == 0:
+        ...         _ = tmpFile.write("shared text")
+        ...
+        ...     parallelComm.Barrier()
+        ...
+        ...     # read on all processors
+        ...     _ = tmpFile.seek(0)
+        ...     txt = tmpFile.read()
+        >>> print(txt)
+        shared text
+
         Parameters
         ----------
         prefix, suffix, dir : str
@@ -113,3 +141,10 @@ else:
             f = _TemporaryFileWrapper(f, fname, delete=False)
 
         return f
+
+def _test():
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
+
+if __name__ == "__main__":
+    _test()

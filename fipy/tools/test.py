@@ -10,6 +10,7 @@ def _suite():
             'numerix',
             'dump',
             'vector',
+            'sharedtempfile'
         ), base = __name__)
 
     return theSuite
