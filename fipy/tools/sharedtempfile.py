@@ -10,19 +10,39 @@ if utils.PY3:
 
     def SharedTemporaryFile(mode='w+b', buffering=-1, encoding=None,
                             newline=None, suffix="", prefix=template,
-        """Create and return a temporary file shared by all MPI ranks.
-        Arguments:
-        'prefix', 'suffix', 'dir' -- as for mkstemp.
-        'mode' -- the mode argument to io.open (default "w+b").
-        'buffering' -- the buffer size argument to io.open (default -1).
-        'encoding' -- the encoding argument to io.open (default None)
-        'newline' -- the newline argument to io.open (default None)
-        'delete' -- whether the file is deleted on close (default True).
-        The file is created as mkstemp() would do it.
                             dir=None, delete=True, communicator=parallelComm):
-        Returns an object with a file-like interface; the name of the file
-        is accessible as file.name.  The file will be automatically deleted
-        when it is closed unless the 'delete' argument is set to False.
+        """Create a temporary file shared by all MPI ranks.
+
+        The file is created as ~tempfile.NamedTemporaryFile() would do it.
+        The name of the returned file-like object is accessible as its
+        ``name`` attribute.  The file will be automatically deleted when it
+        is closed unless the `delete` argument is set to False.
+
+        Parameters
+        ----------
+        prefix, suffix, dir : str
+            As for mkstemp
+        mode : str
+            The mode argument to io.open (default "w+b")
+        buffering : int
+            The buffer size argument to io.open (default -1)
+        encoding : str or None
+            The encoding argument to io.open (default None)
+        newline : str or None
+            The newline argument to io.open (default None)
+        delete : bool
+            Whether the file is deleted on close (default True)
+        communicator : ~fipy.tools.comms.commWrapper.CommWrapper
+            MPI communicator describing ranks to share with.  A duck-typed
+            object with `procID` and `Nproc` attributes is sufficient.
+
+        Returns
+        -------
+        file-like object
+
+        See Also
+        --------
+        tempfile.NamedTemporaryFile, tempfile.mkstemp, io.open
         """
 
         if communicator.procID == 0:
@@ -44,18 +64,36 @@ if utils.PY3:
         return f
 else:
     def SharedTemporaryFile(mode='w+b', bufsize=-1, suffix="",
-        """Create and return a temporary file shared by all MPI ranks.
-        Arguments:
-        'prefix', 'suffix', 'dir' -- as for mkstemp.
-        'mode' -- the mode argument to os.fdopen (default "w+b").
-        'bufsize' -- the buffer size argument to os.fdopen (default -1).
-        'delete' -- whether the file is deleted on close (default True).
-        The file is created as mkstemp() would do it.
                             prefix=template, dir=None, delete=True,
                             communicator=parallelComm):
-        Returns an object with a file-like interface; the name of the file
-        is accessible as its 'name' attribute.  The file will be automatically
-        deleted when it is closed unless the 'delete' argument is set to False.
+        """Create a temporary file shared by all MPI ranks.
+
+        The file is created as ~tempfile.NamedTemporaryFile() would do it.
+        The name of the returned file-like object is accessible as its
+        ``name`` attribute.  The file will be automatically deleted when it
+        is closed unless the `delete` argument is set to False.
+
+        Parameters
+        ----------
+        prefix, suffix, dir : str
+            As for mkstemp
+        mode : str
+            The mode argument to os.fdopen (default "w+b")
+        bufsize : int
+            The buffer size argument to os.fdopen (default -1)
+        delete : bool
+            Whether the file is deleted on close (default True)
+        communicator : ~fipy.tools.comms.commWrapper.CommWrapper
+            MPI communicator describing ranks to share with.  A duck-typed
+            object with `procID` and `Nproc` attributes is sufficient
+
+        Returns
+        -------
+        file-like object
+
+        See Also
+        --------
+        tempfile.NamedTemporaryFile, tempfile.mkstemp, os.fdopen
         """
 
         if communicator.procID == 0:
