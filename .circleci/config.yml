@@ -407,7 +407,7 @@ jobs:
           command: |
             source activate ~/project/<< parameters.condaenv >>
             conda install --channel conda-forge black
-            black --target-version py27 --fast --diff --check setup.py
+            black --target-version py27 --fast --diff --check setup.py fipy/tools/sharedtempfile.py
 
   pyspelling:
     <<: *defaults3

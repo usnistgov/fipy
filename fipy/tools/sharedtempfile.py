@@ -19,9 +19,17 @@ __all__ = ["SharedTemporaryFile"]
 if utils.PY3:
     import io as _io
 
-    def SharedTemporaryFile(mode='w+b', buffering=-1, encoding=None,
-                            newline=None, suffix="", prefix=template,
-                            dir=None, delete=True, communicator=parallelComm):
+    def SharedTemporaryFile(
+        mode="w+b",
+        buffering=-1,
+        encoding=None,
+        newline=None,
+        suffix="",
+        prefix=template,
+        dir=None,
+        delete=True,
+        communicator=parallelComm,
+    ):
         """Create a temporary file shared by all MPI ranks.
 
         The file is created as `NamedTemporaryFile` would do it.
@@ -72,9 +80,16 @@ if utils.PY3:
         """
 
         if communicator.procID == 0:
-            file = NamedTemporaryFile(mode=mode, buffering=buffering, encoding=encoding,
-                                      newline=newline, suffix=suffix, prefix=prefix,
-                                      dir=dir, delete=delete)
+            file = NamedTemporaryFile(
+                mode=mode,
+                buffering=buffering,
+                encoding=encoding,
+                newline=newline,
+                suffix=suffix,
+                prefix=prefix,
+                dir=dir,
+                delete=delete,
+            )
             fname = file.name
         else:
             fname = None
@@ -82,16 +97,26 @@ if utils.PY3:
         fname = communicator.bcast(fname)
 
         if communicator.procID != 0:
-            file = _io.open(fname, mode, buffering=buffering,
-                            newline=newline, encoding=encoding)
+            file = _io.open(
+                fname, mode, buffering=buffering, newline=newline, encoding=encoding
+            )
             # let procID 0 handle delete
             file = _TemporaryFileWrapper(file, fname, delete=False)
 
         return file
+
+
 else:
-    def SharedTemporaryFile(mode='w+b', bufsize=-1, suffix="",
-                            prefix=template, dir=None, delete=True,
-                            communicator=parallelComm):
+
+    def SharedTemporaryFile(
+        mode="w+b",
+        bufsize=-1,
+        suffix="",
+        prefix=template,
+        dir=None,
+        delete=True,
+        communicator=parallelComm,
+    ):
         """Create a temporary file shared by all MPI ranks.
 
         The file is created as `NamedTemporaryFile` would do it.
@@ -138,8 +163,14 @@ else:
         """
 
         if communicator.procID == 0:
-            file = NamedTemporaryFile(mode=mode, bufsize=bufsize, suffix=suffix,
-                                      prefix=prefix, dir=dir, delete=delete)
+            file = NamedTemporaryFile(
+                mode=mode,
+                bufsize=bufsize,
+                suffix=suffix,
+                prefix=prefix,
+                dir=dir,
+                delete=delete,
+            )
             fname = file.name
         else:
             fname = None
@@ -153,9 +184,12 @@ else:
 
         return file
 
+
 def _test():
     import fipy.tests.doctestPlus
+
     return fipy.tests.doctestPlus.testmod()
+
 
 if __name__ == "__main__":
     _test()
