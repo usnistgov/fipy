@@ -43,6 +43,7 @@ if utils.PY3:
         See Also
         --------
         tempfile.NamedTemporaryFile, tempfile.mkstemp, io.open
+
         """
 
         if communicator.procID == 0:
@@ -94,6 +95,7 @@ else:
         See Also
         --------
         tempfile.NamedTemporaryFile, tempfile.mkstemp, os.fdopen
+
         """
 
         if communicator.procID == 0:
