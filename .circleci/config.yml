@@ -359,7 +359,7 @@ jobs:
           command: |
             source activate ~/project/<< parameters.condaenv >>
             pip install pylint
-            pylint setup.py fipy/tools/sharedtempfile.py
+            pylint setup.py
 
   flake8:
     <<: *defaults2
@@ -383,7 +383,7 @@ jobs:
           command: |
             source activate ~/project/<< parameters.condaenv >>
             pip install flake8
-            flake8 setup.py fipy/tools/sharedtempfile.py
+            flake8 setup.py
 
   black:
     <<: *defaults3
@@ -407,7 +407,7 @@ jobs:
           command: |
             source activate ~/project/<< parameters.condaenv >>
             conda install --channel conda-forge black
-            black --target-version py27 --fast --diff --check setup.py fipy/tools/sharedtempfile.py
+            black --target-version py27 --fast --diff --check setup.py
 
   pyspelling:
     <<: *defaults3
