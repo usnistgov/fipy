@@ -1,9 +1,20 @@
-from future import utils
+"""This module provides a generic, high-level interface for
+creating shared temporary files.  All of the interfaces
+provided by this module can be used without fear of race conditions.
+"""
+
 from tempfile import NamedTemporaryFile, template, _TemporaryFileWrapper
+from future import utils
 
 from fipy.tools import parallelComm
 
 __all__ = ["SharedTemporaryFile"]
+
+# Silence linting errors that come from following conventions of
+# tempfile package.
+# pylint: disable=invalid-name
+# pylint: disable=redefined-builtin
+# pylint: disable=too-many-arguments
 
 if utils.PY3:
     import io as _io
@@ -61,22 +72,22 @@ if utils.PY3:
         """
 
         if communicator.procID == 0:
-            f = NamedTemporaryFile(mode=mode, buffering=buffering, encoding=encoding,
-                                   newline=newline, suffix=suffix, prefix=prefix,
-                                   dir=dir, delete=delete)
-            fname = f.name
+            file = NamedTemporaryFile(mode=mode, buffering=buffering, encoding=encoding,
+                                      newline=newline, suffix=suffix, prefix=prefix,
+                                      dir=dir, delete=delete)
+            fname = file.name
         else:
             fname = None
 
         fname = communicator.bcast(fname)
 
         if communicator.procID != 0:
-            f = _io.open(fname, mode, buffering=buffering,
-                         newline=newline, encoding=encoding)
+            file = _io.open(fname, mode, buffering=buffering,
+                            newline=newline, encoding=encoding)
             # let procID 0 handle delete
-            f = _TemporaryFileWrapper(f, fname, delete=False)
+            file = _TemporaryFileWrapper(file, fname, delete=False)
 
-        return f
+        return file
 else:
     def SharedTemporaryFile(mode='w+b', bufsize=-1, suffix="",
                             prefix=template, dir=None, delete=True,
@@ -127,20 +138,20 @@ else:
         """
 
         if communicator.procID == 0:
-            f = NamedTemporaryFile(mode=mode, bufsize=bufsize, suffix=suffix,
-                                   prefix=prefix, dir=dir, delete=delete)
-            fname = f.name
+            file = NamedTemporaryFile(mode=mode, bufsize=bufsize, suffix=suffix,
+                                      prefix=prefix, dir=dir, delete=delete)
+            fname = file.name
         else:
             fname = None
 
         fname = communicator.bcast(fname)
 
         if communicator.procID != 0:
-            f = open(fname, mode, bufsize)
+            file = open(fname, mode, bufsize)
             # let procID 0 handle delete
-            f = _TemporaryFileWrapper(f, fname, delete=False)
+            file = _TemporaryFileWrapper(file, fname, delete=False)
 
-        return f
+        return file
 
 def _test():
     import fipy.tests.doctestPlus

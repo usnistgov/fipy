@@ -359,7 +359,7 @@ jobs:
           command: |
             source activate ~/project/<< parameters.condaenv >>
             pip install pylint
-            pylint setup.py
+            pylint setup.py fipy/tools/sharedtempfile.py
 
   flake8:
     <<: *defaults2
