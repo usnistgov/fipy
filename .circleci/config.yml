@@ -383,7 +383,7 @@ jobs:
           command: |
             source activate ~/project/<< parameters.condaenv >>
             pip install flake8
-            flake8 setup.py
+            flake8 setup.py fipy/tools/sharedtempfile.py
 
   black:
     <<: *defaults3
