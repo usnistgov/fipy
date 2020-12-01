@@ -13,7 +13,7 @@ if utils.PY3:
                             dir=None, delete=True, communicator=parallelComm):
         """Create a temporary file shared by all MPI ranks.
 
-        The file is created as ~tempfile.NamedTemporaryFile() would do it.
+        The file is created as `NamedTemporaryFile` would do it.
         The name of the returned file-like object is accessible as its
         ``name`` attribute.  The file will be automatically deleted when it
         is closed unless the `delete` argument is set to False.
@@ -68,7 +68,7 @@ else:
                             communicator=parallelComm):
         """Create a temporary file shared by all MPI ranks.
 
-        The file is created as ~tempfile.NamedTemporaryFile() would do it.
+        The file is created as `NamedTemporaryFile` would do it.
         The name of the returned file-like object is accessible as its
         ``name`` attribute.  The file will be automatically deleted when it
         is closed unless the `delete` argument is set to False.
