@@ -45,6 +45,7 @@ import fipy.tools.vector
 from .dimensions.physicalField import PhysicalField
 from fipy.tools.numerix import *
 from fipy.tools.vitals import Vitals
+from fipy.tools.sharedtempfile import SharedTemporaryFile
 
 __all__ = ["serialComm",
            "parallelComm",
@@ -54,7 +55,8 @@ __all__ = ["serialComm",
            "PhysicalField",
            "Vitals",
            "serial",
-           "parallel"]
+           "parallel",
+           "SharedTemporaryFile"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
