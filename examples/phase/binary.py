@@ -572,19 +572,34 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 >>> dt = 1.e-5
 
 >>> if __name__ == '__main__':
-...     timesteps = 100
+...     timesteps = 1000000
 ... else:
 ...     timesteps = 10
 
->>> from builtins import range
->>> for i in range(timesteps):
-...     phase.updateOld()
-...     C.updateOld()
-...     phaseRes = 1e+10
-...     diffRes = 1e+10
-...     while phaseRes > 1e-3 or diffRes > 1e-3:
-...         phaseRes = phaseEq.sweep(var=phase, dt=dt)
-...         diffRes = diffusionEq.sweep(var=C, dt=dt, solver=solver)
+>>> phaseScale = 1e-3
+>>> diffScale = 1e-3
+
+>>> phase.updateOld()
+>>> C.updateOld()
+
+>>> from steppyngstounes import PIDStepper, ScaledStepper, FixedStepper, PseudoRKQSStepper
+>>> for outer in FixedStepper(start=0., stop=timesteps*dt, tryStep=dt * 100):
+...     for inner in PseudoRKQSStepper(start=outer.begin, stop=outer.end, tryStep=dt):
+...         # print("step", inner.begin, inner.size)
+...         for sweep in range(5):
+...             phaseRes = phaseEq.sweep(var=phase, dt=inner.size) / phaseScale
+...             diffRes = diffusionEq.sweep(var=C, dt=inner.size, solver=solver) / diffScale
+...             # print("    ", sweep, phaseRes, diffRes)
+...         res = max(phaseRes, diffRes)
+...         if inner.succeeded(error=res, value=None):
+...             phase.updateOld()
+...             C.updateOld()
+...             print(inner.size)
+...         else:
+...             phase.value = phase.old
+...             C.value = C.old
+...     dt = inner.want
+...     outer.succeeded(value=None, error=1.)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
