@@ -580,9 +580,9 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 >>> dt = 1.e-5
 
 >>> if __name__ == '__main__':
-...     timesteps = 1000000
+...     totaltime = 1e10
 ... else:
-...     timesteps = 10
+...     totaltime = 1e-4
 
 >>> phaseScale = 1e-3
 >>> diffScale = 1e-3
@@ -591,25 +591,43 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 >>> C.updateOld()
 
 >>> from steppyngstounes import PIDStepper, ScaledStepper, FixedStepper, PseudoRKQSStepper
->>> for outer in FixedStepper(start=0., stop=timesteps*dt, tryStep=dt * 100):
-...     for inner in PseudoRKQSStepper(start=outer.begin, stop=outer.end, tryStep=dt):
+
+>>> class SquareStepper(FixedStepper):
+...     def _adaptStep(self):
+...         dt = (self.current - self.start)
+...         if dt == 0:
+...             dt = super(FixedStepper, self)._adaptStep()
+...         return dt
+
+>>> solve = 0
+
+>>> t = viewer.axes.text(0.00025, 0.2, "t = 0")
+
+>>> for outer in SquareStepper(start=0., stop=totaltime, size=dt):
+...     #print(outer.size)
+...     for inner in PIDStepper(start=outer.begin, stop=outer.end, size=dt): #, maxStep=2.5):
 ...         # print("step", inner.begin, inner.size)
 ...         for sweep in range(5):
 ...             phaseRes = phaseEq.sweep(var=phase, dt=inner.size) / phaseScale
 ...             diffRes = diffusionEq.sweep(var=C, dt=inner.size, solver=solver) / diffScale
 ...             # print("    ", sweep, phaseRes, diffRes)
+...             solve += 1
 ...         res = max(phaseRes, diffRes)
 ...         if inner.succeeded(error=res, value=None):
 ...             phase.updateOld()
 ...             C.updateOld()
-...             print(inner.size)
+...             #print("", inner.size)
 ...         else:
+...             #print("", inner.size, "FAILED", phaseRes, diffRes)
 ...             phase.value = phase.old
 ...             C.value = C.old
 ...     dt = inner.want
 ...     outer.succeeded(value=None, error=1.)
 ...     if __name__ == '__main__':
-...         viewer.plot()
+...         t.set_text("t = {:f}".format(outer.end))
+...         viewer.plot(filename="binary-{}.png".format(outer.end))
+
+>>> print(solve, "total solves")
 
 >>> from fipy import input
 >>> if __name__ == '__main__':
