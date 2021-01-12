@@ -473,7 +473,15 @@ We plot the result against the sharp interface solution
    pair: module; fipy.viewers
 
 >>> if __name__ == '__main__':
-...     viewer = Viewer(vars=(phase, C, sharp),
+...     from matplotlib import pyplot as plt
+...     fig = plt.figure(constrained_layout=True, figsize=[4, 6])
+...     gs = fig.add_gridspec(ncols=1, nrows=3)
+...     viewax = fig.add_subplot(gs[1:, 0])
+...     viewax.set_xlabel(r"$x / \mathrm{cm}$")
+...     posax = fig.add_subplot(gs[0, 0], sharex=viewax)
+...     posax.set_ylabel(r"$t / \mathrm{s}$")
+...     posax.label_outer()
+...     viewer = Viewer(vars=(phase, C, sharp), axes=viewax,
 ...                     datamin=0., datamax=1.)
 ...     viewer.plot()
 
@@ -603,6 +611,17 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 
 >>> t = viewer.axes.text(0.00025, 0.2, "t = 0")
 
+>>> def tanhResiduals(p, y, x):
+>>>     x0, d = p
+>>>     return y - 0.5 * (1 - numerix.tanh((x - x0) / (2*d)))
+>>> from scipy.optimize import leastsq # doctest: +SCIPY
+>>> x =  mesh.cellCenters[0]
+
+>>> positions = [0.001]
+>>> times = [1e-5]
+>>> posax.set_ylim(dt, totaltime)
+>>> line, = posax.semilogy(positions, times, color="blue")
+>>> bug, = posax.semilogy([], [], linestyle="", marker="o", color="red")
 >>> for outer in SquareStepper(start=0., stop=totaltime, size=dt):
 ...     #print(outer.size)
 ...     for inner in PIDStepper(start=outer.begin, stop=outer.end, size=dt): #, maxStep=2.5):
@@ -624,7 +643,14 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 ...     dt = inner.want
 ...     outer.succeeded(value=None, error=1.)
 ...     if __name__ == '__main__':
-...         t.set_text("t = {:f}".format(outer.end))
+...         if posax is not None:
+...             (x0_fit, d_fit), msg = leastsq(tanhResiduals, [L/2., deltaA],
+...                                            args=(phase.globalValue, x.globalValue)) # doctest: +SCIPY
+...             positions.append(x0_fit)
+...             times.append(outer.end)
+...             line.set_data(positions, times)
+...             bug.set_data([positions[-1]], [times[-1]])
+...         t.set_text(r"$t = {:f}\,\mathrm{{s}}$".format(outer.end))
 ...         viewer.plot(filename="binary-{}.png".format(outer.end))
 
 >>> print(solve, "total solves")
