@@ -584,9 +584,6 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 ... else:
 ...     totaltime = 1e-4
 
->>> phaseScale = 1e-3
->>> diffScale = 1e-3
-
 >>> phase.updateOld()
 >>> C.updateOld()
 
@@ -618,13 +615,15 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 ...     #print(outer.size)
 ...     for inner in PIDStepper(start=outer.begin, stop=outer.end, size=dt): #, maxStep=2.5):
 ...         # print("step", inner.begin, inner.size)
-...         for sweep in range(5):
-...             phaseRes = phaseEq.sweep(var=phase, dt=inner.size) / phaseScale
-...             diffRes = diffusionEq.sweep(var=C, dt=inner.size, solver=solver) / diffScale
+...         for sweep in range(2):
+...             phaseRes = phaseEq.sweep(var=phase, dt=inner.size)
+...             diffRes = diffusionEq.sweep(var=C, dt=inner.size, solver=solver)
 ...             # print("    ", sweep, phaseRes, diffRes)
 ...             solve += 1
-...         res = max(phaseRes, diffRes)
-...         if inner.succeeded(error=res, value=None):
+...         err = max(phaseRes / 1e-3,
+...                   diffRes / 1e-3,
+...                   abs(C.cellVolumeAverage.value - 0.5) / 1e-6)
+...         if inner.succeeded(error=err, value=None):
 ...             phase.updateOld()
 ...             C.updateOld()
 ...             #print("", inner.size)
