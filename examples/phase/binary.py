@@ -588,7 +588,7 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 >>> dt = 1.e-5
 
 >>> if __name__ == '__main__':
-...     totaltime = 1e10
+...     totaltime = 300 * 3600 # 300 h
 ... else:
 ...     totaltime = 1e-4
 
