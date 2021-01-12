@@ -670,6 +670,26 @@ timesteps to reach equilibrium. If we waited sufficiently long, we
 could again verify the final concentrations and phase fraction against the
 expected values.
 
+The interface moves :math:`\approx 3.4\,\mathrm{\mu m}` in
+:math:`80\,\mathrm{ms}`, driven by diffusion in the liquid phase
+(:math:`(10\,\mathrm{\mu m})^2 / (10^{-5}\,\mathrm{cm^2/s}) = 0.1 s` is a
+rough estimate of how long this process should take).  For the next
+:math:`20\,\mathrm{s}`, the interface stalls while the solute step trapped
+in the solid phase diffuses outward (:math:`(3.4\,\mathrm{\mu m})^2 /
+(10^{-9}\,\mathrm{cm^2/s}) = \mathcal{O}(100\,\mathrm{s})`).  Once the
+solute gradient in the solid reaches the new position of the interface, the
+solidification front begins to move, driven by diffusion in the solid.
+When the solute in the solid becomes uniform, the interface stalls again
+after :math:`\approx 4000\,\mathrm{s}`, having moved another
+:math:`3.2\,\mathrm{\mu m}` (:math:`(17\,\mathrm{\mu m})^2 /
+(10^{-9}\,\mathrm{cm^2/s}) = \mathcal{O}(3000\,\mathrm{s})`).  After this
+point, there is essentially no further motion of the interface and barely
+perceptable changes in the concentration field.  The fact that the
+interface does not reach the predicted phase fraction is due to the fact
+that this phase field model exhibits adsorption at the interface, resulting
+in the bulk phases not having exactly the concentrations assumed in the
+sharp interface treatment.
+
 .. rubric:: Footnotes
 
 .. [#phi] We will find that we need to "sweep" this non-linear problem
