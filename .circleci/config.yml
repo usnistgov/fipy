@@ -99,6 +99,16 @@ commands:
 
     steps:
       - run:
+          name: Install LaTeX
+          command: |
+            apt-get --yes update
+            apt-get --yes install texlive-latex-base
+            apt-get --yes install texlive-fonts-recommended
+            apt-get --yes install texlive-fonts-extra
+            apt-get --yes install texlive-latex-extra
+            apt-get --yes install texlive-science
+
+      - run:
           name: Build Docs
           command: |
             source activate ~/project/<< parameters.condaenv >>
@@ -123,6 +133,7 @@ commands:
     steps:
       - run:
           name: Install LaTeX
+          # needed for imgmath
           command: |
             apt-get --yes update
             apt-get --yes install texlive-latex-base
