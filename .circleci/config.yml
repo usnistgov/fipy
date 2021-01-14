@@ -498,7 +498,7 @@ jobs:
             apt-get --yes install texlive-fonts-extra
             apt-get --yes install texlive-latex-extra
             apt-get --yes install texlive-science
-            apt-get --yes install texlive-texlive-extra-utils
+            apt-get --yes install texlive-extra-utils
 
       - build_html_docs:
           condaenv: << parameters.condaenv >>
