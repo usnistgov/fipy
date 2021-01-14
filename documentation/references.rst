@@ -4,6 +4,6 @@
    References
    ==========
 
-.. bibliography:: /documentation/refs.bib
+.. bibliography::
    :style: unsrt
    :all:
