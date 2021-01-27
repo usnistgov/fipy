@@ -712,7 +712,7 @@ old values before we get started.
 ...             diffRes = diffusionEq.sweep(var=C, dt=step.size, solver=solver)
 ...         err = max(phaseRes / 1e-3,
 ...                   diffRes / 1e-3,
-...                   abs(C.cellVolumeAverage.value - 0.5) / 1e-6)
+...                   abs(Cavg.value - 0.5) / 1e-6)
 ...         if step.succeeded(error=err):
 ...             phase.updateOld()
 ...             C.updateOld()
