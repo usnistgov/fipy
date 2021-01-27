@@ -661,8 +661,9 @@ diffusion field to become uniform.  In the liquid, this will take
 
 Not wanting to take a hundred-million steps, we employ adaptive time
 stepping, using the steppyingstounes package.  This package takes care of
-many of the messy details of stepping, like ???, while keeping the
-structure of our solve loop largely intact.
+many of the messy details of stepping, like overshoot, underflow, and step
+size adaptation, while keeping the structure of our solve loop largely
+intact.
 
 >>> from steppyngstounes import SequenceStepper, PIDStepper
 >>> from itertools import count
