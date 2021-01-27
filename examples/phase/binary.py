@@ -469,20 +469,70 @@ We plot the result against the sharp interface solution
 >>> sharp.setValue(Cs, where=x < L * fraction)
 >>> sharp.setValue(Cl, where=x >= L * fraction)
 
+>>> elapsed = Variable(value=0.) # s
+
 .. index::
    pair: module; fipy.viewers
 
 >>> if __name__ == '__main__':
-...     from matplotlib import pyplot as plt
-...     fig = plt.figure(constrained_layout=True, figsize=[4, 6])
-...     gs = fig.add_gridspec(ncols=1, nrows=3)
-...     viewax = fig.add_subplot(gs[1:, 0])
-...     viewax.set_xlabel(r"$x / \mathrm{cm}$")
-...     posax = fig.add_subplot(gs[0, 0], sharex=viewax)
-...     posax.set_ylabel(r"$t / \mathrm{s}$")
-...     posax.label_outer()
-...     viewer = Viewer(vars=(phase, C, sharp), axes=viewax,
-...                     datamin=0., datamax=1.)
+...     try:
+...         from fipy import Matplotlib1DViewer
+...         from scipy.optimize import leastsq # doctest: +SCIPY
+...         from matplotlib import pyplot as plt
+...
+...         class PhaseViewer(Matplotlib1DViewer):
+...             def __init__(self, phase, C, sharp, elapsed, title=None,
+...                          tmin=None, tmax=None, **kwlimits):
+...                 self.phase = phase
+...                 self.x = self.phase.mesh.cellCenters[0]
+...                 self.elapsed = elapsed
+...
+...                 fig = plt.figure(constrained_layout=True, figsize=[4, 6])
+...                 gs = fig.add_gridspec(ncols=1, nrows=3)
+...                 self.viewax = fig.add_subplot(gs[1:, 0])
+...                 self.viewax.set_xlabel(r"$x / \mathrm{cm}$")
+...                 self.posax = fig.add_subplot(gs[0, 0], sharex=self.viewax)
+...                 self.posax.set_ylabel(r"$t / \mathrm{s}$")
+...                 self.posax.label_outer()
+...                 self.posax.set_ylim(tmin, tmax)
+...
+...                 self.times = []
+...                 self.positions = []
+...                 self.line, = self.posax.semilogy([0.], [0.],
+...                                                  color="blue")
+...                 self.bug, = self.posax.semilogy([], [],
+...                                                 linestyle="", marker="o", color="red")
+...
+...                 super(PhaseViewer, self).__init__(vars=(phase, C, sharp),
+...                                                   axes=self.viewax,
+...                                                   **kwlimits)
+...
+...                 self.timer = self.viewax.text(0.00025, 0.2, "t = 0")
+...
+...             @staticmethod
+...             def tanhResiduals(p, y, x):
+...                 x0, d = p
+...                 return y - 0.5 * (1 - numerix.tanh((x - x0) / (2*d)))
+...
+...             def _plot(self):
+...                 (x0_fit, d_fit), msg = leastsq(self.tanhResiduals, [L/2., deltaA],
+...                                                args=(self.phase.globalValue,
+...                                                      self.x.globalValue))
+...                 self.positions.append(x0_fit)
+...                 self.times.append(float(self.elapsed))
+...                 self.line.set_data(self.positions, self.times)
+...                 self.bug.set_data([self.positions[-1]], [self.times[-1]])
+...
+...                 self.timer.set_text(r"$t = {:f}\\,\\mathrm{{s}}$".format(float(self.elapsed)))
+...
+...                 super(PhaseViewer, self)._plot()
+...
+...         viewer = PhaseViewer(phase=phase, C=C, sharp=sharp,
+...                              elapsed=elapsed, tmin=1e-5, tmax=300 * 3600,
+...                              datamin=0., datamax=1.)
+...     except ImportError:
+...         viewer = Viewer(vars=(phase, C, sharp),
+...                         datamin=0., datamax=1.)
 ...     viewer.plot()
 
 Because the phase field interface will not move, and because we've seen in
@@ -569,14 +619,14 @@ barrier heights is negligible:
    \\vec{u}_\\phi &= \\frac{D_\\phi}{C} \\nabla \\phi
    \\\\
    &\\approx
-   \\frac{Dl \\frac{1}{2} V_m}{R T}
+   \\frac{D_l \\frac{1}{2} V_m}{R T}
    \\left[
        \\frac{L_B\\left(T - T_M^B\\right)}{T_M^B}
        - \\frac{L_A\\left(T - T_M^A\\right)}{T_M^A}
    \\right] \\frac{1}{\\Delta x}
    \\\\
    &\\approx
-   \\frac{Dl \\frac{1}{2} V_m}{R T}
+   \\frac{D_l \\frac{1}{2} V_m}{R T}
    \\left(L_B + L_A\\right) \\frac{T_M^A - T_M^B}{T_M^A + T_M^B}
    \\frac{1}{\\Delta x}
    \\\\
@@ -585,74 +635,20 @@ barrier heights is negligible:
 To get a :math:`\\text{CFL} = \\vec{u}_\\phi \\Delta t / \\Delta x < 1`, we need a
 time step of about :math:`\\unit{10^{-5}}{\\second}`.
 
->>> dt = 1.e-5
+>>> dt0 = 1.e-5
 
->>> if __name__ == '__main__':
-...     totaltime = 300 * 3600 # 300 h
-... else:
-...     totaltime = 1e-4
-
->>> phase.updateOld()
->>> C.updateOld()
-
->>> from steppyngstounes import PIDStepper, ScaledStepper, FixedStepper, PseudoRKQSStepper
-
->>> class SquareStepper(FixedStepper):
-...     def _adaptStep(self):
-...         dt = (self.current - self.start)
-...         if dt == 0:
-...             dt = super(FixedStepper, self)._adaptStep()
-...         return dt
-
->>> solve = 0
-
->>> t = viewer.axes.text(0.00025, 0.2, "t = 0")
-
->>> def tanhResiduals(p, y, x):
->>>     x0, d = p
->>>     return y - 0.5 * (1 - numerix.tanh((x - x0) / (2*d)))
->>> from scipy.optimize import leastsq # doctest: +SCIPY
->>> x =  mesh.cellCenters[0]
-
->>> positions = [0.001]
->>> times = [1e-5]
->>> posax.set_ylim(dt, totaltime)
->>> line, = posax.semilogy(positions, times, color="blue")
->>> bug, = posax.semilogy([], [], linestyle="", marker="o", color="red")
->>> for outer in SquareStepper(start=0., stop=totaltime, size=dt):
-...     #print(outer.size)
-...     for inner in PIDStepper(start=outer.begin, stop=outer.end, size=dt): #, maxStep=2.5):
-...         # print("step", inner.begin, inner.size)
-...         for sweep in range(2):
-...             phaseRes = phaseEq.sweep(var=phase, dt=inner.size)
-...             diffRes = diffusionEq.sweep(var=C, dt=inner.size, solver=solver)
-...             # print("    ", sweep, phaseRes, diffRes)
-...             solve += 1
-...         err = max(phaseRes / 1e-3,
-...                   diffRes / 1e-3,
-...                   abs(C.cellVolumeAverage.value - 0.5) / 1e-6)
-...         if inner.succeeded(error=err, value=None):
-...             phase.updateOld()
-...             C.updateOld()
-...             #print("", inner.size)
-...         else:
-...             #print("", inner.size, "FAILED", phaseRes, diffRes)
-...             phase.value = phase.old
-...             C.value = C.old
-...     dt = inner.want
-...     outer.succeeded(value=None, error=1.)
+>>> from builtins import range
+>>> for i in range(8):
+...     phase.updateOld()
+...     C.updateOld()
+...     phaseRes = 1e+10
+...     diffRes = 1e+10
+...     while phaseRes > 1e-3 or diffRes > 1e-3:
+...         phaseRes = phaseEq.sweep(var=phase, dt=dt0)
+...         diffRes = diffusionEq.sweep(var=C, dt=dt0, solver=solver)
+...     elapsed.value = (i + 1) * dt0
 ...     if __name__ == '__main__':
-...         if posax is not None:
-...             (x0_fit, d_fit), msg = leastsq(tanhResiduals, [L/2., deltaA],
-...                                            args=(phase.globalValue, x.globalValue)) # doctest: +SCIPY
-...             positions.append(x0_fit)
-...             times.append(outer.end)
-...             line.set_data(positions, times)
-...             bug.set_data([positions[-1]], [times[-1]])
-...         t.set_text(r"$t = {:f}\,\mathrm{{s}}$".format(outer.end))
-...         viewer.plot(filename="binary-{}.png".format(outer.end))
-
->>> print(solve, "total solves")
+...         viewer.plot()
 
 >>> from fipy import input
 >>> if __name__ == '__main__':
@@ -663,31 +659,102 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
    :align: center
    :alt: phase and composition fields in during solidification, compared with final phase diagram concentrations
 
-We see that the composition on either side of the interface approach the
+We see that the composition on either side of the interface approaches the
 sharp-interface solidus and liquidus, but it will take a great many more
 timesteps to reach equilibrium. If we waited sufficiently long, we
 could again verify the final concentrations and phase fraction against the
 expected values.
 
-The interface moves :math:`\approx 3.4\,\mathrm{\mu m}` in
-:math:`80\,\mathrm{ms}`, driven by diffusion in the liquid phase
-(:math:`(10\,\mathrm{\mu m})^2 / (10^{-5}\,\mathrm{cm^2/s}) = 0.1 s` is a
-rough estimate of how long this process should take).  For the next
-:math:`20\,\mathrm{s}`, the interface stalls while the solute step trapped
-in the solid phase diffuses outward (:math:`(3.4\,\mathrm{\mu m})^2 /
-(10^{-9}\,\mathrm{cm^2/s}) = \mathcal{O}(100\,\mathrm{s})`).  Once the
-solute gradient in the solid reaches the new position of the interface, the
-solidification front begins to move, driven by diffusion in the solid.
-When the solute in the solid becomes uniform, the interface stalls again
-after :math:`\approx 4000\,\mathrm{s}`, having moved another
-:math:`3.2\,\mathrm{\mu m}` (:math:`(17\,\mathrm{\mu m})^2 /
-(10^{-9}\,\mathrm{cm^2/s}) = \mathcal{O}(3000\,\mathrm{s})`).  After this
+We can estimate the time to equlibration by examining the time for the
+diffusion field to become uniform.  In the liquid, this will take
+:math:`\\mathcal{O}((\\unit{10}{\\micro\\meter})^2 / D_l) =
+\\unit{0.1}{\\second}` and in the solid
+:math:`\\mathcal{O}((\\unit{10}{\\micro\\meter})^2 / D_s) =
+\\unit{1000}{\\second}`.
+
+Not wanting to take a hundred-million steps, we employ adaptive time
+stepping, using the steppyingstounes package.  This package takes care of
+many of the messy details of stepping, like ???, while keeping the
+structure of our solve loop largely intact.
+
+>>> from steppyngstounes import SequenceStepper, PIDStepper
+>>> from itertools import count
+
+Assuming the process is dominated by diffusion, we can take steps that
+increase parabolically.
+Since we're unsure if diffusion is the only process controlling dynamics,
+we take each parabolic step with an adaptive stepper that uses a `PID
+controller`_ to keep the equation residuals and mass conservation within
+acceptable limits.  The total number of solves is not strongly sensitive to
+the number of sweeps, but two sweeps seems to be both sufficient and
+efficient.
+
+We'll only advance the step if it's successful, so we need to update the
+old values before we get started.
+
+>>> phase.updateOld()
+>>> C.updateOld()
+
+>>> if __name__ == '__main__':
+...     totaltime = 300 * 3600 # 300 h
+... else:
+...     totaltime = 32e-5 # 320 us
+
+>>> dt = dt0
+
+>>> for checkpoint in SequenceStepper(start=float(elapsed), stop=totaltime,
+...                                   sizes=(dt0 * 2**(n/2) for n in count(7))):
+...     for step in PIDStepper(start=checkpoint.begin,
+...                            stop=checkpoint.end,
+...                            size=dt):
+...         for sweep in range(2):
+...             phaseRes = phaseEq.sweep(var=phase, dt=step.size)
+...             diffRes = diffusionEq.sweep(var=C, dt=step.size, solver=solver)
+...         err = max(phaseRes / 1e-3,
+...                   diffRes / 1e-3,
+...                   abs(C.cellVolumeAverage.value - 0.5) / 1e-6)
+...         if step.succeeded(error=err):
+...             phase.updateOld()
+...             C.updateOld()
+...             elapsed.value = step.end
+...         else:
+...             phase.value = phase.old
+...             C.value = C.old
+...     # the last step might have been smaller than possible,
+...     # if it was near the end of the checkpoint range
+...     dt = step.want
+...     checkpoint.succeeded()
+...     if __name__ == '__main__':
+...         viewer.plot()
+
+>>> from fipy import input
+>>> if __name__ == '__main__':
+...     input("Re-equilbrated phase field. Press <return> to proceed...")
+
+.. image:: binary/moving.*
+   :width: 90%
+   :align: center
+   :alt: phase and composition fields during solidification, compared with final phase diagram concentrations
+
+The interface moves :math:`\\approx \\unit{3.4}{\\micro\\meter}` in
+:math:`\\unit{80}{\\milli\\second}`, driven by diffusion in the liquid
+phase (compare the estimate above of \\unit{0.1}{\\second}}).  For the next
+:math:`\\unit{20}{\\second}`, the interface stalls while the solute step
+trapped in the solid phase diffuses outward
+(:math:`(\\unis{3.4}{\\micro\\meter})^2 / D_s =
+\mathcal{O}(\\unit{100}{\\second})`).  Once the solute gradient in the
+solid reaches the new position of the interface, the solidification front
+begins to move, driven by diffusion in the solid.  When the solute in the
+solid becomes uniform, the interface stalls again after :math:`\\approx
+\\unit{4000}{\\second}`, having moved another
+:math:`\\unit{3.2}{\\micro\\meter}` (recall the estimate of
+:math:`\\unit{1000}{\\second}` for equilibration in the solid).  After this
 point, there is essentially no further motion of the interface and barely
 perceptable changes in the concentration field.  The fact that the
 interface does not reach the predicted phase fraction is due to the fact
-that this phase field model exhibits adsorption at the interface, resulting
-in the bulk phases not having exactly the concentrations assumed in the
-sharp interface treatment.
+that this phase field model accounts for adsorption at the interface,
+resulting in the bulk phases not having exactly the concentrations assumed
+in the sharp interface treatment.
 
 .. rubric:: Footnotes
 
@@ -701,6 +768,8 @@ sharp interface treatment.
    as a :class:`~fipy.variables.variable.Variable`
 
 .. _CFL limit: http://en.wikipedia.org/wiki/Courant-Friedrichs-Lewy_condition
+
+.. _PID controller: https://en.wikipedia.org/wiki/PID_controller
 """
 
 from __future__ import unicode_literals
