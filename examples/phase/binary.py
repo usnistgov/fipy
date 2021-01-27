@@ -668,13 +668,12 @@ structure of our solve loop largely intact.
 >>> from itertools import count
 
 Assuming the process is dominated by diffusion, we can take steps that
-increase parabolically.
-Since we're unsure if diffusion is the only process controlling dynamics,
-we take each parabolic step with an adaptive stepper that uses a `PID
-controller`_ to keep the equation residuals and mass conservation within
-acceptable limits.  The total number of solves is not strongly sensitive to
-the number of sweeps, but two sweeps seems to be both sufficient and
-efficient.
+increase geometrically.  Since we're unsure if diffusion is the only
+process controlling dynamics, we take each increasing step with an adaptive
+stepper that uses a `PID controller`_ to keep the equation residuals and
+mass conservation within acceptable limits.  The total number of solves is
+not strongly sensitive to the number of sweeps, but two sweeps seems to be
+both sufficient and efficient.
 
 We'll only advance the step if it's successful, so we need to update the
 old values before we get started.
