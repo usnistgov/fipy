@@ -735,7 +735,7 @@ The interface moves :math:`\\approx \\unit{3.4}{\\micro\\meter}` in
 phase (compare the estimate above of \\unit{0.1}{\\second}}).  For the next
 :math:`\\unit{20}{\\second}`, the interface stalls while the solute step
 trapped in the solid phase diffuses outward
-(:math:`(\\unis{3.4}{\\micro\\meter})^2 / D_s =
+(:math:`(\\unit{3.4}{\\micro\\meter})^2 / D_s =
 \mathcal{O}(\\unit{100}{\\second})`).  Once the solute gradient in the
 solid reaches the new position of the interface, the solidification front
 begins to move, driven by diffusion in the solid.  When the solute in the
