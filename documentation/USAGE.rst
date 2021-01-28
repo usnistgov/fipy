@@ -937,6 +937,19 @@ Nothing different needs to be done when
 
    %    \subsection{Internal boundary conditions}
 
+-----------------
+Adaptive Stepping
+-----------------
+
+Step size can be controlled with the :term:`steppyngstounes` package.
+Demonstrations of its use are found in :mod:`examples.phase.binary` and
+:mod:`examples.phase.binaryCoupled.`
+
+.. note::
+
+   The old :mod:`fipy.steppers` classes are now deprecated.  They were
+   undocumented and did not work very well.
+
 .. _RunningUnderPython2:
 
 ----------------------
