@@ -50,6 +50,8 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'documentation/contents'
 
+bibtex_bibfiles = ['documentation/refs.bib']
+
 # General information about the project.
 project = u'FiPy'
 copyright = u'works of NIST employees are not not subject to copyright protection'
@@ -332,6 +334,7 @@ latex_additional_files = ['figures/nistident_flright_vec.pdf']
 #latex_use_modindex = True
 
 imgmath_latex_preamble = common_preamble
+imgmath_image_format = "svg"
 
 # refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {

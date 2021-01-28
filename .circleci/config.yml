@@ -122,16 +122,6 @@ commands:
 
     steps:
       - run:
-          name: Install LaTeX
-          command: |
-            apt-get --yes update
-            apt-get --yes install texlive-latex-base
-            apt-get --yes install texlive-fonts-recommended
-            apt-get --yes install texlive-fonts-extra
-            apt-get --yes install texlive-latex-extra
-            apt-get --yes install texlive-science
-
-      - run:
           name: Build Docs
           command: |
             source activate ~/project/<< parameters.condaenv >>
@@ -498,6 +488,17 @@ jobs:
             pip install sphinxcontrib-bibtex
             pip install numpydoc
             conda install --channel conda-forge matplotlib pandas imagemagick
+
+      - run:
+          name: Install LaTeX
+          command: |
+            apt-get --yes update
+            apt-get --yes install texlive-latex-base
+            apt-get --yes install texlive-fonts-recommended
+            apt-get --yes install texlive-fonts-extra
+            apt-get --yes install texlive-latex-extra
+            apt-get --yes install texlive-science
+            apt-get --yes install texlive-extra-utils
 
       - build_html_docs:
           condaenv: << parameters.condaenv >>
