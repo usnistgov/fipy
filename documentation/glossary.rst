@@ -186,6 +186,11 @@ Glossary
       See
       http://sphinx.pocoo.org/.
 
+   steppyngstounes
+      This package provides iterators that simplify both deterministic and
+      adaptive time (or other independent variable) stepping.
+      See https://github.com/guyer/steppyngstounes.
+
    TravisCI
       A cloud-based :term:`Continuous Integration` tool.
       See https://travis-ci.org.

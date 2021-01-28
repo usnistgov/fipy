@@ -40,7 +40,6 @@ import sys
 from fipy.boundaryConditions import *
 from fipy.meshes import *
 from fipy.solvers import *
-from fipy.steppers import *
 from fipy.terms import *
 from fipy.tools import *
 from fipy.variables import *
@@ -50,7 +49,6 @@ __all__ = []
 __all__.extend(boundaryConditions.__all__)
 __all__.extend(meshes.__all__)
 __all__.extend(solvers.__all__)
-__all__.extend(steppers.__all__)
 __all__.extend(terms.__all__)
 __all__.extend(tools.__all__)
 __all__.extend(variables.__all__)
