@@ -723,7 +723,7 @@ old values before we get started.
 ...     # the last step might have been smaller than possible,
 ...     # if it was near the end of the checkpoint range
 ...     dt = step.want
-...     checkpoint.succeeded()
+...     _ = checkpoint.succeeded()
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
