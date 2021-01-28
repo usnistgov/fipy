@@ -590,6 +590,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 .. image:: /figures/examples/phase/binary/stationary.*
    :width: 90%
    :align: center
+   :alt: phase and composition fields in equilibrium, compared with phase diagram concentrations
 
 We verify that the bulk phases have shifted to the predicted solidus and
 liquidus compositions
@@ -746,10 +747,17 @@ old values before we get started.
 >>> if __name__ == '__main__':
 ...     input("Re-equilbrated phase field. Press <return> to proceed...")
 
-.. image:: binary/moving.*
-   :width: 90%
-   :align: center
-   :alt: phase and composition fields during solidification, compared with final phase diagram concentrations
+.. image:: binary/binaryCoupled-0.000899.*
+   :width: 30%
+   :alt: phase and composition fields at t=0.000899, compared with final phase diagram concentrations
+
+.. image:: binary/binaryCoupled-8.949963.*
+   :width: 30%
+   :alt: phase and composition fields at t=8.949963, compared with final phase diagram concentrations
+
+.. image:: binary/binaryCoupled-1080000.000000.*
+   :width: 30%
+   :alt: phase and composition fields at t=1080000, compared with final phase diagram concentrations
 
 The interface moves :math:`\\approx \\unit{3.4}{\\micro\\meter}` in
 :math:`\\unit{80}{\\milli\\second}`, driven by diffusion in the liquid
