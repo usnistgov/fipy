@@ -754,25 +754,28 @@ old values before we get started.
    :width: 30%
    :alt: phase and composition fields at t=1080000, compared with final phase diagram concentrations
 
-The interface moves :math:`\\approx \\unit{3.4}{\\micro\\meter}` in
-:math:`\\unit{80}{\\milli\\second}`, driven by diffusion in the liquid
+The interface moves :math:`\\approx \\unit{2.8}{\\micro\\meter}` in
+:math:`\\unit{70}{\\milli\\second}`, driven by diffusion in the liquid
 phase (compare the estimate above of \\unit{0.1}{\\second}}).  For the next
-:math:`\\unit{20}{\\second}`, the interface stalls while the solute step
+:math:`\\unit{12}{\\second}`, the interface stalls while the solute step
 trapped in the solid phase diffuses outward
-(:math:`(\\unis{3.4}{\\micro\\meter})^2 / D_s =
-\mathcal{O}(\\unit{100}{\\second})`).  Once the solute gradient in the
+(:math:`(\\unit{2.8}{\\micro\\meter})^2 / D_s =
+\mathcal{O}(\\unit{80}{\\second})`).  Once the solute gradient in the
 solid reaches the new position of the interface, the solidification front
 begins to move, driven by diffusion in the solid.  When the solute in the
 solid becomes uniform, the interface stalls again after :math:`\\approx
 \\unit{4000}{\\second}`, having moved another
-:math:`\\unit{3.2}{\\micro\\meter}` (recall the estimate of
+:math:`\\unit{2.9}{\\micro\\meter}` (recall the estimate of
 :math:`\\unit{1000}{\\second}` for equilibration in the solid).  After this
 point, there is essentially no further motion of the interface and barely
-perceptable changes in the concentration field.  The fact that the
-interface does not reach the predicted phase fraction is due to the fact
-that this phase field model accounts for adsorption at the interface,
-resulting in the bulk phases not having exactly the concentrations assumed
-in the sharp interface treatment.
+perceptable changes in the concentration field.
+
+.. note::
+
+   This evolution is qualitatively consistent with that seen in
+   :mod:`examples.phase.binary`, but the interface does not move as far and
+   the bulk concentrations are further from the phase diagram values.  The
+   computation also takes substantially longer than the uncoupled variant.
 
 .. rubric:: Footnotes
 
