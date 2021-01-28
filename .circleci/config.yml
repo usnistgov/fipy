@@ -40,6 +40,7 @@ commands:
             source activate ~/project/<< parameters.condaenv >>
             conda remove --quiet --channel conda-forge --force fipy
             pip install scikit-fmm
+            pip install git+https://github.com/guyer/steppyngstounes.git
 
   test_fipy:
     description: "Run FiPy Tests"

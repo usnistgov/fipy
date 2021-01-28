@@ -54,6 +54,7 @@ before_install:
   # Useful for debugging any issues with conda
   - conda info -a
   - pip install scikit-fmm
+  - pip install git+https://github.com/guyer/steppyngstounes.git
 install:
   - python setup.py install
 before_script:
