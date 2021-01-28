@@ -683,7 +683,7 @@ timesteps to reach equilibrium. If we waited sufficiently long, we
 could again verify the final concentrations and phase fraction against the
 expected values.
 
-We can estimate the time to equlibration by examining the time for the
+We can estimate the time to equilibration by examining the time for the
 diffusion field to become uniform.  In the liquid, this will take
 :math:`\\mathcal{O}((\\unit{10}{\\micro\\meter})^2 / D_l) =
 \\unit{0.1}{\\second}` and in the solid
@@ -691,10 +691,10 @@ diffusion field to become uniform.  In the liquid, this will take
 \\unit{1000}{\\second}`.
 
 Not wanting to take a hundred-million steps, we employ adaptive time
-stepping, using the steppyingstounes package.  This package takes care of
-many of the messy details of stepping, like overshoot, underflow, and step
-size adaptation, while keeping the structure of our solve loop largely
-intact.
+stepping, using the :term:`steppyingstounes` package.  This package takes
+care of many of the messy details of stepping, like overshoot, underflow,
+and step size adaptation, while keeping the structure of our solve loop
+largely intact.
 
 >>> from steppyngstounes import SequenceStepper, PIDStepper
 >>> from itertools import count
@@ -773,7 +773,7 @@ solid becomes uniform, the interface stalls again after :math:`\\approx
 :math:`\\unit{2.9}{\\micro\\meter}` (recall the estimate of
 :math:`\\unit{1000}{\\second}` for equilibration in the solid).  After this
 point, there is essentially no further motion of the interface and barely
-perceptable changes in the concentration field.
+perceptible changes in the concentration field.
 
 .. note::
 
