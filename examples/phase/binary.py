@@ -562,7 +562,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 >>> C.updateOld()
 >>> phaseRes = 1e+10
 >>> diffRes = 1e+10
->>> while phaseRes > 1e-3 or diffRes > 1e-3:
+>>> while phaseRes > 1e-3 or diffRes > 1e-3 or abs(Cavg.value - 0.5) > 5e-7:
 ...     phaseRes = phaseEq.sweep(var=phase, dt=dt)
 ...     diffRes = diffusionEq.sweep(var=C, dt=dt, solver=solver)
 >>> from fipy import input
@@ -643,7 +643,7 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 ...     C.updateOld()
 ...     phaseRes = 1e+10
 ...     diffRes = 1e+10
-...     while phaseRes > 1e-3 or diffRes > 1e-3:
+...     while phaseRes > 1e-3 or diffRes > 1e-3 or abs(Cavg.value - 0.5) > 1e-6:
 ...         phaseRes = phaseEq.sweep(var=phase, dt=dt0)
 ...         diffRes = diffusionEq.sweep(var=C, dt=dt0, solver=solver)
 ...     elapsed.value = (i + 1) * dt0
