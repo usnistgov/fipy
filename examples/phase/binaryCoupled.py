@@ -661,7 +661,7 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 ...     C.updateOld()
 ...     res = 1e+10
 ...     sweep = 0
-...     while res > 1e-3 and sweep < 20:
+...     while (res > 1e-3 or abs(Cavg.value - 0.5) > 1e-8) and sweep < 20:
 ...         res = eq.sweep(dt=dt0, solver=solver)
 ...         sweep += 1
 ...     elapsed.value = (i + 1) * dt0
