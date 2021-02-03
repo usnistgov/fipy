@@ -756,7 +756,7 @@ old values before we get started.
 
 The interface moves :math:`\\approx \\unit{2.8}{\\micro\\meter}` in
 :math:`\\unit{70}{\\milli\\second}`, driven by diffusion in the liquid
-phase (compare the estimate above of :math:`\\unit{0.1}{\\second}}`).
+phase (compare the estimate above of :math:`\\unit{0.1}{\\second}`).
 For the next
 :math:`\\unit{12}{\\second}`, the interface stalls while the solute step
 trapped in the solid phase diffuses outward
