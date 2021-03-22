@@ -69,7 +69,7 @@ class LinearLUSolver(PysparseSolver):
         for iteration in range(self.iterations):
             errorVector = L * x - b
 
-            if (numerix.sqrt(numerix.sum(errorVector**2)) / error0)  <= self.tolerance:
+            if numerix.sqrt(numerix.sum(errorVector**2))  <= self.tolerance * error0:
                 break
 
             xError = numerix.zeros(len(b), 'd')
