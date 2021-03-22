@@ -1,23 +1,26 @@
+#
+# $ nix-shell --pure --argstr tag 20.09
+#
+{
+  tag ? "20.09"
+}:
 let
-    pkgs = import (builtins.fetchGit {
-      url = "https://github.com/NixOS/nixpkgs.git";
-      rev = "c2ae05d5973cc4f8842755f2807ac10e31bb2aa8";
-      ref = "master";
-    }) { };
-    pythonPackages = pkgs.python3Packages;
-    not_darwin_inputs = pkgs.lib.optionals (! pkgs.stdenv.isDarwin ) [ pythonPackages.jupyter ];
-    not_darwin_pre_shell_hook = if (! pkgs.stdenv.isDarwin) then ''
-      jupyter nbextension install --py widgetsnbextension --user
-      jupyter nbextension enable widgetsnbextension --user --py
-    '' else "";
-    filter_pyamg = builtins.filter (x: ! ((pkgs.lib.hasInfix "pyamg" x.name) && pkgs.stdenv.isDarwin));
+  pkgs = import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/${tag}.tar.gz") {};
+  pypkgs = pkgs.python3Packages;
+  not_darwin_inputs = pkgs.lib.optionals (! pkgs.stdenv.isDarwin ) [ pypkgs.jupyter ];
+  not_darwin_pre_shell_hook = if (! pkgs.stdenv.isDarwin) then ''
+    jupyter nbextension install --py widgetsnbextension --user
+    jupyter nbextension enable widgetsnbextension --user --py
+  '' else "";
+  filter_pyamg = builtins.filter (x: ! ((pkgs.lib.hasInfix "pyamg" x.name) && pkgs.stdenv.isDarwin));
 in
-  (pythonPackages.fipy.overridePythonAttrs (old: rec {
+  (pypkgs.fipy.overridePythonAttrs (old: rec {
     src = builtins.filterSource (path: type: type != "directory" || baseNameOf path != ".git") ./.;
-    nativeBuildInputs = with pythonPackages; [
+    nativeBuildInputs = with pypkgs; [
       pip
       pkgs.imagemagick
       pkgs.git
+      pkgs.openssh
     ] ++ propagatedBuildInputs ++ not_darwin_inputs;
 
     propagatedBuildInputs = (filter_pyamg old.propagatedBuildInputs);
@@ -29,7 +32,7 @@ in
       export PYTHONPATH=$PYTHONPATH:$USER_SITE
       export PATH=$PATH:$PYTHONUSERBASE/bin
 
-      export OMPI_MCA_plm_rsh_agent=/usr/bin/ssh
+      export OMPI_MCA_plm_rsh_agent=${pkgs.openssh}/bin/ssh
 
       ## To build the docs
       # pip install --user sphinx
