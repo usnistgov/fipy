@@ -34,7 +34,12 @@ in
 
       export OMPI_MCA_plm_rsh_agent=${pkgs.openssh}/bin/ssh
 
-      ## To build the docs
+      ## To build the docs (don't use --pure)
+      # Need latex to build properly
+      #
+      # texlive-latex-base, texlive-fonts-recommended, texlive-fonts-extra
+      # texlive-latex-extra, texlive-science, texlive-extra-utils
+      #
       # pip install --user sphinx
       # pip install --user "sphinxcontrib-bibtex<=0.4.2"
       # pip install --user git+https://github.com/thewtex/sphinx-contrib.git#subdirectory=traclinks
