@@ -84,11 +84,12 @@ jobs:
     # Tests with Nix #
     ##################
 
-    - language: nix
+    - name: nix
+      os:
+        -linux
+      language: nix
       env:
-        global:
-          - FIPY_SOLVERS=scipy
-          - STORE=$HOME/nix-store
+        - STORE=$HOME/nix-store
       cache:
         directories:
           - $STORE
