@@ -272,7 +272,7 @@ http://www.geuz.org/gmsh/
 
 :term:`Gmsh` is an application that allows the creation of irregular meshes.
 When running in parallel, :term:`FiPy` requires a version of :term:`Gmsh`
->= 2.5 and < 4.0.
+>= 2.5 and < 4.0 or >= 4.5.2.
 
 SciPy
 =====
