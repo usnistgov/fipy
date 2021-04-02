@@ -1387,6 +1387,11 @@ class _GmshTopology(_MeshTopology):
 class Gmsh2D(Mesh2D):
     """Construct a 2D Mesh using Gmsh
 
+    If called in parallel, mesh will be partitioned based on
+    `parallelComm.Nproc`.  If an MSH file is supplied, it must have been
+    previously partitioned with the number of partitions matching
+    `parallelComm.Nproc`.
+
     >>> radius = 5.
     >>> side = 4.
     >>> squaredCircle = Gmsh2D('''
@@ -1875,6 +1880,11 @@ class Gmsh2D(Mesh2D):
 class Gmsh2DIn3DSpace(Gmsh2D):
     """Create a topologically 2D Mesh in 3D coordinates using Gmsh
 
+    If called in parallel, mesh will be partitioned based on
+    `parallelComm.Nproc`.  If an MSH file is supplied, it must have been
+    previously partitioned with the number of partitions matching
+    `parallelComm.Nproc`.
+
     Parameters
     ----------
     arg : str
@@ -1958,6 +1968,11 @@ class Gmsh2DIn3DSpace(Gmsh2D):
 
 class Gmsh3D(Mesh):
     """Create a 3D Mesh using Gmsh
+
+    If called in parallel, mesh will be partitioned based on
+    `parallelComm.Nproc`.  If an MSH file is supplied, it must have been
+    previously partitioned with the number of partitions matching
+    `parallelComm.Nproc`.
 
     Parameters
     ----------
