@@ -180,7 +180,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                      or (StrictVersion("4.0") <= version < StrictVersion("4.5.2"))):
                     warnstr = ("Cannot partition with Gmsh version < 2.5 "
                                "or 4.0 <= version < 4.5.2. "
-                               "Reverting to serial."
+                               "Reverting to serial.")
                     warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
                     communicator = serialComm
 
