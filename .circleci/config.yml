@@ -228,7 +228,7 @@ commands:
           at: ~/project
 
       - run:
-          name: Create Conda Environment
+          name: Install with Pip
           command: |
             conda create -v --quiet --name pipenv --show-channel-urls --channel conda-forge << parameters.packages >>
             source activate pipenv
