@@ -224,9 +224,6 @@ commands:
     steps:
       - checkout
 
-      - restore_conda_cache:
-          condaenv: << parameters.condaenv >>
-
       - attach_workspace:
           at: ~/project
 
