@@ -222,10 +222,10 @@ commands:
         default: "python"
 
     steps:
-      # Download and cache dependencies
-      - install_dependencies
-
       - checkout
+
+      - restore_conda_cache:
+          condaenv: << parameters.condaenv >>
 
       - attach_workspace:
           at: ~/project
