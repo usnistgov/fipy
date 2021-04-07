@@ -88,7 +88,7 @@ Recommended Method
 
      and for Python 3.x, you should be able to do::
 
-      conda create --name <MYFIPYENV> --channel conda-forge "python>3" numpy scipy matplotlib pysparse gmsh
+      conda create --name <MYFIPYENV> --channel conda-forge python=3 numpy scipy matplotlib pysparse gmsh
 
      followed, for either, by::
 
