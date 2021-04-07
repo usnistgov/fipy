@@ -591,6 +591,7 @@ workflows:
 #       - build-27-docs:
 #           requires:
 #             - conda2_env
+      - pip_env
       - build-36-docs:
           requires:
             - conda3_env
