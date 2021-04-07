@@ -213,6 +213,25 @@ commands:
           paths:
             - << parameters.condaenv >>
 
+  install_pip_packages:
+    description: "Check pip installation"
+
+    parameters:
+      packages:
+        type: string
+        default: "python"
+
+    steps:
+      # Download and cache dependencies
+      - install_dependencies
+
+      - run:
+          name: Create Conda Environment
+          command: |
+            conda create -v --quiet --name pipenv --show-channel-urls --channel conda-forge << parameters.packages >>
+            source activate pipenv
+            pip install -e .
+
 jobs:
   conda2_env:
     <<: *defaults2
@@ -229,6 +248,13 @@ jobs:
       - install_conda_packages:
           packages: "python=3.6 fipy"
           condaenv: "test-environment-36"
+
+  pip_env:
+    <<: *defaults3
+
+    steps:
+      - install_pip_packages:
+          packages: "python=3"
 
   test-27-pysparse:
     <<: *defaults2
