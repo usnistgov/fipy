@@ -225,6 +225,8 @@ commands:
       # Download and cache dependencies
       - install_dependencies
 
+      - checkout
+
       - attach_workspace:
           at: ~/project
 
