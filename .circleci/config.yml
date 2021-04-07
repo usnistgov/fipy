@@ -225,6 +225,9 @@ commands:
       # Download and cache dependencies
       - install_dependencies
 
+      - attach_workspace:
+          at: ~/project
+
       - run:
           name: Create Conda Environment
           command: |
