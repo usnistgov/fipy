@@ -3,16 +3,12 @@ from a repository that username has access to. Supports Github API v3.
 Adapted from: https://gist.github.com/patrickfuller/e2ea8a94badc5b6967ef3ca0a9452a43
 """
 from __future__ import print_function
-from __future__ import unicode_literals
 
 import os
 import textwrap
 from distutils.core import Command
-from future.utils import text_to_native_str
 
-from ._nativize import nativize_all
-
-__all__ = [text_to_native_str("changelog")]
+__all__ = ["changelog"]
 
 class changelog(Command):
     description = "Generate ReST change log from github issues and pull requests"
@@ -43,7 +39,6 @@ class changelog(Command):
          "If the string `none` is passed, "
          "issues without milestones are returned. ")
      ]
-    user_options = [nativize_all(u) for u in user_options]
 
     def initialize_options(self):
         import github

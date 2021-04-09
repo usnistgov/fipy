@@ -213,6 +213,27 @@ commands:
           paths:
             - << parameters.condaenv >>
 
+  install_pip_packages:
+    description: "Check pip installation"
+
+    parameters:
+      packages:
+        type: string
+        default: "python"
+
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: ~/project
+
+      - run:
+          name: Install with Pip
+          command: |
+            conda create -v --quiet --name pipenv --show-channel-urls --channel conda-forge << parameters.packages >>
+            source activate pipenv
+            pip install -e .
+
 jobs:
   conda2_env:
     <<: *defaults2
@@ -229,6 +250,13 @@ jobs:
       - install_conda_packages:
           packages: "python=3.6 fipy"
           condaenv: "test-environment-36"
+
+  pip_env:
+    <<: *defaults3
+
+    steps:
+      - install_pip_packages:
+          packages: "python=3"
 
   test-27-pysparse:
     <<: *defaults2
@@ -565,6 +593,7 @@ workflows:
 #       - build-27-docs:
 #           requires:
 #             - conda2_env
+      - pip_env
       - build-36-docs:
           requires:
             - conda3_env

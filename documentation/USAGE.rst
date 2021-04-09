@@ -984,8 +984,10 @@ command in the base directory::
 
    This mechanism is intended primarily for the developers. At a minimum,
    you will need at least version 1.7.0 of `Sphinx
-   <http://www.sphinx-doc.org/>`_, plus all of its prerequisites. We 
-   install via conda::
+   <http://www.sphinx-doc.org/>`_, plus all of its prerequisites. Python
+   2.7 probably won't work.
+
+   We install via conda::
 
    $ conda install --channel conda-forge sphinx
 
