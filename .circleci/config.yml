@@ -36,7 +36,7 @@ commands:
       - run:
           name: Create Conda Environment
           command: |
-            conda create -v --quiet --prefix << parameters.condaenv >> --show-channel-urls --channel conda-forge << parameters.packages >> gmsh
+            conda create -v --quiet --prefix << parameters.condaenv >> --show-channel-urls --channel conda-forge conda << parameters.packages >> gmsh
             source activate ~/project/<< parameters.condaenv >>
             conda remove --quiet --channel conda-forge --force fipy
             pip install scikit-fmm
@@ -168,7 +168,6 @@ commands:
             apt-get --yes update
             apt-get --yes install build-essential
             conda config --set always_yes yes --set changeps1 no
-            conda update -q conda
             conda config --remove channels defaults
 
   remove_extracted_conda_packages:
