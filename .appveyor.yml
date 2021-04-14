@@ -103,6 +103,7 @@ build_script:
 test_script:
     - python setup.py egg_info
     - if defined FIPY_INLINE python setup.py test 1> NUL 2>&1
+    - iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
     - python setup.py test --deprecation-errors
     - conda env export
 
