@@ -32,11 +32,15 @@ commands:
         type: string
         default: ""
 
+      python:
+        type: string
+        default: "python"
+
     steps:
       - run:
           name: Create Conda Environment
           command: |
-            conda create -v --quiet --prefix << parameters.condaenv >> conda
+            conda create -v --quiet --prefix << parameters.condaenv >> "<< parameters.python >>" conda
             source activate ~/project/<< parameters.condaenv >>
             conda install -v --quiet --show-channel-urls --channel conda-forge << parameters.packages >> gmsh
             conda remove --quiet --channel conda-forge --force fipy
@@ -191,6 +195,9 @@ commands:
       condaenv:
         type: string
         default: "test-environment-27"
+      python:
+        type: string
+        default: "python"
 
     steps:
       # Download and cache dependencies
@@ -202,6 +209,7 @@ commands:
       - createenv:
           condaenv: << parameters.condaenv >>
           packages: << parameters.packages >>
+          python: << parameters.python >>
 
       - remove_extracted_conda_packages
 
@@ -240,7 +248,8 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=2.7 fipy \"traitsui<7.0.0\""
+          python:   "python=2.7"
+          packages: "fipy \"traitsui<7.0.0\""
           condaenv: "test-environment-27"
 
   conda3_env:
@@ -248,7 +257,8 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=3.6 fipy"
+          python:   "python=3"
+          packages: "fipy"
           condaenv: "test-environment-36"
 
   pip_env:
