@@ -7,6 +7,12 @@ image:
 environment:
 
   matrix:
+
+    - TARGET_ARCH: x64
+      CONDA_PY: 36
+      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
+      FIPY_SOLVERS: scipy
+
     - TARGET_ARCH: x64
       CONDA_PY: 27
       CONDA_INSTALL_LOCN: C:\\Miniconda-x64
@@ -32,11 +38,6 @@ environment:
 #      CONDA_PY: 36
 #      CONDA_INSTALL_LOCN: C:\\Miniconda36
 #      FIPY_SOLVERS: scipy
-
-    - TARGET_ARCH: x64
-      CONDA_PY: 36
-      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
-      FIPY_SOLVERS: scipy
 
 matrix:
   exclude:
