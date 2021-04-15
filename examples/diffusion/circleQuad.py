@@ -159,6 +159,21 @@ The values at the elements should be equal to their `x` coordinate
 >>> print(phi.allclose(x, atol = 0.035)) # doctest: +GMSH
 1
 
+>>> from fipy.meshes.gmshMesh import gmshVersion
+>>> version = gmshVersion()
+
+>>> Viewer(vars=CellVariable(mesh=mesh,
+...                          name="error - Gmsh {}".format(version),
+...                          value=phi - x)).plot(filename="error_gmsh{}.png".format(version))
+
+>>> Viewer(vars=CellVariable(mesh=mesh,
+...                          name="volume - Gmsh {}".format(version),
+...                          value=mesh.cellVolumes)).plot(filename="volume_gmsh{}.png".format(version))
+
+>>> Viewer(vars=CellVariable(name = "non-orthogonality - Gmsh {}".format(version),
+...                          mesh = mesh,
+...                          value = mesh._nonOrthogonality)).plot(filename="nonorthogonality_gmsh{}.png".format(version))
+
 Display the results if run as a script.
 
 >>> from fipy import input
