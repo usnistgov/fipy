@@ -117,3 +117,6 @@ artifacts:
 
 # deploy_script:
 #     - cmd: upload_or_check_non_existence .\recipe guyer --channel=main
+
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
