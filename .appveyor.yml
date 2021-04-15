@@ -52,8 +52,10 @@ matrix:
 platform:
     - x64
 
-init:
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+# Enable remote desktop on CI
+#   https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
+# init:
+#   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
     # If there is a newer build queued for the same PR, cancel this one.
@@ -117,5 +119,6 @@ artifacts:
 # deploy_script:
 #     - cmd: upload_or_check_non_existence .\recipe guyer --channel=main
 
-on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+# Hold remote desktop open
+# on_finish:
+#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
