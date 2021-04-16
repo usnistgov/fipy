@@ -11,7 +11,7 @@ defaults2: &defaults2
   <<: *defaults
 
   docker:
-    - image: continuumio/miniconda2
+    - image: continuumio/miniconda3
 
 defaults3: &defaults3
   <<: *defaults
