@@ -45,7 +45,7 @@ before_install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy gmsh;
+  - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy gmsh pytrilinos;
   - source activate test-environment
   - conda remove --quiet --channel conda-forge --force fipy
   - if [[ $PY3K -eq 0 ]]; then
