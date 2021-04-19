@@ -34,9 +34,17 @@ class DeprecationErroringTestProgram(unittest.TestProgram):
             warnings.filterwarnings(action="default", category=DeprecationWarning,
                                     message="invalid escape sequence.*")
 
+            # Don't raise errors in skfmm.pfmm
+            # due to deprecation of np.int in NumPy 1.20
             warnings.filterwarnings(action="default", category=DeprecationWarning,
                                     message="`np\.int` is a deprecated alias for the builtin `int`.*",
                                     module="skfmm\.pfmm")
+
+            # Don't raise errors in tvtk.array_handler
+            # due to deprecation of dtype conversion of np.character
+            warnings.filterwarnings(action="default", category=DeprecationWarning,
+                                    message="Converting `np\.character` to a dtype is deprecated..*",
+                                    module="tvtk\.array_handler")
 
             super(DeprecationErroringTestProgram, self).runTests()
 
