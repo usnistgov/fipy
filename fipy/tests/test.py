@@ -40,18 +40,6 @@ class DeprecationErroringTestProgram(unittest.TestProgram):
                                     message="`np\.int` is a deprecated alias for the builtin `int`.*",
                                     module="skfmm\.pfmm")
 
-            # Don't raise errors in tvtk.array_handler
-            # due to deprecation of dtype conversion of np.character
-            warnings.filterwarnings(action="default", category=DeprecationWarning,
-                                    message="Converting `np\.character` to a dtype is deprecated..*",
-                                    module="tvtk\.array_handler")
-
-            # Don't raise errors in tvtk.tvtk_base
-            # due to deprecation of TraitPrefixMap
-            warnings.filterwarnings(action="default", category=DeprecationWarning,
-                                    message="'TraitPrefixMap' trait handler has been deprecated.*",
-                                    module="tvtk\.tvtk_base")
-
             super(DeprecationErroringTestProgram, self).runTests()
 
 class test(_test):

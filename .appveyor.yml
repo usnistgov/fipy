@@ -9,8 +9,8 @@ environment:
   matrix:
 
     - TARGET_ARCH: x64
-      CONDA_PY: 36
-      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
+      CONDA_PY: 39
+      CONDA_INSTALL_LOCN: C:\\Miniconda39-x64
       FIPY_SOLVERS: scipy
 
     - TARGET_ARCH: x64
@@ -35,14 +35,14 @@ environment:
       FIPY_SOLVERS: scipy
 
 #    - TARGET_ARCH: x86
-#      CONDA_PY: 36
-#      CONDA_INSTALL_LOCN: C:\\Miniconda36
+#      CONDA_PY: 39
+#      CONDA_INSTALL_LOCN: C:\\Miniconda39
 #      FIPY_SOLVERS: scipy
 
 matrix:
   exclude:
     - image: Visual Studio 2015
-      CONDA_PY: 36
+      CONDA_PY: 39
 
     - image: Visual Studio 2019
       CONDA_PY: 27
@@ -83,7 +83,7 @@ install:
 
     # Configure the VM.
     - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root python=2.7 fipy
-    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "36" conda.exe install --quiet --name root "python>3" fipy gmsh
+    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "39" conda.exe install --quiet --name root python=3 fipy gmsh
     - cmd: conda.exe remove --quiet --force fipy
     # FIXME: fipy recipe on conda-forge doesn't have gmsh compatible with Python 2.7
     - ps: |
