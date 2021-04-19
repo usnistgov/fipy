@@ -34,6 +34,10 @@ class DeprecationErroringTestProgram(unittest.TestProgram):
             warnings.filterwarnings(action="default", category=DeprecationWarning,
                                     message="invalid escape sequence.*")
 
+            warnings.filterwarnings(action="default", category=DeprecationWarning,
+                                    message="`np\.int` is a deprecated alias for the builtin `int`.*",
+                                    module="skfmm\.pfmm")
+
             super(DeprecationErroringTestProgram, self).runTests()
 
 class test(_test):
