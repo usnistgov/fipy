@@ -196,7 +196,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                         # https://gitlab.onelab.info/gmsh/gmsh/issues/733
                         gmshFlags += ["-part_ghosts"]
 
-            gmshFlags += ["-format", "msh2"]
+            gmshFlags += ["-format", "msh2", "-smooth", "8"]
 
             if background is not None:
                 if communicator.procID == 0:
