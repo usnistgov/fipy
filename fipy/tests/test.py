@@ -34,6 +34,12 @@ class DeprecationErroringTestProgram(unittest.TestProgram):
             warnings.filterwarnings(action="default", category=DeprecationWarning,
                                     message="invalid escape sequence.*")
 
+            # Don't raise errors in skfmm.pfmm
+            # due to deprecation of np.int in NumPy 1.20
+            warnings.filterwarnings(action="default", category=DeprecationWarning,
+                                    message="`np\.int` is a deprecated alias for the builtin `int`.*",
+                                    module="skfmm\.pfmm")
+
             super(DeprecationErroringTestProgram, self).runTests()
 
 class test(_test):

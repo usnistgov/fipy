@@ -507,7 +507,7 @@ class Variable(object):
                 else:
                     mask = constraint.where
                     if not hasattr(mask, 'dtype') or mask.dtype != bool:
-                        mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
+                        mask = numerix.array(mask, dtype=bool)
 
                     if 0 not in value.shape:
                         try:
