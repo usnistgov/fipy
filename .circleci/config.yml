@@ -248,7 +248,7 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=3.6 fipy"
+          packages: "python=3 fipy pytrilinos"
           condaenv: "test-environment-36"
 
   pip_env:
@@ -286,26 +286,6 @@ jobs:
     environment:
       FIPY_SOLVERS: scipy
 
-  test-27-trilinos-serial:
-    <<: *defaults2
-
-    steps:
-      - test_fipy:
-          condaenv: test-environment-27
-    environment:
-      FIPY_SOLVERS: trilinos
-
-  test-27-trilinos-parallel:
-    <<: *defaults2
-
-    steps:
-      - test_fipy:
-          mpirun: "mpirun -np 2"
-          condaenv: test-environment-27
-    environment:
-      FIPY_SOLVERS: trilinos
-      OMP_NUM_THREADS: 1
-
   test-27-petsc-serial:
     <<: *defaults2
 
@@ -334,6 +314,26 @@ jobs:
           condaenv: test-environment-36
     environment:
       FIPY_SOLVERS: scipy
+
+  test-36-trilinos-serial:
+    <<: *defaults3
+
+    steps:
+      - test_fipy:
+          condaenv: test-environment-36
+    environment:
+      FIPY_SOLVERS: trilinos
+
+  test-36-trilinos-parallel:
+    <<: *defaults3
+
+    steps:
+      - test_fipy:
+          mpirun: "mpirun -np 2"
+          condaenv: test-environment-36
+    environment:
+      FIPY_SOLVERS: trilinos
+      OMP_NUM_THREADS: 1
 
   test-36-petsc-serial:
     <<: *defaults3
@@ -618,12 +618,6 @@ workflows:
 #       - test-27-scipy:
 #           requires:
 #             - conda2_env
-      - test-27-trilinos-serial:
-          requires:
-            - conda2_env
-      - test-27-trilinos-parallel:
-          requires:
-            - conda2_env
       - test-27-petsc-serial:
           requires:
             - conda2_env
@@ -631,6 +625,12 @@ workflows:
           requires:
             - conda2_env
       - test-36-scipy:
+          requires:
+            - conda3_env
+      - test-36-trilinos-serial:
+          requires:
+            - conda3_env
+      - test-36-trilinos-parallel:
           requires:
             - conda3_env
       - test-36-petsc-serial:
