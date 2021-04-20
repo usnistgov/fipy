@@ -9,11 +9,6 @@ environment:
   matrix:
 
     - TARGET_ARCH: x64
-      CONDA_PY: 36
-      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
-      FIPY_SOLVERS: scipy
-
-    - TARGET_ARCH: x64
       CONDA_PY: 27
       CONDA_INSTALL_LOCN: C:\\Miniconda-x64
       FIPY_SOLVERS: pysparse
@@ -35,14 +30,19 @@ environment:
       FIPY_SOLVERS: scipy
 
 #    - TARGET_ARCH: x86
-#      CONDA_PY: 36
-#      CONDA_INSTALL_LOCN: C:\\Miniconda36
+#      CONDA_PY: 38
+#      CONDA_INSTALL_LOCN: C:\\Miniconda38
 #      FIPY_SOLVERS: scipy
+
+    - TARGET_ARCH: x64
+      CONDA_PY: 38
+      CONDA_INSTALL_LOCN: C:\\Miniconda38-x64
+      FIPY_SOLVERS: scipy
 
 matrix:
   exclude:
     - image: Visual Studio 2015
-      CONDA_PY: 36
+      CONDA_PY: 38
 
     - image: Visual Studio 2019
       CONDA_PY: 27
@@ -78,12 +78,12 @@ install:
     - cmd: conda.exe config --set always_yes yes
     - cmd: conda.exe config --set changeps1 no
     - cmd: conda.exe config --remove channels defaults
-    - cmd: conda.exe config --add channels defaults
+    - cmd: if "%CONDA_PY%" == "27" conda.exe config --add channels defaults
     - cmd: conda.exe config --add channels conda-forge
 
     # Configure the VM.
     - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root python=2.7 fipy
-    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "36" conda.exe install --quiet --name root "python>3" fipy gmsh
+    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "38" conda.exe install --quiet --name root python=3 fipy gmsh
     - cmd: conda.exe remove --quiet --force fipy
     # FIXME: fipy recipe on conda-forge doesn't have gmsh compatible with Python 2.7
     - ps: |
