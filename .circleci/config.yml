@@ -11,7 +11,7 @@ defaults2: &defaults2
   <<: *defaults
 
   docker:
-    - image: continuumio/miniconda2
+    - image: continuumio/miniconda3
 
 defaults3: &defaults3
   <<: *defaults
@@ -32,11 +32,15 @@ commands:
         type: string
         default: ""
 
+      python:
+        type: string
+        default: "python"
+
     steps:
       - run:
           name: Create Conda Environment
           command: |
-            conda create -v --quiet --prefix << parameters.condaenv >> --show-channel-urls --channel conda-forge << parameters.packages >> gmsh
+            conda create -v --quiet --prefix << parameters.condaenv >> --show-channel-urls --channel conda-forge "<< parameters.python >>" << parameters.packages >> gmsh
             source activate ~/project/<< parameters.condaenv >>
             conda remove --quiet --channel conda-forge --force fipy
             pip install scikit-fmm
@@ -143,7 +147,7 @@ commands:
           paths:
             - /opt/conda
             - /root/.cache/pip
-          key: v12-dependencies-{{ arch }}-<< parameters.condaenv >>
+          key: v13-dependencies-{{ arch }}-<< parameters.condaenv >>
 
   restore_conda_cache:
     description: "Restore cache holding conda and pip"
@@ -156,9 +160,9 @@ commands:
     steps:
       - restore_cache:
           keys:
-          - v12-dependencies-{{ arch }}-<< parameters.condaenv >>
+          - v13-dependencies-{{ arch }}-<< parameters.condaenv >>
           # fallback to using the latest cache if no exact match is found
-          - v12-dependencies-
+          - v13-dependencies-
 
   install_dependencies:
     steps:
@@ -168,7 +172,6 @@ commands:
             apt-get --yes update
             apt-get --yes install build-essential
             conda config --set always_yes yes --set changeps1 no
-            conda update -q conda
             conda config --remove channels defaults
 
   remove_extracted_conda_packages:
@@ -191,6 +194,9 @@ commands:
       condaenv:
         type: string
         default: "test-environment-27"
+      python:
+        type: string
+        default: "python"
 
     steps:
       # Download and cache dependencies
@@ -202,6 +208,7 @@ commands:
       - createenv:
           condaenv: << parameters.condaenv >>
           packages: << parameters.packages >>
+          python: << parameters.python >>
 
       - remove_extracted_conda_packages
 
@@ -240,7 +247,8 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=2.7 fipy \"traitsui<7.0.0\""
+          python:   "python=2.7"
+          packages: "fipy \"traitsui<7.0.0\""
           condaenv: "test-environment-27"
 
   conda3_env:
@@ -248,7 +256,8 @@ jobs:
 
     steps:
       - install_conda_packages:
-          packages: "python=3 fipy pytrilinos"
+          python:   "python=3"
+          packages: "fipy pytrilinos"
           condaenv: "test-environment-36"
 
   pip_env:
