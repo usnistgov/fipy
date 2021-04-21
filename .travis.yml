@@ -45,8 +45,9 @@ before_install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy gmsh pytrilinos;
+  - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy pytrilinos;
   - source activate test-environment
+  - conda install --quiet --show-channel-urls --channel conda-forge gmsh;
   - conda remove --quiet --channel conda-forge --force fipy
   - if [[ $PY3K -eq 0 ]]; then
       conda install --channel conda-forge "traitsui<7.0.0";
