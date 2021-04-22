@@ -434,7 +434,7 @@ jobs:
           name: Lint
           command: |
             source activate ~/project/<< parameters.condaenv >>
-            conda install --channel conda-forge black
+            mamba install --channel conda-forge black
             black --target-version py27 --fast --diff --check setup.py
 
   pyspelling:
@@ -458,7 +458,7 @@ jobs:
           name: Spell Check
           command: |
             source activate ~/project/<< parameters.condaenv >>
-            conda install --channel conda-forge hunspell
+            mamba install --channel conda-forge hunspell
             pip install pyspelling
             wget -O en_US.aff  https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
             wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
@@ -489,10 +489,10 @@ jobs:
           name: install sphinx
           command: |
             source activate ~/project/<< parameters.condaenv >>
-            conda install --channel conda-forge sphinx future
+            mamba install --channel conda-forge sphinx future
             pip install 'sphinxcontrib-bibtex<=0.4.2'
             pip install numpydoc
-            conda install --channel conda-forge matplotlib pandas imagemagick
+            mamba install --channel conda-forge matplotlib pandas imagemagick
 
       - build_html_docs:
           condaenv: << parameters.condaenv >>
@@ -522,10 +522,10 @@ jobs:
           name: install sphinx
           command: |
             source activate ~/project/<< parameters.condaenv >>
-            conda install --channel conda-forge sphinx future
+            mamba install --channel conda-forge sphinx future
             pip install sphinxcontrib-bibtex
             pip install numpydoc
-            conda install --channel conda-forge matplotlib pandas imagemagick
+            mamba install --channel conda-forge matplotlib pandas imagemagick
 
       - run:
           name: Install LaTeX
