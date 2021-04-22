@@ -40,7 +40,6 @@ commands:
       - run:
           name: Create Conda Environment
           command: |
-            conda install --channel conda-forge mamba
             mamba create -v --quiet --prefix << parameters.condaenv >> --show-channel-urls --channel conda-forge "<< parameters.python >>" << parameters.packages >>
             source activate ~/project/<< parameters.condaenv >>
             mamba remove --quiet --channel conda-forge --force fipy
@@ -174,6 +173,7 @@ commands:
             apt-get --yes install build-essential
             conda config --set always_yes yes --set changeps1 no
             conda config --remove channels defaults
+            conda install --channel conda-forge mamba
 
   remove_extracted_conda_packages:
     description: "force conda to download packages into the cache and then
