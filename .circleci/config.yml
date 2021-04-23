@@ -87,6 +87,7 @@ commands:
             if [[ ! -z "${FIPY_INLINE}" ]]; then
               << parameters.mpirun >> python setup.py test > /dev/null 2>&1 || true;
             fi
+            python setup.py develop
             << parameters.mpirun >> python examples/phase/test.py
 
       - store_artifacts:
