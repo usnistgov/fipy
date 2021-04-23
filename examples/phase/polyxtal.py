@@ -14,7 +14,7 @@ including the effects of discrete crystalline orientations (anisotropy).
 We start with a regular 2D Cartesian mesh
 
 >>> import logging
->>> logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
+>>> logging.basicConfig(level=logging.DEBUG, format='%(asctime)s:%(levelname)s:%(message)s')
 
 >>> logging.debug("begin")
 
