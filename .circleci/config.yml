@@ -87,7 +87,7 @@ commands:
             if [[ ! -z "${FIPY_INLINE}" ]]; then
               << parameters.mpirun >> python setup.py test > /dev/null 2>&1 || true;
             fi
-            << parameters.mpirun >> python setup.py test --deprecation-errors
+            << parameters.mpirun >> python examples/phase/test.py
 
       - store_artifacts:
           path: test-reports
@@ -600,68 +600,68 @@ workflows:
     jobs:
       - conda2_env
       - conda3_env
-#       - build-27-docs:
+# #       - build-27-docs:
+# #           requires:
+# #             - conda2_env
+#       - pip_env
+#       - build-36-docs:
+#           requires:
+#             - conda3_env
+#       - pylint:
 #           requires:
 #             - conda2_env
-      - pip_env
-      - build-36-docs:
-          requires:
-            - conda3_env
-      - pylint:
-          requires:
-            - conda2_env
-      - flake8:
-          requires:
-            - conda2_env
-      - black:
-          requires:
-            - conda3_env
-      - pyspelling:
-          requires:
-            - conda3_env
-      - test-27-pysparse:
-          requires:
-            - conda2_env
-#       - test-27-inline:
+#       - flake8:
 #           requires:
 #             - conda2_env
-#       - test-27-scipy:
+#       - black:
+#           requires:
+#             - conda3_env
+#       - pyspelling:
+#           requires:
+#             - conda3_env
+#       - test-27-pysparse:
 #           requires:
 #             - conda2_env
-      - test-27-petsc-serial:
+# #       - test-27-inline:
+# #           requires:
+# #             - conda2_env
+      - test-27-scipy:
           requires:
             - conda2_env
-      - test-27-petsc-parallel:
-          requires:
-            - conda2_env
+#       - test-27-petsc-serial:
+#           requires:
+#             - conda2_env
+#       - test-27-petsc-parallel:
+#           requires:
+#             - conda2_env
       - test-36-scipy:
           requires:
             - conda3_env
-      - test-36-trilinos-serial:
-          requires:
-            - conda3_env
-      - test-36-trilinos-parallel:
-          requires:
-            - conda3_env
+#       - test-36-trilinos-serial:
+#           requires:
+#             - conda3_env
+#       - test-36-trilinos-parallel:
+#           requires:
+#             - conda3_env
       - test-36-petsc-serial:
           requires:
             - conda3_env
-      - test-36-petsc-parallel:
-          requires:
-            - conda3_env
-      - build-binaries:
-          requires:
-            - conda3_env
-#             - build-36-docs
-#             - pylint
-#             - flake8
-#             - black
-#             - pyspelling
-#             - test-27-pysparse
-#             - test-27-trilinos-serial
-#             - test-27-trilinos-parallel
-#             - test-27-petsc-serial
-#             - test-27-petsc-parallel
-#             - test-36-scipy
-#             - test-36-petsc-serial
-#             - test-36-petsc-parallel
+#       - test-36-petsc-parallel:
+#           requires:
+#             - conda3_env
+#       - build-binaries:
+#           requires:
+#             - conda3_env
+# #             - build-36-docs
+# #             - pylint
+# #             - flake8
+# #             - black
+# #             - pyspelling
+# #             - test-27-pysparse
+# #             - test-27-trilinos-serial
+# #             - test-27-trilinos-parallel
+# #             - test-27-petsc-serial
+# #             - test-27-petsc-parallel
+# #             - test-36-scipy
+# #             - test-36-petsc-serial
+# #             - test-36-petsc-parallel
