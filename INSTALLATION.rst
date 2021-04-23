@@ -120,7 +120,10 @@ Recommended Method
 
   .. note::
 
-     conda_ can be quite slow to resolve all dependencies when performing
+     conda_ can be
+     `quite <https://www.anaconda.com/blog/understanding-and-improving-condas-performance>`_
+     `slow <https://medium.com/@marius.v.niekerk/conda-metachannel-f962241c9437>`_
+     to resolve all dependencies when performing
      an installation.  You may wish to consider using the alternative
      mamba_ installation manager to speed things up.
 
