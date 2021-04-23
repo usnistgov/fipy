@@ -147,7 +147,7 @@ commands:
           paths:
             - /opt/conda
             - /root/.cache/pip
-          key: v13-dependencies-{{ arch }}-<< parameters.condaenv >>
+          key: v14-dependencies-{{ arch }}-<< parameters.condaenv >>
 
   restore_conda_cache:
     description: "Restore cache holding conda and pip"
@@ -160,9 +160,9 @@ commands:
     steps:
       - restore_cache:
           keys:
-          - v13-dependencies-{{ arch }}-<< parameters.condaenv >>
+          - v14-dependencies-{{ arch }}-<< parameters.condaenv >>
           # fallback to using the latest cache if no exact match is found
-          - v13-dependencies-
+          - v14-dependencies-
 
   install_dependencies:
     steps:
