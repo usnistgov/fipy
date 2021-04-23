@@ -120,6 +120,15 @@ Recommended Method
 
   .. note::
 
+     conda_ can be
+     `quite <https://www.anaconda.com/blog/understanding-and-improving-condas-performance>`_
+     `slow <https://medium.com/@marius.v.niekerk/conda-metachannel-f962241c9437>`_
+     to resolve all dependencies when performing
+     an installation.  You may wish to consider using the alternative
+     mamba_ installation manager to speed things up.
+
+  .. note::
+
      On Linux_ and `Mac OS X`_, you should have a pretty complete system
      to run and visualize :term:`FiPy` simulations. On Windows_, there
      are fewer packages available via conda_, particularly amongst the
@@ -141,6 +150,7 @@ Recommended Method
 .. _Windows: http://www.microsoft.com/windows/
 .. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
 .. _CondaForge:    https://anaconda.org/conda-forge/fipy
+.. _mamba: https://github.com/mamba-org/mamba
 
 
 --------------
