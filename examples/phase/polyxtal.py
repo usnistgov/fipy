@@ -13,6 +13,11 @@ including the effects of discrete crystalline orientations (anisotropy).
 
 We start with a regular 2D Cartesian mesh
 
+>>> import logging
+>>> logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
+
+>>> logging.debug("begin")
+
 >>> from fipy import CellVariable, Variable, ModularVariable, Grid2D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, MatplotlibViewer, Matplotlib2DGridViewer, MultiViewer
 >>> from fipy.tools import numerix
 >>> dx = dy = 0.025
@@ -21,6 +26,8 @@ We start with a regular 2D Cartesian mesh
 ... else:
 ...     nx = ny = 200
 >>> mesh = Grid2D(dx=dx, dy=dy, nx=nx, ny=ny)
+
+>>> logging.debug("Grid2D initialized")
 
 and we'll take fixed timesteps
 
@@ -40,6 +47,8 @@ and an orientation :math:`-\pi < \theta \le \pi`
 
 >>> theta = ModularVariable(name=r'$\theta$', mesh=mesh, hasOld=True)
 >>> theta.value = -numerix.pi + 0.0001
+
+>>> logging.debug("CellVariables initialized")
 
 The ``hasOld`` flag causes the storage of the value of variable from the
 previous timestep. This is necessary for solving equations with
@@ -132,6 +141,8 @@ as
 ...                                 * (1 - phase)
 ...                                 - (2 * s + epsilon**2 * thetaMag) * thetaMag))
 
+>>> logging.debug("Equations initialized")
+
 The governing equation for orientation is given by
 
 .. math::
@@ -187,6 +198,8 @@ We seed a circular solidified region in the center
 ...     seed = ((x - Cx * nx * dx)**2 + (y - Cy * ny * dy)**2) < radius**2
 ...     phase[seed] = 1.
 ...     theta[seed] = numerix.pi * (2 * orientation - 1)
+
+>>> logging.debug("Initial condition set")
 
 and quench the entire simulation domain below the melting point
 
@@ -318,9 +331,12 @@ and iterate the solution in time, plotting as we go,
 ...     phase.updateOld()
 ...     dT.updateOld()
 ...     theta.updateOld()
-...     thetaEq.solve(theta, dt=dt)
-...     phaseEq.solve(phase, dt=dt)
-...     heatEq.solve(dT, dt=dt)
+...     res_theta = thetaEq.sweep(theta, dt=dt)
+...     logging.debug("elapsed={}, theta residual = {}".format(elapsed, res_theta))
+...     res_phase = phaseEq.sweep(phase, dt=dt)
+...     logging.debug("elapsed={}, phase residual = {}".format(elapsed, res_phase))
+...     res_heat = heatEq.sweep(dT, dt=dt)
+...     logging.debug("elapsed={}, heat residual = {}".format(elapsed, res_heat))
 ...     elapsed += dt
 ...     if __name__ == "__main__" and elapsed >= save_at:
 ...         timer.set_text("t = %.3f" % elapsed)
