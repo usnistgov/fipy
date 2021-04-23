@@ -4,19 +4,19 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(testModuleNames = (
-                                       'impingement.test',
-                                       'missOrientation.test',
+#                                        'impingement.test',
+#                                        'missOrientation.test',
                                    ),
                                    docTestModuleNames = (
-                                       'binary',
-                                       'anisotropyOLD',
-                                       'anisotropy',
-                                       'quaternary',
-                                       'simple',
-                                       'symmetry',
-                                       'binaryCoupled',
+#                                        'binary',
+#                                        'anisotropyOLD',
+#                                        'anisotropy',
+#                                        'quaternary',
+#                                        'simple',
+#                                        'symmetry',
+#                                        'binaryCoupled',
                                        'polyxtal',
-                                       'polyxtalCoupled'
+#                                        'polyxtalCoupled'
                                    ),
                                    base = __name__)
 
