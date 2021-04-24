@@ -325,17 +325,32 @@ and iterate the solution in time, plotting as we go,
 >>> save_interval = 0.002
 >>> save_at = save_interval
 
+# >>> from fipy import solvers
+# >>> if solvers.solver == "scipy":
+# ...     solver = solvers.LinearGMRESSolver()
+# ... else:
+# ...     solver = None
+
+>>> solver = None
+
+>>> theta_solver = thetaEq.getDefaultSolver()
+>>> logging.debug("theta: {} {}".format(theta_solver, theta_solver.preconditioner))
+>>> phase_solver = phaseEq.getDefaultSolver()
+>>> logging.debug("phase: {} {}".format(phase_solver, phase_solver.preconditioner))
+>>> heat_solver = heatEq.getDefaultSolver()
+>>> logging.debug("heat: {} {}".format(heat_solver, heat_solver.preconditioner))
+
 >>> while elapsed < total_time:
 ...     if elapsed > 0.3:
 ...         q.value = 100
 ...     phase.updateOld()
 ...     dT.updateOld()
 ...     theta.updateOld()
-...     res_theta = thetaEq.sweep(theta, dt=dt)
+...     res_theta = thetaEq.sweep(theta, dt=dt, solver=solver)
 ...     logging.debug("elapsed={}, theta residual = {}".format(elapsed, res_theta))
-...     res_phase = phaseEq.sweep(phase, dt=dt)
+...     res_phase = phaseEq.sweep(phase, dt=dt, solver=solver)
 ...     logging.debug("elapsed={}, phase residual = {}".format(elapsed, res_phase))
-...     res_heat = heatEq.sweep(dT, dt=dt)
+...     res_heat = heatEq.sweep(dT, dt=dt, solver=solver)
 ...     logging.debug("elapsed={}, heat residual = {}".format(elapsed, res_heat))
 ...     elapsed += dt
 ...     if __name__ == "__main__" and elapsed >= save_at:
