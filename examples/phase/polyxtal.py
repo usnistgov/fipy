@@ -331,8 +331,6 @@ and iterate the solution in time, plotting as we go,
 # ... else:
 # ...     solver = None
 
->>> solver = None
-
 >>> theta_solver = thetaEq.getDefaultSolver()
 >>> logging.debug("theta: {} {}".format(theta_solver, theta_solver.preconditioner))
 >>> phase_solver = phaseEq.getDefaultSolver()
@@ -340,7 +338,9 @@ and iterate the solution in time, plotting as we go,
 >>> heat_solver = heatEq.getDefaultSolver()
 >>> logging.debug("heat: {} {}".format(heat_solver, heat_solver.preconditioner))
 
->>> while elapsed < total_time:
+>>> for step in range(1):
+...     solver = None
+...
 ...     if elapsed > 0.3:
 ...         q.value = 100
 ...     phase.updateOld()
@@ -348,8 +348,20 @@ and iterate the solution in time, plotting as we go,
 ...     theta.updateOld()
 ...     res_theta = thetaEq.sweep(theta, dt=dt, solver=solver)
 ...     logging.debug("elapsed={}, theta residual = {}".format(elapsed, res_theta))
+...
+...     phaseEq.cacheMatrix()
+...     phaseEq.cacheRHSvector()
+...     solver = phaseEq._prepareLinearSystem(var=phase, solver=solver, boundaryConditions=(), dt=dt)
+...
+...     logging.debug("elapsed={}, phase prepared".format(elapsed))
+...     # numerix.savetxt("xvec.dat", phase.value)
+...
 ...     res_phase = phaseEq.sweep(phase, dt=dt, solver=solver)
 ...     logging.debug("elapsed={}, phase residual = {}".format(elapsed, res_phase))
+...
+...     # phaseEq.matrix.exportMmf("matrix.mtx")
+...     # numerix.savetxt("bvec.dat", phaseEq.RHSvector)
+...
 ...     res_heat = heatEq.sweep(dT, dt=dt, solver=solver)
 ...     logging.debug("elapsed={}, heat residual = {}".format(elapsed, res_heat))
 ...     elapsed += dt

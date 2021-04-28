@@ -74,6 +74,6 @@ before_script:
       travis_wait 40 $MPIRUN python setup.py test || true;
     fi
 script:
-  - $MPIRUN time python timelu.py;
+  - $MPIRUN FIPY_VERBOSE_SOLVER=1 python examples/phase/test.py;
 after_success:
   - conda env export
