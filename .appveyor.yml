@@ -8,10 +8,10 @@ environment:
 
   matrix:
 
-    - TARGET_ARCH: x64
-      CONDA_PY: 27
-      CONDA_INSTALL_LOCN: C:\\Miniconda-x64
-      FIPY_SOLVERS: pysparse
+#     - TARGET_ARCH: x64
+#       CONDA_PY: 27
+#       CONDA_INSTALL_LOCN: C:\\Miniconda-x64
+#       FIPY_SOLVERS: pysparse
 
 #    - TARGET_ARCH: x64
 #      CONDA_PY: 27
