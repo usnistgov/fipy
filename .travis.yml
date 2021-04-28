@@ -74,6 +74,6 @@ before_script:
       travis_wait 40 $MPIRUN python setup.py test || true;
     fi
 script:
-  - $MPIRUN python setup.py test --deprecation-errors;
+  - $MPIRUN time python timelu.py;
 after_success:
   - conda env export

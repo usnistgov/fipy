@@ -109,7 +109,7 @@ build_script:
 test_script:
     - python setup.py egg_info
     - if defined FIPY_INLINE python setup.py test 1> NUL 2>&1
-    - python setup.py test --deprecation-errors
+    - time python timelu.py
     - conda env export
 
 artifacts:
