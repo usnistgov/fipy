@@ -47,7 +47,7 @@ def solve(var):
         xError = LU.solve(errorVector)
         x[:] = x - xError
 
-    logging.debug("{}:SOLVE:{}".format(var, iteration))
+        logging.debug("{}:SOLVE:{}".format(var, iteration))
 
     print("var: {}".format(var))
     print("iterations:", iteration+1)
@@ -56,6 +56,6 @@ def solve(var):
 
     logging.debug("{}:END".format(var))
 
-solve("theta")
+# solve("theta")
 solve("phase")
-solve("heat")
+# solve("heat")
