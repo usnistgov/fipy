@@ -89,7 +89,7 @@ commands:
             fi
             python setup.py develop
             export FIPY_VERBOSE_SOLVER=1
-            << parameters.mpirun >> python timelu.py
+            << parameters.mpirun >> python setup.py test --deprecation-errors
 
       - store_artifacts:
           path: test-reports
