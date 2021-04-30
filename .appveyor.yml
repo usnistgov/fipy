@@ -109,7 +109,7 @@ build_script:
 test_script:
     - python setup.py egg_info
     - if defined FIPY_INLINE python setup.py test 1> NUL 2>&1
-    - FIPY_VERBOSE_SOLVER=1 python examples/phase/test.py
+    - python examples/phase/test.py
     - conda env export
 
 artifacts:

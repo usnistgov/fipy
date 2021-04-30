@@ -346,6 +346,17 @@ and iterate the solution in time, plotting as we go,
 ...     phase.updateOld()
 ...     dT.updateOld()
 ...     theta.updateOld()
+...
+...     thetaEq.cacheMatrix()
+...     thetaEq.cacheRHSvector()
+...     solver = thetaEq._prepareLinearSystem(var=theta, solver=solver, boundaryConditions=(), dt=dt)
+...
+...     logging.debug("elapsed={}, theta prepared".format(elapsed))
+...     numerix.savetxt("theta-xvec.dat", theta.value)
+...
+...     thetaEq.matrix.exportMmf("theta-matrix.mtx")
+...     numerix.savetxt("theta-bvec.dat", thetaEq.RHSvector)
+...
 ...     res_theta = thetaEq.sweep(theta, dt=dt, solver=solver)
 ...     logging.debug("elapsed={}, theta residual = {}".format(elapsed, res_theta))
 ...
@@ -354,16 +365,27 @@ and iterate the solution in time, plotting as we go,
 ...     solver = phaseEq._prepareLinearSystem(var=phase, solver=solver, boundaryConditions=(), dt=dt)
 ...
 ...     logging.debug("elapsed={}, phase prepared".format(elapsed))
-...     # numerix.savetxt("xvec.dat", phase.value)
+...     numerix.savetxt("phase-xvec.dat", phase.value)
 ...
 ...     res_phase = phaseEq.sweep(phase, dt=dt, solver=solver)
 ...     logging.debug("elapsed={}, phase residual = {}".format(elapsed, res_phase))
 ...
-...     # phaseEq.matrix.exportMmf("matrix.mtx")
-...     # numerix.savetxt("bvec.dat", phaseEq.RHSvector)
+...     phaseEq.matrix.exportMmf("phase-matrix.mtx")
+...     numerix.savetxt("phase-bvec.dat", phaseEq.RHSvector)
+...
+...     heatEq.cacheMatrix()
+...     heatEq.cacheRHSvector()
+...     solver = heatEq._prepareLinearSystem(var=dT, solver=solver, boundaryConditions=(), dt=dt)
+...
+...     logging.debug("elapsed={}, heat prepared".format(elapsed))
+...     numerix.savetxt("heat-xvec.dat", dT.value)
 ...
 ...     res_heat = heatEq.sweep(dT, dt=dt, solver=solver)
 ...     logging.debug("elapsed={}, heat residual = {}".format(elapsed, res_heat))
+...
+...     heatEq.matrix.exportMmf("heat-matrix.mtx")
+...     numerix.savetxt("heat-bvec.dat", heatEq.RHSvector)
+...
 ...     elapsed += dt
 ...     if __name__ == "__main__" and elapsed >= save_at:
 ...         timer.set_text("t = %.3f" % elapsed)

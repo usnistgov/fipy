@@ -88,7 +88,8 @@ commands:
               << parameters.mpirun >> python setup.py test > /dev/null 2>&1 || true;
             fi
             python setup.py develop
-            << parameters.mpirun >> FIPY_VERBOSE_SOLVER=1 python examples/phase/test.py
+            export FIPY_VERBOSE_SOLVER=1
+            << parameters.mpirun >> python examples/phase/test.py
 
       - store_artifacts:
           path: test-reports
