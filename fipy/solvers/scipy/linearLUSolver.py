@@ -3,6 +3,10 @@ from __future__ import unicode_literals
 from builtins import range
 __docformat__ = 'restructuredtext'
 
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s:%(levelname)s:%(message)s')
+
 import os
 
 from scipy.sparse.linalg import splu
@@ -28,10 +32,15 @@ class LinearLUSolver(_ScipySolver):
         L = L * (1 / maxdiag)
         b = b * (1 / maxdiag)
 
+        logging.debug("begin splu")
+
         LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=1.,
                                             relax=1,
                                             panel_size=10,
-                                            permc_spec=3)
+                                            permc_spec="COLAMD",
+                                            options=dict(PrintStat=True))
+
+        logging.debug("end splu")
 
         error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
 
