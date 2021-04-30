@@ -28,7 +28,11 @@ def solve(var):
 
     logging.debug("{}:NORMALIZE".format(var))
 
-    LU = splu(L.asformat("csc"),
+    Lprime = L.asformat("csc")
+
+    logging.debug("{}:toCSC".format(var))
+
+    LU = splu(Lprime,
               diag_pivot_thresh=1.,
               relax=1,
               panel_size=10,
