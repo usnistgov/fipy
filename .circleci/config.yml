@@ -125,7 +125,7 @@ jobs:
     steps:
       - install_conda_packages:
           python:   "python=2.7"
-          packages: "scipy mpi4py petsc4py"
+          packages: "scipy mpi4py"
           condaenv: "test-environment-27"
 
   conda3_env:
@@ -134,7 +134,7 @@ jobs:
     steps:
       - install_conda_packages:
           python:   "python=3"
-          packages: "scipy mpi4py petsc4py"
+          packages: "scipy mpi4py"
           condaenv: "test-environment-3k"
 
   test-27-scipy:
