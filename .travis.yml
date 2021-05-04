@@ -50,24 +50,7 @@ before_install:
   - source activate test-environment
   # Useful for debugging any issues with conda
   - conda info -a
-  - pip install scikit-fmm
-install:
-  - python setup.py install
-before_script:
-  # lack of display causes tests to abort at VtkViewer
-  # Workaround @ http://docs.enthought.com/mayavi/mayavi/tips.html#rendering-using-the-virtual-framebuffer
-  # and https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
-  - if [[ $TRAVIS_OS_NAME = "linux" ]]; then
-      export DISPLAY=:99.0;
-      sh -e /etc/init.d/xvfb start;
-      sleep 3;
-    fi
-  # inline must be run twice to clear out compiler warnings
-  # we don't care if it fails the first time
-  - if [[ ! -z "${FIPY_INLINE}" ]]; then
-      travis_wait 40 $MPIRUN python setup.py test || true;
-    fi
-script:
-  - $MPIRUN python setup.py test --deprecation-errors;
+# script:
+  - python timelu.py;
 after_success:
   - conda env export
