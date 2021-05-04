@@ -82,9 +82,9 @@ install:
     - cmd: conda.exe config --add channels conda-forge
 
     # Configure the VM.
-    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root python=2.7 scipy future
-    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "38" conda.exe install --quiet --name root python=3 scipy future
-    - cmd: if "%TARGET_ARCH%" == "x86" conda.exe install --quiet --name root python scipy future
+    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root python=2.7 scipy matplotlib-base
+    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "38" conda.exe install --quiet --name root python=3 scipy matplotlib-base
+    - cmd: if "%TARGET_ARCH%" == "x86" conda.exe install --quiet --name root python scipy matplotlib-base
 
 # Skip .NET project specific build phase.
 build: off
