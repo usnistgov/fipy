@@ -15,10 +15,13 @@ def solve(var):
     logging.debug("{}:START".format(var))
 
     L = mmread("{}-matrix.mtx".format(var))
+
+    logging.debug("{}:mmread".format(var))
+
     x = np.loadtxt("{}-xvec.dat".format(var))
     b = np.loadtxt("{}-bvec.dat".format(var))
 
-    logging.debug("{}:LOAD".format(var))
+    logging.debug("{}:loadtxt".format(var))
 
     diag = L.diagonal()
     maxdiag = max(np.absolute(diag))
@@ -30,7 +33,7 @@ def solve(var):
 
     Lprime = L.asformat("csc")
 
-    logging.debug("{}:toCSC".format(var))
+    logging.debug("{}:asformat_csc".format(var))
 
     LU = splu(Lprime,
               diag_pivot_thresh=1.,
@@ -39,7 +42,7 @@ def solve(var):
               permc_spec="COLAMD",
               options=dict(PrintStat=True))
 
-    logging.debug("{}:SETUP".format(var))
+    logging.debug("{}:splu".format(var))
 
     error0 = L2norm(error(L, x, b))
 
@@ -51,7 +54,7 @@ def solve(var):
         xError = LU.solve(errorVector)
         x[:] = x - xError
 
-        logging.debug("{}:SOLVE:{}".format(var, iteration))
+        logging.debug("{}:solve:{}".format(var, iteration))
 
     print("var: {}".format(var))
     print("iterations:", iteration+1)
