@@ -46,14 +46,8 @@ before_install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda install --channel conda-forge mamba
-  - mamba create --quiet --name test-environment --show-channel-urls --channel conda-forge python=$TRAVIS_PYTHON_VERSION fipy pytrilinos;
+  - mamba create --quiet --name test-environment --show-channel-urls --channel conda-forge python=$TRAVIS_PYTHON_VERSION scipy;
   - source activate test-environment
-  - mamba remove --quiet --channel conda-forge --force fipy
-  - if [[ $PY3K -eq 0 ]]; then
-      mamba install --channel conda-forge "traitsui<7.0.0" "gmsh<4.0";
-    else
-      mamba install --channel conda-forge gmsh;
-    fi
   # Useful for debugging any issues with conda
   - conda info -a
   - pip install scikit-fmm

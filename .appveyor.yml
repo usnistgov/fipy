@@ -82,23 +82,9 @@ install:
     - cmd: conda.exe config --add channels conda-forge
 
     # Configure the VM.
-    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root python=2.7 fipy
-    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "38" conda.exe install --quiet --name root python=3 fipy gmsh
-    - cmd: conda.exe remove --quiet --force fipy
-    # FIXME: fipy recipe on conda-forge doesn't have gmsh compatible with Python 2.7
-    - ps: |
-        $ErrorActionPreference = "Stop";
-        if (($env:TARGET_ARCH -eq "x64") -and ($env:CONDA_PY -eq "27")) {
-            Invoke-WebRequest -Uri 'https://gmsh.info/bin/Windows/gmsh-4.3.0-Windows64.zip' -OutFile gmsh-4.3.0-Windows64.zip
-            Add-Type -A 'System.IO.Compression.FileSystem'
-            Expand-Archive gmsh-4.3.0-Windows64.zip -DestinationPath .
-            copy gmsh-4.3.0-Windows64\gmsh.exe $env:CONDA_INSTALL_LOCN\Scripts\
-        }
-    - cmd: if "%TARGET_ARCH%" == "x86" conda.exe install --quiet --name root python numpy scipy matplotlib
-    - cmd: if "%TARGET_ARCH%" == "x86" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root mayavi weave
-    - cmd: if "%TARGET_ARCH%" == "x86" if "%FIPY_SOLVERS%" == "pysparse" conda.exe install --quiet --name root pysparse
-
-    - cmd: pip install scikit-fmm
+    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root python=2.7 scipy
+    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "38" conda.exe install --quiet --name root python=3 scipy
+    - cmd: if "%TARGET_ARCH%" == "x86" conda.exe install --quiet --name root python numpy scipy
 
 # Skip .NET project specific build phase.
 build: off
@@ -107,14 +93,8 @@ build_script:
     - python setup.py release --windows
 
 test_script:
-    - python setup.py egg_info
-    - if defined FIPY_INLINE python setup.py test 1> NUL 2>&1
-    - python setup.py test --deprecation-errors
+    - python timelu.py
     - conda env export
-
-artifacts:
-  - path: dist\FiPy-*.zip
-    name: Win Installer
 
 # deploy_script:
 #     - cmd: upload_or_check_non_existence .\recipe guyer --channel=main
