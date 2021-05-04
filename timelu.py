@@ -56,10 +56,10 @@ def solve(var):
 
         logging.debug("{}:solve:{}".format(var, iteration))
 
-    print("var: {}".format(var))
-    print("iterations:", iteration+1)
-    print("residual:", L2norm(errorVector))
-    print("x", "min", min(abs(x)), "max", max(abs(x)))
+        print("", "var: {}".format(var))
+        print("", "iterations:", iteration+1)
+        print("", "residual:", L2norm(errorVector))
+        print("", "x", "min", min(abs(x)), "max", max(abs(x)))
 
     logging.debug("{}:END".format(var))
 
