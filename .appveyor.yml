@@ -89,9 +89,6 @@ install:
 # Skip .NET project specific build phase.
 build: off
 
-build_script:
-    - python setup.py release --windows
-
 test_script:
     - python timelu.py
     - conda env export
