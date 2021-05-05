@@ -46,7 +46,7 @@ before_install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda install --channel conda-forge mamba
-  - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge python=$TRAVIS_PYTHON_VERSION scipy mpich;
+  - conda create --quiet --name test-environment --show-channel-urls --channel conda-forge python=$TRAVIS_PYTHON_VERSION scipy matplotlib-base future;
   - source activate test-environment
   # Useful for debugging any issues with conda
   - conda info -a
