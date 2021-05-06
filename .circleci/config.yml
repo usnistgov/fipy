@@ -15,6 +15,8 @@ commands:
     description: "Run Tests"
 
     steps:
+      - checkout
+
       - run:
           name: Install Dependencies
           command: |
@@ -27,8 +29,6 @@ commands:
           name: Create Conda Environment
           command: |
             conda create -v --quiet --prefix test-environment --show-channel-urls --channel conda-forge "python=3" scipy
-
-      - checkout
 
       - attach_workspace:
           at: ~/project
