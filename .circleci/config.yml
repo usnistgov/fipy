@@ -23,7 +23,6 @@ commands:
             apt-get --yes update
             apt-get --yes install build-essential
             conda config --set always_yes yes --set changeps1 no
-            conda config --remove channels defaults
 
       - run:
           name: Create Conda Environment
