@@ -28,7 +28,7 @@ commands:
       - run:
           name: Create Conda Environment
           command: |
-            conda create -v --quiet --prefix test-environment --show-channel-urls --channel conda-forge "python=3" scipy
+            conda create -v --quiet --prefix test-environment --show-channel-urls "python=3" scipy
 
       - attach_workspace:
           at: ~/project
