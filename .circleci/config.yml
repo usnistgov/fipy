@@ -11,44 +11,22 @@ defaults: &defaults
     - image: continuumio/miniconda3
 
 commands:
-  createenv:
-    description: "Create conda environment"
-
-    parameters:
-      condaenv:
-        type: string
-        default: "cache"
-
-      packages:
-        type: string
-        default: ""
-
-      python:
-        type: string
-        default: "python"
-
-    steps:
-      - run:
-          name: Create Conda Environment
-          command: |
-            mamba create -v --quiet --prefix << parameters.condaenv >> --show-channel-urls --channel conda-forge "<< parameters.python >>" << parameters.packages >>
-
   test:
     description: "Run Tests"
 
-    parameters:
-      condaenv:
-        type: string
-        default: "test-environment-27"
-
     steps:
       - run:
-          name: Install libGL
+          name: Install Dependencies
           command: |
             apt-get --yes update
-            apt-get --yes install libglu1-mesa
-            apt-get --yes install libgl1-mesa-glx
-            apt-get --yes install libxrender1
+            apt-get --yes install build-essential
+            conda config --set always_yes yes --set changeps1 no
+            conda config --remove channels defaults
+
+      - run:
+          name: Create Conda Environment
+          command: |
+            conda create -v --quiet --prefix test-environment --show-channel-urls --channel conda-forge "python=3" scipy
 
       - checkout
 
@@ -58,98 +36,21 @@ commands:
       - run:
           name: Output Environment
           command: |
-            conda env export --prefix ~/project/<< parameters.condaenv >>
+            conda env export --prefix ~/project/test-environment
 
       - run:
           name: Run Tests
           no_output_timeout: 30m
           command: |
-            source activate ~/project/<< parameters.condaenv >>
+            source activate ~/project/test-environment
             python timelu.py
 
-  install_dependencies:
-    steps:
-      - run:
-          name: Install Dependencies
-          command: |
-            apt-get --yes update
-            apt-get --yes install build-essential
-            conda config --set always_yes yes --set changeps1 no
-            conda config --remove channels defaults
-            conda install --channel conda-forge mamba
-
-  remove_extracted_conda_packages:
-    description: "force conda to download packages into the cache and then
-                  clean out extracted packages
-                  after https://gist.github.com/mcg1969/cbb1760cea6b0671959d8cbf957c89bf"
-    steps:
-      - run:
-          name: Remove Extracted Conda Packages
-          command: |
-            conda clean --packages
-
-  install_conda_packages:
-    description: "Restore conda environment and install packages"
-
-    parameters:
-      packages:
-        type: string
-        default: ""
-      condaenv:
-        type: string
-        default: "test-environment-27"
-      python:
-        type: string
-        default: "python"
-
-    steps:
-
-      - install_dependencies
-
-      - createenv:
-          condaenv: << parameters.condaenv >>
-          packages: << parameters.packages >>
-          python: << parameters.python >>
-
-      - remove_extracted_conda_packages
-
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - << parameters.condaenv >>
-
 jobs:
-  conda2_env:
+  test-scipy:
     <<: *defaults
 
     steps:
-      - install_conda_packages:
-          python:   "python=2.7"
-          packages: "scipy \"blas=*=mkl\""
-          condaenv: "test-environment-27"
-
-  conda3_env:
-    <<: *defaults
-
-    steps:
-      - install_conda_packages:
-          python:   "python=3"
-          packages: "scipy \"blas=*=mkl\""
-          condaenv: "test-environment-3k"
-
-  test-27-scipy:
-    <<: *defaults
-
-    steps:
-      - test:
-          condaenv: test-environment-27
-
-  test-3k-scipy:
-    <<: *defaults
-
-    steps:
-      - test:
-          condaenv: test-environment-3k
+      - test
 
 
 workflows:
@@ -157,11 +58,4 @@ workflows:
 
   test:
     jobs:
-      - conda2_env
-      - conda3_env
-      - test-27-scipy:
-          requires:
-            - conda2_env
-      - test-3k-scipy:
-          requires:
-            - conda3_env
+      - test-scipy
