@@ -1,68 +1,25 @@
 import logging
-import numpy as np
 from scipy.sparse.linalg import splu
 from scipy.io import mmread
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s:%(levelname)s:%(message)s')
 
-def L2norm(vec):
-    return np.sqrt(np.sum(vec**2))
+logging.debug("START")
 
-def error(L, x, b):
-    return L * x - b
+L = mmread("phase-matrix.mtx")
 
-def solve(var):
-    logging.debug("{}:START".format(var))
+logging.debug("mmread")
 
-    L = mmread("{}-matrix.mtx".format(var))
+Lcsc = L.asformat("csc")
 
-    logging.debug("{}:mmread".format(var))
+logging.debug("asformat_csc")
 
-    x = np.loadtxt("{}-xvec.dat".format(var))
-    b = np.loadtxt("{}-bvec.dat".format(var))
+LU = splu(Lcsc,
+          diag_pivot_thresh=1.,
+          relax=1,
+          panel_size=10,
+          permc_spec="COLAMD")
 
-    logging.debug("{}:loadtxt".format(var))
+logging.debug("splu")
 
-    diag = L.diagonal()
-    maxdiag = max(np.absolute(diag))
-
-    L = L * (1 / maxdiag)
-    b = b * (1 / maxdiag)
-
-    logging.debug("{}:NORMALIZE".format(var))
-
-    Lprime = L.asformat("csc")
-
-    logging.debug("{}:asformat_csc".format(var))
-
-    LU = splu(Lprime,
-              diag_pivot_thresh=1.,
-              relax=1,
-              panel_size=10,
-              permc_spec="COLAMD",
-              options=dict(PrintStat=True))
-
-    logging.debug("{}:splu".format(var))
-
-    error0 = L2norm(error(L, x, b))
-
-    for iteration in range(10):
-        errorVector = error(L, x, b)
-        if (L2norm(errorVector) / error0) <= 1e-10:
-            break
-
-        xError = LU.solve(errorVector)
-        x[:] = x - xError
-
-        logging.debug("{}:solve:{}".format(var, iteration))
-
-        print("", "var: {}".format(var))
-        print("", "iterations:", iteration+1)
-        print("", "residual:", L2norm(errorVector))
-        print("", "x", "min", min(abs(x)), "max", max(abs(x)))
-
-    logging.debug("{}:END".format(var))
-
-# solve("theta")
-solve("phase")
-# solve("heat")
+logging.debug("END")
