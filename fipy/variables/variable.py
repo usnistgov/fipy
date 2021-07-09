@@ -1164,6 +1164,7 @@ class Variable(object):
             >>> print(abs(Variable(2.3) - Variable(1.2)))
             1.1
 
+
         Check representation works with different versions of numpy
 
             >>> print(repr(abs(Variable(2.3))))
