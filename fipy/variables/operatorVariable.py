@@ -209,7 +209,7 @@ def _OperatorVariableClass(baseClass=object):
                         return s
                 elif ins.opname == 'LOAD_CONST':
                     stack.append(ins.argval)
-                elif ins.opname == 'LOAD_ATTR':
+                elif ins.opname in ['LOAD_ATTR', 'LOAD_METHOD']:
                     stack.append(stack.pop() + "." + ins.argval)
                 elif ins.opname == 'COMPARE_OP':
                     stack.append(stack.pop(-2) + " " + dis.cmp_op[ins.arg] + " " + stack.pop())
@@ -217,7 +217,7 @@ def _OperatorVariableClass(baseClass=object):
                     stack.append(ins.argval)
                 elif ins.opname == 'LOAD_FAST':
                     stack.append(self.__var(ins.arg, style=style, argDict=argDict, id=id, freshen=freshen))
-                elif ins.opname == 'CALL_FUNCTION':
+                elif ins.opname in ['CALL_FUNCTION', 'CALL_METHOD']:
                     # args are last ins.arg items on stack
                     args, stack = stack[-ins.arg:], stack[:-ins.arg]
                     stack.append(stack.pop() + "(" + ", ".join(args) + ")")
