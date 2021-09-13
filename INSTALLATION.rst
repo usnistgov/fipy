@@ -67,13 +67,16 @@ Recommended Method
 * `install Miniconda`_ on your computer
 * run::
 
-    $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy
+    $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy gmsh
 
   .. note::
 
      This command creates a self-contained conda_ environment and then
      downloads and populates the environment with the prerequisites for
      :term:`FiPy` from the conda-forge_ channel at https://anaconda.org.
+
+     :term:`Gmsh` is an optional package because some versions are
+     incompatible with :term:`FiPy`, so it must be requested explicitly.
 
   .. attention::
 
@@ -85,7 +88,7 @@ Recommended Method
 
      and for Python 3.x, you should be able to do::
 
-      conda create --name <MYFIPYENV> --channel conda-forge python=3.6 numpy scipy matplotlib pysparse
+      conda create --name <MYFIPYENV> --channel conda-forge python=3 numpy scipy matplotlib pysparse gmsh
 
      followed, for either, by::
 
@@ -117,6 +120,15 @@ Recommended Method
 
   .. note::
 
+     conda_ can be
+     `quite <https://www.anaconda.com/blog/understanding-and-improving-condas-performance>`_
+     `slow <https://medium.com/@marius.v.niekerk/conda-metachannel-f962241c9437>`_
+     to resolve all dependencies when performing
+     an installation.  You may wish to consider using the alternative
+     mamba_ installation manager to speed things up.
+
+  .. note::
+
      On Linux_ and `Mac OS X`_, you should have a pretty complete system
      to run and visualize :term:`FiPy` simulations. On Windows_, there
      are fewer packages available via conda_, particularly amongst the
@@ -138,6 +150,7 @@ Recommended Method
 .. _Windows: http://www.microsoft.com/windows/
 .. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
 .. _CondaForge:    https://anaconda.org/conda-forge/fipy
+.. _mamba: https://github.com/mamba-org/mamba
 
 
 --------------
@@ -269,7 +282,7 @@ http://www.geuz.org/gmsh/
 
 :term:`Gmsh` is an application that allows the creation of irregular meshes.
 When running in parallel, :term:`FiPy` requires a version of :term:`Gmsh`
->= 2.5 and < 4.0.
+>= 2.5 and < 4.0 or >= 4.5.2.
 
 SciPy
 =====

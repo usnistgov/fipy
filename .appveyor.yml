@@ -7,6 +7,7 @@ image:
 environment:
 
   matrix:
+
     - TARGET_ARCH: x64
       CONDA_PY: 27
       CONDA_INSTALL_LOCN: C:\\Miniconda-x64
@@ -29,19 +30,19 @@ environment:
       FIPY_SOLVERS: scipy
 
 #    - TARGET_ARCH: x86
-#      CONDA_PY: 36
-#      CONDA_INSTALL_LOCN: C:\\Miniconda36
+#      CONDA_PY: 38
+#      CONDA_INSTALL_LOCN: C:\\Miniconda38
 #      FIPY_SOLVERS: scipy
 
     - TARGET_ARCH: x64
-      CONDA_PY: 36
-      CONDA_INSTALL_LOCN: C:\\Miniconda36-x64
+      CONDA_PY: 38
+      CONDA_INSTALL_LOCN: C:\\Miniconda38-x64
       FIPY_SOLVERS: scipy
 
 matrix:
   exclude:
     - image: Visual Studio 2015
-      CONDA_PY: 36
+      CONDA_PY: 38
 
     - image: Visual Studio 2019
       CONDA_PY: 27
@@ -50,6 +51,11 @@ matrix:
 # with the TARGET_ARCH variable.
 platform:
     - x64
+
+# Enable remote desktop on CI
+#   https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
+# init:
+#   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
     # If there is a newer build queued for the same PR, cancel this one.
@@ -72,12 +78,12 @@ install:
     - cmd: conda.exe config --set always_yes yes
     - cmd: conda.exe config --set changeps1 no
     - cmd: conda.exe config --remove channels defaults
-    - cmd: conda.exe config --add channels defaults
+    - cmd: if "%CONDA_PY%" == "27" conda.exe config --add channels defaults
     - cmd: conda.exe config --add channels conda-forge
 
     # Configure the VM.
     - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "27" conda.exe install --quiet --name root python=2.7 fipy
-    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "36" conda.exe install --quiet --name root python=3.6 fipy "gmsh<4.0"
+    - cmd: if "%TARGET_ARCH%" == "x64" if "%CONDA_PY%" == "38" conda.exe install --quiet --name root python=3 fipy gmsh
     - cmd: conda.exe remove --quiet --force fipy
     # FIXME: fipy recipe on conda-forge doesn't have gmsh compatible with Python 2.7
     - ps: |
@@ -112,3 +118,7 @@ artifacts:
 
 # deploy_script:
 #     - cmd: upload_or_check_non_existence .\recipe guyer --channel=main
+
+# Hold remote desktop open
+# on_finish:
+#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))

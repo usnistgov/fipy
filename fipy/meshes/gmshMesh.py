@@ -176,9 +176,11 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             gmshFlags = ["-%d" % dimensions, "-nopopup"]
 
             if communicator.Nproc > 1:
-                if not (StrictVersion("2.5") < version <= StrictVersion("4.0")):
-                    warnstr = "Cannot partition with Gmsh version < 2.5 or >= 4.0. " \
-                               + "Reverting to serial."
+                if  ((version < StrictVersion("2.5"))
+                     or (StrictVersion("4.0") <= version < StrictVersion("4.5.2"))):
+                    warnstr = ("Cannot partition with Gmsh version < 2.5 "
+                               "or 4.0 <= version < 4.5.2. "
+                               "Reverting to serial.")
                     warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
                     communicator = serialComm
 
@@ -190,11 +192,11 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                     gmshFlags += ["-part", "%d" % communicator.Nproc]
                     if version >= StrictVersion("4.0"):
                         # Gmsh 4.x needs to be told to generate ghost cells
-                        # Unfortunately, the ghosts are broken
+                        # Unfortunately, the ghosts are broken in Gmsh 4.0--4.5.1
                         # https://gitlab.onelab.info/gmsh/gmsh/issues/733
                         gmshFlags += ["-part_ghosts"]
 
-            gmshFlags += ["-format", "msh2"]
+            gmshFlags += ["-format", "msh2", "-smooth", "8"]
 
             if background is not None:
                 if communicator.procID == 0:
@@ -1387,6 +1389,11 @@ class _GmshTopology(_MeshTopology):
 class Gmsh2D(Mesh2D):
     """Construct a 2D Mesh using Gmsh
 
+    If called in parallel, the mesh will be partitioned based on the value
+    of `parallelComm.Nproc`.  If an `MSH` file is supplied, it must have
+    been previously partitioned with the number of partitions matching
+    `parallelComm.Nproc`.
+
     >>> radius = 5.
     >>> side = 4.
     >>> squaredCircle = Gmsh2D('''
@@ -1875,6 +1882,11 @@ class Gmsh2D(Mesh2D):
 class Gmsh2DIn3DSpace(Gmsh2D):
     """Create a topologically 2D Mesh in 3D coordinates using Gmsh
 
+    If called in parallel, the mesh will be partitioned based on the value
+    of `parallelComm.Nproc`.  If an `MSH` file is supplied, it must have
+    been previously partitioned with the number of partitions matching
+    `parallelComm.Nproc`.
+
     Parameters
     ----------
     arg : str
@@ -1958,6 +1970,11 @@ class Gmsh2DIn3DSpace(Gmsh2D):
 
 class Gmsh3D(Mesh):
     """Create a 3D Mesh using Gmsh
+
+    If called in parallel, the mesh will be partitioned based on the value
+    of `parallelComm.Nproc`.  If an `MSH` file is supplied, it must have
+    been previously partitioned with the number of partitions matching
+    `parallelComm.Nproc`.
 
     Parameters
     ----------
