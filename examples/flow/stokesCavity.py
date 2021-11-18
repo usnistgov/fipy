@@ -218,7 +218,7 @@ Set up the viewers,
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=(pressure, xVelocity, yVelocity, velocity),
-...                xmin=0., xmax=1., ymin=0., ymax=1., colorbar=True)
+...                xmin=0., xmax=1., ymin=0., ymax=1., colorbar='vertical')
 
 Below, we iterate for a set number of sweeps. We use the
 :meth:`~fipy.terms.term.Term.sweep` method instead of
