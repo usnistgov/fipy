@@ -5,11 +5,14 @@ __docformat__ = 'restructuredtext'
 from fipy.steppers.stepper import Stepper
 from fipy.steppers.pseudoRKQSStepper import PseudoRKQSStepper
 from fipy.steppers.pidStepper import PIDStepper
+from fipy.tools.decorators import deprecate
 
 __all__ = ["L1error", "L2error", "LINFerror", "sweepMonotonic"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
+@deprecate(version="3.4.3",
+           message="Pass a ``residualFn`` to :meth:`~fipy.terms.term.Term.sweep`.")
 def residual(var, matrix, RHSvector):
     r"""
     Determines the residual for the current solution matrix and variable.
@@ -34,6 +37,9 @@ def residual(var, matrix, RHSvector):
     Lx = matrix * array(var)
     return LINFnorm(Lx - RHSvector)
 
+@deprecate(version="3.4.3",
+           message="Calculate error explicitly with "
+                   ":mod:`~fipy.tools.numerix`.")
 def error(var, matrix, RHSvector, norm):
     r"""
     .. math::
@@ -60,6 +66,9 @@ def error(var, matrix, RHSvector, norm):
     denom = L1norm(var.old)
     return L1norm(var - var.old) / (denom + (denom == 0))
 
+@deprecate(version="3.4.3",
+           message="Calculate error explicitly with "
+                   ":mod:`~fipy.tools.numerix.L1norm`.")
 def L1error(var, matrix, RHSvector):
     r"""
     .. math::
@@ -81,6 +90,9 @@ def L1error(var, matrix, RHSvector):
     from fipy.tools.numerix import L1norm
     return error(var, matrix, RHSvector, L1norm)
 
+@deprecate(version="3.4.3",
+           message="Calculate error explicitly with "
+                   ":mod:`~fipy.tools.numerix.L2norm`.")
 def L2error(var, matrix, RHSvector):
     r"""
     .. math::
@@ -102,6 +114,9 @@ def L2error(var, matrix, RHSvector):
     from fipy.tools.numerix import L2norm
     return error(var, matrix, RHSvector, L2norm)
 
+@deprecate(version="3.4.3",
+           message="Calculate error explicitly with "
+                   ":mod:`~fipy.tools.numerix.LINFnorm`.")
 def LINFerror(var, matrix, RHSvector):
     r"""
     .. math::
@@ -123,6 +138,8 @@ def LINFerror(var, matrix, RHSvector):
     from fipy.tools.numerix import LINFnorm
     return error(var, matrix, RHSvector, LINFnorm)
 
+@deprecate(version="3.4.3",
+           message="Use the :term:`steppyngstounes` package instead.")
 def sweepMonotonic(fn, *args, **kwargs):
     """
     Repeatedly calls :func:`fn(*args, **kwargs)` until the residual returned by
