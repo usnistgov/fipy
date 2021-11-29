@@ -66,3 +66,4 @@ class LinearLUSolver(PETScSolver):
             PRINT('precon:', ksp.getPC().type)
             PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
             PRINT('residual:', errorVector.norm(1))
+
