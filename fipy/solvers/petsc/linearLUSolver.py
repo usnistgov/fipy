@@ -18,13 +18,13 @@ class LinearLUSolver(PETScSolver):
     A direct solve is performed.
 
     """
-      
+
     def __init__(self, tolerance=1e-10, iterations=10, precon="lu"):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `precon`: *Ignored*. 
+          - `precon`: *Ignored*.
 
         """
         PETScSolver.__init__(self, tolerance=tolerance,
@@ -38,26 +38,26 @@ class LinearLUSolver(PETScSolver):
         # TODO: SuperLU invoked with PCFactorSetMatSolverType(pc, MATSOLVERSUPERLU)
         #       see: http://www.mcs.anl.gov/petsc/petsc-dev/src/ksp/ksp/examples/tutorials/ex52.c.html
         # PETSc.PC().setFactorSolverType("superlu")
-        
+
         L.assemble()
         ksp.setOperators(L)
         ksp.setFromOptions()
-        
+
         for iteration in range(self.iterations):
             errorVector = L * x - b
             tol = errorVector.norm()
-            
+
             if iteration == 0:
                 tol0 = tol
-                
-            if (tol / tol0) <= self.tolerance:
+
+            if tol <= self.tolerance * tol0:
                 break
-                
+
             xError = x.copy()
 
             ksp.solve(errorVector, xError)
             x -= xError
-            
+
         if 'FIPY_VERBOSE_SOLVER' in os.environ:
             from fipy.tools.debug import PRINT
 #             L.view()
