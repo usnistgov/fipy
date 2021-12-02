@@ -38,7 +38,7 @@ class LinearLUSolver(_ScipySolver):
         for iteration in range(min(self.iterations, 10)):
             errorVector = L * x - b
 
-            if (numerix.sqrt(numerix.sum(errorVector**2)) / error0)  <= self.tolerance:
+            if numerix.sqrt(numerix.sum(errorVector**2))  <= self.tolerance * error0:
                 break
 
             xError = LU.solve(errorVector)
