@@ -34,7 +34,8 @@ class LabelVariable(CellVariable):
     To have no connectivity between cells, we can assign a structure with
     no neighbors.
 
-    >>> labels = fp.LabelVariable(features, structure=[0,1,0],
+    >>> labels = fp.LabelVariable(features,
+    ...                           structure=[0,1,0],
     ...                           name="labels")
     >>> print(labels.num_features)
     3
@@ -74,10 +75,11 @@ class LabelVariable(CellVariable):
     the structure array follows NumPy (y, x) ordering, rather than FiPy (x,
     y) ordering.
 
-    >>> labels = fp.LabelVariable(features, structure=[[1,1,0],
-    ...                                                [1,1,1],
-    ...                                                [0,1,1]],
-    ...                             name="labels")
+    >>> labels = fp.LabelVariable(features,
+    ...                           structure=[[1,1,0],
+    ...                                      [1,1,1],
+    ...                                      [0,1,1]],
+    ...                           name="labels")
     >>> print(labels.num_features)
     1
     >>> print(labels.ndimage)
@@ -137,16 +139,17 @@ class LabelVariable(CellVariable):
     other two.  Note that the structure array follows NumPy (z, y, x)
     ordering, rather than FiPy (x, y, z) ordering.
 
-    >>> labels = fp.LabelVariable(features, structure=[[[1,0,0],
-    ...                                                 [0,1,0],
-    ...                                                 [0,0,0]],
-    ...                                                [[0,1,0],
-    ...                                                 [1,1,1],
-    ...                                                 [0,1,0]],
-    ...                                                [[0,0,0],
-    ...                                                 [0,1,0],
-    ...                                                 [0,0,1]]],
-    ...                         name="labels")
+    >>> labels = fp.LabelVariable(features,
+    ...                           structure=[[[1,0,0],
+    ...                                       [0,1,0],
+    ...                                       [0,0,0]],
+    ...                                      [[0,1,0],
+    ...                                       [1,1,1],
+    ...                                       [0,1,0]],
+    ...                                      [[0,0,0],
+    ...                                       [0,1,0],
+    ...                                       [0,0,1]]],
+    ...                           name="labels")
     >>> print(labels.num_features)
     2
     >>> print(labels.ndimage)
