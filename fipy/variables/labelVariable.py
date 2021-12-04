@@ -9,7 +9,7 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class LabelVariable(CellVariable):
-    """Label features in `var` using scipy.ndimage.label
+    """Label features in `var` using `scipy.ndimage.label`
     
     >>> import fipy as fp
 
@@ -208,7 +208,7 @@ class LabelVariable(CellVariable):
     def _calcValue(self):
         """Label features of `var`
         
-        Side-effect: sets self._num_features
+        Side-effect: sets :attr:`self._num_features`.
         """
         from scipy import ndimage
 

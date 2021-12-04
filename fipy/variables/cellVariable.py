@@ -132,15 +132,16 @@ class CellVariable(_MeshVariable):
 
     @property
     def ndimage(self):
-        """Global value as an ndarray suitable for scipy.ndimage
+        """Global value as an `ndarray` suitable for `scipy.ndimage`
 
-        The cell values of a `CellVariable` are stored in a 1D ndarray.
+        The cell values of a `CellVariable` are stored in a 1D `ndarray.
         FiPy arranges its gridded cells in a right-handed Cartesian
         fashion, with x increasing to the right, y increasing up, and z
-        increasing toward you.  Conversely, NumPy arrays and ndimages are
-        arranged in stacks of increasing z, each consisting of rows of
-        increasing y, each element of which increases in x.  As a result, we
-        reverse FiPy's (x,y,z) shape to NumPy's (z,y,x).
+        increasing toward you.  Conversely, NumPy arrays, particularly
+        `scipy.ndimage` arrays, are arranged in stacks of increasing z,
+        each consisting of rows of increasing y, each element of which
+        increases in x.  As a result, we reverse FiPy's (x,y,z) shape to
+        NumPy's (z,y,x).
 
         >>> import fipy as fp
         >>> mesh = fp.Grid2D(nx=2, ny=3)
