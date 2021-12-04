@@ -56,13 +56,16 @@ class LabelVariable(CellVariable):
         
         Side-effect: sets self._num_features
         """
-        arr = self.var.globalValue.astype(self.dtype)
-        shape = (self.var.mesh.args['nx'], self.var.mesh.args['ny'])
-        arr = arr.reshape(shape)
-        self._num_features = ndimage.label(input=arr,
+        from scipy import ndimage
+
+        feat = self.var.globalValue
+        feat = feat.reshape(self.var.mesh.shape[::-1])
+
+        arr = numerix.empty(self.var.mesh.shape[::-1], dtype=self.dtype)
+        self._num_features = ndimage.label(input=feat,
                                            structure=self.structure,
                                            output=arr)
-        return arr.flat
+        return arr.flatten()
         
     @property
     def num_features(self):
