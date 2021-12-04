@@ -11,6 +11,166 @@ __all__ = [text_to_native_str(n) for n in __all__]
 class LabelVariable(CellVariable):
     """Label features in `var` using scipy.ndimage.label
     
+    >>> import fipy as fp
+
+    Create a 1D domain with two distinct non-zero regions.
+
+    >>> mesh = fp.Grid1D(nx=5)
+
+    >>> features = fp.CellVariable(mesh=mesh, name="features")
+    >>> features.setValue(1., where=(mesh.x > 1) & (mesh.x < 3))
+    >>> features.setValue(0.5, where=(mesh.x > 4) & (mesh.x < 5))
+    >>> print(features.value)
+    [ 0.   1.   1.   0.   0.5]
+
+    Label the non-zero regions.
+
+    >>> labels = fp.LabelVariable(features, name="labels")
+    >>> print(labels.num_features)
+    2
+    >>> print(labels)
+    [0 1 1 0 2]
+
+    To have no connectivity between cells, we can assign a structure with
+    no neighbors.
+
+    >>> labels = fp.LabelVariable(features, structure=[0,1,0],
+    ...                           name="labels")
+    >>> print(labels.num_features)
+    3
+    >>> print(labels)
+    [0 1 2 0 3]
+
+    Similarly, create a 2D domain with two distinct non-zero regions.
+
+    >>> mesh = fp.Grid2D(nx=5, ny=5)
+
+    >>> features = fp.CellVariable(mesh=mesh, name="features")
+    >>> features.setValue(1., where=((mesh.x > 1) & (mesh.x < 3)
+    ...                              & (mesh.y > 1) & (mesh.y < 3)))
+    >>> features.setValue(0.5, where=((mesh.x > 3) & (mesh.x < 4)
+    ...                               & (mesh.y > 3) & (mesh.y < 4)))
+
+    Note that FiPy arranges its gridded cells in a right-handed Cartesian
+    fashion, with x increasing to the right, y increasing up, and z
+    increasing toward you.  Conversely, NumPy arrays and ndimages are
+    arranged in stacks of increasing z, each consisting of rows of
+    increasing y, each element of which increases in x.  As a result, we
+    reverse FiPy's (x,y) shape to NumPy's (y, x):
+
+    >>> print(features.value.reshape(mesh.shape[::-1]))
+    [[ 0.   0.   0.   0.   0. ]
+     [ 0.   1.   1.   0.   0. ]
+     [ 0.   1.   1.   0.   0. ]
+     [ 0.   0.   0.   0.5  0. ]
+     [ 0.   0.   0.   0.   0. ]]
+
+    >>> labels = fp.LabelVariable(features, name="labels")
+    >>> print(labels.num_features)
+    2
+    >>> print(labels.value.reshape(mesh.shape[::-1]))
+    [[0 0 0 0 0]
+     [0 1 1 0 0]
+     [0 1 1 0 0]
+     [0 0 0 2 0]
+     [0 0 0 0 0]]
+
+    By default, the two domains are seen as unconnected because there is no
+    overlap of cells along either the x or y axis.  The following structure
+    creates connectivity along one diagonal, but not the other.  Note that
+    the structure array follows NumPy (y, x) ordering, rather than FiPy (x,
+    y) ordering.
+
+    >>> labels = fp.LabelVariable(features, structure=[[1,1,0],
+    ...                                                [1,1,1],
+    ...                                                [0,1,1]],
+    ...                             name="labels")
+    >>> print(labels.num_features)
+    1
+    >>> print(labels.value.reshape(mesh.shape[::-1]))
+    [[0 0 0 0 0]
+     [0 1 1 0 0]
+     [0 1 1 0 0]
+     [0 0 0 1 0]
+     [0 0 0 0 0]]
+
+    Similarly, create a 3D domain with three distinct non-zero regions.
+
+    >>> mesh = fp.Grid3D(nx=3, ny=3, nz=3)
+
+    >>> features = fp.CellVariable(mesh=mesh, name="features")
+    >>> features.setValue(1., where=((mesh.x > 0) & (mesh.x < 2)
+    ...                              & (mesh.y > 0) & (mesh.y < 2)
+    ...                              & (mesh.z > 0) & (mesh.z < 2)))
+    >>> features.setValue(0.7, where=((mesh.x > 2) & (mesh.x < 3)
+    ...                               & (mesh.y > 2) & (mesh.y < 3)
+    ...                               & (mesh.z > 0) & (mesh.z < 1)))
+    >>> features.setValue(0.5, where=((mesh.x > 2) & (mesh.x < 3)
+    ...                               & (mesh.y > 2) & (mesh.y < 3)
+    ...                               & (mesh.z > 2) & (mesh.z < 3)))
+
+    We reverse FiPy's (x,y, z) shape to NumPy's (z, y, x)
+
+    >>> print(features.value.reshape(mesh.shape[::-1]))
+    [[[ 1.   1.   0. ]
+      [ 1.   1.   0. ]
+      [ 0.   0.   0.7]]
+    <BLANKLINE>
+     [[ 1.   1.   0. ]
+      [ 1.   1.   0. ]
+      [ 0.   0.   0. ]]
+    <BLANKLINE>
+     [[ 0.   0.   0. ]
+      [ 0.   0.   0. ]
+      [ 0.   0.   0.5]]]
+
+    >>> labels = fp.LabelVariable(features, name="labels")
+    >>> print(labels.num_features)
+    3
+    >>> print(labels.value.reshape(mesh.shape[::-1]))
+    [[[1 1 0]
+      [1 1 0]
+      [0 0 2]]
+    <BLANKLINE>
+     [[1 1 0]
+      [1 1 0]
+      [0 0 0]]
+    <BLANKLINE>
+     [[0 0 0]
+      [0 0 0]
+      [0 0 3]]]
+
+    By default, the three domains are seen as unconnected because there is
+    no overlap of cells along any of the x, y, or z axes.  The following
+    structure creates connectivity along one major diagonal, but not the
+    other two.  Note that the structure array follows NumPy (z, y, x)
+    ordering, rather than FiPy (x, y, z) ordering.
+
+    >>> labels = fp.LabelVariable(features, structure=[[[1,0,0],
+    ...                                                 [0,1,0],
+    ...                                                 [0,0,0]],
+    ...                                                [[0,1,0],
+    ...                                                 [1,1,1],
+    ...                                                 [0,1,0]],
+    ...                                                [[0,0,0],
+    ...                                                 [0,1,0],
+    ...                                                 [0,0,1]]],
+    ...                         name="labels")
+    >>> print(labels.num_features)
+    2
+    >>> print(labels.value.reshape(mesh.shape[::-1]))
+    [[[1 1 0]
+      [1 1 0]
+      [0 0 2]]
+    <BLANKLINE>
+     [[1 1 0]
+      [1 1 0]
+      [0 0 0]]
+    <BLANKLINE>
+     [[0 0 0]
+      [0 0 0]
+      [0 0 1]]]
+
     Parameters
     ----------
     var : ~fipy.variables.cellVariable.CellVariable
@@ -75,3 +235,10 @@ class LabelVariable(CellVariable):
             self._getValue()
 
         return self._num_features
+
+def _test():
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
+
+if __name__ == "__main__":
+    _test()
