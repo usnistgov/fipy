@@ -12,6 +12,7 @@ from fipy.variables.histogramVariable import *
 from fipy.variables.surfactantVariable import *
 from fipy.variables.surfactantConvectionVariable import *
 from fipy.variables.distanceVariable import *
+from fipy.variables.labelVariable import *
 
 __all__ = []
 __all__.extend(variable.__all__)
@@ -28,3 +29,4 @@ __all__.extend(histogramVariable.__all__)
 __all__.extend(surfactantVariable.__all__)
 __all__.extend(surfactantConvectionVariable.__all__)
 __all__.extend(distanceVariable.__all__)
+__all__.extend(labelVariable.__all__)
