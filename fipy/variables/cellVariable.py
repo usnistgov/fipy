@@ -147,9 +147,9 @@ class CellVariable(_MeshVariable):
         >>> mesh = fp.Grid2D(nx=2, ny=3)
         >>> var = fp.CellVariable(mesh=mesh, value=mesh.x * mesh.y)
         >>> print(var.ndimage)
-        [[0.25 0.75]
-         [0.75 2.25]
-         [1.25 3.75]]
+        [[ 0.25  0.75]
+         [ 0.75  2.25]
+         [ 1.25  3.75]]
 
         Returns
         -------
