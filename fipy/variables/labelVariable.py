@@ -2,12 +2,11 @@ from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellVariable import CellVariable
+from fipy.tools import numerix
 
 __all__ = ["LabelVariable"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
-
-from scipy import ndimage
 
 class LabelVariable(CellVariable):
     """Label features in `var` using scipy.ndimage.label
@@ -37,15 +36,16 @@ class LabelVariable(CellVariable):
         to store the largest label, or this Variable will raise an Exception.
         Default: int.
     """
-    def __init__(self, var, structure=None, dtype=int):
+    def __init__(self, var, name="", structure=None, dtype=int):
         # We want our value to hold dtype,
         # but if we pass an array, the CellVariable
         # will probably be wonky
-        value = fp.numerix.array(0.).astype(dtype).item()
-        fp.CellVariable.__init__(self,
-                                 mesh=var.mesh,
-                                 value=value,
-                                 elementshape=var.shape[:-1])
+        value = numerix.array(0.).astype(dtype).item()
+        CellVariable.__init__(self,
+                              mesh=var.mesh,
+                              name=name,
+                              value=value,
+                              elementshape=var.shape[:-1])
         self.var = self._requires(var)
         self.structure = structure
         self.dtype = dtype
