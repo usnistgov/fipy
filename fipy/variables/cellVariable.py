@@ -130,6 +130,42 @@ class CellVariable(_MeshVariable):
         return self._getGlobalValue(self.mesh._localNonOverlappingCellIDs,
                                     self.mesh._globalNonOverlappingCellIDs)
 
+    @property
+    def ndimage(self):
+        """Global value as an ndarray suitable for scipy.ndimage
+
+        The cell values of a `CellVariable` are stored in a 1D ndarray.
+        FiPy arranges its gridded cells in a right-handed Cartesian
+        fashion, with x increasing to the right, y increasing up, and z
+        increasing toward you.  Conversely, NumPy arrays and ndimages are
+        arranged in stacks of increasing z, each consisting of rows of
+        increasing y, each element of which increases in x.  As a result, we
+        reverse FiPy's (x,y,z) shape to NumPy's (z,y,x).
+
+        >>> import fipy as fp
+        >>> mesh = fp.Grid2D(nx=2, ny=3)
+        >>> var = fp.CellVariable(mesh=mesh, value=mesh.x * mesh.y)
+        >>> print(var.ndimage)
+        [[0.25 0.75]
+         [0.75 2.25]
+         [1.25 3.75]]
+
+        Returns
+        -------
+        ndarray
+            Shape of mesh grid
+
+        Note
+        ----
+        Only suitable for a `CellVariable` defined on a `Grid?D` mesh.
+        """
+        try:
+            shape = self.mesh.shape[::-1]
+        except AttributeError:
+            raise TypeError("Only CellVariables defined on a Grid mesh can "
+                            "be represented as an ndimage")
+        return self.globalValue.reshape(shape)
+
     def setValue(self, value, unit = None, where = None):
         _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
 

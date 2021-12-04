@@ -20,7 +20,7 @@ class LabelVariable(CellVariable):
     >>> features = fp.CellVariable(mesh=mesh, name="features")
     >>> features.setValue(1., where=(mesh.x > 1) & (mesh.x < 3))
     >>> features.setValue(0.5, where=(mesh.x > 4) & (mesh.x < 5))
-    >>> print(features.value)
+    >>> print(features.ndimage)
     [ 0.   1.   1.   0.   0.5]
 
     Label the non-zero regions.
@@ -28,7 +28,7 @@ class LabelVariable(CellVariable):
     >>> labels = fp.LabelVariable(features, name="labels")
     >>> print(labels.num_features)
     2
-    >>> print(labels)
+    >>> print(labels.ndimage)
     [0 1 1 0 2]
 
     To have no connectivity between cells, we can assign a structure with
@@ -38,7 +38,7 @@ class LabelVariable(CellVariable):
     ...                           name="labels")
     >>> print(labels.num_features)
     3
-    >>> print(labels)
+    >>> print(labels.ndimage)
     [0 1 2 0 3]
 
     Similarly, create a 2D domain with two distinct non-zero regions.
@@ -51,14 +51,7 @@ class LabelVariable(CellVariable):
     >>> features.setValue(0.5, where=((mesh.x > 3) & (mesh.x < 4)
     ...                               & (mesh.y > 3) & (mesh.y < 4)))
 
-    Note that FiPy arranges its gridded cells in a right-handed Cartesian
-    fashion, with x increasing to the right, y increasing up, and z
-    increasing toward you.  Conversely, NumPy arrays and ndimages are
-    arranged in stacks of increasing z, each consisting of rows of
-    increasing y, each element of which increases in x.  As a result, we
-    reverse FiPy's (x,y) shape to NumPy's (y, x):
-
-    >>> print(features.value.reshape(mesh.shape[::-1]))
+    >>> print(features.ndimage)
     [[ 0.   0.   0.   0.   0. ]
      [ 0.   1.   1.   0.   0. ]
      [ 0.   1.   1.   0.   0. ]
@@ -68,7 +61,7 @@ class LabelVariable(CellVariable):
     >>> labels = fp.LabelVariable(features, name="labels")
     >>> print(labels.num_features)
     2
-    >>> print(labels.value.reshape(mesh.shape[::-1]))
+    >>> print(labels.ndimage)
     [[0 0 0 0 0]
      [0 1 1 0 0]
      [0 1 1 0 0]
@@ -87,7 +80,7 @@ class LabelVariable(CellVariable):
     ...                             name="labels")
     >>> print(labels.num_features)
     1
-    >>> print(labels.value.reshape(mesh.shape[::-1]))
+    >>> print(labels.ndimage)
     [[0 0 0 0 0]
      [0 1 1 0 0]
      [0 1 1 0 0]
@@ -109,9 +102,7 @@ class LabelVariable(CellVariable):
     ...                               & (mesh.y > 2) & (mesh.y < 3)
     ...                               & (mesh.z > 2) & (mesh.z < 3)))
 
-    We reverse FiPy's (x,y, z) shape to NumPy's (z, y, x)
-
-    >>> print(features.value.reshape(mesh.shape[::-1]))
+    >>> print(features.ndimage)
     [[[ 1.   1.   0. ]
       [ 1.   1.   0. ]
       [ 0.   0.   0.7]]
@@ -127,7 +118,7 @@ class LabelVariable(CellVariable):
     >>> labels = fp.LabelVariable(features, name="labels")
     >>> print(labels.num_features)
     3
-    >>> print(labels.value.reshape(mesh.shape[::-1]))
+    >>> print(labels.ndimage)
     [[[1 1 0]
       [1 1 0]
       [0 0 2]]
@@ -158,7 +149,7 @@ class LabelVariable(CellVariable):
     ...                         name="labels")
     >>> print(labels.num_features)
     2
-    >>> print(labels.value.reshape(mesh.shape[::-1]))
+    >>> print(labels.ndimage)
     [[[1 1 0]
       [1 1 0]
       [0 0 2]]
