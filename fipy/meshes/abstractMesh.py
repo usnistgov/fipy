@@ -336,10 +336,12 @@ class AbstractMesh(object):
             other_faces = otherc.exteriorFaces.value
 
         ## only try to match exterior (X) vertices
-        self_Xvertices = numerix.unique(selfc.faceVertexIDs.filled()[...,
+        self_Xvertices = numerix.unique(selfc.faceVertexIDs[...,
             self_faces].flatten())
-        other_Xvertices = numerix.unique(otherc.faceVertexIDs.filled()[...,
+        self_Xvertices = self_Xvertices.compressed()
+        other_Xvertices = numerix.unique(otherc.faceVertexIDs[...,
             other_faces].flatten())
+        other_Xvertices = other_Xvertices.compressed()
 
         self_XvertexCoords = selfc.vertexCoords[..., self_Xvertices]
         other_XvertexCoords = otherc.vertexCoords[..., other_Xvertices]
@@ -404,7 +406,7 @@ class AbstractMesh(object):
             self_faceHash = numerix.empty(self_matchingFaces.shape[:-1] + (0,), dtype="str")
         else:
             # sort each of self's Face's vertexIDs for canonical comparison
-            self_faceHash = numerix.sort(self_faceVertexIDs[..., self_matchingFaces], axis=0)
+            self_faceHash = numerix.sort(self_faceVertexIDs[..., self_matchingFaces].filled(), axis=0)
             # then hash the Faces for comparison (NumPy set operations are only for 1D arrays)
             self_faceHash = numerix.apply_along_axis(str, axis=0, arr=self_faceHash)
 
@@ -449,6 +451,21 @@ class AbstractMesh(object):
         face_map[faceCorrelates[1]] = faceCorrelates[0]
 
         other_faceVertexIDs = vertex_map[otherc.faceVertexIDs[..., facesToAdd]]
+
+        # ensure that both sets of faceVertexIDs have the same maximum number of (masked) elements
+        diff = self_faceVertexIDs.shape[0] - other_faceVertexIDs.shape[0]
+        if diff > 0:
+            other_faceVertexIDs = numerix.append(other_faceVertexIDs,
+                                                 -1 * numerix.ones((diff,)
+                                                                   + other_faceVertexIDs.shape[1:], 'l'),
+                                                 axis=0)
+            other_faceVertexIDs = MA.masked_values(other_faceVertexIDs, -1)
+        elif diff < 0:
+            self_faceVertexIDs = numerix.append(self_faceVertexIDs,
+                                                -1 * numerix.ones((-diff,)
+                                                                  + self_faceVertexIDs.shape[1:], 'l'),
+                                                axis=0)
+            self_faceVertexIDs = MA.masked_values(self_faceVertexIDs, -1)
 
         # ensure that both sets of cellFaceIDs have the same maximum number of (masked) elements
         self_cellFaceIDs = selfc.cellFaceIDs
