@@ -65,16 +65,14 @@ they have been modified.
 Support
 -------
 
-You can communicate with the :term:`FiPy` developers and with other
-users via our `mailing list`_ and we welcome you to use the `issue
-tracker`_ for bugs, support requests, feature requests and patch
-submissions <https://github.com/usnistgov/fipy/issues>. We also monitor
-StackOverflow_ for questions tagged with "fipy". We welcome
-collaborative efforts on this project.
+We offer several modes to communicate with the :term:`FiPy` developers and
+with other users.
 
 .. toctree::
 
-   documentation/MAIL
+   documentation/CONTACT
+
+We welcome collaborative efforts on this project.
 
 ------------------------
 Conventions and Notation
@@ -151,9 +149,6 @@ or a
 .. _CTCMS:         http://www.ctcms.nist.gov/
 .. _MSED:          http://www.nist.gov/mml/msed/
 .. _NIST:          http://www.nist.gov/
-.. _issue tracker: https://github.com/usnistgov/fipy/issues
-.. _mailing list:  http://www.ctcms.nist.gov/fipy/documentation/MAIL.html
-.. _StackOverflow: http://stackoverflow.com/questions/tagged/fipy
 
 .. |GitHub|        image:: https://img.shields.io/github/contributors/usnistgov/fipy.svg
 .. _GitHub:        https://github.com/usnistgov/fipy
