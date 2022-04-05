@@ -68,7 +68,6 @@ def gmshVersion(communicator=parallelComm):
         while True:
             try:
                 # gmsh returns version in stderr (Why?!?)
-                # (newer versions of gmsh return the version in stdout)
                 # spyder on Windows throws
                 #   OSError: [WinError 6] The handle is invalid
                 # if we don't PIPE stdout, too
@@ -78,11 +77,8 @@ def gmshVersion(communicator=parallelComm):
                 break
 
             try:
-                out, err = p.communicate()
-                verStr = err.decode('ascii').strip()
-                if not verStr:
-                    # newer versions of gmsh return the version in stdout
-                    verStr = out.decode('ascii').strip()
+                out, verStr = p.communicate()
+                verStr = verStr.decode('ascii').strip()
                 break
             except IOError:
                 # some weird conflict with things like PyQT can cause
