@@ -14,7 +14,7 @@ from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 
-from distutils.version import StrictVersion
+from packaging.version import Version
 
 from fipy.meshes import Gmsh2D
 from fipy.meshes.gmshMesh import _gmshVersion
@@ -105,7 +105,7 @@ class GapFillMesh(Gmsh2D):
         # Build the fine region mesh.
         self.fineMesh = Grid2D(nx=nx, ny=ny, dx=cellSize, dy=cellSize, communicator=serialComm)
 
-        if _gmshVersion() < StrictVersion("2.7"):
+        if _gmshVersion() < Version("2.7"):
             # kludge: must offset cellSize by `eps` to work properly
             eps = float(cellSize)/(nx * 10)
         else:
