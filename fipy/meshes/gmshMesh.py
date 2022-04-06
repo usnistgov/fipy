@@ -13,11 +13,11 @@ import sys
 import tempfile
 from textwrap import dedent
 import warnings
-from packaging.version import Version, parse as parse_version
 
 from fipy.tools import numerix as nx
 from fipy.tools import parallelComm
 from fipy.tools import serialComm
+from fipy.tools.version import Version, parse_version
 from fipy.tests.doctestPlus import register_skipper
 
 from fipy.meshes.mesh import Mesh
