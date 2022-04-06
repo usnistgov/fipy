@@ -3,9 +3,10 @@
 `distutils.version` is deprecated, but `packaging.version` is unavailable
 in Python 2.7
 """
+from __future__ import unicode_literals
+
 __docformat__ = 'restructuredtext'
 
-from __future__ import unicode_literals
 
 __all__ = ["Version", "parse_version"]
 from future.utils import text_to_native_str
