@@ -62,7 +62,7 @@ class release(Command):
         version = versioneer.get_version()
 
         self._remove_manifest()
-        run_setup("setup.py", ["bdist_wheel"])
+        run_setup("setup.py", ["bdist_wininst"])
 
         self._remove_manifest()
 
