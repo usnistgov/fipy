@@ -324,7 +324,7 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
             ## why has the interface changed *again*?
             from numpy.core.arrayprint import FloatingFormat
             return FloatingFormat(data=NUMERIX.array((arr,)), precision=precision,
-                                  floatmode='maxprec', suppress_small=suppress_small)(arr).strip()
+                                  floatmode='maxprec', suppress_small=suppress_small, legacy=False)(arr).strip()
         except ImportError:
             try:
                 ## this is for numpy 1.0.4 and above

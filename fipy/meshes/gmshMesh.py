@@ -13,11 +13,11 @@ import sys
 import tempfile
 from textwrap import dedent
 import warnings
-from distutils.version import StrictVersion
 
 from fipy.tools import numerix as nx
 from fipy.tools import parallelComm
 from fipy.tools import serialComm
+from fipy.tools.version import Version, parse_version
 from fipy.tests.doctestPlus import register_skipper
 
 from fipy.meshes.mesh import Mesh
@@ -38,7 +38,7 @@ def _checkForGmsh():
     hasGmsh = True
     try:
         version = _gmshVersion(communicator=parallelComm)
-        hasGmsh = version >= StrictVersion("2.0")
+        hasGmsh = version >= Version("2.0")
     except Exception:
         hasGmsh = False
     return hasGmsh
@@ -97,12 +97,12 @@ def gmshVersion(communicator=parallelComm):
 def _gmshVersion(communicator=parallelComm):
     version = gmshVersion(communicator) or "0.0"
     try:
-        version = StrictVersion(version)
+        version = parse_version(version)
     except ValueError:
         # gmsh returns the version string in stderr,
         # which means it's often unparsable due to irrelevant warnings
         # assume it's OK and move on
-        version = StrictVersion("3.0")
+        version = Version("3.0")
 
     return version
 
@@ -137,7 +137,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
 
     # Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
     version = _gmshVersion(communicator=communicator)
-    if version < StrictVersion("2.0"):
+    if version < Version("2.0"):
         raise EnvironmentError("Gmsh version must be >= 2.0.")
 
     # If we're being passed a .msh file, leave it be. Otherwise,
@@ -180,8 +180,8 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             gmshFlags = ["-%d" % dimensions, "-nopopup"]
 
             if communicator.Nproc > 1:
-                if  ((version < StrictVersion("2.5"))
-                     or (StrictVersion("4.0") <= version < StrictVersion("4.5.2"))):
+                if  ((version < Version("2.5"))
+                     or (Version("4.0") <= version < Version("4.5.2"))):
                     warnstr = ("Cannot partition with Gmsh version < 2.5 "
                                "or 4.0 <= version < 4.5.2. "
                                "Reverting to serial.")
@@ -194,7 +194,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                         raise ValueError("'dimensions' must be specified to generate a mesh from a geometry script")
                 else: # gmsh version is adequate for partitioning
                     gmshFlags += ["-part", "%d" % communicator.Nproc]
-                    if version >= StrictVersion("4.0"):
+                    if version >= Version("4.0"):
                         # Gmsh 4.x needs to be told to generate ghost cells
                         # Unfortunately, the ghosts are broken in Gmsh 4.0--4.5.1
                         # https://gitlab.onelab.info/gmsh/gmsh/issues/733
@@ -2246,7 +2246,7 @@ class GmshGrid2D(Gmsh2D):
         width  = nx * dx
         numLayers = int(ny / float(dy))
 
-        if _gmshVersion() < StrictVersion("2.7"):
+        if _gmshVersion() < Version("2.7"):
             # kludge: must offset cellSize by `eps` to work properly
             eps = float(dx)/(nx * 10)
         else:
@@ -2320,7 +2320,7 @@ class GmshGrid3D(Gmsh3D):
         width  = nx * dx
         depth  = nz * dz
 
-        if _gmshVersion() < StrictVersion("2.7"):
+        if _gmshVersion() < Version("2.7"):
             # kludge: must offset cellSize by `eps` to work properly
             eps = float(dx)/(nx * 10)
         else:
