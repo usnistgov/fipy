@@ -1,8 +1,9 @@
 """Shim for version checking
 
-distutils.version is deprecated, but packaging.version is unavailable in
-Python 2.7
+`distutils.version` is deprecated, but `packaging.version` is unavailable
+in Python 2.7
 """
+__docformat__ = 'restructuredtext'
 
 from __future__ import unicode_literals
 
