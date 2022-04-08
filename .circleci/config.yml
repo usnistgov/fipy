@@ -42,7 +42,7 @@ commands:
           no_output_timeout: 30m
           command: |
             source activate ~/project/test-environment
-            OMP_NUM_THREADS=1 python timelu.py
+            python timelu.py
 
 jobs:
   test-scipy:
