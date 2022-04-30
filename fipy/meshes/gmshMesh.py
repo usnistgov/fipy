@@ -1387,6 +1387,35 @@ class _GmshTopology(_MeshTopology):
         return nx.arange(len(self.mesh.cellGlobalIDs)
                          + len(self.mesh.gCellGlobalIDs))
 
+    @property
+    def _nonOverlappingFaces(self):
+        return (nx.in1d(self.mesh.faceCellIDs[0],
+                        self.mesh._localNonOverlappingCellIDs)
+                | nx.in1d(self.mesh.faceCellIDs[1],
+                          self.mesh._localNonOverlappingCellIDs))
+
+    @property
+    def _localNonOverlappingFaceIDs(self):
+        """Return the IDs of the local mesh in isolation.
+
+        Does not include the IDs of faces of boundary cells.
+
+        E.g., would return [0, 1, 3, 4, 6, 7, 9, 10, 11, 13, 14, 15]
+        for mesh A
+
+        ```
+            A   ||   B
+        --6---7-----7---8--
+       13   14 15/14 15   16
+        --3---4-----4---5--
+        9   10 11/10 11   12
+        --0---1-----1---2--
+                ||
+        ```
+
+        .. note:: Trivial except for parallel meshes
+        """
+        return nx.arange(self.mesh.numberOfFaces)[..., self._nonOverlappingFaces]
 
 
 
