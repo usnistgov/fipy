@@ -44,36 +44,16 @@ class release(Command):
         except OSError as _:
             pass
 
-    def _build_unix_distribution(self):
-        """Create Unix source distribution"""
+    def _build_source_distribution(self, formats):
+        """Create source distribution"""
 
         self._remove_manifest()
-        shutil.copyfile("MANIFEST-UNIX.in", "MANIFEST.in")
-        run_setup("setup.py", ["sdist"])
-        os.remove("MANIFEST.in")
-
-    def _build_windows_distribution(self):
-        """Create Windows source distribution
-
-        Contains executable installer and examples"""
-
-        import versioneer
-
-        version = versioneer.get_version()
-
-        self._remove_manifest()
-
-        shutil.copyfile("MANIFEST-WINDOWS.in", "MANIFEST.in")
-        run_setup("setup.py", ["sdist", "--dist-dir=dist-windows", "--formats=zip"])
-        shutil.move(
-            os.path.join("dist-windows", "FiPy-{}.zip".format(version)),
-            os.path.join("dist", "FiPy-{}.win32.zip".format(version)),
-        )
-        os.rmdir("dist-windows")
-        os.remove("MANIFEST.in")
+        run_setup("setup.py", ["sdist", "--formats=" + ",".join(formats)])
 
     def run(self):
+        formats = []
         if self.unix:
-            self._build_unix_distribution()
+            formats.append("gztar")
         if self.windows:
-            self._build_windows_distribution()
+            formats.append("zip")
+        self._build_source_distribution(formats)
