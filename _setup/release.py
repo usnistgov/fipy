@@ -62,9 +62,6 @@ class release(Command):
         version = versioneer.get_version()
 
         self._remove_manifest()
-        run_setup("setup.py", ["bdist_wininst"])
-
-        self._remove_manifest()
 
         shutil.copyfile("MANIFEST-WINDOWS.in", "MANIFEST.in")
         run_setup("setup.py", ["sdist", "--dist-dir=dist-windows", "--formats=zip"])
