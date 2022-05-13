@@ -211,8 +211,11 @@ Push the tag to GitHub_::
 Upon successful completion of the `Continuous Integration`_ systems, fetch
 the tagged build products and place in :file:`dist/`:
 
-  :file:`FiPy-x.y.tar.gz`
+  :file:`FiPy-{x.y}.tar.gz`
     From CircleCI_ `build-binaries` Artifacts
+
+  :file:`dist-Linux/FiPy-{x.y}-none-any.whl`
+    From Azure_ Artifacts
 
   :file:`~/project/documentation/_build/latex/fipy.pdf`
     From CircleCI_ `build-36-docs` Artifacts
@@ -220,7 +223,7 @@ the tagged build products and place in :file:`dist/`:
   :file:`~/project/html.tar.gz`
     From CircleCI_ `build-36-docs` Artifacts
 
-  :file:`FiPy-x.y.win32.zip`
+  :file:`FiPy-{x.y}.win32.zip`
     From AppVeyor_ Artifacts
 
 From the :file:`{FiPySource}` directory, unpack :file:`dist/html.tar.gz`
@@ -233,8 +236,9 @@ into file:`documentation/_build` with::
 Upload
 ------
 
-Attach :file:`dist/FiPy-x.y.tar.gz`, :file:`dist/FiPy-x.y.win32.zip`, and
-:file:`documentation/_build/latex/fipy-x.y.pdf` to a `GitHub release`_
+Attach :file:`dist/FiPy-{x.y}.tar.gz`, :file:`dist/FiPy-{x.y}.win32.zip`,
+:file:`FiPy-{x.y}-none-any.whl`, and
+:file:`documentation/_build/latex/fipy-{x.y}.pdf` to a `GitHub release`_
 associated with tag x.y.
 
 Upload the build products to PyPI with twine_::
