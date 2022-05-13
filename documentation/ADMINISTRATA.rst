@@ -101,13 +101,13 @@ Continuous Integration
 | |Azure|_
 
 We use the :term:`Azure` cloud service for :term:`Continuous Integration` (CI).
-This CI is configured in |.azure/pipelines.yml|.
+This CI is configured in |.azure/pipelines.yml|_.
 
 .. |Azure|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
 .. _Azure:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
 
-.. _{FiPySource}/.azure/pipelines.yml: https://github.com/usnistgov/fipy/blob/master/.azure/pipelines.yml
 .. |.azure/pipelines.yml| replace::    :file:`{FiPySource}/.azure/pipelines.yml`
+.. _.azure/pipelines.yml: https://github.com/usnistgov/fipy/blob/master/.azure/pipelines.yml
 
 ================
 Making a Release
