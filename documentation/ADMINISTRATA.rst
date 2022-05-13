@@ -223,7 +223,7 @@ the tagged build products and place in :file:`dist/`:
   :file:`~/project/html.tar.gz`
     From CircleCI_ `build-36-docs` Artifacts
 
-  :file:`FiPy-{x.y}.win32.zip`
+  :file:`dist-Windows_NT/FiPy-{x.y}.zip`
     From AppVeyor_ Artifacts
 
 From the :file:`{FiPySource}` directory, unpack :file:`dist/html.tar.gz`
@@ -236,7 +236,7 @@ into file:`documentation/_build` with::
 Upload
 ------
 
-Attach :file:`dist/FiPy-{x.y}.tar.gz`, :file:`dist/FiPy-{x.y}.win32.zip`,
+Attach :file:`dist/FiPy-{x.y}.tar.gz`, :file:`dist/FiPy-{x.y}.zip`,
 :file:`FiPy-{x.y}-none-any.whl`, and
 :file:`documentation/_build/latex/fipy-{x.y}.pdf` to a `GitHub release`_
 associated with tag x.y.
