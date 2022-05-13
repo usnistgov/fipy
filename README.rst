@@ -3,7 +3,7 @@ Overview
 ========
 
 
-| |CircleCI|_ |TravisCI|_ |AppVeyor|_
+| |Azure|_
 | |GitHub|_ |PyPI|_  |Codacy|_ |CondaForge|_ |Binder|_
 | |gitter|_ |Depsy|_ |OpenHub|_
 
@@ -154,12 +154,8 @@ or a
 .. _GitHub:        https://github.com/usnistgov/fipy
 .. |gitter|        image:: https://badges.gitter.im/usnistgov/fipy.svg
 .. _gitter:        https://gitter.im/usnistgov/fipy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
-.. |CircleCI|      image:: https://img.shields.io/circleci/project/github/usnistgov/fipy/master.svg?label=Linux
-.. _CircleCI:      https://circleci.com/gh/usnistgov/fipy
-.. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/master.svg?label=macOS
-.. _TravisCI:      https://travis-ci.com/github/usnistgov/fipy
-.. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=master&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
-.. _AppVeyor:      https://ci.appveyor.com/project/usnistgov/fipy
+.. |Azure|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
+.. _Azure:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
 .. |OpenHub|       image:: https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif
 .. _OpenHub:       https://www.openhub.net/p/fipy
 .. |PyPI|          image:: https://img.shields.io/pypi/v/fipy.svg
