@@ -198,7 +198,7 @@ preference). One can also create an explicit diffusion term with
 
 .. _discret-higherOrderDiffusion:
 
-Higher order diffusion
+Higher Order Diffusion
 ''''''''''''''''''''''
 
 Higher order diffusion expressions, such as :math:`\nabla^4 \phi` or
@@ -210,6 +210,12 @@ represented as
 
 The number of elements supplied for ``coeff`` determines the
 order of the term.
+
+.. note::
+
+   While this multiple-coefficient form is still supported,
+   :ref:`CoupledEquations` are the recommended approach for higher order
+   expressions.
 
 Source Term
 ~~~~~~~~~~~

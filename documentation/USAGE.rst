@@ -549,13 +549,61 @@ array. For example, if ``Term01`` is a transient term then ``Term01``
 would appear in the upper left diagonal and the ordering of the
 variable column array would be reversed.
 
-The use of coupled equation is described in detail in
+The use of coupled equations is described in detail in
 :mod:`examples.diffusion.coupled`. Other examples that demonstrate the
 use of coupled equations are :mod:`examples.phase.binaryCoupled`,
 :mod:`examples.phase.polyxtalCoupled` and
 :mod:`examples.cahnHilliard.mesh2DCoupled`. As well as coupling
-equations, true vector equations can now be written in :term:`FiPy`
-(see :mod:`examples.diffusion.coupled` for more details).
+equations, true vector equations can now be written in :term:`FiPy`.
+
+.. attention::
+
+    Coupled equations are not compatible with
+    :ref:`discret-higherOrderDiffusion` terms.  This is not a practical
+    limitation, as any higher order terms can be decomposed into multiple
+    2nd-order equations.  For example, the pair of `coupled Cahn-Hilliard &
+    Allen-Cahn`_ 4th- and 2nd-order equations
+
+    .. math::
+
+        \begin{align}
+            \frac{\partial C}{\partial t}
+            &= \nabla\cdot\left[
+                M\nabla\left(
+                    \frac{\partial f(c, \phi)}{\partial C}
+                    - \kappa_C\nabla^2 C
+                \right)
+            \right]
+            \\
+            \frac{\partial \phi}{\partial t}
+            &= -L\left(
+                \frac{\partial f(c, \phi)}{\partial \phi}
+                - \kappa_\phi\nabla^2 \phi
+            \right)
+        \end{align}
+
+    can be decomposed to three 2nd-order equations
+
+    .. math::
+
+        \begin{align}
+            \frac{\partial C}{\partial t}
+            &= \nabla\cdot\left(
+                M\nabla\mu
+            \right)
+            \\
+            \mu
+            &= \frac{\partial f(c, \phi)}{\partial C}
+               - \kappa_C\nabla^2 C
+            \\
+            \frac{\partial \phi}{\partial t}
+            &= -L\left(
+                \frac{\partial f(c, \phi)}{\partial \phi}
+                - \kappa_\phi\nabla^2 \phi
+            \right)
+        \end{align}
+
+    .. _coupled Cahn-Hilliard & Allen-Cahn: https://pages.nist.gov/pfhub/benchmarks/benchmark2.ipynb
 
 .. _BoundaryConditions:
 
