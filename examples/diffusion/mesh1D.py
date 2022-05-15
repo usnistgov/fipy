@@ -41,8 +41,6 @@ We'll let
 
 for now.
 
-The set of boundary conditions are given to the equation as a Python
-tuple or list (the distinction is not generally important to :term:`FiPy`).
 The boundary conditions
 
 .. math::
@@ -67,7 +65,7 @@ and a set of faces over which they apply.
 
 For example, here the exterior faces on the left of the domain are extracted by
 ``mesh``.\ :attr:`~fipy.meshes.abstractMesh.AbstractMesh.facesLeft`. The boundary
-conditions is applied using
+conditions are applied using
 ``phi``\. :meth:`~fipy.variables.variable.Variable.constrain` with these faces and
 a value (``valueLeft``).
 
@@ -77,8 +75,8 @@ a value (``valueLeft``).
 .. note::
 
    If no boundary conditions are specified on exterior faces, the default
-   boundary condition is equivalent to a zero gradient, equivalent to
-   :math:`\vec{n} \cdot \nabla \phi \rvert_\text{someFaces} = 0`.
+   boundary condition is no-flux,
+   :math:`\vec{n} \cdot (D \nabla \phi) \rvert_\text{someFaces} = 0`.
 
 If you have ever tried to numerically solve
 Eq. :eq:`eq:diffusion:mesh1D:constantD`,

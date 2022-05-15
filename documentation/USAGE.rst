@@ -613,6 +613,23 @@ Boundary Conditions
 
 .. currentmodule:: fipy.variables.cellVariable
 
+Default boundary conditions
+===========================
+
+If no constraints are applied, solutions are conservative, i.e., all
+boundaries are zero flux.  For the equation
+
+.. math::
+
+    \frac{\partial\phi}{\partial t}
+    &= \nabla\cdot\left(\vec{a}\phi\right) + \nabla\cdot\left(b\nabla\phi\right)
+
+the condition on the boundary :math:`S` is
+
+.. math::
+
+   \hat{n}\cdot\left(\vec{a}\phi + b\nabla\phi\right) = 0\qquad\text{on $S$.}
+
 Applying fixed value (Dirichlet) boundary conditions
 ====================================================
 

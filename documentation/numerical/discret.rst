@@ -38,6 +38,16 @@ the face center may not lie on the line joining the CV centers, which
 will lead to an error in the face interpolation. :term:`FiPy` currently
 only uses the CC-FVM.
 
+Boundary Conditions
+'''''''''''''''''''
+
+The natural boundary condition for CC-FVM is no-flux.  For :eq:`num:gen`,
+the boundary condition is
+
+.. math::
+
+   \hat{n}\cdot[\vec{u}\phi - (\Gamma_i\nabla)^n] = 0
+
 Vertex Centered FVM (VC-FVM)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
