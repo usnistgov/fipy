@@ -66,7 +66,8 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
         colorbar : bool, optional
             plot a color bar in specified orientation if not `None`
         axes : ~matplotlib.axes.Axes, optional
-            if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
+            if not `None`, `vars` will be plotted into this
+            :ref:`Matplotlib` :class:`~matplotlib.axes.Axes` object
         figaspect : float, optional
             desired aspect ratio of figure. If arg is a number, use that aspect
             ratio. If arg is `auto`, the aspect ratio will be determined from
@@ -77,11 +78,11 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
                                             cmap=cmap, colorbar=colorbar, axes=axes,
                                             **kwlimits)
 
-        self.mesh = self.vars[0].mesh
+        mesh = self.vars[0].mesh
 
-        vertexIDs = self.mesh._orderedCellVertexIDs
+        vertexIDs = mesh._orderedCellVertexIDs
 
-        vertexCoords = self.mesh.vertexCoords
+        vertexCoords = mesh.vertexCoords
 
         xCoords = numerix.take(vertexCoords[0], vertexIDs)
         yCoords = numerix.take(vertexCoords[1], vertexIDs)
@@ -96,8 +97,8 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
             polys.append(list(zip(x, y)))
 
         from matplotlib.collections import PolyCollection
-        self.collection = PolyCollection(polys)
-        self.collection.set_linewidth(0.5)
+        self._collection = PolyCollection(polys)
+        self._collection.set_linewidth(0.5)
         try:
             self.axes.add_patch(self.collection)
         except:
@@ -113,6 +114,11 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
         self.axes.set_ylim(ymin=ymin, ymax=ymax)
 
         self._plot()
+
+    @property
+    def collection(self):
+        """The :ref:`Matplotlib` :class:`~matplotlib.collections.PolyCollection` representing the cells."""
+        return self._collection
 
     def _getSuitableVars(self, vars):
         from fipy.meshes.mesh2D import Mesh2D

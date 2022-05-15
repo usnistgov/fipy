@@ -92,14 +92,22 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
         AbstractMatplotlib2DViewer.__init__(self, vars=vars, title=title, axes=axes, figaspect=figaspect, **kwlimits)
 
         self.log = log
-        self.kwargs = dict(density=density, cmap=cmap, norm=norm, arrowsize=arrowsize,
+        self.kwargs = dict(density=density, linewidth=linewidth, color=color,
+                           cmap=cmap, norm=norm, arrowsize=arrowsize,
                            arrowstyle=arrowstyle, minlength=minlength)
-        self.linewidth = linewidth
-        self.color = color
 
         self._stream = None
 
         self._plot()
+
+    @property
+    def kwargs(self):
+        """keyword arguments to pass to :func:`~matplotlib.axes.Axes.streamplot`."""
+        return self._kwargs
+
+    @kwargs.setter
+    def kwargs(self, value):
+        self._kwargs = value
 
     def _getSuitableVars(self, vars):
         from fipy.meshes.mesh2D import Mesh2D
@@ -141,12 +149,12 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
         V = griddata(C.value.T, var.value[1],
                      (grid_x, grid_y), method='cubic')
 
-        lw = self.linewidth
+        lw = self.kwargs["linewidth"]
         if isinstance(lw, (FaceVariable, CellVariable)):
             lw = griddata(C.value.T, lw.value,
                           (grid_x, grid_y), method='cubic')
 
-        color = self.color
+        color = self.kwargs["color"]
         if isinstance(color, (FaceVariable, CellVariable)):
             color = griddata(C.value.T, color.value,
                              (grid_x, grid_y), method='cubic', fill_value=color.min())
@@ -175,8 +183,12 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
 #             # self._stream.arrows.remove()
 #             self._stream.lines.remove()
 
+        kwargs = self.kwargs.copy()
+        kwargs["linewidth"] = lw
+        kwargs["color"] = color
+
         self.axes.cla()
-        self._stream = self.axes.streamplot(X, Y, U, V, linewidth=lw, color=color, **self.kwargs)
+        self._stream = self.axes.streamplot(X, Y, U, V, **kwargs)
 
         self.axes.set_xlim(xmin=self._getLimit('xmin'),
                            xmax=self._getLimit('xmax'))

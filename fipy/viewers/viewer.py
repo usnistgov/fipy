@@ -29,9 +29,9 @@ class AbstractViewer(object):
         if self.__class__ is AbstractViewer:
             raise NotImplementedError("can't instantiate abstract base class")
 
-        self.vars = self._getSuitableVars(vars)
+        self._vars = self._getSuitableVars(vars)
 
-        self.limits = kwlimits
+        self._limits = kwlimits
 
         if title is None:
             if len(self.vars) == 1:
@@ -40,6 +40,30 @@ class AbstractViewer(object):
                 title = ''
 
         self.title = title
+
+    @property
+    def limits(self):
+        return self._limits
+
+    @property
+    def title(self):
+        """The text appearing at the top center.
+
+        (default: if ``len(self.vars) == 1``, the name of
+        :attr:`self.vars[0]`, otherwise ``""``.)
+        """
+        return self._title
+
+    @title.setter
+    def title(self, value):
+        self._title = value
+
+    @property
+    def vars(self):
+        """The :class:`~fipy.variables.variable.Variable` or list
+        of :class:`~fipy.variables.variable.Variable` objects to
+        display."""
+        return self._vars
 
     def _getSuitableVars(self, vars):
         if type(vars) not in [type([]), type(())]:
