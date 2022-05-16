@@ -186,14 +186,14 @@ the tagged build products from Azure_ Artifacts and place in
 
  * :file:`dist-Linux/FiPy-{x.y}-none-any.whl`
  * :file:`dist-Linux/FiPy-{x.y}.tar.gz`
+ * :file:`dist-Linux/FiPy-{x.y}.pdf`
+ * :file:`dist-Linux/html-{x.y}.tar.gz`
  * :file:`dist-Windows_NT/FiPy-{x.y}.zip`
- * :file:`fipy.pdf`
- * :file:`html.tar.gz`
 
-From the :file:`{FiPySource}` directory, unpack :file:`dist/html.tar.gz`
+From the :file:`{FiPySource}` directory, unpack :file:`dist/html-{x.y}.tar.gz`
 into :file:`documentation/_build` with::
 
-    $ tar -xzf dist/html.tar.gz -C documentation/_build
+    $ tar -xzf dist/html-{x.y}.tar.gz -C documentation/_build
 
 
 ------
@@ -204,7 +204,7 @@ Attach
  * :file:`dist/FiPy-{x.y}-none-any.whl`
  * :file:`dist/FiPy-{x.y}.tar.gz`
  * :file:`dist/FiPy-{x.y}.zip`
- * :file:`dist/fipy.pdf`
+ * :file:`dist/FiPy-{x.y}.pdf`
 to a `GitHub release`_ associated with tag x.y.
 
 Upload the build products to PyPI with twine_::
