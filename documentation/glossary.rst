@@ -9,6 +9,10 @@ Glossary
       A cloud-based :term:`Continuous Integration` tool.
       See https://www.appveyor.com.
 
+   Azure
+      A cloud-based :term:`Continuous Integration` tool.
+      See https://dev.azure.com.
+
    Buildbot
       The Buildbot is a system to automate the compile/test cycle
       required by most software projects to validate code changes.
