@@ -186,9 +186,9 @@ the tagged build products from Azure_ Artifacts and place in
 
  * :file:`dist-Linux/FiPy-{x.y}-none-any.whl`
  * :file:`dist-Linux/FiPy-{x.y}.tar.gz`
- * :file:`dist-Linux/FiPy-{x.y}.pdf`
- * :file:`dist-Linux/html-{x.y}.tar.gz`
  * :file:`dist-Windows_NT/FiPy-{x.y}.zip`
+ * :file:`dist-docs/FiPy-{x.y}.pdf`
+ * :file:`dist-docs/html-{x.y}.tar.gz`
 
 From the :file:`{FiPySource}` directory, unpack :file:`dist/html-{x.y}.tar.gz`
 into :file:`documentation/_build` with::
