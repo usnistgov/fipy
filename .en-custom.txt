@@ -21,6 +21,7 @@ autoscale
 autoscales
 axisymmetric
 AztecOO
+.azure
 backend
 backends
 backport
@@ -249,6 +250,7 @@ Peric
 PETSc
 photovoltaics
 PID
+pipelines.yml
 PNG
 POSIX
 pre-assembled
