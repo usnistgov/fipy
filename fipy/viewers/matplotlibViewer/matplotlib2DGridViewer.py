@@ -14,8 +14,6 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
 
-    __doc__ += AbstractMatplotlib2DViewer._test2D(viewer="Matplotlib2DGridViewer")
-
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DGridViewer`.
 
@@ -100,6 +98,10 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
     def _plot(self):
         super(Matplotlib2DGridViewer, self)._plot()
         self.image.set_data(self._data)
+
+    @classmethod
+    def _doctest_body(cls):
+        return cls._test2D()
 
 def _test():
     from fipy.viewers.viewer import _test2D

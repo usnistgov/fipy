@@ -27,9 +27,6 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
 
     """
 
-    __doc__ += AbstractMatplotlib2DViewer._test2Dvector(viewer="MatplotlibStreamViewer")
-    __doc__ += AbstractMatplotlib2DViewer._test2DvectorIrregular(viewer="MatplotlibStreamViewer")
-
     def __init__(self, vars, title=None, log=False, limits={}, axes=None, figaspect='auto',
                  density=1, linewidth=None, color=None, cmap=None, norm=None, arrowsize=1,
                  arrowstyle='-|>', minlength=0.1,
@@ -182,6 +179,11 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
                            xmax=self._getLimit('xmax'))
         self.axes.set_ylim(ymin=self._getLimit('ymin'),
                            ymax=self._getLimit('ymax'))
+
+    @classmethod
+    def _doctest_body(cls):
+        return (cls._test2Dvector()
+                + cls._test2DvectorIrregular())
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

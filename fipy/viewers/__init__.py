@@ -31,6 +31,7 @@ class MeshDimensionError(IndexError):
 
 from fipy.viewers.viewer import AbstractViewer
 class DummyViewer(AbstractViewer):
+    """Substitute viewer that doesn't do anything"""
     def plot(self, filename=None):
         pass
 

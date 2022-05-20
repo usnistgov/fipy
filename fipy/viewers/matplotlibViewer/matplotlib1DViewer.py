@@ -16,8 +16,6 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
 
-    __doc__ += AbstractMatplotlibViewer._test1D(viewer="Matplotlib1DViewer")
-
     def __init__(self, vars, title=None, xlog=False, ylog=False, limits={}, legend='upper left', axes=None, **kwlimits):
         """
 
@@ -110,6 +108,10 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
         for line, datum in zip(self.lines, self._data):
             line[0].set_xdata(datum[0])
             line[0].set_ydata(datum[1])
+
+    @classmethod
+    def _doctest_body(cls):
+        return cls._test1D()
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

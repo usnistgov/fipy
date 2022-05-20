@@ -6,6 +6,8 @@ __all__ = ["AbstractMatplotlibViewer"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
+from future.builtins import super
+
 from fipy.viewers.viewer import AbstractViewer
 
 def _isnotebook():
@@ -219,6 +221,13 @@ class AbstractMatplotlibViewer(AbstractViewer):
             return retina_figure(self.fig)
         else:
             return print_figure(self.fig, "png")
+
+    @classmethod
+    def _doctest_extra(cls):
+        return ("""
+            >>> viewer.cmap = "ocean"
+            >>> viewer.log = True
+        """ + super()._doctest_extra())
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

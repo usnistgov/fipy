@@ -44,8 +44,6 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
 
-    __doc__ += AbstractMatplotlib2DViewer._test2Dirregular(viewer="Matplotlib2DViewer")
-
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DViewer`.
 
@@ -148,6 +146,10 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
 
 ##        plt.ylim(ymin=self._getLimit('ymin'),
 ##                 ymax=self._getLimit('ymax'))
+
+    @classmethod
+    def _doctest_body(cls):
+        return cls._test2Dirregular()
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

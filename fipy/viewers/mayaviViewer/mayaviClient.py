@@ -22,10 +22,6 @@ class MayaviClient(AbstractViewer):
     .. _Mayavi: http://code.enthought.com/projects/mayavi
 
     """
-    __doc__ += AbstractViewer._test1D(viewer="MayaviClient")
-    __doc__ += AbstractViewer._test2D(viewer="MayaviClient")
-    __doc__ += AbstractViewer._test2Dirregular(viewer="MayaviClient")
-    __doc__ += AbstractViewer._test3D(viewer="MayaviClient")
 
     def __init__(self, vars, title=None, daemon_file=None, fps=1.0, **kwlimits):
         """Create a `MayaviClient`.
@@ -159,6 +155,17 @@ class MayaviClient(AbstractViewer):
 
     def _validFileExtensions(self):
         return [".png", ".jpg", ".bmp", ".tiff", ".ps", ".eps", ".pdf", ".rib", ".oogl", ".iv", ".vrml", ".obj"]
+
+    @classmethod
+    def _doctest_body(cls):
+        return (cls._test1D()
+                + cls._test2D()
+                + cls._test2Dirregular()
+                + cls._test3D())
+
+    @classmethod
+    def _doctest_extra(cls):
+        return ""
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

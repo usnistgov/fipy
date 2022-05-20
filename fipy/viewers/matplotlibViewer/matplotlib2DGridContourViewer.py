@@ -2,6 +2,8 @@ from __future__ import division
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
+from future.builtins import super
+
 from fipy.tools import numerix
 
 from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
@@ -18,10 +20,7 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
 
-    __doc__ += AbstractMatplotlib2DViewer._test2D(viewer="Matplotlib2DGridContourViewer")
-
-
-    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, figaspect='auto', **kwlimits):
+    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, levels=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DViewer`.
 
         Parameters
@@ -102,6 +101,16 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
 
         self.axes.set_ylim(ymin=self._getLimit('ymin'),
                            ymax=self._getLimit('ymax'))
+
+    @classmethod
+    def _doctest_body(cls):
+        return cls._test2D()
+
+    @classmethod
+    def _doctest_extra(cls):
+        return ("""
+            >>> viewer.levels = 2
+        """ + super()._doctest_extra())
 
 def _test():
     from fipy.viewers.viewer import _test2D

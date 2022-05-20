@@ -18,10 +18,8 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
 
-    __doc__ += AbstractMatplotlib2DViewer._test2D(viewer="Matplotlib2DContourViewer")
-
-
-    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, number=10, levels=None, figaspect='auto', **kwlimits):
+    def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical',
+                 axes=None, number=None, levels=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DContourViewer`.
 
         Parameters
@@ -132,6 +130,11 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
         if self.colorbar is not None:
             self.colorbar.plot()
 
+    @classmethod
+    def _doctest_extra(cls):
+        return ("""
+            >>> viewer.levels = 2
+        """ + super()._doctest_extra())
 
 def _test():
     from fipy.viewers.viewer import _test2D
