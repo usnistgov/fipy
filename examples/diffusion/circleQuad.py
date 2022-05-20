@@ -53,12 +53,9 @@ We can now create a :class:`Viewer <~fipy.viewers.viewer.AbstractViewer>` to see
 >>> viewer = None
 >>> from fipy import input
 >>> if __name__ == '__main__':
-...     try:
-...         viewer = Viewer(vars=phi, datamin=-1, datamax=1.)
-...         viewer.plotMesh()
-...         input("Irregular circular mesh. Press <return> to proceed...")
-...     except:
-...         print("Unable to create a viewer for an irregular mesh (try Matplotlib2DViewer or MayaviViewer)")
+...     viewer = Viewer(vars=phi, datamin=-1, datamax=1.)
+...     viewer.plotMesh()
+...     input("Irregular circular mesh. Press <return> to proceed...")
 
 .. image:: circleMesh.*
    :width: 90%
