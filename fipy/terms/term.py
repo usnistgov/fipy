@@ -274,7 +274,7 @@ class Term(object):
         Returns
         -------
         residual : ~fipy.variables.cellVariable.CellVariable
-            The residual vector　:math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}`
+            The residual vector :math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}`
         """
         solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
         solver._applyUnderRelaxation(underRelaxation)
@@ -309,7 +309,7 @@ class Term(object):
         Returns
         -------
         residual : ~fipy.variables.cellVariable.CellVariable
-            The residual vector　:math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}`
+            The residual vector :math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}`
         norm : float
             The L2 norm of `residual`, :math:`\|\vec{r}\|_2`
         """
@@ -357,7 +357,7 @@ class Term(object):
         Returns
         -------
         error : ~fipy.variables.cellVariable.CellVariable
-            The residual vector　:math:`\vec{e}=\mathsf{L}\vec{x}_\text{old} - \vec{b}`
+            The residual vector :math:`\vec{e}=\mathsf{L}\vec{x}_\text{old} - \vec{b}`
         """
         solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
         solver._applyUnderRelaxation(underRelaxation)
