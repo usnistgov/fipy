@@ -214,7 +214,7 @@ class Term(object):
         Returns
         -------
         residual : ~fipy.variables.cellVariable.CellVariable
-            The residual vector　:math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}`
+            The residual vector :math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}`
         """
         solver = self._prepareLinearSystem(var=var, solver=solver, boundaryConditions=boundaryConditions, dt=dt)
         solver._applyUnderRelaxation(underRelaxation=underRelaxation)
