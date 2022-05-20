@@ -93,7 +93,7 @@ Recommended Method
      followed, for either, by::
 
       activate <MYFIPYENV>
-      pip install fipy
+      python -m pip install fipy
 
   .. attention::
 
@@ -198,7 +198,7 @@ It is not necessary to formally install :term:`FiPy`, but if you wish
 to do so and you are confident that all of the requisite packages have
 been installed properly, you can install it by typing::
 
-    $ pip install fipy
+    $ python -m pip install fipy
 
 or by unpacking the archive and typing::
 
@@ -366,7 +366,7 @@ Our preferred development environment is set up with::
 
    $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy
    $ source activate <MYFIPYENV>
-   $ pip install scikit-fmm
+   $ python -m pip install scikit-fmm
    $ conda remove --channel conda-forge --force fipy
    $ git clone https://github.com/usnistgov/fipy.git
    $ cd fipy

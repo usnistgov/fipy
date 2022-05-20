@@ -184,18 +184,16 @@ Upon successful completion of the `Continuous Integration`_ systems, fetch
 the tagged build products from Azure_ Artifacts and place in
 :file:`{FiPySource}/dist/`:
 
- * :file:`dist-Linux/FiPy-x.y.tar.gz`
+ * :file:`dist-Linux/FiPy-{x.y}-none-any.whl`
+ * :file:`dist-Linux/FiPy-{x.y}.tar.gz`
+ * :file:`dist-Windows_NT/FiPy-{x.y}.zip`
+ * :file:`dist-docs/FiPy-{x.y}.pdf`
+ * :file:`dist-docs/html-{x.y}.tar.gz`
 
- * :file:`dist-Windows_NT/FiPy-x.y.win32.zip`
-
- * :file:`fipy.pdf`
-
- * :file:`html.tar.gz`
-
-From the :file:`{FiPySource}` directory, unpack :file:`dist/html.tar.gz`
+From the :file:`{FiPySource}` directory, unpack :file:`dist/html-{x.y}.tar.gz`
 into :file:`documentation/_build` with::
 
-    $ tar -xzf dist/html.tar.gz -C documentation/_build
+    $ tar -xzf dist/html-{x.y}.tar.gz -C documentation/_build
 
 
 ------
@@ -203,14 +201,15 @@ Upload
 ------
 
 Attach
- * :file:`dist/FiPy-x.y.tar.gz`
- * :file:`dist/FiPy-x.y.win32.zip`
- * :file:`documentation/_build/latex/fipy-x.y.pdf`
+ * :file:`dist/FiPy-{x.y}-none-any.whl`
+ * :file:`dist/FiPy-{x.y}.tar.gz`
+ * :file:`dist/FiPy-{x.y}.zip`
+ * :file:`dist/FiPy-{x.y}.pdf`
 to a `GitHub release`_ associated with tag x.y.
 
 Upload the build products to PyPI with twine_::
 
-    $ twine upload dist/FiPy-${FIPY_VERSION}.tar.gz
+    $ twine upload dist/FiPy-${FIPY_VERSION}.*
 
 Upload the web site to CTCMS ::
 

@@ -993,11 +993,11 @@ command in the base directory::
 
    Bibliographic citations require the `sphinxcontrib-bibtex` package::
 
-   $ pip install sphinxcontrib-bibtex
+   $ python -m pip install sphinxcontrib-bibtex
 
    Some documentation uses `numpydoc` styling::
 
-   $ pip install numpydoc
+   $ python -m pip install numpydoc
 
    Some embeded figures require `matplotlib`, `pandas`, and `imagemagick`::
 
@@ -1011,7 +1011,7 @@ command in the base directory::
    need `pyspelling`, `hunspell`, and the `libreoffice` dictionaries::
 
    $ conda install --channel conda-forge hunspell
-   $ pip install pyspelling
+   $ python -m pip install pyspelling
    $ wget -O en_US.aff  https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
    $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
 
