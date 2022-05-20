@@ -41,6 +41,13 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
             plot a color bar if not `None`
         axes : ~matplotlib.axes.Axes, optional
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
+        levels : int or array-like, optional
+            Determines the number and positions of the contour lines /
+            regions.  If an int `n`, tries to automatically choose no more
+            than `n+1` "nice" contour levels over the range of `vars`.  If
+            array-like, draw contour lines at the specified levels.  The
+            values must be in increasing order.  E.g. to draw just the zero
+            contour pass ``levels=[0]``.
         figaspect : float, optional
             desired aspect ratio of figure. If a number, use that aspect
             ratio. If `auto`, the aspect ratio will be determined from
@@ -51,7 +58,18 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
                                             cmap=cmap, colorbar=colorbar, axes=axes, figaspect=figaspect,
                                             **kwlimits)
 
+        self.levels = levels
+
         self._plot()
+
+    @property
+    def levels(self):
+        """The number of automatically-chosen contours or their values."""
+        return self._levels
+
+    @levels.setter
+    def levels(self, value):
+        self._levels = value
 
     def _getSuitableVars(self, vars):
         from fipy.meshes.nonUniformGrid2D import NonUniformGrid2D
@@ -83,18 +101,11 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
         Z = self.vars[0].value
         X, Y, Z = [v.reshape(shape, order='F') for v in (X, Y, Z)]
 
-        numberOfContours = 10
-        smallNumber = 1e-7
-        zmin = self.norm.vmin
-        zmax = self.norm.vmax
-        diff = zmax - zmin
+        zmin = self._norm.vmin
+        zmax = self._norm.vmax
 
-        if diff < smallNumber:
-            V = numerix.arange(numberOfContours + 1) * smallNumber / numberOfContours + zmin
-        else:
-            V = numerix.arange(numberOfContours + 1) * diff / numberOfContours + zmin
-
-        self.axes.contourf(X, Y, Z, V, cmap=self.cmap)
+        self.axes.contourf(X, Y, Z, levels=self.levels,
+                           vmin=zmin, vmax=zmax, cmap=self.cmap)
 
         self.axes.set_xlim(xmin=self._getLimit('xmin'),
                            xmax=self._getLimit('xmax'))

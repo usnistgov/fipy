@@ -51,9 +51,6 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
         self.axes.set_ylim(ymin=self._getLimit('ymin'),
                            ymax=self._getLimit('ymax'))
 
-        if title is None:
-            self.axes.set_title(self.vars[0].name)
-
     def _getLimit(self, key, default=None):
         limit = AbstractMatplotlib2DViewer._getLimit(self, key, default=default)
         if limit is None:
@@ -84,11 +81,11 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
         xmin, ymin = self.vars[0].mesh.extents['min']
         xmax, ymax = self.vars[0].mesh.extents['max']
 
-        self.image = self.axes.imshow(self._data,
-                                      extent=(xmin, xmax, ymin, ymax),
-                                      norm=self.norm,
-                                      cmap=self.cmap)
-        return self.image
+        image = self.axes.imshow(self._data,
+                                 extent=(xmin, xmax, ymin, ymax),
+                                 norm=self._norm,
+                                 cmap=self.cmap)
+        return image
 
     @property
     def _data(self):
@@ -97,7 +94,7 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
 
     def _plot(self):
         super(Matplotlib2DGridViewer, self)._plot()
-        self.image.set_data(self._data)
+        self._mappable.set_data(self._data)
 
     @classmethod
     def _doctest_body(cls):

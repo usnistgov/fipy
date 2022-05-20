@@ -62,6 +62,15 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
 
         self._plot()
 
+    @property
+    def levels(self):
+        """The number of automatically-chosen contours or their values."""
+        return self._levels
+
+    @levels.setter
+    def levels(self, value):
+        self._levels = value
+
     def _getSuitableVars(self, vars):
         from fipy.meshes.mesh2D import Mesh2D
         from fipy.variables.cellVariable import CellVariable
@@ -110,8 +119,8 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
                                      datamin=self._getLimit(('datamin', 'zmin')),
                                      datamax=self._getLimit(('datamax', 'zmax')))
 
-        self.norm.vmin = zmin
-        self.norm.vmax = zmax
+        self._norm.vmin = zmin
+        self._norm.vmax = zmax
 
         if self.levels is not None:
             levels = self.levels

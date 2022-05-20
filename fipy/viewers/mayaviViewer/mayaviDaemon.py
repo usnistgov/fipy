@@ -106,17 +106,17 @@ class MayaviDaemon(Mayavi):
 
         (options, args) = parser.parse_args(argv)
 
-        self.lockfname = options.lock
-        self.cellfname = options.cell
-        self.facefname = options.face
-        self.bounds = [options.xmin, options.xmax,
-                       options.ymin, options.ymax,
-                       options.zmin, options.zmax]
+        self._lockfname = options.lock
+        self._cellfname = options.cell
+        self._facefname = options.face
+        self._bounds = [options.xmin, options.xmax,
+                        options.ymin, options.ymax,
+                        options.zmin, options.zmax]
 
-        self.datamin = options.datamin
-        self.datamax = options.datamax
+        self._datamin = options.datamin
+        self._datamax = options.datamax
 
-        self.fps = options.fps
+        self._fps = options.fps
 
     @staticmethod
     def _examine_data(source, datatype, bounds):
@@ -167,11 +167,11 @@ class MayaviDaemon(Mayavi):
 
         mlab.clf()
 
-        self.cellsource = self.setup_source(self.cellfname)
+        self.cellsource = self.setup_source(self._cellfname)
         self.has_cell, bounds = self._examine_data(source=self.cellsource, datatype="cell_data",
                                                    bounds=zeros((0, 6), 'l'))
 
-        self.facesource = self.setup_source(self.facefname)
+        self.facesource = self.setup_source(self._facefname)
         self.has_face, bounds = self._examine_data(source=self.facesource, datatype="point_data",
                                                    bounds=bounds)
 
@@ -182,18 +182,18 @@ class MayaviDaemon(Mayavi):
                   boundsmin[2], boundsmax[3],
                   boundsmin[4], boundsmax[5])
 
-        self.bounds = where(self.bounds == array((None,)),
-                            bounds,
-                            self.bounds).astype(float)
+        self._bounds = where(self._bounds == array((None,)),
+                             bounds,
+                             self._bounds).astype(float)
 
         self.view_data()
 
         # Poll the lock file.
-        self.timer = Timer(1000 / self.fps, self.poll_file)
+        self.timer = Timer(1000 / self._fps, self.poll_file)
 
     def __del__(self):
         dir = None
-        for fname in [self.cellfname, self.facefname, self.lockfname]:
+        for fname in [self._cellfname, self._facefname, self._lockfname]:
             if fname and os.path.isfile(fname):
                 os.unlink(fname)
                 if not dir:
@@ -208,14 +208,14 @@ class MayaviDaemon(Mayavi):
         raise SystemExit("MayaviDaemon cleaned up")
 
     def poll_file(self):
-        if os.path.isfile(self.lockfname):
+        if os.path.isfile(self._lockfname):
             self.update_pipeline(self.cellsource)
             self.update_pipeline(self.facesource)
-            with open(self.lockfname, 'r') as lock:
+            with open(self._lockfname, 'r') as lock:
                 filename = lock.read()
             if len(filename) > 0:
                 mlab.savefig(filename)
-            os.unlink(self.lockfname)
+            os.unlink(self._lockfname)
 
     def update_pipeline(self, source):
         """Override this to do something else if needed.
@@ -251,7 +251,7 @@ class MayaviDaemon(Mayavi):
 
             clip.widget.widget_mode = 'Box'
             clip.widget.widget.place_factor = 1.
-            clip.widget.widget.place_widget(self.bounds)
+            clip.widget.widget.place_widget(self._bounds)
             clip.widget.update_implicit_function()
 
             clip.widget.visible = False
@@ -285,14 +285,14 @@ class MayaviDaemon(Mayavi):
             clip = self.clip_data(source)
 
             if has["scalars"]:
-                s = mlab.pipeline.surface(clip, vmin=self.datamin, vmax=self.datamax)
+                s = mlab.pipeline.surface(clip, vmin=self._datamin, vmax=self._datamax)
                 if not has_scale_bar:
                     s.module_manager.scalar_lut_manager.show_scalar_bar = True
                     has_scale_bar = True
             if cell_data:
                 clip = mlab.pipeline.cell_to_point_data(clip)
             if has["vectors"]:
-                v = mlab.pipeline.vectors(clip, vmin=self.datamin, vmax=self.datamax)
+                v = mlab.pipeline.vectors(clip, vmin=self._datamin, vmax=self._datamax)
                 if not has_scale_bar:
                     v.module_manager.scalar_lut_manager.show_scalar_bar = True
                     has_scale_bar = True

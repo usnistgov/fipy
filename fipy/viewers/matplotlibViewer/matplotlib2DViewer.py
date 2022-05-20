@@ -11,6 +11,7 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class AbstractMatplotlib2DViewer(AbstractMatplotlibViewer):
+
     def figaspect(self, figaspect, colorbar):
         if figaspect == 'auto':
             figaspect = self.vars[0].mesh.aspect2D
@@ -30,10 +31,10 @@ class AbstractMatplotlib2DViewer(AbstractMatplotlibViewer):
                                      datamin=self._getLimit(('datamin', 'zmin')),
                                      datamax=self._getLimit(('datamax', 'zmax')))
 
-        self.norm.vmin = zmin
-        self.norm.vmax = zmax
+        self._norm.vmin = zmin
+        self._norm.vmax = zmax
 
-        self.mappable.set_norm(self.norm)
+        self._mappable.set_norm(self._norm)
 
 class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
     """
@@ -136,7 +137,7 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
 
         Z = self.vars[0].value
 
-        rgba = self.cmap(self.norm(Z))
+        rgba = self.cmap(self._norm(Z))
 
         self.collection.set_facecolors(rgba)
         self.collection.set_edgecolors(rgba)
