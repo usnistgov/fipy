@@ -77,10 +77,7 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
 
     @property
     def log(self):
-        """Whether data has logarithmic scaling
-
-        :type: bool
-        """
+        """Whether data has logarithmic scaling"""
         return self.axes.get_yscale() == 'log'
 
     @log.setter
