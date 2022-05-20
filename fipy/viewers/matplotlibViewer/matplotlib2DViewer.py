@@ -137,7 +137,7 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
 
         Z = self.vars[0].value
 
-        rgba = self.cmap(self._norm(Z))
+        rgba = self._mappable.get_cmap()(self._norm(Z))
 
         self.collection.set_facecolors(rgba)
         self.collection.set_edgecolors(rgba)
