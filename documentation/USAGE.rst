@@ -566,42 +566,38 @@ equations, true vector equations can now be written in :term:`FiPy`.
 
     .. math::
 
-        \begin{align}
-            \frac{\partial C}{\partial t}
-            &= \nabla\cdot\left[
-                M\nabla\left(
-                    \frac{\partial f(c, \phi)}{\partial C}
-                    - \kappa_C\nabla^2 C
-                \right)
-            \right]
-            \\
-            \frac{\partial \phi}{\partial t}
-            &= -L\left(
-                \frac{\partial f(c, \phi)}{\partial \phi}
-                - \kappa_\phi\nabla^2 \phi
+        \frac{\partial C}{\partial t}
+        &= \nabla\cdot\left[
+            M\nabla\left(
+                \frac{\partial f(c, \phi)}{\partial C}
+                - \kappa_C\nabla^2 C
             \right)
-        \end{align}
+        \right]
+        \\
+        \frac{\partial \phi}{\partial t}
+        &= -L\left(
+            \frac{\partial f(c, \phi)}{\partial \phi}
+            - \kappa_\phi\nabla^2 \phi
+        \right)
 
     can be decomposed to three 2nd-order equations
 
     .. math::
 
-        \begin{align}
-            \frac{\partial C}{\partial t}
-            &= \nabla\cdot\left(
-                M\nabla\mu
-            \right)
-            \\
-            \mu
-            &= \frac{\partial f(c, \phi)}{\partial C}
-               - \kappa_C\nabla^2 C
-            \\
-            \frac{\partial \phi}{\partial t}
-            &= -L\left(
-                \frac{\partial f(c, \phi)}{\partial \phi}
-                - \kappa_\phi\nabla^2 \phi
-            \right)
-        \end{align}
+        \frac{\partial C}{\partial t}
+        &= \nabla\cdot\left(
+            M\nabla\mu
+        \right)
+        \\
+        \mu
+        &= \frac{\partial f(c, \phi)}{\partial C}
+           - \kappa_C\nabla^2 C
+        \\
+        \frac{\partial \phi}{\partial t}
+        &= -L\left(
+            \frac{\partial f(c, \phi)}{\partial \phi}
+            - \kappa_\phi\nabla^2 \phi
+        \right)
 
     .. _coupled Cahn-Hilliard & Allen-Cahn: https://pages.nist.gov/pfhub/benchmarks/benchmark2.ipynb
 
