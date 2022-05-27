@@ -31,7 +31,7 @@ class Matplotlib1DViewer(AbstractMatplotlibViewer):
             log scaling of y axis if `True`
         limits : dict
             a (deprecated) alternative to limit keyword arguments
-        float xmin, xmax, datamin, datamax : float, optional
+        xmin, xmax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
             (*ymin* and *ymax* are synonyms for *datamin* and *datamax*).

@@ -32,7 +32,7 @@ class MayaviClient(AbstractViewer):
             `CellVariable` objects to plot
         title : str, optional
             displayed at the top of the `Viewer` window
-        float xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
+        xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
             displayed range of data. A 1D `Viewer` will only use `xmin` and
             `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
             viewers will use `datamin` and `datamax`. Any limit set to a

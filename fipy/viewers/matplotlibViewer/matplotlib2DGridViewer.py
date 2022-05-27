@@ -28,7 +28,7 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
         cmap : ~matplotlib.colors.Colormap, optional
             the :class:`~matplotlib.colors.Colormap`.
             Defaults to `matplotlib.cm.jet`
-        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
+        xmin, xmax, ymin, ymax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
         colorbar : bool, optional

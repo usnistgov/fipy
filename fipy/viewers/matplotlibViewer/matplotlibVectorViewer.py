@@ -39,7 +39,7 @@ class MatplotlibVectorViewer(AbstractMatplotlib2DViewer):
             if `True`, arrow length goes at the base-10 logarithm of the magnitude
         limits : dict, optional
             a (deprecated) alternative to limit keyword arguments
-        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
+        xmin, xmax, ymin, ymax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
         axes : ~matplotlib.axes.Axes, optional

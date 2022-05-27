@@ -73,7 +73,7 @@ class AbstractMatplotlibViewer(AbstractViewer):
             desired aspect ratio of figure. If arg is a number, use that aspect
             ratio. If arg is `auto`, the aspect ratio will be determined from
             the Variable's mesh.
-        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
+        xmin, xmax, ymin, ymax, datamin, datamax : float, optional
             displayed range of data. A 1D `Viewer` will only use *xmin* and
             *xmax*, a 2D viewer will also use *ymin* and *ymax*. All
             viewers will use *datamin* and *datamax*. Any limit set to a
