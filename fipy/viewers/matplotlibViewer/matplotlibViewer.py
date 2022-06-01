@@ -84,14 +84,15 @@ class AbstractMatplotlibViewer(AbstractViewer):
         colorbar : bool, optional
             plot a color bar in specified orientation if not `None`
         axes : ~matplotlib.axes.Axes, optional
-            if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
+            if not `None`, `vars` will be plotted into this
+            :ref:`Matplotlib` :class:`~matplotlib.axes.Axes` object
         log : bool, optional
           whether to logarithmically scale the data
         """
         if self.__class__ is AbstractMatplotlibViewer:
             raise NotImplementedError("can't instantiate abstract base class")
 
-        AbstractViewer.__init__(self, vars=vars, title=title, **kwlimits)
+        super(AbstractMatplotlibViewer, self).__init__(vars=vars, title=None, **kwlimits)
 
         from matplotlib import pyplot as plt
 

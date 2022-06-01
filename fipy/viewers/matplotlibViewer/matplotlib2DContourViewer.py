@@ -2,6 +2,8 @@ from __future__ import division
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
+import warnings
+
 from fipy.tools import numerix
 
 from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
@@ -41,11 +43,15 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
         axes : ~matplotlib.axes.Axes, optional
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
         number : int, optional
-            contour `number` automatically-chosen levels
-        levels : :obj:`list` of :obj:`float`, optional
-            A list of numbers indicating the level
-            curves to draw; e.g. to draw just the zero contour pass
-            ``levels=[0]``
+            Determines the number and positions of the contour lines /
+            regions. (deprecated, use `levels=`).
+        levels : int or array-like, optional
+            Determines the number and positions of the contour lines /
+            regions.  If an int `n`, tries to automatically choose no more
+            than `n+1` "nice" contour levels over the range of `vars`.  If
+            array-like, draw contour lines at the specified levels.  The
+            values must be in increasing order.  E.g. to draw just the zero
+            contour pass ``levels=[0]``.
         figaspect : float
             desired aspect ratio of figure. If arg is a number, use that aspect
             ratio. If arg is `auto`, the aspect ratio will be determined from
@@ -57,7 +63,12 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
                                             cmap=cmap, colorbar=colorbar, axes=axes,
                                             figaspect=figaspect,
                                             **kwlimits)
-        self.number = number
+
+        if levels is None:
+            if number is not None:
+                warnings.warn("number= is deprecated. Use levels=",
+                              DeprecationWarning, stacklevel=1)
+            levels = number
         self.levels = levels
 
         self._plot()
@@ -122,13 +133,8 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
         self._norm.vmin = zmin
         self._norm.vmax = zmax
 
-        if self.levels is not None:
-            levels = self.levels
-        else:
-            levels = numerix.arange(self.number + 1) * (zmax - zmin) / self.number + zmin
-
-
-        self._contourSet = self.axes.contour(xi, yi, zi, levels=levels, cmap=self.cmap)
+        self._contourSet = self.axes.contour(xi, yi, zi, levels=self.levels,
+                                             vmin=zmin, vmax=zmax, cmap=self.cmap)
 
         self.axes.set_xlim(xmin=self._getLimit('xmin'),
                            xmax=self._getLimit('xmax'))
