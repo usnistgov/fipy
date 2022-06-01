@@ -2,6 +2,8 @@ from __future__ import division
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
+from future.builtins import super
+
 from fipy.tools import numerix
 
 from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
@@ -18,9 +20,6 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
 
-    __doc__ += AbstractMatplotlib2DViewer._test2D(viewer="Matplotlib2DGridContourViewer")
-
-
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, levels=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DViewer`.
 
@@ -32,7 +31,7 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
             displayed at the top of the `Viewer` window
         limits : dict
           a (deprecated) alternative to limit keyword arguments
-        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
+        xmin, xmax, ymin, ymax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
         cmap : ~matplotlib.colors.Colormap, optional
@@ -102,8 +101,8 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
         Z = self.vars[0].value
         X, Y, Z = [v.reshape(shape, order='F') for v in (X, Y, Z)]
 
-        zmin = self.norm.vmin
-        zmax = self.norm.vmax
+        zmin = self._norm.vmin
+        zmax = self._norm.vmax
 
         self.axes.contourf(X, Y, Z, levels=self.levels,
                            vmin=zmin, vmax=zmax, cmap=self.cmap)
@@ -113,6 +112,16 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
 
         self.axes.set_ylim(ymin=self._getLimit('ymin'),
                            ymax=self._getLimit('ymax'))
+
+    @classmethod
+    def _doctest_body(cls):
+        return cls._test2D()
+
+    @classmethod
+    def _doctest_extra(cls):
+        return ("""
+            >>> viewer.levels = 2
+        """ + super()._doctest_extra())
 
 def _test():
     from fipy.viewers.viewer import _test2D

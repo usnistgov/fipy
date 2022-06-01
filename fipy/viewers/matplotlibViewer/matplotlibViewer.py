@@ -6,6 +6,8 @@ __all__ = ["AbstractMatplotlibViewer"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
+from future.builtins import super
+
 from fipy.viewers.viewer import AbstractViewer
 
 def _isnotebook():
@@ -71,7 +73,7 @@ class AbstractMatplotlibViewer(AbstractViewer):
             desired aspect ratio of figure. If arg is a number, use that aspect
             ratio. If arg is `auto`, the aspect ratio will be determined from
             the Variable's mesh.
-        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
+        xmin, xmax, ymin, ymax, datamin, datamax : float, optional
             displayed range of data. A 1D `Viewer` will only use *xmin* and
             *xmax*, a 2D viewer will also use *ymin* and *ymax*. All
             viewers will use *datamin* and *datamax*. Any limit set to a
@@ -104,7 +106,7 @@ class AbstractMatplotlibViewer(AbstractViewer):
             self._axes = axes
             self._fig = axes.get_figure()
 
-        self._mappable = None
+        self._mappable_ = None
 
         import matplotlib
         # Set the colormap and norm to correspond to the data for which
@@ -114,15 +116,13 @@ class AbstractMatplotlibViewer(AbstractViewer):
         else:
             self._cmap = cmap
 
-        self.norm = None
+        self._norm = None
         self.log = log
 
         if colorbar:
-            self._colorbar = self.fig.colorbar(mappable=self.mappable,
+            self._colorbar = self.fig.colorbar(mappable=self._mappable,
                                                orientation=colorbar,
                                                label=self.vars[0].name)
-        else:
-            self._colorbar = None
 
         self.title = title
 
@@ -139,13 +139,12 @@ class AbstractMatplotlibViewer(AbstractViewer):
     @cmap.setter
     def cmap(self, value):
         self._cmap = value
-        # Need to remake mappable
-        self._mappable = None
+        self._mappable.set_cmap(value)
 
     @property
     def colorbar(self):
         """The :ref:`Matplotlib` :class:`~matplotlib.colorbar.Colorbar`."""
-        return self._colorbar
+        return getattr(self, "_colorbar", None)
 
     @property
     def fig(self):
@@ -162,7 +161,7 @@ class AbstractMatplotlibViewer(AbstractViewer):
         """Whether data has logarithmic scaling (:class:`bool`).
         """
         from matplotlib import colors
-        return isinstance(self.norm, colors.LogNorm)
+        return isinstance(self._norm, colors.LogNorm)
 
     @log.setter
     def log(self, value):
@@ -172,36 +171,37 @@ class AbstractMatplotlibViewer(AbstractViewer):
 
         from matplotlib import colors
         if value:
-            self.norm = colors.LogNorm(vmin=zmin, vmax=zmax)
+            self._norm = colors.LogNorm(vmin=zmin, vmax=zmax)
         else:
-            self.norm = colors.Normalize(vmin=zmin, vmax=zmax)
+            self._norm = colors.Normalize(vmin=zmin, vmax=zmax)
 
     def _make_mappable(self):
         import matplotlib
-        mappable = matplotlib.cm.ScalarMappable(norm=self.norm, cmap=self.cmap)
+        mappable = matplotlib.cm.ScalarMappable(norm=self._norm, cmap=self.cmap)
         # ignored, but needed for matplotlib < 3.0 (Py2k)
         mappable.set_array(self.vars[0].value)
 
         return mappable
 
     @property
-    def mappable(self):
+    def _mappable(self):
         """The :class:`~matplotlib.cm.ScalarMappable` between data and rendering.
         """
-        if self._mappable is None:
-            self._mappable = self._make_mappable()
-        return self._mappable
+        if self._mappable_ is None:
+            self._mappable_ = self._make_mappable()
+        return self._mappable_
 
     @property
-    def norm(self):
+    def _norm(self):
         """The :ref:`Matplotlib` :class:`~matplotlib.colors.Normalize`."""
-        return self._norm
+        return self._norm_
 
-    @norm.setter
-    def norm(self, value):
-        self._norm = value
-        # Need to remake mappable
-        self._mappable = None
+    @_norm.setter
+    def _norm(self, value):
+        self._norm_ = value
+        self._mappable.set_norm(value)
+        if self.colorbar is not None:
+            self.colorbar.update_normal(self._mappable)
 
     @AbstractViewer.title.setter
     def title(self, value):
@@ -266,6 +266,13 @@ class AbstractMatplotlibViewer(AbstractViewer):
             return retina_figure(self.fig)
         else:
             return print_figure(self.fig, "png")
+
+    @classmethod
+    def _doctest_extra(cls):
+        return ("""
+            >>> viewer.cmap = "ocean"
+            >>> viewer.log = True
+        """ + super()._doctest_extra())
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

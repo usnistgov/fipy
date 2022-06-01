@@ -20,9 +20,6 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
 
-    __doc__ += AbstractMatplotlib2DViewer._test2D(viewer="Matplotlib2DContourViewer")
-
-
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical',
                  axes=None, number=None, levels=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DContourViewer`.
@@ -35,7 +32,7 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
             displayed at the top of the `Viewer` window
         limits : dict, optional
             a (deprecated) alternative to limit keyword arguments
-        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
+        xmin, xmax, ymin, ymax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
         cmap : ~matplotlib.colors.Colormap, optional
@@ -133,8 +130,8 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
                                      datamin=self._getLimit(('datamin', 'zmin')),
                                      datamax=self._getLimit(('datamax', 'zmax')))
 
-        self.norm.vmin = zmin
-        self.norm.vmax = zmax
+        self._norm.vmin = zmin
+        self._norm.vmax = zmax
 
         self._contourSet = self.axes.contour(xi, yi, zi, levels=self.levels,
                                              vmin=zmin, vmax=zmax, cmap=self.cmap)
@@ -148,6 +145,11 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
         if self.colorbar is not None:
             self.colorbar.plot()
 
+    @classmethod
+    def _doctest_extra(cls):
+        return ("""
+            >>> viewer.levels = 2
+        """ + super()._doctest_extra())
 
 def _test():
     from fipy.viewers.viewer import _test2D

@@ -22,10 +22,6 @@ class MayaviClient(AbstractViewer):
     .. _Mayavi: http://code.enthought.com/projects/mayavi
 
     """
-    __doc__ += AbstractViewer._test1D(viewer="MayaviClient")
-    __doc__ += AbstractViewer._test2D(viewer="MayaviClient")
-    __doc__ += AbstractViewer._test2Dirregular(viewer="MayaviClient")
-    __doc__ += AbstractViewer._test3D(viewer="MayaviClient")
 
     def __init__(self, vars, title=None, daemon_file=None, fps=1.0, **kwlimits):
         """Create a `MayaviClient`.
@@ -36,7 +32,7 @@ class MayaviClient(AbstractViewer):
             `CellVariable` objects to plot
         title : str, optional
             displayed at the top of the `Viewer` window
-        float xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
+        xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
             displayed range of data. A 1D `Viewer` will only use `xmin` and
             `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
             viewers will use `datamin` and `datamax`. Any limit set to a
@@ -47,27 +43,27 @@ class MayaviClient(AbstractViewer):
         fps : float, optional
             frames per second to attempt to display
         """
-        self.fps = fps
+        self._fps = fps
 
-        self.vtkdir = tempfile.mkdtemp()
-        self.vtkcellfname = os.path.join(self.vtkdir, "cell.vtk")
-        self.vtkfacefname = os.path.join(self.vtkdir, "face.vtk")
-        self.vtklockfname = os.path.join(self.vtkdir, "lock")
+        self._vtkdir = tempfile.mkdtemp()
+        self._vtkcellfname = os.path.join(self._vtkdir, "cell.vtk")
+        self._vtkfacefname = os.path.join(self._vtkdir, "face.vtk")
+        self._vtklockfname = os.path.join(self._vtkdir, "lock")
 
         from fipy.viewers.vtkViewer import VTKCellViewer, VTKFaceViewer
 
         try:
-            self.vtkCellViewer = VTKCellViewer(vars=vars)
-            cell_vars = self.vtkCellViewer.vars
+            self._vtkCellViewer = VTKCellViewer(vars=vars)
+            cell_vars = self._vtkCellViewer.vars
         except TypeError:
-            self.vtkCellViewer = None
+            self._vtkCellViewer = None
             cell_vars = []
 
         try:
-            self.vtkFaceViewer = VTKFaceViewer(vars=vars)
-            face_vars = self.vtkFaceViewer.vars
+            self._vtkFaceViewer = VTKFaceViewer(vars=vars)
+            face_vars = self._vtkFaceViewer.vars
         except TypeError:
-            self.vtkFaceViewer = None
+            self._vtkFaceViewer = None
             face_vars = []
 
         AbstractViewer.__init__(self, vars=cell_vars + face_vars, title=title, **kwlimits)
@@ -84,15 +80,15 @@ class MayaviClient(AbstractViewer):
         cmd = [pyth,
                daemon_file,
                "--lock",
-               self.vtklockfname,
+               self._vtklockfname,
                "--fps",
-               str(self.fps)]
+               str(self._fps)]
 
-        if self.vtkCellViewer is not None:
-            cmd += ["--cell", self.vtkcellfname]
+        if self._vtkCellViewer is not None:
+            cmd += ["--cell", self._vtkcellfname]
 
-        if self.vtkFaceViewer is not None:
-            cmd += ["--face", self.vtkfacefname]
+        if self._vtkFaceViewer is not None:
+            cmd += ["--face", self._vtkfacefname]
 
 
         cmd += self._getLimit('xmin')
@@ -104,13 +100,18 @@ class MayaviClient(AbstractViewer):
         cmd += self._getLimit('datamin')
         cmd += self._getLimit('datamax')
 
-        self.daemon = subprocess.Popen(cmd)
+        self._daemon = subprocess.Popen(cmd)
+
+    @property
+    def fps(self):
+        """The frames per second to attempt to display."""
+        return self._fps
 
     def __del__(self):
-        for fname in [self.vtkcellfname, self.vtkfacefname, self.vtklockfname]:
+        for fname in [self._vtkcellfname, self._vtkfacefname, self._vtklockfname]:
             if fname and os.path.isfile(fname):
                 os.unlink(fname)
-        os.rmdir(self.vtkdir)
+        os.rmdir(self._vtkdir)
 
     def _getLimit(self, key, default=None):
         """
@@ -141,17 +142,17 @@ class MayaviClient(AbstractViewer):
         start = time.time()
         plotted = False
         while not plotted:
-            if not os.path.isfile(self.vtklockfname):
-                if self.vtkCellViewer is not None:
-                    self.vtkCellViewer.plot(filename=self.vtkcellfname)
-                if self.vtkFaceViewer is not None:
-                    self.vtkFaceViewer.plot(filename=self.vtkfacefname)
-                with open(self.vtklockfname, 'w') as lock:
+            if not os.path.isfile(self._vtklockfname):
+                if self._vtkCellViewer is not None:
+                    self._vtkCellViewer.plot(filename=self._vtkcellfname)
+                if self._vtkFaceViewer is not None:
+                    self._vtkFaceViewer.plot(filename=self._vtkfacefname)
+                with open(self._vtklockfname, 'w') as lock:
                     if filename is not None:
                         lock.write(filename)
                 plotted = True
 
-            if (time.time() - start > 30. / self.fps) and not plotted:
+            if (time.time() - start > 30. / self._fps) and not plotted:
                 print("viewer: NOT READY")
                 start = time.time()
         if not plotted:
@@ -159,6 +160,17 @@ class MayaviClient(AbstractViewer):
 
     def _validFileExtensions(self):
         return [".png", ".jpg", ".bmp", ".tiff", ".ps", ".eps", ".pdf", ".rib", ".oogl", ".iv", ".vrml", ".obj"]
+
+    @classmethod
+    def _doctest_body(cls):
+        return (cls._test1D()
+                + cls._test2D()
+                + cls._test2Dirregular()
+                + cls._test3D())
+
+    @classmethod
+    def _doctest_extra(cls):
+        return ""
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

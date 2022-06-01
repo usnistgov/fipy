@@ -13,6 +13,7 @@ def _suite():
         'matplotlib1DViewer',
         'matplotlib2DViewer',
         'matplotlib2DGridViewer',
+        'matplotlib2DContourViewer',
         'matplotlib2DGridContourViewer',
         'matplotlibStreamViewer',
         'matplotlibVectorViewer',
