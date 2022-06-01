@@ -82,14 +82,15 @@ class AbstractMatplotlibViewer(AbstractViewer):
         colorbar : bool, optional
             plot a color bar in specified orientation if not `None`
         axes : ~matplotlib.axes.Axes, optional
-            if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
+            if not `None`, `vars` will be plotted into this
+            :ref:`Matplotlib` :class:`~matplotlib.axes.Axes` object
         log : bool, optional
           whether to logarithmically scale the data
         """
         if self.__class__ is AbstractMatplotlibViewer:
             raise NotImplementedError("can't instantiate abstract base class")
 
-        AbstractViewer.__init__(self, vars=vars, title=title, **kwlimits)
+        super(AbstractMatplotlibViewer, self).__init__(vars=vars, title=None, **kwlimits)
 
         from matplotlib import pyplot as plt
 
@@ -97,15 +98,11 @@ class AbstractMatplotlibViewer(AbstractViewer):
 
         if axes is None:
             w, h = plt.figaspect(self.figaspect(figaspect, colorbar))
-            self.fig = plt.figure(figsize=(w, h))
-            self.axes = plt.gca()
+            self._fig = plt.figure(figsize=(w, h))
+            self._axes = plt.gca()
         else:
-            self.axes = axes
-            self.fig = axes.get_figure()
-
-        self.id = self.fig.number
-
-        self.axes.set_title(self.title)
+            self._axes = axes
+            self._fig = axes.get_figure()
 
         self._mappable = None
 
@@ -113,22 +110,71 @@ class AbstractMatplotlibViewer(AbstractViewer):
         # Set the colormap and norm to correspond to the data for which
         # the colorbar will be used.
         if cmap is None:
-            self.cmap = matplotlib.cm.jet
+            self._cmap = matplotlib.cm.jet
         else:
-            self.cmap = cmap
+            self._cmap = cmap
 
         self.norm = None
         self.log = log
 
         if colorbar:
-            self.colorbar = self.fig.colorbar(mappable=self.mappable,
-                                              orientation=colorbar,
-                                              label=self.vars[0].name)
+            self._colorbar = self.fig.colorbar(mappable=self.mappable,
+                                               orientation=colorbar,
+                                               label=self.vars[0].name)
         else:
-            self.colorbar = None
+            self._colorbar = None
 
-    def figaspect(self, figaspect, colorbar):
-        return figaspect
+        self.title = title
+
+    @property
+    def axes(self):
+        """The :ref:`Matplotlib` :class:`~matplotlib.axes.Axes`."""
+        return getattr(self, "_axes", None)
+
+    @property
+    def cmap(self):
+        """The :ref:`Matplotlib` :class:`~~matplotlib.colors.Colormap`."""
+        return self._cmap
+
+    @cmap.setter
+    def cmap(self, value):
+        self._cmap = value
+        # Need to remake mappable
+        self._mappable = None
+
+    @property
+    def colorbar(self):
+        """The :ref:`Matplotlib` :class:`~matplotlib.colorbar.Colorbar`."""
+        return self._colorbar
+
+    @property
+    def fig(self):
+        """The :ref:`Matplotlib` :class:`~matplotlib.figure.Figure`."""
+        return self._fig
+
+    @property
+    def id(self):
+        """The :ref:`Matplotlib` :class:`~matplotlib.figure.Figure` number."""
+        return self.fig.number
+
+    @property
+    def log(self):
+        """Whether data has logarithmic scaling (:class:`bool`).
+        """
+        from matplotlib import colors
+        return isinstance(self.norm, colors.LogNorm)
+
+    @log.setter
+    def log(self, value):
+        zmin, zmax = self._autoscale(vars=self.vars,
+                                     datamin=self._getLimit(('datamin', 'zmin')),
+                                     datamax=self._getLimit(('datamax', 'zmax')))
+
+        from matplotlib import colors
+        if value:
+            self.norm = colors.LogNorm(vmin=zmin, vmax=zmax)
+        else:
+            self.norm = colors.Normalize(vmin=zmin, vmax=zmax)
 
     def _make_mappable(self):
         import matplotlib
@@ -140,33 +186,34 @@ class AbstractMatplotlibViewer(AbstractViewer):
 
     @property
     def mappable(self):
+        """The :class:`~matplotlib.cm.ScalarMappable` between data and rendering.
+        """
         if self._mappable is None:
             self._mappable = self._make_mappable()
         return self._mappable
 
-    def log():
-        doc = "logarithmic data scaling"
+    @property
+    def norm(self):
+        """The :ref:`Matplotlib` :class:`~matplotlib.colors.Normalize`."""
+        return self._norm
 
-        def fget(self):
-            from matplotlib import colors
-            return isinstance(self.norm, colors.LogNorm)
+    @norm.setter
+    def norm(self, value):
+        self._norm = value
+        # Need to remake mappable
+        self._mappable = None
 
-        def fset(self, value):
-            zmin, zmax = self._autoscale(vars=self.vars,
-                                         datamin=self._getLimit(('datamin', 'zmin')),
-                                         datamax=self._getLimit(('datamax', 'zmax')))
+    @AbstractViewer.title.setter
+    def title(self, value):
+        # attrociousness needed to call inherited setter
+        # https://stackoverflow.com/q/3336767/2019542
+        # https://gist.github.com/Susensio/979259559e2bebcd0273f1a95d7c1e79
+        super(AbstractMatplotlibViewer, type(self)).title.fset(self, value)
+        if self.axes is not None:
+            self.axes.set_title(self.title)
 
-            from matplotlib import colors
-            if value:
-                self.norm = colors.LogNorm(vmin=zmin, vmax=zmax)
-            else:
-                self.norm = colors.Normalize(vmin=zmin, vmax=zmax)
-
-            self.mappable.set_norm(self.norm)
-
-        return locals()
-
-    log = property(**log())
+    def figaspect(self, figaspect, colorbar):
+        return figaspect
 
     def plot(self, filename = None):
         from matplotlib import pyplot as plt

@@ -54,7 +54,7 @@ class Matplotlib2DGridViewer(AbstractMatplotlib2DViewer):
                            ymax=self._getLimit('ymax'))
 
         if title is None:
-            self.axes.set_title(self.vars[0].name)
+            self.title = self.vars[0].name
 
     def _getLimit(self, key, default=None):
         limit = AbstractMatplotlib2DViewer._getLimit(self, key, default=default)
