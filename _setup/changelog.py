@@ -185,7 +185,8 @@ class changelog(Command):
         issues = issues.sort_values(by=["number"], ascending=[False])
         wontfix = issues.labels.apply(lambda x: 'wontfix' in x)
         invalid = issues.labels.apply(lambda x: 'invalid' in x)
-        issues = issues[~wontfix & ~invalid]
+        question = issues.labels.apply(lambda x: 'question' in x)
+        issues = issues[~wontfix & ~invalid & ~question]
 
         # fix the dates to reflect dates from original Trac issue tracker
         trac = (r" _Imported from trac ticket .*,  "
