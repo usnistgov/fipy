@@ -73,9 +73,7 @@ class changelog(Command):
         print()
 
         for i, issue in issues.iterrows():
-            # distutils does something disgusting with encodings
-            # we have to strip out unicode or we get errors
-            print(issue.ReST.encode("ascii", errors="replace"))
+            print(issue.ReST)
 
     def _getMilestone(self, milestone):
         """Return Milestone with title of `milestone`
