@@ -11,6 +11,112 @@ Change Log
 Version |release|
 -----------------
 
+This maintenance release adds a new example contributed by
+`@Jon83Carvalho <https://github.com/Jon83Carvalho>`_,
+clarifies many points in the documentation,
+migrates all :ref:`CONTINUOUSINTEGRATION` to
+`Azure <https://dev.azure.com>`_,
+updates to using
+`wheels <https://packaging.python.org/en/latest/specifications/binary-distribution-format/>`_
+for distribution,
+and substantially refactors matrices to work more consistently across
+solvers.
+
+Pulls
+-----
+
+- Update CI documentation to refer only to Azure
+  (`#863 <https://github.com/usnistgov/fipy/pull/863>`_)
+- Refine azure runs
+  (`#851 <https://github.com/usnistgov/fipy/pull/851>`_)
+- Debug CIs
+  (`#848 <https://github.com/usnistgov/fipy/pull/848>`_)
+- Collect contact information on single page
+  (`#847 <https://github.com/usnistgov/fipy/pull/847>`_)
+- Set up CI with Azure Pipelines
+  (`#822 <https://github.com/usnistgov/fipy/pull/822>`_)
+- Replace deprecated numpy types
+  (`#798 <https://github.com/usnistgov/fipy/pull/798>`_)
+- Move trilinos tests to Py3k
+  (`#797 <https://github.com/usnistgov/fipy/pull/797>`_)
+- Fix Python 2.7 conda environment
+  (`#795 <https://github.com/usnistgov/fipy/pull/795>`_)
+- fix: stop divide by zero warning in LU solvers
+  (`#790 <https://github.com/usnistgov/fipy/pull/790>`_)
+- Introduce SharedTemporaryFile (bis)
+  (`#769 <https://github.com/usnistgov/fipy/pull/769>`_)
+- Raise ImportError before trying to unpack solvers
+  (`#768 <https://github.com/usnistgov/fipy/pull/768>`_)
+- Disable TVTK tests if its prerequisites aren't met
+  (`#764 <https://github.com/usnistgov/fipy/pull/764>`_)
+- Tabulate versions of FiPy dependencies when tests are run
+  (`#763 <https://github.com/usnistgov/fipy/pull/763>`_)
+- Debug CI failures
+  (`#749 <https://github.com/usnistgov/fipy/pull/749>`_)
+- Stokes Cavity - non-newtonian
+  (`#748 <https://github.com/usnistgov/fipy/pull/748>`_)
+  Thanks to `@Jon83Carvalho <https://github.com/Jon83Carvalho>`_.
+- Refactor matrices
+  (`#721 <https://github.com/usnistgov/fipy/pull/721>`_)
+
+Fixes
+-----
+
+- `#862 <https://github.com/usnistgov/fipy/issues/862>`_:
+  Could not load the Qt platform plugin "xcb"
+- `#858 <https://github.com/usnistgov/fipy/issues/858>`_:
+  CI issues
+- `#850 <https://github.com/usnistgov/fipy/issues/850>`_:
+  Switch to wheels
+- `#849 <https://github.com/usnistgov/fipy/issues/849>`_:
+  linux-py27-pysparse fails
+- `#841 <https://github.com/usnistgov/fipy/issues/841>`_:
+  Matplotlib2DViewer should accept color map as string
+- `#836 <https://github.com/usnistgov/fipy/issues/836>`_:
+  Document that coupled and high-order diffusion terms are
+  incompatible
+- `#833 <https://github.com/usnistgov/fipy/issues/833>`_:
+  fipy.tools.dump undocumented that it always gzips
+- `#828 <https://github.com/usnistgov/fipy/issues/828>`_:
+  `colorbar=True` no longer works Stokes flow example
+- `#826 <https://github.com/usnistgov/fipy/issues/826>`_:
+  Gmsh load issue
+- `#818 <https://github.com/usnistgov/fipy/issues/818>`_:
+  Document that `GridND` meshes are always Cartesian
+- `#811 <https://github.com/usnistgov/fipy/issues/811>`_:
+  In python 3.9 __repr__ throws an exception with abs
+- `#801 <https://github.com/usnistgov/fipy/issues/801>`_:
+  CircleCI test-36-trilinos-serial extremely slow
+- `#800 <https://github.com/usnistgov/fipy/issues/800>`_:
+  CircleCI conda2_env is really slow and ends up installing FiPy 3.3
+- `#796 <https://github.com/usnistgov/fipy/issues/796>`_:
+  examples.phase.polyxtal freezes on CircleCI with Py3k and scipy
+  solvers
+- `#792 <https://github.com/usnistgov/fipy/issues/792>`_:
+  circleQuad example fails with Gmsh > 4.4
+- `#781 <https://github.com/usnistgov/fipy/issues/781>`_:
+  MatplolibViewer.axes property is not documented
+- `#778 <https://github.com/usnistgov/fipy/issues/778>`_:
+  Binder failed build
+- `#762 <https://github.com/usnistgov/fipy/issues/762>`_:
+  Equations on Website don't show right
+- `#742 <https://github.com/usnistgov/fipy/issues/742>`_:
+  No documentation for `Variable.mag`
+- `#735 <https://github.com/usnistgov/fipy/issues/735>`_:
+  pip install fipy fails
+- `#734 <https://github.com/usnistgov/fipy/issues/734>`_:
+  Document the residual
+- `#688 <https://github.com/usnistgov/fipy/issues/688>`_:
+  try-except not needed for circle Viewer
+- `#676 <https://github.com/usnistgov/fipy/issues/676>`_:
+  Default no-flux condition is not explicitly stated
+- `#609 <https://github.com/usnistgov/fipy/issues/609>`_:
+  Parallelizing of Gmsh meshes not clearly documented
+
+----------------------------
+Version 3.4.2.1 - 2020-08-01
+----------------------------
+
 This release fixes assorted viewer issues, fixes a problem with convection
 boundary conditions, and introduces spherical meshes.
 
