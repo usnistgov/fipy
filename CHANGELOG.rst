@@ -43,9 +43,9 @@ Pulls
   (`#795 <https://github.com/usnistgov/fipy/pull/795>`_)
 - fix: stop divide by zero warning in LU solvers
   (`#790 <https://github.com/usnistgov/fipy/pull/790>`_)
-- Introduce SharedTemporaryFile (bis)
+- Introduce `SharedTemporaryFile` (bis)
   (`#769 <https://github.com/usnistgov/fipy/pull/769>`_)
-- Raise ImportError before trying to unpack solvers
+- Raise `ImportError` before trying to unpack solvers
   (`#768 <https://github.com/usnistgov/fipy/pull/768>`_)
 - Disable TVTK tests if its prerequisites aren't met
   (`#764 <https://github.com/usnistgov/fipy/pull/764>`_)
@@ -53,7 +53,7 @@ Pulls
   (`#763 <https://github.com/usnistgov/fipy/pull/763>`_)
 - Debug CI failures
   (`#749 <https://github.com/usnistgov/fipy/pull/749>`_)
-- Stokes Cavity - non-newtonian
+- Stokes Cavity - non-Newtonian
   (`#748 <https://github.com/usnistgov/fipy/pull/748>`_)
   Thanks to `@Jon83Carvalho <https://github.com/Jon83Carvalho>`_.
 - Refactor matrices
@@ -63,20 +63,20 @@ Fixes
 -----
 
 - `#862 <https://github.com/usnistgov/fipy/issues/862>`_:
-  Could not load the Qt platform plugin "xcb"
+  Could not load the Qt platform plugin "`xcb`"
 - `#858 <https://github.com/usnistgov/fipy/issues/858>`_:
   CI issues
 - `#850 <https://github.com/usnistgov/fipy/issues/850>`_:
   Switch to wheels
 - `#849 <https://github.com/usnistgov/fipy/issues/849>`_:
-  linux-py27-pysparse fails
+  `linux-py27-pysparse` fails
 - `#841 <https://github.com/usnistgov/fipy/issues/841>`_:
-  Matplotlib2DViewer should accept color map as string
+  `Matplotlib2DViewer` should accept color map as string
 - `#836 <https://github.com/usnistgov/fipy/issues/836>`_:
   Document that coupled and high-order diffusion terms are
   incompatible
 - `#833 <https://github.com/usnistgov/fipy/issues/833>`_:
-  fipy.tools.dump undocumented that it always gzips
+  `fipy.tools.dump` undocumented that it always gzips
 - `#828 <https://github.com/usnistgov/fipy/issues/828>`_:
   `colorbar=True` no longer works Stokes flow example
 - `#826 <https://github.com/usnistgov/fipy/issues/826>`_:
@@ -90,12 +90,12 @@ Fixes
 - `#800 <https://github.com/usnistgov/fipy/issues/800>`_:
   CircleCI conda2_env is really slow and ends up installing FiPy 3.3
 - `#796 <https://github.com/usnistgov/fipy/issues/796>`_:
-  examples.phase.polyxtal freezes on CircleCI with Py3k and scipy
+  `examples.phase.polyxtal` freezes on CircleCI with Py3k and scipy
   solvers
 - `#792 <https://github.com/usnistgov/fipy/issues/792>`_:
-  circleQuad example fails with Gmsh > 4.4
+  `circleQuad` example fails with Gmsh > 4.4
 - `#781 <https://github.com/usnistgov/fipy/issues/781>`_:
-  MatplolibViewer.axes property is not documented
+  `MatplolibViewer.axes` property is not documented
 - `#778 <https://github.com/usnistgov/fipy/issues/778>`_:
   Binder failed build
 - `#762 <https://github.com/usnistgov/fipy/issues/762>`_:
@@ -103,7 +103,7 @@ Fixes
 - `#742 <https://github.com/usnistgov/fipy/issues/742>`_:
   No documentation for `Variable.mag`
 - `#735 <https://github.com/usnistgov/fipy/issues/735>`_:
-  pip install fipy fails
+  `pip install fipy` fails
 - `#734 <https://github.com/usnistgov/fipy/issues/734>`_:
   Document the residual
 - `#688 <https://github.com/usnistgov/fipy/issues/688>`_:
