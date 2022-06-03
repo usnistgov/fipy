@@ -150,7 +150,6 @@ or a
 .. _MSED:          http://www.nist.gov/mml/msed/
 .. _NIST:          http://www.nist.gov/
 
-
 .. |GitHub|        image:: https://img.shields.io/github/contributors/usnistgov/fipy.svg
 .. _GitHub:        https://github.com/usnistgov/fipy
 .. |gitter|        image:: https://badges.gitter.im/usnistgov/fipy.svg
