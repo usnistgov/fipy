@@ -25,7 +25,7 @@ def VTKViewer(vars, title=None, limits={}, **kwlimits):
         displayed at the top of the `Viewer` window
     limits : dict, optional
         a (deprecated) alternative to limit keyword arguments
-    float xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
+    xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
         displayed range of data. Any limit set to
         a (default) value of `None` will autoscale.
     """

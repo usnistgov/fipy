@@ -3,6 +3,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.viewers.matplotlibViewer.matplotlib1DViewer import *
 from fipy.viewers.matplotlibViewer.matplotlib2DGridViewer import *
+from fipy.viewers.matplotlibViewer.matplotlib2DContourViewer import *
 from fipy.viewers.matplotlibViewer.matplotlib2DGridContourViewer import *
 from fipy.viewers.matplotlibViewer.matplotlib2DViewer import *
 from fipy.viewers.matplotlibViewer.matplotlibVectorViewer import *
@@ -13,6 +14,7 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 __all__.extend(matplotlib1DViewer.__all__)
 __all__.extend(matplotlib2DGridViewer.__all__)
+__all__.extend(matplotlib2DContourViewer.__all__)
 __all__.extend(matplotlib2DGridContourViewer.__all__)
 __all__.extend(matplotlib2DViewer.__all__)
 __all__.extend(matplotlibVectorViewer.__all__)
@@ -91,7 +93,7 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
         displayed at the top of the `Viewer` window
     limits : dict
         a (deprecated) alternative to limit keyword arguments
-    float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
+    xmin, xmax, ymin, ymax, datamin, datamax : float, optional
         displayed range of data. A 1D `Viewer` will only use *xmin* and
         *xmax*, a 2D viewer will also use *ymin* and *ymax*. All
         viewers will use *datamin* and *datamax*. Any limit set to a

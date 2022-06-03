@@ -11,6 +11,7 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class AbstractMatplotlib2DViewer(AbstractMatplotlibViewer):
+
     def figaspect(self, figaspect, colorbar):
         if figaspect == 'auto':
             figaspect = self.vars[0].mesh.aspect2D
@@ -30,10 +31,10 @@ class AbstractMatplotlib2DViewer(AbstractMatplotlibViewer):
                                      datamin=self._getLimit(('datamin', 'zmin')),
                                      datamax=self._getLimit(('datamax', 'zmax')))
 
-        self.norm.vmin = zmin
-        self.norm.vmax = zmax
+        self._norm.vmin = zmin
+        self._norm.vmax = zmax
 
-        self.mappable.set_norm(self.norm)
+        self._mappable.set_norm(self._norm)
 
 class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
     """
@@ -43,8 +44,6 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """
-
-    __doc__ += AbstractMatplotlib2DViewer._test2Dirregular(viewer="Matplotlib2DViewer")
 
     def __init__(self, vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DViewer`.
@@ -60,13 +59,14 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
         cmap : ~matplotlib.colors.Colormap, optional
             the :class:`~matplotlib.colors.Colormap`.
             Defaults to `matplotlib.cm.jet`
-        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
+        xmin, xmax, ymin, ymax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
         colorbar : bool, optional
             plot a color bar in specified orientation if not `None`
         axes : ~matplotlib.axes.Axes, optional
-            if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
+            if not `None`, `vars` will be plotted into this
+            :ref:`Matplotlib` :class:`~matplotlib.axes.Axes` object
         figaspect : float, optional
             desired aspect ratio of figure. If arg is a number, use that aspect
             ratio. If arg is `auto`, the aspect ratio will be determined from
@@ -77,11 +77,11 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
                                             cmap=cmap, colorbar=colorbar, axes=axes,
                                             **kwlimits)
 
-        self.mesh = self.vars[0].mesh
+        mesh = self.vars[0].mesh
 
-        vertexIDs = self.mesh._orderedCellVertexIDs
+        vertexIDs = mesh._orderedCellVertexIDs
 
-        vertexCoords = self.mesh.vertexCoords
+        vertexCoords = mesh.vertexCoords
 
         xCoords = numerix.take(vertexCoords[0], vertexIDs)
         yCoords = numerix.take(vertexCoords[1], vertexIDs)
@@ -96,8 +96,8 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
             polys.append(list(zip(x, y)))
 
         from matplotlib.collections import PolyCollection
-        self.collection = PolyCollection(polys)
-        self.collection.set_linewidth(0.5)
+        self._collection = PolyCollection(polys)
+        self._collection.set_linewidth(0.5)
         try:
             self.axes.add_patch(self.collection)
         except:
@@ -113,6 +113,11 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
         self.axes.set_ylim(ymin=ymin, ymax=ymax)
 
         self._plot()
+
+    @property
+    def collection(self):
+        """The :ref:`Matplotlib` :class:`~matplotlib.collections.PolyCollection` representing the cells."""
+        return self._collection
 
     def _getSuitableVars(self, vars):
         from fipy.meshes.mesh2D import Mesh2D
@@ -138,7 +143,7 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
 
         Z = self.vars[0].value
 
-        rgba = self.cmap(self.norm(Z))
+        rgba = self._mappable.get_cmap()(self._norm(Z))
 
         self.collection.set_facecolors(rgba)
         self.collection.set_edgecolors(rgba)
@@ -148,6 +153,10 @@ class Matplotlib2DViewer(AbstractMatplotlib2DViewer):
 
 ##        plt.ylim(ymin=self._getLimit('ymin'),
 ##                 ymax=self._getLimit('ymax'))
+
+    @classmethod
+    def _doctest_body(cls):
+        return cls._test2Dirregular()
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

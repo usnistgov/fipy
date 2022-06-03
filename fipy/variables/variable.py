@@ -1504,6 +1504,8 @@ class Variable(object):
 
     @property
     def mag(self):
+        r"""The magnitude of the :class:`~fipy.variables.variable.Variable`,
+        e.g., :math:`|\vec{\psi}| = \sqrt{\vec{\psi}\cdot\vec{\psi}}`."""
         if not hasattr(self, "_mag"):
             self._mag = numerix.sqrt(self.dot(self))
 

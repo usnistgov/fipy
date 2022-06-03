@@ -130,7 +130,9 @@ autosummary_generate = ['examples/diffusion/index.rst',
 
 autodoc_default_options = {
     'member-order': 'alphabetical',
-    'special-members': None,
+    'special-members': True,
+    'inherited-members': True,
+    'exclude-members': '__annotations__, __dict__, __init__, __module__, __weakref__'
 }
 
 autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'PyTrilinos.NOX']
@@ -345,11 +347,14 @@ intersphinx_mapping = {
 
 def skip_numpy_not_numerix(app, what, name, obj, skip, options):
     import types
-    if ((type(obj) in [types.FunctionType,
-                       types.BuiltinFunctionType,
-                       type])
-        and not (obj.__module__.startswith("fipy")
-                 or obj.__module__.startswith("package"))):
+    if type(obj) in [types.FunctionType,
+                     types.BuiltinFunctionType,
+                     type]:
+        module = getattr(obj, "__module__", "")
+        if module is None:
+            module = ""
+        if not (module.startswith("fipy")
+                or module.startswith("package")):
             skip = True
     return skip
 
