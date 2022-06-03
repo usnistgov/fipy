@@ -114,14 +114,6 @@ class changelog(Command):
 
         return date
 
-    def read_pull(self, x):
-        if x['pull_request'] is None:
-            result = (False, None)
-        else:
-            pull = self.repo.get_pull(x.number)
-            result = (pull.merged, pull.merged_at)
-        return result
-
     def format_pull(self, x):
         prefix = "- "
         hang = " " * len(prefix)
@@ -214,11 +206,9 @@ class changelog(Command):
         ispull = issues['pull_request'].notna()
         isissue = ~ispull
 
-        issues['merged'], issues['merged_at'] = zip(*issues.apply(self.read_pull, axis=1))
-
         issues.loc[ispull, 'ReST'] = issues.apply(self.format_pull, axis=1)
 
         issues.loc[isissue, 'ReST'] = issues.apply(self.format_issue, axis=1)
 
-        self._printReST(issues[ispull & issues['merged']], "Pulls")
+        self._printReST(issues[ispull], "Pulls")
         self._printReST(issues[isissue], "Fixes")
