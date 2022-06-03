@@ -278,6 +278,7 @@ reconstrain
 redeclare
 refactor
 refactoring
+refactors
 repo
 reST
 Rhie-Chow
