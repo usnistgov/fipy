@@ -2250,6 +2250,94 @@ class Gmsh3D(Mesh):
 
         >>> if parallelComm.procID == 0:
         ...     os.remove(posFile)
+
+
+        Ensure that ghost faces are excluded from accumulating operations (#856).
+        Six exterior surfaces of 10x10x10 cube mesh should each have a total
+        area of 100, regardless of partitioning.
+
+        >>> geo = '''
+        ... cellSize = 1.;
+        ...
+        ... Point(1) = {0, 0, 0, cellSize};
+        ... Point(2) = {10, 0, 0, cellSize};
+        ... Point(3) = {10, 10, 0, cellSize};
+        ... Point(4) = {0, 10, 0, cellSize};
+        ...
+        ... Point(11) = {0, 0, 10, cellSize};
+        ... Point(12) = {10, 0, 10, cellSize};
+        ... Point(13) = {10, 10, 10, cellSize};
+        ... Point(14) = {0, 10, 10, cellSize};
+        ...
+        ... Line(1) = {1, 2};
+        ... Line(2) = {2, 3};
+        ... Line(3) = {3, 4};
+        ... Line(4) = {4, 1};
+        ...
+        ... Line(11) = {11, 12};
+        ... Line(12) = {12, 13};
+        ... Line(13) = {13, 14};
+        ... Line(14) = {14, 11};
+        ...
+        ... Line(21) = {1, 11};
+        ... Line(22) = {2, 12};
+        ... Line(23) = {3, 13};
+        ... Line(24) = {4, 14};
+        ...
+        ... Line Loop(1) = {1, 2, 3, 4};
+        ... Line Loop(2) = {11, 12, 13, 14};
+        ... Line Loop(3) = {1, 22, -11, -21};
+        ... Line Loop(4) = {2, 23, -12, -22};
+        ... Line Loop(5) = {3, 24, -13, -23};
+        ... Line Loop(6) = {4, 21, -14, -24};
+        ...
+        ... Plane Surface(1) = {1};
+        ... Plane Surface(2) = {2};
+        ... Plane Surface(3) = {3};
+        ... Plane Surface(4) = {4};
+        ... Plane Surface(5) = {5};
+        ... Plane Surface(6) = {6};
+        ...
+        ... Surface Loop(1) = {1, 2, 3, 4, 5, 6};
+        ...
+        ... Volume(1) = {1};
+        ...
+        ... Physical Surface("bottom") = {1};
+        ... Physical Surface("top") = {2};
+        ... Physical Surface("front") = {3};
+        ... Physical Surface("right") = {4};
+        ... Physical Surface("back") = {5};
+        ... Physical Surface("left") = {6};
+        ...
+        ... Physical Volume("box") = {1};
+        ... '''
+
+        >>> cube = Gmsh3D(geo) # doctest: +GMSH
+        >>> phi = CellVariable(mesh=cube, value=cube.z) # doctest: +GMSH
+
+        >>> area = (cube._faceAreas * cube.physicalFaces["bottom"]).sum() # doctest: +GMSH
+        >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
+        True
+
+        >>> area = (cube._faceAreas * cube.physicalFaces["top"]).sum() # doctest: +GMSH
+        >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
+        True
+
+        >>> area = (cube._faceAreas * cube.physicalFaces["front"]).sum() # doctest: +GMSH
+        >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
+        True
+
+        >>> area = (cube._faceAreas * cube.physicalFaces["right"]).sum() # doctest: +GMSH
+        >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
+        True
+
+        >>> area = (cube._faceAreas * cube.physicalFaces["back"]).sum() # doctest: +GMSH
+        >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
+        True
+
+        >>> area = (cube._faceAreas * cube.physicalFaces["left"]).sum() # doctest: +GMSH
+        >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
+        True
         """
 
 class GmshGrid2D(Gmsh2D):
