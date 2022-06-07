@@ -2313,7 +2313,6 @@ class Gmsh3D(Mesh):
         ... '''
 
         >>> cube = Gmsh3D(geo) # doctest: +GMSH
-        >>> phi = CellVariable(mesh=cube, value=cube.z) # doctest: +GMSH
 
         >>> area = (cube._faceAreas * cube.physicalFaces["bottom"]).sum() # doctest: +GMSH
         >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
