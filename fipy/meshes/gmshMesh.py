@@ -2314,29 +2314,15 @@ class Gmsh3D(Mesh):
 
         >>> cube = Gmsh3D(geo) # doctest: +GMSH
 
-        >>> area = (cube._faceAreas * cube.physicalFaces["bottom"]).sum() # doctest: +GMSH
-        >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
-        True
-
-        >>> area = (cube._faceAreas * cube.physicalFaces["top"]).sum() # doctest: +GMSH
-        >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
-        True
-
-        >>> area = (cube._faceAreas * cube.physicalFaces["front"]).sum() # doctest: +GMSH
-        >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
-        True
-
-        >>> area = (cube._faceAreas * cube.physicalFaces["right"]).sum() # doctest: +GMSH
-        >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
-        True
-
-        >>> area = (cube._faceAreas * cube.physicalFaces["back"]).sum() # doctest: +GMSH
-        >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
-        True
-
-        >>> area = (cube._faceAreas * cube.physicalFaces["left"]).sum() # doctest: +GMSH
-        >>> print(numerix.allclose(area, 100)) # doctest: +GMSH
-        True
+        >>> for surface in ["bottom", "top", "front", "right", "back", "left"]: # doctest: +GMSH
+        ...     area = (cube._faceAreas * cube.physicalFaces[surface]).sum() # doctest: +GMSH
+        ...     print(surface, numerix.allclose(area, 100)) # doctest: +GMSH
+        bottom True
+        top True
+        front True
+        right True
+        back True
+        left True
         """
 
 class GmshGrid2D(Gmsh2D):
