@@ -802,6 +802,29 @@ class UniformGrid2D(UniformGrid):
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var)
 
+        Ensure that ghost faces are excluded from accumulating operations (#856).
+        Four exterior surfaces of 10x10 square mesh should each have a total
+        area of 10, regardless of partitioning.
+
+            >>> square = Grid2D(nx=10, dx=1., ny=10, dy=1.)
+
+            >>> area = (square._faceAreas * square.facesBottom).sum()
+            >>> print(numerix.allclose(area, 10))
+            True
+
+            >>> area = (square._faceAreas * square.facesTop).sum()
+            >>> print(numerix.allclose(area, 10))
+            True
+
+            >>> area = (square._faceAreas * square.facesLeft).sum()
+            >>> print(numerix.allclose(area, 10))
+            True
+            >>> print(area)
+
+            >>> area = (square._faceAreas * square.facesRight).sum()
+            >>> print(numerix.allclose(area, 10))
+            True
+            >>> print(area)
         """
 
 def _test():
