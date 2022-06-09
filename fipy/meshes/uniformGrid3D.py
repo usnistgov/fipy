@@ -920,9 +920,10 @@ class UniformGrid3D(UniformGrid):
 
             Oh, how boring. We'll assume the 3x2x1 permutations are good enough for everything else until proven otherwise.
             
-        Ensure that ghost faces are excluded from accumulating operations (#856).
-        Four exterior surfaces of 10x10x10 cube mesh should each have a total
-        area of 100, regardless of partitioning.
+        Ensure that ghost faces are excluded from accumulating operations
+        (#856).  Four exterior surfaces of :math:`10\times 10\times 10`
+        cube mesh should each have a total area of 100, regardless of
+        partitioning.
 
             >>> cube = UniformGrid3D(nx=10, dx=1., ny=10, dy=1., nz=10, dz=1.)
 

@@ -2252,9 +2252,10 @@ class Gmsh3D(Mesh):
         ...     os.remove(posFile)
 
 
-        Ensure that ghost faces are excluded from accumulating operations (#856).
-        Six exterior surfaces of 10x10x10 cube mesh should each have a total
-        area of 100, regardless of partitioning.
+        Ensure that ghost faces are excluded from accumulating operations
+        (#856).  Six exterior surfaces of :math:`10\times 10\times 10` cube
+        mesh should each have a total area of 100, regardless of
+        partitioning.
 
         >>> geo = '''
         ... cellSize = 1.;

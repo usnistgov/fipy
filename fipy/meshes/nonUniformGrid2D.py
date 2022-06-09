@@ -244,9 +244,9 @@ class NonUniformGrid2D(Mesh2D):
             >>> print(min(m.y) == 5.5) # doctest: +PROCESSOR_2_OF_3
             True
 
-        Ensure that ghost faces are excluded from accumulating operations (#856).
-        Four exterior surfaces of 10x10 square mesh should each have a total
-        area of 10, regardless of partitioning.
+        Ensure that ghost faces are excluded from accumulating operations
+        (#856).  Four exterior surfaces of :math:`10\times 10` square mesh
+        should each have a total area of 10, regardless of partitioning.
 
             >>> square = NonUniformGrid2D(nx=10, dx=1., ny=10, dy=1.)
 
