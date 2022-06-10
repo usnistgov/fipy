@@ -823,6 +823,12 @@ class UniformGrid2D(UniformGrid):
             >>> area = (square._faceAreas * square.facesRight).sum()
             >>> print(numerix.allclose(area, 10))
             True
+
+        Ensure no double-counting of faces on boundary between partitions.
+
+            >>> area = (square._faceAreas * (square.faceCenters[1] == 5.)).sum()
+            >>> print(numerix.allclose(area, 10)) # doctest: +PARALLEL_2
+            True
         """
 
 def _test():
