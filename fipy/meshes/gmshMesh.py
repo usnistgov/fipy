@@ -1389,10 +1389,10 @@ class _GmshTopology(_MeshTopology):
 
     @property
     def _nonOverlappingFaces(self):
-        return (nx.in1d(self.mesh.faceCellIDs[0],
-                        self.mesh._localNonOverlappingCellIDs)
-                | nx.in1d(self.mesh.faceCellIDs[1],
-                          self.mesh._localNonOverlappingCellIDs))
+        return (nx.in1dMA(self.mesh.faceCellIDs[0],
+                          self.mesh._localNonOverlappingCellIDs).filled(False)
+                | nx.in1dMA(self.mesh.faceCellIDs[1],
+                            self.mesh._localNonOverlappingCellIDs).filled(False))
 
     @property
     def _localNonOverlappingFaceIDs(self):

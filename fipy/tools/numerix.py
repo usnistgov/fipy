@@ -1007,6 +1007,36 @@ if not hasattr(NUMERIX, "in1d"):
         else:
             return flag[indx][rev_idx]
 
+# Buggy numpy.ma.in1d fixed in https://github.com/numpy/numpy/pull/20011
+def in1dMA(ar1, ar2, assume_unique=False, invert=False):
+    """
+    Test whether each element of an array is also present in a second
+    array.
+    The output is always a masked array. See `numpy.in1d` for more details.
+    We recommend using :func:`isin` instead of `in1d` for new code.
+    See Also
+    --------
+    isin       : Version of this function that preserves the shape of ar1.
+    numpy.in1d : Equivalent function for ndarrays.
+    Notes
+    -----
+    .. versionadded:: 1.4.0
+    """
+    ar1, ar2 = MA.asarray(ar1), MA.asarray(ar2)
+    m = MA.getmask(ar1)
+    res = MA.empty_like(ar1, dtype='bool')
+    if ar1.mask is not MA.nomask:
+        ar1 = ar1[~ar1.mask]
+    if ar2.mask is not MA.nomask:
+        ar2 = ar2[~ar2.mask]
+    out = NUMERIX.in1d(ar1, ar2, assume_unique=assume_unique,
+                      invert=invert)
+    if m is not MA.nomask:
+        res[~m] = out
+    else:
+        res[:] = out
+    return res
+
 def invert_indices(arr, axis=-1):
     """Invert an index array
 
