@@ -147,6 +147,31 @@ class _AbstractTopology(object):
         return numerix.arange(self.mesh.numberOfFaces)
 
     @property
+    def _nonOverlappingFaces(self):
+        """Return mask of faces on local mesh.
+
+        False for faces only belonging to ghost cells.
+
+        E.g., would return [True, True, False, True, True, False, True,
+        True, False, True, True, True, False, True, True, True, False]
+        for mesh A
+
+        ```
+            A   ||   B
+        --6---7----8------
+       13   14  15  16   |
+        --3---4----5------
+        9   10  11  12   |
+        --0---1----2------
+                ||
+        ```
+        """
+        return (numerix.in1dMA(self.mesh.faceCellIDs[0],
+                               self._localNonOverlappingCellIDs).filled(False)
+                | numerix.in1dMA(self.mesh.faceCellIDs[1],
+                                 self._localNonOverlappingCellIDs).filled(False))
+
+    @property
     def _localNonOverlappingFaceIDs(self):
         """Return the IDs of the local mesh in isolation.
 

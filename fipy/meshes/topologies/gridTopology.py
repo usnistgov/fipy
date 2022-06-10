@@ -18,13 +18,6 @@ class _GridTopology(_AbstractTopology):
         return True
 
     @property
-    def _nonOverlappingFaces(self):
-        return (numerix.in1dMA(self.mesh.faceCellIDs[0],
-                               self.mesh._localNonOverlappingCellIDs).filled(False)
-                | numerix.in1dMA(self.mesh.faceCellIDs[1],
-                                 self.mesh._localNonOverlappingCellIDs).filled(False))
-
-    @property
     def _localNonOverlappingFaceIDs(self):
         """Return the IDs of the local mesh in isolation.
 
