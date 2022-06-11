@@ -954,7 +954,7 @@ class UniformGrid3D(UniformGrid):
         Ensure no double-counting of faces on boundary between partitions.
 
             >>> area = (cube._faceAreas * (cube.faceCenters[2] == 5.)).sum()
-            >>> print(numerix.allclose(area, 10)) # doctest: +PARALLEL_2
+            >>> print(numerix.allclose(area, 100)) # doctest: +PARALLEL_2
             True
         """
 
