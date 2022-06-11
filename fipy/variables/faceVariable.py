@@ -35,8 +35,9 @@ class FaceVariable(_MeshVariable):
 
     @property
     def globalValue(self):
-        return self._getGlobalValue(self.mesh._localNonOverlappingFaceIDs,
-                                    self.mesh._globalNonOverlappingFaceIDs)
+        ownedFaceIDs = self._localNonOverlappingIDs
+        return self._getGlobalValue(ownedFaceIDs,
+                                    self._globalOverlappingIDs[..., ownedFaceIDs])
 
     def setValue(self, value, unit = None, where = None):
         _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
@@ -82,7 +83,7 @@ class FaceVariable(_MeshVariable):
 
     @property
     def _localNonOverlappingIDs(self):
-        return self.mesh._localNonOverlappingFaceIDs
+        return self.mesh.topology._ownedFaceIDs
 
 def _test():
     import fipy.tests.doctestPlus

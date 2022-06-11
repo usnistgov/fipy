@@ -130,6 +130,15 @@ class CellVariable(_MeshVariable):
         return self._getGlobalValue(self.mesh._localNonOverlappingCellIDs,
                                     self.mesh._globalNonOverlappingCellIDs)
 
+    def _updateGhosts(self):
+        """Communicate ghost values between processes
+        """
+        from fipy.solvers import _MeshMatrix
+        matrix = _MeshMatrix(mesh=self.mesh)
+        # Don't allow mangling by `_globalToLocalValue()`.
+        # matrix._updateGhosts already returns values in correct order
+        _MeshVariable.setValue(self, value=matrix._getGhostedValues(self))
+
     def setValue(self, value, unit = None, where = None):
         _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
 

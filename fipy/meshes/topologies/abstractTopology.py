@@ -147,6 +147,62 @@ class _AbstractTopology(object):
         return numerix.arange(self.mesh.numberOfFaces)
 
     @property
+    def _cellProcID(self):
+        """
+        Return the processor that "owns" each cell.
+        Ownership goes to the lowest `procID` of a neighboring cell.
+        Boundary faces try not to be duplicated
+
+        E.g., would return [0, 0, 1, 0, 0, 1] for mesh A
+                       and [0, 1, 1, 0, 1, 1] for mesh B
+
+        ```
+            A        B
+        ------------------
+        | 4 | 5 || 6 | 7 |
+        ------------------
+        | 0 | 1 || 2 | 3 |
+        ------------------
+        ```
+
+        .. note:: Trivial except for parallel meshes
+        """
+        from fipy.variables.cellVariable import CellVariable
+
+        procID = CellVariable(mesh=self.mesh,
+                              value=self.mesh.communicator.procID)
+        procID._updateGhosts()
+
+        return procID
+
+    @property
+    def _ownedFaceIDs(self):
+        """
+        Return the local face IDs of the mesh "owned" by the current
+        processor.  Ownership goes to the lowest `procID` of a neighboring
+        cell.  Boundary faces try not to be duplicated
+
+        E.g., would return [0, 1, 3, 4, 6, 7, 9, 10, 11, 13, 14, 15] for mesh A
+                       and [1, 2, 4, 5, 7, 8, 11, 12, 15, 16] for mesh B
+
+        ```
+            A   ||   B
+        --6---7-----7---8--
+       13   14 15/14 15   16
+        --3---4-----4---5--
+        9   10 11/10 11   12
+        --0---1-----1---2--
+                ||
+        ```
+
+        .. note:: Trivial except for parallel meshes
+        """
+        minproc = numerix.take(self._cellProcID,
+                               self.mesh.faceCellIDs).min(axis=0)
+
+        return numerix.where(minproc == self.mesh.communicator.procID)[0]
+
+    @property
     def _nonOverlappingFaces(self):
         """Return mask of faces on local mesh.
 
