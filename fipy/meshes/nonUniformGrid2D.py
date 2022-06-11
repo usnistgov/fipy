@@ -33,6 +33,12 @@ class NonUniformGrid2D(Mesh2D):
             'overlap': overlap
         }
 
+        if self.args['nx'] is None:
+            self.args['nx'] = len(self.args['dx'])
+
+        if self.args['ny'] is None:
+            self.args['ny'] = len(self.args['dy'])
+
         builder.buildGridData([dx, dy], [nx, ny], overlap, communicator)
 
         ([self.dx, self.dy],
