@@ -798,7 +798,7 @@ class UniformGrid2D(UniformGrid):
         warnings from the solver.
 
             >>> from fipy import *
-            >>> mesh = UniformGrid2D(nx=3., ny=3., dx=1., dy=1.)
+            >>> mesh = UniformGrid2D(nx=3, ny=3, dx=1., dy=1.)
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var)
 
