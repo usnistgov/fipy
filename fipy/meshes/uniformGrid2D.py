@@ -829,6 +829,13 @@ class UniformGrid2D(UniformGrid):
             >>> area = (square._faceAreas * (square.faceCenters[1] == 5.)).sum()
             >>> print(numerix.allclose(area, 10)) # doctest: +PARALLEL_2
             True
+
+        Size of global value should not depend on number of processors (#400)
+
+            >>> print(square.cellCenters.globalValue.shape)
+            (2, 100)
+            >>> print(square.faceCenters.globalValue.shape)
+            (2, 220)
         """
 
 def _test():

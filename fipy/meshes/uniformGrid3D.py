@@ -956,6 +956,13 @@ class UniformGrid3D(UniformGrid):
             >>> area = (cube._faceAreas * (cube.faceCenters[2] == 5.)).sum()
             >>> print(numerix.allclose(area, 100)) # doctest: +PARALLEL_2
             True
+
+        Size of global value should not depend on number of processors (#400)
+
+            >>> print(cube.cellCenters.globalValue.shape)
+            (3, 1000)
+            >>> print(cube.faceCenters.globalValue.shape)
+            (3, 3300)
         """
 
 def _test():
