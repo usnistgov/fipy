@@ -304,6 +304,137 @@ class _Grid2DTopology(_GridTopology):
         return numerix.arange(0, self.mesh.ny * self.mesh.nx)
 
     @property
+    def _globalNonOverlappingFaceIDs(self):
+        """Return the IDs of the local mesh in the context of the global parallel mesh.
+
+        Does not include the IDs of faces of boundary cells.
+
+        E.g., would return [0, 1, 2, 3, 8, 9, 10] for mesh A
+
+        ```
+        --6---7--
+        14  15  16
+        --4---5--  B
+        11  12  13
+        ==2===3==
+        8   9   10 A
+        --0---1--
+        ```
+
+        .. note:: Trivial except for parallel meshes
+        """
+        y0 = self.mesh.offset[1] + self.mesh.overlap['bottom']
+        horz = numerix.arange(y0 * self.mesh.nx,
+                              (y0 + self.mesh.ny + 1
+                               - self.mesh.overlap['bottom']
+                               - self.mesh.overlap['top']) * self.mesh.nx)
+        global_horz_faces = self.mesh.nx * (self.mesh.args['ny'] + 1)
+        prev_vert_faces = y0 * (self.mesh.nx + 1)
+        vert = numerix.arange(global_horz_faces + prev_vert_faces,
+                              global_horz_faces + prev_vert_faces
+                              + (self.mesh.ny - self.mesh.overlap['bottom']
+                                 - self.mesh.overlap['top']) * (self.mesh.nx + 1))
+
+        return numerix.concatenate((horz, vert))
+
+    @property
+    def _globalOverlappingFaceIDs(self):
+        """Return the IDs of the local mesh in the context of the global parallel mesh.
+
+        Includes the IDs of faces of boundary cells.
+
+        E.g., would return [0, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13] for mesh A
+
+        ```
+        --6---7--
+        14  15  16
+        --4---5--  B
+        11  12  13
+        ==2===3==
+        8   9   10 A
+        --0---1--
+        ```
+
+        .. note:: Trivial except for parallel meshes
+        """
+        y0 = self.mesh.offset[1]
+        horz = numerix.arange(y0 * self.mesh.nx,
+                              (y0 + self.mesh.ny + 1) * self.mesh.nx)
+        global_horz_faces = self.mesh.nx * (self.mesh.args['ny'] + 1)
+        prev_vert_faces = y0 * (self.mesh.nx + 1)
+        vert = numerix.arange(global_horz_faces + prev_vert_faces,
+                              global_horz_faces + prev_vert_faces
+                              + self.mesh.ny * (self.mesh.nx + 1))
+
+        return numerix.concatenate((horz, vert))
+
+    @property
+    def _localNonOverlappingFaceIDs(self):
+        """Return the IDs of the local mesh in isolation.
+
+        Does not include the IDs of faces of boundary cells.
+
+        E.g., would return [0, 1, 2, 3, 6, 7, 8] for mesh A
+        and [2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16] for mesh B
+
+        ```
+        --6---7--
+        14  15  16
+        --4---5--  B
+        11  12  13
+        ==2===3==
+        6   7   8  A
+        --0---1--
+        ```
+
+        .. note:: Trivial except for parallel meshes
+        """
+        y0 = self.mesh.overlap['bottom']
+        horz = numerix.arange(y0 * self.mesh.nx,
+                              (y0 + self.mesh.ny + 1
+                               - self.mesh.overlap['bottom']
+                               - self.mesh.overlap['top']) * self.mesh.nx)
+        horz_faces = self.mesh.nx * (self.mesh.ny + 1)
+        y1 = horz_faces + self.mesh.overlap['bottom'] * (self.mesh.nx + 1)
+        vert = numerix.arange(y1,
+                              y1
+                              + (self.mesh.ny - self.mesh.overlap['bottom']
+                                 - self.mesh.overlap['top']) * (self.mesh.nx + 1))
+
+        return numerix.concatenate((horz, vert))
+
+    @property
+    def _localOverlappingFaceIDs(self):
+        """Return the IDs of the local mesh in isolation.
+
+        Includes the IDs of faces of boundary cells.
+
+        E.g., would return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] for mesh A
+        and [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] for mesh B
+
+        ```
+        --6---7--
+        14  15  16
+        --4---5--  B
+        11  12  13
+        ==2===3==
+        6   7   8  A
+        --0---1--
+        ```
+
+        .. note:: Trivial except for parallel meshes
+        """
+        y0 = 0
+        horz = numerix.arange(y0 * self.mesh.nx,
+                              (y0 + self.mesh.ny + 1) * self.mesh.nx)
+        horz_faces = self.mesh.nx * (self.mesh.ny + 1)
+        y1 = horz_faces
+        vert = numerix.arange(y1,
+                              y1 + self.mesh.ny * (self.mesh.nx + 1))
+
+        return numerix.concatenate((horz, vert))
+
+    @property
     def _cellTopology(self):
         """return a map of the topology of each cell of grid"""
         cellTopology = numerix.empty((self.mesh.numberOfCells,), dtype=numerix.ubyte)
