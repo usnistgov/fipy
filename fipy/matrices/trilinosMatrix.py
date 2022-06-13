@@ -842,15 +842,22 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
         else:
             s = (localNonOverlappingCellIDs,)
 
+        nonOverlappingVector = var[s].ravel()
+        dtype = nonOverlappingVector.dtype
+
+        # Epetra can only handle doubles. Ugh.
+        nonOverlappingVector = nonOverlappingVector.astype(float)
+
         nonOverlappingVector = Epetra.Vector(self.domainMap,
-                                             var[s].ravel())
+                                             nonOverlappingVector)
 
         overlappingVector = Epetra.Vector(self.colMap)
         overlappingVector.Import(nonOverlappingVector,
                                  Epetra.Import(self.colMap, self.domainMap),
                                  Epetra.Insert)
 
-        return numerix.reshape(numerix.asarray(overlappingVector), var.shape)
+        return numerix.reshape(numerix.asarray(overlappingVector, dtype=dtype),
+                               var.shape)
 
     def put(self, vector, id1, id2, overlapping=False):
         """Insert local overlapping values and coordinates into global
