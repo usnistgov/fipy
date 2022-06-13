@@ -17,29 +17,6 @@ class _GridTopology(_AbstractTopology):
     def _isOrthogonal(self):
         return True
 
-    @property
-    def _localNonOverlappingFaceIDs(self):
-        """Return the IDs of the local mesh in isolation.
-
-        Does not include the IDs of faces of boundary cells.
-
-        E.g., would return [0, 1, 3, 4, 6, 7, 9, 10, 11, 13, 14, 15]
-        for mesh A
-
-        ```
-            A   ||   B
-        --6---7-----7---8--
-       13   14 15/14 15   16
-        --3---4-----4---5--
-        9   10 11/10 11   12
-        --0---1-----1---2--
-                ||
-        ```
-
-        .. note:: Trivial except for parallel meshes
-        """
-        return numerix.arange(self.mesh.numberOfFaces)[..., self._nonOverlappingFaces]
-
 class _Grid1DTopology(_GridTopology):
 
     _concatenatedClass = Mesh1D
