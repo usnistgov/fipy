@@ -67,7 +67,7 @@ Fixes
 - `#858 <https://github.com/usnistgov/fipy/issues/858>`_:
   CI issues
 - `#856 <https://github.com/usnistgov/fipy/issues/856>`_:
-  FaceVariable does not accumulate properly in parallel
+  `FaceVariable` does not accumulate properly in parallel
 - `#850 <https://github.com/usnistgov/fipy/issues/850>`_:
   Switch to wheels
 - `#849 <https://github.com/usnistgov/fipy/issues/849>`_:
