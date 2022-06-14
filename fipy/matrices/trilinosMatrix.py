@@ -822,6 +822,52 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
         copy.matrix = tmp.matrix
         return copy
 
+    @staticmethod
+    def _ArrayAsEpetraVector(arr, emap):
+        """Convert numpy `ndarray` to `Epetra.Vector`
+
+        Parameters
+        ----------
+        arr : array_like
+            Input data, in any form that can be converted to an array.
+        emap : Epetra.Map
+            The map to distribute across.
+
+        Returns
+        -------
+        vec : Epetra.Vector
+            Epetra interpretation of `arr`.
+        dtype : data-type
+            The original data type of `arr`, as :class:`Epetra.Vector` can
+            only handle doubles.
+        """
+        return (Epetra.Vector(emap, numerix.asarray(arr, dtype=float)),
+                arr.dtype)
+
+    @staticmethod
+    def _EpetraVectorAsArray(vec, dtype=None, shape=None):
+        """Convert `Epetra.Vector` to numpy `ndarray`
+
+        Parameters
+        ----------
+        vec : Epetra.Vector
+            Input data.
+        dtype : data-type, optional
+            By default, the data-type is float, as :class:`Epetra.Vector`
+            can only hold doubles.
+        shape : tuple
+            Desired shape of result (default: None leaves shape along)
+
+        Returns
+        -------
+        out : ndarray
+            Array interpretation of `vec`.
+        """
+        arr = numerix.asarray(vec, dtype=dtype)
+        if shape is not None:
+            arr = numerix.reshape(arr, shape=shape)
+        return arr
+
     def _getGhostedValues(self, var):
         """Obtain current ghost values from across processes
 
@@ -830,27 +876,27 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
         ndarray
             Ghosted values
         """
-        mesh = var.mesh
-        localNonOverlappingCellIDs = mesh._localNonOverlappingCellIDs
+        s = (var.mesh._localNonOverlappingCellIDs,)
 
         ## The following conditional is required because empty indexing is
         ## not altogether functional.  This numpy.empty((0,))[[]] and this
         ## numpy.empty((0,))[...,[]] both work, but this numpy.empty((3,
         ## 0))[...,[]] is broken.
         if var.shape[-1] != 0:
-            s = (Ellipsis, localNonOverlappingCellIDs)
-        else:
-            s = (localNonOverlappingCellIDs,)
+            s = (Ellipsis,) + s
 
-        nonOverlappingVector = Epetra.Vector(self.domainMap,
-                                             var[s].ravel())
+        (nonOverlappingVector,
+         original_dtype) = self._ArrayAsEpetraVector(arr=var[s].ravel(),
+                                                     emap=self.domainMap)
 
         overlappingVector = Epetra.Vector(self.colMap)
         overlappingVector.Import(nonOverlappingVector,
                                  Epetra.Import(self.colMap, self.domainMap),
                                  Epetra.Insert)
 
-        return numerix.reshape(numerix.asarray(overlappingVector), var.shape)
+        return self._EpetraVectorAsArray(overlappingVector,
+                                         dtype=original_dtype,
+                                         shape=var.shape)
 
     def put(self, vector, id1, id2, overlapping=False):
         """Insert local overlapping values and coordinates into global

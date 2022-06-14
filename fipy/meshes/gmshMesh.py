@@ -1387,6 +1387,28 @@ class _GmshTopology(_MeshTopology):
         return nx.arange(len(self.mesh.cellGlobalIDs)
                          + len(self.mesh.gCellGlobalIDs))
 
+    @property
+    def _localNonOverlappingFaceIDs(self):
+        """Return the IDs of the local mesh in isolation.
+
+        Does not include the IDs of faces of boundary cells.
+
+        E.g., would return [0, 1, 3, 4, 6, 7, 9, 10, 11, 13, 14, 15]
+        for mesh A
+
+        ```
+            A   ||   B
+        --6---7-----7---8--
+       13   14 15/14 15   16
+        --3---4-----4---5--
+        9   10 11/10 11   12
+        --0---1-----1---2--
+                ||
+        ```
+
+        .. note:: Trivial except for parallel meshes
+        """
+        return nx.arange(self.mesh.numberOfFaces)[..., self._nonOverlappingFaces]
 
 
 
@@ -2221,6 +2243,80 @@ class Gmsh3D(Mesh):
 
         >>> if parallelComm.procID == 0:
         ...     os.remove(posFile)
+
+
+        Ensure that ghost faces are excluded from accumulating operations
+        (#856).  Six exterior surfaces of :math:`10\times 10\times 10` cube
+        mesh should each have a total area of 100, regardless of
+        partitioning.
+
+        >>> geo = '''
+        ... cellSize = 1.;
+        ...
+        ... Point(1) = {0, 0, 0, cellSize};
+        ... Point(2) = {10, 0, 0, cellSize};
+        ... Point(3) = {10, 10, 0, cellSize};
+        ... Point(4) = {0, 10, 0, cellSize};
+        ...
+        ... Point(11) = {0, 0, 10, cellSize};
+        ... Point(12) = {10, 0, 10, cellSize};
+        ... Point(13) = {10, 10, 10, cellSize};
+        ... Point(14) = {0, 10, 10, cellSize};
+        ...
+        ... Line(1) = {1, 2};
+        ... Line(2) = {2, 3};
+        ... Line(3) = {3, 4};
+        ... Line(4) = {4, 1};
+        ...
+        ... Line(11) = {11, 12};
+        ... Line(12) = {12, 13};
+        ... Line(13) = {13, 14};
+        ... Line(14) = {14, 11};
+        ...
+        ... Line(21) = {1, 11};
+        ... Line(22) = {2, 12};
+        ... Line(23) = {3, 13};
+        ... Line(24) = {4, 14};
+        ...
+        ... Line Loop(1) = {1, 2, 3, 4};
+        ... Line Loop(2) = {11, 12, 13, 14};
+        ... Line Loop(3) = {1, 22, -11, -21};
+        ... Line Loop(4) = {2, 23, -12, -22};
+        ... Line Loop(5) = {3, 24, -13, -23};
+        ... Line Loop(6) = {4, 21, -14, -24};
+        ...
+        ... Plane Surface(1) = {1};
+        ... Plane Surface(2) = {2};
+        ... Plane Surface(3) = {3};
+        ... Plane Surface(4) = {4};
+        ... Plane Surface(5) = {5};
+        ... Plane Surface(6) = {6};
+        ...
+        ... Surface Loop(1) = {1, 2, 3, 4, 5, 6};
+        ...
+        ... Volume(1) = {1};
+        ...
+        ... Physical Surface("bottom") = {1};
+        ... Physical Surface("top") = {2};
+        ... Physical Surface("front") = {3};
+        ... Physical Surface("right") = {4};
+        ... Physical Surface("back") = {5};
+        ... Physical Surface("left") = {6};
+        ...
+        ... Physical Volume("box") = {1};
+        ... '''
+
+        >>> cube = Gmsh3D(geo) # doctest: +GMSH
+
+        >>> for surface in ["bottom", "top", "front", "right", "back", "left"]: # doctest: +GMSH
+        ...     area = (cube._faceAreas * cube.physicalFaces[surface]).sum() # doctest: +GMSH
+        ...     print(surface, numerix.allclose(area, 100)) # doctest: +GMSH
+        bottom True
+        top True
+        front True
+        right True
+        back True
+        left True
         """
 
 class GmshGrid2D(Gmsh2D):
