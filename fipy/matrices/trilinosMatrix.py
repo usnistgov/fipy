@@ -824,7 +824,7 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
 
     @staticmethod
     def _ArrayAsEpetraVector(arr, emap):
-        """Convert numpy ndarray to Epetra.Vector
+        """Convert numpy `ndarray` to `Epetra.Vector`
 
         Parameters
         ----------
@@ -838,15 +838,15 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
         vec : Epetra.Vector
             Epetra interpretation of `arr`.
         dtype : data-type
-            The original data type of `arr`.  Epetra.Vector can only handle
-            doubles.
+            The original data type of `arr`, as :class:`Epetra.Vector` can
+            only handle doubles.
         """
         return (Epetra.Vector(emap, numerix.asarray(arr, dtype=float)),
                 arr.dtype)
 
     @staticmethod
     def _EpetraVectorAsArray(vec, dtype=None, shape=None):
-        """Convert Epetra.Vector to numpy ndarray
+        """Convert `Epetra.Vector` to numpy `ndarray`
 
         Parameters
         ----------
