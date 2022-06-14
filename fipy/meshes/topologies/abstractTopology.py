@@ -2,7 +2,8 @@ from __future__ import unicode_literals
 from builtins import object
 __docformat__ = 'restructuredtext'
 
-from fipy.tools import numerix
+from ...tools import numerix
+from ...variables.cellVariable import CellVariable
 
 __all__ = []
 
@@ -167,8 +168,6 @@ class _AbstractTopology(object):
 
         .. note:: Trivial except for parallel meshes
         """
-        from fipy.variables.cellVariable import CellVariable
-
         procID = CellVariable(mesh=self.mesh,
                               value=self.mesh.communicator.procID)
         procID._updateGhosts()
