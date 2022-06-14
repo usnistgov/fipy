@@ -66,6 +66,8 @@ Fixes
   Could not load the Qt platform plugin "`xcb`"
 - `#858 <https://github.com/usnistgov/fipy/issues/858>`_:
   CI issues
+- `#856 <https://github.com/usnistgov/fipy/issues/856>`_:
+  FaceVariable does not accumulate properly in parallel
 - `#850 <https://github.com/usnistgov/fipy/issues/850>`_:
   Switch to wheels
 - `#849 <https://github.com/usnistgov/fipy/issues/849>`_:
@@ -112,6 +114,8 @@ Fixes
   Default no-flux condition is not explicitly stated
 - `#609 <https://github.com/usnistgov/fipy/issues/609>`_:
   Parallelizing of Gmsh meshes not clearly documented
+- `#400 <https://github.com/usnistgov/fipy/issues/400>`_:
+  Fix `FaceVariable.globalValue` method
 
 ----------------------------
 Version 3.4.2.1 - 2020-08-01
