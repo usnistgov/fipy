@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-from fipy.variables.meshVariable import _MeshVariable
-from fipy.tools import numerix
-from fipy.tools.decorators import deprecate
+from .meshVariable import _MeshVariable
+from ..solvers import _MeshMatrix
+from ..tools import numerix
+from ..tools.decorators import deprecate
 
 __all__ = ["CellVariable"]
 from future.utils import text_to_native_str
@@ -129,6 +130,14 @@ class CellVariable(_MeshVariable):
         """
         return self._getGlobalValue(self.mesh._localNonOverlappingCellIDs,
                                     self.mesh._globalNonOverlappingCellIDs)
+
+    def _updateGhosts(self):
+        """Communicate ghost values between processes
+        """
+        matrix = _MeshMatrix(mesh=self.mesh)
+        # Don't allow mangling by `_globalToLocalValue()`.
+        # matrix._updateGhosts already returns values in correct order
+        _MeshVariable.setValue(self, value=matrix._getGhostedValues(self))
 
     def setValue(self, value, unit = None, where = None):
         _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)

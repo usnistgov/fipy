@@ -329,6 +329,13 @@ class UniformGrid1D(UniformGrid):
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var, solver=DummySolver())
 
+        Size of global value should not depend on number of processors (#400)
+
+            >>> mesh = Grid1D(nx=10)
+            >>> print(mesh.cellCenters.globalValue.shape)
+            (1, 10)
+            >>> print(mesh.faceCenters.globalValue.shape)
+            (1, 11)
         """
 
 def _test():
