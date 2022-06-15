@@ -136,6 +136,7 @@ GRICAD
 Guyer
 gzip
 gzipped
+gzips
 Halperin
 Hamadani
 Hangarter
@@ -238,6 +239,7 @@ overpotential
 O'Beirne
 parallelization
 parallelize
+parallelizing
 Patankar
 PBICGSTAB
 PCG
@@ -251,6 +253,7 @@ PETSc
 photovoltaics
 PID
 pipelines.yml
+plugin
 PNG
 POSIX
 pre-assembled
@@ -275,6 +278,7 @@ reconstrain
 redeclare
 refactor
 refactoring
+refactors
 repo
 reST
 Rhie-Chow

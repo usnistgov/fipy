@@ -84,9 +84,8 @@ are not installed, :term:`FiPy` will warn something like::
 Although the test suite may show warnings, there should be no other errors.
 Any errors should be investigated or reported on the `issue tracker`_.
 Users can see if there are any known problems for the latest :term:`FiPy`
-distribution by checking `FiPy's automated test display`_.
+distribution by checking :term:`FiPy`'s :ref:`CONTINUOUSINTEGRATION` dashboard.
 
-.. _FiPy's automated test display: http://build.cmi.kent.edu:8010/console
 .. _issue tracker: https://github.com/usnistgov/fipy/issues/new
 
 Below are a number of common `Command-line Flags`_ for testing various
