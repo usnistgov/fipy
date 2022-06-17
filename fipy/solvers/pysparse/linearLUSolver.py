@@ -4,14 +4,16 @@ from __future__ import unicode_literals
 from builtins import range
 __docformat__ = 'restructuredtext'
 
+import logging
+
+_log = logging.getLogger(__name__)
+
 import os
 
 from pysparse.direct import superlu
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 from fipy.tools import numerix
-
-DEBUG = False
 
 __all__ = ["LinearLUSolver"]
 from future.utils import text_to_native_str
@@ -60,10 +62,6 @@ class LinearLUSolver(PysparseSolver):
 
         LU = superlu.factorize(L.matrix.to_csr())
 
-        if DEBUG:
-            import sys
-            print(L.matrix, file=sys.stderr)
-
         error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
 
         for iteration in range(self.iterations):
@@ -80,3 +78,7 @@ class LinearLUSolver(PysparseSolver):
             from fipy.tools.debug import PRINT
             PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
             PRINT('residual:', numerix.sqrt(numerix.sum(errorVector**2)))
+
+        _log.debug('%s iterations: %d / %d', type(self), iteration+1, self.iterations)
+        _log.debug('%s residual: %s', type(self), numerix.sqrt(numerix.sum(errorVector**2)))
+        _log.debug('%s matrix: %s', type(self), L.matrix)

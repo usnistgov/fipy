@@ -3,6 +3,10 @@ from builtins import range
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
+import logging
+
+_log = logging.getLogger(__name__)
+
 import os
 
 from petsc4py import PETSc
@@ -67,3 +71,7 @@ class LinearLUSolver(PETScSolver):
             PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
             PRINT('residual:', errorVector.norm(1))
 
+        _log.debug('%s solver: %s', type(self), ksp.type)
+        _log.debug('%s precon: %s', type(self), ksp.getPC().type)
+        _log.debug('%s iterations: %d / %d', type(self), iteration+1, self.iterations)
+        _log.debug('%s residual: %s', type(self), errorVector.norm(1))
