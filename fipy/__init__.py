@@ -35,7 +35,23 @@ from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
+import logging
+
+_log = logging.getLogger(__name__)
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
+
+_log.info("FiPy version %s", __version__)
+
 import sys
+
+# log uncaught exceptions
+def excepthook(*args):
+  _log.error('Uncaught exception:', exc_info=args)
+
+sys.excepthook = excepthook
 
 from fipy.boundaryConditions import *
 from fipy.meshes import *
@@ -143,7 +159,3 @@ def test(*args):
         import shutil
         shutil.rmtree(tmpDir)
         raise exitErr
-
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
