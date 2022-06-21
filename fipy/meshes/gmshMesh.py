@@ -7,12 +7,15 @@ from builtins import range
 from builtins import str
 __docformat__ = 'restructuredtext'
 
+import logging
 import os
 from subprocess import Popen, PIPE
 import sys
 import tempfile
 from textwrap import dedent
 import warnings
+
+_log = logging.getLogger(__name__)
 
 from fipy.tools import numerix as nx
 from fipy.tools import parallelComm
@@ -46,11 +49,6 @@ def _checkForGmsh():
 register_skipper(flag="GMSH",
                  test=_checkForGmsh,
                  why="`gmsh` cannot be found on the $PATH")
-
-def parprint(str):
-    if DEBUG:
-        if parallelComm.procID == 0:
-            print(str, file=sys.stderr)
 
 class GmshException(Exception):
     pass
@@ -241,7 +239,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
 
                 gmshOutput = gmshOutput.decode('ascii')
 
-                parprint("gmsh out: %s" % gmshOutput)
+                _log.debug("gmsh out: %s" % gmshOutput)
             else:
                 mshFile = None
                 gmshOutput = ""
@@ -798,7 +796,7 @@ class MSHFile(GmshFile):
             else:
                 raise GmshException("Mesh has fewer than 2 or more than 3 dimensions")
 
-            parprint("Parsing elements.")
+            _log.debug("Parsing elements.")
             (cellsData,
              ghostsData,
              facesData) = self._parseElementFile()
@@ -818,15 +816,15 @@ class MSHFile(GmshFile):
                 errStr += "\n\nGmsh output:\n%s" % "".join(self.gmshOutput).rstrip()
                 raise GmshException(errStr)
 
-            parprint("Recovering coords.")
-            parprint("numcells %d" % numCellsTotal)
+            _log.debug("Recovering coords.")
+            _log.debug("numcells %d" % numCellsTotal)
             vertexCoords, vertIDtoIdx = self._vertexCoordsAndMap(cellsToGmshVerts)
 
             # translate Gmsh IDs to `vertexCoord` indices
             cellsToVertIDs = self._translateNodesToVertices(cellsToGmshVerts,
                                                             vertIDtoIdx)
 
-            parprint("Building cells and faces.")
+            _log.debug("Building cells and faces.")
             (facesToV,
              cellsToF,
              facesDict) = self._deriveCellsAndFaces(cellsToVertIDs,
@@ -870,7 +868,7 @@ class MSHFile(GmshFile):
         cellsToVertIDs = [nx.concatenate((v, nx.array([-1] * (maxVerts-len(v)), dtype=nx.INT_DTYPE))) for v in cellsToVertIDs]
         cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0, 1)
 
-        parprint("Done with cells and faces.")
+        _log.debug("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF,
                 cellsData.idmap, ghostsData.idmap,
                 cellsToVertIDs)
@@ -1626,8 +1624,8 @@ class Gmsh2D(Mesh2D):
 
         if communicator.Nproc > 1:
             self.globalNumberOfCells = communicator.sum(len(self.cellGlobalIDs))
-            parprint("  I'm solving with %d cells total." % self.globalNumberOfCells)
-            parprint("  Got global number of cells")
+            _log.debug("  I'm solving with %d cells total." % self.globalNumberOfCells)
+            _log.debug("  Got global number of cells")
 
         Mesh2D.__init__(self, vertexCoords=verts,
                               faceVertexIDs=faces,
@@ -1644,7 +1642,7 @@ class Gmsh2D(Mesh2D):
 
         del self.mshFile
 
-        parprint("Exiting Gmsh2D")
+        _log.debug("Exiting Gmsh2D")
 
     def __setstate__(self, state):
         super(Gmsh2D, self).__setstate__(state)
