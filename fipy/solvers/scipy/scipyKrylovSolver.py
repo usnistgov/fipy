@@ -37,6 +37,6 @@ class _ScipyKrylovSolver(_ScipySolver):
                 PRINT('failure', self._warningList[info].__class__.__name__)
 
         if info < 0:
-            _log.debug('%s failure: %s', self._warningList[info].__class__.__name__)
+            _log.debug('%s failure: %s', type(self), self._warningList[info].__class__.__name__)
 
         return x
