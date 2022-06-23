@@ -62,7 +62,7 @@ sys.excepthook = excepthook
 
 from fipy.tools.logging import package_info
 
-_log.info(list(zip(*package_info())))
+_log.info(package_info())
 del package_info
 
 

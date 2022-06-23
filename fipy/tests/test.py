@@ -155,11 +155,11 @@ class test(_test):
     def printPackageInfo(self):
         from fipy.tools.logging import package_info
 
-        packages, versions = package_info()
+        packages = package_info()
 
         print()
-        package_width = max(len(word) for word in packages)
-        for package, version in zip(packages, versions):
+        package_width = max(len(word) for word in packages.keys())
+        for package, version in packages.items():
             print("  ".join((package.ljust(package_width), version)))
         print()
 
