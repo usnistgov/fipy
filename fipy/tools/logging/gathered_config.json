@@ -1,0 +1,36 @@
+{
+    "version": 1,
+    "formatters": {
+        "brief": {
+            "format": "[%(mpirank)d / %(mpisize)d] %(message)s"
+        },
+        "default": {
+            "format": "[%(mpirank)d / %(mpisize)d] %(asctime)s - %(levelname)s - %(name)s - %(funcName)s - %(message)s"
+        }
+    },
+    "filters": {
+        "mpi_filter": {
+            "()": "mpilogging.MPIRankFilter"
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "filters": ["mpi_filter"],
+            "formatter": "brief",
+            "level": "INFO"
+        },
+        "gatherfile": {
+            "class": "mpilogging.MPIGatheredFileHandler",
+            "filters": ["mpi_filter"],
+            "formatter": "default",
+            "filename": "fipy.log"
+        }
+    },
+    "loggers": {
+        "fipy": {
+            "level": "DEBUG",
+            "handlers": ["console", "gatherfile"]
+        }
+    }
+}
