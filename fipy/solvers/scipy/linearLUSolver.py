@@ -3,10 +3,6 @@ from __future__ import unicode_literals
 from builtins import range
 __docformat__ = 'restructuredtext'
 
-import logging
-
-_log = logging.getLogger(__name__)
-
 import os
 
 from scipy.sparse.linalg import splu
@@ -53,7 +49,7 @@ class LinearLUSolver(_ScipySolver):
             PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
             PRINT('residual:', numerix.sqrt(numerix.sum(errorVector**2)))
 
-        _log.debug('%s iterations: %d / %d', type(self), iteration+1, self.iterations)
-        _log.debug('%s residual: %s', type(self), numerix.sqrt(numerix.sum(errorVector**2)))
+        self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
+        self._log.debug('residual: %s', numerix.sqrt(numerix.sum(errorVector**2)))
 
         return x

@@ -1,9 +1,5 @@
 __docformat__ = 'restructuredtext'
 
-import logging
-
-_log = logging.getLogger(__name__)
-
 import os
 
 from petsc4py import PETSc
@@ -78,9 +74,9 @@ class PETScKrylovSolver(PETScSolver):
             PRINT('norm:', ksp.norm)
             PRINT('norm_type:', ksp.norm_type)
 
-        _log.debug('%s solver: %s', type(self), ksp.type)
-        _log.debug('%s precon: %s', type(self), ksp.getPC().type)
-        _log.debug('%s convergence: %s', type(self), _reason[ksp.reason])
-        _log.debug('%s iterations: %d / %d', type(self), ksp.its, self.iterations)
-        _log.debug('%s norm: %s', type(self), ksp.norm)
-        _log.debug('%s norm_type: %s', type(self), ksp.norm_type)
+        self._log.debug('solver: %s', ksp.type)
+        self._log.debug('precon: %s', ksp.getPC().type)
+        self._log.debug('convergence: %s', _reason[ksp.reason])
+        self._log.debug('iterations: %d / %d', ksp.its, self.iterations)
+        self._log.debug('norm: %s', ksp.norm)
+        self._log.debug('norm_type: %s', ksp.norm_type)

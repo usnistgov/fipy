@@ -1,10 +1,6 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-import logging
-
-_log = logging.getLogger(__name__)
-
 import os
 from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
 
@@ -60,10 +56,10 @@ class PysparseSolver(_PysparseMatrixSolver):
                 PRINT('failure', self._warningList[info].__class__.__name__)
             PRINT('relres:', relres)
 
-        _log.debug('%s iterations: %d / %d', type(self), iteration+1, self.iterations)
+        self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
         if info < 0:
-            _log.debug('%s failure: %s', type(self), self._warningList[info].__class__.__name__)
-        _log.debug('%s relres: %s', type(self), relres)
+            self._log.debug('failure: %s', self._warningList[info].__class__.__name__)
+        self._log.debug('relres: %s', relres)
 
     def _solve(self):
 

@@ -1,10 +1,6 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-import logging
-
-_log = logging.getLogger(__name__)
-
 import os
 
 from PyTrilinos import AztecOO
@@ -83,11 +79,11 @@ class TrilinosAztecOOSolver(TrilinosSolver):
             PRINT('AztecOO.AZ_Aztec_version:', status[AztecOO.AZ_Aztec_version])
 
         status = Solver.GetAztecStatus()
-        _log.debug('%s iterations: %d / %d', type(self), status[AztecOO.AZ_its], self.iterations)
-        _log.debug('%s failure: %d / %d', type(self), _reason[status[AztecOO.AZ_why]])
-        _log.debug('%s AztecOO.AZ_r: %s', type(self), status[AztecOO.AZ_r])
-        _log.debug('%s AztecOO.AZ_scaled_r: %s', type(self), status[AztecOO.AZ_scaled_r])
-        _log.debug('%s AztecOO.AZ_solve_time: %s', type(self), status[AztecOO.AZ_solve_time])
-        _log.debug('%s AztecOO.AZ_Aztec_version: %s', type(self), status[AztecOO.AZ_Aztec_version])
+        self._log.debug('iterations: %d / %d', status[AztecOO.AZ_its], self.iterations)
+        self._log.debug('failure: %d / %d', _reason[status[AztecOO.AZ_why]])
+        self._log.debug('AztecOO.AZ_r: %s', status[AztecOO.AZ_r])
+        self._log.debug('AztecOO.AZ_scaled_r: %s', status[AztecOO.AZ_scaled_r])
+        self._log.debug('AztecOO.AZ_solve_time: %s', status[AztecOO.AZ_solve_time])
+        self._log.debug('AztecOO.AZ_Aztec_version: %s', status[AztecOO.AZ_Aztec_version])
 
         return output

@@ -3,10 +3,6 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
-import logging
-
-_log = logging.getLogger(__name__)
-
 import os
 
 from fipy.solvers.scipy.scipySolver import _ScipySolver
@@ -37,6 +33,6 @@ class _ScipyKrylovSolver(_ScipySolver):
                 PRINT('failure', self._warningList[info].__class__.__name__)
 
         if info < 0:
-            _log.debug('%s failure: %s', type(self), self._warningList[info].__class__.__name__)
+            self._log.debug('failure: %s', self._warningList[info].__class__.__name__)
 
         return x
