@@ -3,8 +3,6 @@ from __future__ import unicode_literals
 from builtins import range
 __docformat__ = 'restructuredtext'
 
-import os
-
 from scipy.sparse.linalg import splu
 
 from fipy.solvers.scipy.scipySolver import _ScipySolver
@@ -43,11 +41,6 @@ class LinearLUSolver(_ScipySolver):
 
             xError = LU.solve(errorVector)
             x[:] = x - xError
-
-        if 'FIPY_VERBOSE_SOLVER' in os.environ:
-            from fipy.tools.debug import PRINT
-            PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
-            PRINT('residual:', numerix.sqrt(numerix.sum(errorVector**2)))
 
         self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
         self._log.debug('residual: %s', numerix.sqrt(numerix.sum(errorVector**2)))

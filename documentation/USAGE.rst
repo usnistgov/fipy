@@ -220,8 +220,9 @@ package.
 
 .. envvar:: FIPY_VERBOSE_SOLVER
 
-   If present, causes the linear solvers to print a variety of diagnostic
-   information.
+   If present, causes the
+   :class:`~fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver` to
+   print a variety of diagnostic information.
 
 .. envvar:: FIPY_VIEWER
 

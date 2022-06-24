@@ -1,8 +1,6 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-import os
-
 from PyTrilinos import AztecOO
 
 _reason = {AztecOO.AZ_normal : 'AztecOO.AZ_normal',
@@ -63,20 +61,6 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         if self.preconditioner is not None:
             if hasattr(self.preconditioner, 'Prec'):
                 del self.preconditioner.Prec
-
-        if 'FIPY_VERBOSE_SOLVER' in os.environ:
-            status = Solver.GetAztecStatus()
-
-            from fipy.tools.debug import PRINT
-            PRINT('iterations: %d / %d' % (status[AztecOO.AZ_its], self.iterations))
-
-            PRINT('failure', _reason[status[AztecOO.AZ_why]])
-
-            PRINT('AztecOO.AZ_r:', status[AztecOO.AZ_r])
-            PRINT('AztecOO.AZ_scaled_r:', status[AztecOO.AZ_scaled_r])
-            PRINT('AztecOO.AZ_rec_r:', status[AztecOO.AZ_rec_r])
-            PRINT('AztecOO.AZ_solve_time:', status[AztecOO.AZ_solve_time])
-            PRINT('AztecOO.AZ_Aztec_version:', status[AztecOO.AZ_Aztec_version])
 
         status = Solver.GetAztecStatus()
         self._log.debug('iterations: %d / %d', status[AztecOO.AZ_its], self.iterations)
