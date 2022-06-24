@@ -44,6 +44,50 @@ Python can be obtained from the :cite:`PythonReference`.
 As you gain experience, you may want to browse through the
 :ref:`FlagsAndEnvironmentVariables` that affect :term:`FiPy`.
 
+-------
+Logging
+-------
+
+Diagnostic information about a :term:`FiPy` run can be obtained using the
+:mod:`logging` module.  For example, at the beginning of your script, you
+can add::
+
+    >>> import logging
+    >>> log = logging.getLogger("fipy")
+    >>> console = logging.StreamHandler()
+    >>> console.setLevel(logging.INFO)
+    >>> log.addHandler(console)
+
+in order to see informational messages in the terminal.  To have more
+verbose debugging information save to a file::
+
+    >>> logfile = logging.FileHandler(filename="fipy.log")
+    >>> logfile.setLevel(logging.DEBUG)
+    >>> log.addHandler(logfile)
+
+    >>> log.setLevel(logging.DEBUG)
+
+To restrict logging to, e.g., information about the :term:`PETSc` solvers::
+
+    >>> petsc = logging.Filter('fipy.solvers.petsc')
+    >>> logfile.addFilter(petsc)
+
+More complex configurations can be specified by setting the
+:envvar:`FIPY_LOG_CONFIG` environment variable.  In this case, it is not
+necessary to add any logging instructions to your own script.  Example
+configration files can be found in
+:file:`{FiPySource}/fipy/tools/logging/`.
+
+If `Solving in Parallel`_, the :mod:`mpilogging` package enables reporting
+which MPI rank each log entry comes from.  For example::
+
+    >>> from mpilogging import MPIScatterdFileHandler
+    >>> mpilog = MPIScatteredFileHandler(filepattern="fipy.%(mpirank)d_of_%(mpisize)d.log"
+    >>> mpilog.setLevel(logging.DEBUG)
+    >>> log.addHandler(mpilog)
+
+will generate a unique log file for each MPI rank.
+
 ------------
 Testing FiPy
 ------------
@@ -212,6 +256,12 @@ package.
    that produced a particular piece of :mod:`weave` C code. Useful
    for debugging.
 
+.. envvar:: FIPY_LOG_CONFIG
+
+   Specifies a :term:`JSON`-formatted logging configuration file, suitable
+   for passing to :func:`logging.config.dictConfig`.  Example configuration
+   files can be found in :file:`{FiPySource}/fipy/tools/logging/`.
+
 .. envvar:: FIPY_SOLVERS
 
    Forces the use of the specified suite of linear solvers.  Valid
@@ -222,7 +272,8 @@ package.
 
    If present, causes the
    :class:`~fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver` to
-   print a variety of diagnostic information.
+   print a variety of diagnostic information.  All other solvers should use
+   `Logging`_ and :envvar:`FIPY_LOG_CONFIG`.
 
 .. envvar:: FIPY_VIEWER
 
