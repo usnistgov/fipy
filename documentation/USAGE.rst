@@ -75,7 +75,7 @@ To restrict logging to, e.g., information about the :term:`PETSc` solvers::
 More complex configurations can be specified by setting the
 :envvar:`FIPY_LOG_CONFIG` environment variable.  In this case, it is not
 necessary to add any logging instructions to your own script.  Example
-configration files can be found in
+configuration files can be found in
 :file:`{FiPySource}/fipy/tools/logging/`.
 
 If `Solving in Parallel`_, the :mod:`mpilogging` package enables reporting
