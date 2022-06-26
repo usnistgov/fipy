@@ -64,7 +64,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         status = Solver.GetAztecStatus()
         self._log.debug('iterations: %d / %d', status[AztecOO.AZ_its], self.iterations)
-        self._log.debug('failure: %d / %d', _reason[status[AztecOO.AZ_why]])
+        self._log.debug('failure: %s', _reason[status[AztecOO.AZ_why]])
         self._log.debug('AztecOO.AZ_r: %s', status[AztecOO.AZ_r])
         self._log.debug('AztecOO.AZ_scaled_r: %s', status[AztecOO.AZ_scaled_r])
         self._log.debug('AztecOO.AZ_solve_time: %s', status[AztecOO.AZ_solve_time])
