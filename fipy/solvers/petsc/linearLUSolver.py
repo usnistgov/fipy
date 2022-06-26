@@ -60,3 +60,7 @@ class LinearLUSolver(PETScSolver):
         self._log.debug('precon: %s', ksp.getPC().type)
         self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
         self._log.debug('residual: %s', errorVector.norm(1))
+
+        self.status['iterations'] = iteration+1
+        self.status['residual'] = errorVector.norm(1)
+        self.status['code'] = "Success"
