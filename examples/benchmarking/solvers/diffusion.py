@@ -27,7 +27,7 @@ parser.add_argument("--writeFiles", help="whether to write solution values and m
 args, unknowns = parser.parse_known_args()
 
 if parallelComm.procID == 0:
-    print "storing results in {0}".format(args.output)
+    print("storing results in {0}".format(args.output))
     data = dtr.Treant(args.output)
 else:
     class dummyTreant(object):
@@ -36,7 +36,6 @@ else:
     data = dummyTreant()
 
 data.categories['processes'] = parallelComm.Nproc
-data.categories['numberOfElements'] = args.numberOfElements
 data.categories['sweeps'] = args.sweeps
 data.categories['iterations'] = args.iterations
 data.categories['tolerance'] = args.tolerance
@@ -45,6 +44,7 @@ data.categories['library'] = fp.solvers.solver
 data.categories['script'] = __file__
 
 N = int(numerix.sqrt(args.numberOfElements))
+data.categories['numberOfElements'] = N**2
 mesh = fp.Grid2D(nx=N, Lx=1., ny=N, Ly=1.)
 
 var = fp.CellVariable(mesh=mesh, value=1., hasOld=True)
@@ -72,7 +72,7 @@ elif args.solver == "lu":
 else:
     raise Exception("Unknown solver: {0}".format(args.solver))
         
-start = time.clock()
+start = time.process_time()
 
 for sweep in range(args.sweeps):
     eq.cacheMatrix()
@@ -86,4 +86,4 @@ for sweep in range(args.sweeps):
         fp.tools.dump.write((var, eq.RHSvector), 
                             filename=data["sweep{0}.tar.gz".format(sweep)].make().abspath)
 
-data.categories['elapsed'] = time.clock() - start
+data.categories['elapsed'] = time.process_time() - start
