@@ -81,7 +81,7 @@ configuration files can be found in
 If `Solving in Parallel`_, the :mod:`mpilogging` package enables reporting
 which MPI rank each log entry comes from.  For example::
 
-    >>> from mpilogging import MPIScatterdFileHandler
+    >>> from mpilogging import MPIScatteredFileHandler
     >>> mpilog = MPIScatteredFileHandler(filepattern="fipy.%(mpirank)d_of_%(mpisize)d.log"
     >>> mpilog.setLevel(logging.DEBUG)
     >>> log.addHandler(mpilog)
