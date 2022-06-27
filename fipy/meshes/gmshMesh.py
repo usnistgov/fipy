@@ -27,15 +27,11 @@ from fipy.meshes.mesh import Mesh
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes.topologies.meshTopology import _MeshTopology
 
-from fipy.tools.debug import PRINT
-
 __all__ = ["openMSHFile", "openPOSFile",
            "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D",
            "GmshGrid2D", "GmshGrid3D"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
-
-DEBUG = False
 
 def _checkForGmsh():
     hasGmsh = True
