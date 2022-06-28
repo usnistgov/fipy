@@ -63,4 +63,4 @@ class LinearLUSolver(PETScSolver):
 
         self.status['iterations'] = iteration+1
         self.status['residual'] = errorVector.norm(1)
-        self.status['code'] = "Success"
+        self.status['result'] = "Success"
