@@ -51,7 +51,7 @@ Glossary
       :ref:`MATPLOTLIB`. See http://ipython.scipy.org/.
 
    JSON
-      JavaScript Open Notation.  A text format suitable for storing
+      JavaScript Object Notation.  A text format suitable for storing
       structured information such as :keyword:`dict` or :keyword:`list`.
       See https://www.json.org/.
 
