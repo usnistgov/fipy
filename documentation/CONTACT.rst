@@ -13,8 +13,6 @@ If you are having trouble, we are able to offer much more effective help if
 you provide a `minimal reproducible example
 <https://stackoverflow.com/help/minimal-reproducible-example>`__.
 
-.. _DISCUSSIONS:
-
 GitHub Discussions
 ==================
 
@@ -23,9 +21,7 @@ https://github.com/usnistgov/fipy/discussions
 Suitable for open-ended conversations, troubleshooting, showing off…
 
 If a discussion highlights a bug or feature request, it’s easy for us to
-migrate :ref:`DISCUSSIONS` to :ref:`ISSUES`.
-
-.. _ISSUES:
+migrate `GitHub Discussions`_ to `GitHub Issues`_.
 
 GitHub Issues
 =============
@@ -41,14 +37,20 @@ https://stackoverflow.com/questions/tagged/fipy
 
 Suitable for questions that (probably) have definitive answers ("How do
 I...?").  It doesn’t work so well for back-and-forth conversations, which
-are better suited to :ref:`DISCUSSIONS`.
+are better suited to `GitHub Discussions`_. Further, it's
+`bad at math <https://meta.stackexchange.com/questions/30559/latex-on-stack-overflow>`_
+and they tend to delete answers that link to our existing
+documentation, meaning that we'd need to expend considerable effort, using
+an inferior tool, to duplicate things we've already written.
+
+Seriously, use `GitHub Discussions`_.
 
 Mailing List
 ============
 
 .. attention::
 
-   The mailing list is deprecated. Please use :ref:`DISCUSSIONS`, instead.
+   The mailing list is deprecated. Please use `GitHub Discussions`_, instead.
 
 You can sign up for the mailing list by sending a `subscription
 email <mailto:fipy+subscribe@list.nist.gov>`__ to
