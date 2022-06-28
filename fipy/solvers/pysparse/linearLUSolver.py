@@ -67,7 +67,7 @@ class LinearLUSolver(PysparseSolver):
             xError = numerix.zeros(len(b), 'd')
             LU.solve(errorVector, xError)
             x[:] = x - xError
-            
+
         self.status['iterations'] = iteration
         self.status['scaled residual'] = numerix.sqrt(numerix.sum(errorVector**2)) / error0
         # never fails?

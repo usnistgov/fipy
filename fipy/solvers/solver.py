@@ -24,9 +24,9 @@ from fipy.tools import numerix
 __all__ = ["SolverConvergenceWarning", "NormalConvergence", "MaximumIterationWarning",
            "PreconditionerWarning", "IllConditionedPreconditionerWarning",
            "PreconditionerNotPositiveDefiniteWarning", "MatrixIllConditionedWarning",
-           "StagnatedSolverWarning", "ScalarQuantityOutOfRangeWarning", 
+           "StagnatedSolverWarning", "ScalarQuantityOutOfRangeWarning",
            "IllegalInputOrBreakdownWarning",
-           "ParameterWarning", "BreakdownWarning", "LossOfPrecisionWarning", 
+           "ParameterWarning", "BreakdownWarning", "LossOfPrecisionWarning",
            "Solver"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
@@ -39,7 +39,7 @@ class SolverConvergenceWarning(Warning):
 
     def __str__(self):
         return "%s failed. Iterations: %g. Relative error: %g" % (str(self.solver), self.iter, self.relres)
-        
+
 class NormalConvergence(SolverConvergenceWarning):
     def __str__(self):
         return "User requested convergence criteria is satisfied. Iterations: {0}. Relative error: {1}".format(self.iter, self.relres)
@@ -70,7 +70,7 @@ class StagnatedSolverWarning(SolverConvergenceWarning):
 class ScalarQuantityOutOfRangeWarning(SolverConvergenceWarning):
     def __str__(self):
         return "A scalar quantity became too small or too large to continue computing. Iterations: %g. Relative error: %g" % (self.iter, self.relres)
-        
+
 class IllegalInputOrBreakdownWarning(SolverConvergenceWarning):
     def __str__(self):
         return "{0} received illegal input or had a breakdown." \
@@ -79,11 +79,11 @@ class IllegalInputOrBreakdownWarning(SolverConvergenceWarning):
 class ParameterWarning(SolverConvergenceWarning):
     def __str__(self):
         return "User requested option is not available for {0}.".format(self.solver)
-        
+
 class BreakdownWarning(SolverConvergenceWarning):
     def __str__(self):
         return "Numerical breakdown occurred. Iterations: {0}. Relative error: {1}".format(self.iter, self.relres)
-        
+
 class LossOfPrecisionWarning(SolverConvergenceWarning):
     def __str__(self):
         return "Numerical loss of precision occurred. Iterations: {0}. Relative error: {1}".format(self.iter, self.relres)
@@ -117,7 +117,7 @@ class Solver(object):
         self.iterations = iterations
 
         self.preconditioner = precon
-        
+
         self.status = dict()
 
         self._log = logging.getLogger(self.__class__.__module__

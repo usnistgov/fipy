@@ -1,6 +1,6 @@
 import argparse
 import time
-import uuid 
+import uuid
 
 import datreant.core as dtr
 
@@ -32,7 +32,7 @@ if parallelComm.procID == 0:
 else:
     class dummyTreant(object):
         categories = dict()
-        
+
     data = dummyTreant()
 
 data.categories['processes'] = parallelComm.Nproc
@@ -57,7 +57,7 @@ if fp.solvers.solver != "scipy" and args.solver in ("pcg", "cgs", "gmres"):
     precon = fp.JacobiPreconditioner()
 else:
     precon = None
-    
+
 if args.solver in ("cg", "pcg"):
     solver = fp.LinearPCGSolver(tolerance=args.tolerance, iterations=args.iterations, precon=precon)
     if fp.solvers.solver == "trilinos":
@@ -71,19 +71,19 @@ elif args.solver == "lu":
     solver = fp.LinearLUSolver(tolerance=args.tolerance, iterations=args.iterations)
 else:
     raise Exception("Unknown solver: {0}".format(args.solver))
-        
+
 start = time.process_time()
 
 for sweep in range(args.sweeps):
     eq.cacheMatrix()
     eq.cacheRHSvector()
     res = eq.sweep(var=var, dt=1., solver=solver)
-    
+
     data.categories['sweep {0} - iterations'.format(sweep)] = solver.status['iterations']
-    
+
     if args.writeFiles and parallelComm.procID == 0:
         eq.matrix.exportMmf(data["sweep{0}.mtx".format(sweep)].make().abspath)
-        fp.tools.dump.write((var, eq.RHSvector), 
+        fp.tools.dump.write((var, eq.RHSvector),
                             filename=data["sweep{0}.tar.gz".format(sweep)].make().abspath)
 
 data.categories['elapsed'] = time.process_time() - start

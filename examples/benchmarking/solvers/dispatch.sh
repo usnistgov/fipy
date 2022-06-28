@@ -2,7 +2,7 @@
 
 USAGE="usage: $0 [-h] [--env ENV] [--cmd CMD] [--np NP] [--mprof] [--] SCRIPT [ARGS]
 
-Iterates over solvers and mesh sizes by calling setup.sh, which activates 
+Iterates over solvers and mesh sizes by calling setup.sh, which activates
 the appropriate conda environment and calls python on SCRIPT
 
 positional arguments:
@@ -11,7 +11,7 @@ positional arguments:
 
 optional arguments:
   -h, --help  show this help message and exit
-  --qsub      Invoke SCRIPT using 'qsub -cwd' for Sun grid engine 
+  --qsub      Invoke SCRIPT using 'qsub -cwd' for Sun grid engine
               (default: invoke using bash)
   --env ENV   Conda environment to activate before invoking SCRIPT
               (default: fipy)
@@ -52,7 +52,7 @@ do
         -*)
             # unknown option
             echo Unknown option: $1>&2
-            exit 10 
+            exit 10
             ;;
     esac
     shift # option(s) fully processed, proceed to next input argument
