@@ -50,7 +50,7 @@ class PysparseSolver(_PysparseMatrixSolver):
 
         info, iter, relres = self.solveFnc(A, b, x, self.tolerance,
                                            self.iterations, P)
-                                           
+
         self.status['iterations'] = iter
         self.status['scaled residual'] = relres
         if info < 0:
@@ -86,7 +86,7 @@ class PysparseSolver(_PysparseMatrixSolver):
             array /= self.var.unit.factor
 
         self.var[:] = array.reshape(self.var.shape)
-        
+
     _warningList = (ScalarQuantityOutOfRangeWarning,
                     StagnatedSolverWarning,
                     MatrixIllConditionedWarning,
@@ -102,5 +102,3 @@ class PysparseSolver(_PysparseMatrixSolver):
             # is stacklevel=5 always what's needed to get to the user's scope?
             import warnings
             warnings.warn(self._warningList[info](self, iter, relres), stacklevel=5)
-
-

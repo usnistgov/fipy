@@ -2,7 +2,7 @@
 
 USAGE="usage: $0 [-h] [--env ENV] [--] SCRIPT [ARGS]
 
-activates the appropriate conda environment and calls python on SCRIPT 
+activates the appropriate conda environment and calls python on SCRIPT
 with ARGS
 
 optional arguments:
@@ -31,7 +31,7 @@ do
         -*)
             # unknown option
             echo Unknown option: $1>&2
-            exit 10 
+            exit 10
             ;;
     esac
     shift # option(s) fully processed, proceed to next input argument

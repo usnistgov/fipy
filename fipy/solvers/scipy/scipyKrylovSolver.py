@@ -19,7 +19,7 @@ class _ScipyKrylovSolver(_ScipySolver):
 
     def _countIterations(self, xk):
         self.actualIterations += 1
-        
+
     def _solve_(self, L, x, b):
         A = L.matrix
         if self.preconditioner is None:
@@ -34,7 +34,7 @@ class _ScipyKrylovSolver(_ScipySolver):
                                 M=M,
                                 atol='legacy',
                                 callback=self._countIterations)
-                                
+
         self.status['iterations'] = self.actualIterations
         if info == 0:
             self.status['code'] = "Success"
@@ -42,7 +42,7 @@ class _ScipyKrylovSolver(_ScipySolver):
             self.status['code'] = IllegalInputOrBreakdownWarning.__class__.__name__
         elif info > 0:
             self.status['code'] = MaximumIterationWarning.__class__.__name__
-            
+
         self._raiseWarning(info, self.actualIterations, 0.)
 
         if info < 0:
