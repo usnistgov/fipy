@@ -37,11 +37,11 @@ class _ScipyKrylovSolver(_ScipySolver):
 
         self.status['iterations'] = self.actualIterations
         if info == 0:
-            self.status['code'] = "Success"
+            self.status['result'] = "Success"
         elif info < 0:
-            self.status['code'] = IllegalInputOrBreakdownWarning.__class__.__name__
+            self.status['result'] = IllegalInputOrBreakdownWarning.__class__.__name__
         elif info > 0:
-            self.status['code'] = MaximumIterationWarning.__class__.__name__
+            self.status['result'] = MaximumIterationWarning.__class__.__name__
 
         self._raiseWarning(info, self.actualIterations, 0.)
 

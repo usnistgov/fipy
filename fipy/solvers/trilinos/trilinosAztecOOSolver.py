@@ -99,7 +99,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         self.status['convergence residual'] = status[AztecOO.AZ_rec_r]
         self.status['solve time'] = status[AztecOO.AZ_solve_time]
         self.status['Aztec version'] = status[AztecOO.AZ_Aztec_version]
-        self.status['code'] = self._warningDict[status[AztecOO.AZ_why]].__class__.__name__
+        self.status['result'] = self._warningDict[status[AztecOO.AZ_why]].__class__.__name__
 
         self._raiseWarning(status[AztecOO.AZ_why],
                            status[AztecOO.AZ_its],

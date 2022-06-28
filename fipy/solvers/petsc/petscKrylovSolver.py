@@ -70,6 +70,6 @@ class PETScKrylovSolver(PETScSolver):
 
         self.status['iterations'] = ksp.its
         self.status['residual'] = ksp.norm
-        self.status['code'] = _reason[ksp.reason]
+        self.status['result'] = _reason[ksp.reason]
 
         ksp.destroy()

@@ -54,9 +54,9 @@ class PysparseSolver(_PysparseMatrixSolver):
         self.status['iterations'] = iter
         self.status['scaled residual'] = relres
         if info < 0:
-            self.status['code'] = self._warningList[info].__class__.__name__
+            self.status['result'] = self._warningList[info].__class__.__name__
         else:
-            self.status['code'] = "Success"
+            self.status['result'] = "Success"
 
         self._raiseWarning(info, iter, relres)
 
