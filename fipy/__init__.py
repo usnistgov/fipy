@@ -35,7 +35,33 @@ from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 
+import json
+import logging
+import logging.config
+import os
 import sys
+
+# log uncaught exceptions
+def excepthook(*args):
+  _log.error('Uncaught exception:', exc_info=args)
+
+sys.excepthook = excepthook
+
+# configure logging before doing anything else, otherwise we'll miss things
+if 'FIPY_LOG_CONFIG' in os.environ:
+    with open(os.environ['FIPY_LOG_CONFIG'], mode='r') as fp:
+        logging.config.dictConfig(json.load(fp))
+
+_log = logging.getLogger(__name__)
+
+# __version__ needs to be defined before calling package_info()
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
+
+from fipy.tools.logging import package_info
+_log.info(package_info())
+del package_info
 
 from fipy.boundaryConditions import *
 from fipy.meshes import *
@@ -143,7 +169,3 @@ def test(*args):
         import shutil
         shutil.rmtree(tmpDir)
         raise exitErr
-
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions

@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-import os
 from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
 
 __all__ = ["PysparseSolver"]
@@ -48,13 +47,10 @@ class PysparseSolver(_PysparseMatrixSolver):
 
         self._raiseWarning(info, iter, relres)
 
-        if 'FIPY_VERBOSE_SOLVER' in os.environ:
-            from fipy.tools.debug import PRINT
-            PRINT('iterations: %d / %d' % (iter, self.iterations))
-
-            if info < 0:
-                PRINT('failure', self._warningList[info].__class__.__name__)
-            PRINT('relres:', relres)
+        self._log.debug('iterations: %d / %d', iter, self.iterations)
+        if info < 0:
+            self._log.debug('failure: %s', self._warningList[info].__class__.__name__)
+        self._log.debug('relres: %s', relres)
 
     def _solve(self):
 

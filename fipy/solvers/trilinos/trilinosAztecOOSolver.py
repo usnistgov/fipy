@@ -1,9 +1,14 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-import os
-
 from PyTrilinos import AztecOO
+
+_reason = {AztecOO.AZ_normal : 'AztecOO.AZ_normal',
+           AztecOO.AZ_param : 'AztecOO.AZ_param',
+           AztecOO.AZ_breakdown : 'AztecOO.AZ_breakdown',
+           AztecOO.AZ_loss : 'AztecOO.AZ_loss',
+           AztecOO.AZ_ill_cond : 'AztecOO.AZ_ill_cond',
+           AztecOO.AZ_maxits : 'AztecOO.AZ_maxits'}
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
@@ -57,24 +62,12 @@ class TrilinosAztecOOSolver(TrilinosSolver):
             if hasattr(self.preconditioner, 'Prec'):
                 del self.preconditioner.Prec
 
-        if 'FIPY_VERBOSE_SOLVER' in os.environ:
-            status = Solver.GetAztecStatus()
-
-            from fipy.tools.debug import PRINT
-            PRINT('iterations: %d / %d' % (status[AztecOO.AZ_its], self.iterations))
-            failure = {AztecOO.AZ_normal : 'AztecOO.AZ_normal',
-                       AztecOO.AZ_param : 'AztecOO.AZ_param',
-                       AztecOO.AZ_breakdown : 'AztecOO.AZ_breakdown',
-                       AztecOO.AZ_loss : 'AztecOO.AZ_loss',
-                       AztecOO.AZ_ill_cond : 'AztecOO.AZ_ill_cond',
-                       AztecOO.AZ_maxits : 'AztecOO.AZ_maxits'}
-
-            PRINT('failure', failure[status[AztecOO.AZ_why]])
-
-            PRINT('AztecOO.AZ_r:', status[AztecOO.AZ_r])
-            PRINT('AztecOO.AZ_scaled_r:', status[AztecOO.AZ_scaled_r])
-            PRINT('AztecOO.AZ_rec_r:', status[AztecOO.AZ_rec_r])
-            PRINT('AztecOO.AZ_solve_time:', status[AztecOO.AZ_solve_time])
-            PRINT('AztecOO.AZ_Aztec_version:', status[AztecOO.AZ_Aztec_version])
+        status = Solver.GetAztecStatus()
+        self._log.debug('iterations: %d / %d', status[AztecOO.AZ_its], self.iterations)
+        self._log.debug('failure: %s', _reason[status[AztecOO.AZ_why]])
+        self._log.debug('AztecOO.AZ_r: %s', status[AztecOO.AZ_r])
+        self._log.debug('AztecOO.AZ_scaled_r: %s', status[AztecOO.AZ_scaled_r])
+        self._log.debug('AztecOO.AZ_solve_time: %s', status[AztecOO.AZ_solve_time])
+        self._log.debug('AztecOO.AZ_Aztec_version: %s', status[AztecOO.AZ_Aztec_version])
 
         return output

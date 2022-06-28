@@ -50,6 +50,11 @@ Glossary
       An improved :term:`Python` shell that integrates nicely with
       :ref:`MATPLOTLIB`. See http://ipython.scipy.org/.
 
+   JSON
+      JavaScript Object Notation.  A text format suitable for storing
+      structured information such as :keyword:`dict` or :keyword:`list`.
+      See https://www.json.org/.
+
    linux
       An operating system.
       See http://www.linux.org.

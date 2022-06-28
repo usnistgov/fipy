@@ -1,7 +1,5 @@
 __docformat__ = 'restructuredtext'
 
-import os
-
 from petsc4py import PETSc
 
 from fipy.solvers.petsc.petscSolver import PETScSolver
@@ -63,13 +61,9 @@ class PETScKrylovSolver(PETScSolver):
         ksp.setFromOptions()
         ksp.solve(b, x)
 
-        if 'FIPY_VERBOSE_SOLVER' in os.environ:
-            from fipy.tools.debug import PRINT
-#             L.view()
-#             b.view()
-            PRINT('solver:', ksp.type)
-            PRINT('precon:', ksp.getPC().type)
-            PRINT('convergence: %s' % _reason[ksp.reason])
-            PRINT('iterations: %d / %d' % (ksp.its, self.iterations))
-            PRINT('norm:', ksp.norm)
-            PRINT('norm_type:', ksp.norm_type)
+        self._log.debug('solver: %s', ksp.type)
+        self._log.debug('precon: %s', ksp.getPC().type)
+        self._log.debug('convergence: %s', _reason[ksp.reason])
+        self._log.debug('iterations: %d / %d', ksp.its, self.iterations)
+        self._log.debug('norm: %s', ksp.norm)
+        self._log.debug('norm_type: %s', ksp.norm_type)
