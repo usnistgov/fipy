@@ -4,18 +4,18 @@
 Solvers
 =======
 
-:term:`FiPy` requires either :term:`Pysparse`, :term:`SciPy` or
-:term:`Trilinos` to be installed in order to solve linear systems.
-From our experiences, :term:`FiPy` runs most efficiently in serial
-when :term:`Pysparse` is the linear solver. :term:`Trilinos` is the
-most complete of the three solvers due to its numerous preconditioning
-and solver capabilities and it also allows :term:`FiPy` to :ref:`run
-in parallel <PARALLEL>`. Although less efficient than :term:`Pysparse`
-and less capable than :term:`Trilinos`, :term:`SciPy` is a very
-popular package, widely available and easy to install. For this
-reason, :term:`SciPy` may be the best linear solver choice when first
-installing and testing :term:`FiPy` (and it is the only viable solver
-under `Python 3.x`_).
+:term:`FiPy` requires either PETSc_, pyamgx_, Pysparse_, SciPy_, or
+Trilinos_ solver suites to be installed in order to solve linear systems.
+From our experiences, :term:`FiPy` runs most efficiently in serial when Pysparse_
+is the linear solver.  PETSc_ and Trilinos_ are the most complete of the
+solvers due to their numerous preconditioning and solver capabilities and
+they also allow :term:`FiPy` to :ref:`run in parallel <PARALLEL>`.
+Although less efficient than Pysparse_ and less capable than PETSc_ or
+Trilinos_, SciPy_ is a very popular package, widely available and easy to
+install.  For this reason, SciPy_ may be the best linear solver choice when
+first installing and testing :term:`FiPy`.  pyamgx_ offers the possibility
+of solving sparse sparse linear systems on the GPU; be aware that both
+hardware and software configuration is non-trivial.
 
 :term:`FiPy` chooses the solver suite based on system availability or based
 on the user supplied :ref:`FlagsAndEnvironmentVariables`. For example,
@@ -31,7 +31,7 @@ to ``scipy``::
     $ python -c "from fipy import *; print DefaultSolver"
     <class 'fipy.solvers.scipy.linearLUSolver.LinearLUSolver'>
 
-uses a :ref:`SCIPY` solver. Suite-specific solver classes can also
+uses a SciPy_ solver. Suite-specific solver classes can also
 be imported and instantiated overriding any other directives. For
 example::
 
@@ -39,13 +39,11 @@ example::
     >   print DefaultSolver" --no-pysparse
     <class 'fipy.solvers.scipy.linearLUSolver.LinearLUSolver'>
 
-uses a :ref:`SCIPY` solver regardless of the command line
+uses a SciPy_ solver regardless of the command line
 argument. In the absence of :ref:`FlagsAndEnvironmentVariables`,
 :term:`FiPy`'s order of precedence when choosing the
-solver suite for generic solvers is :ref:`PYSPARSE` followed by
-:ref:`TRILINOS`, :ref:`PYAMG` and :ref:`SCIPY`.
-
-.. _Python 3.x:   http://docs.python.org/py3k/
+solver suite for generic solvers is PySparse_ followed by
+PETSc_, Trilinos_, SciPy_, PyAMG_, and pyamgx_.
 
 .. _PETSC:
 
@@ -82,7 +80,11 @@ http://pysparse.sourceforge.net
 It provides several sparse matrix storage formats and conversion methods.
 It also implements a number of iterative solvers, preconditioners, and
 interfaces to efficient factorization packages. The only requirement to
-install and use Pysparse is :term:`NumPy`.
+install and use :term:`Pysparse` is :term:`NumPy`.
+
+.. warning::
+
+   :term:`Pysparse` is archaic and limited to :ref:`RunningUnderPython2`.
 
 .. warning::
 
@@ -108,7 +110,7 @@ PyAMG
 http://code.google.com/p/pyamg/
 
 The :term:`PyAMG` package provides adaptive multigrid preconditioners that
-can be used in conjunction with the :term:`SciPy` solvers.
+can be used in conjunction with the SciPy_ solvers.
 
 .. _PYAMGX:
 
@@ -132,10 +134,10 @@ Trilinos
 http://trilinos.sandia.gov
 
 :term:`Trilinos` provides a more complete set of solvers and
-preconditioners than either :term:`Pysparse` or
-:term:`SciPy`. :term:`Trilinos` preconditioning allows for iterative
-solutions to some difficult problems that :term:`Pysparse` and
-:term:`SciPy` cannot solve, and it enables parallel execution of
+preconditioners than either Pysparse_ or
+SciPy_. :term:`Trilinos` preconditioning allows for iterative
+solutions to some difficult problems that Pysparse_ and
+SciPy_ cannot solve, and it enables parallel execution of
 :term:`FiPy` (see :ref:`PARALLEL` for more details).
 
 .. attention::
