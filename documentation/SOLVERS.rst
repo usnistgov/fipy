@@ -193,3 +193,133 @@ SciPy_ cannot solve, and it enables parallel execution of
         forced the solver to stop before reaching an adequate solution.
         Different solvers, different preconditioners, or a less restrictive
         tolerance may help.
+
+-----------
+Convergence
+-----------
+
+Different solver suites take different approaches to testing convergence.
+We endeavor to harmonize this behavior by allowing the strings in the
+"FiPy" column to be passed as the ``criterion=`` argument when
+instantiating a :class:`~fipy.solvers.solver.Solver`.
+
+.. note:: PyAMG_ is a set of preconditioners applied on top of SciPy_, so
+   is not explicitly included in the following tables.
+
+.. csv-table:: Residual Functions
+   :file: _static/residuals.csv
+   :widths: 21 13 13 13 13 13 13
+   :header-rows: 1
+
+Different solver suites also report different levels of detail about why
+they succed or fail.  This information is captured as a
+:class:`~fipy.solvers.convergence.ConvergenceBase` property of the
+:class:`~fipy.solvers.solver.Solver` after calling
+:meth:`~fipy.terms.term.Term.solve` or
+:meth:`~fipy.terms.term.Term.sweep`.
+
+.. csv-table:: Convergence Status Codes
+   :file: _static/solver_convergence.csv
+   :widths: 25 25 15 15 20 25
+   :header-rows: 1
+
+.. [#KSP_UNPRECONDITIONED_NORM] |KSP_NORM_UNPRECONDITIONED|_
+.. |KSP_NORM_UNPRECONDITIONED|  replace:: :literal:`KSP_UNPRECONDITIONED_NORM`
+.. _KSP_NORM_UNPRECONDITIONED:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED/
+.. [#KSP_PRECONDITIONED_NORM] |KSP_NORM_PRECONDITIONED|_
+.. |KSP_NORM_PRECONDITIONED|  replace:: :literal:`KSP_PRECONDITIONED_NORM`
+.. _KSP_NORM_PRECONDITIONED:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_PRECONDITIONED/
+.. [#KSP_NATURAL_NORM] |KSP_NORM_NATURAL|_
+.. |KSP_NORM_NATURAL|  replace:: :literal:`KSP_NATURAL_NORM`
+.. _KSP_NORM_NATURAL:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_NATURAL/
+
+.. [#AMGX_ABSOLUTE]        ``ABSOLUTE`` [#AMGX_convergence]_
+.. [#AMGX_RELATIVE_INI_CORE]  ``RELATIVE_INI_CORE`` [#AMGX_convergence]_
+.. [#AMGX_convergence]   *AMGX REFERENCE MANUAL*: 2.3 General Settings: ``convergence``,
+   October 2017, API Version 2,
+   https://github.com/NVIDIA/AMGX/blob/main/doc/AMGX_Reference.pdf
+
+.. [#AZ_noscaled]    ``AZ_noscaled`` [#AztecOO_convergence]_
+.. [#AZ_rhs]    ``AZ_rhs`` [#AztecOO_convergence]_
+.. [#AZ_Anorm]    ``AZ_Anorm`` [#AztecOO_convergence]_
+.. [#AZ_r0]    ``AZ_r0`` [#AztecOO_convergence]_
+.. [#AZ_sol]    ``AZ_sol`` [#AztecOO_convergence]_
+.. [#AztecOO_convergence]  *AztecOO Users Guide*: 3.1  Aztec Options: ``options[AZ_conv]``,
+   SAND REPORT SAND2004-3796, Updated August 2007,
+   For AztecOO Version 3.6 in Trilinos Release 8.0,
+   https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf
+
+.. |KSP_CONVERGED_ITS|             replace:: :literal:`KSP_CONVERGED_ITS`
+.. _KSP_CONVERGED_ITS:             https://petsc.org/main/docs/manualpages/KSP/KSP_CONVERGED_ITS/
+.. |KSP_CONVERGED_ATOL|            replace:: :literal:`KSP_CONVERGED_ATOL`
+.. _KSP_CONVERGED_ATOL:            https://petsc.org/main/docs/manualpages/KSP/KSP_CONVERGED_ATOL/
+.. |KSP_CONVERGED_RTOL|            replace:: :literal:`KSP_CONVERGED_RTOL`
+.. _KSP_CONVERGED_RTOL:            https://petsc.org/main/docs/manualpages/KSP/KSP_CONVERGED_RTOL/
+.. |KSP_CONVERGED_ITERATING|       replace:: :literal:`KSP_CONVERGED_ITERATING`
+.. _KSP_CONVERGED_ITERATING:       https://petsc.org/main/docs/manualpages/KSP/KSP_CONVERGED_ITERATING/
+.. |KSP_DIVERGED_ITS|              replace:: :literal:`KSP_DIVERGED_ITS`
+.. _KSP_DIVERGED_ITS:              https://petsc.org/main/docs/manualpages/KSP/KSP_DIVERGED_ITS/
+.. |KSP_DIVERGED_PC_FAILED|        replace:: :literal:`KSP_DIVERGED_PC_FAILED`
+.. _KSP_DIVERGED_PC_FAILED:        https://petsc.org/main/docs/manualpages/KSP/KSP_DIVERGED_PC_FAILED/
+.. |KSP_DIVERGED_INDEFINITE_PC|    replace:: :literal:`KSP_DIVERGED_INDEFINITE_PC`
+.. _KSP_DIVERGED_INDEFINITE_PC:    https://petsc.org/main/docs/manualpages/KSP/KSP_DIVERGED_INDEFINITE_PC/
+.. |KSP_DIVERGED_INDEFINITE_MAT|   replace:: :literal:`KSP_DIVERGED_INDEFINITE_MAT`
+.. _KSP_DIVERGED_INDEFINITE_MAT:   https://petsc.org/main/docs/manualpages/KSP/KSPConvergedReason/
+.. |KSP_DIVERGED_NANORINF|         replace:: :literal:`KSP_DIVERGED_NANORINF`
+.. _KSP_DIVERGED_NANORINF:         https://petsc.org/main/docs/manualpages/KSP/KSPConvergedReason/
+.. |KSP_DIVERGED_BREAKDOWN|        replace:: :literal:`KSP_DIVERGED_BREAKDOWN`
+.. _KSP_DIVERGED_BREAKDOWN:        https://petsc.org/main/docs/manualpages/KSP/KSP_DIVERGED_BREAKDOWN/
+.. |KSP_DIVERGED_BREAKDOWN_BICG|   replace:: :literal:`KSP_DIVERGED_BREAKDOWN_BICG`
+.. _KSP_DIVERGED_BREAKDOWN_BICG:   https://petsc.org/main/docs/manualpages/KSP/KSP_DIVERGED_BREAKDOWN_BICG/
+.. |KSP_CONVERGED_HAPPY_BREAKDOWN| replace:: :literal:`KSP_CONVERGED_HAPPY_BREAKDOWN`
+.. _KSP_CONVERGED_HAPPY_BREAKDOWN: https://petsc.org/main/docs/manualpages/KSP/KSPConvergedReason/
+.. |KSP_DIVERGED_NULL|             replace:: :literal:`KSP_DIVERGED_NULL`
+.. _KSP_DIVERGED_NULL:             https://petsc.org/main/docs/manualpages/KSP/KSPConvergedReason/
+.. |KSP_DIVERGED_DTOL|             replace:: :literal:`KSP_DIVERGED_DTOL`
+.. _KSP_DIVERGED_DTOL:             https://petsc.org/main/docs/manualpages/KSP/KSP_DIVERGED_DTOL/
+.. |KSP_DIVERGED_NONSYMMETRIC|     replace:: :literal:`KSP_DIVERGED_NONSYMMETRIC`
+.. _KSP_DIVERGED_NONSYMMETRIC:     https://petsc.org/main/docs/manualpages/KSP/KSP_DIVERGED_NONSYMMETRIC/
+
+.. |AMGX_SOLVE_SUCCESS|            replace:: :literal:`AMGX_SOLVE_SUCCESS`
+.. _AMGX_SOLVE_SUCCESS:            https://github.com/NVIDIA/AMGX/blob/main/doc/AMGX_Reference.pdf
+.. |AMGX_SOLVE_FAILED|             replace:: :literal:`AMGX_SOLVE_FAILED`
+.. _AMGX_SOLVE_FAILED:             https://github.com/NVIDIA/AMGX/blob/main/doc/AMGX_Reference.pdf
+.. |AMGX_SOLVE_DIVERGED|           replace:: :literal:`AMGX_SOLVE_DIVERGED`
+.. _AMGX_SOLVE_DIVERGED:           https://github.com/NVIDIA/AMGX/blob/main/doc/AMGX_Reference.pdf
+
+.. |PySparse_2|                    replace:: :literal:`2`
+.. _PySparse_2:                    http://pysparse.sourceforge.net/itsolvers.html
+.. |PySparse_1|                    replace:: :literal:`1`
+.. _PySparse_1:                    http://pysparse.sourceforge.net/itsolvers.html
+.. |PySparse_0|                    replace:: :literal:`0`
+.. _PySparse_0:                    http://pysparse.sourceforge.net/itsolvers.html
+.. |PySparse_neg1|                 replace:: :literal:`-1`
+.. _PySparse_neg1:                 http://pysparse.sourceforge.net/itsolvers.html
+.. |PySparse_neg2|                 replace:: :literal:`-2`
+.. _PySparse_neg2:                 http://pysparse.sourceforge.net/itsolvers.html
+.. |PySparse_neg3|                 replace:: :literal:`-3`
+.. _PySparse_neg3:                 http://pysparse.sourceforge.net/itsolvers.html
+.. |PySparse_neg4|                 replace:: :literal:`-4`
+.. _PySparse_neg4:                 http://pysparse.sourceforge.net/itsolvers.html
+.. |PySparse_neg5|                 replace:: :literal:`-5`
+.. _PySparse_neg5:                 http://pysparse.sourceforge.net/itsolvers.html
+.. |PySparse_neg6|                 replace:: :literal:`-6`
+.. _PySparse_neg6:                 http://pysparse.sourceforge.net/itsolvers.html
+
+.. |SciPy_0|                       replace:: :literal:`0`
+.. _SciPy_0:                       https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.gmres.html
+.. |SciPy_lt0|                     replace:: :literal:`<0`
+.. _SciPy_lt0:                     https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.gmres.html
+.. |SciPy_gt0|                     replace:: :literal:`>0`
+.. _SciPy_gt0:                     https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.gmres.html
+
+.. |AZ_normal|                     replace:: :literal:`AZ_normal`
+.. _AZ_normal:                     https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf
+.. |AZ_maxits|                     replace:: :literal:`AZ_maxits`
+.. _AZ_maxits:                     https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf
+.. |AZ_ill_cond|                   replace:: :literal:`AZ_ill_cond`
+.. _AZ_ill_cond:                   https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf
+.. |AZ_breakdown|                  replace:: :literal:`AZ_breakdown`
+.. _AZ_breakdown:                  https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf
+.. |AZ_loss|                       replace:: :literal:`AZ_loss`
+.. _AZ_loss:                       https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf
