@@ -14,6 +14,32 @@ class _ScipySolver(Solver):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
+    criteria = {
+        "default": None,
+        "RHS": None
+    }
+
+    def __init__(self, tolerance=1e-10, criterion="initial",
+                 iterations=1000, precon=None):
+        """
+        Create a `Solver` object.
+
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        criterion : {'default', 'RHS'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon
+            Preconditioner to use.  Not all solver suites support
+            preconditioners.
+        """
+        super(_ScipySolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                           iterations=iterations, precon=precon)
+
     @property
     def _matrixClass(self):
         return _ScipyMeshMatrix

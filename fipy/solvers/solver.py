@@ -91,6 +91,7 @@ class LossOfPrecisionWarning(SolverConvergenceWarning):
         return "Numerical loss of precision occurred. Iterations: {0}. Relative error: {1}".format(self.iter, self.relres)
 
 
+
 class Solver(object):
     """
     The base `LinearXSolver` class.
@@ -98,7 +99,12 @@ class Solver(object):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, tolerance=1e-10, iterations=1000, precon=None):
+    criteria = {
+        "default": None
+    }
+
+    def __init__(self, tolerance=1e-10, criterion="default",
+                 iterations=1000, precon=None):
         """
         Create a `Solver` object.
 
@@ -106,6 +112,9 @@ class Solver(object):
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'initial', 'unscaled', 'RHS', 'matrix', 'solution', 'preconditioned', 'natural'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         precon
@@ -116,6 +125,7 @@ class Solver(object):
             raise NotImplementedError("can't instantiate abstract base class")
 
         self.tolerance = tolerance
+        self.criterion = criterion
         self.iterations = iterations
 
         self.preconditioner = precon
@@ -139,7 +149,7 @@ class Solver(object):
         self.convergence = cls(solver=self,
                                iterations=iterations,
                                residual=residual,
-                               criterion=None,
+                               criterion=self.criterion,
                                actual_code=actual_code,
                                **kwargs)
 

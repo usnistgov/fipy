@@ -16,13 +16,24 @@ class PETScKrylovSolver(PETScSolver):
        It provides the code to call all Krylov solvers from the PETSc package.
 
     """
-      
-    def __init__(self, tolerance=1e-10, iterations=1000, precon=None):
+
+    criteria = {
+        "default": PETSc.KSP.NormType.DEFAULT
+        "preconditioned": PETSc.KSP.NormType.PRECONDITIONED,
+        "initial": PETSc.KSP.NormType.UNPRECONDITIONED,
+        "natural": PETSc.KSP.NormType.NATURAL,
+    }
+
+    def __init__(self, tolerance=1e-10, criterion="default",
+                 iterations=1000, precon=None):
         """
         Parameters
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'initial', 'preconditioned', 'natural'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         precon : str
@@ -32,7 +43,7 @@ class PETScKrylovSolver(PETScSolver):
         if self.__class__ is PETScKrylovSolver:
             raise NotImplementedError("can't instantiate abstract base class")
             
-        PETScSolver.__init__(self, tolerance=tolerance,
+        PETScSolver.__init__(self, tolerance=tolerance, criterion=criterion,
                              iterations=iterations, precon=precon)
 
     def _solve_(self, L, x, b):
@@ -42,6 +53,7 @@ class PETScKrylovSolver(PETScSolver):
         if self.preconditioner is not None:
             ksp.getPC().setType(self.preconditioner)
         ksp.setTolerances(rtol=self.tolerance, max_it=self.iterations)
+        ksp.setNormType(self.criteria[self.criterion])
         L.assemble()
         ksp.setOperators(L)
         ksp.setFromOptions()

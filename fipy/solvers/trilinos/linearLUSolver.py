@@ -20,20 +20,28 @@ class LinearLUSolver(TrilinosSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, precon=None, iterations=10):
+    criteria = {
+        "default": AztecOO.AZ_r0,
+        "initial": AztecOO.AZ_r0
+    }
+
+    def __init__(self, tolerance=1e-10, criterion="initial", precon=None,
+                 iterations=10):
         """
         Parameters
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'initial'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         precon
             *ignored*
         """
 
-
-        TrilinosSolver.__init__(self, tolerance=tolerance,
+        TrilinosSolver.__init__(self, tolerance=tolerance, criterion=criterion,
                                 iterations=iterations, precon=None)
 
         if precon is not None:
@@ -70,7 +78,7 @@ class LinearLUSolver(TrilinosSolver):
 
              x[:] = x - xError
 
-        self._setConvergence(suite="trilinos"
+        self._setConvergence(suite="trilinos",
                              code=AztecOO.AZ_normal,
                              iterations=iteration+1,
                              residual=residual)
