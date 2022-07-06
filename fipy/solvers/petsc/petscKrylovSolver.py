@@ -37,10 +37,14 @@ class PETScKrylovSolver(PETScSolver):
       
     def __init__(self, tolerance=1e-10, iterations=1000, precon=None):
         """
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-          - `precon`: Preconditioner to use (string). 
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon : str
+            Preconditioner to use.
 
         """
         if self.__class__ is PETScKrylovSolver:
