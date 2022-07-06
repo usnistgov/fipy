@@ -6,7 +6,7 @@ __all__ = []
 import os
 import warnings
 
-from fipy.solvers.scipy.scipySolver import _ScipySolver
+from .scipySolver import _ScipySolver
 from fipy.solvers import (MaximumIterationWarning,
                           IllegalInputOrBreakdownWarning)
 

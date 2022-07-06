@@ -8,14 +8,14 @@ import atexit
 
 import pyamgx
 
-from fipy.solvers.pyamgx.pyAMGXSolver import *
-from fipy.solvers.pyamgx.linearCGSolver import *
-from fipy.solvers.pyamgx.linearGMRESSolver import *
-from fipy.solvers.pyamgx.linearFGMRESSolver import *
-from fipy.solvers.pyamgx.linearBiCGStabSolver import *
-from fipy.solvers.pyamgx.linearLUSolver import *
-from fipy.solvers.pyamgx.aggregationAMGSolver import *
-from fipy.solvers.pyamgx.classicalAMGSolver import *
+from .pyAMGXSolver import *
+from .linearCGSolver import *
+from .linearGMRESSolver import *
+from .linearFGMRESSolver import *
+from .linearBiCGStabSolver import *
+from .linearLUSolver import *
+from .aggregationAMGSolver import *
+from .classicalAMGSolver import *
 
 pyamgx.initialize()
 atexit.register(pyamgx.finalize)

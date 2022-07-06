@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
+from ..pysparseMatrixSolver import _PysparseMatrixSolver
 from fipy.solvers import (ScalarQuantityOutOfRangeWarning,
                           StagnatedSolverWarning,
                           MatrixIllConditionedWarning,

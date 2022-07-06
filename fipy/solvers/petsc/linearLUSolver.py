@@ -5,7 +5,7 @@ __docformat__ = 'restructuredtext'
 
 from petsc4py import PETSc
 
-from fipy.solvers.petsc.petscSolver import PETScSolver
+from .petscSolver import PETScSolver
 
 __all__ = ["LinearLUSolver"]
 

@@ -10,8 +10,8 @@ _reason = {AztecOO.AZ_normal : 'AztecOO.AZ_normal',
            AztecOO.AZ_ill_cond : 'AztecOO.AZ_ill_cond',
            AztecOO.AZ_maxits : 'AztecOO.AZ_maxits'}
 
-from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
-from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
+from .trilinosSolver import TrilinosSolver
+from .preconditioners.jacobiPreconditioner import JacobiPreconditioner
 from fipy.solvers import (NormalConvergence,
                           ParameterWarning,
                           BreakdownWarning,
