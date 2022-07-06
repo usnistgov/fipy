@@ -3,14 +3,14 @@ __docformat__ = 'restructuredtext'
 
 from pysparse.itsolvers import krylov
 
-from fipy.solvers.pysparse.preconditioners import JacobiPreconditioner
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
+from .linearInitialSolver import LinearInitialSolver
+from .preconditioners import JacobiPreconditioner
 
 __all__ = ["LinearGMRESSolver"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class LinearGMRESSolver(PysparseSolver):
+class LinearGMRESSolver(LinearInitialSolver):
     """
 
     The `LinearGMRESSolver` solves a linear system of equations using the
@@ -25,11 +25,25 @@ class LinearGMRESSolver(PysparseSolver):
 
     """
 
-    def __init__(self, precon=JacobiPreconditioner(), *args, **kwargs):
+    solveFnc = staticmethod(krylov.gmres)
+
+    def __init__(self, tolerance=1e-10, criterion="default",
+                 iterations=1000, precon=JacobiPreconditioner()):
         """
+        Create a `LinearGMRESSolver` object.
+
         Parameters
         ----------
-        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner, optional
+        tolerance : float
+            Required error tolerance.
+        criterion : {'default', 'initial'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
+            Preconditioner to use.
+            (default :class:`fipy.solvers.pysparse.preconditioners.JacobiPreconditioner`).
         """
-        super(LinearGMRESSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = krylov.gmres
+        super(LinearGMRESSolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                                iterations=iterations, precon=precon)

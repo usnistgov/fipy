@@ -14,8 +14,14 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class PyAMGXSolver(Solver):
 
-    def __init__(self, config_dict, tolerance=1e-10, iterations=2000,
-                 precon=None, smoother=None, **kwargs):
+    criteria = {
+        "default": "RELATIVE_INI_CORE",
+        "unscaled": "ABSOLUTE",
+        "initial": "RELATIVE_INI_CORE",
+    }
+
+    def __init__(self, config_dict, tolerance=1e-10, criterion="default",
+                 iterations=2000, precon=None, smoother=None, **kwargs):
         """
         Parameters
         ----------
@@ -23,6 +29,9 @@ class PyAMGXSolver(Solver):
             AMGX configuration options
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'solution'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         precon : ~fipy.solvers.pyamgx.preconditioners.preconditioners.Preconditioner, optional
@@ -37,6 +46,7 @@ class PyAMGXSolver(Solver):
             config_dict["solver"]["preconditioner"] = precon
         if smoother:
             config_dict["solver"]["smoother"] = smoother
+        config_dict["solver"]["convergence"] = self.criteria[criterion]
         config_dict["solver"].update(kwargs)
 
         # create AMGX objects:
@@ -47,7 +57,7 @@ class PyAMGXSolver(Solver):
         self.A_gpu = pyamgx.Matrix().create(self.resources)
         self.solver = pyamgx.Solver().create(self.resources, self.cfg)
 
-        super(PyAMGXSolver, self).__init__(tolerance=tolerance, iterations=iterations)
+        super(PyAMGXSolver, self).__init__(tolerance=tolerance, criterion=criterion, iterations=iterations)
 
     def __exit__(self, *args):
         # destroy AMGX objects:

@@ -27,7 +27,13 @@ class LinearLUSolver(PysparseSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, iterations=10, precon=None):
+    criteria = {
+        "default": None,
+        "initial": None
+    }
+
+    def __init__(self, tolerance=1e-10, criterion="default",
+                 iterations=10, precon=None):
         """
         Creates a `LinearLUSolver`.
 
@@ -35,13 +41,15 @@ class LinearLUSolver(PysparseSolver):
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'initial'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
             *ignored*
         """
-
-        super(LinearLUSolver, self).__init__(tolerance=tolerance,
+        super(LinearLUSolver, self).__init__(tolerance=tolerance, criterion=criterion,
                                              iterations=iterations)
 
     def _solve_(self, L, x, b):

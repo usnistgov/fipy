@@ -19,21 +19,31 @@ class LinearJORSolver(PysparseSolver):
     non-symmetric coefficient matrix.
 
     """
-    def __init__(self, tolerance=1e-10, iterations=1000, relaxation=1.0):
+
+    criteria = {
+        "default": None,
+        "unscaled": None
+    }
+
+    def __init__(self, tolerance=1e-10, criterion="default",
+                 iterations=1000, relaxation=1.0):
         """
-        The `Solver` class should not be invoked directly.
+        Create a `LinearJORSolver` object.
 
         Parameters
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'unscaled'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         relaxation : float
             Fraction of update to apply
         """
-        super(LinearJORSolver, self).__init__(tolerance=tolerance,
-                                              iterations=iterations)
+        super(LinearJORSolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                              iterations=iterations, precon=None)
         self.relaxation = relaxation
 
     def _solve_(self, L, x, b):
@@ -47,16 +57,17 @@ class LinearJORSolver(PysparseSolver):
         xold = x.copy()
 
         for iteration in range(self.iterations):
-            if tol <= self.tolerance:
-                break
+            residual = numerix.L2norm(L * x - b)
 
-            residual = L * x - b
+            if residual <= self.tolerance:
+                break
 
             xold[:] = x
             x[:] = (-(LU) * x + b) / d
 
             x[:] = xold + self.relaxation * (x - xold)
 
-            tol = max(abs(residual))
-
-            print(iteration, tol)
+        self._setConvergence(suite="pysparse",
+                             code=0,
+                             iterations=iteration+1,
+                             residual=residual)

@@ -18,24 +18,25 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
     """
 
-    @property
-    def convergenceCheck(self):
-        """Residual expression to compare to `tolerance`.
+    criteria = {
+        "default": AztecOO.AZ_r0,
+        "unscaled": AztecOO.AZ_noscaled,
+        "RHS": AztecOO.AZ_rhs,
+        "matrix": AztecOO.AZ_Anorm,
+        "initial": AztecOO.AZ_r0,
+        "solution": AztecOO.AZ_sol
+    }
 
-        (see https://trilinos.org/oldsite/packages/aztecoo/AztecOOUserGuide.pdf)
-        """
-        return self._convergenceCheck
-
-    @convergenceCheck.setter
-    def convergenceCheck(self, value):
-        self._convergenceCheck = value
-
-    def __init__(self, tolerance=1e-10, iterations=1000, precon=JacobiPreconditioner()):
+    def __init__(self, tolerance=1e-10, criterion="default",
+                 iterations=1000, precon=JacobiPreconditioner()):
         """
         Parameters
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'solution'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         precon : ~fipy.solvers.trilinos.preconditioners.preconditioner.Preconditioner
@@ -43,7 +44,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         if self.__class__ is TrilinosAztecOOSolver:
             raise NotImplementedError("can't instantiate abstract base class")
 
-        TrilinosSolver.__init__(self, tolerance=tolerance,
+        TrilinosSolver.__init__(self, tolerance=tolerance, criterion=criterion,
                                 iterations=iterations, precon=None)
         self.preconditioner = precon
 
@@ -56,8 +57,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
 
-        if self.convergenceCheck is not None:
-            Solver.SetAztecOption(AztecOO.AZ_conv, self.convergenceCheck)
+        Solver.SetAztecOption(AztecOO.AZ_conv, self.criteria[self.criterion])
 
         if self.preconditioner is not None:
             self.preconditioner._applyToSolver(solver=Solver, matrix=L)
@@ -72,7 +72,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         status = Solver.GetAztecStatus()
 
-        self._setConvergence(suite="trilinos"
+        self._setConvergence(suite="trilinos",
                              code=int(status[AztecOO.AZ_why]),
                              iterations=status[AztecOO.AZ_its],
                              residual=status[AztecOO.AZ_r],
