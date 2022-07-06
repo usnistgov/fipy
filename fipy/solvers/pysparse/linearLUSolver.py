@@ -27,8 +27,7 @@ class LinearLUSolver(PysparseSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, iterations=10,
-                       maxIterations=10, precon=None):
+    def __init__(self, tolerance=1e-10, iterations=10, precon=None):
         """
         Creates a `LinearLUSolver`.
 
@@ -42,10 +41,8 @@ class LinearLUSolver(PysparseSolver):
             *ignored*
         """
 
-        iterations = min(iterations, maxIterations)
-
-        super(LinearLUSolver, self).__init__(tolerance = tolerance,
-                                             iterations = iterations)
+        super(LinearLUSolver, self).__init__(tolerance=tolerance,
+                                             iterations=iterations)
 
     def _solve_(self, L, x, b):
         diag = L.takeDiagonal()
