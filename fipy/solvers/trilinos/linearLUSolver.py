@@ -20,7 +20,7 @@ class LinearLUSolver(TrilinosSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, iterations=10, precon=None, maxIterations=10):
+    def __init__(self, tolerance=1e-10, precon=None, iterations=10):
         """
         Parameters
         ----------
@@ -32,7 +32,6 @@ class LinearLUSolver(TrilinosSolver):
             *ignored*
         """
 
-        iterations = min(iterations, maxIterations)
 
         TrilinosSolver.__init__(self, tolerance=tolerance,
                                 iterations=iterations, precon=None)
