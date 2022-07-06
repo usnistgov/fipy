@@ -45,25 +45,25 @@ class LinearLUSolver(PETScSolver):
         ksp.setFromOptions()
 
         for iteration in range(self.iterations):
-            errorVector = L * x - b
-            tol = errorVector.norm()
+            residualVector = L * x - b
 
+            residual = residualVector.norm(PETSc.NormType.NORM_2)
             if iteration == 0:
-                tol0 = tol
+                residual0 = residual
 
-            if tol <= self.tolerance * tol0:
+            if residual <= self.tolerance * residual0:
                 break
 
             xError = x.copy()
 
-            ksp.solve(errorVector, xError)
+            ksp.solve(residualVector, xError)
             x -= xError
 
-        self._log.debug('solver: %s', ksp.type)
-        self._log.debug('precon: %s', ksp.getPC().type)
-        self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
-        self._log.debug('residual: %s', errorVector.norm(1))
+        self._setConvergence(suite="petsc"
+                             code=PETSc.KSP.ConvergedReason.CONVERGED_ITS,
+                             iterations=iteration+1,
+                             residual=residual),
+                             ksp_solver=ksp.type,
+                             ksp_precon=ksp.getPC().type)
 
-        self.status['iterations'] = iteration+1
-        self.status['residual'] = errorVector.norm(PETSc.NormType.NORM_2)
-        self.status['result'] = "Success"
+        self.convergence.warn()

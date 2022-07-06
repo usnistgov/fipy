@@ -59,6 +59,8 @@ from .linearBicgstabSolver import *
 
 from .trilinosMLTest import *
 
+from . import aztecConvergence
+
 DefaultSolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearGMRESSolver
 DummySolver = DefaultSolver

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from petsc4py import PETSc
@@ -5,27 +6,8 @@ from petsc4py import PETSc
 from .petscSolver import PETScSolver
 
 __all__ = ["PETScKrylovSolver"]
-
-_reason = {1: "KSP_CONVERGED_RTOL_NORMAL",
-           9: "KSP_CONVERGED_ATOL_NORMAL",
-           2: "KSP_CONVERGED_RTOL",
-           3: "KSP_CONVERGED_ATOL",
-           4: "KSP_CONVERGED_ITS",
-           5: "KSP_CONVERGED_CG_NEG_CURVE",
-           6: "KSP_CONVERGED_CG_CONSTRAINED",
-           7: "KSP_CONVERGED_STEP_LENGTH",
-           8: "KSP_CONVERGED_HAPPY_BREAKDOWN",
-           -2: "KSP_DIVERGED_NULL",
-           -3: "KSP_DIVERGED_ITS",
-           -4: "KSP_DIVERGED_DTOL",
-           -5: "KSP_DIVERGED_BREAKDOWN",
-           -6: "KSP_DIVERGED_BREAKDOWN_BICG",
-           -7: "KSP_DIVERGED_NONSYMMETRIC",
-           -8: "KSP_DIVERGED_INDEFINITE_PC",
-           -9: "KSP_DIVERGED_NANORINF",
-           -10: "KSP_DIVERGED_INDEFINITE_MAT",
-           -11: "KSP_DIVERGED_PC_FAILED",
-           0: "KSP_CONVERGED_ITERATING"}
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 class PETScKrylovSolver(PETScSolver):
 
@@ -65,15 +47,14 @@ class PETScKrylovSolver(PETScSolver):
         ksp.setFromOptions()
         ksp.solve(b, x)
 
-        self._log.debug('solver: %s', ksp.type)
-        self._log.debug('precon: %s', ksp.getPC().type)
-        self._log.debug('convergence: %s', _reason[ksp.reason])
-        self._log.debug('iterations: %d / %d', ksp.its, self.iterations)
-        self._log.debug('norm: %s', ksp.norm)
-        self._log.debug('norm_type: %s', ksp.norm_type)
-
-        self.status['iterations'] = ksp.its
-        self.status['residual'] = ksp.norm
-        self.status['result'] = _reason[ksp.reason]
+        self._setConvergence(suite="petsc",
+                             code=ksp.reason,
+                             iterations=ksp.its,
+                             residual=ksp.norm,
+                             ksp_solver=ksp.type,
+                             ksp_precon=ksp.getPC().type,
+                             ksp_norm_type=ksp.norm_type)
 
         ksp.destroy()
+
+        self.convergence.warn()

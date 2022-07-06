@@ -12,6 +12,8 @@ from .linearJORSolver import *
 
 from .preconditioners import *
 
+from . import pysparseConvergence
+
 DefaultSolver = LinearPCGSolver
 DefaultAsymmetricSolver = LinearLUSolver
 DummySolver = DefaultSolver

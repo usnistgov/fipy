@@ -8,6 +8,7 @@ from .linearGMRESSolver import *
 from .linearBicgSolver import *
 from .linearCGSSolver import *
 from .dummySolver import *
+from . import petscConvergence
 
 DefaultSolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearGMRESSolver

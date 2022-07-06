@@ -17,6 +17,8 @@ from .linearLUSolver import *
 from .aggregationAMGSolver import *
 from .classicalAMGSolver import *
 
+from . import pyamgxConvergence
+
 pyamgx.initialize()
 atexit.register(pyamgx.finalize)
 

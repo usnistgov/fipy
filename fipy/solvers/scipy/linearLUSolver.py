@@ -31,23 +31,24 @@ class LinearLUSolver(_ScipySolver):
                                             panel_size=10,
                                             permc_spec=3)
 
-        error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
-
         for iteration in range(min(self.iterations, 10)):
-            errorVector = L * x - b
+            residualVector = L * x - b
 
-            if numerix.sqrt(numerix.sum(errorVector**2))  <= self.tolerance * error0:
+            residual = numerix.L2norm(residualVector)
+            if iteration == 0:
+                residual0 = residual
+
+            if residual <= self.tolerance * residual0:
                 break
 
-            xError = LU.solve(errorVector)
+            xError = LU.solve(residualVector)
             x[:] = x - xError
 
-        self.status['iterations'] = iteration
-        self.status['scaled residual'] = numerix.sqrt(numerix.sum(errorVector**2)) / error0
-        # never fails?
-        self.status['result'] = "Success"
+        self._setConvergence(suite="scipy",
+                             code=0,
+                             iterations=iteration+1,
+                             residual=residual)
 
-        self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
-        self._log.debug('residual: %s', numerix.sqrt(numerix.sum(errorVector**2)))
+        self.convergence.warn()
 
         return x
