@@ -194,6 +194,8 @@ SciPy_ cannot solve, and it enables parallel execution of
         Different solvers, different preconditioners, or a less restrictive
         tolerance may help.
 
+.. _CONVERGENCE:
+
 -----------
 Convergence
 -----------

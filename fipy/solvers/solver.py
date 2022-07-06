@@ -18,8 +18,10 @@ from builtins import str
 __docformat__ = 'restructuredtext'
 
 import logging
+import warnings
 
 from fipy.tools import numerix
+from .convergence import ConvergenceBase
 
 __all__ = ["SolverConvergenceWarning", "NormalConvergence", "MaximumIterationWarning",
            "PreconditionerWarning", "IllConditionedPreconditionerWarning",
@@ -118,8 +120,6 @@ class Solver(object):
 
         self.preconditioner = precon
 
-        self.status = dict()
-
         self._log = logging.getLogger(self.__class__.__module__
                                       + "." + self.__class__.__name__)
 
@@ -133,6 +133,15 @@ class Solver(object):
 
     def _solve_(self, L, x, b):
         raise NotImplementedError
+
+    def _setConvergence(self, suite, code, iterations, residual, actual_code=None, **kwargs):
+        cls = ConvergenceBase.code_registry[(suite, code)]
+        self.convergence = cls(solver=self,
+                               iterations=iterations,
+                               residual=residual,
+                               criterion=None,
+                               actual_code=actual_code,
+                               **kwargs)
 
     def _applyUnderRelaxation(self, underRelaxation=None):
         if underRelaxation is not None:

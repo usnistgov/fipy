@@ -79,6 +79,14 @@ class PyAMGXSolver(Solver):
 
         # download values from GPU to CPU
         self.x_gpu.download(x)
+
+        self._setConvergence(suite="pyamgx",
+                             code=self.solver.status,
+                             iterations=self.solver.iterations_number,
+                             residual=self.solver.get_residual())
+
+        self.convergence.warn()
+
         return x
 
     def _solve(self):

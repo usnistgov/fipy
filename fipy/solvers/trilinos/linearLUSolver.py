@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from builtins import range
 __docformat__ = 'restructuredtext'
 
+from PyTrilinos import AztecOO
 from PyTrilinos import Epetra
 from PyTrilinos import Amesos
 
@@ -46,35 +47,34 @@ class LinearLUSolver(TrilinosSolver):
     def _solve_(self, L, x, b):
 
         for iteration in range(self.iterations):
-             # errorVector = L*x - b
-             errorVector = Epetra.Vector(L.RangeMap())
-             L.Multiply(False, x, errorVector)
+             # residualVector = L*x - b
+             residualVector = Epetra.Vector(L.RangeMap())
+             L.Multiply(False, x, residualVector)
              # If A is an Epetra.Vector with map M
              # and B is an Epetra.Vector with map M
              # and C = A - B
              # then C is an Epetra.Vector with *no map* !!!?!?!
-             errorVector -= b
+             residualVector -= b
 
-             tol = errorVector.Norm1()
-
+             residual = residualVector.Norm2()
              if iteration == 0:
-                 tol0 = tol
+                 residual0 = residual
 
-             if (tol / tol0) <= self.tolerance:
+             if residual <= self.tolerance * residual0:
                  break
 
              xError = Epetra.Vector(L.RowMap())
 
-             Problem = Epetra.LinearProblem(L, xError, errorVector)
+             Problem = Epetra.LinearProblem(L, xError, residualVector)
              Solver = self.Factory.Create(text_to_native_str("Klu"), Problem)
              Solver.Solve()
 
              x[:] = x - xError
 
-        self.status['iterations'] = iteration
-        self.status['scaled residual'] = tol / tol0
-        # never fails?
-        self.status['result'] = "Success"
+        self._setConvergence(suite="trilinos"
+                             code=AztecOO.AZ_normal,
+                             iterations=iteration+1,
+                             residual=residual)
 
-        self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
-        self._log.debug('residual: %s', errorVector.Norm2())
+        self.convergence.warn()
+

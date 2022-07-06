@@ -7,8 +7,7 @@ import os
 import warnings
 
 from .scipySolver import _ScipySolver
-from fipy.solvers import (MaximumIterationWarning,
-                          IllegalInputOrBreakdownWarning)
+from fipy.tools import numerix
 
 class _ScipyKrylovSolver(_ScipySolver):
     """
@@ -35,28 +34,12 @@ class _ScipyKrylovSolver(_ScipySolver):
                                 atol='legacy',
                                 callback=self._countIterations)
 
-        self.status['iterations'] = self.actualIterations
-        if info == 0:
-            self.status['result'] = "Success"
-        elif info < 0:
-            self.status['result'] = IllegalInputOrBreakdownWarning.__class__.__name__
-        elif info > 0:
-            self.status['result'] = MaximumIterationWarning.__class__.__name__
+        self._setConvergence(suite="scipy",
+                             code=numerix.sign(info),
+                             actual_code=info,
+                             iterations=self.actualIterations,
+                             residual=0.)
 
-        self._raiseWarning(info, self.actualIterations, 0.)
-
-        if info < 0:
-            self._log.debug('failure: %s', self._warningList[info].__class__.__name__)
+        self.convergence.warn()
 
         return x
-
-    def _raiseWarning(self, info, iter, relres):
-        # 0 : successful exit
-        # >0 : convergence to tolerance not achieved, number of iterations
-        # <0 : illegal input or breakdown
-
-        if info < 0:
-            # is stacklevel=5 always what's needed to get to the user's scope?
-            warnings.warn(IllegalInputOrBreakdownWarning(self, iter, relres), stacklevel=5)
-        elif info > 0:
-            warnings.warn(MaximumIterationWarning(self, iter, relres), stacklevel=5)

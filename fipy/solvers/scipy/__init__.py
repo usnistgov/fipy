@@ -10,6 +10,8 @@ from .linearBicgstabSolver import *
 from .linearLUSolver import *
 from .linearPCGSolver import *
 
+from . import scipyConvergence
+
 DefaultSolver = LinearLUSolver
 DummySolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearLUSolver
