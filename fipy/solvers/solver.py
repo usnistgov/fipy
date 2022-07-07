@@ -153,6 +153,70 @@ class Solver(object):
                                actual_code=actual_code,
                                **kwargs)
 
+    def _defaultNorm(self, L, x, b):
+        raise NotImplementedError
+
+    def _unscaledNorm(self, L, x, b):
+        return 1.
+
+    def _rhsNorm(self, L, x, b):
+        raise NotImplementedError
+
+    def _matrixNorm(self, L, x, b):
+        raise NotImplementedError
+
+    def _residualNorm(self, L, x, b):
+        raise NotImplementedError
+
+    def _solutionNorm(self, L, x, b):
+        raise NotImplementedError
+
+    def _preconditionedNorm(self, L, x, b):
+        raise NotImplementedError
+
+    def _naturalNorm(self, L, x, b):
+        raise NotImplementedError
+
+    def _adaptDefaultTolerance(self, L, x, b):
+        raise NotImplementedError
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        raise NotImplementedError
+
+    def _adaptRHSTolerance(self, L, x, b):
+        raise NotImplementedError
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        raise NotImplementedError
+
+    def _adaptInitialTolerance(self, L, x, b):
+        raise NotImplementedError
+
+    def _adaptSolutionTolerance(self, L, x, b):
+        raise NotImplementedError
+
+    def _adaptPreconditionedTolerance(self, L, x, b):
+        raise NotImplementedError
+
+    def _adaptNaturalTolerance(self, L, x, b):
+        raise NotImplementedError
+
+    def _adaptTolerance(self, L, x, b):
+        adapt = {
+            "default": self._adaptDefaultTolerance,
+            "unscaled": self._adaptUnscaledTolerance,
+            "RHS": self._adaptRHSTolerance,
+            "matrix": self._adaptMatrixTolerance,
+            "initial": self._adaptInitialTolerance,
+            "solution": self._adaptSolutionTolerance,
+            "preconditioned": self._adaptPreconditionedTolerance,
+            "natural": self._adaptNaturalTolerance
+        }
+
+        tolerance_factor, suite_criterion = adapt[self.criterion](L, x, b)
+
+        return tolerance_factor, suite_criterion
+
     def _applyUnderRelaxation(self, underRelaxation=None):
         if underRelaxation is not None:
             self.matrix.putDiagonal(numerix.asarray(self.matrix.takeDiagonal()) / underRelaxation)

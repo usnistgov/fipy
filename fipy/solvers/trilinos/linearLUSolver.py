@@ -20,19 +20,14 @@ class LinearLUSolver(TrilinosSolver):
 
     """
 
-    criteria = {
-        "default": AztecOO.AZ_r0,
-        "initial": AztecOO.AZ_r0
-    }
-
-    def __init__(self, tolerance=1e-10, criterion="initial", precon=None,
+    def __init__(self, tolerance=1e-10, criterion="default", precon=None,
                  iterations=10):
         """
         Parameters
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'initial'}
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
@@ -50,8 +45,24 @@ class LinearLUSolver(TrilinosSolver):
                            UserWarning, stacklevel=2)
         self.Factory = Amesos.Factory()
 
+    def _adaptDefaultTolerance(self, L, x, b):
+        return self._adaptInitialTolerance(L, x, b)
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        return (1., None)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        return (self._rhsNorm(L, x, b), None)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        return (self._matrixNorm(L, x, b), None)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
+
+        tolerance_factor, _ = self._adaptTolerance(L, x, b)
 
         for iteration in range(self.iterations):
              # residualVector = L*x - b
@@ -64,10 +75,8 @@ class LinearLUSolver(TrilinosSolver):
              residualVector -= b
 
              residual = residualVector.Norm2()
-             if iteration == 0:
-                 residual0 = residual
 
-             if residual <= self.tolerance * residual0:
+             if residual <= self.tolerance * tolerance_factor:
                  break
 
              xError = Epetra.Vector(L.RowMap())
@@ -81,7 +90,7 @@ class LinearLUSolver(TrilinosSolver):
         self._setConvergence(suite="trilinos",
                              code=AztecOO.AZ_normal,
                              iterations=iteration+1,
-                             residual=residual)
+                             residual=residual / tolerance_factor)
 
         self.convergence.warn()
 

@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from ..pysparseMatrixSolver import _PysparseMatrixSolver
+from fipy.tools import numerix
 
 __all__ = ["PysparseSolver"]
 from future.utils import text_to_native_str
@@ -42,15 +43,23 @@ class PysparseSolver(_PysparseMatrixSolver):
         else:
             P, A = self.preconditioner._applyToMatrix(A)
 
-        info, iter, relres = self.solveFnc(A, b, x, self.tolerance,
+        tolerance_factor, _ = self._adaptTolerance(L, x, b)
+
+        info, iter, relres = self.solveFnc(A, b, x,
+                                           self.tolerance * tolerance_factor,
                                            self.iterations, P)
 
         self._setConvergence(suite="pysparse",
                              code=info,
                              iterations=iter,
-                             residual=relres)
+                             residual=relres / tolerance_factor)
 
         self.convergence.warn()
+
+    def _residualNorm(self, L, x, b):
+        residualVector = L * x - b
+
+        return numerix.L2norm(residualVector)
 
     def _solve(self):
 

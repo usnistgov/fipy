@@ -68,6 +68,18 @@ class TrilinosSolver(Solver):
         self.matrix.flush()
         del self.globalVectors
 
+    def _residualNorm(self, L, x, b):
+        # residualVector = L*x - b
+        residualVector = Epetra.Vector(L.RangeMap())
+        L.Multiply(False, x, residualVector)
+        # If A is an Epetra.Vector with map M
+        # and B is an Epetra.Vector with map M
+        # and C = A - B
+        # then C is an Epetra.Vector with *no map* !!!?!?!
+        residualVector -= b
+
+        return residualVector.Norm2()
+
     def _solve(self):
         from fipy.terms import SolutionVariableNumberError
 

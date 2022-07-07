@@ -14,12 +14,7 @@ class _ScipySolver(Solver):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    criteria = {
-        "default": None,
-        "RHS": None
-    }
-
-    def __init__(self, tolerance=1e-10, criterion="initial",
+    def __init__(self, tolerance=1e-10, criterion="default",
                  iterations=1000, precon=None):
         """
         Create a `Solver` object.
@@ -28,7 +23,7 @@ class _ScipySolver(Solver):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'RHS'}
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
@@ -43,6 +38,11 @@ class _ScipySolver(Solver):
     @property
     def _matrixClass(self):
         return _ScipyMeshMatrix
+
+    def _residualNorm(self, L, x, b):
+        residualVector = L * x - b
+
+        return numerix.L2norm(residualVector)
 
     def _solve(self):
 
