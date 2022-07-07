@@ -141,7 +141,7 @@ if solver is None and _desired_solver in ["pyamg", None]:
 
 if solver is None and _desired_solver in ["pyamgx", None]:
     try:
-        if _parallelComm.Nproc > 1:
+        if _Nproc > 1:
             raise  SerialSolverError('pyamgx')
         from fipy.solvers.pyamgx import *
         __all__.extend(pyamgx.__all__)
