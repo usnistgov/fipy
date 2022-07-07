@@ -99,6 +99,7 @@ class PyAMGXSolver(Solver):
         tolerance_factor, suite_criterion = self._adaptTolerance(L, x, b)
         config_dict = self.config_dict.copy()
         config_dict["solver"]["monitor_residual"] = 1
+        config_dict["solver"]["store_res_history"] = 1
         config_dict["solver"]["tolerance"] = self.tolerance * tolerance_factor
         config_dict["solver"]["convergence"] = suite_criterion
 
@@ -112,10 +113,15 @@ class PyAMGXSolver(Solver):
         # download values from GPU to CPU
         self.x_gpu.download(x)
 
+        if solver.iterations_number == -1:
+            residual = None
+        else:
+            residual = solver.get_residual() / tolerance_factor
+
         self._setConvergence(suite="pyamgx",
                              code=solver.status,
                              iterations=solver.iterations_number,
-                             residual=0.) #solver.get_residual() / tolerance_factor)
+                             residual=residual)
 
         self.convergence.warn()
 
