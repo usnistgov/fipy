@@ -68,8 +68,6 @@ class PyAMGXSolver(Solver):
         self.var = var
         self.matrix = matrix
         self.RHSvector = RHSvector
-        self.A_gpu.upload_CSR(self.matrix.matrix)
-        self.solver.setup(self.A_gpu)
 
     def _adaptDefaultTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)
@@ -90,26 +88,28 @@ class PyAMGXSolver(Solver):
         # transfer data from CPU to GPU
         self.x_gpu.upload(x)
         self.b_gpu.upload(b)
+        self.A_gpu.upload_CSR(L.matrix)
 
         tolerance_factor, suite_criterion = self._adaptTolerance(L, x, b)
         config_dict = self.config_dict.copy()
+        config_dict["solver"]["monitor_residual"] = 1
         config_dict["solver"]["tolerance"] = self.tolerance * tolerance_factor
         config_dict["solver"]["convergence"] = suite_criterion
 
         cfg = pyamgx.Config().create_from_dict(config_dict)
         solver = pyamgx.Solver().create(self.resources, cfg)
+        solver.setup(self.A_gpu)
 
         # solve system on GPU
-        self.solver.solve(self.b_gpu, self.x_gpu)
+        solver.solve(self.b_gpu, self.x_gpu)
 
         # download values from GPU to CPU
         self.x_gpu.download(x)
 
         self._setConvergence(suite="pyamgx",
-                             code=self.solver.status,
-                             iterations=self.solver.iterations_number,
-                             residual=(self.solver.get_residual()
-                                       / tolerance_factor))
+                             code=solver.status,
+                             iterations=solver.iterations_number,
+                             residual=0.) #solver.get_residual() / tolerance_factor)
 
         self.convergence.warn()
 
