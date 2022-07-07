@@ -19,6 +19,24 @@ class _ScipyKrylovSolver(_ScipySolver):
     def _countIterations(self, xk):
         self.actualIterations += 1
 
+    def _adaptDefaultTolerance(self, L, x, b):
+        return self._adaptRHSTolerance(L, x, b)
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        factor = 1. / self._rhsNorm(L, x, b)
+        return (factor, None)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        return (1., None)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        factor = self.matrixNorm(L, x, b) / self._rhsNorm(L, x, b)
+        return (factor, None)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        factor = self._residualNorm(L, x, b) / self._rhsNorm(L, x, b)
+        return (factor, None)
+
     def _solve_(self, L, x, b):
         A = L.matrix
         if self.preconditioner is None:
@@ -26,9 +44,11 @@ class _ScipyKrylovSolver(_ScipySolver):
         else:
             M = self.preconditioner._applyToMatrix(A)
 
+        tolerance_factor, _ = self._adaptTolerance(L, x, b)
+
         self.actualIterations = 0
         x, info = self.solveFnc(A, b, x,
-                                tol=self.tolerance,
+                                tol=self.tolerance * tolerance_factor,
                                 maxiter=self.iterations,
                                 M=M,
                                 atol='legacy',
@@ -39,7 +59,7 @@ class _ScipyKrylovSolver(_ScipySolver):
                              code=numerix.sign(info),
                              actual_code=info,
                              iterations=self.actualIterations,
-                             residual=0.)
+                             residual=0. / tolerance_factor)
 
         self.convergence.warn()
 

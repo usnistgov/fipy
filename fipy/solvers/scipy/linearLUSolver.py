@@ -19,26 +19,35 @@ class LinearLUSolver(_ScipySolver):
     the Scipy `scipy.sparse.linalg.splu` module.
     """
 
+    def _adaptDefaultTolerance(self, L, x, b):
+        return self._adaptInitialTolerance(L, x, b)
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        return (1., None)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        return (self._rhsNorm(L, x, b), None)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        return (self.matrixNorm(L, x, b), None)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        return (self._residualNorm(L, x, b), None)
+
     def _solve_(self, L, x, b):
-        diag = L.takeDiagonal()
-        maxdiag = max(numerix.absolute(diag))
-
-        L = L * (1 / maxdiag)
-        b = b * (1 / maxdiag)
-
         LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=1.,
                                             relax=1,
                                             panel_size=10,
                                             permc_spec=3)
 
+        tolerance_factor, _ = self._adaptTolerance(L, x, b)
+
         for iteration in range(min(self.iterations, 10)):
             residualVector = L * x - b
 
             residual = numerix.L2norm(residualVector)
-            if iteration == 0:
-                residual0 = residual
 
-            if residual <= self.tolerance * residual0:
+            if residual <= self.tolerance * tolerance_factor:
                 break
 
             xError = LU.solve(residualVector)
@@ -47,7 +56,7 @@ class LinearLUSolver(_ScipySolver):
         self._setConvergence(suite="scipy",
                              code=0,
                              iterations=iteration+1,
-                             residual=residual)
+                             residual=residual / tolerance_factor)
 
         self.convergence.warn()
 

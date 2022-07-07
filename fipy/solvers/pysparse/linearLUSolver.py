@@ -27,11 +27,6 @@ class LinearLUSolver(PysparseSolver):
 
     """
 
-    criteria = {
-        "default": None,
-        "initial": None
-    }
-
     def __init__(self, tolerance=1e-10, criterion="default",
                  iterations=10, precon=None):
         """
@@ -41,7 +36,7 @@ class LinearLUSolver(PysparseSolver):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'initial'}
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
@@ -52,23 +47,32 @@ class LinearLUSolver(PysparseSolver):
         super(LinearLUSolver, self).__init__(tolerance=tolerance, criterion=criterion,
                                              iterations=iterations)
 
+    def _adaptDefaultTolerance(self, L, x, b):
+        return self._adaptInitialTolerance(L, x, b)
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        return (1., None)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        return (self._rhsNorm(L, x, b), None)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        return (self._matrixNorm(L, x, b), None)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        return (self._residualNorm(L, x, b), None)
+
     def _solve_(self, L, x, b):
-        diag = L.takeDiagonal()
-        maxdiag = max(numerix.absolute(diag))
-
-        L = L * (1 / maxdiag)
-        b = b * (1 / maxdiag)
-
         LU = superlu.factorize(L.matrix.to_csr())
+
+        tolerance_factor, _ = self._adaptTolerance(L, x, b)
 
         for iteration in range(self.iterations):
             residualVector = L * x - b
 
             residual = numerix.L2norm(residualVector)
-            if iteration == 0:
-                residual0 = residual
 
-            if residual <= self.tolerance * residual0:
+            if residual <= self.tolerance * tolerance_factor:
                 break
 
             xError = numerix.zeros(len(b), 'd')
@@ -78,4 +82,4 @@ class LinearLUSolver(PysparseSolver):
         self._setConvergence(suite="pysparse",
                              code=0,
                              iterations=iteration+1,
-                             residual=residual)
+                             residual=residual / tolerance_factor)

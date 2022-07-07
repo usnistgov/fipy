@@ -18,15 +18,6 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
     """
 
-    criteria = {
-        "default": AztecOO.AZ_r0,
-        "unscaled": AztecOO.AZ_noscaled,
-        "RHS": AztecOO.AZ_rhs,
-        "matrix": AztecOO.AZ_Anorm,
-        "initial": AztecOO.AZ_r0,
-        "solution": AztecOO.AZ_sol
-    }
-
     def __init__(self, tolerance=1e-10, criterion="default",
                  iterations=1000, precon=JacobiPreconditioner()):
         """
@@ -48,6 +39,24 @@ class TrilinosAztecOOSolver(TrilinosSolver):
                                 iterations=iterations, precon=None)
         self.preconditioner = precon
 
+    def _adaptDefaultTolerance(self, L, x, b):
+        return self._adaptInitialTolerance(L, x, b)
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        return (1., AztecOO.AZ_noscaled)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        return (1., AztecOO.AZ_rhs)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        return (1., AztecOO.AZ_Anorm)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        return (1., AztecOO.AZ_r0)
+
+    def _adaptSolutionTolerance(self, L, x, b):
+        return (1., AztecOO.AZ_sol)
+
     def _solve_(self, L, x, b):
 
         Solver = AztecOO.AztecOO(L, x, b)
@@ -57,14 +66,16 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
 
-        Solver.SetAztecOption(AztecOO.AZ_conv, self.criteria[self.criterion])
+        tolerance_factor, suite_criterion = self._adaptTolerance(L, x, b)
+
+        Solver.SetAztecOption(AztecOO.AZ_conv, suite_criterion)
 
         if self.preconditioner is not None:
             self.preconditioner._applyToSolver(solver=Solver, matrix=L)
         else:
             Solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
 
-        output = Solver.Iterate(self.iterations, self.tolerance)
+        output = Solver.Iterate(self.iterations, self.tolerance * tolerance_factor)
 
         if self.preconditioner is not None:
             if hasattr(self.preconditioner, 'Prec'):
@@ -75,7 +86,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         self._setConvergence(suite="trilinos",
                              code=int(status[AztecOO.AZ_why]),
                              iterations=status[AztecOO.AZ_its],
-                             residual=status[AztecOO.AZ_r],
+                             residual=status[AztecOO.AZ_r] / tolerance_factor,
                              scaled_residual=status[AztecOO.AZ_scaled_r],
                              convergence_residual=status[AztecOO.AZ_rec_r],
                              solve_time=status[AztecOO.AZ_solve_time],

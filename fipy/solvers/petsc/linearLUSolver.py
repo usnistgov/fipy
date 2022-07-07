@@ -17,12 +17,16 @@ class LinearLUSolver(PETScSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, iterations=10, precon="lu"):
+    def __init__(self, tolerance=1e-10, criterion="default",
+                 iterations=10, precon="lu"):
         """
         Parameters
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         precon : str
@@ -30,6 +34,21 @@ class LinearLUSolver(PETScSolver):
         """
         PETScSolver.__init__(self, tolerance=tolerance,
                              iterations=iterations, precon="lu")
+
+    def _adaptDefaultTolerance(self, L, x, b):
+        return self._adaptInitialTolerance(L, x, b)
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        return (1., None)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        return (self._rhsNorm(L, x, b), None)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        return (self._matrixNorm(L, x, b), None)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
         ksp = PETSc.KSP()
@@ -44,14 +63,14 @@ class LinearLUSolver(PETScSolver):
         ksp.setOperators(L)
         ksp.setFromOptions()
 
+        tolerance_factor, _ = self._adaptTolerance(L, x, b)
+
         for iteration in range(self.iterations):
             residualVector = L * x - b
 
             residual = residualVector.norm(PETSc.NormType.NORM_2)
-            if iteration == 0:
-                residual0 = residual
 
-            if residual <= self.tolerance * residual0:
+            if residual <= self.tolerance * tolerance_factor:
                 break
 
             xError = x.copy()
@@ -59,10 +78,10 @@ class LinearLUSolver(PETScSolver):
             ksp.solve(residualVector, xError)
             x -= xError
 
-        self._setConvergence(suite="petsc"
+        self._setConvergence(suite="petsc",
                              code=PETSc.KSP.ConvergedReason.CONVERGED_ITS,
                              iterations=iteration+1,
-                             residual=residual),
+                             residual=residual / tolerance_factor,
                              ksp_solver=ksp.type,
                              ksp_precon=ksp.getPC().type)
 

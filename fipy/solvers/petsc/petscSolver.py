@@ -45,6 +45,11 @@ class PETScSolver(Solver):
             overlappingRHSvector.destroy()
         del self.globalVectors
         
+    def _residualNorm(self, L, x, b):
+        residualVector = L * x - b
+
+        return residualVector.norm(PETSc.NormType.NORM_2)
+
     def _solve(self):
         from fipy.terms import SolutionVariableNumberError
         
