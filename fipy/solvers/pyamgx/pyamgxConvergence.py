@@ -1,9 +1,23 @@
-from pyamgx import AMGX_SOLVE_SUCCESS, AMGX_SOLVE_FAILED, AMGX_SOLVE_DIVERGED
+from ..convergence import (Convergence, IterationDivergence,
+                           BreakdownDivergence)
 
-from ..convergence import (Convergence, AbsoluteToleranceConvergence,
-                           RelativeToleranceConvergence, IterationDivergence,
-                           Divergence, BreakdownDivergence,
-                           IllConditionedDivergence,
-                           PreconditioningDivergence,
-                           IllConditionedPreconditionerDivergence,
-                           OutOfRangeDivergence)
+class pyamgx_Convergence(Convergence):
+    """
+    """
+    status_code = "success"
+    status_name = "success"
+    suite = "pyamgx"
+
+class pyamgx_BreakdownDivergence(BreakdownDivergence):
+    """
+    """
+    status_code = "failed"
+    status_name = "failed"
+    suite = "pyamgx"
+
+class pyamgx_IterationDivergence(IterationDivergence):
+    """
+    """
+    status_code = "diverged"
+    status_name = "diverged"
+    suite = "pyamgx"
