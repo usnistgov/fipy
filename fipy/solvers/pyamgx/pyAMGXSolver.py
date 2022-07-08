@@ -52,13 +52,27 @@ class PyAMGXSolver(Solver):
 
         super(PyAMGXSolver, self).__init__(tolerance=tolerance, criterion=criterion, iterations=iterations)
 
-    def __exit__(self, *args):
+    def _destroy_AMGX(self):
         # destroy AMGX objects:
-        self.A_gpu.destroy()
-        self.b_gpu.destroy()
-        self.x_gpu.destroy()
-        self.resources.destroy()
-        self.cfg.destroy()
+        # self.resources apparently doesn't need to be destroyed
+        if hasattr(self, "A_gpu"):
+            self.A_gpu.destroy()
+            del self.A_gpu
+        if hasattr(self, "b_gpu"):
+            self.b_gpu.destroy()
+            del self.b_gpu
+        if hasattr(self, "x_gpu"):
+            self.x_gpu.destroy()
+            del self.x_gpu
+        if hasattr(self, "cfg"):
+            self.cfg.destroy()
+            del self.cfg
+
+    def __exit__(self, *args):
+        self._destroy_AMGX()
+
+    def __del__(self):
+        self._destroy_AMGX()
 
     @property
     def _matrixClass(self):
