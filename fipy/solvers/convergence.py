@@ -53,7 +53,7 @@ class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
         else:
             self.actual_code = actual_code
 
-        self.info = vars(self)
+        self.info = vars(self).copy()
         self.info["status_name"] = self.status_name
         self.info["status_code"] = self.status_code
         self.info["max_iterations"] = self.solver.iterations
@@ -64,6 +64,9 @@ class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
 
     def warn(self):
         pass
+
+    def __str__(self):
+        return str(self.info)
 
 class Convergence(ConvergenceBase):
      message = "User requested convergence criteria is satisfied. Iterations: {0}. Relative error: {1}"
