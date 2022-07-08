@@ -169,10 +169,31 @@ register_skipper(flag='PYSPARSE_SOLVER',
                  why="the Pysparse solvers are not being used.",
                  skipWarning=True)
 
-register_skipper(flag='NOT_PYAMGX_SOLVER',
-                 test=lambda: solver != 'pyamgx',
-                 why="the PyAMGX solver is being used.",
+register_skipper(flag='PETSC_SOLVER',
+                 test=lambda: solver_suite == 'petsc',
+                 why="the PETSc solvers are not being used.",
                  skipWarning=True)
+
+register_skipper(flag='SCIPY_SOLVER',
+                 test=lambda: solver_suite == 'scipy',
+                 why="the SciPy solvers are not being used.",
+                 skipWarning=True)
+
+register_skipper(flag='PYAMG_SOLVER',
+                 test=lambda: solver_suite == 'pyamg',
+                 why="the PyAMG solvers are not being used.",
+                 skipWarning=True)
+
+register_skipper(flag='PYAMGX_SOLVER',
+                 test=lambda: solver_suite == 'pyamgx',
+                 why="the pyamgx solvers are not being used.",
+                 skipWarning=True)
+
+register_skipper(flag='TRILINOS_SOLVER',
+                 test=lambda: (solver_suite == 'trilinos') or (solver_suite == 'no-pysparse'),
+                 why="the Trilinos solvers are not being used.",
+                 skipWarning=True)
+
 del register_skipper
 
 _log.info("Solver suite is %s", solver_suite)
