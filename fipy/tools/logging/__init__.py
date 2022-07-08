@@ -50,8 +50,8 @@ def package_info():
         packages['gmsh'] = 'version check failed: {}'.format(e)
 
     try:
-        from fipy.solvers import solver
-        packages['solver'] = solver
+        from fipy.solvers import solver_suite
+        packages['solver'] = solver_suite
     except Exception as e:
         packages['solver'] = str(e)
 

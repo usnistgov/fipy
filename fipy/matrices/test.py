@@ -3,22 +3,22 @@ __all__ = []
 
 from fipy.tests.doctestPlus import _LateImportDocTestSuite
 import fipy.tests.testProgram
-from fipy.solvers import solver
+from fipy.solvers import solver_suite
 
-if solver == 'trilinos':
+if solver_suite == 'trilinos':
     docTestModuleNames = ('trilinosMatrix', 'pysparseMatrix')
-elif solver == 'no-pysparse':
+elif solver_suite == 'no-pysparse':
     docTestModuleNames = ('trilinosMatrix',)
-elif solver == 'scipy' or solver == 'pyamg':
+elif solver_suite == 'scipy' or solver_suite == 'pyamg':
     docTestModuleNames = ('scipyMatrix',)
-elif solver == 'pysparse':
+elif solver_suite == 'pysparse':
     docTestModuleNames = ('pysparseMatrix',)
-elif solver == 'pyamgx':
+elif solver_suite == 'pyamgx':
     docTestModuleNames = ('scipyMatrix',)
-elif solver == 'petsc':
+elif solver_suite == 'petsc':
     docTestModuleNames = ('petscMatrix',)
 else:
-    raise ImportError('Unknown solver package %s' % solver)
+    raise ImportError('Unknown solver package %s' % solver_suite)
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames=docTestModuleNames, base=__name__)
