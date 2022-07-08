@@ -80,7 +80,7 @@ class RelativeToleranceConvergence(Convergence):
 class Divergence(ConvergenceBase):
 
     def warn(self):
-        warnings.warn("({status_code}, {status_name}): {residual}".format(**self.info), stacklevel=6)
+        warnings.warn("({status_code}, {status_name}): {residual}".format(**self.info), stacklevel=5)
 
 class IterationDivergence(Divergence):
     pass
