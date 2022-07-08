@@ -3,6 +3,8 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
+from scipy.sparse import linalg
+
 from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
 from fipy.solvers.solver import Solver
 from fipy.tools import numerix
@@ -38,6 +40,12 @@ class _ScipySolver(Solver):
     @property
     def _matrixClass(self):
         return _ScipyMeshMatrix
+
+    def _rhsNorm(self, L, x, b):
+        return numerix.L2norm(b)
+
+    def _matrixNorm(self, L, x, b):
+        return linalg.norm(L.matrix, ord=numerix.inf)
 
     def _residualNorm(self, L, x, b):
         residualVector = L * x - b

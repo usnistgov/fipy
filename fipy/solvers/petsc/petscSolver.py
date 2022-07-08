@@ -45,6 +45,12 @@ class PETScSolver(Solver):
             overlappingRHSvector.destroy()
         del self.globalVectors
         
+    def _rhsNorm(self, L, x, b):
+        return b.norm(PETSc.NormType.NORM_2)
+
+    def _matrixNorm(self, L, x, b):
+        return L.norm(PETSc.NormType.NORM_INFINITY)
+
     def _residualNorm(self, L, x, b):
         residualVector = L * x - b
 

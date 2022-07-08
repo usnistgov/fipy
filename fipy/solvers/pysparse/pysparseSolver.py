@@ -56,6 +56,12 @@ class PysparseSolver(_PysparseMatrixSolver):
 
         self.convergence.warn()
 
+    def _rhsNorm(self, L, x, b):
+        return numerix.L2norm(b)
+
+    def _matrixNorm(self, L, x, b):
+        return L.matrix.norm('inf')
+
     def _residualNorm(self, L, x, b):
         residualVector = L * x - b
 

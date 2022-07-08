@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
-import numpy
-from scipy.sparse import csr_matrix
+
+from scipy.sparse import csr_matrix, linalg
 
 import pyamgx
 
@@ -69,6 +69,12 @@ class PyAMGXSolver(Solver):
         self.matrix = matrix
         self.RHSvector = RHSvector
 
+    def _rhsNorm(self, L, x, b):
+        return numerix.L2norm(b)
+
+    def _matrixNorm(self, L, x, b):
+        return linalg.norm(L.matrix, ord=numerix.inf)
+
     def _adaptDefaultTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)
 
@@ -76,10 +82,10 @@ class PyAMGXSolver(Solver):
         return (1., "ABSOLUTE")
 
     def _adaptRHSTolerance(self, L, x, b):
-        return (self.rhsNorm(L, x, b), "ABSOLUTE")
+        return (self._rhsNorm(L, x, b), "ABSOLUTE")
 
     def _adaptMatrixTolerance(self, L, x, b):
-        return (self.matrixNorm(L, x, b), "ABSOLUTE")
+        return (self._matrixNorm(L, x, b), "ABSOLUTE")
 
     def _adaptInitialTolerance(self, L, x, b):
         return (1., "RELATIVE_INI_CORE")
