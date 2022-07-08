@@ -12,14 +12,17 @@ class LinearFGMRESSolver(PyAMGXSolver):
     AMGX, with a Jacobi preconditioner by default.
     """
 
-    def __init__(self, tolerance=1e-10, iterations=2000,
-                 precon=BlockJacobiPreconditioner(),
+    def __init__(self, tolerance=1e-10, criterion="default",
+                 iterations=1000, precon=BlockJacobiPreconditioner(),
                  **kwargs):
         """
         Parameters
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         precon : ~fipy.solvers.pyamgx.preconditioners.preconditioners.Preconditioner, optional
@@ -41,6 +44,7 @@ class LinearFGMRESSolver(PyAMGXSolver):
         super(LinearFGMRESSolver, self).__init__(
                 config_dict,
                 tolerance=tolerance,
+                criterion=criterion,
                 iterations=iterations,
                 precon=precon,
                 **kwargs)

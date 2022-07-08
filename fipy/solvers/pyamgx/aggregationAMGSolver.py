@@ -11,8 +11,8 @@ class AggregationAMGSolver(PyAMGXSolver):
     The `AggregationAMGSolver` is an interface to the aggregation AMG solver in
     AMGX, with a Jacobi smoother by default.
     """
-    def __init__(self, tolerance=1e-10, iterations=2000,
-                 precon=None,
+    def __init__(self, tolerance=1e-10, criterion="default",
+                 iterations=1000, precon=None,
                  smoother=BlockJacobiSmoother(),
                  **kwargs):
         """
@@ -20,6 +20,9 @@ class AggregationAMGSolver(PyAMGXSolver):
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         precon : ~fipy.solvers.pyamgx.preconditioners.preconditioners.Preconditioner, optional
@@ -41,6 +44,7 @@ class AggregationAMGSolver(PyAMGXSolver):
         super(AggregationAMGSolver, self).__init__(
                 config_dict,
                 tolerance=tolerance,
+                criterion=criterion,
                 iterations=iterations,
                 precon=precon,
                 smoother=smoother,

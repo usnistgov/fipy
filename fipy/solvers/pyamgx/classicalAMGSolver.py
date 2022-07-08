@@ -11,8 +11,8 @@ class ClassicalAMGSolver(PyAMGXSolver):
     The `ClassicalAMGSolver` is an interface to the classical AMG solver in
     AMGX, with a Jacobi smoother by default.
     """
-    def __init__(self, tolerance=1e-10, iterations=2000,
-                 precon=None,
+    def __init__(self, tolerance=1e-10, criterion="default",
+                 iterations=1000, precon=None,
                  smoother=BlockJacobiSmoother(),
                  **kwargs):
         """
@@ -20,6 +20,9 @@ class ClassicalAMGSolver(PyAMGXSolver):
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         precon : ~fipy.solvers.pyamgx.preconditioners.preconditioners.Preconditioner, optional
@@ -40,6 +43,7 @@ class ClassicalAMGSolver(PyAMGXSolver):
         super(ClassicalAMGSolver, self).__init__(
                 config_dict,
                 tolerance=tolerance,
+                criterion=criterion,
                 iterations=iterations,
                 precon=precon,
                 smoother=smoother,
