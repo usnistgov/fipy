@@ -29,7 +29,7 @@ class LinearLUSolver(_ScipySolver):
         return (self._rhsNorm(L, x, b), None)
 
     def _adaptMatrixTolerance(self, L, x, b):
-        return (self.matrixNorm(L, x, b), None)
+        return (self._matrixNorm(L, x, b), None)
 
     def _adaptInitialTolerance(self, L, x, b):
         return (self._residualNorm(L, x, b), None)

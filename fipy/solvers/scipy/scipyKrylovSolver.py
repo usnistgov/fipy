@@ -30,7 +30,7 @@ class _ScipyKrylovSolver(_ScipySolver):
         return (1., None)
 
     def _adaptMatrixTolerance(self, L, x, b):
-        factor = self.matrixNorm(L, x, b) / self._rhsNorm(L, x, b)
+        factor = self._matrixNorm(L, x, b) / self._rhsNorm(L, x, b)
         return (factor, None)
 
     def _adaptInitialTolerance(self, L, x, b):

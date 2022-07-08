@@ -37,11 +37,11 @@ class LinearInitialSolver(PysparseSolver):
         return (factor, None)
 
     def _adaptRHSTolerance(self, L, x, b):
-        factor = self.rhsNorm(L, x, b) / self._residualNorm(L, x, b)
+        factor = self._rhsNorm(L, x, b) / self._residualNorm(L, x, b)
         return (1., None)
 
     def _adaptMatrixTolerance(self, L, x, b):
-        factor = self.matrixNorm(L, x, b) / self._residualNorm(L, x, b)
+        factor = self._matrixNorm(L, x, b) / self._residualNorm(L, x, b)
         return (factor, None)
 
     def _adaptInitialTolerance(self, L, x, b):
