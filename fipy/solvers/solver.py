@@ -12,6 +12,7 @@ can abort whenever it has problems with::
 
 """
 from __future__ import division
+from __future__ import print_function
 from __future__ import unicode_literals
 from builtins import object
 from builtins import str
@@ -98,10 +99,6 @@ class Solver(object):
 
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-
-    criteria = {
-        "default": None
-    }
 
     def __init__(self, tolerance=1e-10, criterion="default",
                  iterations=1000, precon=None):
@@ -263,3 +260,72 @@ class Solver(object):
 
     def __exit__(self, exc_type, exc_value, traceback):
         pass
+
+    def _test(self):
+        """
+        >>> import fipy as fp
+
+        >>> mesh = fp.Grid1D(nx=3)
+        >>> var = fp.CellVariable(mesh=mesh)
+        >>> var.constrain(1., where=mesh.facesLeft)
+        >>> var.constrain(2., where=mesh.facesRight)
+        >>> D = fp.FaceVariable(mesh=mesh, value=mesh.faceCenters[0])
+        >>> eq = fp.TransientTerm() == fp.DiffusionTerm(coeff=D)
+
+        >>> var.setValue(mesh.x)
+        >>> # with eq.getDefaultSolver(criterion="default", precon=None) as s:
+        >>> # with fp.LinearPCGSolver(criterion="default") as solver:
+        >>> # with fp.LinearGMRESSolver(criterion="default") as solver:
+        >>> with fp.LinearGMRESSolver(criterion="default", precon=None) as s:
+        ...     eq.solve(var=var, dt=1., solver=s)
+        ...     print(s.convergence.criterion, s.convergence.residual, var)
+        default 5.325944231618159e-16 [ 1.06363636  1.62727273  1.97272727]
+
+        >>> var.setValue(mesh.x)
+        >>> with fp.LinearGMRESSolver(criterion="unscaled", precon=None) as s:
+        ...     eq.solve(var=var, dt=1., solver=s)
+        ...     print(s.convergence.criterion, s.convergence.residual, var)
+        unscaled 8.479955780533376e-15 [ 1.06363636  1.62727273  1.97272727]
+
+        >>> var.setValue(mesh.x)
+        >>> with fp.LinearGMRESSolver(criterion="RHS", precon=None) as s:
+        ...     eq.solve(var=var, dt=1., solver=s)
+        ...     print(s.convergence.criterion, s.convergence.residual, var)
+        RHS 5.813782806744329e-16 [ 1.06363636  1.62727273  1.97272727]
+
+        >>> var.setValue(mesh.x)
+        >>> with fp.LinearGMRESSolver(criterion="matrix", precon=None) as s:
+        ...     eq.solve(var=var, dt=1., solver=s)
+        ...     print(s.convergence.criterion, s.convergence.residual, var)
+        matrix 7.709050709575797e-16 [ 1.06363636  1.62727273  1.97272727]
+
+        >>> var.setValue(mesh.x)
+        >>> with fp.LinearGMRESSolver(criterion="initial", precon=None) as s:
+        ...     eq.solve(var=var, dt=1., solver=s)
+        ...     print(s.convergence.criterion, s.convergence.residual, var)
+        initial 1.6319682508690227e-15 [ 1.06363636  1.62727273  1.97272727]
+
+        >>> # var.setValue(mesh.x)
+        >>> # with fp.LinearGMRESSolver(criterion="solution") as s: # doctest: +TRILINOS_SOLVER
+        ... #     eq.solve(var=var, dt=1., solver=s)
+        ... #     print(s.convergence.criterion, s.convergence.residual, var)
+
+        >>> var.setValue(mesh.x)
+        >>> with fp.LinearGMRESSolver(criterion="preconditioned", precon=None) as s: # doctest: +PETSC_SOLVER
+        ...     eq.solve(var=var, dt=1., solver=s)
+        ...     print(s.convergence.criterion, s.convergence.residual, var)
+        preconditioned 5.325944231618159e-16 [ 1.06363636  1.62727273  1.97272727]
+
+        >>> var.setValue(mesh.x)
+        >>> with fp.LinearGMRESSolver(criterion="natural", precon=None) as s: # doctest: +PETSC_SOLVER
+        ...     eq.solve(var=var, dt=1., solver=s)
+        ...     print(s.convergence.criterion, s.convergence.residual, var)
+        """
+        pass
+
+def _test():
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
+
+if __name__ == "__main__":
+    _test()
