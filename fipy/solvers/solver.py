@@ -276,48 +276,48 @@ class Solver(object):
         >>> # with eq.getDefaultSolver(criterion="default", precon=None) as s:
         >>> # with fp.LinearPCGSolver(criterion="default") as solver:
         >>> # with fp.LinearGMRESSolver(criterion="default") as solver:
-        >>> with fp.LinearGMRESSolver(criterion="default", precon=None) as s:
+        >>> with eq.getDefaultSolver(criterion="default") as s:
         ...     eq.solve(var=var, dt=1., solver=s)
         ...     print(s.convergence.criterion, s.convergence.residual, var)
         default 5.325944231618159e-16 [ 1.06363636  1.62727273  1.97272727]
 
         >>> var.setValue(mesh.x)
-        >>> with fp.LinearGMRESSolver(criterion="unscaled", precon=None) as s:
+        >>> with eq.getDefaultSolver(criterion="unscaled") as s:
         ...     eq.solve(var=var, dt=1., solver=s)
         ...     print(s.convergence.criterion, s.convergence.residual, var)
         unscaled 8.479955780533376e-15 [ 1.06363636  1.62727273  1.97272727]
 
         >>> var.setValue(mesh.x)
-        >>> with fp.LinearGMRESSolver(criterion="RHS", precon=None) as s:
+        >>> with eq.getDefaultSolver(criterion="RHS") as s:
         ...     eq.solve(var=var, dt=1., solver=s)
         ...     print(s.convergence.criterion, s.convergence.residual, var)
         RHS 5.813782806744329e-16 [ 1.06363636  1.62727273  1.97272727]
 
         >>> var.setValue(mesh.x)
-        >>> with fp.LinearGMRESSolver(criterion="matrix", precon=None) as s:
+        >>> with eq.getDefaultSolver(criterion="matrix") as s:
         ...     eq.solve(var=var, dt=1., solver=s)
         ...     print(s.convergence.criterion, s.convergence.residual, var)
         matrix 7.709050709575797e-16 [ 1.06363636  1.62727273  1.97272727]
 
         >>> var.setValue(mesh.x)
-        >>> with fp.LinearGMRESSolver(criterion="initial", precon=None) as s:
+        >>> with eq.getDefaultSolver(criterion="initial") as s:
         ...     eq.solve(var=var, dt=1., solver=s)
         ...     print(s.convergence.criterion, s.convergence.residual, var)
         initial 1.6319682508690227e-15 [ 1.06363636  1.62727273  1.97272727]
 
         >>> # var.setValue(mesh.x)
-        >>> # with fp.LinearGMRESSolver(criterion="solution") as s: # doctest: +TRILINOS_SOLVER
+        >>> # with eq.getDefaultSolver(criterion="solution") as s: # doctest: +TRILINOS_SOLVER
         ... #     eq.solve(var=var, dt=1., solver=s)
         ... #     print(s.convergence.criterion, s.convergence.residual, var)
 
         >>> var.setValue(mesh.x)
-        >>> with fp.LinearGMRESSolver(criterion="preconditioned", precon=None) as s: # doctest: +PETSC_SOLVER
+        >>> with eq.getDefaultSolver(criterion="preconditioned") as s: # doctest: +PETSC_SOLVER
         ...     eq.solve(var=var, dt=1., solver=s)
         ...     print(s.convergence.criterion, s.convergence.residual, var)
         preconditioned 5.325944231618159e-16 [ 1.06363636  1.62727273  1.97272727]
 
         >>> var.setValue(mesh.x)
-        >>> with fp.LinearGMRESSolver(criterion="natural", precon=None) as s: # doctest: +PETSC_SOLVER
+        >>> with eq.getDefaultSolver(criterion="natural") as s: # doctest: +PETSC_SOLVER
         ...     eq.solve(var=var, dt=1., solver=s)
         ...     print(s.convergence.criterion, s.convergence.residual, var)
         """
