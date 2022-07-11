@@ -18,6 +18,7 @@ from builtins import object
 from builtins import str
 __docformat__ = 'restructuredtext'
 
+import json
 import logging
 import warnings
 
@@ -149,6 +150,10 @@ class Solver(object):
                                criterion=self.criterion,
                                actual_code=actual_code,
                                **kwargs)
+
+        info = self.convergence.info.copy()
+        info["solver"] = str(info["solver"])
+        self._log.debug(json.dumps(info))
 
     def _defaultNorm(self, L, x, b):
         raise NotImplementedError
