@@ -67,7 +67,9 @@ class PETScKrylovSolver(PETScSolver):
         ksp = PETSc.KSP()
         ksp.create(L.comm)
         ksp.setType(self.solver)
-        if self.preconditioner is not None:
+        if self.preconditioner is None:
+            ksp.getPC().setType('none')
+        else:
             ksp.getPC().setType(self.preconditioner)
 
         tolerance_factor, suite_criterion = self._adaptTolerance(L, x, b)
