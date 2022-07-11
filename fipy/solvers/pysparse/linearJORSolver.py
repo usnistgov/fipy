@@ -34,7 +34,7 @@ class LinearJORSolver(PysparseSolver):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'unscaled'}
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
@@ -56,10 +56,12 @@ class LinearJORSolver(PysparseSolver):
         tol = 1e+10
         xold = x.copy()
 
+        tolerance_factor, _ = self._adaptTolerance(L, x, b)
+
         for iteration in range(self.iterations):
             residual = numerix.L2norm(L * x - b)
 
-            if residual <= self.tolerance:
+            if residual <= self.tolerance * tolerance_factor:
                 break
 
             xold[:] = x
@@ -70,4 +72,4 @@ class LinearJORSolver(PysparseSolver):
         self._setConvergence(suite="pysparse",
                              code=0,
                              iterations=iteration+1,
-                             residual=residual)
+                             residual=residual / tolerance_factor)

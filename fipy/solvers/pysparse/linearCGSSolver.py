@@ -39,7 +39,7 @@ class LinearCGSSolver(LinearRHSSolver):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'RHS'}
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int

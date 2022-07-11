@@ -29,14 +29,6 @@ class LinearPCGSolver(LinearRHSSolver):
 
     solveFnc = staticmethod(krylov.pcg)
 
-    def __init__(self, precon=SsorPreconditioner(), *args, **kwargs):
-        """
-        Parameters
-        ----------
-        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner, optional
-        """
-        super(LinearPCGSolver, self).__init__(precon=precon, *args, **kwargs)
-
     def __init__(self, tolerance=1e-10, criterion="default",
                  iterations=1000, precon=SsorPreconditioner()):
         """
@@ -46,7 +38,7 @@ class LinearPCGSolver(LinearRHSSolver):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'RHS'}
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
