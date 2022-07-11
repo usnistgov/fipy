@@ -725,7 +725,7 @@ and solve the steady-state problem
 ...     viewer.plot()
 >>> from fipy import input
 >>> if __name__ == '__main__':
-...     input("No-flux - stead-state failure. \
+...     input("No-flux - steady-state failure. \
 ... Press <return> to proceed...")
 
 >>> print(numerix.allclose(phi, 0.0)) #doctest: +PYSPARSE_SOLVER
