@@ -60,7 +60,7 @@ __version__ = get_versions()['version']
 del get_versions
 
 from fipy.tools.logging import package_info
-_log.info(package_info())
+_log.info(json.dumps(package_info()))
 del package_info
 
 from fipy.boundaryConditions import *
