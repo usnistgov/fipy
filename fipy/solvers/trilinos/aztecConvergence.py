@@ -12,6 +12,13 @@ class AZ_NormalConvergence(Convergence):
     status_name = "AZ_normal"
     suite = "trilinos"
 
+class AZ_LossOfAccuracyConvergence(Convergence):
+    """
+    """
+    status_code = AztecOO.AZ_loss
+    status_name = "AZ_loss"
+    suite = "trilinos"
+
 class AZ_ParameterDivergence(Divergence):
     """
     """
@@ -24,13 +31,6 @@ class AZ_BreakdownDivergence(BreakdownDivergence):
     """
     status_code = AztecOO.AZ_breakdown
     status_name = "AZ_breakdown"
-    suite = "trilinos"
-
-class AZ_LossOfAccuracyDivergence(Divergence):
-    """
-    """
-    status_code = AztecOO.AZ_loss
-    status_name = "AZ_loss"
     suite = "trilinos"
 
 class AZ_IllConditionedDivergence(IllConditionedDivergence):
