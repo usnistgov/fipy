@@ -1,8 +1,7 @@
 import argparse
-import time
+import json
+import os
 import uuid
-
-import datreant.core as dtr
 
 import fipy as fp
 from fipy.tools import numerix
@@ -26,25 +25,7 @@ parser.add_argument("--writeFiles", help="whether to write solution values and m
 
 args, unknowns = parser.parse_known_args()
 
-if parallelComm.procID == 0:
-    print("storing results in {0}".format(args.output))
-    data = dtr.Treant(args.output)
-else:
-    class dummyTreant(object):
-        categories = dict()
-
-    data = dummyTreant()
-
-data.categories['processes'] = parallelComm.Nproc
-data.categories['sweeps'] = args.sweeps
-data.categories['iterations'] = args.iterations
-data.categories['tolerance'] = args.tolerance
-data.categories['solver'] = args.solver
-data.categories['library'] = fp.solvers.solver
-data.categories['script'] = __file__
-
 N = int(numerix.sqrt(args.numberOfElements))
-data.categories['numberOfElements'] = N**2
 mesh = fp.Grid2D(nx=N, Lx=1., ny=N, Ly=1.)
 
 var = fp.CellVariable(mesh=mesh, value=1., hasOld=True)
@@ -53,37 +34,38 @@ var.constrain(0., where=mesh.facesRight)
 
 eq = fp.TransientTerm() == fp.DiffusionTerm(coeff=var)
 
-if fp.solvers.solver != "scipy" and args.solver in ("pcg", "cgs", "gmres"):
-    precon = fp.JacobiPreconditioner()
-else:
-    precon = None
+precon = None
 
-if args.solver in ("cg", "pcg"):
-    solver = fp.LinearPCGSolver(tolerance=args.tolerance, iterations=args.iterations, precon=precon)
-    if fp.solvers.solver == "trilinos":
-        # PySparse does b-normalization for (P)CG
-        solver.convergenceCheck = solver.AZ_rhs
-elif args.solver == "cgs":
-    solver = fp.LinearCGSSolver(tolerance=args.tolerance, iterations=args.iterations, precon=precon)
-elif args.solver == "gmres":
-    solver = fp.LinearGMRESSolver(tolerance=args.tolerance, iterations=args.iterations, precon=precon)
-elif args.solver == "lu":
-    solver = fp.LinearLUSolver(tolerance=args.tolerance, iterations=args.iterations)
-else:
-    raise Exception("Unknown solver: {0}".format(args.solver))
+# if fp.solvers.solver != "scipy" and args.solver in ("pcg", "cgs", "gmres"):
+#     precon = fp.JacobiPreconditioner()
 
-start = time.process_time()
+solver_class = {
+    "cg": fp.LinearPCGSolver,
+    "pcg": fp.LinearPCGSolver,
+    "cgs": fp.LinearCGSSolver,
+    "gmres": fp.LinearGMRESSolver,
+    "lu": fp.LinearLUSolver
+}
 
-for sweep in range(args.sweeps):
-    eq.cacheMatrix()
-    eq.cacheRHSvector()
-    res = eq.sweep(var=var, dt=1., solver=solver)
-
-    data.categories['sweep {0} - iterations'.format(sweep)] = solver.status['iterations']
+with solver_class[args.solver](tolerance=args.tolerance, criterion="initial",
+                               iterations=args.iterations, precon=precon) as solver:
 
     if args.writeFiles and parallelComm.procID == 0:
-        eq.matrix.exportMmf(data["sweep{0}.mtx".format(sweep)].make().abspath)
-        fp.tools.dump.write((var, eq.RHSvector),
-                            filename=data["sweep{0}.tar.gz".format(sweep)].make().abspath)
+        suite = solver.__module__.split('.')[2]
+        path = os.path.join(args.output, suite, solver.__class__.__name__, str(N**2))
 
-data.categories['elapsed'] = time.process_time() - start
+        os.makedirs(path)
+
+    solver._log.debug(json.dumps(dict(state="START", numberOfElements=N**2, sweeps=args.sweeps)))
+
+    for sweep in range(args.sweeps):
+        eq.cacheMatrix()
+        eq.cacheRHSvector()
+        res = eq.sweep(var=var, dt=1., solver=solver)
+
+    solver._log.debug(json.dumps(dict(state="END", numberOfElements=N**2, sweeps=args.sweeps)))
+
+    if args.writeFiles and parallelComm.procID == 0:
+        eq.matrix.exportMmf(os.path.join(path, "final.mtx"))
+        fp.tools.dump.write((var, eq.RHSvector),
+                            filename=os.path.join(path, "final.tar.gz"))
