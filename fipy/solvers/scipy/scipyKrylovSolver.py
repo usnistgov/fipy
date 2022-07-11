@@ -52,8 +52,7 @@ class _ScipyKrylovSolver(_ScipySolver):
                                 maxiter=self.iterations,
                                 M=M,
                                 atol='legacy',
-                                callback=self._countIterations,
-                                callback_type='legacy')
+                                callback=self._countIterations)
 
         self._setConvergence(suite="scipy",
                              code=numerix.sign(info),
