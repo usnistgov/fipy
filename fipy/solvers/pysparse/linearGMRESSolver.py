@@ -36,7 +36,7 @@ class LinearGMRESSolver(LinearInitialSolver):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'initial'}
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
