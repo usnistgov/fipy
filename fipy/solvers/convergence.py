@@ -59,8 +59,8 @@ class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
         self.info["max_iterations"] = self.solver.iterations
         self.info.update(kwargs)
 
-        self._log = logging.getLogger(solver.__class__.__module__
-                                      + "." + solver.__class__.__name__)
+        self._log = logging.getLogger(self.__class__.__module__
+                                      + "." + self.__class__.__name__)
 
     def warn(self):
         pass
