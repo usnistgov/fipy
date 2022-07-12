@@ -11,14 +11,7 @@ class Preconditioner(object):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self):
-        """
-        Create a `Preconditioner` object.
-        """
-        if self.__class__ is Preconditioner:
-            raise NotImplementedError("can't instantiate abstract base class")
-
-    def _applyToMatrix(self, matrix):
+    def _applyToMatrix(self, A):
         """
         Returns the function used for Pysparse
         preconditioning.
