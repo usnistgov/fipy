@@ -29,6 +29,9 @@ class LinearInitialSolver(PysparseSolver):
         super(LinearInitialSolver, self).__init__(tolerance=tolerance, criterion=criterion,
                                                   iterations=iterations, precon=precon)
 
+    def _defaultNorm(self, L, x, b):
+        return self._residualNorm(L, x, b)
+
     def _adaptDefaultTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)
 

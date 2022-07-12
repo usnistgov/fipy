@@ -58,7 +58,7 @@ class _ScipyKrylovSolver(_ScipySolver):
                              code=numerix.sign(info),
                              actual_code=info,
                              iterations=self.actualIterations,
-                             residual=0. / tolerance_factor)
+                             residual=self._residualNorm(L, x, b))
 
         self.convergence.warn()
 

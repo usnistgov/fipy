@@ -90,7 +90,7 @@ class LinearLUSolver(TrilinosSolver):
         self._setConvergence(suite="trilinos",
                              code=AztecOO.AZ_normal,
                              iterations=iteration+1,
-                             residual=float(residual / tolerance_factor))
+                             residual=float(residual))
 
         self.convergence.warn()
 

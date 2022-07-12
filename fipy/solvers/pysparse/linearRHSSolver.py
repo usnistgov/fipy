@@ -29,6 +29,9 @@ class LinearRHSSolver(PysparseSolver):
         super(LinearRHSSolver, self).__init__(tolerance=tolerance, criterion=criterion,
                                               iterations=iterations, precon=precon)
 
+    def _defaultNorm(self, L, x, b):
+        return self._rhsNorm(L, x, b)
+
     def _adaptDefaultTolerance(self, L, x, b):
         return self._adaptRHSTolerance(L, x, b)
 

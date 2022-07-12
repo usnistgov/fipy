@@ -81,7 +81,7 @@ class LinearLUSolver(PETScSolver):
         self._setConvergence(suite="petsc",
                              code=PETSc.KSP.ConvergedReason.CONVERGED_ITS,
                              iterations=iteration+1,
-                             residual=residual / tolerance_factor,
+                             residual=residual,
                              ksp_solver=ksp.type,
                              ksp_precon=ksp.getPC().type)
 
