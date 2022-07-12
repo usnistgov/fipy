@@ -42,5 +42,7 @@ if [[ "$#" < 1 ]]; then
     exit 1
 fi
 
-source activate $ENV
-$@
+# https://stackoverflow.com/a/56155771/2019542
+eval "$(conda shell.bash hook)"
+conda activate $ENV
+env $@

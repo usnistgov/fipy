@@ -22,6 +22,8 @@ QSUB=0
 ENV=fipy
 NP=1
 PYTHON=python
+SOLVERSUITE=petsc
+PRECONDITIONER=none
 
 while [[ $# > 0 ]] && [[ $1 == -* ]]
 do
@@ -37,8 +39,16 @@ do
             NP="$2"
             shift # option has parameter
             ;;
+        --log)
+            LOG_CONFIG="FIPY_LOG_CONFIG=${2}"
+            shift # option has parameter
+            ;;
         --mprof)
             PYTHON="mprof run"
+            ;;
+        --solversuite)
+            SOLVERSUITE="$2"
+            shift # option has parameter
             ;;
         -h|--help)
             echo "$USAGE"
@@ -72,21 +82,21 @@ else
     MPI=""
 fi
 
-for library in trilinos scipy pysparse
+for solver in cg pcg cgs gmres lu
 do
-    for solver in cg pcg cgs gmres lu
+    for size in 10 100 1000 # 10000 100000 1000000 10000000
     do
-        for size in 100 1000 10000 100000 1000000 10000000
-        do
-            dir="Data/`uuidgen`"
-            mkdir -p $dir
-            INVOCATION="${MPI} ${PYTHON} ${BASH_SOURCE%/*}/${SCRIPT} \
-              --${library} --numberOfElements=${size} --solver=${solver} --output $dir $@"
-            if [[ $QSUB == 1 ]]; then
-                qsub -cwd -pe nodal ${NP} -q "wide64" -o "${dir}" -e "${dir}" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
-            else
-                bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
-            fi
-        done
+        dir="Data/`uuidgen`"
+        mkdir -p $dir
+        INVOCATION="OMP_NUM_THREADS=1 FIPY_SOLVERS=${SOLVERSUITE} ${LOG_CONFIG} \
+          ${MPI} ${PYTHON} ${BASH_SOURCE%/*}/${SCRIPT} \
+          --numberOfElements=${size} --solver=${solver} $@"
+#             INVOCATION="${MPI} ${PYTHON} ${BASH_SOURCE%/*}/${SCRIPT} \
+#               --${library} --numberOfElements=${size} --solver=${solver} --output $dir $@"
+        if [[ $QSUB == 1 ]]; then
+            qsub -cwd -pe nodal ${NP} -q "wide64" -o "${dir}" -e "${dir}" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
+        else
+            bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
+        fi
     done
 done
