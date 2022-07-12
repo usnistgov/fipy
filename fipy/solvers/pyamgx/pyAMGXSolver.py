@@ -130,7 +130,7 @@ class PyAMGXSolver(Solver):
         if solver.iterations_number == -1:
             residual = None
         else:
-            residual = solver.get_residual() / tolerance_factor
+            residual = solver.get_residual()
 
         self._setConvergence(suite="pyamgx",
                              code=solver.status,

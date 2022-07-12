@@ -45,6 +45,10 @@ class PysparseSolver(_PysparseMatrixSolver):
 
         tolerance_factor, _ = self._adaptTolerance(L, x, b)
 
+        # Pysparse returns the relative residual,
+        # which changes depending on which solver is used
+        default_norm = self._defaultNorm(L, x, b)
+
         info, iter, relres = self.solveFnc(A, b, x,
                                            self.tolerance * tolerance_factor,
                                            self.iterations, P)
@@ -52,7 +56,7 @@ class PysparseSolver(_PysparseMatrixSolver):
         self._setConvergence(suite="pysparse",
                              code=info,
                              iterations=iter,
-                             residual=relres / tolerance_factor)
+                             residual=relres * default_norm)
 
         self.convergence.warn()
 

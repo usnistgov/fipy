@@ -82,4 +82,4 @@ class LinearLUSolver(PysparseSolver):
         self._setConvergence(suite="pysparse",
                              code=0,
                              iterations=iteration+1,
-                             residual=residual / tolerance_factor)
+                             residual=residual)

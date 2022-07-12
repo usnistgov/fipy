@@ -56,7 +56,7 @@ class LinearLUSolver(_ScipySolver):
         self._setConvergence(suite="scipy",
                              code=0,
                              iterations=iteration+1,
-                             residual=residual / tolerance_factor)
+                             residual=residual)
 
         self.convergence.warn()
 

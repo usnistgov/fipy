@@ -84,7 +84,7 @@ class PETScKrylovSolver(PETScSolver):
         self._setConvergence(suite="petsc",
                              code=ksp.reason,
                              iterations=ksp.its,
-                             residual=ksp.norm / tolerance_factor,
+                             residual=ksp.norm,
                              ksp_solver=ksp.type,
                              ksp_precon=ksp.getPC().type,
                              ksp_norm_type=ksp.norm_type)
