@@ -8,6 +8,8 @@ import atexit
 
 import pyamgx
 
+from .preconditioners import *
+
 from .pyAMGXSolver import *
 from .linearCGSolver import *
 from .linearGMRESSolver import *
@@ -42,3 +44,4 @@ __all__.extend(linearBiCGStabSolver.__all__)
 __all__.extend(linearLUSolver.__all__)
 __all__.extend(aggregationAMGSolver.__all__)
 __all__.extend(classicalAMGSolver.__all__)
+__all__.extend(preconditioners.__all__)
