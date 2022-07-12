@@ -10,6 +10,8 @@ from .linearCGSSolver import *
 from .dummySolver import *
 from . import petscConvergence
 
+from .preconditioners import *
+
 DefaultSolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearGMRESSolver
 DummySolver = DummySolver
@@ -25,3 +27,4 @@ __all__.extend(linearPCGSolver.__all__)
 __all__.extend(linearGMRESSolver.__all__)
 __all__.extend(linearBicgSolver.__all__)
 __all__.extend(linearCGSSolver.__all__)
+__all__.extend(preconditioners.__all__)

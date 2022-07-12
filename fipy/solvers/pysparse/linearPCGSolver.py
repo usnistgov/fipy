@@ -4,7 +4,7 @@ __docformat__ = 'restructuredtext'
 from pysparse.itsolvers import krylov
 
 from .linearRHSSolver import LinearRHSSolver
-from .preconditioners import SsorPreconditioner
+from .preconditioners import SSORPreconditioner
 
 __all__ = ["LinearPCGSolver"]
 from future.utils import text_to_native_str
@@ -45,7 +45,7 @@ class LinearPCGSolver(LinearRHSSolver):
             Maximum number of iterative steps to perform.
         precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
             Preconditioner to use
-            (default :class:`fipy.solvers.pysparse.preconditioners.SsorPreconditioner`).
+            (default :class:`fipy.solvers.pysparse.preconditioners.SSORPreconditioner`).
         """
         super(LinearPCGSolver, self).__init__(tolerance=tolerance, criterion=criterion,
                                               iterations=iterations, precon=precon)
