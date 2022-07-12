@@ -14,6 +14,8 @@ parser.add_argument("--numberOfElements", help="number of total cells in a Grid2
                     type=int, default=10000)
 parser.add_argument("--solver", help="solver class to use",
                     choices=("cg", "pcg", "cgs", "gmres", "lu"), default="cg")
+parser.add_argument("--preconditioner", help="preconditioner class to use",
+                    choices=("jacobi", "ilu", "ssor", "icc", "none"), default="none")
 parser.add_argument("--sweeps", help="number of nonlinear sweeps to take",
                     type=int, default=10)
 parser.add_argument("--iterations", help="maximum number of linear iterations to take for each sweep",
@@ -36,8 +38,16 @@ eq = fp.TransientTerm() == fp.DiffusionTerm(coeff=var)
 
 precon = None
 
-# if fp.solvers.solver != "scipy" and args.solver in ("pcg", "cgs", "gmres"):
-#     precon = fp.JacobiPreconditioner()
+if args.preconditioner == "jacobi":
+    precon = fp.JacobiPreconditioner()
+elif args.preconditioner == "ilu":
+    precon = fp.ILUPreconditioner()
+elif args.preconditioner == "ssor":
+    precon = fp.SSORPreconditioner
+elif args.preconditioner == "icc":
+    precon = fp.ICPreconditioner
+elif args.preconditioner == "none":
+    precon = None
 
 solver_class = {
     "cg": fp.LinearPCGSolver,
@@ -56,14 +66,21 @@ with solver_class[args.solver](tolerance=args.tolerance, criterion="initial",
 
         os.makedirs(path)
 
-    solver._log.debug(json.dumps(dict(state="START", numberOfElements=N**2, sweeps=args.sweeps)))
+    state = dict(state="START", numberOfElements=N**2, sweeps=args.sweeps)
+    if precon is None:
+        state["preconditioner"] = None
+    else:
+        state["preconditioner"] = precon.__class__.__name__
+
+    solver._log.debug(json.dumps(state))
 
     for sweep in range(args.sweeps):
         eq.cacheMatrix()
         eq.cacheRHSvector()
         res = eq.sweep(var=var, dt=1., solver=solver)
 
-    solver._log.debug(json.dumps(dict(state="END", numberOfElements=N**2, sweeps=args.sweeps)))
+    state["state"] = "END"
+    solver._log.debug(json.dumps(state))
 
     if args.writeFiles and parallelComm.procID == 0:
         eq.matrix.exportMmf(os.path.join(path, "final.mtx"))
