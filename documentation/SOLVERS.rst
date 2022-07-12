@@ -225,6 +225,7 @@ they succed or fail.  This information is captured as a
    :widths: 25 25 15 15 20 25
    :header-rows: 1
 
+.. [#KSP_Convergence_Tests] https://petsc.org/release/docs/manual/ksp/#sec-convergencetests
 .. [#KSP_UNPRECONDITIONED_NORM] |KSP_NORM_UNPRECONDITIONED|_
 .. |KSP_NORM_UNPRECONDITIONED|  replace:: :literal:`KSP_UNPRECONDITIONED_NORM`
 .. _KSP_NORM_UNPRECONDITIONED:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED/
