@@ -36,8 +36,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
             raise NotImplementedError("can't instantiate abstract base class")
 
         TrilinosSolver.__init__(self, tolerance=tolerance, criterion=criterion,
-                                iterations=iterations, precon=None)
-        self.preconditioner = precon
+                                iterations=iterations, precon=precon)
 
     def _adaptDefaultTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)
@@ -70,10 +69,10 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         Solver.SetAztecOption(AztecOO.AZ_conv, suite_criterion)
 
-        if self.preconditioner is not None:
-            self.preconditioner._applyToSolver(solver=Solver, matrix=L)
-        else:
+        if self.preconditioner is None:
             Solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
+        else:
+            self.preconditioner._applyToSolver(solver=Solver, matrix=L)
 
         output = Solver.Iterate(self.iterations, self.tolerance * tolerance_factor)
 

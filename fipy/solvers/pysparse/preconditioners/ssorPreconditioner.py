@@ -7,10 +7,10 @@ __all__ = ["SsorPreconditioner"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class SsorPreconditioner(Preconditioner):
+class SSORPreconditioner(Preconditioner):
     """
     SSOR preconditioner for Pysparse.
-    Really just a wrapper class for `pysparse.precon.jacobi`.
+    Really just a wrapper class for `pysparse.precon.ssor`.
     """
     def _applyToMatrix(self, A):
         """

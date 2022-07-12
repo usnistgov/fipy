@@ -15,5 +15,5 @@ class DomDecompPreconditioner(Preconditioner):
 
     """
 
-    def _ApplyToSolver(self, solver, matrix):
+    def _applyToSolver(self, solver, matrix):
         solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_dom_decomp)
