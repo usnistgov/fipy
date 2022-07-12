@@ -4,6 +4,8 @@ import logging
 
 _log = logging.getLogger(__name__)
 
+from .preconditioners import *
+
 from .linearCGSSolver import *
 from .linearGMRESSolver import *
 from .linearBicgstabSolver import *
@@ -29,3 +31,4 @@ __all__.extend(linearGMRESSolver.__all__)
 __all__.extend(linearBicgstabSolver.__all__)
 __all__.extend(linearLUSolver.__all__)
 __all__.extend(linearPCGSolver.__all__)
+__all__.extend(preconditioners.__all__)
