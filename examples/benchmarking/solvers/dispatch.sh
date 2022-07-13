@@ -110,8 +110,6 @@ do
     size=$((10**${POWER}))
     for solver in pcg cgs gmres lu
     do
-        dir="Data/`uuidgen`"
-        mkdir -p $dir
         INVOCATION="OMP_NUM_THREADS=1 FIPY_SOLVERS=${SOLVERSUITE} ${LOG_CONFIG} \
           ${MPI} ${PYTHON} ${BASH_SOURCE%/*}/${SCRIPT} \
           --numberOfElements=${size} --solver=${solver} $@"
