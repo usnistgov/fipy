@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from fipy.solvers.pyamgx import PyAMGXSolver
-from fipy.solvers.pyamgx.preconditioners import BlockJacobiPreconditioner
+from fipy.solvers.pyamgx.preconditioners import JacobiPreconditioner
 
 __all__ = ["LinearFGMRESSolver"]
 from future.utils import text_to_native_str
@@ -13,7 +13,7 @@ class LinearFGMRESSolver(PyAMGXSolver):
     """
 
     def __init__(self, tolerance=1e-10, criterion="default",
-                 iterations=1000, precon=BlockJacobiPreconditioner(),
+                 iterations=1000, precon=JacobiPreconditioner(),
                  **kwargs):
         """
         Parameters
