@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# E.g.,
+# bash examples/benchmarking/solvers/dispatch.sh --env fipy27 --solversuite pysparse --log examples/benchmarking/solvers/macos_config.json diffusion.py --preconditioner=ilu
+
 USAGE="usage: $0 [-h] [--env ENV] [--cmd CMD] [--np NP] [--mprof] [--] SCRIPT [ARGS]
 
 Iterates over solvers and mesh sizes by calling setup.sh, which activates
@@ -16,7 +19,12 @@ optional arguments:
   --env ENV   Conda environment to activate before invoking SCRIPT
               (default: fipy)
   --np NP     Number of processes to invoke SCRIPT with (default: 1)
-  --mprof     Whether to run mprof profiler (default: False)"
+  --mprof     Whether to run mprof profiler (default: False)
+  --log       Path to log configuration file
+  --solversuite  Solver package to use
+  --powermin  Power of ten for minimum size, minsize = 10**POWERMIN
+  --powermin  Power of ten for maximum size, maxsize = 10**POWERMAX
+  --powerstep Increment in power of ten for size"
 
 QSUB=0
 ENV=fipy
