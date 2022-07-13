@@ -146,6 +146,6 @@ class PyAMGXSolver(Solver):
 
     def _solve(self):
          if self.var.mesh.communicator.Nproc > 1:
-             raise Exception("SciPy solvers cannot be used with multiple processors")
+             raise Exception("pyamgx solvers cannot be used with multiple processors")
 
          self.var[:] = numerix.reshape(self._solve_(self.matrix, self.var.ravel(), numerix.array(self.RHSvector)), self.var.shape)

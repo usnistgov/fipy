@@ -3,7 +3,7 @@ from pysparse.precon import precon
 
 from fipy.solvers.pysparse.preconditioners.preconditioner import Preconditioner
 
-__all__ = ["SsorPreconditioner"]
+__all__ = ["SSORPreconditioner"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
