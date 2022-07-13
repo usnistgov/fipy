@@ -47,10 +47,10 @@ class _ScipySolver(Solver):
     def _matrixNorm(self, L, x, b):
         return linalg.norm(L.matrix, ord=numerix.inf)
 
-    def _residualNorm(self, L, x, b):
+    def _residualVectorAndNorm(self, L, x, b):
         residualVector = L * x - b
 
-        return numerix.L2norm(residualVector)
+        return residualVector, numerix.L2norm(residualVector)
 
     def _solve(self):
 

@@ -43,9 +43,7 @@ class LinearLUSolver(_ScipySolver):
         tolerance_factor, _ = self._adaptTolerance(L, x, b)
 
         for iteration in range(min(self.iterations, 10)):
-            residualVector = L * x - b
-
-            residual = numerix.L2norm(residualVector)
+            residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
             if residual <= self.tolerance * tolerance_factor:
                 break

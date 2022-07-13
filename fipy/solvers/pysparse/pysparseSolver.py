@@ -66,10 +66,10 @@ class PysparseSolver(_PysparseMatrixSolver):
     def _matrixNorm(self, L, x, b):
         return L.matrix.norm('inf')
 
-    def _residualNorm(self, L, x, b):
+    def _residualVectorAndNorm(self, L, x, b):
         residualVector = L * x - b
 
-        return numerix.L2norm(residualVector)
+        return residualVector, numerix.L2norm(residualVector)
 
     def _solve(self):
 

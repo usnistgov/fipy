@@ -65,27 +65,18 @@ class LinearLUSolver(TrilinosSolver):
         tolerance_factor, _ = self._adaptTolerance(L, x, b)
 
         for iteration in range(self.iterations):
-             # residualVector = L*x - b
-             residualVector = Epetra.Vector(L.RangeMap())
-             L.Multiply(False, x, residualVector)
-             # If A is an Epetra.Vector with map M
-             # and B is an Epetra.Vector with map M
-             # and C = A - B
-             # then C is an Epetra.Vector with *no map* !!!?!?!
-             residualVector -= b
+            residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
-             residual = residualVector.Norm2()
+            if residual <= self.tolerance * tolerance_factor:
+                break
 
-             if residual <= self.tolerance * tolerance_factor:
-                 break
+            xError = Epetra.Vector(L.RowMap())
 
-             xError = Epetra.Vector(L.RowMap())
+            Problem = Epetra.LinearProblem(L, xError, residualVector)
+            Solver = self.Factory.Create(text_to_native_str("Klu"), Problem)
+            Solver.Solve()
 
-             Problem = Epetra.LinearProblem(L, xError, residualVector)
-             Solver = self.Factory.Create(text_to_native_str("Klu"), Problem)
-             Solver.Solve()
-
-             x[:] = x - xError
+            x[:] = x - xError
 
         self._setConvergence(suite="trilinos",
                              code=AztecOO.AZ_normal,

@@ -167,8 +167,13 @@ class Solver(object):
     def _matrixNorm(self, L, x, b):
         raise NotImplementedError
 
-    def _residualNorm(self, L, x, b):
+    def _residualVectorAndNorm(self, L, x, b):
         raise NotImplementedError
+
+    def _residualNorm(self, L, x, b):
+        _, residual = self._residualVectorAndNorm(L, x, b)
+
+        return residual
 
     def _solutionNorm(self, L, x, b):
         raise NotImplementedError
