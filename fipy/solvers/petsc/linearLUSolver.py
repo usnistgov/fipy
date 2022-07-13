@@ -66,9 +66,7 @@ class LinearLUSolver(PETScSolver):
         tolerance_factor, _ = self._adaptTolerance(L, x, b)
 
         for iteration in range(self.iterations):
-            residualVector = L * x - b
-
-            residual = residualVector.norm(PETSc.NormType.NORM_2)
+            residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
             if residual <= self.tolerance * tolerance_factor:
                 break

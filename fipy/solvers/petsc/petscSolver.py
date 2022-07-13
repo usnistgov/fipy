@@ -51,10 +51,10 @@ class PETScSolver(Solver):
     def _matrixNorm(self, L, x, b):
         return L.norm(PETSc.NormType.NORM_INFINITY)
 
-    def _residualNorm(self, L, x, b):
+    def _residualVectorAndNorm(self, L, x, b):
         residualVector = L * x - b
 
-        return residualVector.norm(PETSc.NormType.NORM_2)
+        return residualVector, residualVector.norm(PETSc.NormType.NORM_2)
 
     def _solve(self):
         from fipy.terms import SolutionVariableNumberError

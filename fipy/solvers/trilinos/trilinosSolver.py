@@ -68,7 +68,7 @@ class TrilinosSolver(Solver):
         self.matrix.flush()
         del self.globalVectors
 
-    def _residualNorm(self, L, x, b):
+    def _residualVectorAndNorm(self, L, x, b):
         # residualVector = L*x - b
         residualVector = Epetra.Vector(L.RangeMap())
         L.Multiply(False, x, residualVector)
@@ -78,7 +78,7 @@ class TrilinosSolver(Solver):
         # then C is an Epetra.Vector with *no map* !!!?!?!
         residualVector -= b
 
-        return residualVector.Norm2()
+        return residualVector, residualVector.Norm2()
 
     def _solve(self):
         from fipy.terms import SolutionVariableNumberError
