@@ -16,6 +16,8 @@ optional arguments:
   -h, --help  show this help message and exit
   --qsub      Invoke SCRIPT using 'qsub -cwd' for Sun grid engine
               (default: invoke using bash)
+  --sbatch    Invoke SCRIPT using 'sbatch ???' for slurm
+              (default: invoke using bash)
   --env ENV   Conda environment to activate before invoking SCRIPT
               (default: fipy)
   --np NP     Number of processes to invoke SCRIPT with (default: 1)
@@ -27,6 +29,7 @@ optional arguments:
   --powerstep Increment in power of ten for size"
 
 QSUB=0
+SBATCH=""
 ENV=fipy
 NP=1
 PYTHON=python
@@ -41,6 +44,10 @@ do
     case "$1" in
         --qsub)
             QSUB=1
+            ;;
+        --sbatch)
+            SBATCH="$2"
+            shift # option has parameter
             ;;
         --env)
             ENV="$2"
@@ -113,10 +120,14 @@ do
         INVOCATION="OMP_NUM_THREADS=1 FIPY_SOLVERS=${SOLVERSUITE} ${LOG_CONFIG} \
           ${MPI} ${PYTHON} ${BASH_SOURCE%/*}/${SCRIPT} \
           --numberOfElements=${size} --solver=${solver} $@"
-#             INVOCATION="${MPI} ${PYTHON} ${BASH_SOURCE%/*}/${SCRIPT} \
-#               --${library} --numberOfElements=${size} --solver=${solver} --output $dir $@"
+
+        JOBNAME="${SCRIPT}-${size}-${solver}"
+
         if [[ $QSUB == 1 ]]; then
             qsub -cwd -pe nodal ${NP} -q "wide64" -o "${dir}" -e "${dir}" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
+        elif [[ -n $SBATCH ]]; then
+            sbatch --partition=${SBATCH} --job-name=${JOBNAME} --ntasks=${NP} --ntasks-per-core=2 \
+              "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
         else
             echo bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
             bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
