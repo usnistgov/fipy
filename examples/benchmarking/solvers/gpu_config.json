@@ -1,0 +1,21 @@
+{
+    "version": 1,
+    "formatters": {
+        "default": {
+            "format": "%(asctime)s | %(levelname)s | %(name)s | %(funcName)s | %(message)s"
+        }
+    },
+    "handlers": {
+        "serialfile": {
+            "class": "logging.FileHandler",
+            "formatter": "default",
+            "filename": "examples/benchmarking/solvers/gpu.log"
+        }
+    },
+    "loggers": {
+        "fipy": {
+            "level": "DEBUG",
+            "handlers": ["serialfile"]
+        }
+    }
+}
