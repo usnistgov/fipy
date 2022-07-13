@@ -84,6 +84,5 @@ with solver_class(tolerance=args.tolerance, criterion="initial",
     solver._log.debug(json.dumps(state))
 
     if args.writeFiles and parallelComm.procID == 0:
-        eq.matrix.exportMmf(os.path.join(path, "final.mtx"))
-        fp.tools.dump.write((var, eq.RHSvector),
-                            filename=os.path.join(path, "final.tar.gz"))
+        filename = os.path.join(path, "solution.tsv")
+        fp.viewer.TSVViewer(vars=var).plot(filename=filename)
