@@ -24,6 +24,9 @@ NP=1
 PYTHON=python
 SOLVERSUITE=petsc
 PRECONDITIONER=none
+POWERMIN=1
+POWERMAX=6
+POWERSTEP=1
 
 while [[ $# > 0 ]] && [[ $1 == -* ]]
 do
@@ -48,6 +51,18 @@ do
             ;;
         --solversuite)
             SOLVERSUITE="$2"
+            shift # option has parameter
+            ;;
+        --powermin)
+            POWERMIN="$2"
+            shift # option has parameter
+            ;;
+        --powermax)
+            POWERMAX="$2"
+            shift # option has parameter
+            ;;
+        --powerstep)
+            POWERMAX="$2"
             shift # option has parameter
             ;;
         -h|--help)
@@ -82,9 +97,10 @@ else
     MPI=""
 fi
 
-for solver in cg pcg cgs gmres lu
+for (( POWER=${POWERMIN}; POWER<=${POWERMAX}; POWER+=${POWERSTEP} ))
 do
-    for size in 10 100 1000 # 10000 100000 1000000 10000000
+    size=$((10**${POWER}))
+    for solver in pcg cgs gmres lu
     do
         dir="Data/`uuidgen`"
         mkdir -p $dir
@@ -96,6 +112,7 @@ do
         if [[ $QSUB == 1 ]]; then
             qsub -cwd -pe nodal ${NP} -q "wide64" -o "${dir}" -e "${dir}" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
         else
+            echo bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
             bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
         fi
     done
