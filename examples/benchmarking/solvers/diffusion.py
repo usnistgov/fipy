@@ -85,4 +85,4 @@ with solver_class(tolerance=args.tolerance, criterion="initial",
 
     if args.writeFiles and parallelComm.procID == 0:
         filename = os.path.join(path, "solution.tsv")
-        fp.viewer.TSVViewer(vars=var).plot(filename=filename)
+        fp.viewers.TSVViewer(vars=var).plot(filename=filename)
