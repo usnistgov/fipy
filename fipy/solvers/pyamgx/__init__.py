@@ -11,7 +11,7 @@ import pyamgx
 from .preconditioners import *
 
 from .pyAMGXSolver import *
-from .linearCGSolver import *
+from .linearPCGSolver import *
 from .linearGMRESSolver import *
 from .linearFGMRESSolver import *
 from .linearBiCGStabSolver import *
@@ -24,7 +24,7 @@ from . import pyamgxConvergence
 pyamgx.initialize()
 atexit.register(pyamgx.finalize)
 
-DefaultSolver = LinearCGSolver
+DefaultSolver = LinearPCGSolver
 DefaultAsymmetricSolver = LinearLUSolver
 DummySolver = DefaultSolver
 GeneralSolver = LinearLUSolver
@@ -37,7 +37,7 @@ __all__ = ["DefaultSolver",
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-__all__.extend(linearCGSolver.__all__)
+__all__.extend(linearPCGSolver.__all__)
 __all__.extend(linearGMRESSolver.__all__)
 __all__.extend(linearFGMRESSolver.__all__)
 __all__.extend(linearBiCGStabSolver.__all__)

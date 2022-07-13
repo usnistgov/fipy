@@ -2,13 +2,13 @@ from __future__ import unicode_literals
 from fipy.solvers.pyamgx import PyAMGXSolver
 from fipy.solvers.pyamgx.preconditioners import *
 
-__all__ = ["LinearCGSolver", "LinearPCGSolver"]
+__all__ = ["LinearPCGSolver"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class LinearCGSolver(PyAMGXSolver):
+class LinearPCGSolver(PyAMGXSolver):
     """
-    The `LinearCGSolver` is an interface to the PCG solver in
+    The `LinearPCGSolver` is an interface to the PCG solver in
     AMGX, with no preconditioning by default.
     """
 
@@ -42,7 +42,7 @@ class LinearCGSolver(PyAMGXSolver):
                 }
             }
         }
-        super(LinearCGSolver, self).__init__(
+        super(LinearPCGSolver, self).__init__(
                 config_dict,
                 tolerance=tolerance,
                 criterion=criterion,
@@ -52,5 +52,3 @@ class LinearCGSolver(PyAMGXSolver):
 
     def _canSolveAsymmetric(self):
         return False
-
-LinearPCGSolver = LinearCGSolver
