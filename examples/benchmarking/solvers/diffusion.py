@@ -49,15 +49,17 @@ elif args.preconditioner == "icc":
 elif args.preconditioner == "none":
     precon = None
 
-solver_class = {
-    "pcg": fp.LinearPCGSolver,
-    "cgs": fp.LinearCGSSolver,
-    "gmres": fp.LinearGMRESSolver,
-    "lu": fp.LinearLUSolver
-}
+if args.solver == "cgs":
+    solver_class = fp.LinearCGSSolver
+elif args.solver == "gmres":
+    solver_class = fp.LinearGMRESSolver
+elif args.solver == "lu":
+    solver_class = fp.LinearLUSolver
+elif args.solver == "pcg":
+    solver_class = fp.LinearPCGSolver
 
-with solver_class[args.solver](tolerance=args.tolerance, criterion="initial",
-                               iterations=args.iterations, precon=precon) as solver:
+with solver_class(tolerance=args.tolerance, criterion="initial",
+                  iterations=args.iterations, precon=precon) as solver:
 
     if args.writeFiles and parallelComm.procID == 0:
         suite = solver.__module__.split('.')[2]
