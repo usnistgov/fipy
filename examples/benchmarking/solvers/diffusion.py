@@ -50,7 +50,6 @@ elif args.preconditioner == "none":
     precon = None
 
 solver_class = {
-    "cg": fp.LinearPCGSolver,
     "pcg": fp.LinearPCGSolver,
     "cgs": fp.LinearCGSSolver,
     "gmres": fp.LinearGMRESSolver,
