@@ -22,16 +22,19 @@ optional arguments:
               (default: fipy)
   --np NP     Number of processes to invoke SCRIPT with (default: 1)
   --mprof     Whether to run mprof profiler (default: False)
-  --log       Path to log configuration file
-  --solversuite  Solver package to use
-  --powermin  Power of ten for minimum size, minsize = 10**POWERMIN
-  --powermin  Power of ten for maximum size, maxsize = 10**POWERMAX
-  --powerstep Increment in power of ten for size"
+  --log CONFIG LOG  Path to log configuration file template and
+                    path for log file.
+  --solversuite SUITE   Solver package to use
+  --powermin POWERMIN   Power of ten for minimum size, minsize = 10**POWERMIN
+  --powermin POWERMAX   Power of ten for maximum size, maxsize = 10**POWERMAX
+  --powerstep POWERSTEP Increment in power of ten for size"
 
 QSUB=0
 SBATCH=""
 ENV=fipy
 NP=1
+LOGCONFIG=""
+LOGFILE=""
 PYTHON=python
 SOLVERSUITE=petsc
 PRECONDITIONER=none
@@ -58,8 +61,10 @@ do
             shift # option has parameter
             ;;
         --log)
-            LOG_CONFIG="FIPY_LOG_CONFIG=${2}"
-            shift # option has parameter
+            LOGCONFIG="$2"
+            LOGFILE="$3"
+            shift # option has two parameters
+            shift
             ;;
         --mprof)
             PYTHON="mprof run"
@@ -127,10 +132,10 @@ do
             qsub -cwd -pe nodal ${NP} -q "wide64" -o "${dir}" -e "${dir}" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
         elif [[ -n $SBATCH ]]; then
             sbatch --partition=${SBATCH} --job-name=${JOBNAME} --ntasks=${NP} --ntasks-per-core=2 \
-              "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
+              "${BASH_SOURCE%/*}/setup.sh" --log ${LOGCONFIG} ${LOGFILE} --env "${ENV}" -- ${INVOCATION}
         else
             echo bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
-            bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
+            bash "${BASH_SOURCE%/*}/setup.sh" --log ${LOGCONFIG} ${LOGFILE} --env "${ENV}" -- ${INVOCATION}
         fi
     done
 done

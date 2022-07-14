@@ -8,7 +8,10 @@ with ARGS
 optional arguments:
   -h, --help  show this help message and exit
   --env ENV   Conda environment to activate before invoking SCRIPT
-              (default: fipy)"
+              (default: fipy)
+  --log CONFIG LOG  Path to log configuration file template and
+                    path for log file.
+"
 
 ENV=fipy
 
@@ -18,6 +21,12 @@ do
         --env)
             ENV="$2"
             shift # option has parameter
+            ;;
+        --log)
+            LOGCONFIG="$2"
+            LOGFILE="$3"
+            shift # option has two parameters
+            shift
             ;;
         -h|--help)
             echo "$USAGE"
@@ -42,7 +51,28 @@ if [[ "$#" < 1 ]]; then
     exit 1
 fi
 
+if [[ -n $LOGCONFIG ]]; then
+    tmp_dir=$(mktemp -d -t fipylogconfig-XXXXXXXXXX)
+    cp $LOGCONFIG $tmp_dir
+    LOGCONFIG="${tmp_dir}/${LOGCONFIG##*/}"
+
+    if [[ -n $SLURM_JOB_ID ]]; then
+        logpath=${LOGFILE%/*}
+        logbase=${LOGFILE##*/}
+        logpref=${logbase%.*}
+        logfext=${logbase##*.}
+
+        LOGFILE="${logpath}/${logpref}.${SLURM_JOB_ID}.${logfext}"
+    fi
+
+    sed -i -e "s:%LOGFILE%:${LOGFILE}:g" $LOGCONFIG
+fi
+
 # https://stackoverflow.com/a/56155771/2019542
 eval "$(conda shell.bash hook)"
-conda activate $ENV
-env $@
+echo conda activate $ENV
+echo env FIPY_LOG_CONFIG=${LOGCONFIG} $@
+
+if [[ -n $tmp_dir ]]; then
+    rm -rf ${LOGCONFIG}
+fi
