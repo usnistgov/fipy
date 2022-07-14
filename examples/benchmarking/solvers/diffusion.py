@@ -61,8 +61,13 @@ with solver_class(tolerance=args.tolerance, criterion="initial",
 
     if (args.output is not None) and (parallelComm.procID == 0):
         suite = solver.__module__.split('.')[2]
+        if args.preconditioner is None:
+            preconditioner_name = "none"
+        else:
+            preconditioner_name = precon.__class__.__name__
         path = os.path.join(args.output, suite,
-                            args.solver, args.preconditioner,
+                            solver.__class__.__name__,
+                            preconditioner_name,
                             str(N**2))
 
         os.makedirs(path)
