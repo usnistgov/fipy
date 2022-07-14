@@ -70,8 +70,8 @@ fi
 
 # https://stackoverflow.com/a/56155771/2019542
 eval "$(conda shell.bash hook)"
-echo conda activate $ENV
-echo env FIPY_LOG_CONFIG=${LOGCONFIG} $@
+conda activate $ENV
+env FIPY_LOG_CONFIG=${LOGCONFIG} $@
 
 if [[ -n $tmp_dir ]]; then
     rm -rf ${LOGCONFIG}
