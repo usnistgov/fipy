@@ -9,7 +9,7 @@ from fipy.tools import parallelComm
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--output", help="directory to store results in",
-                    default=str(uuid.uuid4()))
+                    default=None)
 parser.add_argument("--numberOfElements", help="number of total cells in a Grid2D",
                     type=int, default=10000)
 parser.add_argument("--solver", help="solver class to use",
@@ -22,8 +22,6 @@ parser.add_argument("--iterations", help="maximum number of linear iterations to
                     type=int, default=1000)
 parser.add_argument("--tolerance", help="linear solver tolerance",
                     type=float, default=1e-10)
-parser.add_argument("--writeFiles", help="whether to write solution values and matrix to OUTPUT",
-                    action='store_true')
 
 args, unknowns = parser.parse_known_args()
 
@@ -61,7 +59,7 @@ elif args.solver == "pcg":
 with solver_class(tolerance=args.tolerance, criterion="initial",
                   iterations=args.iterations, precon=precon) as solver:
 
-    if args.writeFiles and parallelComm.procID == 0:
+    if (args.output is not None) and (parallelComm.procID == 0):
         suite = solver.__module__.split('.')[2]
         path = os.path.join(args.output, suite, solver.__class__.__name__, str(N**2))
 
@@ -83,6 +81,6 @@ with solver_class(tolerance=args.tolerance, criterion="initial",
     state["state"] = "END"
     solver._log.debug(json.dumps(state))
 
-    if args.writeFiles and parallelComm.procID == 0:
+    if (args.output is not None) and (parallelComm.procID == 0):
         filename = os.path.join(path, "solution.tsv")
         fp.viewers.TSVViewer(vars=var).plot(filename=filename)
