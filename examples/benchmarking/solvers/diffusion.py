@@ -61,7 +61,9 @@ with solver_class(tolerance=args.tolerance, criterion="initial",
 
     if (args.output is not None) and (parallelComm.procID == 0):
         suite = solver.__module__.split('.')[2]
-        path = os.path.join(args.output, suite, solver.__class__.__name__, str(N**2))
+        path = os.path.join(args.output, suite,
+                            args.solver, args.preconditioner,
+                            str(N**2))
 
         os.makedirs(path)
 
