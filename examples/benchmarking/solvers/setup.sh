@@ -56,8 +56,9 @@ if [[ -n $LOGCONFIG ]]; then
     cp $LOGCONFIG $tmp_dir
     LOGCONFIG="${tmp_dir}/${LOGCONFIG##*/}"
 
+    logpath=${LOGFILE%/*}
+    mkdir -p $logpath
     if [[ -n $SLURM_JOB_ID ]]; then
-        logpath=${LOGFILE%/*}
         logbase=${LOGFILE##*/}
         logpref=${logbase%.*}
         logfext=${logbase##*.}
