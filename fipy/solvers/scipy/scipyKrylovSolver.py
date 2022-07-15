@@ -47,12 +47,17 @@ class _ScipyKrylovSolver(_ScipySolver):
         tolerance_factor, _ = self._adaptTolerance(L, x, b)
 
         self.actualIterations = 0
+
+        self._log.debug("BEGIN solve")
+
         x, info = self.solveFnc(A, b, x,
                                 tol=self.tolerance * tolerance_factor,
                                 maxiter=self.iterations,
                                 M=M,
                                 atol='legacy',
                                 callback=self._countIterations)
+
+        self._log.debug("END solve")
 
         self._setConvergence(suite="scipy",
                              code=numerix.sign(info),

@@ -42,6 +42,8 @@ class LinearLUSolver(_ScipySolver):
 
         tolerance_factor, _ = self._adaptTolerance(L, x, b)
 
+        self._log.debug("BEGIN solve")
+
         for iteration in range(min(self.iterations, 10)):
             residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
@@ -50,6 +52,8 @@ class LinearLUSolver(_ScipySolver):
 
             xError = LU.solve(residualVector)
             x[:] = x - xError
+
+        self._log.debug("END solve")
 
         self._setConvergence(suite="scipy",
                              code=0,

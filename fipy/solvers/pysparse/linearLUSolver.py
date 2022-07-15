@@ -67,6 +67,8 @@ class LinearLUSolver(PysparseSolver):
 
         tolerance_factor, _ = self._adaptTolerance(L, x, b)
 
+        self._log.debug("BEGIN solve")
+
         for iteration in range(self.iterations):
             residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
@@ -74,8 +76,11 @@ class LinearLUSolver(PysparseSolver):
                 break
 
             xError = numerix.zeros(len(b), 'd')
+
             LU.solve(residualVector, xError)
             x[:] = x - xError
+
+        self._log.debug("END solve")
 
         self._setConvergence(suite="pysparse",
                              code=0,

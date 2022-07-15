@@ -74,7 +74,11 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         else:
             self.preconditioner._applyToSolver(solver=Solver, matrix=L)
 
+        self._log.debug("BEGIN solve")
+
         output = Solver.Iterate(self.iterations, self.tolerance * tolerance_factor)
+
+        self._log.debug("END solve")
 
         if self.preconditioner is not None:
             if hasattr(self.preconditioner, 'Prec'):

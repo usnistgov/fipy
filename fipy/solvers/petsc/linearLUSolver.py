@@ -65,6 +65,8 @@ class LinearLUSolver(PETScSolver):
 
         tolerance_factor, _ = self._adaptTolerance(L, x, b)
 
+        self._log.debug("BEGIN solve")
+
         for iteration in range(self.iterations):
             residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
@@ -74,7 +76,10 @@ class LinearLUSolver(PETScSolver):
             xError = x.copy()
 
             ksp.solve(residualVector, xError)
+
             x -= xError
+
+        self._log.debug("END solve")
 
         self._setConvergence(suite="petsc",
                              code=PETSc.KSP.ConvergedReason.CONVERGED_ITS,
