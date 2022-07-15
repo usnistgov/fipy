@@ -49,9 +49,13 @@ class PysparseSolver(_PysparseMatrixSolver):
         # which changes depending on which solver is used
         default_norm = self._defaultNorm(L, x, b)
 
+        self._log.debug("BEGIN solve")
+
         info, iter, relres = self.solveFnc(A, b, x,
                                            self.tolerance * tolerance_factor,
                                            self.iterations, P)
+
+        self._log.debug("END solve")
 
         self._setConvergence(suite="pysparse",
                              code=info,

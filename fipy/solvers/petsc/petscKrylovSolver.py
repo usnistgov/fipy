@@ -79,7 +79,12 @@ class PETScKrylovSolver(PETScSolver):
         L.assemble()
         ksp.setOperators(L)
         ksp.setFromOptions()
+
+        self._log.debug("BEGIN solve")
+
         ksp.solve(b, x)
+
+        self._log.debug("END solve")
 
         self._setConvergence(suite="petsc",
                              code=ksp.reason,

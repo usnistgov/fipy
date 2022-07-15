@@ -64,6 +64,8 @@ class LinearLUSolver(TrilinosSolver):
 
         tolerance_factor, _ = self._adaptTolerance(L, x, b)
 
+        self._log.debug("BEGIN solve")
+
         for iteration in range(self.iterations):
             residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
@@ -77,6 +79,8 @@ class LinearLUSolver(TrilinosSolver):
             Solver.Solve()
 
             x[:] = x - xError
+
+        self._log.debug("END solve")
 
         self._setConvergence(suite="trilinos",
                              code=AztecOO.AZ_normal,

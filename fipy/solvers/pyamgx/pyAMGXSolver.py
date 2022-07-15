@@ -122,7 +122,12 @@ class PyAMGXSolver(Solver):
         solver.setup(self.A_gpu)
 
         # solve system on GPU
+
+        self._log.debug("BEGIN solve")
+
         solver.solve(self.b_gpu, self.x_gpu)
+
+        self._log.debug("END solve")
 
         # download values from GPU to CPU
         self.x_gpu.download(x)
