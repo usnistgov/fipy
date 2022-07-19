@@ -89,5 +89,7 @@ with solver_class(tolerance=args.tolerance, criterion="initial",
     solver._log.debug(json.dumps(state))
 
     if (args.output is not None) and (parallelComm.procID == 0):
-        filename = os.path.join(path, "solution.tsv")
-        fp.viewers.TSVViewer(vars=var).plot(filename=filename)
+        filename = os.path.join(path, "solution.npz")
+        x, y, value = [field.reshape((mesh.nx, mesh.ny))
+                       for field in mesh.x, mesh.y, var.value]
+        numerix.savez(filename, x=mesh.x, y=mesh.y, value=value)
