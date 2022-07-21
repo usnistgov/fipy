@@ -57,7 +57,6 @@ from fipy.tools import numerix
 from fipy.tools import vector
 from .dimensions.physicalField import PhysicalField
 from fipy.tools.numerix import *
-from fipy.tools.vitals import Vitals
 from fipy.tools.sharedtempfile import SharedTemporaryFile
 
 __all__ = ["serialComm",
@@ -66,7 +65,6 @@ __all__ = ["serialComm",
            "numerix",
            "vector",
            "PhysicalField",
-           "Vitals",
            "serial",
            "parallel",
            "SharedTemporaryFile"]

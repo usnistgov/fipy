@@ -64,9 +64,20 @@ from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
 
-from fipy.tools.logging import package_info
-_log.info(package_info())
-del package_info
+
+from fipy.tools.logging import environment
+
+_fipy_environment = {
+    "argv": sys.argv,
+    "platform": environment.platform_info(),
+    "package": environment.package_info()
+}
+
+if _log.isEnabledFor(logging.DEBUG):
+    _fipy_environment["conda"] = environment.conda_info()
+
+_log.debug(json.dumps(_fipy_environment))
+
 
 from fipy.boundaryConditions import *
 from fipy.meshes import *
