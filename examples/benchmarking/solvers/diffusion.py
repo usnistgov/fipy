@@ -101,3 +101,5 @@ with solver_class(tolerance=args.tolerance, criterion="initial",
         x, y, value = [field.reshape((mesh.nx, mesh.ny))
                        for field in (mesh.x, mesh.y, var.value)]
         numerix.savez(filename, x=mesh.x, y=mesh.y, value=value)
+
+        solver._log.debug("result stored in {}".format(filename)
