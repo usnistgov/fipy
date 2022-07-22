@@ -67,12 +67,15 @@ if [[ -n $LOGCONFIG ]]; then
     fi
 
     sed -i -e "s:%LOGFILE%:${LOGFILE}:g" $LOGCONFIG
+
+    LOGCONFIGENV="FIPY_LOG_CONFIG=${LOGCONFIG}"
 fi
 
 # https://stackoverflow.com/a/56155771/2019542
 eval "$(conda shell.bash hook)"
 conda activate $ENV
-env FIPY_LOG_CONFIG=${LOGCONFIG} $@
+echo ${LOGCONFIGENV} "$@"
+env ${LOGCONFIGENV} "$@"
 
 if [[ -n $tmp_dir ]]; then
     rm -rf ${LOGCONFIG}
