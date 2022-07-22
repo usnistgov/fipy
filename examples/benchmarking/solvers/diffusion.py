@@ -22,6 +22,10 @@ parser.add_argument("--iterations", help="maximum number of linear iterations to
                     type=int, default=1000)
 parser.add_argument("--tolerance", help="linear solver tolerance",
                     type=float, default=1e-10)
+parser.add_argument("--left", help="value of left-hand Dirichlet condition",
+                    type=float, default=1.)
+parser.add_argument("--right", help="value of right-hand Dirichlet condition",
+                    type=float, default=0.)
 
 args, unknowns = parser.parse_known_args()
 
@@ -29,10 +33,10 @@ N = int(numerix.sqrt(args.numberOfElements))
 mesh = fp.Grid2D(nx=N, Lx=1., ny=N, Ly=1.)
 
 var = fp.CellVariable(mesh=mesh, value=1., hasOld=True)
-var.constrain(1., where=mesh.facesLeft)
-var.constrain(0., where=mesh.facesRight)
+var.constrain(args.left, where=mesh.facesLeft)
+var.constrain(args.right, where=mesh.facesRight)
 
-eq = fp.TransientTerm() == fp.DiffusionTerm(coeff=var)
+eq = fp.TransientTerm() == fp.DiffusionTerm(coeff=var.harmonicFaceValue)
 
 precon = None
 
