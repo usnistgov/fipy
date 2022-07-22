@@ -56,6 +56,10 @@ if args.solver == "cgs":
 elif args.solver == "gmres":
     solver_class = fp.LinearGMRESSolver
 elif args.solver == "lu":
+    if args.preconditioner != "none":
+        # preconditioned lu doesn't make any sense
+        exit()
+
     solver_class = fp.LinearLUSolver
 elif args.solver == "pcg":
     solver_class = fp.LinearPCGSolver
