@@ -78,5 +78,5 @@ echo ${LOGCONFIGENV} "$@"
 env ${LOGCONFIGENV} "$@"
 
 if [[ -n $tmp_dir ]]; then
-    rm -rf ${LOGCONFIG}
+    rm -rf ${tmp_dir}
 fi
