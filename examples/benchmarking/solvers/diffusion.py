@@ -36,7 +36,7 @@ var = fp.CellVariable(mesh=mesh, value=1., hasOld=True)
 var.constrain(args.left, where=mesh.facesLeft)
 var.constrain(args.right, where=mesh.facesRight)
 
-eq = fp.TransientTerm() == fp.DiffusionTerm(coeff=var.harmonicFaceValue)
+eq = fp.TransientTerm() == fp.DiffusionTerm() # coeff=var.harmonicFaceValue)
 
 precon = None
 
