@@ -504,7 +504,7 @@ times.sort()
 times = times[(times > elapsed) & (times <= args.totaltime)]
 
 
-# In[ ]:
+# In[266]:
 
 
 from steppyngstounes import CheckpointStepper, FixedStepper
@@ -521,11 +521,10 @@ for checkpoint in CheckpointStepper(start=elapsed,
         for sweep in range(args.sweeps):
             res = eq.sweep(var=phi, dt=step.size)
 
-        if step.succeeded(error=res / 1e-3):
-            phi.updateOld()
-            stats.append(current_stats(step.end))
-        else:
-            phi.value = phi.old
+        phi.updateOld()
+        stats.append(current_stats(step.end))
+
+        _ = step.succeeded(error=res / 1e-3):
 
     for tt, xx, yy in nucleii[nucleii[..., 0] == checkpoint.end]:
         phi.setValue(phi + nucleus(x0=xx, y0=yy, r0=args.factor * 2))
