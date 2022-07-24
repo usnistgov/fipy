@@ -44,7 +44,7 @@ except:
 # ## Initialize
 # ### Load parameters
 
-# In[57]:
+# In[3]:
 
 
 parser = argparse.ArgumentParser()
@@ -82,17 +82,18 @@ parser.add_argument("--tolerance", help="linear solver tolerance",
 
 # ### Set any parameters for interactive notebook
 
-# In[58]:
+# In[206]:
 
 
 if isnotebook:
-    argv = ["--numberOfElements=10000", "--totaltime=1.2", "--checkpoint_interval=0.12",
-            "--nucleation_scale=100"]
+    # argv = ["--numberOfElements=10000", "--totaltime=1.2", "--checkpoint_interval=0.12",
+    #         "--nucleation_scale=100", "--output=nucleation6"]
+    argv = ["--numberOfElements=10000", "--nucleation_scale=100", "--output=nucleation12"]
 else:
     argv = None
 
 
-# In[59]:
+# In[207]:
 
 
 args, unknowns = parser.parse_known_args(args=argv)
@@ -107,7 +108,7 @@ args, unknowns = parser.parse_known_args(args=argv)
 # Create a mesh based on parameters. Set
 # >  the computational domain is ... 1000×1000 
 
-# In[61]:
+# In[208]:
 
 
 nx = ny = int(nmx.sqrt(args.numberOfElements))
@@ -116,7 +117,7 @@ phi = fp.CellVariable(mesh=mesh, name="$\phi$", value=0., hasOld=True)
 elapsed = 0.
 
 
-# In[62]:
+# In[209]:
 
 
 if args.restart is not None:
@@ -130,14 +131,14 @@ if args.restart is not None:
     elapsed = float(re.match(pattern, args.restart).group(1))
 
 
-# In[63]:
+# In[210]:
 
 
 x, y = mesh.cellCenters[0], mesh.cellCenters[1]
 X, Y = mesh.faceCenters[0], mesh.faceCenters[1]
 
 
-# In[64]:
+# In[211]:
 
 
 if isnotebook:
@@ -147,7 +148,7 @@ if isnotebook:
 
 # ## Create solver
 
-# In[65]:
+# In[212]:
 
 
 precon = None
@@ -186,7 +187,7 @@ solver = solver_class(tolerance=args.tolerance, criterion="initial",
 # 
 # > [Set] the driving force to $\Delta f = 1 / (6\sqrt{2})$
 
-# In[67]:
+# In[213]:
 
 
 Delta_f = 1. / (6 * nmx.sqrt(2.))
@@ -194,7 +195,7 @@ Delta_f = 1. / (6 * nmx.sqrt(2.))
 
 # > $$r_c = \frac{1}{3\sqrt{2}}\frac{1}{\Delta f} = 2.0$$
 
-# In[68]:
+# In[214]:
 
 
 rc = 2.0
@@ -235,7 +236,7 @@ rc = 2.0
 # \notag
 # \end{align}
 
-# In[69]:
+# In[215]:
 
 
 mPhi = -2 * (1 - 2 * phi) + 30 * phi * (1 - phi) * Delta_f
@@ -253,7 +254,7 @@ eq = (fp.TransientTerm() ==
 # F[\phi] = \int\left[\frac{1}{2}(\nabla\phi)^2 + g(\phi) - \Delta f p(\phi)\right]\,dV \tag{6}
 # \end{align}
 
-# In[70]:
+# In[216]:
 
 
 ftot = (0.5 * phi.grad.mag**2
@@ -274,7 +275,7 @@ F = ftot.cellVolumeAverage * volumes.sum()
 # 
 # > $\phi$ is set to unity in regions of overlaps of nuclei
 
-# In[71]:
+# In[217]:
 
 
 def nucleus(x0, y0, r0):
@@ -290,7 +291,7 @@ def nucleus(x0, y0, r0):
 # 
 # > 100 random nucleation times $t_i$ are generated, $i=1,\ldots,100$, drawn from a uniform distribution in the interval $t_i \in [0,600)$
 
-# In[72]:
+# In[218]:
 
 
 if parallelComm.procID == 0:
@@ -313,7 +314,7 @@ nucleii = parallelComm.bcast(nucleii, root=0)
 
 # ### Setup ouput storage
 
-# In[74]:
+# In[219]:
 
 
 if (args.output is not None) and (parallelComm.procID == 0):
@@ -338,7 +339,7 @@ if parallelComm.procID == 0:
 
 # ### Create particle counter
 
-# In[41]:
+# In[220]:
 
 
 from scipy import ndimage
@@ -411,13 +412,13 @@ class LabelVariable(fp.CellVariable):
         return self._num_features
 
 
-# In[42]:
+# In[221]:
 
 
 labels = LabelVariable(phi, threshold=0.5)
 
 
-# In[43]:
+# In[222]:
 
 
 if isnotebook:
@@ -427,7 +428,7 @@ if isnotebook:
 
 # ### Define output routines
 
-# In[44]:
+# In[223]:
 
 
 def saveStats(elapsed):
@@ -466,7 +467,7 @@ def checkpoint_data(elapsed):
 
 # ### Figure out when to save
 
-# In[45]:
+# In[224]:
 
 
 checkpoints = (fp.numerix.arange(int(elapsed / args.checkpoint_interval),
@@ -476,7 +477,7 @@ checkpoints = (fp.numerix.arange(int(elapsed / args.checkpoint_interval),
 checkpoints.sort()
 
 
-# In[46]:
+# In[225]:
 
 
 if args.restart is not None:
@@ -495,7 +496,7 @@ if parallelComm.procID == 0:
 
 # ## Solve and output
 
-# In[48]:
+# In[226]:
 
 
 times = fp.tools.concatenate([checkpoints, nucleii[..., 0]])
@@ -503,7 +504,7 @@ times.sort()
 times = times[(times > elapsed) & (times <= args.totaltime)]
 
 
-# In[49]:
+# In[227]:
 
 
 from steppyngstounes import CheckpointStepper, PIDStepper
@@ -520,9 +521,11 @@ for checkpoint in CheckpointStepper(start=elapsed,
         for sweep in range(args.sweeps):
             res = eq.sweep(var=phi, dt=step.size)
 
-        if step.succeeded(error=res / 1e-5):
+        if step.succeeded(error=res / 1e-3):
             phi.updateOld()
             stats.append(current_stats(step.end))
+        else:
+            phi.value = phi.old
 
     for tt, xx, yy in nucleii[nucleii[..., 0] == checkpoint.end]:
         phi.setValue(phi + nucleus(x0=xx, y0=yy, r0=args.factor * 2))
@@ -538,6 +541,30 @@ for checkpoint in CheckpointStepper(start=elapsed,
         # labelViewer.plot()
 
     _ = checkpoint.succeeded()
+
+
+# In[ ]:
+
+
+checkpoint.end
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
