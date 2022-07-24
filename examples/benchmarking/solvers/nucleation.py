@@ -6,69 +6,178 @@
 # FiPy implementation of problem 3 in *Nucleation Benchmark Problem*, Wenkun Wu *et al.*, January 16, 2020
 # 
 # Based on problem 2.3 in *Benchmark problems for nucleation*, Tamás Pusztai, September 25, 2019
+# 
+# Revised to [PFHub statement](https://pages.nist.gov/pfhub/benchmarks/benchmark8.ipynb/#Part-%28c%29)
+
+# **Do not edit `nucleation.py`**. Generate the batch-runnable file from the notebook with
+# ```bash
+# jupyter nbconvert nucleation.ipynb --to python
+# ```
 
 # ## Import Python modules
 
+# In[1]:
+
+
+import argparse
 import os
 import re
 import sys
-import yaml
-
-import datreant as dtr
 
 import fipy as fp
+from fipy.tools import numerix as nmx
 from fipy.tools import parallelComm
-from fipy.meshes.factoryMeshes import _dnl
+
+
+# Jupyter notebook handles some things differently than from the commandline
+
+# In[2]:
+
+
+try:
+    from IPython import get_ipython
+    isnotebook = get_ipython() is not None
+except:
+    isnotebook = False
 
 
 # ## Initialize
 # ### Load parameters
 
+# In[57]:
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--output", help="directory to store results in",
+                    default=os.getcwd())
+parser.add_argument("--store_by_solver",
+                    help="store results in nested subdirectories based on solver,"
+                    "preconditioner, and system size",
+                    action='store_true')
+parser.add_argument("--restart", help="solution to initialize from",
+                    default=None)
+parser.add_argument("--checkpoint_interval", help="frequency to save results",
+                    type=float, default=6.)
+parser.add_argument("--totaltime", help="duration of full simulation",
+                    type=float, default=600.)
+parser.add_argument("--numnuclei", help="number of nuclei",
+                    type=int, default=100)
+parser.add_argument("--factor", help="fraction of critical nucleus size for new nuclei",
+                    type=float, default=1.1)
+parser.add_argument("--nucleation_scale", help="size of domain for nuclei",
+                    type=float, default=1000)
+parser.add_argument("--numberOfElements", help="number of total cells in a Grid2D",
+                    type=int, default=1000000)
+parser.add_argument("--solver", help="solver class to use",
+                    choices=("pcg", "cgs", "gmres", "lu"), default="pcg")
+parser.add_argument("--preconditioner", help="preconditioner class to use",
+                    choices=("jacobi", "ilu", "ssor", "icc", "none"), default="none")
+parser.add_argument("--sweeps", help="number of nonlinear sweeps to take",
+                    type=int, default=5)
+parser.add_argument("--iterations", help="maximum number of linear iterations to take for each sweep",
+                    type=int, default=1000)
+parser.add_argument("--tolerance", help="linear solver tolerance",
+                    type=float, default=1e-10)
+
+
+# ### Set any parameters for interactive notebook
+
+# In[58]:
+
+
+if isnotebook:
+    argv = ["--numberOfElements=10000", "--totaltime=1.2", "--checkpoint_interval=0.12",
+            "--nucleation_scale=100"]
+else:
+    argv = None
+
+
+# In[59]:
+
+
+args, unknowns = parser.parse_known_args(args=argv)
+
 
 # ### Initialize mesh and solution variables
 # 
-# Either restart from some `path/to/t={time}.tar.gz`, where the time is assigned to `elapsed`
+# Either restart from some `path/to/restart/t={time}.npz`, where the time is assigned to `elapsed`
 # 
 # or
 # 
 # Create a mesh based on parameters. Set
-# >  the domain size to 1000 × 1000... the spatial and temporal resolution by setting $\Delta x = \Delta y = 0.8$ and $\Delta t = 0.04$
+# >  the computational domain is ... 1000×1000 
 
-checkpoint_interval = params['checkpoint_interval']
-savetime = params['savetime']
-totaltime = params['totaltime']
-dt = params['dt']
+# In[61]:
 
-if params['restart']:
-    phi, = fp.tools.dump.read(filename=params['restart'])
-    mesh = phi.mesh
 
-    X, Y = mesh.faceCenters
-    
-    Lx = mesh.communicator.MaxAll(max(X)) - mesh.communicator.MinAll(min(X))
-    Ly = mesh.communicator.MaxAll(max(Y)) - mesh.communicator.MinAll(min(Y))
+nx = ny = int(nmx.sqrt(args.numberOfElements))
+mesh = fp.Grid2D(nx=nx, ny=ny)
+phi = fp.CellVariable(mesh=mesh, name="$\phi$", value=0., hasOld=True)
+elapsed = 0.
+
+
+# In[62]:
+
+
+if args.restart is not None:
+    data = nmx.load(args.restart)
+    phi.setValue(data["phi"][:nx, :ny].flat)
 
     # scanf("%g") simulator
     # https://docs.python.org/3/library/re.html#simulating-scanf
     scanf_g = "[-+]?(\d+(\.\d*)?|\.\d+)([eE][-+]?\d+)?"
-    pattern = ".*t=({g})\.tar\.gz".format(g=scanf_g)
-    elapsed = re.match(pattern, params['restart']).group(1)
-    elapsed = fp.Variable(name="$t$", value=float(elapsed))
-else:
-    Lx = params['Lx']
-    Ly = params['Ly']
+    pattern = ".*t=({g})\.npz".format(g=scanf_g)
+    elapsed = float(re.match(pattern, args.restart).group(1))
 
-    dx, nx = _dnl(dx=params['dx'], nx=None, Lx=Lx)
-    dy, ny = _dnl(dx=params['dx'], nx=None, Lx=Ly)
 
-    mesh = fp.Grid2D(dx=dx, nx=nx, dy=dy, ny=ny)
+# In[63]:
 
-    phi = fp.CellVariable(mesh=mesh, name="$\phi$", value=0., hasOld=True)
 
-    elapsed = fp.Variable(name="$t$", value=0.)
-    
 x, y = mesh.cellCenters[0], mesh.cellCenters[1]
 X, Y = mesh.faceCenters[0], mesh.faceCenters[1]
+
+
+# In[64]:
+
+
+if isnotebook:
+    viewer = fp.Viewer(vars=phi, datamin=0., datamax=1.)
+    viewer.plot()
+
+
+# ## Create solver
+
+# In[65]:
+
+
+precon = None
+
+if args.preconditioner == "jacobi":
+    precon = fp.JacobiPreconditioner()
+elif args.preconditioner == "ilu":
+    precon = fp.ILUPreconditioner()
+elif args.preconditioner == "ssor":
+    precon = fp.SSORPreconditioner()
+elif args.preconditioner == "icc":
+    precon = fp.ICPreconditioner()
+elif args.preconditioner == "none":
+    precon = None
+
+if args.solver == "cgs":
+    solver_class = fp.LinearCGSSolver
+elif args.solver == "gmres":
+    solver_class = fp.LinearGMRESSolver
+elif args.solver == "lu":
+    if args.preconditioner != "none":
+        # preconditioned lu doesn't make any sense
+        exit()
+
+    solver_class = fp.LinearLUSolver
+elif args.solver == "pcg":
+    solver_class = fp.LinearPCGSolver
+
+solver = solver_class(tolerance=args.tolerance, criterion="initial",
+                      iterations=args.iterations, precon=precon)
 
 
 # ## Define governing equation
@@ -77,10 +186,16 @@ X, Y = mesh.faceCenters[0], mesh.faceCenters[1]
 # 
 # > [Set] the driving force to $\Delta f = 1 / (6\sqrt{2})$
 
-Delta_f = 1. / (6 * fp.numerix.sqrt(2.))
+# In[67]:
+
+
+Delta_f = 1. / (6 * nmx.sqrt(2.))
 
 
 # > $$r_c = \frac{1}{3\sqrt{2}}\frac{1}{\Delta f} = 2.0$$
+
+# In[68]:
+
 
 rc = 2.0
 
@@ -120,6 +235,8 @@ rc = 2.0
 # \notag
 # \end{align}
 
+# In[69]:
+
 
 mPhi = -2 * (1 - 2 * phi) + 30 * phi * (1 - phi) * Delta_f
 dmPhidPhi = 4 + 30 * (1 - 2 * phi) * Delta_f
@@ -136,6 +253,8 @@ eq = (fp.TransientTerm() ==
 # F[\phi] = \int\left[\frac{1}{2}(\nabla\phi)^2 + g(\phi) - \Delta f p(\phi)\right]\,dV \tag{6}
 # \end{align}
 
+# In[70]:
+
 
 ftot = (0.5 * phi.grad.mag**2
         + phi**2 * (1 - phi)**2
@@ -146,37 +265,45 @@ F = ftot.cellVolumeAverage * volumes.sum()
 
 # ## Define nucleation
 # 
-# > generate ... supercritical seeds with $r_0 = 1.1r^∗$. ... When adding a new seed, simply add the $\phi$ values given by the $\phi(r)$ profile
-# \begin{align}
-# \phi(x) &= \frac{1 - \tanh\left(\frac{x - x_0}{\sqrt{2}}\right)}{2}\tag{8}
+# Generate supercritical seeds with $r_0 = 1.1r^∗$. When adding a new seed, simply add the $\phi$ values given by the $\phi(r)$ profile
+# > \begin{align}
+# \phi_i(\vec{r}) &= \frac{1}{2}\left[1 - \tanh\left(\frac{\left|\vec{r} - \vec{r}_i\right| - 1.1 r^*}{\sqrt{2}}\right)\right]\tag{18}
 # \end{align}
-# to the $\phi$ values already in the domain, and handle the possible overlaps by setting $\phi = 1$ for all cells where $\phi > 1.$
+# 
+# to the $\phi$ values already in the domain,
+# 
+# > $\phi$ is set to unity in regions of overlaps of nuclei
+
+# In[71]:
 
 
 def nucleus(x0, y0, r0):
-    r = fp.numerix.sqrt((x - x0)**2 + (y - y0)**2)
+    r = nmx.sqrt((x - x0)**2 + (y - y0)**2)
 
-    return (1 - fp.numerix.tanh((r - r0) / fp.numerix.sqrt(2.))) / 2
+    return (1 - nmx.tanh((r - r0) / nmx.sqrt(2.))) / 2
 
 
 # ### Determine nucleation times
-# Either load nucleation times from `path/to/restart/nucleii.txt`, based on directory of `params['restart']`
+# Either load nucleation times from `path/to/restart/nucleii.txt`, based on directory of `args.restart`
 # 
 # or
 # 
-# > generate 100 random nucleation times in the range $t=0\dots100$ for adding the 100 seeds to the simulation domain.
+# > 100 random nucleation times $t_i$ are generated, $i=1,\ldots,100$, drawn from a uniform distribution in the interval $t_i \in [0,600)$
+
+# In[72]:
 
 
 if parallelComm.procID == 0:
-    if params['restart']:
-        fname = os.path.join(os.path.dirname(params['restart']), "nucleii.txt")
-        nucleii = fp.numerix.loadtxt(fnamem, skiprows=1)
+    if args.restart is not None:
+        fname = os.path.join(os.path.dirname(args.restart), "nucleii.npy")
+        nucleii = nmx.load(fname)
     else:
-        times = fp.numerix.random.random(params['numnuclei']) * totaltime
+        times = nmx.random.random(args.numnuclei) * args.totaltime
         times.sort()
-        nucleii = fp.numerix.concatenate((times[..., fp.numerix.newaxis],
-                                          fp.numerix.random.random((params['numnuclei'], 2))),
-                                         axis=-1)
+        nucleii = nmx.concatenate((times[..., nmx.newaxis],
+                                   (nmx.random.random((args.numnuclei, 2))
+                                    * args.nucleation_scale)),
+                                  axis=-1)
 else:
     nucleii = None
 nucleii = parallelComm.bcast(nucleii, root=0)
@@ -184,43 +311,137 @@ nucleii = parallelComm.bcast(nucleii, root=0)
 
 # ## Setup output
 
-try:
-    from sumatra.projects import load_project
-    project = load_project(os.getcwd())
-    record = project.get_record(params["sumatra_label"])
-    output = record.datastore.root
-except:
-    # either there's no sumatra, no sumatra project, or no sumatra_label
-    # this will be the case if this script is run directly
-    output = os.getcwd()
-    
-if parallelComm.procID == 0:
-    print("storing results in {0}".format(output))
-    data = dtr.Treant(output)
-else:
-    class dummyTreant(object):
-        categories = dict()
+# ### Setup ouput storage
 
-    data = dummyTreant()
+# In[74]:
+
+
+if (args.output is not None) and (parallelComm.procID == 0):
+    if args.store_by_solver:
+        suite = solver.__module__.split('.')[2]
+        if args.preconditioner is None:
+            preconditioner_name = "none"
+        else:
+            preconditioner_name = precon.__class__.__name__
+        path = os.path.join(args.output, suite,
+                            solver.__class__.__name__,
+                            preconditioner_name,
+                            str(nx * ny))
+    else:
+        path = args.output
+
+    os.makedirs(path)
+
+if parallelComm.procID == 0:
+    print("storing results in {0}".format(path))
+
+
+# ### Create particle counter
+
+# In[41]:
+
+
+from scipy import ndimage
+
+class LabelVariable(fp.CellVariable):
+    """Label features in `var` using scipy.ndimage.label
+    
+    Parameters
+    ----------
+    var : ~fipy.variables.cellVariable.CellVariable
+        Field to be labeled. Any values equal to or greater than `threshold`
+        are counted as features and values below are considered the background.
+        
+        .. important:
+           Only sensible if `var` is defined on a `...Grid...` Mesh.
+    structure : array_like, optional
+        A structuring element that defines feature connections.
+        `structure` must be centrosymmetric
+        (see ```scipy.ndimage.label`` Notes
+        <https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.label.html#scipy.ndimage.label>`_).
+        If no structuring element is provided,
+        one is automatically generated with a squared connectivity equal to
+        one.  That is, for a 2-D `input` array, the default structuring element
+        is::
+            [[0,1,0],
+             [1,1,1],
+             [0,1,0]]
+    threshold : float, optional
+        Boundary value between features (inclusive) and background.
+    dtype : date-type, optional
+        The desired data-type for the labels. Note that the type must be able
+        to store the largest label, or this Variable will raise an Exception.
+        Default: int.
+    """
+    def __init__(self, var, structure=None, threshold=0.5, dtype=int):
+        # We want our value to hold dtype,
+        # but if we pass an array, the CellVariable
+        # will probably be wonky
+        value = fp.numerix.array(0.).astype(dtype).item()
+        fp.CellVariable.__init__(self,
+                                 mesh=var.mesh,
+                                 value=value,
+                                 elementshape=var.shape[:-1])
+        self.var = self._requires(var)
+        self.structure = structure
+        self.threshold = threshold
+        self.dtype = dtype
+        self._num_features = None
+    
+    def _calcValue(self):
+        """Label features of `var`
+        
+        Side-effect: sets self._num_features
+        """
+        arr = (self.var.globalValue > self.threshold).astype(self.dtype)
+        shape = (self.var.mesh.args['nx'], self.var.mesh.args['ny'])
+        arr = arr.reshape(shape)
+        self._num_features = ndimage.label(input=arr,
+                                           structure=self.structure,
+                                           output=arr)
+        return arr.flat
+        
+    @property
+    def num_features(self):
+        """How many objects were found
+        """
+        if self.stale or not self._isCached() or self._num_features is None:
+            self._getValue()
+
+        return self._num_features
+
+
+# In[42]:
+
+
+labels = LabelVariable(phi, threshold=0.5)
+
+
+# In[43]:
+
+
+if isnotebook:
+    labelViewer = fp.Viewer(vars=labels, datamin=0, datamax=25)
+    labelViewer.plot()
 
 
 # ### Define output routines
 
-# In[ ]:
+# In[44]:
 
 
 def saveStats(elapsed):
     if parallelComm.procID == 0:
-        fname = data['stats.txt'].make().abspath
+        fname = os.path.join(path, 'stats.txt')
         if os.path.exists(fname):
             # backup before overwrite
             os.rename(fname, fname + ".save")
         try:
-            fp.numerix.savetxt(fname,
-                               stats,
-                               delimiter="\t",
-                               comments='',
-                               header="\t".join(["time", "fraction", "particle_count", "energy"]))
+            nmx.savetxt(fname,
+                        stats,
+                        delimiter="\t",
+                        comments='',
+                        header="\t".join(["time", "fraction", "particle_count", "energy"]))
         except:
             # restore from backup
             os.rename(fname + ".save", fname)
@@ -231,82 +452,96 @@ def current_stats(elapsed):
     return [float(x) for x in [elapsed, phi.cellVolumeAverage, labels.num_features, F]]
 
 def savePhi(elapsed):
+    phi_value = phi.globalValue.reshape((nx, ny))
     if parallelComm.procID == 0:
-        fname = data["t={}.tar.gz".format(elapsed)].make().abspath
-    else:
-        fname = None
-    fname = parallelComm.bcast(fname)
+        fname = os.path.join(path, "t={}.npz".format(elapsed))
+        nmx.savez(fname, phi=phi_value)
 
-    fp.tools.dump.write((phi,), filename=fname)
-
-def checkpoint(elapsed):
+def checkpoint_data(elapsed):
     saveStats(elapsed)
     savePhi(elapsed)
 
 
+# ### Output initial condition
+
 # ### Figure out when to save
 
-# In[ ]:
+# In[45]:
 
 
-checkpoints = (fp.numerix.arange(int(elapsed / checkpoint_interval),
-                                 int(totaltime / checkpoint_interval)) + 1) * checkpoint_interval
-for sometime in [savetime, totaltime]:
-    if sometime > elapsed and sometime not in checkpoints: 
-        checkpoints = fp.tools.concatenate([checkpoints, [sometime]])
+checkpoints = (fp.numerix.arange(int(elapsed / args.checkpoint_interval),
+                                 int(args.totaltime / args.checkpoint_interval))
+               + 1) * args.checkpoint_interval
+
 checkpoints.sort()
 
 
-# ### Output initial condition
-
-# In[ ]:
+# In[46]:
 
 
-if params['restart']:
-    fname = os.path.join(os.path.dirname(params['restart']), "stats.txt")
-    stats = fp.numerix.loadtxt(fname, skiprows=1)
+if args.restart is not None:
+    fname = os.path.join(os.path.dirname(args.restart), "stats.txt")
+    stats = nmx.loadtxt(fname, skiprows=1)
     stats = stats[stats[..., 0] <= elapsed].tolist()
 else:
     stats = []
     stats.append(current_stats(elapsed))
 
-checkpoint(elapsed)
+checkpoint_data(elapsed)
     
 if parallelComm.procID == 0:
-    fp.numerix.savetxt(data['nucleii.txt'].make().abspath, nucleii, 
-                       delimiter="\t", comments='',
-                       header="\t".join(["time", "x", "y"]))
+    nmx.save(os.path.join(path, 'nucleii.npy'), nucleii, allow_pickle=False)
 
 
 # ## Solve and output
 
-# In[ ]:
+# In[48]:
 
 
 times = fp.tools.concatenate([checkpoints, nucleii[..., 0]])
 times.sort()
-times = times[(times > elapsed) & (times <= totaltime)]
+times = times[(times > elapsed) & (times <= args.totaltime)]
+
+
+# In[49]:
+
+
+from steppyngstounes import CheckpointStepper, PIDStepper
+
+phi.updateOld()
+for checkpoint in CheckpointStepper(start=elapsed,
+                                    stops=times,
+                                    stop=args.totaltime):
+
+    for step in PIDStepper(start=checkpoint.begin,
+                           stop=checkpoint.end,
+                           size=checkpoint.size):
+
+        for sweep in range(args.sweeps):
+            res = eq.sweep(var=phi, dt=step.size)
+
+        if step.succeeded(error=res / 1e-5):
+            phi.updateOld()
+            stats.append(current_stats(step.end))
+
+    for tt, xx, yy in nucleii[nucleii[..., 0] == checkpoint.end]:
+        phi.setValue(phi + nucleus(x0=xx, y0=yy, r0=args.factor * 2))
+        phi.setValue(1., where=phi > 1.)
+        phi.updateOld()
+
+    if checkpoint.end in checkpoints:
+        # don't save nucleation events?
+        checkpoint_data(checkpoint.end)
+
+    if isnotebook:
+        viewer.plot()
+        # labelViewer.plot()
+
+    _ = checkpoint.succeeded()
 
 
 # In[ ]:
 
 
-for until in times:
-    while elapsed.value < until:
-        phi.updateOld()
-        dt_until = (until - elapsed).value
-        dt_save = dt
-        if dt_until < dt:
-            dt = dt_until
-        for sweep in range(5):
-            eq.sweep(var=phi, dt=dt)
-        elapsed.value = elapsed() + dt
-        stats.append(current_stats(elapsed))
-        dt = dt_save
 
-    for tt, fx, fy in nucleii[nucleii[..., 0] == until]:
-        phi.setValue(phi + nucleus(x0=fx * Lx, y0=fy * Ly, r0=params['factor'] * 2))
-        phi.setValue(1., where=phi > 1.)
-              
-    if elapsed in checkpoints:
-        checkpoint(elapsed)
+
