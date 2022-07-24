@@ -524,7 +524,7 @@ for checkpoint in CheckpointStepper(start=elapsed,
         phi.updateOld()
         stats.append(current_stats(step.end))
 
-        _ = step.succeeded(error=res / 1e-3):
+        _ = step.succeeded(error=res / 1e-3)
 
     for tt, xx, yy in nucleii[nucleii[..., 0] == checkpoint.end]:
         phi.setValue(phi + nucleus(x0=xx, y0=yy, r0=args.factor * 2))
