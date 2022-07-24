@@ -16,7 +16,7 @@
 
 # ## Import Python modules
 
-# In[1]:
+# In[228]:
 
 
 import argparse
@@ -31,7 +31,7 @@ from fipy.tools import parallelComm
 
 # Jupyter notebook handles some things differently than from the commandline
 
-# In[2]:
+# In[229]:
 
 
 try:
@@ -44,7 +44,7 @@ except:
 # ## Initialize
 # ### Load parameters
 
-# In[3]:
+# In[230]:
 
 
 parser = argparse.ArgumentParser()
@@ -82,18 +82,18 @@ parser.add_argument("--tolerance", help="linear solver tolerance",
 
 # ### Set any parameters for interactive notebook
 
-# In[206]:
+# In[245]:
 
 
 if isnotebook:
     # argv = ["--numberOfElements=10000", "--totaltime=1.2", "--checkpoint_interval=0.12",
     #         "--nucleation_scale=100", "--output=nucleation6"]
-    argv = ["--numberOfElements=10000", "--nucleation_scale=100", "--output=nucleation12"]
+    argv = ["--numberOfElements=10000", "--nucleation_scale=100", "--output=nucleation16"]
 else:
     argv = None
 
 
-# In[207]:
+# In[246]:
 
 
 args, unknowns = parser.parse_known_args(args=argv)
@@ -108,7 +108,7 @@ args, unknowns = parser.parse_known_args(args=argv)
 # Create a mesh based on parameters. Set
 # >  the computational domain is ... 1000×1000 
 
-# In[208]:
+# In[247]:
 
 
 nx = ny = int(nmx.sqrt(args.numberOfElements))
@@ -117,7 +117,7 @@ phi = fp.CellVariable(mesh=mesh, name="$\phi$", value=0., hasOld=True)
 elapsed = 0.
 
 
-# In[209]:
+# In[248]:
 
 
 if args.restart is not None:
@@ -131,14 +131,14 @@ if args.restart is not None:
     elapsed = float(re.match(pattern, args.restart).group(1))
 
 
-# In[210]:
+# In[249]:
 
 
 x, y = mesh.cellCenters[0], mesh.cellCenters[1]
 X, Y = mesh.faceCenters[0], mesh.faceCenters[1]
 
 
-# In[211]:
+# In[250]:
 
 
 if isnotebook:
@@ -148,7 +148,7 @@ if isnotebook:
 
 # ## Create solver
 
-# In[212]:
+# In[251]:
 
 
 precon = None
@@ -187,7 +187,7 @@ solver = solver_class(tolerance=args.tolerance, criterion="initial",
 # 
 # > [Set] the driving force to $\Delta f = 1 / (6\sqrt{2})$
 
-# In[213]:
+# In[252]:
 
 
 Delta_f = 1. / (6 * nmx.sqrt(2.))
@@ -195,7 +195,7 @@ Delta_f = 1. / (6 * nmx.sqrt(2.))
 
 # > $$r_c = \frac{1}{3\sqrt{2}}\frac{1}{\Delta f} = 2.0$$
 
-# In[214]:
+# In[253]:
 
 
 rc = 2.0
@@ -236,7 +236,7 @@ rc = 2.0
 # \notag
 # \end{align}
 
-# In[215]:
+# In[254]:
 
 
 mPhi = -2 * (1 - 2 * phi) + 30 * phi * (1 - phi) * Delta_f
@@ -254,7 +254,7 @@ eq = (fp.TransientTerm() ==
 # F[\phi] = \int\left[\frac{1}{2}(\nabla\phi)^2 + g(\phi) - \Delta f p(\phi)\right]\,dV \tag{6}
 # \end{align}
 
-# In[216]:
+# In[255]:
 
 
 ftot = (0.5 * phi.grad.mag**2
@@ -275,7 +275,7 @@ F = ftot.cellVolumeAverage * volumes.sum()
 # 
 # > $\phi$ is set to unity in regions of overlaps of nuclei
 
-# In[217]:
+# In[256]:
 
 
 def nucleus(x0, y0, r0):
@@ -291,7 +291,7 @@ def nucleus(x0, y0, r0):
 # 
 # > 100 random nucleation times $t_i$ are generated, $i=1,\ldots,100$, drawn from a uniform distribution in the interval $t_i \in [0,600)$
 
-# In[218]:
+# In[257]:
 
 
 if parallelComm.procID == 0:
@@ -314,7 +314,7 @@ nucleii = parallelComm.bcast(nucleii, root=0)
 
 # ### Setup ouput storage
 
-# In[219]:
+# In[258]:
 
 
 if (args.output is not None) and (parallelComm.procID == 0):
@@ -339,7 +339,7 @@ if parallelComm.procID == 0:
 
 # ### Create particle counter
 
-# In[220]:
+# In[259]:
 
 
 from scipy import ndimage
@@ -412,13 +412,13 @@ class LabelVariable(fp.CellVariable):
         return self._num_features
 
 
-# In[221]:
+# In[260]:
 
 
 labels = LabelVariable(phi, threshold=0.5)
 
 
-# In[222]:
+# In[261]:
 
 
 if isnotebook:
@@ -428,7 +428,7 @@ if isnotebook:
 
 # ### Define output routines
 
-# In[223]:
+# In[262]:
 
 
 def saveStats(elapsed):
@@ -467,7 +467,7 @@ def checkpoint_data(elapsed):
 
 # ### Figure out when to save
 
-# In[224]:
+# In[263]:
 
 
 checkpoints = (fp.numerix.arange(int(elapsed / args.checkpoint_interval),
@@ -477,7 +477,7 @@ checkpoints = (fp.numerix.arange(int(elapsed / args.checkpoint_interval),
 checkpoints.sort()
 
 
-# In[225]:
+# In[264]:
 
 
 if args.restart is not None:
@@ -496,7 +496,7 @@ if parallelComm.procID == 0:
 
 # ## Solve and output
 
-# In[226]:
+# In[265]:
 
 
 times = fp.tools.concatenate([checkpoints, nucleii[..., 0]])
@@ -504,19 +504,19 @@ times.sort()
 times = times[(times > elapsed) & (times <= args.totaltime)]
 
 
-# In[227]:
+# In[ ]:
 
 
-from steppyngstounes import CheckpointStepper, PIDStepper
+from steppyngstounes import CheckpointStepper, FixedStepper
 
 phi.updateOld()
 for checkpoint in CheckpointStepper(start=elapsed,
                                     stops=times,
                                     stop=args.totaltime):
 
-    for step in PIDStepper(start=checkpoint.begin,
-                           stop=checkpoint.end,
-                           size=checkpoint.size):
+    for step in FixedStepper(start=checkpoint.begin,
+                             stop=checkpoint.end,
+                             size=1.):
 
         for sweep in range(args.sweeps):
             res = eq.sweep(var=phi, dt=step.size)
