@@ -16,10 +16,11 @@
 
 # ## Import Python modules
 
-# In[228]:
+# In[339]:
 
 
 import argparse
+import json
 import os
 import re
 import sys
@@ -82,18 +83,19 @@ parser.add_argument("--tolerance", help="linear solver tolerance",
 
 # ### Set any parameters for interactive notebook
 
-# In[245]:
+# In[317]:
 
 
 if isnotebook:
     # argv = ["--numberOfElements=10000", "--totaltime=1.2", "--checkpoint_interval=0.12",
     #         "--nucleation_scale=100", "--output=nucleation6"]
-    argv = ["--numberOfElements=10000", "--nucleation_scale=100", "--output=nucleation16"]
+    argv = ["--numberOfElements=100000", "--nucleation_scale=1000", "--output=nucleation21",
+           "--restart=../../../../solvers_and_timings/nucleation18/t=300.0.npz"]
 else:
     argv = None
 
 
-# In[246]:
+# In[318]:
 
 
 args, unknowns = parser.parse_known_args(args=argv)
@@ -108,7 +110,7 @@ args, unknowns = parser.parse_known_args(args=argv)
 # Create a mesh based on parameters. Set
 # >  the computational domain is ... 1000×1000 
 
-# In[247]:
+# In[319]:
 
 
 nx = ny = int(nmx.sqrt(args.numberOfElements))
@@ -117,12 +119,13 @@ phi = fp.CellVariable(mesh=mesh, name="$\phi$", value=0., hasOld=True)
 elapsed = 0.
 
 
-# In[248]:
+# In[320]:
 
 
 if args.restart is not None:
     data = nmx.load(args.restart)
-    phi.setValue(data["phi"][:nx, :ny].flat)
+    lower, upper = int((1000 - nx) / 2), int((1000 + nx) / 2)
+    phi.setValue(data["phi"][lower:upper, lower:upper].flat)
 
     # scanf("%g") simulator
     # https://docs.python.org/3/library/re.html#simulating-scanf
@@ -131,14 +134,14 @@ if args.restart is not None:
     elapsed = float(re.match(pattern, args.restart).group(1))
 
 
-# In[249]:
+# In[321]:
 
 
 x, y = mesh.cellCenters[0], mesh.cellCenters[1]
 X, Y = mesh.faceCenters[0], mesh.faceCenters[1]
 
 
-# In[250]:
+# In[322]:
 
 
 if isnotebook:
@@ -148,7 +151,7 @@ if isnotebook:
 
 # ## Create solver
 
-# In[251]:
+# In[323]:
 
 
 precon = None
@@ -187,7 +190,7 @@ solver = solver_class(tolerance=args.tolerance, criterion="initial",
 # 
 # > [Set] the driving force to $\Delta f = 1 / (6\sqrt{2})$
 
-# In[252]:
+# In[324]:
 
 
 Delta_f = 1. / (6 * nmx.sqrt(2.))
@@ -195,7 +198,7 @@ Delta_f = 1. / (6 * nmx.sqrt(2.))
 
 # > $$r_c = \frac{1}{3\sqrt{2}}\frac{1}{\Delta f} = 2.0$$
 
-# In[253]:
+# In[325]:
 
 
 rc = 2.0
@@ -236,7 +239,7 @@ rc = 2.0
 # \notag
 # \end{align}
 
-# In[254]:
+# In[326]:
 
 
 mPhi = -2 * (1 - 2 * phi) + 30 * phi * (1 - phi) * Delta_f
@@ -254,7 +257,7 @@ eq = (fp.TransientTerm() ==
 # F[\phi] = \int\left[\frac{1}{2}(\nabla\phi)^2 + g(\phi) - \Delta f p(\phi)\right]\,dV \tag{6}
 # \end{align}
 
-# In[255]:
+# In[327]:
 
 
 ftot = (0.5 * phi.grad.mag**2
@@ -275,7 +278,7 @@ F = ftot.cellVolumeAverage * volumes.sum()
 # 
 # > $\phi$ is set to unity in regions of overlaps of nuclei
 
-# In[256]:
+# In[328]:
 
 
 def nucleus(x0, y0, r0):
@@ -291,7 +294,7 @@ def nucleus(x0, y0, r0):
 # 
 # > 100 random nucleation times $t_i$ are generated, $i=1,\ldots,100$, drawn from a uniform distribution in the interval $t_i \in [0,600)$
 
-# In[257]:
+# In[329]:
 
 
 if parallelComm.procID == 0:
@@ -314,7 +317,7 @@ nucleii = parallelComm.bcast(nucleii, root=0)
 
 # ### Setup ouput storage
 
-# In[258]:
+# In[330]:
 
 
 if (args.output is not None) and (parallelComm.procID == 0):
@@ -339,7 +342,7 @@ if parallelComm.procID == 0:
 
 # ### Create particle counter
 
-# In[259]:
+# In[331]:
 
 
 from scipy import ndimage
@@ -412,13 +415,13 @@ class LabelVariable(fp.CellVariable):
         return self._num_features
 
 
-# In[260]:
+# In[332]:
 
 
 labels = LabelVariable(phi, threshold=0.5)
 
 
-# In[261]:
+# In[333]:
 
 
 if isnotebook:
@@ -428,7 +431,7 @@ if isnotebook:
 
 # ### Define output routines
 
-# In[262]:
+# In[334]:
 
 
 def saveStats(elapsed):
@@ -467,7 +470,7 @@ def checkpoint_data(elapsed):
 
 # ### Figure out when to save
 
-# In[263]:
+# In[335]:
 
 
 checkpoints = (fp.numerix.arange(int(elapsed / args.checkpoint_interval),
@@ -477,7 +480,7 @@ checkpoints = (fp.numerix.arange(int(elapsed / args.checkpoint_interval),
 checkpoints.sort()
 
 
-# In[264]:
+# In[336]:
 
 
 if args.restart is not None:
@@ -496,7 +499,7 @@ if parallelComm.procID == 0:
 
 # ## Solve and output
 
-# In[265]:
+# In[337]:
 
 
 times = fp.tools.concatenate([checkpoints, nucleii[..., 0]])
@@ -504,7 +507,7 @@ times.sort()
 times = times[(times > elapsed) & (times <= args.totaltime)]
 
 
-# In[266]:
+# In[340]:
 
 
 from steppyngstounes import CheckpointStepper, FixedStepper
@@ -518,8 +521,19 @@ for checkpoint in CheckpointStepper(start=elapsed,
                              stop=checkpoint.end,
                              size=1.):
 
+        state = dict(state="START", numberOfElements=mesh.numberOfCells, sweeps=args.sweeps)
+        if precon is None:
+            state["preconditioner"] = None
+        else:
+            state["preconditioner"] = precon.__class__.__name__
+
+        solver._log.debug(json.dumps(state))
+
         for sweep in range(args.sweeps):
-            res = eq.sweep(var=phi, dt=step.size)
+            res = eq.sweep(var=phi, dt=step.size, solver=solver)
+
+        state["state"] = "END"
+        solver._log.debug(json.dumps(state))
 
         phi.updateOld()
         stats.append(current_stats(step.end))
@@ -540,12 +554,6 @@ for checkpoint in CheckpointStepper(start=elapsed,
         # labelViewer.plot()
 
     _ = checkpoint.succeeded()
-
-
-# In[ ]:
-
-
-checkpoint.end
 
 
 # In[ ]:
