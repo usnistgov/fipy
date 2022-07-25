@@ -31,6 +31,7 @@ optional arguments:
 
 QSUB=0
 SBATCH=""
+SLURMTIME="1:00:00"
 ENV=fipy
 NP=1
 LOGCONFIG=""
@@ -50,7 +51,9 @@ do
             ;;
         --sbatch)
             SBATCH="$2"
-            shift # option has parameter
+            SLURMTIME="$3"
+            shift # option has two parameters
+            shift
             ;;
         --env)
             ENV="$2"
@@ -126,12 +129,13 @@ do
           ${MPI} ${PYTHON} ${BASH_SOURCE%/*}/${SCRIPT} \
           --numberOfElements=${size} --solver=${solver} $@"
 
-        JOBNAME="${SCRIPT}-${size}-${solver}"
+        JOBNAME="${SCRIPT}-${SOLVERSUITE}-${size}-${solver}"
 
         if [[ $QSUB == 1 ]]; then
             qsub -cwd -pe nodal ${NP} -q "wide64" -o "${dir}" -e "${dir}" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
         elif [[ -n $SBATCH ]]; then
-            sbatch --partition=${SBATCH} --job-name=${JOBNAME} --ntasks=${NP} --ntasks-per-core=2 \
+            sbatch --partition=${SBATCH} --job-name=${JOBNAME} --ntasks=${NP} \
+              --ntasks-per-core=2 --time=${SLURMTIME} \
               "${BASH_SOURCE%/*}/setup.sh" --log ${LOGCONFIG} ${LOGFILE} --env "${ENV}" -- ${INVOCATION}
         else
             echo bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
