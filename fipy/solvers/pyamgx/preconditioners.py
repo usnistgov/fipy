@@ -15,8 +15,8 @@ __all__ = ["AMGPreconditioner",
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class Preconditioner(object, **kwargs):
-    def __init__(self):
+class Preconditioner(object):
+    def __init__(self, **kwargs):
         self.config_dict = {
             "solver": self.pctype,
             "max_iters": 1
