@@ -38,7 +38,7 @@ class PyAMGXSolver(Solver):
 
         self.config_dict["solver"]["max_iters"] = iterations
         if precon is not None:
-            self.config_dict["solver"]["preconditioner"] = precon
+            self.config_dict["solver"]["preconditioner"] = precon()
         if smoother is not None:
             self.config_dict["solver"]["smoother"] = smoother
         self.config_dict["solver"].update(kwargs)
