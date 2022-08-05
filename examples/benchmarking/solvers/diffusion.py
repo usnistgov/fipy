@@ -13,7 +13,7 @@ parser.add_argument("--output", help="directory to store results in",
 parser.add_argument("--numberOfElements", help="number of total cells in a Grid2D",
                     type=int, default=10000)
 parser.add_argument("--solver", help="solver class to use",
-                    choices=("cg", "pcg", "cgs", "gmres", "lu"), default="cg")
+                    choices=("pcg", "cgs", "gmres", "lu"), default="pcg")
 parser.add_argument("--preconditioner", help="preconditioner class to use",
                     choices=("jacobi", "ilu", "ssor", "icc", "none"), default="none")
 parser.add_argument("--sweeps", help="number of nonlinear sweeps to take",
@@ -45,9 +45,9 @@ if args.preconditioner == "jacobi":
 elif args.preconditioner == "ilu":
     precon = fp.ILUPreconditioner()
 elif args.preconditioner == "ssor":
-    precon = fp.SSORPreconditioner
+    precon = fp.SSORPreconditioner()
 elif args.preconditioner == "icc":
-    precon = fp.ICPreconditioner
+    precon = fp.ICPreconditioner()
 elif args.preconditioner == "none":
     precon = None
 
