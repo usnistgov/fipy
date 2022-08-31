@@ -38,7 +38,7 @@ LOGCONFIG=""
 LOGFILE=""
 PYTHON=python
 SOLVERSUITE=petsc
-PRECONDITIONER=none
+PRECONDITIONERS=none
 POWERMIN=1
 POWERMAX=6
 POWERSTEP=1
@@ -88,6 +88,10 @@ do
             POWERMAX="$2"
             shift # option has parameter
             ;;
+        --preconditioners)
+            PRECONDITIONERS="$2"
+            shift # option has parameter
+            ;;
         -h|--help)
             echo "$USAGE"
             exit 0
@@ -125,21 +129,24 @@ do
     size=$((10**${POWER}))
     for solver in pcg cgs gmres lu
     do
-        INVOCATION="OMP_NUM_THREADS=1 FIPY_SOLVERS=${SOLVERSUITE} ${LOG_CONFIG} \
-          ${MPI} ${PYTHON} ${BASH_SOURCE%/*}/${SCRIPT} \
-          --numberOfElements=${size} --solver=${solver} $@"
+        for preconditioner in $PRECONDITIONERS
+        do
+            INVOCATION="OMP_NUM_THREADS=1 FIPY_SOLVERS=${SOLVERSUITE} ${LOG_CONFIG} \
+              ${MPI} ${PYTHON} ${BASH_SOURCE%/*}/${SCRIPT} \
+              --numberOfElements=${size} --solver=${solver} --preconditioner=${preconditioner} $@"
 
-        JOBNAME="${SCRIPT}-${SOLVERSUITE}-${size}-${solver}"
+            JOBNAME="${SCRIPT}-${SOLVERSUITE}-${size}-${preconditioner}-${solver}"
 
-        if [[ $QSUB == 1 ]]; then
-            qsub -cwd -pe nodal ${NP} -q "wide64" -o "${dir}" -e "${dir}" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
-        elif [[ -n $SBATCH ]]; then
-            sbatch --partition=${SBATCH} --job-name=${JOBNAME} --ntasks=${NP} \
-              --ntasks-per-core=2 --time=${SLURMTIME} \
-              "${BASH_SOURCE%/*}/setup.sh" --log ${LOGCONFIG} ${LOGFILE} --env "${ENV}" -- ${INVOCATION}
-        else
-            echo bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
-            bash "${BASH_SOURCE%/*}/setup.sh" --log ${LOGCONFIG} ${LOGFILE} --env "${ENV}" -- ${INVOCATION}
-        fi
+            if [[ $QSUB == 1 ]]; then
+                qsub -cwd -pe nodal ${NP} -q "wide64" -o "${dir}" -e "${dir}" "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
+            elif [[ -n $SBATCH ]]; then
+                sbatch --partition=${SBATCH} --job-name=${JOBNAME} --ntasks=${NP} \
+                  --ntasks-per-core=2 --time=${SLURMTIME} \
+                  "${BASH_SOURCE%/*}/setup.sh" --log ${LOGCONFIG} ${LOGFILE} --env "${ENV}" -- ${INVOCATION}
+            else
+                echo bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
+                # bash "${BASH_SOURCE%/*}/setup.sh" --log ${LOGCONFIG} ${LOGFILE} --env "${ENV}" -- ${INVOCATION}
+            fi
+        done
     done
 done
