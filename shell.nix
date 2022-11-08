@@ -2,34 +2,37 @@
 # $ nix-shell --pure --argstr tag 20.09
 #
 {
-  tag ? "20.09"
+  tag ? "22.05"
 }:
 let
   pkgs = import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/${tag}.tar.gz") {};
   pypkgs = pkgs.python3Packages;
-  not_darwin_inputs = pkgs.lib.optionals (! pkgs.stdenv.isDarwin ) [ pypkgs.jupyter ];
-  not_darwin_pre_shell_hook = if (! pkgs.stdenv.isDarwin) then ''
-    jupyter nbextension install --py widgetsnbextension --user
-    jupyter nbextension enable widgetsnbextension --user --py
-  '' else "";
-  filter_pyamg = builtins.filter (x: ! ((pkgs.lib.hasInfix "pyamg" x.name) && pkgs.stdenv.isDarwin));
+
+  nixes_src = builtins.fetchTarball "https://github.com/wd15/nixes/archive/9a757526887dfd56c6665290b902f93c422fd6b1.zip";
+  jupyter_extra = pypkgs.callPackage "${nixes_src}/jupyter/default.nix" {
+    jupyterlab=(if pkgs.stdenv.isDarwin then pypkgs.jupyter else pypkgs.jupyterlab);
+  };
+
 in
   (pypkgs.fipy.overridePythonAttrs (old: rec {
-    src = builtins.filterSource (path: type: type != "directory" || baseNameOf path != ".git") ./.;
+
+    src = pkgs.lib.cleanSource ./.;
+
     nativeBuildInputs = with pypkgs; [
       pip
       pkgs.imagemagick
       pkgs.git
       pkgs.openssh
-    ] ++ propagatedBuildInputs ++ not_darwin_inputs;
+      nbval
+    ] ++ propagatedBuildInputs ++ [ jupyter_extra ipywidgets ];
 
-    propagatedBuildInputs = (filter_pyamg old.propagatedBuildInputs);
+    propagatedBuildInputs = old.propagatedBuildInputs;
 
-    postShellHook = not_darwin_pre_shell_hook + ''
+    postShellHook = ''
       SOURCE_DATE_EPOCH=$(date +%s)
       export PYTHONUSERBASE=$PWD/.local
       export USER_SITE=`python -c "import site; print(site.USER_SITE)"`
-      export PYTHONPATH=$PYTHONPATH:$USER_SITE
+      export PYTHONPATH=$PYTHONPATH:$USER_SITE:$(pwd)
       export PATH=$PATH:$PYTHONUSERBASE/bin
 
       export OMPI_MCA_plm_rsh_agent=${pkgs.openssh}/bin/ssh
