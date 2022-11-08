@@ -3,16 +3,12 @@ from a repository that username has access to. Supports Github API v3.
 Adapted from: https://gist.github.com/patrickfuller/e2ea8a94badc5b6967ef3ca0a9452a43
 """
 from __future__ import print_function
-from __future__ import unicode_literals
 
 import os
 import textwrap
 from distutils.core import Command
-from future.utils import text_to_native_str
 
-from ._nativize import nativize_all
-
-__all__ = [text_to_native_str("changelog")]
+__all__ = ["changelog"]
 
 class changelog(Command):
     description = "Generate ReST change log from github issues and pull requests"
@@ -43,7 +39,6 @@ class changelog(Command):
          "If the string `none` is passed, "
          "issues without milestones are returned. ")
      ]
-    user_options = [nativize_all(u) for u in user_options]
 
     def initialize_options(self):
         import github
@@ -78,9 +73,7 @@ class changelog(Command):
         print()
 
         for i, issue in issues.iterrows():
-            # distutils does something disgusting with encodings
-            # we have to strip out unicode or we get errors
-            print(issue.ReST.encode("ascii", errors="replace"))
+            print(issue.ReST)
 
     def _getMilestone(self, milestone):
         """Return Milestone with title of `milestone`
@@ -120,6 +113,14 @@ class changelog(Command):
                     date = tagOrSHA
 
         return date
+
+    def read_pull(self, x):
+        if x['pull_request'] is None:
+            result = (False, None)
+        else:
+            pull = self.repo.get_pull(x.number)
+            result = (pull.merged, pull.merged_at)
+        return result
 
     def format_pull(self, x):
         prefix = "- "
@@ -192,7 +193,8 @@ class changelog(Command):
         issues = issues.sort_values(by=["number"], ascending=[False])
         wontfix = issues.labels.apply(lambda x: 'wontfix' in x)
         invalid = issues.labels.apply(lambda x: 'invalid' in x)
-        issues = issues[~wontfix & ~invalid]
+        question = issues.labels.apply(lambda x: 'question' in x)
+        issues = issues[~wontfix & ~invalid & ~question]
 
         # fix the dates to reflect dates from original Trac issue tracker
         trac = (r" _Imported from trac ticket .*,  "
@@ -212,9 +214,11 @@ class changelog(Command):
         ispull = issues['pull_request'].notna()
         isissue = ~ispull
 
+        issues['merged'], issues['merged_at'] = zip(*issues.apply(self.read_pull, axis=1))
+
         issues.loc[ispull, 'ReST'] = issues.apply(self.format_pull, axis=1)
 
         issues.loc[isissue, 'ReST'] = issues.apply(self.format_issue, axis=1)
 
-        self._printReST(issues[ispull], "Pulls")
+        self._printReST(issues[ispull & issues['merged']], "Pulls")
         self._printReST(issues[isissue], "Fixes")

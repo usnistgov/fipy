@@ -1,5 +1,10 @@
 from __future__ import unicode_literals
 from builtins import str
+
+import logging
+
+_log = logging.getLogger(__name__)
+
 import os
 from importlib import import_module
 
@@ -169,3 +174,11 @@ register_skipper(flag='NOT_PYAMGX_SOLVER',
                  why="the PyAMGX solver is being used.",
                  skipWarning=True)
 del register_skipper
+
+_log.info("Solver suite is %s", solver)
+_log.debug("DefaultSolver is %s", DefaultSolver)
+_log.debug("DefaultAsymmetricSolver is %s", DefaultAsymmetricSolver)
+_log.debug("DummySolver is %s", DummySolver)
+_log.debug("GeneralSolver is %s", GeneralSolver)
+_log.debug("serialComm is %s", serialComm)
+_log.debug("parallelComm is %s", parallelComm)

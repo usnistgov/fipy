@@ -44,6 +44,51 @@ Python can be obtained from the :cite:`PythonReference`.
 As you gain experience, you may want to browse through the
 :ref:`FlagsAndEnvironmentVariables` that affect :term:`FiPy`.
 
+-------
+Logging
+-------
+
+Diagnostic information about a :term:`FiPy` run can be obtained using the
+:mod:`logging` module.  For example, at the beginning of your script, you
+can add::
+
+    >>> import logging
+    >>> log = logging.getLogger("fipy")
+    >>> console = logging.StreamHandler()
+    >>> console.setLevel(logging.INFO)
+    >>> log.addHandler(console)
+
+in order to see informational messages in the terminal.  To have more
+verbose debugging information save to a file::
+
+    >>> logfile = logging.FileHandler(filename="fipy.log")
+    >>> logfile.setLevel(logging.DEBUG)
+    >>> log.addHandler(logfile)
+
+    >>> log.setLevel(logging.DEBUG)
+
+To restrict logging to, e.g., information about the :term:`PETSc` solvers::
+
+    >>> petsc = logging.Filter('fipy.solvers.petsc')
+    >>> logfile.addFilter(petsc)
+
+More complex configurations can be specified by setting the
+:envvar:`FIPY_LOG_CONFIG` environment variable.  In this case, it is not
+necessary to add any logging instructions to your own script.  Example
+configuration files can be found in
+:file:`{FiPySource}/fipy/tools/logging/`.
+
+If `Solving in Parallel`_, the :mod:`mpilogging` package (which can be
+installed via :term:`PyPI`) enables reporting which MPI rank each log entry
+comes from.  For example::
+
+    >>> from mpilogging import MPIScatteredFileHandler
+    >>> mpilog = MPIScatteredFileHandler(filepattern="fipy.%(mpirank)d_of_%(mpisize)d.log"
+    >>> mpilog.setLevel(logging.DEBUG)
+    >>> log.addHandler(mpilog)
+
+will generate a unique log file for each MPI rank.
+
 ------------
 Testing FiPy
 ------------
@@ -84,9 +129,8 @@ are not installed, :term:`FiPy` will warn something like::
 Although the test suite may show warnings, there should be no other errors.
 Any errors should be investigated or reported on the `issue tracker`_.
 Users can see if there are any known problems for the latest :term:`FiPy`
-distribution by checking `FiPy's automated test display`_.
+distribution by checking :term:`FiPy`'s :ref:`CONTINUOUSINTEGRATION` dashboard.
 
-.. _FiPy's automated test display: http://build.cmi.kent.edu:8010/console
 .. _issue tracker: https://github.com/usnistgov/fipy/issues/new
 
 Below are a number of common `Command-line Flags`_ for testing various
@@ -212,6 +256,12 @@ package.
    that produced a particular piece of :mod:`weave` C code. Useful
    for debugging.
 
+.. envvar:: FIPY_LOG_CONFIG
+
+   Specifies a :term:`JSON`-formatted logging configuration file, suitable
+   for passing to :func:`logging.config.dictConfig`.  Example configuration
+   files can be found in :file:`{FiPySource}/fipy/tools/logging/`.
+
 .. envvar:: FIPY_SOLVERS
 
    Forces the use of the specified suite of linear solvers.  Valid
@@ -220,8 +270,10 @@ package.
 
 .. envvar:: FIPY_VERBOSE_SOLVER
 
-   If present, causes the linear solvers to print a variety of diagnostic
-   information.
+   If present, causes the
+   :class:`~fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver` to
+   print a variety of diagnostic information.  All other solvers should use
+   `Logging`_ and :envvar:`FIPY_LOG_CONFIG`.
 
 .. envvar:: FIPY_VIEWER
 
@@ -549,13 +601,57 @@ array. For example, if ``Term01`` is a transient term then ``Term01``
 would appear in the upper left diagonal and the ordering of the
 variable column array would be reversed.
 
-The use of coupled equation is described in detail in
+The use of coupled equations is described in detail in
 :mod:`examples.diffusion.coupled`. Other examples that demonstrate the
 use of coupled equations are :mod:`examples.phase.binaryCoupled`,
 :mod:`examples.phase.polyxtalCoupled` and
 :mod:`examples.cahnHilliard.mesh2DCoupled`. As well as coupling
-equations, true vector equations can now be written in :term:`FiPy`
-(see :mod:`examples.diffusion.coupled` for more details).
+equations, true vector equations can now be written in :term:`FiPy`.
+
+.. attention::
+
+    Coupled equations are not compatible with
+    :ref:`discret-higherOrderDiffusion` terms.  This is not a practical
+    limitation, as any higher order terms can be decomposed into multiple
+    2nd-order equations.  For example, the pair of `coupled Cahn-Hilliard &
+    Allen-Cahn`_ 4th- and 2nd-order equations
+
+    .. math::
+
+        \frac{\partial C}{\partial t}
+        &= \nabla\cdot\left[
+            M\nabla\left(
+                \frac{\partial f(c, \phi)}{\partial C}
+                - \kappa_C\nabla^2 C
+            \right)
+        \right]
+        \\
+        \frac{\partial \phi}{\partial t}
+        &= -L\left(
+            \frac{\partial f(c, \phi)}{\partial \phi}
+            - \kappa_\phi\nabla^2 \phi
+        \right)
+
+    can be decomposed to three 2nd-order equations
+
+    .. math::
+
+        \frac{\partial C}{\partial t}
+        &= \nabla\cdot\left(
+            M\nabla\mu
+        \right)
+        \\
+        \mu
+        &= \frac{\partial f(c, \phi)}{\partial C}
+           - \kappa_C\nabla^2 C
+        \\
+        \frac{\partial \phi}{\partial t}
+        &= -L\left(
+            \frac{\partial f(c, \phi)}{\partial \phi}
+            - \kappa_\phi\nabla^2 \phi
+        \right)
+
+    .. _coupled Cahn-Hilliard & Allen-Cahn: https://pages.nist.gov/pfhub/benchmarks/benchmark2.ipynb
 
 .. _BoundaryConditions:
 
@@ -564,6 +660,23 @@ Boundary Conditions
 -------------------
 
 .. currentmodule:: fipy.variables.cellVariable
+
+Default boundary conditions
+===========================
+
+If no constraints are applied, solutions are conservative, i.e., all
+boundaries are zero flux.  For the equation
+
+.. math::
+
+    \frac{\partial\phi}{\partial t}
+    &= \nabla\cdot\left(\vec{a}\phi\right) + \nabla\cdot\left(b\nabla\phi\right)
+
+the condition on the boundary :math:`S` is
+
+.. math::
+
+   \hat{n}\cdot\left(\vec{a}\phi + b\nabla\phi\right) = 0\qquad\text{on $S$.}
 
 Applying fixed value (Dirichlet) boundary conditions
 ====================================================
@@ -984,18 +1097,20 @@ command in the base directory::
 
    This mechanism is intended primarily for the developers. At a minimum,
    you will need at least version 1.7.0 of `Sphinx
-   <http://www.sphinx-doc.org/>`_, plus all of its prerequisites. We 
-   install via conda::
+   <http://www.sphinx-doc.org/>`_, plus all of its prerequisites. Python
+   2.7 probably won't work.
+
+   We install via conda::
 
    $ conda install --channel conda-forge sphinx
 
    Bibliographic citations require the `sphinxcontrib-bibtex` package::
 
-   $ pip install sphinxcontrib-bibtex
+   $ python -m pip install sphinxcontrib-bibtex
 
    Some documentation uses `numpydoc` styling::
 
-   $ pip install numpydoc
+   $ python -m pip install numpydoc
 
    Some embeded figures require `matplotlib`, `pandas`, and `imagemagick`::
 
@@ -1009,7 +1124,7 @@ command in the base directory::
    need `pyspelling`, `hunspell`, and the `libreoffice` dictionaries::
 
    $ conda install --channel conda-forge hunspell
-   $ pip install pyspelling
+   $ python -m pip install pyspelling
    $ wget -O en_US.aff  https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
    $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
 

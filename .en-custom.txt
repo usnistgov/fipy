@@ -21,6 +21,7 @@ autoscale
 autoscales
 axisymmetric
 AztecOO
+.azure
 backend
 backends
 backport
@@ -135,6 +136,7 @@ GRICAD
 Guyer
 gzip
 gzipped
+gzips
 Halperin
 Hamadani
 Hangarter
@@ -237,6 +239,7 @@ overpotential
 O'Beirne
 parallelization
 parallelize
+parallelizing
 Patankar
 PBICGSTAB
 PCG
@@ -249,6 +252,8 @@ Peric
 PETSc
 photovoltaics
 PID
+pipelines.yml
+plugin
 PNG
 POSIX
 pre-assembled
@@ -273,6 +278,7 @@ reconstrain
 redeclare
 refactor
 refactoring
+refactors
 repo
 reST
 Rhie-Chow
@@ -295,6 +301,7 @@ Sohn
 spinodal
 sr
 SSOR
+StackOverflow
 stackoverflow
 stents
 subdirectory
@@ -362,6 +369,7 @@ Zhitenev
 3D
 3x2x1
 -
+-formatted
 -only
 -periodicity
 -valued

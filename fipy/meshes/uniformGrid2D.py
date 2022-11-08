@@ -798,10 +798,44 @@ class UniformGrid2D(UniformGrid):
         warnings from the solver.
 
             >>> from fipy import *
-            >>> mesh = UniformGrid2D(nx=3., ny=3., dx=1., dy=1.)
+            >>> mesh = UniformGrid2D(nx=3, ny=3, dx=1., dy=1.)
             >>> var = CellVariable(mesh=mesh)
             >>> DiffusionTerm().solve(var)
 
+        Ensure that ghost faces are excluded from accumulating operations
+        (#856).  Four exterior surfaces of :math:`10\times 10` square mesh
+        should each have a total area of 10, regardless of partitioning.
+
+            >>> square = UniformGrid2D(nx=10, dx=1., ny=10, dy=1.)
+
+            >>> area = (square._faceAreas * square.facesBottom).sum()
+            >>> print(numerix.allclose(area, 10))
+            True
+
+            >>> area = (square._faceAreas * square.facesTop).sum()
+            >>> print(numerix.allclose(area, 10))
+            True
+
+            >>> area = (square._faceAreas * square.facesLeft).sum()
+            >>> print(numerix.allclose(area, 10))
+            True
+
+            >>> area = (square._faceAreas * square.facesRight).sum()
+            >>> print(numerix.allclose(area, 10))
+            True
+
+        Ensure no double-counting of faces on boundary between partitions.
+
+            >>> area = (square._faceAreas * (square.faceCenters[1] == 5.)).sum()
+            >>> print(numerix.allclose(area, 10)) # doctest: +PARALLEL_2
+            True
+
+        Size of global value should not depend on number of processors (#400)
+
+            >>> print(square.cellCenters.globalValue.shape)
+            (2, 100)
+            >>> print(square.faceCenters.globalValue.shape)
+            (2, 220)
         """
 
 def _test():

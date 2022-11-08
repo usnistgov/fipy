@@ -1,3 +1,7 @@
+import logging
+
+_log = logging.getLogger(__name__)
+
 from fipy.solvers.petsc.linearLUSolver import *
 from fipy.solvers.petsc.linearPCGSolver import *
 from fipy.solvers.petsc.linearGMRESSolver import *

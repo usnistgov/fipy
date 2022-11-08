@@ -17,6 +17,8 @@ from builtins import object
 from builtins import str
 __docformat__ = 'restructuredtext'
 
+import logging
+
 from fipy.tools import numerix
 
 __all__ = ["SolverConvergenceWarning", "MaximumIterationWarning",
@@ -90,6 +92,9 @@ class Solver(object):
         self.iterations = iterations
 
         self.preconditioner = precon
+
+        self._log = logging.getLogger(self.__class__.__module__
+                                      + "." + self.__class__.__name__)
 
     def _storeMatrix(self, var, matrix, RHSvector):
         self.var = var

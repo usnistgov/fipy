@@ -507,7 +507,7 @@ class Variable(object):
                 else:
                     mask = constraint.where
                     if not hasattr(mask, 'dtype') or mask.dtype != bool:
-                        mask = numerix.array(mask, dtype=numerix.NUMERIX.bool)
+                        mask = numerix.array(mask, dtype=bool)
 
                     if 0 not in value.shape:
                         try:
@@ -1164,6 +1164,12 @@ class Variable(object):
             >>> print(abs(Variable(2.3) - Variable(1.2)))
             1.1
 
+
+        Check representation works with different versions of numpy
+
+            >>> print(repr(abs(Variable(2.3))))
+            numerix.fabs(Variable(value=array(2.3)))
+
         """
         return self._UnaryOperatorVariable(lambda a: numerix.fabs(a))
 
@@ -1498,6 +1504,8 @@ class Variable(object):
 
     @property
     def mag(self):
+        r"""The magnitude of the :class:`~fipy.variables.variable.Variable`,
+        e.g., :math:`|\vec{\psi}| = \sqrt{\vec{\psi}\cdot\vec{\psi}}`."""
         if not hasattr(self, "_mag"):
             self._mag = numerix.sqrt(self.dot(self))
 

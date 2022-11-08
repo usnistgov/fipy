@@ -1,4 +1,9 @@
 from __future__ import unicode_literals
+
+import logging
+
+_log = logging.getLogger(__name__)
+
 from fipy.solvers.pysparse.linearCGSSolver import *
 from fipy.solvers.pysparse.linearPCGSolver import *
 from fipy.solvers.pysparse.linearGMRESSolver import *

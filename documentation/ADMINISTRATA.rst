@@ -98,44 +98,16 @@ Use the GitHub_ interface to `merge the pull request`_.
 Continuous Integration
 ======================
 
-We use three different cloud services for continuous integration (CI).  Each
-service offers unique capabilities, but this also serves to distribute the
-load.
+| |Azure|_
 
-| |CircleCI|_ |TravisCI|_ |AppVeyor|_
+We use the :term:`Azure` cloud service for :term:`Continuous Integration` (CI).
+This CI is configured in |.azure/pipelines.yml|_.
 
------
-Linux
------
+.. |Azure|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
+.. _Azure:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
 
-Linux builds are performed on CircleCI_. This CI is configured in
-`{FiPySource}/.circleci/config.yml`_.
-
---------
-Mac OS X
---------
-
-Mac OS X builds are performed on TravisCI_. This CI is configured in
-`{FiPySource}/.travis.yml`_.
-
--------
-Windows
--------
-
-Windows builds are performed on AppVeyor_. This CI is configured in
-`{FiPySource}/.appveyor.yml`_.
-
-.. |CircleCI|      image:: https://img.shields.io/circleci/project/github/usnistgov/fipy/master.svg?label=Linux
-.. _CircleCI:      https://circleci.com/gh/usnistgov/fipy
-.. |TravisCI|      image:: https://img.shields.io/travis/usnistgov/fipy/master.svg?label=macOS
-.. _TravisCI:      https://travis-ci.org/usnistgov/fipy
-.. |AppVeyor|      image:: https://ci.appveyor.com/api/projects/status/github/usnistgov/fipy?branch=master&svg=true&failingText=Windows%20-%20failing&passingText=Windows%20-%20passing&pendingText=Windows%20-%20pending
-.. _AppVeyor:      https://ci.appveyor.com/project/usnistgov/fipy
-
-.. _{FiPySource}/.circleci/config.yml: https://github.com/usnistgov/fipy/blob/master/.circleci/config.yml
-.. _{FiPySource}/.travis.yml: https://github.com/usnistgov/fipy/blob/master/.travis.yml
-.. _{FiPySource}/.appveyor.yml: https://github.com/usnistgov/fipy/blob/master/.appveyor.yml
-
+.. |.azure/pipelines.yml| replace::    :file:`{FiPySource}/.azure/pipelines.yml`
+.. _.azure/pipelines.yml: https://github.com/usnistgov/fipy/blob/master/.azure/pipelines.yml
 
 ================
 Making a Release
@@ -209,37 +181,35 @@ Push the tag to GitHub_::
     $ git push --tags origin master
 
 Upon successful completion of the `Continuous Integration`_ systems, fetch
-the tagged build products and place in :file:`dist/`:
+the tagged build products from Azure_ Artifacts and place in
+:file:`{FiPySource}/dist/`:
 
-  :file:`FiPy-x.y.tar.gz`
-    From CircleCI_ `build-binaries` Artifacts
+ * :file:`dist-Linux/FiPy-{x.y}-none-any.whl`
+ * :file:`dist-Linux/FiPy-{x.y}.tar.gz`
+ * :file:`dist-Windows_NT/FiPy-{x.y}.zip`
+ * :file:`dist-docs/FiPy-{x.y}.pdf`
+ * :file:`dist-docs/html-{x.y}.tar.gz`
 
-  :file:`~/project/documentation/_build/latex/fipy.pdf`
-    From CircleCI_ `build-36-docs` Artifacts
+From the :file:`{FiPySource}` directory, unpack :file:`dist/html-{x.y}.tar.gz`
+into :file:`documentation/_build` with::
 
-  :file:`~/project/html.tar.gz`
-    From CircleCI_ `build-36-docs` Artifacts
-
-  :file:`FiPy-x.y.win32.zip`
-    From AppVeyor_ Artifacts
-
-From the :file:`{FiPySource}` directory, unpack :file:`dist/html.tar.gz`
-into file:`documentation/_build` with::
-
-    $ tar -xzf dist/html.tar.gz -C documentation/_build
+    $ tar -xzf dist/html-{x.y}.tar.gz -C documentation/_build
 
 
 ------
 Upload
 ------
 
-Attach :file:`dist/FiPy-x.y.tar.gz`, :file:`dist/FiPy-x.y.win32.zip`, and
-:file:`documentation/_build/latex/fipy-x.y.pdf` to a `GitHub release`_
-associated with tag x.y.
+Attach
+ * :file:`dist/FiPy-{x.y}-none-any.whl`
+ * :file:`dist/FiPy-{x.y}.tar.gz`
+ * :file:`dist/FiPy-{x.y}.zip`
+ * :file:`dist/FiPy-{x.y}.pdf`
+to a `GitHub release`_ associated with tag x.y.
 
 Upload the build products to PyPI with twine_::
 
-    $ twine upload dist/FiPy-${FIPY_VERSION}.tar.gz
+    $ twine upload dist/FiPy-${FIPY_VERSION}.*
 
 Upload the web site to CTCMS ::
 

@@ -1,6 +1,8 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
+from future.builtins import super
+
 from fipy.tools import numerix
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
@@ -18,17 +20,6 @@ class MatplotlibVectorViewer(AbstractMatplotlib2DViewer):
     .. _Matplotlib: http://matplotlib.sourceforge.net/
 
     """
-
-    __doc__ += AbstractMatplotlib2DViewer._test2Dvector(viewer="MatplotlibVectorViewer")
-    __doc__ += """
-
-            >>> for sparsity in numerix.arange(5000, 0, -500):
-            ...     viewer.quiver(sparsity=sparsity)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
-
-    """
-    __doc__ += AbstractMatplotlib2DViewer._test2DvectorIrregular(viewer="MatplotlibVectorViewer")
 
     def __init__(self, vars, title=None, scale=None, sparsity=None, log=False, limits={}, axes=None, figaspect='auto', **kwlimits):
         """Creates a `Matplotlib2DViewer`.
@@ -48,7 +39,7 @@ class MatplotlibVectorViewer(AbstractMatplotlib2DViewer):
             if `True`, arrow length goes at the base-10 logarithm of the magnitude
         limits : dict, optional
             a (deprecated) alternative to limit keyword arguments
-        float xmin, xmax, ymin, ymax, datamin, datamax : float, optional
+        xmin, xmax, ymin, ymax, datamin, datamax : float, optional
             displayed range of data. Any limit set to
             a (default) value of `None` will autoscale.
         axes : ~matplotlib.axes.Axes, optional
@@ -145,6 +136,20 @@ class MatplotlibVectorViewer(AbstractMatplotlib2DViewer):
                            xmax=self._getLimit('xmax'))
         self.axes.set_ylim(ymin=self._getLimit('ymin'),
                            ymax=self._getLimit('ymax'))
+
+    @classmethod
+    def _doctest_body(cls):
+        return (cls._test2Dvector()
+                + cls._test2DvectorIrregular())
+
+    @classmethod
+    def _doctest_extra(cls):
+        return ("""
+            >>> for sparsity in numerix.arange(5000, 0, -500):
+            ...     viewer.quiver(sparsity=sparsity)
+            ...     viewer.plot()
+            >>> viewer._promptForOpinion()
+        """ + super()._doctest_extra())
 
 if __name__ == "__main__":
     import fipy.tests.doctestPlus

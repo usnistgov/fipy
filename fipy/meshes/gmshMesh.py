@@ -7,24 +7,25 @@ from builtins import range
 from builtins import str
 __docformat__ = 'restructuredtext'
 
+import logging
 import os
 from subprocess import Popen, PIPE
 import sys
 import tempfile
 from textwrap import dedent
 import warnings
-from distutils.version import StrictVersion
+
+_log = logging.getLogger(__name__)
 
 from fipy.tools import numerix as nx
 from fipy.tools import parallelComm
 from fipy.tools import serialComm
+from fipy.tools.version import Version, parse_version
 from fipy.tests.doctestPlus import register_skipper
 
 from fipy.meshes.mesh import Mesh
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes.topologies.meshTopology import _MeshTopology
-
-from fipy.tools.debug import PRINT
 
 __all__ = ["openMSHFile", "openPOSFile",
            "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D",
@@ -32,13 +33,11 @@ __all__ = ["openMSHFile", "openPOSFile",
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-DEBUG = False
-
 def _checkForGmsh():
     hasGmsh = True
     try:
         version = _gmshVersion(communicator=parallelComm)
-        hasGmsh = version >= StrictVersion("2.0")
+        hasGmsh = version >= Version("2.0")
     except Exception:
         hasGmsh = False
     return hasGmsh
@@ -46,11 +45,6 @@ def _checkForGmsh():
 register_skipper(flag="GMSH",
                  test=_checkForGmsh,
                  why="`gmsh` cannot be found on the $PATH")
-
-def parprint(str):
-    if DEBUG:
-        if parallelComm.procID == 0:
-            print(str, file=sys.stderr)
 
 class GmshException(Exception):
     pass
@@ -68,6 +62,7 @@ def gmshVersion(communicator=parallelComm):
         while True:
             try:
                 # gmsh returns version in stderr (Why?!?)
+                # (newer versions of gmsh return the version in stdout)
                 # spyder on Windows throws
                 #   OSError: [WinError 6] The handle is invalid
                 # if we don't PIPE stdout, too
@@ -77,8 +72,11 @@ def gmshVersion(communicator=parallelComm):
                 break
 
             try:
-                out, verStr = p.communicate()
-                verStr = verStr.decode('ascii').strip()
+                out, err = p.communicate()
+                verStr = err.decode('ascii').strip()
+                if not verStr:
+                    # newer versions of gmsh return the version in stdout
+                    verStr = out.decode('ascii').strip()
                 break
             except IOError:
                 # some weird conflict with things like PyQT can cause
@@ -93,12 +91,12 @@ def gmshVersion(communicator=parallelComm):
 def _gmshVersion(communicator=parallelComm):
     version = gmshVersion(communicator) or "0.0"
     try:
-        version = StrictVersion(version)
+        version = parse_version(version)
     except ValueError:
         # gmsh returns the version string in stderr,
         # which means it's often unparsable due to irrelevant warnings
         # assume it's OK and move on
-        version = StrictVersion("3.0")
+        version = Version("3.0")
 
     return version
 
@@ -133,7 +131,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
 
     # Enforce gmsh version to be either >= 2 or 2.5, based on Nproc.
     version = _gmshVersion(communicator=communicator)
-    if version < StrictVersion("2.0"):
+    if version < Version("2.0"):
         raise EnvironmentError("Gmsh version must be >= 2.0.")
 
     # If we're being passed a .msh file, leave it be. Otherwise,
@@ -176,9 +174,11 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
             gmshFlags = ["-%d" % dimensions, "-nopopup"]
 
             if communicator.Nproc > 1:
-                if not (StrictVersion("2.5") < version <= StrictVersion("4.0")):
-                    warnstr = "Cannot partition with Gmsh version < 2.5 or >= 4.0. " \
-                               + "Reverting to serial."
+                if  ((version < Version("2.5"))
+                     or (Version("4.0") <= version < Version("4.5.2"))):
+                    warnstr = ("Cannot partition with Gmsh version < 2.5 "
+                               "or 4.0 <= version < 4.5.2. "
+                               "Reverting to serial.")
                     warnings.warn(warnstr, RuntimeWarning, stacklevel=2)
                     communicator = serialComm
 
@@ -188,13 +188,13 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
                         raise ValueError("'dimensions' must be specified to generate a mesh from a geometry script")
                 else: # gmsh version is adequate for partitioning
                     gmshFlags += ["-part", "%d" % communicator.Nproc]
-                    if version >= StrictVersion("4.0"):
+                    if version >= Version("4.0"):
                         # Gmsh 4.x needs to be told to generate ghost cells
-                        # Unfortunately, the ghosts are broken
+                        # Unfortunately, the ghosts are broken in Gmsh 4.0--4.5.1
                         # https://gitlab.onelab.info/gmsh/gmsh/issues/733
                         gmshFlags += ["-part_ghosts"]
 
-            gmshFlags += ["-format", "msh2"]
+            gmshFlags += ["-format", "msh2", "-smooth", "8"]
 
             if background is not None:
                 if communicator.procID == 0:
@@ -235,7 +235,7 @@ def openMSHFile(name, dimensions=None, coordDimensions=None, communicator=parall
 
                 gmshOutput = gmshOutput.decode('ascii')
 
-                parprint("gmsh out: %s" % gmshOutput)
+                _log.debug("gmsh out: %s" % gmshOutput)
             else:
                 mshFile = None
                 gmshOutput = ""
@@ -792,7 +792,7 @@ class MSHFile(GmshFile):
             else:
                 raise GmshException("Mesh has fewer than 2 or more than 3 dimensions")
 
-            parprint("Parsing elements.")
+            _log.debug("Parsing elements.")
             (cellsData,
              ghostsData,
              facesData) = self._parseElementFile()
@@ -812,15 +812,15 @@ class MSHFile(GmshFile):
                 errStr += "\n\nGmsh output:\n%s" % "".join(self.gmshOutput).rstrip()
                 raise GmshException(errStr)
 
-            parprint("Recovering coords.")
-            parprint("numcells %d" % numCellsTotal)
+            _log.debug("Recovering coords.")
+            _log.debug("numcells %d" % numCellsTotal)
             vertexCoords, vertIDtoIdx = self._vertexCoordsAndMap(cellsToGmshVerts)
 
             # translate Gmsh IDs to `vertexCoord` indices
             cellsToVertIDs = self._translateNodesToVertices(cellsToGmshVerts,
                                                             vertIDtoIdx)
 
-            parprint("Building cells and faces.")
+            _log.debug("Building cells and faces.")
             (facesToV,
              cellsToF,
              facesDict) = self._deriveCellsAndFaces(cellsToVertIDs,
@@ -864,7 +864,7 @@ class MSHFile(GmshFile):
         cellsToVertIDs = [nx.concatenate((v, nx.array([-1] * (maxVerts-len(v)), dtype=nx.INT_DTYPE))) for v in cellsToVertIDs]
         cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0, 1)
 
-        parprint("Done with cells and faces.")
+        _log.debug("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF,
                 cellsData.idmap, ghostsData.idmap,
                 cellsToVertIDs)
@@ -1381,11 +1381,38 @@ class _GmshTopology(_MeshTopology):
         return nx.arange(len(self.mesh.cellGlobalIDs)
                          + len(self.mesh.gCellGlobalIDs))
 
+    @property
+    def _localNonOverlappingFaceIDs(self):
+        """Return the IDs of the local mesh in isolation.
+
+        Does not include the IDs of faces of boundary cells.
+
+        E.g., would return [0, 1, 3, 4, 6, 7, 9, 10, 11, 13, 14, 15]
+        for mesh A
+
+        ```
+            A   ||   B
+        --6---7-----7---8--
+       13   14 15/14 15   16
+        --3---4-----4---5--
+        9   10 11/10 11   12
+        --0---1-----1---2--
+                ||
+        ```
+
+        .. note:: Trivial except for parallel meshes
+        """
+        return nx.arange(self.mesh.numberOfFaces)[..., self._nonOverlappingFaces]
 
 
 
 class Gmsh2D(Mesh2D):
     """Construct a 2D Mesh using Gmsh
+
+    If called in parallel, the mesh will be partitioned based on the value
+    of `parallelComm.Nproc`.  If an `MSH` file is supplied, it must have
+    been previously partitioned with the number of partitions matching
+    `parallelComm.Nproc`.
 
     >>> radius = 5.
     >>> side = 4.
@@ -1615,8 +1642,8 @@ class Gmsh2D(Mesh2D):
 
         if communicator.Nproc > 1:
             self.globalNumberOfCells = communicator.sum(len(self.cellGlobalIDs))
-            parprint("  I'm solving with %d cells total." % self.globalNumberOfCells)
-            parprint("  Got global number of cells")
+            _log.debug("  I'm solving with %d cells total." % self.globalNumberOfCells)
+            _log.debug("  Got global number of cells")
 
         Mesh2D.__init__(self, vertexCoords=verts,
                               faceVertexIDs=faces,
@@ -1633,7 +1660,7 @@ class Gmsh2D(Mesh2D):
 
         del self.mshFile
 
-        parprint("Exiting Gmsh2D")
+        _log.debug("Exiting Gmsh2D")
 
     def __setstate__(self, state):
         super(Gmsh2D, self).__setstate__(state)
@@ -1875,6 +1902,11 @@ class Gmsh2D(Mesh2D):
 class Gmsh2DIn3DSpace(Gmsh2D):
     """Create a topologically 2D Mesh in 3D coordinates using Gmsh
 
+    If called in parallel, the mesh will be partitioned based on the value
+    of `parallelComm.Nproc`.  If an `MSH` file is supplied, it must have
+    been previously partitioned with the number of partitions matching
+    `parallelComm.Nproc`.
+
     Parameters
     ----------
     arg : str
@@ -1958,6 +1990,11 @@ class Gmsh2DIn3DSpace(Gmsh2D):
 
 class Gmsh3D(Mesh):
     """Create a 3D Mesh using Gmsh
+
+    If called in parallel, the mesh will be partitioned based on the value
+    of `parallelComm.Nproc`.  If an `MSH` file is supplied, it must have
+    been previously partitioned with the number of partitions matching
+    `parallelComm.Nproc`.
 
     Parameters
     ----------
@@ -2200,6 +2237,80 @@ class Gmsh3D(Mesh):
 
         >>> if parallelComm.procID == 0:
         ...     os.remove(posFile)
+
+
+        Ensure that ghost faces are excluded from accumulating operations
+        (#856).  Six exterior surfaces of :math:`10\times 10\times 10` cube
+        mesh should each have a total area of 100, regardless of
+        partitioning.
+
+        >>> geo = '''
+        ... cellSize = 1.;
+        ...
+        ... Point(1) = {0, 0, 0, cellSize};
+        ... Point(2) = {10, 0, 0, cellSize};
+        ... Point(3) = {10, 10, 0, cellSize};
+        ... Point(4) = {0, 10, 0, cellSize};
+        ...
+        ... Point(11) = {0, 0, 10, cellSize};
+        ... Point(12) = {10, 0, 10, cellSize};
+        ... Point(13) = {10, 10, 10, cellSize};
+        ... Point(14) = {0, 10, 10, cellSize};
+        ...
+        ... Line(1) = {1, 2};
+        ... Line(2) = {2, 3};
+        ... Line(3) = {3, 4};
+        ... Line(4) = {4, 1};
+        ...
+        ... Line(11) = {11, 12};
+        ... Line(12) = {12, 13};
+        ... Line(13) = {13, 14};
+        ... Line(14) = {14, 11};
+        ...
+        ... Line(21) = {1, 11};
+        ... Line(22) = {2, 12};
+        ... Line(23) = {3, 13};
+        ... Line(24) = {4, 14};
+        ...
+        ... Line Loop(1) = {1, 2, 3, 4};
+        ... Line Loop(2) = {11, 12, 13, 14};
+        ... Line Loop(3) = {1, 22, -11, -21};
+        ... Line Loop(4) = {2, 23, -12, -22};
+        ... Line Loop(5) = {3, 24, -13, -23};
+        ... Line Loop(6) = {4, 21, -14, -24};
+        ...
+        ... Plane Surface(1) = {1};
+        ... Plane Surface(2) = {2};
+        ... Plane Surface(3) = {3};
+        ... Plane Surface(4) = {4};
+        ... Plane Surface(5) = {5};
+        ... Plane Surface(6) = {6};
+        ...
+        ... Surface Loop(1) = {1, 2, 3, 4, 5, 6};
+        ...
+        ... Volume(1) = {1};
+        ...
+        ... Physical Surface("bottom") = {1};
+        ... Physical Surface("top") = {2};
+        ... Physical Surface("front") = {3};
+        ... Physical Surface("right") = {4};
+        ... Physical Surface("back") = {5};
+        ... Physical Surface("left") = {6};
+        ...
+        ... Physical Volume("box") = {1};
+        ... '''
+
+        >>> cube = Gmsh3D(geo) # doctest: +GMSH
+
+        >>> for surface in ["bottom", "top", "front", "right", "back", "left"]: # doctest: +GMSH
+        ...     area = (cube._faceAreas * cube.physicalFaces[surface]).sum() # doctest: +GMSH
+        ...     print(surface, numerix.allclose(area, 100)) # doctest: +GMSH
+        bottom True
+        top True
+        front True
+        right True
+        back True
+        left True
         """
 
 class GmshGrid2D(Gmsh2D):
@@ -2225,7 +2336,7 @@ class GmshGrid2D(Gmsh2D):
         width  = nx * dx
         numLayers = int(ny / float(dy))
 
-        if _gmshVersion() < StrictVersion("2.7"):
+        if _gmshVersion() < Version("2.7"):
             # kludge: must offset cellSize by `eps` to work properly
             eps = float(dx)/(nx * 10)
         else:
@@ -2299,7 +2410,7 @@ class GmshGrid3D(Gmsh3D):
         width  = nx * dx
         depth  = nz * dz
 
-        if _gmshVersion() < StrictVersion("2.7"):
+        if _gmshVersion() < Version("2.7"):
             # kludge: must offset cellSize by `eps` to work properly
             eps = float(dx)/(nx * 10)
         else:

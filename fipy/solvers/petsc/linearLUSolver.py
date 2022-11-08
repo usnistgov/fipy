@@ -3,8 +3,6 @@ from builtins import range
 from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
-import os
-
 from petsc4py import PETSc
 
 from fipy.solvers.petsc.petscSolver import PETScSolver
@@ -18,13 +16,13 @@ class LinearLUSolver(PETScSolver):
     A direct solve is performed.
 
     """
-      
+
     def __init__(self, tolerance=1e-10, iterations=10, precon="lu"):
         """
         :Parameters:
           - `tolerance`: The required error tolerance.
           - `iterations`: The maximum number of iterative steps to perform.
-          - `precon`: *Ignored*. 
+          - `precon`: *Ignored*.
 
         """
         PETScSolver.__init__(self, tolerance=tolerance,
@@ -38,32 +36,27 @@ class LinearLUSolver(PETScSolver):
         # TODO: SuperLU invoked with PCFactorSetMatSolverType(pc, MATSOLVERSUPERLU)
         #       see: http://www.mcs.anl.gov/petsc/petsc-dev/src/ksp/ksp/examples/tutorials/ex52.c.html
         # PETSc.PC().setFactorSolverType("superlu")
-        
+
         L.assemble()
         ksp.setOperators(L)
         ksp.setFromOptions()
-        
+
         for iteration in range(self.iterations):
             errorVector = L * x - b
             tol = errorVector.norm()
-            
+
             if iteration == 0:
                 tol0 = tol
-                
-            if (tol / tol0) <= self.tolerance:
+
+            if tol <= self.tolerance * tol0:
                 break
-                
+
             xError = x.copy()
 
             ksp.solve(errorVector, xError)
             x -= xError
-            
-        if 'FIPY_VERBOSE_SOLVER' in os.environ:
-            from fipy.tools.debug import PRINT
-#             L.view()
-#             b.view()
-            PRINT('solver:', ksp.type)
-            PRINT('precon:', ksp.getPC().type)
-            PRINT('iterations: %d / %d' % (iteration+1, self.iterations))
-            PRINT('residual:', errorVector.norm(1))
 
+        self._log.debug('solver: %s', ksp.type)
+        self._log.debug('precon: %s', ksp.getPC().type)
+        self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
+        self._log.debug('residual: %s', errorVector.norm(1))

@@ -3,8 +3,6 @@ from __future__ import unicode_literals
 from builtins import range
 __docformat__ = 'restructuredtext'
 
-import os
-
 from PyTrilinos import Epetra
 from PyTrilinos import Amesos
 
@@ -73,7 +71,5 @@ class LinearLUSolver(TrilinosSolver):
 
              x[:] = x - xError
 
-        if 'FIPY_VERBOSE_SOLVER' in os.environ:
-            from fipy.tools.debug import PRINT
-            PRINT('iterations: %d / %d' % (iteration + 1, self.iterations))
-            PRINT('residual:', errorVector.Norm2())
+        self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
+        self._log.debug('residual: %s', errorVector.Norm2())

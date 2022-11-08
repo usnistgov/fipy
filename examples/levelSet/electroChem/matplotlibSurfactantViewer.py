@@ -80,7 +80,7 @@ class MatplotlibSurfactantViewer(AbstractMatplotlibViewer):
             moving top boundary or to show all contours (Default)
         limits : dict, optional
             a (deprecated) alternative to limit keyword arguments
-        float xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
+        xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
             displayed range of data. A 1D `Viewer` will only use `xmin` and
             `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
             viewers will use `datamin` and `datamax`. Any limit set to a

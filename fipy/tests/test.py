@@ -34,6 +34,12 @@ class DeprecationErroringTestProgram(unittest.TestProgram):
             warnings.filterwarnings(action="default", category=DeprecationWarning,
                                     message="invalid escape sequence.*")
 
+            # Don't raise errors in skfmm.pfmm
+            # due to deprecation of np.int in NumPy 1.20
+            warnings.filterwarnings(action="default", category=DeprecationWarning,
+                                    message="`np\.int` is a deprecated alias for the builtin `int`.*",
+                                    module="skfmm\.pfmm")
+
             super(DeprecationErroringTestProgram, self).runTests()
 
 class test(_test):
@@ -147,68 +153,13 @@ class test(_test):
             yield "examples.test._suite"
 
     def printPackageInfo(self):
-        packages = ['python']
-        versions = [sys.version.replace('\n', '| ')]
+        from fipy.tools.logging import package_info
 
-        for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'mpi4py', 'petsc4py', 'pyamgx']:
-            packages.append(pkg)
-
-            try:
-                mod = __import__(pkg)
-
-                versions.append(mod.__version__)
-            except ImportError as e:
-                versions.append('not installed')
-
-            except Exception as e:
-                versions.append('version check failed: {}'.format(e))
-
-        ## PyTrilinos
-        packages.append('PyTrilinos')
-        try:
-            import PyTrilinos
-            versions.append(PyTrilinos.version())
-        except ImportError as e:
-            versions.append('not installed')
-        except Exception as e:
-            versions.append('version check failed: {}'.format(e))
-
-        ## Mayavi uses a non-standard approach for storing its version number.
-        packages.append('mayavi')
-        try:
-            from mayavi.__version__ import __version__ as mayaviversion
-            versions.append(mayaviversion)
-        except ImportError as e:
-            try:
-                from enthought.mayavi.__version__ import __version__ as mayaviversion
-                versions.append(mayaviversion)
-            except ImportError as e:
-                versions.append('not installed')
-        except Exception as e:
-            versions.append('version check failed: {}'.format(e))
-
-        ## Gmsh version
-        packages.append('gmsh')
-        try:
-            from fipy.meshes.gmshMesh import gmshVersion
-            gmshversion = gmshVersion()
-            if gmshversion is None:
-                versions.append('not installed')
-            else:
-                versions.append(gmshversion)
-        except Exception as e:
-            versions.append('version check failed: {}'.format(e))
-
-        packages.append("solver")
-        try:
-            from fipy.solvers import solver
-            versions.append(solver)
-        except Exception as e:
-            versions.append(str(e))
+        packages = package_info()
 
         print()
-        package_width = max(len(word) for word in packages)
-        for package, version in zip(packages, versions):
+        package_width = max(len(word) for word in packages.keys())
+        for package, version in packages.items():
             print("  ".join((package.ljust(package_width), version)))
         print()
 

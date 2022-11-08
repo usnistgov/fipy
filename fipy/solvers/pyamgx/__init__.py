@@ -1,4 +1,9 @@
 from __future__ import unicode_literals
+
+import logging
+
+_log = logging.getLogger(__name__)
+
 import atexit
 
 import pyamgx

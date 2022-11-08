@@ -38,9 +38,12 @@ def write(data, filename = None, extension = '', communicator=parallelComm):
     filename : str
         Name of the file to place the pickled object.  If `filename` is
         `None` then a temporary file will be used and the file object and
-        file name will be returned as a tuple
+        file name will be returned as a tuple.
+        If the filename ends in `.gz`, the file is automatically saved in
+        compressed gzip format.
     extension : str
-        Used if `filename` is not given.
+        File extension to append if `filename` is not given.  If set to
+        `.gz`, the file is automatically saved in compressed gzip format.
     communicator : ~fipy.tools.comms.commWrapper.CommWrapper
         A duck-typed object with `procID` and `Nproc` attributes is sufficient
     """
@@ -50,7 +53,11 @@ def write(data, filename = None, extension = '', communicator=parallelComm):
             (f, _filename) =  tempfile.mkstemp(extension)
         else:
             (f, _filename) = (None, filename)
-        fileStream = gzip.GzipFile(filename=_filename, mode='wb', fileobj=None)
+        _, ext = os.path.splitext(_filename)
+        if ext == ".gz":
+            fileStream = gzip.GzipFile(filename=_filename, mode='wb', fileobj=None)
+        else:
+            fileStream = open(_filename, mode='wb')
     else:
         fileStream = open(os.devnull, mode='wb')
         (f, _filename) = (None, os.devnull)
@@ -69,7 +76,8 @@ def read(filename, fileobject=None, communicator=parallelComm, mesh_unmangle=Fal
     Parameters
     ----------
     filename : str
-        Name of the file to unpickle the object from.
+        Name of the file to unpickle the object from.  If the filename
+        extension is `.gz`, the file is first decompressed.
     fileobject : file
         Used to remove temporary files
     communicator : ~fipy.tools.comms.commWrapper.CommWrapper
@@ -78,7 +86,11 @@ def read(filename, fileobject=None, communicator=parallelComm, mesh_unmangle=Fal
         Whether to correct improper pickling of non-uniform meshes (ticket:243)
     """
     if communicator.procID == 0:
-        fileStream = gzip.GzipFile(filename=filename, mode='r', fileobj=None)
+        _, ext = os.path.splitext(filename)
+        if ext == ".gz":
+            fileStream = gzip.GzipFile(filename=filename, mode='r', fileobj=None)
+        else:
+            fileStream = open(filename, mode='rb')
         data = fileStream.read()
         fileStream.close()
         if fileobject is not None:

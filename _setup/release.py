@@ -1,5 +1,4 @@
 """setuptools command to prepare FiPy for release"""
-from __future__ import unicode_literals
 
 from distutils.core import Command
 import glob
@@ -7,11 +6,8 @@ import os
 import shutil
 
 from setuptools.sandbox import run_setup
-from future.utils import text_to_native_str
 
-from ._nativize import nativize_all
-
-__all__ = [text_to_native_str("release")]
+__all__ = ["release"]
 
 
 class release(Command):
@@ -27,7 +23,6 @@ class release(Command):
                     ('windows', None, "create an executable installer for MS Windows"),
                     ('all', None, "create unix and Windows distributions"),
                    ]
-    user_options = [nativize_all(u) for u in user_options]
 
     def initialize_options(self):
         self.unix = 0
@@ -49,39 +44,16 @@ class release(Command):
         except OSError as _:
             pass
 
-    def _build_unix_distribution(self):
-        """Create Unix source distribution"""
+    def _build_source_distribution(self, formats):
+        """Create source distribution"""
 
         self._remove_manifest()
-        shutil.copyfile("MANIFEST-UNIX.in", "MANIFEST.in")
-        run_setup("setup.py", ["sdist"])
-        os.remove("MANIFEST.in")
-
-    def _build_windows_distribution(self):
-        """Create Windows source distribution
-
-        Contains executable installer and examples"""
-
-        import versioneer
-
-        version = versioneer.get_version()
-
-        self._remove_manifest()
-        run_setup("setup.py", ["bdist_wininst"])
-
-        self._remove_manifest()
-
-        shutil.copyfile("MANIFEST-WINDOWS.in", "MANIFEST.in")
-        run_setup("setup.py", [text_to_native_str(s) for s in ["sdist", "--dist-dir=dist-windows", "--formats=zip"]])
-        shutil.move(
-            os.path.join("dist-windows", "FiPy-{}.zip".format(version)),
-            os.path.join("dist", "FiPy-{}.win32.zip".format(version)),
-        )
-        os.rmdir("dist-windows")
-        os.remove("MANIFEST.in")
+        run_setup("setup.py", ["sdist", "--formats=" + ",".join(formats)])
 
     def run(self):
+        formats = []
         if self.unix:
-            self._build_unix_distribution()
+            formats.append("gztar")
         if self.windows:
-            self._build_windows_distribution()
+            formats.append("zip")
+        self._build_source_distribution(formats)

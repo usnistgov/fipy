@@ -324,7 +324,7 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
             ## why has the interface changed *again*?
             from numpy.core.arrayprint import FloatingFormat
             return FloatingFormat(data=NUMERIX.array((arr,)), precision=precision,
-                                  floatmode='maxprec', suppress_small=suppress_small)(arr).strip()
+                                  floatmode='maxprec', suppress_small=suppress_small, legacy=False)(arr).strip()
         except ImportError:
             try:
                 ## this is for numpy 1.0.4 and above
@@ -1006,6 +1006,60 @@ if not hasattr(NUMERIX, "in1d"):
             return flag[indx]
         else:
             return flag[indx][rev_idx]
+
+def in1dMA(ar1, ar2, assume_unique=False, invert=False):
+    """
+    Test whether each unmasked element of an array is also present and
+    unmasked in a second array.
+    The output is always a masked array. See `numpy.in1d` for more details.
+    We recommend using :func:`isin` instead of `in1d` for new code.
+
+    Parameters
+    ----------
+    ar1 : (M,) array_like
+        Input array.
+    ar2 : array_like
+        The values against which to test each value of `ar1`.
+    assume_unique : bool, optional
+        If True, the input arrays are both assumed to be unique, which
+        can speed up the calculation.  Default is False.
+    invert : bool, optional
+        If True, the values in the returned array are inverted (that is,
+        False where an element of `ar1` is in `ar2` and True otherwise).
+        Default is False. ``np.in1d(a, b, invert=True)`` is equivalent
+        to (but is faster than) ``np.invert(in1d(a, b))``.
+
+    Returns
+    -------
+    in1d : (M,) ndarray, bool
+        The values `ar1[in1d]` are in `ar2`.
+
+    See Also
+    --------
+    isin       : Version of this function that preserves the shape of ar1.
+    numpy.in1d : Equivalent function for ndarrays.
+
+    Notes
+    -----
+    .. versionadded:: 1.4.0
+
+    Replaces buggy `numpy.ma.in1d`, fixed in
+    https://github.com/numpy/numpy/pull/20011.
+    """
+    ar1, ar2 = MA.asarray(ar1), MA.asarray(ar2)
+    m = MA.getmask(ar1)
+    res = MA.empty_like(ar1, dtype='bool')
+    if ar1.mask is not MA.nomask:
+        ar1 = ar1[~ar1.mask]
+    if ar2.mask is not MA.nomask:
+        ar2 = ar2[~ar2.mask]
+    out = NUMERIX.in1d(ar1, ar2, assume_unique=assume_unique,
+                      invert=invert)
+    if m is not MA.nomask:
+        res[~m] = out
+    else:
+        res[:] = out
+    return res
 
 def invert_indices(arr, axis=-1):
     """Invert an index array

@@ -8,7 +8,7 @@ recursive-exclude fipy *.png *.pdf
 # recursive-include documentation/_build/html *.html *.css *.gif *.png
 include documentation/_build/latex/fipy.pdf
 
-recursive-include examples *.py *.msh *.gz
+recursive-include examples *.py *.msh *.gz *.rst
 recursive-include fipy *.msh
 include versioneer.py
 include fipy/_version.py
