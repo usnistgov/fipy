@@ -2,16 +2,21 @@
 # $ nix-shell --pure --argstr tag 20.09
 #
 {
-  tag ? "22.05"
+  tag ? "22.11"
 }:
 let
   pkgs = import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/${tag}.tar.gz") {};
   pypkgs = pkgs.python3Packages;
 
-  nixes_src = builtins.fetchTarball "https://github.com/wd15/nixes/archive/9a757526887dfd56c6665290b902f93c422fd6b1.zip";
-  jupyter_extra = pypkgs.callPackage "${nixes_src}/jupyter/default.nix" {
-    jupyterlab=(if pkgs.stdenv.isDarwin then pypkgs.jupyter else pypkgs.jupyterlab);
-  };
+  jupyter_extra = with pypkgs; [
+    ipython
+    ipykernel
+    traitlets
+    notebook
+    widgetsnbextension
+    ipywidgets
+    (if pkgs.stdenv.isDarwin then pypkgs.jupyter else pypkgs.jupyterlab)
+  ];
 
 in
   (pypkgs.fipy.overridePythonAttrs (old: rec {
@@ -24,7 +29,7 @@ in
       pkgs.git
       pkgs.openssh
       nbval
-    ] ++ propagatedBuildInputs ++ [ jupyter_extra ipywidgets ];
+    ] ++ propagatedBuildInputs ++ jupyter_extra;
 
     propagatedBuildInputs = old.propagatedBuildInputs;
 
