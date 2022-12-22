@@ -16,7 +16,7 @@
 
 # ## Import Python modules
 
-# In[339]:
+# In[4]:
 
 
 import argparse
@@ -32,7 +32,7 @@ from fipy.tools import parallelComm
 
 # Jupyter notebook handles some things differently than from the commandline
 
-# In[229]:
+# In[5]:
 
 
 try:
@@ -45,7 +45,7 @@ except:
 # ## Initialize
 # ### Load parameters
 
-# In[230]:
+# In[6]:
 
 
 parser = argparse.ArgumentParser()
@@ -79,23 +79,27 @@ parser.add_argument("--iterations", help="maximum number of linear iterations to
                     type=int, default=1000)
 parser.add_argument("--tolerance", help="linear solver tolerance",
                     type=float, default=1e-10)
+parser.add_argument("--store_matrix",
+                    help="store the matrix and RHS vector along with other output",
+                    action='store_true')
 
 
 # ### Set any parameters for interactive notebook
 
-# In[317]:
+# In[68]:
 
 
 if isnotebook:
     # argv = ["--numberOfElements=10000", "--totaltime=1.2", "--checkpoint_interval=0.12",
     #         "--nucleation_scale=100", "--output=nucleation6"]
-    argv = ["--numberOfElements=100000", "--nucleation_scale=1000", "--output=nucleation21",
-           "--restart=../../../../solvers_and_timings/nucleation18/t=300.0.npz"]
+    argv = ["--numberOfElements=16", "--nucleation_scale=1000", "--output=nucleation32",
+           "--restart=../../../../solvers_and_timings/results/nucleation/nucleation18/t=300.0.npz",
+           "--store_matrix"]
 else:
     argv = None
 
 
-# In[318]:
+# In[69]:
 
 
 args, unknowns = parser.parse_known_args(args=argv)
@@ -110,7 +114,7 @@ args, unknowns = parser.parse_known_args(args=argv)
 # Create a mesh based on parameters. Set
 # >  the computational domain is ... 1000×1000 
 
-# In[319]:
+# In[70]:
 
 
 nx = ny = int(nmx.sqrt(args.numberOfElements))
@@ -119,7 +123,7 @@ phi = fp.CellVariable(mesh=mesh, name="$\phi$", value=0., hasOld=True)
 elapsed = 0.
 
 
-# In[320]:
+# In[71]:
 
 
 if args.restart is not None:
@@ -134,14 +138,14 @@ if args.restart is not None:
     elapsed = float(re.match(pattern, args.restart).group(1))
 
 
-# In[321]:
+# In[72]:
 
 
 x, y = mesh.cellCenters[0], mesh.cellCenters[1]
 X, Y = mesh.faceCenters[0], mesh.faceCenters[1]
 
 
-# In[322]:
+# In[73]:
 
 
 if isnotebook:
@@ -151,7 +155,7 @@ if isnotebook:
 
 # ## Create solver
 
-# In[323]:
+# In[74]:
 
 
 precon = None
@@ -190,7 +194,7 @@ solver = solver_class(tolerance=args.tolerance, criterion="initial",
 # 
 # > [Set] the driving force to $\Delta f = 1 / (6\sqrt{2})$
 
-# In[324]:
+# In[75]:
 
 
 Delta_f = 1. / (6 * nmx.sqrt(2.))
@@ -198,7 +202,7 @@ Delta_f = 1. / (6 * nmx.sqrt(2.))
 
 # > $$r_c = \frac{1}{3\sqrt{2}}\frac{1}{\Delta f} = 2.0$$
 
-# In[325]:
+# In[76]:
 
 
 rc = 2.0
@@ -239,7 +243,7 @@ rc = 2.0
 # \notag
 # \end{align}
 
-# In[326]:
+# In[77]:
 
 
 mPhi = -2 * (1 - 2 * phi) + 30 * phi * (1 - phi) * Delta_f
@@ -257,7 +261,7 @@ eq = (fp.TransientTerm() ==
 # F[\phi] = \int\left[\frac{1}{2}(\nabla\phi)^2 + g(\phi) - \Delta f p(\phi)\right]\,dV \tag{6}
 # \end{align}
 
-# In[327]:
+# In[78]:
 
 
 ftot = (0.5 * phi.grad.mag**2
@@ -278,7 +282,7 @@ F = ftot.cellVolumeAverage * volumes.sum()
 # 
 # > $\phi$ is set to unity in regions of overlaps of nuclei
 
-# In[328]:
+# In[79]:
 
 
 def nucleus(x0, y0, r0):
@@ -294,7 +298,7 @@ def nucleus(x0, y0, r0):
 # 
 # > 100 random nucleation times $t_i$ are generated, $i=1,\ldots,100$, drawn from a uniform distribution in the interval $t_i \in [0,600)$
 
-# In[329]:
+# In[80]:
 
 
 if parallelComm.procID == 0:
@@ -317,7 +321,7 @@ nucleii = parallelComm.bcast(nucleii, root=0)
 
 # ### Setup ouput storage
 
-# In[330]:
+# In[81]:
 
 
 if (args.output is not None) and (parallelComm.procID == 0):
@@ -342,7 +346,7 @@ if parallelComm.procID == 0:
 
 # ### Create particle counter
 
-# In[331]:
+# In[82]:
 
 
 from scipy import ndimage
@@ -415,13 +419,13 @@ class LabelVariable(fp.CellVariable):
         return self._num_features
 
 
-# In[332]:
+# In[83]:
 
 
 labels = LabelVariable(phi, threshold=0.5)
 
 
-# In[333]:
+# In[84]:
 
 
 if isnotebook:
@@ -431,7 +435,7 @@ if isnotebook:
 
 # ### Define output routines
 
-# In[334]:
+# In[85]:
 
 
 def saveStats(elapsed):
@@ -461,16 +465,27 @@ def savePhi(elapsed):
         fname = os.path.join(path, "t={}.npz".format(elapsed))
         nmx.savez(fname, phi=phi_value)
 
-def checkpoint_data(elapsed):
+def saveMatrix(elapsed):
+    mtxname = os.path.join(path, "t={}.mtx".format(elapsed))
+    eq.matrix.exportMmf(mtxname)
+    
+    rhs_value = eq.RHSvector
+    if parallelComm.procID == 0:
+        rhsname = os.path.join(path, "t={}.rhs.npz".format(elapsed))
+        nmx.savez(rhsname, rhs=rhs_value)
+
+def checkpoint_data(elapsed, store_matrix=False):
     saveStats(elapsed)
     savePhi(elapsed)
+    if store_matrix:
+        saveMatrix(elapsed)
 
 
 # ### Output initial condition
 
 # ### Figure out when to save
 
-# In[335]:
+# In[86]:
 
 
 checkpoints = (fp.numerix.arange(int(elapsed / args.checkpoint_interval),
@@ -480,7 +495,7 @@ checkpoints = (fp.numerix.arange(int(elapsed / args.checkpoint_interval),
 checkpoints.sort()
 
 
-# In[336]:
+# In[87]:
 
 
 if args.restart is not None:
@@ -499,7 +514,7 @@ if parallelComm.procID == 0:
 
 # ## Solve and output
 
-# In[337]:
+# In[88]:
 
 
 times = fp.tools.concatenate([checkpoints, nucleii[..., 0]])
@@ -507,10 +522,13 @@ times.sort()
 times = times[(times > elapsed) & (times <= args.totaltime)]
 
 
-# In[340]:
+# In[89]:
 
 
 from steppyngstounes import CheckpointStepper, FixedStepper
+
+eq.cacheMatrix()
+eq.cacheRHSvector()
 
 phi.updateOld()
 for checkpoint in CheckpointStepper(start=elapsed,
@@ -547,31 +565,13 @@ for checkpoint in CheckpointStepper(start=elapsed,
 
     if checkpoint.end in checkpoints:
         # don't save nucleation events?
-        checkpoint_data(checkpoint.end)
+        checkpoint_data(checkpoint.end, store_matrix=args.store_matrix)
 
     if isnotebook:
         viewer.plot()
         # labelViewer.plot()
 
     _ = checkpoint.succeeded()
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
 
 
 # In[ ]:
