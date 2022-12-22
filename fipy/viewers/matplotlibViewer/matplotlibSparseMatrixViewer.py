@@ -42,7 +42,7 @@ class MatplotlibSparseMatrixViewer(object):
         import tempfile
         import os
 
-        if "print" in os.environ['FIPY_DISPLAY_MATRIX'].lower().split():
+        if "print" in os.environ.get('FIPY_DISPLAY_MATRIX', '').lower().split():
             print("-"*75)
             print(self.title)
             print("-"*75)
