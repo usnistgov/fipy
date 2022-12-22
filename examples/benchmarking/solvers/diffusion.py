@@ -26,6 +26,9 @@ parser.add_argument("--left", help="value of left-hand Dirichlet condition",
                     type=float, default=1.)
 parser.add_argument("--right", help="value of right-hand Dirichlet condition",
                     type=float, default=0.)
+parser.add_argument("--store_matrix",
+                    help="store the matrix and RHS vector along with other output",
+                    action='store_true')
 
 args, unknowns = parser.parse_known_args()
 
@@ -96,10 +99,19 @@ with solver_class(tolerance=args.tolerance, criterion="initial",
     state["state"] = "END"
     solver._log.debug(json.dumps(state))
 
-    if (args.output is not None) and (parallelComm.procID == 0):
-        filename = os.path.join(path, "solution.npz")
-        x, y, value = [field.value.reshape((mesh.nx, mesh.ny))
-                       for field in (mesh.x, mesh.y, var)]
-        numerix.savez(filename, x=mesh.x, y=mesh.y, value=value)
+    if args.output is not None:
+        mtxname = os.path.join(path, "matrix.mtx")
+        eq.matrix.exportMmf(mtxname)
+    
+        rhs_value = eq.RHSvector
 
-        solver._log.debug("result stored in {}".format(filename))
+        if parallelComm.procID == 0:
+            rhsname = os.path.join(path, "rhs.npz")
+            numerix.savez(rhsname, rhs=rhs_value)
+
+            filename = os.path.join(path, "solution.npz")
+            x, y, value = [field.value.reshape((mesh.nx, mesh.ny))
+                           for field in (mesh.x, mesh.y, var)]
+            numerix.savez(filename, x=mesh.x, y=mesh.y, value=value)
+
+            solver._log.debug("result stored in {}".format(filename))
