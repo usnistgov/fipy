@@ -95,3 +95,5 @@ class PETScKrylovSolver(PETScSolver):
                              ksp_norm_type=ksp.norm_type)
 
         self.convergence.warn()
+
+        ksp.destroy()

@@ -271,6 +271,9 @@ class Solver(object):
     def __exit__(self, exc_type, exc_value, traceback):
         pass
 
+    def __del__(self):
+        pass
+
     def _test(self):
         """
         >>> import fipy as fp
