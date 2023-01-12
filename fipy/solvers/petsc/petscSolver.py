@@ -38,7 +38,7 @@ class PETScSolver(Solver):
         return self.globalVectors
 
     def _deleteGlobalMatrixAndVectors(self):
-        self.matrix.flush()
+        del self.matrix
         if hasattr(self, "globalVectors"):
             globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
             overlappingVector.destroy()
@@ -106,5 +106,6 @@ class PETScSolver(Solver):
     def __del__(self):
         if hasattr(self, "globalVectors"):
             globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
+            del globalMatrix
             overlappingVector.destroy()
             overlappingRHSvector.destroy()
