@@ -1,37 +1,53 @@
+#
+# $ nix-shell --pure --argstr tag 20.09
+#
+{
+  tag ? "22.11"
+}:
 let
-    pkgs = import (builtins.fetchGit {
-      url = "https://github.com/NixOS/nixpkgs.git";
-      rev = "c2ae05d5973cc4f8842755f2807ac10e31bb2aa8";
-      ref = "master";
-    }) { };
-    pythonPackages = pkgs.python3Packages;
-    not_darwin_inputs = pkgs.lib.optionals (! pkgs.stdenv.isDarwin ) [ pythonPackages.jupyter ];
-    not_darwin_pre_shell_hook = if (! pkgs.stdenv.isDarwin) then ''
-      jupyter nbextension install --py widgetsnbextension --user
-      jupyter nbextension enable widgetsnbextension --user --py
-    '' else "";
-    filter_pyamg = builtins.filter (x: ! ((pkgs.lib.hasInfix "pyamg" x.name) && pkgs.stdenv.isDarwin));
+  pkgs = import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/${tag}.tar.gz") {};
+  pypkgs = pkgs.python3Packages;
+
+  jupyter_extra = with pypkgs; [
+    ipython
+    ipykernel
+    traitlets
+    notebook
+    widgetsnbextension
+    ipywidgets
+    (if pkgs.stdenv.isDarwin then pypkgs.jupyter else pypkgs.jupyterlab)
+  ];
+
 in
-  (pythonPackages.fipy.overridePythonAttrs (old: rec {
-    src = builtins.filterSource (path: type: type != "directory" || baseNameOf path != ".git") ./.;
-    nativeBuildInputs = with pythonPackages; [
+  (pypkgs.fipy.overridePythonAttrs (old: rec {
+
+    src = pkgs.lib.cleanSource ./.;
+
+    nativeBuildInputs = with pypkgs; [
       pip
       pkgs.imagemagick
       pkgs.git
-    ] ++ propagatedBuildInputs ++ not_darwin_inputs;
+      pkgs.openssh
+      nbval
+    ] ++ propagatedBuildInputs ++ jupyter_extra;
 
-    propagatedBuildInputs = (filter_pyamg old.propagatedBuildInputs);
+    propagatedBuildInputs = old.propagatedBuildInputs;
 
-    postShellHook = not_darwin_pre_shell_hook + ''
+    postShellHook = ''
       SOURCE_DATE_EPOCH=$(date +%s)
       export PYTHONUSERBASE=$PWD/.local
       export USER_SITE=`python -c "import site; print(site.USER_SITE)"`
-      export PYTHONPATH=$PYTHONPATH:$USER_SITE
+      export PYTHONPATH=$PYTHONPATH:$USER_SITE:$(pwd)
       export PATH=$PATH:$PYTHONUSERBASE/bin
 
-      export OMPI_MCA_plm_rsh_agent=/usr/bin/ssh
+      export OMPI_MCA_plm_rsh_agent=${pkgs.openssh}/bin/ssh
 
-      ## To build the docs
+      ## To build the docs (don't use --pure)
+      # Need latex to build properly
+      #
+      # texlive-latex-base, texlive-fonts-recommended, texlive-fonts-extra
+      # texlive-latex-extra, texlive-science, texlive-extra-utils
+      #
       # pip install --user sphinx
       # pip install --user "sphinxcontrib-bibtex<=0.4.2"
       # pip install --user git+https://github.com/thewtex/sphinx-contrib.git#subdirectory=traclinks
