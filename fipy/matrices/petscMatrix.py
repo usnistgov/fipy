@@ -24,6 +24,9 @@ class _PETScMatrix(_SparseMatrix):
         """
         self.matrix = matrix
 
+    def __del__(self):
+        self.matrix.destroy()
+
     def copy(self):
         return _PETScMatrix(matrix=self.matrix.copy())
 
@@ -546,6 +549,11 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
         copy = self.__class__(mesh=self.mesh) # FIXME: ??? , bandwidth=self.bandwidth)
         copy.matrix = tmp.matrix
         return copy
+
+    def __del__(self):
+        if hasattr(self, "_ao_"):
+            self._ao_.destroy()
+        super(_PETScBaseMeshMatrix, self).__del__()
 
     @property
     def _ao(self):

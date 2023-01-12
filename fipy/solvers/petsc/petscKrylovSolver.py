@@ -67,3 +67,5 @@ class PETScKrylovSolver(PETScSolver):
         self._log.debug('iterations: %d / %d', ksp.its, self.iterations)
         self._log.debug('norm: %s', ksp.norm)
         self._log.debug('norm_type: %s', ksp.norm_type)
+
+        ksp.destroy()
