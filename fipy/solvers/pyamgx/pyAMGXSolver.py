@@ -78,11 +78,6 @@ class PyAMGXSolver(Solver):
     def _matrixClass(self):
         return _ScipyMeshMatrix
 
-    def _storeMatrix(self, var, matrix, RHSvector):
-        self.var = var
-        self.matrix = matrix
-        self.RHSvector = RHSvector
-
     def _rhsNorm(self, L, x, b):
         return numerix.L2norm(b)
 
