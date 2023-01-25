@@ -145,7 +145,7 @@ do
                   "${BASH_SOURCE%/*}/setup.sh" --log ${LOGCONFIG} ${LOGFILE} --env "${ENV}" -- ${INVOCATION}
             else
                 echo bash "${BASH_SOURCE%/*}/setup.sh" --env "${ENV}" -- ${INVOCATION}
-                # bash "${BASH_SOURCE%/*}/setup.sh" --log ${LOGCONFIG} ${LOGFILE} --env "${ENV}" -- ${INVOCATION}
+                bash "${BASH_SOURCE%/*}/setup.sh" --log ${LOGCONFIG} ${LOGFILE} --env "${ENV}" -- ${INVOCATION}
             fi
         done
     done
