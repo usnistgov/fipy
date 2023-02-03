@@ -1,0 +1,6 @@
+diffusion
+	Simulation results from `codes/scripts/diffusion.py`.
+initial_conditions
+	Restart data for generating illustrative results.
+nucleation
+	Simulation results from `codes/scripts/nucleation.py`.
