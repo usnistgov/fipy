@@ -592,7 +592,7 @@ class CellVariable(_MeshVariable):
         if not isinstance(value, Constraint):
             constraint = Constraint(value=value, where=where)
         else:
-            value = constraint
+            constraint = value
 
         if numerix.shape(constraint.where)[-1] == self.mesh.numberOfFaces:
 
