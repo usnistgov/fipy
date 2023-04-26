@@ -591,6 +591,8 @@ class CellVariable(_MeshVariable):
         from fipy.boundaryConditions.constraint import Constraint
         if not isinstance(value, Constraint):
             constraint = Constraint(value=value, where=where)
+        else:
+            value = constraint
 
         if numerix.shape(constraint.where)[-1] == self.mesh.numberOfFaces:
 
