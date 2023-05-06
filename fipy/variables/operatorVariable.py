@@ -231,6 +231,8 @@ def _OperatorVariableClass(baseClass=object):
                     stack.append(stack.pop() + "(" + ", ".join(args + kwargs) + ")")
                 elif ins.opname == 'LOAD_DEREF':
                     stack.append(ins.argval)
+                elif ins.opname == 'RESUME':
+                    pass
                 elif ins.opcode in self._unop:
                     stack.append(self._unop[ins.opcode] + '(' + stack.pop() + ')')
                 elif ins.opcode in self._binop:
