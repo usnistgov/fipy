@@ -139,6 +139,12 @@ def _OperatorVariableClass(baseClass=object):
                     62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
         }
 
+        # introduced in Python 3.11
+        _binary_op = {
+            0: "+", 1: "&", 2: "//", 3: "<<", 4: "@", 5: "*", 6: "%", 7: "|",
+            8: "**", 9: ">>", 10: "-", 11: "/", 12: "^"
+        }
+
         def _py2kInstructions(self, bytecodes, style, argDict, id, freshen):
             def _popIndex():
                 return bytecodes.pop(0) + bytecodes.pop(0) * 256
@@ -233,6 +239,8 @@ def _OperatorVariableClass(baseClass=object):
                     stack.append(ins.argval)
                 elif ins.opname == 'RESUME':
                     pass
+                elif ins.opname == 'BINARY_OP':
+                    stack.append(stack.pop(-2) + " " + self._binary_op[ins.argval] + " " + stack.pop())
                 elif ins.opcode in self._unop:
                     stack.append(self._unop[ins.opcode] + '(' + stack.pop() + ')')
                 elif ins.opcode in self._binop:
