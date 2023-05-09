@@ -84,13 +84,12 @@ def _OperatorVariableClass(baseClass=object):
                                                                for i in range(len(self.var))]))
 
             try:
-                instructions = dis.get_instructions(self.op.__code__)
-                parseInstructions = self._py3kInstructions
+                representation = self._py3kInstructions(op=self.op, style=style, argDict=argDict, id=id, freshen=freshen)
             except AttributeError:
                 instructions = [ord(byte) for byte in self.op.__code__.co_code]
-                parseInstructions = self._py2kInstructions
+                representation = self._py2kInstructions(instructions, style=style, argDict=argDict, id=id, freshen=freshen)
 
-            return parseInstructions(instructions, style=style, argDict=argDict, id=id, freshen=freshen)
+            return representation
 
         def __var(self, i, style, argDict, id, freshen):
             v = self.var[i]
@@ -199,9 +198,11 @@ def _OperatorVariableClass(baseClass=object):
                        repr(allbytecodes),
                        repr(stack)))
 
-        def _py3kInstructions(self, instructions, style, argDict, id, freshen):
+        def _py3kInstructions(self, op, style, argDict, id, freshen):
             stack = []
-            
+            kws = []
+            instructions = dis.get_instructions(op.__code__)
+
             for ins in instructions:
                 if ins.opname == 'UNARY_CONVERT':
                     stack.append("`" + stack.pop() + "`")
@@ -236,11 +237,42 @@ def _OperatorVariableClass(baseClass=object):
                         kwargs.append(kws.pop() + "=" + args.pop())
                     stack.append(stack.pop() + "(" + ", ".join(args + kwargs) + ")")
                 elif ins.opname == 'LOAD_DEREF':
-                    stack.append(ins.argval)
+                    stack.append(op.__closure__[ins.arg-1].cell_contents)
                 elif ins.opname == 'RESUME':
                     pass
                 elif ins.opname == 'BINARY_OP':
                     stack.append(stack.pop(-2) + " " + self._binary_op[ins.argval] + " " + stack.pop())
+                elif ins.opname == 'PRECALL':
+                    pass
+                elif ins.opname == 'CALL':
+                    kwargs = [kw + "=" + str(stack.pop()) for kw in kws]
+                    positionals = [stack.pop() for _ in range(ins.argval - len(kws))]
+                    callable = stack.pop()
+                    if len(stack) > 0:
+                        call_self = callable
+                        callable = stack.pop()
+                    stack.append(callable + "(" + ", ".join(positionals + kwargs) + ")")
+                    kws = []
+                elif ins.opname == 'COPY_FREE_VARS':
+                    pass
+                elif ins.opname == 'KW_NAMES':
+                    kws = op.__code__.co_consts[ins.arg]
+                elif ins.opname == 'BUILD_TUPLE':
+                    tpl = tuple(stack.pop() for _ in range(ins.argval))
+                    stack.append(tpl)
+                elif ins.opname == 'BUILD_MAP':
+                    d = {stack.pop(): stack.pop() for _ in range(ins.argval)}
+                    stack.append(d)
+                elif ins.opname == 'DICT_MERGE':
+                    updates = [stack.pop() for _ in range(ins.argval)]
+                    d = stack.pop()
+                    for u in updates:
+                        d.update(u)
+                    stack.append(d)
+                elif ins.opname == 'CALL_FUNCTION_EX':
+                    kwargs = [k + "=" + str(v) for k, v in stack.pop().items()]
+                    args = [str(v) for v in stack.pop()]
+                    stack.append(stack.pop() + "(" + ", ".join(args + kwargs) + ")")
                 elif ins.opcode in self._unop:
                     stack.append(self._unop[ins.opcode] + '(' + stack.pop() + ')')
                 elif ins.opcode in self._binop:
