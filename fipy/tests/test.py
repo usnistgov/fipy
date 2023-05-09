@@ -40,6 +40,13 @@ class DeprecationErroringTestProgram(unittest.TestProgram):
                                     message="`np\.int` is a deprecated alias for the builtin `int`.*",
                                     module="skfmm\.pfmm")
 
+            # Don't raise errors in scikits.umfpack
+            # due to deprecation of pkg_resources.declare_namespace
+            # raised in Python 3.7, but not newer
+            # (combination of PyTrilinos and Gmsh(?) forces this old configuration)
+            warnings.filterwarnings(action="default", category=DeprecationWarning,
+                                    message="Deprecated call to `pkg_resources.declare_namespace('scikits')")
+
             super(DeprecationErroringTestProgram, self).runTests()
 
 class test(_test):
