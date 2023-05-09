@@ -45,7 +45,7 @@ class DeprecationErroringTestProgram(unittest.TestProgram):
             # raised in Python 3.7, but not newer
             # (combination of PyTrilinos and Gmsh(?) forces this old configuration)
             warnings.filterwarnings(action="default", category=DeprecationWarning,
-                                    message="Deprecated call to `pkg_resources.declare_namespace('scikits')")
+                                    message="Deprecated call to `pkg_resources\.declare_namespace('scikits').*")
 
             super(DeprecationErroringTestProgram, self).runTests()
 
