@@ -78,6 +78,17 @@ Recommended Method
      :term:`Gmsh` is an optional package because some versions are
      incompatible with :term:`FiPy`, so it must be requested explicitly.
 
+  .. note::
+
+     The `fipy conda-forge`_ package is a convenience. You may choose to
+     install packages explicitly, e.g.,::
+
+       $ conda create --name <MYFIPYENV> --channel conda-forge python=3 numpy scipy matplotlib-base future packaging mpich mpi4py petsc4py mayavi "gmsh <4.0|>=4.5.2"
+
+     or
+
+       $ conda create --name <MYFIPYENV> --channel conda-forge python=2.7 numpy scipy matplotlib-base future packaging pysparse mayavi "traitsui<7.0.0" "gmsh<4.0"
+
   .. attention::
 
      Windows x86_64 is fully supported, but this does not work on
@@ -150,7 +161,7 @@ Recommended Method
 .. _Windows: http://www.microsoft.com/windows/
 .. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
 .. _CondaForge:    https://anaconda.org/conda-forge/fipy
-.. _mamba: https://github.com/mamba-org/mamba
+.. _mamba: https://mamba.readthedocs.io/
 
 
 --------------
