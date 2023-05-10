@@ -477,7 +477,10 @@ class _TrilinosMatrix(_SparseMatrix):
     def numpyArray(self):
         import tempfile
         import os
-        from scipy.io import mmio
+        try:
+            from scipy.io import mmread
+        except ImportError:
+            from scipy.io.mmio import mmread
         from fipy.tools import parallelComm
 
         if parallelComm.procID == 0:
@@ -490,7 +493,7 @@ class _TrilinosMatrix(_SparseMatrix):
         self.exportMmf(mtxName)
 
         parallelComm.Barrier()
-        mtx = mmio.mmread(mtxName)
+        mtx = mmread(mtxName)
         parallelComm.Barrier()
 
         if parallelComm.procID == 0:
