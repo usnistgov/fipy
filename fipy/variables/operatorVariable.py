@@ -205,6 +205,7 @@ def _OperatorVariableClass(baseClass=object):
 
             for ins in instructions:
                 if ins.opname == 'UNARY_CONVERT':
+                    # Removed in Python 3
                     stack.append("`" + stack.pop() + "`")
                 elif ins.opname == 'BINARY_SUBSCR':
                     stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
@@ -217,18 +218,22 @@ def _OperatorVariableClass(baseClass=object):
                 elif ins.opname == 'LOAD_CONST':
                     stack.append(ins.argval)
                 elif ins.opname in ['LOAD_ATTR', 'LOAD_METHOD']:
+                    # LOAD_METHOD new in Python 3.7
                     stack.append(stack.pop() + "." + ins.argval)
                 elif ins.opname == 'COMPARE_OP':
                     stack.append(stack.pop(-2) + " " + dis.cmp_op[ins.arg] + " " + stack.pop())
                 elif ins.opname == 'LOAD_GLOBAL':
+                    # Changed in Python 3.11
                     stack.append(ins.argval)
                 elif ins.opname == 'LOAD_FAST':
                     stack.append(self.__var(ins.arg, style=style, argDict=argDict, id=id, freshen=freshen))
                 elif ins.opname in ['CALL_FUNCTION', 'CALL_METHOD']:
+                    # Removed in Python 3.11
                     # args are last ins.arg items on stack
                     args, stack = stack[-ins.arg:], stack[:-ins.arg]
                     stack.append(stack.pop() + "(" + ", ".join(args) + ")")
                 elif ins.opname == 'CALL_FUNCTION_KW':
+                    # Removed in Python 3.11
                     kws = list(stack.pop())
                     # args are last ins.arg items on stack
                     args, stack = stack[-ins.arg:], stack[:-ins.arg]
@@ -237,14 +242,19 @@ def _OperatorVariableClass(baseClass=object):
                         kwargs.append(kws.pop() + "=" + args.pop())
                     stack.append(stack.pop() + "(" + ", ".join(args + kwargs) + ")")
                 elif ins.opname == 'LOAD_DEREF':
+                    # Changed in Python 3.11
                     stack.append(op.__closure__[ins.arg-1].cell_contents)
                 elif ins.opname == 'RESUME':
+                    # New in Python 3.11
                     pass
                 elif ins.opname == 'BINARY_OP':
+                    # New in Python 3.11
                     stack.append(stack.pop(-2) + " " + self._binary_op[ins.argval] + " " + stack.pop())
                 elif ins.opname == 'PRECALL':
+                    # New in Python 3.11
                     pass
                 elif ins.opname == 'CALL':
+                    # New in Python 3.11
                     kwargs = [kw + "=" + str(stack.pop()) for kw in kws]
                     positionals = [stack.pop() for _ in range(ins.argval - len(kws))]
                     callable = stack.pop()
@@ -254,22 +264,27 @@ def _OperatorVariableClass(baseClass=object):
                     stack.append(callable + "(" + ", ".join(positionals + kwargs) + ")")
                     kws = []
                 elif ins.opname == 'COPY_FREE_VARS':
+                    # New in Python 3.11
                     pass
                 elif ins.opname == 'KW_NAMES':
+                    # New in Python 3.11
                     kws = op.__code__.co_consts[ins.arg]
                 elif ins.opname == 'BUILD_TUPLE':
                     tpl = tuple(stack.pop() for _ in range(ins.argval))
                     stack.append(tpl)
                 elif ins.opname == 'BUILD_MAP':
+                    # Changed in Python 3.5
                     d = {stack.pop(): stack.pop() for _ in range(ins.argval)}
                     stack.append(d)
                 elif ins.opname == 'DICT_MERGE':
+                    # New in Python 3.9
                     updates = [stack.pop() for _ in range(ins.argval)]
                     d = stack.pop()
                     for u in updates:
                         d.update(u)
                     stack.append(d)
                 elif ins.opname == 'CALL_FUNCTION_EX':
+                    # New in Python 3.6
                     kwargs = [k + "=" + str(v) for k, v in stack.pop().items()]
                     args = [str(v) for v in stack.pop()]
                     stack.append(stack.pop() + "(" + ", ".join(args + kwargs) + ")")
