@@ -7,6 +7,7 @@ Phase Field Examples
    :template: example.rst
 
    examples.phase.simple
+   examples.phase.binary
    examples.phase.binaryCoupled
    examples.phase.quaternary
    examples.phase.anisotropy
