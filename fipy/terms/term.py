@@ -210,6 +210,11 @@ class Term(object):
             :math:`\mathsf{L}\vec{e}=\vec{r}` for the error vector
             :math:`\vec{e}` and store it in the `errorVector` member of
             `Term`
+        
+        Returns
+        -------
+        residual : ~fipy.variables.cellVariable.CellVariable
+            The residual vector :math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}`
         """
         solver = self._prepareLinearSystem(var=var, solver=solver, boundaryConditions=boundaryConditions, dt=dt)
         solver._applyUnderRelaxation(underRelaxation=underRelaxation)
@@ -265,6 +270,11 @@ class Term(object):
         residualFn : function
             Takes `var`, `matrix`, and `RHSvector` arguments, used to
             customize the residual calculation.
+
+        Returns
+        -------
+        residual : ~fipy.variables.cellVariable.CellVariable
+            The residual vector :math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}`
         """
         solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
         solver._applyUnderRelaxation(underRelaxation)
@@ -295,6 +305,13 @@ class Term(object):
         residualFn : function
             Takes `var`, `matrix`, and `RHSvector` arguments, used to
             customize the residual calculation.
+            
+        Returns
+        -------
+        residual : ~fipy.variables.cellVariable.CellVariable
+            The residual vector :math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}`
+        norm : float
+            The L2 norm of `residual`, :math:`\|\vec{r}\|_2`
         """
         vector = self.justResidualVector(var=var, solver=solver, boundaryConditions=boundaryConditions, dt=dt,
                                          underRelaxation=underRelaxation, residualFn=residualFn)
@@ -337,6 +354,10 @@ class Term(object):
             Takes `var`, `matrix`, and `RHSvector` arguments, used to
             customize the residual calculation.
 
+        Returns
+        -------
+        error : ~fipy.variables.cellVariable.CellVariable
+            The residual vector :math:`\vec{e}=\mathsf{L}\vec{x}_\text{old} - \vec{b}`
         """
         solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
         solver._applyUnderRelaxation(underRelaxation)

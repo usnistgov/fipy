@@ -919,6 +919,50 @@ class UniformGrid3D(UniformGrid):
             True
 
             Oh, how boring. We'll assume the 3x2x1 permutations are good enough for everything else until proven otherwise.
+            
+        Ensure that ghost faces are excluded from accumulating operations
+        (#856).  Four exterior surfaces of :math:`10\times 10\times 10`
+        cube mesh should each have a total area of 100, regardless of
+        partitioning.
+
+            >>> cube = UniformGrid3D(nx=10, dx=1., ny=10, dy=1., nz=10, dz=1.)
+
+            >>> area = (cube._faceAreas * cube.facesBottom).sum()
+            >>> print(numerix.allclose(area, 100))
+            True
+
+            >>> area = (cube._faceAreas * cube.facesTop).sum()
+            >>> print(numerix.allclose(area, 100))
+            True
+
+            >>> area = (cube._faceAreas * cube.facesLeft).sum()
+            >>> print(numerix.allclose(area, 100))
+            True
+
+            >>> area = (cube._faceAreas * cube.facesRight).sum()
+            >>> print(numerix.allclose(area, 100))
+            True
+
+            >>> area = (cube._faceAreas * cube.facesFront).sum()
+            >>> print(numerix.allclose(area, 100))
+            True
+
+            >>> area = (cube._faceAreas * cube.facesBack).sum()
+            >>> print(numerix.allclose(area, 100))
+            True
+
+        Ensure no double-counting of faces on boundary between partitions.
+
+            >>> area = (cube._faceAreas * (cube.faceCenters[2] == 5.)).sum()
+            >>> print(numerix.allclose(area, 100)) # doctest: +PARALLEL_2
+            True
+
+        Size of global value should not depend on number of processors (#400)
+
+            >>> print(cube.cellCenters.globalValue.shape)
+            (3, 1000)
+            >>> print(cube.faceCenters.globalValue.shape)
+            (3, 3300)
         """
 
 def _test():

@@ -31,6 +31,7 @@ class MeshDimensionError(IndexError):
 
 from fipy.viewers.viewer import AbstractViewer
 class DummyViewer(AbstractViewer):
+    """Substitute viewer that doesn't do anything"""
     def plot(self, filename=None):
         pass
 
@@ -66,7 +67,7 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         a (deprecated) alternative to limit keyword arguments
     FIPY_VIEWER
         a specific viewer to attempt (possibly multiple times for multiple variables)
-    float xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
+    xmin, xmax, ymin, ymax, zmin, zmax, datamin, datamax : float, optional
         displayed range of data. A 1D `Viewer` will only use `xmin` and
         `xmax`, a 2D viewer will also use `ymin` and `ymax`, and so on. All
         viewers will use `datamin` and `datamax`. Any limit set to a

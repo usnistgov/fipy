@@ -38,6 +38,16 @@ the face center may not lie on the line joining the CV centers, which
 will lead to an error in the face interpolation. :term:`FiPy` currently
 only uses the CC-FVM.
 
+Boundary Conditions
+'''''''''''''''''''
+
+The natural boundary condition for CC-FVM is no-flux.  For :eq:`num:gen`,
+the boundary condition is
+
+.. math::
+
+   \hat{n}\cdot[\vec{u}\phi - (\Gamma_i\nabla)^n] = 0
+
 Vertex Centered FVM (VC-FVM)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -198,7 +208,7 @@ preference). One can also create an explicit diffusion term with
 
 .. _discret-higherOrderDiffusion:
 
-Higher order diffusion
+Higher Order Diffusion
 ''''''''''''''''''''''
 
 Higher order diffusion expressions, such as :math:`\nabla^4 \phi` or
@@ -210,6 +220,12 @@ represented as
 
 The number of elements supplied for ``coeff`` determines the
 order of the term.
+
+.. note::
+
+   While this multiple-coefficient form is still supported,
+   :ref:`CoupledEquations` are the recommended approach for higher order
+   expressions.
 
 Source Term
 ~~~~~~~~~~~

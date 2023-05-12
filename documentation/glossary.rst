@@ -9,6 +9,10 @@ Glossary
       A cloud-based :term:`Continuous Integration` tool.
       See https://www.appveyor.com.
 
+   Azure
+      A cloud-based :term:`Continuous Integration` tool.
+      See https://dev.azure.com.
+
    Buildbot
       The Buildbot is a system to automate the compile/test cycle
       required by most software projects to validate code changes.
@@ -45,6 +49,11 @@ Glossary
    IPython
       An improved :term:`Python` shell that integrates nicely with
       :ref:`MATPLOTLIB`. See http://ipython.scipy.org/.
+
+   JSON
+      JavaScript Object Notation.  A text format suitable for storing
+      structured information such as :keyword:`dict` or :keyword:`list`.
+      See https://www.json.org/.
 
    linux
       An operating system.

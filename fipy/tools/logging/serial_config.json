@@ -1,0 +1,25 @@
+{
+    "version": 1,
+    "formatters": {
+        "default": {
+            "format": "%(asctime)s - %(levelname)s - %(name)s - %(funcName)s - %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "INFO"
+        },
+        "serialfile": {
+            "class": "logging.FileHandler",
+            "formatter": "default",
+            "filename": "fipy.log"
+        }
+    },
+    "loggers": {
+        "fipy": {
+            "level": "DEBUG",
+            "handlers": ["console", "serialfile"]
+        }
+    }
+}

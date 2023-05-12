@@ -44,6 +44,15 @@ class NonUniformGrid3D(Mesh):
             'overlap': overlap,
         }
 
+        if self.args['nx'] is None:
+            self.args['nx'] = len(self.args['dx'])
+
+        if self.args['ny'] is None:
+            self.args['ny'] = len(self.args['dy'])
+
+        if self.args['nz'] is None:
+            self.args['nz'] = len(self.args['dz'])
+
         builder.buildGridData([dx, dy, dz], [nx, ny, nz], overlap,
                               communicator)
 
@@ -367,6 +376,36 @@ class NonUniformGrid3D(Mesh):
             >>> print(min(m.z) == 5.5) # doctest: +PROCESSOR_2_OF_3
             True
 
+        Ensure that ghost faces are excluded from accumulating operations
+        (#856).  Four exterior surfaces of :math:`10\times 10\times 10`
+        cube mesh should each have a total area of 100, regardless of
+        partitioning.
+
+            >>> cube = NonUniformGrid3D(nx=10, dx=1., ny=10, dy=1., nz=10, dz=1.)
+
+            >>> area = (cube._faceAreas * cube.facesBottom).sum()
+            >>> print(numerix.allclose(area, 100))
+            True
+
+            >>> area = (cube._faceAreas * cube.facesTop).sum()
+            >>> print(numerix.allclose(area, 100))
+            True
+
+            >>> area = (cube._faceAreas * cube.facesLeft).sum()
+            >>> print(numerix.allclose(area, 100))
+            True
+
+            >>> area = (cube._faceAreas * cube.facesRight).sum()
+            >>> print(numerix.allclose(area, 100))
+            True
+
+            >>> area = (cube._faceAreas * cube.facesFront).sum()
+            >>> print(numerix.allclose(area, 100))
+            True
+
+            >>> area = (cube._faceAreas * cube.facesBack).sum()
+            >>> print(numerix.allclose(area, 100))
+            True
         """
 
 def _test():

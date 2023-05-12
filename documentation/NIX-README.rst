@@ -58,7 +58,7 @@ knows about a ``.local`` directory in the base :term:`FiPy` directory
 used by :term:`Pip` for installation.  So, for example, to install the
 ``toolz`` package from within the Nix shell use::
 
-    $ pip install --user toolz
+    $ python -m pip install --user toolz
 
 The ``.local`` directory will persist after the Nix shell has been
 closed.
