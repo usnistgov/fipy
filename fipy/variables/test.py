@@ -31,7 +31,8 @@ def _suite():
             'fipy.variables.surfactantConvectionVariable',
             'fipy.variables.surfactantVariable',
             'fipy.variables.levelSetDiffusionVariable',
-            'fipy.variables.distanceVariable'
+            'fipy.variables.distanceVariable',
+            'fipy.variables.labelVariable'
         ))
 
 if __name__ == '__main__':
