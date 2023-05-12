@@ -34,15 +34,18 @@ def _dealWithTrilinosImportPathologies():
 
     from PyTrilinos import Epetra
 
-    import platform
-    if platform.dist()[0] == 'debian':
-        import PyTrilinos
-        if '10.0.4' in PyTrilinos.version():
-            # The package mpi4py is a required package if you are using
-            # Trilinos on a Debian platform with Trilinos version 10.0.4 due to
-            # a Trilinos bug (see <https://github.com/usnistgov/fipy/issues/301>).
+    try:
+        import platform
+        if platform.dist()[0] == 'debian':
+            import PyTrilinos
+            if '10.0.4' in PyTrilinos.version():
+                # The package mpi4py is a required package if you are using
+                # Trilinos on a Debian platform with Trilinos version 10.0.4 due to
+                # a Trilinos bug (see <https://github.com/usnistgov/fipy/issues/301>).
 
-            from mpi4py import MPI
+                from mpi4py import MPI
+    except:
+        pass
 
 _dealWithTrilinosImportPathologies()
 
