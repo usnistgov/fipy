@@ -162,6 +162,7 @@ Recommended Method
 .. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
 .. _CondaForge:    https://anaconda.org/conda-forge/fipy
 .. _mamba: https://mamba.readthedocs.io/
+.. _fipy conda-forge: https://anaconda.org/conda-forge/fipy
 
 
 --------------
