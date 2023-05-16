@@ -9,3 +9,4 @@ jobs:
       - uses: usnistgov/NISTtheDocs2Death@main
         with:
           docs-folder: documentation/
+
