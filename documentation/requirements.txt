@@ -1,1 +1,6 @@
+sphinx
+pandas
+imagemagick
+sphinxcontrib-bibtex
+numpydoc
 -e .
