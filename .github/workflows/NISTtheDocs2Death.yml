@@ -8,4 +8,4 @@ jobs:
     steps:
       - uses: usnistgov/NISTtheDocs2Death@main
         with:
-          docs_folder: documentation/
+          docs-folder: documentation/
