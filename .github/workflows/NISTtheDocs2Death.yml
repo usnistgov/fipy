@@ -15,5 +15,5 @@ jobs:
                  --output-dir=documentation/tutorial/package/generated
                  --suffix=rst documentation/tutorial/package
           build-command: >
-            sphinx-build -b html -n -c documentation/ ..
+            sphinx-build -b html -n -c . ..
               documentation/_build/html/
