@@ -9,6 +9,10 @@
 
 @import url("basic.css");
 
+@import url("css_xHLfTKufnRskE-WS-MHFRZw0xTl5z5FmoqUO5xrVbv0.css") all;
+@import url("css_upsjsFTrh_luQ_mkVG8bvtY6hJP2qeBdVsxUinYrGlI.css") screen;
+@import url("css_Wmk7cHp8tUe6LbVg3R63qxW01aH9Q-8Q4W2Hu6mxCwE.css") print;
+
 /* -- page layout ----------------------------------------------------------- */
 
 div.sphinxsidebar {
