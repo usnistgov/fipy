@@ -9,3 +9,7 @@ jobs:
       - uses: usnistgov/NISTtheDocs2Death@main
         with:
           docs-folder: documentation/
+          build-command: |
+            sphinx-apidoc --output-dir=fipy/generated --suffix=rst fipy
+            sphinx-apidoc --output-dir=documentation/tutorial/package/generated --suffix=rst documentation/tutorial/package
+            sphinx-build -b html -n -c documentation/ . documentation/build/html/
