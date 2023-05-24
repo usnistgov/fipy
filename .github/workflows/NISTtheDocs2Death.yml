@@ -12,4 +12,4 @@ jobs:
           pre-build-command: >
             "sphinx-apidoc --output-dir=fipy/generated --suffix=rst fipy
             && sphinx-apidoc --output-dir=documentation/tutorial/package/generated --suffix=rst documentation/tutorial/package"
-          build-command: "sphinx-build -b html -n .. _build/html/"
+          build-command: "sphinx-build -b html -n -c documentation/ .. _build/html/"
