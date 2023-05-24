@@ -2,5 +2,4 @@ sphinx
 pandas
 sphinxcontrib-bibtex
 numpydoc
-versioneer
 -e .
