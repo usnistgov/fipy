@@ -1,0 +1,10 @@
+fipy.tools.logging package
+==========================
+
+Module contents
+---------------
+
+.. automodule:: fipy.tools.logging
+   :members:
+   :undoc-members:
+   :show-inheritance:

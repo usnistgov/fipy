@@ -1,0 +1,6 @@
+﻿examples.diffusion.mesh20x20
+============================
+
+.. currentmodule:: examples.diffusion.mesh20x20
+
+.. automodule:: examples.diffusion.mesh20x20

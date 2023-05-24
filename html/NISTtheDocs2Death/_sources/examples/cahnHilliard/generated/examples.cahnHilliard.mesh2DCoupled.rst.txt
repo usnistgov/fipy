@@ -1,0 +1,6 @@
+﻿examples.cahnHilliard.mesh2DCoupled
+===================================
+
+.. currentmodule:: examples.cahnHilliard.mesh2DCoupled
+
+.. automodule:: examples.cahnHilliard.mesh2DCoupled

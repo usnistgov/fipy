@@ -1,0 +1,6 @@
+﻿examples.diffusion.coupled
+==========================
+
+.. currentmodule:: examples.diffusion.coupled
+
+.. automodule:: examples.diffusion.coupled

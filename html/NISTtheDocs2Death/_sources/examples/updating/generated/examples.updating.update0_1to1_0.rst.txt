@@ -1,0 +1,6 @@
+﻿examples.updating.update0\_1to1\_0
+==================================
+
+.. currentmodule:: examples.updating.update0_1to1_0
+
+.. automodule:: examples.updating.update0_1to1_0

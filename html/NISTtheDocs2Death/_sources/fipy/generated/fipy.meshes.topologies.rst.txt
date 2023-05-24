@@ -1,0 +1,37 @@
+fipy.meshes.topologies package
+==============================
+
+Submodules
+----------
+
+fipy.meshes.topologies.abstractTopology module
+----------------------------------------------
+
+.. automodule:: fipy.meshes.topologies.abstractTopology
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.topologies.gridTopology module
+------------------------------------------
+
+.. automodule:: fipy.meshes.topologies.gridTopology
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.topologies.meshTopology module
+------------------------------------------
+
+.. automodule:: fipy.meshes.topologies.meshTopology
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.meshes.topologies
+   :members:
+   :undoc-members:
+   :show-inheritance:

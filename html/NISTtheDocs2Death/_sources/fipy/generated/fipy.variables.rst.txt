@@ -1,0 +1,325 @@
+fipy.variables package
+======================
+
+Submodules
+----------
+
+fipy.variables.addOverFacesVariable module
+------------------------------------------
+
+.. automodule:: fipy.variables.addOverFacesVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.arithmeticCellToFaceVariable module
+--------------------------------------------------
+
+.. automodule:: fipy.variables.arithmeticCellToFaceVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.betaNoiseVariable module
+---------------------------------------
+
+.. automodule:: fipy.variables.betaNoiseVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.binaryOperatorVariable module
+--------------------------------------------
+
+.. automodule:: fipy.variables.binaryOperatorVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.cellToFaceVariable module
+----------------------------------------
+
+.. automodule:: fipy.variables.cellToFaceVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.cellVariable module
+----------------------------------
+
+.. automodule:: fipy.variables.cellVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.constant module
+------------------------------
+
+.. automodule:: fipy.variables.constant
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.constraintMask module
+------------------------------------
+
+.. automodule:: fipy.variables.constraintMask
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.coupledCellVariable module
+-----------------------------------------
+
+.. automodule:: fipy.variables.coupledCellVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.distanceVariable module
+--------------------------------------
+
+.. automodule:: fipy.variables.distanceVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.exponentialNoiseVariable module
+----------------------------------------------
+
+.. automodule:: fipy.variables.exponentialNoiseVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.faceGradContributionsVariable module
+---------------------------------------------------
+
+.. automodule:: fipy.variables.faceGradContributionsVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.faceGradVariable module
+--------------------------------------
+
+.. automodule:: fipy.variables.faceGradVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.faceVariable module
+----------------------------------
+
+.. automodule:: fipy.variables.faceVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.gammaNoiseVariable module
+----------------------------------------
+
+.. automodule:: fipy.variables.gammaNoiseVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.gaussCellGradVariable module
+-------------------------------------------
+
+.. automodule:: fipy.variables.gaussCellGradVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.gaussianNoiseVariable module
+-------------------------------------------
+
+.. automodule:: fipy.variables.gaussianNoiseVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.harmonicCellToFaceVariable module
+------------------------------------------------
+
+.. automodule:: fipy.variables.harmonicCellToFaceVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.histogramVariable module
+---------------------------------------
+
+.. automodule:: fipy.variables.histogramVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.interfaceAreaVariable module
+-------------------------------------------
+
+.. automodule:: fipy.variables.interfaceAreaVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.interfaceFlagVariable module
+-------------------------------------------
+
+.. automodule:: fipy.variables.interfaceFlagVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.leastSquaresCellGradVariable module
+--------------------------------------------------
+
+.. automodule:: fipy.variables.leastSquaresCellGradVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.levelSetDiffusionVariable module
+-----------------------------------------------
+
+.. automodule:: fipy.variables.levelSetDiffusionVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.meshVariable module
+----------------------------------
+
+.. automodule:: fipy.variables.meshVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.minmodCellToFaceVariable module
+----------------------------------------------
+
+.. automodule:: fipy.variables.minmodCellToFaceVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.modCellGradVariable module
+-----------------------------------------
+
+.. automodule:: fipy.variables.modCellGradVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.modCellToFaceVariable module
+-------------------------------------------
+
+.. automodule:: fipy.variables.modCellToFaceVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.modFaceGradVariable module
+-----------------------------------------
+
+.. automodule:: fipy.variables.modFaceGradVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.modPhysicalField module
+--------------------------------------
+
+.. automodule:: fipy.variables.modPhysicalField
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.modularVariable module
+-------------------------------------
+
+.. automodule:: fipy.variables.modularVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.noiseVariable module
+-----------------------------------
+
+.. automodule:: fipy.variables.noiseVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.operatorVariable module
+--------------------------------------
+
+.. automodule:: fipy.variables.operatorVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.scharfetterGummelFaceVariable module
+---------------------------------------------------
+
+.. automodule:: fipy.variables.scharfetterGummelFaceVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.surfactantConvectionVariable module
+--------------------------------------------------
+
+.. automodule:: fipy.variables.surfactantConvectionVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.surfactantVariable module
+----------------------------------------
+
+.. automodule:: fipy.variables.surfactantVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.test module
+--------------------------
+
+.. automodule:: fipy.variables.test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.unaryOperatorVariable module
+-------------------------------------------
+
+.. automodule:: fipy.variables.unaryOperatorVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.uniformNoiseVariable module
+------------------------------------------
+
+.. automodule:: fipy.variables.uniformNoiseVariable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.variables.variable module
+------------------------------
+
+.. automodule:: fipy.variables.variable
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.variables
+   :members:
+   :undoc-members:
+   :show-inheritance:

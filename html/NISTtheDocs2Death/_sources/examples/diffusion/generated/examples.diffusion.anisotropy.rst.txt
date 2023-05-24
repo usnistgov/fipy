@@ -1,0 +1,6 @@
+﻿examples.diffusion.anisotropy
+=============================
+
+.. currentmodule:: examples.diffusion.anisotropy
+
+.. automodule:: examples.diffusion.anisotropy

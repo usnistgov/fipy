@@ -1,0 +1,69 @@
+fipy.solvers.scipy package
+==========================
+
+Submodules
+----------
+
+fipy.solvers.scipy.linearBicgstabSolver module
+----------------------------------------------
+
+.. automodule:: fipy.solvers.scipy.linearBicgstabSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.scipy.linearCGSSolver module
+-----------------------------------------
+
+.. automodule:: fipy.solvers.scipy.linearCGSSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.scipy.linearGMRESSolver module
+-------------------------------------------
+
+.. automodule:: fipy.solvers.scipy.linearGMRESSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.scipy.linearLUSolver module
+----------------------------------------
+
+.. automodule:: fipy.solvers.scipy.linearLUSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.scipy.linearPCGSolver module
+-----------------------------------------
+
+.. automodule:: fipy.solvers.scipy.linearPCGSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.scipy.scipyKrylovSolver module
+-------------------------------------------
+
+.. automodule:: fipy.solvers.scipy.scipyKrylovSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.scipy.scipySolver module
+-------------------------------------
+
+.. automodule:: fipy.solvers.scipy.scipySolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.solvers.scipy
+   :members:
+   :undoc-members:
+   :show-inheritance:

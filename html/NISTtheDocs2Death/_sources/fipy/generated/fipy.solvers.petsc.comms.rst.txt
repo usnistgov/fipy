@@ -1,0 +1,37 @@
+fipy.solvers.petsc.comms package
+================================
+
+Submodules
+----------
+
+fipy.solvers.petsc.comms.parallelPETScCommWrapper module
+--------------------------------------------------------
+
+.. automodule:: fipy.solvers.petsc.comms.parallelPETScCommWrapper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.petsc.comms.petscCommWrapper module
+------------------------------------------------
+
+.. automodule:: fipy.solvers.petsc.comms.petscCommWrapper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.petsc.comms.serialPETScCommWrapper module
+------------------------------------------------------
+
+.. automodule:: fipy.solvers.petsc.comms.serialPETScCommWrapper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.solvers.petsc.comms
+   :members:
+   :undoc-members:
+   :show-inheritance:

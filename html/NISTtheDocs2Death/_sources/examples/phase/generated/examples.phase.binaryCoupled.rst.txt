@@ -1,0 +1,6 @@
+﻿examples.phase.binaryCoupled
+============================
+
+.. currentmodule:: examples.phase.binaryCoupled
+
+.. automodule:: examples.phase.binaryCoupled

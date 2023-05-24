@@ -1,0 +1,93 @@
+fipy.viewers.matplotlibViewer package
+=====================================
+
+Submodules
+----------
+
+fipy.viewers.matplotlibViewer.matplotlib1DViewer module
+-------------------------------------------------------
+
+.. automodule:: fipy.viewers.matplotlibViewer.matplotlib1DViewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.viewers.matplotlibViewer.matplotlib2DContourViewer module
+--------------------------------------------------------------
+
+.. automodule:: fipy.viewers.matplotlibViewer.matplotlib2DContourViewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.viewers.matplotlibViewer.matplotlib2DGridContourViewer module
+------------------------------------------------------------------
+
+.. automodule:: fipy.viewers.matplotlibViewer.matplotlib2DGridContourViewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.viewers.matplotlibViewer.matplotlib2DGridViewer module
+-----------------------------------------------------------
+
+.. automodule:: fipy.viewers.matplotlibViewer.matplotlib2DGridViewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.viewers.matplotlibViewer.matplotlib2DViewer module
+-------------------------------------------------------
+
+.. automodule:: fipy.viewers.matplotlibViewer.matplotlib2DViewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer module
+-----------------------------------------------------------------
+
+.. automodule:: fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.viewers.matplotlibViewer.matplotlibStreamViewer module
+-----------------------------------------------------------
+
+.. automodule:: fipy.viewers.matplotlibViewer.matplotlibStreamViewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.viewers.matplotlibViewer.matplotlibVectorViewer module
+-----------------------------------------------------------
+
+.. automodule:: fipy.viewers.matplotlibViewer.matplotlibVectorViewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.viewers.matplotlibViewer.matplotlibViewer module
+-----------------------------------------------------
+
+.. automodule:: fipy.viewers.matplotlibViewer.matplotlibViewer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.viewers.matplotlibViewer.test module
+-----------------------------------------
+
+.. automodule:: fipy.viewers.matplotlibViewer.test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.viewers.matplotlibViewer
+   :members:
+   :undoc-members:
+   :show-inheritance:

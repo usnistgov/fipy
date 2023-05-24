@@ -1,0 +1,6 @@
+﻿examples.phase.polyxtalCoupled
+==============================
+
+.. currentmodule:: examples.phase.polyxtalCoupled
+
+.. automodule:: examples.phase.polyxtalCoupled

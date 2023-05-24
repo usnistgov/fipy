@@ -1,0 +1,94 @@
+fipy.solvers.trilinos package
+=============================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   fipy.solvers.trilinos.comms
+   fipy.solvers.trilinos.preconditioners
+
+Submodules
+----------
+
+fipy.solvers.trilinos.linearBicgstabSolver module
+-------------------------------------------------
+
+.. automodule:: fipy.solvers.trilinos.linearBicgstabSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.trilinos.linearCGSSolver module
+--------------------------------------------
+
+.. automodule:: fipy.solvers.trilinos.linearCGSSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.trilinos.linearGMRESSolver module
+----------------------------------------------
+
+.. automodule:: fipy.solvers.trilinos.linearGMRESSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.trilinos.linearLUSolver module
+-------------------------------------------
+
+.. automodule:: fipy.solvers.trilinos.linearLUSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.trilinos.linearPCGSolver module
+--------------------------------------------
+
+.. automodule:: fipy.solvers.trilinos.linearPCGSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.trilinos.trilinosAztecOOSolver module
+--------------------------------------------------
+
+.. automodule:: fipy.solvers.trilinos.trilinosAztecOOSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.trilinos.trilinosMLTest module
+-------------------------------------------
+
+.. automodule:: fipy.solvers.trilinos.trilinosMLTest
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.trilinos.trilinosNonlinearSolver module
+----------------------------------------------------
+
+.. automodule:: fipy.solvers.trilinos.trilinosNonlinearSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.trilinos.trilinosSolver module
+-------------------------------------------
+
+.. automodule:: fipy.solvers.trilinos.trilinosSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.solvers.trilinos
+   :members:
+   :undoc-members:
+   :show-inheritance:

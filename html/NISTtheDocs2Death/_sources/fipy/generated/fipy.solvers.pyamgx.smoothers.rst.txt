@@ -1,0 +1,21 @@
+fipy.solvers.pyamgx.smoothers package
+=====================================
+
+Submodules
+----------
+
+fipy.solvers.pyamgx.smoothers.smoothers module
+----------------------------------------------
+
+.. automodule:: fipy.solvers.pyamgx.smoothers.smoothers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.solvers.pyamgx.smoothers
+   :members:
+   :undoc-members:
+   :show-inheritance:
