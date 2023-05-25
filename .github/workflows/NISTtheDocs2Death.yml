@@ -22,7 +22,7 @@ jobs:
             && apk add --no-cache git
             )
             )
-            && git config --global --add safe.directory /github/worspace
+            && git config --global --add safe.directory /github/workspace
             && echo "::error::pwd = `pwd`"
             && echo "::error::ls = `ls -al`"
             && echo "::error::which git = `which git`"
