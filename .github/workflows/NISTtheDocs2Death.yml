@@ -9,7 +9,7 @@ jobs:
       - uses: usnistgov/NISTtheDocs2Death@main
         with:
           docs-folder: documentation/
-          pre-build-command: >
+          pre-build-command: >-
             which git
             || (
             (
@@ -23,13 +23,9 @@ jobs:
             )
             )
             && git config --global --add safe.directory /github/workspace
-            && echo "::error::pwd = `pwd`"
-            && echo "::error::ls = `ls -al`"
-            && echo "::error::which git = `which git`"
-            && echo "::error::version before apidoc = `python setup.py version`"
-#             && sphinx-apidoc --output-dir=fipy/generated --suffix=rst fipy
-#             && sphinx-apidoc
-#             --output-dir=documentation/tutorial/package/generated
-#             --suffix=rst documentation/tutorial/package
-          build-command: >
+            && sphinx-apidoc --output-dir=fipy/generated --suffix=rst fipy
+            && sphinx-apidoc
+            --output-dir=documentation/tutorial/package/generated
+            --suffix=rst documentation/tutorial/package
+          build-command: >-
             sphinx-build -b html -n -c . .. _build/html/
