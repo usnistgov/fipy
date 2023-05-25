@@ -4,7 +4,7 @@
 Using FiPy
 ==========
 
-These document explains how to use :term:`FiPy` in a practical sense.
+This document explains how to use :term:`FiPy` in a practical sense.
 To see the problems that :term:`FiPy` is capable of solving, you can
 run any of the scripts in the :ref:`examples <part:examples>`.
 
