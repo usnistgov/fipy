@@ -1,0 +1,86 @@
+fipy.solvers.pyamgx package
+===========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   fipy.solvers.pyamgx.preconditioners
+   fipy.solvers.pyamgx.smoothers
+
+Submodules
+----------
+
+fipy.solvers.pyamgx.aggregationAMGSolver module
+-----------------------------------------------
+
+.. automodule:: fipy.solvers.pyamgx.aggregationAMGSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.pyamgx.classicalAMGSolver module
+---------------------------------------------
+
+.. automodule:: fipy.solvers.pyamgx.classicalAMGSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.pyamgx.linearBiCGStabSolver module
+-----------------------------------------------
+
+.. automodule:: fipy.solvers.pyamgx.linearBiCGStabSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.pyamgx.linearCGSolver module
+-----------------------------------------
+
+.. automodule:: fipy.solvers.pyamgx.linearCGSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.pyamgx.linearFGMRESSolver module
+---------------------------------------------
+
+.. automodule:: fipy.solvers.pyamgx.linearFGMRESSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.pyamgx.linearGMRESSolver module
+--------------------------------------------
+
+.. automodule:: fipy.solvers.pyamgx.linearGMRESSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.pyamgx.linearLUSolver module
+-----------------------------------------
+
+.. automodule:: fipy.solvers.pyamgx.linearLUSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.pyamgx.pyAMGXSolver module
+---------------------------------------
+
+.. automodule:: fipy.solvers.pyamgx.pyAMGXSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.solvers.pyamgx
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>examples.phase.binaryCoupled &#8212; FiPy 3.4.3+140.g6fcf7068 documentation</title>
+    <title>examples.phase.binaryCoupled &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
     <link rel="stylesheet" href="../../../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
@@ -52,7 +52,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="top" title="FiPy 3.4.3+140.g6fcf7068 documentation" href="../../../documentation/contents.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="../../../documentation/contents.html" />
     <link rel="up" title="Phase Field Examples" href="../index.html" />
     <link rel="next" title="examples.phase.quaternary" href="examples.phase.quaternary.html" />
     <link rel="prev" title="examples.phase.simple" href="examples.phase.simple.html" />
@@ -389,8 +389,8 @@ we can then reduce Eq. <a class="reference internal" href="#equation-eq-phase-bi
     + \frac{W_B - W_A}{2} g'(\phi)
 \right\} \nabla \phi
 \right).\end{split}\]</div>
-<p>The first term is clearly a <code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code> in <span class="math notranslate nohighlight">\(C\)</span>. The second is a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code> in <span class="math notranslate nohighlight">\(\phi\)</span> with a diffusion coefficient</p>
+<p>The first term is clearly a <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.diffusionTerm.DiffusionTerm" title="fipy.terms.diffusionTerm.DiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code></a> in <span class="math notranslate nohighlight">\(C\)</span>. The second is a
+<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.diffusionTerm.DiffusionTerm" title="fipy.terms.diffusionTerm.DiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code></a> in <span class="math notranslate nohighlight">\(\phi\)</span> with a diffusion coefficient</p>
 <div class="math notranslate nohighlight">
 \[D_{\phi}(C, \phi) =
 \frac{D_C C (1 - C) V_m}{R T}
@@ -537,8 +537,8 @@ field through <code class="docutils literal notranslate"><span class="pre">phase
 non-linear problem to convergence. We use the “residual” of the equations
 (a measure of how well they think they have solved the given set of linear
 equations) as a test for how long to sweep.</p>
-<p id="index-7">We now use the “<code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code>” method instead of
-“<code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code>” because we require the residual.</p>
+<p id="index-7">We now use the “<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a>” method instead of
+“<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a>” because we require the residual.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">solver</span> <span class="o">=</span> <span class="n">LinearLUSolver</span><span class="p">(</span><span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -667,7 +667,7 @@ to retain an “old” value.</p>
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">2</a><span class="fn-bracket">]</span></span>
 <p>we are going to want to
 examine different temperatures in this example, so we declare <span class="math notranslate nohighlight">\(T\)</span>
-as a <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></p>
+as a <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a></p>
 </aside>
 </aside>
 </section>
@@ -687,7 +687,7 @@ as a <code class="xref py py-class docutils literal notranslate"><span class="pr
               <img class="logo" src="../../../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.3+140.g6fcf7068
+Version 3.4.3+141.g9c8f5a4b
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

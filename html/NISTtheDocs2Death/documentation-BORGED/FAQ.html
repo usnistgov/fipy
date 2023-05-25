@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Frequently Asked Questions &#8212; FiPy 3.4.3+140.g6fcf7068 documentation</title>
+    <title>Frequently Asked Questions &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -52,7 +52,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.3+140.g6fcf7068 documentation" href="../documentation/contents.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="../documentation/contents.html" />
   
  
 
@@ -111,7 +111,7 @@
 <h2>How do I represent an equation in FiPy?<a class="headerlink" href="#how-do-i-represent-an-equation-in-fipy" title="Permalink to this heading">¶</a></h2>
 <p>As explained in <a class="reference internal" href="../documentation/numerical/index.html#chap-numerics"><span class="std std-ref">Theoretical and Numerical Background</span></a>, the canonical
 governing equation that can be solved by <a class="reference internal" href="../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> for the dependent
-<code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code> <span class="math notranslate nohighlight">\(\phi\)</span> is</p>
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> <span class="math notranslate nohighlight">\(\phi\)</span> is</p>
 <div class="math notranslate nohighlight">
 \[\underbrace{
   \frac{\partial (\rho \phi)}{\partial t}
@@ -139,7 +139,7 @@ examples are presented in Part <a class="reference internal" href="../examples/R
 <h3>Is there a way to model an anisotropic diffusion process or more generally to represent the diffusion coefficient as a tensor so that the diffusion term takes the form <span class="math notranslate nohighlight">\(\partial_i \Gamma_{ij}\partial_j \phi\)</span>?<a class="headerlink" href="#is-there-a-way-to-model-an-anisotropic-diffusion-process-or-more-generally-to-represent-the-diffusion-coefficient-as-a-tensor-so-that-the-diffusion-term-takes-the-form-partial-i-gamma-ij-partial-j-phi" title="Permalink to this heading">¶</a></h3>
 <p>Terms of the form <span class="math notranslate nohighlight">\(\partial_i \Gamma_{ij}\partial_j \phi\)</span> can be
 posed in <a class="reference internal" href="../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> by using a list, tuple rank 1
-or rank 2 <code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code> to represent a
+or rank 2 <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> to represent a
 vector or tensor diffusion coefficient. For example, if we wished to
 represent a diffusion term with an anisotropy ratio of 5 aligned along the
 x-coordinate axis, we could write the term as,</p>
@@ -202,22 +202,22 @@ term should be treated as a source.</p>
 \[\frac{\partial \phi}{\partial t}
 = \nabla\cdot\left( D_1 \nabla \phi\right)
 + \nabla\cdot\left( D_2 \nabla \xi\right)\]</div>
-<p>then the first term is a <code class="xref py py-class docutils literal notranslate"><span class="pre">TransientTerm</span></code> and the second term is a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code>, but the third term is simply an explicit source,
+<p>then the first term is a <a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.transientTerm.TransientTerm" title="fipy.terms.transientTerm.TransientTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransientTerm</span></code></a> and the second term is a
+<a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.diffusionTerm.DiffusionTerm" title="fipy.terms.diffusionTerm.DiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code></a>, but the third term is simply an explicit source,
 which is written in Python as</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">D2</span> <span class="o">*</span> <span class="n">xi</span><span class="o">.</span><span class="n">faceGrad</span><span class="p">)</span><span class="o">.</span><span class="n">divergence</span>
 </pre></div>
 </div>
 <p>Higher order diffusive sources can be obtained by simply nesting the
-references to <code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGrad</span></code> and
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">divergence</span></code>.</p>
+references to <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable.faceGrad" title="fipy.variables.cellVariable.CellVariable.faceGrad"><code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGrad</span></code></a> and
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable.divergence" title="fipy.variables.faceVariable.FaceVariable.divergence"><code class="xref py py-attr docutils literal notranslate"><span class="pre">divergence</span></code></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>We use <code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGrad</span></code>, rather than
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">grad</span></code>, in order to obtain a second-order spatial
+<p>We use <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable.faceGrad" title="fipy.variables.cellVariable.CellVariable.faceGrad"><code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGrad</span></code></a>, rather than
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable.grad" title="fipy.variables.cellVariable.CellVariable.grad"><code class="xref py py-attr docutils literal notranslate"><span class="pre">grad</span></code></a>, in order to obtain a second-order spatial
 discretization of the diffusion term in <span class="math notranslate nohighlight">\(\xi\)</span>, consistent with the
 matrix that is formed by
-<code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code> for <span class="math notranslate nohighlight">\(\phi\)</span>.</p>
+<a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.diffusionTerm.DiffusionTerm" title="fipy.terms.diffusionTerm.DiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code></a> for <span class="math notranslate nohighlight">\(\phi\)</span>.</p>
 </div>
 </section>
 <section id="how-do-i-represent-a-convective-source">
@@ -233,11 +233,11 @@ matrix that is formed by
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">u</span> <span class="o">*</span> <span class="n">xi</span><span class="o">.</span><span class="n">arithmeticFaceValue</span><span class="p">)</span><span class="o">.</span><span class="n">divergence</span>
 </pre></div>
 </div>
-<p>when <span class="math notranslate nohighlight">\(\vec{u}\)</span> is a rank-1 <code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code> (preferred) or as</p>
+<p>when <span class="math notranslate nohighlight">\(\vec{u}\)</span> is a rank-1 <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> (preferred) or as</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">u</span> <span class="o">*</span> <span class="n">xi</span><span class="p">)</span><span class="o">.</span><span class="n">divergence</span>
 </pre></div>
 </div>
-<p>if <span class="math notranslate nohighlight">\(\vec{u}\)</span> is a rank-1 <code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code>.</p>
+<p>if <span class="math notranslate nohighlight">\(\vec{u}\)</span> is a rank-1 <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a>.</p>
 </section>
 <section id="how-do-i-represent-a-transient-source">
 <h4>How do I represent a transient source?<a class="headerlink" href="#how-do-i-represent-a-transient-source" title="Permalink to this heading">¶</a></h4>
@@ -274,7 +274,7 @@ For <a class="reference internal" href="../documentation/glossary.html#term-FiPy
 <p class="admonition-title">Note</p>
 <p>With the advent of <a class="reference internal" href="../documentation/USAGE.html#coupledequations"><span class="std std-ref">Coupled and Vector Equations</span></a> in FiPy 3.x, it is now
 possible to represent both terms with
-<code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code>.</p>
+<a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.diffusionTerm.DiffusionTerm" title="fipy.terms.diffusionTerm.DiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code></a>.</p>
 </div>
 </section>
 <section id="what-if-the-coefficient-of-a-term-depends-on-the-variable-that-i-m-solving-for">
@@ -301,7 +301,7 @@ necessary to “sweep” the solution to convergence as discussed in
 <p>The way to save your calculations depends on how you plan to make use of
 the data. If you want to save it for “restart” (so that you can continue
 or redirect a calculation from some intermediate stage), then you’ll want
-to “pickle” the <a class="reference internal" href="../documentation/glossary.html#term-Python"><span class="xref std std-term">Python</span></a> data with the <code class="xref py py-mod docutils literal notranslate"><span class="pre">dump</span></code> module. This is
+to “pickle” the <a class="reference internal" href="../documentation/glossary.html#term-Python"><span class="xref std std-term">Python</span></a> data with the <a class="reference internal" href="../fipy/generated/fipy.tools.html#module-fipy.tools.dump" title="fipy.tools.dump"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dump</span></code></a> module. This is
 illustrated in <a class="reference internal" href="../examples/phase/generated/examples.phase.anisotropy.html#module-examples.phase.anisotropy" title="examples.phase.anisotropy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.phase.anisotropy</span></code></a>,
 <a class="reference internal" href="../examples/phase/generated/examples.phase.impingement.mesh40x1.html#module-examples.phase.impingement.mesh40x1" title="examples.phase.impingement.mesh40x1"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.phase.impingement.mesh40x1</span></code></a>,
 <a class="reference internal" href="../examples/phase/generated/examples.phase.impingement.mesh20x20.html#module-examples.phase.impingement.mesh20x20" title="examples.phase.impingement.mesh20x20"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.phase.impingement.mesh20x20</span></code></a>, and
@@ -311,7 +311,7 @@ besides <a class="reference internal" href="../documentation/glossary.html#term-
 another piece of software, whether to make publication-quality graphs or
 movies, or to perform some analysis, or as input to another stage of a
 multiscale model, then you can save your data as an <abbr>ASCII</abbr> text
-file of tab-separated-values with a <code class="xref py py-class docutils literal notranslate"><span class="pre">TSVViewer</span></code>. This is illustrated
+file of tab-separated-values with a <a class="reference internal" href="../fipy/generated/fipy.viewers.html#fipy.viewers.tsvViewer.TSVViewer" title="fipy.viewers.tsvViewer.TSVViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">TSVViewer</span></code></a>. This is illustrated
 in <a class="reference internal" href="../examples/diffusion/generated/examples.diffusion.circle.html#module-examples.diffusion.circle" title="examples.diffusion.circle"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.diffusion.circle</span></code></a>.</p>
 </section>
 <section id="how-do-i-save-a-plot-image">
@@ -319,7 +319,7 @@ in <a class="reference internal" href="../examples/diffusion/generated/examples.
 <p>Some of the viewers have a button or other mechanism in the user interface
 for saving an image file. Also, you can supply an optional keyword
 <code class="docutils literal notranslate"><span class="pre">filename</span></code> when you tell the viewer to
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code>, <em>e.g.</em></p>
+<a class="reference internal" href="../fipy/generated/fipy.viewers.html#fipy.viewers.viewer.AbstractViewer.plot" title="fipy.viewers.viewer.AbstractViewer.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot()</span></code></a>, <em>e.g.</em></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;myimage.ext&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -335,7 +335,7 @@ and “<code class="file docutils literal notranslate"><span class="pre">.png</s
 <p class="admonition-title">Attention</p>
 <p>Actually, <a class="reference internal" href="../documentation/glossary.html#term-Matplotlib"><span class="xref std std-term">Matplotlib</span></a> supports different extensions, depending
 on the chosen <a class="reference external" href="http://matplotlib.sourceforge.net/backends.html">backend</a>, but our
-<code class="xref py py-class docutils literal notranslate"><span class="pre">MatplotlibViewer</span></code> classes
+<a class="reference internal" href="../fipy/generated/fipy.viewers.matplotlibViewer.html#fipy.viewers.matplotlibViewer.matplotlibViewer.AbstractMatplotlibViewer" title="fipy.viewers.matplotlibViewer.matplotlibViewer.AbstractMatplotlibViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatplotlibViewer</span></code></a> classes
 don’t properly support this yet.</p>
 </div>
 </dd>
@@ -357,26 +357,26 @@ individual frames (see the previous question) and then stitch them together
 into a movie, using one of a variety of different free, shareware, or
 commercial software packages. The guidance in the
 <a class="reference external" href="http://matplotlib.sourceforge.net/faq/howto_faq.html#make-a-movie">Matplotlib FAQ on movies</a>
-should be adaptable to other <code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code>s.</p>
+should be adaptable to other <a class="reference internal" href="../fipy/generated/fipy.viewers.html#fipy.viewers.viewer.AbstractViewer" title="fipy.viewers.viewer.AbstractViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code></a>s.</p>
 </section>
 <section id="why-doesn-t-the-viewer-look-the-way-i-want">
-<h3>Why doesn’t the <code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code> look the way I want?<a class="headerlink" href="#why-doesn-t-the-viewer-look-the-way-i-want" title="Permalink to this heading">¶</a></h3>
+<h3>Why doesn’t the <a class="reference internal" href="../fipy/generated/fipy.viewers.html#fipy.viewers.viewer.AbstractViewer" title="fipy.viewers.viewer.AbstractViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code></a> look the way I want?<a class="headerlink" href="#why-doesn-t-the-viewer-look-the-way-i-want" title="Permalink to this heading">¶</a></h3>
 <p><a class="reference internal" href="../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>’s viewers are utilitarian. They’re designed to let you see
 <em>something</em> with a minimum of effort. Because different plotting
 packages have different capabilities and some are easier to install on some
 platforms than on others, we have tried to support a range of <a class="reference internal" href="../documentation/glossary.html#term-Python"><span class="xref std std-term">Python</span></a>
 plotters with a minimal common set of features. Many of these packages are
 capable of much more, however. Often, you can invoke the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code> you
+<a class="reference internal" href="../fipy/generated/fipy.viewers.html#fipy.viewers.viewer.AbstractViewer" title="fipy.viewers.viewer.AbstractViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code></a> you
 want, and then issue supplemental commands for the underlying plotting
 package. The better option is to make a “subclass” of the <a class="reference internal" href="../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code> that comes closest to producing the image you want. You can
+<a class="reference internal" href="../fipy/generated/fipy.viewers.html#fipy.viewers.viewer.AbstractViewer" title="fipy.viewers.viewer.AbstractViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code></a> that comes closest to producing the image you want. You can
 then override just the behavior you wan to change, while letting <a class="reference internal" href="../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> do
 most of the heavy lifting. See <a class="reference internal" href="../examples/phase/generated/examples.phase.anisotropy.html#module-examples.phase.anisotropy" title="examples.phase.anisotropy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.phase.anisotropy</span></code></a> and
 <a class="reference internal" href="../examples/phase/generated/examples.phase.polyxtal.html#module-examples.phase.polyxtal" title="examples.phase.polyxtal"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.phase.polyxtal</span></code></a> for examples of creating a custom
-<a class="reference internal" href="../documentation/glossary.html#term-Matplotlib"><span class="xref std std-term">Matplotlib</span></a> <code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code> class; see
+<a class="reference internal" href="../documentation/glossary.html#term-Matplotlib"><span class="xref std std-term">Matplotlib</span></a> <a class="reference internal" href="../fipy/generated/fipy.viewers.html#fipy.viewers.viewer.AbstractViewer" title="fipy.viewers.viewer.AbstractViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code></a> class; see
 <a class="reference internal" href="../examples/cahnHilliard/generated/examples.cahnHilliard.sphere.html#module-examples.cahnHilliard.sphere" title="examples.cahnHilliard.sphere"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.cahnHilliard.sphere</span></code></a> for an example of creating a custom
-<a class="reference internal" href="../documentation/glossary.html#term-Mayavi"><span class="xref std std-term">Mayavi</span></a> <code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code> class.</p>
+<a class="reference internal" href="../documentation/glossary.html#term-Mayavi"><span class="xref std std-term">Mayavi</span></a> <a class="reference internal" href="../fipy/generated/fipy.viewers.html#fipy.viewers.viewer.AbstractViewer" title="fipy.viewers.viewer.AbstractViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code></a> class.</p>
 </section>
 </section>
 <section id="iterations-timesteps-and-sweeps-oh-my">
@@ -397,7 +397,7 @@ approximations until the linear equations have been satisfactorily
 solved. <a class="reference internal" href="../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> chooses a default number of iterations and solution
 tolerance, which you will not generally need to change. If you do wish to
 change these defaults, you’ll need to create a new
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code> object with the desired number of
+<a class="reference internal" href="../fipy/generated/fipy.solvers.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code></a> object with the desired number of
 iterations and solution tolerance, <em>e.g.</em></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mySolver</span> <span class="o">=</span> <span class="n">LinearPCGSolver</span><span class="p">(</span><span class="n">iterations</span><span class="o">=</span><span class="mi">1234</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">5e-6</span><span class="p">)</span>
 <span class="go">:</span>
@@ -407,7 +407,7 @@ iterations and solution tolerance, <em>e.g.</em></p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The older <code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code> <code class="docutils literal notranslate"><span class="pre">steps=</span></code> keyword is now deprecated
+<p>The older <a class="reference internal" href="../fipy/generated/fipy.solvers.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code></a> <code class="docutils literal notranslate"><span class="pre">steps=</span></code> keyword is now deprecated
 in favor of <code class="docutils literal notranslate"><span class="pre">iterations=</span></code> to make the role clearer.</p>
 </div>
 <p>Solver iterations are changed from their defaults in
@@ -419,7 +419,7 @@ when a PDE is non-linear (<em>e.g.</em>, a diffusivity that
 depends on concentration) or when multiple PDEs are coupled
 (<em>e.g.</em>, if solute diffusivity depends on temperature and
 thermal conductivity depends on concentration). Even if the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code> solves the <em>linear</em> approximation of the
+<a class="reference internal" href="../fipy/generated/fipy.solvers.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code></a> solves the <em>linear</em> approximation of the
 PDE to absolute perfection by performing an infinite number of
 iterations, the solution may still not be a very good
 representation of the actual <em>non-linear</em> PDE. If we
@@ -449,7 +449,7 @@ variable into the “old” value only when we want to:</p>
 <p>Finally, we will need to repeatedly solve the equation until
 it gives a stable result. To clearly distinguish that a
 single cycle will not truly “solve” the equation, we invoke
-a different method “<code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code>:</p>
+a different method “<a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a>:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">sweep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sweeps</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">eq</span><span class="o">.</span><span class="n">sweep</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">myVar</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
@@ -525,20 +525,20 @@ increased as the kinetics slow down in
 </div>
 </section>
 <section id="why-the-distinction-between-cellvariable-and-facevariable-coefficients">
-<h2>Why the distinction between <code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code> coefficients?<a class="headerlink" href="#why-the-distinction-between-cellvariable-and-facevariable-coefficients" title="Permalink to this heading">¶</a></h2>
+<h2>Why the distinction between <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> and <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> coefficients?<a class="headerlink" href="#why-the-distinction-between-cellvariable-and-facevariable-coefficients" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference internal" href="../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> solves field variables on the cell centers. Transient and
 source terms describe the change in the value of a field at the cell
 center, and so they take a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code> coefficient. Diffusion
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> coefficient. Diffusion
 and convection terms involve fluxes <em>between</em> cell centers, and are
 calculated on the face between two cells, and so they take a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code> coefficient.</p>
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> coefficient.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you supply a <code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code>
-<code class="docutils literal notranslate"><span class="pre">var</span></code> when a <code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code>
+<p>If you supply a <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a>
+<code class="docutils literal notranslate"><span class="pre">var</span></code> when a <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a>
 is expected, <a class="reference internal" href="../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> will automatically substitute
-<code class="docutils literal notranslate"><span class="pre">var.</span></code><code class="xref py py-attr docutils literal notranslate"><span class="pre">arithmeticFaceValue</span></code>.
+<code class="docutils literal notranslate"><span class="pre">var.</span></code><a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable.arithmeticFaceValue" title="fipy.variables.cellVariable.CellVariable.arithmeticFaceValue"><code class="xref py py-attr docutils literal notranslate"><span class="pre">arithmeticFaceValue</span></code></a>.
 This can have undesirable consequences, however. For one thing, the
 arithmetic face average of a non-linear function is not the same as the
 same non-linear function of the average argument, <em>e.g.</em>, for
@@ -554,7 +554,7 @@ drop below zero, a harmonic average is more appropriate than
 an arithmetic average.</p>
 <p>If you experience problems (unstable or wrong results, or
 excessively small timesteps), you may need to explicitly supply the
-desired <code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code> rather than letting <a class="reference internal" href="../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
+desired <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> rather than letting <a class="reference internal" href="../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
 assume one.</p>
 </div>
 </section>
@@ -566,8 +566,8 @@ assume one.</p>
 <h2>What does this error message mean?<a class="headerlink" href="#what-does-this-error-message-mean" title="Permalink to this heading">¶</a></h2>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">ValueError:</span> <span class="pre">frames</span> <span class="pre">are</span> <span class="pre">not</span> <span class="pre">aligned</span></code></dt><dd><p>This error most likely means that you have provided a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code> when <a class="reference internal" href="../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
-was expecting a <code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code>
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> when <a class="reference internal" href="../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
+was expecting a <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a>
 (or vice versa).</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">MA.MA.MAError:</span> <span class="pre">Cannot</span> <span class="pre">automatically</span> <span class="pre">convert</span> <span class="pre">masked</span> <span class="pre">array</span> <span class="pre">to</span> <span class="pre">Numeric</span> <span class="pre">because</span> <span class="pre">data</span> <span class="pre">is</span> <span class="pre">masked</span> <span class="pre">in</span> <span class="pre">one</span> <span class="pre">or</span> <span class="pre">more</span> <span class="pre">locations.</span></code></dt><dd><p>This not-so-helpful error message could mean a number of things, but
@@ -628,7 +628,7 @@ or file an issue at &lt;<a class="reference external" href="https://github.com/u
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.3+140.g6fcf7068
+Version 3.4.3+141.g9c8f5a4b
 
   <div class="sphinxsidebarsection">
   <h3><a href="../documentation/contents.html">Table Of Contents</a></h3>

@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>examples.phase.simple &#8212; FiPy 3.4.3+140.g6fcf7068 documentation</title>
+    <title>examples.phase.simple &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
     <link rel="stylesheet" href="../../../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
@@ -52,7 +52,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="top" title="FiPy 3.4.3+140.g6fcf7068 documentation" href="../../../documentation/contents.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="../../../documentation/contents.html" />
     <link rel="up" title="Phase Field Examples" href="../index.html" />
     <link rel="next" title="examples.phase.binaryCoupled" href="examples.phase.binaryCoupled.html" />
     <link rel="prev" title="Phase Field Examples" href="../index.html" />
@@ -319,9 +319,9 @@ transient term, these sweeps are not time steps, but rather repeated
 iterations at the same time step to reach a converged solution).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>We use <code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code> instead of
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code> because we don’t care about the residual.
-Either function would work, but <code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code> is a bit faster.</p>
+<p>We use <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a> instead of
+<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a> because we don’t care about the residual.
+Either function would work, but <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a> is a bit faster.</p>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">L</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
@@ -465,8 +465,8 @@ form of the source term shown above</p>
 </div>
 <p>In order to separate the effect of forming the phase field interface
 from the kinetics of moving it, we first equilibrate at the melting
-point. We now use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code> method instead of
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code> because we require the residual.</p>
+point. We now use the <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a> method instead of
+<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a> because we require the residual.</p>
 <div class="doctest highlight-default notranslate" id="index-7"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">timeStep</span> <span class="o">=</span> <span class="mf">1e-6</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">range</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
@@ -487,8 +487,8 @@ more than one grid point per time step,
 we thus set the timestep according to the grid spacing <span class="math notranslate nohighlight">\(\Delta x\)</span>,
 the linear kinetic coefficient <span class="math notranslate nohighlight">\(\beta\)</span>, and the undercooling
 <span class="math notranslate nohighlight">\(\abs{T_m - T}\)</span>
-Again we use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code> method as a replacement for
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code>.</p>
+Again we use the <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a> method as a replacement for
+<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">velocity</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">Tm</span> <span class="o">-</span> <span class="n">T</span><span class="p">())</span> <span class="c1"># cm / s</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">timeStep</span> <span class="o">=</span> <span class="mf">.1</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">/</span> <span class="n">velocity</span> <span class="c1"># s</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">elapsed</span> <span class="o">=</span> <span class="mi">0</span>
@@ -558,7 +558,7 @@ thickness</p>
               <img class="logo" src="../../../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.3+140.g6fcf7068
+Version 3.4.3+141.g9c8f5a4b
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

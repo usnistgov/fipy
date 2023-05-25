@@ -1,0 +1,37 @@
+fipy.tools.dimensions package
+=============================
+
+Submodules
+----------
+
+fipy.tools.dimensions.DictWithDefault module
+--------------------------------------------
+
+.. automodule:: fipy.tools.dimensions.DictWithDefault
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.dimensions.NumberDict module
+---------------------------------------
+
+.. automodule:: fipy.tools.dimensions.NumberDict
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.dimensions.physicalField module
+------------------------------------------
+
+.. automodule:: fipy.tools.dimensions.physicalField
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.tools.dimensions
+   :members:
+   :undoc-members:
+   :show-inheritance:

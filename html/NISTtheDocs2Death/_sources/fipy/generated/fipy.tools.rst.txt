@@ -1,0 +1,111 @@
+fipy.tools package
+==================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   fipy.tools.comms
+   fipy.tools.dimensions
+   fipy.tools.logging
+
+Submodules
+----------
+
+fipy.tools.debug module
+-----------------------
+
+.. automodule:: fipy.tools.debug
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.decorators module
+----------------------------
+
+.. automodule:: fipy.tools.decorators
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.dump module
+----------------------
+
+.. automodule:: fipy.tools.dump
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.inline module
+------------------------
+
+.. automodule:: fipy.tools.inline
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.numerix module
+-------------------------
+
+.. automodule:: fipy.tools.numerix
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.parser module
+------------------------
+
+.. automodule:: fipy.tools.parser
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.sharedtempfile module
+--------------------------------
+
+.. automodule:: fipy.tools.sharedtempfile
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.test module
+----------------------
+
+.. automodule:: fipy.tools.test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.vector module
+------------------------
+
+.. automodule:: fipy.tools.vector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.version module
+-------------------------
+
+.. automodule:: fipy.tools.version
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.vitals module
+------------------------
+
+.. automodule:: fipy.tools.vitals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.tools
+   :members:
+   :undoc-members:
+   :show-inheritance:

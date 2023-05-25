@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Using FiPy &#8212; FiPy 3.4.3+140.g6fcf7068 documentation</title>
+    <title>Using FiPy &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -52,7 +52,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.3+140.g6fcf7068 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Frequently Asked Questions" href="FAQ.html" />
     <link rel="prev" title="Viewers" href="VIEWERS.html" />
@@ -267,7 +267,7 @@ package.</p>
 <dt class="sig sig-object std" id="cmdoption-cache">
 <span class="sig-name descname"><span class="pre">--cache</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-cache" title="Permalink to this definition">¶</a></dt>
 <dd><p>Causes lazily evaluated <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code> objects to retain their
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> objects to retain their
 value.</p>
 </dd></dl>
 
@@ -275,7 +275,7 @@ value.</p>
 <dt class="sig sig-object std" id="cmdoption-no-cache">
 <span class="sig-name descname"><span class="pre">--no-cache</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-no-cache" title="Permalink to this definition">¶</a></dt>
 <dd><p>Causes lazily evaluated <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code> objects to always recalculate
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> objects to always recalculate
 their value.</p>
 </dd></dl>
 
@@ -339,15 +339,15 @@ with the <a class="reference internal" href="SOLVERS.html#scipy"><span class="st
 appropriate for your shell. If you are not running in a shell (<em>e.g.</em>,
 you are invoking <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> scripts from within <a class="reference internal" href="glossary.html#term-IPython"><span class="xref std std-term">IPython</span></a> or IDLE),
 you can set these variables via the <a class="reference external" href="https://docs.python.org/3/library/os.html#os.environ" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">os.environ</span></code></a> dictionary,
-but you must do so before importing anything from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code>
+but you must do so before importing anything from the <a class="reference internal" href="../fipy/generated/fipy.html#module-fipy" title="fipy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code></a>
 package.</p>
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FIPY_DISPLAY_MATRIX">
 <span class="sig-name descname"><span class="pre">FIPY_DISPLAY_MATRIX</span></span><a class="headerlink" href="#envvar-FIPY_DISPLAY_MATRIX" title="Permalink to this definition">¶</a></dt>
 <dd><p>If present, causes the graphical display of the solution matrix of each
-equation at each call of <code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code> or <code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code>.
+equation at each call of <a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a> or <a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a>.
 Setting the value to “<code class="docutils literal notranslate"><span class="pre">terms</span></code>” causes the display of the matrix for each
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code> that composes the equation. Requires the <a class="reference internal" href="glossary.html#term-Matplotlib"><span class="xref std std-term">Matplotlib</span></a>
+<a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> that composes the equation. Requires the <a class="reference internal" href="glossary.html#term-Matplotlib"><span class="xref std std-term">Matplotlib</span></a>
 package. Setting the value to “<code class="docutils literal notranslate"><span class="pre">print</span></code>” causes the matrix to be
 printed to the console.</p>
 </dd></dl>
@@ -387,7 +387,7 @@ files can be found in <code class="file docutils literal notranslate"><em><span 
 <dt class="sig sig-object std" id="envvar-FIPY_VERBOSE_SOLVER">
 <span class="sig-name descname"><span class="pre">FIPY_VERBOSE_SOLVER</span></span><a class="headerlink" href="#envvar-FIPY_VERBOSE_SOLVER" title="Permalink to this definition">¶</a></dt>
 <dd><p>If present, causes the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">LinearGeneralSolver</span></code> to
+<a class="reference internal" href="../fipy/generated/fipy.solvers.pyAMG.html#fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver" title="fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearGeneralSolver</span></code></a> to
 print a variety of diagnostic information.  All other solvers should use
 <a class="reference internal" href="#logging">Logging</a> and <span class="target" id="index-2"></span><a class="reference internal" href="#envvar-FIPY_LOG_CONFIG"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">FIPY_LOG_CONFIG</span></code></a>.</p>
 </dd></dl>
@@ -406,14 +406,14 @@ to run without displaying anything.</p>
 <dt class="sig sig-object std" id="envvar-FIPY_INCLUDE_NUMERIX_ALL">
 <span class="sig-name descname"><span class="pre">FIPY_INCLUDE_NUMERIX_ALL</span></span><a class="headerlink" href="#envvar-FIPY_INCLUDE_NUMERIX_ALL" title="Permalink to this definition">¶</a></dt>
 <dd><p>If present, causes the inclusion of all functions and variables of the
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">numerix</span></code> module in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code> namespace.</p>
+<a class="reference internal" href="../fipy/generated/fipy.tools.html#module-fipy.tools.numerix" title="fipy.tools.numerix"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numerix</span></code></a> module in the <a class="reference internal" href="../fipy/generated/fipy.html#module-fipy" title="fipy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code></a> namespace.</p>
 </dd></dl>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FIPY_CACHE">
 <span class="sig-name descname"><span class="pre">FIPY_CACHE</span></span><a class="headerlink" href="#envvar-FIPY_CACHE" title="Permalink to this definition">¶</a></dt>
 <dd><p>If present, causes lazily evaluated <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code> objects to
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> objects to
 retain their value.</p>
 </dd></dl>
 
@@ -430,11 +430,11 @@ if solver is not <a class="reference internal" href="SOLVERS.html#petsc"><span c
 <section id="solving-in-parallel">
 <span id="parallel"></span><h2>Solving in Parallel<a class="headerlink" href="#solving-in-parallel" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> can use <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> or <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> to solve equations in
-parallel. Most mesh classes in <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy.meshes</span></code> can solve in
+parallel. Most mesh classes in <a class="reference internal" href="../fipy/generated/fipy.meshes.html#module-fipy.meshes" title="fipy.meshes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy.meshes</span></code></a> can solve in
 parallel. This includes all “<code class="docutils literal notranslate"><span class="pre">...Grid...</span></code>” and “<code class="docutils literal notranslate"><span class="pre">...Gmsh...</span></code>”
 class meshes. Currently, the only remaining serial-only meshes are
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Tri2D</span></code> and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">SkewedGrid2D</span></code>.</p>
+<a class="reference internal" href="../fipy/generated/fipy.meshes.html#fipy.meshes.tri2D.Tri2D" title="fipy.meshes.tri2D.Tri2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Tri2D</span></code></a> and
+<a class="reference internal" href="../fipy/generated/fipy.meshes.html#fipy.meshes.skewedGrid2D.SkewedGrid2D" title="fipy.meshes.skewedGrid2D.SkewedGrid2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">SkewedGrid2D</span></code></a>.</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> requires <a class="reference internal" href="glossary.html#term-mpi4py"><span class="xref std std-term">mpi4py</span></a> to work in parallel.</p>
@@ -550,7 +550,7 @@ libraries.</p>
 up into separate sub-domains and solves them (somewhat) independently.
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> generally “does the right thing”, but if you find that
 you need to do something with the entire solution, you can use
-<code class="docutils literal notranslate"><span class="pre">var.</span></code><code class="xref py py-attr docutils literal notranslate"><span class="pre">globalValue</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">var.</span></code><a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable.globalValue" title="fipy.variables.cellVariable.CellVariable.globalValue"><code class="xref py py-attr docutils literal notranslate"><span class="pre">globalValue</span></code></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>One option for debugging in parallel is:</p>
@@ -739,7 +739,7 @@ boundaries are zero flux.  For the equation</p>
 <section id="applying-fixed-value-dirichlet-boundary-conditions">
 <h3>Applying fixed value (Dirichlet) boundary conditions<a class="headerlink" href="#applying-fixed-value-dirichlet-boundary-conditions" title="Permalink to this heading">¶</a></h3>
 <p>To apply a fixed value boundary condition use the
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code> method. For example, to fix <cite>var</cite> to
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable.constrain" title="fipy.variables.cellVariable.CellVariable.constrain"><code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code></a> method. For example, to fix <cite>var</cite> to
 have a value of <cite>2</cite> along the upper surface of a domain, use</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">var</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mf">2.</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">facesTop</span><span class="p">)</span>
 </pre></div>
@@ -747,14 +747,14 @@ have a value of <cite>2</cite> along the upper surface of a domain, use</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The old equivalent
-<code class="xref py py-class docutils literal notranslate"><span class="pre">FixedValue</span></code> boundary
+<a class="reference internal" href="../fipy/generated/fipy.boundaryConditions.html#fipy.boundaryConditions.fixedValue.FixedValue" title="fipy.boundaryConditions.fixedValue.FixedValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">FixedValue</span></code></a> boundary
 condition is now deprecated.</p>
 </div>
 </section>
 <section id="applying-fixed-gradient-boundary-conditions-neumann">
 <h3>Applying fixed gradient boundary conditions (Neumann)<a class="headerlink" href="#applying-fixed-gradient-boundary-conditions-neumann" title="Permalink to this heading">¶</a></h3>
 <p>To apply a fixed Gradient boundary condition use the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGrad</span></code>.<code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code> method. For
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable.faceGrad" title="fipy.variables.cellVariable.CellVariable.faceGrad"><code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGrad</span></code></a>.<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable.constrain" title="fipy.variables.variable.Variable.constrain"><code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code></a> method. For
 example, to fix <cite>var</cite> to have a gradient of <cite>(0,2)</cite> along the upper
 surface of a 2D domain, use</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">var</span><span class="o">.</span><span class="n">faceGrad</span><span class="o">.</span><span class="n">constrain</span><span class="p">(((</span><span class="mi">0</span><span class="p">,),(</span><span class="mi">2</span><span class="p">,)),</span> <span class="n">where</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">facesTop</span><span class="p">)</span>
@@ -769,7 +769,7 @@ surface of a 2D domain, use</p>
 <section id="applying-fixed-flux-boundary-conditions">
 <h3>Applying fixed flux boundary conditions<a class="headerlink" href="#applying-fixed-flux-boundary-conditions" title="Permalink to this heading">¶</a></h3>
 <p>Generally these can be implemented with a judicious use of
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGrad</span></code>.<code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code>.  Failing that, an
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable.faceGrad" title="fipy.variables.cellVariable.CellVariable.faceGrad"><code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGrad</span></code></a>.<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable.constrain" title="fipy.variables.variable.Variable.constrain"><code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code></a>.  Failing that, an
 exterior flux term can be added to the equation. Firstly, set the
 terms’ coefficients to be zero on the exterior faces,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">diffCoeff</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">exteriorFaces</span><span class="p">)</span>
@@ -783,10 +783,10 @@ terms’ coefficients to be zero on the exterior faces,</p>
 </pre></div>
 </div>
 <p>where <cite>exteriorFlux</cite> is a rank 1
-<code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code>.</p>
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The old equivalent <code class="xref py py-class docutils literal notranslate"><span class="pre">FixedFlux</span></code>
+<p>The old equivalent <a class="reference internal" href="../fipy/generated/fipy.boundaryConditions.html#fipy.boundaryConditions.fixedFlux.FixedFlux" title="fipy.boundaryConditions.fixedFlux.FixedFlux"><code class="xref py py-class docutils literal notranslate"><span class="pre">FixedFlux</span></code></a>
 boundary condition is now deprecated.</p>
 </div>
 </section>
@@ -889,7 +889,7 @@ its neighboring cell.  We can, in turn, substitute this back into
               {- \left(\vec{d}_{fP}\cdot\vec{a}\right)_f + b_f}\end{split}\]</div>
 <p>to obtain the value on the boundary face in terms of the neighboring cell.</p>
 <p>Substituting <a class="reference internal" href="#equation-robin-facegrad">(2)</a> into the discretization of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code>:</p>
+<a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.diffusionTerm.DiffusionTerm" title="fipy.terms.diffusionTerm.DiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code></a>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\int_V \nabla\cdot\left(\Gamma\nabla\phi\right) dV
 &amp;= \int_S \Gamma \hat{n}\cdot\nabla\phi\, S \\
@@ -1134,7 +1134,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.3+140.g6fcf7068
+Version 3.4.3+141.g9c8f5a4b
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

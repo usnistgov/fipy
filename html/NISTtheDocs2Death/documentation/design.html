@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Design and Implementation &#8212; FiPy 3.4.3+140.g6fcf7068 documentation</title>
+    <title>Design and Implementation &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -52,7 +52,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.3+140.g6fcf7068 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Virtual Kinetics of Materials Laboratory" href="VKML.html" />
     <link rel="prev" title="Numerical Schemes" href="numerical/scheme.html" />
@@ -314,25 +314,25 @@ mathematicians (<a class="reference internal" href="glossary.html#term-SciPy"><s
 <p>The <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> classes that make up <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> are described in detail in
 <a class="reference internal" href="API.html#part-modules"><span class="std std-ref">fipy Package Documentation</span></a>, but we give a brief overview here. <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is
 based around three fundamental <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> classes:
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code>,
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>, and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code>. Using the terminology of
+<a class="reference internal" href="../fipy/generated/fipy.meshes.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a>,
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a>, and
+<a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a>. Using the terminology of
 <a class="reference internal" href="numerical/index.html#chap-numerics"><span class="std std-ref">Theoretical and Numerical Background</span></a>:</p>
 <dl>
-<dt>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> object</dt><dd><p>represents the domain of interest.
+<dt>A <a class="reference internal" href="../fipy/generated/fipy.meshes.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> object</dt><dd><p>represents the domain of interest.
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> contains many different specific mesh classes to describe
 different geometries.</p>
 </dd>
-<dt>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code> object</dt><dd><p>represents a quantity or field that can change during the problem
+<dt>A <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> object</dt><dd><p>represents a quantity or field that can change during the problem
 evolution. A particular type of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>, called a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code>, represents
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a>, called a
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a>, represents
 <span class="math notranslate nohighlight">\(\phi\)</span> at the centers of the cells of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code>. A
-<code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code> describes the values
+<a class="reference internal" href="../fipy/generated/fipy.meshes.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a>. A
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> describes the values
 of the field <span class="math notranslate nohighlight">\(\phi\)</span>, but it is not concerned with their geometry;
-that role is taken by the <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code>.</p>
-<p>An important property of <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code> objects is that they can
+that role is taken by the <a class="reference internal" href="../fipy/generated/fipy.meshes.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a>.</p>
+<p>An important property of <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> objects is that they can
 describe dependency relationships, such that:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="mi">4</span>
@@ -340,7 +340,7 @@ describe dependency relationships, such that:</p>
 </div>
 <p>does not assign the value <code class="docutils literal notranslate"><span class="pre">12</span></code> to <code class="docutils literal notranslate"><span class="pre">b</span></code>, but rather it
 assigns a multiplication operator object to <code class="docutils literal notranslate"><span class="pre">b</span></code>, which
-depends on the <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code> object <code class="docutils literal notranslate"><span class="pre">a</span></code>:</p>
+depends on the <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> object <code class="docutils literal notranslate"><span class="pre">a</span></code>:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
 <span class="go">(Variable(value = 3) * 4)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
@@ -348,28 +348,28 @@ depends on the <code class="xref py py-class docutils literal notranslate"><span
 <span class="go">(Variable(value = 5) * 4)</span>
 </pre></div>
 </div>
-<p>The numerical value of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code> is not calculated
+<p>The numerical value of the <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> is not calculated
 until it is needed (a process known as “lazy evaluation”):</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">b</span>
 <span class="go">20</span>
 </pre></div>
 </div>
 </dd>
-<dt>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code> object</dt><dd><p>represents any of the terms in
+<dt>A <a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> object</dt><dd><p>represents any of the terms in
 Equation <a class="reference internal" href="numerical/equation.html#equation-num-gen">(2)</a> or any linear combination of such
 terms.  Early in the development of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>, a distinction was
 made between <code class="docutils literal notranslate"><span class="pre">Equation</span></code> objects, which represented all of
-Equation <a class="reference internal" href="numerical/equation.html#equation-num-gen">(2)</a>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code> objects, which
+Equation <a class="reference internal" href="numerical/equation.html#equation-num-gen">(2)</a>, and <a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> objects, which
 represented the individual terms in that equation.  The
 <code class="docutils literal notranslate"><span class="pre">Equation</span></code> object has since been eliminated as redundant.
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code> objects can be single entities such as a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code> or a linear combination of other
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code> objects that build up to form an expression such as
+<a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> objects can be single entities such as a
+<a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.diffusionTerm.DiffusionTerm" title="fipy.terms.diffusionTerm.DiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code></a> or a linear combination of other
+<a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> objects that build up to form an expression such as
 Equation <a class="reference internal" href="numerical/equation.html#equation-num-gen">(2)</a>.</p>
 </dd>
 </dl>
-<p>Beyond these three fundamental classes of <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code>,
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code>, <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is composed of a
+<p>Beyond these three fundamental classes of <a class="reference internal" href="../fipy/generated/fipy.meshes.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a>,
+<a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a>, and <a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a>, <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is composed of a
 number of related classes.</p>
 <figure class="align-default" id="id5">
 <span id="fig-objects"></span><a class="reference internal image-reference" href="../_images/objects1.png"><img alt="../_images/objects1.png" src="../_images/objects1.png" style="width: 680.0px; height: 344.0px;" /></a>
@@ -377,22 +377,22 @@ number of related classes.</p>
 <p><span class="caption-text">Primary object relationships in <cite>FiPy</cite>.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> object is composed of cells. Each cell is
+<p>A <a class="reference internal" href="../fipy/generated/fipy.meshes.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> object is composed of cells. Each cell is
 defined by its bounding faces and each face is defined by its bounding
-vertices. A <code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code> object encapsulates the
+vertices. A <a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> object encapsulates the
 contributions to the <code class="xref py py-class docutils literal notranslate"><span class="pre">_SparseMatrix</span></code> that
 defines the solution of an equation.
-<code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code>
+<a class="reference internal" href="../fipy/generated/fipy.boundaryConditions.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>
 objects are used to describe the conditions on the boundaries of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code>, and each
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code> interprets the <code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code>
+<a class="reference internal" href="../fipy/generated/fipy.meshes.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a>, and each
+<a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> interprets the <a class="reference internal" href="../fipy/generated/fipy.boundaryConditions.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>
 objects as necessary to modify the
 <code class="xref py py-class docutils literal notranslate"><span class="pre">_SparseMatrix</span></code>. An equation constructed
-from <code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code> objects can apply a unique
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code> to invert its
+from <a class="reference internal" href="../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> objects can apply a unique
+<a class="reference internal" href="../fipy/generated/fipy.solvers.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code></a> to invert its
 <code class="xref py py-class docutils literal notranslate"><span class="pre">_SparseMatrix</span></code> in the most expedient and
-stable fashion. At any point during the solution, a <code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code> can be invoked to display the values of
-the solved <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code> objects.</p>
+stable fashion. At any point during the solution, a <a class="reference internal" href="../fipy/generated/fipy.viewers.html#fipy.viewers.viewer.AbstractViewer" title="fipy.viewers.viewer.AbstractViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code></a> can be invoked to display the values of
+the solved <a class="reference internal" href="../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> objects.</p>
 <p>At this point, it will be useful to examine some of the example
 problems in <a class="reference internal" href="../examples/README.html#part-examples"><span class="std std-ref">Examples</span></a>.  More classes are introduced in
 the examples, along with illustrations of their instantiation and use.</p>
@@ -426,7 +426,7 @@ the examples, along with illustrations of their instantiation and use.</p>
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.3+140.g6fcf7068
+Version 3.4.3+141.g9c8f5a4b
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

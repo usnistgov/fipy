@@ -1,0 +1,263 @@
+fipy.meshes package
+===================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   fipy.meshes.builders
+   fipy.meshes.representations
+   fipy.meshes.topologies
+
+Submodules
+----------
+
+fipy.meshes.abstractMesh module
+-------------------------------
+
+.. automodule:: fipy.meshes.abstractMesh
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.cylindricalGrid1D module
+------------------------------------
+
+.. automodule:: fipy.meshes.cylindricalGrid1D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.cylindricalGrid2D module
+------------------------------------
+
+.. automodule:: fipy.meshes.cylindricalGrid2D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.cylindricalNonUniformGrid1D module
+----------------------------------------------
+
+.. automodule:: fipy.meshes.cylindricalNonUniformGrid1D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.cylindricalNonUniformGrid2D module
+----------------------------------------------
+
+.. automodule:: fipy.meshes.cylindricalNonUniformGrid2D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.cylindricalUniformGrid1D module
+-------------------------------------------
+
+.. automodule:: fipy.meshes.cylindricalUniformGrid1D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.cylindricalUniformGrid2D module
+-------------------------------------------
+
+.. automodule:: fipy.meshes.cylindricalUniformGrid2D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.factoryMeshes module
+--------------------------------
+
+.. automodule:: fipy.meshes.factoryMeshes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.gmshMesh module
+---------------------------
+
+.. automodule:: fipy.meshes.gmshMesh
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.grid1D module
+-------------------------
+
+.. automodule:: fipy.meshes.grid1D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.grid2D module
+-------------------------
+
+.. automodule:: fipy.meshes.grid2D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.grid3D module
+-------------------------
+
+.. automodule:: fipy.meshes.grid3D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.mesh module
+-----------------------
+
+.. automodule:: fipy.meshes.mesh
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.mesh1D module
+-------------------------
+
+.. automodule:: fipy.meshes.mesh1D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.mesh2D module
+-------------------------
+
+.. automodule:: fipy.meshes.mesh2D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.nonUniformGrid1D module
+-----------------------------------
+
+.. automodule:: fipy.meshes.nonUniformGrid1D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.nonUniformGrid2D module
+-----------------------------------
+
+.. automodule:: fipy.meshes.nonUniformGrid2D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.nonUniformGrid3D module
+-----------------------------------
+
+.. automodule:: fipy.meshes.nonUniformGrid3D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.periodicGrid1D module
+---------------------------------
+
+.. automodule:: fipy.meshes.periodicGrid1D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.periodicGrid2D module
+---------------------------------
+
+.. automodule:: fipy.meshes.periodicGrid2D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.periodicGrid3D module
+---------------------------------
+
+.. automodule:: fipy.meshes.periodicGrid3D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.skewedGrid2D module
+-------------------------------
+
+.. automodule:: fipy.meshes.skewedGrid2D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.sphericalNonUniformGrid1D module
+--------------------------------------------
+
+.. automodule:: fipy.meshes.sphericalNonUniformGrid1D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.sphericalUniformGrid1D module
+-----------------------------------------
+
+.. automodule:: fipy.meshes.sphericalUniformGrid1D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.test module
+-----------------------
+
+.. automodule:: fipy.meshes.test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.tri2D module
+------------------------
+
+.. automodule:: fipy.meshes.tri2D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.uniformGrid module
+------------------------------
+
+.. automodule:: fipy.meshes.uniformGrid
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.uniformGrid1D module
+--------------------------------
+
+.. automodule:: fipy.meshes.uniformGrid1D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.uniformGrid2D module
+--------------------------------
+
+.. automodule:: fipy.meshes.uniformGrid2D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.meshes.uniformGrid3D module
+--------------------------------
+
+.. automodule:: fipy.meshes.uniformGrid3D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.meshes
+   :members:
+   :undoc-members:
+   :show-inheritance:

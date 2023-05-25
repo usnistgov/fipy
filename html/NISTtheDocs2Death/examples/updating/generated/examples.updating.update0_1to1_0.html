@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>examples.updating.update0_1to1_0 &#8212; FiPy 3.4.3+140.g6fcf7068 documentation</title>
+    <title>examples.updating.update0_1to1_0 &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
     <link rel="stylesheet" href="../../../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
@@ -52,7 +52,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="top" title="FiPy 3.4.3+140.g6fcf7068 documentation" href="../../../documentation/contents.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="../../../documentation/contents.html" />
     <link rel="up" title="Updating FiPy" href="../index.html" />
     <link rel="next" title="fipy Package Documentation" href="../../../documentation/API.html" />
     <link rel="prev" title="examples.updating.update1_0to2_0" href="examples.updating.update1_0to2_0.html" />
@@ -202,9 +202,9 @@ instantiator as follows:</p>
 </div>
 <p>More details of the benefits and drawbacks of each type of convection
 term can be found in the numerical section of the manual. Essentially
-the <code class="xref py py-class docutils literal notranslate"><span class="pre">ExponentialConvectionTerm</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">PowerLawConvectionTerm</span></code> will both
+the <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm" title="fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExponentialConvectionTerm</span></code></a> and <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm" title="fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">PowerLawConvectionTerm</span></code></a> will both
 handle most types of convection diffusion cases with the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">PowerLawConvectionTerm</span></code> being more efficient.</p>
+<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm" title="fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">PowerLawConvectionTerm</span></code></a> being more efficient.</p>
 <p>We iterate to equilibrium</p>
 <div class="doctest highlight-default notranslate" id="index-4"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.iterators.iterator</span> <span class="kn">import</span> <span class="n">Iterator</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">it</span> <span class="o">=</span> <span class="n">Iterator</span><span class="p">((</span><span class="n">eq</span><span class="p">,))</span>
@@ -274,7 +274,7 @@ vector to be 1D as well</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">convCoeff</span> <span class="o">=</span> <span class="p">(</span><span class="mf">10.</span><span class="p">,)</span>
 </pre></div>
 </div>
-<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">FixedValue</span></code> boundary conditions at the left and right are unchanged,
+<p>The <a class="reference internal" href="../../../fipy/generated/fipy.boundaryConditions.html#fipy.boundaryConditions.fixedValue.FixedValue" title="fipy.boundaryConditions.fixedValue.FixedValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">FixedValue</span></code></a> boundary conditions at the left and right are unchanged,
 but a <cite>Grid1D</cite> mesh does not even have top and bottom faces:</p>
 <div class="doctest highlight-default notranslate" id="index-8"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">valueLeft</span> <span class="o">=</span> <span class="mf">0.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">valueRight</span> <span class="o">=</span> <span class="mf">1.</span>
@@ -292,7 +292,7 @@ but a <cite>Grid1D</cite> mesh does not even have top and bottom faces:</p>
 </pre></div>
 </div>
 <p>The biggest change between <a class="reference internal" href="../../../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 0.1 and <a class="reference internal" href="../../../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 1.0 is that <code class="xref py py-class docutils literal notranslate"><span class="pre">Equation</span></code>
-objects no longer exist at all.  Instead, <code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code> objects can be simply
+objects no longer exist at all.  Instead, <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> objects can be simply
 added, subtracted, and equated to assemble an equation.  Where before the
 assembly of the equation occurred in the black-box of
 <code class="xref py py-class docutils literal notranslate"><span class="pre">SteadyConvectionDiffusionScEquation</span></code>, we now assemble it directly:</p>
@@ -307,8 +307,8 @@ assembly of the equation occurred in the black-box of
 </div>
 <p>One thing that <code class="xref py py-class docutils literal notranslate"><span class="pre">SteadyConvectionDiffusionScEquation</span></code> took care of
 automatically was that a <code class="xref py py-class docutils literal notranslate"><span class="pre">ConvectionTerm</span></code> must know about any
-<code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code> in the equation in order to calculate a Péclet number.
-Now, the <code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code> must be explicitly passed to the <code class="xref py py-class docutils literal notranslate"><span class="pre">ConvectionTerm</span></code>
+<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.diffusionTerm.DiffusionTerm" title="fipy.terms.diffusionTerm.DiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code></a> in the equation in order to calculate a Péclet number.
+Now, the <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.diffusionTerm.DiffusionTerm" title="fipy.terms.diffusionTerm.DiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code></a> must be explicitly passed to the <code class="xref py py-class docutils literal notranslate"><span class="pre">ConvectionTerm</span></code>
 in the <cite>diffusionTerm</cite> parameter.</p>
 <p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code> class still exists, but it is no longer necessary.  Instead,
 the solution to an implicit steady-state problem like this can simply be
@@ -324,14 +324,14 @@ suitable):</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>In version 0.1, the <code class="xref py py-class docutils literal notranslate"><span class="pre">Equation</span></code> object had to be
-told about the <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code>,
-and <code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code> objects
+told about the <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a>, <a class="reference internal" href="../../../fipy/generated/fipy.solvers.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code></a>,
+and <a class="reference internal" href="../../../fipy/generated/fipy.boundaryConditions.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a> objects
 when it was created (and it, in turn, passed much of this information to
-the <code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code> objects in order to create them). In version
-1.0, the <code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code> objects (and the equation assembled
+the <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> objects in order to create them). In version
+1.0, the <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> objects (and the equation assembled
 from them) are abstract.
-The <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code>,
-and <code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code> objects
+The <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a>, <a class="reference internal" href="../../../fipy/generated/fipy.solvers.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code></a>,
+and <a class="reference internal" href="../../../fipy/generated/fipy.boundaryConditions.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a> objects
 are only needed by the <code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code> method (and, in fact, the same equation
 could be used to solve different variables, with different solvers, subject
 to different boundary conditions, if desired).</p>
@@ -383,7 +383,7 @@ convert your existing scripts to <a class="reference internal" href="../../../do
               <img class="logo" src="../../../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.3+140.g6fcf7068
+Version 3.4.3+141.g9c8f5a4b
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

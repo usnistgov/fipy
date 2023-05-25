@@ -1,0 +1,589 @@
+
+<!DOCTYPE html>
+
+
+<!--[if IEMobile 7]><html class="iem7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html class="no-js"  lang="en" dir="ltr" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# book: http://ogp.me/ns/book# profile: http://ogp.me/ns/profile# video: http://ogp.me/ns/video# product: http://ogp.me/ns/product# content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#"><!--<![endif]-->
+
+  <head>
+<meta charset="utf-8" />
+<link rel="shortcut icon" href="https://www.nist.gov/sites/all/themes/nist_style/favicon.ico" type="image/vnd.microsoft.icon" />
+<script type="text/x-mathjax-config">MathJax.Hub.Config({
+  extensions: ['tex2jax.js'],
+  jax: ['input/TeX','output/HTML-CSS'],
+  tex2jax: {
+    inlineMath: [ ['$$','$$'], ['\\(','\\)'] ],
+    processEscapes: true,
+    processClass: 'tex2jax',
+    ignoreClass: 'html'
+  },
+  showProcessingMessages: false,
+  messageStyle: 'none'
+});
+</script>
+<meta name="MobileOptimized" content="width">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+
+      <!--[if lt IE 9]>
+    <script src="https://www.nist.gov/sites/all/themes/zen/js/html5-respond.js"></script>
+    <![endif]-->
+    <!--[if (gte IE 6)&(lte IE 8)]>
+  <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
+  <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>fipy.boundaryConditions package &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
+    <link rel="stylesheet" href="../../_static/ntd2d.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/ntd2d.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="../../documentation/contents.html" />
+    <link rel="up" title="fipy Package Documentation" href="../../documentation/API.html" />
+    <link rel="next" title="fipy.matrices package" href="fipy.matrices.html" />
+    <link rel="prev" title="package.subpackage package" href="../../documentation/tutorial/package/generated/package.subpackage.html" />
+  
+ 
+
+
+  <link rel="stylesheet" href="https://pages.nist.gov/nist-header-footer/css/nist-combined.css">
+  <script src="https://code.jquery.com/jquery-3.6.2.min.js" type="text/javascript" defer="defer"></script>
+  <script src="https://pages.nist.gov/nist-header-footer/js/nist-header-footer.js" type="text/javascript" defer="defer"></script>
+
+  </head>
+<!--  <body role="document">-->
+  <body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-414011 node-type-software hide-breadcrumb section-services-resources page-panels is-panel" role="document">
+      <div id="page" class="mini-header">
+
+
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fipy.matrices.html" title="fipy.matrices package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../../documentation/tutorial/package/generated/package.subpackage.html" title="package.subpackage package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html"><img src="../../_static/fipy.png" alt="FiPy logo"
+                 style="vertical-align: middle; margin-top: -1px"/>
+        FiPy</a> &gt;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../documentation/API.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code> Package Documentation</a> &gt;</li> 
+      </ul>
+    </div>
+
+  <div id="main" class="clearfix" role="main" tabindex="-1">
+    <div class="main__inner">
+      <div class="page-info">
+        <a id="main-content"></a>
+      </div>
+
+      <div class="document">
+        <div class="documentwrapper">
+
+      <div id="content" class="column">
+      <div id="block-nist-www-content" class="nist-block">
+        <section class="nist-page__content usa-section clearfix">
+
+         
+
+        <div class="grid-container margin-top-4">
+        <div class="grid-row grid-gap-6">
+
+  <div class="nist-page__region nist-page__region--content tablet-lg:grid-col-8">
+              <div class="body" role="main">
+		
+  <section id="fipy-boundaryconditions-package">
+<h1>fipy.boundaryConditions package<a class="headerlink" href="#fipy-boundaryconditions-package" title="Permalink to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-fipy.boundaryConditions.boundaryCondition">
+<span id="fipy-boundaryconditions-boundarycondition-module"></span><h2>fipy.boundaryConditions.boundaryCondition module<a class="headerlink" href="#module-fipy.boundaryConditions.boundaryCondition" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.boundaryCondition.BoundaryCondition">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.boundaryConditions.boundaryCondition.</span></span><span class="sig-name descname"><span class="pre">BoundaryCondition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Generic boundary condition base class.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>This class is abstract. Always create one of its subclasses.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>faces</strong> (<a class="reference internal" href="fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Mask of faces where this condition applies.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Value to impose.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.boundaryCondition.BoundaryCondition.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.boundaryCondition.BoundaryCondition.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-fipy.boundaryConditions.constraint">
+<span id="fipy-boundaryconditions-constraint-module"></span><h2>fipy.boundaryConditions.constraint module<a class="headerlink" href="#module-fipy.boundaryConditions.constraint" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.constraint.Constraint">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.boundaryConditions.constraint.</span></span><span class="sig-name descname"><span class="pre">Constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.constraint.Constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Object to hold a <cite>Variable</cite> to <cite>value</cite> at <cite>where</cite></p>
+<p>see <a class="reference internal" href="fipy.variables.html#fipy.variables.variable.Variable.constrain" title="fipy.variables.variable.Variable.constrain"><code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.constraint.Constraint.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.constraint.Constraint.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-fipy.boundaryConditions.fixedFlux">
+<span id="fipy-boundaryconditions-fixedflux-module"></span><h2>fipy.boundaryConditions.fixedFlux module<a class="headerlink" href="#module-fipy.boundaryConditions.fixedFlux" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.fixedFlux.FixedFlux">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.boundaryConditions.fixedFlux.</span></span><span class="sig-name descname"><span class="pre">FixedFlux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.fixedFlux.FixedFlux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a></p>
+<p>The <cite>FixedFlux</cite> boundary condition adds a contribution, equivalent to a
+fixed flux (Neumann condition), to the equation’s RHS vector.  The
+contribution, given by <cite>value</cite>, is only added to entries corresponding to
+the specified <cite>faces</cite>, and is weighted by the face areas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>faces</strong> (<a class="reference internal" href="fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Mask of faces where this condition applies.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Value to impose.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.fixedFlux.FixedFlux.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.fixedFlux.FixedFlux.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-fipy.boundaryConditions.fixedValue">
+<span id="fipy-boundaryconditions-fixedvalue-module"></span><h2>fipy.boundaryConditions.fixedValue module<a class="headerlink" href="#module-fipy.boundaryConditions.fixedValue" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.fixedValue.FixedValue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.boundaryConditions.fixedValue.</span></span><span class="sig-name descname"><span class="pre">FixedValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.fixedValue.FixedValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a></p>
+<p>The <cite>FixedValue</cite> boundary condition adds a contribution, equivalent to a
+fixed value (Dirichlet condition), to the equation’s RHS vector and
+coefficient matrix. The contributions are given by
+<span class="math notranslate nohighlight">\(-\mathtt{value}\times G_{\text{face}}\)</span>
+for the RHS vector and <span class="math notranslate nohighlight">\(G_{\text{face}}\)</span> for
+the coefficient matrix. The parameter <span class="math notranslate nohighlight">\(G_{\text{face}}\)</span> represents the
+term’s geometric coefficient, which depends on the type of term and the mesh
+geometry.</p>
+<p>Contributions are only added to entries corresponding to the
+specified faces.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>faces</strong> (<a class="reference internal" href="fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Mask of faces where this condition applies.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Value to impose.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.fixedValue.FixedValue.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.fixedValue.FixedValue.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-fipy.boundaryConditions.nthOrderBoundaryCondition">
+<span id="fipy-boundaryconditions-nthorderboundarycondition-module"></span><h2>fipy.boundaryConditions.nthOrderBoundaryCondition module<a class="headerlink" href="#module-fipy.boundaryConditions.nthOrderBoundaryCondition" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.nthOrderBoundaryCondition.NthOrderBoundaryCondition">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.boundaryConditions.nthOrderBoundaryCondition.</span></span><span class="sig-name descname"><span class="pre">NthOrderBoundaryCondition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.nthOrderBoundaryCondition.NthOrderBoundaryCondition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a></p>
+<p>This boundary condition is generally used in conjunction with a
+<cite>ImplicitDiffusionTerm</cite> that has multiple coefficients.  It does not
+have any direct effect on the solution matrices, but its derivatives
+do.</p>
+<p>Creates an <cite>NthOrderBoundaryCondition</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>faces</strong> (<a class="reference internal" href="fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Mask of faces where this condition applies.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Value to impose.</p></li>
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Order of the boundary condition. An <cite>order</cite> of <cite>0</cite>
+corresponds to a <cite>FixedValue</cite> and an <cite>order</cite> of <cite>1</cite> corresponds to
+a <cite>FixedFlux</cite>. Even and odd orders behave like <cite>FixedValue</cite> and <cite>FixedFlux</cite> objects,
+respectively, but apply to higher order terms.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.nthOrderBoundaryCondition.NthOrderBoundaryCondition.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.nthOrderBoundaryCondition.NthOrderBoundaryCondition.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-fipy.boundaryConditions.test">
+<span id="fipy-boundaryconditions-test-module"></span><h2>fipy.boundaryConditions.test module<a class="headerlink" href="#module-fipy.boundaryConditions.test" title="Permalink to this heading">¶</a></h2>
+<p>Test numeric implementation of the mesh</p>
+</section>
+<section id="module-fipy.boundaryConditions">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-fipy.boundaryConditions" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.Constraint">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.boundaryConditions.</span></span><span class="sig-name descname"><span class="pre">Constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.Constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Object to hold a <cite>Variable</cite> to <cite>value</cite> at <cite>where</cite></p>
+<p>see <a class="reference internal" href="fipy.variables.html#fipy.variables.variable.Variable.constrain" title="fipy.variables.variable.Variable.constrain"><code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.Constraint.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.Constraint.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.FixedFlux">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.boundaryConditions.</span></span><span class="sig-name descname"><span class="pre">FixedFlux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.FixedFlux" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a></p>
+<p>The <cite>FixedFlux</cite> boundary condition adds a contribution, equivalent to a
+fixed flux (Neumann condition), to the equation’s RHS vector.  The
+contribution, given by <cite>value</cite>, is only added to entries corresponding to
+the specified <cite>faces</cite>, and is weighted by the face areas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>faces</strong> (<a class="reference internal" href="fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Mask of faces where this condition applies.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Value to impose.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.FixedFlux.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.FixedFlux.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.FixedValue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.boundaryConditions.</span></span><span class="sig-name descname"><span class="pre">FixedValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.FixedValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a></p>
+<p>The <cite>FixedValue</cite> boundary condition adds a contribution, equivalent to a
+fixed value (Dirichlet condition), to the equation’s RHS vector and
+coefficient matrix. The contributions are given by
+<span class="math notranslate nohighlight">\(-\mathtt{value}\times G_{\text{face}}\)</span>
+for the RHS vector and <span class="math notranslate nohighlight">\(G_{\text{face}}\)</span> for
+the coefficient matrix. The parameter <span class="math notranslate nohighlight">\(G_{\text{face}}\)</span> represents the
+term’s geometric coefficient, which depends on the type of term and the mesh
+geometry.</p>
+<p>Contributions are only added to entries corresponding to the
+specified faces.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>faces</strong> (<a class="reference internal" href="fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Mask of faces where this condition applies.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Value to impose.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.FixedValue.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.FixedValue.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.NthOrderBoundaryCondition">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.boundaryConditions.</span></span><span class="sig-name descname"><span class="pre">NthOrderBoundaryCondition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">faces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.NthOrderBoundaryCondition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a></p>
+<p>This boundary condition is generally used in conjunction with a
+<cite>ImplicitDiffusionTerm</cite> that has multiple coefficients.  It does not
+have any direct effect on the solution matrices, but its derivatives
+do.</p>
+<p>Creates an <cite>NthOrderBoundaryCondition</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>faces</strong> (<a class="reference internal" href="fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – Mask of faces where this condition applies.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Value to impose.</p></li>
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Order of the boundary condition. An <cite>order</cite> of <cite>0</cite>
+corresponds to a <cite>FixedValue</cite> and an <cite>order</cite> of <cite>1</cite> corresponds to
+a <cite>FixedFlux</cite>. Even and odd orders behave like <cite>FixedValue</cite> and <cite>FixedFlux</cite> objects,
+respectively, but apply to higher order terms.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.boundaryConditions.NthOrderBoundaryCondition.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.boundaryConditions.NthOrderBoundaryCondition.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+                <div class='last-updated'>
+                Last updated on May 25, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
+                </div>
+              </div>
+  </div>  
+  <aside class="nist-page__region nist-page__region--sidebar-second tablet-lg:grid-col-4">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+            <p class="logo"><a href="../../documentation/contents.html">
+              <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+            </a></p>
+<strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
+Version 3.4.3+141.g9c8f5a4b
+
+  <div class="sphinxsidebarsection">
+  <h3><a href="../../documentation/contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">fipy.boundaryConditions package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-fipy.boundaryConditions.boundaryCondition">fipy.boundaryConditions.boundaryCondition module</a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.boundaryCondition.BoundaryCondition.__repr__"><code class="docutils literal notranslate"><span class="pre">BoundaryCondition.__repr__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-fipy.boundaryConditions.constraint">fipy.boundaryConditions.constraint module</a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.constraint.Constraint"><code class="docutils literal notranslate"><span class="pre">Constraint</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.constraint.Constraint.__repr__"><code class="docutils literal notranslate"><span class="pre">Constraint.__repr__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-fipy.boundaryConditions.fixedFlux">fipy.boundaryConditions.fixedFlux module</a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.fixedFlux.FixedFlux"><code class="docutils literal notranslate"><span class="pre">FixedFlux</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.fixedFlux.FixedFlux.__repr__"><code class="docutils literal notranslate"><span class="pre">FixedFlux.__repr__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-fipy.boundaryConditions.fixedValue">fipy.boundaryConditions.fixedValue module</a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.fixedValue.FixedValue"><code class="docutils literal notranslate"><span class="pre">FixedValue</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.fixedValue.FixedValue.__repr__"><code class="docutils literal notranslate"><span class="pre">FixedValue.__repr__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-fipy.boundaryConditions.nthOrderBoundaryCondition">fipy.boundaryConditions.nthOrderBoundaryCondition module</a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.nthOrderBoundaryCondition.NthOrderBoundaryCondition"><code class="docutils literal notranslate"><span class="pre">NthOrderBoundaryCondition</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.nthOrderBoundaryCondition.NthOrderBoundaryCondition.__repr__"><code class="docutils literal notranslate"><span class="pre">NthOrderBoundaryCondition.__repr__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-fipy.boundaryConditions.test">fipy.boundaryConditions.test module</a></li>
+<li><a class="reference internal" href="#module-fipy.boundaryConditions">Module contents</a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.Constraint"><code class="docutils literal notranslate"><span class="pre">Constraint</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.Constraint.__repr__"><code class="docutils literal notranslate"><span class="pre">Constraint.__repr__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.boundaryConditions.FixedFlux"><code class="docutils literal notranslate"><span class="pre">FixedFlux</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.FixedFlux.__repr__"><code class="docutils literal notranslate"><span class="pre">FixedFlux.__repr__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.boundaryConditions.FixedValue"><code class="docutils literal notranslate"><span class="pre">FixedValue</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.FixedValue.__repr__"><code class="docutils literal notranslate"><span class="pre">FixedValue.__repr__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.boundaryConditions.NthOrderBoundaryCondition"><code class="docutils literal notranslate"><span class="pre">NthOrderBoundaryCondition</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.boundaryConditions.NthOrderBoundaryCondition.__repr__"><code class="docutils literal notranslate"><span class="pre">NthOrderBoundaryCondition.__repr__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<div class="sphinxsidebarsection">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../../documentation/tutorial/package/generated/package.subpackage.html"
+                        title="previous chapter">package.subpackage package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fipy.matrices.html"
+                        title="next chapter">fipy.matrices package</a></p>
+</div>
+  <div class="sphinxsidebarsection">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/fipy/generated/fipy.boundaryConditions.rst.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  </div>
+<div class="sphinxsidebarsection">
+<div id="searchbox" style="display: none" role="search">
+  <div data-layout-content-preview-placeholder-label="&quot;Sphinx
+  Search&quot; field" class="nist-block nist-block--search">
+  <h2>Quick search</h2>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+</div>
+<div class="sphinxsidebarsection" id="contact-wrapper">
+  
+        <div data-layout-content-preview-placeholder-label="&quot;Related
+        organization tree&quot; views block" class="nist-block nist-block--org">
+          
+          <h2 class="nist-block__title">Organizations</h2>
+              
+              <div class="views-element-container"><div
+              class="js-view-dom-id-70b0923f677edbe3dda361030ef8dc373cd0ca94065c39cfd81338de767f1019">
+
+            <div class="nist-related-orgs"><div class="term-tree-list"><ul
+            class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters" hreflang="en">NIST
+            Headquarters</a><ul class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs"
+            hreflang="en">Laboratory Programs</a><ul class="term"><li
+            class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs/material-measurement-laboratory"
+            hreflang="en">Material Measurement Laboratory</a>
+			<ul
+			class="term"><li
+			class="selected"><a href="https://www.nist.gov/mml/msed"
+			hreflang="en">Materials Science and Engineering
+			Division</a></li><li
+			class="selected"><a href="https://www.nist.gov/mml/ctcms"
+			hreflang="en">Center for Theoretical and
+			              Computational Materials Science</a></li></ul>
+                          </li></ul></li></ul></li></ul></div></div>
+          <div class="nist-related-orgs"></div>
+          <div class="nist-related-orgs"></div>
+
+
+
+        </div>
+        </div>
+
+          </div>
+
+
+          <div data-layout-content-preview-placeholder-label="&quot;NIST
+          Staff&quot; field" class="nist-block nist-block--contact">
+
+          <h2 class="nist-block__title">NIST Staff</h2>
+
+                  <div class="nist-field nist-field--label-hidden
+                  nist-field--link-list entity-reference nist-field__items
+                  nist-field--no-margin">
+                            <div class="nist-field__item
+                            nist-field--no-margin"><a
+                            href="https://www.nist.gov/people/jonathan-e-guyer"
+                            hreflang="en">Jonathan E. Guyer</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/daniel-wheeler"
+                                hreflang="en">Daniel Wheeler</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/james-warren"
+                                hreflang="en">James A. Warren</a></div>
+                  </div>
+
+
+          </div>
+
+          <div data-layout-content-preview-placeholder-label="&quot;Contact&quot; field"
+          class="nist-block nist-block--contact nist-block--mail">
+
+          <h2 class="nist-block__title">
+          <a class="" href="../../documentation/CONTACT.html" style="">Contact</a>
+          </h2>
+
+          </div>
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+  </aside>
+        </div>
+      </div>
+
+      <div class="panel-region--postface">
+      <div class="inner region-inner inside">
+        
+<div class="pane pane--nist-node-date-pane" >
+
+    </div>
+      </div>
+    </div>
+
+        </section>
+        </div>
+      </div>
+
+      </div>  
+    </div>          
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  
+
+
+  <!-- Taken from https://www.filamentgroup.com/lab/html-includes/#another-demo%3A-including-another-html-file -->
+  <iframe src="../../_static/ntd2d_menu.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    </div>
+  </body>
+</html>

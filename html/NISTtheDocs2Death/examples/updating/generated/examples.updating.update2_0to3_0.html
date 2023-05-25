@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>examples.updating.update2_0to3_0 &#8212; FiPy 3.4.3+140.g6fcf7068 documentation</title>
+    <title>examples.updating.update2_0to3_0 &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
     <link rel="stylesheet" href="../../../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
@@ -51,7 +51,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="top" title="FiPy 3.4.3+140.g6fcf7068 documentation" href="../../../documentation/contents.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="../../../documentation/contents.html" />
     <link rel="up" title="Updating FiPy" href="../index.html" />
     <link rel="next" title="examples.updating.update1_0to2_0" href="examples.updating.update1_0to2_0.html" />
     <link rel="prev" title="Updating FiPy" href="../index.html" />
@@ -137,7 +137,7 @@ help on the <a class="reference external" href="http://www.ctcms.nist.gov/fipy/m
 <blockquote>
 <div><ul>
 <li><p>We have reconsidered the change in FiPy 2.0 that included all of the
-functions of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">numerix</span></code> module in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code> namespace.
+functions of the <a class="reference internal" href="../../../fipy/generated/fipy.tools.html#module-fipy.tools.numerix" title="fipy.tools.numerix"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numerix</span></code></a> module in the <a class="reference internal" href="../../../fipy/generated/fipy.html#module-fipy" title="fipy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code></a> namespace.
 You now must be more explicit when referring to any of these functions:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">numerix</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -156,9 +156,9 @@ you find most comfortable.</p>
 the <span class="target" id="index-0"></span><a class="reference internal" href="../../../documentation/USAGE.html#envvar-FIPY_INCLUDE_NUMERIX_ALL"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">FIPY_INCLUDE_NUMERIX_ALL</span></code></a> environment variable.</p>
 </div>
 </li>
-<li><p>If your equation contains a <code class="xref py py-class docutils literal notranslate"><span class="pre">TransientTerm</span></code>,
+<li><p>If your equation contains a <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.transientTerm.TransientTerm" title="fipy.terms.transientTerm.TransientTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransientTerm</span></code></a>,
 then you must specify the timestep by passing a <code class="docutils literal notranslate"><span class="pre">dt=</span></code> argument when calling
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code> or <code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code>.</p></li>
+<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a> or <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a>.</p></li>
 </ul>
 </div></blockquote>
 <p>The remaining changes are not <em>required</em>, but they make scripts easier to read
@@ -176,18 +176,18 @@ to indicate that we may not maintain the old syntax indefinitely.</p>
 </div>
 </li>
 <li><p>Boundary conditions are better applied with the
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code> method than with
-the old <code class="xref py py-class docutils literal notranslate"><span class="pre">FixedValue</span></code> and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">FixedFlux</span></code> classes. See
+<a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable.constrain" title="fipy.variables.cellVariable.CellVariable.constrain"><code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code></a> method than with
+the old <a class="reference internal" href="../../../fipy/generated/fipy.boundaryConditions.html#fipy.boundaryConditions.fixedValue.FixedValue" title="fipy.boundaryConditions.fixedValue.FixedValue"><code class="xref py py-class docutils literal notranslate"><span class="pre">FixedValue</span></code></a> and
+<a class="reference internal" href="../../../fipy/generated/fipy.boundaryConditions.html#fipy.boundaryConditions.fixedFlux.FixedFlux" title="fipy.boundaryConditions.fixedFlux.FixedFlux"><code class="xref py py-class docutils literal notranslate"><span class="pre">FixedFlux</span></code></a> classes. See
 <a class="reference internal" href="../../../documentation/USAGE.html#boundaryconditions"><span class="std std-ref">Boundary Conditions</span></a>.</p></li>
-<li><p>Individual <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> classes should be imported
-directly from <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy.meshes</span></code> and not <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy.meshes.numMesh</span></code>.</p></li>
+<li><p>Individual <a class="reference internal" href="../../../fipy/generated/fipy.meshes.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> classes should be imported
+directly from <a class="reference internal" href="../../../fipy/generated/fipy.meshes.html#module-fipy.meshes" title="fipy.meshes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy.meshes</span></code></a> and not <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy.meshes.numMesh</span></code>.</p></li>
 <li><p>The <a class="reference internal" href="../../../documentation/glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a> meshes now have simplified names:
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh2D</span></code> instead of
+<a class="reference internal" href="../../../fipy/generated/fipy.meshes.html#fipy.meshes.gmshMesh.Gmsh2D" title="fipy.meshes.gmshMesh.Gmsh2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh2D</span></code></a> instead of
 <code class="xref py py-class docutils literal notranslate"><span class="pre">GmshImporter2D</span></code>,
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh3D</span></code> instead of
+<a class="reference internal" href="../../../fipy/generated/fipy.meshes.html#fipy.meshes.gmshMesh.Gmsh3D" title="fipy.meshes.gmshMesh.Gmsh3D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh3D</span></code></a> instead of
 <code class="xref py py-class docutils literal notranslate"><span class="pre">GmshImporter3D</span></code>, and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh2DIn3DSpace</span></code> instead of
+<a class="reference internal" href="../../../fipy/generated/fipy.meshes.html#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace" title="fipy.meshes.gmshMesh.Gmsh2DIn3DSpace"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh2DIn3DSpace</span></code></a> instead of
 <code class="xref py py-class docutils literal notranslate"><span class="pre">GmshImporter2DIn3DSpace</span></code>.</p></li>
 </ul>
 </div></blockquote>
@@ -208,7 +208,7 @@ directly from <code class="xref py py-mod docutils literal notranslate"><span cl
               <img class="logo" src="../../../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.3+140.g6fcf7068
+Version 3.4.3+141.g9c8f5a4b
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

@@ -1,0 +1,85 @@
+fipy.solvers.petsc package
+==========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   fipy.solvers.petsc.comms
+
+Submodules
+----------
+
+fipy.solvers.petsc.dummySolver module
+-------------------------------------
+
+.. automodule:: fipy.solvers.petsc.dummySolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.petsc.linearBicgSolver module
+------------------------------------------
+
+.. automodule:: fipy.solvers.petsc.linearBicgSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.petsc.linearCGSSolver module
+-----------------------------------------
+
+.. automodule:: fipy.solvers.petsc.linearCGSSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.petsc.linearGMRESSolver module
+-------------------------------------------
+
+.. automodule:: fipy.solvers.petsc.linearGMRESSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.petsc.linearLUSolver module
+----------------------------------------
+
+.. automodule:: fipy.solvers.petsc.linearLUSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.petsc.linearPCGSolver module
+-----------------------------------------
+
+.. automodule:: fipy.solvers.petsc.linearPCGSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.petsc.petscKrylovSolver module
+-------------------------------------------
+
+.. automodule:: fipy.solvers.petsc.petscKrylovSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.petsc.petscSolver module
+-------------------------------------
+
+.. automodule:: fipy.solvers.petsc.petscSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.solvers.petsc
+   :members:
+   :undoc-members:
+   :show-inheritance:

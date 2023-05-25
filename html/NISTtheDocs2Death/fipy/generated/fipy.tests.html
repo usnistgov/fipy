@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+
+
+<!--[if IEMobile 7]><html class="iem7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html class="no-js"  lang="en" dir="ltr" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# book: http://ogp.me/ns/book# profile: http://ogp.me/ns/profile# video: http://ogp.me/ns/video# product: http://ogp.me/ns/product# content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#"><!--<![endif]-->
+
+  <head>
+<meta charset="utf-8" />
+<link rel="shortcut icon" href="https://www.nist.gov/sites/all/themes/nist_style/favicon.ico" type="image/vnd.microsoft.icon" />
+<script type="text/x-mathjax-config">MathJax.Hub.Config({
+  extensions: ['tex2jax.js'],
+  jax: ['input/TeX','output/HTML-CSS'],
+  tex2jax: {
+    inlineMath: [ ['$$','$$'], ['\\(','\\)'] ],
+    processEscapes: true,
+    processClass: 'tex2jax',
+    ignoreClass: 'html'
+  },
+  showProcessingMessages: false,
+  messageStyle: 'none'
+});
+</script>
+<meta name="MobileOptimized" content="width">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+
+      <!--[if lt IE 9]>
+    <script src="https://www.nist.gov/sites/all/themes/zen/js/html5-respond.js"></script>
+    <![endif]-->
+    <!--[if (gte IE 6)&(lte IE 8)]>
+  <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
+  <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>fipy.tests package &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
+    <link rel="stylesheet" href="../../_static/ntd2d.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/ntd2d.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="../../documentation/contents.html" />
+    <link rel="up" title="fipy Package Documentation" href="../../documentation/API.html" />
+    <link rel="next" title="fipy.tools package" href="fipy.tools.html" />
+    <link rel="prev" title="fipy.terms package" href="fipy.terms.html" />
+  
+ 
+
+
+  <link rel="stylesheet" href="https://pages.nist.gov/nist-header-footer/css/nist-combined.css">
+  <script src="https://code.jquery.com/jquery-3.6.2.min.js" type="text/javascript" defer="defer"></script>
+  <script src="https://pages.nist.gov/nist-header-footer/js/nist-header-footer.js" type="text/javascript" defer="defer"></script>
+
+  </head>
+<!--  <body role="document">-->
+  <body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-414011 node-type-software hide-breadcrumb section-services-resources page-panels is-panel" role="document">
+      <div id="page" class="mini-header">
+
+
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fipy.tools.html" title="fipy.tools package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fipy.terms.html" title="fipy.terms package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html"><img src="../../_static/fipy.png" alt="FiPy logo"
+                 style="vertical-align: middle; margin-top: -1px"/>
+        FiPy</a> &gt;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../documentation/API.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code> Package Documentation</a> &gt;</li> 
+      </ul>
+    </div>
+
+  <div id="main" class="clearfix" role="main" tabindex="-1">
+    <div class="main__inner">
+      <div class="page-info">
+        <a id="main-content"></a>
+      </div>
+
+      <div class="document">
+        <div class="documentwrapper">
+
+      <div id="content" class="column">
+      <div id="block-nist-www-content" class="nist-block">
+        <section class="nist-page__content usa-section clearfix">
+
+         
+
+        <div class="grid-container margin-top-4">
+        <div class="grid-row grid-gap-6">
+
+  <div class="nist-page__region nist-page__region--content tablet-lg:grid-col-8">
+              <div class="body" role="main">
+		
+  <section id="fipy-tests-package">
+<h1>fipy.tests package<a class="headerlink" href="#fipy-tests-package" title="Permalink to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-fipy.tests.doctestPlus">
+<span id="fipy-tests-doctestplus-module"></span><h2>fipy.tests.doctestPlus module<a class="headerlink" href="#module-fipy.tests.doctestPlus" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="fipy.tests.doctestPlus.execButNoTest">
+<span class="sig-prename descclassname"><span class="pre">fipy.tests.doctestPlus.</span></span><span class="sig-name descname"><span class="pre">execButNoTest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'__main__'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.doctestPlus.execButNoTest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fipy.tests.doctestPlus.register_skipper">
+<span class="sig-prename descclassname"><span class="pre">fipy.tests.doctestPlus.</span></span><span class="sig-name descname"><span class="pre">register_skipper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">why</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipWarning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.doctestPlus.register_skipper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new doctest option flag for skipping tests</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flag</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Name of the option flag</p></li>
+<li><p><strong>test</strong> (<em>function</em>) – A function which should return <cite>True</cite> if the test should be run</p></li>
+<li><p><strong>why</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Explanation for why the test was skipped (to be used in a string
+“<code class="docutils literal notranslate"><span class="pre">Skipped</span> <span class="pre">%%(count)d</span> <span class="pre">doctest</span> <span class="pre">examples</span> <span class="pre">because</span> <span class="pre">%%(why)s</span></code>”)</p></li>
+<li><p><strong>skipWarning</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Whether or not to report on tests skipped by this flag (default <cite>True</cite>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fipy.tests.doctestPlus.report_skips">
+<span class="sig-prename descclassname"><span class="pre">fipy.tests.doctestPlus.</span></span><span class="sig-name descname"><span class="pre">report_skips</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.doctestPlus.report_skips" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print out how many doctest examples were skipped due to flags</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fipy.tests.doctestPlus.testmod">
+<span class="sig-prename descclassname"><span class="pre">fipy.tests.doctestPlus.</span></span><span class="sig-name descname"><span class="pre">testmod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optionflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extraglobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.doctestPlus.testmod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test examples in the given module.  Return (#failures, #tests).</p>
+<p>Largely duplicated from <a class="reference external" href="https://docs.python.org/3/library/doctest.html#doctest.testmod" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">doctest.testmod()</span></code></a>, but using
+<code class="xref py py-class docutils literal notranslate"><span class="pre">_SelectiveDocTestParser</span></code>.</p>
+<p>Test examples in docstrings in functions and classes reachable
+from module m (or the current module if m is not supplied), starting
+with m.__doc__.</p>
+<p>Also test examples reachable from dict m.__test__ if it exists and is
+not None.  m.__test__ maps names to functions, classes and strings;
+function and class docstrings are tested even if the name is private;
+strings are tested directly, as if they were docstrings.</p>
+<p>Return (#failures, #tests).</p>
+<p>See help(doctest) for an overview.</p>
+<p>Optional keyword arg <cite>name</cite> gives the name of the module; by default
+use <cite>m.__name__</cite>.</p>
+<p>Optional keyword arg <cite>globs</cite> gives a dict to be used as the globals
+when executing examples; by default, use <cite>m.__dict__</cite>.  A copy of this
+dict is actually used for each docstring, so that each docstring’s
+examples start with a clean slate.</p>
+<p>Optional keyword arg <cite>extraglobs</cite> gives a dictionary that should be
+merged into the globals that are used to execute examples.  By
+default, no extra globals are used.  This is new in 2.4.</p>
+<p>Optional keyword arg <cite>verbose</cite> prints lots of stuff if true, prints
+only failures if false; by default, it’s true iff <cite>-v</cite> is in <cite>sys.argv</cite>.</p>
+<p>Optional keyword arg <cite>report</cite> prints a summary at the end when true,
+else prints nothing at the end.  In verbose mode, the summary is
+detailed, else very brief (in fact, empty if all tests passed).</p>
+<p>Optional keyword arg <cite>optionflags</cite> or’s together module constants,
+and defaults to 0.  This is new in 2.3.  Possible values (see the
+docs for details):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DONT_ACCEPT_TRUE_FOR_1</span>
+<span class="n">DONT_ACCEPT_BLANKLINE</span>
+<span class="n">NORMALIZE_WHITESPACE</span>
+<span class="n">ELLIPSIS</span>
+<span class="n">SKIP</span>
+<span class="n">IGNORE_EXCEPTION_DETAIL</span>
+<span class="n">REPORT_UDIFF</span>
+<span class="n">REPORT_CDIFF</span>
+<span class="n">REPORT_NDIFF</span>
+<span class="n">REPORT_ONLY_FIRST_FAILURE</span>
+</pre></div>
+</div>
+<p>as well as FiPy’s flags:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">GMSH</span>
+<span class="n">SCIPY</span>
+<span class="n">TVTK</span>
+<span class="n">SERIAL</span>
+<span class="n">PARALLEL</span>
+<span class="n">PROCESSOR_0</span>
+<span class="n">PROCESSOR_0_OF_2</span>
+<span class="n">PROCESSOR_1_OF_2</span>
+<span class="n">PROCESSOR_0_OF_3</span>
+<span class="n">PROCESSOR_1_OF_3</span>
+<span class="n">PROCESSOR_2_OF_3</span>
+</pre></div>
+</div>
+<p>Optional keyword arg “raise_on_error” raises an exception on the
+first unexpected exception or failure. This allows failures to be
+postmortem debugged.</p>
+</dd></dl>
+
+</section>
+<section id="module-fipy.tests.lateImportTest">
+<span id="fipy-tests-lateimporttest-module"></span><h2>fipy.tests.lateImportTest module<a class="headerlink" href="#module-fipy.tests.lateImportTest" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-fipy.tests.test">
+<span id="fipy-tests-test-module"></span><h2>fipy.tests.test module<a class="headerlink" href="#module-fipy.tests.test" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.tests.test.test">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.tests.test.</span></span><span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.test.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">test</span></code></p>
+<p>Construct the command for dist, updating
+vars(self) with any keyword parameters.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.tests.test.test.command_consumes_arguments">
+<span class="sig-name descname"><span class="pre">command_consumes_arguments</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#fipy.tests.test.test.command_consumes_arguments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.tests.test.test.description">
+<span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'run</span> <span class="pre">unit</span> <span class="pre">tests</span> <span class="pre">after</span> <span class="pre">in-place</span> <span class="pre">build</span> <span class="pre">(deprecated),</span> <span class="pre">for</span> <span class="pre">FiPy</span> <span class="pre">and</span> <span class="pre">its</span> <span class="pre">examples'</span></em><a class="headerlink" href="#fipy.tests.test.test.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.tests.test.test.finalize_options">
+<span class="sig-name descname"><span class="pre">finalize_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.test.test.finalize_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set final values for all the options that this command supports.
+This is always called as late as possible, ie.  after any option
+assignments from the command-line or from other commands have been
+done.  Thus, this is the place to code option dependencies: if
+‘foo’ depends on ‘bar’, then it is safe to set ‘foo’ from ‘bar’ as
+long as ‘foo’ still has the same value it was assigned in
+‘initialize_options()’.</p>
+<p>This method must be implemented by all command classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.tests.test.test.initialize_options">
+<span class="sig-name descname"><span class="pre">initialize_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.test.test.initialize_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set default values for all the options that this command
+supports.  Note that these defaults may be overridden by other
+commands, by the setup script, by config files, or by the
+command-line.  Thus, this is not the place to code dependencies
+between options; generally, ‘initialize_options()’ implementations
+are just a bunch of “self.foo = None” assignments.</p>
+<p>This method must be implemented by all command classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.tests.test.test.printPackageInfo">
+<span class="sig-name descname"><span class="pre">printPackageInfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.test.test.printPackageInfo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.tests.test.test.run_tests">
+<span class="sig-name descname"><span class="pre">run_tests</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.test.test.run_tests" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.tests.test.test.sub_commands">
+<span class="sig-name descname"><span class="pre">sub_commands</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#fipy.tests.test.test.sub_commands" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.tests.test.test.test_args">
+<span class="sig-name descname"><span class="pre">test_args</span></span><a class="headerlink" href="#fipy.tests.test.test.test_args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.tests.test.test.user_options">
+<span class="sig-name descname"><span class="pre">user_options</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[('test-module=',</span> <span class="pre">'m',</span> <span class="pre">&quot;Run</span> <span class="pre">'test_suite'</span> <span class="pre">in</span> <span class="pre">specified</span> <span class="pre">module&quot;),</span> <span class="pre">('test-suite=',</span> <span class="pre">'s',</span> <span class="pre">&quot;Run</span> <span class="pre">single</span> <span class="pre">test,</span> <span class="pre">case</span> <span class="pre">or</span> <span class="pre">suite</span> <span class="pre">(e.g.</span> <span class="pre">'module.test_suite')&quot;),</span> <span class="pre">('test-runner=',</span> <span class="pre">'r',</span> <span class="pre">'Test</span> <span class="pre">runner</span> <span class="pre">to</span> <span class="pre">use'),</span> <span class="pre">('inline',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">with</span> <span class="pre">inline</span> <span class="pre">compilation</span> <span class="pre">enabled'),</span> <span class="pre">('pythoncompiled=',</span> <span class="pre">None,</span> <span class="pre">&quot;directory</span> <span class="pre">in</span> <span class="pre">which</span> <span class="pre">to</span> <span class="pre">put</span> <span class="pre">weave's</span> <span class="pre">work</span> <span class="pre">product&quot;),</span> <span class="pre">('Trilinos',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">using</span> <span class="pre">Trilinos</span> <span class="pre">solvers'),</span> <span class="pre">('Pysparse',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">using</span> <span class="pre">Pysparse</span> <span class="pre">solvers</span> <span class="pre">(default)'),</span> <span class="pre">('trilinos',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">using</span> <span class="pre">Trilinos</span> <span class="pre">solvers'),</span> <span class="pre">('pysparse',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">using</span> <span class="pre">Pysparse</span> <span class="pre">solvers</span> <span class="pre">(default)'),</span> <span class="pre">('scipy',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">using</span> <span class="pre">SciPy</span> <span class="pre">solvers'),</span> <span class="pre">('Scipy',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">using</span> <span class="pre">SciPy</span> <span class="pre">solvers'),</span> <span class="pre">('petsc',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">using</span> <span class="pre">PETSc</span> <span class="pre">solvers'),</span> <span class="pre">('no-pysparse',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">without</span> <span class="pre">using</span> <span class="pre">the</span> <span class="pre">Pysparse</span> <span class="pre">solvers'),</span> <span class="pre">('pyamg',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">without</span> <span class="pre">using</span> <span class="pre">the</span> <span class="pre">PyAMG</span> <span class="pre">solvers'),</span> <span class="pre">('pyamgx',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">using</span> <span class="pre">the</span> <span class="pre">pyamgx</span> <span class="pre">solvers'),</span> <span class="pre">('all',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">all</span> <span class="pre">non-interactive</span> <span class="pre">FiPy</span> <span class="pre">tests</span> <span class="pre">(default)'),</span> <span class="pre">('really-all',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">*all*</span> <span class="pre">FiPy</span> <span class="pre">tests</span> <span class="pre">(including</span> <span class="pre">those</span> <span class="pre">requiring</span> <span class="pre">user</span> <span class="pre">input)'),</span> <span class="pre">('examples',</span> <span class="pre">None,</span> <span class="pre">'test</span> <span class="pre">FiPy</span> <span class="pre">examples'),</span> <span class="pre">('modules',</span> <span class="pre">None,</span> <span class="pre">'test</span> <span class="pre">FiPy</span> <span class="pre">code</span> <span class="pre">modules'),</span> <span class="pre">('viewers',</span> <span class="pre">None,</span> <span class="pre">'test</span> <span class="pre">FiPy</span> <span class="pre">viewer</span> <span class="pre">modules</span> <span class="pre">(requires</span> <span class="pre">user</span> <span class="pre">input)'),</span> <span class="pre">('cache',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">with</span> <span class="pre">Variable</span> <span class="pre">caching'),</span> <span class="pre">('no-cache',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">without</span> <span class="pre">Variable</span> <span class="pre">caching'),</span> <span class="pre">('timetests=',</span> <span class="pre">None,</span> <span class="pre">'file</span> <span class="pre">in</span> <span class="pre">which</span> <span class="pre">to</span> <span class="pre">put</span> <span class="pre">time</span> <span class="pre">spent</span> <span class="pre">on</span> <span class="pre">each</span> <span class="pre">test'),</span> <span class="pre">('skfmm',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">using</span> <span class="pre">the</span> <span class="pre">Scikit-fmm</span> <span class="pre">level</span> <span class="pre">set</span> <span class="pre">solver</span> <span class="pre">(default)'),</span> <span class="pre">('lsmlib',</span> <span class="pre">None,</span> <span class="pre">'run</span> <span class="pre">FiPy</span> <span class="pre">using</span> <span class="pre">the</span> <span class="pre">LSMLIB</span> <span class="pre">level</span> <span class="pre">set</span> <span class="pre">solver</span> <span class="pre">(default)'),</span> <span class="pre">('deprecation-errors',</span> <span class="pre">None,</span> <span class="pre">'raise</span> <span class="pre">Exceptions</span> <span class="pre">for</span> <span class="pre">all</span> <span class="pre">DeprecationWarnings')]</span></em><a class="headerlink" href="#fipy.tests.test.test.user_options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-fipy.tests.testProgram">
+<span id="fipy-tests-testprogram-module"></span><h2>fipy.tests.testProgram module<a class="headerlink" href="#module-fipy.tests.testProgram" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-fipy.tests">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-fipy.tests" title="Permalink to this heading">¶</a></h2>
+<p>unit testing scripts
+no chapter heading</p>
+</section>
+</section>
+
+
+                <div class='last-updated'>
+                Last updated on May 25, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
+                </div>
+              </div>
+  </div>  
+  <aside class="nist-page__region nist-page__region--sidebar-second tablet-lg:grid-col-4">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+            <p class="logo"><a href="../../documentation/contents.html">
+              <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+            </a></p>
+<strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
+Version 3.4.3+141.g9c8f5a4b
+
+  <div class="sphinxsidebarsection">
+  <h3><a href="../../documentation/contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">fipy.tests package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-fipy.tests.doctestPlus">fipy.tests.doctestPlus module</a><ul>
+<li><a class="reference internal" href="#fipy.tests.doctestPlus.execButNoTest"><code class="docutils literal notranslate"><span class="pre">execButNoTest()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tests.doctestPlus.register_skipper"><code class="docutils literal notranslate"><span class="pre">register_skipper()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tests.doctestPlus.report_skips"><code class="docutils literal notranslate"><span class="pre">report_skips()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tests.doctestPlus.testmod"><code class="docutils literal notranslate"><span class="pre">testmod()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-fipy.tests.lateImportTest">fipy.tests.lateImportTest module</a></li>
+<li><a class="reference internal" href="#module-fipy.tests.test">fipy.tests.test module</a><ul>
+<li><a class="reference internal" href="#fipy.tests.test.test"><code class="docutils literal notranslate"><span class="pre">test</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.tests.test.test.command_consumes_arguments"><code class="docutils literal notranslate"><span class="pre">test.command_consumes_arguments</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tests.test.test.description"><code class="docutils literal notranslate"><span class="pre">test.description</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tests.test.test.finalize_options"><code class="docutils literal notranslate"><span class="pre">test.finalize_options()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tests.test.test.initialize_options"><code class="docutils literal notranslate"><span class="pre">test.initialize_options()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tests.test.test.printPackageInfo"><code class="docutils literal notranslate"><span class="pre">test.printPackageInfo()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tests.test.test.run_tests"><code class="docutils literal notranslate"><span class="pre">test.run_tests()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tests.test.test.sub_commands"><code class="docutils literal notranslate"><span class="pre">test.sub_commands</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tests.test.test.test_args"><code class="docutils literal notranslate"><span class="pre">test.test_args</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tests.test.test.user_options"><code class="docutils literal notranslate"><span class="pre">test.user_options</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-fipy.tests.testProgram">fipy.tests.testProgram module</a></li>
+<li><a class="reference internal" href="#module-fipy.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<div class="sphinxsidebarsection">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="fipy.terms.html"
+                        title="previous chapter">fipy.terms package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fipy.tools.html"
+                        title="next chapter">fipy.tools package</a></p>
+</div>
+  <div class="sphinxsidebarsection">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/fipy/generated/fipy.tests.rst.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  </div>
+<div class="sphinxsidebarsection">
+<div id="searchbox" style="display: none" role="search">
+  <div data-layout-content-preview-placeholder-label="&quot;Sphinx
+  Search&quot; field" class="nist-block nist-block--search">
+  <h2>Quick search</h2>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+</div>
+<div class="sphinxsidebarsection" id="contact-wrapper">
+  
+        <div data-layout-content-preview-placeholder-label="&quot;Related
+        organization tree&quot; views block" class="nist-block nist-block--org">
+          
+          <h2 class="nist-block__title">Organizations</h2>
+              
+              <div class="views-element-container"><div
+              class="js-view-dom-id-70b0923f677edbe3dda361030ef8dc373cd0ca94065c39cfd81338de767f1019">
+
+            <div class="nist-related-orgs"><div class="term-tree-list"><ul
+            class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters" hreflang="en">NIST
+            Headquarters</a><ul class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs"
+            hreflang="en">Laboratory Programs</a><ul class="term"><li
+            class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs/material-measurement-laboratory"
+            hreflang="en">Material Measurement Laboratory</a>
+			<ul
+			class="term"><li
+			class="selected"><a href="https://www.nist.gov/mml/msed"
+			hreflang="en">Materials Science and Engineering
+			Division</a></li><li
+			class="selected"><a href="https://www.nist.gov/mml/ctcms"
+			hreflang="en">Center for Theoretical and
+			              Computational Materials Science</a></li></ul>
+                          </li></ul></li></ul></li></ul></div></div>
+          <div class="nist-related-orgs"></div>
+          <div class="nist-related-orgs"></div>
+
+
+
+        </div>
+        </div>
+
+          </div>
+
+
+          <div data-layout-content-preview-placeholder-label="&quot;NIST
+          Staff&quot; field" class="nist-block nist-block--contact">
+
+          <h2 class="nist-block__title">NIST Staff</h2>
+
+                  <div class="nist-field nist-field--label-hidden
+                  nist-field--link-list entity-reference nist-field__items
+                  nist-field--no-margin">
+                            <div class="nist-field__item
+                            nist-field--no-margin"><a
+                            href="https://www.nist.gov/people/jonathan-e-guyer"
+                            hreflang="en">Jonathan E. Guyer</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/daniel-wheeler"
+                                hreflang="en">Daniel Wheeler</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/james-warren"
+                                hreflang="en">James A. Warren</a></div>
+                  </div>
+
+
+          </div>
+
+          <div data-layout-content-preview-placeholder-label="&quot;Contact&quot; field"
+          class="nist-block nist-block--contact nist-block--mail">
+
+          <h2 class="nist-block__title">
+          <a class="" href="../../documentation/CONTACT.html" style="">Contact</a>
+          </h2>
+
+          </div>
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+  </aside>
+        </div>
+      </div>
+
+      <div class="panel-region--postface">
+      <div class="inner region-inner inside">
+        
+<div class="pane pane--nist-node-date-pane" >
+
+    </div>
+      </div>
+    </div>
+
+        </section>
+        </div>
+      </div>
+
+      </div>  
+    </div>          
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  
+
+
+  <!-- Taken from https://www.filamentgroup.com/lab/html-includes/#another-demo%3A-including-another-html-file -->
+  <iframe src="../../_static/ntd2d_menu.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    </div>
+  </body>
+</html>

@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>examples.updating.update1_0to2_0 &#8212; FiPy 3.4.3+140.g6fcf7068 documentation</title>
+    <title>examples.updating.update1_0to2_0 &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
     <link rel="stylesheet" href="../../../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
@@ -51,7 +51,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="top" title="FiPy 3.4.3+140.g6fcf7068 documentation" href="../../../documentation/contents.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="../../../documentation/contents.html" />
     <link rel="up" title="Updating FiPy" href="../index.html" />
     <link rel="next" title="examples.updating.update0_1to1_0" href="examples.updating.update0_1to1_0.html" />
     <link rel="prev" title="examples.updating.update2_0to3_0" href="examples.updating.update2_0to3_0.html" />
@@ -136,7 +136,7 @@ help on the <a class="reference external" href="http://www.ctcms.nist.gov/fipy/m
 <p>The following items <strong>must</strong> be changed in your scripts</p>
 <blockquote>
 <div><ul>
-<li><p>The dimension axis of a <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code> is now first, not last</p>
+<li><p>The dimension axis of a <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> is now first, not last</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">getCellCenters</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -161,7 +161,7 @@ problems than it’s worth.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Any vector constants must be reoriented. For instance, in order to offset
-a <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code>, you must write</p>
+a <a class="reference internal" href="../../../fipy/generated/fipy.meshes.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a>, you must write</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">deltax</span><span class="p">,),</span> <span class="p">(</span><span class="n">deltay</span><span class="p">,))</span>
 </pre></div>
 </div>
@@ -177,8 +177,8 @@ a <code class="xref py py-class docutils literal notranslate"><span class="pre">
 </li>
 <li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">VectorCellVariable</span></code> and
 <code class="xref py py-class docutils literal notranslate"><span class="pre">VectorFaceVariable</span></code> no longer exist.
-<code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code> and
-and <code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code> now both inherit from
+<a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> and
+and <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> now both inherit from
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MeshVariable</span></code>, which
 can have arbitrary rank. A field of scalars (default) will have <code class="docutils literal notranslate"><span class="pre">rank=0</span></code>, a
 field of vectors will have <code class="docutils literal notranslate"><span class="pre">rank=1</span></code>, etc. You should write</p>
@@ -204,8 +204,8 @@ manipulate them, such as</p>
 </div>
 </li>
 <li><p>For internal reasons, <a class="reference internal" href="../../../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> now supports
-<code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code> and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code>
+<a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> and
+<a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a>
 objects that contain integers, but it is not meaningful to solve a PDE for an
 integer field (<a class="reference internal" href="../../../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> should issue a warning if you try). As a result, when given,
 initial values must be specified as floating-point values:</p>
@@ -217,10 +217,10 @@ initial values must be specified as floating-point values:</p>
 </pre></div>
 </div>
 <p>If the <code class="docutils literal notranslate"><span class="pre">value</span></code> argument is not supplied, the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code> will contain floats, as before.</p>
+<a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> will contain floats, as before.</p>
 </li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">faces</span></code> argument to
-<code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code> now takes a mask,
+<a class="reference internal" href="../../../fipy/generated/fipy.boundaryConditions.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a> now takes a mask,
 instead of a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Face</span></code> IDs. Now you write</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">getFaceCenters</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">FixedValue</span><span class="p">(</span><span class="n">faces</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">getExteriorFaces</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">),</span> <span class="n">value</span><span class="o">=...</span><span class="p">)</span>
@@ -236,7 +236,7 @@ instead of a list of <code class="xref py py-class docutils literal notranslate"
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">getCenters()</span></code> had to be made for each set
 of <code class="xref py py-class docutils literal notranslate"><span class="pre">Face</span></code> objects. It was also extremely
 difficult to specify boundary conditions that depended both on position in
-space and on the current values of any other <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>.</p>
+space and on the current values of any other <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">FixedValue</span><span class="p">(</span><span class="n">faces</span><span class="o">=</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">getExteriorFaces</span><span class="p">()</span>
 <span class="gp">... </span>                  <span class="o">&amp;</span> <span class="p">(((</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;</span> <span class="mf">1e-6</span><span class="p">)</span>
 <span class="gp">... </span>                      <span class="o">&amp;</span> <span class="p">(</span><span class="n">Y</span> <span class="o">&gt;</span> <span class="mf">3.</span><span class="p">))</span>
@@ -268,7 +268,7 @@ methods used in <a class="reference internal" href="../../../documentation/gloss
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">getCells()</span></code>
 or <code class="xref py py-meth docutils literal notranslate"><span class="pre">fipy.meshes.mesh.Mesh.getFaces()</span></code>.</p>
 </li>
-<li><p>Some modules, such as <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy.solvers</span></code>, have been significantly rearranged.
+<li><p>Some modules, such as <a class="reference internal" href="../../../fipy/generated/fipy.solvers.html#module-fipy.solvers" title="fipy.solvers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy.solvers</span></code></a>, have been significantly rearranged.
 For example, you need to change</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.solvers.linearPCGSolver</span> <span class="kn">import</span> <span class="n">LinearPCGSolver</span>
 </pre></div>
@@ -283,9 +283,9 @@ For example, you need to change</p>
 </div>
 </li>
 <li><p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">numerix.max()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">numerix.min()</span></code> functions no longer exist. Either
-call <a class="reference external" href="https://docs.python.org/3/library/functions.html#max" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">max()</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/functions.html#min" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">min()</span></code></a> or the <code class="xref py py-meth docutils literal notranslate"><span class="pre">max()</span></code>
-and <code class="xref py py-meth docutils literal notranslate"><span class="pre">min()</span></code> methods of a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code>.</p></li>
+call <a class="reference external" href="https://docs.python.org/3/library/functions.html#max" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">max()</span></code></a> and <a class="reference external" href="https://docs.python.org/3/library/functions.html#min" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">min()</span></code></a> or the <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable.max" title="fipy.variables.variable.Variable.max"><code class="xref py py-meth docutils literal notranslate"><span class="pre">max()</span></code></a>
+and <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable.min" title="fipy.variables.variable.Variable.min"><code class="xref py py-meth docutils literal notranslate"><span class="pre">min()</span></code></a> methods of a
+<a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a>.</p></li>
 <li><p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">Numeric</span></code> module has not been supported for a long time. Be sure to use</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>
@@ -303,7 +303,7 @@ to indicate that we may not maintain the old syntax indefinitely.</p>
 <blockquote>
 <div><ul>
 <li><p>All of the most commonly used classes and functions in <a class="reference internal" href="../../../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> are directly
-accessible in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code> namespace. For brevity, our examples now start with</p>
+accessible in the <a class="reference internal" href="../../../fipy/generated/fipy.html#module-fipy" title="fipy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code></a> namespace. For brevity, our examples now start with</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
 </div>
@@ -316,8 +316,8 @@ accessible in the <code class="xref py py-mod docutils literal notranslate"><spa
 <p>imports that we used to use. Most of the explicit imports should continue to
 work, so you do not need to change them if you don’t wish to, but we find our
 own scripts much easier to read without them.</p>
-<p>All of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">numerix</span></code> module is now imported into the <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code> namespace, so you
-can call <code class="xref py py-mod docutils literal notranslate"><span class="pre">numerix</span></code> functions a number of different ways, including:</p>
+<p>All of the <a class="reference internal" href="../../../fipy/generated/fipy.tools.html#module-fipy.tools.numerix" title="fipy.tools.numerix"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numerix</span></code></a> module is now imported into the <a class="reference internal" href="../../../fipy/generated/fipy.html#module-fipy" title="fipy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code></a> namespace, so you
+can call <a class="reference internal" href="../../../fipy/generated/fipy.tools.html#module-fipy.tools.numerix" title="fipy.tools.numerix"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numerix</span></code></a> functions a number of different ways, including:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
@@ -342,7 +342,7 @@ comes to the examples.</p>
 </div>
 </li>
 <li><p>The function <code class="xref py py-func docutils literal notranslate"><span class="pre">fipy.viewers.make()</span></code> has been renamed to
-<code class="xref py py-func docutils literal notranslate"><span class="pre">fipy.viewers.Viewer()</span></code>. All of the <code class="docutils literal notranslate"><span class="pre">limits</span></code> can now be supplied as direct
+<a class="reference internal" href="../../../fipy/generated/fipy.viewers.html#fipy.viewers.Viewer" title="fipy.viewers.Viewer"><code class="xref py py-func docutils literal notranslate"><span class="pre">fipy.viewers.Viewer()</span></code></a>. All of the <code class="docutils literal notranslate"><span class="pre">limits</span></code> can now be supplied as direct
 arguments, as well (although this is not required). The result is a more
 natural syntax:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">Viewer</span>
@@ -394,10 +394,10 @@ diagonal of the matrix.</p>
 </li>
 <li><p>To make clearer the distinction between iterations, timesteps, and sweeps
 (see FAQ <a class="reference internal" href="../../../documentation/FAQ.html#faq-iterationstimestepssweeps"><span class="std std-ref">Iterations, timesteps, and sweeps? Oh, my!</span></a>)
-the <code class="docutils literal notranslate"><span class="pre">steps</span></code> argument to a <code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code> object has
+the <code class="docutils literal notranslate"><span class="pre">steps</span></code> argument to a <a class="reference internal" href="../../../fipy/generated/fipy.solvers.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code></a> object has
 been renamed <code class="docutils literal notranslate"><span class="pre">iterations</span></code>.</p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitDiffusionTerm</span></code> has been
-renamed to <code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code>.</p></li>
+<li><p><a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.implicitDiffusionTerm.ImplicitDiffusionTerm" title="fipy.terms.implicitDiffusionTerm.ImplicitDiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitDiffusionTerm</span></code></a> has been
+renamed to <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.diffusionTerm.DiffusionTerm" title="fipy.terms.diffusionTerm.DiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code></a>.</p></li>
 </ul>
 </div></blockquote>
 </section>
@@ -417,7 +417,7 @@ renamed to <code class="xref py py-class docutils literal notranslate"><span cla
               <img class="logo" src="../../../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.3+140.g6fcf7068
+Version 3.4.3+141.g9c8f5a4b
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

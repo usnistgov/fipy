@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>examples.cahnHilliard.sphere &#8212; FiPy 3.4.3+140.g6fcf7068 documentation</title>
+    <title>examples.cahnHilliard.sphere &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
     <link rel="stylesheet" href="../../../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
@@ -52,7 +52,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="top" title="FiPy 3.4.3+140.g6fcf7068 documentation" href="../../../documentation/contents.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="../../../documentation/contents.html" />
     <link rel="up" title="Cahn-Hilliard Examples" href="../index.html" />
     <link rel="next" title="Fluid Flow Examples" href="../../flow/index.html" />
     <link rel="prev" title="examples.cahnHilliard.mesh2DCoupled" href="examples.cahnHilliard.mesh2DCoupled.html" />
@@ -164,7 +164,7 @@ declaration of <code class="docutils literal notranslate"><span class="pre">mesh
 </pre></div>
 </div>
 <p><a class="reference internal" href="../../../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> doesn’t plot or output anything unless you tell it to: If
-<code class="xref py py-class docutils literal notranslate"><span class="pre">MayaviClient</span></code> is available, we
+<a class="reference internal" href="../../../fipy/generated/fipy.viewers.mayaviViewer.html#fipy.viewers.mayaviViewer.mayaviClient.MayaviClient" title="fipy.viewers.mayaviViewer.mayaviClient.MayaviClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">MayaviClient</span></code></a> is available, we
 can customize the view with a subclass of
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MayaviDaemon</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -182,7 +182,7 @@ can customize the view with a subclass of
 <span class="math notranslate nohighlight">\(\partial f/\partial \phi\)</span>
 manually and then put the equation in the canonical
 form by decomposing the spatial derivatives
-so that each <code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code> is of a single, even order:</p>
+so that each <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term" title="fipy.terms.term.Term"><code class="xref py py-class docutils literal notranslate"><span class="pre">Term</span></code></a> is of a single, even order:</p>
 <div class="math notranslate nohighlight">
 \[\frac{\partial \phi}{\partial t}
  = \nabla\cdot D a^2 \left[ 1 - 6 \phi \left(1 - \phi\right)\right] \nabla \phi- \nabla\cdot D \nabla \epsilon^2 \nabla^2 \phi.\]</div>
@@ -237,7 +237,7 @@ evolution of their problem.</p>
               <img class="logo" src="../../../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.3+140.g6fcf7068
+Version 3.4.3+141.g9c8f5a4b
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

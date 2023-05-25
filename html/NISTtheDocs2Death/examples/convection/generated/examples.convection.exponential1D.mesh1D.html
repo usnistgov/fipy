@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>examples.convection.exponential1D.mesh1D &#8212; FiPy 3.4.3+140.g6fcf7068 documentation</title>
+    <title>examples.convection.exponential1D.mesh1D &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
     <link rel="stylesheet" href="../../../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
@@ -52,7 +52,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="top" title="FiPy 3.4.3+140.g6fcf7068 documentation" href="../../../documentation/contents.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="../../../documentation/contents.html" />
     <link rel="up" title="Convection Examples" href="../index.html" />
     <link rel="next" title="examples.convection.exponential1DSource.mesh1D" href="examples.convection.exponential1DSource.mesh1D.html" />
     <link rel="prev" title="Convection Examples" href="../index.html" />
@@ -157,8 +157,8 @@ given by</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">var</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="n">valueRight</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesRight</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The equation is created with the <code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code> and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ExponentialConvectionTerm</span></code>. The scheme used by the convection term
+<p>The equation is created with the <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.diffusionTerm.DiffusionTerm" title="fipy.terms.diffusionTerm.DiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code></a> and
+<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm" title="fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExponentialConvectionTerm</span></code></a>. The scheme used by the convection term
 needs to calculate a Péclet number and thus the diffusion term
 instance must be passed to the convection term.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="p">(</span><span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">diffCoeff</span><span class="p">)</span>
@@ -167,9 +167,9 @@ instance must be passed to the convection term.</p>
 </div>
 <p>More details of the benefits and drawbacks of each type of convection
 term can be found in <a class="reference internal" href="../../../documentation/numerical/scheme.html#sec-numericalschemes"><span class="std std-ref">Numerical Schemes</span></a>.
-Essentially, the <code class="xref py py-class docutils literal notranslate"><span class="pre">ExponentialConvectionTerm</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">PowerLawConvectionTerm</span></code> will
+Essentially, the <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm" title="fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExponentialConvectionTerm</span></code></a> and <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm" title="fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">PowerLawConvectionTerm</span></code></a> will
 both handle most types of convection-diffusion cases, with the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">PowerLawConvectionTerm</span></code> being more efficient.</p>
+<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm" title="fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">PowerLawConvectionTerm</span></code></a> being more efficient.</p>
 <p>We solve the equation</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">var</span><span class="p">)</span>
 </pre></div>
@@ -210,7 +210,7 @@ both handle most types of convection-diffusion cases, with the
               <img class="logo" src="../../../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.3+140.g6fcf7068
+Version 3.4.3+141.g9c8f5a4b
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

@@ -1,0 +1,50 @@
+fipy.solvers package
+====================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   fipy.solvers.petsc
+   fipy.solvers.pyAMG
+   fipy.solvers.pyamgx
+   fipy.solvers.pysparse
+   fipy.solvers.scipy
+   fipy.solvers.trilinos
+
+Submodules
+----------
+
+fipy.solvers.pysparseMatrixSolver module
+----------------------------------------
+
+.. automodule:: fipy.solvers.pysparseMatrixSolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.solver module
+--------------------------
+
+.. automodule:: fipy.solvers.solver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.solvers.test module
+------------------------
+
+.. automodule:: fipy.solvers.test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.solvers
+   :members:
+   :undoc-members:
+   :show-inheritance:

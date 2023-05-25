@@ -1,0 +1,29 @@
+fipy.tools.comms package
+========================
+
+Submodules
+----------
+
+fipy.tools.comms.abstractCommWrapper module
+-------------------------------------------
+
+.. automodule:: fipy.tools.comms.abstractCommWrapper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.tools.comms.dummyComm module
+---------------------------------
+
+.. automodule:: fipy.tools.comms.dummyComm
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.tools.comms
+   :members:
+   :undoc-members:
+   :show-inheritance:

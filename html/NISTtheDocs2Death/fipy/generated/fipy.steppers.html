@@ -1,0 +1,511 @@
+
+<!DOCTYPE html>
+
+
+<!--[if IEMobile 7]><html class="iem7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html class="no-js"  lang="en" dir="ltr" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# book: http://ogp.me/ns/book# profile: http://ogp.me/ns/profile# video: http://ogp.me/ns/video# product: http://ogp.me/ns/product# content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#"><!--<![endif]-->
+
+  <head>
+<meta charset="utf-8" />
+<link rel="shortcut icon" href="https://www.nist.gov/sites/all/themes/nist_style/favicon.ico" type="image/vnd.microsoft.icon" />
+<script type="text/x-mathjax-config">MathJax.Hub.Config({
+  extensions: ['tex2jax.js'],
+  jax: ['input/TeX','output/HTML-CSS'],
+  tex2jax: {
+    inlineMath: [ ['$$','$$'], ['\\(','\\)'] ],
+    processEscapes: true,
+    processClass: 'tex2jax',
+    ignoreClass: 'html'
+  },
+  showProcessingMessages: false,
+  messageStyle: 'none'
+});
+</script>
+<meta name="MobileOptimized" content="width">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+
+      <!--[if lt IE 9]>
+    <script src="https://www.nist.gov/sites/all/themes/zen/js/html5-respond.js"></script>
+    <![endif]-->
+    <!--[if (gte IE 6)&(lte IE 8)]>
+  <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
+  <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>fipy.steppers package &#8212; FiPy 3.4.3+141.g9c8f5a4b documentation</title>
+    <link rel="stylesheet" href="../../_static/ntd2d.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/ntd2d.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="FiPy 3.4.3+141.g9c8f5a4b documentation" href="../../documentation/contents.html" />
+    <link rel="up" title="fipy Package Documentation" href="../../documentation/API.html" />
+    <link rel="next" title="fipy.terms package" href="fipy.terms.html" />
+    <link rel="prev" title="fipy.solvers.trilinos.preconditioners package" href="fipy.solvers.trilinos.preconditioners.html" />
+  
+ 
+
+
+  <link rel="stylesheet" href="https://pages.nist.gov/nist-header-footer/css/nist-combined.css">
+  <script src="https://code.jquery.com/jquery-3.6.2.min.js" type="text/javascript" defer="defer"></script>
+  <script src="https://pages.nist.gov/nist-header-footer/js/nist-header-footer.js" type="text/javascript" defer="defer"></script>
+
+  </head>
+<!--  <body role="document">-->
+  <body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-414011 node-type-software hide-breadcrumb section-services-resources page-panels is-panel" role="document">
+      <div id="page" class="mini-header">
+
+
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fipy.terms.html" title="fipy.terms package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fipy.solvers.trilinos.preconditioners.html" title="fipy.solvers.trilinos.preconditioners package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html"><img src="../../_static/fipy.png" alt="FiPy logo"
+                 style="vertical-align: middle; margin-top: -1px"/>
+        FiPy</a> &gt;</li>
+
+          <li class="nav-item nav-item-1"><a href="../../documentation/API.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code> Package Documentation</a> &gt;</li> 
+      </ul>
+    </div>
+
+  <div id="main" class="clearfix" role="main" tabindex="-1">
+    <div class="main__inner">
+      <div class="page-info">
+        <a id="main-content"></a>
+      </div>
+
+      <div class="document">
+        <div class="documentwrapper">
+
+      <div id="content" class="column">
+      <div id="block-nist-www-content" class="nist-block">
+        <section class="nist-page__content usa-section clearfix">
+
+         
+
+        <div class="grid-container margin-top-4">
+        <div class="grid-row grid-gap-6">
+
+  <div class="nist-page__region nist-page__region--content tablet-lg:grid-col-8">
+              <div class="body" role="main">
+		
+  <section id="fipy-steppers-package">
+<h1>fipy.steppers package<a class="headerlink" href="#fipy-steppers-package" title="Permalink to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-fipy.steppers.pidStepper">
+<span id="fipy-steppers-pidstepper-module"></span><h2>fipy.steppers.pidStepper module<a class="headerlink" href="#module-fipy.steppers.pidStepper" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.steppers.pidStepper.PIDStepper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.steppers.pidStepper.</span></span><span class="sig-name descname"><span class="pre">PIDStepper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportional</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.075</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integral</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.175</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derivative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.pidStepper.PIDStepper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.steppers.stepper.Stepper" title="fipy.steppers.stepper.Stepper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stepper</span></code></a></p>
+<p>Adaptive stepper using a PID controller, based on:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@article</span><span class="p">{</span><span class="n">PIDpaper</span><span class="p">,</span>
+   <span class="n">author</span> <span class="o">=</span>  <span class="p">{</span><span class="n">A</span><span class="o">.</span> <span class="n">M</span><span class="o">.</span> <span class="n">P</span><span class="o">.</span> <span class="n">Valli</span> <span class="ow">and</span> <span class="n">G</span><span class="o">.</span> <span class="n">F</span><span class="o">.</span> <span class="n">Carey</span> <span class="ow">and</span> <span class="n">A</span><span class="o">.</span> <span class="n">L</span><span class="o">.</span> <span class="n">G</span><span class="o">.</span> <span class="n">A</span><span class="o">.</span> <span class="n">Coutinho</span><span class="p">},</span>
+   <span class="n">title</span> <span class="o">=</span>   <span class="p">{</span><span class="n">Control</span> <span class="n">strategies</span> <span class="k">for</span> <span class="n">timestep</span> <span class="n">selection</span> <span class="ow">in</span> <span class="n">finite</span> <span class="n">element</span>
+              <span class="n">simulation</span> <span class="n">of</span> <span class="n">incompressible</span> <span class="n">flows</span> <span class="ow">and</span> <span class="n">coupled</span>
+              <span class="n">reaction</span><span class="o">-</span><span class="n">convection</span><span class="o">-</span><span class="n">diffusion</span> <span class="n">processes</span><span class="p">},</span>
+   <span class="n">journal</span> <span class="o">=</span> <span class="p">{</span><span class="n">Int</span><span class="o">.</span> <span class="n">J</span><span class="o">.</span> <span class="n">Numer</span><span class="o">.</span> <span class="n">Meth</span><span class="o">.</span> <span class="n">Fluids</span><span class="p">},</span>
+   <span class="n">volume</span> <span class="o">=</span>  <span class="mi">47</span><span class="p">,</span>
+   <span class="n">year</span> <span class="o">=</span>    <span class="mi">2005</span><span class="p">,</span>
+   <span class="n">pages</span> <span class="o">=</span>   <span class="p">{</span><span class="mi">201</span><span class="o">-</span><span class="mi">231</span><span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.steppers.pidStepper.PIDStepper.failFn">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">failFn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.pidStepper.PIDStepper.failFn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.steppers.pidStepper.PIDStepper.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtTry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtMin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtPrev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweepFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">successFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.pidStepper.PIDStepper.step" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.steppers.pidStepper.PIDStepper.successFn">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">successFn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtPrev</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elapsed</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.pidStepper.PIDStepper.successFn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.steppers.pidStepper.PIDStepper.sweepFn">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sweepFn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.pidStepper.PIDStepper.sweepFn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-fipy.steppers.pseudoRKQSStepper">
+<span id="fipy-steppers-pseudorkqsstepper-module"></span><h2>fipy.steppers.pseudoRKQSStepper module<a class="headerlink" href="#module-fipy.steppers.pseudoRKQSStepper" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.steppers.pseudoRKQSStepper.</span></span><span class="sig-name descname"><span class="pre">PseudoRKQSStepper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">safety</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pgrow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pshrink</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.000189</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.steppers.stepper.Stepper" title="fipy.steppers.stepper.Stepper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stepper</span></code></a></p>
+<p>Adaptive stepper based on the <code class="docutils literal notranslate"><span class="pre">rkqs</span></code> (Runge-Kutta
+“quality-controlled” stepper) algorithm of Numerical Recipes in C: 2nd
+Edition, Section 16.2.</p>
+<p>Not really appropriate, since we’re not doing Runge-Kutta steps
+in the first place, but works OK.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper.failFn">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">failFn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper.failFn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtTry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtMin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtPrev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweepFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">successFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper.step" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper.successFn">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">successFn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtPrev</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elapsed</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper.successFn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper.sweepFn">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sweepFn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper.sweepFn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-fipy.steppers.stepper">
+<span id="fipy-steppers-stepper-module"></span><h2>fipy.steppers.stepper module<a class="headerlink" href="#module-fipy.steppers.stepper" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.steppers.stepper.Stepper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.steppers.stepper.</span></span><span class="sig-name descname"><span class="pre">Stepper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.stepper.Stepper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.steppers.stepper.Stepper.failFn">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">failFn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.stepper.Stepper.failFn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.steppers.stepper.Stepper.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtTry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtMin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtPrev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweepFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">successFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.stepper.Stepper.step" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.steppers.stepper.Stepper.successFn">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">successFn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtPrev</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elapsed</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.stepper.Stepper.successFn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.steppers.stepper.Stepper.sweepFn">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sweepFn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.stepper.Stepper.sweepFn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-fipy.steppers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-fipy.steppers" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="fipy.steppers.L1error">
+<span class="sig-prename descclassname"><span class="pre">fipy.steppers.</span></span><span class="sig-name descname"><span class="pre">L1error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RHSvector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.L1error" title="Permalink to this definition">¶</a></dt>
+<dd><div class="math notranslate nohighlight">
+\[\frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_1}
+{\|\mathtt{var}^\text{old}\|_1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\|\vec{x}\|_1\)</span> is the <span class="math notranslate nohighlight">\(L^1\)</span> norm of <span class="math notranslate nohighlight">\(\vec{x}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> (<a class="reference internal" href="fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a>) – The <cite>CellVariable</cite> in question.</p></li>
+<li><p><strong>matrix</strong> – <em>(ignored)</em></p></li>
+<li><p><strong>RHSvector</strong> – <em>(ignored)</em></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fipy.steppers.L2error">
+<span class="sig-prename descclassname"><span class="pre">fipy.steppers.</span></span><span class="sig-name descname"><span class="pre">L2error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RHSvector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.L2error" title="Permalink to this definition">¶</a></dt>
+<dd><div class="math notranslate nohighlight">
+\[\frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_2}
+{\|\mathtt{var}^\text{old}\|_2}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\|\vec{x}\|_2\)</span> is the <span class="math notranslate nohighlight">\(L^2\)</span> norm of <span class="math notranslate nohighlight">\(\vec{x}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> (<a class="reference internal" href="fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a>) – The <cite>CellVariable</cite> in question.</p></li>
+<li><p><strong>matrix</strong> – <em>(ignored)</em></p></li>
+<li><p><strong>RHSvector</strong> – <em>(ignored)</em></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fipy.steppers.LINFerror">
+<span class="sig-prename descclassname"><span class="pre">fipy.steppers.</span></span><span class="sig-name descname"><span class="pre">LINFerror</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RHSvector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.LINFerror" title="Permalink to this definition">¶</a></dt>
+<dd><div class="math notranslate nohighlight">
+\[\frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_\infty}
+{\|\mathtt{var}^\text{old}\|_\infty}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\|\vec{x}\|_\infty\)</span> is the <span class="math notranslate nohighlight">\(L^\infty\)</span> norm of <span class="math notranslate nohighlight">\(\vec{x}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> (<a class="reference internal" href="fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a>) – The <cite>CellVariable</cite> in question.</p></li>
+<li><p><strong>matrix</strong> – <em>(ignored)</em></p></li>
+<li><p><strong>RHSvector</strong> – <em>(ignored)</em></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fipy.steppers.sweepMonotonic">
+<span class="sig-prename descclassname"><span class="pre">fipy.steppers.</span></span><span class="sig-name descname"><span class="pre">sweepMonotonic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.sweepMonotonic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repeatedly calls <code class="xref py py-func docutils literal notranslate"><span class="pre">fn(*args,</span> <span class="pre">**kwargs)()</span></code> until the residual returned by
+<code class="xref py py-func docutils literal notranslate"><span class="pre">fn()</span></code> is no longer decreasing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<em>function</em>) – The function to call</p></li>
+<li><p><strong>*args</strong> – </p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+                <div class='last-updated'>
+                Last updated on May 25, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
+                </div>
+              </div>
+  </div>  
+  <aside class="nist-page__region nist-page__region--sidebar-second tablet-lg:grid-col-4">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+            <p class="logo"><a href="../../documentation/contents.html">
+              <img class="logo" src="../../_static/logo.png" alt="Logo"/>
+            </a></p>
+<strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
+Version 3.4.3+141.g9c8f5a4b
+
+  <div class="sphinxsidebarsection">
+  <h3><a href="../../documentation/contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">fipy.steppers package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-fipy.steppers.pidStepper">fipy.steppers.pidStepper module</a><ul>
+<li><a class="reference internal" href="#fipy.steppers.pidStepper.PIDStepper"><code class="docutils literal notranslate"><span class="pre">PIDStepper</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.steppers.pidStepper.PIDStepper.failFn"><code class="docutils literal notranslate"><span class="pre">PIDStepper.failFn()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.pidStepper.PIDStepper.step"><code class="docutils literal notranslate"><span class="pre">PIDStepper.step()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.pidStepper.PIDStepper.successFn"><code class="docutils literal notranslate"><span class="pre">PIDStepper.successFn()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.pidStepper.PIDStepper.sweepFn"><code class="docutils literal notranslate"><span class="pre">PIDStepper.sweepFn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-fipy.steppers.pseudoRKQSStepper">fipy.steppers.pseudoRKQSStepper module</a><ul>
+<li><a class="reference internal" href="#fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper"><code class="docutils literal notranslate"><span class="pre">PseudoRKQSStepper</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper.failFn"><code class="docutils literal notranslate"><span class="pre">PseudoRKQSStepper.failFn()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper.step"><code class="docutils literal notranslate"><span class="pre">PseudoRKQSStepper.step()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper.successFn"><code class="docutils literal notranslate"><span class="pre">PseudoRKQSStepper.successFn()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.pseudoRKQSStepper.PseudoRKQSStepper.sweepFn"><code class="docutils literal notranslate"><span class="pre">PseudoRKQSStepper.sweepFn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-fipy.steppers.stepper">fipy.steppers.stepper module</a><ul>
+<li><a class="reference internal" href="#fipy.steppers.stepper.Stepper"><code class="docutils literal notranslate"><span class="pre">Stepper</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.steppers.stepper.Stepper.failFn"><code class="docutils literal notranslate"><span class="pre">Stepper.failFn()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.stepper.Stepper.step"><code class="docutils literal notranslate"><span class="pre">Stepper.step()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.stepper.Stepper.successFn"><code class="docutils literal notranslate"><span class="pre">Stepper.successFn()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.stepper.Stepper.sweepFn"><code class="docutils literal notranslate"><span class="pre">Stepper.sweepFn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-fipy.steppers">Module contents</a><ul>
+<li><a class="reference internal" href="#fipy.steppers.L1error"><code class="docutils literal notranslate"><span class="pre">L1error()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.L2error"><code class="docutils literal notranslate"><span class="pre">L2error()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.LINFerror"><code class="docutils literal notranslate"><span class="pre">LINFerror()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.sweepMonotonic"><code class="docutils literal notranslate"><span class="pre">sweepMonotonic()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<div class="sphinxsidebarsection">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="fipy.solvers.trilinos.preconditioners.html"
+                        title="previous chapter">fipy.solvers.trilinos.preconditioners package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fipy.terms.html"
+                        title="next chapter">fipy.terms package</a></p>
+</div>
+  <div class="sphinxsidebarsection">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/fipy/generated/fipy.steppers.rst.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  </div>
+<div class="sphinxsidebarsection">
+<div id="searchbox" style="display: none" role="search">
+  <div data-layout-content-preview-placeholder-label="&quot;Sphinx
+  Search&quot; field" class="nist-block nist-block--search">
+  <h2>Quick search</h2>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+</div>
+<div class="sphinxsidebarsection" id="contact-wrapper">
+  
+        <div data-layout-content-preview-placeholder-label="&quot;Related
+        organization tree&quot; views block" class="nist-block nist-block--org">
+          
+          <h2 class="nist-block__title">Organizations</h2>
+              
+              <div class="views-element-container"><div
+              class="js-view-dom-id-70b0923f677edbe3dda361030ef8dc373cd0ca94065c39cfd81338de767f1019">
+
+            <div class="nist-related-orgs"><div class="term-tree-list"><ul
+            class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters" hreflang="en">NIST
+            Headquarters</a><ul class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs"
+            hreflang="en">Laboratory Programs</a><ul class="term"><li
+            class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs/material-measurement-laboratory"
+            hreflang="en">Material Measurement Laboratory</a>
+			<ul
+			class="term"><li
+			class="selected"><a href="https://www.nist.gov/mml/msed"
+			hreflang="en">Materials Science and Engineering
+			Division</a></li><li
+			class="selected"><a href="https://www.nist.gov/mml/ctcms"
+			hreflang="en">Center for Theoretical and
+			              Computational Materials Science</a></li></ul>
+                          </li></ul></li></ul></li></ul></div></div>
+          <div class="nist-related-orgs"></div>
+          <div class="nist-related-orgs"></div>
+
+
+
+        </div>
+        </div>
+
+          </div>
+
+
+          <div data-layout-content-preview-placeholder-label="&quot;NIST
+          Staff&quot; field" class="nist-block nist-block--contact">
+
+          <h2 class="nist-block__title">NIST Staff</h2>
+
+                  <div class="nist-field nist-field--label-hidden
+                  nist-field--link-list entity-reference nist-field__items
+                  nist-field--no-margin">
+                            <div class="nist-field__item
+                            nist-field--no-margin"><a
+                            href="https://www.nist.gov/people/jonathan-e-guyer"
+                            hreflang="en">Jonathan E. Guyer</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/daniel-wheeler"
+                                hreflang="en">Daniel Wheeler</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/james-warren"
+                                hreflang="en">James A. Warren</a></div>
+                  </div>
+
+
+          </div>
+
+          <div data-layout-content-preview-placeholder-label="&quot;Contact&quot; field"
+          class="nist-block nist-block--contact nist-block--mail">
+
+          <h2 class="nist-block__title">
+          <a class="" href="../../documentation/CONTACT.html" style="">Contact</a>
+          </h2>
+
+          </div>
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+  </aside>
+        </div>
+      </div>
+
+      <div class="panel-region--postface">
+      <div class="inner region-inner inside">
+        
+<div class="pane pane--nist-node-date-pane" >
+
+    </div>
+      </div>
+    </div>
+
+        </section>
+        </div>
+      </div>
+
+      </div>  
+    </div>          
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  
+
+
+  <!-- Taken from https://www.filamentgroup.com/lab/html-includes/#another-demo%3A-including-another-html-file -->
+  <iframe src="../../_static/ntd2d_menu.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    </div>
+  </body>
+</html>

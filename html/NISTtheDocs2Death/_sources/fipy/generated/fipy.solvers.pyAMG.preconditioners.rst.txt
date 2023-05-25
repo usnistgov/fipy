@@ -1,0 +1,21 @@
+fipy.solvers.pyAMG.preconditioners package
+==========================================
+
+Submodules
+----------
+
+fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner module
+---------------------------------------------------------------------------
+
+.. automodule:: fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.solvers.pyAMG.preconditioners
+   :members:
+   :undoc-members:
+   :show-inheritance:

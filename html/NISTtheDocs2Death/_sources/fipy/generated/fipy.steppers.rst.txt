@@ -1,0 +1,37 @@
+fipy.steppers package
+=====================
+
+Submodules
+----------
+
+fipy.steppers.pidStepper module
+-------------------------------
+
+.. automodule:: fipy.steppers.pidStepper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.steppers.pseudoRKQSStepper module
+--------------------------------------
+
+.. automodule:: fipy.steppers.pseudoRKQSStepper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fipy.steppers.stepper module
+----------------------------
+
+.. automodule:: fipy.steppers.stepper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: fipy.steppers
+   :members:
+   :undoc-members:
+   :show-inheritance:
