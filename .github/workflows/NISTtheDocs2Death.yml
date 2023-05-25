@@ -10,7 +10,8 @@ jobs:
         with:
           docs-folder: documentation/
           pre-build-command: >
-            sphinx-apidoc --output-dir=fipy/generated --suffix=rst fipy
+            python setup.py version
+            && sphinx-apidoc --output-dir=fipy/generated --suffix=rst fipy
             && sphinx-apidoc
                  --output-dir=documentation/tutorial/package/generated
                  --suffix=rst documentation/tutorial/package
