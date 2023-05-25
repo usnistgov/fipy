@@ -126,10 +126,10 @@
 condition at <span class="math notranslate nohighlight">\(x = L\)</span> is an outflow boundary condition requiring
 the use of an artificial constraint to be set on the right hand side
 faces. Exterior faces without constraints are considered to have zero
-outflow. An <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.implicitSourceTerm.ImplicitSourceTerm" title="fipy.terms.implicitSourceTerm.ImplicitSourceTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitSourceTerm</span></code></a>
+outflow. An <code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitSourceTerm</span></code>
 object will be used to represent this term. The derivative of
 <span class="math notranslate nohighlight">\(\phi\)</span> can be represented by a
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.ConvectionTerm" title="fipy.terms.ConvectionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConvectionTerm</span></code></a> with a constant unitary velocity
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ConvectionTerm</span></code> with a constant unitary velocity
 field from left to right. The following is an example code that
 includes a test against the analytical result.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">PowerLawConvectionTerm</span><span class="p">,</span> <span class="n">ImplicitSourceTerm</span><span class="p">,</span> <span class="n">Viewer</span>

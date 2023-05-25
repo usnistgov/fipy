@@ -216,7 +216,7 @@ and <a class="reference internal" href="../../../documentation/glossary.html#ter
 </pre></div>
 </div>
 <p>The velocity is required as a rank-1
-<a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> for calculating the mass
+<code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code> for calculating the mass
 flux. This is required by the Rhie-Chow correction to avoid pressure/velocity
 decoupling.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">velocity</span> <span class="o">=</span> <span class="n">FaceVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -269,7 +269,7 @@ pressure correction equation can be written as,</p>
 </div>
 <p>Above would work good on a staggered grid, however, on a colocated grid as <a class="reference internal" href="../../../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
 uses, the term
-<code class="docutils literal notranslate"><span class="pre">velocity</span></code>.<a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable.divergence" title="fipy.variables.faceVariable.FaceVariable.divergence"><code class="xref py py-attr docutils literal notranslate"><span class="pre">divergence</span></code></a> will
+<code class="docutils literal notranslate"><span class="pre">velocity</span></code>.<code class="xref py py-attr docutils literal notranslate"><span class="pre">divergence</span></code> will
 cause oscillations in the pressure solution as velocity is a face variable. We
 can apply the Rhie-Chow correction terms for this. In this an intermediate
 velocity term <span class="math notranslate nohighlight">\(u^\diamond\)</span> is considered which does not contain the
@@ -316,16 +316,16 @@ Now, set up the no-slip boundary conditions</p>
 </pre></div>
 </div>
 <p>Below, we iterate for a set number of sweeps. We use the
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a> method instead of
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a> because we require the residual for output.
-We also use the <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.cacheMatrix" title="fipy.terms.term.Term.cacheMatrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cacheMatrix()</span></code></a>,
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.matrix" title="fipy.terms.term.Term.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>,
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.cacheRHSvector" title="fipy.terms.term.Term.cacheRHSvector"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cacheRHSvector()</span></code></a> and
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.RHSvector" title="fipy.terms.term.Term.RHSvector"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RHSvector</span></code></a> because both the matrix and RHS
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code> method instead of
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code> because we require the residual for output.
+We also use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">cacheMatrix()</span></code>,
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code>,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">cacheRHSvector()</span></code> and
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">RHSvector</span></code> because both the matrix and RHS
 vector are required by the SIMPLE algorithm. Additionally, the
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a> method is passed an <code class="docutils literal notranslate"><span class="pre">underRelaxation</span></code>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code> method is passed an <code class="docutils literal notranslate"><span class="pre">underRelaxation</span></code>
 factor to relax the solution. This argument cannot be passed to
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a>.</p>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code>.</p>
 <div class="doctest highlight-default notranslate" id="index-3"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">range</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">sweep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sweeps</span><span class="p">):</span>
 <span class="gp">...</span>

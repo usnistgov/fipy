@@ -133,7 +133,7 @@ following code section a file is created with the geometry that
 describes the mesh. For details of how to write such geometry files
 for <a class="reference internal" href="../../../documentation/glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a>, see the <a class="reference external" href="http://www.geuz.org/gmsh/doc/texinfo/gmsh.html">gmsh manual</a>.</p>
 <p>The mesh created by <a class="reference internal" href="../../../documentation/glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a> is then imported into <a class="reference internal" href="../../../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> using the
-<a class="reference internal" href="../../../fipy/generated/fipy.meshes.html#fipy.meshes.gmshMesh.Gmsh2D" title="fipy.meshes.gmshMesh.Gmsh2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh2D</span></code></a> object.</p>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh2D</span></code> object.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Gmsh2D</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">Viewer</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
 </pre></div>

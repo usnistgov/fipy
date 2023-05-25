@@ -126,7 +126,7 @@
 <div class="math notranslate nohighlight">
 \[\frac{ \partial \phi } { \partial t } + \vec{u} \cdot \nabla \phi = 0\]</div>
 <p>The scheme used in the
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm" title="fipy.terms.firstOrderAdvectionTerm.FirstOrderAdvectionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">FirstOrderAdvectionTerm</span></code></a>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">FirstOrderAdvectionTerm</span></code>
 preserves the <code class="docutils literal notranslate"><span class="pre">var</span></code> as a distance function. The solution to this
 problem will be demonstrated in the following script. Firstly, setup
 the parameters.</p>
@@ -194,7 +194,7 @@ the parameters.</p>
 </pre></div>
 </div>
 <p>If the advection equation is built with the
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.advectionTerm.AdvectionTerm" title="fipy.terms.advectionTerm.AdvectionTerm"><code class="xref py py-func docutils literal notranslate"><span class="pre">AdvectionTerm()</span></code></a>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">AdvectionTerm()</span></code>
 the result is more accurate,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">var</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">initialArray</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">advEqn</span> <span class="o">=</span> <span class="n">TransientTerm</span><span class="p">()</span> <span class="o">+</span> <span class="n">AdvectionTerm</span><span class="p">(</span><span class="n">velocity</span><span class="p">)</span>

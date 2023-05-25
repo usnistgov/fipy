@@ -897,7 +897,7 @@ necessary.</p>
 <li><p><a class="reference internal" href="documentation/USAGE.html#coupledequations"><span class="std std-ref">Coupled and Vector Equations</span></a> are now supported.</p></li>
 <li><p>A more robust mechanism for specifying <a class="reference internal" href="documentation/USAGE.html#boundaryconditions"><span class="std std-ref">Boundary Conditions</span></a> is now
 used.</p></li>
-<li><p>Most <a class="reference internal" href="fipy/generated/fipy.meshes.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a>es can be partitioned by
+<li><p>Most <code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code>es can be partitioned by
 <a class="reference internal" href="documentation/USAGE.html#meshingwithgmsh"><span class="std std-ref">Meshing with Gmsh</span></a>.</p></li>
 <li><p><a class="reference internal" href="documentation/SOLVERS.html#pyamg"><span class="std std-ref">PyAMG</span></a> and <a class="reference internal" href="documentation/SOLVERS.html#scipy"><span class="std std-ref">SciPy</span></a> have been added to the <a class="reference internal" href="documentation/SOLVERS.html#solvers"><span class="std std-ref">Solvers</span></a>.</p></li>
 <li><p>FiPy is capable of running under <a class="reference internal" href="documentation/glossary.html#term-Python-3"><span class="xref std std-term">Python 3</span></a>.</p></li>
@@ -905,12 +905,12 @@ used.</p></li>
 properties.</p></li>
 <li><p>The test suite now runs much faster.</p></li>
 <li><p>Tests can now be run on a full install using <cite>fipy.test()</cite>.</p></li>
-<li><p>The functions of the <a class="reference internal" href="fipy/generated/fipy.tools.html#module-fipy.tools.numerix" title="fipy.tools.numerix"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numerix</span></code></a> module are no longer
-included in the <a class="reference internal" href="fipy/generated/fipy.html#module-fipy" title="fipy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code></a> namespace.  See
+<li><p>The functions of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">numerix</span></code> module are no longer
+included in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code> namespace.  See
 <a class="reference internal" href="examples/updating/generated/examples.updating.update2_0to3_0.html#module-examples.updating.update2_0to3_0" title="examples.updating.update2_0to3_0"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.updating.update2_0to3_0</span></code></a> for details.</p></li>
-<li><p>Equations containing a <a class="reference internal" href="fipy/generated/fipy.terms.html#fipy.terms.transientTerm.TransientTerm" title="fipy.terms.transientTerm.TransientTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransientTerm</span></code></a>,
+<li><p>Equations containing a <code class="xref py py-class docutils literal notranslate"><span class="pre">TransientTerm</span></code>,
 must specify the timestep by passing a <code class="docutils literal notranslate"><span class="pre">dt=</span></code> argument when calling
-<a class="reference internal" href="fipy/generated/fipy.terms.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a> or <a class="reference internal" href="fipy/generated/fipy.terms.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a>.</p></li>
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code> or <code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code>.</p></li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -1127,7 +1127,7 @@ Concatenated <cite>Mesh</cite> garbled by <cite>dump.write</cite>/<cite>read</ci
 <h2>Version 2.1.1 - 2010-10-05<a class="headerlink" href="#version-2-1-1-2010-10-05" title="Permalink to this heading">¶</a></h2>
 <p>The significant changes since version 2.1 are:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="fipy/generated/fipy.viewers.matplotlibViewer.html#fipy.viewers.matplotlibViewer.MatplotlibViewer" title="fipy.viewers.matplotlibViewer.MatplotlibViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatplotlibViewer</span></code></a> can display
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">MatplotlibViewer</span></code> can display
 into an existing set of Matplotlib axes.</p></li>
 <li><p><a class="reference internal" href="documentation/glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a> and <a class="reference internal" href="documentation/glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> are now completely independent.</p></li>
 </ul>
@@ -1197,7 +1197,7 @@ Switch documentation to use <cite>:math:</cite> directive</p></li>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="file docutils literal notranslate"><span class="pre">examples/phase/symmetry.py</span></code> fails because
-<a class="reference internal" href="fipy/generated/fipy.meshes.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> no longer provides a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> no longer provides a
 <code class="docutils literal notranslate"><span class="pre">getCells</span></code> method. The mechanism
 for enforcing symmetry in the updated example is both clearer and
 faster.</p></li>
@@ -1266,14 +1266,14 @@ you will need to make to your <a class="reference internal" href="documentation/
 </div>
 <p>The significant changes since version 1.2 are:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> and
-<a class="reference internal" href="fipy/generated/fipy.variables.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> objects can hold
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code> objects can hold
 values of any rank.</p></li>
 <li><p>Much simpler syntax for specifying
 <code class="docutils literal notranslate"><span class="pre">Cell</span></code>s for initial conditions and
 <code class="docutils literal notranslate"><span class="pre">Face</span></code>s for boundary conditions.</p></li>
 <li><p>Automated determination of the Péclet number and partitioning of
-<a class="reference internal" href="fipy/generated/fipy.terms.html#fipy.terms.implicitSourceTerm.ImplicitSourceTerm" title="fipy.terms.implicitSourceTerm.ImplicitSourceTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitSourceTerm</span></code></a> coefficients
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitSourceTerm</span></code> coefficients
 between the matrix diagonal and the right-hand-side-vector.</p></li>
 <li><p>Simplified <code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code> syntax.</p></li>
 <li><p>Support for the <a class="reference external" href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov">Trilinos solvers</a>.</p></li>

@@ -132,7 +132,7 @@ applying boundary condition patches.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">dx</span><span class="o">=</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="n">dy</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="n">ny</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We create a <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> and initialize it to zero:</p>
+<p>We create a <code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code> and initialize it to zero:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;solution variable&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                   <span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span>
 <span class="gp">... </span>                   <span class="n">value</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">)</span>

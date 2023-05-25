@@ -143,7 +143,7 @@ parameter <code class="docutils literal notranslate"><span class="pre">dx</span>
 </pre></div>
 </div>
 <p><a class="reference internal" href="../../../documentation/glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> solves all equations at the centers of the cells of the mesh. We
-thus need a <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> object to hold the values of the
+thus need a <code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code> object to hold the values of the
 solution, with the initial condition <span class="math notranslate nohighlight">\(\phi = 0\)</span> at <span class="math notranslate nohighlight">\(t = 0\)</span>,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;solution variable&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                   <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span>
@@ -174,9 +174,9 @@ solution, with the initial condition <span class="math notranslate nohighlight">
 conditions.</p>
 </div>
 <p>For example, here the exterior faces on the left of the domain are extracted by
-<code class="docutils literal notranslate"><span class="pre">mesh</span></code>.<a class="reference internal" href="../../../fipy/generated/fipy.meshes.html#fipy.meshes.abstractMesh.AbstractMesh.facesLeft" title="fipy.meshes.abstractMesh.AbstractMesh.facesLeft"><code class="xref py py-attr docutils literal notranslate"><span class="pre">facesLeft</span></code></a>. The boundary
+<code class="docutils literal notranslate"><span class="pre">mesh</span></code>.<code class="xref py py-attr docutils literal notranslate"><span class="pre">facesLeft</span></code>. The boundary
 conditions are applied using
-<code class="docutils literal notranslate"><span class="pre">phi</span></code>. <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable.constrain" title="fipy.variables.variable.Variable.constrain"><code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code></a> with these faces and
+<code class="docutils literal notranslate"><span class="pre">phi</span></code>. <code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code> with these faces and
 a value (<code class="docutils literal notranslate"><span class="pre">valueLeft</span></code>).</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="n">valueRight</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesRight</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="n">valueLeft</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesLeft</span><span class="p">)</span>
@@ -215,7 +215,7 @@ this example is being run automatically as a test. We accomplish this by
 having Python check if this script is the “<code class="docutils literal notranslate"><span class="pre">__main__</span></code>” script, which will
 only be true if we explicitly launched it and not if it has been imported
 by another script such as the automatic tester. The factory function
-<a class="reference internal" href="../../../fipy/generated/fipy.viewers.html#fipy.viewers.Viewer" title="fipy.viewers.Viewer"><code class="xref py py-func docutils literal notranslate"><span class="pre">Viewer()</span></code></a> returns a suitable viewer depending on available
+<code class="xref py py-func docutils literal notranslate"><span class="pre">Viewer()</span></code> returns a suitable viewer depending on available
 viewers and the dimension of the mesh.</p>
 <div class="doctest highlight-default notranslate" id="index-1"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phiAnalytical</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;analytical value&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                             <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
@@ -352,7 +352,7 @@ of the fully implicit scheme to drive down the error
 <p>As mentioned above, there is no stable limit to how large a time step can
 be taken for the implicit diffusion problem. In fact, if the time evolution
 of the problem is not interesting, it is possible to eliminate the time
-step altogether by omitting the <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.transientTerm.TransientTerm" title="fipy.terms.transientTerm.TransientTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransientTerm</span></code></a>. The steady-state diffusion
+step altogether by omitting the <code class="xref py py-class docutils literal notranslate"><span class="pre">TransientTerm</span></code>. The steady-state diffusion
 equation</p>
 <div class="math notranslate nohighlight">
 \[D \nabla^2 \phi = 0\]</div>
@@ -388,11 +388,11 @@ system or of time.</p>
     (1 + \sin t) / 2 &amp;\text{on \( x = 0 \)} \\
     0 &amp;\text{on \( x = L \)} \\
 \end{cases}\end{split}\]</div>
-<p>we will need to declare time <span class="math notranslate nohighlight">\(t\)</span> as a <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a></p>
+<p>we will need to declare time <span class="math notranslate nohighlight">\(t\)</span> as a <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>and then declare our boundary condition as a function of this <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a></p>
+<p>and then declare our boundary condition as a function of this <code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">phi</span><span class="o">.</span><span class="n">faceConstraints</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">valueLeft</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">numerix</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">time</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="n">valueLeft</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesLeft</span><span class="p">)</span>
@@ -638,11 +638,11 @@ analytical solution from before.</p>
 <p>As described above, an inner “sweep” loop is generally required for
 the solution of non-linear or multiple equation sets. Often a
 conditional is required to exit this “sweep” loop given some
-convergence criteria. Instead of using the <a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a>
+convergence criteria. Instead of using the <code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code>
 method equation, when sweeping, it is often useful to call
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a> instead. The
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a> method behaves the same way as
-<a class="reference internal" href="../../../fipy/generated/fipy.terms.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a>, but returns the residual that can then be
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code> instead. The
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code> method behaves the same way as
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code>, but returns the residual that can then be
 used as part of the exit condition.</p>
 <p>We now repeatedly run the problem with increasing numbers of
 sweeps.</p>

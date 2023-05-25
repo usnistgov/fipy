@@ -187,8 +187,8 @@ explicit and implicit technique respectively.</p>
 <p>Because <code class="docutils literal notranslate"><span class="pre">theta</span></code>
 is an <span class="math notranslate nohighlight">\(S^1\)</span>-valued variable (i.e. it maps to the circle) and thus
 intrinsically has <span class="math notranslate nohighlight">\(2\pi\)</span>-periodicity,
-we must use <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.modularVariable.ModularVariable" title="fipy.variables.modularVariable.ModularVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModularVariable</span></code></a> instead of a <a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a>. A
-<a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.modularVariable.ModularVariable" title="fipy.variables.modularVariable.ModularVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModularVariable</span></code></a> confines <code class="docutils literal notranslate"><span class="pre">theta</span></code> to
+we must use <code class="xref py py-class docutils literal notranslate"><span class="pre">ModularVariable</span></code> instead of a <code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code>. A
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ModularVariable</span></code> confines <code class="docutils literal notranslate"><span class="pre">theta</span></code> to
 <span class="math notranslate nohighlight">\(-\pi &lt; \theta \le \pi\)</span> by adding or subtracting <span class="math notranslate nohighlight">\(2\pi\)</span> where
 necessary and by defining a new
 subtraction operator between two angles.</p>
@@ -243,7 +243,7 @@ discretization of <code class="docutils literal notranslate"><span class="pre">t
 </pre></div>
 </div>
 <p>The source term requires the evaluation of the face gradient without
-the modular operator. <code class="docutils literal notranslate"><span class="pre">theta</span></code><a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.modularVariable.ModularVariable.faceGradNoMod" title="fipy.variables.modularVariable.ModularVariable.faceGradNoMod"><code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGradNoMod</span></code></a>
+the modular operator. <code class="docutils literal notranslate"><span class="pre">theta</span></code><code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGradNoMod</span></code>
 evaluates the gradient without modular arithmetic.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">thetaGradDiff</span> <span class="o">=</span> <span class="n">theta</span><span class="o">.</span><span class="n">faceGrad</span> <span class="o">-</span> <span class="n">theta</span><span class="o">.</span><span class="n">faceGradNoMod</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sourceCoeff</span> <span class="o">=</span> <span class="p">(</span><span class="n">diffusionCoeff</span> <span class="o">*</span> <span class="n">thetaGradDiff</span><span class="p">)</span><span class="o">.</span><span class="n">divergence</span>

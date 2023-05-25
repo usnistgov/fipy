@@ -274,7 +274,7 @@ discretization of <code class="docutils literal notranslate"><span class="pre">t
 </pre></div>
 </div>
 <p>The source term requires the evaluation of the face gradient without
-the modular operator. <code class="docutils literal notranslate"><span class="pre">theta</span></code><a class="reference internal" href="../../../fipy/generated/fipy.variables.html#fipy.variables.modularVariable.ModularVariable.faceGradNoMod" title="fipy.variables.modularVariable.ModularVariable.faceGradNoMod"><code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGradNoMod</span></code></a>
+the modular operator. <code class="docutils literal notranslate"><span class="pre">theta</span></code><code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGradNoMod</span></code>
 evaluates the gradient without modular arithmetic.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">thetaEq</span> <span class="o">=</span> <span class="p">(</span><span class="n">TransientTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">tau_theta</span> <span class="o">*</span> <span class="n">phaseMod</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">Pfunc</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="n">theta</span><span class="p">)</span>
 <span class="gp">... </span>           <span class="o">==</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">D_theta</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="n">theta</span><span class="p">)</span>
@@ -298,7 +298,7 @@ evaluates the gradient without modular arithmetic.</p>
 </div>
 <p>In a real solidification process, dendritic branching is induced by small thermal
 fluctuations along an otherwise smooth surface, but the granularity of the
-<a class="reference internal" href="../../../fipy/generated/fipy.meshes.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> is enough “noise” in this case, so we don’t need to explicitly
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code> is enough “noise” in this case, so we don’t need to explicitly
 introduce randomness, the way we did in the Cahn-Hilliard problem.</p>
 <p>FiPy’s viewers are utilitarian, striving to let the user see <em>something</em>,
 regardless of their operating system or installed packages, so you the default
