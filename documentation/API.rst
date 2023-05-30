@@ -9,15 +9,15 @@
    :maxdepth: 4
 
    tutorial/index
-   ../fipy/generated/fipy.boundaryConditions
-   ../fipy/generated/fipy.matrices
-   ../fipy/generated/fipy.meshes
-   ../fipy/generated/fipy.solvers
-   ../fipy/generated/fipy.steppers
-   ../fipy/generated/fipy.terms
-   ../fipy/generated/fipy.tests
-   ../fipy/generated/fipy.tools
-   ../fipy/generated/fipy.variables
-   ../fipy/generated/fipy.viewers
+   generated/fipy/fipy.boundaryConditions
+   generated/fipy/fipy.matrices
+   generated/fipy/fipy.meshes
+   generated/fipy/fipy.solvers
+   generated/fipy/fipy.steppers
+   generated/fipy/fipy.terms
+   generated/fipy/fipy.tests
+   generated/fipy/fipy.tools
+   generated/fipy/fipy.variables
+   generated/fipy/fipy.viewers
 
-..   ../fipy/generated/modules
+..   generated/fipy/modules

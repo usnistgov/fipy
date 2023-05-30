@@ -17,8 +17,11 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.append(os.path.abspath('sphinxext'))
-sys.path.append(os.path.abspath('tutorial'))
+import pathlib
+import sys
+sys.path.insert(0, pathlib.Path(__file__).parents[1].resolve().as_posix())
+sys.path.append(pathlib.Path('sphinxext').resolve().as_posix())
+sys.path.append(pathlib.Path('tutorial').resolve().as_posix())
 
 # -- General configuration -----------------------------------------------------
 
@@ -46,14 +49,14 @@ source_suffix = '.rst'
 # The encoding of source files.
 #source_encoding = 'utf-8'
 
-# The master toctree document.
-master_doc = 'documentation/contents'
+# The root toctree document.
+root_doc = 'contents'
 
-bibtex_bibfiles = ['documentation/refs.bib']
+bibtex_bibfiles = ['refs.bib']
 
 # General information about the project.
 project = u'FiPy'
-copyright = u'works of NIST employees are not not subject to copyright protection'
+copyright = u'works of NIST employees are not not subject to copyright protection in the United States'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -78,23 +81,18 @@ release = fipy.__version__
 #today_fmt = '%B %d, %Y'
 
 # List of documents that shouldn't be included in the build.
-unused_docs = ['documentation/RESOURCES',
-               'documentation/TODOLIST',
-               'documentation/VERSION']
+unused_docs = ['RESOURCES',
+               'TODOLIST',
+               'VERSION']
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_patterns = ['fipy/generated/modules.rst',
-                    'fipy/generated/__init__.rst',
-                    'build',
-                    'dist',
-                    'FiPy.egg-info',
-                    'documentation/_build',
-                    'documentation/_templates',
-                    'documentation/tutorial/package/generated/modules.rst',
-                    'documentation/sphinxext',
-                    '**/.git',
-                    'worktrees']
+exclude_patterns = ['generated/fipy/modules.rst',
+                    'generated/fipy/__init__.rst',
+                    '_build',
+                    '_templates',
+                    'generated/tutorial/modules.rst',
+                    'sphinxext',]
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -118,14 +116,14 @@ pygments_style = 'sphinx'
 
 autoclass_content = "both"
 
-autosummary_generate = ['examples/diffusion/index.rst',
-                        'examples/convection/index.rst',
-                        'examples/phase/index.rst',
-                        'examples/levelSet/index.rst',
-                        'examples/cahnHilliard/index.rst',
-                        'examples/flow/index.rst',
-                        'examples/reactiveWetting/index.rst',
-                        'examples/updating/index.rst']
+autosummary_generate = ['../examples/diffusion/index.rst',
+                        '../examples/convection/index.rst',
+                        '../examples/phase/index.rst',
+                        '../examples/levelSet/index.rst',
+                        '../examples/cahnHilliard/index.rst',
+                        '../examples/flow/index.rst',
+                        '../examples/reactiveWetting/index.rst',
+                        '../examples/updating/index.rst']
 
 autodoc_default_options = {
     'member-order': 'alphabetical',
@@ -314,7 +312,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('documentation/manual', 'fipy.tex', 'FiPy Manual',
+  ('manual', 'fipy.tex', 'FiPy Manual',
    r'Jonathan E. Guyer \\ Daniel Wheeler \\ James A. Warren', 'manual'),
 ]
 

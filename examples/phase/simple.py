@@ -494,7 +494,7 @@ True
    :align: center
    :alt: phase field when solved with physical parameters
 
-.. .. bibmissing:: /documentation/refs.bib
+.. .. bibmissing:: /refs.bib
     :sort:
 """
 from __future__ import unicode_literals

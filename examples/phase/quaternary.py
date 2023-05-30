@@ -401,7 +401,7 @@ their equilibrium values in each phase
 >>> print(equilibrium)
 True
 
-.. .. bibmissing:: /documentation/refs.bib
+.. .. bibmissing:: /refs.bib
     :sort:
 """
 

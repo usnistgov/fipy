@@ -848,7 +848,7 @@ mixture of plain scripts and doctest documentation/tests.
 
 .. :term:`FiPy` replace:: `FiPy`
 
-.. .. bibmissing:: /documentation/refs.bib
+.. .. bibmissing:: /refs.bib
     :sort:
 """
 from __future__ import unicode_literals

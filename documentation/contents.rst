@@ -9,10 +9,10 @@ FiPy Contents
 .. toctree::
 
    introduction
-   ../examples/README
+   EXAMPLES
    API
    references
-   ../LICENSE
+   LICENSE
    ../DISCLAIMER
 
 .. toctree::
@@ -20,8 +20,8 @@ FiPy Contents
 
    GUIDELINES
    GIT
-   tutorial/package/generated/package
-   ../fipy/generated/fipy
+   generated/tutorial/package
+   generated/fipy/fipy
    external_definitions
    NIX-README
    manual

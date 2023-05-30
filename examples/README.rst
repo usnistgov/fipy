@@ -60,14 +60,14 @@ please `contact us`_.
 .. toctree::
    :maxdepth: 2
 
-   diffusion/index
-   convection/index
-   phase/index
-   levelSet/index
-   cahnHilliard/index
-   flow/index
-   reactiveWetting/index
-   updating/index
+   generated/examples/examples.diffusion
+   generated/examples/examples.convection
+   generated/examples/examples.phase
+   generated/examples/examples.levelSet
+   generated/examples/examples.cahnHilliard
+   generated/examples/examples.flow
+   generated/examples/examples.reactiveWetting
+   generated/examples/examples.updating
 
 
 .. _Python:         http://www.python.org/

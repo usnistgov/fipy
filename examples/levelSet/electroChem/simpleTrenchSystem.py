@@ -124,7 +124,7 @@ resemble the image below.
    :align: center
    :alt: catalyst coverage as a function of time during superfill
 
-.. .. bibmissing:: /documentation/refs.bib
+.. .. bibmissing:: /refs.bib
     :sort:
 """
 from __future__ import absolute_import

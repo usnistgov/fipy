@@ -71,7 +71,7 @@ with other users.
 
 .. toctree::
 
-   documentation/CONTACT
+   CONTACT
 
 We welcome collaborative efforts on this project.
 

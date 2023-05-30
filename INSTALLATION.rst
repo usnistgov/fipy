@@ -391,7 +391,7 @@ Our preferred development environment is set up with::
 
 .. _documentation:GIT:
 
-.. include:: documentation/GIT.rst
+.. include:: GIT.rst
 
 ---
 Nix
@@ -399,4 +399,4 @@ Nix
 
 .. _nixinstall:
 
-.. include:: documentation/NIX-README.rst
+.. include:: NIX-README.rst

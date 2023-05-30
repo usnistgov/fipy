@@ -354,7 +354,7 @@ The following plot shows the scaling behavior for multiple
 processors.  We compare solution time vs number of Slurm_ tasks (available
 cores) for a `Method of Manufactured Solutions Allen-Cahn problem`_.
 
-.. plot:: documentation/pyplots/scaling.py
+.. plot:: pyplots/scaling.py
 
    Scaling behavior of different solver packages
 
@@ -489,7 +489,7 @@ compare solution time vs number of :term:`OpenMP` threads for fixed number of
 slots for a `Method of Manufactured Solutions Allen-Cahn problem`_.
 :term:`OpenMP` threading always slows down FiPy performance.
 
-.. plot:: documentation/pyplots/cpus_vs_threads.py
+.. plot:: pyplots/cpus_vs_threads.py
 
    Effect of having more :term:`OpenMP` threads for each :term:`MPI` rank
 
