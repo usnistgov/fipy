@@ -4,7 +4,7 @@ import matplotlib.ticker as ticker
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv("threading.csv", comment='#')
+df = pd.read_csv("threading.csv", comment='#', index_col="label")
 
 df = df[(df['totaltime'] == 8.0) & (df['nx'] == 400)]
 
@@ -19,10 +19,11 @@ linestyles = {1: '-', 2: '--', 4: '-.', 16: ':'}
 for solver, group1 in df.groupby('solver'):
     stats = group1.groupby('nthreads')
     
-    av = stats.get_group(1).solvetime.mean() / stats.solvetime.mean()
-    st = stats.get_group(1).solvetime.mean() / stats.solvetime.std()
+    group1mean = stats.get_group(1).solvetime.mean(numeric_only=True)
+    av = group1mean / stats.solvetime.mean(numeric_only=True)
+    st = group1mean / stats.solvetime.std()
     
-    ax.errorbar(av.index, av, yerr=st, 
+    ax.errorbar(av.index, av, # yerr=st, 
                 marker=markers[solver], color=colors[solver], linewidth=2,
                 markersize=12, label=solver)
                     

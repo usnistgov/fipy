@@ -4,7 +4,7 @@ import matplotlib.ticker as ticker
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv("scaling.csv", comment='#')
+df = pd.read_csv("scaling.csv", comment='#', index_col='label')
 
 df = df[(df['totaltime'] == 8.0) & (df['nx'] == 1000)]
 df = df[df['nthreads'] * df['ncpus'] == df['nslots']]
@@ -21,7 +21,8 @@ linestyles = {1: '-', 2: '--', 4: '-.', 16: ':'}
 for solver, group1 in df.groupby('solver'):
     for nthreads, group2 in group1.groupby('nthreads'):
         stats = group2.groupby('nslots')
-        ax.errorbar(stats.mean().speedup.index, stats.mean().speedup, yerr=stats.std().speedup, 
+        speedup = stats.mean(numeric_only=True).speedup
+        ax.errorbar(speedup.index, speedup, # yerr=stats.std().speedup, 
                     marker=markers[solver], color=colors[solver], linestyle=linestyles[nthreads], linewidth=2,
                     markersize=12, label="{} - {:.0f} thread(s)".format(solver, nthreads))
                     
