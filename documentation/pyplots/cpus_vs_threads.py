@@ -22,6 +22,7 @@ for solver, group1 in df.groupby('solver'):
     group1mean = stats.get_group(1).solvetime.mean(numeric_only=True)
     av = group1mean / stats.solvetime.mean(numeric_only=True)
     st = group1mean / stats.solvetime.std()
+    st[st.isna()] = 0.
     
     ax.errorbar(av.index, av, # yerr=st, 
                 marker=markers[solver], color=colors[solver], linewidth=2,

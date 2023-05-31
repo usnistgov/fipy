@@ -22,7 +22,10 @@ for solver, group1 in df.groupby('solver'):
     for nthreads, group2 in group1.groupby('nthreads'):
         stats = group2.groupby('nslots')
         speedup = stats.mean(numeric_only=True).speedup
-        ax.errorbar(speedup.index, speedup, # yerr=stats.std().speedup, 
+        yerr = stats.std(numeric_only=True).speedup
+        yerr[yerr.isna()] = 0.
+
+        ax.errorbar(speedup.index, speedup, yerr=yerr,
                     marker=markers[solver], color=colors[solver], linestyle=linestyles[nthreads], linewidth=2,
                     markersize=12, label="{} - {:.0f} thread(s)".format(solver, nthreads))
                     
