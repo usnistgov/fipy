@@ -1,5 +1,3 @@
-.. _part:examples:
-
 ========
 Examples
 ========
@@ -56,18 +54,6 @@ In addition to those presented in this manual, there are dozens of other
 files in the :file:`examples/` directory, that demonstrate other uses of FiPy.
 If these examples do not help you construct your own problem scripts,
 please `contact us`_.
-
-.. toctree::
-   :maxdepth: 2
-
-   generated/examples/examples.diffusion
-   generated/examples/examples.convection
-   generated/examples/examples.phase
-   generated/examples/examples.levelSet
-   generated/examples/examples.cahnHilliard
-   generated/examples/examples.flow
-   generated/examples/examples.reactiveWetting
-   generated/examples/examples.updating
 
 
 .. _Python:         http://www.python.org/
