@@ -414,7 +414,9 @@ class CellVariable(_MeshVariable):
         return self._faceGrad
 
     @property
-    @deprecate(new_name="grad.arithmeticFaceValue", version=3.3)
+    @deprecate(new_name="faceGradAverage",
+               new_string="use :attr:`%s` instead",
+               version=3.3)
     def faceGradAverage(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `FaceVariable` using averaging
