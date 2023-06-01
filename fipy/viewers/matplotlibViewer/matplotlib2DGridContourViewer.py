@@ -41,11 +41,11 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
             plot a color bar if not `None`
         axes : ~matplotlib.axes.Axes, optional
             if not `None`, `vars` will be plotted into this Matplotlib `Axes` object
-        levels : int or array-like, optional
+        levels : int or array_like, optional
             Determines the number and positions of the contour lines /
             regions.  If an int `n`, tries to automatically choose no more
             than `n+1` "nice" contour levels over the range of `vars`.  If
-            array-like, draw contour lines at the specified levels.  The
+            array_like, draw contour lines at the specified levels.  The
             values must be in increasing order.  E.g. to draw just the zero
             contour pass ``levels=[0]``.
         figaspect : float, optional
