@@ -125,7 +125,7 @@ evolution of their problem.
 >>> if __name__ == '__main__':
 ...     input("Coupled equations. Press <return> to proceed...")
 
-.. image:: mesh2DCoupled.*
+.. image:: /figures/examples/cahnHilliard/mesh2DCoupled.*
    :width: 90%
    :align: center
 

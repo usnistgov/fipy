@@ -160,7 +160,7 @@ If we are running interactively, we plot the error
 ...                      value = analyticalArray),))
 ...     viewer.plot()
 
-.. image:: phase/error.*
+.. image:: /figures/examples/elphf/phase/error.*
    :scale: 50
    :align: center
    :alt: error in solution to steady-state phase field equation

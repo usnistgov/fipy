@@ -69,7 +69,7 @@ evolution of their problem.
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
-.. image:: mesh3D.*
+.. image:: /figures/examples/cahnHilliard/mesh3D.*
    :width: 90%
    :align: center
    :alt: snapshot of Cahn-Hilliard phase separation in 3D with cutaway

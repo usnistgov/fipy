@@ -65,7 +65,7 @@ and solve the equation by repeatedly looping in time:
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
-.. image:: mesh20x20transient.*
+.. image:: /figures/examples/diffusion/mesh20x20transient.*
    :width: 90%
    :align: center
    :alt: solution to diffusion problem on a 2D domain with some Dirichlet boundaries
@@ -87,7 +87,7 @@ We can also solve the steady-state problem directly
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 
-.. image:: mesh20x20steadyState.*
+.. image:: /figures/examples/diffusion/mesh20x20steadyState.*
    :width: 90%
    :align: center
    :alt: stead-state solution to diffusion problem on a 2D domain with some Dirichlet boundaries

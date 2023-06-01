@@ -57,7 +57,7 @@ We can now create a :class:`Viewer <~fipy.viewers.viewer.AbstractViewer>` to see
 ...     viewer.plotMesh()
 ...     input("Irregular circular mesh. Press <return> to proceed...")
 
-.. image:: circleMesh.*
+.. image:: /figures/examples/diffusion/circleMesh.*
    :width: 90%
    :align: center
 
@@ -87,7 +87,7 @@ We first step through the transient problem
 ...     if viewer is not None:
 ...         viewer.plot()
 
-.. image:: circleTransient.*
+.. image:: /figures/examples/diffusion/circleTransient.*
    :width: 90%
    :align: center
 
@@ -163,7 +163,7 @@ Display the results if run as a script.
 ...     viewer.plot()
 ...     input("Steady-state diffusion. Press <return> to proceed...")
 
-.. image:: circleSteadyState.*
+.. image:: /figures/examples/diffusion/circleSteadyState.*
    :width: 90%
    :align: center
 """

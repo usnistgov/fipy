@@ -375,7 +375,7 @@ and again iterate to equilibrium
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
-.. image:: quaternary.*
+.. image:: /figures/examples/phase/quaternary.*
    :width: 90%
    :align: center
    :alt: phase and four composition fields in equilibrium

@@ -155,7 +155,7 @@ We then solve the equation by repeatedly looping in time:
 >>> if __name__ == '__main__':
 ...     input("Explicit transient diffusion. Press <return> to proceed...")
 
-.. image:: mesh1Dexplicit.*
+.. image:: /figures/examples/diffusion/mesh1Dexplicit.*
    :width: 90%
    :align: center
    :alt: solution to diffusion problem evolved by explicit time steps
@@ -201,7 +201,7 @@ and rerun with much larger time steps
 >>> if __name__ == '__main__':
 ...     input("Implicit transient diffusion. Press <return> to proceed...")
 
-.. image:: mesh1Dimplicit.*
+.. image:: /figures/examples/diffusion/mesh1Dimplicit.*
    :width: 90%
    :align: center
    :alt: solution to diffusion problem evolved by implicit time steps
@@ -279,7 +279,7 @@ of :math:`10^{-10}`.
 >>> if __name__ == '__main__':
 ...     input("Implicit steady-state diffusion. Press <return> to proceed...")
 
-.. image:: mesh1DsteadyState.*
+.. image:: /figures/examples/diffusion/mesh1DsteadyState.*
    :width: 90%
    :align: center
    :alt: steady-state solution to diffusion problem
@@ -325,7 +325,7 @@ condition will automatically update,
 >>> if __name__ == '__main__':
 ...     input("Time-dependent boundary condition. Press <return> to proceed...")
 
-.. image:: mesh1DtimedBC.*
+.. image:: /figures/examples/diffusion/mesh1DtimedBC.*
    :width: 90%
    :align: center
    :alt: solution to diffusion problem with a time-dependent Dirichlet boundary condition
@@ -420,7 +420,7 @@ And finally, we can plot the result
 ...     input("Non-uniform steady-state diffusion. Press <return> to proceed...")
 
 
-.. image:: mesh1Dnon-uniform.*
+.. image:: /figures/examples/diffusion/mesh1Dnon-uniform.*
    :width: 90%
    :align: center
    :alt: steady-state solution to diffusion problem with a non-uniform diffusivity
@@ -501,7 +501,7 @@ and finally, plot
 ...     Viewer(vars=(phiT, phiF)).plot()
 ...     input("Non-uniform thermal conductivity. Press <return> to proceed...")
 
-.. image:: mesh1Dalpha.*
+.. image:: /figures/examples/diffusion/mesh1Dalpha.*
    :width: 90%
    :align: center
    :alt: representation of difference between non-uniform alpha and D
@@ -655,7 +655,7 @@ can just solve for it directly
 ...     input("Implicit variable diffusivity - steady-state. \
 ... Press <return> to proceed...")
 
-.. image:: mesh1Dvariable.*
+.. image:: /figures/examples/diffusion/mesh1Dvariable.*
    :width: 90%
    :align: center
    :alt: solution to a diffusion problem a non-linear diffusivity
@@ -672,7 +672,7 @@ state. Consider a localized block of material diffusing in a closed box.
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=phi, datamin=-0.1, datamax=1.1)
 
-.. image:: mesh1D-noflux_initial.*
+.. image:: /figures/examples/diffusion/mesh1D-noflux_initial.*
    :width: 90%
    :align: center
    :alt: initial condition for no-flux boundary conditions
@@ -700,7 +700,7 @@ conditions, and solve
 ...     input("No-flux - transient. \
 ... Press <return> to proceed...")
 
-.. image:: mesh1D-noflux_transient.*
+.. image:: /figures/examples/diffusion/mesh1D-noflux_transient.*
    :width: 90%
    :align: center
    :alt: long-time solution for no-flux boundary conditions
@@ -731,7 +731,7 @@ and solve the steady-state problem
 >>> print(numerix.allclose(phi, 0.0)) #doctest: +PYSPARSE_SOLVER
 True
 
-.. image:: mesh1D-noflux_steady_fail.*
+.. image:: /figures/examples/diffusion/mesh1D-noflux_steady_fail.*
    :width: 90%
    :align: center
    :alt: (failed) steady-state solution for no-flux boundary conditions
@@ -793,7 +793,7 @@ The solution is to run the transient problem and to take one enormous time step
 >>> print(numerix.allclose(phi, 0.2, atol=1e-5))
 True
 
-.. image:: mesh1D-noflux_steady.*
+.. image:: /figures/examples/diffusion/mesh1D-noflux_steady.*
    :width: 90%
    :align: center
    :alt: steady-state solution for no-flux boundary conditions

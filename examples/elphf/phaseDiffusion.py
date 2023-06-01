@@ -185,7 +185,7 @@ iterating to equilibrium
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
-.. image:: phaseDiffusion/binary.*
+.. image:: /figures/examples/elphf/phaseDiffusion/binary.*
    :scale: 50
    :align: center
    :alt: phase and two concentration fields in equilibrium
@@ -267,7 +267,7 @@ and again iterate to equilibrium
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
-.. image:: phaseDiffusion/quaternary.*
+.. image:: /figures/examples/elphf/phaseDiffusion/quaternary.*
    :scale: 50
    :align: center
    :alt: phase and four concentration fields in equilibrium
@@ -359,7 +359,7 @@ and again iterate to equilibrium
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
-.. image:: phaseDiffusion/ternaryAndElectrons.*
+.. image:: /figures/examples/elphf/phaseDiffusion/ternaryAndElectrons.*
    :scale: 50
    :align: center
    :alt: phase and four concentration fields (one like electrons) in equilibrium

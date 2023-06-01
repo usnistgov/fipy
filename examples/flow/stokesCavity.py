@@ -293,7 +293,7 @@ factor to relax the solution. This argument cannot be passed to
 ... 
 ...             viewer.plot()
 
-.. image:: cavity.*
+.. image:: /figures/examples/flow/cavity.*
    :width: 90%
    :align: center
    :alt: flow field for moving lid problem

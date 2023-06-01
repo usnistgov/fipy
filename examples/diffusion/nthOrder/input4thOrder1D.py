@@ -94,7 +94,7 @@ If the problem is run interactively, we can view the result:
 ...     viewer = Viewer(vars=(var, analytical))
 ...     viewer.plot()
 
-.. image:: input4thOrder1D.*
+.. image:: /figures/examples/diffusion/input4thOrder1D.*
    :width: 90%
    :align: center
    :alt: solution to biharmonic equation

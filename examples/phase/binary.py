@@ -504,7 +504,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ...     viewer.plot()
 ...     input("Stationary phase field. Press <return> to proceed...")
 
-.. image:: binary/stationary.*
+.. image:: /figures/examples/phase/binary/stationary.*
    :width: 90%
    :align: center
    :alt: phase and composition fields in equilibrium, compared with phase diagram concentrations
@@ -592,7 +592,7 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 >>> if __name__ == '__main__':
 ...     input("Moving phase field. Press <return> to proceed...")
 
-.. image:: binary/moving.*
+.. image:: /figures/examples/phase/binary/moving.*
    :width: 90%
    :align: center
    :alt: phase and composition fields in during solidification, compared with final phase diagram concentrations

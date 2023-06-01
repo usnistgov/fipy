@@ -86,7 +86,7 @@ If we are running interactively, we'll want a viewer to see the results
 ...     viewer.plot()
 ...     input("Initial condition. Press <return> to proceed...")
 
-.. image:: simple/step.*
+.. image:: /figures/examples/phase/simple/step.*
    :width: 50%
    :align: center
    :alt: step-function initial condition
@@ -163,7 +163,7 @@ we obtain the surprising result that :math:`\phi` is zero everywhere.
 ...     viewer.plot()
 ...     input("Fully explicit source. Press <return> to proceed...")
 
-.. image:: simple/explicit.*
+.. image:: /figures/examples/phase/simple/explicit.*
    :width: 50%
    :align: center
    :alt: steady-state phase field zero everywhere
@@ -201,7 +201,7 @@ After 13 time steps, the solution has converged to the analytical solution
 >>> if __name__ == '__main__':
 ...     input("Relaxation, explicit. Press <return> to proceed...")
 
-.. image:: simple/relaxation.*
+.. image:: /figures/examples/phase/simple/relaxation.*
    :width: 50%
    :align: center
    :alt: steady-state equilibrium phase field after relaxation
@@ -489,7 +489,7 @@ True
 >>> if __name__ == '__main__':
 ...     input("Dimensional, semi-implicit. Press <return> to proceed...")
 
-.. image:: simple/dimensional.*
+.. image:: /figures/examples/phase/simple/dimensional.*
    :width: 90%
    :align: center
    :alt: phase field when solved with physical parameters

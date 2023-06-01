@@ -61,7 +61,7 @@ installed (see :ref:`INSTALLATION`) then a plot should
 appear that is updated every 10 time steps and will eventually
 resemble the image below.
 
-.. image:: electroChem/inputGold.*
+.. image:: /figures/examples/levelSet/electroChem/inputGold.*
    :width: 90%
    :align: center
    :alt: catalyst coverage as a function of time during gold superfill

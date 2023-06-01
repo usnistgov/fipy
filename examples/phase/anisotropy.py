@@ -196,7 +196,7 @@ and iterate the solution in time, plotting as we go,
 ...     if __name__ == "__main__" and (i % 10 == 0):
 ...         viewer.plot()
 
-.. image:: anisotropy.*
+.. image:: /figures/examples/phase/anisotropy.*
    :width: 90%
    :align: center
    :alt: phase field and undercooling during solidification of a 6-fold "snowflake" anisotropic seed
