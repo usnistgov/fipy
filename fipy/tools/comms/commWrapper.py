@@ -5,7 +5,7 @@ from fipy.tools import numerix
 
 __all__ = ["AbstractCommWrapper"]
 
-class AbstractCommWrapper(object):
+class CommWrapper(object):
     """MPI Communicator wrapper
     
     Encapsulates capabilities needed for possibly parallel operations. 
