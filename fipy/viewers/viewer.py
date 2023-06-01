@@ -69,7 +69,8 @@ class AbstractViewer(with_metaclass(MetaViewer, object)):
         """The text appearing at the top center.
 
         (default: if ``len(self.vars) == 1``, the name of
-        :attr:`self.vars[0]`, otherwise ``""``.)
+        the only :class:`~fipy.variables.variable.Variable`,
+        otherwise ``""``.)
         """
         return self._title
 
