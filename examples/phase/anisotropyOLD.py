@@ -138,8 +138,8 @@ The following section of code builds up the :math:`A` and :math:`D` coefficients
 The :math:`\nabla \xi` variable (``dxi``),
 given by :math:`(\xi_x, \xi_y) = (-\phi_y, \phi_x)`,
 is constructed by first obtaining :math:`\nabla \phi`
-
-using :meth:`getFaceGrad`. The axes are rotated ninety degrees.
+using :attr:`~fipy.variables.cellVariable.CellVariable.faceGrad`.
+The axes are rotated ninety degrees.
 
 >>> dxi = phase.faceGrad.dot(((0, 1), (-1, 0)))
 >>> anisotropySource = (A * dxi).divergence
