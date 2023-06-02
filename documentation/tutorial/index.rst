@@ -14,4 +14,4 @@ for their containing package.
 .. toctree::
    :maxdepth: 4
 
-   package/generated/package.subpackage
+   ../generated/tutorial/package.subpackage
