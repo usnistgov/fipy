@@ -86,9 +86,9 @@ def Grid3D(dx=1., dy=1., dz=1.,
         is adequate.  Higher order equations or discretizations require
         more.
     communicator : ~fipy.tools.comms.commWrapper.CommWrapper
-        MPI communicator to use.  Select :class:`~fipy.tools.serialComm` to
+        MPI communicator to use.  Select :attr:`~fipy.tools.serialComm` to
         create a serial mesh when running in parallel; mostly used for test
-        purposes.  (default: :class:`~fipy.tools.parallelComm`).
+        purposes.  (default: :attr:`~fipy.tools.parallelComm`).
     """
 
     if numerix.getShape(dx) == () \
@@ -139,9 +139,9 @@ def Grid2D(dx=1., dy=1., nx=None, ny=None, Lx=None, Ly=None, overlap=2, communic
         is adequate.  Higher order equations or discretizations require
         more.
     communicator : ~fipy.tools.comms.commWrapper.CommWrapper
-        MPI communicator to use.  Select :class:`~fipy.tools.serialComm` to
+        MPI communicator to use.  Select :attr:`~fipy.tools.serialComm` to
         create a serial mesh when running in parallel; mostly used for test
-        purposes.  (default: :class:`~fipy.tools.parallelComm`).
+        purposes.  (default: :attr:`~fipy.tools.parallelComm`).
     """
 
     if numerix.getShape(dx) == () and numerix.getShape(dy) == ():
@@ -181,9 +181,9 @@ def Grid1D(dx=1., nx=None, Lx=None, overlap=2, communicator=parallelComm):
         is adequate.  Higher order equations or discretizations require
         more.
     communicator : ~fipy.tools.comms.commWrapper.CommWrapper
-        MPI communicator to use.  Select :class:`~fipy.tools.serialComm` to
+        MPI communicator to use.  Select :attr:`~fipy.tools.serialComm` to
         create a serial mesh when running in parallel; mostly used for test
-        purposes.  (default: :class:`~fipy.tools.parallelComm`).
+        purposes.  (default: :attr:`~fipy.tools.parallelComm`).
     """
 
     if numerix.getShape(dx) == ():
@@ -233,9 +233,9 @@ def CylindricalGrid2D(dr=None, dz=None,
         simulations. Generally 2 is adequate. Higher order equations or
         discretizations require more.
     communicator : ~fipy.tools.comms.commWrapper.CommWrapper
-        MPI communicator to use.  Select :class:`~fipy.tools.serialComm` to
+        MPI communicator to use.  Select :attr:`~fipy.tools.serialComm` to
         create a serial mesh when running in parallel; mostly used for test
-        purposes.  (default: :class:`~fipy.tools.parallelComm`).
+        purposes.  (default: :attr:`~fipy.tools.parallelComm`).
     """
     if dr is not None:
         dx = dr
@@ -287,9 +287,9 @@ def CylindricalGrid1D(dr=None, nr=None, Lr=None,
         simulations. Generally 2 is adequate. Higher order equations or
         discretizations require more.
     communicator : ~fipy.tools.comms.commWrapper.CommWrapper
-        MPI communicator to use.  Select :class:`~fipy.tools.serialComm` to
+        MPI communicator to use.  Select :attr:`~fipy.tools.serialComm` to
         create a serial mesh when running in parallel; mostly used for test
-        purposes.  (default: :class:`~fipy.tools.parallelComm`).
+        purposes.  (default: :attr:`~fipy.tools.parallelComm`).
     """
 
     if dr is not None:
@@ -332,9 +332,9 @@ def SphericalGrid1D(dr=None, nr=None, Lr=None,
         simulations. Generally 2 is adequate. Higher order equations or
         discretizations require more.
     communicator : ~fipy.tools.comms.commWrapper.CommWrapper
-        MPI communicator to use.  Select :class:`~fipy.tools.serialComm` to
+        MPI communicator to use.  Select :attr:`~fipy.tools.serialComm` to
         create a serial mesh when running in parallel; mostly used for test
-        purposes.  (default: :class:`~fipy.tools.parallelComm`).
+        purposes.  (default: :attr:`~fipy.tools.parallelComm`).
     """
 
     if dr is not None:

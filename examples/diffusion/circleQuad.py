@@ -103,7 +103,7 @@ another application, we could export tab-separated-values with
 
    TSVViewer(vars=(phi, phi.grad)).plot(filename="myTSV.tsv")
 
-.. literalinclude:: myTSV.tsv
+.. literalinclude:: /figures/examples/diffusion/myTSV.tsv
 
 The values are listed at the :class:`~fipy.meshes.cell.Cell` centers.
 Particularly for irregular meshes, no specific ordering should be relied upon.

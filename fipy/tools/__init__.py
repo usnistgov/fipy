@@ -1,3 +1,16 @@
+"""
+
+.. attribute:: serialComm
+    :type: ~fipy.tools.comms.commWrapper.CommWrapper
+
+    Serial MPI communicator when running in parallel.
+
+.. attribute:: parallelComm
+    :type: ~fipy.tools.comms.commWrapper.CommWrapper
+
+    Parallel MPI communicator when running in parallel.
+"""
+
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import range
