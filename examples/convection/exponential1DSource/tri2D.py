@@ -1,7 +1,7 @@
 r"""
 
 This example solves the steady-state convection-diffusion equation as described in
-:mod:`examples.diffusion.convection.exponential1D.mesh1D` but uses a constant source
+:mod:`examples.convection.exponential1D.mesh1D` but uses a constant source
 value such that,
 
 .. math::
