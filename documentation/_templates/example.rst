@@ -2,3 +2,4 @@
 {{ underline }}
 
 .. automodule:: {{ module }}.{{ objname }}
+    :noindex:
