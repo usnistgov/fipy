@@ -415,7 +415,7 @@ class CellVariable(_MeshVariable):
 
     @property
     @deprecate(new_name="faceGradAverage",
-               new_string="use :attr:`%s` instead",
+               new_string="use :attr:`grad.arithmeticFaceValue` instead",
                version=3.3)
     def faceGradAverage(self):
         r"""
