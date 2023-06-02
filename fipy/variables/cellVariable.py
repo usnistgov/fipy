@@ -414,8 +414,9 @@ class CellVariable(_MeshVariable):
         return self._faceGrad
 
     @property
-    @deprecate(new_name="faceGradAverage",
-               new_string="use :attr:`grad.arithmeticFaceValue` instead",
+    @deprecate(new_name="~fipy.variables.cellVariable.CellVariable.grad",
+               new_string="use :attr:`%s`. "
+                          ":attr:`~fipy.variables.cellVariable.CellVariable.arithmeticFaceValue` instead",
                version=3.3)
     def faceGradAverage(self):
         r"""
