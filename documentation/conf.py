@@ -116,15 +116,6 @@ pygments_style = 'sphinx'
 
 autoclass_content = "both"
 
-autosummary_generate = ['../examples/diffusion/index.rst',
-                        '../examples/convection/index.rst',
-                        '../examples/phase/index.rst',
-                        '../examples/levelSet/index.rst',
-                        '../examples/cahnHilliard/index.rst',
-                        '../examples/flow/index.rst',
-                        '../examples/reactiveWetting/index.rst',
-                        '../examples/updating/index.rst']
-
 autodoc_default_options = {
     'member-order': 'alphabetical',
     'special-members': True,
