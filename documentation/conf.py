@@ -132,7 +132,8 @@ autodoc_default_options = {
     'exclude-members': '__annotations__, __dict__, __init__, __module__, __weakref__'
 }
 
-autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'PyTrilinos.NOX']
+autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'PyTrilinos.NOX',
+                        'pysparse', 'PyTrilinos']
 
 napoleon_numpy_docstring = True
 
