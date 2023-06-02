@@ -5,7 +5,8 @@ import copy
 __all__ = ["BlockJacobiSmoother",
            "MultiColorDILUSmoother",
            "MultiColorGSSmoother",
-           "MultiColorILUSmoother"]
+           "MultiColorILUSmoother",
+           "Smoother"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
