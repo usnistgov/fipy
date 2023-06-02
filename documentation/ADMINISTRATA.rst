@@ -205,6 +205,7 @@ Attach
  * :file:`dist/FiPy-{x.y}.tar.gz`
  * :file:`dist/FiPy-{x.y}.zip`
  * :file:`dist/FiPy-{x.y}.pdf`
+
 to a `GitHub release`_ associated with tag x.y.
 
 Upload the build products to PyPI with twine_::
