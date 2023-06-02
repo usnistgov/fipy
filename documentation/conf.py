@@ -339,9 +339,9 @@ imgmath_image_format = "svg"
 # refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
-    'numpy': ('https://docs.scipy.org/doc/numpy/', None),
-    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
-    'matplotlib': ('https://matplotlib.org/', None)}
+    'numpy': ('https://numpy.org/doc/stable/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/', None),
+    'matplotlib': ('https://matplotlib.org/stable/', None)}
 
 def skip_numpy_not_numerix(app, what, name, obj, skip, options):
     import types
