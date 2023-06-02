@@ -3,7 +3,7 @@ __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
 
-__all__ = ["AbstractCommWrapper"]
+__all__ = ["CommWrapper"]
 
 class CommWrapper(object):
     """MPI Communicator wrapper
