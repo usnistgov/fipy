@@ -9,7 +9,7 @@ FiPy Contents
 .. toctree::
 
    introduction
-   EXAMPLES
+   examples/README
    API
    references
    LICENSE
@@ -22,6 +22,7 @@ FiPy Contents
    GIT
    generated/tutorial/package
    generated/fipy/fipy
+   generated/examples/examples
    external_definitions
    NIX-README
    manual

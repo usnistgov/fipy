@@ -5,6 +5,6 @@ FiPy Manual
    :maxdepth: 2
 
    introduction
-   EXAMPLES
+   examples/README
    API
    references
