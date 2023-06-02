@@ -8,8 +8,9 @@ at the command line. A contour plot should appear and the word `finished`
 in the terminal.
 
 This example is similar to the example found in
-:mod:`examples.diffusion.steadyState.mesh1D.input`, however, the `mesh` is a
-`Tri2D` object rather than a `Grid2D` object.
+:mod:`examples.diffusion.mesh1D`, however, the `mesh` is a
+:class:`fipy.meshes.tri2D.Tri2D` object rather than a
+:func:`~fipy.meshes.Grid1D` object.
 
 Here, one time step is executed to implicitly find the steady state
 solution.

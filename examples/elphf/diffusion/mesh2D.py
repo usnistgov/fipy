@@ -1,5 +1,5 @@
 r"""
-The same three-component diffusion problem as introduced in :mod:`examples/elphf/diffusion/mesh1D.py` but in 2D:
+The same three-component diffusion problem as introduced in :mod:`examples.elphf.diffusion.mesh1D` but in 2D:
     >>> from fipy import CellVariable, FaceVariable, Grid2D, TransientTerm, DiffusionTerm, PowerLawConvectionTerm, Viewer
 
     >>> nx = 40

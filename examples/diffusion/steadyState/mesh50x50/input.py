@@ -1,9 +1,7 @@
 """
 
-This input file again solves a 1D diffusion problem as in::
-
-    $ examples/diffusion/steadyState/mesh1D/input.py
-
+This input file again solves a 1D diffusion problem as in
+:mod:`examples.diffusion.mesh1D`.
 The difference being that the mesh is two dimensional.
 
 The result is again tested in the same way:
