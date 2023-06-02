@@ -94,7 +94,7 @@ We'll have no substitutional species and no interstitial species in this first e
 ...     enthalpy += component * component.standardPotential
 ...     barrier += component * component.barrier
 
-We linearize the source term in the same way as in :mod:`example.phase.simple`.
+We linearize the source term in the same way as in :mod:`examples.phase.simple`.
 
 >>> mXi = -(30 * phase * (1. - phase) * enthalpy \
 ...         +  4 * (0.5 - phase) * barrier)
