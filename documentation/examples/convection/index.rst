@@ -2,11 +2,7 @@
 Convection Examples
 -------------------
 
-.. autosummary::
-   :toctree: generated
-   :template: example.rst
-
-   examples.convection.exponential1D.mesh1D
-   examples.convection.exponential1DSource.mesh1D
-   examples.convection.robin
-   examples.convection.source
+* :mod:`examples.convection.exponential1D.mesh1D`
+* :mod:`examples.convection.exponential1DSource.mesh1D`
+* :mod:`examples.convection.robin`
+* :mod:`examples.convection.source`
