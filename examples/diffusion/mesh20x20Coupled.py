@@ -3,7 +3,8 @@ r"""Solve a coupled set of diffusion equations in two dimensions.
 This example solves a diffusion problem and demonstrates the use of
 applying boundary condition patches.
 
-.. index:: Grid2D
+.. index::
+   single: Grid2D
 
 >>> from fipy import CellVariable, Grid2D, Viewer, TransientTerm, DiffusionTerm
 >>> from fipy.tools import numerix

@@ -11,7 +11,8 @@ Warren, Kobayashi, Lobkovsky and Carter :cite:`WarrenPolycrystal`.
 
 We start from a circular seed in a 2D mesh:
 
-.. index:: Grid2D
+.. index::
+   single: Grid2D
 
 >>> from fipy import CellVariable, Grid2D, TransientTerm, DiffusionTerm, ExplicitDiffusionTerm, ImplicitSourceTerm, Viewer
 >>> from fipy.tools import numerix
@@ -92,7 +93,8 @@ The parameters for these equations are
 The ``phase`` variable is 0 for a liquid and ``1 for a solid.  Here,
 the ``phase`` variable is initialized as a liquid,
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> phase = CellVariable(name='phase field', mesh=mesh, hasOld=1)
 
@@ -119,7 +121,12 @@ The :math:`m(\phi, T)` variable
 
 is created from the ``phase`` and ``temperature`` variables.
 
-.. index:: :math:`\pi`, pi, arctan, arctan2, tan
+.. index::
+   single: :math:`\pi`
+   single: pi
+   single: arctan
+   single: arctan2
+   single: tan
 
 >>> mVar = phase - 0.5 - kappa1 / numerix.pi * numerix.arctan(kappa2 * temperature)
 
@@ -146,7 +153,10 @@ The axes are rotated ninety degrees.
 
 The phase equation can now be constructed.
 
-.. index:: TransientTerm, ExplicitDiffusionTerm, ImplicitSourceTerm
+.. index::
+   single: TransientTerm
+   single: ExplicitDiffusionTerm
+   single: ImplicitSourceTerm
 
 >>> phaseEq = TransientTerm(tau) == ExplicitDiffusionTerm(D) + \
 ...     ImplicitSourceTerm(mVar * ((mVar < 0) - phase)) + \
@@ -189,7 +199,9 @@ The solution is compared with test data. The test data was created for
 field modeling. The following code opens the file :file:`anisotropy.gz` extracts
 the data and compares it with the `phase` variable.
 
-.. index:: loadtxt, allclose
+.. index::
+   single: loadtxt
+   single: allclose
 
 >>> import os
 >>> from future.utils import text_to_native_str

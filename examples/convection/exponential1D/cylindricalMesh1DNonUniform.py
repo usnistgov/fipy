@@ -70,7 +70,8 @@ and test the solution against the analytical result
 
 or
 
-.. index:: exp
+.. index::
+   single: exp
 
 >>> axis = 0
 

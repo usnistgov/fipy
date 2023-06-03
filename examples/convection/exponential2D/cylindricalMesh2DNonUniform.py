@@ -68,7 +68,8 @@ and test the solution against the analytical result
 
    \phi = \exp{\frac{u}{D} \left(r_1 - r\right)} \left( \frac{ \ei{\frac{u r_0}{D}} - \ei{\frac{u r}{D}} }{ \ei{\frac{u r_0}{D}} - \ei{\frac{u r_1}{D}} } \right)
 
-.. index:: exp
+.. index::
+   single: exp
 
 >>> axis = 0
 >>> try:
