@@ -53,7 +53,7 @@ The equation is created with the :class:`~fipy.terms.diffusionTerm.DiffusionTerm
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
 More details of the benefits and drawbacks of each type of convection
-term can be found in :ref:`sec:NumericalSchemes}`.
+term can be found in :ref:`sec:NumericalSchemes`.
 Essentially, the :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm` and :class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` will
 both handle most types of convection-diffusion cases, with the
 :class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` being more efficient.
