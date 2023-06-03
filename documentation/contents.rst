@@ -9,7 +9,7 @@ FiPy Contents
 .. toctree::
 
    introduction
-   examples/README
+   EXAMPLES
    API
    references
    LICENSE
