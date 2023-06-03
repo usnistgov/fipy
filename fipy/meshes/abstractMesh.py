@@ -108,7 +108,7 @@ class AbstractMesh(object):
     @property
     def x(self):
         """
-        Equivalent to using :attr:`cellCenters`\ ``[0]``.
+        Equivalent to using :attr:`~fipy.meshes.abstractMesh.AbstractMesh.cellCenters`\ ``[0]``.
 
         >>> from fipy import *
         >>> print(Grid1D(nx=2).x)
@@ -119,7 +119,7 @@ class AbstractMesh(object):
     @property
     def y(self):
         """
-        Equivalent to using :attr:`cellCenters`\ ``[1]``.
+        Equivalent to using :attr:`~fipy.meshes.abstractMesh.AbstractMesh.cellCenters`\ ``[1]``.
 
         >>> from fipy import *
         >>> print(Grid2D(nx=2, ny=2).y)
@@ -137,7 +137,7 @@ class AbstractMesh(object):
     @property
     def z(self):
         """
-        Equivalent to using :attr:`cellCenters`\ ``[2]``.
+        Equivalent to using :attr:`~fipy.meshes.abstractMesh.AbstractMesh.cellCenters`\ ``[2]``.
 
         >>> from fipy import *
         >>> print(Grid3D(nx=2, ny=2, nz=2).z)
