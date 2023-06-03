@@ -1,10 +1,6 @@
 .. _part:examples:
 
-========
-Examples
-========
-
-.. include:: ../../examples/README.rst
+.. include:: ../examples/README.rst
 
 * Diffusion Examples
     * :mod:`examples.diffusion.mesh1D`
