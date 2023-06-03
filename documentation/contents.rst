@@ -23,6 +23,7 @@ FiPy Contents
    generated/tutorial/package
    generated/fipy/fipy
    generated/examples/examples
+   generated/examples/modules
    external_definitions
    NIX-README
    manual
