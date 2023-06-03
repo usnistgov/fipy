@@ -99,7 +99,7 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
 
     @property
     def kwargs(self):
-        """keyword arguments to pass to :func:`~matplotlib.axes.Axes.streamplot`."""
+        """keyword arguments to pass to :meth:`~matplotlib.axes.Axes.streamplot`."""
         return self._kwargs
 
     @kwargs.setter
