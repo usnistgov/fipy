@@ -26,7 +26,8 @@ The Helmholtz free energy functional can be written as the integral
        + \\frac{\\kappa_C}{2}\\abs{\\nabla C}^2
    \\right\\} dV
 
-over the volume :math:`\\mathcal{V}` as a function of phase :math:`\\phi` [#phi]_
+over the volume :math:`\\mathcal{V}` as a function of phase :math:`\\phi`
+[#phiCoupled]_
 
 .. index::
    single: CellVariable
@@ -37,7 +38,7 @@ composition :math:`C`
 
 >>> C = CellVariable(name="composition", mesh=mesh, hasOld=1)
 
-and temperature :math:`T` [#T]_
+and temperature :math:`T` [#TCoupled]_
 
 .. index::
    single: Variable
@@ -629,12 +630,12 @@ expected values.
 
 .. rubric:: Footnotes
 
-.. [#phi] We will find that we need to "sweep" this non-linear problem
+.. [#phiCoupled] We will find that we need to "sweep" this non-linear problem
    (see *e.g.* the composition-dependent diffusivity example in
    :mod:`examples.diffusion.mesh1D`), so we declare :math:`\\phi` and :math:`C`
    to retain an "old" value.
 
-.. [#T] we are going to want to
+.. [#TCoupled] we are going to want to
    examine different temperatures in this example, so we declare :math:`T`
    as a :class:`~fipy.variables.variable.Variable`
 
