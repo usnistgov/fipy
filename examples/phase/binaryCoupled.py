@@ -48,7 +48,7 @@ Frequently, the gradient energy term in concentration is ignored and we
 can derive governing equations
 
 .. math::
-   :label: eq:phase:binary:phase
+   :label: eq:phase:binaryCoupled:phase
 
     \\frac{\\partial\\phi}{\\partial t}
     = M_\\phi \\left( \\kappa_\\phi \\nabla^2 \\phi
@@ -57,7 +57,7 @@ can derive governing equations
 for phase and
 
 .. math::
-   :label: eq:phase:binary:diffusion
+   :label: eq:phase:binaryCoupled:diffusion
 
    \\frac{\\partial C}{\\partial t}
    = \\nabla\\cdot\\left( M_C \\nabla \\frac{\\partial f}{\\partial C} \\right)
@@ -154,7 +154,7 @@ pure component melting point :math:`T_M^A`, such that
 With these assumptions
 
 .. math::
-   :label: eq:phase:binary:phaseTransformation
+   :label: eq:phase:binaryCoupled:phaseTransformation
 
    \\frac{\\partial f}{\\partial \\phi}
    &= (1-C) \\frac{\\partial f_A}{\\partial \\phi}
@@ -170,7 +170,7 @@ With these assumptions
 and
 
 .. math::
-   :label: eq:phase:binary:chemicalPotential
+   :label: eq:phase:binaryCoupled:chemicalPotential
 
    \\frac{\\partial f}{\\partial C}
    &= \\left[f_B(\\phi, T) + \\frac{R T}{V_m} \\ln C\\right]
@@ -262,9 +262,9 @@ these issues automatically, so we could just write::
 Although the second syntax would essentially work as written, such an
 explicit implementation would be very slow. In order to take advantage
 of :term:`FiPy`'s implicit solvers, it is necessary to reduce
-Eq. :eq:`eq:phase:binary:diffusion` to the canonical form of
+Eq. :eq:`eq:phase:binaryCoupled:diffusion` to the canonical form of
 Eq. :eq:`num:gen`, hence we must expand
-Eq. :eq:`eq:phase:binary:chemicalPotential` as
+Eq. :eq:`eq:phase:binaryCoupled:chemicalPotential` as
 
 .. math::
 
@@ -277,10 +277,10 @@ Eq. :eq:`eq:phase:binary:chemicalPotential` as
    + \\frac{W_B - W_A}{2} g(\\phi)
 
 In either bulk phase, :math:`\\nabla p(\\phi) = \\nabla g(\\phi) = 0`, so
-we can then reduce Eq. :eq:`eq:phase:binary:diffusion` to
+we can then reduce Eq. :eq:`eq:phase:binaryCoupled:diffusion` to
 
 .. math::
-   :label: eq:phase:binary:diffusion:bulk
+   :label: eq:phase:binaryCoupled:diffusion:bulk
 
    \\frac{\\partial C}{\\partial t}
    &= \\nabla\\cdot\\left( M_C \\nabla \\left\\{
@@ -299,10 +299,10 @@ and, by comparison with Fick's second law
    = \\nabla\\cdot\\left[D \\nabla C\\right],
 
 we can associate the mobility :math:`M_C` with the intrinsic diffusivity :math:`D_C` by
-:math:`M_C \\equiv D_C C (1-C) V_m / R T` and write Eq. :eq:`eq:phase:binary:diffusion` as
+:math:`M_C \\equiv D_C C (1-C) V_m / R T` and write Eq. :eq:`eq:phase:binaryCoupled:diffusion` as
 
 .. math::
-   :label: eq:phase:binary:diffusion:canonical
+   :label: eq:phase:binaryCoupled:diffusion:canonical
 
    \\frac{\\partial C}{\\partial t}
    &= \\nabla\\cdot\\left( D_C \\nabla C \\right) \\nonumber \\\\
@@ -567,7 +567,7 @@ diffusion and of phase transformation compete with each other).
 The `CFL limit`_ requires that no interface should advect more than one grid
 spacing in a timestep. We can get a rough idea for the maximum timestep we can
 take by looking at the velocity of convection induced by phase transformation in
-Eq. :eq:`eq:phase:binary:diffusion:canonical` (even though there is no explicit
+Eq. :eq:`eq:phase:binaryCoupled:diffusion:canonical` (even though there is no explicit
 convection in the coupled form used for this example, the principle remains the
 same). If we assume that the phase changes from 1 to 0 in a single grid spacing,
 that the diffusivity is `Dl` at the interface, and that the term due to the difference in
