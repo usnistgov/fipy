@@ -105,7 +105,7 @@ another application, we could export tab-separated-values with
 
 .. literalinclude:: /figures/examples/diffusion/myTSV.tsv
 
-The values are listed at the :class:`~fipy.meshes.cell.Cell` centers.
+The values are listed at the cell centers.
 Particularly for irregular meshes, no specific ordering should be relied upon.
 Vector quantities are listed in multiple columns, one for each mesh dimension.
 

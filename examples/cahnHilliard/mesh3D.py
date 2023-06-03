@@ -38,9 +38,9 @@ so that each :class:`~fipy.terms.term.Term` is of a single, even order:
 
 :term:`FiPy` would automatically interpolate
 ``D * a**2 * (1 - 6 * phi * (1 - phi))``
-onto the :class:`~fipy.meshes.face.Face`\s, where the diffusive flux is calculated, but we obtain
+onto the faces, where the diffusive flux is calculated, but we obtain
 somewhat more accurate results by performing a linear interpolation from
-``phi`` at :class:`~fipy.meshes.cell.Cell` centers to ``PHI`` at :class:`~fipy.meshes.face.Face` centers.
+``phi`` at cell centers to ``PHI`` at face centers.
 Some problems benefit from non-linear interpolations, such as harmonic or
 geometric means, and :term:`FiPy` makes it easy to obtain these, too.
 
