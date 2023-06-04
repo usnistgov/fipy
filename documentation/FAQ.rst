@@ -555,7 +555,7 @@ Why don't my scripts work anymore?
 
 :term:`FiPy` has experienced three major API changes. The steps
 necessary to upgrade older scripts are discussed in
-:ref:`chap:UpdateFiPy`.
+:ref:`sec:UpdateFiPy`.
 
 What if my question isn't answered here?
 ----------------------------------------
