@@ -1091,16 +1091,26 @@ You can view the manual online at <http://www.ctcms.nist.gov/fipy> or you
 can `download the latest manual`_ from
 <http://www.ctcms.nist.gov/fipy/download/>. Alternatively,
 it may be possible to build a fresh copy by issuing the following
-command in the base directory::
+command in the :file:`documentation/` directory::
 
-    $ python setup.py build_docs --pdf --html
+    $ sphinx-apidoc --output-dir=generated/fipy --suffix=rst ../fipy
+    $ sphinx-apidoc --output-dir=generated/examples --suffix=rst ../examples
+    $ sphinx-apidoc --output-dir=generated/tutorial --suffix=rst tutorial/package
+
+and then::
+
+    $ make html
+
+or::
+
+    $ make latexpdf
 
 .. note::
 
-   This mechanism is intended primarily for the developers. At a minimum,
-   you will need at least version 1.7.0 of `Sphinx
-   <http://www.sphinx-doc.org/>`_, plus all of its prerequisites. Python
-   2.7 probably won't work.
+   This mechanism is intended primarily for the developers.  At a minimum,
+   you will need `Sphinx <http://www.sphinx-doc.org/>`_, plus all of its
+   prerequisites.  We are currently building with Sphinx v7.0.  Python 2.7
+   probably won't work.
 
    We install via conda::
 
@@ -1129,6 +1139,27 @@ command in the base directory::
    $ python -m pip install pyspelling
    $ wget -O en_US.aff  https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.aff?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
    $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
+
+.. warning::
+
+   Sphinx will issue a huge number of warnings like
+
+       .../fipy/boundaryConditions/constraint.py:docstring of
+       fipy.boundaryConditions.constraint.Constraint:1:
+       WARNING: duplicate object description of
+       fipy.boundaryConditions.constraint.Constraint,
+       other instance in generated/fipy/fipy, use :noindex: for one of them
+
+   This is a `known <https://github.com/sphinx-doc/sphinx/issues/10348>`_
+   `issue <https://github.com/sphinx-doc/sphinx/issues/8664>`_ resulting
+   from our use of `sphinx-apidoc
+   <https://www.sphinx-doc.org/en/master/man/sphinx-apidoc.html>`_ and the
+   fact that :term:`FiPy` imports many objects from submodules into the
+   base package in order to (dubiously?)  make the API easier to use.
+   Adding ``:noindex:`` causes its own problems.  The only real remedy is
+   probably to write all of the API documentation by hand.  In the
+   meantime, these warnings are not harmful; the documentation crosslinks
+   work as expected.
 
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
 .. _SIunits.sty: https://ctan.org/pkg/siunits
