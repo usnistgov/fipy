@@ -78,7 +78,8 @@ class Base(object):
     def method1(self):
         """
         This is one thing that you can instruct any object that derives from
-        :class:`Base` to do, by calling ``myObjectDerivedFromBase.``:meth:`method1`
+        :class:`~package.subpackage.base.Base` to do,
+        by calling ``myObjectDerivedFromBase.``:meth:`method1`
 
         Parameters
         ----------
@@ -95,6 +96,6 @@ class Base(object):
     def method2(self):
         """
         This is another thing that you can instruct any object that derives from
-        :class:`Base` to do.
+        :class:`~package.subpackage.base.Base` to do.
         """
         pass
