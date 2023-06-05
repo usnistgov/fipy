@@ -80,9 +80,10 @@ necessary to add any logging instructions to your own script.  Example
 configuration files can be found in
 :file:`{FiPySource}/fipy/tools/logging/`.
 
-If `Solving in Parallel`_, the :mod:`mpilogging` package (which can be
-installed via :term:`PyPI`) enables reporting which MPI rank each log entry
-comes from.  For example::
+If `Solving in Parallel`_, the
+`mpilogging <https://github.com/usnistgov/mpilogging>`_
+package enables reporting which MPI rank each log entry comes from.  For
+example::
 
     >>> from mpilogging import MPIScatteredFileHandler
     >>> mpilog = MPIScatteredFileHandler(filepattern="fipy.%(mpirank)d_of_%(mpisize)d.log"
