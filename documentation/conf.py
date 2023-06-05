@@ -336,8 +336,10 @@ intersphinx_mapping = {
 
 def skip_numpy_not_numerix(app, what, name, obj, skip, options):
     import types
+    import numpy
     if type(obj) in [types.FunctionType,
                      types.BuiltinFunctionType,
+                     type(numpy.dtype),
                      type]:
         module = getattr(obj, "__module__", "")
         if module is None:
@@ -347,8 +349,15 @@ def skip_numpy_not_numerix(app, what, name, obj, skip, options):
             skip = True
     return skip
 
+def skip_mayavi_baseclass(app, what, name, obj, skip, options):
+    return True if name in ["trait_property_changed", "trait_items_event"] else None
+
+def autodoc_skip_member(app, what, name, obj, skip, options):
+    return (skip_numpy_not_numerix(app, what, name, obj, skip, options)
+            or skip_mayavi_baseclass(app, what, name, obj, skip, options))
+
 def setup(app):
-    app.connect('autodoc-skip-member', skip_numpy_not_numerix)
+    app.connect('autodoc-skip-member', autodoc_skip_member)
     
 # lifted from astropy/astropy@e68ca1a1
 
