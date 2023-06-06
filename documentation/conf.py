@@ -35,8 +35,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.autosummary',
               'sphinx.ext.imgconverter',
-              'numpydoc',
-#               'sphinx.ext.napoleon',
+              'sphinx.ext.napoleon',
               'redirecting_html',
               'sphinxcontrib.bibtex',
               'matplotlib.sphinxext.plot_directive']
@@ -127,27 +126,21 @@ autodoc_default_options = {
 autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'PyTrilinos.NOX',
                         'pysparse', 'PyTrilinos']
 
-# napoleon raises spurious warnings about
-# `py:class reference target not found: file`
-# and
-# `py:class reference target not found: file-like object`
-# Just use numpydoc, since napoleon doesn't seem to gain us anything
-
-# napoleon_numpy_docstring = True
+napoleon_numpy_docstring = True
 #
-# # [@MadPhysicist](https://stackoverflow.com/users/2988730/mad-physicist)
-# # [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
-# # https://stackoverflow.com/a/66182779
-# napoleon_use_param = True
-# # napoleon_preprocess_types = True
-# napoleon_type_aliases = {
-#     'array-like': ':term:`array-like <array_like>`',
-#     'array_like': ':term:`array_like`'
-# }
+# [@MadPhysicist](https://stackoverflow.com/users/2988730/mad-physicist)
+# [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+# https://stackoverflow.com/a/66182779
+napoleon_use_param = True
+# napoleon_preprocess_types = True
+napoleon_type_aliases = {
+    'array-like': ':term:`array-like <array_like>`',
+    'array_like': ':term:`array_like`'
+}
 
-autosummary_generate = True
+# autosummary_generate = True
 
-numpydoc_show_class_members = False
+# numpydoc_show_class_members = False
 
 # -- Options for HTML output ---------------------------------------------------
 
