@@ -52,7 +52,7 @@ Glossary
 
    JSON
       JavaScript Object Notation.  A text format suitable for storing
-      structured information such as :keyword:`dict` or :keyword:`list`.
+      structured information such as :class:`dict` or :class:`list`.
       See https://www.json.org/.
 
    linux
