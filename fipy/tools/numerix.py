@@ -62,6 +62,8 @@ elif arch == '64bit':
 else:
     raise Exception('Cannot set integer dtype because architecture is unknown.')
 
+py_max = max
+
 from numpy.core import umath
 from numpy import newaxis as NewAxis
 from numpy import *
@@ -914,7 +916,7 @@ def _broadcastShapes(shape1, shape2):
         if s == 0 or o == 0:
             return 0
         else:
-            return max(s, o)
+            return py_max(s, o)
 
     if logical_and.reduce([(s == o or s == 1 or o == 1) for s, o in zip(shape1, shape2)]):
         broadcastshape = tuple([maxzero(s, o) for s, o in zip(shape1, shape2)])
@@ -1093,7 +1095,7 @@ def invert_indices(arr, axis=-1):
     rev = coo_matrix(
         (NUMERIX.ones(len(fwd), dtype=int),
          (fwd[..., 0], fwd[..., 1])),
-        shape=(arr.shape[axis], max(arr.flat)+1)
+        shape=(arr.shape[axis], py_max(arr.flat)+1)
     ).tolil().T.rows
     return argstoarray(*rev).swapaxes(0, axis).astype(int)
 
