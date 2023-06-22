@@ -140,7 +140,7 @@ def put(arr, ids, values):
     if _isPhysical(arr):
         arr.put(ids, values)
     elif MA.isMaskedArray(arr):
-        if NUMERIX.sometrue(MA.getmaskarray(ids)):
+        if NUMERIX.any(MA.getmaskarray(ids)):
             if numpy_version == 'old':
                 pvalues = MA.array(values, mask=MA.getmaskarray(ids))
             else:

@@ -18,7 +18,7 @@ def _putAdd(vector, ids, additionVector, mask=False):
     """
     additionVector = numerix.array(additionVector)
 
-    if numerix.sometrue(mask):
+    if numerix.any(mask):
         if len(vector.shape) < len(additionVector.shape):
             for j in range(vector.shape[0]):
                 for id, value, masked in zip(ids.flat, additionVector[j].flat, mask.flat):
