@@ -257,7 +257,7 @@ class PhysicalField(object):
             other = PhysicalField(value = other)
 
         if not isinstance(other, PhysicalField):
-            if numerix.alltrue(other == 0):
+            if numerix.all(other == 0):
                 new_value = sign1(selfValue)
             elif self.unit.isDimensionlessOrAngle() or self.unit.isInverseAngle():
                 new_value = sign1(selfValue) + sign2(other)
@@ -484,7 +484,7 @@ class PhysicalField(object):
         if not isinstance(other, PhysicalField):
             if isinstance(other, string_types):
                 other = PhysicalField(other)
-            elif numerix.alltrue(other == 0) or self.unit.isDimensionlessOrAngle():
+            elif numerix.all(other == 0) or self.unit.isDimensionlessOrAngle():
                 other = PhysicalField(value = other, unit = self.unit)
             else:
                 raise TypeError('Incompatible units')
@@ -1415,7 +1415,7 @@ class PhysicalUnit(object):
                 return self.isDimensionless()
             else:
                 raise TypeError('PhysicalUnits can only be compared with other PhysicalUnits')
-        if not numerix.alltrue(self.powers == other.powers):
+        if not numerix.all(self.powers == other.powers):
             raise TypeError('Incompatible units')
 
     def __eq__(self, other):
@@ -1673,7 +1673,7 @@ class PhysicalUnit(object):
                 ...
             TypeError: Unit conversion (K to degF) cannot be expressed as a simple multiplicative factor
         """
-        if not numerix.alltrue(self.powers == other.powers):
+        if not numerix.all(self.powers == other.powers):
             if self.isDimensionlessOrAngle() and other.isDimensionlessOrAngle():
                 return self.factor / other.factor
             else:
@@ -1694,7 +1694,7 @@ class PhysicalUnit(object):
             >>> [str(numerix.round_(element, 6)) for element in b.conversionTupleTo(a)]
             ['0.555556', '459.67']
         """
-        if not numerix.alltrue(self.powers == other.powers):
+        if not numerix.all(self.powers == other.powers):
             raise TypeError('Incompatible units')
 
         # let (s1,d1) be the conversion tuple from 'self' to base units
