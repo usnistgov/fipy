@@ -1099,6 +1099,11 @@ def invert_indices(arr, axis=-1):
     ).tolil().T.rows
     return argstoarray(*rev).swapaxes(0, axis).astype(int)
 
+# NumPy 1.25 deprectates `round_()` in favor of `round()`,
+# but earlier NumPy doesn't alias `round()` in `__all__`
+if "round" not in globals():
+    round = NUMERIX.round
+
 def _test():
     import fipy.tests.doctestPlus
     return fipy.tests.doctestPlus.testmod()
