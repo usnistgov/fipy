@@ -69,9 +69,9 @@ The following code tests the results with a different algorithm:
 ...         x = dx * (i + 0.5)
 ...         y = dx * (j + 0.5)
 ...         testResult[i, j] = x * y
-...         bottomRight[i, j] = var(((L - x,), (y,)))
-...         topLeft[i, j] = var(((x,), (L - y,)))
-...         topRight[i, j] = var(((L - x,), (L - y,)))
+...         bottomRight[i, j] = var(((L - x,), (y,)))[0]
+...         topLeft[i, j] = var(((x,), (L - y,)))[0]
+...         topRight[i, j] = var(((L - x,), (L - y,)))[0]
 >>> numerix.allclose(testResult, bottomRight, atol = 1e-10)
 1
 >>> numerix.allclose(testResult, topLeft, atol = 1e-10)
