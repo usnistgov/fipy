@@ -249,7 +249,10 @@ class UniformGrid1D(UniformGrid):
                              overlap=self.args['overlap'])
 
     def __mul__(self, factor):
-        return UniformGrid1D(dx=self.dx * factor,
+        dx = numerix.array([[self.args['dx']]])
+        dx *= factor
+
+        return UniformGrid1D(dx=dx[0,0],
                              nx=self.args['nx'],
                              origin=self.args['origin'] * factor,
                              overlap=self.args['overlap'])
