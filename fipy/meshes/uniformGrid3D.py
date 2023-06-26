@@ -382,10 +382,15 @@ class UniformGrid3D(UniformGrid):
                              origin = numerix.array(self.args['origin']) + vector, overlap=self.args['overlap'])
 
     def __mul__(self, factor):
-        return UniformGrid3D(dx = self.dx * factor, nx = self.nx,
-                             dy = self.dy * factor, ny = self.ny,
-                             dz = self.dz * factor, nz = self.nz,
-                             origin = self.origin * factor)
+        dxdydz = numerix.array([[self.args['dx']],
+                                [self.args['dy']],
+                                [self.args['dz']]])
+        dxdydz *= factor
+
+        return UniformGrid3D(dx=dxdydz[0,0], nx=self.nx,
+                             dy=dxdydz[1,0], ny=self.ny,
+                             dz=dxdydz[2,0], nz=self.nz,
+                             origin=self.origin * factor)
 
     @property
     def _concatenableMesh(self):

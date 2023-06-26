@@ -386,14 +386,13 @@ class Mesh(AbstractMesh):
             [[ 1.5  4.5  1.5  4.5]
              [ 1.   1.   3.   3. ]]
 
-
         but the vector must have the same dimensionality as the `Mesh`
 
             >>> dilatedMesh = baseMesh * ((3,), (2,), (1,)) #doctest: +IGNORE_EXCEPTION_DETAIL
             Traceback (most recent call last):
             ...
             ValueError: shape mismatch: objects cannot be broadcast to a single shape
-        """
+       """
         newCoords = self.vertexCoords * factor
         newmesh = Mesh(vertexCoords=newCoords,
                        faceVertexIDs=numerix.array(self.faceVertexIDs),
@@ -786,6 +785,66 @@ class Mesh(AbstractMesh):
             ... # doctest: +SERIAL
             True
 
+
+
+        Check dilation of 1D meshes
+
+            >>> from fipy.meshes import Grid1D
+            >>> baseMesh = Grid1D(dx = 1.0, nx = 2)
+            >>> print(baseMesh.cellCenters)
+            [[ 0.5  1.5]]
+
+        The `factor` can be a scalar
+
+            >>> dilatedMesh = baseMesh * 3
+            >>> print(dilatedMesh.cellCenters)
+            [[ 1.5  4.5]]
+
+        or a vector
+
+            >>> dilatedMesh = baseMesh * ((3,),)
+            >>> print(dilatedMesh.cellCenters)
+            [[ 1.5  4.5]]
+
+        but the vector must have the same dimensionality as the `Mesh`
+
+            >>> dilatedMesh = baseMesh * ((3,), (2,), (1,)) #doctest: +IGNORE_EXCEPTION_DETAIL
+            Traceback (most recent call last):
+            ...
+            ValueError: shape mismatch: objects cannot be broadcast to a single shape
+
+
+        Check dilation of 3D meshes
+
+            >>> from fipy.meshes import Grid3D
+            >>> baseMesh = Grid3D(dx = 1.0, dy = 1.0, dz = 1.0, nx = 2, ny = 2, nz = 2)
+            >>> print(baseMesh.cellCenters)
+            [[ 0.5  1.5  0.5  1.5  0.5  1.5  0.5  1.5]
+             [ 0.5  0.5  1.5  1.5  0.5  0.5  1.5  1.5]
+             [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]]
+
+        The `factor` can be a scalar
+
+            >>> dilatedMesh = baseMesh * 3
+            >>> print(dilatedMesh.cellCenters)
+            [[ 1.5  4.5  1.5  4.5  1.5  4.5  1.5  4.5]
+             [ 1.5  1.5  4.5  4.5  1.5  1.5  4.5  4.5]
+             [ 1.5  1.5  1.5  1.5  4.5  4.5  4.5  4.5]]
+
+        or a vector
+
+            >>> dilatedMesh = baseMesh * ((3,), (2,), (1,))
+            >>> print(dilatedMesh.cellCenters)
+            [[ 1.5  4.5  1.5  4.5  1.5  4.5  1.5  4.5]
+             [ 1.   1.   3.   3.   1.   1.   3.   3. ]
+             [ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]]
+
+        but the vector must have the same dimensionality as the `Mesh`
+
+            >>> dilatedMesh = baseMesh * ((3,), (2,)) #doctest: +IGNORE_EXCEPTION_DETAIL
+            Traceback (most recent call last):
+            ...
+            ValueError: shape mismatch: objects cannot be broadcast to a single shape
         """
 
 def _test():

@@ -257,7 +257,7 @@ class PhysicalField(object):
             other = PhysicalField(value = other)
 
         if not isinstance(other, PhysicalField):
-            if numerix.alltrue(other == 0):
+            if numerix.all(other == 0):
                 new_value = sign1(selfValue)
             elif self.unit.isDimensionlessOrAngle() or self.unit.isInverseAngle():
                 new_value = sign1(selfValue) + sign2(other)
@@ -484,7 +484,7 @@ class PhysicalField(object):
         if not isinstance(other, PhysicalField):
             if isinstance(other, string_types):
                 other = PhysicalField(other)
-            elif numerix.alltrue(other == 0) or self.unit.isDimensionlessOrAngle():
+            elif numerix.all(other == 0) or self.unit.isDimensionlessOrAngle():
                 other = PhysicalField(value = other, unit = self.unit)
             else:
                 raise TypeError('Incompatible units')
@@ -654,7 +654,7 @@ class PhysicalField(object):
         As a special case, quantities with angular units are converted to
         base units (radians) and then assumed dimensionless.
 
-            >>> print(numerix.round_(float(PhysicalField("2. deg")), 6))
+            >>> print(numerix.round(float(PhysicalField("2. deg")), 6))
             0.034907
 
         If the quantity is not dimensionless, the conversion fails.
@@ -908,7 +908,7 @@ class PhysicalField(object):
         """
         Return the `PhysicalField` without units, after conversion to base SI units.
 
-            >>> print(numerix.round_(PhysicalField("1 inch").numericValue, 6))
+            >>> print(numerix.round(PhysicalField("1 inch").numericValue, 6))
             0.0254
         """
         return self.inSIUnits().value
@@ -971,7 +971,7 @@ class PhysicalField(object):
 
         The input `PhysicalField` must be dimensionless
 
-            >>> print(numerix.round_(PhysicalField("1 m").arccos(), 6))
+            >>> print(numerix.round(PhysicalField("1 m").arccos(), 6))
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -988,7 +988,7 @@ class PhysicalField(object):
 
         The input `PhysicalField` must be dimensionless
 
-            >>> print(numerix.round_(PhysicalField("1. m").arccosh(), 6))
+            >>> print(numerix.round(PhysicalField("1. m").arccosh(), 6))
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1004,7 +1004,7 @@ class PhysicalField(object):
 
         The input `PhysicalField` must be dimensionless
 
-            >>> print(numerix.round_(PhysicalField("1 m").arcsin(), 6))
+            >>> print(numerix.round(PhysicalField("1 m").arcsin(), 6))
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1065,9 +1065,9 @@ class PhysicalField(object):
         """
         Return the cosine of the `PhysicalField`
 
-            >>> print(numerix.round_(PhysicalField(2*numerix.pi/6, "rad").cos(), 6))
+            >>> print(numerix.round(PhysicalField(2*numerix.pi/6, "rad").cos(), 6))
             0.5
-            >>> print(numerix.round_(PhysicalField(60., "deg").cos(), 6))
+            >>> print(numerix.round(PhysicalField(60., "deg").cos(), 6))
             0.5
 
         The units of the `PhysicalField` must be an angle
@@ -1099,9 +1099,9 @@ class PhysicalField(object):
         """
         Return the tangent of the `PhysicalField`
 
-            >>> numerix.round_(PhysicalField(numerix.pi/4, "rad").tan(), 6)
+            >>> numerix.round(PhysicalField(numerix.pi/4, "rad").tan(), 6)
             1.0
-            >>> numerix.round_(PhysicalField(45, "deg").tan(), 6)
+            >>> numerix.round(PhysicalField(45, "deg").tan(), 6)
             1.0
 
         The units of the `PhysicalField` must be an angle
@@ -1133,15 +1133,15 @@ class PhysicalField(object):
         """
         Return the arctangent of `self` divided by `other` in radians
 
-            >>> print(numerix.round_(PhysicalField(2.).arctan2(PhysicalField(5.)), 6))
+            >>> print(numerix.round(PhysicalField(2.).arctan2(PhysicalField(5.)), 6))
             0.380506
 
         The input `PhysicalField` objects must be in the same dimensions
 
-            >>> print(numerix.round_(PhysicalField(2.54, "cm").arctan2(PhysicalField(1., "inch")), 6))
+            >>> print(numerix.round(PhysicalField(2.54, "cm").arctan2(PhysicalField(1., "inch")), 6))
             0.785398
 
-            >>> print(numerix.round_(PhysicalField(2.).arctan2(PhysicalField("5. m")), 6))
+            >>> print(numerix.round(PhysicalField(2.).arctan2(PhysicalField("5. m")), 6))
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1153,12 +1153,12 @@ class PhysicalField(object):
         """
         Return the arctangent of the `PhysicalField` in radians
 
-            >>> print(numerix.round_(PhysicalField(1).arctan(), 6))
+            >>> print(numerix.round(PhysicalField(1).arctan(), 6))
             0.785398
 
         The input `PhysicalField` must be dimensionless
 
-            >>> print(numerix.round_(PhysicalField("1 m").arctan(), 6))
+            >>> print(numerix.round(PhysicalField("1 m").arctan(), 6))
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1174,7 +1174,7 @@ class PhysicalField(object):
 
         The input `PhysicalField` must be dimensionless
 
-            >>> print(numerix.round_(PhysicalField("1 m").arctanh(), 6))
+            >>> print(numerix.round(PhysicalField("1 m").arctanh(), 6))
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1186,12 +1186,12 @@ class PhysicalField(object):
         """
         Return the natural logarithm of the `PhysicalField`
 
-            >>> print(numerix.round_(PhysicalField(10).log(), 6))
+            >>> print(numerix.round(PhysicalField(10).log(), 6))
             2.302585
 
         The input `PhysicalField` must be dimensionless
 
-            >>> print(numerix.round_(PhysicalField("1. m").log(), 6))
+            >>> print(numerix.round(PhysicalField("1. m").log(), 6))
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1202,12 +1202,12 @@ class PhysicalField(object):
         """
         Return the base-10 logarithm of the `PhysicalField`
 
-            >>> print(numerix.round_(PhysicalField(10.).log10(), 6))
+            >>> print(numerix.round(PhysicalField(10.).log10(), 6))
             1.0
 
         The input `PhysicalField` must be dimensionless
 
-            >>> print(numerix.round_(PhysicalField("1. m").log10(), 6))
+            >>> print(numerix.round(PhysicalField("1. m").log10(), 6))
             Traceback (most recent call last):
                 ...
             TypeError: Incompatible units
@@ -1415,7 +1415,7 @@ class PhysicalUnit(object):
                 return self.isDimensionless()
             else:
                 raise TypeError('PhysicalUnits can only be compared with other PhysicalUnits')
-        if not numerix.alltrue(self.powers == other.powers):
+        if not numerix.all(self.powers == other.powers):
             raise TypeError('Incompatible units')
 
     def __eq__(self, other):
@@ -1651,7 +1651,7 @@ class PhysicalUnit(object):
 
             >>> a = PhysicalField("1. mm")
             >>> b = PhysicalField("1. inch")
-            >>> print(numerix.round_(b.unit.conversionFactorTo(a.unit), 6))
+            >>> print(numerix.round(b.unit.conversionFactorTo(a.unit), 6))
             25.4
 
         Units must have the same fundamental SI units
@@ -1673,7 +1673,7 @@ class PhysicalUnit(object):
                 ...
             TypeError: Unit conversion (K to degF) cannot be expressed as a simple multiplicative factor
         """
-        if not numerix.alltrue(self.powers == other.powers):
+        if not numerix.all(self.powers == other.powers):
             if self.isDimensionlessOrAngle() and other.isDimensionlessOrAngle():
                 return self.factor / other.factor
             else:
@@ -1691,10 +1691,10 @@ class PhysicalUnit(object):
             >>> a = PhysicalField("1. K").unit
             >>> b = PhysicalField("1. degF").unit
             >>> from builtins import str
-            >>> [str(numerix.round_(element, 6)) for element in b.conversionTupleTo(a)]
+            >>> [str(numerix.round(element, 6)) for element in b.conversionTupleTo(a)]
             ['0.555556', '459.67']
         """
-        if not numerix.alltrue(self.powers == other.powers):
+        if not numerix.all(self.powers == other.powers):
             raise TypeError('Incompatible units')
 
         # let (s1,d1) be the conversion tuple from 'self' to base units
@@ -1886,17 +1886,17 @@ def _Scale(quantity, scaling):
 
     `quantity` can be a `PhysicalField`
 
-        >>> print(numerix.round_(_Scale(PhysicalField("1. inch"), PhysicalField("1. mm")), 6))
+        >>> print(numerix.round(_Scale(PhysicalField("1. inch"), PhysicalField("1. mm")), 6))
         25.4
 
     or a value-unit string convertible to a `PhysicalField`
 
-        >>> print(numerix.round_(_Scale("1. inch", PhysicalField("1. mm")), 6))
+        >>> print(numerix.round(_Scale("1. inch", PhysicalField("1. mm")), 6))
         25.4
 
     or a dimensionless number. A dimensionless number is left alone.
 
-        >>> print(numerix.round_(_Scale(PhysicalField(2.), PhysicalField("1. mm")), 6))
+        >>> print(numerix.round(_Scale(PhysicalField(2.), PhysicalField("1. mm")), 6))
         2.0
 
     It is an error for the result to have dimensions.

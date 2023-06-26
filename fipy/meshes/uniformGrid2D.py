@@ -425,11 +425,12 @@ class UniformGrid2D(UniformGrid):
                              origin = numerix.array(self.args['origin']) + vector, overlap=self.args['overlap'])
 
     def __mul__(self, factor):
-        if numerix.shape(factor) is ():
-            factor = numerix.resize(factor, (2, 1))
+        dxdy = numerix.array([[self.args['dx']],
+                              [self.args['dy']]])
+        dxdy *= factor
 
-        return UniformGrid2D(dx=self.args['dx'] * numerix.array(factor[0]), nx=self.args['nx'],
-                             dy=self.args['dy'] * numerix.array(factor[1]), ny=self.args['ny'],
+        return UniformGrid2D(dx=dxdy[0,0], nx=self.args['nx'],
+                             dy=dxdy[1,0], ny=self.args['ny'],
                              origin=numerix.array(self.args['origin']) * factor, overlap=self.args['overlap'])
 
     @property

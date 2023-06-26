@@ -532,7 +532,7 @@ class _MeshVariable(Variable):
         newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other)
 
         if ((newOpShape is None or baseClass is None)
-            and numerix.alltrue(numerix.array(numerix.getShape(other)) == self.mesh.dim)):
+            and numerix.all(numerix.array(numerix.getShape(other)) == self.mesh.dim)):
                 newOpShape, baseClass, newOther = Variable._shapeClassAndOther(self, opShape, operatorClass, other[..., numerix.newaxis])
 
         return (newOpShape, baseClass, newOther)
