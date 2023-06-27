@@ -250,6 +250,7 @@ Péclet
 PEG-SPS-Cl
 Peric
 PETSc
+petsc4py
 photovoltaics
 PID
 pipelines.yml
