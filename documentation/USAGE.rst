@@ -44,6 +44,8 @@ Python can be obtained from the :cite:`PythonReference`.
 As you gain experience, you may want to browse through the
 :ref:`FlagsAndEnvironmentVariables` that affect :term:`FiPy`.
 
+.. _LOGGING:
+
 -------
 Logging
 -------

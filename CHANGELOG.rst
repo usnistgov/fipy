@@ -11,6 +11,34 @@ Change Log
 Version |release|
 -----------------
 
+This maintenance release adds :ref:`LOGGING` and resolves compatibility issues
+with recent builds of :term:`PETSc` and :term:`NumPy`.
+
+Pulls
+-----
+
+- Fix numpy 1.25 issues
+  (`#930 <https://github.com/usnistgov/fipy/pull/930>`_)
+- Get CI working again
+  (`#925 <https://github.com/usnistgov/fipy/pull/925>`_)
+- Discourage StackOverflow
+  (`#876 <https://github.com/usnistgov/fipy/pull/876>`_)
+- Add Logging
+  (`#875 <https://github.com/usnistgov/fipy/pull/875>`_)
+- Add tests for the Nix build
+  (`#791 <https://github.com/usnistgov/fipy/pull/791>`_)
+
+Fixes
+-----
+
+- `#896 <https://github.com/usnistgov/fipy/issues/896>`_:
+  Poor garbage collection with petsc4py 3.18.3 (was "Memory leak in
+  `term.justErrorVector()`", but this isn't strictly a leak)
+
+--------------------------
+Version 3.4.3 - 2022-06-15
+--------------------------
+
 This maintenance release adds a new example contributed by
 `@Jon83Carvalho <https://github.com/Jon83Carvalho>`_,
 clarifies many points in the documentation,
