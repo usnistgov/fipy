@@ -41,6 +41,13 @@ py:class setuptools.command.test.test
 # fipy.tools
 py:class PhysicalQuantity
 
+# fipy.tools.dump
+py:class file
+
+# fipy.tools.sharedtempfile.SharedTemporaryFile
+py:class file object
+py:class file-like object
+
 # fipy.variables
 py:class fipy.variables.meshVariable._MeshVariable
 py:class fipy.variables.cellToFaceVariable._CellToFaceVariable

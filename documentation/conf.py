@@ -379,6 +379,9 @@ def setup(app):
 # Enable nitpicky mode - which ensures that all references in the docs
 # resolve.
 
+# Lots of things aren't defined, though
+# https://stackoverflow.com/a/30624034/2019542
+
 nitpicky = True
 nitpick_ignore = []
 
