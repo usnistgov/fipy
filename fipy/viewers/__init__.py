@@ -2,27 +2,19 @@ from __future__ import unicode_literals
 from builtins import str
 __docformat__ = 'restructuredtext'
 
-__all__ = []
-
 try:
     from fipy.viewers.matplotlibViewer import *
-    __all__.extend(matplotlibViewer.__all__)
 except:
     pass
 
 try:
     from fipy.viewers.mayaviViewer import *
-    __all__.extend(mayaviViewer.__all__)
 except:
     pass
 
 from fipy.viewers.multiViewer import *
 from fipy.viewers.tsvViewer import *
 from fipy.viewers.vtkViewer import *
-
-__all__.extend(multiViewer.__all__)
-__all__.extend(tsvViewer.__all__)
-__all__.extend(vtkViewer.__all__)
 
 # what about vector variables?
 
@@ -134,7 +126,3 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         return MultiViewer(viewers = viewers)
     else:
         return viewers[0]
-
-__all__.extend(["MeshDimensionError", "DummyViewer", "Viewer"])
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]

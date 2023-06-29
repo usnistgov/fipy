@@ -47,34 +47,3 @@ from fipy.terms.vanLeerConvectionTerm import *
 from fipy.terms.firstOrderAdvectionTerm import *
 from fipy.terms.advectionTerm import *
 ConvectionTerm = PowerLawConvectionTerm
-
-__all__ = ["ExplicitVariableError",
-           "TermMultiplyError",
-           "AbstractBaseClassError",
-           "VectorCoeffError",
-           "SolutionVariableNumberError",
-           "SolutionVariableRequiredError",
-           "IncorrectSolutionVariable",
-           "ConvectionTerm",
-           "FirstOrderAdvectionTerm",
-           "AdvectionTerm"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
-
-__all__.extend(transientTerm.__all__)
-__all__.extend(diffusionTerm.__all__)
-__all__.extend(diffusionTermCorrection.__all__)
-__all__.extend(diffusionTermNoCorrection.__all__)
-__all__.extend(explicitDiffusionTerm.__all__)
-__all__.extend(implicitDiffusionTerm.__all__)
-__all__.extend(implicitSourceTerm.__all__)
-__all__.extend(residualTerm.__all__)
-__all__.extend(centralDiffConvectionTerm.__all__)
-__all__.extend(explicitUpwindConvectionTerm.__all__)
-__all__.extend(exponentialConvectionTerm.__all__)
-__all__.extend(hybridConvectionTerm.__all__)
-__all__.extend(powerLawConvectionTerm.__all__)
-__all__.extend(upwindConvectionTerm.__all__)
-__all__.extend(vanLeerConvectionTerm.__all__)
-__all__.extend(firstOrderAdvectionTerm.__all__)
-__all__.extend(advectionTerm.__all__)

@@ -72,16 +72,6 @@ from fipy.tools import *
 from fipy.variables import *
 from fipy.viewers import *
 
-__all__ = []
-__all__.extend(boundaryConditions.__all__)
-__all__.extend(meshes.__all__)
-__all__.extend(solvers.__all__)
-__all__.extend(steppers.__all__)
-__all__.extend(terms.__all__)
-__all__.extend(tools.__all__)
-__all__.extend(variables.__all__)
-__all__.extend(viewers.__all__)
-
 # fipy needs to export raw_input whether or not parallel
 
 input_original = input
@@ -97,11 +87,6 @@ if parallelComm.Nproc > 1:
         else:
             return ""
     input = mpi_input
-
-__all__.extend(['input', 'input_original'])
-
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 _saved_stdout = sys.stdout
 

@@ -11,9 +11,6 @@ from importlib import import_module
 from fipy.tools.parser import _parseSolver
 
 from fipy.solvers.solver import *
-__all__ = list(solver.__all__)
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 _desired_solver = _parseSolver()
 
@@ -61,7 +58,6 @@ if solver is None and _desired_solver in ["pysparse", None]:
         if _Nproc > 1:
             raise SerialSolverError()
         from fipy.solvers.pysparse import *
-        __all__.extend(pysparse.__all__)
         _mesh_matrices = _import_mesh_matrices(suite="Pysparse")
         solver = "pysparse"
     except Exception as inst:
@@ -73,7 +69,6 @@ if solver is None and _desired_solver in ["petsc", None]:
         petsc4py.init()
 
         from fipy.solvers.petsc import *
-        __all__.extend(petsc.__all__)
 
         from fipy.solvers.petsc.comms.serialPETScCommWrapper import SerialPETScCommWrapper
         serialComm = SerialPETScCommWrapper()
@@ -92,7 +87,6 @@ if solver is None and _desired_solver in ["petsc", None]:
 if solver is None and _desired_solver in ["trilinos", "no-pysparse", None]:
     try:
         from fipy.solvers.trilinos import *
-        __all__.extend(trilinos.__all__)
         
         from fipy.solvers.trilinos.comms.serialEpetraCommWrapper import SerialEpetraCommWrapper
         serialComm = SerialEpetraCommWrapper()
@@ -122,7 +116,6 @@ if solver is None and _desired_solver in ["scipy", None]:
         if _Nproc > 1:
             raise SerialSolverError()
         from fipy.solvers.scipy import *
-        __all__.extend(scipy.__all__)
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver = "scipy"
     except Exception as inst:
@@ -133,7 +126,6 @@ if solver is None and _desired_solver in ["pyamg", None]:
         if _Nproc > 1:
             raise SerialSolverError()
         from fipy.solvers.pyAMG import *
-        __all__.extend(pyAMG.__all__)
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver = "pyamg"
     except Exception as inst:
@@ -144,7 +136,6 @@ if solver is None and _desired_solver in ["pyamgx", None]:
         if _parallelComm.Nproc > 1:
             raise  SerialSolverError('pyamgx')
         from fipy.solvers.pyamgx import *
-        __all__.extend(pyamgx.__all__)
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver = "pyamgx"
     except Exception as inst:
