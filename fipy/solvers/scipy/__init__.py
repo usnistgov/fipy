@@ -11,6 +11,6 @@ from fipy.solvers.scipy.linearLUSolver import *
 from fipy.solvers.scipy.linearPCGSolver import *
 
 DefaultSolver = LinearLUSolver
-DummySolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearLUSolver
+DummySolver = LinearGMRESSolver
 GeneralSolver = LinearLUSolver

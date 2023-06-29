@@ -50,6 +50,28 @@ def _import_mesh_matrices(suite):
 
 solver = None
 
+# The following definitions are only to provide documentation.
+# They will be overridden by the solver suite that's actually imported.
+DefaultSolver = None
+"""Solver class for solving symmetric matrices.
+
+This solver should be both robust and performant.
+"""
+DefaultAsymmetricSolver = None
+"""Solver class for solving asymmetric matrices.
+"""
+DummySolver = None
+"""Solver used by tests that don't actually need to solve.
+
+Some tests are intended to confirm the matrix building machinery, but don't
+actually need to solve (and may not be able to, e.g., zeros on the
+diagonal).
+"""
+GeneralSolver = None
+"""Solver class that should solve any matrix.
+"""
+
+
 from fipy.tools.comms.dummyComm import DummyComm
 serialComm, parallelComm = DummyComm(), DummyComm()
 
