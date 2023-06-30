@@ -243,9 +243,9 @@ latex_elements = {
     \\newcommand{\\sphinxbackoftitlepage}{%
       \\changepage{}{}{}{}{}{}{}{}{}
       \\vspace*{\\fill}
-      \\input LICENSE
+      \\input LICENSE.tex.txt
       \\rule{\\textwidth}{0.1pt}
-      \\input DISCLAIMER
+      \\input DISCLAIMER.tex.txt
     }
     \\renewcommand{\\sphinxmaketitle}{%
       \\let\\spx@tempa\\relax
@@ -331,13 +331,40 @@ latex_documents = [
 # not chapters.
 latex_toplevel_sectioning = 'part'
 
-latex_additional_files = ['figures/nistident_flright_vec.pdf']
+# Goofy `.tex.txt` suffix required to keep files from being submitted to
+# PDF build process
+# https://www.sphinx-doc.org/en/master/latex.html#the-latex-elements-configuration-setting
+latex_additional_files = [
+    'figures/nistident_flright_vec.pdf',
+    'LICENSE.tex.txt',
+    'DISCLAIMER.tex.txt'
+]
 
 # Documents to append as an appendix to all manuals.
 # latex_appendices = ['documentation/refs.bib_cited']
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+# --------------------------------------------------------
+
+# convert and move files
+
+outdir = os.path.join('_build', 'latex')
+
+from docutils.core import publish_file
+
+for xtra in ("LICENSE", "DISCLAIMER"):
+    publish_file(source_path="%s.rst" % xtra,
+                 destination_path="%s.tex.txt" % xtra,
+                 reader_name='standalone',
+                 parser_name='restructuredtext',
+                 writer_name='latex',
+                 settings_overrides= {
+                     'template': '_templates/empty.tex'
+                 })
+
+# --------------------------------------------------------
 
 imgmath_latex_preamble = common_preamble
 imgmath_image_format = "svg"
