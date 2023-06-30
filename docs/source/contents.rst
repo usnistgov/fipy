@@ -12,8 +12,6 @@ FiPy Contents
    EXAMPLES
    API
    references
-   LICENSE
-   ../DISCLAIMER
 
 .. toctree::
    :hidden:
@@ -25,3 +23,5 @@ FiPy Contents
    external_definitions
    NIX-README
    manual
+   LICENSE
+   DISCLAIMER

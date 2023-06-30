@@ -1,6 +1,6 @@
 .. _part:examples:
 
-.. include:: ../examples/README.rst
+.. include:: ../../examples/README.rst
 
 Diffusion Examples
 ------------------

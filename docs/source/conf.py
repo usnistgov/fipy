@@ -281,7 +281,7 @@ latex_additional_files = [
 ]
 
 # Documents to append as an appendix to all manuals.
-# latex_appendices = ['documentation/refs.bib_cited']
+# latex_appendices = ['docs/source/refs.bib_cited']
 
 # If false, no module index is generated.
 #latex_use_modindex = True

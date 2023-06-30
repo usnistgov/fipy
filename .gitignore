@@ -7,8 +7,7 @@ FiPy.egg-info
 MANIFEST.in
 dist/
 documentation/_build/
-documentation/tutorial/package/generated/
-examples/reactiveWetting/generated/
+generated/
 *.logamgx
 *.dump.gz
 worktrees/

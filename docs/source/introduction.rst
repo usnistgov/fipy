@@ -5,8 +5,8 @@ Introduction
 .. toctree::
    :maxdepth: 3
 
-   ../README
-   ../INSTALLATION
+   README
+   INSTALLATION
    ADMINISTRATA
    SOLVERS
    VIEWERS
@@ -18,5 +18,5 @@ Introduction
    VKML
    CREDITS
    PUBLICATIONS
-   ../CHANGELOG
+   CHANGELOG
    glossary

@@ -191,9 +191,9 @@ the tagged build products from Azure_ Artifacts and place in
  * :file:`dist-docs/html-{x.y}.tar.gz`
 
 From the :file:`{FiPySource}` directory, unpack :file:`dist/html-{x.y}.tar.gz`
-into :file:`documentation/_build` with::
+into :file:`docs/build` with::
 
-    $ tar -xzf dist/html-{x.y}.tar.gz -C documentation/_build
+    $ tar -xzf dist/html-{x.y}.tar.gz -C docs/build
 
 
 ------
