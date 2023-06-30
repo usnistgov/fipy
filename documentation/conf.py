@@ -229,6 +229,7 @@ common_preamble = """
     \\usepackage{changepage}
 
     \\DeclareMathOperator{\\erf}{erf}
+    \\DeclareMathOperator{\\Ei}{ei}
     \\providecommand{\\abs}[1]{\\lvert#1\\rvert}
     """
 
