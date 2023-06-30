@@ -23,9 +23,14 @@ jobs:
             )
             )
             && git config --global --add safe.directory /github/workspace
-            && sphinx-apidoc --output-dir=documentation/generated/fipy --suffix=rst fipy
             && sphinx-apidoc
-            --output-dir=documentation/generated/tutorial
-            --suffix=rst documentation/tutorial/package
+                --output-dir=docs/source/generated/fipy
+                --suffix=rst fipy
+            && sphinx-apidoc
+                --output-dir=docs/source/generated/examples
+                --suffix=rst examples
+            && sphinx-apidoc
+                --output-dir=docs/source/generated/tutorial
+                --suffix=rst docs/source/tutorial/package
           build-command: >
             sphinx-build -b html -n -c . .. _build/html/
