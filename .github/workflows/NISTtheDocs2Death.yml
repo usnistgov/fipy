@@ -8,7 +8,6 @@ jobs:
     steps:
       - uses: usnistgov/NISTtheDocs2Death@main
         with:
-          docs-folder: documentation/
           pre-build-command: >
             which git
             || (
@@ -32,5 +31,3 @@ jobs:
             && sphinx-apidoc
                 --output-dir=docs/source/generated/tutorial
                 --suffix=rst docs/source/tutorial/package
-          build-command: >
-            sphinx-build -b html -n -c . .. _build/html/
