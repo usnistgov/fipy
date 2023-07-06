@@ -8,6 +8,8 @@ jobs:
     steps:
       - uses: usnistgov/NISTtheDocs2Death@main
         with:
+          docs-folder: docs
+          separated-layout: true
           pre-build-command: >
             which git
             || (
