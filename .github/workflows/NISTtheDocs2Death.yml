@@ -25,12 +25,12 @@ jobs:
             )
             && git config --global --add safe.directory /github/workspace
             && mkdir -p docs/source/generated
-            && (sphinx-apidoc
-                --output-dir=docs/source/generated
-                --suffix=rst fipy)
-            && (sphinx-apidoc
-                --output-dir=docs/source/generated
-                --suffix=rst examples)
-            && (sphinx-apidoc
-                --output-dir=docs/source/generated
-                --suffix=rst docs/source/tutorial/package)
+            && sphinx-apidoc \
+                --output-dir=docs/source/generated \
+                --suffix=rst fipy
+            && sphinx-apidoc \
+                --output-dir=docs/source/generated \
+                --suffix=rst examples
+            && sphinx-apidoc \
+                --output-dir=docs/source/generated \
+                --suffix=rst docs/source/tutorial/package
