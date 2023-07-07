@@ -34,4 +34,3 @@ jobs:
             && sphinx-apidoc
             --output-dir=docs/source/generated
             --suffix=rst docs/source/tutorial/package
-
