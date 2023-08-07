@@ -6,7 +6,7 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: usnistgov/NISTtheDocs2Death@0.1
+      - uses: usnistgov/NISTtheDocs2Death@refactor_sphinxdocs
         with:
           docs-folder: docs
           separated-layout: true
