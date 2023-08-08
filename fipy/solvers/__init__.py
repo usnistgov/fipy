@@ -48,7 +48,7 @@ def _import_mesh_matrices(suite):
 
     return _RowMeshMatrix, _ColMeshMatrix, _MeshMatrix
 
-solver = None
+solver_suite = None
 
 # The following definitions are only to provide documentation.
 # They will be overridden by the solver suite that's actually imported.
@@ -75,17 +75,17 @@ GeneralSolver = None
 from fipy.tools.comms.dummyComm import DummyComm
 serialComm, parallelComm = DummyComm(), DummyComm()
 
-if solver is None and _desired_solver in ["pysparse", None]:
+if solver_suite is None and _desired_solver in ["pysparse", None]:
     try:
         if _Nproc > 1:
             raise SerialSolverError()
         from fipy.solvers.pysparse import *
         _mesh_matrices = _import_mesh_matrices(suite="Pysparse")
-        solver = "pysparse"
+        solver_suite = "pysparse"
     except Exception as inst:
         _exceptions["pysparse"] = inst
 
-if solver is None and _desired_solver in ["petsc", None]:
+if solver_suite is None and _desired_solver in ["petsc", None]:
     try:
         import petsc4py
         petsc4py.init()
@@ -102,11 +102,11 @@ if solver is None and _desired_solver in ["petsc", None]:
             parallelComm = SerialPETScCommWrapper()
 
         _mesh_matrices = _import_mesh_matrices(suite="PETSc")
-        solver = "petsc"
+        solver_suite = "petsc"
     except Exception as inst:
         _exceptions["petsc"] = inst
 
-if solver is None and _desired_solver in ["trilinos", "no-pysparse", None]:
+if solver_suite is None and _desired_solver in ["trilinos", "no-pysparse", None]:
     try:
         from fipy.solvers.trilinos import *
         
@@ -122,48 +122,48 @@ if solver is None and _desired_solver in ["trilinos", "no-pysparse", None]:
         if _desired_solver != "no-pysparse":
             try:
                 _mesh_matrices = _import_mesh_matrices(suite="Pysparse")
-                solver = "trilinos"
+                solver_suite = "trilinos"
             except ImportError:
                 pass
                 
-        if solver is None:
+        if solver_suite is None:
             # no-pysparse requested or pysparseMatrix failed to import
             _mesh_matrices = _import_mesh_matrices(suite="Trilinos")
-            solver = "no-pysparse"
+            solver_suite = "no-pysparse"
     except Exception as inst:
         _exceptions["trilinos"] = inst
 
-if solver is None and _desired_solver in ["scipy", None]:
+if solver_suite is None and _desired_solver in ["scipy", None]:
     try:
         if _Nproc > 1:
             raise SerialSolverError()
         from fipy.solvers.scipy import *
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
-        solver = "scipy"
+        solver_suite = "scipy"
     except Exception as inst:
         _exceptions["scipy"] = inst
 
-if solver is None and _desired_solver in ["pyamg", None]:
+if solver_suite is None and _desired_solver in ["pyamg", None]:
     try:
         if _Nproc > 1:
             raise SerialSolverError()
         from fipy.solvers.pyAMG import *
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
-        solver = "pyamg"
+        solver_suite = "pyamg"
     except Exception as inst:
         _exceptions["pyamg"] = inst
 
-if solver is None and _desired_solver in ["pyamgx", None]:
+if solver_suite is None and _desired_solver in ["pyamgx", None]:
     try:
         if _parallelComm.Nproc > 1:
             raise  SerialSolverError('pyamgx')
         from fipy.solvers.pyamgx import *
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
-        solver = "pyamgx"
+        solver_suite = "pyamgx"
     except Exception as inst:
         _exceptions["pyamgx"] = inst
 
-if solver is None:
+if solver_suite is None:
     if _desired_solver is None:
         raise ImportError('Unable to load a solver: %s' % str(_exceptions))
     else:
@@ -178,17 +178,17 @@ _RowMeshMatrix, _ColMeshMatrix, _MeshMatrix = _mesh_matrices
 from fipy.tests.doctestPlus import register_skipper
 
 register_skipper(flag='PYSPARSE_SOLVER',
-                 test=lambda: solver == 'pysparse',
+                 test=lambda: solver_suite == 'pysparse',
                  why="the Pysparse solvers are not being used.",
                  skipWarning=True)
 
 register_skipper(flag='NOT_PYAMGX_SOLVER',
-                 test=lambda: solver != 'pyamgx',
+                 test=lambda: solver_suite != 'pyamgx',
                  why="the PyAMGX solver is being used.",
                  skipWarning=True)
 del register_skipper
 
-_log.info("Solver suite is %s", solver)
+_log.info("Solver suite is %s", solver_suite)
 _log.debug("DefaultSolver is %s", DefaultSolver)
 _log.debug("DefaultAsymmetricSolver is %s", DefaultAsymmetricSolver)
 _log.debug("DummySolver is %s", DummySolver)
