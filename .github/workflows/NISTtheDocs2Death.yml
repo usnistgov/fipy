@@ -9,8 +9,6 @@ jobs:
       - uses: usnistgov/NISTtheDocs2Death@0.2
         with:
           docs-folder: docs
-          separated-layout: true
           formats: |-
             epub
             pdf
-
