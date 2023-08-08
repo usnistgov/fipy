@@ -42,10 +42,10 @@ import os
 import sys
 
 # log uncaught exceptions
-def excepthook(*args):
+def _excepthook(*args):
   _log.error('Uncaught exception:', exc_info=args)
 
-sys.excepthook = excepthook
+sys.excepthook = _excepthook
 
 # configure logging before doing anything else, otherwise we'll miss things
 if 'FIPY_LOG_CONFIG' in os.environ:
