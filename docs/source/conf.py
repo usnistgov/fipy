@@ -138,7 +138,7 @@ napoleon_type_aliases = {
     'array_like': ':term:`array_like`'
 }
 
-# autosummary_generate = True
+autosummary_generate = True
 
 # numpydoc_show_class_members = False
 

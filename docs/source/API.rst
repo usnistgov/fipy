@@ -6,10 +6,13 @@
 
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
 
    tutorial/index
-   generated/fipy/fipy
-   generated/examples/examples
 
-..   generated/fipy/modules
+.. autosummary::
+   :toctree: generated
+   :recursive:
+
+   fipy
+   examples

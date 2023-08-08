@@ -11,7 +11,8 @@ packages, *e.g.* :mod:`fipy.package.subpackage` located in
 their own chapters; rather, their contents will be described in the chapter
 for their containing package.
 
-.. toctree::
-   :maxdepth: 4
+.. autosummary::
+   :toctree: generated
+   :recursive:
 
-   ../generated/tutorial/package.subpackage
+   package

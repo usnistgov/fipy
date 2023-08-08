@@ -1088,17 +1088,9 @@ become available on conda-forge_.
 Manual
 ------
 
-You can view the manual online at <http://www.ctcms.nist.gov/fipy> or you
-can `download the latest manual`_ from
-<http://www.ctcms.nist.gov/fipy/download/>. Alternatively,
-it may be possible to build a fresh copy by issuing the following
-command in the :file:`docs/` directory::
-
-    $ sphinx-apidoc --output-dir=source/generated/fipy --suffix=rst ../fipy
-    $ sphinx-apidoc --output-dir=source/generated/examples --suffix=rst ../examples
-    $ sphinx-apidoc --output-dir=source/generated/tutorial --suffix=rst source/tutorial/package
-
-and then::
+You can view the manual online at <http://pages.nist.gov/fipy>.
+Alternatively, it may be possible to build a fresh copy by issuing the
+following command in the :file:`docs/` directory::
 
     $ make html
 

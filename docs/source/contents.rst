@@ -18,8 +18,6 @@ FiPy Contents
 
    GUIDELINES
    GIT
-   generated/tutorial/package
-   generated/examples/modules
    external_definitions
    NIX-README
    manual
