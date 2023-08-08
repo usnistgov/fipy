@@ -7,11 +7,12 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class Constraint(object):
-    def __init__(self, value, where=None):
-        """Object to hold a `Variable` to `value` at `where`
+    """Object to hold a `Variable` to `value` at `where`
 
-        see :meth:`~fipy.variables.variable.Variable.constrain`
-        """
+    see :meth:`~fipy.variables.variable.Variable.constrain`
+    """
+
+    def __init__(self, value, where=None):
         self.value = value
         self.where = where
 
