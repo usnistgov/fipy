@@ -52,9 +52,9 @@ for M in (2, 3):
                          why="not running on processor %d of %d" % (N, M),
                          skipWarning=False)
 
-import fipy.tools.dump
-import fipy.tools.numerix
-import fipy.tools.vector
+from fipy.tools import dump
+from fipy.tools import numerix
+from fipy.tools import vector
 from .dimensions.physicalField import PhysicalField
 from fipy.tools.numerix import *
 from fipy.tools.vitals import Vitals
