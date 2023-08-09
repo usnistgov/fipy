@@ -9,6 +9,7 @@ jobs:
       - uses: usnistgov/NISTtheDocs2Death@main
         with:
           docs-folder: docs
+          pre-build-command: python setup.py version
           formats: |-
             epub
             pdf
