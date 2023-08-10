@@ -1,0 +1,23 @@
+examples.elphf.diffusion.mesh1D
+===============================
+
+.. automodule:: examples.elphf.diffusion.mesh1D
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

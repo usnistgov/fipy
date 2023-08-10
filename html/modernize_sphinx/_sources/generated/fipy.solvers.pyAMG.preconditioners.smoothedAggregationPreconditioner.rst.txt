@@ -1,0 +1,29 @@
+fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner
+====================================================================
+
+.. automodule:: fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SmoothedAggregationPreconditioner
+   
+   
+
+   
+   
+   
+
+
+

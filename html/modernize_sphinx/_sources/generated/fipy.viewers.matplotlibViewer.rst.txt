@@ -1,0 +1,29 @@
+fipy.viewers.matplotlibViewer
+=============================
+
+.. automodule:: fipy.viewers.matplotlibViewer
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AbstractMatplotlibViewer
+   
+   
+
+   
+   
+   
+
+
+

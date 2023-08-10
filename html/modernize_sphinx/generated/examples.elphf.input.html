@@ -1,0 +1,625 @@
+
+<!DOCTYPE html>
+
+
+<!--[if IEMobile 7]><html class="iem7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html class="no-js"  lang="en" dir="ltr" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# book: http://ogp.me/ns/book# profile: http://ogp.me/ns/profile# video: http://ogp.me/ns/video# product: http://ogp.me/ns/product# content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#"><!--<![endif]-->
+
+  <head>
+<meta charset="utf-8" />
+<link rel="shortcut icon" href="https://www.nist.gov/sites/all/themes/nist_style/favicon.ico" type="image/vnd.microsoft.icon" />
+<script type="text/x-mathjax-config">MathJax.Hub.Config({
+  extensions: ['tex2jax.js'],
+  jax: ['input/TeX','output/HTML-CSS'],
+  tex2jax: {
+    inlineMath: [ ['$$','$$'], ['\\(','\\)'] ],
+    processEscapes: true,
+    processClass: 'tex2jax',
+    ignoreClass: 'html'
+  },
+  showProcessingMessages: false,
+  messageStyle: 'none'
+});
+</script>
+<meta name="MobileOptimized" content="width">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+
+      <!--[if lt IE 9]>
+    <script src="https://www.nist.gov/sites/all/themes/zen/js/html5-respond.js"></script>
+    <![endif]-->
+    <!--[if (gte IE 6)&(lte IE 8)]>
+  <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
+  <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>examples.elphf.input &#8212; FiPy 0+unknown documentation</title>
+    <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="FiPy 0+unknown documentation" href="../contents.html" />
+    <link rel="up" title="examples.elphf" href="examples.elphf.html" />
+    <link rel="next" title="examples.elphf.phase" href="examples.elphf.phase.html" />
+    <link rel="prev" title="examples.elphf.diffusion.mesh2D" href="examples.elphf.diffusion.mesh2D.html" />
+  
+ 
+
+
+  <link rel="stylesheet" href="https://pages.nist.gov/nist-header-footer/css/nist-combined.css">
+  <script src="https://code.jquery.com/jquery-3.6.2.min.js" type="text/javascript" defer="defer"></script>
+  <script src="https://pages.nist.gov/nist-header-footer/js/nist-header-footer.js" type="text/javascript" defer="defer"></script>
+
+  </head>
+<!--  <body role="document">-->
+  <body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-414011 node-type-software hide-breadcrumb section-services-resources page-panels is-panel" role="document">
+      <div id="page" class="mini-header">
+
+
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="examples.elphf.phase.html" title="examples.elphf.phase"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="examples.elphf.diffusion.mesh2D.html" title="examples.elphf.diffusion.mesh2D"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html"><img src="../_static/fipy.png" alt="FiPy logo"
+                 style="vertical-align: middle; margin-top: -1px"/>
+        FiPy</a> &gt;</li>
+
+          <li class="nav-item nav-item-1"><a href="../API.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code> Package Documentation</a> &gt;</li>
+          <li class="nav-item nav-item-2"><a href="examples.html" >examples</a> &gt;</li>
+          <li class="nav-item nav-item-3"><a href="examples.elphf.html" accesskey="U">examples.elphf</a> &gt;</li> 
+      </ul>
+    </div>
+
+  <div id="main" class="clearfix" role="main" tabindex="-1">
+    <div class="main__inner">
+      <div class="page-info">
+        <a id="main-content"></a>
+      </div>
+
+      <div class="document">
+        <div class="documentwrapper">
+
+      <div id="content" class="column">
+      <div id="block-nist-www-content" class="nist-block">
+        <section class="nist-page__content usa-section clearfix">
+
+         
+
+        <div class="grid-container margin-top-4">
+        <div class="grid-row grid-gap-6">
+
+  <div class="nist-page__region nist-page__region--content tablet-lg:grid-col-8">
+              <div class="body" role="main">
+		
+  <section id="module-examples.elphf.input">
+<span id="examples-elphf-input"></span><h1>examples.elphf.input<a class="headerlink" href="#module-examples.elphf.input" title="Permalink to this heading">¶</a></h1>
+<p>This example adds two more components to
+<code class="docutils literal notranslate"><span class="pre">examples/elphf/input1DphaseBinary.py</span></code>
+one of which is another substitutional species and the other represents
+electrons and diffuses interstitially.</p>
+<p>Parameters from <cite>2004/January/21/elphf0214</cite></p>
+<p>We start by defining a 1D mesh</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">PhysicalField</span> <span class="k">as</span> <span class="n">PF</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">RT</span> <span class="o">=</span> <span class="p">(</span><span class="n">PF</span><span class="p">(</span><span class="s2">&quot;1 Nav*kB&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;298 K&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">molarVolume</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;1.80000006366754e-05 m**3/mol&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Faraday</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;1 Nav*e&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">L</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;3 nm&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nx</span> <span class="o">=</span> <span class="mi">1200</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dx</span> <span class="o">=</span> <span class="n">L</span> <span class="o">/</span> <span class="n">nx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># nx = 200</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># dx = PF(&quot;0.01 nm&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">## dx = PF(&quot;0.001 nm&quot;) * (1.001 - 1/cosh(arange(-10, 10, .01)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># L = nx * dx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid1D</span><span class="p">(</span><span class="n">dx</span> <span class="o">=</span> <span class="n">dx</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">nx</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># mesh = Grid1D(dx = dx)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># L = mesh.facesRight[0].center[0] - mesh.facesLeft[0].center[0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># L = mesh.cellCenters[0,-1] - mesh.cellCenters[0,0]</span>
+</pre></div>
+</div>
+<p>We create the phase field</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">timeStep</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;1e-12 s&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;xi&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">hasOld</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span><span class="o">.</span><span class="n">mobility</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;1 m**3/J/s&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">molarVolume</span> <span class="o">/</span> <span class="p">(</span><span class="n">RT</span> <span class="o">*</span> <span class="n">timeStep</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span><span class="o">.</span><span class="n">gradientEnergy</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;3.6e-11 J/m&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">scale</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">RT</span> <span class="o">/</span> <span class="n">molarVolume</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">p</span><span class="p">(</span><span class="n">xi</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">xi</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="n">xi</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">15</span> <span class="o">*</span> <span class="n">xi</span> <span class="o">+</span> <span class="mf">10.</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">xi</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="p">(</span><span class="n">xi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">xi</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">pPrime</span><span class="p">(</span><span class="n">xi</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="mf">30.</span> <span class="o">*</span> <span class="p">(</span><span class="n">xi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">xi</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">gPrime</span><span class="p">(</span><span class="n">xi</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">xi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">xi</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">-</span> <span class="n">xi</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We create four components</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">ComponentVariable</span><span class="p">(</span><span class="n">CellVariable</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">standardPotential</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">barrier</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">diffusivity</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">valence</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">equation</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">hasOld</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">standardPotential</span> <span class="o">=</span> <span class="n">standardPotential</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">barrier</span> <span class="o">=</span> <span class="n">barrier</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">diffusivity</span> <span class="o">=</span> <span class="n">diffusivity</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">valence</span> <span class="o">=</span> <span class="n">valence</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">equation</span> <span class="o">=</span> <span class="n">equation</span>
+<span class="gp">... </span>        <span class="n">CellVariable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">hasOld</span> <span class="o">=</span> <span class="n">hasOld</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">standardPotential</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standardPotential</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">barrier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">barrier</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">diffusivity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffusivity</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">valence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valence</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">equation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">equation</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">hasOld</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>the solvent</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">solvent</span> <span class="o">=</span> <span class="n">ComponentVariable</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;H2O&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CnStandardPotential</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;34139.7265625 J/mol&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="n">RT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CnBarrier</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;3.6e5 J/mol&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="n">RT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CnValence</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>and two solute species</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">substitutionals</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="n">ComponentVariable</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;SO4&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">diffusivity</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;1e-9 m**2/s&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">scale</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">timeStep</span><span class="p">),</span>
+<span class="gp">... </span>                      <span class="n">standardPotential</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;24276.6640625 J/mol&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="n">RT</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">barrier</span> <span class="o">=</span> <span class="n">CnBarrier</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">valence</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">value</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;0.000010414586295976 mol/l&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">molarVolume</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">ComponentVariable</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Cu&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">diffusivity</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;1e-9 m**2/s&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">scale</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">timeStep</span><span class="p">),</span>
+<span class="gp">... </span>                      <span class="n">standardPotential</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;-7231.81396484375 J/mol&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="n">RT</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">barrier</span> <span class="o">=</span> <span class="n">CnBarrier</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">valence</span> <span class="o">=</span> <span class="o">+</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">value</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;55.5553718417909 mol/l&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">molarVolume</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>and one interstitial</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">interstitials</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="n">ComponentVariable</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;e-&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">diffusivity</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;1e-9 m**2/s&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">scale</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">timeStep</span><span class="p">),</span>
+<span class="gp">... </span>                      <span class="n">standardPotential</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;-33225.9453125 J/mol&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="n">RT</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">barrier</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">valence</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>                      <span class="n">value</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;111.110723815414 mol/l&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">molarVolume</span><span class="p">)]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">substitutionals</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">solvent</span> <span class="o">-=</span> <span class="n">component</span>
+<span class="gp">... </span>    <span class="n">component</span><span class="o">.</span><span class="n">standardPotential</span> <span class="o">-=</span> <span class="n">CnStandardPotential</span>
+<span class="gp">... </span>    <span class="n">component</span><span class="o">.</span><span class="n">barrier</span> <span class="o">-=</span> <span class="n">CnBarrier</span>
+<span class="gp">... </span>    <span class="n">component</span><span class="o">.</span><span class="n">valence</span> <span class="o">-=</span> <span class="n">CnValence</span>
+</pre></div>
+</div>
+<p>Finally, we create the electrostatic potential field</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">potential</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;phi&#39;</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">permittivity</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="s2">&quot;78.49 eps0&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Faraday</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">mesh</span><span class="o">.</span><span class="n">scale</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">RT</span> <span class="o">*</span> <span class="n">molarVolume</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">permittivity</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">permittivityPrime</span> <span class="o">=</span> <span class="mf">0.</span>
+</pre></div>
+</div>
+<p>The thermodynamic parameters are chosen to give a solid phase rich in electrons
+and the solvent and a liquid phase rich in the two substitutional species</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">solvent</span><span class="o">.</span><span class="n">standardPotential</span> <span class="o">=</span> <span class="n">CnStandardPotential</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">solvent</span><span class="o">.</span><span class="n">barrier</span> <span class="o">=</span> <span class="n">CnBarrier</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">solvent</span><span class="o">.</span><span class="n">valence</span> <span class="o">=</span> <span class="n">CnValence</span>
+</pre></div>
+</div>
+<p>Once again, we start with a sharp phase boundary</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">L</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">interstitials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;0.000111111503177394 mol/l&quot;</span> <span class="o">*</span> <span class="n">molarVolume</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">L</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">substitutionals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;0.249944439430068 mol/l&quot;</span> <span class="o">*</span> <span class="n">molarVolume</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">L</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">substitutionals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="s2">&quot;0.249999982581341 mol/l&quot;</span> <span class="o">*</span> <span class="n">molarVolume</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">L</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We again create the phase equation as in <code class="docutils literal notranslate"><span class="pre">examples.elphf.phase.input1D</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span><span class="o">.</span><span class="n">setScale</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span><span class="o">.</span><span class="n">equation</span> <span class="o">=</span> <span class="n">TransientTerm</span><span class="p">(</span><span class="n">coeff</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">phase</span><span class="o">.</span><span class="n">mobility</span><span class="p">)</span> \
+<span class="gp">... </span>    <span class="o">==</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span> <span class="o">=</span> <span class="n">phase</span><span class="o">.</span><span class="n">gradientEnergy</span><span class="p">)</span> \
+<span class="gp">... </span>    <span class="o">-</span> <span class="p">(</span><span class="n">permittivityPrime</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="n">potential</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">potential</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We linearize the source term in the same way as in <cite>example.phase.simple.input1D</cite>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">enthalpy</span> <span class="o">=</span> <span class="n">solvent</span><span class="o">.</span><span class="n">standardPotential</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">barrier</span> <span class="o">=</span> <span class="n">solvent</span><span class="o">.</span><span class="n">barrier</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">substitutionals</span> <span class="o">+</span> <span class="n">interstitials</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">enthalpy</span> <span class="o">+=</span> <span class="n">component</span> <span class="o">*</span> <span class="n">component</span><span class="o">.</span><span class="n">standardPotential</span>
+<span class="gp">... </span>    <span class="n">barrier</span> <span class="o">+=</span> <span class="n">component</span> <span class="o">*</span> <span class="n">component</span><span class="o">.</span><span class="n">barrier</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mXi</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mi">30</span> <span class="o">*</span> <span class="n">phase</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">phase</span><span class="p">)</span> <span class="o">*</span> <span class="n">enthalpy</span> <span class="o">+</span>  <span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">-</span> <span class="n">phase</span><span class="p">)</span> <span class="o">*</span> <span class="n">barrier</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dmXidXi</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">60</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">-</span> <span class="n">phase</span><span class="p">)</span> <span class="o">*</span> <span class="n">enthalpy</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">barrier</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S1</span> <span class="o">=</span> <span class="n">dmXidXi</span> <span class="o">*</span> <span class="n">phase</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">phase</span><span class="p">)</span> <span class="o">+</span> <span class="n">mXi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">phase</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S0</span> <span class="o">=</span> <span class="n">mXi</span> <span class="o">*</span> <span class="n">phase</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">phase</span><span class="p">)</span> <span class="o">-</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">S1</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span><span class="o">.</span><span class="n">equation</span> <span class="o">-=</span> <span class="n">S0</span> <span class="o">+</span> <span class="n">ImplicitSourceTerm</span><span class="p">(</span><span class="n">coeff</span> <span class="o">=</span> <span class="n">S1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and we create the diffusion equation for the solute as in
+<code class="docutils literal notranslate"><span class="pre">examples.elphf.diffusion.input1D</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">Cj</span> <span class="ow">in</span> <span class="n">substitutionals</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">CkSum</span> <span class="o">=</span> <span class="n">ComponentVariable</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">CkFaceSum</span> <span class="o">=</span> <span class="n">FaceVariable</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">Ck</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ck</span> <span class="k">for</span> <span class="n">Ck</span> <span class="ow">in</span> <span class="n">substitutionals</span> <span class="k">if</span> <span class="n">Ck</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Cj</span><span class="p">]:</span>
+<span class="gp">... </span>        <span class="n">CkSum</span> <span class="o">+=</span> <span class="n">Ck</span>
+<span class="gp">... </span>        <span class="n">CkFaceSum</span> <span class="o">+=</span> <span class="n">Ck</span><span class="o">.</span><span class="n">harmonicFaceValue</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="n">counterDiffusion</span> <span class="o">=</span> <span class="n">CkSum</span><span class="o">.</span><span class="n">faceGrad</span>
+<span class="gp">... </span>    <span class="c1"># phaseTransformation = (pPrime(phase.harmonicFaceValue) * Cj.standardPotential</span>
+<span class="gp">... </span>    <span class="c1">#         + gPrime(phase.harmonicFaceValue) * Cj.barrier) * phase.faceGrad</span>
+<span class="gp">... </span>    <span class="n">phaseTransformation</span> <span class="o">=</span> <span class="p">(</span><span class="n">pPrime</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span><span class="o">.</span><span class="n">harmonicFaceValue</span> <span class="o">*</span> <span class="n">Cj</span><span class="o">.</span><span class="n">standardPotential</span>
+<span class="gp">... </span>            <span class="o">+</span> <span class="n">gPrime</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span><span class="o">.</span><span class="n">harmonicFaceValue</span> <span class="o">*</span> <span class="n">Cj</span><span class="o">.</span><span class="n">barrier</span><span class="p">)</span> <span class="o">*</span> <span class="n">phase</span><span class="o">.</span><span class="n">faceGrad</span>
+<span class="gp">... </span>    <span class="c1"># phaseTransformation = (p(phase).faceGrad * Cj.standardPotential</span>
+<span class="gp">... </span>    <span class="c1">#         + g(phase).faceGrad * Cj.barrier)</span>
+<span class="gp">... </span>    <span class="n">electromigration</span> <span class="o">=</span> <span class="n">Cj</span><span class="o">.</span><span class="n">valence</span> <span class="o">*</span> <span class="n">potential</span><span class="o">.</span><span class="n">faceGrad</span>
+<span class="gp">... </span>    <span class="n">convectionCoeff</span> <span class="o">=</span> <span class="n">counterDiffusion</span> <span class="o">+</span> \
+<span class="gp">... </span>        <span class="n">solvent</span><span class="o">.</span><span class="n">harmonicFaceValue</span> <span class="o">*</span> <span class="p">(</span><span class="n">phaseTransformation</span> <span class="o">+</span> <span class="n">electromigration</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">convectionCoeff</span> <span class="o">*=</span> <span class="p">(</span><span class="n">Cj</span><span class="o">.</span><span class="n">diffusivity</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CkFaceSum</span><span class="p">))</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="n">Cj</span><span class="o">.</span><span class="n">equation</span> <span class="o">=</span> <span class="p">(</span><span class="n">TransientTerm</span><span class="p">()</span>
+<span class="gp">... </span>                   <span class="o">==</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">Cj</span><span class="o">.</span><span class="n">diffusivity</span><span class="p">)</span>
+<span class="gp">... </span>                   <span class="o">+</span> <span class="n">PowerLawConvectionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">convectionCoeff</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">Cj</span> <span class="ow">in</span> <span class="n">interstitials</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="c1"># phaseTransformation = (pPrime(phase.harmonicFaceValue) * Cj.standardPotential</span>
+<span class="gp">... </span>    <span class="c1">#         + gPrime(phase.harmonicFaceValue) * Cj.barrier) * phase.faceGrad</span>
+<span class="gp">... </span>    <span class="n">phaseTransformation</span> <span class="o">=</span> <span class="p">(</span><span class="n">pPrime</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span><span class="o">.</span><span class="n">harmonicFaceValue</span> <span class="o">*</span> <span class="n">Cj</span><span class="o">.</span><span class="n">standardPotential</span>
+<span class="gp">... </span>            <span class="o">+</span> <span class="n">gPrime</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span><span class="o">.</span><span class="n">harmonicFaceValue</span> <span class="o">*</span> <span class="n">Cj</span><span class="o">.</span><span class="n">barrier</span><span class="p">)</span> <span class="o">*</span> <span class="n">phase</span><span class="o">.</span><span class="n">faceGrad</span>
+<span class="gp">... </span>    <span class="c1"># phaseTransformation = (p(phase).faceGrad * Cj.standardPotential</span>
+<span class="gp">... </span>    <span class="c1">#         + g(phase).faceGrad * Cj.barrier)</span>
+<span class="gp">... </span>    <span class="n">electromigration</span> <span class="o">=</span> <span class="n">Cj</span><span class="o">.</span><span class="n">valence</span> <span class="o">*</span> <span class="n">potential</span><span class="o">.</span><span class="n">faceGrad</span>
+<span class="gp">... </span>    <span class="n">convectionCoeff</span> <span class="o">=</span> <span class="n">Cj</span><span class="o">.</span><span class="n">diffusivity</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">Cj</span><span class="o">.</span><span class="n">harmonicFaceValue</span><span class="p">)</span> <span class="o">*</span> \
+<span class="gp">... </span>        <span class="p">(</span><span class="n">phaseTransformation</span> <span class="o">+</span> <span class="n">electromigration</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="n">Cj</span><span class="o">.</span><span class="n">equation</span> <span class="o">=</span> <span class="p">(</span><span class="n">TransientTerm</span><span class="p">()</span>
+<span class="gp">... </span>                   <span class="o">==</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">Cj</span><span class="o">.</span><span class="n">diffusivity</span><span class="p">)</span>
+<span class="gp">... </span>                   <span class="o">+</span> <span class="n">PowerLawConvectionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">convectionCoeff</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>And Poisson’s equation</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">charge</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">Cj</span> <span class="ow">in</span> <span class="n">interstitials</span> <span class="o">+</span> <span class="n">substitutionals</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">charge</span> <span class="o">+=</span> <span class="n">Cj</span> <span class="o">*</span> <span class="n">Cj</span><span class="o">.</span><span class="n">valence</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">potential</span><span class="o">.</span><span class="n">equation</span> <span class="o">=</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span> <span class="o">=</span> <span class="n">permittivity</span><span class="p">)</span> <span class="o">+</span> <span class="n">charge</span> <span class="o">==</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>If running interactively, we create viewers to display the results</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">phaseViewer</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">(</span><span class="nb">vars</span><span class="o">=</span><span class="n">phase</span><span class="p">,</span> <span class="n">datamin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">datamax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">concViewer</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">(</span><span class="nb">vars</span><span class="o">=</span><span class="p">[</span><span class="n">solvent</span><span class="p">]</span> <span class="o">+</span> <span class="n">substitutionals</span> <span class="o">+</span> <span class="n">interstitials</span><span class="p">,</span> <span class="n">ylog</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">potentialViewer</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">(</span><span class="nb">vars</span> <span class="o">=</span> <span class="n">potential</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">phaseViewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">concViewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">potentialViewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Press a key to continue&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Again, this problem does not have an analytical solution, so after
+iterating to equilibrium</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">solver</span> <span class="o">=</span> <span class="n">LinearLUSolver</span><span class="p">(</span><span class="n">tolerance</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">potential</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesLeft</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span><span class="o">.</span><span class="n">residual</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">potential</span><span class="o">.</span><span class="n">residual</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">Cj</span> <span class="ow">in</span> <span class="n">substitutionals</span> <span class="o">+</span> <span class="n">interstitials</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">Cj</span><span class="o">.</span><span class="n">residual</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">residualViewer</span> <span class="o">=</span> <span class="n">Viewer</span><span class="p">(</span><span class="nb">vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">phase</span><span class="o">.</span><span class="n">residual</span><span class="p">,</span> <span class="n">potential</span><span class="o">.</span><span class="n">residual</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">Cj</span><span class="o">.</span><span class="n">residual</span> <span class="k">for</span> <span class="n">Cj</span> <span class="ow">in</span> <span class="n">substitutionals</span> <span class="o">+</span> <span class="n">interstitials</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tsv</span> <span class="o">=</span> <span class="n">TSVViewer</span><span class="p">(</span><span class="nb">vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">phase</span><span class="p">,</span> <span class="n">potential</span><span class="p">]</span> <span class="o">+</span> <span class="n">substitutionals</span> <span class="o">+</span> <span class="n">interstitials</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="n">substitutionals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">diffusivity</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># dt = 1.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elapsed</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">maxError</span> <span class="o">=</span> <span class="mf">1e-1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SAFETY</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ERRCON</span> <span class="o">=</span> <span class="mf">1.89e-4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">desiredTimestep</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">thisTimeStep</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%3s</span><span class="s2">: </span><span class="si">%20s</span><span class="s2"> | </span><span class="si">%20s</span><span class="s2"> | </span><span class="si">%20s</span><span class="s2"> | </span><span class="si">%20s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="s2">&quot;elapsed&quot;</span><span class="p">,</span> <span class="s2">&quot;this&quot;</span><span class="p">,</span> <span class="s2">&quot;next dt&quot;</span><span class="p">,</span> <span class="s2">&quot;residual&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">residual</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">range</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">str</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">500</span><span class="p">):</span> <span class="c1"># iterate</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">thisTimeStep</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">tsv</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.tsv&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">elapsed</span> <span class="o">*</span> <span class="n">timeStep</span><span class="p">))</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">[</span><span class="n">phase</span><span class="p">,</span> <span class="n">potential</span><span class="p">]</span> <span class="o">+</span> <span class="n">substitutionals</span> <span class="o">+</span> <span class="n">interstitials</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">field</span><span class="o">.</span><span class="n">updateOld</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span> <span class="c1"># sweep</span>
+<span class="gp">... </span>            <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">timeStep</span><span class="p">,</span> <span class="n">residual</span><span class="p">)</span>
+<span class="gp">... </span>            <span class="c1"># raw_input()</span>
+<span class="gp">... </span>            <span class="n">residual</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="gp">...</span>
+<span class="gp">... </span>            <span class="n">phase</span><span class="o">.</span><span class="n">equation</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span> <span class="o">=</span> <span class="n">phase</span><span class="p">,</span> <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="p">)</span>
+<span class="gp">... </span>            <span class="c1"># print phase.name, phase.equation.residual.max()</span>
+<span class="gp">... </span>            <span class="n">residual</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">equation</span><span class="o">.</span><span class="n">residual</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">residual</span><span class="p">)</span>
+<span class="gp">... </span>            <span class="n">phase</span><span class="o">.</span><span class="n">residual</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">phase</span><span class="o">.</span><span class="n">equation</span><span class="o">.</span><span class="n">residual</span>
+<span class="gp">...</span>
+<span class="gp">... </span>            <span class="n">potential</span><span class="o">.</span><span class="n">equation</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span> <span class="o">=</span> <span class="n">potential</span><span class="p">,</span> <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="p">)</span>
+<span class="gp">... </span>            <span class="c1"># print potential.name, potential.equation.residual.max()</span>
+<span class="gp">... </span>            <span class="n">residual</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">potential</span><span class="o">.</span><span class="n">equation</span><span class="o">.</span><span class="n">residual</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">residual</span><span class="p">)</span>
+<span class="gp">... </span>            <span class="n">potential</span><span class="o">.</span><span class="n">residual</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">potential</span><span class="o">.</span><span class="n">equation</span><span class="o">.</span><span class="n">residual</span>
+<span class="gp">...</span>
+<span class="gp">... </span>            <span class="k">for</span> <span class="n">Cj</span> <span class="ow">in</span> <span class="n">substitutionals</span> <span class="o">+</span> <span class="n">interstitials</span><span class="p">:</span>
+<span class="gp">... </span>                <span class="n">Cj</span><span class="o">.</span><span class="n">equation</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span> <span class="o">=</span> <span class="n">Cj</span><span class="p">,</span>
+<span class="gp">... </span>                                  <span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span><span class="p">,</span>
+<span class="gp">... </span>                                  <span class="n">solver</span> <span class="o">=</span> <span class="n">solver</span><span class="p">)</span>
+<span class="gp">... </span>                <span class="c1"># print Cj.name, Cj.equation.residual.max()</span>
+<span class="gp">... </span>                <span class="n">residual</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">Cj</span><span class="o">.</span><span class="n">equation</span><span class="o">.</span><span class="n">residual</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">residual</span><span class="p">)</span>
+<span class="gp">... </span>                <span class="n">Cj</span><span class="o">.</span><span class="n">residual</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">Cj</span><span class="o">.</span><span class="n">equation</span><span class="o">.</span><span class="n">residual</span>
+<span class="gp">...</span>
+<span class="gp">... </span>            <span class="c1"># print</span>
+<span class="gp">... </span>            <span class="c1"># phaseViewer.plot()</span>
+<span class="gp">... </span>            <span class="c1"># concViewer.plot()</span>
+<span class="gp">... </span>            <span class="c1"># potentialViewer.plot()</span>
+<span class="gp">... </span>            <span class="c1"># residualViewer.plot()</span>
+<span class="gp">...</span>
+<span class="gp">... </span>        <span class="n">residual</span> <span class="o">/=</span> <span class="n">maxError</span>
+<span class="gp">... </span>        <span class="k">if</span> <span class="n">residual</span> <span class="o">&lt;=</span> <span class="mf">1.</span><span class="p">:</span>
+<span class="gp">... </span>            <span class="k">break</span>       <span class="c1"># step succeeded</span>
+<span class="gp">...</span>
+<span class="gp">... </span>        <span class="n">dt</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">SAFETY</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">residual</span><span class="o">**-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="k">if</span> <span class="n">thisTimeStep</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">==</span> <span class="n">thisTimeStep</span><span class="p">:</span>
+<span class="gp">... </span>            <span class="k">raise</span> <span class="ne">FloatingPointError</span><span class="p">(</span><span class="s2">&quot;step size underflow&quot;</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="n">thisTimeStep</span> <span class="o">+=</span> <span class="n">dt</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">residual</span> <span class="o">&gt;</span> <span class="n">ERRCON</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">dt</span> <span class="o">*=</span> <span class="n">SAFETY</span> <span class="o">*</span> <span class="n">residual</span><span class="o">**-</span><span class="mf">0.2</span>
+<span class="gp">... </span>    <span class="k">else</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">dt</span> <span class="o">*=</span> <span class="mf">5.</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="c1"># dt *= (maxError / residual)**0.5</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">thisTimeStep</span> <span class="o">&gt;=</span> <span class="n">desiredTimestep</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">elapsed</span> <span class="o">+=</span> <span class="n">thisTimeStep</span>
+<span class="gp">... </span>        <span class="n">thisTimeStep</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="gp">... </span>    <span class="k">else</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">dt</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">desiredTimestep</span> <span class="o">-</span> <span class="n">thisTimeStep</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">phaseViewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">... </span>        <span class="n">concViewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">... </span>        <span class="n">potentialViewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%3d</span><span class="s2">: </span><span class="si">%20s</span><span class="s2"> | </span><span class="si">%20s</span><span class="s2"> | </span><span class="si">%20s</span><span class="s2"> | </span><span class="si">%g</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">elapsed</span> <span class="o">*</span> <span class="n">timeStep</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">thisTimeStep</span> <span class="o">*</span> <span class="n">timeStep</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">dt</span> <span class="o">*</span> <span class="n">timeStep</span><span class="p">),</span> <span class="n">residual</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>we confirm that the far-field phases have remained separated</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ends</span> <span class="o">=</span> <span class="n">take</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">allclose</span><span class="p">(</span><span class="n">ends</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="n">rtol</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<p>and that the concentration fields has appropriately segregated into into
+their respective phases</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ends</span> <span class="o">=</span> <span class="n">take</span><span class="p">(</span><span class="n">interstitials</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">allclose</span><span class="p">(</span><span class="n">ends</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span> <span class="n">rtol</span> <span class="o">=</span> <span class="mf">3e-3</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">3e-3</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ends</span> <span class="o">=</span> <span class="n">take</span><span class="p">(</span><span class="n">substitutionals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">allclose</span><span class="p">(</span><span class="n">ends</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">),</span> <span class="n">rtol</span> <span class="o">=</span> <span class="mf">3e-3</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">3e-3</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ends</span> <span class="o">=</span> <span class="n">take</span><span class="p">(</span><span class="n">substitutionals</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">allclose</span><span class="p">(</span><span class="n">ends</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span> <span class="n">rtol</span> <span class="o">=</span> <span class="mf">3e-3</span><span class="p">,</span> <span class="n">atol</span> <span class="o">=</span> <span class="mf">3e-3</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</section>
+
+
+                <div class='last-updated'>
+                Last updated on Aug 10, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
+                </div>
+              </div>
+  </div>  
+  <aside class="nist-page__region nist-page__region--sidebar-second tablet-lg:grid-col-4">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+            <p class="logo"><a href="../contents.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+<strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
+Version 0+unknown
+
+<div class="sphinxsidebarsection">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="examples.elphf.diffusion.mesh2D.html"
+                        title="previous chapter">examples.elphf.diffusion.mesh2D</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="examples.elphf.phase.html"
+                        title="next chapter">examples.elphf.phase</a></p>
+</div>
+  <div class="sphinxsidebarsection">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/generated/examples.elphf.input.rst.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  </div>
+<div class="sphinxsidebarsection">
+<div id="searchbox" style="display: none" role="search">
+  <div data-layout-content-preview-placeholder-label="&quot;Sphinx
+  Search&quot; field" class="nist-block nist-block--search">
+  <h2>Quick search</h2>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+</div>
+<div class="sphinxsidebarsection" id="contact-wrapper">
+  
+        <div data-layout-content-preview-placeholder-label="&quot;Related
+        organization tree&quot; views block" class="nist-block nist-block--org">
+          
+          <h2 class="nist-block__title">Organizations</h2>
+              
+              <div class="views-element-container"><div
+              class="js-view-dom-id-70b0923f677edbe3dda361030ef8dc373cd0ca94065c39cfd81338de767f1019">
+
+            <div class="nist-related-orgs"><div class="term-tree-list"><ul
+            class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters" hreflang="en">NIST
+            Headquarters</a><ul class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs"
+            hreflang="en">Laboratory Programs</a><ul class="term"><li
+            class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs/material-measurement-laboratory"
+            hreflang="en">Material Measurement Laboratory</a>
+			<ul
+			class="term"><li
+			class="selected"><a href="https://www.nist.gov/mml/msed"
+			hreflang="en">Materials Science and Engineering
+			Division</a></li><li
+			class="selected"><a href="https://www.nist.gov/mml/ctcms"
+			hreflang="en">Center for Theoretical and
+			              Computational Materials Science</a></li></ul>
+                          </li></ul></li></ul></li></ul></div></div>
+          <div class="nist-related-orgs"></div>
+          <div class="nist-related-orgs"></div>
+
+
+
+        </div>
+        </div>
+
+          </div>
+
+
+          <div data-layout-content-preview-placeholder-label="&quot;NIST
+          Staff&quot; field" class="nist-block nist-block--contact">
+
+          <h2 class="nist-block__title">NIST Staff</h2>
+
+                  <div class="nist-field nist-field--label-hidden
+                  nist-field--link-list entity-reference nist-field__items
+                  nist-field--no-margin">
+                            <div class="nist-field__item
+                            nist-field--no-margin"><a
+                            href="https://www.nist.gov/people/jonathan-e-guyer"
+                            hreflang="en">Jonathan E. Guyer</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/daniel-wheeler"
+                                hreflang="en">Daniel Wheeler</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/james-warren"
+                                hreflang="en">James A. Warren</a></div>
+                  </div>
+
+
+          </div>
+
+          <div data-layout-content-preview-placeholder-label="&quot;Contact&quot; field"
+          class="nist-block nist-block--contact nist-block--mail">
+
+          <h2 class="nist-block__title">
+          <a class="" href="../docs/source/CONTACT.html" style="">Contact</a>
+          </h2>
+
+          </div>
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+  </aside>
+        </div>
+      </div>
+
+      <div class="panel-region--postface">
+      <div class="inner region-inner inside">
+        
+<div class="pane pane--nist-node-date-pane" >
+
+    </div>
+      </div>
+    </div>
+
+        </section>
+        </div>
+      </div>
+
+      </div>  
+    </div>          
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  
+
+
+  <!-- Taken from https://www.filamentgroup.com/lab/html-includes/#another-demo%3A-including-another-html-file -->
+  <iframe src="../_static/ntd2d_menu.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    </div>
+  </body>
+</html>

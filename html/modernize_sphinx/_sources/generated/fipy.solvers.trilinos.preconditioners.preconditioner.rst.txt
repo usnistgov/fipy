@@ -1,0 +1,29 @@
+fipy.solvers.trilinos.preconditioners.preconditioner
+====================================================
+
+.. automodule:: fipy.solvers.trilinos.preconditioners.preconditioner
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Preconditioner
+   
+   
+
+   
+   
+   
+
+
+

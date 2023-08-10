@@ -1,0 +1,29 @@
+fipy.solvers.pysparse.linearLUSolver
+====================================
+
+.. automodule:: fipy.solvers.pysparse.linearLUSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearLUSolver
+   
+   
+
+   
+   
+   
+
+
+
