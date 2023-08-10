@@ -9,7 +9,24 @@ jobs:
       - uses: usnistgov/NISTtheDocs2Death@main
         with:
           docs-folder: docs
-          pre-build-command: python setup.py version
+          pre-build-command: >
+            which git
+            || (
+            (
+            apt-get -yq update
+            && apt-get -yq install git
+            && rm -rf /var/lib/apt/lists/*
+            )
+            || (
+            apk update --no-cache
+            && apk add --no-cache git
+            )
+            )
+            && git config --global --add safe.directory /github/workspace
+            && echo "::error::pwd = `pwd`"
+            && echo "::error::ls = `ls -al`"
+            && echo "::error::which git = `which git`"
+            && echo "::error::version before apidoc = `python setup.py version`"
           formats: |-
             epub
             pdf
