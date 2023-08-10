@@ -23,10 +23,6 @@ jobs:
             )
             )
             && git config --global --add safe.directory /github/workspace
-            && echo "::error::pwd = `pwd`"
-            && echo "::error::ls = `ls -al`"
-            && echo "::error::which git = `which git`"
-            && echo "::error::version before apidoc = `python setup.py version`"
           formats: |-
             epub
             pdf
