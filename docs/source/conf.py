@@ -316,10 +316,21 @@ intersphinx_mapping = {
 def skip_numpy_not_numerix(app, what, name, obj, skip, options):
     import types
     import numpy
-    if type(obj) in [types.FunctionType,
+
+    screen_types = [types.FunctionType,
                      types.BuiltinFunctionType,
                      type(numpy.dtype),
-                     type]:
+                     type]
+
+    try:
+        # NumPy 1.25 changed how dispatching works
+        # which makes many numpy functions not Python functions
+        # https://github.com/numpy/numpy/pull/23020
+        screen_types.append(numpy.core._multiarray_umath._ArrayFunctionDispatcher)
+    except:
+        pass
+
+    if type(obj) in screen_types:
         module = getattr(obj, "__module__", "")
         if module is None:
             module = ""
