@@ -6,7 +6,7 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: usnistgov/NISTtheDocs2Death@main
+      - uses: usnistgov/NISTtheDocs2Death@0.3
         with:
           docs-folder: docs
           pre-build-command: >
@@ -26,3 +26,4 @@ jobs:
           formats: |-
             epub
             pdf
+
