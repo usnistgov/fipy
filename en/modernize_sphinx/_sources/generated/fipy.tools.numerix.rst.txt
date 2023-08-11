@@ -22,10 +22,6 @@ fipy.tools.numerix
       dot
       getShape
       getUnit
-      in1dMA
-      invert_indices
-      isFloat
-      isInt
       isclose
       nearest
       put

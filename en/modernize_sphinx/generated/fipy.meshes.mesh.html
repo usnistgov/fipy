@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>fipy.meshes.mesh &#8212; FiPy 3.4.4+256.g961ca499 documentation</title>
+    <title>fipy.meshes.mesh &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -51,7 +51,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+256.g961ca499 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="../contents.html" />
     <link rel="up" title="fipy.meshes" href="fipy.meshes.html" />
     <link rel="next" title="fipy.meshes.mesh1D" href="fipy.meshes.mesh1D.html" />
     <link rel="prev" title="fipy.meshes.grid3D" href="fipy.meshes.grid3D.html" />
@@ -137,7 +137,8 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.mesh.Mesh">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.mesh.</span></span><span class="sig-name descname"><span class="pre">Mesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertexCoords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">faceVertexIDs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cellFaceIDs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator=DummyComm()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_RepresentationClass=&lt;class</span> <span class="pre">'fipy.meshes.representations.meshRepresentation._MeshRepresentation'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_TopologyClass=&lt;class</span> <span class="pre">'fipy.meshes.topologies.meshTopology._MeshTopology'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.mesh.Mesh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generic mesh class using numerix to do the calculations</p>
+<dd><p>Bases: <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh" title="fipy.meshes.abstractMesh.AbstractMesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractMesh</span></code></a></p>
+<p>Generic mesh class using numerix to do the calculations</p>
 <p>Meshes contain cells, faces, and vertices.</p>
 <p>This is built for a non-mixed element mesh.</p>
 <dl class="py property">
@@ -469,6 +470,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.mesh.Mesh.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.mesh.Mesh.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.mesh.Mesh.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.mesh.Mesh.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -626,7 +633,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.mesh.Mesh.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.mesh.Mesh.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -637,7 +644,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.mesh.Mesh.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.mesh.Mesh.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -652,7 +659,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.mesh.Mesh.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.mesh.Mesh.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -669,7 +676,8 @@ y-axis running from bottom to top.</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="fipy.meshes.mesh.MeshAdditionError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.mesh.</span></span><span class="sig-name descname"><span class="pre">MeshAdditionError</span></span><a class="headerlink" href="#fipy.meshes.mesh.MeshAdditionError" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py attribute">
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<dl class="py attribute">
 <dt class="sig sig-object py" id="fipy.meshes.mesh.MeshAdditionError.__cause__">
 <span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.meshes.mesh.MeshAdditionError.__cause__" title="Permalink to this definition">¶</a></dt>
 <dd><p>exception cause</p>
@@ -730,7 +738,7 @@ set self.__traceback__ to tb and return self.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 10, 2023.
+                Last updated on Aug 11, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
                 </div>
               </div>
@@ -743,7 +751,7 @@ set self.__traceback__ to tb and return self.</p>
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+256.g961ca499
+Version 3.4.4+257.g125bb1fe
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
@@ -761,6 +769,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.mesh.Mesh.__sub__"><code class="docutils literal notranslate"><span class="pre">Mesh.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.mesh.Mesh.__truediv__"><code class="docutils literal notranslate"><span class="pre">Mesh.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.mesh.Mesh.aspect2D"><code class="docutils literal notranslate"><span class="pre">Mesh.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.mesh.Mesh.cellCenters"><code class="docutils literal notranslate"><span class="pre">Mesh.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.mesh.Mesh.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">Mesh.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.mesh.Mesh.facesBack"><code class="docutils literal notranslate"><span class="pre">Mesh.facesBack</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.mesh.Mesh.facesBottom"><code class="docutils literal notranslate"><span class="pre">Mesh.facesBottom</span></code></a></li>

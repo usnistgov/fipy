@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>fipy.meshes.periodicGrid3D &#8212; FiPy 3.4.4+256.g961ca499 documentation</title>
+    <title>fipy.meshes.periodicGrid3D &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -51,7 +51,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+256.g961ca499 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="../contents.html" />
     <link rel="up" title="fipy.meshes" href="fipy.meshes.html" />
     <link rel="next" title="fipy.meshes.representations" href="fipy.meshes.representations.html" />
     <link rel="prev" title="fipy.meshes.periodicGrid2D" href="fipy.meshes.periodicGrid2D.html" />
@@ -148,7 +148,8 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3D">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.periodicGrid3D.</span></span><span class="sig-name descname"><span class="pre">PeriodicGrid3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a periodic 3D grid mesh with horizontal faces numbered
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BasePeriodicGrid3D</span></code></p>
+<p>Creates a periodic 3D grid mesh with horizontal faces numbered
 first and then vertical faces. Vertices and cells are numbered
 in the usual way.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">numerix</span>
@@ -544,6 +545,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3D.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3D.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -701,7 +708,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3D.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -712,7 +719,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3D.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -727,7 +734,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3D.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -744,7 +751,8 @@ y-axis running from bottom to top.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.periodicGrid3D.</span></span><span class="sig-name descname"><span class="pre">PeriodicGrid3DFrontBack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py property">
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BasePeriodicGrid3D</span></code></p>
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.VTKCellDataSet">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VTKCellDataSet</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.VTKCellDataSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a TVTK <cite>DataSet</cite> representing the cells of this mesh</p>
@@ -1073,6 +1081,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1230,7 +1244,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -1241,7 +1255,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -1256,7 +1270,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -1273,7 +1287,8 @@ y-axis running from bottom to top.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.periodicGrid3D.</span></span><span class="sig-name descname"><span class="pre">PeriodicGrid3DLeftRight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py property">
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BasePeriodicGrid3D</span></code></p>
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.VTKCellDataSet">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VTKCellDataSet</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.VTKCellDataSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a TVTK <cite>DataSet</cite> representing the cells of this mesh</p>
@@ -1602,6 +1617,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1759,7 +1780,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -1770,7 +1791,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -1785,7 +1806,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -1802,7 +1823,8 @@ y-axis running from bottom to top.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.periodicGrid3D.</span></span><span class="sig-name descname"><span class="pre">PeriodicGrid3DLeftRightFrontBack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py property">
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BasePeriodicGrid3D</span></code></p>
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.VTKCellDataSet">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VTKCellDataSet</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.VTKCellDataSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a TVTK <cite>DataSet</cite> representing the cells of this mesh</p>
@@ -2131,6 +2153,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2288,7 +2316,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -2299,7 +2327,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -2314,7 +2342,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -2331,7 +2359,8 @@ y-axis running from bottom to top.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.periodicGrid3D.</span></span><span class="sig-name descname"><span class="pre">PeriodicGrid3DLeftRightTopBottom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py property">
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BasePeriodicGrid3D</span></code></p>
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.VTKCellDataSet">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VTKCellDataSet</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.VTKCellDataSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a TVTK <cite>DataSet</cite> representing the cells of this mesh</p>
@@ -2660,6 +2689,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2817,7 +2852,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -2828,7 +2863,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -2843,7 +2878,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -2860,7 +2895,8 @@ y-axis running from bottom to top.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.periodicGrid3D.</span></span><span class="sig-name descname"><span class="pre">PeriodicGrid3DTopBottom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py property">
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BasePeriodicGrid3D</span></code></p>
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.VTKCellDataSet">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VTKCellDataSet</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.VTKCellDataSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a TVTK <cite>DataSet</cite> representing the cells of this mesh</p>
@@ -3189,6 +3225,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3346,7 +3388,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -3357,7 +3399,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -3372,7 +3414,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -3389,7 +3431,8 @@ y-axis running from bottom to top.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.periodicGrid3D.</span></span><span class="sig-name descname"><span class="pre">PeriodicGrid3DTopBottomFrontBack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py property">
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BasePeriodicGrid3D</span></code></p>
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.VTKCellDataSet">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VTKCellDataSet</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.VTKCellDataSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a TVTK <cite>DataSet</cite> representing the cells of this mesh</p>
@@ -3718,6 +3761,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3875,7 +3924,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -3886,7 +3935,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -3901,7 +3950,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -3919,7 +3968,7 @@ y-axis running from bottom to top.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 10, 2023.
+                Last updated on Aug 11, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
                 </div>
               </div>
@@ -3932,7 +3981,7 @@ y-axis running from bottom to top.</p>
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+256.g961ca499
+Version 3.4.4+257.g125bb1fe
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
@@ -3950,6 +3999,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D.__sub__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3D.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D.__truediv__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3D.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D.aspect2D"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3D.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D.cellCenters"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3D.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3D.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D.facesBack"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3D.facesBack</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3D.facesBottom"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3D.facesBottom</span></code></a></li>
@@ -3976,6 +4026,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.__sub__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DFrontBack.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.__truediv__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DFrontBack.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.aspect2D"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DFrontBack.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.cellCenters"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DFrontBack.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DFrontBack.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.facesBack"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DFrontBack.facesBack</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DFrontBack.facesBottom"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DFrontBack.facesBottom</span></code></a></li>
@@ -4002,6 +4053,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.__sub__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRight.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.__truediv__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRight.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.aspect2D"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRight.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.cellCenters"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRight.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRight.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.facesBack"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRight.facesBack</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRight.facesBottom"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRight.facesBottom</span></code></a></li>
@@ -4028,6 +4080,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.__sub__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightFrontBack.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.__truediv__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightFrontBack.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.aspect2D"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightFrontBack.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.cellCenters"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightFrontBack.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightFrontBack.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.facesBack"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightFrontBack.facesBack</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightFrontBack.facesBottom"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightFrontBack.facesBottom</span></code></a></li>
@@ -4054,6 +4107,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.__sub__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightTopBottom.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.__truediv__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightTopBottom.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.aspect2D"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightTopBottom.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.cellCenters"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightTopBottom.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightTopBottom.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.facesBack"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightTopBottom.facesBack</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DLeftRightTopBottom.facesBottom"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DLeftRightTopBottom.facesBottom</span></code></a></li>
@@ -4080,6 +4134,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.__sub__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottom.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.__truediv__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottom.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.aspect2D"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottom.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.cellCenters"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottom.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottom.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.facesBack"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottom.facesBack</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottom.facesBottom"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottom.facesBottom</span></code></a></li>
@@ -4106,6 +4161,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.__sub__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottomFrontBack.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.__truediv__"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottomFrontBack.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.aspect2D"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottomFrontBack.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.cellCenters"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottomFrontBack.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottomFrontBack.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.facesBack"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottomFrontBack.facesBack</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.periodicGrid3D.PeriodicGrid3DTopBottomFrontBack.facesBottom"><code class="docutils literal notranslate"><span class="pre">PeriodicGrid3DTopBottomFrontBack.facesBottom</span></code></a></li>

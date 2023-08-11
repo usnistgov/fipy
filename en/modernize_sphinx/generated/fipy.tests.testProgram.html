@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>fipy.tests.testProgram &#8212; FiPy 3.4.4+256.g961ca499 documentation</title>
+    <title>fipy.tests.testProgram &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -51,7 +51,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+256.g961ca499 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="../contents.html" />
     <link rel="up" title="fipy.tests" href="fipy.tests.html" />
     <link rel="next" title="fipy.tools" href="fipy.tools.html" />
     <link rel="prev" title="fipy.tests.test" href="fipy.tests.test.html" />
@@ -121,16 +121,33 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></p></td>
-<td><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">_TestProgram</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.tests.testProgram.TestProgram" title="fipy.tests.testProgram.TestProgram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TestProgram</span></code></a>([module, defaultTest, argv, ...])</p></td>
+<td><p>A command-line program that runs a set of tests</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.tests.testProgram.main" title="fipy.tests.testProgram.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="#fipy.tests.testProgram.TestProgram" title="fipy.tests.testProgram.TestProgram"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestProgram</span></code></a></p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.tests.testProgram.TestProgram">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.tests.testProgram.</span></span><span class="sig-name descname"><span class="pre">TestProgram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module='__main__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultTest=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argv=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testRunner=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testLoader=&lt;unittest.loader.TestLoader</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exit=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failfast=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catchbreak=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warnings=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tb_locals=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.testProgram.TestProgram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestProgram</span></code></p>
+<p>A command-line program that runs a set of tests</p>
+<p>This is primarily for making test modules conveniently executable.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.tests.testProgram.main">
+<span class="sig-prename descclassname"><span class="pre">fipy.tests.testProgram.</span></span><span class="sig-name descname"><span class="pre">main</span></span><a class="headerlink" href="#fipy.tests.testProgram.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#fipy.tests.testProgram.TestProgram" title="fipy.tests.testProgram.TestProgram"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestProgram</span></code></a></p>
+</dd></dl>
+
 </section>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 10, 2023.
+                Last updated on Aug 11, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
                 </div>
               </div>
@@ -143,8 +160,19 @@
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+256.g961ca499
+Version 3.4.4+257.g125bb1fe
 
+  <div class="sphinxsidebarsection">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">fipy.tests.testProgram</a><ul>
+<li><a class="reference internal" href="#fipy.tests.testProgram.TestProgram"><code class="docutils literal notranslate"><span class="pre">TestProgram</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tests.testProgram.main"><code class="docutils literal notranslate"><span class="pre">main</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>
   <p class="topless"><a href="fipy.tests.test.html"

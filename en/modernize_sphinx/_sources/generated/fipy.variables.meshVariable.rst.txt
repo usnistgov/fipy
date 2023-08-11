@@ -13,6 +13,12 @@ fipy.variables.meshVariable
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MeshVariable
+   
    
 
    

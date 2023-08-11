@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>fipy.variables.variable &#8212; FiPy 3.4.4+256.g961ca499 documentation</title>
+    <title>fipy.variables.variable &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -52,7 +52,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+256.g961ca499 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="../contents.html" />
     <link rel="up" title="fipy.variables" href="fipy.variables.html" />
     <link rel="next" title="fipy.viewers" href="fipy.viewers.html" />
     <link rel="prev" title="fipy.variables.uniformNoiseVariable" href="fipy.variables.uniformNoiseVariable.html" />
@@ -130,7 +130,8 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.variables.variable.Variable">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.variables.variable.</span></span><span class="sig-name descname"><span class="pre">Variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.variable.Variable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Lazily evaluated quantity with units.</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Lazily evaluated quantity with units.</p>
 <p>Using a <a class="reference internal" href="#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> in a mathematical expression will create an
 automatic dependency <a class="reference internal" href="#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a>, e.g.,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
@@ -681,6 +682,18 @@ e.g., <span class="math notranslate nohighlight">\(|\vec{\psi}| = \sqrt{\vec{\ps
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.variable.Variable.max">
+<span class="sig-name descname"><span class="pre">max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.variable.Variable.max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the maximum along a given axis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.variable.Variable.min">
+<span class="sig-name descname"><span class="pre">min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.variable.Variable.min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the minimum along a given axis.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.variable.Variable.release">
 <span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.variable.Variable.release" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove <cite>constraint</cite> from <cite>self</cite></p>
@@ -759,6 +772,12 @@ e.g., <span class="math notranslate nohighlight">\(|\vec{\psi}| = \sqrt{\vec{\ps
 </div>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.variable.Variable.std">
+<span class="sig-name descname"><span class="pre">std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.variable.Variable.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the standard deviation along a given axis.</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.variables.variable.Variable.unit">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit</span></span><a class="headerlink" href="#fipy.variables.variable.Variable.unit" title="Permalink to this definition">¶</a></dt>
@@ -791,7 +810,7 @@ e.g., <span class="math notranslate nohighlight">\(|\vec{\psi}| = \sqrt{\vec{\ps
 
 
                 <div class='last-updated'>
-                Last updated on Aug 10, 2023.
+                Last updated on Aug 11, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
                 </div>
               </div>
@@ -804,7 +823,7 @@ e.g., <span class="math notranslate nohighlight">\(|\vec{\psi}| = \sqrt{\vec{\ps
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+256.g961ca499
+Version 3.4.4+257.g125bb1fe
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
@@ -843,9 +862,12 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.variables.variable.Variable.inBaseUnits"><code class="docutils literal notranslate"><span class="pre">Variable.inBaseUnits()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.variable.Variable.inUnitsOf"><code class="docutils literal notranslate"><span class="pre">Variable.inUnitsOf()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.variable.Variable.mag"><code class="docutils literal notranslate"><span class="pre">Variable.mag</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.variable.Variable.max"><code class="docutils literal notranslate"><span class="pre">Variable.max()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.variable.Variable.min"><code class="docutils literal notranslate"><span class="pre">Variable.min()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.variable.Variable.release"><code class="docutils literal notranslate"><span class="pre">Variable.release()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.variable.Variable.setValue"><code class="docutils literal notranslate"><span class="pre">Variable.setValue()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.variable.Variable.shape"><code class="docutils literal notranslate"><span class="pre">Variable.shape</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.variable.Variable.std"><code class="docutils literal notranslate"><span class="pre">Variable.std()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.variable.Variable.unit"><code class="docutils literal notranslate"><span class="pre">Variable.unit</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.variable.Variable.value"><code class="docutils literal notranslate"><span class="pre">Variable.value</span></code></a></li>
 </ul>

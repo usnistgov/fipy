@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>fipy.tests.test &#8212; FiPy 3.4.4+256.g961ca499 documentation</title>
+    <title>fipy.tests.test &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -51,7 +51,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+256.g961ca499 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="../contents.html" />
     <link rel="up" title="fipy.tests" href="fipy.tests.html" />
     <link rel="next" title="fipy.tests.testProgram" href="fipy.tests.testProgram.html" />
     <link rel="prev" title="fipy.tests.lateImportTest" href="fipy.tests.lateImportTest.html" />
@@ -121,7 +121,7 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeprecationErroringTestProgram</span></code>([module, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.tests.test.DeprecationErroringTestProgram" title="fipy.tests.test.DeprecationErroringTestProgram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeprecationErroringTestProgram</span></code></a>([module, ...])</p></td>
 <td><p><cite>TestProgram</cite> that overrides inability of standard <cite>TestProgram</cite> to throw errors on <cite>DeprecationWarning</cite></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.tests.test.test" title="fipy.tests.test.test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test</span></code></a>(dist, **kw)</p></td>
@@ -130,9 +130,18 @@
 </tbody>
 </table>
 <dl class="py class">
+<dt class="sig sig-object py" id="fipy.tests.test.DeprecationErroringTestProgram">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.tests.test.</span></span><span class="sig-name descname"><span class="pre">DeprecationErroringTestProgram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module='__main__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultTest=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argv=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testRunner=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testLoader=&lt;unittest.loader.TestLoader</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exit=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failfast=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catchbreak=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warnings=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tb_locals=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.test.DeprecationErroringTestProgram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestProgram</span></code></p>
+<p><cite>TestProgram</cite> that overrides inability of standard
+<cite>TestProgram</cite> to throw errors on <cite>DeprecationWarning</cite></p>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="fipy.tests.test.test">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.tests.test.</span></span><span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.test.test" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct the command for dist, updating
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">test</span></code></p>
+<p>Construct the command for dist, updating
 vars(self) with any keyword parameters.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.tests.test.test.finalize_options">
@@ -165,7 +174,7 @@ are just a bunch of “self.foo = None” assignments.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 10, 2023.
+                Last updated on Aug 11, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
                 </div>
               </div>
@@ -178,12 +187,13 @@ are just a bunch of “self.foo = None” assignments.</p>
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+256.g961ca499
+Version 3.4.4+257.g125bb1fe
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">fipy.tests.test</a><ul>
+<li><a class="reference internal" href="#fipy.tests.test.DeprecationErroringTestProgram"><code class="docutils literal notranslate"><span class="pre">DeprecationErroringTestProgram</span></code></a></li>
 <li><a class="reference internal" href="#fipy.tests.test.test"><code class="docutils literal notranslate"><span class="pre">test</span></code></a><ul>
 <li><a class="reference internal" href="#fipy.tests.test.test.finalize_options"><code class="docutils literal notranslate"><span class="pre">test.finalize_options()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.tests.test.test.initialize_options"><code class="docutils literal notranslate"><span class="pre">test.initialize_options()</span></code></a></li>

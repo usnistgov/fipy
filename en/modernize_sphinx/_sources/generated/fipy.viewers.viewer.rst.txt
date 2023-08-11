@@ -18,7 +18,6 @@ fipy.viewers.viewer
    .. autosummary::
    
       AbstractViewer
-      MetaViewer
    
    
 

@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>fipy.steppers &#8212; FiPy 3.4.4+256.g961ca499 documentation</title>
+    <title>fipy.steppers &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -52,7 +52,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+256.g961ca499 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="../contents.html" />
     <link rel="up" title="fipy" href="fipy.html" />
     <link rel="next" title="fipy.steppers.pidStepper" href="fipy.steppers.pidStepper.html" />
     <link rel="prev" title="fipy.solvers.trilinos.trilinosSolver" href="fipy.solvers.trilinos.trilinosSolver.html" />
@@ -130,10 +130,10 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.steppers.LINFerror" title="fipy.steppers.LINFerror"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LINFerror</span></code></a>(var, matrix, RHSvector)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">error</span></code>(var, matrix, RHSvector, norm)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.steppers.error" title="fipy.steppers.error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">error</span></code></a>(var, matrix, RHSvector[, norm])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">residual</span></code>(var, matrix, RHSvector)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.steppers.residual" title="fipy.steppers.residual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">residual</span></code></a>(var, matrix, RHSvector)</p></td>
 <td><p>Determines the residual for the current solution matrix and variable.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.steppers.sweepMonotonic" title="fipy.steppers.sweepMonotonic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sweepMonotonic</span></code></a>(fn, *args, **kwargs)</p></td>
@@ -196,6 +196,45 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="fipy.steppers.error">
+<span class="sig-prename descclassname"><span class="pre">fipy.steppers.</span></span><span class="sig-name descname"><span class="pre">error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RHSvector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm=&lt;function</span> <span class="pre">L1norm&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.error" title="Permalink to this definition">¶</a></dt>
+<dd><div class="math notranslate nohighlight">
+\[\frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_?}
+{\|\mathtt{var}^\text{old}\|_?}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\|\vec{x}\|_?\)</span> is the normalization of <span class="math notranslate nohighlight">\(\vec{x}\)</span> provided
+by <cite>norm</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> (<a class="reference internal" href="fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a>) – The <cite>CellVariable</cite> in question.</p></li>
+<li><p><strong>matrix</strong> – <em>(ignored)</em></p></li>
+<li><p><strong>RHSvector</strong> – <em>(ignored)</em></p></li>
+<li><p><strong>norm</strong> (<em>function</em>) – A function that will normalize its <cite>array</cite> argument and return
+a single number (default: <a class="reference internal" href="fipy.tools.numerix.html#fipy.tools.numerix.L1norm" title="fipy.tools.numerix.L1norm"><code class="xref py py-func docutils literal notranslate"><span class="pre">L1norm()</span></code></a>).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fipy.steppers.residual">
+<span class="sig-prename descclassname"><span class="pre">fipy.steppers.</span></span><span class="sig-name descname"><span class="pre">residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RHSvector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.residual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the residual for the current solution matrix and variable.</p>
+<div class="math notranslate nohighlight">
+\[\|\mathsf{L}\vec{x} - \vec{b}\|_\infty\]</div>
+<p>where <span class="math notranslate nohighlight">\(\|\vec{\xi}\|_\infty\)</span> is the <span class="math notranslate nohighlight">\(L^\infty\)</span> norm of <span class="math notranslate nohighlight">\(\vec{\xi}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> (<a class="reference internal" href="fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a>) – The <cite>CellVariable</cite> in question, <em>prior</em> to solution.</p></li>
+<li><p><strong>matrix</strong> (<em>_SparseMatrix</em>) – The coefficient matrix at this step/sweep</p></li>
+<li><p><strong>RHSvector</strong> (<em>ndarray</em>) – The right hand side vector</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="fipy.steppers.sweepMonotonic">
 <span class="sig-prename descclassname"><span class="pre">fipy.steppers.</span></span><span class="sig-name descname"><span class="pre">sweepMonotonic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.sweepMonotonic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Repeatedly calls <code class="xref py py-func docutils literal notranslate"><span class="pre">fn(*args,</span> <span class="pre">**kwargs)()</span></code> until the residual returned by
@@ -232,7 +271,7 @@
 
 
                 <div class='last-updated'>
-                Last updated on Aug 10, 2023.
+                Last updated on Aug 11, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
                 </div>
               </div>
@@ -245,7 +284,7 @@
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+256.g961ca499
+Version 3.4.4+257.g125bb1fe
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
@@ -254,6 +293,8 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.steppers.L1error"><code class="docutils literal notranslate"><span class="pre">L1error()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.steppers.L2error"><code class="docutils literal notranslate"><span class="pre">L2error()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.steppers.LINFerror"><code class="docutils literal notranslate"><span class="pre">LINFerror()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.error"><code class="docutils literal notranslate"><span class="pre">error()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.steppers.residual"><code class="docutils literal notranslate"><span class="pre">residual()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.steppers.sweepMonotonic"><code class="docutils literal notranslate"><span class="pre">sweepMonotonic()</span></code></a></li>
 </ul>
 </li>

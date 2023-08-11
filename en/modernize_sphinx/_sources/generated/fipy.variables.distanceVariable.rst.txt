@@ -9,12 +9,6 @@ fipy.variables.distanceVariable
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-   
-      module_exists
-   
    
 
    

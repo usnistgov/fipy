@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>fipy.meshes.gmshMesh &#8212; FiPy 3.4.4+256.g961ca499 documentation</title>
+    <title>fipy.meshes.gmshMesh &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -51,7 +51,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+256.g961ca499 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="../contents.html" />
     <link rel="up" title="fipy.meshes" href="fipy.meshes.html" />
     <link rel="next" title="fipy.meshes.grid1D" href="fipy.meshes.grid1D.html" />
     <link rel="prev" title="fipy.meshes.factoryMeshes" href="fipy.meshes.factoryMeshes.html" />
@@ -121,7 +121,7 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">gmshVersion</span></code>([communicator])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.meshes.gmshMesh.gmshVersion" title="fipy.meshes.gmshMesh.gmshVersion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gmshVersion</span></code></a>([communicator])</p></td>
 <td><p>Determine the version of Gmsh.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.meshes.gmshMesh.openMSHFile" title="fipy.meshes.gmshMesh.openMSHFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">openMSHFile</span></code></a>(name[, dimensions, ...])</p></td>
@@ -144,8 +144,8 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh3D" title="fipy.meshes.gmshMesh.Gmsh3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Gmsh3D</span></code></a>(arg[, communicator, overlap, background])</p></td>
 <td><p>Create a 3D Mesh using Gmsh</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">GmshFile</span></code>(filename, communicator, mode[, ...])</p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshFile" title="fipy.meshes.gmshMesh.GmshFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GmshFile</span></code></a>(filename, communicator, mode[, ...])</p></td>
+<td><p>Base class for Gmsh mesh storage files.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid2D" title="fipy.meshes.gmshMesh.GmshGrid2D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GmshGrid2D</span></code></a>([dx, dy, nx, ny, ...])</p></td>
 <td><p>Should serve as a drop-in replacement for <cite>Grid2D</cite></p></td>
@@ -153,29 +153,30 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid3D" title="fipy.meshes.gmshMesh.GmshGrid3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GmshGrid3D</span></code></a>([dx, dy, dz, nx, ny, nz, ...])</p></td>
 <td><p>Should serve as a drop-in replacement for <cite>Grid3D</cite></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MSHFile</span></code>(filename, dimensions[, ...])</p></td>
-<td><p>Class responsible for parsing a Gmsh file and then readying its contents for use by a <cite>Mesh</cite> constructor.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.meshes.gmshMesh.MSHFile" title="fipy.meshes.gmshMesh.MSHFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MSHFile</span></code></a>(filename, dimensions[, ...])</p></td>
+<td><p>Wrapper for Gmsh MSH storage files.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">POSFile</span></code>(filename, communicator, mode[, ...])</p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.meshes.gmshMesh.POSFile" title="fipy.meshes.gmshMesh.POSFile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">POSFile</span></code></a>(filename, communicator, mode[, ...])</p></td>
+<td><p>Wrapper for Gmsh POS mesh storage files.</p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Exceptions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">GmshException</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException" title="fipy.meshes.gmshMesh.GmshException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GmshException</span></code></a></p></td>
+<td><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> raised for Gmsh error conditions.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeshExportError</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.meshes.gmshMesh.MeshExportError" title="fipy.meshes.gmshMesh.MeshExportError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeshExportError</span></code></a></p></td>
+<td><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> raised when FiPy mesh cannot be exported to Gmsh.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh2D">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">Gmsh2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordDimensions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh2D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct a 2D Mesh using Gmsh</p>
+<dd><p>Bases: <a class="reference internal" href="fipy.meshes.mesh2D.html#fipy.meshes.mesh2D.Mesh2D" title="fipy.meshes.mesh2D.Mesh2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh2D</span></code></a></p>
+<p>Construct a 2D Mesh using Gmsh</p>
 <p>If called in parallel, the mesh will be partitioned based on the value
 of <cite>parallelComm.Nproc</cite>.  If an <cite>MSH</cite> file is supplied, it must have
 been previously partitioned with the number of partitions matching
@@ -715,6 +716,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh2D.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh2D.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh2D.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh2D.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -905,7 +912,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh2D.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh2D.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -916,7 +923,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh2D.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh2D.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -931,7 +938,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh2D.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh2D.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -948,7 +955,8 @@ y-axis running from bottom to top.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh2DIn3DSpace">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">Gmsh2DIn3DSpace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a topologically 2D Mesh in 3D coordinates using Gmsh</p>
+<dd><p>Bases: <a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2D" title="fipy.meshes.gmshMesh.Gmsh2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh2D</span></code></a></p>
+<p>Create a topologically 2D Mesh in 3D coordinates using Gmsh</p>
 <p>If called in parallel, the mesh will be partitioned based on the value
 of <cite>parallelComm.Nproc</cite>.  If an <cite>MSH</cite> file is supplied, it must have
 been previously partitioned with the number of partitions matching
@@ -1297,6 +1305,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1487,7 +1501,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -1498,7 +1512,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -1513,7 +1527,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -1530,7 +1544,8 @@ y-axis running from bottom to top.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh3D">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">Gmsh3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh3D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a 3D Mesh using Gmsh</p>
+<dd><p>Bases: <a class="reference internal" href="fipy.meshes.mesh.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a></p>
+<p>Create a 3D Mesh using Gmsh</p>
 <p>If called in parallel, the mesh will be partitioned based on the value
 of <cite>parallelComm.Nproc</cite>.  If an <cite>MSH</cite> file is supplied, it must have
 been previously partitioned with the number of partitions matching
@@ -1878,6 +1893,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh3D.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh3D.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh3D.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh3D.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2035,7 +2056,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh3D.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh3D.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -2046,7 +2067,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh3D.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh3D.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -2061,7 +2082,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.Gmsh3D.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.Gmsh3D.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -2075,10 +2096,80 @@ y-axis running from bottom to top.</p>
 
 </dd></dl>
 
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">GmshException</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> raised for Gmsh error conditions.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshException.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshException.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshException.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshException.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshException.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshException.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshException.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshException.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshException.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshException.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshException.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshException.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshException.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshException.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshException.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshException.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshException.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshException.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">GmshFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileIsTemporary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Base class for Gmsh mesh storage files.</p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid2D">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">GmshGrid2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordDimensions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid2D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Should serve as a drop-in replacement for <cite>Grid2D</cite></p>
+<dd><p>Bases: <a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2D" title="fipy.meshes.gmshMesh.Gmsh2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh2D</span></code></a></p>
+<p>Should serve as a drop-in replacement for <cite>Grid2D</cite></p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid2D.VTKCellDataSet">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VTKCellDataSet</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid2D.VTKCellDataSet" title="Permalink to this definition">¶</a></dt>
@@ -2408,6 +2499,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid2D.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid2D.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid2D.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid2D.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -2598,7 +2695,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid2D.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid2D.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -2609,7 +2706,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid2D.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid2D.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -2624,7 +2721,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid2D.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid2D.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -2641,7 +2738,8 @@ y-axis running from bottom to top.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid3D">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">GmshGrid3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid3D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Should serve as a drop-in replacement for <cite>Grid3D</cite></p>
+<dd><p>Bases: <a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh3D" title="fipy.meshes.gmshMesh.Gmsh3D"><code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh3D</span></code></a></p>
+<p>Should serve as a drop-in replacement for <cite>Grid3D</cite></p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid3D.VTKCellDataSet">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VTKCellDataSet</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid3D.VTKCellDataSet" title="Permalink to this definition">¶</a></dt>
@@ -2971,6 +3069,12 @@ NotImplementedError</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid3D.cellCenters">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellCenters</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid3D.cellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinates of geometric centers of cells</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid3D.cellFaceIDs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cellFaceIDs</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid3D.cellFaceIDs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -3128,7 +3232,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid3D.x">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid3D.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[0]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 <span class="go">[ 0.5  1.5]</span>
@@ -3139,7 +3243,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid3D.y">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid3D.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[1]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  1.5  1.5]</span>
@@ -3154,7 +3258,7 @@ y-axis running from bottom to top.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshGrid3D.z">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshGrid3D.z" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equivalent to using <code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
+<dd><p>Equivalent to using <a class="reference internal" href="fipy.meshes.abstractMesh.html#fipy.meshes.abstractMesh.AbstractMesh.cellCenters" title="fipy.meshes.abstractMesh.AbstractMesh.cellCenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cellCenters</span></code></a><code class="docutils literal notranslate"><span class="pre">[2]</span></code>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Grid3D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nz</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
 <span class="go">[ 0.5  0.5  0.5  0.5  1.5  1.5  1.5  1.5]</span>
@@ -3166,6 +3270,144 @@ y-axis running from bottom to top.</p>
 </div>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MSHFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">MSHFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordDimensions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmshOutput</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileIsTemporary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.MSHFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.meshes.gmshMesh.GmshFile" title="fipy.meshes.gmshMesh.GmshFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">GmshFile</span></code></a></p>
+<p>Wrapper for Gmsh MSH storage files.</p>
+<p>Class responsible for parsing a Gmsh file and then readying
+its contents for use by a <cite>Mesh</cite> constructor.</p>
+<p>Can handle a partitioned mesh based on <cite>parallelComm.Nproc</cite>. If partitioning,
+the <cite>.msh</cite> file must either be previously partitioned with the number of
+partitions matching <cite>Nproc</cite>, or the mesh must be specified with a <cite>.geo</cite> file
+or multiline string.</p>
+<p>Does not support gmsh versions &lt; 2. If partitioning, gmsh
+version must be &gt;= 2.5.</p>
+<p>TODO: Refactor face extraction functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Gmsh output file</p></li>
+<li><p><strong>dimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Dimension of mesh</p></li>
+<li><p><strong>coordDimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Dimension of shapes</p></li>
+<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><em>CommWrapper</em></a>) – Generally, <cite>fipy.tools.serialComm</cite> or <cite>fipy.tools.parallelComm</cite>.
+Select <cite>~fipy.tools.serialComm</cite> to create a serial mesh when
+running in parallel; mostly used for test purposes.</p></li>
+<li><p><strong>gmshOutput</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Output (if any) from Gmsh run that created <cite>.msh</cite> file</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Beginning with <cite>r</cite> for reading and <cite>w</cite> for writing.
+The file will be created if it doesn’t exist when opened for writing;
+it will be truncated when opened for writing.
+Add a <cite>b</cite> to the mode for binary files.</p></li>
+<li><p><strong>fileIsTemporary</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – If <cite>True</cite>, <cite>filename</cite> should be cleaned up on deletion</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MSHFile.makeMapVariables">
+<span class="sig-name descname"><span class="pre">makeMapVariables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.MSHFile.makeMapVariables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility function to make <cite>MeshVariables</cite> that define different domains in the mesh</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MSHFile.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.MSHFile.read" title="Permalink to this definition">¶</a></dt>
+<dd><ol class="arabic simple" start="0">
+<li><p>Build <cite>cellsToVertices</cite></p></li>
+<li><p>Recover needed <cite>vertexCoords</cite> and mapping from file using
+<cite>cellsToVertices</cite></p></li>
+<li><p>Build <cite>cellsToVertIDs</cite> proper from <cite>vertexCoords</cite> and vertex map</p></li>
+<li><p>Build faces</p></li>
+<li><p>Build <cite>cellsToFaces</cite></p></li>
+</ol>
+<p>Isolate relevant data into three files, store in
+<cite>self.nodesPath</cite> for <cite>$Nodes</cite>,
+<cite>self.elemsPath</cite> for <cite>$Elements</cite>.
+<cite>self.namesFile</cite> for <cite>$PhysicalNames</cite>.</p>
+<dl class="simple">
+<dt>Returns <cite>vertexCoords</cite>, <cite>facesToVertexID</cite>, <cite>cellsToFaceID</cite>,</dt><dd><p><cite>cellGlobalIDMap</cite>, <cite>ghostCellGlobalIDMap</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MeshExportError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">MeshExportError</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.MeshExportError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException" title="fipy.meshes.gmshMesh.GmshException"><code class="xref py py-class docutils literal notranslate"><span class="pre">GmshException</span></code></a></p>
+<p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> raised when FiPy mesh cannot be exported to Gmsh.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MeshExportError.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.MeshExportError.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MeshExportError.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.MeshExportError.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MeshExportError.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.MeshExportError.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MeshExportError.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.MeshExportError.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MeshExportError.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.MeshExportError.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MeshExportError.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.MeshExportError.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MeshExportError.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.MeshExportError.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MeshExportError.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.MeshExportError.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MeshExportError.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.MeshExportError.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.POSFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">POSFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileIsTemporary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.POSFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.meshes.gmshMesh.GmshFile" title="fipy.meshes.gmshMesh.GmshFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">GmshFile</span></code></a></p>
+<p>Wrapper for Gmsh POS mesh storage files.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fipy.meshes.gmshMesh.gmshVersion">
+<span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">gmshVersion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">communicator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DummyComm()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.gmshVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the version of Gmsh.</p>
+<p>We can’t trust the generated <cite>.msh</cite> file for the correct version number, so
+we have to retrieve it from the gmsh binary.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -3203,7 +3445,7 @@ Add a <cite>b</cite> to the mode for binary files.</p></li>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 10, 2023.
+                Last updated on Aug 11, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
                 </div>
               </div>
@@ -3216,7 +3458,7 @@ Add a <cite>b</cite> to the mode for binary files.</p></li>
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+256.g961ca499
+Version 3.4.4+257.g125bb1fe
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
@@ -3234,6 +3476,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2D.__sub__"><code class="docutils literal notranslate"><span class="pre">Gmsh2D.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2D.__truediv__"><code class="docutils literal notranslate"><span class="pre">Gmsh2D.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2D.aspect2D"><code class="docutils literal notranslate"><span class="pre">Gmsh2D.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2D.cellCenters"><code class="docutils literal notranslate"><span class="pre">Gmsh2D.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2D.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">Gmsh2D.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2D.extrude"><code class="docutils literal notranslate"><span class="pre">Gmsh2D.extrude()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2D.facesBack"><code class="docutils literal notranslate"><span class="pre">Gmsh2D.facesBack</span></code></a></li>
@@ -3261,6 +3504,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.__sub__"><code class="docutils literal notranslate"><span class="pre">Gmsh2DIn3DSpace.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.__truediv__"><code class="docutils literal notranslate"><span class="pre">Gmsh2DIn3DSpace.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.aspect2D"><code class="docutils literal notranslate"><span class="pre">Gmsh2DIn3DSpace.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.cellCenters"><code class="docutils literal notranslate"><span class="pre">Gmsh2DIn3DSpace.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">Gmsh2DIn3DSpace.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.extrude"><code class="docutils literal notranslate"><span class="pre">Gmsh2DIn3DSpace.extrude()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh2DIn3DSpace.facesBack"><code class="docutils literal notranslate"><span class="pre">Gmsh2DIn3DSpace.facesBack</span></code></a></li>
@@ -3288,6 +3532,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh3D.__sub__"><code class="docutils literal notranslate"><span class="pre">Gmsh3D.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh3D.__truediv__"><code class="docutils literal notranslate"><span class="pre">Gmsh3D.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh3D.aspect2D"><code class="docutils literal notranslate"><span class="pre">Gmsh3D.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh3D.cellCenters"><code class="docutils literal notranslate"><span class="pre">Gmsh3D.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh3D.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">Gmsh3D.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh3D.facesBack"><code class="docutils literal notranslate"><span class="pre">Gmsh3D.facesBack</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh3D.facesBottom"><code class="docutils literal notranslate"><span class="pre">Gmsh3D.facesBottom</span></code></a></li>
@@ -3302,6 +3547,19 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.Gmsh3D.z"><code class="docutils literal notranslate"><span class="pre">Gmsh3D.z</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException"><code class="docutils literal notranslate"><span class="pre">GmshException</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException.__cause__"><code class="docutils literal notranslate"><span class="pre">GmshException.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException.__context__"><code class="docutils literal notranslate"><span class="pre">GmshException.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException.__delattr__"><code class="docutils literal notranslate"><span class="pre">GmshException.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException.__getattribute__"><code class="docutils literal notranslate"><span class="pre">GmshException.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException.__reduce__"><code class="docutils literal notranslate"><span class="pre">GmshException.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException.__repr__"><code class="docutils literal notranslate"><span class="pre">GmshException.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException.__setattr__"><code class="docutils literal notranslate"><span class="pre">GmshException.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException.__str__"><code class="docutils literal notranslate"><span class="pre">GmshException.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException.with_traceback"><code class="docutils literal notranslate"><span class="pre">GmshException.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshFile"><code class="docutils literal notranslate"><span class="pre">GmshFile</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid2D"><code class="docutils literal notranslate"><span class="pre">GmshGrid2D</span></code></a><ul>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid2D.VTKCellDataSet"><code class="docutils literal notranslate"><span class="pre">GmshGrid2D.VTKCellDataSet</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid2D.VTKFaceDataSet"><code class="docutils literal notranslate"><span class="pre">GmshGrid2D.VTKFaceDataSet</span></code></a></li>
@@ -3314,6 +3572,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid2D.__sub__"><code class="docutils literal notranslate"><span class="pre">GmshGrid2D.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid2D.__truediv__"><code class="docutils literal notranslate"><span class="pre">GmshGrid2D.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid2D.aspect2D"><code class="docutils literal notranslate"><span class="pre">GmshGrid2D.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid2D.cellCenters"><code class="docutils literal notranslate"><span class="pre">GmshGrid2D.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid2D.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">GmshGrid2D.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid2D.extrude"><code class="docutils literal notranslate"><span class="pre">GmshGrid2D.extrude()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid2D.facesBack"><code class="docutils literal notranslate"><span class="pre">GmshGrid2D.facesBack</span></code></a></li>
@@ -3341,6 +3600,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid3D.__sub__"><code class="docutils literal notranslate"><span class="pre">GmshGrid3D.__sub__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid3D.__truediv__"><code class="docutils literal notranslate"><span class="pre">GmshGrid3D.__truediv__()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid3D.aspect2D"><code class="docutils literal notranslate"><span class="pre">GmshGrid3D.aspect2D</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid3D.cellCenters"><code class="docutils literal notranslate"><span class="pre">GmshGrid3D.cellCenters</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid3D.cellFaceIDs"><code class="docutils literal notranslate"><span class="pre">GmshGrid3D.cellFaceIDs</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid3D.facesBack"><code class="docutils literal notranslate"><span class="pre">GmshGrid3D.facesBack</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid3D.facesBottom"><code class="docutils literal notranslate"><span class="pre">GmshGrid3D.facesBottom</span></code></a></li>
@@ -3355,6 +3615,25 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshGrid3D.z"><code class="docutils literal notranslate"><span class="pre">GmshGrid3D.z</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MSHFile"><code class="docutils literal notranslate"><span class="pre">MSHFile</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MSHFile.makeMapVariables"><code class="docutils literal notranslate"><span class="pre">MSHFile.makeMapVariables()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MSHFile.read"><code class="docutils literal notranslate"><span class="pre">MSHFile.read()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MeshExportError"><code class="docutils literal notranslate"><span class="pre">MeshExportError</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MeshExportError.__cause__"><code class="docutils literal notranslate"><span class="pre">MeshExportError.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MeshExportError.__context__"><code class="docutils literal notranslate"><span class="pre">MeshExportError.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MeshExportError.__delattr__"><code class="docutils literal notranslate"><span class="pre">MeshExportError.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MeshExportError.__getattribute__"><code class="docutils literal notranslate"><span class="pre">MeshExportError.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MeshExportError.__reduce__"><code class="docutils literal notranslate"><span class="pre">MeshExportError.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MeshExportError.__repr__"><code class="docutils literal notranslate"><span class="pre">MeshExportError.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MeshExportError.__setattr__"><code class="docutils literal notranslate"><span class="pre">MeshExportError.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MeshExportError.__str__"><code class="docutils literal notranslate"><span class="pre">MeshExportError.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.MeshExportError.with_traceback"><code class="docutils literal notranslate"><span class="pre">MeshExportError.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.POSFile"><code class="docutils literal notranslate"><span class="pre">POSFile</span></code></a></li>
+<li><a class="reference internal" href="#fipy.meshes.gmshMesh.gmshVersion"><code class="docutils literal notranslate"><span class="pre">gmshVersion()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.openMSHFile"><code class="docutils literal notranslate"><span class="pre">openMSHFile()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.meshes.gmshMesh.openPOSFile"><code class="docutils literal notranslate"><span class="pre">openPOSFile()</span></code></a></li>
 </ul>

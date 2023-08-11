@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>fipy.tools.numerix &#8212; FiPy 3.4.4+256.g961ca499 documentation</title>
+    <title>fipy.tools.numerix &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -52,7 +52,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+256.g961ca499 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="../contents.html" />
     <link rel="up" title="fipy.tools" href="fipy.tools.html" />
     <link rel="next" title="fipy.tools.parser" href="fipy.tools.parser.html" />
     <link rel="prev" title="fipy.tools.logging" href="fipy.tools.logging.html" />
@@ -180,20 +180,8 @@ create a <cite>Variable</cite>.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.tools.numerix.getShape" title="fipy.tools.numerix.getShape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getShape</span></code></a>(arr)</p></td>
 <td><p>Return the shape of <cite>arr</cite></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getUnit</span></code>(arr)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">in1dMA</span></code>(ar1, ar2[, assume_unique, invert])</p></td>
-<td><p>Test whether each unmasked element of an array is also present and unmasked in a second array.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">invert_indices</span></code>(arr[, axis])</p></td>
-<td><p>Invert an index array</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isFloat</span></code>(arr)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isInt</span></code>(arr)</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.tools.numerix.getUnit" title="fipy.tools.numerix.getUnit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getUnit</span></code></a>(arr)</p></td>
+<td><p>Return the unit of <cite>arr</cite>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.tools.numerix.isclose" title="fipy.tools.numerix.isclose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isclose</span></code></a>(first, second[, rtol, atol])</p></td>
 <td><p>Returns which elements of <cite>first</cite> and <cite>second</cite> are equal, subject to the given relative and absolute tolerances, such that.</p></td>
@@ -358,6 +346,13 @@ for arrays <cite>a1</cite> and <cite>a2</cite> of vectors <cite>v1</cite> and <c
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="fipy.tools.numerix.getUnit">
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">getUnit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.getUnit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the unit of <cite>arr</cite>.</p>
+<p>If <cite>arr</cite> has no units, returns 1.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.numerix.isclose">
 <span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">isclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.isclose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns which elements of <cite>first</cite> and <cite>second</cite> are equal, subject to the given
@@ -429,10 +424,11 @@ Places in the code were assuming incorrect put behavior.</p>
 The rank of a scalar is zero.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The rank of a <cite>MeshVariable</cite> is for any single element. E.g., A
-<cite>CellVariable</cite> containing scalars at each cell, and defined on a 9
-element <cite>Grid1D</cite>, has rank 0. If it is defined on a 3x3 <cite>Grid2D</cite>, it is
-still rank 0.</p>
+<p>The rank of a <a class="reference internal" href="fipy.variables.meshVariable.html#fipy.variables.meshVariable.MeshVariable" title="fipy.variables.meshVariable.MeshVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshVariable</span></code></a> is
+for any single element.  E.g., A
+<a class="reference internal" href="fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> containing
+scalars at each cell, and defined on a 9 element <cite>Grid1D</cite>, has rank
+0.  If it is defined on a 3x3 <cite>Grid2D</cite>, it is still rank 0.</p>
 </div>
 </dd></dl>
 
@@ -515,7 +511,7 @@ Default is <cite>sys.float_output_suppress_small</cite> or <cite>False</cite>.</
 
 
                 <div class='last-updated'>
-                Last updated on Aug 10, 2023.
+                Last updated on Aug 11, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
                 </div>
               </div>
@@ -528,7 +524,7 @@ Default is <cite>sys.float_output_suppress_small</cite> or <cite>False</cite>.</
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+256.g961ca499
+Version 3.4.4+257.g125bb1fe
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
@@ -542,6 +538,7 @@ Version 3.4.4+256.g961ca499
 <li><a class="reference internal" href="#fipy.tools.numerix.allequal"><code class="docutils literal notranslate"><span class="pre">allequal()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.tools.numerix.dot"><code class="docutils literal notranslate"><span class="pre">dot()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.tools.numerix.getShape"><code class="docutils literal notranslate"><span class="pre">getShape()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tools.numerix.getUnit"><code class="docutils literal notranslate"><span class="pre">getUnit()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.tools.numerix.isclose"><code class="docutils literal notranslate"><span class="pre">isclose()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.tools.numerix.nearest"><code class="docutils literal notranslate"><span class="pre">nearest()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.tools.numerix.put"><code class="docutils literal notranslate"><span class="pre">put()</span></code></a></li>

@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>fipy.viewers.vtkViewer &#8212; FiPy 3.4.4+256.g961ca499 documentation</title>
+    <title>fipy.viewers.vtkViewer &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -51,7 +51,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+256.g961ca499 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="../contents.html" />
     <link rel="up" title="fipy.viewers" href="fipy.viewers.html" />
     <link rel="next" title="fipy.viewers.vtkViewer.test" href="fipy.viewers.vtkViewer.test.html" />
     <link rel="prev" title="fipy.viewers.viewer" href="fipy.viewers.viewer.html" />
@@ -129,12 +129,13 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.viewers.vtkViewer.VTKCellViewer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.viewers.vtkViewer.</span></span><span class="sig-name descname"><span class="pre">VTKCellViewer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwlimits</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.viewers.vtkViewer.VTKCellViewer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renders <cite>CellVariable</cite> data in VTK format</p>
+<dd><p>Bases: <a class="reference internal" href="fipy.viewers.vtkViewer.vtkViewer.html#fipy.viewers.vtkViewer.vtkViewer.VTKViewer" title="fipy.viewers.vtkViewer.vtkViewer.VTKViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">VTKViewer</span></code></a></p>
+<p>Renders <cite>CellVariable</cite> data in VTK format</p>
 <p>Creates a <cite>VTKViewer</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>vars</strong> (<a class="reference internal" href="fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a><em> or </em><a class="reference internal" href="fipy.variables.faceVariable.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><em>FaceVariable</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – the <cite>MeshVariable</cite> objects to display.</p></li>
+<li><p><strong>vars</strong> (<a class="reference internal" href="fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a><em> or </em><a class="reference internal" href="fipy.variables.faceVariable.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><em>FaceVariable</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – the <a class="reference internal" href="fipy.variables.meshVariable.html#fipy.variables.meshVariable.MeshVariable" title="fipy.variables.meshVariable.MeshVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshVariable</span></code></a> objects to display.</p></li>
 <li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – displayed at the top of the <cite>Viewer</cite> window</p></li>
 <li><p><strong>limits</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – a (deprecated) alternative to limit keyword arguments</p></li>
 <li><p><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. Any limit set to
@@ -245,12 +246,13 @@ display.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.viewers.vtkViewer.VTKFaceViewer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.viewers.vtkViewer.</span></span><span class="sig-name descname"><span class="pre">VTKFaceViewer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwlimits</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.viewers.vtkViewer.VTKFaceViewer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Renders <cite>_MeshVariable</cite> data in VTK format</p>
+<dd><p>Bases: <a class="reference internal" href="fipy.viewers.vtkViewer.vtkViewer.html#fipy.viewers.vtkViewer.vtkViewer.VTKViewer" title="fipy.viewers.vtkViewer.vtkViewer.VTKViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">VTKViewer</span></code></a></p>
+<p>Renders <a class="reference internal" href="fipy.variables.meshVariable.html#fipy.variables.meshVariable.MeshVariable" title="fipy.variables.meshVariable.MeshVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshVariable</span></code></a> data in VTK format</p>
 <p>Creates a <cite>VTKViewer</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>vars</strong> (<a class="reference internal" href="fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a><em> or </em><a class="reference internal" href="fipy.variables.faceVariable.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><em>FaceVariable</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – the <cite>MeshVariable</cite> objects to display.</p></li>
+<li><p><strong>vars</strong> (<a class="reference internal" href="fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a><em> or </em><a class="reference internal" href="fipy.variables.faceVariable.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><em>FaceVariable</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – the <a class="reference internal" href="fipy.variables.meshVariable.html#fipy.variables.meshVariable.MeshVariable" title="fipy.variables.meshVariable.MeshVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshVariable</span></code></a> objects to display.</p></li>
 <li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – displayed at the top of the <cite>Viewer</cite> window</p></li>
 <li><p><strong>limits</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – a (deprecated) alternative to limit keyword arguments</p></li>
 <li><p><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. Any limit set to
@@ -368,7 +370,7 @@ and rank.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>vars</strong> (<a class="reference internal" href="fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a><em> or </em><a class="reference internal" href="fipy.variables.faceVariable.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><em>FaceVariable</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – the <cite>MeshVariable</cite> objects to display.</p></li>
+<li><p><strong>vars</strong> (<a class="reference internal" href="fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a><em> or </em><a class="reference internal" href="fipy.variables.faceVariable.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><em>FaceVariable</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – the <a class="reference internal" href="fipy.variables.meshVariable.html#fipy.variables.meshVariable.MeshVariable" title="fipy.variables.meshVariable.MeshVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshVariable</span></code></a> objects to display.</p></li>
 <li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – displayed at the top of the <cite>Viewer</cite> window</p></li>
 <li><p><strong>limits</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – a (deprecated) alternative to limit keyword arguments</p></li>
 <li><p><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. Any limit set to
@@ -413,7 +415,7 @@ a (default) value of <cite>None</cite> will autoscale.</p></li>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 10, 2023.
+                Last updated on Aug 11, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
                 </div>
               </div>
@@ -426,7 +428,7 @@ a (default) value of <cite>None</cite> will autoscale.</p></li>
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+256.g961ca499
+Version 3.4.4+257.g125bb1fe
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

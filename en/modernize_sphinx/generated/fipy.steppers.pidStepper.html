@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>fipy.steppers.pidStepper &#8212; FiPy 3.4.4+256.g961ca499 documentation</title>
+    <title>fipy.steppers.pidStepper &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
@@ -51,7 +51,7 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+256.g961ca499 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="../contents.html" />
     <link rel="up" title="fipy.steppers" href="fipy.steppers.html" />
     <link rel="next" title="fipy.steppers.pseudoRKQSStepper" href="fipy.steppers.pseudoRKQSStepper.html" />
     <link rel="prev" title="fipy.steppers" href="fipy.steppers.html" />
@@ -129,7 +129,8 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.steppers.pidStepper.PIDStepper">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.steppers.pidStepper.</span></span><span class="sig-name descname"><span class="pre">PIDStepper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vardata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proportional</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.075</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integral</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.175</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">derivative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.steppers.pidStepper.PIDStepper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adaptive stepper using a PID controller, based on:</p>
+<dd><p>Bases: <a class="reference internal" href="fipy.steppers.stepper.html#fipy.steppers.stepper.Stepper" title="fipy.steppers.stepper.Stepper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stepper</span></code></a></p>
+<p>Adaptive stepper using a PID controller, based on:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@article</span><span class="p">{</span><span class="n">PIDpaper</span><span class="p">,</span>
    <span class="n">author</span> <span class="o">=</span>  <span class="p">{</span><span class="n">A</span><span class="o">.</span> <span class="n">M</span><span class="o">.</span> <span class="n">P</span><span class="o">.</span> <span class="n">Valli</span> <span class="ow">and</span> <span class="n">G</span><span class="o">.</span> <span class="n">F</span><span class="o">.</span> <span class="n">Carey</span> <span class="ow">and</span> <span class="n">A</span><span class="o">.</span> <span class="n">L</span><span class="o">.</span> <span class="n">G</span><span class="o">.</span> <span class="n">A</span><span class="o">.</span> <span class="n">Coutinho</span><span class="p">},</span>
    <span class="n">title</span> <span class="o">=</span>   <span class="p">{</span><span class="n">Control</span> <span class="n">strategies</span> <span class="k">for</span> <span class="n">timestep</span> <span class="n">selection</span> <span class="ow">in</span> <span class="n">finite</span> <span class="n">element</span>
@@ -148,7 +149,7 @@
 
 
                 <div class='last-updated'>
-                Last updated on Aug 10, 2023.
+                Last updated on Aug 11, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
                 </div>
               </div>
@@ -161,7 +162,7 @@
               <img class="logo" src="../_static/logo.png" alt="Logo"/>
             </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+256.g961ca499
+Version 3.4.4+257.g125bb1fe
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

@@ -17,6 +17,7 @@ fipy.tests.testProgram
 
    .. autosummary::
    
+      TestProgram
       main
    
    
