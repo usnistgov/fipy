@@ -15,7 +15,7 @@ from future.utils import with_metaclass
 # https://stackoverflow.com/a/13901161/2019542
 # adapted for future
 # https://python-future.org/compatible_idioms.html#metaclasses
-class MetaViewer(type):
+class _MetaViewer(type):
     def __new__(mcl, classname, bases, classdict):
         """Create new viewer with class-appropriate doctests"""
         cls = type.__new__(mcl, classname, bases, classdict)
@@ -27,8 +27,9 @@ class MetaViewer(type):
 
         return cls
 
-class AbstractViewer(with_metaclass(MetaViewer, object)):
-    """
+class AbstractViewer(with_metaclass(_MetaViewer, object)):
+    """Base clase for FiPy Viewers
+
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 

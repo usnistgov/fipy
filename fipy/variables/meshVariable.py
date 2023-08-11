@@ -5,18 +5,15 @@ from __future__ import unicode_literals
 from builtins import str
 __docformat__ = 'restructuredtext'
 
-__all__ = []
-
 from fipy.variables.variable import Variable
 from fipy.variables.constant import _Constant
 from fipy.tools import numerix
 from functools import reduce
 
-class _MeshVariable(Variable):
-    """
-    .. attention:: This class is abstract. Always create one of its subclasses.
+class MeshVariable(Variable):
+    """Abstract base class for a `Variable` that is defined on a mesh
 
-    Abstract base class for a `Variable` that is defined on a mesh
+    .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, mesh, name='', value=0., rank=None, elementshape=None,
                  unit=None, cached=1):
@@ -41,7 +38,7 @@ class _MeshVariable(Variable):
         if isinstance(value, (list, tuple)):
             value = numerix.array(value)
 
-        if isinstance(value, _MeshVariable):
+        if isinstance(value, MeshVariable):
             if mesh is None:
                 mesh = value.mesh
             elif mesh != value.mesh:
@@ -55,7 +52,7 @@ class _MeshVariable(Variable):
         elif not isinstance(value, _Constant) and isinstance(value, Variable):
             name = name or value.name
             unit = None
-            if isinstance(value, _MeshVariable):
+            if isinstance(value, MeshVariable):
                 if not isinstance(value, self._variableClass):
                     raise TypeError("A '%s' cannot be cast to a '%s'" % (value._variableClass.__name__,
                                                                           self._variableClass.__name__))
@@ -191,13 +188,15 @@ class _MeshVariable(Variable):
         return self._constraintMask
 
     def constrain(self, value, where=None):
-        super(_MeshVariable, self).constrain(value, where=where)
+        super(MeshVariable, self).constrain(value, where=where)
         if hasattr(self, '_constraintMask'):
             self._constraintMask._requires(self._constraints[-1].where)
 
     def _getShapeFromMesh(mesh):
-        """
-        Return the shape of this `MeshVariable` type, given a particular mesh.
+        """Return the shape of this
+        :class:`~fipy.variables.meshVariable.MeshVariable` type, given a
+        particular mesh.
+
         Return `None` if unknown or independent of the mesh.
         """
         return None
@@ -265,7 +264,7 @@ class _MeshVariable(Variable):
            \mathsf{A} \cdot \mathsf{B}
 
         Both `A` and `B` can be of arbitrary rank, but at this point, both must
-        be appropriately broadcast `_MeshVariable` objects.
+        be appropriately broadcast :class:`~fipy.variables.meshVariable.MeshVariable` objects.
 
         Test for inline bug
 
@@ -308,7 +307,7 @@ class _MeshVariable(Variable):
         if rankA > 0 and rankB > (rankA - 1):
             opShape = opShape[:rankA-1] + opShape[rankA:]
 
-        return A._BinaryOperatorVariable(lambda a, b: _MeshVariable._dot(a, b, index),
+        return A._BinaryOperatorVariable(lambda a, b: MeshVariable._dot(a, b, index),
                                          B,
                                          opShape=opShape,
                                          operatorClass=operatorClass,
@@ -325,14 +324,14 @@ class _MeshVariable(Variable):
            \text{self} \cdot \text{other}
 
         Both `self` and `other` can be of arbitrary rank, and `other` does not
-        need to be a `_MeshVariable`.
+        need to be a :class:`~fipy.variables.meshVariable.MeshVariable`.
         """
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
             other = _Constant(value=other)
         opShape, baseClass, other = self._shapeClassAndOther(opShape=None, operatorClass=None, other=other)
 
-        return _MeshVariable.__dot(self, other, self._OperatorVariableClass(baseClass))
+        return MeshVariable.__dot(self, other, self._OperatorVariableClass(baseClass))
 
     def rdot(self, other, opShape=None, operatorClass=None):
         """
@@ -344,7 +343,7 @@ class _MeshVariable(Variable):
            \text{other} \cdot \text{self}
 
         Both `self` and `other` can be of arbitrary rank, and `other` does not
-        need to be a `_MeshVariable`.
+        need to be a :class:`~fipy.variables.meshVariable.MeshVariable`.
         """
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
@@ -469,7 +468,7 @@ class _MeshVariable(Variable):
              return Variable.allequal(self, other)
 
     def std(self, axis=None, **kwargs):
-        """Evaluate standard deviation of all the elements of a `MeshVariable`.
+        """Evaluate standard deviation of all the elements of a :class:`~fipy.variables.meshVariable.MeshVariable`.
 
         Adapted from http://mpitutorial.com/tutorials/mpi-reduce-and-allreduce/
 
@@ -519,7 +518,7 @@ class _MeshVariable(Variable):
         >>> warnings.filters = savedFilters
         """
         otherShape = numerix.getShape(other)
-        if (not isinstance(other, _MeshVariable)
+        if (not isinstance(other, MeshVariable)
             and otherShape is not ()
             and otherShape[-1] == self._globalNumberOfElements):
             if (isinstance(other, Variable) and len(other.requiredVariables) > 0):
@@ -585,8 +584,9 @@ class _MeshVariable(Variable):
     def _axisClass(self, axis):
         """
         if we operate along the mesh elements, then this is no longer a
-        `_MeshVariable`, otherwise we get back a `_MeshVariable` of the same
-        class, but lower rank.
+        :class:`~fipy.variables.meshVariable.MeshVariable`, otherwise we
+        get back a :class:`~fipy.variables.meshVariable.MeshVariable` of
+        the same class, but lower rank.
         """
         if axis is None or axis == len(self.shape) - 1 or axis == -1:
             return Variable._OperatorVariableClass(self, baseClass=Variable)
@@ -610,7 +610,7 @@ class _MeshVariable(Variable):
     def __getstate__(self):
         """
         Used internally to collect the necessary information to ``pickle`` the
-        `_MeshVariable` to persistent storage.
+        :class:`~fipy.variables.meshVariable.MeshVariable` to persistent storage.
         """
         return {
             'mesh': self.mesh,

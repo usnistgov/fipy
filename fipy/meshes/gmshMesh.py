@@ -27,7 +27,9 @@ from fipy.meshes.mesh import Mesh
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes.topologies.meshTopology import _MeshTopology
 
-__all__ = ["openMSHFile", "openPOSFile",
+__all__ = ["GmshException", "MeshExportError",
+           "gmshVersion", "openMSHFile", "openPOSFile",
+           "GmshFile", "MSHFile", "POSFile",
            "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D",
            "GmshGrid2D", "GmshGrid3D"]
 from future.utils import text_to_native_str
@@ -47,9 +49,11 @@ register_skipper(flag="GMSH",
                  why="`gmsh` cannot be found on the $PATH")
 
 class GmshException(Exception):
+    """:class:`Exception` raised for Gmsh error conditions."""
     pass
 
 class MeshExportError(GmshException):
+    """:class:`Exception` raised when FiPy mesh cannot be exported to Gmsh."""
     pass
 
 def gmshVersion(communicator=parallelComm):
@@ -267,6 +271,8 @@ def openPOSFile(name, communicator=parallelComm, mode='w'):
                    mode=mode)
 
 class GmshFile(object):
+    """Base class for Gmsh mesh storage files."""
+
     def __init__(self, filename, communicator, mode, fileIsTemporary=False):
         self.filename = filename
         self.communicator = communicator
@@ -328,6 +334,8 @@ class GmshFile(object):
             os.unlink(self.filename)
 
 class POSFile(GmshFile):
+    """Wrapper for Gmsh POS mesh storage files."""
+
     def write(self, obj, time=0.0, timeindex=0):
         if not self.formatWritten:
             self._writeMeshFormat()
@@ -483,7 +491,8 @@ class POSFile(GmshFile):
         self.fileobj.write("\n".join([" ".join(datum) for datum in data]) + "\n")
 
 class MSHFile(GmshFile):
-    """
+    """Wrapper for Gmsh MSH storage files.
+
     Class responsible for parsing a Gmsh file and then readying
     its contents for use by a `Mesh` constructor.
 
@@ -507,9 +516,9 @@ class MSHFile(GmshFile):
         """
         Parameters
         ----------
-        filename : str\
+        filename : str
             Gmsh output file
-        dimensions : iht
+        dimensions : int
             Dimension of mesh
         coordDimensions : int
             Dimension of shapes

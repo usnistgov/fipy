@@ -5,7 +5,7 @@ from fipy.tools import numerix
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 
-from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
+from fipy.viewers.matplotlibViewer.abstractMatplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["MatplotlibStreamViewer"]
 from future.utils import text_to_native_str

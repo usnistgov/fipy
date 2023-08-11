@@ -4,7 +4,7 @@ from builtins import object
 from builtins import range
 __docformat__ = 'restructuredtext'
 
-__all__ = ["AbstractMesh"]
+__all__ = ["AbstractMesh", "MeshAdditionError"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
@@ -18,6 +18,7 @@ from fipy.meshes.representations.abstractRepresentation import _AbstractRepresen
 from fipy.meshes.topologies.abstractTopology import _AbstractTopology
 
 class MeshAdditionError(Exception):
+    """:class:`Exception` raised when meshes cannot be concatenated."""
     pass
 
 class AbstractMesh(object):
@@ -101,6 +102,8 @@ class AbstractMesh(object):
 
     @property
     def cellCenters(self):
+        """Coordinates of geometric centers of cells"""
+
         from fipy.variables.cellVariable import CellVariable
         return CellVariable(mesh=self, value=self._scaledCellCenters,
                             rank=1)

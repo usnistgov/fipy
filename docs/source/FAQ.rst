@@ -266,7 +266,7 @@ directory. The type of image is determined by the file extension
      on the chosen `backend
      <http://matplotlib.sourceforge.net/backends.html>`_, but our
      :class:`MatplotlibViewer
-     <fipy.viewers.matplotlibViewer.matplotlibViewer.AbstractMatplotlibViewer>` classes
+     <fipy.viewers.matplotlibViewer.abstractMatplotlibViewer.AbstractMatplotlibViewer>` classes
      don't properly support this yet.
 
 What if I only want the saved file, with no display on screen?

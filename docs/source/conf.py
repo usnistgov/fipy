@@ -87,11 +87,8 @@ unused_docs = ['RESOURCES',
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_patterns = ['generated/fipy/modules.rst',
-                    'generated/fipy/__init__.rst',
-                    '_build',
+exclude_patterns = ['_build',
                     '_templates',
-                    'generated/tutorial/modules.rst',
                     'sphinxext',]
 
 # The reST default role (used for this markup: `text`) to use for all documents.
@@ -120,6 +117,7 @@ autodoc_default_options = {
     'member-order': 'alphabetical',
     'special-members': True,
     'inherited-members': True,
+    'show-inheritance': True,
     'exclude-members': '__annotations__, __dict__, __init__, __module__, __weakref__'
 }
 

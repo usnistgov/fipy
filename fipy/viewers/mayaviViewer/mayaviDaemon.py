@@ -43,7 +43,7 @@ except ImportError as e:
 # FiPy library imports
 from fipy.tools.numerix import array, concatenate, where, zeros
 
-__all__ = ["MayaviDaemon"]
+__all__ = ["MayaviDaemon", "main"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
@@ -316,8 +316,10 @@ except AttributeError:
 signal.signal(signal.SIGTERM, MayaviDaemon._sigint_handler)
 
 def main(argv=None):
-    """Simple helper to start up the mayavi application.  This returns
-    the running application."""
+    """Simple helper to start up the mayavi application.=
+
+    This returns the running application.
+    """
     m = MayaviDaemon()
     m.main(argv)
     return m

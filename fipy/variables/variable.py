@@ -1428,16 +1428,19 @@ class Variable(object):
                                   axis=axis)
 
     def max(self, axis=None):
+        """Return the maximum along a given axis."""
         return self._axisOperator(opname="maxVar",
                                   op=lambda a: a.max(axis=axis),
                                   axis=axis)
 
     def min(self, axis=None):
+        """Return the minimum along a given axis."""
         return self._axisOperator(opname="minVar",
                                   op=lambda a: a.min(axis=axis),
                                   axis=axis)
 
     def std(self, axis=None, **kwargs):
+        """Return the standard deviation along a given axis."""
         return self._axisOperator(opname="stdVar",
                                   op=lambda a: numerix.std(a, **kwargs),
                                   axis=axis)

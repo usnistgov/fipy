@@ -1,6 +1,8 @@
 import sys
 
 def package_info():
+    """Return dictionary of versions for FiPy dependencies."""
+
     packages = {}
 
     packages['python'] = sys.version.replace('\n', '| ')

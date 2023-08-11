@@ -10,7 +10,7 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class VTKFaceViewer(VTKViewer):
-    """Renders `_MeshVariable` data in VTK format
+    """Renders :class:`~fipy.variables.meshVariable.MeshVariable` data in VTK format
     """
     def _makeDataSet(self, mesh):
         return mesh.VTKFaceDataSet

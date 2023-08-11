@@ -124,3 +124,6 @@ py:exc DeprecationWarning
 
 # Python xml
 py:class xml.dom.minidom.Document
+
+# Python unittest
+py:class unittest.main.TestProgram

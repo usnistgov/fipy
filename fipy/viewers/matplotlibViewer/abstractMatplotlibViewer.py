@@ -50,11 +50,9 @@ def _isretina():
     return isretina
 
 class AbstractMatplotlibViewer(AbstractViewer):
-    """
-    .. attention:: This class is abstract. Always create one of its subclasses.
+    """Base class for the viewers that use the Matplotlib_ plotting package.
 
-    The `AbstractMatplotlibViewer` is the base class for the viewers that use the
-    Matplotlib_ python plotting package.
+    .. attention:: This class is abstract. Always create one of its subclasses.
 
     .. _Matplotlib: http://matplotlib.sourceforge.net/
     """

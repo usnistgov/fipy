@@ -6,7 +6,7 @@ import warnings
 
 from fipy.tools import numerix
 
-from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
+from fipy.viewers.matplotlibViewer.abstractMatplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["Matplotlib2DContourViewer"]
 from future.utils import text_to_native_str

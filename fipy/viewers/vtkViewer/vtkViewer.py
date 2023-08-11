@@ -29,7 +29,7 @@ register_skipper(flag="TVTK",
                  why="the `tvtk` package cannot be imported")
 
 class VTKViewer(AbstractViewer):
-    """Renders `_MeshVariable` data in VTK format
+    """Renders :class:`~fipy.variables.meshVariable.MeshVariable` data in VTK format
     """
     def __init__(self, vars, title=None, limits={}, **kwlimits):
         """Creates a `VTKViewer`
@@ -37,7 +37,7 @@ class VTKViewer(AbstractViewer):
         Parameters
         ----------
         vars : ~fipy.variables.cellVariable.CellVariable or ~fipy.variables.faceVariable.FaceVariable or list
-            the `MeshVariable` objects to display.
+            the :class:`~fipy.variables.meshVariable.MeshVariable` objects to display.
         title : str, optional
             displayed at the top of the `Viewer` window
         limits : dict, optional
