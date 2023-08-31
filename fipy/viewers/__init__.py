@@ -97,19 +97,30 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
         viewers.append(DummyViewer(vars=emptyvars))
 
     try:
-        # pkg_resources is depcrecated,
+        # pkg_resources is deprecated,
         # but importlib.metadata doesn't exist until Python 3.8
         from importlib.metadata import entry_points
 
-        if FIPY_VIEWER is None:
-            # unlike pkg_resources.iter_entry_points,
-            # importlib.metadata.entry_points doesn't return anything
-            # if name=NONE
-            enpts = entry_points(group='fipy.viewers')
-        else:
-            enpts = entry_points(group='fipy.viewers', name=FIPY_VIEWER)
+        enpts = entry_points()
 
-        enpts = sorted(entry_points(group='fipy.viewers'))
+        if hasattr(enpts, "select"):
+            # .select() not introduced until
+            # importlib_metadata 3.6 and Python 3.10
+
+            if FIPY_VIEWER is None:
+                # unlike pkg_resources.iter_entry_points,
+                # importlib.metadata.entry_points doesn't return anything
+                # if name=NONE
+                enpts = enpts.select(group='fipy.viewers')
+            else:
+                enpts = enpts.select(group='fipy.viewers', name=FIPY_VIEWER)
+        else:
+            enpts = enpts.get("fipy.viewers", ())
+
+            if FIPY_VIEWER is not None:
+                enpts = (mod for mod in enpts if mod.name == FIPY_VIEWER)
+
+        enpts = sorted(enpts)
     except ImportError:
         from pkg_resources import iter_entry_points
 
