@@ -1,3 +1,5 @@
+"""Boundary condition base class
+"""
 from __future__ import unicode_literals
 from builtins import object
 __docformat__ = 'restructuredtext'
@@ -11,8 +13,7 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class BoundaryCondition(object):
-    """
-    Generic boundary condition base class.
+    """Generic boundary condition base class.
 
     .. attention:: This class is abstract. Always create one of its subclasses.
     """

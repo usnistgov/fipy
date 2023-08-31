@@ -1,4 +1,8 @@
+""":ref:`Discretizations <section:discretization>` of partial differential equation expressions
+"""
 from __future__ import unicode_literals
+__docformat__ = 'restructuredtext'
+
 class ExplicitVariableError(Exception):
     def __init__(self, s='Terms with explicit Variables cannot mix with Terms with implicit Variables.'):
         Exception.__init__(self, s)

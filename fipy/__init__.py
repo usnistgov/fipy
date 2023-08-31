@@ -1,6 +1,6 @@
-"""
-:term:`FiPy` is an object oriented, partial differential equation (PDE) solver,
-written in :term:`Python`, based on a standard finite volume (FV) approach. The
+"""An object oriented, partial differential equation (PDE) solver
+
+:term:`FiPy` is based on a standard finite volume (FV) approach. The
 framework has been developed in the Materials Science and Engineering Division
 (MSED_) and Center for Theoretical and Computational Materials Science (CTCMS_),
 in the Material Measurement Laboratory (MML_) at the National Institute of

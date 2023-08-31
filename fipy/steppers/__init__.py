@@ -1,3 +1,8 @@
+"""(Obsolete) utilities for iterating time steps
+
+Use `steppyngstounes <https://pages.nist.gov/steppyngstounes/en/latest>`_
+instead.
+"""
 from __future__ import division
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
