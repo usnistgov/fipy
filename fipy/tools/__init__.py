@@ -1,4 +1,4 @@
-"""Utility modules, functions, and values.
+"""Utility modules, functions, and values
 
 .. attribute:: serialComm
     :type: ~fipy.tools.comms.commWrapper.CommWrapper

@@ -1,3 +1,7 @@
+"""Collections of values supporting lazy evaluation
+"""
+__docformat__ = 'restructuredtext'
+
 from fipy.variables.variable import *
 from fipy.variables.cellVariable import *
 from fipy.variables.faceVariable import *
