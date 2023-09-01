@@ -9,8 +9,8 @@ jobs:
       - uses: usnistgov/NISTtheDocs2Death@0.4
         with:
           docs-folder: docs
-          apt-packages: git
           pip-requirements: docs/requirements.txt
+          pre-build-command: python setup.py version
           formats: |-
             epub
             pdf
