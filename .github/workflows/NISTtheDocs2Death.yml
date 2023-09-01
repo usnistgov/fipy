@@ -10,8 +10,4 @@ jobs:
         with:
           docs-folder: docs
           pip-requirements: docs/requirements.txt
-          pre-build-command: |
-            echo "WTF"
-            echo "python setup.py version `python setup.py version`"
-            python setup.py version
-            echo "PING"
+          pre-build-command: python setup.py version
