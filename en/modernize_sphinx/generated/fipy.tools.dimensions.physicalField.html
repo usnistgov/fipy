@@ -33,25 +33,21 @@
     <![endif]-->
     <!--[if (gte IE 6)&(lte IE 8)]>
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
-  <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.tools.dimensions.physicalField &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
+    <title>fipy.tools.dimensions.physicalField &#8212; FiPy 0+unknown documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
-    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=f0cffefe"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 0+unknown documentation" href="../contents.html" />
     <link rel="up" title="fipy.tools.dimensions" href="fipy.tools.dimensions.html" />
     <link rel="next" title="fipy.tools.dump" href="fipy.tools.dump.html" />
     <link rel="prev" title="fipy.tools.dimensions.NumberDict" href="fipy.tools.dimensions.NumberDict.html" />
@@ -350,7 +346,7 @@ The unit of the result is the unit of the first operand.</p>
 <span class="go">10.01 km</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -453,14 +449,14 @@ base units (radians) and then assumed dimensionless.</p>
 <p>If the quantity is not dimensionless, the conversion fails.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;2. m&quot;</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Not possible to convert a PhysicalField with dimensions to float</span>
 </pre></div>
 </div>
 <p>Just as a <a class="reference external" href="http://www.numpy.org">Numeric</a> <cite>array</cite> cannot be cast to float, neither can <cite>PhysicalField</cite> arrays</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(((</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">),</span> <span class="p">(</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">)),</span> <span class="s2">&quot;m/m&quot;</span><span class="p">))</span> 
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">only ...-1 arrays can be converted to Python scalars</span>
 </pre></div>
 </div>
@@ -511,14 +507,14 @@ compared.</p>
 <p>Units must be compatible</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;1 lb&quot;</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
 <p>And so must array dimensions</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="n">PhysicalField</span><span class="p">(((</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">13.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">),</span> <span class="p">(</span><span class="mf">17.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)),</span> <span class="s2">&quot;ft&quot;</span><span class="p">))</span> 
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">ValueError</span>: <span class="n">shape mismatch: objects cannot be broadcast to a single shape</span>
 </pre></div>
 </div>
@@ -616,7 +612,7 @@ The unit of the result is the unit of the first operand.</p>
 <span class="go">10.01 km</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -664,7 +660,7 @@ conversions.</p>
 <span class="go"> [ 5.      6.    ]] m</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;2 min&quot;</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -689,7 +685,7 @@ The unit of the result is the unit of the first operand.</p>
 <span class="go">9.99 km</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -725,7 +721,7 @@ The unit of the result is the unit of the first operand.</p>
 <span class="go">10.01 km</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -760,7 +756,7 @@ their difference divided by <cite>other</cite>’s value is small compared to <c
 <p>The input <cite>PhysicalField</cite> must be dimensionless</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;1 m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">arccos</span><span class="p">(),</span> <span class="mi">6</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -778,7 +774,7 @@ their difference divided by <cite>other</cite>’s value is small compared to <c
 <p>The input <cite>PhysicalField</cite> must be dimensionless</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;1. m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">arccosh</span><span class="p">(),</span> <span class="mi">6</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -795,7 +791,7 @@ their difference divided by <cite>other</cite>’s value is small compared to <c
 <p>The input <cite>PhysicalField</cite> must be dimensionless</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;1 m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(),</span> <span class="mi">6</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -812,7 +808,7 @@ their difference divided by <cite>other</cite>’s value is small compared to <c
 <p>The input <cite>PhysicalField</cite> must be dimensionless</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;1 m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">arctan</span><span class="p">(),</span> <span class="mi">6</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -833,7 +829,7 @@ their difference divided by <cite>other</cite>’s value is small compared to <c
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="mf">2.</span><span class="p">)</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;5. m&quot;</span><span class="p">)),</span> <span class="mi">6</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -850,7 +846,7 @@ their difference divided by <cite>other</cite>’s value is small compared to <c
 <p>The input <cite>PhysicalField</cite> must be dimensionless</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;1 m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(),</span> <span class="mi">6</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -932,7 +928,7 @@ of the object.</p>
 <p>The units of the <cite>PhysicalField</cite> must be an angle</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PhysicalField</span><span class="p">(</span><span class="mf">60.</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cos</span><span class="p">()</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -949,7 +945,7 @@ of the object.</p>
 <p>The units of the <cite>PhysicalField</cite> must be dimensionless</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PhysicalField</span><span class="p">(</span><span class="mf">60.</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">cosh</span><span class="p">()</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1036,7 +1032,7 @@ unit is the product of the units of <cite>self</cite> and <cite>other</cite>.</p
 <p>It’s an error to convert a quantity with units</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(((</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">),</span> <span class="p">(</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">)),</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">inDimensionless</span><span class="p">())</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1066,7 +1062,7 @@ radians.</p>
 <p>It’s an error to convert a quantity with non-angular units</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(((</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">),</span> <span class="p">(</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">)),</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">inRadians</span><span class="p">())</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1129,11 +1125,11 @@ conversions.</p>
 <span class="gp">... </span>    <span class="c1"># NumPy 1.7 has changed the exception type</span>
 <span class="gp">... </span>    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;can only place a scalar for an  array of size 1&quot;</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">ValueError</span>: <span class="n">can only convert an array of size 1 to a Python scalar</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">itemset</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;2 min&quot;</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1150,7 +1146,7 @@ conversions.</p>
 <p>The input <cite>PhysicalField</cite> must be dimensionless</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;1. m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">log</span><span class="p">(),</span> <span class="mi">6</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1167,7 +1163,7 @@ conversions.</p>
 <p>The input <cite>PhysicalField</cite> must be dimensionless</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;1. m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">log10</span><span class="p">(),</span> <span class="mi">6</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1220,7 +1216,7 @@ values that can be converted to the typecode of <cite>self</cite>.</p>
 <p>The units of <cite>values</cite> must be compatible with <cite>self</cite>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;kg&quot;</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1238,7 +1234,7 @@ values that can be converted to the typecode of <cite>self</cite>.</p>
 <p>The new shape must have the same size as the existing one.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">((</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">),</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span> 
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">ValueError</span>: <span class="n">total size of new array must be unchanged</span>
 </pre></div>
 </div>
@@ -1275,7 +1271,7 @@ values that can be converted to the typecode of <cite>self</cite>.</p>
 <p>The units of the <cite>PhysicalField</cite> must be an angle</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PhysicalField</span><span class="p">(</span><span class="mf">30.</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sin</span><span class="p">()</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1292,7 +1288,7 @@ values that can be converted to the typecode of <cite>self</cite>.</p>
 <p>The units of the <cite>PhysicalField</cite> must be dimensionless</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PhysicalField</span><span class="p">(</span><span class="mf">60.</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sinh</span><span class="p">()</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1309,7 +1305,7 @@ values that can be converted to the typecode of <cite>self</cite>.</p>
 <p>The resulting unit must be integral</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;100. m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sqrt</span><span class="p">())</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Illegal exponent</span>
 </pre></div>
 </div>
@@ -1324,7 +1320,7 @@ The unit of the result is the unit of the first operand.</p>
 <span class="go">9.99 km</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">PhysicalField</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1374,7 +1370,7 @@ occurs, and the default value (as in the example above) is 0, the first axis.</p
 <p>The units of the <cite>PhysicalField</cite> must be an angle</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PhysicalField</span><span class="p">(</span><span class="mf">45.</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tan</span><span class="p">()</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1391,7 +1387,7 @@ occurs, and the default value (as in the example above) is 0, the first axis.</p
 <p>The units of the <cite>PhysicalField</cite> must be dimensionless</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">PhysicalField</span><span class="p">(</span><span class="mf">60.</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tanh</span><span class="p">()</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1467,7 +1463,7 @@ zero-point of the corresponding fundamental SI unit.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;25. degC&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">unit</span> <span class="o">/</span> <span class="n">f</span><span class="o">.</span><span class="n">unit</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">cannot divide units with non-zero offset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">unit</span> <span class="o">/</span> <span class="n">f</span><span class="o">.</span><span class="n">inBaseUnits</span><span class="p">()</span><span class="o">.</span><span class="n">unit</span>
 <span class="go">&lt;PhysicalUnit J/K&gt;</span>
@@ -1490,7 +1486,7 @@ zero-point of the corresponding fundamental SI unit.</p></li>
 <p>Units can only be compared with other units</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">unit</span> <span class="o">==</span> <span class="mi">3</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">PhysicalUnits can only be compared with other PhysicalUnits</span>
 </pre></div>
 </div>
@@ -1553,7 +1549,7 @@ zero-point of the corresponding fundamental SI unit.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;25. degC&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">unit</span> <span class="o">*</span> <span class="n">f</span><span class="o">.</span><span class="n">unit</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">cannot multiply units with non-zero offset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">unit</span> <span class="o">*</span> <span class="n">f</span><span class="o">.</span><span class="n">inBaseUnits</span><span class="p">()</span><span class="o">.</span><span class="n">unit</span>
 <span class="go">&lt;PhysicalUnit kB*K&gt;</span>
@@ -1581,7 +1577,7 @@ zero-point of the corresponding fundamental SI unit.</p></li>
 <p>Non-integer powers are not supported</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">unit</span><span class="o">**</span><span class="mf">0.5</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Illegal exponent</span>
 </pre></div>
 </div>
@@ -1589,7 +1585,7 @@ zero-point of the corresponding fundamental SI unit.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;25. degC&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">unit</span><span class="o">**</span><span class="mi">2</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">cannot exponentiate units with non-zero offset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">inBaseUnits</span><span class="p">()</span><span class="o">.</span><span class="n">unit</span><span class="o">**</span><span class="mi">2</span>
 <span class="go">&lt;PhysicalUnit K**2&gt;</span>
@@ -1610,7 +1606,7 @@ zero-point of the corresponding fundamental SI unit.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;25. degC&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="mf">3.</span> <span class="o">/</span> <span class="n">b</span><span class="o">.</span><span class="n">unit</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">cannot divide units with non-zero offset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="mf">3.</span> <span class="o">/</span> <span class="n">b</span><span class="o">.</span><span class="n">inBaseUnits</span><span class="p">()</span><span class="o">.</span><span class="n">unit</span>
 <span class="go">&lt;PhysicalUnit 3.0/K&gt;</span>
@@ -1656,7 +1652,7 @@ zero-point of the corresponding fundamental SI unit.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;25. degC&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">unit</span> <span class="o">*</span> <span class="n">f</span><span class="o">.</span><span class="n">unit</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">cannot multiply units with non-zero offset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">unit</span> <span class="o">*</span> <span class="n">f</span><span class="o">.</span><span class="n">inBaseUnits</span><span class="p">()</span><span class="o">.</span><span class="n">unit</span>
 <span class="go">&lt;PhysicalUnit kB*K&gt;</span>
@@ -1677,7 +1673,7 @@ zero-point of the corresponding fundamental SI unit.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;25. degC&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="mf">3.</span> <span class="o">/</span> <span class="n">b</span><span class="o">.</span><span class="n">unit</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">cannot divide units with non-zero offset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="mf">3.</span> <span class="o">/</span> <span class="n">b</span><span class="o">.</span><span class="n">inBaseUnits</span><span class="p">()</span><span class="o">.</span><span class="n">unit</span>
 <span class="go">&lt;PhysicalUnit 3.0/K&gt;</span>
@@ -1723,7 +1719,7 @@ zero-point of the corresponding fundamental SI unit.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;25. degC&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">unit</span> <span class="o">/</span> <span class="n">f</span><span class="o">.</span><span class="n">unit</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">cannot divide units with non-zero offset</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span><span class="o">.</span><span class="n">unit</span> <span class="o">/</span> <span class="n">f</span><span class="o">.</span><span class="n">inBaseUnits</span><span class="p">()</span><span class="o">.</span><span class="n">unit</span>
 <span class="go">&lt;PhysicalUnit J/K&gt;</span>
@@ -1745,7 +1741,7 @@ zero-point of the corresponding fundamental SI unit.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;1. K&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">conversionFactorTo</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Incompatible units</span>
 </pre></div>
 </div>
@@ -1756,7 +1752,7 @@ zero-point of the corresponding fundamental SI unit.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">PhysicalField</span><span class="p">(</span><span class="s2">&quot;1. degF&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">unit</span><span class="o">.</span><span class="n">conversionFactorTo</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">TypeError</span>: <span class="n">Unit conversion (K to degF) cannot be expressed as a simple multiplicative factor</span>
 </pre></div>
 </div>
@@ -1882,8 +1878,8 @@ zero-point of the corresponding fundamental SI unit.</p></li>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 11, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
+                Last updated on Sep 01, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
   </div>  
@@ -1891,11 +1887,8 @@ zero-point of the corresponding fundamental SI unit.</p></li>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 
-            <p class="logo"><a href="../contents.html">
-              <img class="logo" src="../_static/logo.png" alt="Logo"/>
-            </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+257.g125bb1fe
+Version 0+unknown
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

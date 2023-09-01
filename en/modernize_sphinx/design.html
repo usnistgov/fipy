@@ -33,26 +33,22 @@
     <![endif]-->
     <!--[if (gte IE 6)&(lte IE 8)]>
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
-  <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Design and Implementation &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
+    <title>Design and Implementation &#8212; FiPy 0+unknown documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/ntd2d.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f0cffefe"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="contents.html" />
+    <link rel="top" title="FiPy 0+unknown documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Virtual Kinetics of Materials Laboratory" href="VKML.html" />
     <link rel="prev" title="Numerical Schemes" href="numerical/scheme.html" />
@@ -214,19 +210,19 @@ expression renders simpler code, because the details of the
 implementation are hidden away in the language internals or in an
 external library.  For example, a low-level matrix multiplication
 written in C might be rendered as</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Acols</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">Brows</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">error</span><span class="w"> </span><span class="s">&quot;these matrix shapes cannot be multiplied&quot;</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Acols</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">Brows</span><span class="p">)</span>
+<span class="w">    </span><span class="n">error</span><span class="w"> </span><span class="s">&quot;these matrix shapes cannot be multiplied&quot;</span><span class="p">;</span>
 
-<span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Bcols</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Arows</span><span class="p">);</span><span class="w"></span>
+<span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Bcols</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Arows</span><span class="p">);</span>
 
-<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">Bcols</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">Arows</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">Acols</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">];</span><span class="w"></span>
-<span class="w">        </span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">Bcols</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">Arows</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">Acols</span><span class="p">;</span><span class="w"> </span><span class="n">k</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">B</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">];</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Note that the dimensions of the arrays must be supplied externally, as
@@ -398,11 +394,11 @@ problems in <a class="reference internal" href="EXAMPLES.html#part-examples"><sp
 the examples, along with illustrations of their instantiation and use.</p>
 <p class="rubric">Footnotes</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id3" role="note">
+<aside class="footnote brackets" id="id3" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>… neglecting such common optimizations as byte-code interpreters.</p>
 </aside>
-<aside class="footnote brackets" id="id4" role="note">
+<aside class="footnote brackets" id="id4" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
 <p>A discussion of efficiency issues can be found in
 <a class="reference internal" href="EFFICIENCY.html#chap-efficiency"><span class="std std-ref">Efficiency</span></a>.</p>
@@ -413,8 +409,8 @@ the examples, along with illustrations of their instantiation and use.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 11, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
+                Last updated on Sep 01, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
   </div>  
@@ -422,11 +418,8 @@ the examples, along with illustrations of their instantiation and use.</p>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 
-            <p class="logo"><a href="contents.html">
-              <img class="logo" src="_static/logo.png" alt="Logo"/>
-            </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+257.g125bb1fe
+Version 0+unknown
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

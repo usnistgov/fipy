@@ -33,26 +33,22 @@
     <![endif]-->
     <!--[if (gte IE 6)&(lte IE 8)]>
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
-  <![endif]--><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.variables.meshVariable &#8212; FiPy 3.4.4+257.g125bb1fe documentation</title>
+    <title>fipy.variables.meshVariable &#8212; FiPy 0+unknown documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/sphinx_highlight.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=f0cffefe"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+257.g125bb1fe documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 0+unknown documentation" href="../contents.html" />
     <link rel="up" title="fipy.variables" href="fipy.variables.html" />
     <link rel="next" title="fipy.variables.minmodCellToFaceVariable" href="fipy.variables.minmodCellToFaceVariable.html" />
     <link rel="prev" title="fipy.variables.levelSetDiffusionVariable" href="fipy.variables.levelSetDiffusionVariable.html" />
@@ -229,7 +225,7 @@ Both the following tests are examples ufuncs.</p>
 <span class="go">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">ValueError</span>: <span class="n">The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()</span>
 </pre></div>
 </div>
@@ -297,7 +293,7 @@ Both the following tests are examples ufuncs.</p>
 <p>It is an error to slice a <cite>Variable</cite> whose <cite>value</cite> is not sliceable</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
 <span class="gt">Traceback (most recent call last):</span>
-      <span class="o">...</span>
+<span class="w">    </span>  <span class="o">...</span>
 <span class="gr">IndexError</span>: <span class="n">0-d arrays can&#39;t be indexed</span>
 </pre></div>
 </div>
@@ -416,7 +412,7 @@ Both the following tests are examples ufuncs.</p>
 <span class="go">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))))</span>
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
+<span class="w">    </span><span class="o">...</span>
 <span class="gr">ValueError</span>: <span class="n">The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()</span>
 </pre></div>
 </div>
@@ -785,7 +781,7 @@ need to be a <a class="reference internal" href="#fipy.variables.meshVariable.Me
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">setValue</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> 
 <span class="gt">Traceback (most recent call last):</span>
-    <span class="o">....</span>
+<span class="w">    </span><span class="o">....</span>
 <span class="gr">ValueError</span>: <span class="n">shape mismatch: objects cannot be broadcast to a single shape</span>
 </pre></div>
 </div>
@@ -864,8 +860,8 @@ need to be a <a class="reference internal" href="#fipy.variables.meshVariable.Me
 
 
                 <div class='last-updated'>
-                Last updated on Aug 11, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.
+                Last updated on Sep 01, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
   </div>  
@@ -873,11 +869,8 @@ need to be a <a class="reference internal" href="#fipy.variables.meshVariable.Me
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 
-            <p class="logo"><a href="../contents.html">
-              <img class="logo" src="../_static/logo.png" alt="Logo"/>
-            </a></p>
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+257.g125bb1fe
+Version 0+unknown
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
