@@ -1,0 +1,33 @@
+examples.elphf.diffusion
+========================
+
+.. automodule:: examples.elphf.diffusion
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   examples.elphf.diffusion.mesh1D
+   examples.elphf.diffusion.mesh1Ddimensional
+   examples.elphf.diffusion.mesh2D
+

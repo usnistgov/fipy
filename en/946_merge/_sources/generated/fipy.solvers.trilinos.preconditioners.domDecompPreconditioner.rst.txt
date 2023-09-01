@@ -1,0 +1,29 @@
+fipy.solvers.trilinos.preconditioners.domDecompPreconditioner
+=============================================================
+
+.. automodule:: fipy.solvers.trilinos.preconditioners.domDecompPreconditioner
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DomDecompPreconditioner
+   
+   
+
+   
+   
+   
+
+
+
