@@ -70,10 +70,18 @@ class MayaviClient(AbstractViewer):
 
         self.plot()
 
-        from pkg_resources import Requirement, resource_filename
-        daemon_file = (daemon_file
-                       or resource_filename(Requirement.parse("FiPy"),
-                                            "fipy/viewers/mayaviViewer/mayaviDaemon.py"))
+        try:
+            from importlib import resources
+            
+            ref = resources.files("fipy") / "viewers/mayaviViewer/mayaviDaemon.py"
+            with resources.as_file(ref) as path:
+                builtin_daemon = path.as_posix()
+        except ImportError:
+            from pkg_resources import Requirement, resource_filename
+            builtin_daemon = resource_filename(Requirement.parse("FiPy"),
+                                               "fipy/viewers/mayaviViewer/mayaviDaemon.py")
+
+        daemon_file = (daemon_file or builtin_daemon)
 
         pyth = sys.executable or "python"
 

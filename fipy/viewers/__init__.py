@@ -96,15 +96,42 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
     if len(emptyvars):
         viewers.append(DummyViewer(vars=emptyvars))
 
-    enpts = []
-    import pkg_resources
-    for ep in pkg_resources.iter_entry_points(group='fipy.viewers',
-                                              name=FIPY_VIEWER):
-        enpts.append((ep.name, ep))
+    try:
+        # pkg_resources is deprecated,
+        # but importlib.metadata doesn't exist until Python 3.8
+        from importlib.metadata import entry_points
 
-    for name, ep in sorted(enpts):
+        enpts = entry_points()
 
-        attempts.append(name)
+        if hasattr(enpts, "select"):
+            # .select() not introduced until
+            # importlib_metadata 3.6 and Python 3.10
+
+            if FIPY_VIEWER is None:
+                # unlike pkg_resources.iter_entry_points,
+                # importlib.metadata.entry_points doesn't return anything
+                # if name=NONE
+                enpts = enpts.select(group='fipy.viewers')
+            else:
+                enpts = enpts.select(group='fipy.viewers', name=FIPY_VIEWER)
+        else:
+            enpts = enpts.get("fipy.viewers", ())
+
+            if FIPY_VIEWER is not None:
+                enpts = (mod for mod in enpts if mod.name == FIPY_VIEWER)
+
+        enpts = sorted(enpts)
+    except ImportError:
+        from pkg_resources import iter_entry_points
+
+        enpts = iter_entry_points(group='fipy.viewers', name=FIPY_VIEWER)
+
+        # pkg_resources.EntryPoint objects aren't sortable
+        enpts = sorted(enpts, key=lambda ep: ep.name)
+
+    for ep in enpts:
+
+        attempts.append(ep.name)
 
         try:
             ViewerClass = ep.load()
@@ -119,7 +146,7 @@ def Viewer(vars, title=None, limits={}, FIPY_VIEWER=None, **kwlimits):
 
             break
         except Exception as s:
-            errors.append("%s: %s" % (name, s))
+            errors.append("%s: %s" % (ep.name, s))
 
     if len(attempts) == 0:
         if FIPY_VIEWER is not None:
