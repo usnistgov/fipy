@@ -9,6 +9,7 @@ jobs:
       - uses: usnistgov/NISTtheDocs2Death@0.4
         with:
           docs-folder: docs
+          pip-requirements: docs/requirements.txt
           formats: |-
             epub
             pdf
