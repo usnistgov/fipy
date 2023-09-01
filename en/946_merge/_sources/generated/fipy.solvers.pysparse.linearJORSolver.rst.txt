@@ -1,0 +1,29 @@
+fipy.solvers.pysparse.linearJORSolver
+=====================================
+
+.. automodule:: fipy.solvers.pysparse.linearJORSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearJORSolver
+   
+   
+
+   
+   
+   
+
+
+
