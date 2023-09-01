@@ -10,6 +10,21 @@ jobs:
         with:
           docs-folder: docs
           pip-requirements: docs/requirements.txt
+          pre-build-command: >
+            which git
+            || (
+            (
+            apt-get -yq update
+            && apt-get -yq install git
+            && rm -rf /var/lib/apt/lists/*
+            )
+            || (
+            apk update --no-cache
+            && apk add --no-cache git
+            )
+            )
+            && git config --global --add safe.directory /github/workspace
           formats: |-
             epub
             pdf
+
