@@ -1,0 +1,29 @@
+fipy.solvers.pysparse.preconditioners.ssorPreconditioner
+========================================================
+
+.. automodule:: fipy.solvers.pysparse.preconditioners.ssorPreconditioner
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SsorPreconditioner
+   
+   
+
+   
+   
+   
+
+
+

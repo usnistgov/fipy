@@ -1,0 +1,29 @@
+fipy.solvers.trilinos.preconditioners.jacobiPreconditioner
+==========================================================
+
+.. automodule:: fipy.solvers.trilinos.preconditioners.jacobiPreconditioner
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      JacobiPreconditioner
+   
+   
+
+   
+   
+   
+
+
+
