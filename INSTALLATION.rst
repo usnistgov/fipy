@@ -85,7 +85,7 @@ Recommended Method
 
        $ conda create --name <MYFIPYENV> --channel conda-forge python=3 numpy scipy matplotlib-base future packaging mpich mpi4py petsc4py mayavi "gmsh <4.0|>=4.5.2"
 
-     or
+     or::
 
        $ conda create --name <MYFIPYENV> --channel conda-forge python=2.7 numpy scipy matplotlib-base future packaging pysparse mayavi "traitsui<7.0.0" "gmsh<4.0"
 
