@@ -10,4 +10,7 @@ jobs:
         with:
           docs-folder: docs
           pip-requirements: docs/requirements.txt
-          pre-build-command: python setup.py version
+          pre-build-command: |
+            echo "pwd: `pwd`"
+            echo "ls -a: `ls -a`"
+            python setup.py version
