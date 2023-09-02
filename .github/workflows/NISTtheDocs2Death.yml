@@ -11,7 +11,6 @@ jobs:
           docs-folder: docs
           pip-requirements: docs/requirements.txt
           pre-build-command: |
-            echo "pwd: `pwd`"
-            echo "ls -a: `ls -a`"
+            git config --global --add safe.directory /github/workspace
             echo "git rev-parse --git-dir: `git rev-parse --git-dir`"
             python setup.py version
