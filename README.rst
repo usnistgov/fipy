@@ -5,7 +5,7 @@ Overview
 
 
 | |Azure|_ |Documentation|_ |nix|_
-| |GitHub|_ |PyPI|_  |Codacy|_ |CondaForge|_ |Binder|_
+| |GitHub|_ |PyPI|_  |CondaForge|_ |Binder|_
 | |gitter|_ |Depsy|_ |OpenHub|_
 
 .. only:: latex
@@ -169,7 +169,5 @@ or a
 .. _CondaForge:    https://anaconda.org/conda-forge/fipy
 .. |Depsy|         image:: http://depsy.org/api/package/pypi/FiPy/badge.svg
 .. _Depsy:         http://depsy.org/package/python/FiPy
-.. |Codacy|         image:: https://api.codacy.com/project/badge/Grade/d02921bb54b14e88a1e2e1f5520133f4
-.. _Codacy:         https://www.codacy.com/app/tkphd/fipy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=usnistgov/fipy&amp;utm_campaign=Badge_Grade
 .. |Binder|        image:: https://mybinder.org/badge.svg
 .. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/master?filepath=examples%2Findex.ipynb
