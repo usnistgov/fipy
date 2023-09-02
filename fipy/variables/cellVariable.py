@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from .meshVariable import _MeshVariable
+from .variable import Variable
 from ..solvers import _MeshMatrix
 from ..tools import numerix
 from ..tools.decorators import deprecate
@@ -478,7 +479,12 @@ class CellVariable(_MeshVariable):
             raise AssertionError('The updateOld method requires the CellVariable to have an old value. Set hasOld to True when instantiating the CellVariable.')
         else:
             self._old.value = self.value.copy()
-
+            
+            # Also propogate constraints:
+            if hasattr(self._old, 'faceConstraints'):
+                for n in range(len(self.faceConstraints)):
+                    self._old.faceConstraints[n].value.setValue(self.faceConstraints[n].value)
+               
     def _resetToOld(self):
         if self._old is not None:
             self.value = (self._old.value)
@@ -584,19 +590,27 @@ class CellVariable(_MeshVariable):
         """
         from fipy.boundaryConditions.constraint import Constraint
         if not isinstance(value, Constraint):
-            value = Constraint(value=value, where=where)
+            constraint = Constraint(value=value, where=where)
+        else:
+            constraint = value
 
-        if numerix.shape(value.where)[-1] == self.mesh.numberOfFaces:
+        if numerix.shape(constraint.where)[-1] == self.mesh.numberOfFaces:
 
             if not hasattr(self, 'faceConstraints'):
                 self.faceConstraints = []
-            self.faceConstraints.append(value)
-            self._requires(value.value)
-            # self._requires(value.where) ???
+                
+            self.faceConstraints.append(constraint)
+            
+            if self._old is not None:
+                value_old = Variable(value = value)
+                self._old.constrain(value=value_old, where=where)
+                
+            self._requires(constraint.value)
+            # self._requires(constraint.where) ???
             self._markStale()
         else:
 ##            _MeshVariable.constrain(value, where)
-            super(CellVariable, self).constrain(value, where)
+            super(CellVariable, self).constrain(constraint, where)
 
     def release(self, constraint):
         """Remove `constraint` from `self`
