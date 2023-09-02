@@ -13,4 +13,5 @@ jobs:
           pre-build-command: |
             echo "pwd: `pwd`"
             echo "ls -a: `ls -a`"
+            echo "git rev-parse --git-dir: `git rev-parse --git-dir`"
             python setup.py version
