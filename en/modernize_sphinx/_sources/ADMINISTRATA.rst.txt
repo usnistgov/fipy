@@ -98,16 +98,26 @@ Use the GitHub_ interface to `merge the pull request`_.
 Continuous Integration
 ======================
 
-| |Azure|_
+| |Tests|_ |Documentation|_ |nix|_
 
-We use the :term:`Azure` cloud service for :term:`Continuous Integration` (CI).
-This CI is configured in |.azure/pipelines.yml|_.
+We use the :term:`Azure` and :term:`GitHub Actions` cloud services for
+:term:`Continuous Integration` (CI).  These CIs are configured in
+|.azure/pipelines.yml|_, |.github/workflows/NISTtheDocs2Death.yml|_, and
+|.github/workflows/nix.yml|_.
 
-.. |Azure|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
-.. _Azure:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
+.. |Tests|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
+.. _Tests:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
+.. |Documentation| image:: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml/badge.svg
+.. _Documentation  https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml
+.. |nix|           image:: https://github.com/usnistgov/fipy/actions/workflows/nix.yml/badge.svg
+.. _nix            https://github.com/usnistgov/fipy/actions/workflows/nix.yml
 
 .. |.azure/pipelines.yml| replace::    :file:`{FiPySource}/.azure/pipelines.yml`
 .. _.azure/pipelines.yml: https://github.com/usnistgov/fipy/blob/master/.azure/pipelines.yml
+.. |.github/workflows/NISTtheDocs2Death.yml| replace::    :file:`{FiPySource}/.github/workflows/NISTtheDocs2Death.yml`
+.. _.github/workflows/NISTtheDocs2Death.yml: https://github.com/usnistgov/fipy/blob/master/.github/workflows/NISTtheDocs2Death.yml
+.. |.github/workflows/nix.yml| replace::    :file:`{FiPySource}/.github/workflows/nix.yml`
+.. _.github/workflows/nix.yml: https://github.com/usnistgov/fipy/blob/master/.github/workflows/nix.yml
 
 ================
 Making a Release

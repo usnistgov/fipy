@@ -35,19 +35,19 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Git practices &#8212; FiPy 3.4.4+273.g447e762e documentation</title>
+    <title>Git practices &#8212; FiPy 3.4.4+277.g61d8667d documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=92f8bbbb"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=fd92b6f4"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+273.g447e762e documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.4+277.g61d8667d documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Solvers" href="SOLVERS.html" />
     <link rel="prev" title="Installation" href="INSTALLATION.html" />
@@ -197,10 +197,12 @@ doing a <a class="reference external" href="https://help.github.com/en/articles/
 <section id="continuous-integration">
 <span id="continuousintegration"></span><h1>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this heading">¶</a></h1>
 <div class="line-block">
-<div class="line"><a class="reference external" href="https://dev.azure.com/guyer/FiPy/_build?definitionId=2"><img alt="Azure" src="https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master" /></a></div>
+<div class="line"><a class="reference external" href="https://dev.azure.com/guyer/FiPy/_build?definitionId=2"><img alt="Tests" src="https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master" /></a> <a href="#id1"><span class="problematic" id="id2">|Documentation|_</span></a> <a href="#id3"><span class="problematic" id="id4">|nix|_</span></a></div>
 </div>
-<p>We use the <a class="reference internal" href="glossary.html#term-Azure"><span class="xref std std-term">Azure</span></a> cloud service for <a class="reference internal" href="glossary.html#term-Continuous-Integration"><span class="xref std std-term">Continuous Integration</span></a> (CI).
-This CI is configured in <a class="reference external" href="https://github.com/usnistgov/fipy/blob/master/.azure/pipelines.yml"><code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/.azure/pipelines.yml</span></code></a>.</p>
+<p>We use the <a class="reference internal" href="glossary.html#term-Azure"><span class="xref std std-term">Azure</span></a> and <a class="reference internal" href="glossary.html#term-GitHub-Actions"><span class="xref std std-term">GitHub Actions</span></a> cloud services for
+<a class="reference internal" href="glossary.html#term-Continuous-Integration"><span class="xref std std-term">Continuous Integration</span></a> (CI).  These CIs are configured in
+<a class="reference external" href="https://github.com/usnistgov/fipy/blob/master/.azure/pipelines.yml"><code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/.azure/pipelines.yml</span></code></a>, <a class="reference external" href="https://github.com/usnistgov/fipy/blob/master/.github/workflows/NISTtheDocs2Death.yml"><code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/.github/workflows/NISTtheDocs2Death.yml</span></code></a>, and
+<a class="reference external" href="https://github.com/usnistgov/fipy/blob/master/.github/workflows/nix.yml"><code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/.github/workflows/nix.yml</span></code></a>.</p>
 </section>
 <section id="making-a-release">
 <h1>Making a Release<a class="headerlink" href="#making-a-release" title="Permalink to this heading">¶</a></h1>
@@ -266,7 +268,7 @@ practices</a> above):</p>
 </pre></div>
 </div>
 <p>Upon successful completion of the <a class="reference internal" href="#continuous-integration">Continuous Integration</a> systems, fetch
-the tagged build products from <a class="reference external" href="https://dev.azure.com/guyer/FiPy/_build?definitionId=2">Azure</a> Artifacts and place in
+the tagged build products from <a href="#id5"><span class="problematic" id="id6">Azure_</span></a> Artifacts and place in
 <code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/dist/</span></code>:</p>
 <blockquote>
 <div><ul class="simple">
@@ -344,7 +346,7 @@ request to update the <a class="reference external" href="https://github.com/con
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+273.g447e762e
+Version 3.4.4+277.g61d8667d
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

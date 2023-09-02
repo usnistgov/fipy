@@ -41,6 +41,10 @@ Glossary
       The eponymous software package.
       See http://www.ctcms.nist.gov/fipy.
 
+   GitHub Actions
+      A cloud-based :term:`Continuous Integration` tool.
+      See https://github.com/features/actions.
+
    Gmsh
       A free and Open Source 3D (and 2D!) finite element grid generator. It
       also has a CAD engine and post-processor that :term:`FiPy` does not
