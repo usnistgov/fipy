@@ -12,5 +12,3 @@ jobs:
           pip-requirements: docs/requirements.txt
           pre-build-command: |
             git config --global --add safe.directory /github/workspace
-            echo "git rev-parse --git-dir: `git rev-parse --git-dir`"
-            python setup.py version
