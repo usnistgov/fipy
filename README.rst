@@ -4,7 +4,7 @@ Overview
 
 
 
-| |Azure|_ |Documentation|_ |nix|_
+| |Tests|_ |Documentation|_ |nix|_
 | |GitHub|_ |PyPI|_  |CondaForge|_ |Binder|_
 | |gitter|_ |Depsy|_ |OpenHub|_
 
@@ -155,8 +155,8 @@ or a
 .. _GitHub:        https://github.com/usnistgov/fipy
 .. |gitter|        image:: https://badges.gitter.im/usnistgov/fipy.svg
 .. _gitter:        https://gitter.im/usnistgov/fipy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
-.. |Azure|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
-.. _Azure:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
+.. |Tests|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
+.. _Tests:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
 .. |Documentation| image:: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml/badge.svg
 .. _Documentation  https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml
 .. |nix|           image:: https://github.com/usnistgov/fipy/actions/workflows/nix.yml/badge.svg
