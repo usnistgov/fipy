@@ -18,5 +18,3 @@ dependencies:
   - pip
   - sphinxcontrib-bibtex
   - numpydoc
-  - pip:
-    - -e .
