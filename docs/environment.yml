@@ -7,12 +7,15 @@ dependencies:
   - scipy
   - matplotlib-base
   - future
+  - packaging
   - mpich
   - mpi4py
   - petsc4py
   - mayavi
   - gmsh <4.0|>=4.5.2
+  - sphinx
   - pandas
+  - pip
   - sphinxcontrib-bibtex
   - numpydoc
   - pip:
