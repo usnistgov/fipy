@@ -9,7 +9,7 @@ jobs:
       - uses: usnistgov/NISTtheDocs2Death@main
         with:
           docs-folder: docs
-          pip-requirements: docs/requirements.txt
+          conda-environment: docs/environment.yml
           pre-build-command: |
             git config --global --add safe.directory /github/workspace
 
