@@ -35,19 +35,19 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Solvers &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
+    <title>Solvers &#8212; FiPy 3.4.4+305.gb425cb0c documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/documentation_options.js?v=dbcedde6"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1afd5ef3"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.4+305.gb425cb0c documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Viewers" href="VIEWERS.html" />
     <link rel="prev" title="Git practices" href="ADMINISTRATA.html" />
@@ -111,7 +111,7 @@
               <div class="body" role="main">
 		
   <section id="solvers">
-<span id="id1"></span><h1>Solvers<a class="headerlink" href="#solvers" title="Link to this heading">¶</a></h1>
+<span id="id1"></span><h1>Solvers<a class="headerlink" href="#solvers" title="Permalink to this heading">¶</a></h1>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> requires either <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a>, <a class="reference internal" href="glossary.html#term-SciPy"><span class="xref std std-term">SciPy</span></a> or
 <a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> to be installed in order to solve linear systems.
 From our experiences, <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> runs most efficiently in serial
@@ -152,7 +152,7 @@ argument. In the absence of <a class="reference internal" href="USAGE.html#flags
 solver suite for generic solvers is <a class="reference internal" href="#pysparse"><span class="std std-ref">Pysparse</span></a> followed by
 <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a>, <a class="reference internal" href="#pyamg"><span class="std std-ref">PyAMG</span></a> and <a class="reference internal" href="#scipy"><span class="std std-ref">SciPy</span></a>.</p>
 <section id="petsc">
-<span id="id2"></span><h2>PETSc<a class="headerlink" href="#petsc" title="Link to this heading">¶</a></h2>
+<span id="id2"></span><h2>PETSc<a class="headerlink" href="#petsc" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://www.mcs.anl.gov/petsc">https://www.mcs.anl.gov/petsc</a></p>
 <p><a class="reference internal" href="glossary.html#term-PETSc"><span class="xref std std-term">PETSc</span></a> (the Portable, Extensible Toolkit for Scientific Computation)
 is a suite of data structures and routines for the scalable (parallel)
@@ -172,7 +172,7 @@ interfaces.</p>
 </div>
 </section>
 <section id="pysparse">
-<span id="id3"></span><h2>Pysparse<a class="headerlink" href="#pysparse" title="Link to this heading">¶</a></h2>
+<span id="id3"></span><h2>Pysparse<a class="headerlink" href="#pysparse" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="http://pysparse.sourceforge.net">http://pysparse.sourceforge.net</a></p>
 <p><a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a> is a fast serial sparse matrix library for <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a>.
 It provides several sparse matrix storage formats and conversion methods.
@@ -185,19 +185,19 @@ install and use Pysparse is <a class="reference internal" href="glossary.html#te
 </div>
 </section>
 <section id="scipy">
-<span id="id4"></span><h2>SciPy<a class="headerlink" href="#scipy" title="Link to this heading">¶</a></h2>
+<span id="id4"></span><h2>SciPy<a class="headerlink" href="#scipy" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="http://www.scipy.org/">http://www.scipy.org/</a></p>
 <p>The <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse" title="(in SciPy v1.11.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.sparse</span></code></a> module provides a basic set of serial Krylov
 solvers, but no preconditioners.</p>
 </section>
 <section id="pyamg">
-<span id="id5"></span><h2>PyAMG<a class="headerlink" href="#pyamg" title="Link to this heading">¶</a></h2>
+<span id="id5"></span><h2>PyAMG<a class="headerlink" href="#pyamg" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="http://code.google.com/p/pyamg/">http://code.google.com/p/pyamg/</a></p>
 <p>The <a class="reference internal" href="glossary.html#term-PyAMG"><span class="xref std std-term">PyAMG</span></a> package provides adaptive multigrid preconditioners that
 can be used in conjunction with the <a class="reference internal" href="glossary.html#term-SciPy"><span class="xref std std-term">SciPy</span></a> solvers.</p>
 </section>
 <section id="pyamgx">
-<span id="id6"></span><h2>pyamgx<a class="headerlink" href="#pyamgx" title="Link to this heading">¶</a></h2>
+<span id="id6"></span><h2>pyamgx<a class="headerlink" href="#pyamgx" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://pyamgx.readthedocs.io/">https://pyamgx.readthedocs.io/</a></p>
 <p>The <a class="reference internal" href="glossary.html#term-pyamgx"><span class="xref std std-term">pyamgx</span></a> package is a <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> interface to the
 NVIDIA <a class="reference external" href="https://github.com/NVIDIA/AMGX">AMGX</a>
@@ -205,7 +205,7 @@ library.  <a class="reference internal" href="glossary.html#term-pyamgx"><span c
 preconditioners to solve sparse sparse linear systems on the GPU.</p>
 </section>
 <section id="trilinos">
-<span id="id7"></span><h2>Trilinos<a class="headerlink" href="#trilinos" title="Link to this heading">¶</a></h2>
+<span id="id7"></span><h2>Trilinos<a class="headerlink" href="#trilinos" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="http://trilinos.sandia.gov">http://trilinos.sandia.gov</a></p>
 <p><a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> provides a more complete set of solvers and
 preconditioners than either <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a> or
@@ -273,7 +273,7 @@ tolerance may help.</p>
 
                 <div class='last-updated'>
                 Last updated on Sep 05, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
   </div>  
@@ -282,7 +282,7 @@ tolerance may help.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+302.gbcc35fec
+Version 3.4.4+305.gb425cb0c
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

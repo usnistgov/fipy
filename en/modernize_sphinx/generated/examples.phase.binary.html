@@ -35,20 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.phase.binary &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
+    <title>examples.phase.binary &#8212; FiPy 3.4.4+305.gb425cb0c documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/documentation_options.js?v=dbcedde6"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=1afd5ef3"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+305.gb425cb0c documentation" href="../contents.html" />
     <link rel="up" title="examples.phase" href="examples.phase.html" />
     <link rel="next" title="examples.phase.binaryCoupled" href="examples.phase.binaryCoupled.html" />
     <link rel="prev" title="examples.phase.anisotropyOLD" href="examples.phase.anisotropyOLD.html" />
@@ -114,7 +114,7 @@
               <div class="body" role="main">
 		
   <section id="module-examples.phase.binary">
-<span id="examples-phase-binary"></span><h1>examples.phase.binary<a class="headerlink" href="#module-examples.phase.binary" title="Link to this heading">¶</a></h1>
+<span id="examples-phase-binary"></span><h1>examples.phase.binary<a class="headerlink" href="#module-examples.phase.binary" title="Permalink to this heading">¶</a></h1>
 <p>It is straightforward to extend a phase field model to include binary alloys.
 As in <a class="reference internal" href="examples.phase.simple.html#module-examples.phase.simple" title="examples.phase.simple"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.phase.simple</span></code></a>, we will examine a 1D problem</p>
 <div class="doctest highlight-default notranslate" id="index-0"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">CellVariable</span><span class="p">,</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">Grid1D</span><span class="p">,</span> <span class="n">TransientTerm</span><span class="p">,</span> <span class="n">DiffusionTerm</span><span class="p">,</span> <span class="n">ImplicitSourceTerm</span><span class="p">,</span> <span class="n">PowerLawConvectionTerm</span><span class="p">,</span> <span class="n">DefaultAsymmetricSolver</span><span class="p">,</span> <span class="n">Viewer</span>
@@ -151,12 +151,12 @@ As in <a class="reference internal" href="examples.phase.simple.html#module-exam
 <p>Frequently, the gradient energy term in concentration is ignored and we
 can derive governing equations</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-binary-phase">
-<span class="eqno">(1)<a class="headerlink" href="#equation-eq-phase-binary-phase" title="Link to this equation">¶</a></span>\[ \frac{\partial\phi}{\partial t}
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-phase-binary-phase" title="Permalink to this equation">¶</a></span>\[ \frac{\partial\phi}{\partial t}
  = M_\phi \left( \kappa_\phi \nabla^2 \phi
                 - \frac{\partial f}{\partial \phi} \right)\]</div>
 <p>for phase and</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-binary-diffusion">
-<span class="eqno">(2)<a class="headerlink" href="#equation-eq-phase-binary-diffusion" title="Link to this equation">¶</a></span>\[\frac{\partial C}{\partial t}
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-phase-binary-diffusion" title="Permalink to this equation">¶</a></span>\[\frac{\partial C}{\partial t}
 = \nabla\cdot\left( M_C \nabla \frac{\partial f}{\partial C} \right)\]</div>
 <p>for solute.</p>
 <p>The free energy density <span class="math notranslate nohighlight">\(f(\phi, C, T)\)</span> can be constructed in many
@@ -232,7 +232,7 @@ pure component melting point <span class="math notranslate nohighlight">\(T_M^A\
 + \frac{W_A}{2} g(\phi).\]</div>
 <p>With these assumptions</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-binary-phasetransformation">
-<span class="eqno">(3)<a class="headerlink" href="#equation-eq-phase-binary-phasetransformation" title="Link to this equation">¶</a></span>\[\begin{split}\frac{\partial f}{\partial \phi}
+<span class="eqno">(3)<a class="headerlink" href="#equation-eq-phase-binary-phasetransformation" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial f}{\partial \phi}
 &amp;= (1-C) \frac{\partial f_A}{\partial \phi}
 + C \frac{\partial f_B}{\partial \phi} \nonumber \\
 &amp;= \left\{
@@ -244,7 +244,7 @@ pure component melting point <span class="math notranslate nohighlight">\(T_M^A\
 \right\} g'(\phi)\end{split}\]</div>
 <p>and</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-binary-chemicalpotential">
-<span class="eqno">(4)<a class="headerlink" href="#equation-eq-phase-binary-chemicalpotential" title="Link to this equation">¶</a></span>\[\begin{split}\frac{\partial f}{\partial C}
+<span class="eqno">(4)<a class="headerlink" href="#equation-eq-phase-binary-chemicalpotential" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial f}{\partial C}
 &amp;= \left[f_B(\phi, T) + \frac{R T}{V_m} \ln C\right]
 - \left[f_A(\phi, T) + \frac{R T}{V_m} \ln (1-C) \right] \nonumber \\
 &amp;= \left[\mu_B(\phi, C, T) - \mu_A(\phi, C, T) \right] / V_m\end{split}\]</div>
@@ -345,7 +345,7 @@ Eq. <a class="reference internal" href="#equation-eq-phase-binary-chemicalpotent
 <p>In either bulk phase, <span class="math notranslate nohighlight">\(\nabla p(\phi) = \nabla g(\phi) = 0\)</span>, so
 we can then reduce Eq. <a class="reference internal" href="#equation-eq-phase-binary-diffusion">(2)</a> to</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-binary-diffusion-bulk">
-<span class="eqno">(5)<a class="headerlink" href="#equation-eq-phase-binary-diffusion-bulk" title="Link to this equation">¶</a></span>\[\begin{split}\frac{\partial C}{\partial t}
+<span class="eqno">(5)<a class="headerlink" href="#equation-eq-phase-binary-diffusion-bulk" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial C}{\partial t}
 &amp;= \nabla\cdot\left( M_C \nabla \left\{
     \frac{R T}{V_m} \left[\ln C - \ln (1-C)\right]
 \right\}
@@ -360,7 +360,7 @@ we can then reduce Eq. <a class="reference internal" href="#equation-eq-phase-bi
 <p>we can associate the mobility <span class="math notranslate nohighlight">\(M_C\)</span> with the intrinsic diffusivity <span class="math notranslate nohighlight">\(D\)</span> by
 <span class="math notranslate nohighlight">\(M_C \equiv D C (1-C) V_m / R T\)</span> and write Eq. <a class="reference internal" href="#equation-eq-phase-binary-diffusion">(2)</a> as</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-binary-diffusion-canonical">
-<span class="eqno">(6)<a class="headerlink" href="#equation-eq-phase-binary-diffusion-canonical" title="Link to this equation">¶</a></span>\[\begin{split}\frac{\partial C}{\partial t}
+<span class="eqno">(6)<a class="headerlink" href="#equation-eq-phase-binary-diffusion-canonical" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\partial C}{\partial t}
 &amp;= \nabla\cdot\left( D \nabla C \right) \nonumber \\
 &amp;\qquad + \nabla\cdot\left(
 \frac{D C (1 - C) V_m}{R T}
@@ -649,7 +649,7 @@ as a <a class="reference internal" href="fipy.variables.variable.html#fipy.varia
 
                 <div class='last-updated'>
                 Last updated on Sep 05, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
   </div>  
@@ -658,7 +658,7 @@ as a <a class="reference internal" href="fipy.variables.variable.html#fipy.varia
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+302.gbcc35fec
+Version 3.4.4+305.gb425cb0c
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

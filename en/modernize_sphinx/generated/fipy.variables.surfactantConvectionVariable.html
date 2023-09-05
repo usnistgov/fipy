@@ -35,20 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.variables.surfactantConvectionVariable &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
+    <title>fipy.variables.surfactantConvectionVariable &#8212; FiPy 3.4.4+305.gb425cb0c documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/documentation_options.js?v=dbcedde6"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=1afd5ef3"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+305.gb425cb0c documentation" href="../contents.html" />
     <link rel="up" title="fipy.variables" href="fipy.variables.html" />
     <link rel="next" title="fipy.variables.surfactantVariable" href="fipy.variables.surfactantVariable.html" />
     <link rel="prev" title="fipy.variables.scharfetterGummelFaceVariable" href="fipy.variables.scharfetterGummelFaceVariable.html" />
@@ -114,7 +114,7 @@
               <div class="body" role="main">
 		
   <section id="module-fipy.variables.surfactantConvectionVariable">
-<span id="fipy-variables-surfactantconvectionvariable"></span><h1>fipy.variables.surfactantConvectionVariable<a class="headerlink" href="#module-fipy.variables.surfactantConvectionVariable" title="Link to this heading">¶</a></h1>
+<span id="fipy-variables-surfactantconvectionvariable"></span><h1>fipy.variables.surfactantConvectionVariable<a class="headerlink" href="#module-fipy.variables.surfactantConvectionVariable" title="Permalink to this heading">¶</a></h1>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -125,7 +125,7 @@
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.variables.surfactantConvectionVariable.</span></span><span class="sig-name descname"><span class="pre">SurfactantConvectionVariable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.variables.surfactantConvectionVariable.</span></span><span class="sig-name descname"><span class="pre">SurfactantConvectionVariable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fipy.variables.faceVariable.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a></p>
 <p>Convection coefficient for the <cite>ConservativeSurfactantEquation</cite>.
 The coefficient only has a value for a negative <cite>distanceVar</cite>.</p>
@@ -178,7 +178,7 @@ The coefficient only has a value for a negative <cite>distanceVar</cite>.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__abs__">
-<span class="sig-name descname"><span class="pre">__abs__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__abs__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__abs__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__abs__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Following test it to fix a bug with C inline string using
 <cite>abs()</cite> instead of <cite>fabs()</cite></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="mf">2.3</span><span class="p">)</span> <span class="o">-</span> <span class="n">Variable</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)))</span>
@@ -194,7 +194,7 @@ The coefficient only has a value for a negative <cite>distanceVar</cite>.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__and__">
-<span class="sig-name descname"><span class="pre">__and__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__and__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__and__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__and__" title="Permalink to this definition">¶</a></dt>
 <dd><p>This test case has been added due to a weird bug that was appearing.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
@@ -217,7 +217,7 @@ The coefficient only has a value for a negative <cite>distanceVar</cite>.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__array__">
-<span class="sig-name descname"><span class="pre">__array__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__array__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__array__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__array__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempt to convert the <cite>Variable</cite> to a numerix <cite>array</cite> object</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
@@ -234,7 +234,7 @@ The coefficient only has a value for a negative <cite>distanceVar</cite>.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__array_wrap__">
-<span class="sig-name descname"><span class="pre">__array_wrap__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__array_wrap__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__array_wrap__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__array_wrap__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Required to prevent numpy not calling the reverse binary operations.
 Both the following tests are examples ufuncs.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span> <span class="o">*</span> <span class="n">Variable</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])))</span> 
@@ -250,7 +250,7 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__bool__">
-<span class="sig-name descname"><span class="pre">__bool__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__bool__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__bool__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__bool__" title="Permalink to this definition">¶</a></dt>
 <dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)))</span>
 <span class="go">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))))</span>
@@ -263,7 +263,7 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__call__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__call__" title="Permalink to this definition">¶</a></dt>
 <dd><p>“Evaluate” the <cite>Variable</cite> and return its value</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">())</span>
@@ -279,7 +279,7 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__eq__">
-<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__eq__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test if a <cite>Variable</cite> is equal to another quantity</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span>
@@ -293,7 +293,7 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__ge__">
-<span class="sig-name descname"><span class="pre">__ge__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__ge__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__ge__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__ge__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test if a <cite>Variable</cite> is greater than or equal to another quantity</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">)</span>
@@ -313,7 +313,7 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__getitem__">
-<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__getitem__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__getitem__" title="Permalink to this definition">¶</a></dt>
 <dd><p>“Evaluate” the <cite>Variable</cite> and return the specified element</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">((</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">),</span> <span class="p">(</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">)),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;4 m&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -331,14 +331,14 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__getstate__">
-<span class="sig-name descname"><span class="pre">__getstate__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__getstate__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__getstate__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__getstate__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used internally to collect the necessary information to <code class="docutils literal notranslate"><span class="pre">pickle</span></code> the
 <a class="reference internal" href="fipy.variables.meshVariable.html#fipy.variables.meshVariable.MeshVariable" title="fipy.variables.meshVariable.MeshVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshVariable</span></code></a> to persistent storage.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__gt__">
-<span class="sig-name descname"><span class="pre">__gt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__gt__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__gt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__gt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test if a <cite>Variable</cite> is greater than another quantity</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">)</span>
@@ -355,13 +355,13 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__hash__">
-<span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__hash__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__hash__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__invert__">
-<span class="sig-name descname"><span class="pre">__invert__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__invert__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__invert__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__invert__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns logical “not” of the <cite>Variable</cite></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="o">~</span><span class="n">a</span><span class="p">)</span>
@@ -372,7 +372,7 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__le__">
-<span class="sig-name descname"><span class="pre">__le__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__le__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__le__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__le__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test if a <cite>Variable</cite> is less than or equal to another quantity</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;=</span> <span class="mi">4</span><span class="p">)</span>
@@ -392,7 +392,7 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__lt__">
-<span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__lt__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__lt__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test if a <cite>Variable</cite> is less than another quantity</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">)</span>
@@ -418,7 +418,7 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__ne__">
-<span class="sig-name descname"><span class="pre">__ne__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__ne__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__ne__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__ne__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test if a <cite>Variable</cite> is not equal to another quantity</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">)</span>
@@ -432,12 +432,12 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__new__">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__new__" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__new__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__nonzero__">
-<span class="sig-name descname"><span class="pre">__nonzero__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__nonzero__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__nonzero__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__nonzero__" title="Permalink to this definition">¶</a></dt>
 <dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)))</span>
 <span class="go">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))))</span>
@@ -450,7 +450,7 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__or__">
-<span class="sig-name descname"><span class="pre">__or__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__or__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__or__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__or__" title="Permalink to this definition">¶</a></dt>
 <dd><p>This test case has been added due to a weird bug that was appearing.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
@@ -473,7 +473,7 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__pow__">
-<span class="sig-name descname"><span class="pre">__pow__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__pow__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__pow__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__pow__" title="Permalink to this definition">¶</a></dt>
 <dd><p>return self**other, or self raised to power other</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;mol/l&quot;</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
 <span class="go">1.0 mol**3/l**3</span>
@@ -485,26 +485,26 @@ Both the following tests are examples ufuncs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__repr__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return repr(self).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__setstate__">
-<span class="sig-name descname"><span class="pre">__setstate__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__setstate__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__setstate__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__setstate__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Used internally to create a new <cite>Variable</cite> from <code class="docutils literal notranslate"><span class="pre">pickled</span></code>
 persistent storage.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__str__">
-<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__str__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return str(self).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.all">
-<span class="sig-name descname"><span class="pre">all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.all" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.all" title="Permalink to this definition">¶</a></dt>
 <dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
 <span class="go">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
@@ -515,7 +515,7 @@ persistent storage.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.allclose">
-<span class="sig-name descname"><span class="pre">allclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.allclose" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">allclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.allclose" title="Permalink to this definition">¶</a></dt>
 <dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">allclose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
 <span class="go">1</span>
@@ -535,7 +535,7 @@ out of memory.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.any">
-<span class="sig-name descname"><span class="pre">any</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.any" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">any</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.any" title="Permalink to this definition">¶</a></dt>
 <dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">())</span>
 <span class="go">0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">any</span><span class="p">())</span>
@@ -546,7 +546,7 @@ out of memory.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.constrain">
-<span class="sig-name descname"><span class="pre">constrain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.constrain" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">constrain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.constrain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constrain the <cite>Variable</cite> to have a <cite>value</cite> at an index or mask location specified by <cite>where</cite>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)))</span>
@@ -596,7 +596,7 @@ constraint</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.constraintMask">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">constraintMask</span></span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.constraintMask" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">constraintMask</span></span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.constraintMask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test that <cite>constraintMask</cite> returns a Variable that updates itself whenever the constraints change.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
 </pre></div>
@@ -631,7 +631,7 @@ constraint</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.copy" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make an duplicate of the <cite>Variable</cite></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -659,7 +659,7 @@ constraint</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.divergence">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">divergence</span></span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.divergence" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">divergence</span></span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.divergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>the divergence of <cite>self</cite>, <span class="math notranslate nohighlight">\(\vec{u}\)</span>,</p>
 <div class="math notranslate nohighlight">
 \[\nabla\cdot\vec{u} \approx \frac{\sum_f (\vec{u}\cdot\hat{n})_f A_f}{V_P}\]</div>
@@ -685,7 +685,7 @@ constraint</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.dot">
-<span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opShape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operatorClass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.dot" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opShape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operatorClass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.dot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the mesh-element–by–mesh-element (cell-by-cell, face-by-face,
 etc.) scalar product</p>
 <div class="math notranslate nohighlight">
@@ -696,7 +696,7 @@ need to be a <a class="reference internal" href="fipy.variables.meshVariable.htm
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.getsctype">
-<span class="sig-name descname"><span class="pre">getsctype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.getsctype" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">getsctype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.getsctype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the Numpy <cite>sctype</cite> of the underlying array.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Variable</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">getsctype</span><span class="p">()</span> <span class="o">==</span> <span class="n">numerix</span><span class="o">.</span><span class="n">NUMERIX</span><span class="o">.</span><span class="n">obj2sctype</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 <span class="go">True</span>
@@ -710,7 +710,7 @@ need to be a <a class="reference internal" href="fipy.variables.meshVariable.htm
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.inBaseUnits">
-<span class="sig-name descname"><span class="pre">inBaseUnits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.inBaseUnits" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">inBaseUnits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.inBaseUnits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the value of the <cite>Variable</cite> with all units reduced to
 their base SI elements.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;2.7 Hartree*Nav&quot;</span><span class="p">)</span>
@@ -722,7 +722,7 @@ their base SI elements.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.inUnitsOf">
-<span class="sig-name descname"><span class="pre">inUnitsOf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">units</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.inUnitsOf" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">inUnitsOf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">units</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.inUnitsOf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns one or more <cite>Variable</cite> objects that express the same
 physical quantity in different units.  The units are specified by
 strings containing their names.  The units must be compatible with
@@ -751,20 +751,20 @@ hour/minute/second.  The original object will not be changed.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.mag">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mag</span></span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.mag" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mag</span></span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.mag" title="Permalink to this definition">¶</a></dt>
 <dd><p>The magnitude of the <a class="reference internal" href="fipy.variables.variable.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a>,
 e.g., <span class="math notranslate nohighlight">\(|\vec{\psi}| = \sqrt{\vec{\psi}\cdot\vec{\psi}}\)</span>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.max">
-<span class="sig-name descname"><span class="pre">max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.max" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.max" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the maximum along a given axis.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.min">
-<span class="sig-name descname"><span class="pre">min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.min" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.min" title="Permalink to this definition">¶</a></dt>
 <dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">Grid2D</span><span class="p">,</span> <span class="n">CellVariable</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span>
@@ -777,7 +777,7 @@ e.g., <span class="math notranslate nohighlight">\(|\vec{\psi}| = \sqrt{\vec{\ps
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.rdot">
-<span class="sig-name descname"><span class="pre">rdot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opShape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operatorClass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.rdot" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">rdot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opShape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operatorClass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.rdot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the mesh-element–by–mesh-element (cell-by-cell, face-by-face,
 etc.) scalar product</p>
 <div class="math notranslate nohighlight">
@@ -788,7 +788,7 @@ need to be a <a class="reference internal" href="fipy.variables.meshVariable.htm
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.release">
-<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.release" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.release" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove <cite>constraint</cite> from <cite>self</cite></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)))</span>
@@ -809,7 +809,7 @@ need to be a <a class="reference internal" href="fipy.variables.meshVariable.htm
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.setValue">
-<span class="sig-name descname"><span class="pre">setValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.setValue" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.setValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the value of the Variable. Can take a masked array.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
@@ -845,7 +845,7 @@ need to be a <a class="reference internal" href="fipy.variables.meshVariable.htm
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.shape">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.shape" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.shape" title="Permalink to this definition">¶</a></dt>
 <dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.meshes</span> <span class="kn">import</span> <span class="n">Grid2D</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.variables.cellVariable</span> <span class="kn">import</span> <span class="n">CellVariable</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
@@ -872,7 +872,7 @@ need to be a <a class="reference internal" href="fipy.variables.meshVariable.htm
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.std">
-<span class="sig-name descname"><span class="pre">std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.std" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.std" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate standard deviation of all the elements of a <a class="reference internal" href="fipy.variables.meshVariable.html#fipy.variables.meshVariable.MeshVariable" title="fipy.variables.meshVariable.MeshVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshVariable</span></code></a>.</p>
 <p>Adapted from <a class="reference external" href="http://mpitutorial.com/tutorials/mpi-reduce-and-allreduce/">http://mpitutorial.com/tutorials/mpi-reduce-and-allreduce/</a></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">fipy</span> <span class="k">as</span> <span class="nn">fp</span>
@@ -886,7 +886,7 @@ need to be a <a class="reference internal" href="fipy.variables.meshVariable.htm
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.unit">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit</span></span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.unit" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit</span></span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.unit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the unit object of <cite>self</cite>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;1 m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span>
 <span class="go">&lt;PhysicalUnit m&gt;</span>
@@ -896,7 +896,7 @@ need to be a <a class="reference internal" href="fipy.variables.meshVariable.htm
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.value">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.value" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#fipy.variables.surfactantConvectionVariable.SurfactantConvectionVariable.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>“Evaluate” the <cite>Variable</cite> and return its value (longhand)</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
@@ -917,7 +917,7 @@ need to be a <a class="reference internal" href="fipy.variables.meshVariable.htm
 
                 <div class='last-updated'>
                 Last updated on Sep 05, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
   </div>  
@@ -926,7 +926,7 @@ need to be a <a class="reference internal" href="fipy.variables.meshVariable.htm
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+302.gbcc35fec
+Version 3.4.4+305.gb425cb0c
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

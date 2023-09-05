@@ -35,20 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Design and Implementation &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
+    <title>Design and Implementation &#8212; FiPy 3.4.4+305.gb425cb0c documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/documentation_options.js?v=dbcedde6"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1afd5ef3"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.4+305.gb425cb0c documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Virtual Kinetics of Materials Laboratory" href="VKML.html" />
     <link rel="prev" title="Numerical Schemes" href="numerical/scheme.html" />
@@ -112,7 +112,7 @@
               <div class="body" role="main">
 		
   <section id="design-and-implementation">
-<h1>Design and Implementation<a class="headerlink" href="#design-and-implementation" title="Link to this heading">¶</a></h1>
+<h1>Design and Implementation<a class="headerlink" href="#design-and-implementation" title="Permalink to this heading">¶</a></h1>
 <p>The goal of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is to provide a highly customizable, open source
 code for modeling problems involving coupled sets of PDEs.  <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
 allows users to select and customize modules from within the
@@ -125,9 +125,9 @@ procedures.  The philosophy of <a class="reference internal" href="glossary.html
 while providing a library of efficient modules for common objects and
 data types.</p>
 <section id="design">
-<h2>Design<a class="headerlink" href="#design" title="Link to this heading">¶</a></h2>
+<h2>Design<a class="headerlink" href="#design" title="Permalink to this heading">¶</a></h2>
 <section id="numerical-approach">
-<h3>Numerical Approach<a class="headerlink" href="#numerical-approach" title="Link to this heading">¶</a></h3>
+<h3>Numerical Approach<a class="headerlink" href="#numerical-approach" title="Permalink to this heading">¶</a></h3>
 <p>The solution algorithms given in the <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> examples involve combining
 sets of PDEs while tracking an interface where the parameters of the
 problem change rapidly. The phase field method and the level set
@@ -138,7 +138,7 @@ several examples of both methods.</p>
 model equations to a form tractable to linear solvers.</p>
 </section>
 <section id="object-oriented-structure">
-<h3>Object Oriented Structure<a class="headerlink" href="#object-oriented-structure" title="Link to this heading">¶</a></h3>
+<h3>Object Oriented Structure<a class="headerlink" href="#object-oriented-structure" title="Permalink to this heading">¶</a></h3>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is programmed in an object-oriented manner.  The benefit of
 object oriented programming mainly lies in encapsulation and
 inheritance.  Encapsulation refers to the tight integration between
@@ -151,7 +151,7 @@ is treated by its users as an abstraction; the details of its
 implementation and behavior are internal.</p>
 </section>
 <section id="test-based-development">
-<h3>Test Based Development<a class="headerlink" href="#test-based-development" title="Link to this heading">¶</a></h3>
+<h3>Test Based Development<a class="headerlink" href="#test-based-development" title="Permalink to this heading">¶</a></h3>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> has been developed with a large number of test cases.  These
 test cases are in two categories.  The lower level tests operate on
 the core modules at the individual method level.  The aim is that
@@ -168,7 +168,7 @@ examples and knowledge of whether the code is working on a particular
 computer environment.</p>
 </section>
 <section id="open-source">
-<h3>Open Source<a class="headerlink" href="#open-source" title="Link to this heading">¶</a></h3>
+<h3>Open Source<a class="headerlink" href="#open-source" title="Permalink to this heading">¶</a></h3>
 <p>In recent years, there has been a movement to release software under
 open source and associated unrestricted licenses, especially within
 the scientific community.  These licensing terms allow users to
@@ -182,7 +182,7 @@ tools. Others are free to use <a class="reference internal" href="glossary.html#
 contributions to make <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> better.</p>
 </section>
 <section id="high-level-scripting-language">
-<h3>High-Level Scripting Language<a class="headerlink" href="#high-level-scripting-language" title="Link to this heading">¶</a></h3>
+<h3>High-Level Scripting Language<a class="headerlink" href="#high-level-scripting-language" title="Permalink to this heading">¶</a></h3>
 <p>Programming languages can be broadly lumped into two categories:
 compiled languages and interpreted (or scripting) languages.  Compiled
 languages are converted from a human-readable text source file to a
@@ -285,7 +285,7 @@ only translates to low-level compiled code those portions that prove
 inefficient <a class="footnote-reference brackets" href="#id4" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 </section>
 <section id="python-programming-language">
-<h3>Python Programming Language<a class="headerlink" href="#python-programming-language" title="Link to this heading">¶</a></h3>
+<h3>Python Programming Language<a class="headerlink" href="#python-programming-language" title="Permalink to this heading">¶</a></h3>
 <p>Acknowledging that several scripting languages offer a number, if not
 all, of the features described above, we have selected <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> for
 the implementation of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>.  Python is</p>
@@ -306,7 +306,7 @@ mathematicians (<a class="reference internal" href="glossary.html#term-SciPy"><s
 </section>
 </section>
 <section id="implementation">
-<h2>Implementation<a class="headerlink" href="#implementation" title="Link to this heading">¶</a></h2>
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this heading">¶</a></h2>
 <p>The <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> classes that make up <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> are described in detail in
 <a class="reference internal" href="API.html#part-modules"><span class="std std-ref">fipy Package Documentation</span></a>, but we give a brief overview here. <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is
 based around three fundamental <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> classes:
@@ -370,7 +370,7 @@ number of related classes.</p>
 <figure class="align-default" id="id5">
 <span id="fig-objects"></span><a class="reference internal image-reference" href="_images/objects.png"><img alt="_images/objects.png" src="_images/objects.png" style="width: 680.0px; height: 344.0px;" /></a>
 <figcaption>
-<p><span class="caption-text">Primary object relationships in <cite>FiPy</cite>.</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Primary object relationships in <cite>FiPy</cite>.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>A <a class="reference internal" href="generated/fipy.meshes.mesh.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> object is composed of cells. Each cell is
@@ -410,7 +410,7 @@ the examples, along with illustrations of their instantiation and use.</p>
 
                 <div class='last-updated'>
                 Last updated on Sep 05, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
   </div>  
@@ -419,7 +419,7 @@ the examples, along with illustrations of their instantiation and use.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+302.gbcc35fec
+Version 3.4.4+305.gb425cb0c
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

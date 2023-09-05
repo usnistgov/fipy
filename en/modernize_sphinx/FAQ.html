@@ -35,20 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Frequently Asked Questions &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
+    <title>Frequently Asked Questions &#8212; FiPy 3.4.4+305.gb425cb0c documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/documentation_options.js?v=dbcedde6"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1afd5ef3"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.4+305.gb425cb0c documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Efficiency" href="EFFICIENCY.html" />
     <link rel="prev" title="Using FiPy" href="USAGE.html" />
@@ -112,9 +112,9 @@
               <div class="body" role="main">
 		
   <section id="frequently-asked-questions">
-<span id="faq"></span><h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading">¶</a></h1>
+<span id="faq"></span><h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this heading">¶</a></h1>
 <section id="how-do-i-represent-an-equation-in-fipy">
-<h2>How do I represent an equation in FiPy?<a class="headerlink" href="#how-do-i-represent-an-equation-in-fipy" title="Link to this heading">¶</a></h2>
+<h2>How do I represent an equation in FiPy?<a class="headerlink" href="#how-do-i-represent-an-equation-in-fipy" title="Permalink to this heading">¶</a></h2>
 <p>As explained in <a class="reference internal" href="numerical/index.html#chap-numerics"><span class="std std-ref">Theoretical and Numerical Background</span></a>, the canonical
 governing equation that can be solved by <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> for the dependent
 <a class="reference internal" href="generated/fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> <span class="math notranslate nohighlight">\(\phi\)</span> is</p>
@@ -142,7 +142,7 @@ governing equation that can be solved by <a class="reference internal" href="glo
 governing equations, one for each variable.  Numerous specific
 examples are presented in Part <a class="reference internal" href="EXAMPLES.html#part-examples"><span class="std std-ref">Examples</span></a>.</p>
 <section id="is-there-a-way-to-model-an-anisotropic-diffusion-process-or-more-generally-to-represent-the-diffusion-coefficient-as-a-tensor-so-that-the-diffusion-term-takes-the-form-partial-i-gamma-ij-partial-j-phi">
-<h3>Is there a way to model an anisotropic diffusion process or more generally to represent the diffusion coefficient as a tensor so that the diffusion term takes the form <span class="math notranslate nohighlight">\(\partial_i \Gamma_{ij}\partial_j \phi\)</span>?<a class="headerlink" href="#is-there-a-way-to-model-an-anisotropic-diffusion-process-or-more-generally-to-represent-the-diffusion-coefficient-as-a-tensor-so-that-the-diffusion-term-takes-the-form-partial-i-gamma-ij-partial-j-phi" title="Link to this heading">¶</a></h3>
+<h3>Is there a way to model an anisotropic diffusion process or more generally to represent the diffusion coefficient as a tensor so that the diffusion term takes the form <span class="math notranslate nohighlight">\(\partial_i \Gamma_{ij}\partial_j \phi\)</span>?<a class="headerlink" href="#is-there-a-way-to-model-an-anisotropic-diffusion-process-or-more-generally-to-represent-the-diffusion-coefficient-as-a-tensor-so-that-the-diffusion-term-takes-the-form-partial-i-gamma-ij-partial-j-phi" title="Permalink to this heading">¶</a></h3>
 <p>Terms of the form <span class="math notranslate nohighlight">\(\partial_i \Gamma_{ij}\partial_j \phi\)</span> can be
 posed in <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> by using a list, tuple rank 1
 or rank 2 <a class="reference internal" href="generated/fipy.variables.faceVariable.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> to represent a
@@ -196,13 +196,13 @@ order to calculate the correct tensor values, see
 <a class="reference internal" href="generated/examples.diffusion.anisotropy.html#module-examples.diffusion.anisotropy" title="examples.diffusion.anisotropy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.diffusion.anisotropy</span></code></a> for details.</p>
 </section>
 <section id="how-do-i-represent-a-term-that-doesn-t-involve-the-dependent-variable">
-<h3>How do I represent a <cite>…</cite> term that <em>doesn’t</em> involve the dependent variable?<a class="headerlink" href="#how-do-i-represent-a-term-that-doesn-t-involve-the-dependent-variable" title="Link to this heading">¶</a></h3>
+<h3>How do I represent a <cite>…</cite> term that <em>doesn’t</em> involve the dependent variable?<a class="headerlink" href="#how-do-i-represent-a-term-that-doesn-t-involve-the-dependent-variable" title="Permalink to this heading">¶</a></h3>
 <p>It is important to realize that, even though an expression may
 superficially resemble one of those shown in <a class="reference internal" href="numerical/discret.html#section-discretization"><span class="std std-ref">Discretization</span></a>, if the dependent variable
 <em>for that PDE</em> does not appear in the appropriate place, then that
 term should be treated as a source.</p>
 <section id="how-do-i-represent-a-diffusive-source">
-<h4>How do I represent a diffusive source?<a class="headerlink" href="#how-do-i-represent-a-diffusive-source" title="Link to this heading">¶</a></h4>
+<h4>How do I represent a diffusive source?<a class="headerlink" href="#how-do-i-represent-a-diffusive-source" title="Permalink to this heading">¶</a></h4>
 <p>If the governing equation for <span class="math notranslate nohighlight">\(\phi\)</span> is</p>
 <div class="math notranslate nohighlight">
 \[\frac{\partial \phi}{\partial t}
@@ -227,7 +227,7 @@ matrix that is formed by
 </div>
 </section>
 <section id="how-do-i-represent-a-convective-source">
-<h4>How do I represent a convective source?<a class="headerlink" href="#how-do-i-represent-a-convective-source" title="Link to this heading">¶</a></h4>
+<h4>How do I represent a convective source?<a class="headerlink" href="#how-do-i-represent-a-convective-source" title="Permalink to this heading">¶</a></h4>
 <p>The convection of an independent field <span class="math notranslate nohighlight">\(\xi\)</span> as in</p>
 <div class="math notranslate nohighlight">
 \[\frac{\partial \phi}{\partial t}
@@ -246,7 +246,7 @@ matrix that is formed by
 <p>if <span class="math notranslate nohighlight">\(\vec{u}\)</span> is a rank-1 <a class="reference internal" href="generated/fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a>.</p>
 </section>
 <section id="how-do-i-represent-a-transient-source">
-<h4>How do I represent a transient source?<a class="headerlink" href="#how-do-i-represent-a-transient-source" title="Link to this heading">¶</a></h4>
+<h4>How do I represent a transient source?<a class="headerlink" href="#how-do-i-represent-a-transient-source" title="Permalink to this heading">¶</a></h4>
 <p>The time-rate-of change of an independent variable <span class="math notranslate nohighlight">\(\xi\)</span>, such as in</p>
 <div class="math notranslate nohighlight">
 \[\frac{\partial (\rho_1 \phi)}{\partial t}
@@ -260,7 +260,7 @@ directly, in the manner of Equation <a class="reference internal" href="numerica
 </section>
 </section>
 <section id="what-if-my-term-involves-the-dependent-variable-but-not-where-fipy-puts-it">
-<h3>What if my term involves the dependent variable, but not where FiPy puts it?<a class="headerlink" href="#what-if-my-term-involves-the-dependent-variable-but-not-where-fipy-puts-it" title="Link to this heading">¶</a></h3>
+<h3>What if my term involves the dependent variable, but not where FiPy puts it?<a class="headerlink" href="#what-if-my-term-involves-the-dependent-variable-but-not-where-fipy-puts-it" title="Permalink to this heading">¶</a></h3>
 <p>Frequently, viewing the term from a different perspective will allow it to
 be cast in one of the canonical forms. For example, the third term in</p>
 <div class="math notranslate nohighlight">
@@ -284,7 +284,7 @@ possible to represent both terms with
 </div>
 </section>
 <section id="what-if-the-coefficient-of-a-term-depends-on-the-variable-that-i-m-solving-for">
-<h3>What if the coefficient of a term depends on the variable that I’m solving for?<a class="headerlink" href="#what-if-the-coefficient-of-a-term-depends-on-the-variable-that-i-m-solving-for" title="Link to this heading">¶</a></h3>
+<h3>What if the coefficient of a term depends on the variable that I’m solving for?<a class="headerlink" href="#what-if-the-coefficient-of-a-term-depends-on-the-variable-that-i-m-solving-for" title="Permalink to this heading">¶</a></h3>
 <p>A non-linear coefficient, such as the diffusion coefficient in
 <span class="math notranslate nohighlight">\(\nabla\cdot[\Gamma_1(\phi) \nabla \phi] = \nabla\cdot[\Gamma_0 \phi (1 -
 \phi) \nabla\phi]\)</span> is not a problem for <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>. Simply write it as it
@@ -301,9 +301,9 @@ necessary to “sweep” the solution to convergence as discussed in
 </section>
 </section>
 <section id="how-can-i-see-what-i-m-doing">
-<h2>How can I see what I’m doing?<a class="headerlink" href="#how-can-i-see-what-i-m-doing" title="Link to this heading">¶</a></h2>
+<h2>How can I see what I’m doing?<a class="headerlink" href="#how-can-i-see-what-i-m-doing" title="Permalink to this heading">¶</a></h2>
 <section id="how-do-i-export-data">
-<h3>How do I export data?<a class="headerlink" href="#how-do-i-export-data" title="Link to this heading">¶</a></h3>
+<h3>How do I export data?<a class="headerlink" href="#how-do-i-export-data" title="Permalink to this heading">¶</a></h3>
 <p>The way to save your calculations depends on how you plan to make use of
 the data. If you want to save it for “restart” (so that you can continue
 or redirect a calculation from some intermediate stage), then you’ll want
@@ -321,7 +321,7 @@ file of tab-separated-values with a <a class="reference internal" href="generate
 in <a class="reference internal" href="generated/examples.diffusion.circle.html#module-examples.diffusion.circle" title="examples.diffusion.circle"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.diffusion.circle</span></code></a>.</p>
 </section>
 <section id="how-do-i-save-a-plot-image">
-<h3>How do I save a plot image?<a class="headerlink" href="#how-do-i-save-a-plot-image" title="Link to this heading">¶</a></h3>
+<h3>How do I save a plot image?<a class="headerlink" href="#how-do-i-save-a-plot-image" title="Permalink to this heading">¶</a></h3>
 <p>Some of the viewers have a button or other mechanism in the user interface
 for saving an image file. Also, you can supply an optional keyword
 <code class="docutils literal notranslate"><span class="pre">filename</span></code> when you tell the viewer to
@@ -347,7 +347,7 @@ don’t properly support this yet.</p>
 </dd>
 </dl>
 <section id="what-if-i-only-want-the-saved-file-with-no-display-on-screen">
-<h4>What if I only want the saved file, with no display on screen?<a class="headerlink" href="#what-if-i-only-want-the-saved-file-with-no-display-on-screen" title="Link to this heading">¶</a></h4>
+<h4>What if I only want the saved file, with no display on screen?<a class="headerlink" href="#what-if-i-only-want-the-saved-file-with-no-display-on-screen" title="Permalink to this heading">¶</a></h4>
 <p>To our knowledge, this is only supported by <a class="reference internal" href="glossary.html#term-Matplotlib"><span class="xref std std-term">Matplotlib</span></a>, as is explained
 in the
 <a class="reference external" href="http://matplotlib.sourceforge.net/faq/howto_faq.html#generate-images-without-having-a-window-popup">Matplotlib FAQ on image backends</a>.
@@ -357,7 +357,7 @@ backend,” such as “<code class="docutils literal notranslate"><span class="p
 </section>
 </section>
 <section id="how-do-i-make-a-movie">
-<h3>How do I make a movie?<a class="headerlink" href="#how-do-i-make-a-movie" title="Link to this heading">¶</a></h3>
+<h3>How do I make a movie?<a class="headerlink" href="#how-do-i-make-a-movie" title="Permalink to this heading">¶</a></h3>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> has no facilities for making movies. You will need to save
 individual frames (see the previous question) and then stitch them together
 into a movie, using one of a variety of different free, shareware, or
@@ -366,7 +366,7 @@ commercial software packages. The guidance in the
 should be adaptable to other <a class="reference internal" href="generated/fipy.viewers.viewer.html#fipy.viewers.viewer.AbstractViewer" title="fipy.viewers.viewer.AbstractViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code></a>s.</p>
 </section>
 <section id="why-doesn-t-the-viewer-look-the-way-i-want">
-<h3>Why doesn’t the <a class="reference internal" href="generated/fipy.viewers.viewer.html#fipy.viewers.viewer.AbstractViewer" title="fipy.viewers.viewer.AbstractViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code></a> look the way I want?<a class="headerlink" href="#why-doesn-t-the-viewer-look-the-way-i-want" title="Link to this heading">¶</a></h3>
+<h3>Why doesn’t the <a class="reference internal" href="generated/fipy.viewers.viewer.html#fipy.viewers.viewer.AbstractViewer" title="fipy.viewers.viewer.AbstractViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code></a> look the way I want?<a class="headerlink" href="#why-doesn-t-the-viewer-look-the-way-i-want" title="Permalink to this heading">¶</a></h3>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>’s viewers are utilitarian. They’re designed to let you see
 <em>something</em> with a minimum of effort. Because different plotting
 packages have different capabilities and some are easier to install on some
@@ -386,7 +386,7 @@ most of the heavy lifting. See <a class="reference internal" href="generated/exa
 </section>
 </section>
 <section id="iterations-timesteps-and-sweeps-oh-my">
-<span id="faq-iterationstimestepssweeps"></span><h2>Iterations, timesteps, and sweeps? Oh, my!<a class="headerlink" href="#iterations-timesteps-and-sweeps-oh-my" title="Link to this heading">¶</a></h2>
+<span id="faq-iterationstimestepssweeps"></span><h2>Iterations, timesteps, and sweeps? Oh, my!<a class="headerlink" href="#iterations-timesteps-and-sweeps-oh-my" title="Permalink to this heading">¶</a></h2>
 <p>Any non-linear solution of partial differential equations is an
 approximation. These approximations benefit from repetitive
 solution to achieve the best possible answer. In <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> (and in
@@ -531,7 +531,7 @@ increased as the kinetics slow down in
 </div>
 </section>
 <section id="why-the-distinction-between-cellvariable-and-facevariable-coefficients">
-<h2>Why the distinction between <a class="reference internal" href="generated/fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> and <a class="reference internal" href="generated/fipy.variables.faceVariable.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> coefficients?<a class="headerlink" href="#why-the-distinction-between-cellvariable-and-facevariable-coefficients" title="Link to this heading">¶</a></h2>
+<h2>Why the distinction between <a class="reference internal" href="generated/fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> and <a class="reference internal" href="generated/fipy.variables.faceVariable.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaceVariable</span></code></a> coefficients?<a class="headerlink" href="#why-the-distinction-between-cellvariable-and-facevariable-coefficients" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> solves field variables on the cell centers. Transient and
 source terms describe the change in the value of a field at the cell
 center, and so they take a
@@ -565,11 +565,11 @@ assume one.</p>
 </div>
 </section>
 <section id="how-do-i-represent-boundary-conditions">
-<h2>How do I represent boundary conditions?<a class="headerlink" href="#how-do-i-represent-boundary-conditions" title="Link to this heading">¶</a></h2>
+<h2>How do I represent boundary conditions?<a class="headerlink" href="#how-do-i-represent-boundary-conditions" title="Permalink to this heading">¶</a></h2>
 <p>See the <a class="reference internal" href="USAGE.html#boundaryconditions"><span class="std std-ref">Boundary Conditions</span></a> section for more details.</p>
 </section>
 <section id="what-does-this-error-message-mean">
-<h2>What does this error message mean?<a class="headerlink" href="#what-does-this-error-message-mean" title="Link to this heading">¶</a></h2>
+<h2>What does this error message mean?<a class="headerlink" href="#what-does-this-error-message-mean" title="Permalink to this heading">¶</a></h2>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">ValueError:</span> <span class="pre">frames</span> <span class="pre">are</span> <span class="pre">not</span> <span class="pre">aligned</span></code></dt><dd><p>This error most likely means that you have provided a
 <a class="reference internal" href="generated/fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a> when <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
@@ -595,24 +595,24 @@ message left in <a class="reference internal" href="glossary.html#term-SciPy"><s
 </dl>
 </section>
 <section id="how-do-i-change-fipy-s-default-behavior">
-<span id="faq-flagsandenvironmentvariables"></span><h2>How do I change FiPy’s default behavior?<a class="headerlink" href="#how-do-i-change-fipy-s-default-behavior" title="Link to this heading">¶</a></h2>
+<span id="faq-flagsandenvironmentvariables"></span><h2>How do I change FiPy’s default behavior?<a class="headerlink" href="#how-do-i-change-fipy-s-default-behavior" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> tries to make reasonable choices, based on what packages
 it finds installed, but there may be times that you wish to override
 these behaviors.  See the <a class="reference internal" href="USAGE.html#flagsandenvironmentvariables"><span class="std std-ref">Command-line Flags and Environment Variables</span></a> section
 for more details.</p>
 </section>
 <section id="how-can-i-tell-if-i-m-running-in-parallel">
-<h2>How can I tell if I’m running in parallel?<a class="headerlink" href="#how-can-i-tell-if-i-m-running-in-parallel" title="Link to this heading">¶</a></h2>
+<h2>How can I tell if I’m running in parallel?<a class="headerlink" href="#how-can-i-tell-if-i-m-running-in-parallel" title="Permalink to this heading">¶</a></h2>
 <p>See <a class="reference internal" href="USAGE.html#parallel"><span class="std std-ref">Solving in Parallel</span></a>.</p>
 </section>
 <section id="why-don-t-my-scripts-work-anymore">
-<h2>Why don’t my scripts work anymore?<a class="headerlink" href="#why-don-t-my-scripts-work-anymore" title="Link to this heading">¶</a></h2>
+<h2>Why don’t my scripts work anymore?<a class="headerlink" href="#why-don-t-my-scripts-work-anymore" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> has experienced three major API changes. The steps
 necessary to upgrade older scripts are discussed in
 <a class="reference internal" href="EXAMPLES.html#sec-updatefipy"><span class="std std-ref">Updating FiPy</span></a>.</p>
 </section>
 <section id="what-if-my-question-isn-t-answered-here">
-<h2>What if my question isn’t answered here?<a class="headerlink" href="#what-if-my-question-isn-t-answered-here" title="Link to this heading">¶</a></h2>
+<h2>What if my question isn’t answered here?<a class="headerlink" href="#what-if-my-question-isn-t-answered-here" title="Permalink to this heading">¶</a></h2>
 <p>Please post your question to the
 mailing list &lt;<a class="reference external" href="http://www.ctcms.nist.gov/fipy/mail.html">http://www.ctcms.nist.gov/fipy/mail.html</a>&gt;
 or file an issue at &lt;<a class="reference external" href="https://github.com/usnistgov/fipy/issues/new">https://github.com/usnistgov/fipy/issues/new</a>&gt;.</p>
@@ -622,7 +622,7 @@ or file an issue at &lt;<a class="reference external" href="https://github.com/u
 
                 <div class='last-updated'>
                 Last updated on Sep 05, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
   </div>  
@@ -631,7 +631,7 @@ or file an issue at &lt;<a class="reference external" href="https://github.com/u
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+302.gbcc35fec
+Version 3.4.4+305.gb425cb0c
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

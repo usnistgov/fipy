@@ -35,20 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Finite Volume Method &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
+    <title>Finite Volume Method &#8212; FiPy 3.4.4+305.gb425cb0c documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/documentation_options.js?v=dbcedde6"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=1afd5ef3"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+305.gb425cb0c documentation" href="../contents.html" />
     <link rel="up" title="Theoretical and Numerical Background" href="index.html" />
     <link rel="next" title="Numerical Schemes" href="scheme.html" />
     <link rel="prev" title="General Conservation Equation" href="equation.html" />
@@ -113,7 +113,7 @@
               <div class="body" role="main">
 		
   <section id="finite-volume-method">
-<h1>Finite Volume Method<a class="headerlink" href="#finite-volume-method" title="Link to this heading">¶</a></h1>
+<h1>Finite Volume Method<a class="headerlink" href="#finite-volume-method" title="Permalink to this heading">¶</a></h1>
 <p>To use the FVM, the solution domain must first be divided into
 non-overlapping polyhedral elements or cells.  A solution domain
 divided in such a way is generally known as a mesh (as we will see, a
@@ -124,7 +124,7 @@ CVs are either defined by the cells or are centered on the vertices.</p>
 <figure class="align-center" id="id2">
 <span id="fig-meshcartoon"></span><a class="reference internal image-reference" href="../_images/meshcartoon.png"><img alt="../_images/meshcartoon.png" src="../_images/meshcartoon.png" style="width: 50%;" /></a>
 <figcaption>
-<p><span class="caption-text">Mesh</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+<p><span class="caption-text">Mesh</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 <div class="legend">
 <p>A mesh consists of cells, faces and vertices. For the purposes of
 <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>, the divider between two cells is known as a face for all
@@ -133,7 +133,7 @@ dimensions.</p>
 </figcaption>
 </figure>
 <section id="cell-centered-fvm-cc-fvm">
-<h2>Cell Centered FVM (CC-FVM)<a class="headerlink" href="#cell-centered-fvm-cc-fvm" title="Link to this heading">¶</a></h2>
+<h2>Cell Centered FVM (CC-FVM)<a class="headerlink" href="#cell-centered-fvm-cc-fvm" title="Permalink to this heading">¶</a></h2>
 <p>In the CC-FVM the CVs are formed by the mesh cells with the cell
 center “storing” the average variable value in the CV, (see
 Figure <a class="reference internal" href="#fig-vc-cc-fv"><span class="std std-ref">CV structure for an unstructured mesh</span></a>). The face fluxes are approximated using the
@@ -148,7 +148,7 @@ the face center may not lie on the line joining the CV centers, which
 will lead to an error in the face interpolation. <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> currently
 only uses the CC-FVM.</p>
 <section id="boundary-conditions">
-<h3>Boundary Conditions<a class="headerlink" href="#boundary-conditions" title="Link to this heading">¶</a></h3>
+<h3>Boundary Conditions<a class="headerlink" href="#boundary-conditions" title="Permalink to this heading">¶</a></h3>
 <p>The natural boundary condition for CC-FVM is no-flux.  For <a class="reference internal" href="equation.html#equation-num-gen">(2)</a>,
 the boundary condition is</p>
 <div class="math notranslate nohighlight">
@@ -156,7 +156,7 @@ the boundary condition is</p>
 </section>
 </section>
 <section id="vertex-centered-fvm-vc-fvm">
-<h2>Vertex Centered FVM (VC-FVM)<a class="headerlink" href="#vertex-centered-fvm-vc-fvm" title="Link to this heading">¶</a></h2>
+<h2>Vertex Centered FVM (VC-FVM)<a class="headerlink" href="#vertex-centered-fvm-vc-fvm" title="Permalink to this heading">¶</a></h2>
 <p>In the VC-FVM, the CV is centered around the vertices and the cells
 are divided into sub-control volumes that make up the main CVs (see
 Figure <a class="reference internal" href="#fig-vc-cc-fv"><span class="std std-ref">CV structure for an unstructured mesh</span></a>). The vertices “store” the average
@@ -170,7 +170,7 @@ restrictions as the CC-FVM. <a class="reference internal" href="../glossary.html
 <figure class="align-center" id="id3">
 <span id="fig-vc-cc-fv"></span><a class="reference internal image-reference" href="../_images/vc-cc-fv.png"><img alt="../_images/vc-cc-fv.png" src="../_images/vc-cc-fv.png" style="width: 50%;" /></a>
 <figcaption>
-<p><span class="caption-text">CV structure for an unstructured mesh</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+<p><span class="caption-text">CV structure for an unstructured mesh</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 <div class="legend">
 <p>(a) <span class="math notranslate nohighlight">\(\Omega_a\)</span> represents a vertex-based CV and (b)
 <span class="math notranslate nohighlight">\(\Omega_1\)</span>, <span class="math notranslate nohighlight">\(\Omega_2\)</span>, <span class="math notranslate nohighlight">\(\Omega_3\)</span> and
@@ -181,17 +181,17 @@ restrictions as the CC-FVM. <a class="reference internal" href="../glossary.html
 </section>
 </section>
 <section id="discretization">
-<span id="section-discretization"></span><h1>Discretization<a class="headerlink" href="#discretization" title="Link to this heading">¶</a></h1>
+<span id="section-discretization"></span><h1>Discretization<a class="headerlink" href="#discretization" title="Permalink to this heading">¶</a></h1>
 <p>The first step in the discretization of Equation <a class="reference internal" href="equation.html#equation-num-gen">(2)</a>
 using the CC-FVM is to integrate over a CV and then make appropriate
 approximations for fluxes across the boundary of each CV.  In this
 section, each term in Equation <a class="reference internal" href="equation.html#equation-num-gen">(2)</a> will be examined
 separately.</p>
 <section id="transient-term-partial-rho-phi-partial-t">
-<h2>Transient Term <span class="math notranslate nohighlight">\(\partial (\rho \phi) / \partial t\)</span><a class="headerlink" href="#transient-term-partial-rho-phi-partial-t" title="Link to this heading">¶</a></h2>
+<h2>Transient Term <span class="math notranslate nohighlight">\(\partial (\rho \phi) / \partial t\)</span><a class="headerlink" href="#transient-term-partial-rho-phi-partial-t" title="Permalink to this heading">¶</a></h2>
 <p>For the transient term, the discretization of the integral <span class="math notranslate nohighlight">\(\int_V\)</span> over the volume of a CV is given by</p>
 <div class="math notranslate nohighlight" id="equation-num-tra">
-<span class="eqno">(1)<a class="headerlink" href="#equation-num-tra" title="Link to this equation">¶</a></span>\[\int_V \frac{\partial (\rho \phi)}{\partial t} dV
+<span class="eqno">(1)<a class="headerlink" href="#equation-num-tra" title="Permalink to this equation">¶</a></span>\[\int_V \frac{\partial (\rho \phi)}{\partial t} dV
 \simeq
 \frac{(\rho_{P} \phi_{P} - \rho_{P}^\text{old} \phi_{P}^\text{old}) V_P}{\Delta t}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\phi_P\)</span> represents the average value of <span class="math notranslate nohighlight">\(\phi\)</span> in a CV
@@ -204,10 +204,10 @@ volume of the CV and <span class="math notranslate nohighlight">\(\Delta t\)</sp
 </div>
 </section>
 <section id="convection-term-nabla-cdot-left-vec-u-phi-right">
-<h2>Convection Term <span class="math notranslate nohighlight">\(\nabla \cdot \left( \vec{u} \phi \right)\)</span><a class="headerlink" href="#convection-term-nabla-cdot-left-vec-u-phi-right" title="Link to this heading">¶</a></h2>
+<h2>Convection Term <span class="math notranslate nohighlight">\(\nabla \cdot \left( \vec{u} \phi \right)\)</span><a class="headerlink" href="#convection-term-nabla-cdot-left-vec-u-phi-right" title="Permalink to this heading">¶</a></h2>
 <p>The discretization for the convection term is given by</p>
 <div class="math notranslate nohighlight" id="equation-num-con">
-<span class="eqno">(2)<a class="headerlink" href="#equation-num-con" title="Link to this equation">¶</a></span>\[\begin{split}\int_V \nabla \cdot (\vec{u} \phi)\,dV &amp;=
+<span class="eqno">(2)<a class="headerlink" href="#equation-num-con" title="Permalink to this equation">¶</a></span>\[\begin{split}\int_V \nabla \cdot (\vec{u} \phi)\,dV &amp;=
 \int_S (\vec{n} \cdot \vec{u})\phi\,dS \\
 &amp;\simeq \sum_{f} (\vec{n} \cdot \vec{u})_f \phi_f A_f\end{split}\]</div>
 <p>where we have used the divergence theorem to transform the integral
@@ -242,10 +242,10 @@ constant vector in the form of a <a class="reference internal" href="../glossary
 tuple, <em>e.g.</em> <code class="docutils literal notranslate"><span class="pre">((1,),</span> <span class="pre">(2,))</span></code> for a vector in 2D.</p>
 </section>
 <section id="diffusion-term-nabla-cdot-left-gamma-1-nabla-phi-right">
-<h2>Diffusion Term <span class="math notranslate nohighlight">\(\nabla \cdot \left( \Gamma_1 \nabla \phi \right)\)</span><a class="headerlink" href="#diffusion-term-nabla-cdot-left-gamma-1-nabla-phi-right" title="Link to this heading">¶</a></h2>
+<h2>Diffusion Term <span class="math notranslate nohighlight">\(\nabla \cdot \left( \Gamma_1 \nabla \phi \right)\)</span><a class="headerlink" href="#diffusion-term-nabla-cdot-left-gamma-1-nabla-phi-right" title="Permalink to this heading">¶</a></h2>
 <p>The discretization for the diffusion term is given by</p>
 <div class="math notranslate nohighlight" id="equation-num-dif">
-<span class="eqno">(3)<a class="headerlink" href="#equation-num-dif" title="Link to this equation">¶</a></span>\[\begin{split}\int_V \nabla \cdot (\Gamma\nabla\{\ldots\}) dV
+<span class="eqno">(3)<a class="headerlink" href="#equation-num-dif" title="Permalink to this equation">¶</a></span>\[\begin{split}\int_V \nabla \cdot (\Gamma\nabla\{\ldots\}) dV
 &amp;= \int_S \Gamma (\vec{n} \cdot \nabla\{\ldots\}) dS \\
 &amp;\simeq \sum_f \Gamma_f (\vec{n} \cdot \nabla\{\ldots\})_f A_f\end{split}\]</div>
 <p><span class="math notranslate nohighlight">\(\{\ldots\}\)</span> indicates recursive application of the specified
@@ -279,7 +279,7 @@ preference). One can also create an explicit diffusion term with</p>
 </pre></div>
 </div>
 <section id="higher-order-diffusion">
-<span id="discret-higherorderdiffusion"></span><h3>Higher Order Diffusion<a class="headerlink" href="#higher-order-diffusion" title="Link to this heading">¶</a></h3>
+<span id="discret-higherorderdiffusion"></span><h3>Higher Order Diffusion<a class="headerlink" href="#higher-order-diffusion" title="Permalink to this heading">¶</a></h3>
 <p>Higher order diffusion expressions, such as <span class="math notranslate nohighlight">\(\nabla^4 \phi\)</span> or
 <span class="math notranslate nohighlight">\(\nabla \cdot \left( \Gamma_1 \nabla \left( \nabla\cdot\left(
 \Gamma_2 \nabla \phi\right) \right) \right)\)</span> for  Cahn-Hilliard are
@@ -298,12 +298,12 @@ expressions.</p>
 </section>
 </section>
 <section id="source-term">
-<h2>Source Term<a class="headerlink" href="#source-term" title="Link to this heading">¶</a></h2>
+<h2>Source Term<a class="headerlink" href="#source-term" title="Permalink to this heading">¶</a></h2>
 <p>Any term that cannot be written in one of the previous forms is considered
 a source <span class="math notranslate nohighlight">\(S_{\phi}\)</span>. The discretization for the source term is given
 by,</p>
 <div class="math notranslate nohighlight" id="equation-num-sou">
-<span class="eqno">(4)<a class="headerlink" href="#equation-num-sou" title="Link to this equation">¶</a></span>\[\int_V S_{\phi}\,dV \simeq S_\phi V_P.\]</div>
+<span class="eqno">(4)<a class="headerlink" href="#equation-num-sou" title="Permalink to this equation">¶</a></span>\[\int_V S_{\phi}\,dV \simeq S_\phi V_P.\]</div>
 <p>Including any negative dependence of <span class="math notranslate nohighlight">\(S_\phi\)</span> on <span class="math notranslate nohighlight">\(\phi\)</span> increases
 solution stability. The dependence can only be included in a linear
 manner so Equation <a class="reference internal" href="#equation-num-sou">(4)</a> becomes</p>
@@ -338,7 +338,7 @@ might be written as</p>
 </section>
 </section>
 <section id="linear-equations">
-<span id="section-linear-equations"></span><h1>Linear Equations<a class="headerlink" href="#linear-equations" title="Link to this heading">¶</a></h1>
+<span id="section-linear-equations"></span><h1>Linear Equations<a class="headerlink" href="#linear-equations" title="Permalink to this heading">¶</a></h1>
 <p>The aim of the discretization is to reduce the continuous general
 equation to a set of discrete linear equations that can then be solved
 to obtain the value of the dependent variable at each CV center. This
@@ -352,7 +352,7 @@ gradient method and LU decomposition.</p>
 discretization for equation <a class="reference internal" href="equation.html#equation-num-gen">(2)</a> can now be written for
 each CV as</p>
 <div class="math notranslate nohighlight" id="equation-num-dis">
-<span class="eqno">(5)<a class="headerlink" href="#equation-num-dis" title="Link to this equation">¶</a></span>\[\begin{split}\frac{\rho_{P}(\phi_{P} - \phi_P^\text{old}) V_P}{\Delta t}
+<span class="eqno">(5)<a class="headerlink" href="#equation-num-dis" title="Permalink to this equation">¶</a></span>\[\begin{split}\frac{\rho_{P}(\phi_{P} - \phi_P^\text{old}) V_P}{\Delta t}
 + &amp;
 \sum_{f} (\vec{n} \cdot \vec{u})_f A_f
 \left[\alpha_f \phi_P +\left(1-\alpha_f\right)\phi_A\right]
@@ -365,7 +365,7 @@ V_P ( S_0 + S_1 \phi_P ).\end{split}\]</div>
 combinations between each CV value and its neighboring values and can be
 written in the form</p>
 <div class="math notranslate nohighlight" id="equation-num-dap">
-<span class="eqno">(6)<a class="headerlink" href="#equation-num-dap" title="Link to this equation">¶</a></span>\[a_P \phi_P = \sum_f a_{A} \phi_{A} + b_P,\]</div>
+<span class="eqno">(6)<a class="headerlink" href="#equation-num-dap" title="Permalink to this equation">¶</a></span>\[a_P \phi_P = \sum_f a_{A} \phi_{A} + b_P,\]</div>
 <p>where</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}a_P &amp;=  \frac{\rho_P V_P}{\Delta t} + \sum_f (a_{A} +
@@ -382,7 +382,7 @@ D_f &amp;= \frac{A_f \Gamma_f}{d_{AP}}.\end{split}\]</div>
 
                 <div class='last-updated'>
                 Last updated on Sep 05, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
   </div>  
@@ -391,7 +391,7 @@ D_f &amp;= \frac{A_f \Gamma_f}{d_{AP}}.\end{split}\]</div>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+302.gbcc35fec
+Version 3.4.4+305.gb425cb0c
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

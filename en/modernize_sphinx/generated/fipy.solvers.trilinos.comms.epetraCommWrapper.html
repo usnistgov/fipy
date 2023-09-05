@@ -35,21 +35,21 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.solvers.trilinos.comms.epetraCommWrapper &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
+    <title>fipy.solvers.trilinos.comms.epetraCommWrapper &#8212; FiPy 3.4.4+305.gb425cb0c documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/documentation_options.js?v=dbcedde6"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=1afd5ef3"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+305.gb425cb0c documentation" href="../contents.html" />
     <link rel="up" title="fipy.solvers.trilinos.comms" href="fipy.solvers.trilinos.comms.html" />
-    <link rel="next" title="fipy.solvers.trilinos.comms.parallelEpetraCommWrapper" href="fipy.solvers.trilinos.comms.parallelEpetraCommWrapper.html" />
+    <link rel="next" title="fipy.solvers.trilinos.comms.serialEpetraCommWrapper" href="fipy.solvers.trilinos.comms.serialEpetraCommWrapper.html" />
     <link rel="prev" title="fipy.solvers.trilinos.comms" href="fipy.solvers.trilinos.comms.html" />
   
  
@@ -76,7 +76,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="fipy.solvers.trilinos.comms.parallelEpetraCommWrapper.html" title="fipy.solvers.trilinos.comms.parallelEpetraCommWrapper"
+          <a href="fipy.solvers.trilinos.comms.serialEpetraCommWrapper.html" title="fipy.solvers.trilinos.comms.serialEpetraCommWrapper"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="fipy.solvers.trilinos.comms.html" title="fipy.solvers.trilinos.comms"
@@ -115,7 +115,7 @@
               <div class="body" role="main">
 		
   <section id="module-fipy.solvers.trilinos.comms.epetraCommWrapper">
-<span id="fipy-solvers-trilinos-comms-epetracommwrapper"></span><h1>fipy.solvers.trilinos.comms.epetraCommWrapper<a class="headerlink" href="#module-fipy.solvers.trilinos.comms.epetraCommWrapper" title="Link to this heading">¶</a></h1>
+<span id="fipy-solvers-trilinos-comms-epetracommwrapper"></span><h1>fipy.solvers.trilinos.comms.epetraCommWrapper<a class="headerlink" href="#module-fipy.solvers.trilinos.comms.epetraCommWrapper" title="Permalink to this heading">¶</a></h1>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -126,20 +126,20 @@
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.solvers.trilinos.comms.epetraCommWrapper.EpetraCommWrapper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.trilinos.comms.epetraCommWrapper.</span></span><span class="sig-name descname"><span class="pre">EpetraCommWrapper</span></span><a class="headerlink" href="#fipy.solvers.trilinos.comms.epetraCommWrapper.EpetraCommWrapper" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.trilinos.comms.epetraCommWrapper.</span></span><span class="sig-name descname"><span class="pre">EpetraCommWrapper</span></span><a class="headerlink" href="#fipy.solvers.trilinos.comms.epetraCommWrapper.EpetraCommWrapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommWrapper</span></code></a></p>
 <p>MPI Communicator wrapper</p>
 <p>Encapsulates capabilities needed for Epetra.
 Some capabilities are not parallel.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.trilinos.comms.epetraCommWrapper.EpetraCommWrapper.__getstate__">
-<span class="sig-name descname"><span class="pre">__getstate__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.trilinos.comms.epetraCommWrapper.EpetraCommWrapper.__getstate__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__getstate__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.trilinos.comms.epetraCommWrapper.EpetraCommWrapper.__getstate__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper for pickle.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.trilinos.comms.epetraCommWrapper.EpetraCommWrapper.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.trilinos.comms.epetraCommWrapper.EpetraCommWrapper.__repr__" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.trilinos.comms.epetraCommWrapper.EpetraCommWrapper.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return repr(self).</p>
 </dd></dl>
 
@@ -150,7 +150,7 @@ Some capabilities are not parallel.</p>
 
                 <div class='last-updated'>
                 Last updated on Sep 05, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
   </div>  
@@ -159,7 +159,7 @@ Some capabilities are not parallel.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+302.gbcc35fec
+Version 3.4.4+305.gb425cb0c
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
@@ -180,8 +180,8 @@ Version 3.4.4+302.gbcc35fec
   <p class="topless"><a href="fipy.solvers.trilinos.comms.html"
                         title="previous chapter">fipy.solvers.trilinos.comms</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="fipy.solvers.trilinos.comms.parallelEpetraCommWrapper.html"
-                        title="next chapter">fipy.solvers.trilinos.comms.parallelEpetraCommWrapper</a></p>
+  <p class="topless"><a href="fipy.solvers.trilinos.comms.serialEpetraCommWrapper.html"
+                        title="next chapter">fipy.solvers.trilinos.comms.serialEpetraCommWrapper</a></p>
 </div>
   <div class="sphinxsidebarsection">
   <h3>This Page</h3>
