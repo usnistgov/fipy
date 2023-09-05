@@ -35,20 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.terms.diffusionTermNoCorrection &#8212; FiPy 3.4.4+277.g61d8667d documentation</title>
+    <title>fipy.terms.diffusionTermNoCorrection &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=fd92b6f4"></script>
+    <script src="../_static/documentation_options.js?v=dbcedde6"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+277.g61d8667d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="../contents.html" />
     <link rel="up" title="fipy.terms" href="fipy.terms.html" />
     <link rel="next" title="fipy.terms.explicitDiffusionTerm" href="fipy.terms.explicitDiffusionTerm.html" />
     <link rel="prev" title="fipy.terms.diffusionTermCorrection" href="fipy.terms.diffusionTermCorrection.html" />
@@ -114,7 +114,7 @@
               <div class="body" role="main">
 		
   <section id="module-fipy.terms.diffusionTermNoCorrection">
-<span id="fipy-terms-diffusiontermnocorrection"></span><h1>fipy.terms.diffusionTermNoCorrection<a class="headerlink" href="#module-fipy.terms.diffusionTermNoCorrection" title="Permalink to this heading">¶</a></h1>
+<span id="fipy-terms-diffusiontermnocorrection"></span><h1>fipy.terms.diffusionTermNoCorrection<a class="headerlink" href="#module-fipy.terms.diffusionTermNoCorrection" title="Link to this heading">¶</a></h1>
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -125,7 +125,7 @@
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.terms.diffusionTermNoCorrection.</span></span><span class="sig-name descname"><span class="pre">DiffusionTermNoCorrection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coeff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1.0,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.terms.diffusionTermNoCorrection.</span></span><span class="sig-name descname"><span class="pre">DiffusionTermNoCorrection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coeff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1.0,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_AbstractDiffusionTerm</span></code></p>
 <p>Create a <cite>Term</cite>.</p>
 <dl class="field-list simple">
@@ -136,7 +136,7 @@ acceptable for diffusion or convection terms.</p>
 </dl>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.RHSvector">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RHSvector</span></span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.RHSvector" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">RHSvector</span></span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.RHSvector" title="Link to this definition">¶</a></dt>
 <dd><p>Return the RHS vector calculated in <cite>solve()</cite> or <cite>sweep()</cite>. The
 <cite>cacheRHSvector()</cite> method should be called before <cite>solve()</cite> or
 <cite>sweep()</cite> to cache the vector.</p>
@@ -144,19 +144,19 @@ acceptable for diffusion or convection terms.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.__eq__">
-<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.__eq__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.__eq__" title="Link to this definition">¶</a></dt>
 <dd><p>Return self==value.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.__hash__">
-<span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.__hash__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.__hash__" title="Link to this definition">¶</a></dt>
 <dd><p>Return hash(self).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.__repr__">
-<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.__repr__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.__repr__" title="Link to this definition">¶</a></dt>
 <dd><p>The representation of a <cite>Term</cite> object is given by,</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">__UnaryTerm</span><span class="p">(</span><span class="mf">123.456</span><span class="p">))</span>
 <span class="go">__UnaryTerm(coeff=123.456)</span>
@@ -166,21 +166,21 @@ acceptable for diffusion or convection terms.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.cacheMatrix">
-<span class="sig-name descname"><span class="pre">cacheMatrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.cacheMatrix" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">cacheMatrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.cacheMatrix" title="Link to this definition">¶</a></dt>
 <dd><p>Informs <cite>solve()</cite> and <cite>sweep()</cite> to cache their matrix so
 that <cite>matrix</cite> can return the matrix.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.cacheRHSvector">
-<span class="sig-name descname"><span class="pre">cacheRHSvector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.cacheRHSvector" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">cacheRHSvector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.cacheRHSvector" title="Link to this definition">¶</a></dt>
 <dd><p>Informs <cite>solve()</cite> and <cite>sweep()</cite> to cache their right hand side
 vector so that <cite>getRHSvector()</cite> can return it.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.justErrorVector">
-<span class="sig-name descname"><span class="pre">justErrorVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underRelaxation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residualFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.justErrorVector" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">justErrorVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underRelaxation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residualFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.justErrorVector" title="Link to this definition">¶</a></dt>
 <dd><p>Builds the <cite>Term</cite>’s linear system once.</p>
 <p>This method also recalculates and returns the error as well as
 applying under-relaxation.</p>
@@ -220,7 +220,7 @@ customize the residual calculation.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.justResidualVector">
-<span class="sig-name descname"><span class="pre">justResidualVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underRelaxation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residualFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.justResidualVector" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">justResidualVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underRelaxation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residualFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.justResidualVector" title="Link to this definition">¶</a></dt>
 <dd><p>Builds the <cite>Term</cite>’s linear system once.</p>
 <p>This method also recalculates and returns the residual as well as
 applying under-relaxation.</p>
@@ -259,7 +259,7 @@ customize the residual calculation.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.matrix">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">matrix</span></span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.matrix" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">matrix</span></span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.matrix" title="Link to this definition">¶</a></dt>
 <dd><p>Return the matrix calculated in <cite>solve()</cite> or <cite>sweep()</cite>. The
 <cite>cacheMatrix()</cite> method should be called before <cite>solve()</cite> or
 <cite>sweep()</cite> to cache the matrix.</p>
@@ -267,7 +267,7 @@ customize the residual calculation.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.residualVectorAndNorm">
-<span class="sig-name descname"><span class="pre">residualVectorAndNorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underRelaxation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residualFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.residualVectorAndNorm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">residualVectorAndNorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underRelaxation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residualFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.residualVectorAndNorm" title="Link to this definition">¶</a></dt>
 <dd><p>Builds the <cite>Term</cite>’s linear system once.</p>
 <p>This method also recalculates and returns the residual as well as
 applying under-relaxation.</p>
@@ -299,7 +299,7 @@ customize the residual calculation.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.solve" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.solve" title="Link to this definition">¶</a></dt>
 <dd><p>Builds and solves the <cite>Term</cite>’s linear system once. This method
 does not return the residual. It should be used when the
 residual is not required.</p>
@@ -320,7 +320,7 @@ selected.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.sweep">
-<span class="sig-name descname"><span class="pre">sweep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underRelaxation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residualFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cacheResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cacheError</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.sweep" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">sweep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">underRelaxation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residualFn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cacheResidual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cacheError</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.terms.diffusionTermNoCorrection.DiffusionTermNoCorrection.sweep" title="Link to this definition">¶</a></dt>
 <dd><p>Builds and solves the <cite>Term</cite>’s linear system once. This method
 also recalculates and returns the residual as well as applying
 under-relaxation.</p>
@@ -362,8 +362,8 @@ customize the residual calculation.</p></li>
 
 
                 <div class='last-updated'>
-                Last updated on Sep 02, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on Sep 05, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
                 </div>
               </div>
   </div>  
@@ -372,7 +372,7 @@ customize the residual calculation.</p></li>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+277.g61d8667d
+Version 3.4.4+302.gbcc35fec
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

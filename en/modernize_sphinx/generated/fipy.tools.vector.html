@@ -35,19 +35,19 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.tools.vector &#8212; FiPy 3.4.4+277.g61d8667d documentation</title>
+    <title>fipy.tools.vector &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=fd92b6f4"></script>
+    <script src="../_static/documentation_options.js?v=dbcedde6"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+277.g61d8667d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="../contents.html" />
     <link rel="up" title="fipy.tools" href="fipy.tools.html" />
     <link rel="next" title="fipy.tools.version" href="fipy.tools.version.html" />
     <link rel="prev" title="fipy.tools.test" href="fipy.tools.test.html" />
@@ -113,7 +113,7 @@
               <div class="body" role="main">
 		
   <section id="module-fipy.tools.vector">
-<span id="fipy-tools-vector"></span><h1>fipy.tools.vector<a class="headerlink" href="#module-fipy.tools.vector" title="Permalink to this heading">¶</a></h1>
+<span id="fipy-tools-vector"></span><h1>fipy.tools.vector<a class="headerlink" href="#module-fipy.tools.vector" title="Link to this heading">¶</a></h1>
 <p>Vector utility functions that are inexplicably absent from Numeric</p>
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
@@ -128,7 +128,7 @@
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.vector.prune">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.vector.</span></span><span class="sig-name descname"><span class="pre">prune</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.vector.prune" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.vector.</span></span><span class="sig-name descname"><span class="pre">prune</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.vector.prune" title="Link to this definition">¶</a></dt>
 <dd><p>removes elements with indices i = start + shift * n
 where n = 0, 1, 2, …</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">prune</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
@@ -145,7 +145,7 @@ where n = 0, 1, 2, …</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.vector.putAdd">
-<span class="sig-prename descclassname"><span class="pre">fipy.tools.vector.</span></span><span class="sig-name descname"><span class="pre">putAdd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additionVector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.vector.putAdd" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.vector.</span></span><span class="sig-name descname"><span class="pre">putAdd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additionVector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.vector.putAdd" title="Link to this definition">¶</a></dt>
 <dd><p>This is a temporary replacement for <cite>Numeric.put</cite> as it was not doing
 what we thought it was doing.</p>
 </dd></dl>
@@ -154,8 +154,8 @@ what we thought it was doing.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Sep 02, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on Sep 05, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
                 </div>
               </div>
   </div>  
@@ -164,7 +164,7 @@ what we thought it was doing.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+277.g61d8667d
+Version 3.4.4+302.gbcc35fec
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

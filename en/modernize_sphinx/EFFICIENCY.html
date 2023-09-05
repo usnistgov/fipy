@@ -35,19 +35,19 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Efficiency &#8212; FiPy 3.4.4+277.g61d8667d documentation</title>
+    <title>Efficiency &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=fd92b6f4"></script>
+    <script src="_static/documentation_options.js?v=dbcedde6"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+277.g61d8667d documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Theoretical and Numerical Background" href="numerical/index.html" />
     <link rel="prev" title="Frequently Asked Questions" href="FAQ.html" />
@@ -111,7 +111,7 @@
               <div class="body" role="main">
 		
   <section id="efficiency">
-<span id="chap-efficiency"></span><h1>Efficiency<a class="headerlink" href="#efficiency" title="Permalink to this heading">¶</a></h1>
+<span id="chap-efficiency"></span><h1>Efficiency<a class="headerlink" href="#efficiency" title="Link to this heading">¶</a></h1>
 <p>This section will present results and discussion of efficiency
 evaluations with <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>. Programming in <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> allows greater
 efficiency when designing and implementing new code, but it has some
@@ -211,7 +211,7 @@ memory allocation, so these figures should only be used as a very
 rough guide. The FORTRAN memory usage is exact since memory is not
 allocated dynamically.</p>
 <section id="efficiency-comparison-between-no-cache-and-cache-flags">
-<h2>Efficiency comparison between <a class="reference internal" href="USAGE.html#cmdoption-no-cache"><code class="xref std std-option docutils literal notranslate"><span class="pre">--no-cache</span></code></a> and <a class="reference internal" href="USAGE.html#cmdoption-cache"><code class="xref std std-option docutils literal notranslate"><span class="pre">--cache</span></code></a> flags<a class="headerlink" href="#efficiency-comparison-between-no-cache-and-cache-flags" title="Permalink to this heading">¶</a></h2>
+<h2>Efficiency comparison between <a class="reference internal" href="USAGE.html#cmdoption-no-cache"><code class="xref std std-option docutils literal notranslate"><span class="pre">--no-cache</span></code></a> and <a class="reference internal" href="USAGE.html#cmdoption-cache"><code class="xref std std-option docutils literal notranslate"><span class="pre">--cache</span></code></a> flags<a class="headerlink" href="#efficiency-comparison-between-no-cache-and-cache-flags" title="Link to this heading">¶</a></h2>
 <p>This table shows results for efficiency tests when using the caching
 flags. Examples with more variables involved in complex expressions
 show the largest improvement in memory usage. The <a class="reference internal" href="USAGE.html#cmdoption-no-cache"><code class="xref std std-option docutils literal notranslate"><span class="pre">--no-cache</span></code></a>
@@ -262,7 +262,7 @@ The <a class="reference internal" href="USAGE.html#cmdoption-no-cache"><code cla
 </table>
 </section>
 <section id="efficiency-discussion-of-pysparse-and-trilinos">
-<h2>Efficiency discussion of Pysparse and Trilinos<a class="headerlink" href="#efficiency-discussion-of-pysparse-and-trilinos" title="Permalink to this heading">¶</a></h2>
+<h2>Efficiency discussion of Pysparse and Trilinos<a class="headerlink" href="#efficiency-discussion-of-pysparse-and-trilinos" title="Link to this heading">¶</a></h2>
 <p>Trilinos provides multigrid capabilities which are beneficial for
 some problems, but has significant overhead compared to Pysparse.
 The matrix-building step takes significantly longer in Trilinos,
@@ -280,8 +280,8 @@ success with an iterative method.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Sep 02, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on Sep 05, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
                 </div>
               </div>
   </div>  
@@ -290,7 +290,7 @@ success with an iterative method.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+277.g61d8667d
+Version 3.4.4+302.gbcc35fec
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

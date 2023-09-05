@@ -35,20 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.phase.simple &#8212; FiPy 3.4.4+277.g61d8667d documentation</title>
+    <title>examples.phase.simple &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=fd92b6f4"></script>
+    <script src="../_static/documentation_options.js?v=dbcedde6"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+277.g61d8667d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="../contents.html" />
     <link rel="up" title="examples.phase" href="examples.phase.html" />
     <link rel="next" title="examples.phase.symmetry" href="examples.phase.symmetry.html" />
     <link rel="prev" title="examples.phase.quaternary" href="examples.phase.quaternary.html" />
@@ -114,7 +114,7 @@
               <div class="body" role="main">
 		
   <section id="module-examples.phase.simple">
-<span id="examples-phase-simple"></span><h1>examples.phase.simple<a class="headerlink" href="#module-examples.phase.simple" title="Permalink to this heading">¶</a></h1>
+<span id="examples-phase-simple"></span><h1>examples.phase.simple<a class="headerlink" href="#module-examples.phase.simple" title="Link to this heading">¶</a></h1>
 <p>Solve a phase-field (Allen-Cahn) problem in one-dimension.</p>
 <p>To run this example from the base FiPy directory, type
 <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">examples/phase/simple/input.py</span></code> at the command line.  A viewer
@@ -124,7 +124,7 @@ examples, the word <code class="docutils literal notranslate"><span class="pre">
 FiPy.  It describes a steady 1D phase field problem with no-flux
 boundary conditions such that,</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-simple">
-<span class="eqno">(1)<a class="headerlink" href="#equation-eq-phase-simple" title="Permalink to this equation">¶</a></span>\[\frac{1}{M_\phi}\frac{\partial \phi}{\partial t} =
+<span class="eqno">(1)<a class="headerlink" href="#equation-eq-phase-simple" title="Link to this equation">¶</a></span>\[\frac{1}{M_\phi}\frac{\partial \phi}{\partial t} =
 \kappa_\phi \nabla^2\phi
 - \frac{\partial f}{\partial \phi}\]</div>
 <p>For solidification problems, the Helmholtz free energy is frequently
@@ -194,7 +194,7 @@ we are interested in a steady-state solution, we omit the transient term
 <span class="math notranslate nohighlight">\((1/M_\phi)\frac{\partial \phi}{\partial t}\)</span>.</p>
 <p>The analytical solution for this steady-state phase field problem, in an infinite domain, is</p>
 <div class="math notranslate nohighlight" id="equation-eq-phase-simple-analytical">
-<span class="eqno">(2)<a class="headerlink" href="#equation-eq-phase-simple-analytical" title="Permalink to this equation">¶</a></span>\[\phi = \frac{1}{2}\left[1 - \tanh\frac{x-L/2}{2\sqrt{\kappa/W}}\right]\]</div>
+<span class="eqno">(2)<a class="headerlink" href="#equation-eq-phase-simple-analytical" title="Link to this equation">¶</a></span>\[\phi = \frac{1}{2}\left[1 - \tanh\frac{x-L/2}{2\sqrt{\kappa/W}}\right]\]</div>
 <p>or</p>
 <div class="doctest highlight-default notranslate" id="index-3"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">analyticalArray</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">numerix</span><span class="o">.</span><span class="n">tanh</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">L</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">numerix</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">kappa</span><span class="o">/</span><span class="n">W</span><span class="p">))))</span>
@@ -542,8 +542,8 @@ thickness</p>
 
 
                 <div class='last-updated'>
-                Last updated on Sep 02, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on Sep 05, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
                 </div>
               </div>
   </div>  
@@ -552,7 +552,7 @@ thickness</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+277.g61d8667d
+Version 3.4.4+302.gbcc35fec
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

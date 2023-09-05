@@ -35,20 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using FiPy &#8212; FiPy 3.4.4+277.g61d8667d documentation</title>
+    <title>Using FiPy &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=fd92b6f4"></script>
+    <script src="_static/documentation_options.js?v=dbcedde6"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+277.g61d8667d documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Frequently Asked Questions" href="FAQ.html" />
     <link rel="prev" title="Viewers" href="VIEWERS.html" />
@@ -112,7 +112,7 @@
               <div class="body" role="main">
 		
   <section id="using-fipy">
-<span id="usage"></span><h1>Using FiPy<a class="headerlink" href="#using-fipy" title="Permalink to this heading">¶</a></h1>
+<span id="usage"></span><h1>Using FiPy<a class="headerlink" href="#using-fipy" title="Link to this heading">¶</a></h1>
 <p>This document explains how to use <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> in a practical sense.
 To see the problems that <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is capable of solving, you can
 run any of the scripts in the <a class="reference internal" href="EXAMPLES.html#part-examples"><span class="std std-ref">examples</span></a>.</p>
@@ -146,7 +146,7 @@ Python can be obtained from the <span id="id3">[<a class="reference internal" hr
 <p>As you gain experience, you may want to browse through the
 <a class="reference internal" href="#flagsandenvironmentvariables"><span class="std std-ref">Command-line Flags and Environment Variables</span></a> that affect <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>.</p>
 <section id="logging">
-<span id="id4"></span><h2>Logging<a class="headerlink" href="#logging" title="Permalink to this heading">¶</a></h2>
+<span id="id4"></span><h2>Logging<a class="headerlink" href="#logging" title="Link to this heading">¶</a></h2>
 <p>Diagnostic information about a <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> run can be obtained using the
 <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> module.  For example, at the beginning of your script, you
 can add:</p>
@@ -189,7 +189,7 @@ example:</p>
 <p>will generate a unique log file for each MPI rank.</p>
 </section>
 <section id="testing-fipy">
-<h2>Testing FiPy<a class="headerlink" href="#testing-fipy" title="Permalink to this heading">¶</a></h2>
+<h2>Testing FiPy<a class="headerlink" href="#testing-fipy" title="Link to this heading">¶</a></h2>
 <p>For a general installation, <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> can be tested by running:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -c &quot;import fipy; fipy.test()&quot;
 </pre></div>
@@ -227,7 +227,7 @@ distribution by checking <a class="reference internal" href="glossary.html#term-
 <p>Below are a number of common <a class="reference internal" href="#command-line-flags">Command-line Flags</a> for testing various
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> configurations.</p>
 <section id="parallel-tests">
-<h3>Parallel Tests<a class="headerlink" href="#parallel-tests" title="Permalink to this heading">¶</a></h3>
+<h3>Parallel Tests<a class="headerlink" href="#parallel-tests" title="Link to this heading">¶</a></h3>
 <p>If <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is configured for <a class="reference internal" href="#parallel"><span class="std std-ref">Solving in Parallel</span></a>, you can run the tests
 on multiple processor cores with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mpirun -np {# of processors} python setup.py test --trilinos
@@ -240,13 +240,13 @@ on multiple processor cores with:</p>
 </section>
 </section>
 <section id="command-line-flags-and-environment-variables">
-<span id="flagsandenvironmentvariables"></span><h2>Command-line Flags and Environment Variables<a class="headerlink" href="#command-line-flags-and-environment-variables" title="Permalink to this heading">¶</a></h2>
+<span id="flagsandenvironmentvariables"></span><h2>Command-line Flags and Environment Variables<a class="headerlink" href="#command-line-flags-and-environment-variables" title="Link to this heading">¶</a></h2>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> chooses a default run time configuration based on the
 available packages on the system. The <a class="reference internal" href="#command-line-flags">Command-line Flags</a> and
 <a class="reference internal" href="#environment-variables">Environment Variables</a> sections below describe how to override
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>’s default behavior.</p>
 <section id="command-line-flags">
-<h3>Command-line Flags<a class="headerlink" href="#command-line-flags" title="Permalink to this heading">¶</a></h3>
+<h3>Command-line Flags<a class="headerlink" href="#command-line-flags" title="Link to this heading">¶</a></h3>
 <p>You can add any of the following case-insensitive flags after the name of a
 script you call from the command line, e.g.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myFiPyScript --someflag
@@ -254,7 +254,7 @@ script you call from the command line, e.g.:</p>
 </div>
 <dl class="std cmdoption">
 <dt class="sig sig-object std" id="cmdoption-inline">
-<span class="sig-name descname"><span class="pre">--inline</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-inline" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">--inline</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-inline" title="Link to this definition">¶</a></dt>
 <dd><p>Causes many mathematical operations to be performed in C, rather than
 Python, for improved performance. Requires the <code class="xref py py-mod docutils literal notranslate"><span class="pre">weave</span></code>
 package.</p>
@@ -262,7 +262,7 @@ package.</p>
 
 <dl class="std cmdoption">
 <dt class="sig sig-object std" id="cmdoption-cache">
-<span class="sig-name descname"><span class="pre">--cache</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-cache" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">--cache</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-cache" title="Link to this definition">¶</a></dt>
 <dd><p>Causes lazily evaluated <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
 <a class="reference internal" href="generated/fipy.variables.variable.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> objects to retain their
 value.</p>
@@ -270,7 +270,7 @@ value.</p>
 
 <dl class="std cmdoption">
 <dt class="sig sig-object std" id="cmdoption-no-cache">
-<span class="sig-name descname"><span class="pre">--no-cache</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-no-cache" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">--no-cache</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-no-cache" title="Link to this definition">¶</a></dt>
 <dd><p>Causes lazily evaluated <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
 <a class="reference internal" href="generated/fipy.variables.variable.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> objects to always recalculate
 their value.</p>
@@ -280,58 +280,58 @@ their value.</p>
 environment variable:</p>
 <dl class="std cmdoption">
 <dt class="sig sig-object std" id="cmdoption-pysparse">
-<span class="sig-name descname"><span class="pre">--pysparse</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-pysparse" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">--pysparse</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-pysparse" title="Link to this definition">¶</a></dt>
 <dd><p>Forces the use of the <a class="reference internal" href="SOLVERS.html#pysparse"><span class="std std-ref">Pysparse</span></a> solvers.</p>
 </dd></dl>
 
 <dl class="std cmdoption">
 <dt class="sig sig-object std" id="cmdoption-trilinos">
-<span class="sig-name descname"><span class="pre">--trilinos</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-trilinos" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">--trilinos</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-trilinos" title="Link to this definition">¶</a></dt>
 <dd><p>Forces the use of the <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> solvers, but uses
 <a class="reference internal" href="SOLVERS.html#pysparse"><span class="std std-ref">Pysparse</span></a> to construct the matrices.</p>
 </dd></dl>
 
 <dl class="std cmdoption">
 <dt class="sig sig-object std" id="cmdoption-no-pysparse">
-<span class="sig-name descname"><span class="pre">--no-pysparse</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-no-pysparse" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">--no-pysparse</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-no-pysparse" title="Link to this definition">¶</a></dt>
 <dd><p>Forces the use of the <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> solvers without any use of
 <a class="reference internal" href="SOLVERS.html#pysparse"><span class="std std-ref">Pysparse</span></a>.</p>
 </dd></dl>
 
 <dl class="std cmdoption">
 <dt class="sig sig-object std" id="cmdoption-scipy">
-<span class="sig-name descname"><span class="pre">--scipy</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-scipy" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">--scipy</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-scipy" title="Link to this definition">¶</a></dt>
 <dd><p>Forces the use of the <a class="reference internal" href="SOLVERS.html#scipy"><span class="std std-ref">SciPy</span></a> solvers.</p>
 </dd></dl>
 
 <dl class="std cmdoption">
 <dt class="sig sig-object std" id="cmdoption-pyamg">
-<span class="sig-name descname"><span class="pre">--pyamg</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-pyamg" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">--pyamg</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-pyamg" title="Link to this definition">¶</a></dt>
 <dd><p>Forces the use of the <a class="reference internal" href="SOLVERS.html#pyamg"><span class="std std-ref">PyAMG</span></a> preconditioners in conjunction
 with the <a class="reference internal" href="SOLVERS.html#scipy"><span class="std std-ref">SciPy</span></a> solvers.</p>
 </dd></dl>
 
 <dl class="std cmdoption">
 <dt class="sig sig-object std" id="cmdoption-pyamgx">
-<span class="sig-name descname"><span class="pre">--pyamgx</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-pyamgx" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">--pyamgx</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-pyamgx" title="Link to this definition">¶</a></dt>
 <dd><p>Forces the use of the <a class="reference internal" href="SOLVERS.html#pyamgx"><span class="std std-ref">pyamgx</span></a> solvers.</p>
 </dd></dl>
 
 <dl class="std cmdoption">
 <dt class="sig sig-object std" id="cmdoption-lsmlib">
-<span class="sig-name descname"><span class="pre">--lsmlib</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-lsmlib" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">--lsmlib</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-lsmlib" title="Link to this definition">¶</a></dt>
 <dd><p>Forces the use of the <a class="reference internal" href="INSTALLATION.html#lsmlibdoc"><span class="std std-ref">LSMLIB</span></a> level set solver.</p>
 </dd></dl>
 
 <dl class="std cmdoption">
 <dt class="sig sig-object std" id="cmdoption-skfmm">
-<span class="sig-name descname"><span class="pre">--skfmm</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-skfmm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">--skfmm</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-skfmm" title="Link to this definition">¶</a></dt>
 <dd><p>Forces the use of the <a class="reference internal" href="INSTALLATION.html#scikitfmm"><span class="std std-ref">Scikit-fmm</span></a> level set solver.</p>
 </dd></dl>
 
 </section>
 <section id="environment-variables">
-<h3>Environment Variables<a class="headerlink" href="#environment-variables" title="Permalink to this heading">¶</a></h3>
+<h3>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading">¶</a></h3>
 <p>You can set any of the following environment variables in the manner
 appropriate for your shell. If you are not running in a shell (<em>e.g.</em>,
 you are invoking <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> scripts from within <a class="reference internal" href="glossary.html#term-IPython"><span class="xref std std-term">IPython</span></a> or IDLE),
@@ -340,7 +340,7 @@ but you must do so before importing anything from the <a class="reference intern
 package.</p>
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FIPY_DISPLAY_MATRIX">
-<span class="sig-name descname"><span class="pre">FIPY_DISPLAY_MATRIX</span></span><a class="headerlink" href="#envvar-FIPY_DISPLAY_MATRIX" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">FIPY_DISPLAY_MATRIX</span></span><a class="headerlink" href="#envvar-FIPY_DISPLAY_MATRIX" title="Link to this definition">¶</a></dt>
 <dd><p>If present, causes the graphical display of the solution matrix of each
 equation at each call of <a class="reference internal" href="generated/fipy.terms.term.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a> or <a class="reference internal" href="generated/fipy.terms.term.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a>.
 Setting the value to “<code class="docutils literal notranslate"><span class="pre">terms</span></code>” causes the display of the matrix for each
@@ -351,14 +351,14 @@ printed to the console.</p>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FIPY_INLINE">
-<span class="sig-name descname"><span class="pre">FIPY_INLINE</span></span><a class="headerlink" href="#envvar-FIPY_INLINE" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">FIPY_INLINE</span></span><a class="headerlink" href="#envvar-FIPY_INLINE" title="Link to this definition">¶</a></dt>
 <dd><p>If present, causes many mathematical operations to be performed in C,
 rather than Python. Requires the <code class="xref py py-mod docutils literal notranslate"><span class="pre">weave</span></code> package.</p>
 </dd></dl>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FIPY_INLINE_COMMENT">
-<span class="sig-name descname"><span class="pre">FIPY_INLINE_COMMENT</span></span><a class="headerlink" href="#envvar-FIPY_INLINE_COMMENT" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">FIPY_INLINE_COMMENT</span></span><a class="headerlink" href="#envvar-FIPY_INLINE_COMMENT" title="Link to this definition">¶</a></dt>
 <dd><p>If present, causes the addition of a comment showing the Python context
 that produced a particular piece of <code class="xref py py-mod docutils literal notranslate"><span class="pre">weave</span></code> C code. Useful
 for debugging.</p>
@@ -366,7 +366,7 @@ for debugging.</p>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FIPY_LOG_CONFIG">
-<span class="sig-name descname"><span class="pre">FIPY_LOG_CONFIG</span></span><a class="headerlink" href="#envvar-FIPY_LOG_CONFIG" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">FIPY_LOG_CONFIG</span></span><a class="headerlink" href="#envvar-FIPY_LOG_CONFIG" title="Link to this definition">¶</a></dt>
 <dd><p>Specifies a <a class="reference internal" href="glossary.html#term-JSON"><span class="xref std std-term">JSON</span></a>-formatted logging configuration file, suitable
 for passing to <a class="reference external" href="https://docs.python.org/3/library/logging.config.html#logging.config.dictConfig" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">logging.config.dictConfig()</span></code></a>.  Example configuration
 files can be found in <code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/fipy/tools/logging/</span></code>.</p>
@@ -374,7 +374,7 @@ files can be found in <code class="file docutils literal notranslate"><em><span 
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FIPY_SOLVERS">
-<span class="sig-name descname"><span class="pre">FIPY_SOLVERS</span></span><a class="headerlink" href="#envvar-FIPY_SOLVERS" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">FIPY_SOLVERS</span></span><a class="headerlink" href="#envvar-FIPY_SOLVERS" title="Link to this definition">¶</a></dt>
 <dd><p>Forces the use of the specified suite of linear solvers.  Valid
 (case-insensitive) choices are “<code class="docutils literal notranslate"><span class="pre">petsc</span></code>”, “<code class="docutils literal notranslate"><span class="pre">scipy</span></code>”, “<code class="docutils literal notranslate"><span class="pre">pysparse</span></code>”,
 “<code class="docutils literal notranslate"><span class="pre">trilinos</span></code>”, “<code class="docutils literal notranslate"><span class="pre">no-pysparse</span></code>”, and “<code class="docutils literal notranslate"><span class="pre">pyamg</span></code>”.</p>
@@ -382,7 +382,7 @@ files can be found in <code class="file docutils literal notranslate"><em><span 
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FIPY_VERBOSE_SOLVER">
-<span class="sig-name descname"><span class="pre">FIPY_VERBOSE_SOLVER</span></span><a class="headerlink" href="#envvar-FIPY_VERBOSE_SOLVER" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">FIPY_VERBOSE_SOLVER</span></span><a class="headerlink" href="#envvar-FIPY_VERBOSE_SOLVER" title="Link to this definition">¶</a></dt>
 <dd><p>If present, causes the
 <a class="reference internal" href="generated/fipy.solvers.pyAMG.linearGeneralSolver.html#fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver" title="fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearGeneralSolver</span></code></a> to
 print a variety of diagnostic information.  All other solvers should use
@@ -391,7 +391,7 @@ print a variety of diagnostic information.  All other solvers should use
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FIPY_VIEWER">
-<span class="sig-name descname"><span class="pre">FIPY_VIEWER</span></span><a class="headerlink" href="#envvar-FIPY_VIEWER" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">FIPY_VIEWER</span></span><a class="headerlink" href="#envvar-FIPY_VIEWER" title="Link to this definition">¶</a></dt>
 <dd><p>Forces the use of the specified viewer. Valid values are any
 <code class="samp docutils literal notranslate"><em><span class="pre">&lt;viewer&gt;</span></em></code> from the
 <code class="samp docutils literal notranslate"><span class="pre">fipy.viewers.</span><em><span class="pre">&lt;viewer&gt;</span></em><span class="pre">Viewer</span></code>
@@ -401,14 +401,14 @@ to run without displaying anything.</p>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FIPY_INCLUDE_NUMERIX_ALL">
-<span class="sig-name descname"><span class="pre">FIPY_INCLUDE_NUMERIX_ALL</span></span><a class="headerlink" href="#envvar-FIPY_INCLUDE_NUMERIX_ALL" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">FIPY_INCLUDE_NUMERIX_ALL</span></span><a class="headerlink" href="#envvar-FIPY_INCLUDE_NUMERIX_ALL" title="Link to this definition">¶</a></dt>
 <dd><p>If present, causes the inclusion of all functions and variables of the
 <a class="reference internal" href="generated/fipy.tools.numerix.html#module-fipy.tools.numerix" title="fipy.tools.numerix"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numerix</span></code></a> module in the <a class="reference internal" href="generated/fipy.html#module-fipy" title="fipy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code></a> namespace.</p>
 </dd></dl>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FIPY_CACHE">
-<span class="sig-name descname"><span class="pre">FIPY_CACHE</span></span><a class="headerlink" href="#envvar-FIPY_CACHE" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">FIPY_CACHE</span></span><a class="headerlink" href="#envvar-FIPY_CACHE" title="Link to this definition">¶</a></dt>
 <dd><p>If present, causes lazily evaluated <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
 <a class="reference internal" href="generated/fipy.variables.variable.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> objects to
 retain their value.</p>
@@ -416,7 +416,7 @@ retain their value.</p>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-PETSC_OPTIONS">
-<span class="sig-name descname"><span class="pre">PETSC_OPTIONS</span></span><a class="headerlink" href="#envvar-PETSC_OPTIONS" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">PETSC_OPTIONS</span></span><a class="headerlink" href="#envvar-PETSC_OPTIONS" title="Link to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="https://docs.petsc.org/en/latest/manual/other/#sec-options">PETSc configuration options</a>.  Set to “<cite>-help</cite>” and run a script with
 <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> solvers in order to see what options are possible.  Ignored
 if solver is not <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a>.</p>
@@ -425,7 +425,7 @@ if solver is not <a class="reference internal" href="SOLVERS.html#petsc"><span c
 </section>
 </section>
 <section id="solving-in-parallel">
-<span id="parallel"></span><h2>Solving in Parallel<a class="headerlink" href="#solving-in-parallel" title="Permalink to this heading">¶</a></h2>
+<span id="parallel"></span><h2>Solving in Parallel<a class="headerlink" href="#solving-in-parallel" title="Link to this heading">¶</a></h2>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> can use <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> or <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> to solve equations in
 parallel. Most mesh classes in <a class="reference internal" href="generated/fipy.meshes.html#module-fipy.meshes" title="fipy.meshes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy.meshes</span></code></a> can solve in
 parallel. This includes all “<code class="docutils literal notranslate"><span class="pre">...Grid...</span></code>” and “<code class="docutils literal notranslate"><span class="pre">...Gmsh...</span></code>”
@@ -472,7 +472,7 @@ cores) for a <a class="reference external" href="https://pages.nist.gov/pfhub/be
 <figure class="align-default" id="id5">
 <img alt="_images/scaling.png" class="plot-directive" src="_images/scaling.png" />
 <figcaption>
-<p><span class="caption-text">Scaling behavior of different solver packages</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Scaling behavior of different solver packages</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>“Speedup” relative to <a class="reference internal" href="SOLVERS.html#pysparse"><span class="std std-ref">Pysparse</span></a> (bigger numbers are better) versus
@@ -562,7 +562,7 @@ you need to do something with the entire solution, you can use
 </div>
 </div>
 <section id="openmp-threads-vs-mpi-ranks">
-<span id="threads-vs-ranks"></span><h3>OpenMP Threads vs. MPI Ranks<a class="headerlink" href="#openmp-threads-vs-mpi-ranks" title="Permalink to this heading">¶</a></h3>
+<span id="threads-vs-ranks"></span><h3>OpenMP Threads vs. MPI Ranks<a class="headerlink" href="#openmp-threads-vs-mpi-ranks" title="Link to this heading">¶</a></h3>
 <p>By default, <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> and <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> spawn as many <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads
 as there are cores
 available.  This may very well be an intentional optimization, where
@@ -597,7 +597,7 @@ slots for a <a class="reference external" href="https://pages.nist.gov/pfhub/ben
 <figure class="align-default" id="id7">
 <img alt="_images/cpus_vs_threads.png" class="plot-directive" src="_images/cpus_vs_threads.png" />
 <figcaption>
-<p><span class="caption-text">Effect of having more <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads for each <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> rank</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Effect of having more <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads for each <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> rank</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>“Speedup” relative to one thread (bigger numbers are better) versus number
@@ -611,7 +611,7 @@ and building Trilinos, at least, is <a class="reference external" href="https://
 </section>
 </section>
 <section id="meshing-with-gmsh">
-<span id="meshingwithgmsh"></span><h2>Meshing with Gmsh<a class="headerlink" href="#meshing-with-gmsh" title="Permalink to this heading">¶</a></h2>
+<span id="meshingwithgmsh"></span><h2>Meshing with Gmsh<a class="headerlink" href="#meshing-with-gmsh" title="Link to this heading">¶</a></h2>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> works with arbitrary polygonal meshes generated by
 <a class="reference internal" href="glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a>.  <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> provides two wrappers classes
 (<code class="xref py py-class docutils literal notranslate"><span class="pre">Gmsh2D</span></code> and
@@ -635,7 +635,7 @@ non-orthogonal or non-conjunctional meshes.</p>
 </div>
 </section>
 <section id="coupled-and-vector-equations">
-<span id="coupledequations"></span><h2>Coupled and Vector Equations<a class="headerlink" href="#coupled-and-vector-equations" title="Permalink to this heading">¶</a></h2>
+<span id="coupledequations"></span><h2>Coupled and Vector Equations<a class="headerlink" href="#coupled-and-vector-equations" title="Link to this heading">¶</a></h2>
 <p>Equations can now be coupled together so that the contributions from
 all the equations appear in a single system matrix. This results in
 tighter coupling for equations with spatial and temporal derivatives
@@ -733,9 +733,9 @@ Allen-Cahn</a> 4th- and 2nd-order equations</p>
 </div>
 </section>
 <section id="boundary-conditions">
-<span id="boundaryconditions"></span><h2>Boundary Conditions<a class="headerlink" href="#boundary-conditions" title="Permalink to this heading">¶</a></h2>
+<span id="boundaryconditions"></span><h2>Boundary Conditions<a class="headerlink" href="#boundary-conditions" title="Link to this heading">¶</a></h2>
 <section id="default-boundary-conditions">
-<h3>Default boundary conditions<a class="headerlink" href="#default-boundary-conditions" title="Permalink to this heading">¶</a></h3>
+<h3>Default boundary conditions<a class="headerlink" href="#default-boundary-conditions" title="Link to this heading">¶</a></h3>
 <p>If no constraints are applied, solutions are conservative, i.e., all
 boundaries are zero flux.  For the equation</p>
 <div class="math notranslate nohighlight">
@@ -746,7 +746,7 @@ boundaries are zero flux.  For the equation</p>
 \[\hat{n}\cdot\left(\vec{a}\phi + b\nabla\phi\right) = 0\qquad\text{on $S$.}\]</div>
 </section>
 <section id="applying-fixed-value-dirichlet-boundary-conditions">
-<h3>Applying fixed value (Dirichlet) boundary conditions<a class="headerlink" href="#applying-fixed-value-dirichlet-boundary-conditions" title="Permalink to this heading">¶</a></h3>
+<h3>Applying fixed value (Dirichlet) boundary conditions<a class="headerlink" href="#applying-fixed-value-dirichlet-boundary-conditions" title="Link to this heading">¶</a></h3>
 <p>To apply a fixed value boundary condition use the
 <a class="reference internal" href="generated/fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable.constrain" title="fipy.variables.cellVariable.CellVariable.constrain"><code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code></a> method. For example, to fix <cite>var</cite> to
 have a value of <cite>2</cite> along the upper surface of a domain, use</p>
@@ -761,7 +761,7 @@ condition is now deprecated.</p>
 </div>
 </section>
 <section id="applying-fixed-gradient-boundary-conditions-neumann">
-<h3>Applying fixed gradient boundary conditions (Neumann)<a class="headerlink" href="#applying-fixed-gradient-boundary-conditions-neumann" title="Permalink to this heading">¶</a></h3>
+<h3>Applying fixed gradient boundary conditions (Neumann)<a class="headerlink" href="#applying-fixed-gradient-boundary-conditions-neumann" title="Link to this heading">¶</a></h3>
 <p>To apply a fixed Gradient boundary condition use the
 <a class="reference internal" href="generated/fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable.faceGrad" title="fipy.variables.cellVariable.CellVariable.faceGrad"><code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGrad</span></code></a>.<a class="reference internal" href="generated/fipy.variables.variable.html#fipy.variables.variable.Variable.constrain" title="fipy.variables.variable.Variable.constrain"><code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code></a> method. For
 example, to fix <cite>var</cite> to have a gradient of <cite>(0,2)</cite> along the upper
@@ -776,7 +776,7 @@ surface of a 2D domain, use</p>
 </div>
 </section>
 <section id="applying-fixed-flux-boundary-conditions">
-<h3>Applying fixed flux boundary conditions<a class="headerlink" href="#applying-fixed-flux-boundary-conditions" title="Permalink to this heading">¶</a></h3>
+<h3>Applying fixed flux boundary conditions<a class="headerlink" href="#applying-fixed-flux-boundary-conditions" title="Link to this heading">¶</a></h3>
 <p>Generally these can be implemented with a judicious use of
 <a class="reference internal" href="generated/fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable.faceGrad" title="fipy.variables.cellVariable.CellVariable.faceGrad"><code class="xref py py-attr docutils literal notranslate"><span class="pre">faceGrad</span></code></a>.<a class="reference internal" href="generated/fipy.variables.variable.html#fipy.variables.variable.Variable.constrain" title="fipy.variables.variable.Variable.constrain"><code class="xref py py-meth docutils literal notranslate"><span class="pre">constrain()</span></code></a>.  Failing that, an
 exterior flux term can be added to the equation. Firstly, set the
@@ -800,14 +800,14 @@ boundary condition is now deprecated.</p>
 </div>
 </section>
 <section id="applying-outlet-or-inlet-boundary-conditions">
-<h3>Applying outlet or inlet boundary conditions<a class="headerlink" href="#applying-outlet-or-inlet-boundary-conditions" title="Permalink to this heading">¶</a></h3>
+<h3>Applying outlet or inlet boundary conditions<a class="headerlink" href="#applying-outlet-or-inlet-boundary-conditions" title="Link to this heading">¶</a></h3>
 <p>Convection terms default to a no flux boundary condition unless the
 exterior faces are associated with a constraint, in which case either
 an inlet or an outlet boundary condition is applied depending on the
 flow direction.</p>
 </section>
 <section id="applying-spatially-varying-boundary-conditions">
-<h3>Applying spatially varying boundary conditions<a class="headerlink" href="#applying-spatially-varying-boundary-conditions" title="Permalink to this heading">¶</a></h3>
+<h3>Applying spatially varying boundary conditions<a class="headerlink" href="#applying-spatially-varying-boundary-conditions" title="Link to this heading">¶</a></h3>
 <p>The use of spatial varying boundary conditions is best demonstrated with an
 example. Given a 2D equation in the domain <span class="math notranslate nohighlight">\(0 &lt; x &lt; 1\)</span> and <span class="math notranslate nohighlight">\(0 &lt; y &lt; 1\)</span> with
 boundary conditions,</p>
@@ -835,7 +835,7 @@ in <a class="reference internal" href="generated/examples.diffusion.mesh20x20.ht
 and <a class="reference internal" href="generated/examples.diffusion.circle.html#module-examples.diffusion.circle" title="examples.diffusion.circle"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.diffusion.circle</span></code></a></p>
 </section>
 <section id="applying-robin-boundary-conditions">
-<h3>Applying Robin boundary conditions<a class="headerlink" href="#applying-robin-boundary-conditions" title="Permalink to this heading">¶</a></h3>
+<h3>Applying Robin boundary conditions<a class="headerlink" href="#applying-robin-boundary-conditions" title="Link to this heading">¶</a></h3>
 <p>The Robin condition applied on the portion of the boundary <span class="math notranslate nohighlight">\(S_R\)</span></p>
 <div class="math notranslate nohighlight">
 \[\hat{n}\cdot\left(\vec{a}\phi + b\nabla\phi\right) = g\qquad\text{on $S_R$}\]</div>
@@ -869,7 +869,7 @@ and gradients at intervening faces. Using a first order upwind
 approximation, the boundary value of the variable at face <span class="math notranslate nohighlight">\(f\)</span> can be written in terms of
 the value at the neighboring cell <span class="math notranslate nohighlight">\(P\)</span> and the normal gradient at the boundary:</p>
 <div class="math notranslate nohighlight" id="equation-upwind1">
-<span class="eqno">(1)<a class="headerlink" href="#equation-upwind1" title="Permalink to this equation">¶</a></span>\[\begin{split}\phi_f &amp;\approx \phi_P - \left(\vec{d}_{fP}\cdot\nabla\phi\right)_f
+<span class="eqno">(1)<a class="headerlink" href="#equation-upwind1" title="Link to this equation">¶</a></span>\[\begin{split}\phi_f &amp;\approx \phi_P - \left(\vec{d}_{fP}\cdot\nabla\phi\right)_f
 \\
 &amp;\approx \phi_P - \left(\hat{n}\cdot\nabla\phi\right)_f\left(\vec{d}_{fP}\cdot\hat{n}\right)_f\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\vec{d}_{fP}\)</span> is the distance vector from the face center to
@@ -879,7 +879,7 @@ the adjoining cell center.  The approximation
 is most valid when the mesh is orthogonal.</p>
 <p>Substituting this expression into the Robin condition:</p>
 <div class="math notranslate nohighlight" id="equation-robin-facegrad">
-<span class="eqno">(2)<a class="headerlink" href="#equation-robin-facegrad" title="Permalink to this equation">¶</a></span>\[\begin{split}\hat{n}\cdot\left(\vec{a} \phi + b \nabla\phi\right)_f &amp;= g \\
+<span class="eqno">(2)<a class="headerlink" href="#equation-robin-facegrad" title="Link to this equation">¶</a></span>\[\begin{split}\hat{n}\cdot\left(\vec{a} \phi + b \nabla\phi\right)_f &amp;= g \\
 \hat{n}\cdot\left[\vec{a} \phi_P
 - \vec{a} \left(\hat{n}\cdot\nabla\phi\right)_f\left(\vec{d}_{fP}\cdot\hat{n}\right)_f
 + b \nabla\phi\right]_f &amp;\approx g \\
@@ -890,7 +890,7 @@ is most valid when the mesh is orthogonal.</p>
 its neighboring cell.  We can, in turn, substitute this back into
 <a class="reference internal" href="#equation-upwind1">(1)</a></p>
 <div class="math notranslate nohighlight" id="equation-upwind2">
-<span class="eqno">(3)<a class="headerlink" href="#equation-upwind2" title="Permalink to this equation">¶</a></span>\[\begin{split}\phi_f &amp;\approx \phi_P
+<span class="eqno">(3)<a class="headerlink" href="#equation-upwind2" title="Link to this equation">¶</a></span>\[\begin{split}\phi_f &amp;\approx \phi_P
 - \frac{g_f - \left(\hat{n}\cdot\vec{a}\right)_f \phi_P}
        {-\left(\vec{d}_{fP}\cdot\vec{a}\right)_f + b_f}
 \left(\vec{d}_{fP}\cdot\hat{n}\right)_f \\
@@ -946,11 +946,11 @@ Robin condition used above by letting <span class="math notranslate nohighlight"
 </div>
 </section>
 <section id="applying-internal-boundary-conditions">
-<h3>Applying internal “boundary” conditions<a class="headerlink" href="#applying-internal-boundary-conditions" title="Permalink to this heading">¶</a></h3>
+<h3>Applying internal “boundary” conditions<a class="headerlink" href="#applying-internal-boundary-conditions" title="Link to this heading">¶</a></h3>
 <p>Applying internal boundary conditions can be achieved through the use
 of implicit and explicit sources.</p>
 <section id="internal-fixed-value">
-<h4>Internal fixed value<a class="headerlink" href="#internal-fixed-value" title="Permalink to this heading">¶</a></h4>
+<h4>Internal fixed value<a class="headerlink" href="#internal-fixed-value" title="Link to this heading">¶</a></h4>
 <p>An equation of the form</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eqn</span> <span class="o">=</span> <span class="n">TransientTerm</span><span class="p">()</span> <span class="o">==</span> <span class="n">DiffusionTerm</span><span class="p">()</span>
 </pre></div>
@@ -968,7 +968,7 @@ that are masked. The <code class="docutils literal notranslate"><span class="pre
 <code class="docutils literal notranslate"><span class="pre">CellVariable</span></code> Boolean constructed using the cell center values.</p>
 </section>
 <section id="internal-fixed-gradient">
-<h4>Internal fixed gradient<a class="headerlink" href="#internal-fixed-gradient" title="Permalink to this heading">¶</a></h4>
+<h4>Internal fixed gradient<a class="headerlink" href="#internal-fixed-gradient" title="Link to this heading">¶</a></h4>
 <p>An equation of the form</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eqn</span> <span class="o">=</span> <span class="n">TransientTerm</span><span class="p">()</span> <span class="o">==</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">Gamma0</span><span class="p">)</span>
 </pre></div>
@@ -989,7 +989,7 @@ that are masked. The <code class="docutils literal notranslate"><span class="pre
 <code class="docutils literal notranslate"><span class="pre">FaceVariable</span></code> Boolean constructed using the face center values.</p>
 </section>
 <section id="internal-robin-condition">
-<h4>Internal Robin condition<a class="headerlink" href="#internal-robin-condition" title="Permalink to this heading">¶</a></h4>
+<h4>Internal Robin condition<a class="headerlink" href="#internal-robin-condition" title="Link to this heading">¶</a></h4>
 <p>Nothing different needs to be done when
 <a class="reference internal" href="#applying-robin-boundary-conditions">applying Robin boundary conditions</a> at internal faces.</p>
 <div class="admonition note">
@@ -1064,7 +1064,7 @@ with <span class="math notranslate nohighlight">\(\phi = 0.25\)</span>.</p>
 </section>
 </section>
 <section id="running-under-python-2">
-<span id="runningunderpython2"></span><h2>Running under Python 2<a class="headerlink" href="#running-under-python-2" title="Permalink to this heading">¶</a></h2>
+<span id="runningunderpython2"></span><h2>Running under Python 2<a class="headerlink" href="#running-under-python-2" title="Link to this heading">¶</a></h2>
 <p>Thanks to the <a class="reference external" href="http://python-future.org">future</a> package and to the contributions of <a class="reference external" href="https://github.com/pya">pya</a> and
 <a class="reference external" href="https://github.com/pya">woodscn</a>, <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> runs under both <a class="reference internal" href="glossary.html#term-Python-3"><span class="xref std std-term">Python 3</span></a> and <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a>
 2.7, without conversion or modification.</p>
@@ -1083,7 +1083,7 @@ how to optimize our use of <a class="reference internal" href="SOLVERS.html#pets
 become available on <a class="reference external" href="https://conda-forge.github.io/">conda-forge</a>.</p>
 </section>
 <section id="manual">
-<h2>Manual<a class="headerlink" href="#manual" title="Permalink to this heading">¶</a></h2>
+<h2>Manual<a class="headerlink" href="#manual" title="Link to this heading">¶</a></h2>
 <p>You can view the manual online at &lt;<a class="reference external" href="http://pages.nist.gov/fipy">http://pages.nist.gov/fipy</a>&gt;.
 Alternatively, it may be possible to build a fresh copy by issuing the
 following command in the <code class="file docutils literal notranslate"><span class="pre">docs/</span></code> directory:</p>
@@ -1133,8 +1133,8 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
 
 
                 <div class='last-updated'>
-                Last updated on Sep 02, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on Sep 05, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
                 </div>
               </div>
   </div>  
@@ -1143,7 +1143,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+277.g61d8667d
+Version 3.4.4+302.gbcc35fec
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

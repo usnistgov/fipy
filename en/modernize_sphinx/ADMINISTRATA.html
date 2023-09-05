@@ -35,19 +35,19 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Git practices &#8212; FiPy 3.4.4+277.g61d8667d documentation</title>
+    <title>Git practices &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=fd92b6f4"></script>
+    <script src="_static/documentation_options.js?v=dbcedde6"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+277.g61d8667d documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Solvers" href="SOLVERS.html" />
     <link rel="prev" title="Installation" href="INSTALLATION.html" />
@@ -111,10 +111,10 @@
               <div class="body" role="main">
 		
   <section id="git-practices">
-<h1>Git practices<a class="headerlink" href="#git-practices" title="Permalink to this heading">¶</a></h1>
+<h1>Git practices<a class="headerlink" href="#git-practices" title="Link to this heading">¶</a></h1>
 <p>Refer to <a class="reference internal" href="INSTALLATION.html#documentation-git"><span class="std std-ref">Git usage</span></a> for the current branching conventions.</p>
 <section id="branches">
-<h2>Branches<a class="headerlink" href="#branches" title="Permalink to this heading">¶</a></h2>
+<h2>Branches<a class="headerlink" href="#branches" title="Link to this heading">¶</a></h2>
 <p>Whether fixing a bug or adding a feature, all work on FiPy should be
 conducted on a branch and submitted as a <a class="reference external" href="https://github.com/usnistgov/fipy/pulls">pull request</a>. If there is
 already a reported <a class="reference external" href="https://github.com/">GitHub</a> <a class="reference external" href="https://github.com/usnistgov/fipy/issues">issue</a>, name the branch accordingly:</p>
@@ -130,7 +130,7 @@ $ git commit -m &quot;refactoring_stage_B&quot;
 </pre></div>
 </div>
 <section id="merging-changes-from-master-to-the-branch">
-<h3>Merging changes from master to the branch<a class="headerlink" href="#merging-changes-from-master-to-the-branch" title="Permalink to this heading">¶</a></h3>
+<h3>Merging changes from master to the branch<a class="headerlink" href="#merging-changes-from-master-to-the-branch" title="Link to this heading">¶</a></h3>
 <p>Make sure <code class="docutils literal notranslate"><span class="pre">master</span></code> is up to date:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git fetch origin
 </pre></div>
@@ -146,7 +146,7 @@ $ git merge origin/master
 </div>
 </section>
 <section id="submit-branch-for-code-review">
-<h3>Submit branch for code review<a class="headerlink" href="#submit-branch-for-code-review" title="Permalink to this heading">¶</a></h3>
+<h3>Submit branch for code review<a class="headerlink" href="#submit-branch-for-code-review" title="Link to this heading">¶</a></h3>
 <p>If necessary, <a class="reference external" href="https://help.github.com/en/articles/fork-a-repo">fork</a> the <a class="reference external" href="https://github.com/usnistgov/fipy">fipy repository</a>.</p>
 <p>Add a “remote” link to your fork:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git remote add &lt;MYFORK&gt; &lt;MYFORKURL&gt;
@@ -180,7 +180,7 @@ about it if you like, but the FiPy developers should automatically see the
 pull request and respond to it without further action on your part.</p>
 </section>
 <section id="refactoring-complete-merge-branch-to-master">
-<h3>Refactoring complete: merge branch to master<a class="headerlink" href="#refactoring-complete-merge-branch-to-master" title="Permalink to this heading">¶</a></h3>
+<h3>Refactoring complete: merge branch to master<a class="headerlink" href="#refactoring-complete-merge-branch-to-master" title="Link to this heading">¶</a></h3>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p><strong>Administrators Only!</strong></p>
@@ -195,7 +195,7 @@ doing a <a class="reference external" href="https://help.github.com/en/articles/
 </section>
 </section>
 <section id="continuous-integration">
-<span id="continuousintegration"></span><h1>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this heading">¶</a></h1>
+<span id="continuousintegration"></span><h1>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Link to this heading">¶</a></h1>
 <div class="line-block">
 <div class="line"><a class="reference external" href="https://dev.azure.com/guyer/FiPy/_build?definitionId=2"><img alt="Tests" src="https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master" /></a> <a href="#id1"><span class="problematic" id="id2">|Documentation|_</span></a> <a href="#id3"><span class="problematic" id="id4">|nix|_</span></a></div>
 </div>
@@ -205,13 +205,13 @@ doing a <a class="reference external" href="https://help.github.com/en/articles/
 <a class="reference external" href="https://github.com/usnistgov/fipy/blob/master/.github/workflows/nix.yml"><code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/.github/workflows/nix.yml</span></code></a>.</p>
 </section>
 <section id="making-a-release">
-<h1>Making a Release<a class="headerlink" href="#making-a-release" title="Permalink to this heading">¶</a></h1>
+<h1>Making a Release<a class="headerlink" href="#making-a-release" title="Link to this heading">¶</a></h1>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p><strong>Administrators Only!</strong></p>
 </div>
 <section id="source">
-<h2>Source<a class="headerlink" href="#source" title="Permalink to this heading">¶</a></h2>
+<h2>Source<a class="headerlink" href="#source" title="Link to this heading">¶</a></h2>
 <p>Make sure <code class="docutils literal notranslate"><span class="pre">master</span></code> is ready for release:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git checkout master
 </pre></div>
@@ -254,7 +254,7 @@ release, make sure to add appropriate notes in <code class="file docutils litera
 </div>
 </section>
 <section id="release-from-master">
-<h2>Release from master<a class="headerlink" href="#release-from-master" title="Permalink to this heading">¶</a></h2>
+<h2>Release from master<a class="headerlink" href="#release-from-master" title="Link to this heading">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git checkout master
 </pre></div>
 </div>
@@ -286,7 +286,7 @@ into <code class="file docutils literal notranslate"><span class="pre">docs/buil
 </div>
 </section>
 <section id="upload">
-<h2>Upload<a class="headerlink" href="#upload" title="Permalink to this heading">¶</a></h2>
+<h2>Upload<a class="headerlink" href="#upload" title="Link to this heading">¶</a></h2>
 <dl class="simple">
 <dt>Attach</dt><dd><ul class="simple">
 <li><p><code class="file docutils literal notranslate"><span class="pre">dist/FiPy-</span><em><span class="pre">x.y</span></em><span class="pre">-none-any.whl</span></code></p></li>
@@ -315,7 +315,7 @@ does not have this problem.</p>
 </div>
 </section>
 <section id="update-conda-forge-feedstock">
-<h2>Update conda-forge feedstock<a class="headerlink" href="#update-conda-forge-feedstock" title="Permalink to this heading">¶</a></h2>
+<h2>Update conda-forge feedstock<a class="headerlink" href="#update-conda-forge-feedstock" title="Link to this heading">¶</a></h2>
 <p>Once you push the tag to <a class="reference external" href="https://github.com/">GitHub</a>, the <a class="reference external" href="https://github.com/conda-forge/fipy-feedstock">fipy-feedstock</a> should automatically
 receive a pull request.  Review and amend this pull request as necessary
 and ask the <a class="reference external" href="https://github.com/conda-forge/fipy-feedstock#feedstock-maintainers">feedstock maintainers</a> to merge it.</p>
@@ -329,15 +329,15 @@ request to update the <a class="reference external" href="https://github.com/con
 </ul>
 </section>
 <section id="announce">
-<h2>Announce<a class="headerlink" href="#announce" title="Permalink to this heading">¶</a></h2>
+<h2>Announce<a class="headerlink" href="#announce" title="Link to this heading">¶</a></h2>
 <p>Make an announcement to <a class="reference external" href="mailto:fipy&#37;&#52;&#48;list&#46;nist&#46;gov">fipy<span>&#64;</span>list<span>&#46;</span>nist<span>&#46;</span>gov</a></p>
 </section>
 </section>
 
 
                 <div class='last-updated'>
-                Last updated on Sep 02, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on Sep 05, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
                 </div>
               </div>
   </div>  
@@ -346,7 +346,7 @@ request to update the <a class="reference external" href="https://github.com/con
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+277.g61d8667d
+Version 3.4.4+302.gbcc35fec
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

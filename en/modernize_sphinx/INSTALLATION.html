@@ -35,19 +35,19 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; FiPy 3.4.4+277.g61d8667d documentation</title>
+    <title>Installation &#8212; FiPy 3.4.4+302.gbcc35fec documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=fd92b6f4"></script>
+    <script src="_static/documentation_options.js?v=dbcedde6"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+277.g61d8667d documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.4+302.gbcc35fec documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Git practices" href="ADMINISTRATA.html" />
     <link rel="prev" title="Contact" href="CONTACT.html" />
@@ -111,7 +111,7 @@
               <div class="body" role="main">
 		
   <section id="installation">
-<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
+<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
 <p>The <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> finite volume PDE solver relies on several
 third-party packages.  It is <em>best to obtain and install those first</em>
 before attempting to install <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>. This document explains how
@@ -136,14 +136,14 @@ that may be mentioned on these sites. Please address comments about
 this page to <a class="reference external" href="mailto:fipy&#37;&#52;&#48;list&#46;nist&#46;gov">fipy<span>&#64;</span>list<span>&#46;</span>nist<span>&#46;</span>gov</a>.</p>
 </div>
 <section id="pre-installed-on-binder">
-<h2>Pre-Installed on Binder<a class="headerlink" href="#pre-installed-on-binder" title="Permalink to this heading">¶</a></h2>
+<h2>Pre-Installed on Binder<a class="headerlink" href="#pre-installed-on-binder" title="Link to this heading">¶</a></h2>
 <p>A full <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> installation is available for basic exploration on
 <a class="reference external" href="https://mybinder.org/v2/gh/usnistgov/fipy/master">Binder</a>. The default notebook gives a rudimentary introduction to <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
 syntax and, like any <a class="reference external" href="http://jupyter.org">Jupyter Notebook</a> interface, tab completion will help
 you explore the package interactively.</p>
 </section>
 <section id="recommended-method">
-<h2>Recommended Method<a class="headerlink" href="#recommended-method" title="Permalink to this heading">¶</a></h2>
+<h2>Recommended Method<a class="headerlink" href="#recommended-method" title="Link to this heading">¶</a></h2>
 <p><a class="reference external" href="https://anaconda.org/conda-forge/fipy"><img alt="CondaForge" src="https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg" /></a></p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
@@ -181,10 +181,10 @@ install packages explicitly, e.g.,:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create --name &lt;MYFIPYENV&gt; --channel conda-forge python=3 numpy scipy matplotlib-base future packaging mpich mpi4py petsc4py mayavi &quot;gmsh &lt;4.0|&gt;=4.5.2&quot;
 </pre></div>
 </div>
-<p>or</p>
-<blockquote>
-<div><p>$ conda create –name &lt;MYFIPYENV&gt; –channel conda-forge python=2.7 numpy scipy matplotlib-base future packaging pysparse mayavi “traitsui&lt;7.0.0” “gmsh&lt;4.0”</p>
-</div></blockquote>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create --name &lt;MYFIPYENV&gt; --channel conda-forge python=2.7 numpy scipy matplotlib-base future packaging pysparse mayavi &quot;traitsui&lt;7.0.0&quot; &quot;gmsh&lt;4.0&quot;
+</pre></div>
+</div>
 </div>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
@@ -257,7 +257,7 @@ its <a class="reference internal" href="EXAMPLES.html#part-examples"><span class
 </div>
 </section>
 <section id="obtaining-fipy">
-<h2>Obtaining FiPy<a class="headerlink" href="#obtaining-fipy" title="Permalink to this heading">¶</a></h2>
+<h2>Obtaining FiPy<a class="headerlink" href="#obtaining-fipy" title="Link to this heading">¶</a></h2>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is freely available for download via <a class="reference external" href="https://github.com/usnistgov/fipy">Git</a> or as a
 <a class="reference external" href="https://github.com/usnistgov/fipy/releases">compressed archive</a>. Please see
 <a class="reference internal" href="#documentation-git"><span class="std std-ref">Git usage</span></a> for instructions on obtaining <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
@@ -271,7 +271,7 @@ this issue automatically).</p>
 </div>
 </section>
 <section id="installing-fipy">
-<h2>Installing FiPy<a class="headerlink" href="#installing-fipy" title="Permalink to this heading">¶</a></h2>
+<h2>Installing FiPy<a class="headerlink" href="#installing-fipy" title="Link to this heading">¶</a></h2>
 <p>Details of the <a class="reference internal" href="#required-packages">Required Packages</a> and links are given below,
 but for the courageous and the
 impatient, <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> can be up and running quickly by simply
@@ -312,9 +312,9 @@ setting up your <a class="reference internal" href="#environment"><span class="s
 process.</p>
 </section>
 <section id="required-packages">
-<span id="requiredpackages"></span><h2>Required Packages<a class="headerlink" href="#required-packages" title="Permalink to this heading">¶</a></h2>
+<span id="requiredpackages"></span><h2>Required Packages<a class="headerlink" href="#required-packages" title="Link to this heading">¶</a></h2>
 <section id="python">
-<h3>Python<a class="headerlink" href="#python" title="Permalink to this heading">¶</a></h3>
+<h3>Python<a class="headerlink" href="#python" title="Link to this heading">¶</a></h3>
 <p><a class="reference external" href="http://www.python.org/">http://www.python.org/</a></p>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is written in the <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> language and requires a
 <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> installation to run. <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> comes pre-installed
@@ -337,23 +337,23 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 packages is available with one of the following distributions.</p>
 </section>
 <section id="numpy">
-<h3>NumPy<a class="headerlink" href="#numpy" title="Permalink to this heading">¶</a></h3>
+<h3>NumPy<a class="headerlink" href="#numpy" title="Link to this heading">¶</a></h3>
 <p><a class="reference external" href="http://numpy.scipy.org">http://numpy.scipy.org</a></p>
 <p>Obtain and install the <a class="reference internal" href="glossary.html#term-NumPy"><span class="xref std std-term">NumPy</span></a> package. <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> requires at
 least version 1.0 of <a class="reference internal" href="#numpy">NumPy</a>.</p>
 </section>
 </section>
 <section id="optional-packages">
-<span id="optionalpackages"></span><h2>Optional Packages<a class="headerlink" href="#optional-packages" title="Permalink to this heading">¶</a></h2>
+<span id="optionalpackages"></span><h2>Optional Packages<a class="headerlink" href="#optional-packages" title="Link to this heading">¶</a></h2>
 <section id="gmsh">
-<h3>Gmsh<a class="headerlink" href="#gmsh" title="Permalink to this heading">¶</a></h3>
+<h3>Gmsh<a class="headerlink" href="#gmsh" title="Link to this heading">¶</a></h3>
 <p><a class="reference external" href="http://www.geuz.org/gmsh/">http://www.geuz.org/gmsh/</a></p>
 <p><a class="reference internal" href="glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a> is an application that allows the creation of irregular meshes.
 When running in parallel, <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> requires a version of <a class="reference internal" href="glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a>
 &gt;= 2.5 and &lt; 4.0 or &gt;= 4.5.2.</p>
 </section>
 <section id="scipy">
-<h3>SciPy<a class="headerlink" href="#scipy" title="Permalink to this heading">¶</a></h3>
+<h3>SciPy<a class="headerlink" href="#scipy" title="Link to this heading">¶</a></h3>
 <p><a class="reference external" href="http://www.scipy.org/">http://www.scipy.org/</a></p>
 <p><a class="reference internal" href="glossary.html#term-SciPy"><span class="xref std std-term">SciPy</span></a> provides a large collection of functions and tools that can
 be useful for running and analyzing <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> simulations. Significantly
@@ -363,17 +363,17 @@ details), via the <code class="xref py py-mod docutils literal notranslate"><spa
 </section>
 </section>
 <section id="level-set-packages">
-<h2>Level Set Packages<a class="headerlink" href="#level-set-packages" title="Permalink to this heading">¶</a></h2>
+<h2>Level Set Packages<a class="headerlink" href="#level-set-packages" title="Link to this heading">¶</a></h2>
 <p>To use the level set (<span id="id2">[<a class="reference internal" href="references.html#id4" title="J. A. Sethian. Level Set Methods and Fast Marching Methods. Cambridge University Press, 1996.">8</a>]</span>) components of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> one of the following is
 required.</p>
 <section id="scikit-fmm">
-<span id="scikitfmm"></span><h3>Scikit-fmm<a class="headerlink" href="#scikit-fmm" title="Permalink to this heading">¶</a></h3>
+<span id="scikitfmm"></span><h3>Scikit-fmm<a class="headerlink" href="#scikit-fmm" title="Link to this heading">¶</a></h3>
 <p><a class="reference external" href="http://packages.python.org/scikit-fmm/">http://packages.python.org/scikit-fmm/</a></p>
 <p><a class="reference external" href="http://packages.python.org/scikit-fmm/">Scikit-fmm</a> is a python extension module which implements the fast
 marching method.</p>
 </section>
 <section id="lsmlib">
-<span id="lsmlibdoc"></span><h3>LSMLIB<a class="headerlink" href="#lsmlib" title="Permalink to this heading">¶</a></h3>
+<span id="lsmlibdoc"></span><h3>LSMLIB<a class="headerlink" href="#lsmlib" title="Link to this heading">¶</a></h3>
 <p><a class="reference external" href="http://ktchu.serendipityresearch.org/software/lsmlib/index.html">http://ktchu.serendipityresearch.org/software/lsmlib/index.html</a></p>
 <p>The Level Set Method Library (<a class="reference external" href="http://ktchu.serendipityresearch.org/software/lsmlib/index.html">LSMLIB</a>) provides support for the serial
 and parallel simulation of implicit surface and curve dynamics in two-
@@ -385,7 +385,7 @@ website,
 </section>
 </section>
 <section id="development-environment">
-<span id="environment"></span><h2>Development Environment<a class="headerlink" href="#development-environment" title="Permalink to this heading">¶</a></h2>
+<span id="environment"></span><h2>Development Environment<a class="headerlink" href="#development-environment" title="Link to this heading">¶</a></h2>
 <p>It is often preferable to not formally install packages in the system
 directories. The reasons for this include:</p>
 <blockquote>
@@ -414,7 +414,7 @@ $ python setup.py develop
 </div>
 </section>
 <section id="git-usage">
-<span id="documentation-git"></span><h2>Git usage<a class="headerlink" href="#git-usage" title="Permalink to this heading">¶</a></h2>
+<span id="documentation-git"></span><h2>Git usage<a class="headerlink" href="#git-usage" title="Link to this heading">¶</a></h2>
 <p>All stages of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> development are archived in a Git
 repository at <a class="reference external" href="https://github.com/usnistgov/fipy">GitHub</a>. You can browse through the code at
 <a class="reference external" href="https://github.com/usnistgov/fipy">https://github.com/usnistgov/fipy</a> and, using a <a class="reference internal" href="#git-client">Git client</a>, you can
@@ -425,7 +425,7 @@ download various tagged revisions of <a class="reference internal" href="glossar
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>.</p>
 </div>
 <section id="git-client">
-<h3>Git client<a class="headerlink" href="#git-client" title="Permalink to this heading">¶</a></h3>
+<h3>Git client<a class="headerlink" href="#git-client" title="Link to this heading">¶</a></h3>
 <p>A <code class="docutils literal notranslate"><span class="pre">git</span></code> client application is needed in order to fetch files from our
 repository. This is provided on many operating systems (try executing
 <code class="docutils literal notranslate"><span class="pre">which</span> <span class="pre">git</span></code>) but needs to be installed on many others. The sources to
@@ -433,7 +433,7 @@ build Git, as well as links to various pre-built binaries for
 different platforms, can be obtained from <a class="reference external" href="http://git-scm.com/">http://git-scm.com/</a>.</p>
 </section>
 <section id="git-branches">
-<h3>Git branches<a class="headerlink" href="#git-branches" title="Permalink to this heading">¶</a></h3>
+<h3>Git branches<a class="headerlink" href="#git-branches" title="Link to this heading">¶</a></h3>
 <p>In general, most users will not want to download the very latest state of
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>, as these files are subject to active development and may not behave
 as desired. Most users will not be interested in particular version numbers
@@ -461,7 +461,7 @@ not).</p>
 <p>Past releases of FiPy are tagged as</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">x.y.z</span></code></dt><dd><p>Any released version of FiPy will be designated with a fixed tag: The
-current version of FiPy is 3.4.4+277.g61d8667d.  (Legacy <code class="docutils literal notranslate"><span class="pre">version-x_y_z</span></code> tags
+current version of FiPy is 3.4.4+302.gbcc35fec.  (Legacy <code class="docutils literal notranslate"><span class="pre">version-x_y_z</span></code> tags
 are retained for historical purposes, but won’t be added to.)</p>
 </dd>
 </dl>
@@ -488,15 +488,15 @@ The <a class="reference external" href="http://git-scm.com/book">Pro Git book</a
 </section>
 </section>
 <section id="nix">
-<h2>Nix<a class="headerlink" href="#nix" title="Permalink to this heading">¶</a></h2>
+<h2>Nix<a class="headerlink" href="#nix" title="Link to this heading">¶</a></h2>
 <section id="nix-installation">
-<span id="nixinstall"></span><h3>Nix Installation<a class="headerlink" href="#nix-installation" title="Permalink to this heading">¶</a></h3>
+<span id="nixinstall"></span><h3>Nix Installation<a class="headerlink" href="#nix-installation" title="Link to this heading">¶</a></h3>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> now has a <a class="reference external" href="https://nixos.org/nix/">Nix</a> expression for installing <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
 using <a class="reference external" href="https://nixos.org/nix/">Nix</a>. <a class="reference external" href="https://nixos.org/nix/">Nix</a> is a powerful package manager for Linux and other
 Unix systems that makes package management reliable and
 reproducible. The recipe works on both Linux and Mac OS X.</p>
 <section id="getting-started-with-nix">
-<h4>Getting Started with Nix<a class="headerlink" href="#getting-started-with-nix" title="Permalink to this heading">¶</a></h4>
+<h4>Getting Started with Nix<a class="headerlink" href="#getting-started-with-nix" title="Link to this heading">¶</a></h4>
 <p>There are a number of tutorials on getting started with <a class="reference external" href="https://nixos.org/nix/">Nix</a>. The
 page that I used when getting started is on the Blog of the HPC team
 of GRICAD,</p>
@@ -507,7 +507,7 @@ of GRICAD,</p>
 Nix.</p>
 </section>
 <section id="installing">
-<h4>Installing<a class="headerlink" href="#installing" title="Permalink to this heading">¶</a></h4>
+<h4>Installing<a class="headerlink" href="#installing" title="Link to this heading">¶</a></h4>
 <p>Once you have a working Nix installation use:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nix-shell --pure
 </pre></div>
@@ -526,12 +526,12 @@ version of <a class="reference internal" href="glossary.html#term-FiPy"><span cl
 </div>
 </section>
 <section id="additional-packages">
-<h4>Additional Packages<a class="headerlink" href="#additional-packages" title="Permalink to this heading">¶</a></h4>
+<h4>Additional Packages<a class="headerlink" href="#additional-packages" title="Link to this heading">¶</a></h4>
 <p>To install additional packages available from <a class="reference external" href="https://nixos.org/nixpkgs/">Nixpkgs</a> include them in
 the <cite>nativeBuildInputs</cite> list in <cite>shell.nix</cite>.</p>
 </section>
 <section id="using-pip">
-<h4>Using Pip<a class="headerlink" href="#using-pip" title="Permalink to this heading">¶</a></h4>
+<h4>Using Pip<a class="headerlink" href="#using-pip" title="Link to this heading">¶</a></h4>
 <p>Packages unavailable from Nix can be installed using <a class="reference internal" href="glossary.html#term-pip"><span class="xref std std-term">Pip</span></a>. In
 this case, the installation has been set up so that the Nix shell
 knows about a <code class="docutils literal notranslate"><span class="pre">.local</span></code> directory in the base <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> directory
@@ -549,8 +549,8 @@ closed.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Sep 02, 2023.
-                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                Last updated on Sep 05, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.2.5.
                 </div>
               </div>
   </div>  
@@ -559,7 +559,7 @@ closed.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+277.g61d8667d
+Version 3.4.4+302.gbcc35fec
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
