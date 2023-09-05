@@ -12,4 +12,3 @@ jobs:
           conda-environment: docs/environment.yml
           pre-build-command: |
             git config --global --add safe.directory /github/workspace
-
