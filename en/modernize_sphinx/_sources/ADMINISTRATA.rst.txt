@@ -108,9 +108,9 @@ We use the :term:`Azure` and :term:`GitHub Actions` cloud services for
 .. |Tests|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
 .. _Tests:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
 .. |Documentation| image:: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml/badge.svg
-.. _Documentation  https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml
+å.. _Documentation: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml
 .. |nix|           image:: https://github.com/usnistgov/fipy/actions/workflows/nix.yml/badge.svg
-.. _nix            https://github.com/usnistgov/fipy/actions/workflows/nix.yml
+.. _nix:           https://github.com/usnistgov/fipy/actions/workflows/nix.yml
 
 .. |.azure/pipelines.yml| replace::    :file:`{FiPySource}/.azure/pipelines.yml`
 .. _.azure/pipelines.yml: https://github.com/usnistgov/fipy/blob/master/.azure/pipelines.yml
@@ -205,6 +205,7 @@ into :file:`docs/build` with::
 
     $ tar -xzf dist/html-{x.y}.tar.gz -C docs/build
 
+.. _Azure:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
 
 ------
 Upload
