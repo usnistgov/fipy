@@ -158,9 +158,9 @@ or a
 .. |Tests|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
 .. _Tests:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
 .. |Documentation| image:: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml/badge.svg
-.. _Documentation  https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml
+.. _Documentation: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml
 .. |nix|           image:: https://github.com/usnistgov/fipy/actions/workflows/nix.yml/badge.svg
-.. _nix            https://github.com/usnistgov/fipy/actions/workflows/nix.yml
+.. _nix:           https://github.com/usnistgov/fipy/actions/workflows/nix.yml
 .. |OpenHub|       image:: https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif
 .. _OpenHub:       https://www.openhub.net/p/fipy
 .. |PyPI|          image:: https://img.shields.io/pypi/v/fipy.svg
