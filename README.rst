@@ -6,7 +6,7 @@ Overview
 
 | |Tests|_ |Documentation|_ |nix|_
 | |GitHub|_ |PyPI|_  |CondaForge|_ |Binder|_
-| |gitter|_ |Depsy|_ |OpenHub|_
+| |gitter|_ |OpenHub|_
 
 .. only:: latex
 
@@ -167,8 +167,6 @@ or a
 .. _PyPI:          https://pypi.python.org/pypi/FiPy
 .. |CondaForge|    image:: https://img.shields.io/conda/pn/conda-forge/fipy?label=conda-forge
 .. _CondaForge:    https://anaconda.org/conda-forge/fipy
-.. |Depsy|         image:: http://depsy.org/api/package/pypi/FiPy/badge.svg
-.. _Depsy:         http://depsy.org/package/python/FiPy
 
 .. |Binder|        image:: https://mybinder.org/badge.svg
 .. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/master?filepath=examples%2Findex.ipynb
