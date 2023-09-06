@@ -1,0 +1,29 @@
+fipy.terms.advectionTerm
+========================
+
+.. automodule:: fipy.terms.advectionTerm
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AdvectionTerm
+   
+   
+
+   
+   
+   
+
+
+
