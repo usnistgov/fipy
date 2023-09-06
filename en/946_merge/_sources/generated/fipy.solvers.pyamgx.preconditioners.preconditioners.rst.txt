@@ -1,0 +1,29 @@
+fipy.solvers.pyamgx.preconditioners.preconditioners
+===================================================
+
+.. automodule:: fipy.solvers.pyamgx.preconditioners.preconditioners
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Preconditioner
+   
+   
+
+   
+   
+   
+
+
+
