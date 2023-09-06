@@ -122,8 +122,8 @@ autodoc_default_options = {
 }
 
 autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'PyTrilinos.NOX',
-                        'pysparse', 'PyTrilinos', 'petsc4py', 'mayavi',
-                        'mpi4py']
+                        'pysparse', 'PyTrilinos', 'petsc4py', 'mpi4py',
+                        'mayavi', 'enthought']
 
 napoleon_numpy_docstring = True
 #
