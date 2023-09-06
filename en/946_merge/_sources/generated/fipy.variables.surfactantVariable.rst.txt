@@ -1,0 +1,29 @@
+fipy.variables.surfactantVariable
+=================================
+
+.. automodule:: fipy.variables.surfactantVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SurfactantVariable
+   
+   
+
+   
+   
+   
+
+
+

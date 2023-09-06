@@ -1,0 +1,29 @@
+fipy.solvers.petsc.petscKrylovSolver
+====================================
+
+.. automodule:: fipy.solvers.petsc.petscKrylovSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PETScKrylovSolver
+   
+   
+
+   
+   
+   
+
+
+
