@@ -35,22 +35,22 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.cahnHilliard.sphere &#8212; FiPy 3.4.4+314.g8c0c59e92 documentation</title>
+    <title>examples.cahnHilliard.sphere &#8212; FiPy 3.4.4+315.g8fe4f77c2 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3802267a"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=e126ebc8"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+314.g8c0c59e92 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+315.g8fe4f77c2 documentation" href="../contents.html" />
     <link rel="up" title="examples.cahnHilliard" href="examples.cahnHilliard.html" />
-    <link rel="next" title="examples.cahnHilliard.tanh1D" href="examples.cahnHilliard.tanh1D.html" />
+    <link rel="next" title="examples.cahnHilliard.sphereDaemon" href="examples.cahnHilliard.sphereDaemon.html" />
     <link rel="prev" title="examples.cahnHilliard.mesh3D" href="examples.cahnHilliard.mesh3D.html" />
   
  
@@ -77,7 +77,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="examples.cahnHilliard.tanh1D.html" title="examples.cahnHilliard.tanh1D"
+          <a href="examples.cahnHilliard.sphereDaemon.html" title="examples.cahnHilliard.sphereDaemon"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="examples.cahnHilliard.mesh3D.html" title="examples.cahnHilliard.mesh3D"
@@ -163,7 +163,7 @@ declaration of <code class="docutils literal notranslate"><span class="pre">mesh
 <p><a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> doesn’t plot or output anything unless you tell it to: If
 <a class="reference internal" href="fipy.viewers.mayaviViewer.mayaviClient.html#fipy.viewers.mayaviViewer.mayaviClient.MayaviClient" title="fipy.viewers.mayaviViewer.mayaviClient.MayaviClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">MayaviClient</span></code></a> is available, we
 can customize the view with a subclass of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">MayaviDaemon</span></code>.</p>
+<a class="reference internal" href="fipy.viewers.mayaviViewer.mayaviDaemon.html#fipy.viewers.mayaviViewer.mayaviDaemon.MayaviDaemon" title="fipy.viewers.mayaviViewer.mayaviDaemon.MayaviDaemon"><code class="xref py py-class docutils literal notranslate"><span class="pre">MayaviDaemon</span></code></a>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="k">try</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="n">viewer</span> <span class="o">=</span> <span class="n">MayaviClient</span><span class="p">(</span><span class="nb">vars</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span>
@@ -231,15 +231,15 @@ evolution of their problem.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+314.g8c0c59e92
+Version 3.4.4+315.g8fe4f77c2
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>
   <p class="topless"><a href="examples.cahnHilliard.mesh3D.html"
                         title="previous chapter">examples.cahnHilliard.mesh3D</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="examples.cahnHilliard.tanh1D.html"
-                        title="next chapter">examples.cahnHilliard.tanh1D</a></p>
+  <p class="topless"><a href="examples.cahnHilliard.sphereDaemon.html"
+                        title="next chapter">examples.cahnHilliard.sphereDaemon</a></p>
 </div>
   <div class="sphinxsidebarsection">
   <h3>This Page</h3>
