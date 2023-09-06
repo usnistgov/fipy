@@ -28,7 +28,7 @@ class _MetaViewer(type):
         return cls
 
 class AbstractViewer(with_metaclass(_MetaViewer, object)):
-    """Base clase for FiPy Viewers
+    """Base class for FiPy Viewers
 
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
