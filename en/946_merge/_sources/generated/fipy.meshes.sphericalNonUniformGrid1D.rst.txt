@@ -1,0 +1,29 @@
+fipy.meshes.sphericalNonUniformGrid1D
+=====================================
+
+.. automodule:: fipy.meshes.sphericalNonUniformGrid1D
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SphericalNonUniformGrid1D
+   
+   
+
+   
+   
+   
+
+
+
