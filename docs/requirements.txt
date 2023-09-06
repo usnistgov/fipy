@@ -2,4 +2,5 @@ sphinx
 pandas
 sphinxcontrib-bibtex
 numpydoc
+mayavi
 -e .
