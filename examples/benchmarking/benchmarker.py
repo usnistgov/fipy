@@ -76,7 +76,7 @@ def main():
 
         return rsz, vsz, cpu
 
-    if start is not 0:
+    if start != 0:
         old = '''
               for i in range(steps):
               '''

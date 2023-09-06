@@ -112,7 +112,7 @@ class MeshVariable(Variable):
             if not isinstance(value, Variable):
                 value = _Constant(value)
             valueShape = value.shape
-            if valueShape is not () and valueShape[-1] == self._globalNumberOfElements:
+            if len(valueShape) > 0 and valueShape[-1] == self._globalNumberOfElements:
                 if valueShape[-1] != 0:
                     # workaround for NumPy:ticket:1171
                     value = value[..., self._globalOverlappingIDs]
@@ -519,7 +519,7 @@ class MeshVariable(Variable):
         """
         otherShape = numerix.getShape(other)
         if (not isinstance(other, MeshVariable)
-            and otherShape is not ()
+            and len(otherShape) >  0
             and otherShape[-1] == self._globalNumberOfElements):
             if (isinstance(other, Variable) and len(other.requiredVariables) > 0):
                 import warnings

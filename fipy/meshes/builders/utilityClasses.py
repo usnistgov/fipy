@@ -59,7 +59,7 @@ class _DOffsets(object):
             offset = [offset]
 
         for d, n, i in zip(ds, ns, list(range(len(ds)))):
-            if numerix.getShape(d) is not ():
+            if len(numerix.getShape(d)) > 0:
                 offsetList.append(numerix.sum(d[0:offset[i]]))
                 newDs.append(d[offset[i]:offset[i] + n])
             else:

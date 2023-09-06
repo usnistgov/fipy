@@ -1148,7 +1148,7 @@ class AbstractMesh(object):
         return ug
 
     def _toVTK3D(self, arr, rank=1):
-        if arr.dtype.name is 'bool':
+        if arr.dtype.name == 'bool':
             # VTK can't do bool, and the exception isn't properly
             # thrown back to the user
             arr = arr.astype('int')

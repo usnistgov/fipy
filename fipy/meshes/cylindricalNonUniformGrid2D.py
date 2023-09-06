@@ -56,7 +56,7 @@ class CylindricalNonUniformGrid2D(NonUniformGrid2D):
                                            overlap=self.args['overlap'])
 
     def __mul__(self, factor):
-        if numerix.shape(factor) is ():
+        if len(numerix.shape(factor)) == 0:
             factor = numerix.resize(factor, (2, 1))
 
         return CylindricalNonUniformGrid2D(dx=self.args['dx'] * numerix.array(factor[0]), nx=self.args['nx'],
