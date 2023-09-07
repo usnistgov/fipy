@@ -12,3 +12,4 @@ jobs:
           pip-requirements: docs/requirements.txt
           pre-build-command: |
             git config --global --add safe.directory /github/workspace
+
