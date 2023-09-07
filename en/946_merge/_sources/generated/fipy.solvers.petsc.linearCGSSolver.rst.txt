@@ -1,0 +1,29 @@
+fipy.solvers.petsc.linearCGSSolver
+==================================
+
+.. automodule:: fipy.solvers.petsc.linearCGSSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearCGSSolver
+   
+   
+
+   
+   
+   
+
+
+

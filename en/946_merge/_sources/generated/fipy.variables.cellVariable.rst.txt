@@ -1,0 +1,29 @@
+fipy.variables.cellVariable
+===========================
+
+.. automodule:: fipy.variables.cellVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      CellVariable
+   
+   
+
+   
+   
+   
+
+
+

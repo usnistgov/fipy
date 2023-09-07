@@ -1,0 +1,29 @@
+fipy.tools.vitals
+=================
+
+.. automodule:: fipy.tools.vitals
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Vitals
+   
+   
+
+   
+   
+   
+
+
+
