@@ -57,7 +57,7 @@ We initialize the steady-state equation
 >>> eq = DiffusionTerm(coeff=(1, 1)) == 0
 
 >>> import fipy.solvers.solver
->>> if fipy.solvers.solver  == 'petsc':
+>>> if fipy.solvers.solver_suite  == 'petsc':
 ...     solver = GeneralSolver(precon='lu')
 ... else:
 ...     solver = GeneralSolver()
