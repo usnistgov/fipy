@@ -1,0 +1,33 @@
+fipy.solvers.pysparse.preconditioners
+=====================================
+
+.. automodule:: fipy.solvers.pysparse.preconditioners
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fipy.solvers.pysparse.preconditioners.jacobiPreconditioner
+   fipy.solvers.pysparse.preconditioners.preconditioner
+   fipy.solvers.pysparse.preconditioners.ssorPreconditioner
+
