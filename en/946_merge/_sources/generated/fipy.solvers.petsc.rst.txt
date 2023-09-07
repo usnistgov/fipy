@@ -1,0 +1,39 @@
+fipy.solvers.petsc
+==================
+
+.. automodule:: fipy.solvers.petsc
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fipy.solvers.petsc.comms
+   fipy.solvers.petsc.dummySolver
+   fipy.solvers.petsc.linearBicgSolver
+   fipy.solvers.petsc.linearCGSSolver
+   fipy.solvers.petsc.linearGMRESSolver
+   fipy.solvers.petsc.linearLUSolver
+   fipy.solvers.petsc.linearPCGSolver
+   fipy.solvers.petsc.petscKrylovSolver
+   fipy.solvers.petsc.petscSolver
+

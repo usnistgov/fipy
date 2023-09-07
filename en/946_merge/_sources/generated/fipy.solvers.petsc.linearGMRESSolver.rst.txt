@@ -1,0 +1,29 @@
+fipy.solvers.petsc.linearGMRESSolver
+====================================
+
+.. automodule:: fipy.solvers.petsc.linearGMRESSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearGMRESSolver
+   
+   
+
+   
+   
+   
+
+
+
