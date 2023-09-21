@@ -316,7 +316,7 @@ except AttributeError:
 signal.signal(signal.SIGTERM, MayaviDaemon._sigint_handler)
 
 def main(argv=None):
-    """Simple helper to start up the mayavi application.=
+    """Simple helper to start up the mayavi application.
 
     This returns the running application.
     """
