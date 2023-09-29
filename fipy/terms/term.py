@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from builtins import object
 __docformat__ = 'restructuredtext'
 
+import logging
 import os
 
 from fipy import input
@@ -40,6 +41,9 @@ class Term(object):
         self._cacheRHSvector = False
         self._RHSvector = None
         self.var = var
+
+        self._log = logging.getLogger(self.__class__.__module__
+                                      + "." + self.__class__.__name__)
 
     def _calcVars(self):
         raise NotImplementedError
@@ -105,6 +109,9 @@ class Term(object):
         return SparseMatrix
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
+
+        self._log.debug("BEGIN _prepareLinearSystem")
+
         solver = self.getDefaultSolver(var, solver)
 
         var = self._verifyVar(var)
@@ -151,6 +158,8 @@ class Term(object):
             from fipy import input
             input()
 
+        self._log.debug("END _prepareLinearSystem")
+
         return solver
 
     def solve(self, var=None, solver=None, boundaryConditions=(), dt=None):
@@ -173,9 +182,13 @@ class Term(object):
             Timestep size.
         """
 
+        self._log.debug("BEGIN solve")
+
         solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
 
         solver._solve()
+
+        self._log.debug("END solve")
 
     def sweep(self, var=None, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None, cacheResidual=False, cacheError=False):
         r"""
