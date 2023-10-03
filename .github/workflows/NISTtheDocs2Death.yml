@@ -10,5 +10,5 @@ jobs:
         with:
           docs-folder: docs
           pip-requirements: docs/requirements.txt
-          pre-build-command: |
+          pre-build-command: |-
             git config --global --add safe.directory /github/workspace
