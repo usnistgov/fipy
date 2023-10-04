@@ -1,0 +1,29 @@
+fipy.solvers.trilinos.linearGMRESSolver
+=======================================
+
+.. automodule:: fipy.solvers.trilinos.linearGMRESSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearGMRESSolver
+   
+   
+
+   
+   
+   
+
+
+
