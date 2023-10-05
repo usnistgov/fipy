@@ -287,24 +287,6 @@ latex_additional_files = [
 
 # --------------------------------------------------------
 
-# convert and move files
-
-outdir = os.path.join('_build', 'latex')
-
-from docutils.core import publish_file
-
-for xtra in ("LICENSE", "DISCLAIMER"):
-    publish_file(source_path="%s.rst" % xtra,
-                 destination_path="%s.tex.txt" % xtra,
-                 reader_name='standalone',
-                 parser_name='restructuredtext',
-                 writer_name='latex',
-                 settings_overrides= {
-                     'template': '_templates/empty.tex'
-                 })
-
-# --------------------------------------------------------
-
 # refer to Python, NumPy, SciPy, matplotlib
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
