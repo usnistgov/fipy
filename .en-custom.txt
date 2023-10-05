@@ -218,6 +218,7 @@ multicomponent
 multigrid
 multiline
 multiscale
+multi-phase
 multi-variable
 namespace
 NaN
