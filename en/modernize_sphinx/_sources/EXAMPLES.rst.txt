@@ -2,6 +2,13 @@
 
 .. include:: ../../examples/README.rst
 
+Selected Examples
+=================
+
+Many :term:`FiPy` :mod:`examples` are primarily used for integration
+testing.  The following examples are curated to help with understanding how
+:term:`FiPy` is used.
+
 Diffusion Examples
 ------------------
 
