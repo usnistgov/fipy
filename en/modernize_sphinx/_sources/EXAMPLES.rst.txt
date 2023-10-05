@@ -4,6 +4,9 @@
 
 Diffusion Examples
 ------------------
+
+Selected illustrations of diffusion problems.
+
 * :mod:`examples.diffusion.mesh1D`
 * :mod:`examples.diffusion.coupled`
 * :mod:`examples.diffusion.mesh20x20`
@@ -14,6 +17,9 @@ Diffusion Examples
 
 Convection Examples
 -------------------
+
+Selected illustrations of convection problems.
+
 * :mod:`examples.convection.exponential1D.mesh1D`
 * :mod:`examples.convection.exponential1DSource.mesh1D`
 * :mod:`examples.convection.robin`
@@ -21,6 +27,9 @@ Convection Examples
 
 Phase Field Examples
 --------------------
+
+Selected illustrations of phase field (Allen-Cahn) moving interface
+problems.
 
 * :mod:`examples.phase.simple`
 * :mod:`examples.phase.binary`
@@ -35,6 +44,8 @@ Phase Field Examples
 Level Set Examples
 ------------------
 
+Selected illustrations of level-set moving interface problems.
+
 * :mod:`examples.levelSet.distanceFunction.mesh1D`
 * :mod:`examples.levelSet.distanceFunction.circle`
 * :mod:`examples.levelSet.advection.mesh1D`
@@ -43,16 +54,22 @@ Level Set Examples
 Cahn-Hilliard Examples
 ----------------------
 
+Selected illustrations of Cahn-Hilliard (spinodal decomposition) problems.
+
 * :mod:`examples.cahnHilliard.mesh2DCoupled`
 * :mod:`examples.cahnHilliard.sphere`
 
 Fluid Flow Examples
 -------------------
 
+Selected illustrations of fluid flow problems.
+
 * :mod:`examples.flow.stokesCavity`
 
 Reactive Wetting Examples
 -------------------------
+
+Selected illustrations of multi-phase evolution.
 
 * :mod:`examples.reactiveWetting.liquidVapor1D`
 
@@ -60,6 +77,8 @@ Reactive Wetting Examples
 
 Updating FiPy
 -------------
+
+Demonstrations of how to migrate from older versions of :term:`FiPy`.
 
 * :mod:`examples.updating.update2_0to3_0`
 * :mod:`examples.updating.update1_0to2_0`

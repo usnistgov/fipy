@@ -35,20 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.terms.transientTerm &#8212; FiPy 3.4.4+334.g6770de19d documentation</title>
+    <title>fipy.terms.transientTerm &#8212; FiPy 3.4.4+342.g851e645b6 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=474eccc4"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=60691771"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+334.g6770de19d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+342.g851e645b6 documentation" href="../contents.html" />
     <link rel="up" title="fipy.terms" href="fipy.terms.html" />
     <link rel="next" title="fipy.terms.unaryTerm" href="fipy.terms.unaryTerm.html" />
     <link rel="prev" title="fipy.terms.test" href="fipy.terms.test.html" />
@@ -59,6 +59,7 @@
   <link rel="stylesheet" href="https://pages.nist.gov/nist-header-footer/css/nist-combined.css">
   <script src="https://code.jquery.com/jquery-3.6.2.min.js" type="text/javascript" defer="defer"></script>
   <script src="https://pages.nist.gov/nist-header-footer/js/nist-header-footer.js" type="text/javascript" defer="defer"></script>
+
 
   </head>
 <!--  <body role="document">-->
@@ -181,7 +182,7 @@ relaxation take effect.</p>
 <p>Create a <cite>Term</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>coeff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference internal" href="fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a><em> or </em><a class="reference internal" href="fipy.variables.faceVariable.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><em>FaceVariable</em></a>) – Coefficient for the term.  <cite>FaceVariable</cite> objects are only
+<dd class="field-odd"><p><strong>coeff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference internal" href="fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><em>CellVariable</em></a><em> or </em><a class="reference internal" href="fipy.variables.faceVariable.html#fipy.variables.faceVariable.FaceVariable" title="fipy.variables.faceVariable.FaceVariable"><em>FaceVariable</em></a>) – Coefficient for the term.  <cite>FaceVariable</cite> objects are only
 acceptable for diffusion or convection terms.</p>
 </dd>
 </dl>
@@ -296,9 +297,9 @@ the old value and holds the solution on completion.</p></li>
 <li><p><strong>solver</strong> (<a class="reference internal" href="fipy.solvers.solver.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><em>Solver</em></a>) – Iterative solver to be used to solve the linear system of
 equations.  The default sovler depends on the solver package
 selected.</p></li>
-<li><p><strong>boundaryConditions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="fipy.boundaryConditions.boundaryCondition.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>) – </p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Timestep size.</p></li>
-<li><p><strong>underRelaxation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Usually a value between <cite>0</cite> and <cite>1</cite> or <cite>None</cite> in the case of no
+<li><p><strong>boundaryConditions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="fipy.boundaryConditions.boundaryCondition.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>) – </p></li>
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Timestep size.</p></li>
+<li><p><strong>underRelaxation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Usually a value between <cite>0</cite> and <cite>1</cite> or <cite>None</cite> in the case of no
 under-relaxation</p></li>
 <li><p><strong>residualFn</strong> (<em>function</em>) – Takes <cite>var</cite>, <cite>matrix</cite>, and <cite>RHSvector</cite> arguments, used to
 customize the residual calculation.</p></li>
@@ -335,9 +336,9 @@ the old value and holds the solution on completion.</p></li>
 <li><p><strong>solver</strong> (<a class="reference internal" href="fipy.solvers.solver.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><em>Solver</em></a>) – Iterative solver to be used to solve the linear system of
 equations.  The default sovler depends on the solver package
 selected.</p></li>
-<li><p><strong>boundaryConditions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="fipy.boundaryConditions.boundaryCondition.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>) – </p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Timestep size.</p></li>
-<li><p><strong>underRelaxation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Usually a value between <cite>0</cite> and <cite>1</cite> or <cite>None</cite> in the case of no
+<li><p><strong>boundaryConditions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="fipy.boundaryConditions.boundaryCondition.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>) – </p></li>
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Timestep size.</p></li>
+<li><p><strong>underRelaxation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Usually a value between <cite>0</cite> and <cite>1</cite> or <cite>None</cite> in the case of no
 under-relaxation</p></li>
 <li><p><strong>residualFn</strong> (<em>function</em>) – Takes <cite>var</cite>, <cite>matrix</cite>, and <cite>RHSvector</cite> arguments, used to
 customize the residual calculation.</p></li>
@@ -374,9 +375,9 @@ the old value and holds the solution on completion.</p></li>
 <li><p><strong>solver</strong> (<a class="reference internal" href="fipy.solvers.solver.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><em>Solver</em></a>) – Iterative solver to be used to solve the linear system of
 equations.  The default sovler depends on the solver package
 selected.</p></li>
-<li><p><strong>boundaryConditions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="fipy.boundaryConditions.boundaryCondition.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>) – </p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Timestep size.</p></li>
-<li><p><strong>underRelaxation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Usually a value between <cite>0</cite> and <cite>1</cite> or <cite>None</cite> in the case of no
+<li><p><strong>boundaryConditions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="fipy.boundaryConditions.boundaryCondition.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>) – </p></li>
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Timestep size.</p></li>
+<li><p><strong>underRelaxation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Usually a value between <cite>0</cite> and <cite>1</cite> or <cite>None</cite> in the case of no
 under-relaxation</p></li>
 <li><p><strong>residualFn</strong> (<em>function</em>) – Takes <cite>var</cite>, <cite>matrix</cite>, and <cite>RHSvector</cite> arguments, used to
 customize the residual calculation.</p></li>
@@ -406,8 +407,8 @@ the old value and holds the solution on completion.</p></li>
 <li><p><strong>solver</strong> (<a class="reference internal" href="fipy.solvers.solver.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><em>Solver</em></a>) – Iterative solver to be used to solve the linear system of
 equations.  The default sovler depends on the solver package
 selected.</p></li>
-<li><p><strong>boundaryConditions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="fipy.boundaryConditions.boundaryCondition.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>) – </p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Timestep size.</p></li>
+<li><p><strong>boundaryConditions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="fipy.boundaryConditions.boundaryCondition.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>) – </p></li>
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Timestep size.</p></li>
 </ul>
 </dd>
 </dl>
@@ -427,16 +428,16 @@ the old value and holds the solution on completion.</p></li>
 <li><p><strong>solver</strong> (<a class="reference internal" href="fipy.solvers.solver.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><em>Solver</em></a>) – Iterative solver to be used to solve the linear system of
 equations.  The default sovler depends on the solver package
 selected.</p></li>
-<li><p><strong>boundaryConditions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="fipy.boundaryConditions.boundaryCondition.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>) – </p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Timestep size.</p></li>
-<li><p><strong>underRelaxation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Usually a value between <cite>0</cite> and <cite>1</cite> or <cite>None</cite> in the case of no
+<li><p><strong>boundaryConditions</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="fipy.boundaryConditions.boundaryCondition.html#fipy.boundaryConditions.boundaryCondition.BoundaryCondition" title="fipy.boundaryConditions.boundaryCondition.BoundaryCondition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>) – </p></li>
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Timestep size.</p></li>
+<li><p><strong>underRelaxation</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Usually a value between <cite>0</cite> and <cite>1</cite> or <cite>None</cite> in the case of no
 under-relaxation</p></li>
 <li><p><strong>residualFn</strong> (<em>function</em>) – Takes <cite>var</cite>, <cite>matrix</cite>, and <cite>RHSvector</cite> arguments, used to
 customize the residual calculation.</p></li>
-<li><p><strong>cacheResidual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – If <cite>True</cite>, calculate and store the residual vector
+<li><p><strong>cacheResidual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – If <cite>True</cite>, calculate and store the residual vector
 <span class="math notranslate nohighlight">\(\vec{r}=\mathsf{L}\vec{x} - \vec{b}\)</span> in the
 <cite>residualVector</cite> member of <cite>Term</cite></p></li>
-<li><p><strong>cacheError</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – If <cite>True</cite>, use the residual vector <span class="math notranslate nohighlight">\(\vec{r}\)</span> to solve
+<li><p><strong>cacheError</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – If <cite>True</cite>, use the residual vector <span class="math notranslate nohighlight">\(\vec{r}\)</span> to solve
 <span class="math notranslate nohighlight">\(\mathsf{L}\vec{e}=\vec{r}\)</span> for the error vector
 <span class="math notranslate nohighlight">\(\vec{e}\)</span> and store it in the <cite>errorVector</cite> member of
 <cite>Term</cite></p></li>
@@ -457,7 +458,7 @@ customize the residual calculation.</p></li>
 
 
                 <div class='last-updated'>
-                Last updated on Sep 07, 2023.
+                Last updated on Oct 05, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -467,7 +468,7 @@ customize the residual calculation.</p></li>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+334.g6770de19d
+Version 3.4.4+342.g851e645b6
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

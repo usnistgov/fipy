@@ -35,20 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.tools.numerix &#8212; FiPy 3.4.4+334.g6770de19d documentation</title>
+    <title>fipy.tools.numerix &#8212; FiPy 3.4.4+342.g851e645b6 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=474eccc4"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=60691771"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+334.g6770de19d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+342.g851e645b6 documentation" href="../contents.html" />
     <link rel="up" title="fipy.tools" href="fipy.tools.html" />
     <link rel="next" title="fipy.tools.parser" href="fipy.tools.parser.html" />
     <link rel="prev" title="fipy.tools.logging" href="fipy.tools.logging.html" />
@@ -59,6 +59,7 @@
   <link rel="stylesheet" href="https://pages.nist.gov/nist-header-footer/css/nist-combined.css">
   <script src="https://code.jquery.com/jquery-3.6.2.min.js" type="text/javascript" defer="defer"></script>
   <script src="https://pages.nist.gov/nist-header-footer/js/nist-header-footer.js" type="text/javascript" defer="defer"></script>
+
 
   </head>
 <!--  <body role="document">-->
@@ -118,9 +119,9 @@
 <p>Replacement module for NumPy</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p>This module should be the only place in the code where <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.25)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> is
+<p>This module should be the only place in the code where <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.26)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> is
 explicitly imported and you should always import this module and not
-<a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.25)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> in your own code. The documentation for <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.25)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> remains
+<a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.26)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> in your own code. The documentation for <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v1.26)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> remains
 canonical for all functions and classes not explicitly documented here.</p>
 </div>
 <p>The functions provided in this module replace and augment the <cite>NumPy</cite> module.
@@ -256,7 +257,7 @@ the <span class="math notranslate nohighlight">\(L^2\)</span> norm of <span clas
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a</strong> (<em>array_like</em>) – Input array or object that can be converted to an array.</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Axis along which an logical AND is performed.
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Axis along which an logical AND is performed.
 The default (<cite>axis</cite> = <cite>None</cite>) is to perform a logical AND
 over a flattened input array. <cite>axis</cite> may be negative, in which
 case it counts from the last to the first axis.</p></li>
@@ -292,7 +293,7 @@ element of <cite>second</cite>.</p>
 <span class="sig-prename descclassname"><span class="pre">fipy.tools.numerix.</span></span><span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.numerix.dot" title="Permalink to this definition">¶</a></dt>
 <dd><p>return array of vector dot-products of <cite>v1</cite> and <cite>v2</cite>
 for arrays <cite>a1</cite> and <cite>a2</cite> of vectors <cite>v1</cite> and <cite>v2</cite></p>
-<p>We can’t use <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dot.html#numpy.dot" title="(in NumPy v1.25)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.dot()</span></code></a> on an array of vectors</p>
+<p>We can’t use <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dot.html#numpy.dot" title="(in NumPy v1.26)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.dot()</span></code></a> on an array of vectors</p>
 <p>Test that <cite>Variables</cite> are returned as <cite>Variables</cite>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.meshes</span> <span class="kn">import</span> <span class="n">Grid2D</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -490,14 +491,14 @@ dimension is displayed with additional bracket divisions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_line_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Maximum number of characters used in a single line.  Default is
+<li><p><strong>max_line_width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Maximum number of characters used in a single line.  Default is
 <cite>sys.output_line_width</cite> or 77.</p></li>
-<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of digits after the decimal point.  Default is
+<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Number of digits after the decimal point.  Default is
 <cite>sys.float_output_precision</cite> or 8.</p></li>
-<li><p><strong>suppress_small</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Whether small values should be suppressed (and output as <cite>0</cite>).
+<li><p><strong>suppress_small</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Whether small values should be suppressed (and output as <cite>0</cite>).
 Default is <cite>sys.float_output_suppress_small</cite> or <cite>False</cite>.</p></li>
-<li><p><strong>separator</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – What character string to place between two numbers.</p></li>
-<li><p><strong>array_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – <em>unused</em></p></li>
+<li><p><strong>separator</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – What character string to place between two numbers.</p></li>
+<li><p><strong>array_output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – <em>unused</em></p></li>
 </ul>
 </dd>
 </dl>
@@ -507,7 +508,7 @@ Default is <cite>sys.float_output_suppress_small</cite> or <cite>False</cite>.</
 
 
                 <div class='last-updated'>
-                Last updated on Sep 07, 2023.
+                Last updated on Oct 05, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -517,7 +518,7 @@ Default is <cite>sys.float_output_suppress_small</cite> or <cite>False</cite>.</
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+334.g6770de19d
+Version 3.4.4+342.g851e645b6
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

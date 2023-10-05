@@ -35,19 +35,19 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.tools &#8212; FiPy 3.4.4+334.g6770de19d documentation</title>
+    <title>fipy.tools &#8212; FiPy 3.4.4+342.g851e645b6 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=474eccc4"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=60691771"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+334.g6770de19d documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+342.g851e645b6 documentation" href="../contents.html" />
     <link rel="up" title="fipy" href="fipy.html" />
     <link rel="next" title="fipy.tools.comms" href="fipy.tools.comms.html" />
     <link rel="prev" title="fipy.tests.testProgram" href="fipy.tests.testProgram.html" />
@@ -58,6 +58,7 @@
   <link rel="stylesheet" href="https://pages.nist.gov/nist-header-footer/css/nist-combined.css">
   <script src="https://code.jquery.com/jquery-3.6.2.min.js" type="text/javascript" defer="defer"></script>
   <script src="https://pages.nist.gov/nist-header-footer/js/nist-header-footer.js" type="text/javascript" defer="defer"></script>
+
 
   </head>
 <!--  <body role="document">-->
@@ -129,7 +130,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.tools.PhysicalField">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.tools.</span></span><span class="sig-name descname"><span class="pre">PhysicalField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.PhysicalField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Field or quantity with units.</p>
 <p>Physical Fields can be constructed in one of two ways:</p>
 <blockquote>
@@ -1300,14 +1301,14 @@ is closed unless the <cite>delete</cite> argument is set to False.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – As for mkstemp</p></li>
-<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – As for mkstemp</p></li>
-<li><p><strong>dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – As for mkstemp</p></li>
-<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The mode argument to io.open (default “w+b”)</p></li>
-<li><p><strong>buffering</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The buffer size argument to io.open (default -1)</p></li>
-<li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>None</em>) – The encoding argument to io.open (default None)</p></li>
-<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>None</em>) – The newline argument to io.open (default None)</p></li>
-<li><p><strong>delete</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Whether the file is deleted on close (default True)</p></li>
+<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – As for mkstemp</p></li>
+<li><p><strong>suffix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – As for mkstemp</p></li>
+<li><p><strong>dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – As for mkstemp</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The mode argument to io.open (default “w+b”)</p></li>
+<li><p><strong>buffering</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – The buffer size argument to io.open (default -1)</p></li>
+<li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><em>None</em>) – The encoding argument to io.open (default None)</p></li>
+<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><em>None</em>) – The newline argument to io.open (default None)</p></li>
+<li><p><strong>delete</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Whether the file is deleted on close (default True)</p></li>
 <li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><em>CommWrapper</em></a>) – MPI communicator describing ranks to share with.  A duck-typed
 object with <cite>procID</cite> and <cite>Nproc</cite> attributes is sufficient.</p></li>
 </ul>
@@ -1318,7 +1319,7 @@ object with <cite>procID</cite> and <cite>Nproc</cite> attributes is sufficient.
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference external" href="https://docs.python.org/3/library/tempfile.html#tempfile.NamedTemporaryFile" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tempfile.NamedTemporaryFile</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/tempfile.html#tempfile.mkstemp" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tempfile.mkstemp</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/io.html#io.open" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io.open</span></code></a></p>
+<p><a class="reference external" href="https://docs.python.org/3/library/tempfile.html#tempfile.NamedTemporaryFile" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tempfile.NamedTemporaryFile</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/tempfile.html#tempfile.mkstemp" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tempfile.mkstemp</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/io.html#io.open" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io.open</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -1416,7 +1417,7 @@ object with <cite>procID</cite> and <cite>Nproc</cite> attributes is sufficient.
 
 
                 <div class='last-updated'>
-                Last updated on Sep 07, 2023.
+                Last updated on Oct 05, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -1426,7 +1427,7 @@ object with <cite>procID</cite> and <cite>Nproc</cite> attributes is sufficient.
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+334.g6770de19d
+Version 3.4.4+342.g851e645b6
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

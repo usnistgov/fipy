@@ -35,20 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using FiPy &#8212; FiPy 3.4.4+334.g6770de19d documentation</title>
+    <title>Using FiPy &#8212; FiPy 3.4.4+342.g851e645b6 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=474eccc4"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=60691771"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+334.g6770de19d documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.4+342.g851e645b6 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Frequently Asked Questions" href="FAQ.html" />
     <link rel="prev" title="Viewers" href="VIEWERS.html" />
@@ -59,6 +59,7 @@
   <link rel="stylesheet" href="https://pages.nist.gov/nist-header-footer/css/nist-combined.css">
   <script src="https://code.jquery.com/jquery-3.6.2.min.js" type="text/javascript" defer="defer"></script>
   <script src="https://pages.nist.gov/nist-header-footer/js/nist-header-footer.js" type="text/javascript" defer="defer"></script>
+
 
   </head>
 <!--  <body role="document">-->
@@ -148,7 +149,7 @@ Python can be obtained from the <span id="id3">[<a class="reference internal" hr
 <section id="logging">
 <span id="id4"></span><h2>Logging<a class="headerlink" href="#logging" title="Permalink to this heading">¶</a></h2>
 <p>Diagnostic information about a <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> run can be obtained using the
-<a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.11)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> module.  For example, at the beginning of your script, you
+<a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.12)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> module.  For example, at the beginning of your script, you
 can add:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">logging</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;fipy&quot;</span><span class="p">)</span>
@@ -335,7 +336,7 @@ with the <a class="reference internal" href="SOLVERS.html#scipy"><span class="st
 <p>You can set any of the following environment variables in the manner
 appropriate for your shell. If you are not running in a shell (<em>e.g.</em>,
 you are invoking <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> scripts from within <a class="reference internal" href="glossary.html#term-IPython"><span class="xref std std-term">IPython</span></a> or IDLE),
-you can set these variables via the <a class="reference external" href="https://docs.python.org/3/library/os.html#os.environ" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">os.environ</span></code></a> dictionary,
+you can set these variables via the <a class="reference external" href="https://docs.python.org/3/library/os.html#os.environ" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">os.environ</span></code></a> dictionary,
 but you must do so before importing anything from the <a class="reference internal" href="generated/fipy.html#module-fipy" title="fipy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code></a>
 package.</p>
 <dl class="std envvar">
@@ -368,7 +369,7 @@ for debugging.</p>
 <dt class="sig sig-object std" id="envvar-FIPY_LOG_CONFIG">
 <span class="sig-name descname"><span class="pre">FIPY_LOG_CONFIG</span></span><a class="headerlink" href="#envvar-FIPY_LOG_CONFIG" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specifies a <a class="reference internal" href="glossary.html#term-JSON"><span class="xref std std-term">JSON</span></a>-formatted logging configuration file, suitable
-for passing to <a class="reference external" href="https://docs.python.org/3/library/logging.config.html#logging.config.dictConfig" title="(in Python v3.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">logging.config.dictConfig()</span></code></a>.  Example configuration
+for passing to <a class="reference external" href="https://docs.python.org/3/library/logging.config.html#logging.config.dictConfig" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">logging.config.dictConfig()</span></code></a>.  Example configuration
 files can be found in <code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/fipy/tools/logging/</span></code>.</p>
 </dd></dl>
 
@@ -1133,7 +1134,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
 
 
                 <div class='last-updated'>
-                Last updated on Sep 07, 2023.
+                Last updated on Oct 05, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -1143,7 +1144,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+334.g6770de19d
+Version 3.4.4+342.g851e645b6
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
