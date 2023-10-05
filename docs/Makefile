@@ -19,4 +19,7 @@ help:
 %: Makefile
 	rst2latex.py --template="$(SOURCEDIR)/_templates/empty.tex" "$(SOURCEDIR)/LICENSE.rst" > "$(SOURCEDIR)/LICENSE.tex.txt"
 	rst2latex.py --template="$(SOURCEDIR)/_templates/empty.tex" "$(SOURCEDIR)/DISCLAIMER.rst" > "$(SOURCEDIR)DISCLAIMER.tex.txt"
+	pwd
+	ls
+	ls "$(SOURCEDIR)"
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
