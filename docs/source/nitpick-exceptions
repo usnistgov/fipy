@@ -1,0 +1,129 @@
+# fipy.matrices
+py:class fipy.matrices.sparseMatrix._SparseMatrix
+
+# fipy.meshes
+py:class fipy.meshes.periodicGrid2D._BasePeriodicGrid2D
+py:class fipy.meshes.periodicGrid3D._BasePeriodicGrid3D
+py:class fipy.meshes.gmshImport.Gmsh2D
+py:class fipy.meshes.gmshImport.Gmsh3D
+py:class fipy.meshes.grid1D.Grid1D
+py:class fipy.meshes.grid2D.Grid2D
+py:class fipy.meshes.face.Face
+py:meth fipy.meshes.face.Face.getCenters
+py:meth fipy.meshes.mesh.Mesh.getCells
+py:meth fipy.meshes.mesh.Mesh.getFaces
+py:mod fipy.meshes.numMesh
+py:class fipy.meshes.gmshMesh.GmshImporter2D
+py:class fipy.meshes.gmshMesh.GmshImporter3D
+py:class fipy.meshes.gmshMesh.GmshImporter2DIn3DSpace
+
+# fipy.solvers
+py:class fipy.solvers.pysparseMatrixSolver._PysparseMatrixSolver
+py:class fipy.solvers.scipy.scipyKrylovSolver._ScipyKrylovSolver
+py:class fipy.solvers.scipy.scipySolver._ScipySolver
+
+# fipy.terms
+py:class fipy.terms.nonDiffusionTerm._NonDiffusionTerm
+py:class fipy.terms.abstractDiffusionTerm._AbstractDiffusionTerm
+py:class fipy.terms.abstractConvectionTerm._AbstractConvectionTerm
+py:class fipy.terms.abstractUpwindConvectionTerm._AbstractUpwindConvectionTerm
+py:class fipy.terms.asymmetricConvectionTerm._AsymmetricConvectionTerm
+py:class fipy.terms.explicitSourceTerm._ExplicitSourceTerm
+py:class fipy.terms.equation.Equation
+py:class SteadyConvectionDiffusionScEquation
+py:class fipy.terms.convectionTerm.ConvectionTerm
+py:class fipy.terms.term.implicitSourceTerm.ImplicitSourceTerm
+
+# fipy.tests
+py:class _SelectiveDocTestParser
+py:class setuptools.command.test.test
+
+# fipy.tools
+py:class PhysicalQuantity
+
+# fipy.tools.dump
+py:class file
+
+# fipy.tools.sharedtempfile.SharedTemporaryFile
+py:class file object
+py:class file-like object
+
+# fipy.variables
+py:class fipy.variables.meshVariable._MeshVariable
+py:class fipy.variables.cellToFaceVariable._CellToFaceVariable
+py:class fipy.variables.vectorCellVariable.VectorCellVariable
+py:class fipy.variables.vectorFaceVariable.VectorFaceVariable
+py:class fipy.varibles.meshVariable.MeshVariable
+
+# fipy.viewers
+py:class fipy.viewers.matplotlibViewer.matplotlib2DViewer.AbstractMatplotlib2DViewer
+py:class fipy.viewers.viewer.Viewer
+py:class ~fipy.viewers.viewer.AbstractViewer
+py:func fipy.viewers.make
+
+# fipy.fake
+py:func fn(*args, **kwargs)
+py:func fn
+py:mod fipy.package
+py:mod fipy.package.subpackage
+py:class object.Object
+py:meth __init__
+py:mod example.something.input
+py:exc eq
+
+# fipy.archaic
+py:class Iterator
+py:meth solve
+py:mod equations.stdyConvDiffScEquation
+py:class SteadyConvectionDiffusionScEquation
+
+# examples
+py:mod examples.phase.binary
+py:mod examples.cahnHilliard.mesh2D
+py:class examples.levelSet.electroChem.adsorbingSurfactantEquation.AdsorbingSurfactantEquation
+py:func examples.levelSet.electroChem.leveler.runLeveler
+py:func examples.levelSet.electroChem.simpleTrenchSystem.runSimpleTrenchSystem
+
+# numpy-like documentation
+
+py:class function
+py:class optional
+py:class array_like
+py:class ndarray
+
+# other
+py:mod weave
+py:mod weave.blitz
+py:mod scipy
+py:mod tvtk
+py:mod enthought.tvtk
+py:mod lsmlib
+py:mod matplotlib
+py:mod mayavi
+py:mod pysparse
+py:func numpy.sin
+py:class mayavi.plugins.app.Mayavi
+py:func numerix.max
+py:func numerix.min
+py:mod Numeric
+py:func streamplot
+py:class future.types.newobject.newobject
+
+# Python exceptions
+py:class exceptions.Exception
+py:class exceptions.NotImplementedError
+py:class exceptions.IndexError
+py:class exceptions.TypeError
+py:class exceptions.Warning
+py:exc ImportError: No module named equations.stdyConvDiffScEquation
+py:exc NameError: name 'SteadyConvectionDiffusionScEquation' is not defined
+py:exc NameError: name 'eq' is not defined
+py:exc NameError: name 'it' is not defined
+py:exc ImportError: No module named grid2DGistViewer
+py:exc DeprecationWarning
+
+# Python xml
+py:class xml.dom.minidom.Document
+
+# Python unittest
+py:class unittest.main.TestProgram

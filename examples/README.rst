@@ -1,5 +1,3 @@
-.. _part:examples:
-
 ========
 Examples
 ========
@@ -56,18 +54,6 @@ In addition to those presented in this manual, there are dozens of other
 files in the :file:`examples/` directory, that demonstrate other uses of FiPy.
 If these examples do not help you construct your own problem scripts,
 please `contact us`_.
-
-.. toctree::
-   :maxdepth: 2
-
-   diffusion/index
-   convection/index
-   phase/index
-   levelSet/index
-   cahnHilliard/index
-   flow/index
-   reactiveWetting/index
-   updating/index
 
 
 .. _Python:         http://www.python.org/

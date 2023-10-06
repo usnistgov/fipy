@@ -1,12 +1,12 @@
 from __future__ import unicode_literals
-from fipy.variables.meshVariable import _MeshVariable
+from fipy.variables.meshVariable import MeshVariable
 from fipy.tools import numerix
 
 __all__ = ["FaceVariable"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class FaceVariable(_MeshVariable):
+class FaceVariable(MeshVariable):
     @property
     def _variableClass(self):
         return FaceVariable
@@ -26,7 +26,7 @@ class FaceVariable(_MeshVariable):
         if other is None:
             return FaceVariable
 
-        return _MeshVariable._getArithmeticBaseClass(self, other)
+        return MeshVariable._getArithmeticBaseClass(self, other)
 
     def copy(self):
         return self._getArithmeticBaseClass()(mesh=self.mesh,
@@ -40,7 +40,7 @@ class FaceVariable(_MeshVariable):
                                     self._globalOverlappingIDs[..., ownedFaceIDs])
 
     def setValue(self, value, unit = None, where = None):
-        _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
+        MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
 
     @property
     def divergence(self):

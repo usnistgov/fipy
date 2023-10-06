@@ -82,7 +82,7 @@ import sys
 __all__ = list(sys.modules['numpy'].__dict__.setdefault('__all__', []))
 __all__.extend(["NUMERIX", "NewAxis", "MA", "numpy_version"])
 __all__.extend(sorted(["getUnit", "put", "reshape", "getShape",
-                       "rank", "sum", "isFloat", "isInt", "tostring", "dot",
+                       "rank", "sum", "tostring", "dot",
                        "sqrtDot", "nearest", "allequal", "allclose", "all",
                        "isclose", "take", "indices", "empty", "loadtxt",
                        "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"],
@@ -100,6 +100,10 @@ def _isPhysical(arr):
     return isinstance(arr, Variable) or isinstance(arr, PhysicalField)
 
 def getUnit(arr):
+    """Return the unit of `arr`.
+
+    If `arr` has no units, returns 1.
+    """
     if hasattr(arr, "getUnit") and callable(arr.getUnit):
         return arr.unit
     else:
@@ -222,10 +226,11 @@ def rank(a):
 
     .. note::
 
-       The rank of a `MeshVariable` is for any single element. E.g., A
-       `CellVariable` containing scalars at each cell, and defined on a 9
-       element `Grid1D`, has rank 0. If it is defined on a 3x3 `Grid2D`, it is
-       still rank 0.
+       The rank of a :class:`~fipy.variables.meshVariable.MeshVariable` is
+       for any single element.  E.g., A
+       :class:`~fipy.variables.cellVariable.CellVariable` containing
+       scalars at each cell, and defined on a 9 element `Grid1D`, has rank
+       0.  If it is defined on a 3x3 `Grid2D`, it is still rank 0.
     """
     if hasattr(a, "rank"):
         return a.rank
@@ -250,13 +255,13 @@ def sum(arr, axis=0):
                 axis = 0
             return NUMERIX.tensordot(NUMERIX.ones(arr.shape[axis], 'l'), arr, (0, axis))
 
-def isFloat(arr):
+def _isFloat(arr):
     if isinstance(arr, NUMERIX.ndarray):
         return NUMERIX.issubclass_(arr.dtype.type, NUMERIX.floating)
     else:
         return NUMERIX.issubclass_(arr.__class__, float)
 
-def isInt(arr):
+def _isInt(arr):
     if isinstance(arr, NUMERIX.ndarray):
         return NUMERIX.issubclass_(arr.dtype.type, NUMERIX.integer)
     else:
@@ -320,7 +325,7 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
                                     max_line_width=max_line_width,
                                     suppress_small=suppress_small,
                                     separator=separator)
-    elif isFloat(arr):
+    elif _isFloat(arr):
         try:
             ## this is for numpy 1.14 and above
             ## why has the interface changed *again*?
@@ -337,7 +342,7 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
                 from numpy.core.arrayprint import _floatFormat, _formatFloat
                 return _formatFloat(arr, format='%%1.%df' % precision)
 
-    elif isInt(arr):
+    elif _isInt(arr):
         try:
             ## this is for numpy 1.7 and above
             ## why has the interface changed again?
@@ -1009,7 +1014,7 @@ if not hasattr(NUMERIX, "in1d"):
         else:
             return flag[indx][rev_idx]
 
-def in1dMA(ar1, ar2, assume_unique=False, invert=False):
+def _in1dMA(ar1, ar2, assume_unique=False, invert=False):
     """
     Test whether each unmasked element of an array is also present and
     unmasked in a second array.
@@ -1063,14 +1068,14 @@ def in1dMA(ar1, ar2, assume_unique=False, invert=False):
         res[:] = out
     return res
 
-def invert_indices(arr, axis=-1):
+def _invert_indices(arr, axis=-1):
     """Invert an index array
 
     Given an array of indices, return the locations in the array along
     `axis` of each index.
 
     >>> a = array([[0, 2], [1, 3], [0, 3], [3, 4]])
-    >>> print(invert_indices(a, axis=0))
+    >>> print(_invert_indices(a, axis=0))
     [[0 2 --]
      [1 -- --]
      [0 -- --]
@@ -1078,7 +1083,7 @@ def invert_indices(arr, axis=-1):
      [3 -- --]]
 
     >>> a = MA.masked_values([[0, 1, 0, 3], [2, 3, 3, -1], [-1, 4, -1, -1]], -1)
-    >>> print(invert_indices(a, axis=-1))
+    >>> print(_invert_indices(a, axis=-1))
     [[0 1 0 1 1]
      [2 -- -- 2 --]
      [-- -- -- 3 --]]

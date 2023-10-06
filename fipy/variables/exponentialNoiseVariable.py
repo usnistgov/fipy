@@ -65,12 +65,12 @@ class ExponentialNoiseVariable(NoiseVariable):
     >>> print(abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15)
     1
 
-    .. image:: fipy/variables/exp.*
+    .. image:: /figures/fipy/variables/exp.*
       :scale: 25
       :align: center
       :alt: random values with an exponential distribution
 
-    .. image:: fipy/variables/exp-histogram.*
+    .. image:: /figures/fipy/variables/exp-histogram.*
       :scale: 25
       :align: center
       :alt: histogram of random values with an exponential distribution

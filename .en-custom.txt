@@ -111,6 +111,7 @@ Fick's
 fipy
 FiPy
 FiPy's
+fipy.tools.comms.commWrapper.CommWrapper
 FIXME
 FV
 FVM
@@ -211,11 +212,13 @@ mol
 MPI
 mpi4py
 MSED
+MSH
 Multicellular
 multicomponent
 multigrid
 multiline
 multiscale
+multi-phase
 multi-variable
 namespace
 NaN
@@ -223,7 +226,10 @@ Navier-Stokes
 neighbors'
 Neumann
 NIST
+NISTtheDocs2Death.yml
 Nixpkgs
+nix.yml
+noindex
 NVIDIA
 numerix
 numpy
@@ -237,6 +243,7 @@ osx
 overbar
 overpotential
 O'Beirne
+parallelComm
 parallelization
 parallelize
 parallelizing
@@ -249,13 +256,16 @@ pdf
 Péclet
 PEG-SPS-Cl
 Peric
+performant
 PETSc
 petsc4py
+phiCoupled
 photovoltaics
 PID
 pipelines.yml
 plugin
 PNG
+POS
 POSIX
 pre-assembled
 pre-built
@@ -295,6 +305,7 @@ Scikit-fmm
 scipy
 SciPy
 sctype
+serialComm
 sha256
 sliceable
 smoothers
@@ -305,6 +316,7 @@ SSOR
 StackOverflow
 stackoverflow
 stents
+stiffnesses
 subdirectory
 submicrometer
 submodule
@@ -322,6 +334,7 @@ symlog
 S.I.
 terms'
 Tcl
+TCoupled
 timestep
 timesteps
 TMS
@@ -356,6 +369,7 @@ Waals
 webpage
 whitespace
 Win32
+workflows
 XP
 Xu
 XY
@@ -379,4 +393,5 @@ Zhitenev
 'int32'
 'int64'
 's
+.github
 ...please

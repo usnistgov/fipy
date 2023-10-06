@@ -6,7 +6,7 @@ import warnings
 
 from fipy.tools import numerix
 
-from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
+from fipy.viewers.matplotlibViewer.abstractMatplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["Matplotlib2DContourViewer"]
 from future.utils import text_to_native_str
@@ -45,11 +45,11 @@ class Matplotlib2DContourViewer(AbstractMatplotlib2DViewer):
         number : int, optional
             Determines the number and positions of the contour lines /
             regions. (deprecated, use `levels=`).
-        levels : int or array-like, optional
+        levels : int or array_like, optional
             Determines the number and positions of the contour lines /
             regions.  If an int `n`, tries to automatically choose no more
             than `n+1` "nice" contour levels over the range of `vars`.  If
-            array-like, draw contour lines at the specified levels.  The
+            array_like, draw contour lines at the specified levels.  The
             values must be in increasing order.  E.g. to draw just the zero
             contour pass ``levels=[0]``.
         figaspect : float

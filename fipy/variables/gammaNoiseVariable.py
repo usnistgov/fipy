@@ -70,12 +70,12 @@ class GammaNoiseVariable(NoiseVariable):
     >>> print(abs(noise.faceGrad.divergence.cellVolumeAverage) < 5e-15)
     1
 
-    .. image:: fipy/variables/gamma.*
+    .. image:: /figures/fipy/variables/gamma.*
       :scale: 25
       :align: center
       :alt: random values with a gamma distribution
 
-    .. image:: fipy/variables/gamma-histogram.*
+    .. image:: /figures/fipy/variables/gamma-histogram.*
       :scale: 25
       :align: center
       :alt: histogram of random values with a gamma distribution

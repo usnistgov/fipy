@@ -1,7 +1,7 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in
-:mod:`examples.diffusion.convection.exponential1D.mesh1D` with ``nx = 10`` and ``ny = 10``.
+:mod:`examples.convection.exponential1D.mesh1D` with ``nx = 10`` and ``ny = 10``.
 
 >>> from fipy import CellVariable, Tri2D, DiffusionTerm, ExponentialConvectionTerm, Viewer
 >>> from fipy.tools import numerix

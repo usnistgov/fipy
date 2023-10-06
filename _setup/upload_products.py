@@ -26,23 +26,22 @@ class upload_products(Command):
         if self.pdf:
             fname = 'dist/fipy-%s.pdf' % self.distribution.metadata.get_version()
             print("setting permissions of manual...")
-            os.system('chmod -R g+w documentation/_build/latex/fipy.pdf')
+            os.system('chmod -R g+w docs/build/latex/fipy.pdf')
             
             print("linking manual to `dist/`...")
             os.system('mkdir dist/')
-            os.system('ln -f documentation/_build/latex/fipy.pdf %s' % fname)
+            os.system('ln -f docs/build/latex/fipy.pdf %s' % fname)
             
             print("uploading pdf...")
             os.system('rsync -pgoDLC -e ssh %s %s/download/' % (fname, os.environ['FIPY_WWWHOST']))
 
         if self.html:
             print("setting group and ownership of web pages...")
-            os.system('chmod -R g+w documentation/_build/html/')
+            os.system('chmod -R g+w docs/build/html/')
             
             print("uploading web pages...")
             # The -t flag (implicit in -a) is suddenly causing problems
-            # os.system('rsync -aLC -e ssh %s %s'%('documentation/www/', os.environ['FIPY_WWWHOST']))
-            os.system('rsync -rlpgoDLC -e ssh %s %s' % ('documentation/_build/html/', os.environ['FIPY_WWWHOST']))
+            os.system('rsync -rlpgoDLC -e ssh %s %s' % ('docs/build/html/', os.environ['FIPY_WWWHOST']))
 
         if self.tarball:
             fname = 'dist/FiPy-%s.tar.gz' % self.distribution.metadata.get_version()

@@ -1,7 +1,7 @@
 r"""
 This example combines a phase field problem, as given in
-:mod:`examples.elphf.phase.input1D`, with a binary diffusion problem, such as
-described in the ternary example :mod:`examples.elphf.diffusion.input1D`, on a
+:mod:`examples.elphf.phase`, with a binary diffusion problem, such as
+described in the ternary example :mod:`examples.elphf.diffusion.mesh1D`, on a
 1D mesh
 
 >>> from fipy import CellVariable, FaceVariable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, PowerLawConvectionTerm, Viewer
@@ -80,9 +80,9 @@ in the solute and a liquid phase rich in the solvent.
 >>> solvent.standardPotential = numerix.log(.7/.3)
 >>> solvent.barrier = 1.
 
-We create the phase equation as in :mod:`examples.elphf.phase.input1D`
+We create the phase equation as in :mod:`examples.elphf.phase`
 and create the diffusion equations for the different species as in
-:mod:`examples.elphf.diffusion.input1D`
+:mod:`examples.elphf.diffusion.mesh1D`
 
 >>> def makeEquations(phase, substitutionals, interstitials):
 ...     phase.equation = TransientTerm(coeff = 1/phase.mobility) \
@@ -185,7 +185,7 @@ iterating to equilibrium
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
-.. image:: phaseDiffusion/binary.*
+.. image:: /figures/examples/elphf/phaseDiffusion/binary.*
    :scale: 50
    :align: center
    :alt: phase and two concentration fields in equilibrium
@@ -267,7 +267,7 @@ and again iterate to equilibrium
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
-.. image:: phaseDiffusion/quaternary.*
+.. image:: /figures/examples/elphf/phaseDiffusion/quaternary.*
    :scale: 50
    :align: center
    :alt: phase and four concentration fields in equilibrium
@@ -359,7 +359,7 @@ and again iterate to equilibrium
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
-.. image:: phaseDiffusion/ternaryAndElectrons.*
+.. image:: /figures/examples/elphf/phaseDiffusion/ternaryAndElectrons.*
    :scale: 50
    :align: center
    :alt: phase and four concentration fields (one like electrons) in equilibrium

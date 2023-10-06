@@ -55,7 +55,7 @@ One component in this ternary system will be designated the "solvent"
 >>> solvent = ComponentVariable(mesh = mesh, name = 'Cn', value = 1.)
 
 We can create an arbitrary number of components,
-simply by providing a :keyword:`tuple` or :keyword:`list` of components
+simply by providing a :class:`tuple` or :class:`list` of components
 
 >>> substitutionals = [
 ...     ComponentVariable(mesh = mesh, name = 'C1', diffusivity = 1.,

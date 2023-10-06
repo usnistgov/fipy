@@ -1,6 +1,6 @@
-"""
-:term:`FiPy` is an object oriented, partial differential equation (PDE) solver,
-written in :term:`Python`, based on a standard finite volume (FV) approach. The
+"""An object oriented, partial differential equation (PDE) solver
+
+:term:`FiPy` is based on a standard finite volume (FV) approach. The
 framework has been developed in the Materials Science and Engineering Division
 (MSED_) and Center for Theoretical and Computational Materials Science (CTCMS_),
 in the Material Measurement Laboratory (MML_) at the National Institute of
@@ -42,15 +42,20 @@ import os
 import sys
 
 # log uncaught exceptions
-def excepthook(*args):
+def _excepthook(*args):
   _log.error('Uncaught exception:', exc_info=args)
 
-sys.excepthook = excepthook
+sys.excepthook = _excepthook
 
 # configure logging before doing anything else, otherwise we'll miss things
 if 'FIPY_LOG_CONFIG' in os.environ:
     with open(os.environ['FIPY_LOG_CONFIG'], mode='r') as fp:
         logging.config.dictConfig(json.load(fp))
+else:
+    # Needed for Python 2.7 to avoid
+    # 'No handlers could be found for logger "fipy"'.
+    # Should do nothing in Py3k.
+    logging.basicConfig()
 
 _log = logging.getLogger(__name__)
 
@@ -72,16 +77,6 @@ from fipy.tools import *
 from fipy.variables import *
 from fipy.viewers import *
 
-__all__ = []
-__all__.extend(boundaryConditions.__all__)
-__all__.extend(meshes.__all__)
-__all__.extend(solvers.__all__)
-__all__.extend(steppers.__all__)
-__all__.extend(terms.__all__)
-__all__.extend(tools.__all__)
-__all__.extend(variables.__all__)
-__all__.extend(viewers.__all__)
-
 # fipy needs to export raw_input whether or not parallel
 
 input_original = input
@@ -97,11 +92,6 @@ if parallelComm.Nproc > 1:
         else:
             return ""
     input = mpi_input
-
-__all__.extend(['input', 'input_original'])
-
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 _saved_stdout = sys.stdout
 

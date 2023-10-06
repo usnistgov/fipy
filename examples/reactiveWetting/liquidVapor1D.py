@@ -333,7 +333,7 @@ equation. This currently doesn't work properly in :term:`FiPy`.
 >>> print(freeEnergy < 1.5e9)
 True
 
-.. .. bibmissing:: /documentation/refs.bib
+.. .. bibmissing:: /refs.bib
     :sort:
 """
 from __future__ import unicode_literals

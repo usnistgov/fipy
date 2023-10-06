@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from builtins import zip
 __docformat__ = 'restructuredtext'
 
-from fipy.viewers.matplotlibViewer.matplotlibViewer import AbstractMatplotlibViewer
+from fipy.viewers.matplotlibViewer.abstractMatplotlibViewer import AbstractMatplotlibViewer
 
 __all__ = ["Matplotlib1DViewer"]
 from future.utils import text_to_native_str

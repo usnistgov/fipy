@@ -57,7 +57,7 @@ We can now create a :class:`Viewer <~fipy.viewers.viewer.AbstractViewer>` to see
 ...     viewer.plotMesh()
 ...     input("Irregular circular mesh. Press <return> to proceed...")
 
-.. image:: circleMesh.*
+.. image:: /figures/examples/diffusion/circleMesh.*
    :width: 90%
    :align: center
 
@@ -87,7 +87,7 @@ We first step through the transient problem
 ...     if viewer is not None:
 ...         viewer.plot()
 
-.. image:: circleTransient.*
+.. image:: /figures/examples/diffusion/circleTransient.*
    :width: 90%
    :align: center
 
@@ -103,9 +103,9 @@ another application, we could export tab-separated-values with
 
    TSVViewer(vars=(phi, phi.grad)).plot(filename="myTSV.tsv")
 
-.. literalinclude:: myTSV.tsv
+.. literalinclude:: /figures/examples/diffusion/myTSV.tsv
 
-The values are listed at the :class:`~fipy.meshes.cell.Cell` centers.
+The values are listed at the cell centers.
 Particularly for irregular meshes, no specific ordering should be relied upon.
 Vector quantities are listed in multiple columns, one for each mesh dimension.
 
@@ -163,7 +163,7 @@ Display the results if run as a script.
 ...     viewer.plot()
 ...     input("Steady-state diffusion. Press <return> to proceed...")
 
-.. image:: circleSteadyState.*
+.. image:: /figures/examples/diffusion/circleSteadyState.*
    :width: 90%
    :align: center
 """

@@ -39,11 +39,11 @@ __docformat__ = 'restructuredtext'
 from petsc4py import PETSc
 
 from fipy.tools import numerix
-from fipy.tools.comms.abstractCommWrapper import AbstractCommWrapper
+from fipy.tools.comms.commWrapper import CommWrapper
 
 __all__ = ["PETScCommWrapper"]
 
-class PETScCommWrapper(AbstractCommWrapper):
+class PETScCommWrapper(CommWrapper):
     """MPI Communicator wrapper
     
     Encapsulates capabilities needed for PETSc. 

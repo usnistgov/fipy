@@ -21,6 +21,10 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class MatplotlibSparseMatrixViewer(object):
+    """Displays :class:`~fipy.matrices.sparseMatrix._SparseMatrix` objects using Matplotlib_.
+
+    .. _Matplotlib: http://matplotlib.sourceforge.net/
+    """
     def __init__(self, title="Sparsity"):
         self.title = title
 

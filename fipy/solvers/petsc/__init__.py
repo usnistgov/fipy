@@ -13,14 +13,3 @@ DefaultSolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearGMRESSolver
 DummySolver = DummySolver
 GeneralSolver = DefaultSolver
-
-__all__ = ["DefaultSolver",
-           "DummySolver",
-           "DefaultAsymmetricSolver",
-           "GeneralSolver"]
-           
-__all__.extend(linearLUSolver.__all__)
-__all__.extend(linearPCGSolver.__all__)
-__all__.extend(linearGMRESSolver.__all__)
-__all__.extend(linearBicgSolver.__all__)
-__all__.extend(linearCGSSolver.__all__)

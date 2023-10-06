@@ -13,8 +13,8 @@ faces. Exterior faces without constraints are considered to have zero
 outflow. An :class:`~fipy.terms.implicitSourceTerm.ImplicitSourceTerm`
 object will be used to represent this term. The derivative of
 :math:`\phi` can be represented by a
-:class:`~fipy.terms.ConvectionTerm` with a constant unitary velocity
-field from left to right. The following is an example code that
+:class:`~fipy.terms.convectionTerm.ConvectionTerm` with a constant unitary
+velocity field from left to right.  The following is an example code that
 includes a test against the analytical result.
 
 >>> from fipy import CellVariable, Grid1D, DiffusionTerm, PowerLawConvectionTerm, ImplicitSourceTerm, Viewer

@@ -1,7 +1,7 @@
 r"""
 
 This example solves the steady-state convection-diffusion equation as described in
-:mod:`examples.diffusion.convection.exponential1D.input` but with
+:mod:`examples.convection.exponential1D.mesh1D` but with
 :math:`\vec{u} = (-10,)`.
 
 >>> from fipy import CellVariable, Grid1D, DiffusionTerm, ExponentialConvectionTerm, DefaultAsymmetricSolver, Viewer

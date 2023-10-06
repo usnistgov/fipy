@@ -8,7 +8,7 @@ depletion from the bulk. The governing equations are given by,
    c_t &= D c_{xx} \\
    D c_x &= \Gamma k c (1 - \theta) \qquad\text{at $x = 0$} \\
    \intertext{and}
-   c $= c^{\infty} \qquad\text{at $x = L$}
+   c &= c^{\infty} \qquad\text{at $x = L$}
 
 and on the interface
 
@@ -36,7 +36,7 @@ and
 
 .. math::
 
-   c(x) = \frac{c^{\infty} \left[ k \Gamma_0 (1 - \theta) x / D \right]}{1 + k \Gamma_0 (1 - \theta) L / D
+   c(x) = \frac{c^{\infty} \left[ k \Gamma_0 (1 - \theta) x / D \right]}{1 + k \Gamma_0 (1 - \theta) L / D}
 
 Make sure the dimensionless parameter is large enough
 

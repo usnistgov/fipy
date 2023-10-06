@@ -4,7 +4,7 @@ from builtins import object
 from builtins import range
 __docformat__ = 'restructuredtext'
 
-__all__ = ["AbstractMesh"]
+__all__ = ["AbstractMesh", "MeshAdditionError"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
@@ -18,6 +18,7 @@ from fipy.meshes.representations.abstractRepresentation import _AbstractRepresen
 from fipy.meshes.topologies.abstractTopology import _AbstractTopology
 
 class MeshAdditionError(Exception):
+    """:class:`Exception` raised when meshes cannot be concatenated."""
     pass
 
 class AbstractMesh(object):
@@ -101,6 +102,8 @@ class AbstractMesh(object):
 
     @property
     def cellCenters(self):
+        """Coordinates of geometric centers of cells"""
+
         from fipy.variables.cellVariable import CellVariable
         return CellVariable(mesh=self, value=self._scaledCellCenters,
                             rank=1)
@@ -108,7 +111,7 @@ class AbstractMesh(object):
     @property
     def x(self):
         """
-        Equivalent to using :attr:`cellCenters`\ ``[0]``.
+        Equivalent to using :attr:`~fipy.meshes.abstractMesh.AbstractMesh.cellCenters`\ ``[0]``.
 
         >>> from fipy import *
         >>> print(Grid1D(nx=2).x)
@@ -119,7 +122,7 @@ class AbstractMesh(object):
     @property
     def y(self):
         """
-        Equivalent to using :attr:`cellCenters`\ ``[1]``.
+        Equivalent to using :attr:`~fipy.meshes.abstractMesh.AbstractMesh.cellCenters`\ ``[1]``.
 
         >>> from fipy import *
         >>> print(Grid2D(nx=2, ny=2).y)
@@ -137,7 +140,7 @@ class AbstractMesh(object):
     @property
     def z(self):
         """
-        Equivalent to using :attr:`cellCenters`\ ``[2]``.
+        Equivalent to using :attr:`~fipy.meshes.abstractMesh.AbstractMesh.cellCenters`\ ``[2]``.
 
         >>> from fipy import *
         >>> print(Grid3D(nx=2, ny=2, nz=2).z)
@@ -1145,7 +1148,7 @@ class AbstractMesh(object):
         return ug
 
     def _toVTK3D(self, arr, rank=1):
-        if arr.dtype.name is 'bool':
+        if arr.dtype.name == 'bool':
             # VTK can't do bool, and the exception isn't properly
             # thrown back to the user
             arr = arr.astype('int')

@@ -55,9 +55,7 @@ __all__ = [text_to_native_str(n) for n in __all__]
 # Class definitions
 
 class PhysicalField(object):
-    """
-    Physical field or quantity with units
-    """
+    """Field or quantity with units."""
 
 
     def __init__(self, value, unit = None, array = None):
@@ -1367,9 +1365,7 @@ class PhysicalField(object):
         return MA.allequal(self.value, other.value)
 
 class PhysicalUnit(object):
-    """
-    A `PhysicalUnit` represents the units of a `PhysicalField`.
-    """
+    """The units of a `PhysicalField`."""
 
     def __init__(self, names, factor, powers, offset=0):
         """

@@ -1,3 +1,5 @@
+"""Boundary condition of order 1
+"""
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
@@ -12,10 +14,15 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class FixedFlux(BoundaryCondition):
-    r"""
+    r"""Adds a Neumann contribution to the system of equations.
 
-    The `FixedFlux` boundary condition adds a contribution, equivalent to a
-    fixed flux (Neumann condition), to the equation's RHS vector.  The
+    Implements
+
+    .. math::
+
+       \hat{n}\cdot\vec{J}|_\text{faces} = \text{value}
+
+    The
     contribution, given by `value`, is only added to entries corresponding to
     the specified `faces`, and is weighted by the face areas.
 

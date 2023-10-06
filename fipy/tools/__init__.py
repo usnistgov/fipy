@@ -1,3 +1,16 @@
+"""Utility modules, functions, and values
+
+.. attribute:: serialComm
+    :type: ~fipy.tools.comms.commWrapper.CommWrapper
+
+    Serial MPI communicator when running in parallel.
+
+.. attribute:: parallelComm
+    :type: ~fipy.tools.comms.commWrapper.CommWrapper
+
+    Parallel MPI communicator when running in parallel.
+"""
+
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from builtins import range
@@ -39,9 +52,9 @@ for M in (2, 3):
                          why="not running on processor %d of %d" % (N, M),
                          skipWarning=False)
 
-import fipy.tools.dump
-import fipy.tools.numerix
-import fipy.tools.vector
+from fipy.tools import dump
+from fipy.tools import numerix
+from fipy.tools import vector
 from .dimensions.physicalField import PhysicalField
 from fipy.tools.numerix import *
 from fipy.tools.vitals import Vitals

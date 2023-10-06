@@ -94,7 +94,7 @@ We'll have no substitutional species and no interstitial species in this first e
 ...     enthalpy += component * component.standardPotential
 ...     barrier += component * component.barrier
 
-We linearize the source term in the same way as in :mod:`example.phase.simple.input1D`.
+We linearize the source term in the same way as in :mod:`examples.phase.simple`.
 
 >>> mXi = -(30 * phase * (1. - phase) * enthalpy \
 ...         +  4 * (0.5 - phase) * barrier)
@@ -132,7 +132,7 @@ Since we have only a single component :math:`n`, with :math:`\Delta\mu_n^\circ =
    = \kappa_{\xi}\nabla^2 \xi
    - g'(\xi) W_n
 
-which we know from :mod:`examples.phase.simple.input1D` has the analytical
+which we know from :mod:`examples.phase.simple` has the analytical
 solution
 
 .. math::
@@ -160,7 +160,7 @@ If we are running interactively, we plot the error
 ...                      value = analyticalArray),))
 ...     viewer.plot()
 
-.. image:: phase/error.*
+.. image:: /figures/examples/elphf/phase/error.*
    :scale: 50
    :align: center
    :alt: error in solution to steady-state phase field equation

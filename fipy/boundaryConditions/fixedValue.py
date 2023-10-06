@@ -1,3 +1,5 @@
+"""Boundary condition of order 0
+"""
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
@@ -17,10 +19,15 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class FixedValue(BoundaryCondition):
-    r"""
-    The `FixedValue` boundary condition adds a contribution, equivalent to a
-    fixed value (Dirichlet condition), to the equation's RHS vector and
-    coefficient matrix. The contributions are given by
+    r"""Adds a Dirichlet contribution to the system of equations.
+
+    Implements
+
+    .. math::
+
+       \phi|_\text{faces} = \text{value}
+
+    The contributions are given by
     :math:`-\mathtt{value}\times G_{\text{face}}`
     for the RHS vector and :math:`G_{\text{face}}` for
     the coefficient matrix. The parameter :math:`G_{\text{face}}` represents the

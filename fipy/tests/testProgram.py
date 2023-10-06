@@ -1,11 +1,13 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-__all__ = []
-
 import unittest
 
-class _TestProgram(unittest.TestProgram):
+class TestProgram(unittest.TestProgram):
+    """A command-line program that runs a set of tests
+
+    This is primarily for making test modules conveniently executable.
+    """
     def parseArgs(self, argv):
         import getopt
 ##      inline = 0
@@ -47,6 +49,6 @@ class _TestProgram(unittest.TestProgram):
         if "legacy" in printoptions:
             numerix.set_printoptions(legacy="1.13")
 
-        super(_TestProgram, self).runTests()
+        super(TestProgram, self).runTests()
 
-main = _TestProgram
+main = TestProgram

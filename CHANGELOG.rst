@@ -191,7 +191,7 @@ Fixes
 Version 3.4.1 - 2020-02-14
 --------------------------
 
-This release is primarily for compatibility with :ref:`NumPy` 1.18.
+This release is primarily for compatibility with :mod:`numpy` 1.18.
 
 Pulls
 -----

@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-from .meshVariable import _MeshVariable
+from .meshVariable import MeshVariable
 from ..solvers import _MeshMatrix
 from ..tools import numerix
 from ..tools.decorators import deprecate
@@ -10,7 +10,7 @@ __all__ = ["CellVariable"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class CellVariable(_MeshVariable):
+class CellVariable(MeshVariable):
     """
     Represents the field of values of a variable on a `Mesh`.
 
@@ -33,7 +33,7 @@ class CellVariable(_MeshVariable):
     """
 
     def __init__(self, mesh, name='', value=0., rank=None, elementshape=None, unit=None, hasOld=0):
-        _MeshVariable.__init__(self, mesh=mesh, name=name, value=value,
+        MeshVariable.__init__(self, mesh=mesh, name=name, value=value,
                                rank=rank, elementshape=elementshape, unit=unit)
 
         if hasOld:
@@ -80,7 +80,7 @@ class CellVariable(_MeshVariable):
             >>> print(b)
             [-1]
         """
-        baseClass = _MeshVariable._OperatorVariableClass(self,
+        baseClass = MeshVariable._OperatorVariableClass(self,
                                                          baseClass=baseClass)
 
         class _CellOperatorVariable(baseClass):
@@ -137,10 +137,10 @@ class CellVariable(_MeshVariable):
         matrix = _MeshMatrix(mesh=self.mesh)
         # Don't allow mangling by `_globalToLocalValue()`.
         # matrix._updateGhosts already returns values in correct order
-        _MeshVariable.setValue(self, value=matrix._getGhostedValues(self))
+        MeshVariable.setValue(self, value=matrix._getGhostedValues(self))
 
     def setValue(self, value, unit = None, where = None):
-        _MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
+        MeshVariable.setValue(self, value=self._globalToLocalValue(value), unit=unit, where=where)
 
     def __call__(self, points=None, order=0, nearestCellIDs=None):
         r"""
@@ -198,7 +198,7 @@ class CellVariable(_MeshVariable):
                 raise ValueError('order should be either 0 or 1')
 
         else:
-            return _MeshVariable.__call__(self)
+            return MeshVariable.__call__(self)
 
     @property
     def cellVolumeAverage(self):
@@ -414,7 +414,11 @@ class CellVariable(_MeshVariable):
         return self._faceGrad
 
     @property
-    @deprecate(new_name="grad.arithmeticFaceValue", version=3.3)
+    @deprecate(new_name="~fipy.variables.cellVariable.CellVariable.grad",
+               new_string="use :attr:`%s`\ ``.``\ "
+                          ":attr:`~fipy.variables.cellVariable.CellVariable.arithmeticFaceValue` "
+                          "instead",
+               version=3.3)
     def faceGradAverage(self):
         r"""
         Return :math:`\nabla \phi` as a rank-1 `FaceVariable` using averaging
@@ -499,7 +503,7 @@ class CellVariable(_MeshVariable):
         if other is None:
             return CellVariable
 
-        return _MeshVariable._getArithmeticBaseClass(self, other)
+        return MeshVariable._getArithmeticBaseClass(self, other)
 
 ##pickling
 
@@ -595,7 +599,7 @@ class CellVariable(_MeshVariable):
             # self._requires(value.where) ???
             self._markStale()
         else:
-##            _MeshVariable.constrain(value, where)
+##            MeshVariable.constrain(value, where)
             super(CellVariable, self).constrain(value, where)
 
     def release(self, constraint):
@@ -613,7 +617,7 @@ class CellVariable(_MeshVariable):
         [ 0.5  1.   2.   2.5]
         """
         try:
-            _MeshVariable.release(self, constraint=constraint)
+            MeshVariable.release(self, constraint=constraint)
         except ValueError:
             self.faceConstraints.remove(constraint)
 

@@ -221,10 +221,10 @@ class _AbstractTopology(object):
                 ||
         ```
         """
-        return (numerix.in1dMA(self.mesh.faceCellIDs[0],
-                               self._localNonOverlappingCellIDs).filled(False)
-                | numerix.in1dMA(self.mesh.faceCellIDs[1],
-                                 self._localNonOverlappingCellIDs).filled(False))
+        return (numerix._in1dMA(self.mesh.faceCellIDs[0],
+                                self._localNonOverlappingCellIDs).filled(False)
+                | numerix._in1dMA(self.mesh.faceCellIDs[1],
+                                  self._localNonOverlappingCellIDs).filled(False))
 
     @property
     def _localNonOverlappingFaceIDs(self):
@@ -297,7 +297,7 @@ class _AbstractTopology(object):
         0-------1-------2
         ```
         """
-        return numerix.invert_indices(self.mesh._cellVertexIDs)
+        return numerix._invert_indices(self.mesh._cellVertexIDs)
 
     @property
     def _vertexFaceIDs(self):
@@ -324,7 +324,7 @@ class _AbstractTopology(object):
         0---0---1---1---2
         ```
         """
-        return numerix.invert_indices(self.mesh.faceVertexIDs)
+        return numerix._invert_indices(self.mesh.faceVertexIDs)
 
     # abstract element types mutually understood by FiPy and other meshing systems
     # (VTK, Gmsh, etc.)

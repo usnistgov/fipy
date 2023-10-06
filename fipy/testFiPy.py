@@ -1,4 +1,9 @@
+"""Test suite for :term:`FiPy` modules
+"""
 from __future__ import unicode_literals
+__docformat__ = 'restructuredtext'
+
+
 __all__ = []
 
 from fipy.tests.lateImportTest import _LateImportTestSuite

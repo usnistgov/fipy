@@ -1,1 +1,2 @@
 fipy/_version.py export-subst
+make.bat	text eol=crlf
