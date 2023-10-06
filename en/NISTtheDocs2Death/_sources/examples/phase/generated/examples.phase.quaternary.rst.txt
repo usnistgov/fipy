@@ -1,6 +1,0 @@
-﻿examples.phase.quaternary
-=========================
-
-.. currentmodule:: examples.phase.quaternary
-
-.. automodule:: examples.phase.quaternary

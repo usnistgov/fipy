@@ -1,6 +1,0 @@
-﻿examples.flow.stokesCavity
-==========================
-
-.. currentmodule:: examples.flow.stokesCavity
-
-.. automodule:: examples.flow.stokesCavity

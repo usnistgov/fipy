@@ -1,6 +1,0 @@
-﻿examples.levelSet.advection.circle
-==================================
-
-.. currentmodule:: examples.levelSet.advection.circle
-
-.. automodule:: examples.levelSet.advection.circle

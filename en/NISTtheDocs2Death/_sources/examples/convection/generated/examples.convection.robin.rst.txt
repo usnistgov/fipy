@@ -1,6 +1,0 @@
-﻿examples.convection.robin
-=========================
-
-.. currentmodule:: examples.convection.robin
-
-.. automodule:: examples.convection.robin

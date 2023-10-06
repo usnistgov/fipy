@@ -1,6 +1,0 @@
-﻿examples.phase.polyxtal
-=======================
-
-.. currentmodule:: examples.phase.polyxtal
-
-.. automodule:: examples.phase.polyxtal
