@@ -1,0 +1,29 @@
+fipy.variables.variable
+=======================
+
+.. automodule:: fipy.variables.variable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Variable
+   
+   
+
+   
+   
+   
+
+
+
