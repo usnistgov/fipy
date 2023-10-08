@@ -226,22 +226,27 @@ they succed or fail.  This information is captured as a
    :widths: 25 25 15 15 20 25
    :header-rows: 1
 
-.. [#KSP_Convergence_Tests] https://petsc.org/release/docs/manual/ksp/#sec-convergencetests
-.. [#KSP_UNPRECONDITIONED_NORM] |KSP_NORM_UNPRECONDITIONED|_
+.. [#FiPy_Convergence_Test] Implemented by :term:`FiPy`
+
+.. [#KSP_UNPRECONDITIONED_NORM] |KSP_NORM_UNPRECONDITIONED|_ [#KSP_Convergence_Tests]_
 .. |KSP_NORM_UNPRECONDITIONED|  replace:: :literal:`KSP_UNPRECONDITIONED_NORM`
 .. _KSP_NORM_UNPRECONDITIONED:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED/
-.. [#KSP_PRECONDITIONED_NORM] |KSP_NORM_PRECONDITIONED|_
+.. [#KSP_PRECONDITIONED_NORM] |KSP_NORM_PRECONDITIONED|_ [#KSP_Convergence_Tests]_
 .. |KSP_NORM_PRECONDITIONED|  replace:: :literal:`KSP_PRECONDITIONED_NORM`
 .. _KSP_NORM_PRECONDITIONED:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_PRECONDITIONED/
-.. [#KSP_NATURAL_NORM] |KSP_NORM_NATURAL|_
+.. [#KSP_NATURAL_NORM] |KSP_NORM_NATURAL|_ [#KSP_Convergence_Tests]_
 .. |KSP_NORM_NATURAL|  replace:: :literal:`KSP_NATURAL_NORM`
 .. _KSP_NORM_NATURAL:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_NATURAL/
+
+.. [#KSP_Convergence_Tests] https://petsc.org/release/docs/manual/ksp/#sec-convergencetests
 
 .. [#AMGX_ABSOLUTE]        ``ABSOLUTE`` [#AMGX_convergence]_
 .. [#AMGX_RELATIVE_INI_CORE]  ``RELATIVE_INI_CORE`` [#AMGX_convergence]_
 .. [#AMGX_convergence]   *AMGX REFERENCE MANUAL*: 2.3 General Settings: ``convergence``,
    October 2017, API Version 2,
    https://github.com/NVIDIA/AMGX/blob/main/doc/AMGX_Reference.pdf
+
+.. [#SciPy_Convergence_Test]  https://github.com/scipy/scipy/blob/2d1d5b042a09e131ffe191726aa6829b33590970/scipy/sparse/linalg/_isolve/iterative.py#L30
 
 .. [#AZ_noscaled]    ``AZ_noscaled`` [#AztecOO_convergence]_
 .. [#AZ_rhs]    ``AZ_rhs`` [#AztecOO_convergence]_
