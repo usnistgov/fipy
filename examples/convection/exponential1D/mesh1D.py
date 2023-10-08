@@ -10,7 +10,7 @@ given by
 
    \nabla \cdot \left(D \nabla \phi + \vec{u} \phi \right) = 0
 
-with coefficients :math:`D = 1` and :math:`\vec{u} = 10\hat{\i}`, or
+with coefficients :math:`D = 1` and :math:`\vec{u} = 10\hat{\imath}`, or
 
 >>> diffCoeff = 1.
 >>> convCoeff = (10.,)

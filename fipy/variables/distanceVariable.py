@@ -10,7 +10,7 @@ from fipy.tests.doctestPlus import register_skipper
 import sys
 import os
 
-def module_exists(module_name):
+def _module_exists(module_name):
     try:
         __import__(module_name)
     except ImportError:
@@ -19,10 +19,10 @@ def module_exists(module_name):
         return True
 
 def _checkForLSMLIB():
-    return module_exists('pylsmlib')
+    return _module_exists('pylsmlib')
 
 def _checkForSKFMM():
-    return module_exists('skfmm')
+    return _module_exists('skfmm')
 
 def _parseLSMSolver():
     args = [s.lower() for s in sys.argv[1:]]

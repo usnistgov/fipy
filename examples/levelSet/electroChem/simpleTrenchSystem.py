@@ -40,7 +40,7 @@ mechanism. All of the given equations are implemented in the
 function. As stated above, all the parameters
 in the equations can be changed with function arguments.
 
-.. image:: electroChem/schematicOfEquations.*
+.. image:: /figures/examples/levelSet/electroChem/schematicOfEquations.*
    :width: 90%
    :align: center
    :alt: schematic of superfill equations
@@ -119,12 +119,12 @@ installed (see :ref:`INSTALLATION`) then a plot should
 appear that is updated every 20 time steps and will eventually
 resemble the image below.
 
-.. image:: electroChem/inputSimpleTrenchSystem.*
+.. image:: /figures/examples/levelSet/electroChem/inputSimpleTrenchSystem.*
    :width: 90%
    :align: center
    :alt: catalyst coverage as a function of time during superfill
 
-.. .. bibmissing:: /documentation/refs.bib
+.. .. bibmissing:: /refs.bib
     :sort:
 """
 from __future__ import absolute_import

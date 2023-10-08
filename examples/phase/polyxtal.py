@@ -327,7 +327,7 @@ and iterate the solution in time, plotting as we go,
 ...         viewer.plot()
 ...         save_at += save_interval
 
-.. image:: polyxtal.*
+.. image:: /figures/examples/phase/polyxtal.*
    :width: 90%
    :align: center
    :alt: undercooling and grain orientation during solidification of a collection of anisotropic seeds

@@ -28,7 +28,8 @@ way to express the equation to :term:`FiPy`.
 
 We solve the problem on a 1D mesh
 
-.. index:: Grid2D
+.. index::
+   single: Grid2D
 
 >>> from fipy import CellVariable, Grid1D, NthOrderBoundaryCondition, DiffusionTerm, TransientTerm, LinearLUSolver, DefaultSolver, Viewer
 >>> from fipy.tools import numerix
@@ -40,7 +41,8 @@ We solve the problem on a 1D mesh
 
 and create the solution variable
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> var = CellVariable(
 ...     name="phase field",
@@ -71,7 +73,8 @@ and
 
 or
 
-.. index:: NthOrderBoundaryCondition
+.. index::
+   single: NthOrderBoundaryCondition
 
 >>> BCs = (
 ...     NthOrderBoundaryCondition(faces=mesh.facesLeft, value=0, order=2),
@@ -96,10 +99,12 @@ we create the Cahn-Hilliard equation:
 >>> diffTerm4 = DiffusionTerm(coeff=(diffusionCoeff, epsilon**2))
 >>> eqch = TransientTerm() == diffTerm2 - diffTerm4
 
-.. index:: LinearLUSolver, DefaultSolver
+.. index::
+   single: LinearLUSolver
+   single: DefaultSolver
 
 >>> import fipy.solvers.solver
->>> if fipy.solvers.solver in ['pysparse', 'pyamgx']:
+>>> if fipy.solvers.solver_suite in ['pysparse', 'pyamgx']:
 ...     solver = LinearLUSolver(tolerance=1e-15, iterations=100)
 ... else:
 ...     solver = DefaultSolver()
@@ -112,7 +117,9 @@ The solution to this 1D problem over an infinite domain is given by,
 
 or
 
-.. index:: sqrt, exp
+.. index::
+   single: sqrt
+   single: exp
 
 >>> a = numerix.sqrt(asq)
 >>> answer = 1 / (1 + numerix.exp(-a * (mesh.cellCenters[0]) / epsilon))

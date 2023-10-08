@@ -39,11 +39,11 @@ __docformat__ = 'restructuredtext'
 from PyTrilinos import Epetra
 
 from fipy.tools import numerix
-from fipy.tools.comms.abstractCommWrapper import AbstractCommWrapper
+from fipy.tools.comms.commWrapper import CommWrapper
 
 __all__ = ["EpetraCommWrapper"]
 
-class EpetraCommWrapper(AbstractCommWrapper):
+class EpetraCommWrapper(CommWrapper):
     """MPI Communicator wrapper
     
     Encapsulates capabilities needed for Epetra. 

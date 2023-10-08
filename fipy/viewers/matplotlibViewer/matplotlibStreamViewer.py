@@ -5,7 +5,7 @@ from fipy.tools import numerix
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 
-from fipy.viewers.matplotlibViewer.matplotlib2DViewer import AbstractMatplotlib2DViewer
+from fipy.viewers.matplotlibViewer.abstractMatplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["MatplotlibStreamViewer"]
 from future.utils import text_to_native_str
@@ -99,7 +99,7 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
 
     @property
     def kwargs(self):
-        """keyword arguments to pass to :func:`~matplotlib.axes.Axes.streamplot`."""
+        """keyword arguments to pass to :meth:`~matplotlib.axes.Axes.streamplot`."""
         return self._kwargs
 
     @kwargs.setter

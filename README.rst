@@ -3,9 +3,10 @@ Overview
 ========
 
 
-| |Azure|_
-| |GitHub|_ |PyPI|_  |Codacy|_ |CondaForge|_ |Binder|_
-| |gitter|_ |Depsy|_ |OpenHub|_
+
+| |Tests|_ |Documentation|_ |nix|_
+| |GitHub|_ |PyPI|_  |CondaForge|_ |Binder|_
+| |gitter|_ |OpenHub|_
 
 .. only:: latex
 
@@ -70,7 +71,7 @@ with other users.
 
 .. toctree::
 
-   documentation/CONTACT
+   CONTACT
 
 We welcome collaborative efforts on this project.
 
@@ -154,17 +155,18 @@ or a
 .. _GitHub:        https://github.com/usnistgov/fipy
 .. |gitter|        image:: https://badges.gitter.im/usnistgov/fipy.svg
 .. _gitter:        https://gitter.im/usnistgov/fipy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge
-.. |Azure|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
-.. _Azure:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
+.. |Tests|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
+.. _Tests:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
+.. |Documentation| image:: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml/badge.svg
+.. _Documentation: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml
+.. |nix|           image:: https://github.com/usnistgov/fipy/actions/workflows/nix.yml/badge.svg
+.. _nix:           https://github.com/usnistgov/fipy/actions/workflows/nix.yml
 .. |OpenHub|       image:: https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif
 .. _OpenHub:       https://www.openhub.net/p/fipy
 .. |PyPI|          image:: https://img.shields.io/pypi/v/fipy.svg
 .. _PyPI:          https://pypi.python.org/pypi/FiPy
-.. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
+.. |CondaForge|    image:: https://img.shields.io/conda/pn/conda-forge/fipy?label=conda-forge
 .. _CondaForge:    https://anaconda.org/conda-forge/fipy
-.. |Depsy|         image:: http://depsy.org/api/package/pypi/FiPy/badge.svg
-.. _Depsy:         http://depsy.org/package/python/FiPy
-.. |Codacy|         image:: https://api.codacy.com/project/badge/Grade/d02921bb54b14e88a1e2e1f5520133f4
-.. _Codacy:         https://www.codacy.com/app/tkphd/fipy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=usnistgov/fipy&amp;utm_campaign=Badge_Grade
+
 .. |Binder|        image:: https://mybinder.org/badge.svg
 .. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/master?filepath=examples%2Findex.ipynb

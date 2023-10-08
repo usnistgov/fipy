@@ -8,7 +8,8 @@ import unittest
 import warnings
 import sys
 
-__all__ = [text_to_native_str("test")]
+__all__ = ["DeprecationErroringTestProgram", "test"]
+__all__ = [text_to_native_str(n) for n in __all__]
 
 def _nativize_all(t):
     def _nativize(s):

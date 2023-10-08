@@ -9,17 +9,6 @@ from fipy.viewers.matplotlibViewer.matplotlib2DViewer import *
 from fipy.viewers.matplotlibViewer.matplotlibVectorViewer import *
 from fipy.viewers.matplotlibViewer.matplotlibStreamViewer import *
 
-__all__ = ["MatplotlibViewer"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
-__all__.extend(matplotlib1DViewer.__all__)
-__all__.extend(matplotlib2DGridViewer.__all__)
-__all__.extend(matplotlib2DContourViewer.__all__)
-__all__.extend(matplotlib2DGridContourViewer.__all__)
-__all__.extend(matplotlib2DViewer.__all__)
-__all__.extend(matplotlibVectorViewer.__all__)
-__all__.extend(matplotlibStreamViewer.__all__)
-
 def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical', axes=None, **kwlimits):
     """Generic function for creating a `MatplotlibViewer`.
 

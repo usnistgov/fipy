@@ -1,0 +1,59 @@
+\makeatletter
+\newcommand{\sphinxbackoftitlepage}{%
+  \changepage{}{}{}{}{}{}{}{}{}
+  \vspace*{\fill}
+  \input LICENSE.tex.txt
+  \rule{\textwidth}{0.1pt}
+  \input DISCLAIMER.tex.txt
+}
+\renewcommand{\sphinxmaketitle}{%
+  \let\spx@tempa\relax
+  \ifHy@pageanchor\def\spx@tempa{\Hy@pageanchortrue}\fi
+  \hypersetup{pageanchor=false}% avoid duplicate destination warnings
+  \begin{titlepage}%
+    \let\footnotesize\small
+    \let\footnoterule\relax
+    \noindent\rule{\textwidth}{1pt}\par
+      \begingroup % for PDF information dictionary
+       \def\endgraf{ }\def\and{\& }%
+       \pdfstringdefDisableCommands{\def\\{, }}% overwrite hyperref setup
+       \hypersetup{pdfauthor={\@author}, pdftitle={\@title}}%
+      \endgroup
+    \changepage{1in}{}{1in}{0.5in}{}{-0.5in}{}{}{}
+    \begin{flushright}%
+      \fipylogo\par%
+      \vskip 3em%
+      {\rm\Huge\py@HeaderFamily \@title \par}%
+      {\em\LARGE\py@HeaderFamily \py@release\releaseinfo \par}
+      \vfill
+      {\large\py@HeaderFamily \@author \par}
+      \vfill
+      {\py@authoraddress \par}
+      \vfill
+      {%\large
+       \@date \par
+       \vfill
+       \vfill
+       \vfill
+       \vfill
+       \vfill
+       \vfill
+       \includegraphics[trim=5 2 5 5,scale=1.]{nistident_flright_vec}\par
+      }%
+    \end{flushright}%\par
+    \@thanks
+  \end{titlepage}%
+  \setcounter{footnote}{0}%
+  \let\thanks\relax\let\maketitle\relax
+  %\gdef\@thanks{}\gdef\@author{}\gdef\@title{}
+  \clearpage
+  \ifdefined\sphinxbackoftitlepage\sphinxbackoftitlepage\fi
+  \if@openright\cleardoublepage\else\clearpage\fi
+  \spx@tempa
+}
+\makeatother
+
+\ChNameVar{\fontsize{14}{16}\usefont{OT1}{phv}{m}{n}\selectfont}
+\ChNumVar{\fontsize{60}{62}\usefont{OT1}{ptm}{m}{n}\selectfont}
+\ChTitleVar{\Huge\bfseries\rm}
+\ChRuleWidth{1pt}

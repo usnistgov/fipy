@@ -17,7 +17,7 @@ class HistogramVariable(CellVariable):
 
         Parameters
         ----------
-        distribution : array_like or ~fipy.variables.Variable
+        distribution : array_like or ~fipy.variables.variable.Variable
             The collection of values to sample.
         dx : float
             The bin size

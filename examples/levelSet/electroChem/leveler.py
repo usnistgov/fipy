@@ -165,17 +165,17 @@ and their corresponding arguments for the
 The following images show accelerator and leveler contour plots that
 can be obtained by running this example.
 
-.. image:: electroChem/accelerator.*
+.. image:: /figures/examples/levelSet/electroChem/accelerator.*
    :width: 90%
    :align: center
    :alt: accelerator coverage as a function of time during superfill
 
-.. image:: electroChem/leveler.*
+.. image:: /figures/examples/levelSet/electroChem/leveler.*
    :width: 90%
    :align: center
    :alt: leveler coverage as a function of time during superfill
 
-.. .. bibmissing:: /documentation/refs.bib
+.. .. bibmissing:: /refs.bib
     :sort:
 """
 from __future__ import absolute_import

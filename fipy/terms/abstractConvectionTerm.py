@@ -5,7 +5,7 @@ __docformat__ = 'restructuredtext'
 __all__ = []
 
 from fipy.terms.faceTerm import FaceTerm
-from fipy.variables.meshVariable import _MeshVariable
+from fipy.variables.meshVariable import MeshVariable
 from fipy.variables.faceVariable import FaceVariable
 from fipy.variables.cellVariable import CellVariable
 from fipy.terms import AbstractBaseClassError
@@ -73,7 +73,7 @@ class _AbstractConvectionTerm(FaceTerm):
 
         self.stencil = None
 
-        if isinstance(coeff, _MeshVariable) and coeff.rank < 1:
+        if isinstance(coeff, MeshVariable) and coeff.rank < 1:
             raise VectorCoeffError
 
         if isinstance(coeff, CellVariable):
@@ -152,7 +152,7 @@ class _AbstractConvectionTerm(FaceTerm):
         FaceTerm._checkVar(self, var)
         if not (isinstance(self.coeff, FaceVariable) and self.coeff.rank == 1):
             coeffShape = numerix.getShape(self.coeff)
-            if (coeffShape is ()) or (coeffShape[0] != var.mesh.dim):
+            if (len(coeffShape) == 0) or (coeffShape[0] != var.mesh.dim):
                 raise VectorCoeffError
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):

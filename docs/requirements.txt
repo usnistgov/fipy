@@ -1,0 +1,5 @@
+sphinx
+pandas
+sphinxcontrib-bibtex
+numpydoc
+-e .

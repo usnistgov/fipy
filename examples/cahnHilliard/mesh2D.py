@@ -102,7 +102,7 @@ evolution of their problem.
 >>> print((max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3))
 True
 
-.. image:: mesh2D.*
+.. image:: /figures/examples/cahnHilliard/mesh2D.*
    :width: 90%
    :align: center
    :alt: evolution of Cahn-Hilliard phase separation at t = 30, 100 and 1000

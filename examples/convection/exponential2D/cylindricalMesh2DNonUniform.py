@@ -13,8 +13,9 @@ with coefficients :math:`D = 1` and :math:`\vec{u} = (10,)`, or
 >>> convCoeff = ((10.,), (0.,))
 
 We define a 2D cylindrical mesh representing an annulus. The mesh is a
-pseudo-1D mesh, but is a good test case for the :class:`~fipy.meshes.cylindricalGrid2D.CylindricalGrid2D`
-mesh. The mesh has a non-constant cell spacing.
+pseudo-1D mesh, but is a good test case for the
+:func:`~fipy.meshes.factoryMeshes.CylindricalGrid2D` mesh.  The mesh
+has a non-constant cell spacing.
 
 >>> from fipy import CellVariable, CylindricalGrid2D, DiffusionTerm, ExponentialConvectionTerm, Viewer
 >>> from fipy.tools import numerix
@@ -66,9 +67,10 @@ and test the solution against the analytical result
 
 .. math::
 
-   \phi = \exp{\frac{u}{D} \left(r_1 - r\right)} \left( \frac{ \ei{\frac{u r_0}{D}} - \ei{\frac{u r}{D}} }{ \ei{\frac{u r_0}{D}} - \ei{\frac{u r_1}{D}} } \right)
+   \phi = \exp{\frac{u}{D} \left(r_1 - r\right)} \left( \frac{ \Ei{\frac{u r_0}{D}} - \Ei{\frac{u r}{D}} }{ \Ei{\frac{u r_0}{D}} - \Ei{\frac{u r_1}{D}} } \right)
 
-.. index:: exp
+.. index::
+   single: exp
 
 >>> axis = 0
 >>> try:

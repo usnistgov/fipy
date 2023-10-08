@@ -27,6 +27,7 @@ def _getScript(name = '__main__'):
         return doctest.testsource(module, "")
 
 def execButNoTest(name='__main__'):
+    """Execute the doctests in the module without testing."""
     module = sys.modules.get(name)
 
     # the syntax of doctest changed substantially between Python 2.3 and 2.4

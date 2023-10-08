@@ -35,12 +35,12 @@ class UniformNoiseVariable(NoiseVariable):
     ...         viewer.plot()
     ...         histoplot.plot()
 
-    .. image:: fipy/variables/uniform.*
+    .. image:: /figures/fipy/variables/uniform.*
        :scale: 25
        :align: center
        :alt: random values with a uniform distribution
 
-    .. image:: fipy/variables/uni-histogram.*
+    .. image:: /figures/fipy/variables/uni-histogram.*
        :scale: 25
        :align: center
        :alt: histogram of random values with a uniform distribution

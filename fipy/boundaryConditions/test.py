@@ -1,4 +1,4 @@
-"""Test numeric implementation of the mesh
+"""Test boundary conditions
 """
 from __future__ import unicode_literals
 

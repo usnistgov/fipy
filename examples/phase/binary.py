@@ -2,7 +2,8 @@
 It is straightforward to extend a phase field model to include binary alloys.
 As in :mod:`examples.phase.simple`, we will examine a 1D problem
 
-.. index:: Grid1D
+.. index::
+   single: Grid1D
 
 >>> from fipy import CellVariable, Variable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, PowerLawConvectionTerm, DefaultAsymmetricSolver, Viewer
 >>> from fipy.tools import numerix
@@ -26,7 +27,8 @@ The Helmholtz free energy functional can be written as the integral
 
 over the volume :math:`\\mathcal{V}` as a function of phase :math:`\\phi` [#phi]_
 
-.. index:: CellVariable
+.. index::
+   single: CellVariable
 
 >>> phase = CellVariable(name="phase", mesh=mesh, hasOld=1)
 
@@ -36,7 +38,8 @@ composition :math:`C`
 
 and temperature :math:`T` [#T]_
 
-.. index:: Variable
+.. index::
+   single: Variable
 
 >>> T = Variable(name="temperature")
 
@@ -347,7 +350,8 @@ or
 ...                                + 0.5 * (WB - WA) * g(phase).faceGrad)
 ...                                * D * (1. - C).harmonicFaceValue * Vm / (R * T))
 
-.. index:: PowerLawConvectionTerm
+.. index::
+   single: PowerLawConvectionTerm
 
 >>> diffusionEq = (TransientTerm()
 ...                == DiffusionTerm(coeff=D)
@@ -375,7 +379,8 @@ deduce the liquidus and solidus compositions as
    - \\exp\\left(-\\frac{L_A\\left(T - T_M^A\\right)}{T_M^A}\\frac{V_m}{R T}\\right)} \\\\
    C_S &= \\exp\\left(-\\frac{L_B\\left(T - T_M^B\\right)}{T_M^B}\\frac{V_m}{R T}\\right) C_L
 
-.. index:: exp
+.. index::
+   single: exp
 
 >>> Cl = ((1. - numerix.exp(-enthalpyA * Vm / (R * T)))
 ...       / (numerix.exp(-enthalpyB * Vm / (R * T)) - numerix.exp(-enthalpyA * Vm / (R * T))))
@@ -408,7 +413,9 @@ We'll need a function to return the two conditions for equilibrium
    \\frac{L_B\\left(T - T_M^B\\right)}{T_M^B} V_m
    + R T \\ln C_S - R T \\ln C_L
 
-.. index:: log, array
+.. index::
+   single: log
+   single: array
 
 >>> def equilibrium(C):
 ...     return [numerix.array(enthalpyA * Vm
@@ -438,7 +445,8 @@ and we'll have much better luck if we also supply the Jacobian
 ...     return R * T * numerix.array([[-1. / (1 - C[0]), 1. / (1 - C[1])],
 ...                                   [ 1. / C[0],      -1. / C[1]]])
 
-.. index:: SciPy
+.. index::
+   single: SciPy
 
 >>> try:
 ...     from scipy.optimize import fsolve # doctest: +SCIPY
@@ -504,7 +512,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ...     viewer.plot()
 ...     input("Stationary phase field. Press <return> to proceed...")
 
-.. image:: binary/stationary.*
+.. image:: /figures/examples/phase/binary/stationary.*
    :width: 90%
    :align: center
    :alt: phase and composition fields in equilibrium, compared with phase diagram concentrations
@@ -592,7 +600,7 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 >>> if __name__ == '__main__':
 ...     input("Moving phase field. Press <return> to proceed...")
 
-.. image:: binary/moving.*
+.. image:: /figures/examples/phase/binary/moving.*
    :width: 90%
    :align: center
    :alt: phase and composition fields in during solidification, compared with final phase diagram concentrations

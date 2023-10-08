@@ -7,6 +7,12 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class Stepper(object):
+    """Rudimentary utility class for iterating time steps
+
+    Use `steppyngstounes <https://pages.nist.gov/steppyngstounes/en/latest>`_
+    instead.
+    """
+
     def __init__(self, vardata=()):
         self.vardata = vardata
 

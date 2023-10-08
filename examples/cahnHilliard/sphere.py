@@ -103,7 +103,7 @@ evolution of their problem.
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 
-.. image:: sphere.*
+.. image:: /figures/examples/cahnHilliard/sphere.*
    :width: 90%
    :align: center
    :alt: Cahn-Hilliard phase separation on the surface of a sphere with a rendering of the mesh

@@ -293,7 +293,7 @@ factor to relax the solution. This argument cannot be passed to
 ... 
 ...             viewer.plot()
 
-.. image:: cavity.*
+.. image:: /figures/examples/flow/cavity.*
    :width: 90%
    :align: center
    :alt: flow field for moving lid problem
@@ -307,7 +307,7 @@ Test values in the last cell.
 >>> print(numerix.allclose(yVelocity.globalValue[..., -1], -0.150290488304)) #doctest: +NOT_PYAMGX_SOLVER
 1
 
-.. .. bibmissing:: /documentation/refs.bib
+.. .. bibmissing:: /refs.bib
     :sort:
 """
 from __future__ import unicode_literals

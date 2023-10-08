@@ -1,3 +1,7 @@
+"""Classes to enable accumulating tests without importing them
+
+Prevent failure to import one test from stopping execution of other tests.
+"""
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
@@ -6,6 +10,9 @@ __all__ = []
 import unittest
 
 class _LateImportTestCase(unittest.TestCase):
+    """:class:`~unittest.TestCase` that delays importing until test execution
+    """
+
     def __str__(self):
         return "import %s" % self.moduleName
 
@@ -32,6 +39,9 @@ class _LateImportTestCase(unittest.TestCase):
         return
 
 class _LateImportTestSuite(unittest.TestSuite):
+    """:class:`~unittest.TestSuite` that delays importing until test execution
+    """
+
     def __init__(self, testModuleNames = (), base = '__main__'):
         unittest.TestSuite.__init__(self)
         self._addTestModules(moduleNames = testModuleNames, base = base)

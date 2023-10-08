@@ -5,10 +5,10 @@ given by:
 
 .. math::
 
-   \abs{\nabla \phi} $= 1 \\
+   \abs{\nabla \phi} &= 1 \\
    \phi &= 0 \;\; \text{at} \begin{cases}
-    \text{x = \left( d, L - d \right)$ for $d \le y \le L - d$} \\
-    \text{y = \left( d, L - d \right)$ for $d \le x \le L - d$}
+    \text{$x = \left( d, L - d \right)$ for $d \le y \le L - d$} \\
+    \text{$y = \left( d, L - d \right)$ for $d \le x \le L - d$}
     \end{cases}
 
 Do the tests:

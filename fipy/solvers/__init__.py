@@ -1,4 +1,8 @@
+"""Solving sparse linear systems
+"""
 from __future__ import unicode_literals
+__docformat__ = 'restructuredtext'
+
 from builtins import str
 
 import logging
@@ -11,9 +15,6 @@ from importlib import import_module
 from fipy.tools.parser import _parseSolver
 
 from fipy.solvers.solver import *
-__all__ = list(solver.__all__)
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 _desired_solver = _parseSolver()
 
@@ -53,6 +54,27 @@ def _import_mesh_matrices(suite):
 
 solver_suite = None
 
+# The following definitions are only to provide documentation.
+# They will be overridden by the solver suite that's actually imported.
+DefaultSolver = None
+"""Solver class for solving symmetric matrices.
+
+This solver should be both robust and performant.
+"""
+DefaultAsymmetricSolver = None
+"""Solver class for solving asymmetric matrices.
+"""
+DummySolver = None
+"""Solver used by tests that don't actually need to solve.
+
+Some tests are intended to confirm the matrix building machinery, but don't
+actually need to solve (and may not be able to, e.g., zeros on the
+diagonal).
+"""
+GeneralSolver = None
+"""Solver class that should solve any matrix.
+"""
+
 from fipy.tools.comms.dummyComm import DummyComm
 serialComm, parallelComm = DummyComm(), DummyComm()
 
@@ -61,7 +83,6 @@ if solver_suite is None and _desired_solver in ["pysparse", None]:
         if _Nproc > 1:
             raise SerialSolverError()
         from fipy.solvers.pysparse import *
-        __all__.extend(pysparse.__all__)
         _mesh_matrices = _import_mesh_matrices(suite="Pysparse")
         solver_suite = "pysparse"
     except Exception as inst:
@@ -73,7 +94,6 @@ if solver_suite is None and _desired_solver in ["petsc", None]:
         petsc4py.init()
 
         from fipy.solvers.petsc import *
-        __all__.extend(petsc.__all__)
 
         from fipy.solvers.petsc.comms.serialPETScCommWrapper import SerialPETScCommWrapper
         serialComm = SerialPETScCommWrapper()
@@ -92,7 +112,6 @@ if solver_suite is None and _desired_solver in ["petsc", None]:
 if solver_suite is None and _desired_solver in ["trilinos", "no-pysparse", None]:
     try:
         from fipy.solvers.trilinos import *
-        __all__.extend(trilinos.__all__)
         
         from fipy.solvers.trilinos.comms.serialEpetraCommWrapper import SerialEpetraCommWrapper
         serialComm = SerialEpetraCommWrapper()
@@ -122,7 +141,6 @@ if solver_suite is None and _desired_solver in ["scipy", None]:
         if _Nproc > 1:
             raise SerialSolverError()
         from fipy.solvers.scipy import *
-        __all__.extend(scipy.__all__)
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver_suite = "scipy"
     except Exception as inst:
@@ -133,7 +151,6 @@ if solver_suite is None and _desired_solver in ["pyamg", None]:
         if _Nproc > 1:
             raise SerialSolverError()
         from fipy.solvers.pyAMG import *
-        __all__.extend(pyAMG.__all__)
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver_suite = "pyamg"
     except Exception as inst:
@@ -144,7 +161,6 @@ if solver_suite is None and _desired_solver in ["pyamgx", None]:
         if _Nproc > 1:
             raise  SerialSolverError('pyamgx')
         from fipy.solvers.pyamgx import *
-        __all__.extend(pyamgx.__all__)
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver_suite = "pyamgx"
     except Exception as inst:
@@ -169,9 +185,15 @@ register_skipper(flag='PYSPARSE_SOLVER',
                  why="the Pysparse solvers are not being used.",
                  skipWarning=True)
 
+<<<<<<< HEAD
 register_skipper(flag='PETSC_SOLVER',
                  test=lambda: solver_suite == 'petsc',
                  why="the PETSc solvers are not being used.",
+=======
+register_skipper(flag='NOT_PYAMGX_SOLVER',
+                 test=lambda: solver_suite != 'pyamgx',
+                 why="the PyAMGX solver is being used.",
+>>>>>>> master
                  skipWarning=True)
 
 register_skipper(flag='SCIPY_SOLVER',

@@ -1,0 +1,186 @@
+{% extends "layout.html" %}
+{% block nistsoftwarebutton %}
+  <div class="grid-container margin-top-4">
+  <div class="nist-page__region nist-page__region--content-top">
+
+      <div
+      data-layout-content-preview-placeholder-label="&quot;NIST Software Button&quot; block"
+      class="nist-block">
+          <a class="usa-button usa-button--accent-cool"
+          href="https://www.nist.gov/services-resources/software">Software</a>
+      </div>
+
+  </div>
+  </div>
+{% endblock %}
+{% block body %}
+  <h1>FiPy: A Finite Volume PDE Solver Using Python</h1>
+  <p><a class="reference external"
+  href="glossary.html#term-fipy"><em
+  class="xref">FiPy</em></a> is an object oriented, partial differential
+  equation (PDE) solver,
+  written in <a class="reference external"
+  href="/cgi-bin/redirect.py?url=http://www.python.org/">Python</a>,
+  based on a standard finite volume (FV) approach. The framework has been
+  developed in the Materials Science and Engineering Division (<a class="reference external"
+  href="http://www.nist.gov/mml/msed">MSED</a>) and Center
+  for Theoretical and Computational Materials Science (<a class="reference
+  external" href="http://www.ctcms.nist.gov/">CTCMS</a>), in the Material
+  Measurement Laboratory (<a class="reference external"
+  href="http://www.nist.gov/mml/">MML</a>) at the National Institute of
+  Standards and Technology (<a class="reference external"
+  href="http://www.nist.gov/">NIST</a>).</p>
+  <p>The solution of coupled sets of PDEs is ubiquitous to the numerical
+  simulation of science problems. Numerous PDE solvers exist, using a
+  variety of languages and numerical approaches. Many are proprietary,
+  expensive and difficult to customize. As a result, scientists spend
+  considerable resources repeatedly developing limited tools for specific
+  problems. Our approach, combining the FV method and <a class="reference
+  external"
+  href="/cgi-bin/redirect.py?url=http://www.python.org/">Python</a>,
+  provides a tool that is extensible, powerful and freely available. A
+  significant advantage to <a class="reference external"
+  href="/cgi-bin/redirect.py?url=http://www.python.org/">Python</a>
+  is the existing suite of tools for array calculations, sparse matrices
+  and data rendering.</p>
+  <p>The <a class="reference external"
+  href="glossary.html#term-fipy"><em
+  class="xref">FiPy</em></a> framework includes terms for transient
+  diffusion,
+  convection and standard sources, enabling the solution of arbitrary
+  combinations of coupled elliptic, hyperbolic and parabolic PDEs.
+  Currently implemented models include phase field <a class="reference
+  external"
+  href="references.html#boettingerreview-2002">[BoettingerReview:2002]</a>
+  <a class="reference external"
+  href="references.html#chenreview-2002">[ChenReview:2002]</a>
+  <a class="reference external"
+  href="references.html#mcfaddenreview-2002">[McFaddenReview:2002]</a>
+  treatments of polycrystalline, dendritic, and electrochemical phase
+  transformations as well as a level set treatment of the electrodeposition
+  process <a class="reference external"
+  href="references.html#nist-damascene-2001">[NIST:damascene:2001]</a>.</p>
+  <p>
+  <!-- Development & Quality Assurance Badges -->
+  <a href="https://dev.azure.com/guyer/FiPy/_build?definitionId=2"><img src="https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master" alt="Test status"></img></a>
+  <a href="https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml"><img src="https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml/badge.svg" alt="Documentation status"></img></a>
+  <a href="https://github.com/usnistgov/fipy/actions/workflows/nix.yml"><img src="https://github.com/usnistgov/fipy/actions/workflows/nix.yml/badge.svg" alt="nix status"></img></a>
+  <br>
+  <a href="https://github.com/usnistgov/fipy"><img src="https://img.shields.io/github/contributors/usnistgov/fipy.svg" alt="GitHub"></img></a>
+  <a href="https://pypi.python.org/pypi/FiPy"><img src="https://img.shields.io/pypi/v/fipy.svg" alt="PyPi"></img></a>
+  <a href="https://anaconda.org/conda-forge/fipy"><img src="https://img.shields.io/conda/pn/conda-forge/fipy?label=conda-forge" alt="CondaForge"></img></a>
+  <a href="https://mybinder.org/v2/gh/usnistgov/fipy/master?filepath=examples%2Findex.ipynb"><img src="https://mybinder.org/badge.svg" alt="Binder"></img></a>
+  <br>
+  <!-- Community Badges -->
+  <a href="https://gitter.im/usnistgov/fipy"><img src="https://badges.gitter.im/usnistgov/fipy.svg" alt="gitter"></img></a>
+  <a href="https://www.openhub.net/p/fipy"><img src="https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif" alt="OpenHub"></img></a>
+  </p>
+  <div class="admonition attention">
+  <p class="first admonition-title">If you use FiPy in your research, please cite:
+  <a href="_static/fipy.bib">(bibtex)</a>
+  <a href="_static/fipy.ris">(endnote)</a>
+  <a href="http://www.nist.gov/cgi-bin/get_pdf.cgi?pub_id=854461">(pdf)</a></p>
+  <p>J. E. Guyer, D. Wheeler &amp; J. A. Warren,
+  "FiPy: Partial Differential Equations with Python,"
+  <em>Computing in Science &amp; Engineering</em> <strong>11</strong>(3) pp. 6&mdash;15 (2009),
+  <a href="/cgi-bin/redirect.py?url=http://dx.doi.org/10.1109/MCSE.2009.52"><code>doi:10.1109/MCSE.2009.52</code></a>,
+  <a href="/cgi-bin/redirect.py?url=http://www.ctcms.nist.gov/fipy"><code>http://www.ctcms.nist.gov/fipy</code></a></p>
+  </div>
+  <div class="admonition seealso">
+  <p class="first admonition-title">Other sources of information:</p>
+  <p>For questions not answered here, please check the 
+  <a href="{{ pathto('MAIL') }}">mailing list</a>,
+  open an issue on the
+  <a href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy/issues">issue tracker</a>,
+  or ask a question on 
+  <a href="/cgi-bin/redirect.py?url=https://stackoverflow.com/questions/tagged/fipy">StackOverflow</a>.</p>
+  <p>We encourage you to review the
+  <a href="https://www.mail-archive.com/fipy@list.nist.gov/">mailing list
+  archive</a> (or the <a
+  href="https://www.mail-archive.com/fipy@nist.gov/">older mailing list
+  archive</a>) before posting a question.</p>
+  </div>
+ {% block tables %}
+   <h2>Documentation</h2>
+   <table class="contentstable" align="center"><tr>
+     <td width="50%">
+       <p class="biglink"><a class="biglink" href="{{ pathto('README') }}">About FiPy</a><br/>
+          <span class="linkdescr">start here</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('INSTALLATION') }}">Installation</a><br/>
+	  <span class="linkdescr">how to install FiPy on different platforms</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('USAGE') }}">FiPy Usage</a><br/>
+          <span class="linkdescr">how to use FiPy</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('EXAMPLES') }}">Examples</a><br/>
+          <span class="linkdescr">examples of usage</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('FAQ') }}">FAQs</a><br/>
+          <span class="linkdescr">frequently asked questions (with answers!)</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('LICENSE') }}">License</a><br/>
+          <span class="linkdescr">terms of use</span></p>
+     </td><td width="50%">
+       <p class="biglink"><a class="biglink" href="{{ pathto('numerical/index') }}">Numerical Approach</a><br/>
+          <span class="linkdescr">background on numerical solutions to PDEs</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('design') }}">FiPy Design</a><br/>
+          <span class="linkdescr">FilosoPhy of FiPy</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('API') }}">FiPy API</a><br/>
+          <span class="linkdescr">reference for Python programmers</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('CREDITS') }}">Credits</a><br/>
+          <span class="linkdescr">significant contributors</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('PUBLICATIONS') }}">Publications</a><br/>
+          <span class="linkdescr">papers and talks about (or using) FiPy</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('CHANGELOG') }}">Change Log</a><br/>
+          <span class="linkdescr">history of updates</span></p>
+     </td></tr>
+   </table>
+
+   <h2>Applications</h2>
+   <table class="contentstable" align="center"><tr>
+     <td width="50%">
+       <p class="biglink"><a class="biglink" href="{{ 
+       pathto('examples/levelSet/electroChem/README') }}">Superconformal
+       Electrodeposition</a><br/>
+          <span class="linkdescr">level set treatment of "Damascene" 
+          electrodeposition</span></p>
+     </td><td width="50%">
+       <p class="biglink"><a class="biglink" href="{{ pathto('VKML')
+       }}">Virtual Kinetics of Materials Laboratory</a><br/>
+          <span class="linkdescr">interactive graphical examples from 
+          Purdue University</span></p>
+     </td></tr>
+   </table>
+
+   <h2 class="contentstablelink"><a href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy/releases">Download</a></h2>
+
+   <h2 class="contentstablelink"><a href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy">FiPy@GitHub</a></h2>
+   <table class="contentstable" align="center"><tr>
+     <td width="50%">
+       <p class="biglink"><a class="biglink" 
+       href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy">Source Code</a></p>
+       <p class="biglink"><a class="biglink" 
+       href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy/issues">Reporting Bugs</a></p>
+     </td><td width="50%">
+       <p class="biglink"><a class="biglink" 
+       href="/cgi-bin/redirect.py?url=https://github.com/usnistgov/fipy/wiki">wiki</a></p>
+     </td></tr>
+   </table>
+   
+   <h2>Indices and tables</h2>
+   <table class="contentstable" align="center"><tr>
+     <td width="50%">
+       <p class="biglink"><a class="biglink" href="{{ pathto('py-modindex') }}">Global Module Index</a><br/>
+          <span class="linkdescr">quick access to all modules</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('genindex') }}">General Index</a><br/>
+          <span class="linkdescr">all functions, classes, terms</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('glossary') }}">Glossary</a><br/>
+          <span class="linkdescr">the most important terms explained</span></p>
+     </td><td width="50%">
+       <p class="biglink"><a class="biglink" href="{{ pathto('search')
+       }}">Search Page</a><br/>
+          <span class="linkdescr">search this documentation</span></p>
+       <p class="biglink"><a class="biglink" href="{{ pathto('contents') }}">Complete Table of Contents</a><br/>
+          <span class="linkdescr">lists all sections and subsections</span></p>
+       <p class="biglink"><a class="biglink" href="{{  pathto('references') }}">References</a><br/>
+          <span class="linkdescr">lists of source materials</span></p>
+     </td></tr>
+   </table>
+ {% endblock %}
+{% endblock %}

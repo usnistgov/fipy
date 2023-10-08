@@ -12,7 +12,6 @@ from setuptools import setup, find_packages
 
 import versioneer
 
-from _setup.build_docs import build_docs
 from _setup.changelog import changelog
 from _setup.copy_script import copy_script
 from _setup.upload_products import upload_products
@@ -49,7 +48,6 @@ DIST = setup(
     long_description=LONG_DESCRIPTION,
     cmdclass=dict(
         {
-            "build_docs": build_docs,
             "upload_products": upload_products,
             "copy_script": copy_script,
             "changelog": changelog,

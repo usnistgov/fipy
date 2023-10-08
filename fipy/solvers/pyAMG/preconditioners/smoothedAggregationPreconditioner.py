@@ -10,6 +10,11 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class SmoothedAggregationPreconditioner(Preconditioner):
+    """Preconditioner based on `PyAMG smoothed_aggregation_solver <https://pyamg.readthedocs.io/en/latest/generated/pyamg.aggregation.html#pyamg.aggregation.smoothed_aggregation_solver>`_
+    """
+
+    def __init__(self):
+        pass
 
     def _applyToMatrix(self, A):
         return smoothed_aggregation_solver(A).aspreconditioner(cycle='V')

@@ -1,7 +1,7 @@
 """
 
 This example solves the steady-state convection-diffusion equation as described in
-mod:`examples.diffusion.convection.exponential1D.mesh1D` but uses the
+:mod:`examples.convection.exponential1D.mesh1D` but uses the
 :class:`~fipy.terms.powerLawConvectionTerm.PowerLawConvectionTerm` rather than the :class:`~fipy.terms.exponentialConvectionTerm.ExponentialConvectionTerm` instantiator.
 
 >>> from fipy import CellVariable, Grid2D, DiffusionTerm, PowerLawConvectionTerm, DefaultAsymmetricSolver, Viewer

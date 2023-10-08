@@ -208,7 +208,7 @@ class _TrilinosMatrix(_SparseMatrix):
             AttributeError: 'int' object has no attribute 'fillComplete'
         """
 
-        if other is 0:
+        if other == 0:
             return self
         else:
             return self._add(other)
@@ -216,7 +216,7 @@ class _TrilinosMatrix(_SparseMatrix):
     __radd__ = __add__
 
     def __sub__(self, other):
-        if other is 0:
+        if other == 0:
             return self
         else:
             return self._add(other, sign=-1)

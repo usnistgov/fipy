@@ -25,7 +25,7 @@ deposition from an electrolyte containing PEG-SPS-Cl. Preferential
 metal deposition at the bottom of the trenches followed by bump
 formation above the filled trenches is evident.
 
-.. image:: experimentalSuperfill.*
+.. image:: /figures/examples/levelSet/electroChem/experimentalSuperfill.*
    :scale: 50
    :align: center
    :alt: cross-sectional scanning electron micrographs of experimental superfill
@@ -71,7 +71,7 @@ represents sequential positions of the interface and the color
 represents the concentration of accelerator as a surfactant. The areas
 of high surfactant concentration have an increased deposition rate.
 
-.. image:: superfillImage.*
+.. image:: /figures/examples/levelSet/electroChem/superfillImage.*
    :scale: 50
    :align: left
    :alt: FiPy simulation contours of superfill

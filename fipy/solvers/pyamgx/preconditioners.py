@@ -11,11 +11,17 @@ __all__ = ["AMGPreconditioner",
            "GaussSeidelPreconditioner",
            "ILUPreconditioner",
            "JacobiPreconditioner",
-           "PolynomialPreconditioner"]
+           "PolynomialPreconditioner",
+           "Preconditioner"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class Preconditioner(object):
+    """Interface to pyamgx_ `preconditioner configuration`_.
+    .. _pyamgx: https://pyamgx.readthedocs.io
+    .. _preconditioner configuration: https://pyamgx.readthedocs.io/en/latest/basic.html#config-objects
+    """
+
     def __init__(self, **kwargs):
         self.config_dict = {
             "solver": self.pctype,

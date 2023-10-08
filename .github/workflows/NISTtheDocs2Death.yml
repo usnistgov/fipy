@@ -1,0 +1,16 @@
+name: "Build Documentation"
+
+on: [push, pull_request, delete]
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: usnistgov/NISTtheDocs2Death@main
+        with:
+          docs-folder: docs
+          pip-requirements: docs/requirements.txt
+          pre-build-command: |-
+            git config --global --add safe.directory /github/workspace
+          formats: |-
+            pdf

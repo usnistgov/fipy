@@ -6,6 +6,11 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 def PRINT(label, arg="", stall=True):
+    """Display `label` and `arg` on each MPI rank.
+
+    Annotate with rank number.
+    If `stall` is true, ensure all ranks print before proceeding.
+    """
     import sys
     from fipy import parallelComm
     import time
