@@ -18,6 +18,7 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class Preconditioner(object):
     """Interface to pyamgx_ `preconditioner configuration`_.
+
     .. _pyamgx: https://pyamgx.readthedocs.io
     .. _preconditioner configuration: https://pyamgx.readthedocs.io/en/latest/basic.html#config-objects
     """

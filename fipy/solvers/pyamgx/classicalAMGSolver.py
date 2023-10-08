@@ -25,8 +25,8 @@ class ClassicalAMGSolver(PyAMGXSolver):
             See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.pyamgx.preconditioners.preconditioners.Preconditioner, optional
-        smoother : ~fipy.solvers.pyamgx.smoothers.smoothers.Smoother, optional
+        precon : ~fipy.solvers.pyamgx.preconditioners.Preconditioner, optional
+        smoother : ~fipy.solvers.pyamgx.smoothers.Smoother, optional
         **kwargs
             Other AMGX solver options
         """

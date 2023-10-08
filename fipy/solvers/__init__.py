@@ -185,15 +185,14 @@ register_skipper(flag='PYSPARSE_SOLVER',
                  why="the Pysparse solvers are not being used.",
                  skipWarning=True)
 
-<<<<<<< HEAD
 register_skipper(flag='PETSC_SOLVER',
                  test=lambda: solver_suite == 'petsc',
                  why="the PETSc solvers are not being used.",
-=======
+                 skipWarning=True)
+
 register_skipper(flag='NOT_PYAMGX_SOLVER',
                  test=lambda: solver_suite != 'pyamgx',
                  why="the PyAMGX solver is being used.",
->>>>>>> master
                  skipWarning=True)
 
 register_skipper(flag='SCIPY_SOLVER',
