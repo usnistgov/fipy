@@ -130,8 +130,8 @@ napoleon_numpy_docstring = True
 # [@MadPhysicist](https://stackoverflow.com/users/2988730/mad-physicist)
 # [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 # https://stackoverflow.com/a/66182779
-napoleon_use_param = True
-# napoleon_preprocess_types = True
+# Corrected for https://github.com/sphinx-doc/sphinx/issues/10963
+napoleon_preprocess_types = True
 napoleon_type_aliases = {
     'array-like': ':term:`array-like <array_like>`',
     'array_like': ':term:`array_like`'
