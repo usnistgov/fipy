@@ -52,7 +52,7 @@ class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
             desired aspect ratio of figure. If arg is a number, use that aspect
             ratio. If arg is `auto`, the aspect ratio will be determined from
             the Variable's mesh.
-        density : float or (float, float), optional
+        density : float or tuple of float, optional
             Controls the closeness of streamlines.  When ``density = 1``,
             the domain is divided into a 30x30 grid.  *density* linearly
             scales this grid.  Each cell in the grid can have, at most, one

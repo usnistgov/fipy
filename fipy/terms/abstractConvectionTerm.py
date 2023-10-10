@@ -66,7 +66,8 @@ class _AbstractConvectionTerm(FaceTerm):
 
         Parameters
         ----------
-        coeff : The `Term`'s coefficient value.
+        coeff : :class:`~fipy.variables.meshVariable.MeshVariable`
+            The :class:`~fipy.terms.term.Term`'s coefficient value.
         """
         if self.__class__ is _AbstractConvectionTerm:
             raise AbstractBaseClassError
