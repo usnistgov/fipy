@@ -43,6 +43,9 @@ class _ConvergenceMeta(type):
             cls.name_registry[(cls.suite, cls.status_name)] = cls
 
 class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
+    """Information about whether and why a solver converged.
+    """
+
     def __init__(self, solver, iterations, residual, criterion, actual_code=None, **kwargs):
         self.solver = solver
         self.iterations = iterations
@@ -69,34 +72,55 @@ class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
         return str(self.info)
 
 class Convergence(ConvergenceBase):
-     message = "User requested convergence criteria is satisfied. Iterations: {0}. Relative error: {1}"
+    """Information about why a solver converged.
+    """
+
+    message = "User requested convergence criteria is satisfied. Iterations: {0}. Relative error: {1}"
 
 class AbsoluteToleranceConvergence(Convergence):
+    """Convergence by satisifying absolute tolerance.
+    """
     pass
 
 class RelativeToleranceConvergence(Convergence):
+    """Convergence by satisifying relative tolerance.
+    """
     pass
 
 class Divergence(ConvergenceBase):
+    """Information about why a solver diverged.
+    """
 
     def warn(self):
         warnings.warn("({status_code}, {status_name}): {residual}".format(**self.info), stacklevel=5)
 
 class IterationDivergence(Divergence):
+    """Divergence by exceeding maximum iterations.
+    """
     pass
 
 class BreakdownDivergence(Divergence):
+    """Divergence because method broke down.
+    """
     pass
 
 class IllConditionedDivergence(Divergence):
+    """Divergence because matrix was ill-conditioned.
+    """
     pass
 
 class OutOfRangeDivergence(Divergence):
+    """Divergence because a value became too small, too large, or invalid.
+    """
     pass
 
 class PreconditioningDivergence(Divergence):
+    """Divergence because of a problem with the preconditioner.
+    """
     pass
 
 class IllConditionedPreconditionerDivergence(PreconditioningDivergence):
+    """Divergence because preconditioner is ill-conditioned.
+    """
     pass
 
