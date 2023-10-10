@@ -48,7 +48,7 @@ are automatically applied to the top-right and bottom-left corners.
 We create a viewer to see the results
 
 .. index::
-   module: fipy.viewers
+   pair: module; fipy.viewers
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=phi, datamin=0., datamax=1.)

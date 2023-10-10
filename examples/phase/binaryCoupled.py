@@ -457,7 +457,7 @@ and we'll have much better luck if we also supply the Jacobian
 ...                                   [ 1. / C[0],      -1. / C[1]]])
 
 .. index::
-   module: scipy
+   pair: module; scipy
 
 >>> try:
 ...     from scipy.optimize import fsolve # doctest: +SCIPY
@@ -481,7 +481,7 @@ We plot the result against the sharp interface solution
 >>> sharp.setValue(Cl, where=x >= L * fraction)
 
 .. index::
-   module: fipy.viewers
+   pair: module; fipy.viewers
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=(phase, C, sharp),

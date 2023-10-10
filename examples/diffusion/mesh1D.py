@@ -114,7 +114,7 @@ by another script such as the automatic tester. The factory function
 viewers and the dimension of the mesh.
 
 .. index::
-   module: fipy.viewers
+   pair: module; fipy.viewers
 
 >>> phiAnalytical = CellVariable(name="analytical value",
 ...                              mesh=mesh)
