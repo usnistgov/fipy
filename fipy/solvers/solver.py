@@ -110,7 +110,7 @@ class Solver(object):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'initial', 'unscaled', 'RHS', 'matrix', 'solution', 'preconditioned', 'natural'}
+        criterion : {'default', 'initial', 'unscaled', 'RHS', 'matrix', 'solution', 'preconditioned', 'natural'}, optional
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
