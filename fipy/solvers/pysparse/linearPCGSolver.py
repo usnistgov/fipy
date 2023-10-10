@@ -45,7 +45,7 @@ class LinearPCGSolver(LinearRHSSolver):
             Maximum number of iterative steps to perform.
         precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
             Preconditioner to use
-            (default :class:`fipy.solvers.pysparse.preconditioners.SSORPreconditioner`).
+            (default :class:`~fipy.solvers.pysparse.preconditioners.ssorPreconditioner.SSORPreconditioner`).
         """
         super(LinearPCGSolver, self).__init__(tolerance=tolerance, criterion=criterion,
                                               iterations=iterations, precon=precon)

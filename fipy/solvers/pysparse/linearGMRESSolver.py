@@ -43,7 +43,7 @@ class LinearGMRESSolver(LinearInitialSolver):
             Maximum number of iterative steps to perform.
         precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
             Preconditioner to use.
-            (default :class:`fipy.solvers.pysparse.preconditioners.JacobiPreconditioner`).
+            (default :class:`~fipy.solvers.pysparse.preconditioners.jacobiPreconditioner.JacobiPreconditioner`).
         """
         super(LinearGMRESSolver, self).__init__(tolerance=tolerance, criterion=criterion,
                                                 iterations=iterations, precon=precon)

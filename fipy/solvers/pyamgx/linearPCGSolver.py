@@ -25,7 +25,7 @@ class LinearPCGSolver(PyAMGXSolver):
             See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.pyamgx.preconditioners.preconditioners.Preconditioner, optional
+        precon : ~fipy.solvers.pyamgx.preconditioners.Preconditioner, optional
         **kwargs
             Other AMGX solver options
         """
