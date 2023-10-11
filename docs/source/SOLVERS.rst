@@ -213,7 +213,7 @@ instantiating a :class:`~fipy.solvers.solver.Solver`.
    :file: _static/residuals.csv
    :widths: auto
    :header-rows: 1
-   :stub-columns: 1
+   :stub-columns: 2
 
 The behavior of ``criterion="default"`` depends on the solver suite and,
 sometimes, on the specific solver.  Where feasible, this behavior is
