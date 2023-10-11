@@ -211,28 +211,47 @@ instantiating a :class:`~fipy.solvers.solver.Solver`.
 
 .. csv-table:: Residual Functions
    :file: _static/residuals.csv
-   :widths: 21 13 13 13 13 13 13
+   :widths: auto
    :header-rows: 1
+   :stub-columns: 1
+
+The behavior of ``criterion="default"`` depends on the solver suite and,
+sometimes, on the specific solver.  Where feasible, this behavior is
+specified in the table.
+
+- PySparse_ has two different groups of solvers,
+  with different defaults.
+- PETSc_ accepts ``KSP_NORM_DEFAULT`` in order to
+  "use the default for the current ``KSPType``".  Discerning the actual
+  behavior would require burning the code in a bowl of chicken entrails.
+  (It is reasonable to assume |KSP_NORM_PRECONDITIONED|_ for
+  left-preconditioned solvers and |KSP_NORM_UNPRECONDITIONED|_ otherwise;
+  even the PETSc_ documentation says that |KSP_NORM_NATURAL|_ is `"weird"
+  <https://petsc.org/main/manualpages/KSP/KSPCGS/#developer-note>`_).
+- LU solvers default to ``"initial"``.
+
+.. note:: The documentation for the PETSc_ convergence criteria only 
+   describes how the residual is calculated. 
 
 Different solver suites also report different levels of detail about why
 they succed or fail.  This information is captured as a
-:class:`~fipy.solvers.convergence.ConvergenceBase` property of the
+:class:`~fipy.solvers.convergence.Convergence` or
+:class:`~fipy.solvers.convergence.Divergence` property of the
 :class:`~fipy.solvers.solver.Solver` after calling
 :meth:`~fipy.terms.term.Term.solve` or
 :meth:`~fipy.terms.term.Term.sweep`.
 
 .. csv-table:: Convergence Status Codes
    :file: _static/solver_convergence.csv
-   :widths: 25 25 15 15 20 25
+   :widths: auto
    :header-rows: 1
+   :stub-columns: 1
 
-.. [#FiPy_Convergence_Test] Implemented by :term:`FiPy`
-
-.. |KSP_NORM_UNPRECONDITIONED|  replace:: :literal:`KSP_UNPRECONDITIONED_NORM`
+.. |KSP_NORM_UNPRECONDITIONED|  replace:: :literal:`KSP_NORM_UNPRECONDITIONED`
 .. _KSP_NORM_UNPRECONDITIONED:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED/
-.. |KSP_NORM_PRECONDITIONED|  replace:: :literal:`KSP_PRECONDITIONED_NORM`
+.. |KSP_NORM_PRECONDITIONED|  replace:: :literal:`KSP_NORM_PRECONDITIONED`
 .. _KSP_NORM_PRECONDITIONED:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_PRECONDITIONED/
-.. |KSP_NORM_NATURAL|  replace:: :literal:`KSP_NATURAL_NORM`
+.. |KSP_NORM_NATURAL|  replace:: :literal:`KSP_NORM_NATURAL`
 .. _KSP_NORM_NATURAL:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_NATURAL/
 
 .. [#KSP_Convergence_Tests] https://petsc.org/release/docs/manual/ksp/#sec-convergencetests
@@ -247,6 +266,8 @@ they succed or fail.  This information is captured as a
    SAND REPORT SAND2004-3796, Updated August 2007,
    For AztecOO Version 3.6 in Trilinos Release 8.0,
    https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf
+
+.. [#FiPy_Convergence_Test] Implemented by :term:`FiPy`
 
 .. |KSP_CONVERGED_ITS|             replace:: :literal:`KSP_CONVERGED_ITS`
 .. _KSP_CONVERGED_ITS:             https://petsc.org/main/docs/manualpages/KSP/KSP_CONVERGED_ITS/
