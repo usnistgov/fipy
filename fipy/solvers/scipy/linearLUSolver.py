@@ -40,14 +40,14 @@ class LinearLUSolver(_ScipySolver):
                                             panel_size=10,
                                             permc_spec=3)
 
-        tolerance_factor, _ = self._adaptTolerance(L, x, b)
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         self._log.debug("BEGIN solve")
 
         for iteration in range(min(self.iterations, 10)):
             residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
-            if residual <= self.tolerance * tolerance_factor:
+            if residual <= self.tolerance * tolerance_scale:
                 break
 
             xError = LU.solve(residualVector)

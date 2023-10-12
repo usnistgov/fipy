@@ -56,12 +56,12 @@ class LinearJORSolver(PysparseSolver):
         tol = 1e+10
         xold = x.copy()
 
-        tolerance_factor, _ = self._adaptTolerance(L, x, b)
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         for iteration in range(self.iterations):
             residual = numerix.L2norm(L * x - b)
 
-            if residual <= self.tolerance * tolerance_factor:
+            if residual <= self.tolerance * tolerance_scale:
                 break
 
             xold[:] = x
@@ -72,4 +72,4 @@ class LinearJORSolver(PysparseSolver):
         self._setConvergence(suite="pysparse",
                              code=0,
                              iterations=iteration+1,
-                             residual=residual / tolerance_factor)
+                             residual=residual / tolerance_scale)

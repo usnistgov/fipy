@@ -44,17 +44,21 @@ class _ScipyKrylovSolver(_ScipySolver):
         else:
             M = self.preconditioner._applyToMatrix(A)
 
-        tolerance_factor, _ = self._adaptTolerance(L, x, b)
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         self.actualIterations = 0
+
+        rtol, atol = (self.scale_tolerance(tol, tolerance_scale)
+                      for tol in (self.tolerance,
+                                  self.absolute_tolerance))
 
         self._log.debug("BEGIN solve")
 
         x, info = self.solveFnc(A, b, x,
-                                tol=self.tolerance * tolerance_factor,
+                                tol=rtol,
+                                atol=atol,
                                 maxiter=self.iterations,
                                 M=M,
-                                atol='legacy',
                                 callback=self._countIterations)
 
         self._log.debug("END solve")

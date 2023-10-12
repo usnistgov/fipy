@@ -43,7 +43,7 @@ class PysparseSolver(_PysparseMatrixSolver):
         else:
             P, A = self.preconditioner._applyToMatrix(A)
 
-        tolerance_factor, _ = self._adaptTolerance(L, x, b)
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         # Pysparse returns the relative residual,
         # which changes depending on which solver is used
@@ -52,7 +52,7 @@ class PysparseSolver(_PysparseMatrixSolver):
         self._log.debug("BEGIN solve")
 
         info, iter, relres = self.solveFnc(A, b, x,
-                                           self.tolerance * tolerance_factor,
+                                           self.tolerance * tolerance_scale,
                                            self.iterations, P)
 
         self._log.debug("END solve")

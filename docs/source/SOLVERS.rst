@@ -209,11 +209,16 @@ instantiating a :class:`~fipy.solvers.solver.Solver`.
 .. note:: PyAMG_ is a set of preconditioners applied on top of SciPy_, so
    is not explicitly included in the following tables.
 
-.. csv-table:: Residual Functions
+.. csv-table:: Residual Criteria
    :file: _static/residuals.csv
    :widths: auto
    :header-rows: 1
    :stub-columns: 2
+
+Convergence is detected if ``residual < tolerance * scale``.
+
+``default``
+===========
 
 The behavior of ``criterion="default"`` depends on the solver suite and,
 sometimes, on the specific solver.  Where feasible, this behavior is
@@ -230,8 +235,22 @@ specified in the table.
   <https://petsc.org/main/manualpages/KSP/KSPCGS/#developer-note>`_).
 - LU solvers default to ``"initial"``.
 
-.. note:: The documentation for the PETSc_ convergence criteria only 
-   describes how the residual is calculated. 
+``absolute_tolerance``
+======================
+
+PETSc_ and SciPy_ Krylov solvers accept an additional
+``absolute_tolerance`` parameter, such that convergence is detected if
+``residual < max(tolerance * scale, absolute_tolerance``).
+
+``divergence_tolerance``
+========================
+
+PETSc_ Krylov solvers accept a third ``divergence_tolerance`` parameter,
+such that a divergence is detected if ``residual > divergence_tolerance *
+scale``.
+
+Reporting
+=========
 
 Different solver suites also report different levels of detail about why
 they succed or fail.  This information is captured as a

@@ -220,9 +220,15 @@ class Solver(object):
             "natural": self._adaptNaturalTolerance
         }
 
-        tolerance_factor, suite_criterion = adapt[self.criterion](L, x, b)
+        tolerance_scale, suite_criterion = adapt[self.criterion](L, x, b)
 
-        return tolerance_factor, suite_criterion
+        return tolerance_scale, suite_criterion
+
+    @staticmethod
+    def scale_tolerance(tol, scale):
+        if tol is not None:
+            tol *= scale
+        return tol
 
     def _applyUnderRelaxation(self, underRelaxation=None):
         if underRelaxation is not None:

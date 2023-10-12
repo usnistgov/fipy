@@ -16,7 +16,8 @@ class _ScipySolver(Solver):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-10, absolute_tolerance=0.,
+                 criterion="default",
                  iterations=1000, precon=None):
         """
         Create a `Solver` object.
@@ -24,7 +25,9 @@ class _ScipySolver(Solver):
         Parameters
         ----------
         tolerance : float
-            Required error tolerance.
+            Required relative error tolerance.
+        absolute_tolerance : float
+            Required absolute error tolerance.
         criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
@@ -34,6 +37,7 @@ class _ScipySolver(Solver):
             Preconditioner to use.  Not all solver suites support
             preconditioners.
         """
+        self.absolute_tolerance = absolute_tolerance
         super(_ScipySolver, self).__init__(tolerance=tolerance, criterion=criterion,
                                            iterations=iterations, precon=precon)
 

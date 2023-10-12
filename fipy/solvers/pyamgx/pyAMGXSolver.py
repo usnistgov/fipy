@@ -105,11 +105,11 @@ class PyAMGXSolver(Solver):
         self.b_gpu.upload(b)
         self.A_gpu.upload_CSR(L.matrix)
 
-        tolerance_factor, suite_criterion = self._adaptTolerance(L, x, b)
+        tolerance_scale, suite_criterion = self._adaptTolerance(L, x, b)
         config_dict = self.config_dict.copy()
         config_dict["solver"]["monitor_residual"] = 1
         config_dict["solver"]["store_res_history"] = 1
-        config_dict["solver"]["tolerance"] = self.tolerance * tolerance_factor
+        config_dict["solver"]["tolerance"] = self.tolerance * tolerance_scale
         config_dict["solver"]["convergence"] = suite_criterion
 
         cfg = pyamgx.Config().create_from_dict(config_dict)

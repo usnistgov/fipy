@@ -17,13 +17,20 @@ class PETScKrylovSolver(PETScSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-10,
+                 absolute_tolerance=None,
+                 divergence_tolerance=None,
+                 criterion="default",
                  iterations=1000, precon=None):
         """
         Parameters
         ----------
         tolerance : float
-            Required error tolerance.
+            Required relative error tolerance.
+        absolute_tolerance : float
+            Required absolute error tolerance.
+        divergence_tolerance : float
+            Required divergence error tolerance.
         criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'preconditioned', 'natural'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
@@ -35,7 +42,9 @@ class PETScKrylovSolver(PETScSolver):
         """
         if self.__class__ is PETScKrylovSolver:
             raise NotImplementedError("can't instantiate abstract base class")
-            
+
+        self.absolute_tolerance = absolute_tolerance
+        self.divergence_tolerance = divergence_tolerance
         PETScSolver.__init__(self, tolerance=tolerance, criterion=criterion,
                              iterations=iterations, precon=precon)
 
@@ -72,8 +81,15 @@ class PETScKrylovSolver(PETScSolver):
         else:
             self.preconditioner._applyToSolver(solver=ksp, matrix=L)
 
-        tolerance_factor, suite_criterion = self._adaptTolerance(L, x, b)
-        ksp.setTolerances(rtol=self.tolerance * tolerance_factor, max_it=self.iterations)
+        tolerance_scale, suite_criterion = self._adaptTolerance(L, x, b)
+
+        rtol, atol, divtol = (self.scale_tolerance(tol, tolerance_scale)
+                              for tol in (self.tolerance,
+                                          self.absolute_tolerance,
+                                          self.divergence_tolerance))
+
+        ksp.setTolerances(rtol=rtol, atol=atol, divtol=divtol,
+                          max_it=self.iterations)
         ksp.setNormType(suite_criterion)
 
         L.assemble()

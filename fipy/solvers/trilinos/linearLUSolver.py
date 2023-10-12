@@ -62,14 +62,14 @@ class LinearLUSolver(TrilinosSolver):
 
     def _solve_(self, L, x, b):
 
-        tolerance_factor, _ = self._adaptTolerance(L, x, b)
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         self._log.debug("BEGIN solve")
 
         for iteration in range(self.iterations):
             residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
-            if residual <= self.tolerance * tolerance_factor:
+            if residual <= self.tolerance * tolerance_scale:
                 break
 
             xError = Epetra.Vector(L.RowMap())
