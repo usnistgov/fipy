@@ -35,20 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using FiPy &#8212; FiPy 3.4.4+2.gb3d357617 documentation</title>
+    <title>Using FiPy &#8212; FiPy 3.4.4+3.g7f3fc9a31 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e2650a94"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=521d63fc"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+2.gb3d357617 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.4+3.g7f3fc9a31 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Frequently Asked Questions" href="FAQ.html" />
     <link rel="prev" title="Viewers" href="VIEWERS.html" />
@@ -870,33 +870,33 @@ and gradients at intervening faces. Using a first order upwind
 approximation, the boundary value of the variable at face <span class="math notranslate nohighlight">\(f\)</span> can be written in terms of
 the value at the neighboring cell <span class="math notranslate nohighlight">\(P\)</span> and the normal gradient at the boundary:</p>
 <div class="math notranslate nohighlight" id="equation-upwind1">
-<span class="eqno">(1)<a class="headerlink" href="#equation-upwind1" title="Permalink to this equation">¶</a></span>\[\begin{split}\phi_f &amp;\approx \phi_P - \left(\vec{d}_{fP}\cdot\nabla\phi\right)_f
+<span class="eqno">(1)<a class="headerlink" href="#equation-upwind1" title="Permalink to this equation">¶</a></span>\[\begin{split}\phi_f &amp;\approx \phi_P + \left(\vec{d}_{Pf}\cdot\nabla\phi\right)_f
 \\
-&amp;\approx \phi_P - \left(\hat{n}\cdot\nabla\phi\right)_f\left(\vec{d}_{fP}\cdot\hat{n}\right)_f\end{split}\]</div>
-<p>where <span class="math notranslate nohighlight">\(\vec{d}_{fP}\)</span> is the distance vector from the face center to
-the adjoining cell center.  The approximation
-<span class="math notranslate nohighlight">\(\left(\vec{d}_{fP}\cdot\nabla\phi\right)_f \approx
-\left(\hat{n}\cdot\nabla\phi\right)_f\left(\vec{d}_{fP}\cdot\hat{n}\right)_f\)</span>
+&amp;\approx \phi_P + \left(\hat{n}\cdot\nabla\phi\right)_f\left(\vec{d}_{Pf}\cdot\hat{n}\right)_f\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\vec{d}_{Pf}\)</span> is the distance vector to the center of the face
+<span class="math notranslate nohighlight">\(f\)</span> from the center of the adjoining cell <span class="math notranslate nohighlight">\(P\)</span>.  The
+approximation <span class="math notranslate nohighlight">\(\left(\vec{d}_{Pf}\cdot\nabla\phi\right)_f \approx
+\left(\hat{n}\cdot\nabla\phi\right)_f\left(\vec{d}_{Pf}\cdot\hat{n}\right)_f\)</span>
 is most valid when the mesh is orthogonal.</p>
 <p>Substituting this expression into the Robin condition:</p>
 <div class="math notranslate nohighlight" id="equation-robin-facegrad">
 <span class="eqno">(2)<a class="headerlink" href="#equation-robin-facegrad" title="Permalink to this equation">¶</a></span>\[\begin{split}\hat{n}\cdot\left(\vec{a} \phi + b \nabla\phi\right)_f &amp;= g \\
 \hat{n}\cdot\left[\vec{a} \phi_P
-- \vec{a} \left(\hat{n}\cdot\nabla\phi\right)_f\left(\vec{d}_{fP}\cdot\hat{n}\right)_f
++ \vec{a} \left(\hat{n}\cdot\nabla\phi\right)_f\left(\vec{d}_{Pf}\cdot\hat{n}\right)_f
 + b \nabla\phi\right]_f &amp;\approx g \\
 \left(\hat{n}\cdot\nabla\phi\right)_f
 &amp;\approx \frac{g_f - \left(\hat{n}\cdot\vec{a}\right)_f \phi_P}
-              {-\left(\vec{d}_{fP}\cdot\vec{a}\right)_f + b_f}\end{split}\]</div>
+              {\left(\vec{d}_{Pf}\cdot\vec{a}\right)_f + b_f}\end{split}\]</div>
 <p>we obtain an expression for the gradient at the boundary face in terms of
 its neighboring cell.  We can, in turn, substitute this back into
 <a class="reference internal" href="#equation-upwind1">(1)</a></p>
 <div class="math notranslate nohighlight" id="equation-upwind2">
 <span class="eqno">(3)<a class="headerlink" href="#equation-upwind2" title="Permalink to this equation">¶</a></span>\[\begin{split}\phi_f &amp;\approx \phi_P
-- \frac{g_f - \left(\hat{n}\cdot\vec{a}\right)_f \phi_P}
-       {-\left(\vec{d}_{fP}\cdot\vec{a}\right)_f + b_f}
-\left(\vec{d}_{fP}\cdot\hat{n}\right)_f \\
-&amp;\approx \frac{-g_f \left(\hat{n}\cdot\vec{d}_{fP}\right)_f + b_f\phi_P}
-              {- \left(\vec{d}_{fP}\cdot\vec{a}\right)_f + b_f}\end{split}\]</div>
++ \frac{g_f - \left(\hat{n}\cdot\vec{a}\right)_f \phi_P}
+       {\left(\vec{d}_{Pf}\cdot\vec{a}\right)_f + b_f}
+\left(\vec{d}_{Pf}\cdot\hat{n}\right)_f \\
+&amp;\approx \frac{g_f \left(\hat{n}\cdot\vec{d}_{Pf}\right)_f + b_f\phi_P}
+              {\left(\vec{d}_{Pf}\cdot\vec{a}\right)_f + b_f}\end{split}\]</div>
 <p>to obtain the value on the boundary face in terms of the neighboring cell.</p>
 <p>Substituting <a class="reference internal" href="#equation-robin-facegrad">(2)</a> into the discretization of the
 <a class="reference internal" href="generated/fipy.terms.diffusionTerm.html#fipy.terms.diffusionTerm.DiffusionTerm" title="fipy.terms.diffusionTerm.DiffusionTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffusionTerm</span></code></a>:</p>
@@ -908,7 +908,7 @@ its neighboring cell.  We can, in turn, substitute this back into
 + \sum_{f \in S_R} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f \\
 &amp;\approx \sum_{f \notin S_R} \Gamma_f \left(\hat{n}\cdot\nabla\phi\right)_f A_f
 + \sum_{f \in S_R} \Gamma_f \frac{g_f - \left(\hat{n}\cdot\vec{a}\right)_f \phi_P}
-                    {-\left(\vec{d}_{fP}\cdot\vec{a}\right)_f + b_f} A_f\end{split}\]</div>
+                    {\left(\vec{d}_{Pf}\cdot\vec{a}\right)_f + b_f} A_f\end{split}\]</div>
 <p>An equation of the form</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eqn</span> <span class="o">=</span> <span class="n">TransientTerm</span><span class="p">()</span> <span class="o">==</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">Gamma0</span><span class="p">)</span>
 </pre></div>
@@ -923,7 +923,7 @@ its neighboring cell.  We can, in turn, substitute this back into
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">FaceVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="o">=...</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">FaceVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="o">=...</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">FaceVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="o">=...</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">RobinCoeff</span> <span class="o">=</span> <span class="p">(</span><span class="n">mask</span> <span class="o">*</span> <span class="n">Gamma0</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="p">(</span><span class="o">-</span><span class="n">dPf</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">RobinCoeff</span> <span class="o">=</span> <span class="p">(</span><span class="n">mask</span> <span class="o">*</span> <span class="n">Gamma0</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="p">(</span><span class="n">dPf</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eqn</span> <span class="o">=</span> <span class="p">(</span><span class="n">TransientTerm</span><span class="p">()</span> <span class="o">==</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">Gamma</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">RobinCoeff</span> <span class="o">*</span> <span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">divergence</span>
 <span class="gp">... </span>       <span class="o">-</span> <span class="n">ImplicitSourceTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="p">(</span><span class="n">RobinCoeff</span> <span class="o">*</span> <span class="n">n</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">))</span><span class="o">.</span><span class="n">divergence</span><span class="p">)</span>
 </pre></div>
@@ -936,8 +936,8 @@ substitute <a class="reference internal" href="#equation-upwind2">(3)</a>:</p>
 &amp;\approx \sum_f \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f \\
 &amp;= \sum_{f \notin S_R} \left(\hat{n}\cdot\vec{u}\right)_f \phi_f A_f
 + \sum_{f \in S_R} \left(\hat{n}\cdot\vec{u}\right)_f
-     \frac{-g_f \left(\hat{n}\cdot\vec{d}_{fP}\right)_f + b_f\phi_P}
-          {- \left(\vec{d}_{fP}\cdot\vec{a}\right)_f + b_f} A_f\end{split}\]</div>
+     \frac{g_f \left(\hat{n}\cdot\vec{d}_{Pf}\right)_f + b_f\phi_P}
+          {\left(\vec{d}_{Pf}\cdot\vec{a}\right)_f + b_f} A_f\end{split}\]</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>An expression like the heat flux convection boundary condition
@@ -1134,7 +1134,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
 
 
                 <div class='last-updated'>
-                Last updated on Oct 06, 2023.
+                Last updated on Oct 16, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -1144,7 +1144,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+2.gb3d357617
+Version 3.4.4+3.g7f3fc9a31
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
