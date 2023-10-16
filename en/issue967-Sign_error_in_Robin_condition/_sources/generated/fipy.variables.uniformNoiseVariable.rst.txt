@@ -1,0 +1,29 @@
+fipy.variables.uniformNoiseVariable
+===================================
+
+.. automodule:: fipy.variables.uniformNoiseVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      UniformNoiseVariable
+   
+   
+
+   
+   
+   
+
+
+
