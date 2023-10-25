@@ -181,6 +181,34 @@ class _PETScMatrix(_SparseMatrix):
     def _range(self):
         return list(range(self._shape[1])), list(range(self._shape[0]))
 
+    def _setRCV(self, vector, id1, id2, addv=False):
+        """Insert values based on triplet of rows, columns, and values
+
+        L[id2[k], id1[k]] = vector[k]
+
+        :meth:`~PETSc.Mat.setValuesRCV` is, helpfully, described as
+        `Undocumented. `https://github.com/petsc/petsc/blob/c373386401c23a900b8d8448dc0b1bd4ba1cb6ca/src/binding/petsc4py/src/petsc4py/PETSc/Mat.pyx#L2541C28-L2541C28>`_
+        8^P (even that was only done in
+        `v3.20.0 <https://github.com/petsc/petsc/commit/55a74a43bb44613d95e937906bec3b8c3581b432>`_).
+
+        The sourcecode is not terribly helpful, but, fortunately,
+        Firedrake's `petsc_sparse()` shows what to do.
+        (https://www.firedrakeproject.org/_modules/firedrake/preconditioners/fdm.html).
+
+        I have no idea why they need to be column vectors, but it works.
+
+        Parameters
+        ----------
+        vector : array_like
+            non-zero values
+        id1 : array_like
+            column(?) indices
+        id2 : array_like
+            row(?) indices
+        """
+
+        self.matrix.setValuesRCV(id2[:, None], id1[:, None], vector[:, None])
+
     def put(self, vector, id1, id2):
         """
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
@@ -193,7 +221,7 @@ class _PETScMatrix(_SparseMatrix):
              2.500000      ---        ---    
         """
         self.matrix.assemble(self.matrix.AssemblyType.FLUSH)
-        self.matrix.setValuesCSR(*self._ijv2csr(id2, id1, vector))
+        self._setRCV(vector=vector, id1=id1, id2=id2)
 
     def _ijv2csr(self, i, j, v):
         """Convert arrays of matrix indices and values into CSR format
@@ -288,8 +316,7 @@ class _PETScMatrix(_SparseMatrix):
              2.500000      ---     2.200000  
         """
         self.matrix.assemble(self.matrix.AssemblyType.FLUSH)
-        self.matrix.setValuesCSR(*self._ijv2csr(id2, id1, vector),
-                                 addv=True)
+        self._setRCV(vector=vector, id1=id1, id2=id2, addv=True)
 
     def addAtDiagonal(self, vector):
         if isinstance(vector, (int, float)):
