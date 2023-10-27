@@ -206,8 +206,8 @@ class _PETScMatrix(_SparseMatrix):
         id2 : array_like
             column indices
         """
-        id1 = numerix.asarray(id1, dtype='int32')
-        id2 = numerix.asarray(id2, dtype='int32')
+        id1 = numerix.asarray(id1, dtype=PETSc.IntType)
+        id2 = numerix.asarray(id2, dtype=PETSc.IntType)
         vector = numerix.asarray(vector)
         self.matrix.setValuesRCV(id1[:, None], id2[:, None], vector[:, None],
                                  addv=addv)
@@ -267,7 +267,7 @@ class _PETScMatrix(_SparseMatrix):
         vals = v[ix]
 
         # note: PETSc (at least via pip) only seems to handle 32 bit addressing
-        return row_ptr.astype('int32'), cols.astype('int32'), vals
+        return row_ptr.astype(PETSc.IntType), cols.astype(PETSc.IntType), vals
 
     def putDiagonal(self, vector):
         """
@@ -610,8 +610,8 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
 
             petscIDs = numerix.arange(N) + numerix.sum(count[:comm.procID])
 
-            self._ao_ = PETSc.AO().createBasic(petsc=petscIDs.astype('int32'),
-                                               app=fipyIDs.astype('int32'),
+            self._ao_ = PETSc.AO().createBasic(petsc=petscIDs.astype(PETSc.IntType),
+                                               app=fipyIDs.astype(PETSc.IntType),
                                                comm=comm.petsc4py_comm)
 
         return self._ao_
@@ -624,7 +624,7 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
     def _mesh2matrix(self, ids):
         """Convert mesh cell indices to matrix row indices
         """
-        return self._ao.app2petsc(ids.astype('int32'))
+        return self._ao.app2petsc(ids.astype(PETSc.IntType))
 
     def _fipy2petscGhost(self, var):
         """Convert a FiPy Variable to a PETSc `GhostVec`
@@ -659,7 +659,7 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
         array = numerix.concatenate([corporeal, incorporeal])
 
         comm = self.mesh.communicator.petsc4py_comm
-        vec = PETSc.Vec().createGhostWithArray(ghosts=self._m2m.ghosts.astype('int32'),
+        vec = PETSc.Vec().createGhostWithArray(ghosts=self._m2m.ghosts.astype(PETSc.IntType),
                                                array=array,
                                                comm=comm)
 
@@ -905,7 +905,7 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
                 x = other[self._m2m.localNonOverlappingColIDs]
                 x = PETSc.Vec().createWithArray(x, comm=self.matrix.comm)
 
-                y = PETSc.Vec().createGhost(ghosts=self._m2m.ghosts.astype('int32'),
+                y = PETSc.Vec().createGhost(ghosts=self._m2m.ghosts.astype(PETSc.IntType),
                                             size=(len(self._m2m.localNonOverlappingColIDs), None),
                                             comm=self.matrix.comm)
                 self.matrix.mult(x, y)
@@ -917,7 +917,7 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
     def takeDiagonal(self):
         self.matrix.assemble()
 
-        y = PETSc.Vec().createGhost(ghosts=self._m2m.ghosts.astype('int32'),
+        y = PETSc.Vec().createGhost(ghosts=self._m2m.ghosts.astype(PETSc.IntType),
                                     size=(len(self._m2m.localNonOverlappingColIDs), None),
                                     comm=self.matrix.comm)
         self.matrix.getDiagonal(result=y)
