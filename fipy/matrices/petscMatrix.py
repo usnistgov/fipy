@@ -202,12 +202,15 @@ class _PETScMatrix(_SparseMatrix):
         vector : array_like
             non-zero values
         id1 : array_like
-            column(?) indices
+            row indices
         id2 : array_like
-            row(?) indices
+            column indices
         """
-
-        self.matrix.setValuesRCV(id2[:, None], id1[:, None], vector[:, None])
+        id1 = numerix.asarray(id1, dtype='int32')
+        id2 = numerix.asarray(id2, dtype='int32')
+        vector = numerix.asarray(vector)
+        self.matrix.setValuesRCV(id1[:, None], id2[:, None], vector[:, None],
+                                 addv=addv)
 
     def put(self, vector, id1, id2):
         """
