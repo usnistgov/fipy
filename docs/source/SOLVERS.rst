@@ -203,7 +203,7 @@ Convergence
 
 Different solver suites take different approaches to testing convergence.
 We endeavor to harmonize this behavior by allowing the strings in the
-"FiPy" column to be passed as the ``criterion=`` argument when
+"criterion" column to be passed as an argument when
 instantiating a :class:`~fipy.solvers.solver.Solver`.
 
 .. note:: PyAMG_ is a set of preconditioners applied on top of SciPy_, so
@@ -213,27 +213,29 @@ instantiating a :class:`~fipy.solvers.solver.Solver`.
    :file: _static/residuals.csv
    :widths: auto
    :header-rows: 1
-   :stub-columns: 2
+   :stub-columns: 1
 
 Convergence is detected if ``residual < tolerance * scale``.
 
 ``default``
 ===========
 
-The behavior of ``criterion="default"`` depends on the solver suite and,
-sometimes, on the specific solver.  Where feasible, this behavior is
-specified in the table.
+The setting ``criterion="default"`` is equivalent to what the particular
+suite and solver does if not specifically configured.  The ``default`` row
+of the table is a best effort at documenting what will happen.
 
-- PySparse_ has two different groups of solvers,
-  with different defaults.
-- PETSc_ accepts ``KSP_NORM_DEFAULT`` in order to
-  "use the default for the current ``KSPType``".  Discerning the actual
-  behavior would require burning the code in a bowl of chicken entrails.
-  (It is reasonable to assume |KSP_NORM_PRECONDITIONED|_ for
-  left-preconditioned solvers and |KSP_NORM_UNPRECONDITIONED|_ otherwise;
-  even the PETSc_ documentation says that |KSP_NORM_NATURAL|_ is `"weird"
-  <https://petsc.org/main/manualpages/KSP/KSPCGS/#developer-note>`_).
-- LU solvers default to ``"initial"``.
+.. note::
+
+    - All LU solvers default to ``"initial"``.
+    - PySparse_ has two different groups of solvers,
+      with different defaults.
+    - PETSc_ accepts |KSP_NORM_DEFAULT|_ in order to
+      "use the default for the current ``KSPType``".  Discerning the actual
+      behavior would require burning the code in a bowl of chicken entrails.
+      (It is reasonable to assume |KSP_NORM_PRECONDITIONED|_ for
+      left-preconditioned solvers and |KSP_NORM_UNPRECONDITIONED|_ otherwise;
+      even the PETSc_ documentation says that |KSP_NORM_NATURAL|_ is `"weird"
+      <https://petsc.org/main/manualpages/KSP/KSPCGS/#developer-note>`_).
 
 ``absolute_tolerance``
 ======================
@@ -272,6 +274,8 @@ they succed or fail.  This information is captured as a
 .. _KSP_NORM_PRECONDITIONED:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_PRECONDITIONED/
 .. |KSP_NORM_NATURAL|  replace:: :literal:`KSP_NORM_NATURAL`
 .. _KSP_NORM_NATURAL:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_NATURAL/
+.. |KSP_NORM_DEFAULT|  replace:: :literal:`KSP_NORM_DEFAULT`
+.. _KSP_NORM_DEFAULT:  https://petsc.org/main/manualpages/KSP/KSPNormType/
 
 .. [#KSP_Convergence_Tests] https://petsc.org/release/docs/manual/ksp/#sec-convergencetests
 
