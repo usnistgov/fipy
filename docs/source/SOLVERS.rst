@@ -290,7 +290,8 @@ they succed or fail.  This information is captured as a
    For AztecOO Version 3.6 in Trilinos Release 8.0,
    https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf
 
-.. [#FiPy_Convergence_Test] Implemented by :term:`FiPy`
+.. [#FiPy_Convergence_Test] Implemented by :term:`FiPy` using intrinsic
+   solver capabilities.
 
 .. |KSP_CONVERGED_ITS|             replace:: :literal:`KSP_CONVERGED_ITS`
 .. _KSP_CONVERGED_ITS:             https://petsc.org/main/docs/manualpages/KSP/KSP_CONVERGED_ITS/
