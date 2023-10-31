@@ -214,6 +214,7 @@ instantiating a :class:`~fipy.solvers.solver.Solver`.
    :widths: auto
    :header-rows: 1
    :stub-columns: 1
+   :class: widetable
 
 Convergence is detected if ``residual < tolerance * scale``.
 
@@ -267,6 +268,7 @@ they succed or fail.  This information is captured as a
    :widths: auto
    :header-rows: 1
    :stub-columns: 1
+   :class: widetable
 
 .. |KSP_NORM_UNPRECONDITIONED|  replace:: :literal:`KSP_NORM_UNPRECONDITIONED`
 .. _KSP_NORM_UNPRECONDITIONED:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED/
