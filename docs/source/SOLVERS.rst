@@ -209,12 +209,20 @@ instantiating a :class:`~fipy.solvers.solver.Solver`.
 .. note:: PyAMG_ is a set of preconditioners applied on top of SciPy_, so
    is not explicitly included in the following tables.
 
+.. raw:: latex
+
+    \begin{landscape}
+
 .. csv-table:: Residual Criteria
    :file: _static/residuals.csv
    :widths: auto
    :header-rows: 1
    :stub-columns: 1
-   :class: widetable
+   :class: widetable longtable
+
+.. raw:: latex
+
+    \end{landscape}
 
 Convergence is detected if ``residual < tolerance * scale``.
 
@@ -263,12 +271,23 @@ they succed or fail.  This information is captured as a
 :meth:`~fipy.terms.term.Term.solve` or
 :meth:`~fipy.terms.term.Term.sweep`.
 
+.. raw:: latex
+
+    \begin{landscape}
+
+.. tabularcolumns:: \Y{.25}\Y{.10}\Y{.22}\Y{.16}\Y{.09}\Y{.06}\Y{.12}
+
 .. csv-table:: Convergence Status Codes
    :file: _static/solver_convergence.csv
    :widths: auto
    :header-rows: 1
    :stub-columns: 1
-   :class: widetable
+   :class: widetable longtable
+
+.. raw:: latex
+
+    \end{landscape}
+
 
 .. |KSP_NORM_UNPRECONDITIONED|  replace:: :literal:`KSP_NORM_UNPRECONDITIONED`
 .. _KSP_NORM_UNPRECONDITIONED:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED/

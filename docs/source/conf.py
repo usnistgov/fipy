@@ -244,6 +244,8 @@ latex_elements = {
         \definecolor{bluish}{rgb}{0.216,0.188,0.533}
 
         \newcommand{\fipylogo}{\scalebox{10}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}}
+
+        \usepackage{pdflscape}
     """,
     'printindex': r'\footnotesize\raggedright\printindex',
 }
