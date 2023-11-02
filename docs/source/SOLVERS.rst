@@ -218,7 +218,7 @@ instantiating a :class:`~fipy.solvers.solver.Solver`.
    :widths: auto
    :header-rows: 1
    :stub-columns: 1
-   :class: widetable longtable
+   :class: wideshow longtable
 
 .. raw:: latex
 
@@ -282,7 +282,7 @@ they succed or fail.  This information is captured as a
    :widths: auto
    :header-rows: 1
    :stub-columns: 1
-   :class: widetable longtable
+   :class: wideshow longtable
 
 .. raw:: latex
 
@@ -300,7 +300,7 @@ they succed or fail.  This information is captured as a
    :widths: auto
    :header-rows: 1
    :stub-columns: 1
-   :class: widetable longtable
+   :class: wideshow longtable
 
 .. raw:: latex
 
