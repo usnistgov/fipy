@@ -1,20 +1,9 @@
 ,,PETSc_,pyamgx_,PySparse_,SciPy_,Trilinos_
-:class:`~fipy.solvers.convergence.Convergence`,Convergence criteria met.,|KSP_CONVERGED_ITS|_,|AMGX_SOLVE_SUCCESS|_,,|SciPy_0|_,|AZ_normal|_
+:class:`~fipy.solvers.convergence.Convergence`,Convergence criteria met.,,|AMGX_SOLVE_SUCCESS|_,,|SciPy_0|_,|AZ_normal|_
+:class:`~fipy.solvers.convergence.IterationConvergence`,Requested iterations complete (and no residual calculated).,|KSP_CONVERGED_ITS|_,,,,
 :class:`~fipy.solvers.convergence.AbsoluteToleranceConvergence`,"Converged, residual is as small as seems reasonable on this machine.",|KSP_CONVERGED_ATOL|_,,|PySparse_2|_,,
-,"Converged, :math:`\mathbf{b} = 0`, so the exact solution is :math:`\mathbf{x} = 0`.",,,|PySparse_1|_,,
+:class:`~fipy.solvers.convergence.RHSZeroConvergence`,"Converged, :math:`\mathbf{b} = 0`, so the exact solution is :math:`\mathbf{x} = 0`.",,,|PySparse_1|_,,
 :class:`~fipy.solvers.convergence.RelativeToleranceConvergence`,"Converged, relative error appears to be less than tolerance.",|KSP_CONVERGED_RTOL|_,,|PySparse_0|_,,
-,,|KSP_CONVERGED_HAPPY_BREAKDOWN|_,,,,
-,Solve still in progress.,|KSP_CONVERGED_ITERATING|_,,,,
-,,,,,,
-:class:`~fipy.solvers.convergence.BreakdownDivergence`,Illegal input or the iterative solver has broken down.,|KSP_DIVERGED_BREAKDOWN|_,|AMGX_SOLVE_FAILED|_,,|SciPy_lt0|_,|AZ_breakdown|_
-,"Initial residual is orthogonal to preconditioned initial residual. Try a different preconditioner, or a different initial Level.continue to enlarge the Krylov space.",|KSP_DIVERGED_BREAKDOWN_BICG|_,,,,
-:class:`~fipy.solvers.convergence.IterationDivergence`,Maximum number of iterations was reached.,|KSP_DIVERGED_ITS|_,|AMGX_SOLVE_DIVERGED|_,|PySparse_neg1|_,|SciPy_gt0|_,|AZ_maxits|_
-:class:`~fipy.solvers.convergence.PreconditioningDivergence`,The system involving the preconditioner was ill-conditioned.,|KSP_DIVERGED_PC_FAILED|_,,|PySparse_neg2|_,,
-,"An inner product of the form :math:`\mathbf{x}^T \mathsf{P}^{-1} \mathbf{x}` was not positive, so the preconditioning matrix :math:`\mathsf{P}` does not appear to be positive definite.",|KSP_DIVERGED_INDEFINITE_PC|_,,|PySparse_neg3|_,,
-:class:`~fipy.solvers.convergence.IllConditionedDivergence`,The matrix :math:`\mathsf{L}` appears to be ill-conditioned.,|KSP_DIVERGED_INDEFINITE_MAT|_,,|PySparse_neg4|_,,|AZ_ill_cond|_
-,The method stagnated.,,,|PySparse_neg5|_,,
-:class:`~fipy.solvers.convergence.OutOfRangeDivergence`,A scalar quantity became too small or too large to continue computing.,|KSP_DIVERGED_NANORINF|_,,|PySparse_neg6|_,,
-,The iterative solver has terminated due to a lack of accuracy in the recursive residual (caused by rounding errors).,,,,,|AZ_loss|_
-,,|KSP_DIVERGED_NULL|_,,,,
-,The residual norm increased by a factor of ``divtol``.,|KSP_DIVERGED_DTOL|_,,,,
-,"It appears the operator or preconditioner is not symmetric and this Krylov method (``KSPCG``, ``KSPMINRES``, ``KSPCR``) requires symmetry.",|KSP_DIVERGED_NONSYMMETRIC|_,,,,
+:class:`~fipy.solvers.convergence.HappyBreakdownConvergence`,"""Exact"" solution found and more iterations will just make things worse.",|KSP_CONVERGED_HAPPY_BREAKDOWN|_,,,,
+:class:`~fipy.solvers.convergence.LossOfAccuracyConvergence`,The iterative solver has terminated due to a lack of accuracy in the recursive residual (caused by rounding errors).,,,,,|AZ_loss|_
+:class:`~fipy.solvers.convergence.IteratingConvergence`,Solve still in progress.,|KSP_CONVERGED_ITERATING|_,,,,

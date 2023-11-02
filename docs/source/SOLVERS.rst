@@ -289,6 +289,23 @@ they succed or fail.  This information is captured as a
     \end{landscape}
 
 
+.. raw:: latex
+
+    \begin{landscape}
+
+.. tabularcolumns:: \Y{.25}\Y{.10}\Y{.22}\Y{.16}\Y{.09}\Y{.06}\Y{.12}
+
+.. csv-table:: Divergence Status Codes
+   :file: _static/solver_divergence.csv
+   :widths: auto
+   :header-rows: 1
+   :stub-columns: 1
+   :class: widetable longtable
+
+.. raw:: latex
+
+    \end{landscape}
+
 .. |KSP_NORM_UNPRECONDITIONED|  replace:: :literal:`KSP_NORM_UNPRECONDITIONED`
 .. _KSP_NORM_UNPRECONDITIONED:  https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED/
 .. |KSP_NORM_PRECONDITIONED|  replace:: :literal:`KSP_NORM_PRECONDITIONED`
