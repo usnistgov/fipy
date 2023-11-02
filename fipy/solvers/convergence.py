@@ -6,6 +6,7 @@ __docformat__ = 'restructuredtext'
 
 from future.utils import with_metaclass
 
+import json
 import logging
 import warnings
 
@@ -56,14 +57,24 @@ class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
         else:
             self.actual_code = actual_code
 
-        self.info = vars(self).copy()
-        self.info["status_name"] = self.status_name
-        self.info["status_code"] = self.status_code
-        self.info["max_iterations"] = self.solver.iterations
-        self.info.update(kwargs)
+        self.max_iterations = self.solver.iterations
 
-        self._log = logging.getLogger(self.__class__.__module__
-                                      + "." + self.__class__.__name__)
+        vars(self).update(kwargs)
+
+        self.log()
+
+    @property
+    def info(self):
+        info = vars(self).copy()
+        info["solver"] = str(info["solver"])
+        info.update(vars(self.__class__))
+        return {k: v for k, v in info.items() if not k.startswith("_")}
+
+    def log(self, level=logging.DEBUG):
+        logger = logging.getLogger(self.__class__.__module__
+                                   + "." + self.__class__.__name__)
+
+        logger.log(level, json.dumps(self.info))
 
     def warn(self):
         pass
