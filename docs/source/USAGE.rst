@@ -303,7 +303,7 @@ package.
    :ref:`PETSC` solvers in order to see what options are possible.  Ignored
    if solver is not :ref:`PETSC`.
 
-.. _PETSc configuration options: https://docs.petsc.org/en/latest/manual/other/#sec-options
+.. _PETSc configuration options: https://petsc.org/main/manual/other/#runtime-options
 
 .. _PARALLEL:
 
