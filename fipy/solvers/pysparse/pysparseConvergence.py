@@ -1,6 +1,7 @@
 from ..convergence import (Convergence, AbsoluteToleranceConvergence,
-                           RelativeToleranceConvergence, Divergence,
-                           IterationDivergence, PreconditioningDivergence,
+                           RelativeToleranceConvergence, RHSZeroConvergence,
+                           Divergence, IterationDivergence,
+                           PreconditioningDivergence, StagnatedDivergence,
                            IllConditionedDivergence, OutOfRangeDivergence)
 
 class Pysparse_AbsoluteToleranceConvergence(AbsoluteToleranceConvergence):
@@ -9,7 +10,7 @@ class Pysparse_AbsoluteToleranceConvergence(AbsoluteToleranceConvergence):
     status_name = "Pysparse_CONVERGED_ATOL"
     suite = "pysparse"
 
-class Pysparse_RHSZeroConvergence(Convergence):
+class Pysparse_RHSZeroConvergence(RHSZeroConvergence):
     r""":math:`\vec{b} = 0`, so exact solution is :math:`\vec{x} = 0`.
     """
     status_code = 1
@@ -54,7 +55,7 @@ class Pysparse_IllConditionedDivergence(IllConditionedDivergence):
     status_name = "Pysparse_DIVERGED_MAT_ILL"
     suite = "pysparse"
 
-class Pysparse_StagnatedDivergence(Divergence):
+class Pysparse_StagnatedDivergence(StagnatedDivergence):
     """The method stagnated.
     """
     status_code = -5

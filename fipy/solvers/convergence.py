@@ -11,11 +11,14 @@ import logging
 import warnings
 
 __all__ = ["ConvergenceBase", "Convergence", "AbsoluteToleranceConvergence",
-           "RelativeToleranceConvergence", "Divergence",
-           "IterationDivergence", "BreakdownDivergence",
-           "IllConditionedDivergence", "OutOfRangeDivergence",
-           "PreconditioningDivergence",
-           "IllConditionedPreconditionerDivergence"]
+           "RelativeToleranceConvergence", "RHSZeroConvergence",
+           "IterationConvergence", "HappyBreakdownConvergence",
+           "IteratingConvergence", "LossOfAccuracyConvergence",
+           "Divergence", "IterationDivergence", "BreakdownDivergence",
+           "IllConditionedDivergence", "StagnatedDivergence",
+           "OutOfRangeDivergence", "PreconditioningDivergence",
+           "IllConditionedPreconditionerDivergence", "NullDivergence",
+           "ToleranceDivergence"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
@@ -89,12 +92,41 @@ class Convergence(ConvergenceBase):
     message = "User requested convergence criteria is satisfied. Iterations: {0}. Relative error: {1}"
 
 class AbsoluteToleranceConvergence(Convergence):
-    """Convergence by satisifying absolute tolerance.
+    """Absolute tolerance satisfied.
+
+       residual < atol * scale
     """
     pass
 
 class RelativeToleranceConvergence(Convergence):
-    """Convergence by satisifying relative tolerance.
+    """Relative tolerance satisfied.
+
+       residual < rtol * scale
+    """
+    pass
+
+class RHSZeroConvergence(Convergence):
+    r""":math:`\vec{b} = 0`, so exact solution is :math:`\vec{x} = 0`.
+    """
+    pass
+
+class IterationConvergence(Convergence):
+    """Requested iterations complete (and no residual calculated).
+    """
+    pass
+
+class HappyBreakdownConvergence(Convergence):
+    '''"Exact" solution found and more iterations will just make things worse.
+    '''
+    pass
+
+class IteratingConvergence(Convergence):
+    """Solve still in progress.
+    """
+    pass
+
+class LossOfAccuracyConvergence(Convergence):
+    """Numerical loss of precision occurred.
     """
     pass
 
@@ -106,32 +138,46 @@ class Divergence(ConvergenceBase):
         warnings.warn("({status_code}, {status_name}): {residual}".format(**self.info), stacklevel=5)
 
 class IterationDivergence(Divergence):
-    """Divergence by exceeding maximum iterations.
+    """Exceeded maximum iterations.
     """
     pass
 
 class BreakdownDivergence(Divergence):
-    """Divergence because method broke down.
+    """Method broke down.
     """
     pass
 
 class IllConditionedDivergence(Divergence):
-    """Divergence because matrix was ill-conditioned.
+    """Matrix was ill-conditioned.
+    """
+    pass
+
+class StagnatedDivergence(Divergence):
+    """The method stagnated.
     """
     pass
 
 class OutOfRangeDivergence(Divergence):
-    """Divergence because a value became too small, too large, or invalid.
+    """A value became too small, too large, or invalid.
     """
     pass
 
 class PreconditioningDivergence(Divergence):
-    """Divergence because of a problem with the preconditioner.
+    """A problem with the preconditioner.
     """
     pass
 
 class IllConditionedPreconditionerDivergence(PreconditioningDivergence):
-    """Divergence because preconditioner is ill-conditioned.
+    """Preconditioner is ill-conditioned.
     """
     pass
 
+class NullDivergence(Divergence):
+    """Breakdown when solving the Hessenberg system within GMRES.
+    """
+    pass
+
+class ToleranceDivergence(Divergence):
+    """Residual norm increased too much.
+    """
+    pass

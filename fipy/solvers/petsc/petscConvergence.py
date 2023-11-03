@@ -1,12 +1,15 @@
 from petsc4py import PETSc
 
 from ..convergence import (Convergence, AbsoluteToleranceConvergence,
-                           RelativeToleranceConvergence, IterationDivergence,
+                           RelativeToleranceConvergence, IterationConvergence,
+                           IterationDivergence, HappyBreakdownConvergence,
+                           IteratingConvergence,
                            Divergence, BreakdownDivergence,
                            IllConditionedDivergence,
                            PreconditioningDivergence,
                            IllConditionedPreconditionerDivergence,
-                           OutOfRangeDivergence)
+                           OutOfRangeDivergence, NullDivergence,
+                           ToleranceDivergence)
 
 # "The values KSP_CONVERGED_CG_NEG_CURVE, KSP_CONVERGED_CG_CONSTRAINED, and
 # KSP_CONVERGED_STEP_LENGTH are returned only by the special KSPNASH,
@@ -35,7 +38,7 @@ class KSP_NormalRelativeToleranceConvergence(KSP_RelativeToleranceConvergence):
     status_code = PETSc.KSP.ConvergedReason.CONVERGED_RTOL_NORMAL
     status_name = "KSP_CONVERGED_RTOL_NORMAL"
 
-class KSP_IterationConvergence(Convergence):
+class KSP_IterationConvergence(IterationConvergence):
     """Used by the KSPPREONLY solver after the single iteration of the
     preconditioner is applied.  Also used when the KSPConvergedSkip()
     convergence test routine is set in KSP.
@@ -44,12 +47,12 @@ class KSP_IterationConvergence(Convergence):
     status_name = "KSP_CONVERGED_ITS"
     suite = "petsc"
 
-class KSP_HappyBreakdownConvergence(Convergence):
+class KSP_HappyBreakdownConvergence(HappyBreakdownConvergence):
     status_code = PETSc.KSP.ConvergedReason.CONVERGED_HAPPY_BREAKDOWN
     status_name = "KSP_CONVERGED_HAPPY_BREAKDOWN"
     suite = "petsc"
 
-class KSP_IteratingConvergence(Convergence):
+class KSP_IteratingConvergence(IteratingConvergence):
     """This flag is returned if you call KSPGetConvergedReason() while the
     KSPSolve() is still running.
     """
@@ -64,12 +67,12 @@ class KSP_IterationDivergence(IterationDivergence):
     status_name = "KSP_DIVERGED_ITS"
     suite = "petsc"
 
-class KSP_NullDivergence(Divergence):
+class KSP_NullDivergence(NullDivergence):
     status_code = PETSc.KSP.ConvergedReason.DIVERGED_NULL
     status_name = "KSP_DIVERGED_NULL"
     suite = "petsc"
 
-class KSP_ToleranceDivergence(Divergence):
+class KSP_ToleranceDivergence(ToleranceDivergence):
     """Residual norm increased by a factor of divtol.
     """
     status_code = PETSc.KSP.ConvergedReason.DIVERGED_DTOL

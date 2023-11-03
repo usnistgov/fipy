@@ -3,7 +3,8 @@ from PyTrilinos import AztecOO
 from ..convergence import (Convergence, Divergence,
                            BreakdownDivergence,
                            IllConditionedDivergence,
-                           IterationDivergence)
+                           IterationDivergence,
+                           LossOfAccuracyConvergence)
 
 class AZ_NormalConvergence(Convergence):
     """
@@ -12,8 +13,10 @@ class AZ_NormalConvergence(Convergence):
     status_name = "AZ_normal"
     suite = "trilinos"
 
-class AZ_LossOfAccuracyConvergence(Convergence):
-    """
+# Is this a convergence or divergence?
+# Does it mean the same thing as OutOfRangeDivergence?
+class AZ_LossOfAccuracyConvergence(LossOfAccuracyConvergence):
+    """Numerical loss of precision occurred.
     """
     status_code = AztecOO.AZ_loss
     status_name = "AZ_loss"
