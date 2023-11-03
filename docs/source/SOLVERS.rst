@@ -203,11 +203,9 @@ Convergence
 
 Different solver suites take different approaches to testing convergence.
 We endeavor to harmonize this behavior by allowing the strings in the
-"criterion" column to be passed as an argument when
-instantiating a :class:`~fipy.solvers.solver.Solver`.
-
-.. note:: PyAMG_ is a set of preconditioners applied on top of SciPy_, so
-   is not explicitly included in the following tables.
+"criterion" column to be passed as an argument when instantiating a
+:class:`~fipy.solvers.solver.Solver`.  Convergence is detected if
+``residual < tolerance * scale``.
 
 .. raw:: latex
 
@@ -224,7 +222,8 @@ instantiating a :class:`~fipy.solvers.solver.Solver`.
 
     \end{landscape}
 
-Convergence is detected if ``residual < tolerance * scale``.
+.. note:: PyAMG_ is a set of preconditioners applied on top of SciPy_, so
+   is not explicitly included in these tables.
 
 ``default``
 ===========
