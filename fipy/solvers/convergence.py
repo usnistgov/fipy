@@ -48,19 +48,37 @@ class _ConvergenceMeta(type):
 
 class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
     """Information about whether and why a solver converged.
+
+    Attributes
+    ----------
+    solver : ~fipy.solvers.solver.Solver
+        The linear solver that was invoked.
+    iterations : int
+        The number of linear iterations the solver performed.
+    max_iterations : int
+        The maximum number of linear iterations the solver was allowed.
+    criterion : str
+        The :ref:`CONVERGENCE` test used by the solver.
+    residual : float
+        The norm of the residual achieved by the solver, based on `criterion`.
+    status_code : int or str
+        The canonical return value for this type of convergence.
+    status_name : str
+        The text representation of `status_code`.
+    actual_code : int or str
+        The status value actually returned by the solver.
     """
 
     def __init__(self, solver, iterations, residual, criterion, actual_code=None, **kwargs):
         self.solver = solver
         self.iterations = iterations
-        self.residual = residual
+        self.max_iterations = self.solver.iterations
         self.criterion = criterion
+        self.residual = residual
         if actual_code is None:
             self.actual_code = self.status_code
         else:
             self.actual_code = actual_code
-
-        self.max_iterations = self.solver.iterations
 
         vars(self).update(kwargs)
 
