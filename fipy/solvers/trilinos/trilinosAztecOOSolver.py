@@ -88,7 +88,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         self._setConvergence(suite="trilinos",
                              code=int(status[AztecOO.AZ_why]),
-                             iterations=status[AztecOO.AZ_its],
+                             iterations=int(status[AztecOO.AZ_its]),
                              residual=status[AztecOO.AZ_r],
                              scaled_residual=status[AztecOO.AZ_scaled_r],
                              convergence_residual=status[AztecOO.AZ_rec_r],
