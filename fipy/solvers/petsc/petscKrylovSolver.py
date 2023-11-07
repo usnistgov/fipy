@@ -109,6 +109,8 @@ class PETScKrylovSolver(PETScSolver):
                              code=ksp.reason,
                              iterations=ksp.its,
                              tolerance_scale=tolerance_scale,
+                             # "The residual value that is tested may be an approximation"
+                             # https://petsc.org/release/petsc4py/reference/petsc4py.PETSc.KSP.html#petsc4py.PETSc.KSP.setConvergenceTest
                              residual=ksp.norm,
                              ksp_solver=ksp.type,
                              ksp_precon=ksp.getPC().type,
