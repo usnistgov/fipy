@@ -55,8 +55,6 @@ class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
         The linear solver that was invoked.
     iterations : int
         The number of linear iterations the solver performed.
-    max_iterations : int
-        The maximum number of linear iterations the solver was allowed.
     criterion : str
         The :ref:`CONVERGENCE` test used by the solver.
     tolerance_scale : float
@@ -75,7 +73,6 @@ class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
     def __init__(self, solver, iterations, residual, criterion, actual_code=None, **kwargs):
         self.solver = solver
         self.iterations = iterations
-        self.max_iterations = self.solver.iterations
         self.criterion = criterion
         self.residual = residual
         if actual_code is None:
