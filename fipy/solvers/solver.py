@@ -179,6 +179,17 @@ class Solver(object):
     def _naturalNorm(self, L, x, b):
         raise NotImplementedError
 
+    @property
+    def _Lxb(self):
+        raise NotImplementedError
+
+    @property
+    def _norms(self):
+        L, x, b = self._Lxb
+        return (self._matrixNorm(L, x, b),
+                self._rhsNorm(L, x, b),
+                self._residualNorm(L, x, b))
+
     def _adaptDefaultTolerance(self, L, x, b):
         raise NotImplementedError
 

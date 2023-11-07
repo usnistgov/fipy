@@ -68,6 +68,12 @@ class TrilinosSolver(Solver):
         self.matrix.flush()
         del self.globalVectors
 
+    def _rhsNorm(self, L, x, b):
+        return b.Norm2()
+
+    def _matrixNorm(self, L, x, b):
+        return L.NormInf()
+
     def _residualVectorAndNorm(self, L, x, b):
         # residualVector = L*x - b
         residualVector = Epetra.Vector(L.RangeMap())
@@ -79,6 +85,13 @@ class TrilinosSolver(Solver):
         residualVector -= b
 
         return residualVector, residualVector.Norm2()
+
+    @property
+    def _Lxb(self):
+        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, _ = self._globalMatrixAndVectors
+        return (globalMatrix.matrix,
+                nonOverlappingVector,
+                nonOverlappingRHSvector)
 
     def _solve(self):
         from fipy.terms import SolutionVariableNumberError

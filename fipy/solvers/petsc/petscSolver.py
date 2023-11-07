@@ -49,12 +49,20 @@ class PETScSolver(Solver):
         return b.norm(PETSc.NormType.NORM_2)
 
     def _matrixNorm(self, L, x, b):
+        L.assemble()
         return L.norm(PETSc.NormType.NORM_INFINITY)
 
     def _residualVectorAndNorm(self, L, x, b):
         residualVector = L * x - b
 
         return residualVector, residualVector.norm(PETSc.NormType.NORM_2)
+
+    @property
+    def _Lxb(self):
+        globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
+        return (globalMatrix.matrix,
+                overlappingVector,
+                overlappingRHSvector)
 
     def _solve(self):
         from fipy.terms import SolutionVariableNumberError

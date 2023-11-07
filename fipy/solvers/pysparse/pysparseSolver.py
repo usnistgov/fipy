@@ -76,6 +76,10 @@ class PysparseSolver(_PysparseMatrixSolver):
 
         return residualVector, numerix.L2norm(residualVector)
 
+    @property
+    def _Lxb(self):
+        return (self.matrix, self.var.ravel(), numerix.array(self.RHSvector))
+
     def _solve(self):
 
         if self.var.mesh.communicator.Nproc > 1:

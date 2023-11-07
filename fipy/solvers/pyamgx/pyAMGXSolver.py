@@ -145,6 +145,10 @@ class PyAMGXSolver(Solver):
 
         return x
 
+    @property
+    def _Lxb(self):
+        return (self.matrix, self.var.ravel(), numerix.array(self.RHSvector))
+
     def _solve(self):
          if self.var.mesh.communicator.Nproc > 1:
              raise Exception("pyamgx solvers cannot be used with multiple processors")
