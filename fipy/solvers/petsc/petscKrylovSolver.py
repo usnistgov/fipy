@@ -76,6 +76,7 @@ class PETScKrylovSolver(PETScSolver):
         ksp = PETSc.KSP()
         ksp.create(L.comm)
         ksp.setType(self.solver)
+        ksp.setInitialGuessNonzero(True)
         if self.preconditioner is None:
             ksp.getPC().setType('none')
         else:
