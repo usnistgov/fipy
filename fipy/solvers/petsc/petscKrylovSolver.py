@@ -81,19 +81,21 @@ class PETScKrylovSolver(PETScSolver):
         else:
             self.preconditioner._applyToSolver(solver=ksp, matrix=L)
 
+        L.assemble()
+        ksp.setOperators(L)
+
         tolerance_scale, suite_criterion = self._adaptTolerance(L, x, b)
 
-        rtol, atol, divtol = (self.scale_tolerance(tol, tolerance_scale)
-                              for tol in (self.tolerance,
-                                          self.absolute_tolerance,
-                                          self.divergence_tolerance))
+        rtol, divtol = (self.scale_tolerance(tol, tolerance_scale)
+                        for tol in (self.tolerance,
+                                    self.divergence_tolerance))
 
-        ksp.setTolerances(rtol=rtol, atol=atol, divtol=divtol,
+        ksp.setTolerances(rtol=rtol,
+                          atol=self.absolute_tolerance,
+                          divtol=divtol,
                           max_it=self.iterations)
         ksp.setNormType(suite_criterion)
 
-        L.assemble()
-        ksp.setOperators(L)
         ksp.setFromOptions()
 
         self._log.debug("BEGIN solve")

@@ -67,6 +67,8 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         tolerance_scale, suite_criterion = self._adaptTolerance(L, x, b)
 
+        rtol = self.scale_tolerance(self.tolerance, tolerance_scale)
+
         Solver.SetAztecOption(AztecOO.AZ_conv, suite_criterion)
 
         if self.preconditioner is None:
@@ -76,7 +78,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         self._log.debug("BEGIN solve")
 
-        output = Solver.Iterate(self.iterations, self.tolerance * tolerance_scale)
+        output = Solver.Iterate(self.iterations, rtol)
 
         self._log.debug("END solve")
 

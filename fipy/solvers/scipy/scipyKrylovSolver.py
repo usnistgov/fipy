@@ -48,15 +48,13 @@ class _ScipyKrylovSolver(_ScipySolver):
 
         self.actualIterations = 0
 
-        rtol, atol = (self.scale_tolerance(tol, tolerance_scale)
-                      for tol in (self.tolerance,
-                                  self.absolute_tolerance))
+        rtol = self.scale_tolerance(self.tolerance, tolerance_scale)
 
         self._log.debug("BEGIN solve")
 
         x, info = self.solveFnc(A, b, x,
                                 tol=rtol,
-                                atol=atol,
+                                atol=self.absolute_tolerance,
                                 maxiter=self.iterations,
                                 M=M,
                                 callback=self._countIterations)
