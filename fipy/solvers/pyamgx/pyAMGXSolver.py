@@ -135,6 +135,7 @@ class PyAMGXSolver(Solver):
         self._setConvergence(suite="pyamgx",
                              code=solver.status,
                              iterations=solver.iterations_number,
+                             tolerance_scale=tolerance_scale,
                              residual=residual)
 
         self.convergence.warn()

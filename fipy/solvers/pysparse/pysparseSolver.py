@@ -60,6 +60,7 @@ class PysparseSolver(_PysparseMatrixSolver):
         self._setConvergence(suite="pysparse",
                              code=info,
                              iterations=iter,
+                             tolerance_scale=tolerance_scale,
                              residual=relres * default_norm)
 
         self.convergence.warn()

@@ -67,6 +67,7 @@ class _ScipyKrylovSolver(_ScipySolver):
                              code=numerix.sign(info),
                              actual_code=info,
                              iterations=self.actualIterations,
+                             tolerance_scale=tolerance_scale,
                              residual=self._residualNorm(L, x, b))
 
         self.convergence.warn()

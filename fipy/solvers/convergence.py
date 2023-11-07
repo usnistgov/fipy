@@ -59,8 +59,11 @@ class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
         The maximum number of linear iterations the solver was allowed.
     criterion : str
         The :ref:`CONVERGENCE` test used by the solver.
+    tolerance_scale : float
+        The multiplier applied to the tolerance in order for this solver to
+        satisfy `criterion`.
     residual : float
-        The norm of the residual achieved by the solver, based on `criterion`.
+        The unscaled norm of the residual achieved by the solver.
     status_code : int or str
         The canonical return value for this type of convergence.
     status_name : str

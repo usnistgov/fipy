@@ -105,6 +105,7 @@ class PETScKrylovSolver(PETScSolver):
         self._setConvergence(suite="petsc",
                              code=ksp.reason,
                              iterations=ksp.its,
+                             tolerance_scale=tolerance_scale,
                              residual=ksp.norm,
                              ksp_solver=ksp.type,
                              ksp_precon=ksp.getPC().type,
