@@ -291,61 +291,89 @@ class Solver(object):
         """
         >>> import fipy as fp
 
-        >>> mesh = fp.Grid1D(nx=3)
-        >>> var = fp.CellVariable(mesh=mesh)
-        >>> var.constrain(1., where=mesh.facesLeft)
-        >>> var.constrain(2., where=mesh.facesRight)
-        >>> D = fp.FaceVariable(mesh=mesh, value=mesh.faceCenters[0])
-        >>> eq = fp.TransientTerm() == fp.DiffusionTerm(coeff=D)
+        Consider a steady-state 1D diffusion problem with a
+        position-dependent diffusivity and Dirichlet boundary conditions:
 
-        >>> var.setValue(mesh.x)
-        >>> # with eq.getDefaultSolver(criterion="default", precon=None) as s:
-        >>> # with fp.LinearPCGSolver(criterion="default") as solver:
-        >>> # with fp.LinearGMRESSolver(criterion="default") as solver:
-        >>> with eq.getDefaultSolver(criterion="default") as s:
-        ...     eq.solve(var=var, dt=1., solver=s)
-        ...     print(s.convergence.criterion, s.convergence.residual, var)
-        default 5.325944231618159e-16 [ 1.06363636  1.62727273  1.97272727]
+        .. math::
 
-        >>> var.setValue(mesh.x)
-        >>> with eq.getDefaultSolver(criterion="unscaled") as s:
-        ...     eq.solve(var=var, dt=1., solver=s)
-        ...     print(s.convergence.criterion, s.convergence.residual, var)
-        unscaled 8.479955780533376e-15 [ 1.06363636  1.62727273  1.97272727]
+           \begin{aligned}
+           \frac{\partial}{\partial x}\left[
+               \left(1 + x\right)
+               \frac{\partial \phi}{\partial x}
+           \right] &= 0
+           \\
+           \left.\phi\right\rvert_{x=0} &= \phi_L
+           \\
+           \left.\phi\right\rvert_{x=1} &= \phi_R
+           \end{aligned}
 
-        >>> var.setValue(mesh.x)
-        >>> with eq.getDefaultSolver(criterion="RHS") as s:
-        ...     eq.solve(var=var, dt=1., solver=s)
-        ...     print(s.convergence.criterion, s.convergence.residual, var)
-        RHS 5.813782806744329e-16 [ 1.06363636  1.62727273  1.97272727]
+        with the analytical solution
 
-        >>> var.setValue(mesh.x)
-        >>> with eq.getDefaultSolver(criterion="matrix") as s:
-        ...     eq.solve(var=var, dt=1., solver=s)
-        ...     print(s.convergence.criterion, s.convergence.residual, var)
-        matrix 7.709050709575797e-16 [ 1.06363636  1.62727273  1.97272727]
+        .. math::
 
-        >>> var.setValue(mesh.x)
-        >>> with eq.getDefaultSolver(criterion="initial") as s:
-        ...     eq.solve(var=var, dt=1., solver=s)
-        ...     print(s.convergence.criterion, s.convergence.residual, var)
-        initial 1.6319682508690227e-15 [ 1.06363636  1.62727273  1.97272727]
+           \phi = \frac{\phi_R - \phi_L}{\ln 2} \ln\left(1 + x\right) + \phi_L
 
-        >>> # var.setValue(mesh.x)
-        >>> # with eq.getDefaultSolver(criterion="solution") as s: # doctest: +TRILINOS_SOLVER
-        ... #     eq.solve(var=var, dt=1., solver=s)
-        ... #     print(s.convergence.criterion, s.convergence.residual, var)
+        >>> N = 100
+        >>> mesh = fp.Grid1D(nx=N, Lx=1)
+        >>> phi = fp.CellVariable(mesh=mesh, name=r"$\phi")
+        >>> phiL = 1000.
+        >>> phiR = 2000.
+        >>> phi_analytical = ((((phiR - phiL)/fp.numerix.log(2.))
+        ...                    * fp.numerix.log(1 + mesh.x))
+        ...                   + phiL)
+        >>> phi_analytical.name = r"$\phi_{analytical}$"
 
-        >>> var.setValue(mesh.x)
-        >>> with eq.getDefaultSolver(criterion="preconditioned") as s: # doctest: +PETSC_SOLVER
-        ...     eq.solve(var=var, dt=1., solver=s)
-        ...     print(s.convergence.criterion, s.convergence.residual, var)
-        preconditioned 5.325944231618159e-16 [ 1.06363636  1.62727273  1.97272727]
+        >>> fp.numerix.random.seed(12345)
+        >>> phi_initial = phi_analytical + fp.GaussianNoiseVariable(mesh=mesh, variance=1e-3)
+        >>> phi.value = phi_initial
+        >>> phi.constrain(phiL, where=mesh.facesLeft)
+        >>> phi.constrain(phiR, where=mesh.facesRight)
+        >>> D = fp.FaceVariable(mesh=mesh, value=1 + mesh.faceCenters[0])
+        >>> eq = fp.DiffusionTerm(coeff=D) == 0
 
-        >>> var.setValue(mesh.x)
-        >>> with eq.getDefaultSolver(criterion="natural") as s: # doctest: +PETSC_SOLVER
-        ...     eq.solve(var=var, dt=1., solver=s)
-        ...     print(s.convergence.criterion, s.convergence.residual, var)
+        The norm of the matrix will be :math:`\mathcal{O}(8 N)`.
+        The norm of the right-hand side will be :math:`math{O}(8000 N}`.
+        We choose the initial condition such that the order of the initial
+        residual is :math:`\mathcal{O}(400 / N}`.
+
+        >>> # Solver = fp.LinearPCGSolver
+        >>> # Solver = fp.LinearGMRESSolver
+        >>> # Solver = fp.LinearGMRESSolver
+        >>> Solver = fp.LinearCGSSolver
+
+        >>> solver = Solver(precon=None)
+        >>> solver = eq._prepareLinearSystem(var=phi, solver=solver, boundaryConditions=(), dt=1.)
+        >>> Lnorm, bnorm, rnorm = solver._norms
+        >>> enorm = fp.numerix.L2norm(phi - phi_analytical) / fp.numerix.L2norm(phi_analytical)
+        >>> print("|L| = {Lnorm}".format(**locals()))
+        >>> print("|b| = {bnorm}".format(**locals()))
+        >>> print("|r| = {rnorm}".format(**locals()))
+        >>> print("|e| = {enorm}".format(**locals()))
+
+        >>> criteria = [
+        ...     ("unscaled", 1.),
+        ...     ("RHS", bnorm),
+        ...     ("matrix", Lnorm),
+        ...     ("initial", rnorm)
+        ... ]
+        >>> # criteria += ["solution"]  doctest: +TRILINOS_SOLVER
+        >>> criteria += [
+        ...     ("preconditioned", bnorm),
+        ...     ("natural", bnorm)
+        ... ] # doctest: +PETSC_SOLVER
+        >>> for (criterion, target) in criteria:
+        ...     phi.setValue(phi_initial)
+        ...     with Solver(criterion=criterion, precon=None, tolerance=1e-5) as s:
+        ...         res = eq.sweep(var=phi, solver=s)
+        ...         # print(s.convergence)
+        ...         print(",".join([s.convergence.suite,
+        ...                         criterion,
+        ...                         s.convergence.status_name,
+        ...                         str(s.convergence.residual),
+        ...                         str(s.convergence.residual / (s.tolerance * target)),
+        ...                         str(s.convergence.iterations),
+        ...                         str(fp.numerix.L2norm(phi - phi_analytical) / fp.numerix.L2norm(phi_analytical))
+        ...                        ]))
         """
         pass
 
