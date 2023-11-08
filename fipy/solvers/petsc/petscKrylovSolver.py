@@ -17,7 +17,7 @@ class PETScKrylovSolver(PETScSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10,
+    def __init__(self, tolerance=1e-5,
                  absolute_tolerance=None,
                  divergence_tolerance=None,
                  criterion="default",

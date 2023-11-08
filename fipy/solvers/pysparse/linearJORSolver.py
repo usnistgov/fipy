@@ -20,7 +20,7 @@ class LinearJORSolver(PysparseSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-5, criterion="default",
                  iterations=1000, relaxation=1.0):
         """
         Create a `LinearJORSolver` object.

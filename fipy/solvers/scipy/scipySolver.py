@@ -16,7 +16,7 @@ class ScipySolver(Solver):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, tolerance=1e-10, absolute_tolerance=0.,
+    def __init__(self, tolerance=1e-5, absolute_tolerance=0.,
                  criterion="default",
                  iterations=1000, precon=None):
         """

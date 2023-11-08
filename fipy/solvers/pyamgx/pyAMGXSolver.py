@@ -14,7 +14,7 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class PyAMGXSolver(Solver):
 
-    def __init__(self, config_dict, tolerance=1e-10, criterion="default",
+    def __init__(self, config_dict, tolerance=1e-5, criterion="default",
                  iterations=1000, precon=None, smoother=None, **kwargs):
         """
         Parameters

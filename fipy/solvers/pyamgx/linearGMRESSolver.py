@@ -12,7 +12,7 @@ class LinearGMRESSolver(PyAMGXSolver):
     AMGX, with a Jacobi preconditioner by default.
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-5, criterion="default",
                  iterations=1000, precon=JacobiPreconditioner(),
                  **kwargs):
         """

@@ -100,7 +100,7 @@ class Solver(object):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-5, criterion="default",
                  iterations=1000, precon=None):
         """
         Create a `Solver` object.

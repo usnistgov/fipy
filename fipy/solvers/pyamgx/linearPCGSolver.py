@@ -12,7 +12,7 @@ class LinearPCGSolver(PyAMGXSolver):
     AMGX, with no preconditioning by default.
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-5, criterion="default",
                  iterations=1000, precon=JacobiPreconditioner(),
                  **kwargs):
         """

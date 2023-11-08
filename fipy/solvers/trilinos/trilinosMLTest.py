@@ -23,7 +23,7 @@ class TrilinosMLTest(TrilinosSolver):
     information about what ML preconditioner settings will work best.
     """
 
-    def __init__(self, tolerance=1e-10, iterations=5, MLOptions={}, testUnsupported = False):
+    def __init__(self, tolerance=1e-5, iterations=5, MLOptions={}, testUnsupported = False):
         """
         For detailed information on the possible parameters for ML, see
         http://trilinos.sandia.gov/packages/ml/documentation.html

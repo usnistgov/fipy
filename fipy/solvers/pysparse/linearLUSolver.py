@@ -27,7 +27,7 @@ class LinearLUSolver(PysparseSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-5, criterion="default",
                  iterations=10, precon=None):
         """
         Creates a `LinearLUSolver`.

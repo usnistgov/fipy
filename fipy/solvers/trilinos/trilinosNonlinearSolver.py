@@ -100,7 +100,7 @@ class _DummyJacobianSolver(TrilinosSolver):
 __all__ = ["TrilinosNonlinearSolver"]
 
 class TrilinosNonlinearSolver(TrilinosSolver):
-    def __init__(self, equation, jacobian=None, tolerance=1e-10, iterations=1000,
+    def __init__(self, equation, jacobian=None, tolerance=1e-5, iterations=1000,
                  printingOptions=None, solverOptions=None, linearSolverOptions=None,
                  lineSearchOptions=None, directionOptions=None, newtonOptions=None):
         TrilinosSolver.__init__(self, tolerance=tolerance, iterations=iterations, precon=None)

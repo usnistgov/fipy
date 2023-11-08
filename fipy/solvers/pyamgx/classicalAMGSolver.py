@@ -11,7 +11,7 @@ class ClassicalAMGSolver(PyAMGXSolver):
     The `ClassicalAMGSolver` is an interface to the classical AMG solver in
     AMGX, with a Jacobi smoother by default.
     """
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-5, criterion="default",
                  iterations=1000, precon=None,
                  smoother=BlockJacobiSmoother(),
                  **kwargs):
