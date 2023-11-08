@@ -9,7 +9,7 @@ from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
 from fipy.solvers.solver import Solver
 from fipy.tools import numerix
 
-class _ScipySolver(Solver):
+class ScipySolver(Solver):
     """
     The base `ScipySolver` class.
 
@@ -38,8 +38,8 @@ class _ScipySolver(Solver):
             preconditioners.
         """
         self.absolute_tolerance = absolute_tolerance
-        super(_ScipySolver, self).__init__(tolerance=tolerance, criterion=criterion,
-                                           iterations=iterations, precon=precon)
+        super(ScipySolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                          iterations=iterations, precon=precon)
 
     @property
     def _matrixClass(self):

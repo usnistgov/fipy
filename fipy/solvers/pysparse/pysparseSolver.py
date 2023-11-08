@@ -1,14 +1,14 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-from ..pysparseMatrixSolver import _PysparseMatrixSolver
+from ..pysparseMatrixSolver import PysparseMatrixSolver
 from fipy.tools import numerix
 
 __all__ = ["PysparseSolver"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class PysparseSolver(_PysparseMatrixSolver):
+class PysparseSolver(PysparseMatrixSolver):
     """
     The base `pysparseSolver` class.
 

@@ -6,7 +6,7 @@ __all__ = []
 from fipy.solvers.solver import Solver
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
 
-class _PysparseMatrixSolver(Solver):
+class PysparseMatrixSolver(Solver):
 
     """
     A class consolidating methods for solver packages which use

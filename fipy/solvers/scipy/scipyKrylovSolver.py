@@ -6,10 +6,10 @@ __all__ = []
 import os
 import warnings
 
-from .scipySolver import _ScipySolver
+from .scipySolver import ScipySolver
 from fipy.tools import numerix
 
-class _ScipyKrylovSolver(_ScipySolver):
+class ScipyKrylovSolver(ScipySolver):
     """
     The base `ScipyKrylovSolver` class.
 

@@ -5,14 +5,14 @@ __docformat__ = 'restructuredtext'
 
 from scipy.sparse.linalg import splu
 
-from fipy.solvers.scipy.scipySolver import _ScipySolver
+from fipy.solvers.scipy.scipySolver import ScipySolver
 from fipy.tools import numerix
 
 __all__ = ["LinearLUSolver"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class LinearLUSolver(_ScipySolver):
+class LinearLUSolver(ScipySolver):
     """
     The `LinearLUSolver` solves a linear system of equations using
     LU-factorization.  The `LinearLUSolver` is a wrapper class for the
