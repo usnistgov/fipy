@@ -100,7 +100,7 @@ class Solver(object):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, tolerance=1e-10, criterion="legacy",
+    def __init__(self, tolerance=1e-10, criterion="default",
                  iterations=1000, precon=None):
         """
         Create a `Solver` object.
@@ -109,7 +109,7 @@ class Solver(object):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'initial', 'unscaled', 'RHS', 'matrix', 'solution', 'preconditioned', 'natural', 'legacy'}, optional
+        criterion : {'default', 'initial', 'unscaled', 'RHS', 'matrix', 'solution', 'preconditioned', 'natural', 'legacy'}, optional
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
@@ -223,7 +223,8 @@ class Solver(object):
             "initial": self._adaptInitialTolerance,
             "solution": self._adaptSolutionTolerance,
             "preconditioned": self._adaptPreconditionedTolerance,
-            "natural": self._adaptNaturalTolerance
+            "natural": self._adaptNaturalTolerance,
+            "default": self._adaptRHSTolerance
         }
 
         tolerance_scale, suite_criterion = adapt[self.criterion](L, x, b)

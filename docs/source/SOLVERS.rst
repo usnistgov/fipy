@@ -227,6 +227,13 @@ We endeavor to harmonize this behavior by allowing the strings in the
 
 
 
+``default``
+===========
+
+The setting ``criterion="default"`` applies the same scaling (``RHS``) to
+all solvers.  This behavior is new in version |release|; prior to that, the
+default behavior was the same as ``criterion="legacy"``.
+
 ``legacy``
 ==========
 

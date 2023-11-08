@@ -22,7 +22,7 @@ class PysparseSolver(_PysparseMatrixSolver):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int

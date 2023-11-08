@@ -20,7 +20,7 @@ class PETScKrylovSolver(PETScSolver):
     def __init__(self, tolerance=1e-10,
                  absolute_tolerance=None,
                  divergence_tolerance=None,
-                 criterion="legacy",
+                 criterion="default",
                  iterations=1000, precon=None):
         """
         Parameters
@@ -31,7 +31,7 @@ class PETScKrylovSolver(PETScSolver):
             Required absolute error tolerance.
         divergence_tolerance : float
             Required divergence error tolerance.
-        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'preconditioned', 'natural', 'legacy'}
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'preconditioned', 'natural', 'legacy'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int

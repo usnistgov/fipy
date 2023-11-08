@@ -7,3 +7,4 @@ criterion,residual,scale,PETSc_ [#KSP_Convergence_Tests]_,pyamgx_ [#AMGX_converg
 ``preconditioned``,:math:`\left\|\mathsf{P}^{-1}(\mathsf{L}\vec{x} - \vec{b})\right\|_2`,:math:`\left\|\vec{b}\right\|_2`,|KSP_NORM_PRECONDITIONED|_,,,,
 ``natural``,:math:`\sqrt{(\mathsf{L}\vec{x} - \vec{b})\mathsf{P}^{-1}(\mathsf{L}\vec{x} - \vec{b})}`,:math:`\left\|\vec{b}\right\|_2`,|KSP_NORM_NATURAL|_,,,,
 ``legacy``,,,|KSP_NORM_DEFAULT|_ (``RHS`` or ``preconditioned``),``initial``,``RHS`` or ``initial``,``RHS``,``initial``
+``default``,,,``RHS``,``RHS``,``RHS``,``RHS``,``RHS``

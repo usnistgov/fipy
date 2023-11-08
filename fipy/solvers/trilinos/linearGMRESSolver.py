@@ -18,14 +18,14 @@ class LinearGMRESSolver(TrilinosAztecOOSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, criterion="legacy",
+    def __init__(self, tolerance=1e-10, criterion="default",
                  iterations=1000, precon=MultilevelDDPreconditioner()):
         """
         Parameters
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'initial', 'unscaled', 'RHS', 'matrix', 'solution', 'legacy'}
+        criterion : {'default', 'initial', 'unscaled', 'RHS', 'matrix', 'solution', 'legacy'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
