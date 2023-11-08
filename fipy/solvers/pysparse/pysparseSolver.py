@@ -15,6 +15,21 @@ class PysparseSolver(_PysparseMatrixSolver):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
     def __init__(self, *args, **kwargs):
+        """
+        Create a `Solver` object.
+
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
+            Preconditioner to use.
+        """
         if self.__class__ is PysparseSolver:
             raise NotImplementedError("can't instantiate abstract base class")
 
@@ -79,6 +94,25 @@ class PysparseSolver(_PysparseMatrixSolver):
     @property
     def _Lxb(self):
         return (self.matrix, self.var.ravel(), numerix.array(self.RHSvector))
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        factor = 1. / self._legacyNorm(L, x, b)
+        return (factor, None)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        factor = self._rhsNorm(L, x, b) / self._legacyNorm(L, x, b)
+        return (factor, None)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        factor = self._matrixNorm(L, x, b) / self._legacyNorm(L, x, b)
+        return (factor, None)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        factor = self._residualNorm(L, x, b) / self._legacyNorm(L, x, b)
+        return (factor, None)
+
+    def _adaptLegacyTolerance(self, L, x, b):
+        return (1., None)
 
     def _solve(self):
 
