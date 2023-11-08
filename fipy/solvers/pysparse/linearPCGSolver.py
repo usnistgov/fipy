@@ -29,7 +29,7 @@ class LinearPCGSolver(LinearRHSSolver):
 
     solveFnc = staticmethod(krylov.pcg)
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-10, criterion="legacy",
                  iterations=1000, precon=SSORPreconditioner()):
         """
         Create a `LinearPCGSolver` object.
@@ -38,7 +38,7 @@ class LinearPCGSolver(LinearRHSSolver):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int

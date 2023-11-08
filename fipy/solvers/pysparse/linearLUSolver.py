@@ -27,7 +27,7 @@ class LinearLUSolver(PysparseSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-10, criterion="legacy",
                  iterations=10, precon=None):
         """
         Creates a `LinearLUSolver`.
@@ -36,7 +36,7 @@ class LinearLUSolver(PysparseSolver):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
@@ -47,7 +47,7 @@ class LinearLUSolver(PysparseSolver):
         super(LinearLUSolver, self).__init__(tolerance=tolerance, criterion=criterion,
                                              iterations=iterations)
 
-    def _adaptDefaultTolerance(self, L, x, b):
+    def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)
 
     def _adaptUnscaledTolerance(self, L, x, b):

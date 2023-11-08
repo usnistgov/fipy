@@ -9,7 +9,7 @@ class LinearRHSSolver(PysparseSolver):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-10, criterion="legacy",
                  iterations=1000, precon=None):
         """
         Create a `Solver` object.
@@ -18,7 +18,7 @@ class LinearRHSSolver(PysparseSolver):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
@@ -29,10 +29,10 @@ class LinearRHSSolver(PysparseSolver):
         super(LinearRHSSolver, self).__init__(tolerance=tolerance, criterion=criterion,
                                               iterations=iterations, precon=precon)
 
-    def _defaultNorm(self, L, x, b):
+    def _legacyNorm(self, L, x, b):
         return self._rhsNorm(L, x, b)
 
-    def _adaptDefaultTolerance(self, L, x, b):
+    def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptRHSTolerance(L, x, b)
 
     def _adaptUnscaledTolerance(self, L, x, b):

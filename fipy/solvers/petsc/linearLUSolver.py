@@ -17,14 +17,14 @@ class LinearLUSolver(PETScSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-10, criterion="legacy",
                  iterations=10, precon="lu"):
         """
         Parameters
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
@@ -35,7 +35,7 @@ class LinearLUSolver(PETScSolver):
         PETScSolver.__init__(self, tolerance=tolerance,
                              iterations=iterations, precon="lu")
 
-    def _adaptDefaultTolerance(self, L, x, b):
+    def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)
 
     def _adaptUnscaledTolerance(self, L, x, b):

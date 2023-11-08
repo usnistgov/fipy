@@ -19,7 +19,7 @@ class _ScipyKrylovSolver(_ScipySolver):
     def _countIterations(self, xk):
         self.actualIterations += 1
 
-    def _adaptDefaultTolerance(self, L, x, b):
+    def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptRHSTolerance(L, x, b)
 
     def _adaptUnscaledTolerance(self, L, x, b):

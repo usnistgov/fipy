@@ -12,7 +12,7 @@ class LinearPCGSolver(PyAMGXSolver):
     AMGX, with no preconditioning by default.
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-10, criterion="legacy",
                  iterations=1000, precon=JacobiPreconditioner(),
                  **kwargs):
         """
@@ -20,7 +20,7 @@ class LinearPCGSolver(PyAMGXSolver):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int

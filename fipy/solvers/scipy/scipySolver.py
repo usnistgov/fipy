@@ -17,7 +17,7 @@ class _ScipySolver(Solver):
     """
 
     def __init__(self, tolerance=1e-10, absolute_tolerance=0.,
-                 criterion="default",
+                 criterion="legacy",
                  iterations=1000, precon=None):
         """
         Create a `Solver` object.
@@ -28,7 +28,7 @@ class _ScipySolver(Solver):
             Required relative error tolerance.
         absolute_tolerance : float
             Required absolute error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'legacy', }
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int

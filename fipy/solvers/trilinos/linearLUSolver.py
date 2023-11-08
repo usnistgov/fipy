@@ -20,14 +20,14 @@ class LinearLUSolver(TrilinosSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default", precon=None,
+    def __init__(self, tolerance=1e-10, criterion="legacy", precon=None,
                  iterations=10):
         """
         Parameters
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
@@ -45,7 +45,7 @@ class LinearLUSolver(TrilinosSolver):
                            UserWarning, stacklevel=2)
         self.Factory = Amesos.Factory()
 
-    def _adaptDefaultTolerance(self, L, x, b):
+    def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)
 
     def _adaptUnscaledTolerance(self, L, x, b):

@@ -225,18 +225,21 @@ We endeavor to harmonize this behavior by allowing the strings in the
 .. note:: PyAMG_ is a set of preconditioners applied on top of SciPy_, so
    is not explicitly included in these tables.
 
-``default``
-===========
 
-The setting ``criterion="default"`` is equivalent to what the particular
-suite and solver does if not specifically configured.  The ``default`` row
-of the table is a best effort at documenting what will happen.
+
+``legacy``
+==========
+
+The setting ``criterion="legacy"`` restores the behavior of FiPy prior to
+version |release| and is equivalent to what the particular suite and solver
+does if not specifically configured.  The ``legacy`` row of the table is a
+best effort at documenting what will happen.
 
 .. note::
 
-    - All LU solvers default to ``"initial"``.
+    - All LU solvers use ``"initial"`` scaling.
     - PySparse_ has two different groups of solvers,
-      with different defaults.
+      with different scaling.
     - PETSc_ accepts |KSP_NORM_DEFAULT|_ in order to
       "use the default for the current ``KSPType``".  Discerning the actual
       behavior would require burning the code in a bowl of chicken entrails.

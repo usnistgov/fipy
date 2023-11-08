@@ -14,7 +14,7 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class PyAMGXSolver(Solver):
 
-    def __init__(self, config_dict, tolerance=1e-10, criterion="default",
+    def __init__(self, config_dict, tolerance=1e-10, criterion="legacy",
                  iterations=1000, precon=None, smoother=None, **kwargs):
         """
         Parameters
@@ -23,7 +23,7 @@ class PyAMGXSolver(Solver):
             AMGX configuration options
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
@@ -84,7 +84,7 @@ class PyAMGXSolver(Solver):
     def _matrixNorm(self, L, x, b):
         return linalg.norm(L.matrix, ord=numerix.inf)
 
-    def _adaptDefaultTolerance(self, L, x, b):
+    def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)
 
     def _adaptUnscaledTolerance(self, L, x, b):

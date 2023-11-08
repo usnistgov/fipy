@@ -100,7 +100,7 @@ class Solver(object):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-10, criterion="legacy",
                  iterations=1000, precon=None):
         """
         Create a `Solver` object.
@@ -109,7 +109,7 @@ class Solver(object):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'initial', 'unscaled', 'RHS', 'matrix', 'solution', 'preconditioned', 'natural'}, optional
+        criterion : {'initial', 'unscaled', 'RHS', 'matrix', 'solution', 'preconditioned', 'natural', 'legacy'}, optional
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
@@ -150,7 +150,7 @@ class Solver(object):
                                actual_code=actual_code,
                                **kwargs)
 
-    def _defaultNorm(self, L, x, b):
+    def _legacyNorm(self, L, x, b):
         raise NotImplementedError
 
     def _unscaledNorm(self, L, x, b):
@@ -190,7 +190,7 @@ class Solver(object):
                 self._rhsNorm(L, x, b),
                 self._residualNorm(L, x, b))
 
-    def _adaptDefaultTolerance(self, L, x, b):
+    def _adaptLegacyTolerance(self, L, x, b):
         raise NotImplementedError
 
     def _adaptUnscaledTolerance(self, L, x, b):
@@ -216,7 +216,7 @@ class Solver(object):
 
     def _adaptTolerance(self, L, x, b):
         adapt = {
-            "default": self._adaptDefaultTolerance,
+            "legacy": self._adaptLegacyTolerance,
             "unscaled": self._adaptUnscaledTolerance,
             "RHS": self._adaptRHSTolerance,
             "matrix": self._adaptMatrixTolerance,

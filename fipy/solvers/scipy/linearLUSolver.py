@@ -19,7 +19,7 @@ class LinearLUSolver(_ScipySolver):
     the Scipy `scipy.sparse.linalg.splu` module.
     """
 
-    def _adaptDefaultTolerance(self, L, x, b):
+    def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)
 
     def _adaptUnscaledTolerance(self, L, x, b):

@@ -47,7 +47,7 @@ class PysparseSolver(_PysparseMatrixSolver):
 
         # Pysparse returns the relative residual,
         # which changes depending on which solver is used
-        default_norm = self._defaultNorm(L, x, b)
+        legacy_norm = self._legacyNorm(L, x, b)
 
         self._log.debug("BEGIN solve")
 
@@ -61,7 +61,7 @@ class PysparseSolver(_PysparseMatrixSolver):
                              code=info,
                              iterations=iter,
                              tolerance_scale=tolerance_scale,
-                             residual=relres * default_norm)
+                             residual=relres * legacy_norm)
 
         self.convergence.warn()
 

@@ -20,7 +20,7 @@ class PETScKrylovSolver(PETScSolver):
     def __init__(self, tolerance=1e-10,
                  absolute_tolerance=None,
                  divergence_tolerance=None,
-                 criterion="default",
+                 criterion="legacy",
                  iterations=1000, precon=None):
         """
         Parameters
@@ -31,7 +31,7 @@ class PETScKrylovSolver(PETScSolver):
             Required absolute error tolerance.
         divergence_tolerance : float
             Required divergence error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'preconditioned', 'natural'}
+        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'preconditioned', 'natural', 'legacy'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
@@ -48,7 +48,7 @@ class PETScKrylovSolver(PETScSolver):
         PETScSolver.__init__(self, tolerance=tolerance, criterion=criterion,
                              iterations=iterations, precon=precon)
 
-    def _adaptDefaultTolerance(self, L, x, b):
+    def _adaptLegacyTolerance(self, L, x, b):
         return (1., PETSc.KSP.NormType.DEFAULT)
 
     def _adaptUnscaledTolerance(self, L, x, b):
@@ -76,7 +76,8 @@ class PETScKrylovSolver(PETScSolver):
         ksp = PETSc.KSP()
         ksp.create(L.comm)
         ksp.setType(self.solver)
-        ksp.setInitialGuessNonzero(True)
+        if self.criterion != "legacy":
+            ksp.setInitialGuessNonzero(True)
         if self.preconditioner is None:
             ksp.getPC().setType('none')
         else:

@@ -20,12 +20,7 @@ class LinearJORSolver(PysparseSolver):
 
     """
 
-    criteria = {
-        "default": None,
-        "unscaled": None
-    }
-
-    def __init__(self, tolerance=1e-10, criterion="default",
+    def __init__(self, tolerance=1e-10, criterion="legacy",
                  iterations=1000, relaxation=1.0):
         """
         Create a `LinearJORSolver` object.
@@ -34,7 +29,7 @@ class LinearJORSolver(PysparseSolver):
         ----------
         tolerance : float
             Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial'}
+        criterion : {'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
         iterations : int
