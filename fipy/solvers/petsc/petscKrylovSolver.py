@@ -45,8 +45,8 @@ class PETScKrylovSolver(PETScSolver):
 
         self.absolute_tolerance = absolute_tolerance
         self.divergence_tolerance = divergence_tolerance
-        PETScSolver.__init__(self, tolerance=tolerance, criterion=criterion,
-                             iterations=iterations, precon=precon)
+        super(PETScKrylovSolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                                iterations=iterations, precon=precon)
 
     def _adaptLegacyTolerance(self, L, x, b):
         return (1., PETSc.KSP.NormType.DEFAULT)

@@ -36,8 +36,8 @@ class LinearLUSolver(TrilinosSolver):
             *ignored*
         """
 
-        TrilinosSolver.__init__(self, tolerance=tolerance, criterion=criterion,
-                                iterations=iterations, precon=None)
+        super(LinearLUSolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                             iterations=iterations, precon=None)
 
         if precon is not None:
             import warnings

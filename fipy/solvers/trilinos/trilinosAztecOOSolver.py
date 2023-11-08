@@ -35,8 +35,8 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         if self.__class__ is TrilinosAztecOOSolver:
             raise NotImplementedError("can't instantiate abstract base class")
 
-        TrilinosSolver.__init__(self, tolerance=tolerance, criterion=criterion,
-                                iterations=iterations, precon=precon)
+        super(TrilinosAztecOOSolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                                    iterations=iterations, precon=precon)
 
     def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)

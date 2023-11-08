@@ -32,8 +32,8 @@ class LinearLUSolver(PETScSolver):
         precon : str
             *ignored*
         """
-        PETScSolver.__init__(self, tolerance=tolerance,
-                             iterations=iterations, precon="lu")
+        super(LinearLUSolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                             iterations=iterations, precon="lu")
 
     def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)

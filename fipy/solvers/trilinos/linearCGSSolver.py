@@ -32,6 +32,6 @@ class LinearCGSSolver(TrilinosAztecOOSolver):
             Maximum number of iterative steps to perform.
         precon : ~fipy.solvers.trilinos.preconditioners.preconditioner.Preconditioner
         """
-        TrilinosAztecOOSolver.__init__(self, tolerance=tolerance, criterion=criterion,
-                                       iterations=iterations, precon=precon)
+        super(LinearCGSSolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                              iterations=iterations, precon=precon)
         self.solver = AztecOO.AZ_cgs
