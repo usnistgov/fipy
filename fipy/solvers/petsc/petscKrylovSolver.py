@@ -4,6 +4,7 @@ __docformat__ = 'restructuredtext'
 from petsc4py import PETSc
 
 from .petscSolver import PETScSolver
+from .preconditioners.defaultPreconditioner import DefaultPreconditioner
 
 __all__ = ["PETScKrylovSolver"]
 from future.utils import text_to_native_str
@@ -21,7 +22,7 @@ class PETScKrylovSolver(PETScSolver):
                  absolute_tolerance=None,
                  divergence_tolerance=None,
                  criterion="default",
-                 iterations=1000, precon=None):
+                 iterations=1000, precon=DefaultPreconditioner()):
         """
         Parameters
         ----------
@@ -36,9 +37,10 @@ class PETScKrylovSolver(PETScSolver):
             See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
-        precon : str
-            Preconditioner to use.
-
+        precon : ~fipy.solvers.petsc.preconditioners.preconditioner.Preconditioner, optional
+            Preconditioner to apply to the matrix.  A value of None means
+            to perform an unpreconditioned solve.  (default:
+            ~fipy.solvers.petsc.preconditioners.defaultPreconditioner.DefaultPreconditioner).
         """
         if self.__class__ is PETScKrylovSolver:
             raise NotImplementedError("can't instantiate abstract base class")
@@ -78,9 +80,7 @@ class PETScKrylovSolver(PETScSolver):
         ksp.setType(self.solver)
         if self.criterion != "legacy":
             ksp.setInitialGuessNonzero(True)
-        if self.preconditioner is None:
-            ksp.getPC().setType('none')
-        else:
+        if self.preconditioner is not None:
             self.preconditioner._applyToSolver(solver=ksp, matrix=L)
 
         L.assemble()
