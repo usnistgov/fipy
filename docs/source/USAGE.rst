@@ -278,6 +278,14 @@ package.
    print a variety of diagnostic information.  All other solvers should use
    `Logging`_ and :envvar:`FIPY_LOG_CONFIG`.
 
+.. envvar:: FIPY_DEFAULT_CRITERION
+
+   Changes the default solver :ref:`CONVERGENCE` criterion to the specified
+   value.  Valid choices are "``legacy``", "``unscaled``", "``RHS``",
+   "``matrix``", "``initial``", "``solution``", "``preconditioned``",
+   "``natural``", "``default``".  A value of "``default``" is admittedly
+   circular, but it works.
+
 .. envvar:: FIPY_VIEWER
 
    Forces the use of the specified viewer. Valid values are any

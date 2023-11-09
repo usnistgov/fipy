@@ -19,6 +19,7 @@ from builtins import str
 __docformat__ = 'restructuredtext'
 
 import logging
+import os
 import warnings
 
 from fipy.tools import numerix
@@ -122,6 +123,9 @@ class Solver(object):
             raise NotImplementedError("can't instantiate abstract base class")
 
         self.tolerance = tolerance
+
+        if criterion == "default":
+            criterion = os.environ.get("FIPY_DEFAULT_CRITERION", "default")
         self.criterion = criterion
         self.iterations = iterations
 
