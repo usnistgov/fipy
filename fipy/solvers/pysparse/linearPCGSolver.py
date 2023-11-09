@@ -29,26 +29,7 @@ class LinearPCGSolver(LinearRHSSolver):
 
     solveFnc = staticmethod(krylov.pcg)
 
-    def __init__(self, tolerance=1e-5, criterion="default",
-                 iterations=1000, precon=SSORPreconditioner()):
-        """
-        Create a `LinearPCGSolver` object.
-
-        Parameters
-        ----------
-        tolerance : float
-            Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
-            Interpretation of ``tolerance``.
-            See :ref:`CONVERGENCE` for more information.
-        iterations : int
-            Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
-            Preconditioner to use
-            (default :class:`~fipy.solvers.pysparse.preconditioners.ssorPreconditioner.SSORPreconditioner`).
-        """
-        super(LinearPCGSolver, self).__init__(tolerance=tolerance, criterion=criterion,
-                                              iterations=iterations, precon=precon)
+    DEFAULT_PRECONDITIONER = SSORPreconditioner
 
     def _canSolveAsymmetric(self):
         return False

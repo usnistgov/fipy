@@ -14,13 +14,16 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class PyAMGXSolver(Solver):
 
-    def __init__(self, config_dict, tolerance=1e-5, criterion="default",
-                 iterations=1000, precon=None, smoother=None, **kwargs):
+    # AMGX configuration options
+    CONFIG_DICT = {}
+
+    DEFAULT_SMOOTHER = None
+
+    def __init__(self, tolerance="default", criterion="default",
+                 iterations="default", precon="default", smoother="default", **kwargs):
         """
         Parameters
         ----------
-        config_dict : dict
-            AMGX configuration options
         tolerance : float
             Required error tolerance.
         criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
@@ -33,12 +36,15 @@ class PyAMGXSolver(Solver):
         **kwargs
             Other AMGX solver options
         """
-        # update solver config:
-        self.config_dict = config_dict.copy()
+        super(PyAMGXSolver, self).__init__(tolerance=tolerance, criterion=criterion, iterations=iterations)
 
-        self.config_dict["solver"]["max_iters"] = iterations
-        if precon is not None:
-            self.config_dict["solver"]["preconditioner"] = precon()
+        # update solver config:
+        self.config_dict = self.CONFIG_DICT.copy()
+
+        self.config_dict["solver"]["max_iters"] = self.iterations
+        if self.precon is not None:
+            self.config_dict["solver"]["preconditioner"] = self.precon()
+        smoother = self.value_or_default(smoother, self.default_smoother)
         if smoother is not None:
             self.config_dict["solver"]["smoother"] = smoother
         self.config_dict["solver"].update(kwargs)
@@ -50,7 +56,13 @@ class PyAMGXSolver(Solver):
         self.b_gpu = pyamgx.Vector().create(self.resources)
         self.A_gpu = pyamgx.Matrix().create(self.resources)
 
-        super(PyAMGXSolver, self).__init__(tolerance=tolerance, criterion=criterion, iterations=iterations)
+    @property
+    def default_smoother(self):
+        if self.DEFAULT_SMOOTHER is not None:
+            # instantiate DEFAULT_SMOOTHER class
+            return self.DEFAULT_SMOOTHER()
+        else:
+            return None
 
     def _destroy_AMGX(self):
         # destroy AMGX objects:

@@ -18,25 +18,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
     """
 
-    def __init__(self, tolerance=1e-5, criterion="default",
-                 iterations=1000, precon=JacobiPreconditioner()):
-        """
-        Parameters
-        ----------
-        tolerance : float
-            Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'solution', 'legacy'}
-            Interpretation of ``tolerance``.
-            See :ref:`CONVERGENCE` for more information.
-        iterations : int
-            Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.trilinos.preconditioners.preconditioner.Preconditioner
-        """
-        if self.__class__ is TrilinosAztecOOSolver:
-            raise NotImplementedError("can't instantiate abstract base class")
-
-        super(TrilinosAztecOOSolver, self).__init__(tolerance=tolerance, criterion=criterion,
-                                                    iterations=iterations, precon=precon)
+    DEFAULT_PRECONDITIONER = JacobiPreconditioner
 
     def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)

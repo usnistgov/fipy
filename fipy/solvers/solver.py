@@ -101,8 +101,12 @@ class Solver(object):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, tolerance=1e-5, criterion="default",
-                 iterations=1000, precon=None):
+    DEFAULT_TOLERANCE = 1e-5
+    DEFAULT_ITERATIONS = 1000
+    DEFAULT_PRECONDITIONER = None
+
+    def __init__(self, tolerance="default", criterion="default",
+                 iterations="default", precon="default"):
         """
         Create a `Solver` object.
 
@@ -122,17 +126,41 @@ class Solver(object):
         if self.__class__ is Solver:
             raise NotImplementedError("can't instantiate abstract base class")
 
-        self.tolerance = tolerance
-
-        if criterion == "default":
-            criterion = os.environ.get("FIPY_DEFAULT_CRITERION", "default")
-        self.criterion = criterion
-        self.iterations = iterations
-
-        self.preconditioner = precon
+        self.criterion = self.value_or_default(criterion,
+                                               "default",
+                                               "FIPY_DEFAULT_CRITERION")
+        self.tolerance = self.value_or_default(tolerance,
+                                               self.default_tolerance)
+        self.iterations = self.value_or_default(iterations,
+                                                self.DEFAULT_ITERATIONS)
+        self.preconditioner = self.value_or_default(precon,
+                                                    self.default_preconditioner)
 
         self._log = logging.getLogger(self.__class__.__module__
                                       + "." + self.__class__.__name__)
+
+    def value_or_default(self, value, default, envvar=None):
+        if value == "default":
+            if envvar is not None:
+                value = os.environ.get(envvar, default)
+            else:
+                value = default
+        return value
+
+    @property
+    def default_tolerance(self):
+        if self.criterion == "legacy":
+            return 1e-10
+        else:
+            return self.DEFAULT_TOLERANCE
+
+    @property
+    def default_preconditioner(self):
+        if self.DEFAULT_PRECONDITIONER is not None:
+            # instantiate DEFAULT_PRECONDITIONER class
+            return self.DEFAULT_PRECONDITIONER()
+        else:
+            return None
 
     def _storeMatrix(self, var, matrix, RHSvector):
         self.var = var
@@ -368,7 +396,7 @@ class Solver(object):
         ... ] # doctest: +PETSC_SOLVER
         >>> for (criterion, target) in criteria:
         ...     phi.setValue(phi_initial)
-        ...     with Solver(criterion=criterion, precon=None, tolerance=1e-5) as s:
+        ...     with Solver(criterion=criterion, precon=None) as s:
         ...         res = eq.sweep(var=phi, solver=s)
         ...         # print(s.convergence)
         ...         print(",".join([s.convergence.suite,

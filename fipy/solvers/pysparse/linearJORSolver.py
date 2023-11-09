@@ -20,8 +20,8 @@ class LinearJORSolver(PysparseSolver):
 
     """
 
-    def __init__(self, tolerance=1e-5, criterion="default",
-                 iterations=1000, relaxation=1.0):
+    def __init__(self, tolerance="default", criterion="default",
+                 iterations="default", relaxation=1.0):
         """
         Create a `LinearJORSolver` object.
 

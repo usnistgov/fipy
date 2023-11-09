@@ -18,23 +18,9 @@ class LinearPCGSolver(TrilinosAztecOOSolver):
 
     """
 
-    def __init__(self, tolerance=1e-5, criterion="default",
-                 iterations=1000, precon=MultilevelDDPreconditioner()):
-        """
-        Parameters
-        ----------
-        tolerance : float
-            Required error tolerance.
-        criterion : {'default', 'initial', 'unscaled', 'RHS', 'matrix', 'solution', 'legacy'}
-            Interpretation of ``tolerance``.
-            See :ref:`CONVERGENCE` for more information.
-        iterations : int
-            Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.trilinos.preconditioners.preconditioner.Preconditioner
-        """
-        super(LinearPCGSolver, self).__init__(tolerance=tolerance, criterion=criterion,
-                                              iterations=iterations, precon=precon)
-        self.solver = AztecOO.AZ_cg
+    solver = AztecOO.AZ_cg
+
+    DEFAULT_PRECONDITIONER = MultilevelDDPreconditioner
 
     def _canSolveAsymmetric(self):
         return False

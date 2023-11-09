@@ -18,11 +18,13 @@ class PETScKrylovSolver(PETScSolver):
 
     """
 
-    def __init__(self, tolerance=1e-5,
+    DEFAULT_PRECONDITIONER = DefaultPreconditioner
+
+    def __init__(self, tolerance="default",
                  absolute_tolerance=None,
                  divergence_tolerance=None,
                  criterion="default",
-                 iterations=1000, precon=DefaultPreconditioner()):
+                 iterations="default", precon="default"):
         """
         Parameters
         ----------
@@ -80,7 +82,9 @@ class PETScKrylovSolver(PETScSolver):
         ksp.setType(self.solver)
         if self.criterion != "legacy":
             ksp.setInitialGuessNonzero(True)
-        if self.preconditioner is not None:
+        if self.preconditioner is None:
+            ksp.getPC().setType("none")
+        else:
             self.preconditioner._applyToSolver(solver=ksp, matrix=L)
 
         L.assemble()

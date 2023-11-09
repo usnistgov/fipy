@@ -15,29 +15,6 @@ class PysparseSolver(PysparseMatrixSolver):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    def __init__(self, tolerance=1e-5, criterion="default",
-                 iterations=1000, precon=None):
-        """
-        Create a `Solver` object.
-
-        Parameters
-        ----------
-        tolerance : float
-            Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
-            Interpretation of ``tolerance``.
-            See :ref:`CONVERGENCE` for more information.
-        iterations : int
-            Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
-            Preconditioner to use.
-        """
-        if self.__class__ is PysparseSolver:
-            raise NotImplementedError("can't instantiate abstract base class")
-
-        super(PysparseSolver, self).__init__(tolerance=tolerance, criterion=criterion,
-                                             iterations=iterations, precon=precon)
-
     def _solve_(self, L, x, b):
         """
         `_solve_` is only for use by solvers which may use

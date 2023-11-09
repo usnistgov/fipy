@@ -13,13 +13,6 @@ class TrilinosSolver(Solver):
     .. attention:: This class is abstract. Always create one of its subclasses.
 
     """
-    def __init__(self, tolerance=1e-5, criterion="default",
-                 iterations=1000, precon=None):
-        if self.__class__ is TrilinosSolver:
-            raise NotImplementedError("can't instantiate abstract base class")
-        else:
-            super(TrilinosSolver, self).__init__(tolerance=tolerance, criterion=criterion,
-                                                 iterations=iterations, precon=precon)
 
     def _storeMatrix(self, var, matrix, RHSvector):
         self.var = var

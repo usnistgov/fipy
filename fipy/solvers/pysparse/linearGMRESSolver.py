@@ -27,23 +27,4 @@ class LinearGMRESSolver(LinearInitialSolver):
 
     solveFnc = staticmethod(krylov.gmres)
 
-    def __init__(self, tolerance=1e-5, criterion="default",
-                 iterations=1000, precon=JacobiPreconditioner()):
-        """
-        Create a `LinearGMRESSolver` object.
-
-        Parameters
-        ----------
-        tolerance : float
-            Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
-            Interpretation of ``tolerance``.
-            See :ref:`CONVERGENCE` for more information.
-        iterations : int
-            Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
-            Preconditioner to use.
-            (default :class:`~fipy.solvers.pysparse.preconditioners.jacobiPreconditioner.JacobiPreconditioner`).
-        """
-        super(LinearGMRESSolver, self).__init__(tolerance=tolerance, criterion=criterion,
-                                                iterations=iterations, precon=precon)
+    DEFAULT_PRECONDITIONER = JacobiPreconditioner

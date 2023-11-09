@@ -6,6 +6,7 @@ __docformat__ = 'restructuredtext'
 from petsc4py import PETSc
 
 from .petscSolver import PETScSolver
+from .preconditioners.luPreconditioner import LUPreconditioner
 
 __all__ = ["LinearLUSolver"]
 
@@ -17,8 +18,8 @@ class LinearLUSolver(PETScSolver):
 
     """
 
-    def __init__(self, tolerance=1e-5, criterion="default",
-                 iterations=10, precon="lu"):
+    def __init__(self, tolerance="default", criterion="default",
+                 iterations=10, precon=None):
         """
         Parameters
         ----------
@@ -29,11 +30,13 @@ class LinearLUSolver(PETScSolver):
             See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
-        precon : str
+        precon : ~fipy.solvers.petsc.preconditioners.preconditioner.Preconditioner
             *ignored*
         """
-        super(LinearLUSolver, self).__init__(tolerance=tolerance, criterion=criterion,
-                                             iterations=iterations, precon="lu")
+        super(LinearLUSolver, self).__init__(tolerance=tolerance,
+                                             criterion=criterion,
+                                             iterations=iterations,
+                                             precon=LUPreconditioner())
 
     def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)
@@ -54,7 +57,7 @@ class LinearLUSolver(PETScSolver):
         ksp = PETSc.KSP()
         ksp.create(PETSc.COMM_WORLD)
         ksp.setType("preonly")
-        ksp.getPC().setType(self.preconditioner)
+        self.preconditioner._applyToSolver(solver=ksp, matrix=L)
         # TODO: SuperLU invoked with PCFactorSetMatSolverType(pc, MATSOLVERSUPERLU)
         #       see: http://www.mcs.anl.gov/petsc/petsc-dev/src/ksp/ksp/examples/tutorials/ex52.c.html
         # PETSc.PC().setFactorSolverType("superlu")

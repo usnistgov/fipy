@@ -30,8 +30,8 @@ class LinearCGSSolver(LinearRHSSolver):
 
     solveFnc = staticmethod(krylov.cgs)
 
-    def __init__(self, tolerance=1e-5, criterion="default",
-                 iterations=1000, precon=None):
+    def __init__(self, tolerance="default", criterion="default",
+                 iterations="default", precon="default"):
         """
         Create a `LinearCGSSolver` object.
 

@@ -12,11 +12,6 @@ class PETScSolver(Solver):
     .. attention:: This class is abstract. Always create one of its subclasses.
 
     """
-    def __init__(self, *args, **kwargs):
-        if self.__class__ is PETScSolver:
-            raise NotImplementedError("can't instantiate abstract base class")
-        else:
-            Solver.__init__(self, *args, **kwargs)
 
     @property
     def _globalMatrixAndVectors(self):

@@ -8,7 +8,7 @@ class LinearBicgSolver(PETScKrylovSolver):
 
     """
     The `LinearBicgSolver` is an interface to the biconjugate gradient solver in
-    PETSc, using no preconditioner by default.
+    PETSc.
     """
       
     solver = 'bicg'

@@ -11,41 +11,18 @@ class AggregationAMGSolver(PyAMGXSolver):
     The `AggregationAMGSolver` is an interface to the aggregation AMG solver in
     AMGX, with a Jacobi smoother by default.
     """
-    def __init__(self, tolerance=1e-5, criterion="default",
-                 iterations=1000, precon=None,
-                 smoother=BlockJacobiSmoother(),
-                 **kwargs):
-        """
-        Parameters
-        ----------
-        tolerance : float
-            Required error tolerance.
-        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
-            Interpretation of ``tolerance``.
-            See :ref:`CONVERGENCE` for more information.
-        iterations : int
-            Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.pyamgx.preconditioners.Preconditioner, optional
-        **kwargs
-            Other AMGX solver options
-        """
-        config_dict = {
-            "config_version": 2,
-            "determinism_flag": 1,
-            "solver": {
-                "algorithm": "AGGREGATION",
-                "solver": "AMG",
-                "selector": "SIZE_2",
-                "monitor_residual": 1,
-                "max_levels": 1000,
-                "cycle": "V"
-            }
+
+    CONFIG_DICT = {
+        "config_version": 2,
+        "determinism_flag": 1,
+        "solver": {
+            "algorithm": "AGGREGATION",
+            "solver": "AMG",
+            "selector": "SIZE_2",
+            "monitor_residual": 1,
+            "max_levels": 1000,
+            "cycle": "V"
         }
-        super(AggregationAMGSolver, self).__init__(
-                config_dict,
-                tolerance=tolerance,
-                criterion=criterion,
-                iterations=iterations,
-                precon=precon,
-                smoother=smoother,
-                **kwargs)
+    }
+
+    DEFAULT_SMOOTHER = BlockJacobiSmoother

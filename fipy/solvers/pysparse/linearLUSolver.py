@@ -27,7 +27,7 @@ class LinearLUSolver(PysparseSolver):
 
     """
 
-    def __init__(self, tolerance=1e-5, criterion="default",
+    def __init__(self, tolerance="default", criterion="default",
                  iterations=10, precon=None):
         """
         Creates a `LinearLUSolver`.
@@ -45,7 +45,7 @@ class LinearLUSolver(PysparseSolver):
             *ignored*
         """
         super(LinearLUSolver, self).__init__(tolerance=tolerance, criterion=criterion,
-                                             iterations=iterations)
+                                             iterations=iterations, precon=None)
 
     def _adaptLegacyTolerance(self, L, x, b):
         return self._adaptInitialTolerance(L, x, b)
