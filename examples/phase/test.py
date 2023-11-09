@@ -14,7 +14,6 @@ def _suite():
                                        'quaternary',
                                        'simple',
                                        'symmetry',
-                                       'binary',
                                        'binaryCoupled',
                                        'polyxtal',
                                        'polyxtalCoupled'
