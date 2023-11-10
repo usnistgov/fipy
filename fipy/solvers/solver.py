@@ -101,8 +101,16 @@ class Solver(object):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
+    #: Default tolerance for linear solves unless `criterion="legacy"`
     DEFAULT_TOLERANCE = 1e-5
+
+    #: Default tolerance for linear solves if `criterion="legacy"`
+    LEGACY_TOLERANCE = 1e-10
+
+    #: Default maximum number of iterative steps to perform
     DEFAULT_ITERATIONS = 1000
+
+    #: Default preconditioner to apply to the matrix
     DEFAULT_PRECONDITIONER = None
 
     def __init__(self, tolerance="default", criterion="default",
@@ -113,7 +121,7 @@ class Solver(object):
         Parameters
         ----------
         tolerance : float
-            Required error tolerance.
+            Required residual tolerance.
         criterion : {'default', 'initial', 'unscaled', 'RHS', 'matrix', 'solution', 'preconditioned', 'natural', 'legacy'}, optional
             Interpretation of ``tolerance``.
             See :ref:`CONVERGENCE` for more information.
@@ -149,8 +157,10 @@ class Solver(object):
 
     @property
     def default_tolerance(self):
+        """Default tolerance for linear solve
+        """
         if self.criterion == "legacy":
-            return 1e-10
+            return self.LEGACY_TOLERANCE
         else:
             return self.DEFAULT_TOLERANCE
 
