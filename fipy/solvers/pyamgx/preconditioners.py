@@ -31,8 +31,9 @@ class Preconditioner(object):
         self.config_dict.update(kwargs)
 
     def __call__(self, **kwargs):
-        self.config_dict.update(kwargs)
-        return copy.copy(self.config_dict)
+        config_dict = self.config_dict.copy()
+        config_dict.update(kwargs)
+        return config_dict
 
 class AMGPreconditioner(Preconditioner):
     """
