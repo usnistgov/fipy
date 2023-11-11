@@ -46,6 +46,11 @@ class _ConvergenceMeta(type):
         if hasattr(cls, "status_name") and hasattr(cls, "suite"):
             cls.name_registry[(cls.suite, cls.status_name)] = cls
 
+class DivergenceWarning(UserWarning):
+    def __init__(self, divergence):
+        msg = "msg={status_name}, code={status_code}, residual={residual}".format(**divergence.info)
+        super(DivergenceWarning, self).__init__(msg)
+
 class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
     """Information about whether and why a solver converged.
 
@@ -153,7 +158,7 @@ class Divergence(ConvergenceBase):
     """
 
     def warn(self):
-        warnings.warn("({status_code}, {status_name}): {residual}".format(**self.info), stacklevel=5)
+        warnings.warn(DivergenceWarning(self), stacklevel=5)
 
 class IterationDivergence(Divergence):
     """Exceeded maximum iterations.
