@@ -41,7 +41,7 @@ class LinearLUSolver(PysparseSolver):
             See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
+        precon
             *ignored*
         """
         super(LinearLUSolver, self).__init__(tolerance=tolerance, criterion=criterion,

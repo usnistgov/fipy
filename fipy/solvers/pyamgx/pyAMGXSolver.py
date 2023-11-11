@@ -17,6 +17,7 @@ class PyAMGXSolver(Solver):
     # AMGX configuration options
     CONFIG_DICT = {}
 
+    #: Default smoother to apply to the ???
     DEFAULT_SMOOTHER = None
 
     def __init__(self, tolerance="default", criterion="default",
@@ -31,7 +32,7 @@ class PyAMGXSolver(Solver):
             See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.pyamgx.preconditioners.Preconditioner, optional
+        precon : ~fipy.solvers.pyamgx.preconditioners.PyAMGXPreconditioner, optional
         smoother : ~fipy.solvers.pyamgx.smoothers.Smoother, optional
         **kwargs
             Other AMGX solver options
@@ -42,11 +43,14 @@ class PyAMGXSolver(Solver):
         self.config_dict = self.CONFIG_DICT.copy()
 
         self.config_dict["solver"]["max_iters"] = self.iterations
+
         if self.precon is not None:
-            self.config_dict["solver"]["preconditioner"] = self.precon()
+            self.precon._applyToSolver(self.config_dict["solver"])
+
         smoother = self.value_or_default(smoother, self.default_smoother)
         if smoother is not None:
-            self.config_dict["solver"]["smoother"] = smoother
+            smoother._applyToSolver(self.config_dict["solver"])
+
         self.config_dict["solver"].update(kwargs)
 
         # create AMGX objects:

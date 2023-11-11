@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 from builtins import object
-import copy
 
 __all__ = ["BlockJacobiSmoother",
            "MultiColorDILUSmoother",
@@ -22,9 +21,9 @@ class Smoother(object):
             "solver": smoother_type,
             "max_iters": 1
         }
-    def __call__(self, **kwargs):
-        self.config_dict.update(kwargs)
-        return copy.copy(self.config_dict)
+
+    def _applyToSolver(self, solver):
+        solver["smoother"] = self.config_dict.copy()
 
 BlockJacobiSmoother = Smoother("BLOCK_JACOBI")
 MultiColorDILUSmoother = Smoother("MULTICOLOR_DILU")

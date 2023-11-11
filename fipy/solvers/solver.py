@@ -127,7 +127,7 @@ class Solver(object):
             See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
-        precon
+        precon : ~fipy.solvers.preconditioner.Preconditioner
             Preconditioner to use.  Not all solver suites support
             preconditioners.
         """

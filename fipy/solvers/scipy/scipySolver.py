@@ -1,7 +1,9 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-__all__ = []
+__all__ = ["ScipySolver"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 from scipy.sparse import linalg
 

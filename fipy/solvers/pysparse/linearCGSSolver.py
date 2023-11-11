@@ -44,7 +44,7 @@ class LinearCGSSolver(LinearRHSSolver):
             See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
+        precon : ~fipy.solvers.pysparse.preconditioners.pysparsePreconditioner.PysparsePreconditioner
             Preconditioner to use.
         """
         warnings.warn("The Pysparse CGS solver may return incorrect results for some matrices", UserWarning)

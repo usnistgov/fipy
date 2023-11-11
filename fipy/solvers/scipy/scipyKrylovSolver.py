@@ -1,7 +1,9 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-__all__ = []
+__all__ = ["ScipyKrylovSolver"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
 import os
 import warnings
@@ -42,7 +44,7 @@ class ScipyKrylovSolver(ScipySolver):
         if self.preconditioner is None:
             M = None
         else:
-            M = self.preconditioner._applyToMatrix(A)
+            M, _ = self.preconditioner._applyToMatrix(A)
 
         tolerance_scale, _ = self._adaptTolerance(L, x, b)
 

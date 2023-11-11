@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
-from builtins import object
-import copy
+
+from fipy.solvers.preconditioner import SolverModifyingPreconditioner
 
 __all__ = ["AMGPreconditioner",
            "AggregationAMGPreconditioner",
@@ -12,96 +12,91 @@ __all__ = ["AMGPreconditioner",
            "ILUPreconditioner",
            "JacobiPreconditioner",
            "PolynomialPreconditioner",
-           "Preconditioner"]
+           "PyAMGXPreconditioner"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class Preconditioner(object):
-    """Interface to pyamgx_ `preconditioner configuration`_.
+class PyAMGXPreconditioner(SolverModifyingPreconditioner):
+    """Interface to pyamgx_ `preconditioner configuration`_ for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
 
     .. _pyamgx: https://pyamgx.readthedocs.io
     .. _preconditioner configuration: https://pyamgx.readthedocs.io/en/latest/basic.html#config-objects
     """
 
     def __init__(self, **kwargs):
+        """
+        Parameters
+        ----------
+        **kwargs : dict, optional
+            Extra arguments to preconditioner: refer to `preconditioner
+            configuration`_ for information about possible arguments.
+        """
         self.config_dict = {
             "solver": self.pctype,
             "max_iters": 1
         }
         self.config_dict.update(kwargs)
 
-    def __call__(self, **kwargs):
-        config_dict = self.config_dict.copy()
-        config_dict.update(kwargs)
-        return config_dict
+    def _applyToSolver(self, solver, matrix=None):
+        solver["preconditioner"] = self.config_dict.copy()
 
-class AMGPreconditioner(Preconditioner):
+class AMGPreconditioner(PyAMGXPreconditioner):
+    """Adaptive Multigrid preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
-    Adaptive Multigrid Preconditioner for pyamgx solvers.
 
-    """
     pctype = "AMG"
 
 class AggregationAMGPreconditioner(AMGPreconditioner):
+    """Aggregation Adaptive Multigrid preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
-    Aggregation Adaptive Multigrid Preconditioner for pyamgx solvers.
 
-    """
     def __init__(self):
         super(ClassicalAMGPreconditioner, self).__init__(algorithm="AGGREGATION",
                                                          selector="SIZE_2")
-class BiCGStabPreconditioner(Preconditioner):
+class BiCGStabPreconditioner(PyAMGXPreconditioner):
+    """Biconjugate Gradient Stabilized preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
-    Biconjugate Gradient Stabilized Preconditioner for pyamgx solvers.
 
-    """
     pctype = "PCIBCGSTAB"
 
-class CGPreconditioner(Preconditioner):
+class CGPreconditioner(PyAMGXPreconditioner):
+    """Conjugate Gradient preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
-    Conjugate Gradient Preconditioner for pyamgx solvers.
 
-    """
     pctype = "PCG"
 
-class DILUPreconditioner(Preconditioner):
+class DILUPreconditioner(PyAMGXPreconditioner):
+    """DILU preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
-    DILU Preconditioner for pyamgx solvers.
 
-    """
     pctype = "MULTICOLOR_DILU"
 
-class FGMRESPreconditioner(Preconditioner):
+class FGMRESPreconditioner(PyAMGXPreconditioner):
+    """Flexible Generalized Mimumal Residual preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
-    Flexible Generalized Mimumal Residual Preconditioner for pyamgx solvers.
 
-    """
     pctype = "FGMRES"
 
-class GaussSeidelPreconditioner(Preconditioner):
+class GaussSeidelPreconditioner(PyAMGXPreconditioner):
+    """Gauss-Seidel preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
-    Gauss-Seidel Preconditioner for pyamgx solvers.
 
-    """
     pctype = "MULTICOLOR_GS"
 
-class ILUPreconditioner(Preconditioner):
+class ILUPreconditioner(PyAMGXPreconditioner):
+    """ILU preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
-    ILU Preconditioner for pyamgx solvers.
 
-    """
     pctype = "MULTICOLOR_GS"
 
-class JacobiPreconditioner(Preconditioner):
+class JacobiPreconditioner(PyAMGXPreconditioner):
+    """Block Jacobi preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
-    Block Jacobi Preconditioner for pyamgx solvers.
 
-    """
     pctype = "BLOCK_JACOBI"
 
-class PolynomialPreconditioner(Preconditioner):
+class PolynomialPreconditioner(PyAMGXPreconditioner):
+    """Polynomial preconditioner  for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
-    Polynomial Preconditioner for pyamgx solvers.
 
-    """
     pctype = "POLYNOMIAL"

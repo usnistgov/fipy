@@ -1,20 +1,18 @@
 from __future__ import unicode_literals
 from pysparse.precon import precon
 
-from fipy.solvers.pysparse.preconditioners.preconditioner import Preconditioner
+from fipy.solvers.pysparse.preconditioners.pysparsePreconditioner import PysparsePreconditioner
 
 __all__ = ["SSORPreconditioner"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class SSORPreconditioner(Preconditioner):
+class SSORPreconditioner(PysparsePreconditioner):
+    """SSOR preconditioner for :class:`~fipy.solvers.pysparse.pysparseSolver.PysparseSolver`.
+
+    Wrapper class for :func:`pysparse.precon.ssor`.
     """
-    SSOR preconditioner for Pysparse.
-    Really just a wrapper class for `pysparse.precon.ssor`.
-    """
-    def _applyToMatrix(self, A):
-        """
-        Returns (preconditioning matrix, resulting matrix)
-        """
-        A = A.to_sss()
-        return precon.ssor(A), A
+
+    def _applyToMatrix(self, matrix):
+        matrix = matrix.to_sss()
+        return precon.ssor(matrix), matrix

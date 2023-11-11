@@ -30,7 +30,7 @@ class LinearLUSolver(PETScSolver):
             See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.petsc.preconditioners.preconditioner.Preconditioner
+        precon
             *ignored*
         """
         super(LinearLUSolver, self).__init__(tolerance=tolerance,
