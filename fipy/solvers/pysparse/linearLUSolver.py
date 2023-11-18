@@ -63,11 +63,11 @@ class LinearLUSolver(PysparseSolver):
         return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
-        LU = superlu.factorize(L.matrix.to_csr())
-
         tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         self._log.debug("BEGIN solve")
+
+        LU = superlu.factorize(L.matrix.to_csr())
 
         for iteration in range(self.iterations):
             residualVector, residual = self._residualVectorAndNorm(L, x, b)

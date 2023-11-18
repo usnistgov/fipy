@@ -35,14 +35,14 @@ class LinearLUSolver(ScipySolver):
         return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
+
+        self._log.debug("BEGIN solve")
+
         LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=1.,
                                             relax=1,
                                             panel_size=10,
                                             permc_spec=3)
-
-        tolerance_scale, _ = self._adaptTolerance(L, x, b)
-
-        self._log.debug("BEGIN solve")
 
         for iteration in range(min(self.iterations, 10)):
             residualVector, residual = self._residualVectorAndNorm(L, x, b)
