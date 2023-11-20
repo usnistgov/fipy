@@ -54,11 +54,14 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         Solver.SetAztecOption(AztecOO.AZ_conv, suite_criterion)
 
+        self._log.debug("BEGIN precondition")
+
         if self.preconditioner is None:
             Solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
         else:
             self.preconditioner._applyToSolver(solver=Solver, matrix=L)
 
+        self._log.debug("END precondition")
         self._log.debug("BEGIN solve")
 
         output = Solver.Iterate(self.iterations, rtol)

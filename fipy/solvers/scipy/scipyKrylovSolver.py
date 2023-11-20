@@ -41,18 +41,22 @@ class ScipyKrylovSolver(ScipySolver):
 
     @profile
     def _solve_(self, L, x, b):
-        A = L.matrix
-        if self.preconditioner is None:
-            M = None
-        else:
-            M, _ = self.preconditioner._applyToMatrix(A)
-
         tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         self.actualIterations = 0
 
         rtol = self.scale_tolerance(self.tolerance, tolerance_scale)
 
+        A = L.matrix
+
+        self._log.debug("BEGIN precondition")
+
+        if self.preconditioner is None:
+            M = None
+        else:
+            M, _ = self.preconditioner._applyToMatrix(A)
+
+        self._log.debug("END precondition")
         self._log.debug("BEGIN solve")
 
         x, info = self.solveFnc(A, b, x,

@@ -32,19 +32,22 @@ class PysparseSolver(PysparseMatrixSolver):
             Right hand side vector
         """
 
-        A = L.matrix
-
-        if self.preconditioner is None:
-            P = None
-        else:
-            P, A = self.preconditioner._applyToMatrix(A)
-
         tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         # Pysparse returns the relative residual,
         # which changes depending on which solver is used
         legacy_norm = self._legacyNorm(L, x, b)
 
+        A = L.matrix
+
+        self._log.debug("BEGIN precondition")
+
+        if self.preconditioner is None:
+            P = None
+        else:
+            P, A = self.preconditioner._applyToMatrix(A)
+
+        self._log.debug("END precondition")
         self._log.debug("BEGIN solve")
 
         info, iter, relres = self.solveFnc(A, b, x,

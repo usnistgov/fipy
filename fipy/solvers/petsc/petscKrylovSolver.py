@@ -83,10 +83,6 @@ class PETScKrylovSolver(PETScSolver):
         ksp.setType(self.solver)
         if self.criterion != "legacy":
             ksp.setInitialGuessNonzero(True)
-        if self.preconditioner is None:
-            ksp.getPC().setType("none")
-        else:
-            self.preconditioner._applyToSolver(solver=ksp, matrix=L)
 
         L.assemble()
         ksp.setOperators(L)
@@ -102,6 +98,15 @@ class PETScKrylovSolver(PETScSolver):
                           divtol=divtol,
                           max_it=self.iterations)
         ksp.setNormType(suite_criterion)
+
+        self._log.debug("BEGIN precondition")
+
+        if self.preconditioner is None:
+            ksp.getPC().setType("none")
+        else:
+            self.preconditioner._applyToSolver(solver=ksp, matrix=L)
+
+        self._log.debug("END precondition")
 
         ksp.setFromOptions()
 
