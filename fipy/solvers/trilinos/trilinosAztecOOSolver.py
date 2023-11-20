@@ -38,6 +38,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
     def _adaptSolutionTolerance(self, L, x, b):
         return (1., AztecOO.AZ_sol)
 
+    @profile
     def _solve_(self, L, x, b):
 
         Solver = AztecOO.AztecOO(L, x, b)

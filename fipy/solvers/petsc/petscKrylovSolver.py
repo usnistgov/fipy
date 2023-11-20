@@ -76,6 +76,7 @@ class PETScKrylovSolver(PETScSolver):
     def _adaptNaturalTolerance(self, L, x, b):
         return (1., PETSc.KSP.NormType.NATURAL)
 
+    @profile
     def _solve_(self, L, x, b):
         ksp = PETSc.KSP()
         ksp.create(L.comm)
