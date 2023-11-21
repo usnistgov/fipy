@@ -191,7 +191,6 @@ class Term(object):
 
         self._log.debug("END solve")
 
-    @profile
     def sweep(self, var=None, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None, cacheResidual=False, cacheError=False):
         r"""
         Builds and solves the `Term`'s linear system once. This method

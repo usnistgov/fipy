@@ -15,7 +15,6 @@ class PysparseSolver(PysparseMatrixSolver):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    @profile
     def _solve_(self, L, x, b):
         """
         `_solve_` is only for use by solvers which may use

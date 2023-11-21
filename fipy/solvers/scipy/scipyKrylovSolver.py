@@ -39,7 +39,6 @@ class ScipyKrylovSolver(ScipySolver):
         factor = self._residualNorm(L, x, b) / self._rhsNorm(L, x, b)
         return (factor, None)
 
-    @profile
     def _solve_(self, L, x, b):
         tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
