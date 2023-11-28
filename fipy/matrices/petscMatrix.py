@@ -165,6 +165,8 @@ class _PETScMatrix(_SparseMatrix):
             x = PETSc.Vec().createMPI(N, comm=self.matrix.comm)
             y = x.duplicate()
             x[:] = other
+            self.matrix.assemble()
+            x.assemble()
             self.matrix.multTranspose(x, y)
             arr = numerix.asarray(y)
             x.destroy()
