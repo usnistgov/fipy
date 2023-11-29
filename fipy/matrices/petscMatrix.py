@@ -5,6 +5,7 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
+from collections.abc import Iterable
 from petsc4py import PETSc
 
 from fipy.tools import numerix
@@ -515,7 +516,9 @@ class _PETScMatrixFromShape(_PETScMatrix):
             matrix.setSizes([[rows, None], [cols, None]])
             matrix.setType('aij') # sparse
             matrix.setUp()
-            if nonZerosPerRow > 0:
+            if isinstance(nonZerosPerRow, Iterable) or (nonZerosPerRow > 0):
+                if isinstance(nonZerosPerRow, Iterable):
+                    nonZerosPerRow = numerix.asarray(nonZerosPerRow, dtype=PETSc.IntType)
                 matrix.setPreallocationNNZ(nonZerosPerRow)
                 if not exactNonZeros:
                     matrix.setOption(matrix.Option.NEW_NONZERO_ALLOCATION_ERR, False)
@@ -950,6 +953,45 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
         True
         >>> print(numerix.allclose(val, [1., 2., 0.]))
         True
+
+        Storing more than pre-allocated is an error when `exactNonZeros` is set
+
+        >>> m = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1, exactNonZeros=True)
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0]) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        petsc4py.PETSc.Error: error code 63
+
+        This is also true if multiple values are accumulated into the
+        same matrix entry.
+
+        >>> m = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1, exactNonZeros=True)
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,0], [2,1,1,1]) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        petsc4py.PETSc.Error: error code 63
+
+        Preallocation can be specified row-by-row
+
+        >>> m = _PETScMatrixFromShape(rows=3, cols=3,
+        ...                           nonZerosPerRow=[2, 1, 1])
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+
+        Preallocating on the wrong rows is not an error...
+
+        >>> m = _PETScMatrixFromShape(rows=3, cols=3,
+        ...                           nonZerosPerRow=[1, 2, 1])
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+
+        ...but it is when `exactNonZeros` is specified.
+
+        >>> m = _PETScMatrixFromShape(rows=3, cols=3,
+        ...                           nonZerosPerRow=[1, 2, 1],
+        ...                           exactNonZeros=True)
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0]) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        petsc4py.PETSc.Error: error code 63
         """
         pass
 

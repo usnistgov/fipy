@@ -420,7 +420,7 @@ class _PysparseMatrixFromShape(_PysparseMatrix):
             tmpMatrix = spmatrix.ll_mat(1, 1, 1)
             try:
                 assert len(nonZerosPerRow) == rows
-                sizeHint = numerix.sum(nonZerosPerRow)
+                sizeHint = numerix.sum(numerix.asarray(nonZerosPerRow))
             except TypeError:
                 sizeHint = nonZerosPerRow * rows
             if hasattr(tmpMatrix, 'storeZeros'):
@@ -707,6 +707,35 @@ class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
         >>> print(numerix.allequal(list(m.matrix.values()), numerix.array([1.0, 2.0])))
         True
 
+        Storing more than pre-allocated is not an error when `exactNonZeros` is set
+
+        >>> m = _PysparseMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1, exactNonZeros=True)
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0]) # doctest: +IGNORE_EXCEPTION_DETAIL
+
+        This is also true if multiple values are accumulated into the
+        same matrix entry.
+
+        >>> m = _PysparseMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1, exactNonZeros=True)
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,0], [2,1,1,1]) # doctest: +IGNORE_EXCEPTION_DETAIL
+
+        Preallocation can be specified row-by-row
+
+        >>> m = _PysparseMatrixFromShape(rows=3, cols=3,
+        ...                              nonZerosPerRow=[2, 1, 1])
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+
+        Preallocating on the wrong rows is not an error...
+
+        >>> m = _PysparseMatrixFromShape(rows=3, cols=3,
+        ...                              nonZerosPerRow=[1, 2, 1])
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+
+        ...even when `exactNonZeros` is specified.
+
+        >>> m = _PysparseMatrixFromShape(rows=3, cols=3,
+        ...                              nonZerosPerRow=[1, 2, 1],
+        ...                              exactNonZeros=True)
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
         """
         pass
 

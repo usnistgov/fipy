@@ -750,6 +750,7 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
             # same spot. It's memory-inefficient, but it'll get cleaned up when
             # FillComplete is called, and according to the Trilinos devs the
             # performance boost will be worth it.
+            nonZerosPerRow = numerix.asarray(nonZerosPerRow, dtype='int32')
             StaticProfile = (nonZerosPerRow*3)//2
 
             matrix = Epetra.CrsMatrix(Epetra.Copy, self.rowMap, StaticProfile, exactNonZeros)
@@ -1220,6 +1221,53 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
 
                 else:
                     raise TypeError("%s: %s != (%d,)" % (self.__class__, str(shape), N))
+
+    def _test(self):
+        """Tests
+
+        >>> m = _TrilinosMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1)
+        >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
+
+        Storing more than pre-allocated is an error when `exactNonZeros` is set
+
+        >>> m = _TrilinosMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1, exactNonZeros=True)
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0]) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        RuntimeError: Processor 0, error code -1
+
+        This is also true if multiple values are accumulated into the
+        same matrix entry.
+
+        >>> m = _TrilinosMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1, exactNonZeros=True)
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,0], [2,1,1,1]) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        RuntimeError: Processor 0, error code -1
+
+        Preallocation can be specified row-by-row
+
+        >>> m = _TrilinosMatrixFromShape(rows=3, cols=3,
+        ...                              nonZerosPerRow=[2, 1, 1])
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+
+        Preallocating on the wrong rows is not an error...
+
+        >>> m = _TrilinosMatrixFromShape(rows=3, cols=3,
+        ...                              nonZerosPerRow=[1, 2, 1])
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+
+        ...but it is when `exactNonZeros` is specified.
+
+        >>> m = _TrilinosMatrixFromShape(rows=3, cols=3,
+        ...                              nonZerosPerRow=[1, 2, 1],
+        ...                              exactNonZeros=True)
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0]) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        RuntimeError: Processor 0, error code -1
+        """
+        pass
 
 class _TrilinosIdentityMatrix(_TrilinosMatrixFromShape):
     """
