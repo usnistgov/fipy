@@ -14,10 +14,15 @@ def OffsetSparseMatrix(SparseMatrix, numberOfVariables, numberOfEquations):
         equationIndex = 0
         varIndex = 0
 
-        def __init__(self, mesh, bandwidth=0, sizeHint=None,
-                     numberOfVariables=numberOfVariables, numberOfEquations=numberOfEquations):
-            SparseMatrix.__init__(self, mesh=mesh, bandwidth=bandwidth, sizeHint=sizeHint,
-                                  numberOfVariables=numberOfVariables, numberOfEquations=numberOfEquations)
+        def __init__(self, mesh, nonZerosPerRow=1, exactNonZeros=False,
+                     numberOfVariables=numberOfVariables,
+                     numberOfEquations=numberOfEquations):
+            SparseMatrix.__init__(self,
+                                  mesh=mesh,
+                                  nonZerosPerRow=nonZerosPerRow,
+                                  exactNonZeros=exactNonZeros,
+                                  numberOfVariables=numberOfVariables,
+                                  numberOfEquations=numberOfEquations)
 
         def put(self, vector, id1, id2):
             SparseMatrix.put(self, vector, id1 + self.mesh.numberOfCells * self.equationIndex, id2 + self.mesh.numberOfCells * self.varIndex)

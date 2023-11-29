@@ -57,8 +57,8 @@ class BoundaryCondition(object):
         Ncells : int
             Size of matrices
         MaxFaces : int
-            Maximum number of faces per cell (determines bandwidth of
-            :math:`\mathsf{L}`)
+            Maximum number of faces per cell (determines number of
+            non-zeros per row of :math:`\mathsf{L}`)
         coeff : list
             Contribution due to this face
         """

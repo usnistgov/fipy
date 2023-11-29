@@ -38,23 +38,25 @@ class _TrilinosMatrix(_SparseMatrix):
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
-    def __init__(self, matrix, bandwidth=None):
+    def __init__(self, matrix, nonZerosPerRow=None):
         """
         Parameters
         ----------
         matrix : Epetra.CrsMatrix
             The internal Trilinos matrix
-        bandwidth : int
-            The proposed band width of the matrix.
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
         """
         self.matrix = matrix
 
         self.comm = matrix.Comm()
-        if bandwidth is None:
-            self.bandwidth = ((matrix.NumGlobalNonzeros() + matrix.NumGlobalRows() - 1)
+        if nonZerosPerRow is None:
+            self.nonZerosPerRow = ((matrix.NumGlobalNonzeros() + matrix.NumGlobalRows() - 1)
                               // matrix.NumGlobalRows())
         else:
-            self.bandwidth = bandwidth
+            self.nonZerosPerRow = nonZerosPerRow
 
         super(_TrilinosMatrix, self).__init__()
 
@@ -523,7 +525,7 @@ class _TrilinosMatrix(_SparseMatrix):
             DistributedMap = Epetra.Map(totalElements, 0, self.comm)
             RootToDist = Epetra.Import(DistributedMap, self.rangeMap)
 
-            DistMatrix = Epetra.CrsMatrix(Epetra.Copy, DistributedMap, (self.bandwidth*3) // 2)
+            DistMatrix = Epetra.CrsMatrix(Epetra.Copy, DistributedMap, (self.nonZerosPerRow*3) // 2)
 
             DistMatrix.Import(self.matrix, RootToDist, Epetra.Insert)
 
@@ -554,7 +556,7 @@ class _TrilinosMatrix(_SparseMatrix):
         Examples
         --------
 
-        >>> L = _TrilinosMatrixFromShape(rows=3, cols=3, bandwidth=3)
+        >>> L = _TrilinosMatrixFromShape(rows=3, cols=3, nonZerosPerRow=3)
         >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
         >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
         >>> ptrs, cols, data = L.CSR
@@ -589,7 +591,7 @@ class _TrilinosMatrix(_SparseMatrix):
         Examples
         --------
 
-        >>> L = _TrilinosMatrixFromShape(rows=3, cols=3, bandwidth=3)
+        >>> L = _TrilinosMatrixFromShape(rows=3, cols=3, nonZerosPerRow=3)
         >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
         >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
         >>> rows, data = L.LIL
@@ -711,7 +713,8 @@ class _TrilinosMatrix(_SparseMatrix):
         return _TrilinosMatrix(matrix=A_T_bis)
 
 class _TrilinosMatrixFromShape(_TrilinosMatrix):
-    def __init__(self, rows, cols, bandwidth=1, sizeHint=None, matrix=None):
+    def __init__(self, rows, cols,
+                 nonZerosPerRow=1, exactNonZeros=False, matrix=None):
         """Instantiates and wraps an `Epetra.CrsMatrix`
 
         Parameters
@@ -720,21 +723,20 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
             The number of matrix rows
         cols : int
             The number of matrix columns
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 1).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~PyTrilinos.Epetra.CrsMatrix
             Pre-assembled Trilinos matrix to use for storage.
         """
         self.rows = rows
         self.cols = cols
-
-        size = max(rows, cols)
-        if sizeHint is not None and bandwidth == 0:
-            bandwidth = (sizeHint + size - 1) // (size or 1)
-        else:
-            bandwidth = bandwidth
 
         if matrix is None:
             # On Mar 26, 2011, at 11:04 AM, Williams, Alan B <william@sandia.gov> wrote:
@@ -743,15 +745,17 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
             # matrices with only a row-map and allow the column-map to be
             # generated internally.  Especially if you have a rectangular
             # matrix, which is even trickier to get correct.
-            matrix = Epetra.CrsMatrix(Epetra.Copy, self.rowMap, (bandwidth*3)//2)
 
-        # Leave extra bandwidth, to handle multiple insertions into the
-        # same spot. It's memory-inefficient, but it'll get cleaned up when
-        # FillComplete is called, and according to the Trilinos devs the
-        # performance boost will be worth it.
+            # Pre-allocate extra non-zeros, to handle multiple insertions into the
+            # same spot. It's memory-inefficient, but it'll get cleaned up when
+            # FillComplete is called, and according to the Trilinos devs the
+            # performance boost will be worth it.
+            StaticProfile = (nonZerosPerRow*3)//2
+
+            matrix = Epetra.CrsMatrix(Epetra.Copy, self.rowMap, StaticProfile, exactNonZeros)
 
         super(_TrilinosMatrixFromShape, self).__init__(matrix=matrix,
-                                                       bandwidth=bandwidth)
+                                                       nonZerosPerRow=nonZerosPerRow)
 
     @property
     def rowMap(self):
@@ -772,7 +776,8 @@ class _TrilinosMatrixFromShape(_TrilinosMatrix):
         return Epetra.Map(self.cols, self.cols, 0, comm)
 
 class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
-    def __init__(self, mesh, rows, cols, m2m, bandwidth=0, sizeHint=None, matrix=None):
+    def __init__(self, mesh, rows, cols, m2m,
+                 nonZerosPerRow=0, exactNonZeros=False, matrix=None):
         """Creates a `_TrilinosMatrixFromShape` associated with a `Mesh`.
 
         Parameters
@@ -785,10 +790,15 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
             The number of local matrix columns.
         m2m : ~fipy.matrices.sparseMatrix._Mesh2Matrix
             Object to convert between mesh coordinates and matrix coordinates.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros.
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~PyTrilinos.Epetra.CrsMatrix
             Pre-assembled Trilinos matrix to use for storage.
         """
@@ -797,8 +807,8 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
 
         super(_TrilinosBaseMeshMatrix, self).__init__(rows=rows,
                                                       cols=cols,
-                                                      bandwidth=bandwidth,
-                                                      sizeHint=sizeHint,
+                                                      nonZerosPerRow=nonZerosPerRow,
+                                                      exactNonZeros=exactNonZeros,
                                                       matrix=matrix)
 
     @property
@@ -821,7 +831,7 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
 
     def copy(self):
         tmp = super(_TrilinosBaseMeshMatrix, self).copy()
-        copy = self.__class__(mesh=self.mesh, bandwidth=self.bandwidth)
+        copy = self.__class__(mesh=self.mesh, nonZerosPerRow=self.nonZerosPerRow)
         copy.matrix = tmp.matrix
         return copy
 
@@ -936,8 +946,8 @@ class _TrilinosBaseMeshMatrix(_TrilinosMatrixFromShape):
         super(_TrilinosBaseMeshMatrix, self).addAt(vector=vector, id1=id1, id2=id2)
 
 class _TrilinosRowMeshMatrix(_TrilinosBaseMeshMatrix):
-    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0,
-                 sizeHint=None, matrix=None, m2m=None):
+    def __init__(self, mesh, cols, numberOfEquations=1,
+                 nonZerosPerRow=0, exactNonZeros=False, matrix=None, m2m=None):
         """Creates a `_TrilinosMatrixFromShape` with rows associated with equations.
 
         Parameters
@@ -949,10 +959,15 @@ class _TrilinosRowMeshMatrix(_TrilinosBaseMeshMatrix):
         numberOfEquations : int
             The local rows of the matrix are determined by
             `numberOfEquations * mesh._localNonOverlappingCellIDs`.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros.
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 1).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~PyTrilinos.Epetra.CrsMatrix
             Pre-assembled Trilinos matrix to use for storage.
         m2m : ~fipy.matrices.sparseMatrix._RowMesh2Matrix
@@ -967,8 +982,8 @@ class _TrilinosRowMeshMatrix(_TrilinosBaseMeshMatrix):
                                                      rows=rows,
                                                      cols=cols,
                                                      m2m=m2m,
-                                                     bandwidth=bandwidth,
-                                                     sizeHint=sizeHint,
+                                                     nonZerosPerRow=nonZerosPerRow,
+                                                     exactNonZeros=exactNonZeros,
                                                      matrix=matrix)
 
     @property
@@ -988,8 +1003,8 @@ class _TrilinosRowMeshMatrix(_TrilinosBaseMeshMatrix):
         return self.rowMap
 
 class _TrilinosColMeshMatrix(_TrilinosBaseMeshMatrix):
-    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0,
-                 sizeHint=None, matrix=None):
+    def __init__(self, mesh, rows, numberOfVariables=1,
+                 nonZerosPerRow=0, exactNonZeros=False, matrix=None):
         """Creates a `_TrilinosMatrixFromShape` with columns associated with solution variables.
 
         Parameters
@@ -1001,10 +1016,15 @@ class _TrilinosColMeshMatrix(_TrilinosBaseMeshMatrix):
         numberOfVariables : int
             The local columns of the matrix are determined by
             `numberOfVariables * mesh.globalNumberOfCells`.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros.
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~PyTrilinos.Epetra.CrsMatrix
             Pre-assembled Trilinos matrix to use for storage.
         """
@@ -1016,8 +1036,8 @@ class _TrilinosColMeshMatrix(_TrilinosBaseMeshMatrix):
                                                      rows=rows,
                                                      cols=cols,
                                                      m2m=m2m,
-                                                     bandwidth=bandwidth,
-                                                     sizeHint=sizeHint,
+                                                     nonZerosPerRow=nonZerosPerRow,
+                                                     exactNonZeros=exactNonZeros,
                                                      matrix=matrix)
 
     @property
@@ -1041,7 +1061,7 @@ class _TrilinosColMeshMatrix(_TrilinosBaseMeshMatrix):
 
 class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
     def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1,
-                 bandwidth=0, sizeHint=None, matrix=None):
+                 nonZerosPerRow=0, exactNonZeros=False, matrix=None):
         """Creates a `_TrilinosRowMeshMatrix` associated with equations and variables.
 
         Parameters
@@ -1054,10 +1074,15 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         numberOfEquations : int
             The local rows of the matrix are determined by
             `numberOfEquations * len(mesh._localNonOverlappingCellIDs)`.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~PyTrilinos.Epetra.CrsMatrix
             Pre-assembled Trilinos matrix to use for storage.
         """
@@ -1069,8 +1094,8 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         super(_TrilinosMeshMatrix, self).__init__(mesh=mesh,
                                                   cols=cols,
                                                   numberOfEquations=numberOfEquations,
-                                                  bandwidth=bandwidth,
-                                                  sizeHint=sizeHint,
+                                                  nonZerosPerRow=nonZerosPerRow,
+                                                  exactNonZeros=exactNonZeros,
                                                   matrix=matrix,
                                                   m2m=m2m)
 
@@ -1091,7 +1116,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
     def _getMatrixProperty(self):
         if not hasattr(self, '_matrix'):
             self._matrix = _TrilinosMeshMatrix(self.mesh,
-                                               bandwidth=self.bandwidth,
+                                               nonZerosPerRow=self.nonZerosPerRow,
                                                numberOfVariables=self._m2m.numberOfVariables,
                                                numberOfEquations=self._m2m.numberOfEquations).matrix
         return super(_TrilinosMeshMatrix, self).matrix
@@ -1209,7 +1234,7 @@ class _TrilinosIdentityMatrix(_TrilinosMatrixFromShape):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _TrilinosMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth=1)
+        _TrilinosMatrixFromShape.__init__(self, rows=size, cols=size, nonZerosPerRow=1)
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size, 'l'), ids, ids)
 
@@ -1225,7 +1250,7 @@ class _TrilinosIdentityMeshMatrix(_TrilinosMeshMatrix):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _TrilinosMeshMatrix.__init__(self, mesh=mesh, bandwidth=1)
+        _TrilinosMeshMatrix.__init__(self, mesh=mesh, nonZerosPerRow=1)
         size = mesh.numberOfCells
         ids = numerix.arange(size)
         self.addAt(numerix.ones(size, 'l'), ids, ids)

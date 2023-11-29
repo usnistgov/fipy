@@ -51,15 +51,15 @@ class FixedValue(BoundaryCondition):
         Ncells : int
             Size of matrices
         MaxFaces : int
-            Maximum number of faces per cell (determines bandwidth of
-            :math:`\mathsf{L}`)
+            Maximum number of faces per cell (determines number of
+            non-zeros per row of :math:`\mathsf{L}`)
         coeff : list
             Contribution to adjacent cell diagonal and
             :math:`\mathsf{b}` vector by this exterior face
         """
         faces = self.faces.value
 
-        LL = SparseMatrix(mesh=self.faces.mesh, sizeHint=len(self.faces), bandwidth=1)
+        LL = SparseMatrix(mesh=self.faces.mesh, nonZerosPerRow=1)
         LL.addAt(coeff['cell 1 diag'][faces], self.adjacentCellIDs, self.adjacentCellIDs)
 
         ## The following has been commented out because

@@ -289,7 +289,7 @@ class _PysparseMatrix(_SparseMatrix):
         Examples
         --------
 
-        >>> L = _PysparseMatrixFromShape(rows=3, cols=3, bandwidth=3)
+        >>> L = _PysparseMatrixFromShape(rows=3, cols=3, nonZerosPerRow=3)
         >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
         >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
         >>> ptrs, cols, data = L.CSR
@@ -324,7 +324,7 @@ class _PysparseMatrix(_SparseMatrix):
         Examples
         --------
 
-        >>> L = _PysparseMatrixFromShape(rows=3, cols=3, bandwidth=3)
+        >>> L = _PysparseMatrixFromShape(rows=3, cols=3, nonZerosPerRow=3)
         >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
         >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
         >>> rows, data = L.LIL
@@ -394,7 +394,9 @@ class _PysparseMatrix(_SparseMatrix):
 
 class _PysparseMatrixFromShape(_PysparseMatrix):
 
-    def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, rows, cols,
+                 nonZerosPerRow=0, exactNonZeros=False,
+                 matrix=None, storeZeros=True):
         """Instantiates and wraps a Pysparse `ll_mat` matrix
 
         Parameters
@@ -403,18 +405,24 @@ class _PysparseMatrixFromShape(_PysparseMatrix):
             The number of matrix rows
         cols : int
             The number of matrix columns
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            *ignored*
         matrix : ~pysparse.spmatrix.ll_mat
             Pre-assembled Pysparse matrix to use for storage
         storeZeros : bool
             Instructs pysparse to store zero values if possible.
         """
-        sizeHint = sizeHint or max(rows, cols) * bandwidth
         if matrix is None:
             tmpMatrix = spmatrix.ll_mat(1, 1, 1)
+            try:
+                assert len(nonZerosPerRow) == rows
+                sizeHint = numerix.sum(nonZerosPerRow)
+            except TypeError:
+                sizeHint = nonZerosPerRow * rows
             if hasattr(tmpMatrix, 'storeZeros'):
                 matrix = spmatrix.ll_mat(rows, cols, sizeHint, storeZeros)
             else:
@@ -423,7 +431,9 @@ class _PysparseMatrixFromShape(_PysparseMatrix):
         super(_PysparseMatrixFromShape, self).__init__(matrix=matrix)
 
 class _PysparseBaseMeshMatrix(_PysparseMatrixFromShape):
-    def __init__(self, mesh, rows, cols, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, mesh, rows, cols,
+                 nonZerosPerRow=0, exactNonZeros=False,
+                 matrix=None, storeZeros=True):
         """Creates a `_PysparseMatrixFromShape` associated with a `Mesh`.
 
         Parameters
@@ -434,10 +444,15 @@ class _PysparseBaseMeshMatrix(_PysparseMatrixFromShape):
             The number of local matrix rows.
         cols : int
             The number of local matrix columns.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros.
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~pysparse.spmatrix.ll_mat
             Pre-assembled SciPy matrix to use for storage.
         storeZeros : bool
@@ -447,8 +462,8 @@ class _PysparseBaseMeshMatrix(_PysparseMatrixFromShape):
 
         super(_PysparseBaseMeshMatrix, self).__init__(rows=rows,
                                                       cols=cols,
-                                                      bandwidth=bandwidth,
-                                                      sizeHint=sizeHint,
+                                                      nonZerosPerRow=nonZerosPerRow,
+                                                      exactNonZeros=exactNonZeros,
                                                       matrix=matrix,
                                                       storeZeros=storeZeros)
 
@@ -497,8 +512,9 @@ class _PysparseBaseMeshMatrix(_PysparseMatrixFromShape):
         super(_PysparseBaseMeshMatrix, self).addAt(vector=vector, id1=id1, id2=id2)
 
 class _PysparseRowMeshMatrix(_PysparseBaseMeshMatrix):
-    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0,
-                 sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, mesh, cols, numberOfEquations=1,
+                 nonZerosPerRow=0, exactNonZeros=False,
+                 matrix=None, storeZeros=True):
         """Creates a `_PysparseBaseMeshMatrix` with rows associated with equations.
 
         Parameters
@@ -510,10 +526,15 @@ class _PysparseRowMeshMatrix(_PysparseBaseMeshMatrix):
         numberOfEquations : int
             The rows of the matrix are determined by
             `numberOfEquations * mesh.numberOfCells`.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~pysparse.spmatrix.ll_mat
             Pre-assembled Pysparse matrix to use for storage.
         storeZeros : bool
@@ -524,14 +545,15 @@ class _PysparseRowMeshMatrix(_PysparseBaseMeshMatrix):
         super(_PysparseRowMeshMatrix, self).__init__(mesh=mesh,
                                                      rows=numberOfEquations * mesh.numberOfCells,
                                                      cols=cols,
-                                                     bandwidth=bandwidth,
-                                                     sizeHint=sizeHint,
+                                                     nonZerosPerRow=nonZerosPerRow,
+                                                     exactNonZeros=exactNonZeros,
                                                      matrix=matrix,
                                                      storeZeros=storeZeros)
 
 class _PysparseColMeshMatrix(_PysparseBaseMeshMatrix):
-    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0,
-                 sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, mesh, rows, numberOfVariables=1,
+                 nonZerosPerRow=0, exactNonZeros=False,
+                 matrix=None, storeZeros=True):
         """Creates a `_PysparseBaseMeshMatrix` with columns associated with solution variables.
 
         Parameters
@@ -543,10 +565,15 @@ class _PysparseColMeshMatrix(_PysparseBaseMeshMatrix):
         numberOfVariables : int
             The columns of the matrix are determined by
             `numberOfVariables * mesh.globalNumberOfCells`.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~pysparse.spmatrix.ll_mat
             Pre-assembled Pysparse matrix to use for storage.
         storeZeros : bool
@@ -557,14 +584,15 @@ class _PysparseColMeshMatrix(_PysparseBaseMeshMatrix):
         super(_PysparseColMeshMatrix, self).__init__(mesh=mesh,
                                                      rows=rows,
                                                      cols=numberOfVariables * mesh.numberOfCells,
-                                                     bandwidth=bandwidth,
-                                                     sizeHint=sizeHint,
+                                                     nonZerosPerRow=nonZerosPerRow,
+                                                     exactNonZeros=exactNonZeros,
                                                      matrix=matrix,
                                                      storeZeros=storeZeros)
 
 class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
     def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1,
-                 bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+                 nonZerosPerRow=0, exactNonZeros=False,
+                 matrix=None, storeZeros=True):
         """Creates a `_PysparseBaseMeshMatrix` with associated with equations and variables.
 
         Parameters
@@ -577,10 +605,15 @@ class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
         numberOfEquations : int
             The rows of the matrix are determined by
             `numberOfEquations * mesh.numberOfCells`.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~pysparse.spmatrix.ll_mat
             Pre-assembled Pysparse matrix to use for storage
         storeZeros : bool
@@ -591,8 +624,8 @@ class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
         super(_PysparseMeshMatrix, self).__init__(mesh=mesh,
                                                   cols=numberOfVariables * mesh.numberOfCells,
                                                   numberOfEquations=numberOfEquations,
-                                                  bandwidth=bandwidth,
-                                                  sizeHint=sizeHint,
+                                                  nonZerosPerRow=nonZerosPerRow,
+                                                  exactNonZeros=exactNonZeros,
                                                   matrix=matrix,
                                                   storeZeros=storeZeros)
 
@@ -617,12 +650,12 @@ class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
 
         if not hasattr(self, 'trilinosMatrix'):
             if A.shape[0] == 0:
-                bandwidth = 0
+                nonZerosPerRow = 0
             else:
-                bandwidth = int(numerix.ceil(float(len(values)) / float(A.shape[0])))
-            bandwidth = 1
+                nonZerosPerRow = int(numerix.ceil(float(len(values)) / float(A.shape[0])))
+            nonZerosPerRow = 1
             from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrixKeepStencil
-            tmp = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, bandwidth=bandwidth,
+            tmp = _TrilinosMeshMatrixKeepStencil(mesh=self.mesh, nonZerosPerRow=nonZerosPerRow,
                                                  numberOfVariables=self.numberOfVariables,
                                                  numberOfEquations=self.numberOfEquations)
             self.trilinosMatrix = tmp
@@ -689,7 +722,7 @@ class _PysparseIdentityMatrix(_PysparseMatrixFromShape):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PysparseMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth=1)
+        _PysparseMatrixFromShape.__init__(self, rows=size, cols=size, nonZerosPerRow=1)
         ids = numerix.arange(size)
         self.put(numerix.ones(size, 'd'), ids, ids)
 
