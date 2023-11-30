@@ -17,6 +17,18 @@ def OffsetSparseMatrix(SparseMatrix, numberOfVariables, numberOfEquations):
         def __init__(self, mesh, nonZerosPerRow=1, exactNonZeros=False,
                      numberOfVariables=numberOfVariables,
                      numberOfEquations=numberOfEquations):
+            if hasattr(nonZerosPerRow, "__iter__"):
+                # nonZerosPerRow is an iterable for each row.
+                # need to pad rows for other equations with zeros.
+                # can't compare to collections.abc.Iterable because PySparse.
+                before = self.equationIndex
+                after = numberOfEquations - self.equationIndex - 1
+                N = mesh.numberOfCells
+                nonZerosPerRow = numerix.concatenate([[0] * N * before,
+                                                      nonZerosPerRow,
+                                                      [0] * N * after])
+            else:
+                nonZerosPerRow //= numberOfEquations
             SparseMatrix.__init__(self,
                                   mesh=mesh,
                                   nonZerosPerRow=nonZerosPerRow,
@@ -25,10 +37,18 @@ def OffsetSparseMatrix(SparseMatrix, numberOfVariables, numberOfEquations):
                                   numberOfEquations=numberOfEquations)
 
         def put(self, vector, id1, id2):
-            SparseMatrix.put(self, vector, id1 + self.mesh.numberOfCells * self.equationIndex, id2 + self.mesh.numberOfCells * self.varIndex)
+            N = self.mesh.numberOfCells
+            SparseMatrix.put(self,
+                             vector=vector,
+                             id1=id1 + N * self.equationIndex,
+                             id2=id2 + N * self.varIndex)
 
         def addAt(self, vector, id1, id2):
-            SparseMatrix.addAt(self, vector, id1 + self.mesh.numberOfCells * self.equationIndex, id2 + self.mesh.numberOfCells * self.varIndex)
+            N = self.mesh.numberOfCells
+            SparseMatrix.addAt(self,
+                               vector=vector,
+                               id1=id1 + N * self.equationIndex,
+                               id2=id2 + N * self.varIndex)
 
         def addAtDiagonal(self, vector):
             if type(vector) in [type(1), type(1.)]:

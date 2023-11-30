@@ -121,7 +121,7 @@ class CellTerm(_NonDiffusionTerm):
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
         b = numerix.zeros(var.shape, 'd').ravel()
-        L = SparseMatrix(mesh=var.mesh)
+        L = SparseMatrix(mesh=var.mesh, nonZerosPerRow=1)
 
         coeffVectors = self._getCoeffVectors_(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 
