@@ -707,7 +707,7 @@ class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
         >>> print(numerix.allequal(list(m.matrix.values()), numerix.array([1.0, 2.0])))
         True
 
-        Storing more than pre-allocated is not an error when `exactNonZeros` is set
+        Storing more than preallocated is not an error when `exactNonZeros` is set
 
         >>> m = _PysparseMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1, exactNonZeros=True)
         >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0]) # doctest: +IGNORE_EXCEPTION_DETAIL
@@ -724,13 +724,13 @@ class _PysparseMeshMatrix(_PysparseRowMeshMatrix):
         ...                              nonZerosPerRow=[2, 1, 1])
         >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
 
-        Preallocating on the wrong rows is not an error...
+        Preallocating on the wrong rows is not an error
 
         >>> m = _PysparseMatrixFromShape(rows=3, cols=3,
         ...                              nonZerosPerRow=[1, 2, 1])
         >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
 
-        ...even when `exactNonZeros` is specified.
+        even when `exactNonZeros` is specified.
 
         >>> m = _PysparseMatrixFromShape(rows=3, cols=3,
         ...                              nonZerosPerRow=[1, 2, 1],

@@ -1228,7 +1228,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         >>> m = _TrilinosMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
 
-        Storing more than pre-allocated is an error when `exactNonZeros` is set
+        Storing more than preallocated is an error when `exactNonZeros` is set
 
         >>> m = _TrilinosMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1, exactNonZeros=True)
         >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0]) # doctest: +IGNORE_EXCEPTION_DETAIL
@@ -1251,13 +1251,13 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
         ...                              nonZerosPerRow=[2, 1, 1])
         >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
 
-        Preallocating on the wrong rows is not an error...
+        Preallocating on the wrong rows is not an error
 
         >>> m = _TrilinosMatrixFromShape(rows=3, cols=3,
         ...                              nonZerosPerRow=[1, 2, 1])
         >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
 
-        ...but it is when `exactNonZeros` is specified.
+        but it is when `exactNonZeros` is specified.
 
         >>> m = _TrilinosMatrixFromShape(rows=3, cols=3,
         ...                              nonZerosPerRow=[1, 2, 1],
