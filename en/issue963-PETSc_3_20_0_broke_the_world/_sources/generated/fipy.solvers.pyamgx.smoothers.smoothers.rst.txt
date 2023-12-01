@@ -1,0 +1,29 @@
+fipy.solvers.pyamgx.smoothers.smoothers
+=======================================
+
+.. automodule:: fipy.solvers.pyamgx.smoothers.smoothers
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Smoother
+   
+   
+
+   
+   
+   
+
+
+

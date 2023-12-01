@@ -1,0 +1,29 @@
+fipy.terms.sourceTerm
+=====================
+
+.. automodule:: fipy.terms.sourceTerm
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SourceTerm
+   
+   
+
+   
+   
+   
+
+
+
