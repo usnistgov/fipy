@@ -23,7 +23,7 @@ def OffsetSparseMatrix(SparseMatrix, numberOfVariables, numberOfEquations):
                 # can't compare to collections.abc.Iterable because PySparse.
                 before = self.equationIndex
                 after = numberOfEquations - self.equationIndex - 1
-                N = mesh.numberOfCells
+                N = len(nonZerosPerRow)
                 nonZerosPerRow = numerix.concatenate([[0] * N * before,
                                                       nonZerosPerRow,
                                                       [0] * N * after])

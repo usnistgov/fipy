@@ -140,7 +140,8 @@ class FaceTerm(_NonDiffusionTerm):
         id2 = numerix.take(id2, interiorFaces)
 
         b = numerix.zeros(var.shape, 'd').ravel()
-        L = SparseMatrix(mesh=mesh, nonZerosPerRow=mesh._facesPerCell + 1)
+        facesPerCell = mesh._facesPerCell[..., mesh._localNonOverlappingCellIDs]
+        L = SparseMatrix(mesh=mesh, nonZerosPerRow=facesPerCell + 1)
 
         weight = self._getWeight(var, transientGeomCoeff, diffusionGeomCoeff)
 
