@@ -2185,10 +2185,13 @@ class Gmsh3D(Mesh):
         ...     os.close(ftmp)
         ... else:
         ...     posFile = None
+        >>> parallelComm.Barrier()
         >>> posFile = parallelComm.bcast(posFile)
+        >>> parallelComm.Barrier()
         >>> f = openPOSFile(posFile, mode='w') # doctest: +GMSH
         >>> f.write(vol) # doctest: +GMSH
         >>> f.close() # doctest: +GMSH
+        >>> parallelComm.Barrier()
 
         >>> f = open(posFile, mode='r') # doctest: +GMSH
         >>> l = f.readlines() # doctest: +GMSH
@@ -2244,6 +2247,7 @@ class Gmsh3D(Mesh):
         >>> print(numerix.allclose(a1, a2)) # doctest: +GMSH
         True
 
+        >>> parallelComm.Barrier()
         >>> if parallelComm.procID == 0:
         ...     os.remove(posFile)
 

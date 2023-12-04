@@ -5,6 +5,7 @@ __docformat__ = 'restructuredtext'
 
 __all__ = []
 
+from collections.abc import Iterable
 from petsc4py import PETSc
 
 from fipy.tools import numerix
@@ -53,7 +54,7 @@ class _PETScMatrix(_SparseMatrix):
         """
         Add two sparse matrices
 
-            >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
+            >>> L = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print(L + _PETScIdentityMatrix(size=3))
              1.000000  10.000000   3.000000  
@@ -103,9 +104,9 @@ class _PETScMatrix(_SparseMatrix):
         """
         Multiply a sparse matrix by another sparse matrix
 
-            >>> L1 = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
+            >>> L1 = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=2)
             >>> L1.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-            >>> L2 = _PETScIdentityMatrix(size=3, bandwidth=3)
+            >>> L2 = _PETScIdentityMatrix(size=3, nonZerosPerRow=3)
             >>> L2.put([4.38], [2], [1])
             >>> L2.put([4.38,12357.2,1.1], [2,1,0], [1,0,2])
 
@@ -165,6 +166,8 @@ class _PETScMatrix(_SparseMatrix):
             x = PETSc.Vec().createMPI(N, comm=self.matrix.comm)
             y = x.duplicate()
             x[:] = other
+            self.matrix.assemble()
+            x.assemble()
             self.matrix.multTranspose(x, y)
             arr = numerix.asarray(y)
             x.destroy()
@@ -216,7 +219,7 @@ class _PETScMatrix(_SparseMatrix):
         """
         Put elements of `vector` at positions of the matrix corresponding to (`id1`, `id2`)
 
-            >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
+            >>> L = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=2)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> print(L)
                 ---    10.000000   3.000000  
@@ -273,7 +276,7 @@ class _PETScMatrix(_SparseMatrix):
         """
         Put elements of `vector` along diagonal of matrix
 
-            >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=1)
+            >>> L = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1)
             >>> L.putDiagonal([3.,10.,numerix.pi])
             >>> print(L)
              3.000000      ---        ---    
@@ -310,7 +313,7 @@ class _PETScMatrix(_SparseMatrix):
         """
         Add elements of `vector` to the positions in the matrix corresponding to (`id1`,`id2`)
 
-            >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
+            >>> L = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=3)
             >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
             >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
             >>> print(L)
@@ -348,7 +351,7 @@ class _PETScMatrix(_SparseMatrix):
         Examples
         --------
 
-        >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
+        >>> L = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=3)
         >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
         >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
         >>> ptrs, cols, data = L.CSR
@@ -378,7 +381,7 @@ class _PETScMatrix(_SparseMatrix):
         Examples
         --------
 
-        >>> L = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=3)
+        >>> L = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=3)
         >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
         >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
         >>> rows, data = L.LIL
@@ -510,7 +513,9 @@ class _PETScMatrix(_SparseMatrix):
 
 class _PETScMatrixFromShape(_PETScMatrix):
 
-    def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None, comm=PETSc.COMM_SELF):
+    def __init__(self, rows, cols,
+                 nonZerosPerRow=0, exactNonZeros=False,
+                 matrix=None, comm=PETSc.COMM_SELF):
         """Instantiates and wraps a PETSc `Mat` matrix
 
         Parameters
@@ -519,17 +524,20 @@ class _PETScMatrixFromShape(_PETScMatrix):
             The number of local matrix rows.
         cols : int
             The number of local matrix columns
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~petsc4py.PETSc.Mat
             Pre-assembled PETSc matrix to use for storage.
         comm : ~PETSc.Comm
             The MPI communicator to use.
         """
-        if (bandwidth == 0) and (sizeHint is not None):
-            bandwidth = sizeHint // max(rows, cols)
         if matrix is None:
             matrix = PETSc.Mat()
             matrix.create(comm)
@@ -538,13 +546,19 @@ class _PETScMatrixFromShape(_PETScMatrix):
             matrix.setSizes([[rows, None], [cols, None]])
             matrix.setType('aij') # sparse
             matrix.setUp()
-#             matrix.setPreallocationNNZ(bandwidth) # FIXME: ??? None, bandwidth
-#             matrix.setOption(matrix.Option.NEW_NONZERO_ALLOCATION_ERR, False)
+            if isinstance(nonZerosPerRow, Iterable) or (nonZerosPerRow > 0):
+                if isinstance(nonZerosPerRow, Iterable):
+                    nonZerosPerRow = numerix.asarray(nonZerosPerRow, dtype=PETSc.IntType)
+                matrix.setPreallocationNNZ(nonZerosPerRow)
+                if not exactNonZeros:
+                    matrix.setOption(matrix.Option.NEW_NONZERO_ALLOCATION_ERR, False)
 
         super(_PETScMatrixFromShape, self).__init__(matrix=matrix)
 
 class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
-    def __init__(self, mesh, rows, cols, m2m, bandwidth=0, sizeHint=None, matrix=None):
+    def __init__(self, mesh, rows, cols, m2m,
+                 nonZerosPerRow=0, exactNonZeros=False,
+                 matrix=None):
         """Creates a `_PETScMatrixFromShape` associated with a `Mesh`.
 
         Parameters
@@ -557,10 +571,15 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
             The number of local matrix columns.
         m2m : ~fipy.matrices.sparseMatrix._Mesh2Matrix
             Object to convert between mesh coordinates and matrix coordinates.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros.
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~petsc4py.PETSc.Mat
             Pre-assembled PETSc matrix to use for storage.
         """
@@ -569,14 +588,14 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
 
         super(_PETScBaseMeshMatrix, self).__init__(rows=rows,
                                                    cols=cols,
-                                                   bandwidth=bandwidth,
-                                                   sizeHint=sizeHint,
+                                                   nonZerosPerRow=nonZerosPerRow,
+                                                   exactNonZeros=exactNonZeros,
                                                    matrix=matrix,
                                                    comm=mesh.communicator.petsc4py_comm)
 
     def copy(self):
         tmp = super(_PETScBaseMeshMatrix, self).copy()
-        copy = self.__class__(mesh=self.mesh) # FIXME: ??? , bandwidth=self.bandwidth)
+        copy = self.__class__(mesh=self.mesh) # FIXME: ??? , nonZerosPerRow=self.nonZerosPerRow)
         copy.matrix = tmp.matrix
         return copy
 
@@ -756,8 +775,8 @@ class _PETScBaseMeshMatrix(_PETScMatrixFromShape):
         super(_PETScBaseMeshMatrix, self).addAt(vector=vector, id1=id1, id2=id2)
 
 class _PETScRowMeshMatrix(_PETScBaseMeshMatrix):
-    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0,
-                 sizeHint=None, matrix=None, m2m=None):
+    def __init__(self, mesh, cols, numberOfEquations=1,
+                 nonZerosPerRow=0, exactNonZeros=False, matrix=None, m2m=None):
         """Creates a `_PETScMatrixFromShape` with rows associated with equations.
 
         Parameters
@@ -769,10 +788,15 @@ class _PETScRowMeshMatrix(_PETScBaseMeshMatrix):
         numberOfEquations : int
             The local rows of the matrix are determined by
             `numberOfEquations * mesh._localNonOverlappingCellIDs`.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros.
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~petsc4py.PETSc.Mat
             Pre-assembled PETSc matrix to use for storage.
         m2m : ~fipy.matrices.sparseMatrix._RowMesh2Matrix
@@ -786,12 +810,13 @@ class _PETScRowMeshMatrix(_PETScBaseMeshMatrix):
                                                   rows=numberOfEquations * len(mesh._localNonOverlappingCellIDs),
                                                   cols=cols,
                                                   m2m=m2m,
-                                                  bandwidth=bandwidth,
-                                                  sizeHint=sizeHint,
+                                                  nonZerosPerRow=nonZerosPerRow,
+                                                  exactNonZeros=exactNonZeros,
                                                   matrix=matrix)
 
 class _PETScColMeshMatrix(_PETScBaseMeshMatrix):
-    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0, sizeHint=None, matrix=None):
+    def __init__(self, mesh, rows, numberOfVariables=1,
+                 nonZerosPerRow=0, exactNonZeros=False, matrix=None):
         """Creates a `_PETScMatrixFromShape` with columns associated with solution variables.
 
         Parameters
@@ -803,10 +828,15 @@ class _PETScColMeshMatrix(_PETScBaseMeshMatrix):
         numberOfVariables : int
             The local columns of the matrix are determined by
             `numberOfVariables * mesh.globalNumberOfCells`.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros.
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~petsc4py.PETSc.Mat
             Pre-assembled PETSc matrix to use for storage.
         """
@@ -817,13 +847,13 @@ class _PETScColMeshMatrix(_PETScBaseMeshMatrix):
                                                   rows=rows,
                                                   cols=numberOfVariables * len(mesh._localNonOverlappingCellIDs),
                                                   m2m=m2m,
-                                                  bandwidth=bandwidth,
-                                                  sizeHint=sizeHint,
+                                                  nonZerosPerRow=nonZerosPerRow,
+                                                  exactNonZeros=exactNonZeros,
                                                   matrix=matrix)
 
 class _PETScMeshMatrix(_PETScRowMeshMatrix):
     def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1,
-                 bandwidth=0, sizeHint=None, matrix=None):
+                 nonZerosPerRow=0, exactNonZeros=False, matrix=None):
         """Creates a `_PETScBaseMeshMatrix` associated with equations and variables.
 
         Parameters
@@ -836,10 +866,15 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
         numberOfEquations : int
             The local rows of the matrix are determined by
             `numberOfEquations * len(mesh._localNonOverlappingCellIDs)`.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros
+        nonZerosPerRow : int or array_like of int
+            The approximate number of sparse entries per row.  Either a
+            typical number, or an iterable of values for each row
+            (default: 0).
+        exactNonZeros : bool
+            Whether `nonZerosPerRow` is exact or approximate.
+            Performance is improved preallocation is exact, but errors
+            can result if additional allocations are necessary.
+            (default: False).
         matrix : ~petsc4py.PETSc.Mat
             Pre-assembled PETSc matrix to use for storage.
         """
@@ -850,17 +885,17 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
         super(_PETScMeshMatrix, self).__init__(mesh=mesh,
                                                cols=numberOfVariables * len(mesh._localNonOverlappingCellIDs),
                                                numberOfEquations=numberOfEquations,
-                                               bandwidth=bandwidth,
-                                               sizeHint=sizeHint,
+                                               nonZerosPerRow=nonZerosPerRow,
+                                               exactNonZeros=exactNonZeros,
                                                matrix=matrix,
                                                m2m=m2m)
 
     def __mul__(self, other):
         """Multiply a sparse matrix by another sparse matrix
 
-            >>> L1 = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=2)
+            >>> L1 = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=2)
             >>> L1.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
-            >>> L2 = _PETScIdentityMatrix(size=3, bandwidth=3)
+            >>> L2 = _PETScIdentityMatrix(size=3, nonZerosPerRow=3)
             >>> L2.put([4.38], [2], [1])
             >>> L2.put([4.38,12357.2,1.1], [2,1,0], [1,0,2])
 
@@ -935,7 +970,7 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
     def _test(self):
         """Tests
 
-        >>> m = _PETScMatrixFromShape(rows=3, cols=3, bandwidth=1)
+        >>> m = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1)
         >>> m.addAt((1., 0., 2.), (0, 2, 1), (1, 2, 0))
         >>> m.matrix.assemble()
 
@@ -948,13 +983,52 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
         True
         >>> print(numerix.allclose(val, [1., 2., 0.]))
         True
+
+        Storing more than preallocated is an error when `exactNonZeros` is set
+
+        >>> m = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1, exactNonZeros=True)
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0]) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        petsc4py.PETSc.Error: error code 63
+
+        This is also true if multiple values are accumulated into the
+        same matrix entry.
+
+        >>> m = _PETScMatrixFromShape(rows=3, cols=3, nonZerosPerRow=1, exactNonZeros=True)
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,0], [2,1,1,1]) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        petsc4py.PETSc.Error: error code 63
+
+        Preallocation can be specified row-by-row
+
+        >>> m = _PETScMatrixFromShape(rows=3, cols=3,
+        ...                           nonZerosPerRow=[2, 1, 1])
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+
+        Preallocating on the wrong rows is not an error
+
+        >>> m = _PETScMatrixFromShape(rows=3, cols=3,
+        ...                           nonZerosPerRow=[1, 2, 1])
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
+
+        but it is when `exactNonZeros` is specified.
+
+        >>> m = _PETScMatrixFromShape(rows=3, cols=3,
+        ...                           nonZerosPerRow=[1, 2, 1],
+        ...                           exactNonZeros=True)
+        >>> m.addAt([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0]) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+            ...
+        petsc4py.PETSc.Error: error code 63
         """
         pass
 
 class _PETScIdentityMatrix(_PETScMatrixFromShape):
     """Represents a sparse identity matrix for pysparse.
     """
-    def __init__(self, size, bandwidth=1, comm=PETSc.COMM_SELF):
+    def __init__(self, size, nonZerosPerRow=1, comm=PETSc.COMM_SELF):
         """Create a sparse matrix with `1` in the diagonal
 
             >>> print(_PETScIdentityMatrix(size=3))
@@ -962,12 +1036,12 @@ class _PETScIdentityMatrix(_PETScMatrixFromShape):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PETScMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth=bandwidth, comm=comm)
+        _PETScMatrixFromShape.__init__(self, rows=size, cols=size, nonZerosPerRow=nonZerosPerRow, comm=comm)
         ids = numerix.arange(size)
         self.put(numerix.ones(size, 'd'), ids, ids)
 
 class _PETScIdentityMeshMatrix(_PETScIdentityMatrix):
-    def __init__(self, mesh, bandwidth=1):
+    def __init__(self, mesh, nonZerosPerRow=1):
         """Create a sparse matrix associated with a `Mesh` with `1` in the diagonal
 
             >>> from fipy import Grid1D
@@ -978,7 +1052,7 @@ class _PETScIdentityMeshMatrix(_PETScIdentityMatrix):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _PETScIdentityMatrix.__init__(self, size=mesh.numberOfCells, bandwidth=bandwidth,
+        _PETScIdentityMatrix.__init__(self, size=mesh.numberOfCells, nonZerosPerRow=nonZerosPerRow,
                                       comm=mesh.communicator.petsc4py_comm)
 
 def _test():
