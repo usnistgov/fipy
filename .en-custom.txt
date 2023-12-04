@@ -271,6 +271,9 @@ pre-assembled
 pre-built
 pre-installed
 Pre-Installed
+preallocated
+preallocation
+preallocating
 preconditioner
 preconditioners
 Pusztai

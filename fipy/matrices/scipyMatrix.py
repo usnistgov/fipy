@@ -293,7 +293,7 @@ class _ScipyMatrix(_SparseMatrix):
         Examples
         --------
 
-        >>> L = _ScipyMatrixFromShape(rows=3, cols=3, bandwidth=3)
+        >>> L = _ScipyMatrixFromShape(rows=3, cols=3, nonZerosPerRow=3)
         >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
         >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
         >>> ptrs, cols, data = L.CSR
@@ -321,7 +321,7 @@ class _ScipyMatrix(_SparseMatrix):
         Examples
         --------
 
-        >>> L = _ScipyMatrixFromShape(rows=3, cols=3, bandwidth=3)
+        >>> L = _ScipyMatrixFromShape(rows=3, cols=3, nonZerosPerRow=3)
         >>> L.put([3.,10.,numerix.pi,2.5], [0,0,1,2], [2,1,1,0])
         >>> L.addAt([1.73,2.2,8.4,3.9,1.23], [1,2,0,0,1], [2,2,0,0,2])
         >>> rows, data = L.LIL
@@ -377,17 +377,19 @@ class _ScipyMatrix(_SparseMatrix):
 
 class _ScipyMatrixFromShape(_ScipyMatrix):
 
-    def __init__(self, rows, cols, bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, rows, cols,
+                 nonZerosPerRow=0, exactNonZeros=False,
+                 matrix=None, storeZeros=True):
         """Instantiates and wraps a scipy sparse matrix
 
         Parameters
         ----------
         mesh : ~fipy.meshes.mesh.Mesh
             The `Mesh` to assemble the matrix for.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros
+        nonZerosPerRow : int or array_like of int
+            *ignored*
+        exactNonZeros : bool
+            *ignored*
         matrix : ~scipy.sparse.csr_matrix
             Pre-assembled SciPy matrix to use for storage.
         storeZeros : bool
@@ -399,7 +401,8 @@ class _ScipyMatrixFromShape(_ScipyMatrix):
         super(_ScipyMatrixFromShape, self).__init__(matrix=matrix)
 
 class _ScipyBaseMeshMatrix(_ScipyMatrixFromShape):
-    def __init__(self, mesh, rows, cols, bandwidth=0, sizeHint=None,
+    def __init__(self, mesh, rows, cols,
+                 nonZerosPerRow=0, exactNonZeros=False,
                  matrix=None, storeZeros=True):
         """Creates a `_ScipyMatrixFromShape` associated with a `Mesh`.
 
@@ -411,10 +414,10 @@ class _ScipyBaseMeshMatrix(_ScipyMatrixFromShape):
             The number of local matrix rows.
         cols : int
             The number of local matrix columns.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros.
+        nonZerosPerRow : int or array_like of int
+            *ignored*
+        exactNonZeros : bool
+            *ignored*
         matrix : ~scipy.sparse.csr_matrix
             Pre-assembled SciPy matrix to use for storage.
         storeZeros : bool
@@ -424,8 +427,8 @@ class _ScipyBaseMeshMatrix(_ScipyMatrixFromShape):
 
         super(_ScipyBaseMeshMatrix, self).__init__(rows=rows,
                                                    cols=cols,
-                                                   bandwidth=bandwidth,
-                                                   sizeHint=sizeHint,
+                                                   nonZerosPerRow=nonZerosPerRow,
+                                                   exactNonZeros=exactNonZeros,
                                                    matrix=matrix,
                                                    storeZeros=storeZeros)
 
@@ -442,8 +445,9 @@ class _ScipyBaseMeshMatrix(_ScipyMatrixFromShape):
         return var.value
 
 class _ScipyRowMeshMatrix(_ScipyBaseMeshMatrix):
-    def __init__(self, mesh, cols, numberOfEquations=1, bandwidth=0,
-                 sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, mesh, cols, numberOfEquations=1,
+                 nonZerosPerRow=0, exactNonZeros=False,
+                 matrix=None, storeZeros=True):
         """Creates a `_ScipyBaseMeshMatrix` with rows associated with equations.
 
         Parameters
@@ -455,10 +459,10 @@ class _ScipyRowMeshMatrix(_ScipyBaseMeshMatrix):
         numberOfEquations : int
             The rows of the matrix are determined by
             `numberOfEquations * mesh.numberOfCells`.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros
+        nonZerosPerRow : int or array_like of int
+            *ignored*
+        exactNonZeros : bool
+            *ignored*
         matrix : ~scipy.sparse.csr_matrix
             Pre-assembled SciPy matrix to use for storage.
         storeZeros : bool
@@ -469,14 +473,15 @@ class _ScipyRowMeshMatrix(_ScipyBaseMeshMatrix):
         super(_ScipyRowMeshMatrix, self).__init__(mesh=mesh,
                                                   rows=numberOfEquations * mesh.numberOfCells,
                                                   cols=cols,
-                                                  bandwidth=bandwidth,
-                                                  sizeHint=sizeHint,
+                                                  nonZerosPerRow=nonZerosPerRow,
+                                                  exactNonZeros=exactNonZeros,
                                                   matrix=matrix,
                                                   storeZeros=storeZeros)
 
 class _ScipyColMeshMatrix(_ScipyBaseMeshMatrix):
-    def __init__(self, mesh, rows, numberOfVariables=1, bandwidth=0,
-                 sizeHint=None, matrix=None, storeZeros=True):
+    def __init__(self, mesh, rows, numberOfVariables=1,
+                 nonZerosPerRow=0, exactNonZeros=False,
+                 matrix=None, storeZeros=True):
         """Creates a `_ScipyBaseMeshMatrix` with columns associated with solution variables.
 
         Parameters
@@ -488,10 +493,10 @@ class _ScipyColMeshMatrix(_ScipyBaseMeshMatrix):
         numberOfVariables : int
             The columns of the matrix are determined by
             `numberOfVariables * mesh.globalNumberOfCells`.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros.
+        nonZerosPerRow : int or array_like of int
+            *ignored*
+        exactNonZeros : bool
+            *ignored*
         matrix : ~scipy.sparse.csr_matrix
             Pre-assembled SciPy matrix to use for storage.
         storeZeros : bool
@@ -502,14 +507,14 @@ class _ScipyColMeshMatrix(_ScipyBaseMeshMatrix):
         super(_ScipyColMeshMatrix, self).__init__(mesh=mesh,
                                                   rows=rows,
                                                   cols=numberOfVariables * mesh.numberOfCells,
-                                                  bandwidth=bandwidth,
-                                                  sizeHint=sizeHint,
+                                                  nonZerosPerRow=nonZerosPerRow,
+                                                  exactNonZeros=exactNonZeros,
                                                   matrix=matrix,
                                                   storeZeros=storeZeros)
 
 class _ScipyMeshMatrix(_ScipyRowMeshMatrix):
     def __init__(self, mesh, numberOfVariables=1, numberOfEquations=1,
-                 bandwidth=0, sizeHint=None, matrix=None, storeZeros=True):
+                 nonZerosPerRow=0, exactNonZeros=False, matrix=None, storeZeros=True):
         """Creates a `_ScipyBaseMeshMatrix` associated with equations and variables.
 
         Parameters
@@ -522,10 +527,10 @@ class _ScipyMeshMatrix(_ScipyRowMeshMatrix):
         numberOfEquations : int
             The rows of the matrix are determined by
             `numberOfEquations * mesh.numberOfCells`.
-        bandwidth : int
-            The proposed band width of the matrix.
-        sizeHint : int
-            Estimate of the number of non-zeros
+        nonZerosPerRow : int or array_like of int
+            *ignored*
+        exactNonZeros : bool
+            *ignored*
         matrix : ~scipy.sparse.csr_matrix
             Pre-assembled SciPy matrix to use for storage.
         storeZeros : bool
@@ -535,8 +540,8 @@ class _ScipyMeshMatrix(_ScipyRowMeshMatrix):
 
         super(_ScipyMeshMatrix, self).__init__(mesh=mesh,
                                                cols=numberOfVariables * mesh.numberOfCells,
-                                               bandwidth=bandwidth,
-                                               sizeHint=sizeHint,
+                                               nonZerosPerRow=nonZerosPerRow,
+                                               exactNonZeros=exactNonZeros,
                                                matrix=matrix,
                                                numberOfEquations=numberOfEquations,
                                                storeZeros=storeZeros)
@@ -602,7 +607,7 @@ class _ScipyIdentityMatrix(_ScipyMatrixFromShape):
                 ---     1.000000      ---    
                 ---        ---     1.000000  
         """
-        _ScipyMatrixFromShape.__init__(self, rows=size, cols=size, bandwidth=1)
+        _ScipyMatrixFromShape.__init__(self, rows=size, cols=size, nonZerosPerRow=1)
         ids = numerix.arange(size)
         self.put(numerix.ones(size, 'd'), ids, ids)
 
