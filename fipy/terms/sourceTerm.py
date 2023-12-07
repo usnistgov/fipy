@@ -21,8 +21,8 @@ class SourceTerm(CellTerm):
         coeff : float or ~fipy.variables.cellVariable.CellVariable
             Coefficient of source (default: 0)
         var : ~fipy.variables.cellVariable.CellVariable
-            Variable :math:`\phi` that :class:`~fipy.terms.term.Term` is
-            implicit in.
+            Variable :math:`\phi` that
+            :class:`~fipy.terms.sourcTerm.SourceTerm` is implicit in.
         """
         if self.__class__ is SourceTerm:
             raise AbstractBaseClassError
