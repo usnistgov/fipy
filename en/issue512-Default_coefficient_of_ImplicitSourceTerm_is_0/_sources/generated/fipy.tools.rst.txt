@@ -1,0 +1,44 @@
+fipy.tools
+==========
+
+.. automodule:: fipy.tools
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fipy.tools.comms
+   fipy.tools.debug
+   fipy.tools.decorators
+   fipy.tools.dimensions
+   fipy.tools.dump
+   fipy.tools.inline
+   fipy.tools.logging
+   fipy.tools.numerix
+   fipy.tools.parser
+   fipy.tools.sharedtempfile
+   fipy.tools.test
+   fipy.tools.vector
+   fipy.tools.version
+   fipy.tools.vitals
+

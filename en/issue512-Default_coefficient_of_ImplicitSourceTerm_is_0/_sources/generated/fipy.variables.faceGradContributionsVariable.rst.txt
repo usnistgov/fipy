@@ -1,0 +1,23 @@
+fipy.variables.faceGradContributionsVariable
+============================================
+
+.. automodule:: fipy.variables.faceGradContributionsVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

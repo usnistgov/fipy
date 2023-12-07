@@ -1,0 +1,29 @@
+fipy.solvers.pysparse.pysparseSolver
+====================================
+
+.. automodule:: fipy.solvers.pysparse.pysparseSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PysparseSolver
+   
+   
+
+   
+   
+   
+
+
+
