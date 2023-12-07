@@ -25,7 +25,7 @@ class ImplicitSourceTerm(SourceTerm):
         Parameters
         ----------
         coeff : float or ~fipy.variables.cellVariable.CellVariable
-            Proportiounality coefficient :math:`S` (default: 1)
+            Proportionality coefficient :math:`S` (default: 1)
         var : ~fipy.variables.cellVariable.CellVariable
             Variable :math:`\phi` that
             :class:`~fipy.terms.sourcTerm.SourceTerm` is implicit in.
