@@ -28,7 +28,8 @@ class ImplicitSourceTerm(SourceTerm):
             Proportionality coefficient :math:`S` (default: 1)
         var : ~fipy.variables.cellVariable.CellVariable
             Variable :math:`\phi` that
-            :class:`~fipy.terms.sourcTerm.SourceTerm` is implicit in.
+            :class:`~fipy.terms.implicitSourceTerm.ImplicitSourceTerm` is
+            implicit in.
         """
         super(ImplicitSourceTerm, self).__init__(coeff=coeff, var=var)
 

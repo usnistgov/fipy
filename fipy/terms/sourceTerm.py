@@ -22,7 +22,7 @@ class SourceTerm(CellTerm):
             Coefficient of source (default: 0)
         var : ~fipy.variables.cellVariable.CellVariable
             Variable :math:`\phi` that
-            :class:`~fipy.terms.sourcTerm.SourceTerm` is implicit in.
+            :class:`~fipy.terms.sourceTerm.SourceTerm` is implicit in.
         """
         if self.__class__ is SourceTerm:
             raise AbstractBaseClassError
