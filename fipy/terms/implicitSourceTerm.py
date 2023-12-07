@@ -20,6 +20,18 @@ class ImplicitSourceTerm(SourceTerm):
     where :math:`S` is the `coeff` value.
     """
 
+    def __init__(self, coeff=1., var=None):
+        r"""
+        Parameters
+        ----------
+        coeff : float or ~fipy.variables.cellVariable.CellVariable
+            Proportiounality coefficient :math:`S` (default: 1)
+        var : ~fipy.variables.cellVariable.CellVariable
+            Variable :math:`\phi` that
+            :class:`~fipy.terms.sourcTerm.SourceTerm` is implicit in.
+        """
+        super(self, ImplicitSourceTerm).__init__(coeff=coeff, var=var)
+
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
         Test for a bug due to the sign operator not being updating
