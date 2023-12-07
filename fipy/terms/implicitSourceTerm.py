@@ -30,7 +30,7 @@ class ImplicitSourceTerm(SourceTerm):
             Variable :math:`\phi` that
             :class:`~fipy.terms.sourcTerm.SourceTerm` is implicit in.
         """
-        super(self, ImplicitSourceTerm).__init__(coeff=coeff, var=var)
+        super(ImplicitSourceTerm, self).__init__(coeff=coeff, var=var)
 
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
