@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+dependencies:
+  - mpich
+  - mpi4py
+  - pytrilinos
+platforms:
+  - linux-64
+  - osx-64

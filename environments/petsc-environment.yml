@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+dependencies:
+  - mpich
+  - mpi4py
+  - petsc4py
+platforms:
+  - linux-64
+  - osx-64
+  - osx-arm64
