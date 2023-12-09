@@ -1,0 +1,23 @@
+examples.diffusion.nthOrder.input4thOrder\_line
+===============================================
+
+.. automodule:: examples.diffusion.nthOrder.input4thOrder_line
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

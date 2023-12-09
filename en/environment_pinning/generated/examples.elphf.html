@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+
+
+<!--[if IEMobile 7]><html class="iem7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html class="no-js"  lang="en" dir="ltr" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# book: http://ogp.me/ns/book# profile: http://ogp.me/ns/profile# video: http://ogp.me/ns/video# product: http://ogp.me/ns/product# content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#"><!--<![endif]-->
+
+  <head>
+<meta charset="utf-8" />
+<link rel="shortcut icon" href="https://www.nist.gov/sites/all/themes/nist_style/favicon.ico" type="image/vnd.microsoft.icon" />
+<script type="text/x-mathjax-config">MathJax.Hub.Config({
+  extensions: ['tex2jax.js'],
+  jax: ['input/TeX','output/HTML-CSS'],
+  tex2jax: {
+    inlineMath: [ ['$$','$$'], ['\\(','\\)'] ],
+    processEscapes: true,
+    processClass: 'tex2jax',
+    ignoreClass: 'html'
+  },
+  showProcessingMessages: false,
+  messageStyle: 'none'
+});
+</script>
+<meta name="MobileOptimized" content="width">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+
+      <!--[if lt IE 9]>
+    <script src="https://www.nist.gov/sites/all/themes/zen/js/html5-respond.js"></script>
+    <![endif]-->
+    <!--[if (gte IE 6)&(lte IE 8)]>
+  <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
+  <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>examples.elphf &#8212; FiPy 3.4.4+9.g0eb250766 documentation</title>
+    <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=78520a05"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="FiPy 3.4.4+9.g0eb250766 documentation" href="../contents.html" />
+    <link rel="up" title="examples" href="examples.html" />
+    <link rel="next" title="examples.elphf.diffusion" href="examples.elphf.diffusion.html" />
+    <link rel="prev" title="examples.diffusion.variable" href="examples.diffusion.variable.html" />
+  
+ 
+
+
+  <link rel="stylesheet" href="https://pages.nist.gov/nist-header-footer/css/nist-combined.css">
+  <script src="https://code.jquery.com/jquery-3.6.2.min.js" type="text/javascript" defer="defer"></script>
+  <script src="https://pages.nist.gov/nist-header-footer/js/nist-header-footer.js" type="text/javascript" defer="defer"></script>
+
+
+  </head>
+<!--  <body role="document">-->
+  <body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-414011 node-type-software hide-breadcrumb section-services-resources page-panels is-panel" role="document">
+      <div id="page" class="mini-header">
+
+
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="examples.elphf.diffusion.html" title="examples.elphf.diffusion"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="examples.diffusion.variable.html" title="examples.diffusion.variable"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html"><img src="../_static/fipy.png" alt="FiPy logo"
+                 style="vertical-align: middle; margin-top: -1px"/>
+        FiPy</a> &gt;</li>
+
+          <li class="nav-item nav-item-1"><a href="../API.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code> Package Documentation</a> &gt;</li>
+          <li class="nav-item nav-item-2"><a href="examples.html" accesskey="U">examples</a> &gt;</li> 
+      </ul>
+    </div>
+
+  <div id="main" class="clearfix" role="main" tabindex="-1">
+    <div class="main__inner">
+      <div class="page-info">
+        <a id="main-content"></a>
+      </div>
+
+      <div class="document">
+        <div class="documentwrapper">
+
+      <div id="content" class="column">
+      <div id="block-nist-www-content" class="nist-block">
+        <section class="nist-page__content usa-section clearfix">
+
+         
+
+        <div class="grid-container margin-top-4">
+        <div class="grid-row grid-gap-6">
+
+  <div class="nist-page__region nist-page__region--content tablet-lg:grid-col-8">
+              <div class="body" role="main">
+		
+  <section id="module-examples.elphf">
+<span id="examples-elphf"></span><h1>examples.elphf<a class="headerlink" href="#module-examples.elphf" title="Permalink to this heading">¶</a></h1>
+<p>The following examples exhibit various parts of a model to study
+electrochemical interfaces.  In a pair of papers, Guyer, Boettinger, Warren
+and McFadden <span id="id1">[<a class="reference internal" href="../references.html#id21" title="J. E. Guyer, W. J. Boettinger, J. A. Warren, and G. B. McFadden. Phase field modeling of electrochemistry I: Equilibrium. Physical Review E, 69:021603, 2004. arXiv:cond-mat/0308173, doi:10.1103/PhysRevE.69.021603.">22</a>]</span> <span id="id2">[<a class="reference internal" href="../references.html#id22" title="J. E. Guyer, W. J. Boettinger, J. A. Warren, and G. B. McFadden. Phase field modeling of electrochemistry II: Kinetics. Physical Review E, 69:021604, 2004. arXiv:cond-mat/0308179, doi:10.1103/PhysRevE.69.021604.">23</a>]</span> have shown that an electrochemical
+interface can be modeled by an equation for the phase field <span class="math notranslate nohighlight">\(\xi\)</span></p>
+<div class="math notranslate nohighlight" id="equation-elphf-phase">
+<span class="eqno">(1)<a class="headerlink" href="#equation-elphf-phase" title="Permalink to this equation">¶</a></span>\[ \underbrace{
+     \frac{1}{M_\xi}\frac{\partial \xi}{\partial t}
+     \vphantom{\sum_{j=1}^{n} C_j}
+ }_{\text{transient}}
+ =
+ \underbrace{
+     \kappa_{\xi}\nabla^2 \xi
+     \vphantom{\sum_{j=1}^{n} C_j}
+ }_{\text{diffusion}}
+ -
+ \underbrace{
+     \overbrace{
+         \sum_{j=1}^{n} C_j \left[
+             p'(\xi) \Delta\mu_j^\circ
+             + g'(\xi) W_j
+         \right]
+     }^{\text{phase transformation}}
+     +
+     \overbrace{
+         \frac{\epsilon'(\xi)}{2}\left(\nabla\phi\right)^2
+         \vphantom{\sum_{j=1}^{n} C_j}
+     }^{\text{dielectric}}
+ }_{\text{source}}\]</div>
+<p>a set of diffusion equations for the concentrations <span class="math notranslate nohighlight">\(C_j\)</span>, for the substitutional elements
+<span class="math notranslate nohighlight">\(j = 2,\ldots, n-1\)</span></p>
+<div class="math notranslate nohighlight" id="equation-elphf-substitutional">
+<span class="eqno">(2)<a class="headerlink" href="#equation-elphf-substitutional" title="Permalink to this equation">¶</a></span>\[\begin{split}\underbrace{
+     \frac{\partial C_j}{\partial t}
+}_{\text{transient}}
+ &amp;= \underbrace{
+     D_{j}\nabla^2 C_j
+     \vphantom{\frac{\partial C_j}{\partial t}}
+ }_{\text{diffusion}} \\
+ &amp; \qquad + \underbrace{
+     D_{j}\nabla\cdot
+     \frac{C_j}{1 - \sum_{\substack{k=2\\ k \neq j}}^{n-1} C_k}
+     \left\{
+         \overbrace{
+             \sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i
+         }^{\text{counter diffusion}}
+        +
+        \overbrace{
+             C_n \left[
+                 p'(\xi) \Delta\mu_{jn}^{\circ}
+                 + g'(\xi) W_{jn}
+             \right] \nabla\xi
+             \vphantom{\sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i}
+        }^{\text{phase transformation}}
+        +
+        \overbrace{
+             C_n z_{jn} \nabla \phi
+             \vphantom{\sum_{\substack{i=2\\ i \neq j}}^{n-1} \nabla C_i}
+        }^{\text{electromigration}}
+     \right\}
+ }_{\text{convection}}\end{split}\]</div>
+<p>a diffusion equation for the concentration <span class="math notranslate nohighlight">\(C_{\text{e}^{-}}\)</span> of
+electrons</p>
+<div class="math notranslate nohighlight" id="equation-elphf-interstitial">
+<span class="eqno">(3)<a class="headerlink" href="#equation-elphf-interstitial" title="Permalink to this equation">¶</a></span>\[\begin{split}\underbrace{
+    \frac{\partial C_{\text{e}^{-}}}{\partial t}
+    \vphantom{\left\{
+        \overbrace{
+            \left[p'(\xi)\right]
+        }^{\text{phase transformation}}
+    \right\}}
+}_{\text{transient}}
+= \underbrace{
+    D_{\text{e}^{-}}\nabla^2 C_{\text{e}^{-}}
+    \vphantom{\left\{
+        \overbrace{
+            \left[p'(\xi)\right]
+        }^{\text{phase transformation}}
+    \right\}}
+}_{\text{diffusion}} \\
++ \underbrace{
+    D_{\text{e}^{-}}\nabla\cdot
+    C_{\text{e}^{-}}
+    \left\{
+        \overbrace{
+            \left[
+                p'(\xi) \Delta\mu_{\text{e}^{-}}^{\circ}
+                + g'(\xi) W_{\text{e}^{-}}
+            \right] \nabla\xi
+        }^{\text{phase transformation}}
+        +
+        \overbrace{
+            z_{\text{e}^{-}} \nabla \phi
+            \vphantom{\left[p'(\xi)\right]}
+       }^{\text{electromigration}}
+    \right\}
+}_{\text{convection}}\end{split}\]</div>
+<p>and Poisson’s equation for the electrostatic potential <span class="math notranslate nohighlight">\(\phi\)</span></p>
+<div class="math notranslate nohighlight" id="equation-elphf-poisson">
+<span class="eqno">(4)<a class="headerlink" href="#equation-elphf-poisson" title="Permalink to this equation">¶</a></span>\[\underbrace{
+    \nabla\cdot\left(\epsilon\nabla\phi\right)
+    \vphantom{\sum_{j=1}^n z_j C_j}
+}_{\text{diffusion}}
++
+\underbrace{
+    \sum_{j=1}^n z_j C_j
+}_{\text{source}}
+= 0\]</div>
+<p><span class="math notranslate nohighlight">\(M_\xi\)</span> is the phase field mobility, <span class="math notranslate nohighlight">\(\kappa_\xi\)</span> is the phase
+field gradient energy coefficient,
+<span class="math notranslate nohighlight">\(p'(\xi) = 30\xi^2\left(1-\xi\right)^2\)</span>, and
+<span class="math notranslate nohighlight">\(g'(\xi) = 2\xi\left(1-\xi\right)\left(1-2\xi\right)\)</span>.  For a given species
+<span class="math notranslate nohighlight">\(j\)</span>, <span class="math notranslate nohighlight">\(\Delta\mu_j^{\circ}\)</span> is the standard chemical potential
+difference between the electrode and electrolyte for a pure material,
+<span class="math notranslate nohighlight">\(W_j\)</span> is the magnitude of the energy barrier in the double-well
+free energy function, <span class="math notranslate nohighlight">\(z_j\)</span> is the valence, and <span class="math notranslate nohighlight">\(D_{j}\)</span> is the
+self diffusivity.  <span class="math notranslate nohighlight">\(\Delta\mu_{jn}^{\circ}\)</span>, <span class="math notranslate nohighlight">\(W_{jn}\)</span>, and
+<span class="math notranslate nohighlight">\(z_{jn}\)</span> are the differences of the respective quantities
+<span class="math notranslate nohighlight">\(\Delta\mu_{j}^{\circ}\)</span>, <span class="math notranslate nohighlight">\(W_{j}\)</span>, and <span class="math notranslate nohighlight">\(z_{j}\)</span> between
+substitutional species <span class="math notranslate nohighlight">\(j\)</span> and the solvent species <span class="math notranslate nohighlight">\(n\)</span>.  The
+total charge is denoted by <span class="math notranslate nohighlight">\(\sum_{j=1}^n z_j C_j\)</span>.</p>
+<p>Although unresolved stiffnesses make the full solution of this coupled
+set of equations intractable in <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>, the following examples
+demonstrate the setup and solution of various parts.</p>
+<p class="rubric">Modules</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="examples.elphf.diffusion.html#module-examples.elphf.diffusion" title="examples.elphf.diffusion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">examples.elphf.diffusion</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="examples.elphf.input.html#module-examples.elphf.input" title="examples.elphf.input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">examples.elphf.input</span></code></a></p></td>
+<td><p>This example adds two more components to <code class="docutils literal notranslate"><span class="pre">examples/elphf/input1DphaseBinary.py</span></code> one of which is another substitutional species and the other represents electrons and diffuses interstitially.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="examples.elphf.phase.html#module-examples.elphf.phase" title="examples.elphf.phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">examples.elphf.phase</span></code></a></p></td>
+<td><p>A simple 1D example to test the setup of the phase field equation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="examples.elphf.phaseDiffusion.html#module-examples.elphf.phaseDiffusion" title="examples.elphf.phaseDiffusion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">examples.elphf.phaseDiffusion</span></code></a></p></td>
+<td><p>This example combines a phase field problem, as given in <a class="reference internal" href="examples.elphf.phase.html#module-examples.elphf.phase" title="examples.elphf.phase"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.elphf.phase</span></code></a>, with a binary diffusion problem, such as described in the ternary example <a class="reference internal" href="examples.elphf.diffusion.mesh1D.html#module-examples.elphf.diffusion.mesh1D" title="examples.elphf.diffusion.mesh1D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.elphf.diffusion.mesh1D</span></code></a>, on a 1D mesh</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="examples.elphf.poisson.html#module-examples.elphf.poisson" title="examples.elphf.poisson"><code class="xref py py-obj docutils literal notranslate"><span class="pre">examples.elphf.poisson</span></code></a></p></td>
+<td><p>A simple 1D example to test the setup of the Poisson equation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="examples.elphf.test.html#module-examples.elphf.test" title="examples.elphf.test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">examples.elphf.test</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+                <div class='last-updated'>
+                Last updated on Dec 09, 2023.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                </div>
+              </div>
+  </div>  
+  <aside class="nist-page__region nist-page__region--sidebar-second tablet-lg:grid-col-4">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+<strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
+Version 3.4.4+9.g0eb250766
+
+<div class="sphinxsidebarsection">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="examples.diffusion.variable.html"
+                        title="previous chapter">examples.diffusion.variable</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="examples.elphf.diffusion.html"
+                        title="next chapter">examples.elphf.diffusion</a></p>
+</div>
+  <div class="sphinxsidebarsection">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/generated/examples.elphf.rst.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  </div>
+<div class="sphinxsidebarsection">
+<div id="searchbox" style="display: none" role="search">
+  <div data-layout-content-preview-placeholder-label="&quot;Sphinx
+  Search&quot; field" class="nist-block nist-block--search">
+  <h2 id="searchlabel">Quick search</h2>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+  </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+</div>
+<div class="sphinxsidebarsection" id="contact-wrapper">
+  
+        <div data-layout-content-preview-placeholder-label="&quot;Related
+        organization tree&quot; views block" class="nist-block nist-block--org">
+          
+          <h2 class="nist-block__title">Organizations</h2>
+              
+              <div class="views-element-container"><div
+              class="js-view-dom-id-70b0923f677edbe3dda361030ef8dc373cd0ca94065c39cfd81338de767f1019">
+
+            <div class="nist-related-orgs"><div class="term-tree-list"><ul
+            class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters" hreflang="en">NIST
+            Headquarters</a><ul class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs"
+            hreflang="en">Laboratory Programs</a><ul class="term"><li
+            class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs/material-measurement-laboratory"
+            hreflang="en">Material Measurement Laboratory</a>
+			<ul
+			class="term"><li
+			class="selected"><a href="https://www.nist.gov/mml/msed"
+			hreflang="en">Materials Science and Engineering
+			Division</a></li><li
+			class="selected"><a href="https://www.nist.gov/mml/ctcms"
+			hreflang="en">Center for Theoretical and
+			              Computational Materials Science</a></li></ul>
+                          </li></ul></li></ul></li></ul></div></div>
+          <div class="nist-related-orgs"></div>
+          <div class="nist-related-orgs"></div>
+
+
+
+        </div>
+        </div>
+
+          </div>
+
+
+          <div data-layout-content-preview-placeholder-label="&quot;NIST
+          Staff&quot; field" class="nist-block nist-block--contact">
+
+          <h2 class="nist-block__title">NIST Staff</h2>
+
+                  <div class="nist-field nist-field--label-hidden
+                  nist-field--link-list entity-reference nist-field__items
+                  nist-field--no-margin">
+                            <div class="nist-field__item
+                            nist-field--no-margin"><a
+                            href="https://www.nist.gov/people/jonathan-e-guyer"
+                            hreflang="en">Jonathan E. Guyer</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/daniel-wheeler"
+                                hreflang="en">Daniel Wheeler</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/james-warren"
+                                hreflang="en">James A. Warren</a></div>
+                  </div>
+
+
+          </div>
+
+          <div data-layout-content-preview-placeholder-label="&quot;Contact&quot; field"
+          class="nist-block nist-block--contact nist-block--mail">
+
+          <h2 class="nist-block__title">
+          <a class="" href="../docs/source/CONTACT.html" style="">Contact</a>
+          </h2>
+
+          </div>
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+  </aside>
+        </div>
+      </div>
+
+      <div class="panel-region--postface">
+      <div class="inner region-inner inside">
+        
+<div class="pane pane--nist-node-date-pane" >
+
+    </div>
+      </div>
+    </div>
+
+        </section>
+        </div>
+      </div>
+
+      </div>  
+    </div>          
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  
+
+
+  <!-- Taken from https://www.filamentgroup.com/lab/html-includes/#another-demo%3A-including-another-html-file -->
+  <iframe src="../_static/ntd2d_menu.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    </div>
+  </body>
+</html>

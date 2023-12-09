@@ -1,0 +1,34 @@
+examples.phase.missOrientation
+==============================
+
+.. automodule:: examples.phase.missOrientation
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   examples.phase.missOrientation.circle
+   examples.phase.missOrientation.mesh1D
+   examples.phase.missOrientation.modCircle
+   examples.phase.missOrientation.test
+

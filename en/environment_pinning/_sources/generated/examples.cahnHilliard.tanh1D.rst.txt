@@ -1,0 +1,23 @@
+examples.cahnHilliard.tanh1D
+============================
+
+.. automodule:: examples.cahnHilliard.tanh1D
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
