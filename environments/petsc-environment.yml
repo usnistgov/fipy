@@ -3,6 +3,7 @@ channels:
 dependencies:
   - mpich
   - mpi4py
+  - petsc <= 3.20.2_*_101 # [osx]
   - petsc4py
 platforms:
   - linux-64
