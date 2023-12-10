@@ -1,0 +1,6 @@
+# This environment is redundant to environment.yml.
+# Present for symmetry with other solvers.
+channels:
+  - conda-forge
+dependencies:
+  - scipy
