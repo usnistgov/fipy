@@ -3,7 +3,10 @@ channels:
 dependencies:
   - mpich
   - mpi4py
-  - petsc <= 3.20.2_*_101 # [osx]
+  # petsc 3.20.2_*_102 is broken on macOS,
+  # as a result of linking scotch 7.0.2
+  # https://github.com/conda-forge/petsc-feedstock/issues/180
+  - scotch <7 # [osx]
   - petsc4py
 platforms:
   - linux-64
