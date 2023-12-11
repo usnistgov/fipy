@@ -42,6 +42,8 @@ you explore the package interactively.
 .. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/master
 .. _Jupyter Notebook:    http://jupyter.org
 
+.. _RECOMMENDED_METHOD
+
 ------------------
 Recommended Method
 ------------------
@@ -65,55 +67,83 @@ Recommended Method
    everything necessary to install :term:`FiPy`.
 
 * `install Miniconda`_ on your computer
-* run::
+* Install :term:`FiPy` :ref:`REQUIREDPACKAGES` with one of the following:
 
-    $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy gmsh
+    * Conda environment files::
+
+        $ conda env create --name <MYFIPYENV> \
+            --file environments/base-environment.yml
+
+      followed by::
+
+        $ conda env update --name <MYFIPYENV> \
+            --file environments/<SOLVER>-environment.yml
+
+      You can try to include multiple solver suites, but be aware that
+      different suites may have incompatible requirements, or may restrict
+      installation to obsolete versions of Python.
+
+      .. attention::
+
+         Successively building an environment can be unpredictable, as
+         later packages may conflict with earlier ones.  Unfortunately,
+         ``conda env create`` `does not support multiple environment files
+         <https://github.com/conda/conda/issues/9294>`_.
+
+         Alternatively, combine :file:`environments/base-environment.yml`
+         with any :file:`environments/<SOLVER>-environment.yml` you wish to
+         use (`conda-merge <https://github.com/amitbeka/conda-merge>`_ may
+         prove useful).  Then execute::
+
+           $ conda env create --name <MYFIPYENV> --file <MYMERGEDENVIRONMENT>.yml
+
+    * `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles::
+
+        $ conda-lock install --name <MYFIPYENV> \
+            environments/locks/conda-<SOLVER>-lock.yml
+
+      or, to be really explicit::
+
+        $ conda create --name <MYFIPYENV> \
+            --file environments/locks/conda-<SOLVER>-<PLATFORM>.lock
+
+      These lockfiles list the specific package versions used to test
+      :term:`FiPy` and should provide the most reproducible environment.
+
+    * Directly from conda-forge, picking and choosing desired packages, e.g.::
+
+        $ conda create --name <MYFIPYENV> --channel conda-forge \
+            python=3 numpy scipy matplotlib-base future packaging mpich \
+            mpi4py petsc4py mayavi "gmsh <4.0|>=4.5.2"
+
+      or::
+
+        $ conda create --name <MYFIPYENV> --channel conda-forge \
+            python=2.7 numpy scipy matplotlib-base future packaging \
+            pysparse mayavi "traitsui<7.0.0" "gmsh<4.0"
+
+      .. attention::
+
+         Bit rot has started to set in for Python 2.7.  One consequence is that
+         :class:`~fipy.viewers.vtkViewer.VTKViewer`\s can raise errors
+         (probably other uses of :term:`Mayavi`, too). Hence, the constraint
+         of `"traitsui<7.0.0"`.
 
   .. note::
 
-     This command creates a self-contained conda_ environment and then
-     downloads and populates the environment with the prerequisites for
+     Each of these commands create a self-contained conda_ environment and
+     then download and populate the environment with the prerequisites for
      :term:`FiPy` from the conda-forge_ channel at https://anaconda.org.
 
-     :term:`Gmsh` is an optional package because some versions are
-     incompatible with :term:`FiPy`, so it must be requested explicitly.
+* Install :term:`FiPy` itself::
+
+    $ conda install --name <MYFIPYENV> --channel conda-forge fipy
 
   .. note::
 
-     The `fipy conda-forge`_ package is a convenience. You may choose to
-     install packages explicitly, e.g.,::
-
-       $ conda create --name <MYFIPYENV> --channel conda-forge python=3 numpy scipy matplotlib-base future packaging mpich mpi4py petsc4py mayavi "gmsh <4.0|>=4.5.2"
-
-     or::
-
-       $ conda create --name <MYFIPYENV> --channel conda-forge python=2.7 numpy scipy matplotlib-base future packaging pysparse mayavi "traitsui<7.0.0" "gmsh<4.0"
-
-  .. attention::
-
-     Windows x86_64 is fully supported, but this does not work on
-     Windows x86_32, as conda-forge_ no longer supports that platform.  For
-     Python 2.7.x, you should be able to do::
-
-      conda create --name <MYFIPYENV> --channel conda-forge python=2.7 numpy scipy matplotlib pysparse mayavi weave
-
-     and for Python 3.x, you should be able to do::
-
-      conda create --name <MYFIPYENV> --channel conda-forge python=3 numpy scipy matplotlib pysparse gmsh
-
-     followed, for either, by::
-
-      activate <MYFIPYENV>
-      python -m pip install fipy
-
-  .. attention::
-
-     Bit rot has started to set in for Python 2.7.  One consequence is that
-     :class:`~fipy.viewers.vtkViewer.VTKViewer`\s can raise errors
-     (probably other uses of :term:`Mayavi`, too).  You may be able to remedy this by
-     creating your environment with::
-
-     $ conda create --name <MYFIPYENV> --channel conda-forge python=2.7 fipy "traitsui<7.0.0"
+     The `fipy conda-forge`_ package used to be "batteries included", but
+     we found this to be too fragile.  It now only includes the bare
+     minimum for :term:`FiPy` to function.
 
 * enable this new environment with::
 
@@ -374,12 +404,11 @@ of the system package manager and the system directories.  These utilities
 include conda_, Nix_, Stow_, Virtualenv_ and Buildout_, amongst others.
 Conda_ and Nix_ are only ones of these we have the resources to support.
 
-Our preferred development environment is set up with::
+Our preferred development environment is set up with the initial steps of
+the :ref:`RECOMMENDED_METHOD`, without :term:`FiPy` itself, followed by::
 
-   $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy
    $ source activate <MYFIPYENV>
    $ python -m pip install scikit-fmm
-   $ conda remove --channel conda-forge --force fipy
    $ git clone https://github.com/usnistgov/fipy.git
    $ cd fipy
    $ python setup.py develop
