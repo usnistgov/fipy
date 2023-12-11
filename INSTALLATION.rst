@@ -63,7 +63,7 @@ Recommended Method
 
    In addition to the default packages, many other developers provide
    "channels" to distribute their own builds of a variety of software.
-   These days, the most useful channel is `conda-forge`, which provides
+   These days, the most useful channel is conda-forge_, which provides
    everything necessary to install :term:`FiPy`.
 
 * `install Miniconda`_ on your computer
@@ -110,7 +110,7 @@ Recommended Method
       These lockfiles list the specific package versions used to test
       :term:`FiPy` and should provide the most reproducible environment.
 
-    * Directly from conda-forge, picking and choosing desired packages, e.g.::
+    * Directly from conda-forge_, picking and choosing desired packages, e.g.::
 
         $ conda create --name <MYFIPYENV> --channel conda-forge \
             python=3 numpy scipy matplotlib-base future packaging mpich \
