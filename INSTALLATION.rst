@@ -85,7 +85,7 @@ Recommended Method
 
       .. attention::
 
-         Successively building an environment can be unpredictable, as
+         Successively updating an environment can be unpredictable, as
          later packages may conflict with earlier ones.  Unfortunately,
          ``conda env create`` `does not support multiple environment files
          <https://github.com/conda/conda/issues/9294>`_.
