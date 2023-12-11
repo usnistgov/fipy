@@ -42,7 +42,7 @@ you explore the package interactively.
 .. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/master
 .. _Jupyter Notebook:    http://jupyter.org
 
-.. _RECOMMENDEDMETHOD
+.. _RECOMMENDED_METHOD:
 
 ------------------
 Recommended Method
@@ -405,7 +405,7 @@ include conda_, Nix_, Stow_, Virtualenv_ and Buildout_, amongst others.
 Conda_ and Nix_ are only ones of these we have the resources to support.
 
 Our preferred development environment is set up with the initial steps of
-the :ref:`RECOMMENDEDMETHOD`, without :term:`FiPy` itself, followed by::
+the :ref:`RECOMMENDED_METHOD`, without :term:`FiPy` itself, followed by::
 
    $ source activate <MYFIPYENV>
    $ python -m pip install scikit-fmm
