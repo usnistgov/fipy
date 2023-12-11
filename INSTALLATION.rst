@@ -42,7 +42,7 @@ you explore the package interactively.
 .. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/master
 .. _Jupyter Notebook:    http://jupyter.org
 
-.. _RECOMMENDED_METHOD
+.. _RECOMMENDEDMETHOD
 
 ------------------
 Recommended Method
@@ -189,7 +189,7 @@ Recommended Method
 .. _Mac OS X: http://www.apple.com/macosx/
 .. _Linux: http://www.linux.org/
 .. _Windows: http://www.microsoft.com/windows/
-.. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
+.. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/version.svg
 .. _CondaForge:    https://anaconda.org/conda-forge/fipy
 .. _mamba: https://mamba.readthedocs.io/
 .. _fipy conda-forge: https://anaconda.org/conda-forge/fipy
@@ -405,7 +405,7 @@ include conda_, Nix_, Stow_, Virtualenv_ and Buildout_, amongst others.
 Conda_ and Nix_ are only ones of these we have the resources to support.
 
 Our preferred development environment is set up with the initial steps of
-the :ref:`RECOMMENDED_METHOD`, without :term:`FiPy` itself, followed by::
+the :ref:`RECOMMENDEDMETHOD`, without :term:`FiPy` itself, followed by::
 
    $ source activate <MYFIPYENV>
    $ python -m pip install scikit-fmm
