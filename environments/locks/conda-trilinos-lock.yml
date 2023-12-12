@@ -9,12 +9,12 @@
 # To update a single package to the latest version compatible with the version constraints in the source:
 #     conda-lock lock  --lockfile conda-trilinos-lock.yml --update PACKAGE
 # To re-solve the entire environment, e.g. after changing a version constraint in the source file:
-#     conda-lock -f environment.yml -f trilinos-environment.yml --lockfile conda-trilinos-lock.yml
+#     conda-lock -f environment.yml -f trilinos-environment.yml -f ../base-environment.yml -f ../trilinos-environment.yml --lockfile conda-trilinos-lock.yml
 version: 1
 metadata:
   content_hash:
-    linux-64: f5567493098678c3caf7cb5fd969365629861feb26677f2bf091e4349d200e2c
-    osx-64: f06d368ff0bf441395c5ed506c0157e13c9d3141d0a09380c2ec24d5fc47169e
+    linux-64: f88fa8dcd685ec9987f0595e3e1eb558d9e91e5838b81df67ee709dd03798d19
+    osx-64: a382fb5c119c992076ee359a72b20216d3ff60a47b96d56e7065534d0e62ab93
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -24,6 +24,8 @@ metadata:
   sources:
   - environment.yml
   - trilinos-environment.yml
+  - ../base-environment.yml
+  - ../trilinos-environment.yml
 package:
 - name: _libgcc_mutex
   version: '0.1'
@@ -1228,16 +1230,16 @@ package:
     gettext: '>=0.21.1,<1.0a0'
     gstreamer: 1.22.7
     libcxx: '>=16.0.6'
-    libglib: '>=2.78.1,<3.0a0'
+    libglib: '>=2.78.3,<3.0a0'
     libogg: '>=1.3.4,<1.4.0a0'
     libopus: '>=1.3.1,<2.0a0'
     libpng: '>=1.6.39,<1.7.0a0'
     libvorbis: '>=1.3.7,<1.4.0a0'
     libzlib: '>=1.2.13,<1.3.0a0'
-  url: https://conda.anaconda.org/conda-forge/osx-64/gst-plugins-base-1.22.7-hd283e88_0.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/gst-plugins-base-1.22.7-hd283e88_1.conda
   hash:
-    md5: 6f0f588e82330893016aa084d3ae74a1
-    sha256: b5040c42a813020ef957528b68152593cbcfcbaecceb9ddc39a5eae036bf3634
+    md5: 1d57cc6e01d9cac4182bdceb9ac07c66
+    sha256: 7c8bab381f21b3b98a4a17e75106dc838aff2e37ca08fe9f862dbc5dc3fb8fa9
   category: main
   optional: false
 - name: gstreamer
@@ -1262,14 +1264,14 @@ package:
   dependencies:
     __osx: '>=10.9'
     gettext: '>=0.21.1,<1.0a0'
-    glib: '>=2.78.1,<3.0a0'
+    glib: '>=2.78.3,<3.0a0'
     libcxx: '>=16.0.6'
-    libglib: '>=2.78.1,<3.0a0'
+    libglib: '>=2.78.3,<3.0a0'
     libiconv: '>=1.17,<2.0a0'
-  url: https://conda.anaconda.org/conda-forge/osx-64/gstreamer-1.22.7-h8954545_0.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/gstreamer-1.22.7-h8954545_1.conda
   hash:
-    md5: 78550579c8a164c2af8c6dd690ad7109
-    sha256: 2b0acac438bb96ddc7a34d5fa4f52346837708cee06c858bd78c35d993768a36
+    md5: 0fe69e5a1cc5619a91686a300a25fce0
+    sha256: bdfc72b8d9d6c0ecad13e94de15488c127c2f28a0ae855c45c46e6b10a7f5c1a
   category: main
   optional: false
 - name: hdf4
@@ -1971,11 +1973,11 @@ package:
   manager: conda
   platform: linux-64
   dependencies:
-    libgcc-ng: '>=7.5.0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libev-4.33-h516909a_1.tar.bz2
+    libgcc-ng: '>=12'
+  url: https://conda.anaconda.org/conda-forge/linux-64/libev-4.33-hd590300_2.conda
   hash:
-    md5: 6f8720dff19e17ce5d48cfe7f3d2f0a3
-    sha256: 8c9635aa0ea28922877dc96358f9547f6a55fc7e2eb75a556b05f1725496baf9
+    md5: 172bf1cd1ff8629f2b1179945ed45055
+    sha256: 1cd6048169fa0395af74ed5d8f1716e22c19a81a8a36f934c110ca3ad4dd27b4
   category: main
   optional: false
 - name: libev
@@ -1983,10 +1985,10 @@ package:
   manager: conda
   platform: osx-64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/osx-64/libev-4.33-haf1e3a3_1.tar.bz2
+  url: https://conda.anaconda.org/conda-forge/osx-64/libev-4.33-h10d778d_2.conda
   hash:
-    md5: 79dc2be110b2a3d1e97ec21f691c50ad
-    sha256: c4154d424431898d84d6afb8b32e3ba749fe5d270d322bb0af74571a3cb09c6b
+    md5: 899db79329439820b7e8f8de41bca902
+    sha256: 0d238488564a7992942aa165ff994eca540f687753b4f0998b29b4e4d030ff43
   category: main
   optional: false
 - name: libevent
@@ -2179,11 +2181,11 @@ package:
   manager: conda
   platform: linux-64
   dependencies:
-    libgcc-ng: '>=10.3.0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libiconv-1.17-h166bdaf_0.tar.bz2
+    libgcc-ng: '>=12'
+  url: https://conda.anaconda.org/conda-forge/linux-64/libiconv-1.17-hd590300_1.conda
   hash:
-    md5: b62b52da46c39ee2bc3c162ac7f1804d
-    sha256: 6a81ebac9f1aacdf2b4f945c87ad62b972f0f69c8e0981d68e111739e6720fd7
+    md5: 4b06b43d0eca61db2899e4d7a289c302
+    sha256: a9364735ef2542558ed59aa5f404707dab674df465cbdf312edeaf5e827b55ed
   category: main
   optional: false
 - name: libiconv
@@ -2191,10 +2193,10 @@ package:
   manager: conda
   platform: osx-64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/osx-64/libiconv-1.17-hac89ed1_0.tar.bz2
+  url: https://conda.anaconda.org/conda-forge/osx-64/libiconv-1.17-hd75f5a5_1.conda
   hash:
-    md5: 691d103d11180486154af49c037b7ed9
-    sha256: 4a3294037d595754f7da7c11a41f3922f995aaa333f3cb66f02d8afa032a7bc2
+    md5: c4069fa5c051d41093d3fd52caffa285
+    sha256: c479e7e0df4a59117ee02152fb85565aa6e4091bbb8e044f3367e52b0ccd8970
   category: main
   optional: false
 - name: libidn2
@@ -3666,6 +3668,34 @@ package:
     sha256: eafe084f411a27888239ff8d7ea5e36d53d013d7ebcfd5614f8b7281580f2b50
   category: main
   optional: false
+- name: pip
+  version: 23.3.1
+  manager: conda
+  platform: linux-64
+  dependencies:
+    python: '>=3.7'
+    setuptools: ''
+    wheel: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/pip-23.3.1-pyhd8ed1ab_0.conda
+  hash:
+    md5: 2400c0b86889f43aa52067161e1fb108
+    sha256: 435829a03e1c6009f013f29bb83de8b876c388820bf8cf69a7baeec25f6a3563
+  category: main
+  optional: false
+- name: pip
+  version: 23.3.1
+  manager: conda
+  platform: osx-64
+  dependencies:
+    setuptools: ''
+    wheel: ''
+    python: '>=3.7'
+  url: https://conda.anaconda.org/conda-forge/noarch/pip-23.3.1-pyhd8ed1ab_0.conda
+  hash:
+    md5: 2400c0b86889f43aa52067161e1fb108
+    sha256: 435829a03e1c6009f013f29bb83de8b876c388820bf8cf69a7baeec25f6a3563
+  category: main
+  optional: false
 - name: pixman
   version: 0.42.2
   manager: conda
@@ -4738,25 +4768,25 @@ package:
   category: main
   optional: false
 - name: utfcpp
-  version: 4.0.3
+  version: 4.0.4
   manager: conda
   platform: linux-64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/linux-64/utfcpp-4.0.3-ha770c72_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/utfcpp-4.0.4-ha770c72_0.conda
   hash:
-    md5: df3f9a7f29137de119e65125100002db
-    sha256: 2d4c26b0f70bef5637634ff4c8454d4c5451fb8805f9713e15de8dd58902b076
+    md5: fe0aa3ea88da0546dd903bbed6629f0a
+    sha256: 57d3aaae5dcc690fe24fe2bbadcef05344346e07621d650ae7fe7efb91921874
   category: main
   optional: false
 - name: utfcpp
-  version: 4.0.3
+  version: 4.0.4
   manager: conda
   platform: osx-64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/osx-64/utfcpp-4.0.3-h694c41f_0.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/utfcpp-4.0.4-h694c41f_0.conda
   hash:
-    md5: 960aafec4edd2761dd85e880bd3f8019
-    sha256: f79c587249df0eb5747bb21cc41caf922f4551ed6106999fdbaa0efcc6f9e94d
+    md5: 59d8987e777ca5b896d7656fe111c1d1
+    sha256: 498da3de812ae5f6f2507eb2e2520ec2d431af69722ebd71b8a880ace750327e
   category: main
   optional: false
 - name: vtk
@@ -4843,6 +4873,30 @@ package:
   hash:
     md5: c6b03542ca636798129f9860913604db
     sha256: 6f3348315bba6c7c58ff4417327814ec3689ae82d5fa91fa9f62b0a11799ca50
+  category: main
+  optional: false
+- name: wheel
+  version: 0.42.0
+  manager: conda
+  platform: linux-64
+  dependencies:
+    python: '>=3.7'
+  url: https://conda.anaconda.org/conda-forge/noarch/wheel-0.42.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: 1cdea58981c5cbc17b51973bcaddcea7
+    sha256: 80be0ccc815ce22f80c141013302839b0ed938a2edb50b846cf48d8a8c1cfa01
+  category: main
+  optional: false
+- name: wheel
+  version: 0.42.0
+  manager: conda
+  platform: osx-64
+  dependencies:
+    python: '>=3.7'
+  url: https://conda.anaconda.org/conda-forge/noarch/wheel-0.42.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: 1cdea58981c5cbc17b51973bcaddcea7
+    sha256: 80be0ccc815ce22f80c141013302839b0ed938a2edb50b846cf48d8a8c1cfa01
   category: main
   optional: false
 - name: x264

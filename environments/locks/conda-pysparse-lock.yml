@@ -9,12 +9,12 @@
 # To update a single package to the latest version compatible with the version constraints in the source:
 #     conda-lock lock  --lockfile conda-pysparse-lock.yml --update PACKAGE
 # To re-solve the entire environment, e.g. after changing a version constraint in the source file:
-#     conda-lock -f environment.yml -f pysparse-environment.yml --lockfile conda-pysparse-lock.yml
+#     conda-lock -f environment.yml -f pysparse-environment.yml -f ../base-environment.yml -f ../pysparse-environment.yml --lockfile conda-pysparse-lock.yml
 version: 1
 metadata:
   content_hash:
-    linux-64: b93b5550afd38a8a7eaf61cdaa02162bdf0ee022ba6bb9cfe26bd347ce5d5ef2
-    osx-64: ae0b935ddbed4ff64b53aa231988d35d522b86b73d02354f22d9514044539563
+    linux-64: 0c9cd9d9a86386a77ac4583b323a0e962c9fb357d0c721d476420019869c1d5a
+    osx-64: 0c953ed399d0c92031835255da8a5c133553dd6e653268fa821bea37796c7b17
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -24,6 +24,8 @@ metadata:
   sources:
   - environment.yml
   - pysparse-environment.yml
+  - ../base-environment.yml
+  - ../pysparse-environment.yml
 package:
 - name: _libgcc_mutex
   version: '0.1'
@@ -1656,11 +1658,11 @@ package:
   manager: conda
   platform: linux-64
   dependencies:
-    libgcc-ng: '>=7.5.0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libev-4.33-h516909a_1.tar.bz2
+    libgcc-ng: '>=12'
+  url: https://conda.anaconda.org/conda-forge/linux-64/libev-4.33-hd590300_2.conda
   hash:
-    md5: 6f8720dff19e17ce5d48cfe7f3d2f0a3
-    sha256: 8c9635aa0ea28922877dc96358f9547f6a55fc7e2eb75a556b05f1725496baf9
+    md5: 172bf1cd1ff8629f2b1179945ed45055
+    sha256: 1cd6048169fa0395af74ed5d8f1716e22c19a81a8a36f934c110ca3ad4dd27b4
   category: main
   optional: false
 - name: libev
@@ -1668,10 +1670,10 @@ package:
   manager: conda
   platform: osx-64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/osx-64/libev-4.33-haf1e3a3_1.tar.bz2
+  url: https://conda.anaconda.org/conda-forge/osx-64/libev-4.33-h10d778d_2.conda
   hash:
-    md5: 79dc2be110b2a3d1e97ec21f691c50ad
-    sha256: c4154d424431898d84d6afb8b32e3ba749fe5d270d322bb0af74571a3cb09c6b
+    md5: 899db79329439820b7e8f8de41bca902
+    sha256: 0d238488564a7992942aa165ff994eca540f687753b4f0998b29b4e4d030ff43
   category: main
   optional: false
 - name: libexpat
@@ -1862,11 +1864,11 @@ package:
   manager: conda
   platform: linux-64
   dependencies:
-    libgcc-ng: '>=10.3.0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libiconv-1.17-h166bdaf_0.tar.bz2
+    libgcc-ng: '>=12'
+  url: https://conda.anaconda.org/conda-forge/linux-64/libiconv-1.17-hd590300_1.conda
   hash:
-    md5: b62b52da46c39ee2bc3c162ac7f1804d
-    sha256: 6a81ebac9f1aacdf2b4f945c87ad62b972f0f69c8e0981d68e111739e6720fd7
+    md5: 4b06b43d0eca61db2899e4d7a289c302
+    sha256: a9364735ef2542558ed59aa5f404707dab674df465cbdf312edeaf5e827b55ed
   category: main
   optional: false
 - name: libiconv
@@ -1874,10 +1876,10 @@ package:
   manager: conda
   platform: osx-64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/osx-64/libiconv-1.17-hac89ed1_0.tar.bz2
+  url: https://conda.anaconda.org/conda-forge/osx-64/libiconv-1.17-hd75f5a5_1.conda
   hash:
-    md5: 691d103d11180486154af49c037b7ed9
-    sha256: 4a3294037d595754f7da7c11a41f3922f995aaa333f3cb66f02d8afa032a7bc2
+    md5: c4069fa5c051d41093d3fd52caffa285
+    sha256: c479e7e0df4a59117ee02152fb85565aa6e4091bbb8e044f3367e52b0ccd8970
   category: main
   optional: false
 - name: liblapack
@@ -2837,6 +2839,34 @@ package:
     sha256: 8002279cf4084fbf219f137c2bdef2825d076a5a57a14d1d922d7c5fa7872a5c
   category: main
   optional: false
+- name: pip
+  version: 20.1.1
+  manager: conda
+  platform: linux-64
+  dependencies:
+    python: ''
+    setuptools: ''
+    wheel: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/pip-20.1.1-pyh9f0ad1d_0.tar.bz2
+  hash:
+    md5: cd67a20c73ff2514cf5f34cae28fc867
+    sha256: d36d4300f320f6f8352548dbd8750dbf9679fe4e439b23bab9e2797663491275
+  category: main
+  optional: false
+- name: pip
+  version: 20.1.1
+  manager: conda
+  platform: osx-64
+  dependencies:
+    python: ''
+    setuptools: ''
+    wheel: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/pip-20.1.1-pyh9f0ad1d_0.tar.bz2
+  hash:
+    md5: cd67a20c73ff2514cf5f34cae28fc867
+    sha256: d36d4300f320f6f8352548dbd8750dbf9679fe4e439b23bab9e2797663491275
+  category: main
+  optional: false
 - name: pixman
   version: 0.38.0
   manager: conda
@@ -3647,6 +3677,30 @@ package:
   hash:
     md5: 8c9e869675de544b6671b8614002716a
     sha256: 90fd2ef6cd3b9e896c898cff53cd303efcfc87b26068d6851c09e48b17ef0399
+  category: main
+  optional: false
+- name: wheel
+  version: 0.37.1
+  manager: conda
+  platform: linux-64
+  dependencies:
+    python: '!=3.0,!=3.1,!=3.2,!=3.3,!=3.4'
+  url: https://conda.anaconda.org/conda-forge/noarch/wheel-0.37.1-pyhd8ed1ab_0.tar.bz2
+  hash:
+    md5: 1ca02aaf78d9c70d9a81a3bed5752022
+    sha256: aede66e6370f3b936164a703e48362f9080d7162234058fb2ee63cc84d528afc
+  category: main
+  optional: false
+- name: wheel
+  version: 0.37.1
+  manager: conda
+  platform: osx-64
+  dependencies:
+    python: '!=3.0,!=3.1,!=3.2,!=3.3,!=3.4'
+  url: https://conda.anaconda.org/conda-forge/noarch/wheel-0.37.1-pyhd8ed1ab_0.tar.bz2
+  hash:
+    md5: 1ca02aaf78d9c70d9a81a3bed5752022
+    sha256: aede66e6370f3b936164a703e48362f9080d7162234058fb2ee63cc84d528afc
   category: main
   optional: false
 - name: xorg-fixesproto
