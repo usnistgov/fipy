@@ -350,8 +350,7 @@ of the system package manager and the system directories.  These utilities
 include conda_, Nix_, Stow_, Virtualenv_ and Buildout_, amongst others.
 Conda_ and Nix_ are only ones of these we have the resources to support.
 
-Our preferences is to :ref:`CREATE_CONDA_ENVIRONMENT` for development,
-followed by::
+:ref:`CREATE_CONDA_ENVIRONMENT` for development, followed by::
 
    $ source activate <MYFIPYENV>
    $ python -m pip install scikit-fmm
