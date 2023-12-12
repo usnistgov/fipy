@@ -13,9 +13,9 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: 407df41309fd26867df7da4ca1764a682d2f6deb09b69b6169fb79fbb79063ba
-    osx-64: 0b5b69dd60b53ddb597e51aeceb5347c05e8ffd71633ac6d51fc03e1963c223a
-    osx-arm64: 42af1a7683a6a82958a4df9b6d087caaa50b0744fe5cb8566680b5ba58650c65
+    linux-64: d07a3e2e58642e501aa6458416b059e13ee67443d579035571fd1b49c4c2d551
+    osx-64: 4663c99e3e572345ccf329abcbffbcf1d4cffd0baad31bdb658225a7fd1fe01e
+    osx-arm64: 86b4baac13c06af527fee9664e3851089587a76e30a7e951b35a414fd14f92d5
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -4399,45 +4399,6 @@ package:
     sha256: 2e71c5efc57ec7da59efcb747b615ccde1f70d12eb25128720817a3f3482d622
   category: main
   optional: false
-- name: libptscotch
-  version: 7.0.4
-  manager: conda
-  platform: linux-64
-  dependencies:
-    mpich: '>=4.1.2,<5.0a0'
-    scotch: 7.0.4
-  url: https://conda.anaconda.org/conda-forge/linux-64/libptscotch-7.0.4-h2376d02_1.conda
-  hash:
-    md5: 3bae9801709c714adf2465f8cb69b7dc
-    sha256: 617811ad7ac2a211c09e9c4720fb99647d844e7b78c14ff804c0cbd2ee64d8f7
-  category: main
-  optional: false
-- name: libptscotch
-  version: 7.0.4
-  manager: conda
-  platform: osx-64
-  dependencies:
-    mpich: '>=4.1.2,<5.0a0'
-    scotch: 7.0.4
-  url: https://conda.anaconda.org/conda-forge/osx-64/libptscotch-7.0.4-hbfd41b9_1.conda
-  hash:
-    md5: 0547bd58ca8ee8aa347827c4f3d79fec
-    sha256: 3761180a4a380b3a39494278ec77970268b2e0ce62185df00640314d0ce8155f
-  category: main
-  optional: false
-- name: libptscotch
-  version: 7.0.4
-  manager: conda
-  platform: osx-arm64
-  dependencies:
-    mpich: '>=4.1.2,<5.0a0'
-    scotch: 7.0.4
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/libptscotch-7.0.4-h5340af2_1.conda
-  hash:
-    md5: 872892eceaa9f4659465944a6151f225
-    sha256: efadf47c7c633dd28faa4c493b3db2e71e3fb2b33214f93489d8027e30f30702
-  category: main
-  optional: false
 - name: libraw
   version: 0.21.1
   manager: conda
@@ -4483,58 +4444,6 @@ package:
   hash:
     md5: 339cc6b928bfb4d395f530d9b0c6857a
     sha256: ce83aa7cc9859c4b6d3032746f681bf729db8d5a3d18e17b5aa7c45e53468c4d
-  category: main
-  optional: false
-- name: libscotch
-  version: 7.0.4
-  manager: conda
-  platform: linux-64
-  dependencies:
-    bzip2: '>=1.0.8,<2.0a0'
-    libgcc-ng: '>=12'
-    libgfortran-ng: ''
-    libgfortran5: '>=12.3.0'
-    libzlib: '>=1.2.13,<1.3.0a0'
-    xz: '>=5.2.6,<6.0a0'
-    zlib: ''
-  url: https://conda.anaconda.org/conda-forge/linux-64/libscotch-7.0.4-h91e35bf_1.conda
-  hash:
-    md5: 5716a9d2428758c0b7d3ad3d62491918
-    sha256: 7113e233da8f2cd73e838ed914045c3d3cee970d1eb99551288446af668177ea
-  category: main
-  optional: false
-- name: libscotch
-  version: 7.0.4
-  manager: conda
-  platform: osx-64
-  dependencies:
-    bzip2: '>=1.0.8,<2.0a0'
-    libgfortran: 5.*
-    libgfortran5: '>=13.2.0'
-    libzlib: '>=1.2.13,<1.3.0a0'
-    xz: '>=5.2.6,<6.0a0'
-    zlib: ''
-  url: https://conda.anaconda.org/conda-forge/osx-64/libscotch-7.0.4-h6959927_1.conda
-  hash:
-    md5: fadb16965bd2ed9a2cc64e09ab119e16
-    sha256: ff0d8faa86adfe6c5116ea0c32842cab28913c44034be4cf5aaa8f94ad24944c
-  category: main
-  optional: false
-- name: libscotch
-  version: 7.0.4
-  manager: conda
-  platform: osx-arm64
-  dependencies:
-    bzip2: '>=1.0.8,<2.0a0'
-    libgfortran: 5.*
-    libgfortran5: '>=13.2.0'
-    libzlib: '>=1.2.13,<1.3.0a0'
-    xz: '>=5.2.6,<6.0a0'
-    zlib: ''
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/libscotch-7.0.4-hc938e73_1.conda
-  hash:
-    md5: 9e6ba692678598a5471087831d8db21e
-    sha256: 7144f8d48a5d495d66d30d775ba0e04e885cee47f7ae45202a2f56f54d59e199
   category: main
   optional: false
 - name: libsndfile
@@ -5401,39 +5310,37 @@ package:
   category: main
   optional: false
 - name: metis
-  version: 5.1.1
+  version: 5.1.0
   manager: conda
   platform: linux-64
   dependencies:
     libgcc-ng: '>=12'
-  url: https://conda.anaconda.org/conda-forge/linux-64/metis-5.1.1-h59595ed_2.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/metis-5.1.0-h59595ed_1007.conda
   hash:
-    md5: 9ba5910c34210e7ad60736d172bbcd4c
-    sha256: d8b9f76bb61ee19217f263824f1c6534e606313a84fbfdb3715b572e1f14aa3f
+    md5: 40ccb8318df2500f83bd868dd8fcd201
+    sha256: 446bf794497284e2ffa28ab9191d70c38d372c51e3fd073f0d8b35efb51e7e02
   category: main
   optional: false
 - name: metis
-  version: 5.1.1
+  version: 5.1.0
   manager: conda
   platform: osx-64
-  dependencies:
-    __osx: '>=10.9'
-  url: https://conda.anaconda.org/conda-forge/osx-64/metis-5.1.1-h93d8f39_2.conda
+  dependencies: {}
+  url: https://conda.anaconda.org/conda-forge/osx-64/metis-5.1.0-he965462_1007.conda
   hash:
-    md5: cc31955178e62d3216adff6b41d53946
-    sha256: 418ce2ffaee71a4fc41ec5c92ba8d5ce2443b6976eca1c3168c5cef9ff8f164e
+    md5: 0c64ad59bbcae7772c16a55cbd353e25
+    sha256: a79b36e0c623dfab95cc2c0fce1870e90de5f2328fefa9a1b17351eb0f3ac02e
   category: main
   optional: false
 - name: metis
-  version: 5.1.1
+  version: 5.1.0
   manager: conda
   platform: osx-arm64
-  dependencies:
-    __osx: '>=10.9'
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/metis-5.1.1-h965bd2d_2.conda
+  dependencies: {}
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/metis-5.1.0-h13dd4ca_1007.conda
   hash:
-    md5: ce57da6097b9e7775e184522be89aee5
-    sha256: 38ded0910eec64c45505ad93ddd35142212ec0649ed2e5a6dcf13dad968b8924
+    md5: afefade086a45ae6703dffe83516010a
+    sha256: fae516bee76df367128cf81dae13e7d11ce039ff61665ca59a1c57dee0731973
   category: main
   optional: false
 - name: mpfr
@@ -5653,10 +5560,10 @@ package:
   manager: conda
   platform: linux-64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/linux-64/mumps-include-5.2.1-ha770c72_14.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/mumps-include-5.2.1-ha770c72_11.tar.bz2
   hash:
-    md5: 9b64b2487cf5e5cbc0f77d9a7af74820
-    sha256: 630847df1e2fae9122a78bca8a4b590d56e6d47002d85590dc3a167a52b314a0
+    md5: 765196257c11b54dc52522d2fcafdd69
+    sha256: 583922c671eb90e576a96432fe1439bc5eb46f88c4a0a4867fba39653c09c6de
   category: main
   optional: false
 - name: mumps-include
@@ -5664,10 +5571,10 @@ package:
   manager: conda
   platform: osx-64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/osx-64/mumps-include-5.2.1-h694c41f_14.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/mumps-include-5.2.1-h694c41f_11.tar.bz2
   hash:
-    md5: c42b82f0665b39f62bd25550ed483f02
-    sha256: b92f01f846a59c3ad1a3426ab0f318942601738fb480900af1c8309c8ac50adb
+    md5: ed3d032dc307436df39ff27f34ab7ab8
+    sha256: 7f7e34fb9bcbbe5460dd2f3d3c46335917f693b84f4d1af78d4c5080e800d45d
   category: main
   optional: false
 - name: mumps-include
@@ -5675,10 +5582,10 @@ package:
   manager: conda
   platform: osx-arm64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/mumps-include-5.2.1-hce30654_14.conda
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/mumps-include-5.2.1-hce30654_11.tar.bz2
   hash:
-    md5: 5511552b126fa4cd2d5dabb30363333f
-    sha256: 4ad0fcc0958f145cd89dd2884aa60836468bcc54d454b173a5877e331e6ac79d
+    md5: ceec43d6d4207011f4f1edc0e683fc3a
+    sha256: c3f5bd27bdaad52f12354c03f56db151b5a991dd67ff99184f0f12195d563c6e
   category: main
   optional: false
 - name: mumps-mpi
@@ -5686,24 +5593,22 @@ package:
   manager: conda
   platform: linux-64
   dependencies:
-    libblas: '>=3.9.0,<4.0a0'
-    libgcc-ng: '>=12'
+    libblas: '>=3.8.0,<4.0a0'
+    libgcc-ng: '>=10.3.0'
     libgfortran-ng: ''
-    libgfortran5: '>=12.3.0'
-    liblapack: '>=3.9.0,<4.0a0'
-    libptscotch: ''
-    libscotch: ''
-    metis: '>=5.1.1,<5.1.2.0a0'
-    mpich: '>=4.1.2,<5.0a0'
+    libgfortran5: '>=10.3.0'
+    liblapack: '>=3.8.0,<4.0a0'
+    metis: '>=5.1.0,<5.1.1.0a0'
+    mpich: '>=4.0.1,<5.0a0'
     mumps-include: 5.2.1
     parmetis: '>=4.0.3,<4.1.0a0'
-    ptscotch: '>=7.0.4,<7.0.5.0a0'
+    ptscotch: '>=6.0.9,<6.0.10.0a0'
     scalapack: '>=2.2.0,<2.3.0a0'
-    scotch: '>=7.0.4,<7.0.5.0a0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/mumps-mpi-5.2.1-h5b51c9e_14.conda
+    scotch: '>=6.0.9,<6.0.10.0a0'
+  url: https://conda.anaconda.org/conda-forge/linux-64/mumps-mpi-5.2.1-h7ee95aa_11.tar.bz2
   hash:
-    md5: 8f39ed37cb0b21d7e94aed5f2390fb39
-    sha256: 27e847f142922dd93d2b7addb0764b9313334df38487cf8fcc5d94c1f32eeac7
+    md5: 235559f5e16071637af9c1066ccd2121
+    sha256: 290f40832a7de43264175feb5657ad09fdcb4bed67dc17881d8a3fe1b5dd36da
   category: main
   optional: false
 - name: mumps-mpi
@@ -5711,23 +5616,21 @@ package:
   manager: conda
   platform: osx-64
   dependencies:
-    libblas: '>=3.9.0,<4.0a0'
+    libblas: '>=3.8.0,<4.0a0'
     libgfortran: 5.*
-    libgfortran5: '>=13.2.0'
-    liblapack: '>=3.9.0,<4.0a0'
-    libptscotch: ''
-    libscotch: ''
-    metis: '>=5.1.1,<5.1.2.0a0'
-    mpich: '>=4.1.2,<5.0a0'
+    libgfortran5: '>=9.3.0'
+    liblapack: '>=3.8.0,<4.0a0'
+    metis: '>=5.1.0,<5.1.1.0a0'
+    mpich: '>=4.0.1,<5.0a0'
     mumps-include: 5.2.1
     parmetis: '>=4.0.3,<4.1.0a0'
-    ptscotch: '>=7.0.4,<7.0.5.0a0'
+    ptscotch: '>=6.0.9,<6.0.10.0a0'
     scalapack: '>=2.2.0,<2.3.0a0'
-    scotch: '>=7.0.4,<7.0.5.0a0'
-  url: https://conda.anaconda.org/conda-forge/osx-64/mumps-mpi-5.2.1-h705f37d_14.conda
+    scotch: '>=6.0.9,<6.0.10.0a0'
+  url: https://conda.anaconda.org/conda-forge/osx-64/mumps-mpi-5.2.1-h690e093_11.tar.bz2
   hash:
-    md5: 37a5924ad50a80efe409df5ecca21a1f
-    sha256: 1b869395144db8a127a0d33bc302fdf99887873de30d15f0d38d6d2237a4b844
+    md5: 64fcc5df660d6d866c5d5799f1d0af58
+    sha256: 036ffd9a7cc6f88443d12950a99a3c8c93bd109ebed70efe8e8c01491e575b9d
   category: main
   optional: false
 - name: mumps-mpi
@@ -5737,21 +5640,19 @@ package:
   dependencies:
     libblas: '>=3.9.0,<4.0a0'
     libgfortran: 5.*
-    libgfortran5: '>=13.2.0'
+    libgfortran5: '>=11.0.1.dev0'
     liblapack: '>=3.9.0,<4.0a0'
-    libptscotch: ''
-    libscotch: ''
-    metis: '>=5.1.1,<5.1.2.0a0'
-    mpich: '>=4.1.2,<5.0a0'
+    metis: '>=5.1.0,<5.1.1.0a0'
+    mpich: '>=4.0.1,<5.0a0'
     mumps-include: 5.2.1
     parmetis: '>=4.0.3,<4.1.0a0'
-    ptscotch: '>=7.0.4,<7.0.5.0a0'
+    ptscotch: '>=6.0.9,<6.0.10.0a0'
     scalapack: '>=2.2.0,<2.3.0a0'
-    scotch: '>=7.0.4,<7.0.5.0a0'
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/mumps-mpi-5.2.1-hfea86b6_14.conda
+    scotch: '>=6.0.9,<6.0.10.0a0'
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/mumps-mpi-5.2.1-hfd295ca_11.tar.bz2
   hash:
-    md5: 36cecb7557c459a644c1e8c47d38633c
-    sha256: 4a721f372b921af565a10d5b456b259906467b53059bde3215e1beae6eb8fb7d
+    md5: 67944dc05491af4d3c4702bca7b7a518
+    sha256: 8797875f8de07309dcba8e85a8746069fb149fb2cddf9cbbfe6711e578c403a8
   category: main
   optional: false
 - name: munkres
@@ -6509,7 +6410,7 @@ package:
   platform: linux-64
   dependencies:
     fftw: '>=3.3.10,<4.0a0'
-    hdf5: '>=1.14.3,<1.14.4.0a0'
+    hdf5: '>=1.14.2,<1.14.4.0a0'
     hypre: '>=2.28.0,<2.28.1.0a0'
     libblas: '>=3.9.0,<4.0a0'
     libcblas: '>=3.9.0,<4.0a0'
@@ -6517,24 +6418,22 @@ package:
     libgfortran-ng: ''
     libgfortran5: '>=12.3.0'
     liblapack: '>=3.9.0,<4.0a0'
-    libptscotch: ''
-    libscotch: ''
     libstdcxx-ng: '>=12'
-    metis: '>=5.1.1,<5.2.0a0'
+    metis: '>=5.1.0,<5.2.0a0'
     mpich: '>=4.1.2,<5.0a0'
     mumps-mpi: '>=5.2.1,<5.2.2.0a0'
     parmetis: '>=4.0.3,<4.1.0a0'
-    ptscotch: '>=7.0.4,<7.0.5.0a0'
+    ptscotch: '>=6.0.9,<6.0.10.0a0'
     scalapack: '>=2.2.0,<2.3.0a0'
-    scotch: '>=7.0.4,<7.0.5.0a0'
+    scotch: '>=6.0.9,<6.0.10.0a0'
     suitesparse: '>=5.10.1,<5.11.0a0'
     superlu: ''
-    superlu_dist: '>=8.2.1,<9.0a0'
+    superlu_dist: '>=7.1.1,<8.0a0'
     yaml: '>=0.2.5,<0.3.0a0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/petsc-3.20.2-real_h3d2a624_104.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/petsc-3.20.2-real_h622a54c_100.conda
   hash:
-    md5: 703253062fec181eb28a2ed6e31ca902
-    sha256: 8871a99133ffbfcb5074e4d00551ba76588e3d2affab4ae71550a1b360d21f86
+    md5: ad1583996178ca9d76bb33b751e9793f
+    sha256: cbfb5d7333388cba3325c40329a37709c7af24d7c2d39488741239685fdc8a6f
   category: main
   optional: false
 - name: petsc
@@ -6544,7 +6443,7 @@ package:
   dependencies:
     __osx: '>=10.9'
     fftw: '>=3.3.10,<4.0a0'
-    hdf5: '>=1.14.3,<1.14.4.0a0'
+    hdf5: '>=1.14.2,<1.14.4.0a0'
     hypre: '>=2.28.0,<2.28.1.0a0'
     libblas: '>=3.9.0,<4.0a0'
     libcblas: '>=3.9.0,<4.0a0'
@@ -6552,23 +6451,21 @@ package:
     libgfortran: 5.*
     libgfortran5: '>=13.2.0'
     liblapack: '>=3.9.0,<4.0a0'
-    libptscotch: ''
-    libscotch: ''
-    metis: '>=5.1.1,<5.2.0a0'
+    metis: '>=5.1.0,<5.2.0a0'
     mpich: '>=4.1.2,<5.0a0'
     mumps-mpi: '>=5.2.1,<5.2.2.0a0'
     parmetis: '>=4.0.3,<4.1.0a0'
-    ptscotch: '>=7.0.4,<7.0.5.0a0'
+    ptscotch: '>=6.0.9,<6.0.10.0a0'
     scalapack: '>=2.2.0,<2.3.0a0'
-    scotch: '>=7.0.4,<7.0.5.0a0'
+    scotch: '>=6.0.9,<6.0.10.0a0'
     suitesparse: '>=5.10.1,<5.10.2.0a0'
     superlu: ''
-    superlu_dist: '>=8.2.1,<9.0a0'
+    superlu_dist: '>=7.1.1,<8.0a0'
     yaml: '>=0.2.5,<0.3.0a0'
-  url: https://conda.anaconda.org/conda-forge/osx-64/petsc-3.20.2-real_h9e01db8_104.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/petsc-3.20.2-real_h4e83fda_100.conda
   hash:
-    md5: cb28fa55409410ff4048d347333498bf
-    sha256: 75e848a9e49606e86176a9392bf1cb9ea893d686cf9fc53a469614aa4ee2a0a2
+    md5: 8b55d196cd345a3c4716f06de78983ed
+    sha256: 508827fb798db4475b5dda87fee76aa05e6db7dc9a0146972efd54fc575648e1
   category: main
   optional: false
 - name: petsc
@@ -6578,7 +6475,7 @@ package:
   dependencies:
     __osx: '>=10.9'
     fftw: '>=3.3.10,<4.0a0'
-    hdf5: '>=1.14.3,<1.14.4.0a0'
+    hdf5: '>=1.14.2,<1.14.4.0a0'
     hypre: '>=2.28.0,<2.28.1.0a0'
     libblas: '>=3.9.0,<4.0a0'
     libcblas: '>=3.9.0,<4.0a0'
@@ -6586,23 +6483,21 @@ package:
     libgfortran: 5.*
     libgfortran5: '>=13.2.0'
     liblapack: '>=3.9.0,<4.0a0'
-    libptscotch: ''
-    libscotch: ''
-    metis: '>=5.1.1,<5.2.0a0'
+    metis: '>=5.1.0,<5.2.0a0'
     mpich: '>=4.1.2,<5.0a0'
     mumps-mpi: '>=5.2.1,<5.2.2.0a0'
     parmetis: '>=4.0.3,<4.1.0a0'
-    ptscotch: '>=7.0.4,<7.0.5.0a0'
+    ptscotch: '>=6.0.9,<6.0.10.0a0'
     scalapack: '>=2.2.0,<2.3.0a0'
-    scotch: '>=7.0.4,<7.0.5.0a0'
+    scotch: '>=6.0.9,<6.0.10.0a0'
     suitesparse: '>=5.10.1,<5.10.2.0a0'
     superlu: ''
-    superlu_dist: '>=8.2.1,<9.0a0'
+    superlu_dist: '>=7.1.1,<8.0a0'
     yaml: '>=0.2.5,<0.3.0a0'
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/petsc-3.20.2-real_h5d9a1be_104.conda
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/petsc-3.20.2-real_hfe62963_100.conda
   hash:
-    md5: 486a880a1ddacf33d39e4146d44fdc8d
-    sha256: e61a6e2d0ba76e6ae27c796df126ce63e8b30cf4824a9938e333f2171591c10d
+    md5: e618cc0847fec2e1ed28f844dac11ce8
+    sha256: 99312d8aabe0ff09bde36a539f0b2a5ce6462030ba11951c313c59e685025066
   category: main
   optional: false
 - name: petsc4py
@@ -6924,45 +6819,49 @@ package:
   category: main
   optional: false
 - name: ptscotch
-  version: 7.0.4
+  version: 6.0.9
   manager: conda
   platform: linux-64
   dependencies:
-    libptscotch: 7.0.4
-    mpich: '>=4.1.2,<5.0a0'
-    scotch: 7.0.4
-  url: https://conda.anaconda.org/conda-forge/linux-64/ptscotch-7.0.4-h23d43cc_1.conda
+    libgcc-ng: '>=10.3.0'
+    libzlib: '>=1.2.11,<1.3.0a0'
+    mpich: '>=4.0.1,<5.0a0'
+    scotch: '>=6.0.9,<6.0.10.0a0'
+    zlib: '>=1.2.11,<1.3.0a0'
+  url: https://conda.anaconda.org/conda-forge/linux-64/ptscotch-6.0.9-hb499603_2.tar.bz2
   hash:
-    md5: e08ba070042a08e16eda12d867a8a092
-    sha256: e8080de86e3aa92cf05535b5bd9866a8a9c63853a0345a87a67781241848e2bb
+    md5: 2bb2d071f5cb419e4ce0e1eb7372eb9b
+    sha256: 81f68b9498721dc8ec65f723ecf46b569ee8109540858c440320acf1b7ba1089
   category: main
   optional: false
 - name: ptscotch
-  version: 7.0.4
+  version: 6.0.9
   manager: conda
   platform: osx-64
   dependencies:
-    libptscotch: 7.0.4
-    mpich: '>=4.1.2,<5.0a0'
-    scotch: 7.0.4
-  url: https://conda.anaconda.org/conda-forge/osx-64/ptscotch-7.0.4-h40132e6_1.conda
+    libzlib: '>=1.2.11,<1.3.0a0'
+    mpich: '>=4.0.1,<5.0a0'
+    scotch: '>=6.0.9,<6.0.10.0a0'
+    zlib: '>=1.2.11,<1.3.0a0'
+  url: https://conda.anaconda.org/conda-forge/osx-64/ptscotch-6.0.9-h4f3afa6_2.tar.bz2
   hash:
-    md5: 90798956145eb912d7e104904c9adfea
-    sha256: dd71383b6386b72c0ede5948e3c7c4140311e6d0bcb24361daeea7faf8763a64
+    md5: fad5880e9a67a2254babb5d77e63005f
+    sha256: 0a6d786d07b3ffe60c27e0a747251c8ea524f366d7a3fb49d37d13c839d59d6d
   category: main
   optional: false
 - name: ptscotch
-  version: 7.0.4
+  version: 6.0.9
   manager: conda
   platform: osx-arm64
   dependencies:
-    libptscotch: 7.0.4
-    mpich: '>=4.1.2,<5.0a0'
-    scotch: 7.0.4
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/ptscotch-7.0.4-heaa5b5c_1.conda
+    libzlib: '>=1.2.11,<1.3.0a0'
+    mpich: '>=4.0.1,<5.0a0'
+    scotch: '>=6.0.9,<6.0.10.0a0'
+    zlib: '>=1.2.11,<1.3.0a0'
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/ptscotch-6.0.9-hd02db47_2.tar.bz2
   hash:
-    md5: 7a492ae7b6e78a48dba48469c5c76b58
-    sha256: 454aa7d2d8e85a200b971183412ff6401467b1d4d8523907729293ea33b10610
+    md5: 192bba8a27718aa0dab53c1cdbb5db9d
+    sha256: 4fd4816952763ab0001d1f7dc209bc6c17ba410bbb8b8aef3eca443bb9aaf040
   category: main
   optional: false
 - name: pugixml
@@ -7683,39 +7582,43 @@ package:
   category: main
   optional: false
 - name: scotch
-  version: 7.0.4
+  version: 6.0.9
   manager: conda
   platform: linux-64
   dependencies:
-    libscotch: 7.0.4
-  url: https://conda.anaconda.org/conda-forge/linux-64/scotch-7.0.4-h23d43cc_1.conda
+    libgcc-ng: '>=10.3.0'
+    libzlib: '>=1.2.11,<1.3.0a0'
+    zlib: '>=1.2.11,<1.3.0a0'
+  url: https://conda.anaconda.org/conda-forge/linux-64/scotch-6.0.9-hb2e6521_2.tar.bz2
   hash:
-    md5: 29663db7f60e56db7a2576ddf5a7fdc2
-    sha256: 63bed3999eb07598cb249b670fb36f8f3278cf4abebdafd3b9d908fba904e8bf
+    md5: 20eb1f0c247d10da95b1da761e7f4c10
+    sha256: 88be3ee9b49716657d8429fbb9b6ce4eb65efd79b7e660636775a858cb077921
   category: main
   optional: false
 - name: scotch
-  version: 7.0.4
+  version: 6.0.9
   manager: conda
   platform: osx-64
   dependencies:
-    libscotch: 7.0.4
-  url: https://conda.anaconda.org/conda-forge/osx-64/scotch-7.0.4-h40132e6_1.conda
+    libzlib: '>=1.2.11,<1.3.0a0'
+    zlib: '>=1.2.11,<1.3.0a0'
+  url: https://conda.anaconda.org/conda-forge/osx-64/scotch-6.0.9-h3da7401_2.tar.bz2
   hash:
-    md5: f95928a99576e577d7339420ed388427
-    sha256: 384776e86f69787459f2fcb399249faa744116d894e4014efcfed9458da962df
+    md5: 201a64c35a3b3ce59b56a33f08c7a70e
+    sha256: f7cd07fbfe7a9cbb25a6e1c62c30ca3d821040f9c312c7e95df6895dc4203aef
   category: main
   optional: false
 - name: scotch
-  version: 7.0.4
+  version: 6.0.9
   manager: conda
   platform: osx-arm64
   dependencies:
-    libscotch: 7.0.4
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/scotch-7.0.4-heaa5b5c_1.conda
+    libzlib: '>=1.2.11,<1.3.0a0'
+    zlib: '>=1.2.11,<1.3.0a0'
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/scotch-6.0.9-h7537618_2.tar.bz2
   hash:
-    md5: a30162091e3e0c0940f459ac73813192
-    sha256: 912b497b2adde2647d9ed31325abfff0944a02e6e2819d87315bfef1081b4b70
+    md5: 84c5fcd61737aa430b8d31bb6e2c011b
+    sha256: 2794ecda7de53c115bbaaceff9195dff95a4e5412766ac83189e6b411652ec3e
   category: main
   optional: false
 - name: setuptools
@@ -7932,18 +7835,18 @@ package:
   manager: conda
   platform: linux-64
   dependencies:
-    libblas: '>=3.9.0,<4.0a0'
-    libcblas: '>=3.9.0,<4.0a0'
-    libgcc-ng: '>=12'
-    liblapack: '>=3.9.0,<4.0a0'
-    libstdcxx-ng: '>=12'
-    metis: '>=5.1.1,<5.1.2.0a0'
-    mpfr: '>=4.2.1,<5.0a0'
-    tbb: '>=2021.10.0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/suitesparse-5.10.1-h3ec001c_2.conda
+    libblas: '>=3.8.0,<4.0a0'
+    libcblas: '>=3.8.0,<4.0a0'
+    libgcc-ng: '>=9.4.0'
+    liblapack: '>=3.8.0,<4.0a0'
+    libstdcxx-ng: '>=9.4.0'
+    metis: '>=5.1.0,<5.1.1.0a0'
+    mpfr: '>=4.1.0,<5.0a0'
+    tbb: '>=2021.3.0'
+  url: https://conda.anaconda.org/conda-forge/linux-64/suitesparse-5.10.1-h9e50725_1.tar.bz2
   hash:
-    md5: 9b37d27528c5f86ee09bf1fc6834da8e
-    sha256: 596801423c9183c126bb9a4cf79d8c7b326fb7c089b6f70d4505968e83de874f
+    md5: a3a685b5f9aeb890ed874502fe56accf
+    sha256: 176d004eafe3f07110315d1c96ab7245fbba8677364933213404890a0e2e9d1f
   category: main
   optional: false
 - name: suitesparse
@@ -7951,18 +7854,17 @@ package:
   manager: conda
   platform: osx-64
   dependencies:
-    __osx: '>=10.9'
-    libblas: '>=3.9.0,<4.0a0'
-    libcblas: '>=3.9.0,<4.0a0'
-    libcxx: '>=16.0.6'
-    liblapack: '>=3.9.0,<4.0a0'
-    metis: '>=5.1.1,<5.1.2.0a0'
-    mpfr: '>=4.2.1,<5.0a0'
-    tbb: '>=2021.10.0'
-  url: https://conda.anaconda.org/conda-forge/osx-64/suitesparse-5.10.1-h0a40b7c_2.conda
+    libblas: '>=3.8.0,<4.0a0'
+    libcblas: '>=3.8.0,<4.0a0'
+    libcxx: '>=11.1.0'
+    liblapack: '>=3.8.0,<4.0a0'
+    metis: '>=5.1.0,<5.1.1.0a0'
+    mpfr: '>=4.1.0,<5.0a0'
+    tbb: '>=2021.3.0'
+  url: https://conda.anaconda.org/conda-forge/osx-64/suitesparse-5.10.1-h7aff33d_1.tar.bz2
   hash:
-    md5: 31ae28651c3e544afa792b37e00deccd
-    sha256: e38ceeb1f3fa8e36ee73c912ec2408c2e4bcbdbf25d1bdfc9d44c442a27fa0a8
+    md5: d30185298e8ba70c8bc17121f837730d
+    sha256: 6aadb010ca234dae7795a61add8a19593f55f80e135b88c52e2e52058d3072ae
   category: main
   optional: false
 - name: suitesparse
@@ -7970,18 +7872,17 @@ package:
   manager: conda
   platform: osx-arm64
   dependencies:
-    __osx: '>=10.9'
     libblas: '>=3.9.0,<4.0a0'
     libcblas: '>=3.9.0,<4.0a0'
-    libcxx: '>=16.0.6'
+    libcxx: '>=11.1.0'
     liblapack: '>=3.9.0,<4.0a0'
-    metis: '>=5.1.1,<5.1.2.0a0'
-    mpfr: '>=4.2.1,<5.0a0'
-    tbb: '>=2021.10.0'
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/suitesparse-5.10.1-h88be0ae_2.conda
+    metis: '>=5.1.0,<5.1.1.0a0'
+    mpfr: '>=4.1.0,<5.0a0'
+    tbb: '>=2021.3.0'
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/suitesparse-5.10.1-h7cd81ec_1.tar.bz2
   hash:
-    md5: 66c2bdc4a851a1e6a75f6ad53fc65068
-    sha256: eda0096bfa20713bca6367f8cddc7c889bc2917ff825b7689a594e6ecab21a4e
+    md5: aa2b4cd2c3c870a5da51032c97952e8e
+    sha256: e0bf87e0d1d85a8b073f276194dcb38e41dab1be5198fbd742d86d37741e46d8
   category: main
   optional: false
 - name: superlu
@@ -8031,66 +7932,64 @@ package:
   category: main
   optional: false
 - name: superlu_dist
-  version: 8.2.1
+  version: 7.2.0
   manager: conda
   platform: linux-64
   dependencies:
     _openmp_mutex: '>=4.5'
-    libblas: '>=3.9.0,<4.0a0'
-    libgcc-ng: '>=12'
+    libblas: '>=3.8.0,<4.0a0'
+    libgcc-ng: '>=9.4.0'
     libgfortran-ng: ''
-    libgfortran5: '>=12.3.0'
-    liblapack: '>=3.9.0,<4.0a0'
-    libstdcxx-ng: '>=12'
-    metis: '>=5.1.1,<5.2.0a0'
-    mpich: '>=4.1.2,<5.0a0'
+    libgfortran5: '>=9.4.0'
+    liblapack: '>=3.8.0,<4.0a0'
+    libstdcxx-ng: '>=9.4.0'
+    metis: '>=5.1.0,<5.1.1.0a0'
+    mpich: '>=3.4.2,<5.0a0'
     parmetis: '>=4.0.3,<4.1.0a0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/superlu_dist-8.2.1-h5902e8c_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/superlu_dist-7.2.0-h25dcc4a_0.tar.bz2
   hash:
-    md5: a0a5defd83acba6c01f1f6707138c603
-    sha256: 954049f1746d6cf2f23c82d38b10406fb3c09ac605bf3431c39111aac5d5eca9
+    md5: fac36f70854e425ad3aaa30992d58c1b
+    sha256: 07b255249685c89d2430eac141ab2000ec3a7101931602db41d99e8d99c4ab9e
   category: main
   optional: false
 - name: superlu_dist
-  version: 8.2.1
+  version: 7.2.0
   manager: conda
   platform: osx-64
   dependencies:
-    __osx: '>=10.9'
-    libblas: '>=3.9.0,<4.0a0'
-    libcxx: '>=16.0.6'
+    libblas: '>=3.8.0,<4.0a0'
+    libcxx: '>=11.1.0'
     libgfortran: 5.*
-    libgfortran5: '>=13.2.0'
-    liblapack: '>=3.9.0,<4.0a0'
-    llvm-openmp: '>=17.0.6'
-    metis: '>=5.1.1,<5.2.0a0'
-    mpich: '>=4.1.2,<5.0a0'
+    libgfortran5: '>=9.3.0'
+    liblapack: '>=3.8.0,<4.0a0'
+    llvm-openmp: '>=12.0.1'
+    metis: '>=5.1.0,<5.1.1.0a0'
+    mpich: '>=3.4.2,<5.0a0'
     parmetis: '>=4.0.3,<4.1.0a0'
-  url: https://conda.anaconda.org/conda-forge/osx-64/superlu_dist-8.2.1-h418a15f_0.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/superlu_dist-7.2.0-h4bb6bf2_0.tar.bz2
   hash:
-    md5: 1c6f8009455a501fcf6d6682d9a1f6ce
-    sha256: fbed0dc08a447ac9c66d82c61d62007d2acaadfd464adf7de04498356d6ec17c
+    md5: f5937bfa7727627ff7446791a25edf16
+    sha256: fbedba66033878a223af1b8bb087a05375eaf0a5c052a169c0e16230a3fcd753
   category: main
   optional: false
 - name: superlu_dist
-  version: 8.2.1
+  version: 7.2.0
   manager: conda
   platform: osx-arm64
   dependencies:
-    __osx: '>=10.9'
     libblas: '>=3.9.0,<4.0a0'
-    libcxx: '>=16.0.6'
+    libcxx: '>=11.1.0'
     libgfortran: 5.*
-    libgfortran5: '>=13.2.0'
+    libgfortran5: '>=11.0.1.dev0'
     liblapack: '>=3.9.0,<4.0a0'
-    llvm-openmp: '>=17.0.6'
-    metis: '>=5.1.1,<5.2.0a0'
-    mpich: '>=4.1.2,<5.0a0'
+    llvm-openmp: '>=12.0.1'
+    metis: '>=5.1.0,<5.1.1.0a0'
+    mpich: '>=3.4.2,<5.0a0'
     parmetis: '>=4.0.3,<4.1.0a0'
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/superlu_dist-8.2.1-h6be7e34_0.conda
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/superlu_dist-7.2.0-h7df07b8_0.tar.bz2
   hash:
-    md5: e7dc9dbedf874f55ab0ec5a29e7ffcae
-    sha256: 4b4116cf7581327ad45979386b07b61a5475cf3756e56515ec65f23004dadf02
+    md5: 0ff06c2b04381ff8d492b5fba96d9961
+    sha256: 58a2dd80f6adde68e7276b0ab46356434fbb4fc7dcf33fe1b05b3ae966019a73
   category: main
   optional: false
 - name: svt-av1
