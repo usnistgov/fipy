@@ -81,7 +81,9 @@ Recommended Method
 
       You can try to include multiple solver suites, but be aware that
       different suites may have incompatible requirements, or may restrict
-      installation to obsolete versions of Python.
+      installation to obsolete versions of Python.  Given that :term:`FiPy`
+      can only use one solver suite during a run, installing more than one
+      solver in an environment isn't necessary.
 
       .. attention::
 
