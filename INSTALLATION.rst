@@ -66,118 +66,62 @@ Recommended Method
    These days, the most useful channel is conda-forge_, which provides
    everything necessary to install :term:`FiPy`.
 
-* `install Miniconda`_ on your computer
-* Install :term:`FiPy` :ref:`REQUIREDPACKAGES` with one of the following:
+Install conda_
+==============
 
-    * Conda environment files::
+`Install conda`_ or `install micromamba`_ on your computer.
 
-        $ conda env create --name <MYFIPYENV> \
-            --file environments/base-environment.yml
 
-      followed by::
+.. include:: CONDA_ENVIRONMENT.rst
 
-        $ conda env update --name <MYFIPYENV> \
-            --file environments/<SOLVER>-environment.yml
 
-      You can try to include multiple solver suites, but be aware that
-      different suites may have incompatible requirements, or may restrict
-      installation to obsolete versions of Python.  Given that :term:`FiPy`
-      can only use one solver suite during a run, installing more than one
-      solver in an environment isn't necessary.
+Install :term:`FiPy`
+====================
 
-      .. attention::
-
-         Successively updating an environment can be unpredictable, as
-         later packages may conflict with earlier ones.  Unfortunately,
-         ``conda env create`` `does not support multiple environment files
-         <https://github.com/conda/conda/issues/9294>`_.
-
-         Alternatively, combine :file:`environments/base-environment.yml`
-         with any :file:`environments/<SOLVER>-environment.yml` you wish to
-         use (`conda-merge <https://github.com/amitbeka/conda-merge>`_ may
-         prove useful).  Then execute::
-
-           $ conda env create --name <MYFIPYENV> --file <MYMERGEDENVIRONMENT>.yml
-
-    * `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles::
-
-        $ conda-lock install --name <MYFIPYENV> \
-            environments/locks/conda-<SOLVER>-lock.yml
-
-      or, to be really explicit::
-
-        $ conda create --name <MYFIPYENV> \
-            --file environments/locks/conda-<SOLVER>-<PLATFORM>.lock
-
-      These lockfiles list the specific package versions used to test
-      :term:`FiPy` and should provide the most reproducible environment.
-
-    * Directly from conda-forge_, picking and choosing desired packages, e.g.::
-
-        $ conda create --name <MYFIPYENV> --channel conda-forge \
-            python=3 numpy scipy matplotlib-base future packaging mpich \
-            mpi4py petsc4py mayavi "gmsh <4.0|>=4.5.2"
-
-      or::
-
-        $ conda create --name <MYFIPYENV> --channel conda-forge \
-            python=2.7 numpy scipy matplotlib-base future packaging \
-            pysparse mayavi "traitsui<7.0.0" "gmsh<4.0"
-
-      .. attention::
-
-         Bit rot has started to set in for Python 2.7.  One consequence is that
-         :class:`~fipy.viewers.vtkViewer.VTKViewer`\s can raise errors
-         (probably other uses of :term:`Mayavi`, too). Hence, the constraint
-         of `"traitsui<7.0.0"`.
-
-  .. note::
-
-     Each of these commands create a self-contained conda_ environment and
-     then download and populate the environment with the prerequisites for
-     :term:`FiPy` from the conda-forge_ channel at https://anaconda.org.
-
-* Install :term:`FiPy` itself::
+::
 
     $ conda install --name <MYFIPYENV> --channel conda-forge fipy
 
-  .. note::
+.. note::
 
-     The `fipy conda-forge`_ package used to be "batteries included", but
-     we found this to be too fragile.  It now only includes the bare
-     minimum for :term:`FiPy` to function.
+   The `fipy conda-forge`_ package used to be "batteries included", but
+   we found this to be too fragile.  It now only includes the bare
+   minimum for :term:`FiPy` to function.
 
-* enable this new environment with::
+Enable conda_ environment
+=========================
+
+Enable your new environment with::
 
     $ conda activate <MYFIPYENV>
 
-  or
+or::
 
     $ source activate <MYFIPYENV>
 
-  .. note::
+or, on Windows_::
 
-     ``$ activate <MYFIPYENV>`` on Windows_
+    $ activate <MYFIPYENV>
 
-* move on to :ref:`USAGE`.
+You're now ready to move on to :ref:`USAGE`.
 
-  .. note::
+.. note::
 
-     conda_ can be
-     `quite <https://www.anaconda.com/blog/understanding-and-improving-condas-performance>`_
-     `slow <https://medium.com/@marius.v.niekerk/conda-metachannel-f962241c9437>`_
-     to resolve all dependencies when performing
-     an installation.  You may wish to consider using the alternative
-     mamba_ installation manager to speed things up.
+   conda_ can be
+   `quite <https://www.anaconda.com/blog/understanding-and-improving-condas-performance>`_
+   `slow <https://medium.com/@marius.v.niekerk/conda-metachannel-f962241c9437>`_
+   to resolve all dependencies when performing
+   an installation.  You may wish to consider using the alternative
+   mamba_ installation manager to speed things up.
 
-  .. note::
+.. note::
 
-     On Linux_ and `Mac OS X`_, you should have a pretty complete system
-     to run and visualize :term:`FiPy` simulations. On Windows_, there
-     are fewer packages available via conda_, particularly amongst the
-     sparse matrix :ref:`SOLVERS`, but the system still should be
-     functional. Significantly, you will need to download and install
-     :term:`Gmsh` manually when using Python 2.7.
+   On Linux_ and `Mac OS X`_, you should have a pretty complete system
+   to run and visualize :term:`FiPy` simulations. On Windows_, there
+   are fewer packages available via conda_, particularly amongst the
+   sparse matrix :ref:`SOLVERS`, but the system still should be
+   functional. Significantly, you will need to download and install
+   :term:`Gmsh` manually when using Python 2.7.
 
 .. attention::
 
@@ -185,8 +129,8 @@ Recommended Method
    its :ref:`examples <part:examples>`.  These can be obtained by
    `cloning the repository`_ or downloading a `compressed archive`_.
 
-.. _install Miniconda: https://conda.io/projects/conda/en/latest/user-guide/install
-.. _guyer: https://anaconda.org/guyer
+.. _install conda: https://conda.io/projects/conda/en/latest/user-guide/install/
+.. _install micromamba: https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html
 .. _conda-forge: https://conda-forge.github.io/
 .. _Mac OS X: http://www.apple.com/macosx/
 .. _Linux: http://www.linux.org/
@@ -406,8 +350,8 @@ of the system package manager and the system directories.  These utilities
 include conda_, Nix_, Stow_, Virtualenv_ and Buildout_, amongst others.
 Conda_ and Nix_ are only ones of these we have the resources to support.
 
-Our preferred development environment is set up with the initial steps of
-the :ref:`RECOMMENDED_METHOD`, without :term:`FiPy` itself, followed by::
+Our preferences is to :ref:`CREATE_CONDA_ENVIRONMENT` for development,
+followed by::
 
    $ source activate <MYFIPYENV>
    $ python -m pip install scikit-fmm

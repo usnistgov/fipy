@@ -1,6 +1,15 @@
 channels:
   - conda-forge
 dependencies:
+  - python
+  - numpy
+  - scipy
+  - matplotlib-base
+  - future
+  - packaging
+  - mayavi
+  - gmsh <4.0|>=4.5.2
+  - pip
   - mpich
   - mpi4py
   # petsc 3.20.2_*_102 is broken on macOS,

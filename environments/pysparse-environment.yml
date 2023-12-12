@@ -1,8 +1,17 @@
 channels:
   - conda-forge
 dependencies:
-  - pysparse
+  - python
+  - numpy
+  - scipy
+  - matplotlib-base
+  - future
+  - packaging
   - mayavi # [unix]
+  - traitsui <7.0.0
+  - gmsh <4.0|>=4.5.2
+  - pip
+  - pysparse
 platforms:
   - linux-64
   - osx-64

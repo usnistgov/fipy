@@ -129,7 +129,6 @@ The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
     $ for solver in petsc pysparse scipy trilinos
       do
         conda-lock lock \
-          --file environments/base-environment.yml \
           --file environments/${solver}-environment.yml \
           --lockfile environments/locks/conda-${solver}-lock.yml
         conda-lock render \
