@@ -6,7 +6,9 @@ Create a conda_ environment
 Use one of the following methods to create a self-contained conda_
 environment and then download and populate the environment with the
 prerequisites for :term:`FiPy` from the conda-forge_ channel at
-https://anaconda.org.
+https://anaconda.org.  See `this discussion
+<https://pythonspeed.com/articles/conda-dependency-management/>`_
+of the merits of and relationship between the different methods.
 
 * Conda_ environment files
 
