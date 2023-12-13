@@ -42,6 +42,8 @@ you explore the package interactively.
 .. _Binder:        https://mybinder.org/v2/gh/usnistgov/fipy/master
 .. _Jupyter Notebook:    http://jupyter.org
 
+.. _RECOMMENDED_METHOD:
+
 ------------------
 Recommended Method
 ------------------
@@ -61,91 +63,65 @@ Recommended Method
 
    In addition to the default packages, many other developers provide
    "channels" to distribute their own builds of a variety of software.
-   These days, the most useful channel is `conda-forge`, which provides
+   These days, the most useful channel is conda-forge_, which provides
    everything necessary to install :term:`FiPy`.
 
-* `install Miniconda`_ on your computer
-* run::
+Install conda_
+==============
 
-    $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy gmsh
+`Install conda`_ or `install micromamba`_ on your computer.
 
-  .. note::
 
-     This command creates a self-contained conda_ environment and then
-     downloads and populates the environment with the prerequisites for
-     :term:`FiPy` from the conda-forge_ channel at https://anaconda.org.
+.. include:: CONDA_ENVIRONMENT.rst
 
-     :term:`Gmsh` is an optional package because some versions are
-     incompatible with :term:`FiPy`, so it must be requested explicitly.
 
-  .. note::
+Install :term:`FiPy`
+====================
 
-     The `fipy conda-forge`_ package is a convenience. You may choose to
-     install packages explicitly, e.g.,::
+::
 
-       $ conda create --name <MYFIPYENV> --channel conda-forge python=3 numpy scipy matplotlib-base future packaging mpich mpi4py petsc4py mayavi "gmsh <4.0|>=4.5.2"
+    $ conda install --name <MYFIPYENV> --channel conda-forge fipy
 
-     or::
+.. note::
 
-       $ conda create --name <MYFIPYENV> --channel conda-forge python=2.7 numpy scipy matplotlib-base future packaging pysparse mayavi "traitsui<7.0.0" "gmsh<4.0"
+   The `fipy conda-forge`_ package used to be "batteries included", but
+   we found this to be too fragile.  It now only includes the bare
+   minimum for :term:`FiPy` to function.
 
-  .. attention::
+Enable conda_ environment
+=========================
 
-     Windows x86_64 is fully supported, but this does not work on
-     Windows x86_32, as conda-forge_ no longer supports that platform.  For
-     Python 2.7.x, you should be able to do::
-
-      conda create --name <MYFIPYENV> --channel conda-forge python=2.7 numpy scipy matplotlib pysparse mayavi weave
-
-     and for Python 3.x, you should be able to do::
-
-      conda create --name <MYFIPYENV> --channel conda-forge python=3 numpy scipy matplotlib pysparse gmsh
-
-     followed, for either, by::
-
-      activate <MYFIPYENV>
-      python -m pip install fipy
-
-  .. attention::
-
-     Bit rot has started to set in for Python 2.7.  One consequence is that
-     :class:`~fipy.viewers.vtkViewer.VTKViewer`\s can raise errors
-     (probably other uses of :term:`Mayavi`, too).  You may be able to remedy this by
-     creating your environment with::
-
-     $ conda create --name <MYFIPYENV> --channel conda-forge python=2.7 fipy "traitsui<7.0.0"
-
-* enable this new environment with::
+Enable your new environment with::
 
     $ conda activate <MYFIPYENV>
 
-  or
+or::
 
     $ source activate <MYFIPYENV>
 
-  .. note::
+or, on Windows_::
 
-     ``$ activate <MYFIPYENV>`` on Windows_
+    $ activate <MYFIPYENV>
 
-* move on to :ref:`USAGE`.
+You're now ready to move on to :ref:`USAGE`.
 
-  .. note::
+.. note::
 
-     conda_ can be
-     `quite <https://www.anaconda.com/blog/understanding-and-improving-condas-performance>`_
-     `slow <https://medium.com/@marius.v.niekerk/conda-metachannel-f962241c9437>`_
-     to resolve all dependencies when performing
-     an installation.  You may wish to consider using the alternative
-     mamba_ installation manager to speed things up.
+   conda_ can be
+   `quite <https://www.anaconda.com/blog/understanding-and-improving-condas-performance>`_
+   `slow <https://medium.com/@marius.v.niekerk/conda-metachannel-f962241c9437>`_
+   to resolve all dependencies when performing
+   an installation.  You may wish to consider using the alternative
+   mamba_ installation manager to speed things up.
 
-  .. note::
+.. note::
 
-     On Linux_ and `Mac OS X`_, you should have a pretty complete system
-     to run and visualize :term:`FiPy` simulations. On Windows_, there
-     are fewer packages available via conda_, particularly amongst the
-     sparse matrix :ref:`SOLVERS`, but the system still should be
-     functional. Significantly, you will need to download and install
-     :term:`Gmsh` manually when using Python 2.7.
+   On Linux_ and `Mac OS X`_, you should have a pretty complete system
+   to run and visualize :term:`FiPy` simulations. On Windows_, there
+   are fewer packages available via conda_, particularly amongst the
+   sparse matrix :ref:`SOLVERS`, but the system still should be
+   functional. Significantly, you will need to download and install
+   :term:`Gmsh` manually when using Python 2.7.
 
 .. attention::
 
@@ -153,13 +129,13 @@ Recommended Method
    its :ref:`examples <part:examples>`.  These can be obtained by
    `cloning the repository`_ or downloading a `compressed archive`_.
 
-.. _install Miniconda: https://conda.io/projects/conda/en/latest/user-guide/install
-.. _guyer: https://anaconda.org/guyer
+.. _install conda: https://conda.io/projects/conda/en/latest/user-guide/install/
+.. _install micromamba: https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html
 .. _conda-forge: https://conda-forge.github.io/
 .. _Mac OS X: http://www.apple.com/macosx/
 .. _Linux: http://www.linux.org/
 .. _Windows: http://www.microsoft.com/windows/
-.. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg
+.. |CondaForge|    image:: https://anaconda.org/conda-forge/fipy/badges/version.svg
 .. _CondaForge:    https://anaconda.org/conda-forge/fipy
 .. _mamba: https://mamba.readthedocs.io/
 .. _fipy conda-forge: https://anaconda.org/conda-forge/fipy
@@ -374,12 +350,10 @@ of the system package manager and the system directories.  These utilities
 include conda_, Nix_, Stow_, Virtualenv_ and Buildout_, amongst others.
 Conda_ and Nix_ are only ones of these we have the resources to support.
 
-Our preferred development environment is set up with::
+:ref:`CREATE_CONDA_ENVIRONMENT` for development, followed by::
 
-   $ conda create --name <MYFIPYENV> --channel conda-forge python=<PYTHONVERSION> fipy
    $ source activate <MYFIPYENV>
    $ python -m pip install scikit-fmm
-   $ conda remove --channel conda-forge --force fipy
    $ git clone https://github.com/usnistgov/fipy.git
    $ cd fipy
    $ python setup.py develop

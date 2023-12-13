@@ -183,6 +183,7 @@ linearize
 linearizing
 liquidus
 Lobkovsky
+lockfiles
 LSMLIB
 MacBook
 Malalasekera
