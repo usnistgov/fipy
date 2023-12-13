@@ -35,19 +35,19 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; FiPy 3.4.4+5.gfcf3dfb0a documentation</title>
+    <title>Installation &#8212; FiPy 3.4.4+6.g276495025 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=50f10d8a"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=2d8c8ffa"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+5.gfcf3dfb0a documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.4+6.g276495025 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Git practices" href="ADMINISTRATA.html" />
     <link rel="prev" title="Contact" href="CONTACT.html" />
@@ -144,8 +144,8 @@ syntax and, like any <a class="reference external" href="http://jupyter.org">Jup
 you explore the package interactively.</p>
 </section>
 <section id="recommended-method">
-<h2>Recommended Method<a class="headerlink" href="#recommended-method" title="Permalink to this heading">¶</a></h2>
-<p><a class="reference external" href="https://anaconda.org/conda-forge/fipy"><img alt="CondaForge" src="https://anaconda.org/conda-forge/fipy/badges/installer/conda.svg" /></a></p>
+<span id="id2"></span><h2>Recommended Method<a class="headerlink" href="#recommended-method" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference external" href="https://anaconda.org/conda-forge/fipy"><img alt="CondaForge" src="https://anaconda.org/conda-forge/fipy/badges/version.svg" /></a></p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p>There are many ways to obtain the software
@@ -158,78 +158,118 @@ the user does not have sufficient privileges to install software
 system-wide.</p>
 <p>In addition to the default packages, many other developers provide
 “channels” to distribute their own builds of a variety of software.
-These days, the most useful channel is <cite>conda-forge</cite>, which provides
+These days, the most useful channel is <a class="reference external" href="https://conda-forge.github.io/">conda-forge</a>, which provides
 everything necessary to install <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>.</p>
 </div>
+<section id="install-conda">
+<h3>Install <a class="reference external" href="https://conda.io">conda</a><a class="headerlink" href="#install-conda" title="Permalink to this heading">¶</a></h3>
+<p><a class="reference external" href="https://conda.io/projects/conda/en/latest/user-guide/install/">Install conda</a> or <a class="reference external" href="https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html">install micromamba</a> on your computer.</p>
+</section>
+<section id="create-a-conda-environment">
+<span id="create-conda-environment"></span><h3>Create a <a class="reference external" href="https://conda.io">conda</a> environment<a class="headerlink" href="#create-a-conda-environment" title="Permalink to this heading">¶</a></h3>
+<p>Use one of the following methods to create a self-contained <a class="reference external" href="https://conda.io">conda</a>
+environment and then download and populate the environment with the
+prerequisites for <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> from the <a class="reference external" href="https://conda-forge.github.io/">conda-forge</a> channel at
+<a class="reference external" href="https://anaconda.org">https://anaconda.org</a>.  See <a class="reference external" href="https://pythonspeed.com/articles/conda-dependency-management/">this discussion</a>
+of the merits of and relationship between the different methods.</p>
 <ul>
-<li><p><a class="reference external" href="https://conda.io/projects/conda/en/latest/user-guide/install">install Miniconda</a> on your computer</p></li>
-<li><p>run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create --name &lt;MYFIPYENV&gt; --channel conda-forge python=&lt;PYTHONVERSION&gt; fipy gmsh
+<li><p><a class="reference external" href="https://conda.io">Conda</a> environment files</p>
+<p>This option is the most upgradable in the future and probably the best
+for development.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env create --name &lt;MYFIPYENV&gt; \
+    --file environments/&lt;SOLVER&gt;-environment.yml
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This command creates a self-contained <a class="reference external" href="https://conda.io">conda</a> environment and then
-downloads and populates the environment with the prerequisites for
-<a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> from the <a class="reference external" href="https://conda-forge.github.io/">conda-forge</a> channel at <a class="reference external" href="https://anaconda.org">https://anaconda.org</a>.</p>
-<p><a class="reference internal" href="glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a> is an optional package because some versions are
-incompatible with <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>, so it must be requested explicitly.</p>
+<p>You can try to include multiple solver suites using <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span>
+<span class="pre">update</span></code>, but be aware that different suites may have incompatible
+requirements, or may restrict installation to obsolete versions of
+Python.  Given that <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> can only use one solver suite during
+a run, installing more than one solver in an environment isn’t
+necessary.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Successively updating an environment can be unpredictable, as later
+packages may conflict with earlier ones.  Unfortunately, <code class="docutils literal notranslate"><span class="pre">conda</span>
+<span class="pre">env</span> <span class="pre">create</span></code> <a class="reference external" href="https://github.com/conda/conda/issues/9294">does not support multiple environment files</a>.</p>
+<p>Alternatively, combine the different
+<code class="file docutils literal notranslate"><span class="pre">environments/&lt;SOLVER&gt;-environment.yml</span></code> files you wish to
+use, along with <cite>environment.yml</cite> files for any other packages you
+are interested in (<a class="reference external" href="https://github.com/amitbeka/conda-merge">conda-merge</a> may prove useful).
+Then execute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env create --name &lt;MYFIPYENV&gt; --file &lt;MYMERGEDENVIRONMENT&gt;.yml
+</pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <a class="reference external" href="https://anaconda.org/conda-forge/fipy">fipy conda-forge</a> package is a convenience. You may choose to
-install packages explicitly, e.g.,:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create --name &lt;MYFIPYENV&gt; --channel conda-forge python=3 numpy scipy matplotlib-base future packaging mpich mpi4py petsc4py mayavi &quot;gmsh &lt;4.0|&gt;=4.5.2&quot;
+</div>
+</div>
+</li>
+<li><p><a class="reference external" href="https://github.com/conda/conda-lock">conda-lock</a> lockfiles</p>
+<p>This option will pin all the packages, so is the most reproducible, but
+not particularly upgradable.  For most, this is the safest way to
+generate a FiPy environment that consistently works.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda-lock install --name &lt;MYFIPYENV&gt; \
+    environments/locks/conda-&lt;SOLVER&gt;-lock.yml
+</pre></div>
+</div>
+<p>or, to be really explicit (and obviating the need for <a class="reference external" href="https://github.com/conda/conda-lock">conda-lock</a>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create --name &lt;MYFIPYENV&gt; \
+    --file environments/locks/conda-&lt;SOLVER&gt;-&lt;PLATFORM&gt;.lock
+</pre></div>
+</div>
+</li>
+<li><p>Directly from <a class="reference external" href="https://conda-forge.github.io/">conda-forge</a>, picking and choosing desired packages</p>
+<p>This option is the most flexible, but has the highest risk of missing or
+incompatible packages.</p>
+<p>e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create --name &lt;MYFIPYENV&gt; --channel conda-forge \
+    python=3 numpy scipy matplotlib-base future packaging mpich \
+    mpi4py petsc4py mayavi &quot;gmsh &lt;4.0|&gt;=4.5.2&quot;
 </pre></div>
 </div>
 <p>or:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create --name &lt;MYFIPYENV&gt; --channel conda-forge python=2.7 numpy scipy matplotlib-base future packaging pysparse mayavi &quot;traitsui&lt;7.0.0&quot; &quot;gmsh&lt;4.0&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create --name &lt;MYFIPYENV&gt; --channel conda-forge \
+    python=2.7 numpy scipy matplotlib-base future packaging \
+    pysparse mayavi &quot;traitsui&lt;7.0.0&quot; &quot;gmsh&lt;4.0&quot;
 </pre></div>
-</div>
-</div>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>Windows x86_64 is fully supported, but this does not work on
-Windows x86_32, as <a class="reference external" href="https://conda-forge.github.io/">conda-forge</a> no longer supports that platform.  For
-Python 2.7.x, you should be able to do:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">--</span><span class="n">name</span> <span class="o">&lt;</span><span class="n">MYFIPYENV</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">channel</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">python</span><span class="o">=</span><span class="mf">2.7</span> <span class="n">numpy</span> <span class="n">scipy</span> <span class="n">matplotlib</span> <span class="n">pysparse</span> <span class="n">mayavi</span> <span class="n">weave</span>
-</pre></div>
-</div>
-<p>and for Python 3.x, you should be able to do:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">--</span><span class="n">name</span> <span class="o">&lt;</span><span class="n">MYFIPYENV</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">channel</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">python</span><span class="o">=</span><span class="mi">3</span> <span class="n">numpy</span> <span class="n">scipy</span> <span class="n">matplotlib</span> <span class="n">pysparse</span> <span class="n">gmsh</span>
-</pre></div>
-</div>
-<p>followed, for either, by:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">activate</span> <span class="o">&lt;</span><span class="n">MYFIPYENV</span><span class="o">&gt;</span>
-<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">fipy</span>
-</pre></div>
-</div>
 </div>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p>Bit rot has started to set in for Python 2.7.  One consequence is that
 <a class="reference internal" href="generated/fipy.viewers.vtkViewer.html#fipy.viewers.vtkViewer.VTKViewer" title="fipy.viewers.vtkViewer.VTKViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">VTKViewer</span></code></a>s can raise errors
-(probably other uses of <a class="reference internal" href="glossary.html#term-Mayavi"><span class="xref std std-term">Mayavi</span></a>, too).  You may be able to remedy this by
-creating your environment with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create --name &lt;MYFIPYENV&gt; --channel conda-forge python=2.7 fipy &quot;traitsui&lt;7.0.0&quot;
-</pre></div>
-</div>
+(probably other uses of <a class="reference internal" href="glossary.html#term-Mayavi"><span class="xref std std-term">Mayavi</span></a>, too). Hence, the constraint
+of <cite>“traitsui&lt;7.0.0”</cite>.</p>
 </div>
 </li>
-<li><p>enable this new environment with:</p>
+</ul>
+</section>
+<section id="install-fipy">
+<h3>Install <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a><a class="headerlink" href="#install-fipy" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install --name &lt;MYFIPYENV&gt; --channel conda-forge fipy
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <a class="reference external" href="https://anaconda.org/conda-forge/fipy">fipy conda-forge</a> package used to be “batteries included”, but
+we found this to be too fragile.  It now only includes the bare
+minimum for <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> to function.</p>
+</div>
+</section>
+<section id="enable-conda-environment">
+<h3>Enable <a class="reference external" href="https://conda.io">conda</a> environment<a class="headerlink" href="#enable-conda-environment" title="Permalink to this heading">¶</a></h3>
+<p>Enable your new environment with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate &lt;MYFIPYENV&gt;
 </pre></div>
 </div>
-<p>or</p>
-<blockquote>
-<div><p>$ source activate &lt;MYFIPYENV&gt;</p>
-</div></blockquote>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">activate</span> <span class="pre">&lt;MYFIPYENV&gt;</span></code> on <a class="reference external" href="http://www.microsoft.com/windows/">Windows</a></p>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source activate &lt;MYFIPYENV&gt;
+</pre></div>
 </div>
-</li>
-<li><p>move on to <a class="reference internal" href="USAGE.html#usage"><span class="std std-ref">Using FiPy</span></a>.</p>
+<p>or, on <a class="reference external" href="http://www.microsoft.com/windows/">Windows</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ activate &lt;MYFIPYENV&gt;
+</pre></div>
+</div>
+<p>You’re now ready to move on to <a class="reference internal" href="USAGE.html#usage"><span class="std std-ref">Using FiPy</span></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><a class="reference external" href="https://conda.io">conda</a> can be
@@ -248,14 +288,13 @@ sparse matrix <a class="reference internal" href="SOLVERS.html#solvers"><span cl
 functional. Significantly, you will need to download and install
 <a class="reference internal" href="glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a> manually when using Python 2.7.</p>
 </div>
-</li>
-</ul>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p>When installed via <a class="reference external" href="https://conda.io">conda</a> or <a class="reference internal" href="glossary.html#term-pip"><span class="xref std std-term">pip</span></a>, <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> will not include
 its <a class="reference internal" href="EXAMPLES.html#part-examples"><span class="std std-ref">examples</span></a>.  These can be obtained by
 <a class="reference internal" href="#cloning-the-repository">cloning the repository</a> or downloading a <a class="reference external" href="https://github.com/usnistgov/fipy/releases">compressed archive</a>.</p>
 </div>
+</section>
 </section>
 <section id="obtaining-fipy">
 <h2>Obtaining FiPy<a class="headerlink" href="#obtaining-fipy" title="Permalink to this heading">¶</a></h2>
@@ -365,7 +404,7 @@ details), via the <code class="xref py py-mod docutils literal notranslate"><spa
 </section>
 <section id="level-set-packages">
 <h2>Level Set Packages<a class="headerlink" href="#level-set-packages" title="Permalink to this heading">¶</a></h2>
-<p>To use the level set (<span id="id2">[<a class="reference internal" href="references.html#id4" title="J. A. Sethian. Level Set Methods and Fast Marching Methods. Cambridge University Press, 1996.">8</a>]</span>) components of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> one of the following is
+<p>To use the level set (<span id="id4">[<a class="reference internal" href="references.html#id4" title="J. A. Sethian. Level Set Methods and Fast Marching Methods. Cambridge University Press, 1996.">8</a>]</span>) components of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> one of the following is
 required.</p>
 <section id="scikit-fmm">
 <span id="scikitfmm"></span><h3>Scikit-fmm<a class="headerlink" href="#scikit-fmm" title="Permalink to this heading">¶</a></h3>
@@ -403,11 +442,9 @@ of the utilities that manage packages and their dependencies independently
 of the system package manager and the system directories.  These utilities
 include <a class="reference external" href="https://conda.io">conda</a>, <a class="reference external" href="https://nixos.org/nix/">Nix</a>, <a class="reference external" href="http://savannah.gnu.org/projects/stow/">Stow</a>, <a class="reference external" href="https://virtualenv.pypa.io">Virtualenv</a> and <a class="reference external" href="http://pypi.python.org/pypi/zc.buildout">Buildout</a>, amongst others.
 <a class="reference external" href="https://conda.io">Conda</a> and <a class="reference external" href="https://nixos.org/nix/">Nix</a> are only ones of these we have the resources to support.</p>
-<p>Our preferred development environment is set up with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create --name &lt;MYFIPYENV&gt; --channel conda-forge python=&lt;PYTHONVERSION&gt; fipy
-$ source activate &lt;MYFIPYENV&gt;
+<p><a class="reference internal" href="#create-conda-environment"><span class="std std-ref">Create a conda environment</span></a> for development, followed by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source activate &lt;MYFIPYENV&gt;
 $ python -m pip install scikit-fmm
-$ conda remove --channel conda-forge --force fipy
 $ git clone https://github.com/usnistgov/fipy.git
 $ cd fipy
 $ python setup.py develop
@@ -462,7 +499,7 @@ not).</p>
 <p>Past releases of FiPy are tagged as</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">x.y.z</span></code></dt><dd><p>Any released version of FiPy will be designated with a fixed tag: The
-current version of FiPy is 3.4.4+5.gfcf3dfb0a.  (Legacy <code class="docutils literal notranslate"><span class="pre">version-x_y_z</span></code> tags
+current version of FiPy is 3.4.4+6.g276495025.  (Legacy <code class="docutils literal notranslate"><span class="pre">version-x_y_z</span></code> tags
 are retained for historical purposes, but won’t be added to.)</p>
 </dd>
 </dl>
@@ -485,7 +522,7 @@ synchronized with <code class="docutils literal notranslate"><span class="pre">m
 </div>
 <p>For those who are interested in learning more about Git, a wide variety of
 online sources are available, starting with the <a class="reference external" href="http://git-scm.com/">official Git website</a>.
-The <a class="reference external" href="http://git-scm.com/book">Pro Git book</a> <span id="id5">[<a class="reference internal" href="references.html#id27" title="Scott Chacon. Pro Git. Apress, 2009. URL: http://git-scm.com/book.">9</a>]</span> is particularly instructive.</p>
+The <a class="reference external" href="http://git-scm.com/book">Pro Git book</a> <span id="id7">[<a class="reference internal" href="references.html#id27" title="Scott Chacon. Pro Git. Apress, 2009. URL: http://git-scm.com/book.">9</a>]</span> is particularly instructive.</p>
 </section>
 </section>
 <section id="nix">
@@ -550,7 +587,7 @@ closed.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Dec 05, 2023.
+                Last updated on Dec 13, 2023.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -560,14 +597,20 @@ closed.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+5.gfcf3dfb0a
+Version 3.4.4+6.g276495025
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#pre-installed-on-binder">Pre-Installed on Binder</a></li>
-<li><a class="reference internal" href="#recommended-method">Recommended Method</a></li>
+<li><a class="reference internal" href="#recommended-method">Recommended Method</a><ul>
+<li><a class="reference internal" href="#install-conda">Install conda</a></li>
+<li><a class="reference internal" href="#create-a-conda-environment">Create a conda environment</a></li>
+<li><a class="reference internal" href="#install-fipy">Install <span class="xref std std-term">FiPy</span></a></li>
+<li><a class="reference internal" href="#enable-conda-environment">Enable conda environment</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#obtaining-fipy">Obtaining FiPy</a></li>
 <li><a class="reference internal" href="#installing-fipy">Installing FiPy</a></li>
 <li><a class="reference internal" href="#required-packages">Required Packages</a><ul>
