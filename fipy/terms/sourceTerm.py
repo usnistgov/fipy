@@ -26,7 +26,7 @@ class SourceTerm(CellTerm):
         """
         if self.__class__ is SourceTerm:
             raise AbstractBaseClassError
-        super(CellTerm, self).__init__(coeff=coeff, var=var)
+        super(SourceTerm, self).__init__(coeff=coeff, var=var)
 
     def _calcGeomCoeff(self, var):
         self._checkCoeff(var)
