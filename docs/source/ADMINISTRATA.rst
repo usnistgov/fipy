@@ -119,6 +119,28 @@ We use the :term:`Azure` and :term:`GitHub Actions` cloud services for
 .. |.github/workflows/nix.yml| replace::    :file:`{FiPySource}/.github/workflows/nix.yml`
 .. _.github/workflows/nix.yml: https://github.com/usnistgov/fipy/blob/master/.github/workflows/nix.yml
 
+===============
+Conda Lockfiles
+===============
+
+The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
+:file:`environments/locks/` can be updated with::
+
+    $ for solver in petsc pysparse scipy trilinos
+      do
+        conda-lock lock \
+          --file environments/${solver}-environment.yml \
+          --lockfile environments/locks/conda-${solver}-lock.yml
+        conda-lock render \
+          --filename-template environments/locks/conda-${solver}-{platform}.lock \
+          environments/locks/conda-${solver}-lock.yml
+      done
+
+.. attention::
+
+   Do not merge new lockfiles to ``master`` without validating that
+   everything still works.
+
 ================
 Making a Release
 ================
