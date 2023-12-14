@@ -72,7 +72,7 @@ Install conda_
 `Install conda`_ or `install micromamba`_ on your computer.
 
 
-.. include:: CONDA_ENVIRONMENT.rst
+.. include:: ../../environments/README.rst
 
 
 Install :term:`FiPy`
