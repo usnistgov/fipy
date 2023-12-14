@@ -6,7 +6,7 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: usnistgov/NISTtheDocs2Death@main
+      - uses: usnistgov/Docs4NIST@main
         with:
           docs-folder: docs
           pip-requirements: docs/requirements.txt
