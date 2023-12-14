@@ -23,4 +23,3 @@ FiPy Contents
    manual
    LICENSE
    DISCLAIMER
-   CONDA_ENVIRONMENT
