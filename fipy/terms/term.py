@@ -4,6 +4,7 @@ from builtins import object
 __docformat__ = 'restructuredtext'
 
 import logging
+from functools import cache
 import os
 
 from fipy import input
@@ -108,6 +109,13 @@ class Term(object):
             SparseMatrix = solver._matrixClass
 
         return SparseMatrix
+
+    def _getMatrix(self, SparseMatrix, mesh, nonZerosPerRow=0):
+        if not hasattr(self, "_sparsematrix"):
+            self._sparsematrix = SparseMatrix(mesh=mesh, nonZerosPerRow=nonZerosPerRow)
+        else:
+            self._sparsematrix.zeroEntries()
+        return self._sparsematrix
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
 

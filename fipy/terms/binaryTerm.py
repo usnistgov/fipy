@@ -20,7 +20,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
 
         """
 
-        matrix = SparseMatrix(mesh=var.mesh)
+        matrix = self._getMatrix(SparseMatrix=SparseMatrix, mesh=var.mesh)
         RHSvector = 0
 
         for term in (self.term, self.other):

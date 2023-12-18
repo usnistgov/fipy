@@ -66,7 +66,7 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
         SparseMatrix =  OffsetSparseMatrix(SparseMatrix=SparseMatrix,
                                            numberOfVariables=len(self._vars),
                                            numberOfEquations=len(self._uncoupledTerms))
-        matrix = SparseMatrix(mesh=var.mesh)
+        matrix = self._getMatrix(SparseMatrix=SparseMatrix, mesh=var.mesh)
         RHSvectors = []
 
         for equationIndex, uncoupledTerm in enumerate(self._uncoupledTerms):

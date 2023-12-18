@@ -511,6 +511,9 @@ class _PETScMatrix(_SparseMatrix):
         self.matrix.assemble()
         return _PETScMatrix(matrix=self.matrix.transpose())
 
+    def zeroEntries(self):
+        self.matrix.zeroEntries()
+
 class _PETScMatrixFromShape(_PETScMatrix):
 
     def __init__(self, rows, cols,
@@ -550,6 +553,7 @@ class _PETScMatrixFromShape(_PETScMatrix):
                 if isinstance(nonZerosPerRow, Iterable):
                     nonZerosPerRow = numerix.asarray(nonZerosPerRow, dtype=PETSc.IntType)
                 matrix.setPreallocationNNZ(nonZerosPerRow)
+                matrix.setOption(matrix.Option.KEEP_NONZERO_PATTERN, True)
                 if not exactNonZeros:
                     matrix.setOption(matrix.Option.NEW_NONZERO_ALLOCATION_ERR, False)
 

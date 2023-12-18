@@ -190,7 +190,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 ##         print 'id2',id2
 
         facesPerCell = mesh._facesPerCell[..., mesh._localNonOverlappingCellIDs]
-        coefficientMatrix = SparseMatrix(mesh=mesh, nonZerosPerRow=facesPerCell + 1)
+        coefficientMatrix = self._getMatrix(SparseMatrix=SparseMatrix, mesh=mesh, nonZerosPerRow=facesPerCell + 1)
         interiorCoeff = numerix.take(coeff, interiorFaces, axis=-1).ravel()
         coefficientMatrix.addAt(interiorCoeff, id1.ravel(), id1.swapaxes(0, 1).ravel())
         coefficientMatrix.addAt(-interiorCoeff, id1.ravel(), id2.swapaxes(0, 1).ravel())
@@ -209,7 +209,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 ## ##        print interiorCoeff[:,:,0]
 ## ##        print interiorCoeff[:,:,1]
 
-##         coefficientMatrix = SparseMatrix(mesh=mesh, nonZerosPerRow=mesh._facesPerCell + 1)
+##         coefficientMatrix = self._getMatrix(SparseMatrix=SparseMatrix, mesh=mesh, nonZerosPerRow=mesh._facesPerCell + 1)
 
 ## ##        print 'numerix.sum(interiorCoeff, -2)',numerix.sum(interiorCoeff, -2)
 ## ##        print numerix.sum(interiorCoeff, -2).ravel()
