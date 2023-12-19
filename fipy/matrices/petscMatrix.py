@@ -47,7 +47,7 @@ class _PETScMatrix(_SparseMatrix):
         self.matrix.assemble()
         if other != 0:
             other.matrix.assemble()
-            self.matrix = self.matrix + other.matrix
+            self.matrix += other.matrix
         return self
 
     def __add__(self, other):
