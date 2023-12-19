@@ -14,6 +14,8 @@ from fipy.matrices.sparseMatrix import (_SparseMatrix, _RowMesh2Matrix,
 
 class _PETScMatrix(_SparseMatrix):
 
+    INDEX_TYPE = PETSc.IntType
+
     def __init__(self, matrix):
         """Creates a wrapper for a PETSc matrix
 

@@ -12,6 +12,8 @@ from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import serialComm
 
+from fipy.solvers import _MeshMatrix
+
 __all__ = ["MeshAdditionError", "Mesh"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
@@ -87,8 +89,8 @@ class Mesh(AbstractMesh):
             exteriorCellIDs = list(self._exteriorCellIDs)
         except:
             exteriorCellIDs = self.faceCellIDs[0, self._exteriorFaces.value]
-            tmp = numerix.zeros(self.numberOfCells, 'l')
-            numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs), 'l'))
+            tmp = numerix.zeros(self.numberOfCells, _MeshMatrix.INDEX_TYPE)
+            numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs), _MeshMatrix.INDEX_TYPE))
             exteriorCellIDs = numerix.nonzero(tmp)
             interiorCellIDs = numerix.nonzero(numerix.logical_not(tmp))
         return interiorCellIDs, exteriorCellIDs
@@ -407,7 +409,7 @@ class Mesh(AbstractMesh):
 
     def _translate(self, vector):
         newCoords = self.vertexCoords + vector
-        newmesh = Mesh(newCoords, numerix.array(self.faceVertexIDs), numerix.array(self.cellFaceIDs))
+        newmesh = Mesh(newCoords, numerix.asarray(self.faceVertexIDs), numerix.asarray(self.cellFaceIDs))
         return newmesh
 
     def _handleFaceConnection(self):
@@ -427,9 +429,9 @@ class Mesh(AbstractMesh):
     """calculate Topology methods"""
 
     def _calcFaceCellIDs(self):
-        array = MA.array(MA.indices(self.cellFaceIDs.shape, 'l')[1],
+        array = MA.array(MA.indices(self.cellFaceIDs.shape, _MeshMatrix.INDEX_TYPE)[1],
                          mask=MA.getmask(self.cellFaceIDs))
-        faceCellIDs = MA.zeros((2, self.numberOfFaces), 'l')
+        faceCellIDs = MA.zeros((2, self.numberOfFaces), _MeshMatrix.INDEX_TYPE)
 
         ## Nasty bug: MA.put(arr, ids, values) fills its ids and
         ## values arguments when masked!  This was not the behavior

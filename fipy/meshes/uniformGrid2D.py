@@ -16,6 +16,8 @@ from fipy.meshes.builders import _Grid2DBuilder
 from fipy.meshes.representations.gridRepresentation import _Grid2DRepresentation
 from fipy.meshes.topologies.gridTopology import _Grid2DTopology
 
+from fipy.solvers import _MeshMatrix
+
 __all__ = ["UniformGrid2D"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
@@ -163,8 +165,10 @@ class UniformGrid2D(UniformGrid):
     else:
         @property
         def _adjacentCellIDs(self):
-            Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2), 'l')
-            indices = numerix.indices((self.numberOfHorizontalRows, self.nx))
+            Hids = numerix.zeros((self.numberOfHorizontalRows, self.nx, 2),
+                                 dtype=_MeshMatrix.INDEX_TYPE)
+            indices = numerix.indices((self.numberOfHorizontalRows, self.nx),
+                                      dtype=_MeshMatrix.INDEX_TYPE)
 
             Hids[..., 1] = indices[1] + indices[0] * self.nx
             Hids[..., 0] = Hids[..., 1] - self.nx
@@ -174,8 +178,10 @@ class UniformGrid2D(UniformGrid):
                 Hids[0, ..., 1] = Hids[0, ..., 0]
                 Hids[-1, ..., 1] = Hids[-1, ..., 0]
 
-            Vids = numerix.zeros((self.ny, self.numberOfVerticalColumns, 2), 'l')
-            indices = numerix.indices((self.ny, self.numberOfVerticalColumns))
+            Vids = numerix.zeros((self.ny, self.numberOfVerticalColumns, 2),
+                                 dtype=_MeshMatrix.INDEX_TYPE)
+            indices = numerix.indices((self.ny, self.numberOfVerticalColumns),
+                                      dtype=_MeshMatrix.INDEX_TYPE)
             Vids[..., 1] = indices[1] + indices[0] * self.nx
             Vids[..., 0] = Vids[..., 1] - 1
 
@@ -191,8 +197,9 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def _cellToCellIDs(self):
-        ids = MA.zeros((4, self.nx, self.ny), 'l')
-        indices = numerix.indices((self.nx, self.ny))
+        ids = MA.zeros((4, self.nx, self.ny), dtype=_MeshMatrix.INDEX_TYPE)
+        indices = numerix.indices((self.nx, self.ny),
+                                  dtype=_MeshMatrix.INDEX_TYPE)
         ids[0] = indices[0] + (indices[1] - 1) * self.nx
         ids[1] = (indices[0] + 1) + indices[1] * self.nx
         ids[2] = indices[0] + (indices[1] + 1) * self.nx
@@ -211,7 +218,7 @@ class UniformGrid2D(UniformGrid):
     def _cellToCellIDsFilled(self):
         N = self.numberOfCells
         M = self._maxFacesPerCell
-        cellIDs = numerix.repeat(numerix.arange(N)[numerix.newaxis, ...], M, axis=0)
+        cellIDs = numerix.repeat(numerix.arange(N, dtype=_MeshMatrix.INDEX_TYPE)[numerix.newaxis, ...], M, axis=0)
         cellToCellIDs = self._cellToCellIDs
         return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
 
@@ -465,7 +472,8 @@ class UniformGrid2D(UniformGrid):
     if inline.doInline:
         @property
         def faceCellIDs(self):
-            faceCellIDs = numerix.zeros((2, self.numberOfFaces), 'l')
+            faceCellIDs = numerix.zeros((2, self.numberOfFaces),
+                                        dtype=_MeshMatrix.INDEX_TYPE)
             mask = numerix.zeros((2, self.numberOfFaces), 'l')
 
             inline._runInline("""
@@ -508,8 +516,10 @@ class UniformGrid2D(UniformGrid):
     else:
         @property
         def faceCellIDs(self):
-            Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows), 'l')
-            indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
+            Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows),
+                                 dtype=_MeshMatrix.INDEX_TYPE)
+            indices = numerix.indices((self.nx, self.numberOfHorizontalRows),
+                                      dtype=_MeshMatrix.INDEX_TYPE)
             Hids[1] = indices[0] + indices[1] * self.nx
             Hids[0] = Hids[1] - self.nx
             if self.numberOfHorizontalRows > 0:
@@ -517,8 +527,10 @@ class UniformGrid2D(UniformGrid):
                 Hids[1, ..., 0] = -1
                 Hids[1, ..., -1] = -1
 
-            Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny), 'l')
-            indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
+            Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny),
+                                 dtype=_MeshMatrix.INDEX_TYPE)
+            indices = numerix.indices((self.numberOfVerticalColumns, self.ny),
+                                      dtype=_MeshMatrix.INDEX_TYPE)
             Vids[1] = indices[0] + indices[1] * self.nx
             Vids[0] = Vids[1] - 1
             if self.numberOfVerticalColumns > 0:
@@ -535,13 +547,17 @@ class UniformGrid2D(UniformGrid):
 
     @property
     def faceVertexIDs(self):
-        Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows), 'l')
-        indices = numerix.indices((self.nx, self.numberOfHorizontalRows))
+        Hids = numerix.zeros((2, self.nx, self.numberOfHorizontalRows),
+                             dtype=_MeshMatrix.INDEX_TYPE)
+        indices = numerix.indices((self.nx, self.numberOfHorizontalRows),
+                                  dtype=_MeshMatrix.INDEX_TYPE)
         Hids[0] = indices[0] + indices[1] * self.numberOfVerticalColumns
         Hids[1] = Hids[0] + 1
 
-        Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny), 'l')
-        indices = numerix.indices((self.numberOfVerticalColumns, self.ny))
+        Vids = numerix.zeros((2, self.numberOfVerticalColumns, self.ny),
+                             dtype=_MeshMatrix.INDEX_TYPE)
+        indices = numerix.indices((self.numberOfVerticalColumns, self.ny),
+                                  dtype=_MeshMatrix.INDEX_TYPE)
         Vids[0] = indices[0] + indices[1] * self.numberOfVerticalColumns
         Vids[1] = Vids[0] + self.numberOfVerticalColumns
 
@@ -552,8 +568,10 @@ class UniformGrid2D(UniformGrid):
 
     def _calcOrderedCellVertexIDs(self):
         """Correct ordering for VTK_PIXEL"""
-        ids = numerix.zeros((4, self.nx, self.ny), 'l')
-        indices = numerix.indices((self.nx, self.ny))
+        ids = numerix.zeros((4, self.nx, self.ny),
+                            dtype=_MeshMatrix.INDEX_TYPE)
+        indices = numerix.indices((self.nx, self.ny),
+                                  dtype=_MeshMatrix.INDEX_TYPE)
         ids[2] = indices[0] + (indices[1] + 1) * self.numberOfVerticalColumns
         ids[1] = ids[2] + 1
         ids[3] = indices[0] + indices[1] * self.numberOfVerticalColumns

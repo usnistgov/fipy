@@ -27,6 +27,8 @@ from fipy.meshes.mesh import Mesh
 from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes.topologies.meshTopology import _MeshTopology
 
+from fipy.solvers import _MeshMatrix
+
 __all__ = ["GmshException", "MeshExportError",
            "gmshVersion", "openMSHFile", "openPOSFile",
            "GmshFile", "MSHFile", "POSFile",
@@ -667,7 +669,7 @@ class MSHFile(GmshFile):
         maxFaceLen = max([len(f) for f in uniqueFaces])
         uniqueFaces = [[-1] * (maxFaceLen - len(f)) + f for f in uniqueFaces]
 
-        facesToVertices = nx.array(uniqueFaces, dtype=nx.INT_DTYPE)
+        facesToVertices = nx.array(uniqueFaces, dtype=_MeshMatrix.INDEX_TYPE)
 
         return facesToVertices.swapaxes(0, 1)[::-1], cellsToFaces.swapaxes(0, 1).copy('C'), facesDict
 
@@ -680,7 +682,7 @@ class MSHFile(GmshFile):
             try:
                 vertIndices = vertexMap[nx.array(entity)]
             except IndexError:
-                vertIndices = nx.ones((len(entity),), 'l') * -1
+                vertIndices = nx.ones((len(entity),), _MeshMatrix.INDEX_TYPE) * -1
             entitiesVertices.append(vertIndices)
 
         return entitiesVertices
@@ -870,7 +872,7 @@ class MSHFile(GmshFile):
         # convert lists of cell vertices to a properly oriented masked array
         maxVerts = max([len(v) for v in cellsToVertIDs])
         # ticket:539 - NumPy 1.7 casts to array before concatenation and empty array defaults to float
-        cellsToVertIDs = [nx.concatenate((v, nx.array([-1] * (maxVerts-len(v)), dtype=nx.INT_DTYPE))) for v in cellsToVertIDs]
+        cellsToVertIDs = [nx.concatenate((v, nx.array([-1] * (maxVerts-len(v)), dtype=_MeshMatrix.INDEX_TYPE))) for v in cellsToVertIDs]
         cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0, 1)
 
         _log.debug("Done with cells and faces.")
@@ -1324,7 +1326,8 @@ class _GmshTopology(_MeshTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return nx.array(self.mesh.cellGlobalIDs)
+        return nx.asarray(self.mesh.cellGlobalIDs,
+                          dtype=_MeshMatrix.INDEX_TYPE)
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -1345,7 +1348,8 @@ class _GmshTopology(_MeshTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return nx.array(self.mesh.cellGlobalIDs + self.mesh.gCellGlobalIDs)
+        return nx.asarray(self.mesh.cellGlobalIDs + self.mesh.gCellGlobalIDs,
+                          dtype=_MeshMatrix.INDEX_TYPE)
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -1366,7 +1370,8 @@ class _GmshTopology(_MeshTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return nx.arange(len(self.mesh.cellGlobalIDs))
+        return nx.arange(len(self.mesh.cellGlobalIDs),
+                         dtype=_MeshMatrix.INDEX_TYPE)
 
     @property
     def _localOverlappingCellIDs(self):
@@ -1388,7 +1393,8 @@ class _GmshTopology(_MeshTopology):
         .. note:: Trivial except for parallel meshes
         """
         return nx.arange(len(self.mesh.cellGlobalIDs)
-                         + len(self.mesh.gCellGlobalIDs))
+                         + len(self.mesh.gCellGlobalIDs),
+                         dtype=_MeshMatrix.INDEX_TYPE)
 
     @property
     def _localNonOverlappingFaceIDs(self):
@@ -1411,7 +1417,8 @@ class _GmshTopology(_MeshTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return nx.arange(self.mesh.numberOfFaces)[..., self._nonOverlappingFaces]
+        return nx.arange(self.mesh.numberOfFaces,
+                         dtype=_MeshMatrix.INDEX_TYPE)[..., self._nonOverlappingFaces]
 
 
 

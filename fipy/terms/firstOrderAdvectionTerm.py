@@ -98,7 +98,7 @@ class FirstOrderAdvectionTerm(_NonDiffusionTerm):
 
         cellValues = numerix.repeat(oldArray[numerix.newaxis, ...], NCellFaces, axis = 0)
 
-        cellIDs = numerix.repeat(numerix.arange(NCells)[numerix.newaxis, ...], NCellFaces, axis = 0)
+        cellIDs = numerix.repeat(numerix.arange(NCells, dtype=_MeshMatrix.INDEX_TYPE)[numerix.newaxis, ...], NCellFaces, axis = 0)
         cellToCellIDs = mesh._cellToCellIDs
 
         if NCells > 0:

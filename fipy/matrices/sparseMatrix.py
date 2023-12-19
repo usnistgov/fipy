@@ -16,6 +16,8 @@ class _SparseMatrix(object):
     numpyArray = property()
     _shape = property()
 
+    INDEX_TYPE = int
+
     def __init__(self):
         pass
 

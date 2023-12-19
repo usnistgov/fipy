@@ -38,6 +38,9 @@ class _TrilinosMatrix(_SparseMatrix):
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
+
+    INDEX_TYPE = numerix.int32
+
     def __init__(self, matrix, nonZerosPerRow=None):
         """
         Parameters
