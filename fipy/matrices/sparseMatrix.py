@@ -281,8 +281,9 @@ class _Mesh2Matrix(object):
     @property
     def bodies(self):
         if self._bodies is None:
-            self._bodies = numerix.in1d(self.mesh._globalOverlappingCellIDs,
-                                        self.mesh._globalNonOverlappingCellIDs)
+            self._bodies = numerix.zeros(self.mesh._localOverlappingCellIDs.shape,
+                                         dtype=bool)
+            self._bodies[self.mesh._localNonOverlappingCellIDs] = True
         return self._bodies
 
     @property
