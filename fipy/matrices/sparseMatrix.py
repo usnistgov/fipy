@@ -197,11 +197,15 @@ class _Mesh2Matrix(object):
 
     @property
     def globalNonOverlappingRowIDs(self):
-        return self._cellIDsToGlobalRowIDs(self.mesh._globalNonOverlappingCellIDs)
+        if not hasattr(self, "_globalNonOverlappingRowIDs"):
+            self._globalNonOverlappingRowIDs = self._cellIDsToGlobalRowIDs(self.mesh._globalNonOverlappingCellIDs)
+        return self._globalNonOverlappingRowIDs
 
     @property
     def globalOverlappingRowIDs(self):
-        return self._cellIDsToGlobalRowIDs(self.mesh._globalOverlappingCellIDs)
+        if not hasattr(self, "_globalOverlappingRowIDs"):
+            self._globalOverlappingRowIDs = self._cellIDsToGlobalRowIDs(self.mesh._globalOverlappingCellIDs)
+        return self._globalOverlappingRowIDs
 
     @property
     def localNonOverlappingRowIDs(self):
@@ -217,11 +221,15 @@ class _Mesh2Matrix(object):
 
     @property
     def globalNonOverlappingColIDs(self):
-        return self._cellIDsToGlobalColIDs(self.mesh._globalNonOverlappingCellIDs)
+        if not hasattr(self, "_globalNonOverlappingColIDs"):
+            self._globalNonOverlappingColIDs = self._cellIDsToGlobalColIDs(self.mesh._globalNonOverlappingCellIDs)
+        return self._globalNonOverlappingColIDs
 
     @property
     def globalOverlappingColIDs(self):
-        return self._cellIDsToGlobalColIDs(self.mesh._globalOverlappingCellIDs)
+        if not hasattr(self, "_globalOverlappingColIDs"):
+            self._globalOverlappingColIDs = self._cellIDsToGlobalColIDs(self.mesh._globalOverlappingCellIDs)
+        return self._globalOverlappingColIDs
 
     @property
     def localOverlappingColIDs(self):
