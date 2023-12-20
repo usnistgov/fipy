@@ -242,14 +242,12 @@ class _Mesh2Matrix(object):
     def _getStencil_(self, id1, id2,
                      globalOverlappihgIDs, globalNonOverlappihgIDs,
                      overlapping=False):
-        id1 = globalOverlappihgIDs[id1]
-
         if overlapping:
             mask = numerix.ones(id1.shape, dtype=bool)
         else:
-            mask = numerix.in1d(id1, globalNonOverlappihgIDs)
+            mask = self.bodies[id1]
 
-        id1 = self.matrix()._mesh2matrix(id1[mask])
+        id1 = self.matrix()._mesh2matrix(globalOverlappihgIDs[id1][mask])
         id2 = numerix.asarray(id2)[mask]
 
         return id1, id2, mask
