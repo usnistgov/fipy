@@ -247,7 +247,8 @@ class _Mesh2Matrix(object):
         else:
             mask = self.bodies[id1]
 
-        id1 = self.matrix()._mesh2matrix(globalOverlappihgIDs[id1][mask])
+        id1 = globalOverlappihgIDs[id1][mask]
+        id1 = self.matrix()._mesh2matrix(id1)
         id2 = numerix.asarray(id2)[mask]
 
         return id1, id2, mask
