@@ -4,7 +4,6 @@ from builtins import object
 __docformat__ = 'restructuredtext'
 
 import logging
-from functools import cache
 import os
 
 from fipy import input
