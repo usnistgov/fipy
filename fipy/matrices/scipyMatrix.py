@@ -379,6 +379,10 @@ class _ScipyMatrix(_SparseMatrix):
         """
         return _ScipyMatrix(matrix=self.matrix.transpose(copy=True))
 
+    def zeroEntries(self):
+        id1, id2 = self.matrix.nonzero()
+        self.matrix[id1, id2] = 0
+
 class _ScipyMatrixFromShape(_ScipyMatrix):
 
     def __init__(self, rows, cols,

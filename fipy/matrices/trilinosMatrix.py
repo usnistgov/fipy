@@ -715,6 +715,9 @@ class _TrilinosMatrix(_SparseMatrix):
 
         return _TrilinosMatrix(matrix=A_T_bis)
 
+    def zeroEntries(self):
+        self.matrix.PutScalar(0)
+
 class _TrilinosMatrixFromShape(_TrilinosMatrix):
     def __init__(self, rows, cols,
                  nonZerosPerRow=1, exactNonZeros=False, matrix=None):

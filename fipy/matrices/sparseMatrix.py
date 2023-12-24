@@ -134,6 +134,11 @@ class _SparseMatrix(object):
     def T(self):
         raise NotImplementedError
 
+    def zeroEntries(self):
+        """Insert zeros into nonzero matrix entries.
+        """
+        raise NotImplementedError
+
     def _matrix2mesh(self, ids):
         """Convert matrix row indices to mesh cell indices
         """
