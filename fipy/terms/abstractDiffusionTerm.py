@@ -7,7 +7,7 @@ __all__ = []
 import os
 
 from fipy import input
-from fipy.solvers import _MeshMatrix
+from fipy.solvers import INDEX_TYPE
 from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import numerix
 from fipy.terms import TermMultiplyError
@@ -320,7 +320,8 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
                 self.constraintL = -constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
 
-            ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells, dtype=_MeshMatrix.INDEX_TYPE))
+            ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells,
+                                                       dtype=INDEX_TYPE))
             L.addAt(self.constraintL.ravel(), ids.ravel(), ids.swapaxes(0, 1).ravel())
             b += numerix.reshape(self.constraintB.ravel(), ids.shape).sum(-2).ravel()
 

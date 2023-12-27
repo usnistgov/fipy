@@ -178,6 +178,8 @@ if solver_suite is None:
 # don't unpack until here in order to keep code above more succinct
 _RowMeshMatrix, _ColMeshMatrix, _MeshMatrix = _mesh_matrices
 
+INDEX_TYPE = _MeshMatrix.INDEX_TYPE
+
 from fipy.tests.doctestPlus import register_skipper
 
 register_skipper(flag='PYSPARSE_SOLVER',

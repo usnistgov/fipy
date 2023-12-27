@@ -11,7 +11,7 @@ from fipy.meshes.mesh import Mesh
 
 from fipy.meshes.topologies.abstractTopology import _AbstractTopology
 
-from fipy.solvers import _MeshMatrix
+from fipy.solvers import INDEX_TYPE
 
 class _GridTopology(_AbstractTopology):
 
@@ -43,7 +43,7 @@ class _Grid1DTopology(_GridTopology):
 
         return numerix.arange(self.mesh.offset + self.mesh.overlap['left'],
                               self.mesh.offset + self.mesh.nx - self.mesh.overlap['right'],
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -63,7 +63,7 @@ class _Grid1DTopology(_GridTopology):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.mesh.offset, self.mesh.offset + self.mesh.nx,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -84,7 +84,7 @@ class _Grid1DTopology(_GridTopology):
         """
         return numerix.arange(self.mesh.overlap['left'],
                               self.mesh.nx - self.mesh.overlap['right'],
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
 
     @property
     def _localOverlappingCellIDs(self):
@@ -103,7 +103,7 @@ class _Grid1DTopology(_GridTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(0, self.mesh.nx, dtype=_MeshMatrix.INDEX_TYPE)
+        return numerix.arange(0, self.mesh.nx, dtype=INDEX_TYPE)
 
     @property
     def _globalNonOverlappingFaceIDs(self):
@@ -123,8 +123,9 @@ class _Grid1DTopology(_GridTopology):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.mesh.offset + self.mesh.overlap['left'],
-                              self.mesh.offset + self.mesh.numberOfFaces - self.mesh.overlap['right'],
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              (self.mesh.offset + self.mesh.numberOfFaces
+                               - self.mesh.overlap['right']),
+                              dtype=INDEX_TYPE)
 
     @property
     def _globalOverlappingFaceIDs(self):
@@ -143,8 +144,9 @@ class _Grid1DTopology(_GridTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self.mesh.offset, self.mesh.offset + self.mesh.numberOfFaces,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+        return numerix.arange(self.mesh.offset,
+                              self.mesh.offset + self.mesh.numberOfFaces,
+                              dtype=INDEX_TYPE)
 
     @property
     def _localNonOverlappingFaceIDs(self):
@@ -164,8 +166,9 @@ class _Grid1DTopology(_GridTopology):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.mesh.overlap['left'],
-                              self.mesh.numberOfFaces - self.mesh.overlap['right'],
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              (self.mesh.numberOfFaces
+                               - self.mesh.overlap['right']),
+                              dtype=INDEX_TYPE)
 
     @property
     def _localOverlappingFaceIDs(self):
@@ -184,12 +187,13 @@ class _Grid1DTopology(_GridTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(0, self.mesh.numberOfFaces, dtype=_MeshMatrix.INDEX_TYPE)
+        return numerix.arange(0, self.mesh.numberOfFaces, dtype=INDEX_TYPE)
 
     @property
     def _cellTopology(self):
         """return a map of the topology of each cell of grid"""
-        cellTopology = numerix.empty((self.mesh.numberOfCells,), dtype=numerix.ubyte)
+        cellTopology = numerix.empty((self.mesh.numberOfCells,),
+                                     dtype=numerix.ubyte)
         cellTopology[:] = self._elementTopology["line"]
 
         return cellTopology
@@ -218,9 +222,11 @@ class _Grid2DTopology(_GridTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange((self.mesh.offset[1] + self.mesh.overlap['bottom']) * self.mesh.nx,
-                              (self.mesh.offset[1] + self.mesh.ny - self.mesh.overlap['top']) * self.mesh.nx,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+        return numerix.arange((self.mesh.offset[1]
+                               + self.mesh.overlap['bottom']) * self.mesh.nx,
+                              (self.mesh.offset[1] + self.mesh.ny
+                               - self.mesh.overlap['top']) * self.mesh.nx,
+                              dtype=INDEX_TYPE)
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -242,8 +248,10 @@ class _Grid2DTopology(_GridTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self.mesh.offset[1] * self.mesh.nx, (self.mesh.offset[1] + self.mesh.ny) * self.mesh.nx,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+        return numerix.arange(self.mesh.offset[1] * self.mesh.nx,
+                              (self.mesh.offset[1]
+                               + self.mesh.ny) * self.mesh.nx,
+                              dtype=INDEX_TYPE)
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -266,8 +274,9 @@ class _Grid2DTopology(_GridTopology):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.mesh.overlap['bottom'] * self.mesh.nx,
-                              (self.mesh.ny - self.mesh.overlap['top']) * self.mesh.nx,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              (self.mesh.ny
+                               - self.mesh.overlap['top']) * self.mesh.nx,
+                              dtype=INDEX_TYPE)
 
     @property
     def _localOverlappingCellIDs(self):
@@ -289,18 +298,18 @@ class _Grid2DTopology(_GridTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(0, self.mesh.ny * self.mesh.nx, dtype=_MeshMatrix.INDEX_TYPE)
+        return numerix.arange(0, self.mesh.ny * self.mesh.nx, dtype=INDEX_TYPE)
 
     def _calcFaceIDs(self, y0, ny, global_horz_faces):
         prev_horz_faces = y0 * self.mesh.nx
         horz = numerix.arange(prev_horz_faces,
                               prev_horz_faces + (ny + 1) * self.mesh.nx,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
         prev_vert_faces = y0 * (self.mesh.nx + 1)
         vert = numerix.arange(global_horz_faces + prev_vert_faces,
                               global_horz_faces + prev_vert_faces
                               + ny * (self.mesh.nx + 1),
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
 
         return numerix.concatenate((horz, vert))
 
@@ -428,8 +437,12 @@ class _Grid3DTopology(_GridTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange((self.mesh.offset[2] + self.mesh.overlap['front']) * self.mesh.nx * self.mesh.ny,
-                              (self.mesh.offset[2] + self.mesh.nz - self.mesh.overlap['back']) * self.mesh.nx * self.mesh.ny)
+        nxy = self.mesh.nx * self.mesh.ny
+        return numerix.arange((self.mesh.offset[2]
+                               + self.mesh.overlap['front']) * nxy,
+                              (self.mesh.offset[2]
+                               + self.mesh.nz - self.mesh.overlap['back']) * nxy,
+                              dtype=INDEX_TYPE)
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -439,10 +452,10 @@ class _Grid3DTopology(_GridTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-
-        return numerix.arange(self.mesh.offset[2] * self.mesh.nx * self.mesh.ny,
-                              (self.mesh.offset[2] + self.mesh.nz) * self.mesh.nx * self.mesh.ny,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+        nxy = self.mesh.nx * self.mesh.ny
+        return numerix.arange(self.mesh.offset[2] * nxy,
+                              (self.mesh.offset[2] + self.mesh.nz) * nxy,
+                              dtype=INDEX_TYPE)
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -452,9 +465,10 @@ class _Grid3DTopology(_GridTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return numerix.arange(self.mesh.overlap['front'] * self.mesh.nx * self.mesh.ny,
-                              (self.mesh.nz - self.mesh.overlap['back']) * self.mesh.nx * self.mesh.ny,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+        nxy = self.mesh.nx * self.mesh.ny
+        return numerix.arange(self.mesh.overlap['front'] * nxy,
+                              (self.mesh.nz - self.mesh.overlap['back']) * nxy,
+                              dtype=INDEX_TYPE)
 
     @property
     def _localOverlappingCellIDs(self):
@@ -467,23 +481,23 @@ class _Grid3DTopology(_GridTopology):
         return numerix.arange(0, self.mesh.ny * self.mesh.nx * self.mesh.nz)
 
     def _calcFaceIDs(self, z0, nz, global_xy_faces, global_xz_faces):
-        prev_xy_faces = z0 * self.mesh.nx * self.mesh.ny
+        nxy = self.mesh.nx * self.mesh.ny
+        prev_xy_faces = z0 * nxy
         xy = numerix.arange(prev_xy_faces,
-                            prev_xy_faces +
-                            (nz + 1) * self.mesh.nx * self.mesh.ny,
-                            dtype=_MeshMatrix.INDEX_TYPE)
+                            prev_xy_faces + (nz + 1) * nxy,
+                            dtype=INDEX_TYPE)
 
         prev_xz_faces = z0 * self.mesh.nx * (self.mesh.ny + 1)
         xz = numerix.arange(global_xy_faces + prev_xz_faces,
                             global_xy_faces + prev_xz_faces +
                             self.mesh.nx * (self.mesh.ny + 1) * nz,
-                            dtype=_MeshMatrix.INDEX_TYPE)
+                            dtype=INDEX_TYPE)
 
         prev_yz_faces = z0 * (self.mesh.nx + 1) * self.mesh.ny
         yz = numerix.arange(global_xy_faces + global_xz_faces + prev_yz_faces,
                             global_xy_faces + global_xz_faces + prev_yz_faces +
                             (self.mesh.nx + 1) * self.mesh.ny * nz,
-                            dtype=_MeshMatrix.INDEX_TYPE)
+                            dtype=INDEX_TYPE)
 
         return numerix.concatenate((xy, xz, yz))
 

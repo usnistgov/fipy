@@ -38,7 +38,7 @@ class _AbstractTopology(object):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.mesh.numberOfCells,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
 
     @property
     def _globalOverlappingCellIDs(self):
@@ -60,7 +60,7 @@ class _AbstractTopology(object):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.mesh.numberOfCells,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
 
     @property
     def _localNonOverlappingCellIDs(self):
@@ -82,7 +82,7 @@ class _AbstractTopology(object):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.mesh.numberOfCells,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
 
     @property
     def _localOverlappingCellIDs(self):
@@ -104,7 +104,7 @@ class _AbstractTopology(object):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.mesh.numberOfCells,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
 
     @property
     def _globalNonOverlappingFaceIDs(self):
@@ -128,7 +128,7 @@ class _AbstractTopology(object):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.mesh.numberOfFaces,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
 
     @property
     def _globalOverlappingFaceIDs(self):
@@ -152,7 +152,7 @@ class _AbstractTopology(object):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.mesh.numberOfFaces,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
 
     @property
     def _cellProcID(self):
@@ -255,7 +255,7 @@ class _AbstractTopology(object):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.mesh.numberOfFaces,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
 
     @property
     def _localOverlappingFaceIDs(self):
@@ -279,7 +279,7 @@ class _AbstractTopology(object):
         .. note:: Trivial except for parallel meshes
         """
         return numerix.arange(self.mesh.numberOfFaces,
-                              dtype=_MeshMatrix.INDEX_TYPE)
+                              dtype=INDEX_TYPE)
 
     @property
     def _vertexCellIDs(self):

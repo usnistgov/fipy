@@ -10,7 +10,7 @@ from fipy.meshes.builders import _Grid3DBuilder
 from fipy.meshes.representations.gridRepresentation import _Grid3DRepresentation
 from fipy.meshes.topologies.gridTopology import _Grid3DTopology
 
-from fipy.solvers import _MeshMatrix
+from fipy.solvers import INDEX_TYPE
 
 __all__ = ["UniformGrid3D"]
 from future.utils import text_to_native_str
@@ -138,9 +138,9 @@ class UniformGrid3D(UniformGrid):
     @property
     def _cellToCellIDs(self):
         ids = MA.zeros((6, self.nx, self.ny, self.nz),
-                       dtype=_MeshMatrix.INDEX_TYPE)
+                       dtype=INDEX_TYPE)
         indices = numerix.indices((self.nx, self.ny, self.nz),
-                                  dtype=_MeshMatrix.INDEX_TYPE)
+                                  dtype=INDEX_TYPE)
         nxy = self.nx * self.ny
         same = indices[0] + indices[1] * self.nx + indices[2] * nxy
 
@@ -167,7 +167,8 @@ class UniformGrid3D(UniformGrid):
     def _cellToCellIDsFilled(self):
         N = self.numberOfCells
         M = self._maxFacesPerCell
-        cellIDs = numerix.repeat(numerix.arange(N, dtype=_MeshMatrix.INDEX_TYPE)[numerix.newaxis, ...], M, axis=0)
+        cellIDs = numerix.arange(N, dtype=INDEX_TYPE)[numerix.newaxis, ...]
+        cellIDs = numerix.repeat(cellIDs, M, axis=0)
         cellToCellIDs = self._cellToCellIDs
         return MA.where(MA.getmaskarray(cellToCellIDs), cellIDs, cellToCellIDs)
 
@@ -414,24 +415,26 @@ class UniformGrid3D(UniformGrid):
                                                    self.numberOfXYFaces,
                                                    self.numberOfXZFaces,
                                                    self.numberOfYZFaces)
-                        dtype=_MeshMatrix.INDEX_TYPE)
+                        dtype=INDEX_TYPE)
 
     @property
     def _XYFaceIDs(self):
         ids = numerix.arange(0, self.numberOfXYFaces,
-                             dtype=_MeshMatrix.INDEX_TYPE)
+                             dtype=INDEX_TYPE)
         return ids.reshape((self.nz + 1, self.ny, self.nx)).swapaxes(0, 2)
 
     @property
     def _XZFaceIDs(self):
-        ids = numerix.arange(self.numberOfXYFaces, self.numberOfXYFaces + self.numberOfXZFaces,
-                             dtype=_MeshMatrix.INDEX_TYPE)
+        ids = numerix.arange(self.numberOfXYFaces,
+                             self.numberOfXYFaces + self.numberOfXZFaces,
+                             dtype=INDEX_TYPE)
         return ids.reshape((self.nz, self.ny + 1, self.nx)).swapaxes(0, 2)
 
     @property
     def _YZFaceIDs(self):
-        ids = numerix.arange(self.numberOfXYFaces + self.numberOfXZFaces, self.numberOfFaces,
-                             dtype=_MeshMatrix.INDEX_TYPE)
+        ids = numerix.arange(self.numberOfXYFaces + self.numberOfXZFaces,
+                             self.numberOfFaces,
+                             dtype=INDEX_TYPE)
         return ids.reshape((self.nz, self.ny, self.nx + 1)).swapaxes(0, 2)
 
     @property
@@ -452,9 +455,9 @@ class UniformGrid3D(UniformGrid):
     @property
     def faceCellIDs(self):
         XYids = MA.zeros((2, self.nx, self.ny, self.nz + 1),
-                         dtype=_MeshMatrix.INDEX_TYPE)
+                         dtype=INDEX_TYPE)
         indices = numerix.indices((self.nx, self.ny, self.nz + 1),
-                                  dtype=_MeshMatrix.INDEX_TYPE)
+                                  dtype=INDEX_TYPE)
         XYids[1] = indices[0] + (indices[1] + indices[2] * self.ny) * self.nx
         XYids[0] = XYids[1] - self.nx * self.ny
         XYids[0, ..., 0] = XYids[1, ..., 0]
@@ -462,9 +465,9 @@ class UniformGrid3D(UniformGrid):
         XYids[1, ..., -1] = MA.masked
 
         XZids = MA.zeros((2, self.nx, self.ny + 1, self.nz),
-                         dtype=_MeshMatrix.INDEX_TYPE)
+                         dtype=INDEX_TYPE)
         indices = numerix.indices((self.nx, self.ny + 1, self.nz),
-                                  dtype=_MeshMatrix.INDEX_TYPE)
+                                  dtype=INDEX_TYPE)
         XZids[1] = indices[0] + (indices[1] + indices[2] * self.ny) * self.nx
         XZids[0] = XZids[1] - self.nx
         XZids[0,:, 0,:] = XZids[1,:, 0,:]
@@ -472,18 +475,23 @@ class UniformGrid3D(UniformGrid):
         XZids[1,:, -1,:] = MA.masked
 
         YZids = MA.zeros((2, self.nx + 1, self.ny, self.nz),
-                         dtype=_MeshMatrix.INDEX_TYPE)
+                         dtype=INDEX_TYPE)
         indices = numerix.indices((self.nx + 1, self.ny, self.nz),
-                                  dtype=_MeshMatrix.INDEX_TYPE)
+                                  dtype=INDEX_TYPE)
         YZids[1] = indices[0] + (indices[1] + indices[2] * self.ny) * self.nx
         YZids[0] = YZids[1] - 1
         YZids[0, 0] = YZids[1, 0]
         YZids[1, 0] = MA.masked
         YZids[1, -1] = MA.masked
 
-        return MA.concatenate((XYids.swapaxes(1, 3).reshape((2, self.numberOfXYFaces)),
-                               XZids.swapaxes(1, 3).reshape((2, self.numberOfXZFaces)),
-                               YZids.swapaxes(1, 3).reshape((2, self.numberOfYZFaces))), axis=1)
+        XYids = XYids.swapaxes(1, 3)
+        XZids = XZids.swapaxes(1, 3)
+        YZids = YZids.swapaxes(1, 3)
+
+        return MA.concatenate((XYids.reshape((2, self.numberOfXYFaces)),
+                               XZids.reshape((2, self.numberOfXZFaces)),
+                               YZids.reshape((2, self.numberOfYZFaces))),
+                              axis=1)
 
 ##         from common/mesh
 
@@ -498,9 +506,9 @@ class UniformGrid3D(UniformGrid):
     def _calcOrderedCellVertexIDs(self):
         """Correct ordering for `VTK_VOXEL`"""
         ids = numerix.zeros((8, self.nx, self.ny, self.nz),
-                            dtype=_MeshMatrix.INDEX_TYPE)
+                            dtype=INDEX_TYPE)
         indices = numerix.indices((self.nx, self.ny, self.nz),
-                                  dtype=_MeshMatrix.INDEX_TYPE)
+                                  dtype=INDEX_TYPE)
         ids[1] = indices[0] + (indices[1] + (indices[2] + 1) * (self.ny + 1) + 1) * (self.nx + 1)
         ids[0] = ids[1] + 1
         ids[3] = indices[0] + (indices[1] + (indices[2] + 1) * (self.ny + 1)) * (self.nx + 1)

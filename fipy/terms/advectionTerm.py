@@ -8,7 +8,7 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
-from fipy.solvers import _MeshMatrix
+from fipy.solvers import INDEX_TYPE
 
 from fipy.terms.firstOrderAdvectionTerm import FirstOrderAdvectionTerm
 
@@ -183,8 +183,10 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
         adjacentNormalGradient = numerix.dot(adjacentGradient, mesh._cellNormals)
         adjacentUpValues = cellValues + 2 * dAP * adjacentNormalGradient
 
-        cellIDs = numerix.repeat(numerix.arange(mesh.numberOfCells, dtype=_MeshMatrix.INDEX_TYPE)[numerix.newaxis, ...],
-                mesh._maxFacesPerCell, axis=0)
+        cellIDs = numerix.arange(mesh.numberOfCells,
+                                 dtype=INDEX_TYPE)[numerix.newaxis, ...]
+        cellIDs = numerix.repeat(cellIDs,
+                                 mesh._maxFacesPerCell, axis=0)
         cellIDs = MA.masked_array(cellIDs, mask = MA.getmask(mesh._cellToCellIDs))
         cellGradient = numerix.take(oldArray.grad, cellIDs, axis=-1)
         cellNormalGradient = numerix.dot(cellGradient, mesh._cellNormals)

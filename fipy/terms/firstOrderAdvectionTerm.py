@@ -6,6 +6,7 @@ __all__ = ['FirstOrderAdvectionTerm']
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
+from fipy.solvers import INDEX_TYPE
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
@@ -98,7 +99,8 @@ class FirstOrderAdvectionTerm(_NonDiffusionTerm):
 
         cellValues = numerix.repeat(oldArray[numerix.newaxis, ...], NCellFaces, axis = 0)
 
-        cellIDs = numerix.repeat(numerix.arange(NCells, dtype=_MeshMatrix.INDEX_TYPE)[numerix.newaxis, ...], NCellFaces, axis = 0)
+        cellIDs = numerix.arange(NCells, dtype=INDEX_TYPE)[numerix.newaxis, ...]
+        cellIDs = numerix.repeat(cellIDs, NCellFaces, axis = 0)
         cellToCellIDs = mesh._cellToCellIDs
 
         if NCells > 0:

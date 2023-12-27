@@ -12,7 +12,7 @@ from fipy.tools.numerix import MA
 from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import serialComm
 
-from fipy.solvers import _MeshMatrix
+from fipy.solvers import INDEX_TYPE
 
 __all__ = ["MeshAdditionError", "Mesh"]
 from future.utils import text_to_native_str
@@ -89,8 +89,9 @@ class Mesh(AbstractMesh):
             exteriorCellIDs = list(self._exteriorCellIDs)
         except:
             exteriorCellIDs = self.faceCellIDs[0, self._exteriorFaces.value]
-            tmp = numerix.zeros(self.numberOfCells, _MeshMatrix.INDEX_TYPE)
-            numerix.put(tmp, exteriorCellIDs, numerix.ones(len(exteriorCellIDs), _MeshMatrix.INDEX_TYPE))
+            tmp = numerix.zeros(self.numberOfCells, dtype=INDEX_TYPE)
+            numerix.put(tmp, exteriorCellIDs,
+                        numerix.ones(len(exteriorCellIDs), dtype=INDEX_TYPE))
             exteriorCellIDs = numerix.nonzero(tmp)
             interiorCellIDs = numerix.nonzero(numerix.logical_not(tmp))
         return interiorCellIDs, exteriorCellIDs
@@ -429,9 +430,10 @@ class Mesh(AbstractMesh):
     """calculate Topology methods"""
 
     def _calcFaceCellIDs(self):
-        array = MA.array(MA.indices(self.cellFaceIDs.shape, _MeshMatrix.INDEX_TYPE)[1],
+        array = MA.array(MA.indices(self.cellFaceIDs.shape,
+                                    dtype=INDEX_TYPE)[1],
                          mask=MA.getmask(self.cellFaceIDs))
-        faceCellIDs = MA.zeros((2, self.numberOfFaces), _MeshMatrix.INDEX_TYPE)
+        faceCellIDs = MA.zeros((2, self.numberOfFaces), dtype=INDEX_TYPE)
 
         ## Nasty bug: MA.put(arr, ids, values) fills its ids and
         ## values arguments when masked!  This was not the behavior
