@@ -514,6 +514,7 @@ class _PETScMatrix(_SparseMatrix):
         return _PETScMatrix(matrix=self.matrix.transpose())
 
     def zeroEntries(self):
+        self.matrix.assemble()
         self.matrix.zeroEntries()
 
 class _PETScMatrixFromShape(_PETScMatrix):
