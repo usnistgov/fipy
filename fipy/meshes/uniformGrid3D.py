@@ -414,7 +414,7 @@ class UniformGrid3D(UniformGrid):
                                                    self.nz,
                                                    self.numberOfXYFaces,
                                                    self.numberOfXZFaces,
-                                                   self.numberOfYZFaces)
+                                                   self.numberOfYZFaces),
                         dtype=INDEX_TYPE)
 
     @property

@@ -191,7 +191,7 @@ class _AbstractConvectionTerm(FaceTerm):
 
 
         ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells,
-                                                   ådtype=INDEX_TYPE))
+                                                   dtype=INDEX_TYPE))
         L.addAt(numerix.array(self.constraintL).ravel(), ids.ravel(), ids.swapaxes(0, 1).ravel())
         b += numerix.reshape(self.constraintB.value, ids.shape).sum(0).ravel()
 

@@ -3,7 +3,7 @@ from builtins import object
 __docformat__ = 'restructuredtext'
 
 from ...tools import numerix
-from ...solvers import _MeshMatrix
+from ...solvers import INDEX_TYPE
 from ...variables.cellVariable import CellVariable
 
 __all__ = []
