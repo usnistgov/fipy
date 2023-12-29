@@ -112,7 +112,7 @@ class PysparseSolver(PysparseMatrixSolver):
 
             raise SolutionVariableNumberError
 
-        self._solve_(self.matrix, array, self.RHSvector)
+        self._solve_(self.matrix, array, numerix.array(self.RHSvector))
         factor = self.var.unit.factor
         if factor != 1:
             array /= self.var.unit.factor
