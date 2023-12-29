@@ -55,6 +55,14 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
     def _buildExplcitIfOther(self):
         return False
 
+    def _offsetMatrix(self, SparseMatrix, equationIndex=0, varIndex=0):
+        from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
+        return OffsetSparseMatrix(SparseMatrix=SparseMatrix,
+                                  numberOfVariables=len(self._vars),
+                                  numberOfEquations=len(self._uncoupledTerms),
+                                  equationIndex=equationIndex,
+                                  varIndex=varIndex)
+
     def _buildAndAddMatrices(self, var, SparseMatrix,  boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None, buildExplicitIfOther=False):
         """Build matrices of constituent Terms and collect them
 
@@ -62,30 +70,33 @@ class _CoupledBinaryTerm(_AbstractBinaryTerm):
 
         """
 
-        from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
-        SparseMatrix =  OffsetSparseMatrix(SparseMatrix=SparseMatrix,
-                                           numberOfVariables=len(self._vars),
-                                           numberOfEquations=len(self._uncoupledTerms))
-        matrix = self._getMatrix(SparseMatrix=SparseMatrix, mesh=var.mesh)
+        CoupledMatrixClass = self._offsetMatrix(SparseMatrix=SparseMatrix)
+        matrix = self._getMatrix(SparseMatrix=CoupledMatrixClass,
+                                 mesh=var.mesh)
         RHSvectors = []
 
         for equationIndex, uncoupledTerm in enumerate(self._uncoupledTerms):
 
-            SparseMatrix.equationIndex = equationIndex
             termRHSvector = 0
-            termMatrix = SparseMatrix(mesh=var.mesh)
+            EqnMatrixClass = self._offsetMatrix(SparseMatrix=SparseMatrix,
+                                                equationIndex=equationIndex)
+            termMatrix = EqnMatrixClass(mesh=var.mesh)
 
             for varIndex, tmpVar in enumerate(var.vars):
 
-                SparseMatrix.varIndex = varIndex
+                VarMatrixClass = self._offsetMatrix(SparseMatrix=SparseMatrix,
+                                                    equationIndex=equationIndex,
+                                                    varIndex=varIndex)
 
-                tmpVar, tmpMatrix, tmpRHSvector = uncoupledTerm._buildAndAddMatrices(tmpVar,
-                                                                                     SparseMatrix,
-                                                                                     boundaryConditions=(),
-                                                                                     dt=dt,
-                                                                                     transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(tmpVar),
-                                                                                     diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(tmpVar),
-                                                                                     buildExplicitIfOther=buildExplicitIfOther)
+                (tmpVar,
+                 tmpMatrix,
+                 tmpRHSvector) = uncoupledTerm._buildAndAddMatrices(tmpVar,
+                                                                    VarMatrixClass,
+                                                                    boundaryConditions=(),
+                                                                    dt=dt,
+                                                                    transientGeomCoeff=uncoupledTerm._getTransientGeomCoeff(tmpVar),
+                                                                    diffusionGeomCoeff=uncoupledTerm._getDiffusionGeomCoeff(tmpVar),
+                                                                    buildExplicitIfOther=buildExplicitIfOther)
 
                 termMatrix += tmpMatrix
                 termRHSvector += tmpRHSvector
