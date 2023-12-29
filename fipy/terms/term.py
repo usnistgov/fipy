@@ -103,7 +103,8 @@ class Term(object):
             from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
             SparseMatrix =  OffsetSparseMatrix(SparseMatrix=solver._matrixClass,
                                                numberOfVariables=self._vectorSize(var),
-                                               numberOfEquations=self._vectorSize(var))
+                                               numberOfEquations=self._vectorSize(var),
+                                               equationIndex=0, varIndex=0)
         else:
             SparseMatrix = solver._matrixClass
 

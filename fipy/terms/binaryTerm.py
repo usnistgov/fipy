@@ -20,7 +20,7 @@ class _BinaryTerm(_AbstractBinaryTerm):
 
         """
 
-        matrix = self._getMatrix(SparseMatrix=SparseMatrix, mesh=var.mesh)
+        matrix = self._getMatrix(SparseMatrix=SparseMatrix, mesh=var.mesh, var=var)
         RHSvector = 0
 
         for term in (self.term, self.other):
@@ -39,6 +39,16 @@ class _BinaryTerm(_AbstractBinaryTerm):
             term._buildCache(tmpMatrix, tmpRHSvector)
 
         return (var, matrix, RHSvector)
+
+    def _getMatrix(self, SparseMatrix, mesh, var, nonZerosPerRow=0):
+        if not hasattr(self, "_sparsematrix"):
+            self._sparsematrix = {}
+
+        if var not in self._sparsematrix:
+            self._sparsematrix[var] = SparseMatrix(mesh=mesh, nonZerosPerRow=nonZerosPerRow)
+        else:
+            self._sparsematrix[var].zeroEntries()
+        return self._sparsematrix[var]
 
     def _getDefaultSolver(self, var, solver, *args, **kwargs):
         for term in (self.term, self.other):

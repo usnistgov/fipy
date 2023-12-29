@@ -7,7 +7,7 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 def OffsetSparseMatrix(SparseMatrix,
                        numberOfVariables, numberOfEquations,
-                       equationIndex=0, varIndex=0):
+                       equationIndex, varIndex):
     """
     Used in binary terms. `equationIndex` and `varIndex` need to be set statically before instantiation.
     """
