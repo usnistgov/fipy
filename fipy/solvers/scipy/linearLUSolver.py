@@ -35,11 +35,16 @@ class LinearLUSolver(ScipySolver):
         return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
+        diag = L.takeDiagonal()
+        maxdiag = max(numerix.absolute(diag))
+        L = L * (1 / maxdiag)
+        b = b * (1 / maxdiag)
+
         tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         self._log.debug("BEGIN solve")
 
-        LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=1.,
+        LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=maxdiag,
                                             relax=1,
                                             panel_size=10,
                                             permc_spec=3)
