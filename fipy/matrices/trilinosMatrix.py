@@ -148,7 +148,7 @@ class _TrilinosMatrix(_SparseMatrix):
             # Depending on which one is more filled, pick the order of operations
             if self.matrix.Filled() and other.matrix.NumGlobalNonzeros() \
                                             > self.matrix.NumGlobalNonzeros():
-                tempBandwidth = other.matrix.NumGlobalNonzeros() / self.matrix.NumGlobalRows()+1
+                tempBandwidth = other.matrix.NumGlobalNonzeros() // self.matrix.NumGlobalRows()+1
 
                 tempMatrix = Epetra.CrsMatrix(Epetra.Copy, self.rowMap, tempBandwidth)
 
