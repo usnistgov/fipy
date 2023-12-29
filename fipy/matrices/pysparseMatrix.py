@@ -394,7 +394,7 @@ class _PysparseMatrix(_SparseMatrix):
 
     def zeroEntries(self):
         _, irow, jcol = self.matrix.find()
-        self.put(0, irow, jcol)
+        self.matrix.put(0, irow, jcol)
 
 class _PysparseMatrixFromShape(_PysparseMatrix):
 
