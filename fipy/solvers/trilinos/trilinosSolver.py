@@ -83,6 +83,17 @@ class TrilinosSolver(Solver):
 
     @property
     def _Lxb(self):
+        """Matrix, solution vector, and right-hand side vector
+
+        Returns
+        -------
+        L : ~fipy.solvers._MeshMatrix
+            Sparse matrix object
+        x : Epetra.Vector
+            Solution variable as non-ghosted vector
+        b : Epetra.Vector
+            Right-hand side as non-ghosted vector
+        """
         globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, _ = self._globalMatrixAndVectors
         return (globalMatrix.matrix,
                 nonOverlappingVector,

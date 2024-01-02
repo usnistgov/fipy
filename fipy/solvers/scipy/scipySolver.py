@@ -60,7 +60,17 @@ class ScipySolver(Solver):
 
     @property
     def _Lxb(self):
-        return (self.matrix, self.var.ravel(), numerix.array(self.RHSvector))
+        """Matrix, solution vector, and right-hand side vector
+
+        Returns
+        -------
+        L : ~fipy.matrices.scipyMatrix._ScipyMeshMatrix
+            Sparse matrix object
+        x : ndarray
+            Solution variable
+        b : ndarray
+            Right-hand side vector
+        """
 
     def _solve(self):
 

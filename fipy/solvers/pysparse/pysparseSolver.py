@@ -76,6 +76,17 @@ class PysparseSolver(PysparseMatrixSolver):
 
     @property
     def _Lxb(self):
+        """Matrix, solution vector, and right-hand side vector
+
+        Returns
+        -------
+        L : ~fipy.matrices.pysparseMatrix._PysparseMatrix
+            Sparse matrix object
+        x : ndarray
+            Solution variable
+        b : ndarray
+            Right-hand side vector
+        """
         return (self.matrix, self.var.ravel(), numerix.array(self.RHSvector))
 
     def _adaptUnscaledTolerance(self, L, x, b):

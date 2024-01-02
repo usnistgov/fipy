@@ -54,6 +54,17 @@ class PETScSolver(Solver):
 
     @property
     def _Lxb(self):
+        """Matrix, solution vector, and right-hand side vector
+
+        Returns
+        -------
+        L : ~fipy.matrices.petscMatrix._PETScMeshMatrix
+            Sparse matrix object
+        x : PETSc.Vec
+            Solution variable as ghosted vector
+        b : PETSc.Vec
+            Right-hand side as ghosted vector
+        """
         globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
         return (globalMatrix.matrix,
                 overlappingVector,

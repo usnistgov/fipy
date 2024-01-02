@@ -163,6 +163,17 @@ class PyAMGXSolver(Solver):
 
     @property
     def _Lxb(self):
+        """Matrix, solution vector, and right-hand side vector
+
+        Returns
+        -------
+        L : ~fipy.matrices.scipyMatrix._ScipyMeshMatrix
+            Sparse matrix object
+        x : ndarray
+            Solution variable
+        b : ndarray
+            Right-hand side vector
+        """
         return (self.matrix, self.var.ravel(), numerix.array(self.RHSvector))
 
     def _solve(self):

@@ -223,7 +223,8 @@ class Solver(object):
 
     @property
     def _Lxb(self):
-        """
+        """Matrix, solution vector, and right-hand side vector
+
         Returns
         -------
         L : ~fipy.matrices.sparseMatrix._SparseMatrix
