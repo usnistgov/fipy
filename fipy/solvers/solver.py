@@ -223,6 +223,16 @@ class Solver(object):
 
     @property
     def _Lxb(self):
+        """
+        Returns
+        -------
+        L : ~fipy.matrices.sparseMatrix._SparseMatrix
+            Sparse matrix object
+        x : ???
+            Solution variable in form suitable for solver
+        b : ???
+            Right-hand side vector in form suitable for solver
+        """
         raise NotImplementedError
 
     @property

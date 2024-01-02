@@ -67,12 +67,12 @@ class TrilinosSolver(Solver):
         return b.Norm2()
 
     def _matrixNorm(self, L, x, b):
-        return L.NormInf()
+        return L.matrix.NormInf()
 
     def _residualVectorAndNorm(self, L, x, b):
         # residualVector = L*x - b
-        residualVector = Epetra.Vector(L.RangeMap())
-        L.Multiply(False, x, residualVector)
+        residualVector = Epetra.Vector(L.matrix.RangeMap())
+        L.matrix.Multiply(False, x, residualVector)
         # If A is an Epetra.Vector with map M
         # and B is an Epetra.Vector with map M
         # and C = A - B

@@ -44,8 +44,8 @@ class PETScSolver(Solver):
         return b.norm(PETSc.NormType.NORM_2)
 
     def _matrixNorm(self, L, x, b):
-        L.assemble()
-        return L.norm(PETSc.NormType.NORM_INFINITY)
+        L.matrix.assemble()
+        return L.matrix.norm(PETSc.NormType.NORM_INFINITY)
 
     def _residualVectorAndNorm(self, L, x, b):
         residualVector = L * x - b
