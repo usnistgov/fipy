@@ -92,7 +92,7 @@ We create one diffusion equation for each substitutional component
 ...     Cj.equation = (TransientTerm()
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
-...     Cj.solver = DefaultAsymmetricSolver(precon=None, iterations=3200)
+...     Cj.solver = DefaultAsymmetricSolver(iterations=3200)
 
 If we are running interactively, we create a viewer to see the results
 
