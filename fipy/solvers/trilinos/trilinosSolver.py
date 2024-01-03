@@ -24,7 +24,7 @@ class TrilinosSolver(Solver):
 
     @property
     def _globalMatrixAndVectors(self):
-        if not hasattr(self, 'globalVectors'):
+        if not hasattr(self, '_globalVectors'):
             globalMatrix = self.matrix.asTrilinosMeshMatrix()
 
             mesh = self.var.mesh
@@ -55,24 +55,24 @@ class TrilinosSolver(Solver):
 
             overlappingVector = Epetra.Vector(globalMatrix.colMap, self.var)
 
-            self.globalVectors = (globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector)
+            self._globalVectors = (globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector)
 
-        return self.globalVectors
+        return self._globalVectors
 
     def _deleteGlobalMatrixAndVectors(self):
         self.matrix.flush()
-        del self.globalVectors
+        del self._globalVectors
 
     def _rhsNorm(self, L, x, b):
         return b.Norm2()
 
     def _matrixNorm(self, L, x, b):
-        return L.matrix.NormInf()
+        return L.NormInf()
 
     def _residualVectorAndNorm(self, L, x, b):
         # residualVector = L*x - b
-        residualVector = Epetra.Vector(L.matrix.RangeMap())
-        L.matrix.Multiply(False, x, residualVector)
+        residualVector = Epetra.Vector(L.RangeMap())
+        L.Multiply(False, x, residualVector)
         # If A is an Epetra.Vector with map M
         # and B is an Epetra.Vector with map M
         # and C = A - B
@@ -87,39 +87,37 @@ class TrilinosSolver(Solver):
 
         Returns
         -------
-        L : ~fipy.solvers._MeshMatrix
-            Sparse matrix object
+        L : Epetra.CrsMatrix
+            Sparse matrix
         x : Epetra.Vector
             Solution variable as non-ghosted vector
         b : Epetra.Vector
             Right-hand side as non-ghosted vector
         """
-        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, _ = self._globalMatrixAndVectors
-        return (globalMatrix.matrix,
-                nonOverlappingVector,
-                nonOverlappingRHSvector)
+        L, x, b, _ = self._globalMatrixAndVectors
 
-    def _solve(self):
-        from fipy.terms import SolutionVariableNumberError
+        if not (L.rangeMap.SameAs(L.domainMap)
+                and L.rangeMap.SameAs(x.Map())):
 
-        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
-
-        if not (globalMatrix.rangeMap.SameAs(globalMatrix.domainMap)
-                and globalMatrix.rangeMap.SameAs(nonOverlappingVector.Map())):
+            from fipy.terms import SolutionVariableNumberError
 
             raise SolutionVariableNumberError
 
-        self._solve_(globalMatrix.matrix,
-                     nonOverlappingVector,
-                     nonOverlappingRHSvector)
+        return (L.matrix, x, b)
 
-        overlappingVector.Import(nonOverlappingVector,
+    def _scatterGhosts(self, x):
+        """Distribute ghost values (if any) across processes
+        """
+        globalMatrix, _, _, overlappingVector = self._globalMatrixAndVectors
+
+        overlappingVector.Import(x,
                                  Epetra.Import(globalMatrix.colMap,
                                                globalMatrix.domainMap),
                                  Epetra.Insert)
 
-        self.var.value = numerix.reshape(numerix.array(overlappingVector), self.var.shape)
+        return numerix.asarray(overlappingVector)
 
+    def _cleanup(self):
         self._deleteGlobalMatrixAndVectors()
         del self.var
         del self.RHSvector

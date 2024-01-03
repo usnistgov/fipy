@@ -54,6 +54,22 @@ class LinearLUSolver(PETScSolver):
         return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
+        """Solve system of equations posed for PETSc
+
+        Parameters
+        ----------
+        L : PETSc.Mat
+            Sparse matrix
+        x : PETSc.Vec
+            Solution variable as ghosted vector
+        b : PETSc.Vec
+            Right-hand side as ghosted vector
+
+        Returns
+        -------
+        x : PETSc.Vec
+            Solution variable as ghosted vector
+        """
         ksp = PETSc.KSP()
         ksp.create(PETSc.COMM_WORLD)
         ksp.setType("preonly")
@@ -92,3 +108,5 @@ class LinearLUSolver(PETScSolver):
                              ksp_precon=ksp.getPC().type)
 
         self.convergence.warn()
+
+        return x

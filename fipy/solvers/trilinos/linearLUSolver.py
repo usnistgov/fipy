@@ -61,6 +61,22 @@ class LinearLUSolver(TrilinosSolver):
         return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
+        """Solve system of equations posed for PyTrilinos
+
+        Parameters
+        ----------
+        L : Epetra.CrsMatrix
+            Sparse matrix
+        x : Epetra.Vector
+            Solution variable as non-ghosted vector
+        b : Epetra.Vector
+            Right-hand side as non-ghosted vector
+
+        Returns
+        -------
+        x : Epetra.Vector
+            Solution variable as non-ghosted vector
+        """
 
         tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
@@ -89,3 +105,4 @@ class LinearLUSolver(TrilinosSolver):
 
         self.convergence.warn()
 
+        return x

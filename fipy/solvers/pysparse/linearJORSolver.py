@@ -43,7 +43,7 @@ class LinearJORSolver(PysparseSolver):
 
     def _solve_(self, L, x, b):
 
-        d = L.takeDiagonal()
+        d = L.diagonal()
         D = _PysparseMatrixFromShape(size=len(d))
         D.putDiagonal(d)
 
@@ -68,3 +68,7 @@ class LinearJORSolver(PysparseSolver):
                              code=0,
                              iterations=iteration+1,
                              residual=residual / tolerance_scale)
+
+        self.convergence.warn()
+
+        return x

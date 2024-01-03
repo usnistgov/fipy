@@ -40,25 +40,39 @@ class ScipyKrylovSolver(ScipySolver):
         return (factor, None)
 
     def _solve_(self, L, x, b):
+        """Solve system of equations posed for SciPy
+
+        Parameters
+        ----------
+        L : ~scipy.sparse.csr_matrix
+            Sparse matrix
+        x : ndarray
+            Solution vector
+        b : ndarray
+            Right hand side vector
+
+        Returns
+        -------
+        x : ndarray
+            Solution vector
+        """
         tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         self.actualIterations = 0
 
         rtol = self.scale_tolerance(self.tolerance, tolerance_scale)
 
-        A = L.matrix
-
         self._log.debug("BEGIN precondition")
 
         if self.preconditioner is None:
             M = None
         else:
-            M, _ = self.preconditioner._applyToMatrix(A)
+            M, _ = self.preconditioner._applyToMatrix(L)
 
         self._log.debug("END precondition")
         self._log.debug("BEGIN solve")
 
-        x, info = self.solveFnc(A, b, x,
+        x, info = self.solveFnc(L, b, x,
                                 tol=rtol,
                                 atol=self.absolute_tolerance,
                                 maxiter=self.iterations,

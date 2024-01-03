@@ -16,19 +16,21 @@ class PysparseSolver(PysparseMatrixSolver):
     """
 
     def _solve_(self, L, x, b):
-        """
-        `_solve_` is only for use by solvers which may use
-        preconditioning. If you are writing a solver which
-        doesn't use preconditioning, this must be overridden.
+        """Solve system of equations posed for PySparse
 
         Parameters
         ----------
-        L : ~fipy.matrices.pysparseMatrix._PysparseMeshMatrix
-            Matrix
+        L : ~pysparse.spmatrix.ll_mat
+            Sparse matrix
+        x : array_like
+            Solution vector
+        b : array_like
+            Right hand side vector
+
+        Returns
+        -------
         x : ndarray
             Solution vector
-        b : ndarray
-            Right hand side vector
         """
 
         tolerance_scale, _ = self._adaptTolerance(L, x, b)
@@ -37,19 +39,17 @@ class PysparseSolver(PysparseMatrixSolver):
         # which changes depending on which solver is used
         legacy_norm = self._legacyNorm(L, x, b)
 
-        A = L.matrix
-
         self._log.debug("BEGIN precondition")
 
         if self.preconditioner is None:
             P = None
         else:
-            P, A = self.preconditioner._applyToMatrix(A)
+            P, L = self.preconditioner._applyToMatrix(L)
 
         self._log.debug("END precondition")
         self._log.debug("BEGIN solve")
 
-        info, iter, relres = self.solveFnc(A, b, x,
+        info, iter, relres = self.solveFnc(L, b, x,
                                            self.tolerance * tolerance_scale,
                                            self.iterations, P)
 
@@ -63,31 +63,20 @@ class PysparseSolver(PysparseMatrixSolver):
 
         self.convergence.warn()
 
+        return x
+
     def _rhsNorm(self, L, x, b):
         return numerix.L2norm(b)
 
     def _matrixNorm(self, L, x, b):
-        return L.matrix.norm('inf')
+        return L.norm('inf')
 
     def _residualVectorAndNorm(self, L, x, b):
-        residualVector = L * x - b
+        y = numerix.empty((L.shape[0],))
+        L.matvec(x, y)
+        residualVector = y - b
 
         return residualVector, numerix.L2norm(residualVector)
-
-    @property
-    def _Lxb(self):
-        """Matrix, solution vector, and right-hand side vector
-
-        Returns
-        -------
-        L : ~fipy.matrices.pysparseMatrix._PysparseMatrix
-            Sparse matrix object
-        x : ndarray
-            Solution variable
-        b : ndarray
-            Right-hand side vector
-        """
-        return (self.matrix, self.var.ravel(), numerix.array(self.RHSvector))
 
     def _adaptUnscaledTolerance(self, L, x, b):
         factor = 1. / self._legacyNorm(L, x, b)
@@ -107,25 +96,3 @@ class PysparseSolver(PysparseMatrixSolver):
 
     def _adaptLegacyTolerance(self, L, x, b):
         return (1., None)
-
-    def _solve(self):
-
-        if self.var.mesh.communicator.Nproc > 1:
-            raise Exception("Pysparse solvers cannot be used with multiple processors")
-
-        array = self.var.numericValue.ravel()
-
-        from fipy.terms import SolutionVariableNumberError
-
-        if ((self.matrix == 0)
-            or (self.matrix.matrix.shape[0] != self.matrix.matrix.shape[1])
-            or (self.matrix.matrix.shape[0] != len(array))):
-
-            raise SolutionVariableNumberError
-
-        self._solve_(self.matrix, array, numerix.array(self.RHSvector))
-        factor = self.var.unit.factor
-        if factor != 1:
-            array /= self.var.unit.factor
-
-        self.var[:] = array.reshape(self.var.shape)

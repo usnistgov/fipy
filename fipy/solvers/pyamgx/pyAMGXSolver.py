@@ -119,7 +119,7 @@ class PyAMGXSolver(Solver):
         # transfer data from CPU to GPU
         self.x_gpu.upload(x)
         self.b_gpu.upload(b)
-        self.A_gpu.upload_CSR(L.matrix)
+        self.A_gpu.upload_CSR(L)
 
         tolerance_scale, suite_criterion = self._adaptTolerance(L, x, b)
         config_dict = self.config_dict.copy()
@@ -160,24 +160,3 @@ class PyAMGXSolver(Solver):
         cfg.destroy()
 
         return x
-
-    @property
-    def _Lxb(self):
-        """Matrix, solution vector, and right-hand side vector
-
-        Returns
-        -------
-        L : ~fipy.matrices.scipyMatrix._ScipyMeshMatrix
-            Sparse matrix object
-        x : ndarray
-            Solution variable
-        b : ndarray
-            Right-hand side vector
-        """
-        return (self.matrix, self.var.ravel(), numerix.array(self.RHSvector))
-
-    def _solve(self):
-         if self.var.mesh.communicator.Nproc > 1:
-             raise Exception("pyamgx solvers cannot be used with multiple processors")
-
-         self.var[:] = numerix.reshape(self._solve_(self.matrix, self.var.ravel(), numerix.array(self.RHSvector)), self.var.shape)

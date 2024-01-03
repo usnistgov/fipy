@@ -51,30 +51,9 @@ class ScipySolver(Solver):
         return numerix.L2norm(b)
 
     def _matrixNorm(self, L, x, b):
-        return linalg.norm(L.matrix, ord=numerix.inf)
+        return linalg.norm(L, ord=numerix.inf)
 
     def _residualVectorAndNorm(self, L, x, b):
         residualVector = L * x - b
 
         return residualVector, numerix.L2norm(residualVector)
-
-    @property
-    def _Lxb(self):
-        """Matrix, solution vector, and right-hand side vector
-
-        Returns
-        -------
-        L : ~fipy.matrices.scipyMatrix._ScipyMeshMatrix
-            Sparse matrix object
-        x : ndarray
-            Solution variable
-        b : ndarray
-            Right-hand side vector
-        """
-
-    def _solve(self):
-
-         if self.var.mesh.communicator.Nproc > 1:
-             raise Exception("SciPy solvers cannot be used with multiple processors")
-
-         self.var[:] = numerix.reshape(self._solve_(self.matrix, self.var.ravel(), numerix.array(self.RHSvector)), self.var.shape)

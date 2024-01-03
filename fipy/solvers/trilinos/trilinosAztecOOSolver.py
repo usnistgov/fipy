@@ -39,31 +39,47 @@ class TrilinosAztecOOSolver(TrilinosSolver):
         return (1., AztecOO.AZ_sol)
 
     def _solve_(self, L, x, b):
+        """Solve system of equations posed for PyTrilinos
 
-        Solver = AztecOO.AztecOO(L, x, b)
-        Solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
+        Parameters
+        ----------
+        L : Epetra.CrsMatrix
+            Sparse matrix
+        x : Epetra.Vector
+            Solution variable as non-ghosted vector
+        b : Epetra.Vector
+            Right-hand side as non-ghosted vector
 
-##        Solver.SetAztecOption(AztecOO.AZ_kspace, 30)
+        Returns
+        -------
+        x : Epetra.Vector
+            Solution variable as non-ghosted vector
+        """
 
-        Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
+        solver = AztecOO.AztecOO(L, x, b)
+        solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
+
+##        solver.SetAztecOption(AztecOO.AZ_kspace, 30)
+
+        solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
 
         tolerance_scale, suite_criterion = self._adaptTolerance(L, x, b)
 
         rtol = self.scale_tolerance(self.tolerance, tolerance_scale)
 
-        Solver.SetAztecOption(AztecOO.AZ_conv, suite_criterion)
+        solver.SetAztecOption(AztecOO.AZ_conv, suite_criterion)
 
         self._log.debug("BEGIN precondition")
 
         if self.preconditioner is None:
-            Solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
+            solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
         else:
-            self.preconditioner._applyToSolver(solver=Solver, matrix=L)
+            self.preconditioner._applyToSolver(solver=solver, matrix=L)
 
         self._log.debug("END precondition")
         self._log.debug("BEGIN solve")
 
-        output = Solver.Iterate(self.iterations, rtol)
+        solver.Iterate(self.iterations, rtol)
 
         self._log.debug("END solve")
 
@@ -71,7 +87,7 @@ class TrilinosAztecOOSolver(TrilinosSolver):
             if hasattr(self.preconditioner, 'Prec'):
                 del self.preconditioner.Prec
 
-        status = Solver.GetAztecStatus()
+        status = solver.GetAztecStatus()
 
         self._setConvergence(suite="trilinos",
                              code=int(status[AztecOO.AZ_why]),
@@ -85,4 +101,4 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         self.convergence.warn()
 
-        return output
+        return x

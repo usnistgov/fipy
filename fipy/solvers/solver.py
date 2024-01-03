@@ -177,10 +177,48 @@ class Solver(object):
         self.matrix = matrix
         self.RHSvector = RHSvector
 
+    def _scatterGhosts(self, x):
+        """Distribute ghost values (if any) across processes
+        """
+        return x
+
+    def _cleanup(self):
+        pass
+
     def _solve(self):
-        raise NotImplementedError
+        """Solve system of equations posed for FiPy
+        """
+        L, x, b = self._Lxb
+
+        x = self._solve_(L, x, b)
+
+        x = self._scatterGhosts(x)
+
+        factor = self.var.unit.factor
+        if factor != 1:
+            x /= self.var.unit.factor
+
+        self.var.value = x.reshape(self.var.shape)
+
+        self._cleanup()
 
     def _solve_(self, L, x, b):
+        """Solve system of equations posed for solver suite
+
+        Parameters
+        ----------
+        L : ~fipy.matrices.sparseMatrix._SparseMatrix
+            Sparse matrix object
+        x : array_like
+            Solution variable in form suitable for solver
+        b : array_like
+            Right-hand side vector in form suitable for solver
+
+        Returns
+        -------
+        ndarray
+            Solution vector
+        """
         raise NotImplementedError
 
     def _setConvergence(self, suite, code, iterations, residual, actual_code=None, **kwargs):
@@ -227,14 +265,29 @@ class Solver(object):
 
         Returns
         -------
-        L : ~fipy.matrices.sparseMatrix._SparseMatrix
-            Sparse matrix object
-        x : ???
+        L : matrix
+            Sparse matrix in form suitable for solver
+        x : ndarray
             Solution variable in form suitable for solver
-        b : ???
+        b : ndarray
             Right-hand side vector in form suitable for solver
         """
-        raise NotImplementedError
+        if self.var.mesh.communicator.Nproc > 1:
+            raise Exception(str(type(self)) + " cannot be used with multiple processors")
+
+        L = self.matrix.matrix
+        x = self.var.numericValue.ravel()
+        b = numerix.asarray(self.RHSvector)
+
+        if ((self.matrix == 0)
+            or (L.shape[0] != L.shape[1])
+            or (L.shape[0] != len(x))):
+
+            from fipy.terms import SolutionVariableNumberError
+
+            raise SolutionVariableNumberError
+
+        return (L, x, b)
 
     @property
     def _norms(self):

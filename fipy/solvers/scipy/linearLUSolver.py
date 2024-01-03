@@ -35,7 +35,23 @@ class LinearLUSolver(ScipySolver):
         return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
-        diag = L.takeDiagonal()
+        """Solve system of equations posed for SciPy
+
+        Parameters
+        ----------
+        L : ~scipy.sparse.csr_matrix
+            Sparse matrix
+        x : ndarray
+            Solution vector
+        b : ndarray
+            Right hand side vector
+
+        Returns
+        -------
+        x : ndarray
+            Solution vector
+        """
+        diag = L.diagonal()
         maxdiag = max(numerix.absolute(diag))
         L = L * (1 / maxdiag)
         b = b * (1 / maxdiag)
@@ -44,10 +60,11 @@ class LinearLUSolver(ScipySolver):
 
         self._log.debug("BEGIN solve")
 
-        LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=maxdiag,
-                                            relax=1,
-                                            panel_size=10,
-                                            permc_spec=3)
+        LU = splu(L.asformat("csc"),
+                  diag_pivot_thresh=maxdiag,
+                  relax=1,
+                  panel_size=10,
+                  permc_spec=3)
 
         for iteration in range(min(self.iterations, 10)):
             residualVector, residual = self._residualVectorAndNorm(L, x, b)

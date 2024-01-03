@@ -63,11 +63,27 @@ class LinearLUSolver(PysparseSolver):
         return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
+        """Solve system of equations posed for PySparse
+
+        Parameters
+        ----------
+        L : ~pysparse.spmatrix.ll_mat
+            Sparse matrix
+        x : array_like
+            Solution vector
+        b : array_like
+            Right hand side vector
+
+        Returns
+        -------
+        x : ndarray
+            Solution vector
+        """
         tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         self._log.debug("BEGIN solve")
 
-        LU = superlu.factorize(L.matrix.to_csr())
+        LU = superlu.factorize(L.to_csr())
 
         for iteration in range(self.iterations):
             residualVector, residual = self._residualVectorAndNorm(L, x, b)
@@ -86,3 +102,7 @@ class LinearLUSolver(PysparseSolver):
                              code=0,
                              iterations=iteration+1,
                              residual=residual)
+
+        self.convergence.warn()
+
+        return x

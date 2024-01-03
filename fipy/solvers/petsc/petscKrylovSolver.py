@@ -77,6 +77,22 @@ class PETScKrylovSolver(PETScSolver):
         return (1., PETSc.KSP.NormType.NATURAL)
 
     def _solve_(self, L, x, b):
+        """Solve system of equations posed for PETSc
+
+        Parameters
+        ----------
+        L : PETSc.Mat
+            Sparse matrix
+        x : PETSc.Vec
+            Solution variable as ghosted vector
+        b : PETSc.Vec
+            Right-hand side as ghosted vector
+
+        Returns
+        -------
+        x : PETSc.Vec
+            Solution variable as ghosted vector
+        """
         ksp = PETSc.KSP()
         ksp.create(L.comm)
         ksp.setType(self.solver)
@@ -129,3 +145,5 @@ class PETScKrylovSolver(PETScSolver):
         ksp.destroy()
 
         self.convergence.warn()
+
+        return x

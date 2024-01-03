@@ -14,10 +14,8 @@ class PETScSolver(Solver):
     """
 
     @property
-    def _globalMatrixAndVectors(self):
-        if not hasattr(self, 'globalVectors'):
-            globalMatrix = self.matrix
-
+    def globalVectors(self):
+        if not hasattr(self, '_globalVectors'):
             overlappingVector = self.matrix._fipy2petscGhost(var=self.var)
 
             from fipy.variables.coupledCellVariable import _CoupledCellVariable
@@ -28,24 +26,23 @@ class PETScSolver(Solver):
                 
             overlappingRHSvector = self.matrix._fipy2petscGhost(var=RHSvector)
 
-            self.globalVectors = (globalMatrix, overlappingVector, overlappingRHSvector)
+            self._globalVectors = (overlappingVector, overlappingRHSvector)
 
-        return self.globalVectors
+        return self._globalVectors
 
-    def _deleteGlobalMatrixAndVectors(self):
-        del self.matrix
-        if hasattr(self, "globalVectors"):
-            globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
+    def _deleteGlobalVectors(self):
+        if hasattr(self, "_globalVectors"):
+            overlappingVector, overlappingRHSvector = self.globalVectors
             overlappingVector.destroy()
             overlappingRHSvector.destroy()
-        del self.globalVectors
+        del self._globalVectors
         
     def _rhsNorm(self, L, x, b):
         return b.norm(PETSc.NormType.NORM_2)
 
     def _matrixNorm(self, L, x, b):
-        L.matrix.assemble()
-        return L.matrix.norm(PETSc.NormType.NORM_INFINITY)
+        L.assemble()
+        return L.norm(PETSc.NormType.NORM_INFINITY)
 
     def _residualVectorAndNorm(self, L, x, b):
         residualVector = L * x - b
@@ -58,40 +55,36 @@ class PETScSolver(Solver):
 
         Returns
         -------
-        L : ~fipy.matrices.petscMatrix._PETScMeshMatrix
-            Sparse matrix object
+        L : PETSc.Mat
+            Sparse matrix
         x : PETSc.Vec
             Solution variable as ghosted vector
         b : PETSc.Vec
             Right-hand side as ghosted vector
         """
-        globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
-        return (globalMatrix.matrix,
-                overlappingVector,
-                overlappingRHSvector)
-
-    def _solve(self):
-        from fipy.terms import SolutionVariableNumberError
-        
-        globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
+        x, b = self.globalVectors
+        L = self.matrix.matrix
 
         if ((self.matrix == 0)
-            or (self.matrix.matrix.sizes[0][1] != self.matrix.matrix.sizes[1][1])
-            or (self.matrix.matrix.sizes[0][1] != overlappingVector.size)):
+            or (L.sizes[0][1] != L.sizes[1][1])
+            or (L.sizes[0][1] != x.size)):
+
+            from fipy.terms import SolutionVariableNumberError
 
             raise SolutionVariableNumberError
 
-        self._solve_(globalMatrix.matrix, 
-                     overlappingVector, 
-                     overlappingRHSvector)
+        return (L, x, b)
 
-        value = self.matrix._petsc2fipyGhost(vec=overlappingVector)
-        self.var.value = numerix.reshape(value, self.var.shape)
-        
-#         self._deleteGlobalMatrixAndVectors()
+    def _scatterGhosts(self, x):
+        """Distribute ghost values (if any) across processes
+        """
+        return self.matrix._petsc2fipyGhost(vec=x)
+
+    def _cleanup(self):
+        self._deleteGlobalVectors()
         del self.var
         del self.RHSvector
-            
+
     @property
     def _matrixClass(self):
         return _PETScMeshMatrix
@@ -109,8 +102,8 @@ class PETScSolver(Solver):
             return arr
 
     def _calcResidualVector_(self):
-        globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
-        Lx = globalMatrix * overlappingVector
+        overlappingVector, overlappingRHSvector = self.globalVectors
+        Lx = self.matrix * overlappingVector
         residual = Lx - overlappingRHSvector
         Lx.destroy()
         return residual
@@ -129,8 +122,8 @@ class PETScSolver(Solver):
         return self.nonOverlappingRHSvector.Norm2()
 
     def __del__(self):
-        if hasattr(self, "globalVectors"):
-            globalMatrix, overlappingVector, overlappingRHSvector = self._globalMatrixAndVectors
-            del globalMatrix
+        if hasattr(self, "_globalVectors"):
+            overlappingVector, overlappingRHSvector = self.globalVectors
+            del self.matrix
             overlappingVector.destroy()
             overlappingRHSvector.destroy()
