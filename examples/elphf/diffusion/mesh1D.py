@@ -94,10 +94,12 @@ We create one diffusion equation for each substitutional component
 ...     Cj.equation = (TransientTerm()
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
-...     if solver_suite == "petsc":
-...         Cj.solver = DefaultAsymmetricSolver(precon="default", iterations=3200)
+...     if solver_suite in ["trilinos", "no-pysparse"]:
+...         from fipy import ILUPreconditioner
+...         preconditioner = ILUPreconditioner()
 ...     else:
-...         Cj.solver = DefaultAsymmetricSolver(precon=None, iterations=3200)
+...         preconditioner = "default"
+...     Cj.solver = DefaultAsymmetricSolver(precon=preconditioner, iterations=3200)
 
 If we are running interactively, we create a viewer to see the results
 
