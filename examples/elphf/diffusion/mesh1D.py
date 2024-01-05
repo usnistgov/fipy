@@ -79,6 +79,8 @@ We separate the solution domain into two different concentration regimes
 
 We create one diffusion equation for each substitutional component
 
+>>> from fipy import solver_suite
+
 >>> for Cj in substitutionals:
 ...     CkSum = ComponentVariable(mesh = mesh, value = 0.)
 ...     CkFaceSum = FaceVariable(mesh = mesh, value = 0.)
@@ -92,7 +94,10 @@ We create one diffusion equation for each substitutional component
 ...     Cj.equation = (TransientTerm()
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
-...     Cj.solver = DefaultAsymmetricSolver(iterations=3200)
+...     if solver_suite == "petsc":
+...         Cj.solver = DefaultAsymmetricSolver(precon="default", iterations=3200)
+...     else:
+...         Cj.solver = DefaultAsymmetricSolver(precon=None, iterations=3200)
 
 If we are running interactively, we create a viewer to see the results
 
