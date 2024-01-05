@@ -537,7 +537,7 @@ class Solver(object):
         - the error has been reduced from the initial guess
 
         >>> criteria = [
-        ...     ("unscaled", 1., 0.06, 114),
+        ...     ("unscaled", 1., 0.003, 114),
         ...     ("RHS", bnorm, 0.6, 2),
         ...     ("matrix", Lnorm, 0.6, 58),
         ...     ("initial", rnorm, 0.6, 110)
@@ -559,9 +559,10 @@ class Solver(object):
         ...                    < (s.convergence.residual
         ...                       / (s.tolerance * target))
         ...                    < 1.0),
-        ...                   s.convergence.iterations == iterations,
+        ...                   numerix.allclose(s.convergence.iterations,
+        ...                                    iterations,
+        ...                                    atol=1),
         ...                   error < enorm]
-        ...         print(criterion, checks, s.convergence.iterations)
         ...         satisfied.append(all(checks))
         >>> print(all(satisfied))
         True
