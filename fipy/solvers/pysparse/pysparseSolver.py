@@ -57,7 +57,7 @@ class PysparseSolver(PysparseMatrixSolver):
 
         self._setConvergence(suite="pysparse",
                              code=info,
-                             iterations=iter,
+                             iterations=iter + 1,
                              tolerance_scale=tolerance_scale,
                              residual=relres * legacy_norm)
 
