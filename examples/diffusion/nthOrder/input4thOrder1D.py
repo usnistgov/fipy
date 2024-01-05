@@ -15,7 +15,7 @@ We create an appropriate mesh
 .. index::
    single: Grid1D
 
->>> from fipy import CellVariable, Grid1D, NthOrderBoundaryCondition, DiffusionTerm, Viewer, GeneralSolver
+>>> from fipy import CellVariable, Grid1D, NthOrderBoundaryCondition, DiffusionTerm, Viewer, LinearLUSolver
 
 >>> nx = 500
 >>> dx = L / nx
@@ -56,16 +56,7 @@ We initialize the steady-state equation
 
 >>> eq = DiffusionTerm(coeff=(1, 1)) == 0
 
->>> import fipy.solvers.solver
->>> if fipy.solvers.solver_suite  == 'pysparse':
-...     # default solver fails
-...     solver = GeneralSolver()
-... elif fipy.solvers.solver_suite  == 'petsc':
-...     # default preconditioner doesn't work in parallel
-...     from fipy import LUPreconditioner
-...     solver = GeneralSolver(precon=LUPreconditioner())
-... else:
-...     solver = None
+>>> solver = LinearLUSolver()
 
 We perform one implicit timestep to achieve steady state
 
