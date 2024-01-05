@@ -214,8 +214,13 @@ class _PETScMatrix(_SparseMatrix):
         id1 = numerix.asarray(id1, dtype=PETSc.IntType)
         id2 = numerix.asarray(id2, dtype=PETSc.IntType)
         vector = numerix.asarray(vector)
-        self.matrix.setValuesRCV(id1[:, None], id2[:, None], vector[:, None],
-                                 addv=addv)
+
+        if len(id1) > 0:
+            # self.matrix.setValuesRCV() doesn't work for zero-length arrays
+            # which can happen on some nodes when parallel partitioning.
+            # https://gitlab.com/petsc/petsc/-/issues/1522
+            self.matrix.setValuesRCV(id1[:, None], id2[:, None], vector[:, None],
+                                     addv=addv)
 
     def put(self, vector, id1, id2):
         """
