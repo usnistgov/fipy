@@ -58,7 +58,12 @@ We initialize the steady-state equation
 
 >>> import fipy.solvers.solver
 >>> if fipy.solvers.solver_suite  == 'pysparse':
+...     # default solver fails
 ...     solver = GeneralSolver()
+... elif fipy.solvers.solver_suite  == 'petsc':
+...     # default preconditioner doesn't work in parallel
+...     from fipy import LUPreconditioner
+...     solver = GeneralSolver(precon=LUPreconditioner())
 ... else:
 ...     solver = None
 
