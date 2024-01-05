@@ -391,6 +391,11 @@ class Solver(object):
         """
         >>> import fipy as fp
 
+        For sufficiently constrained circumstances, all solver suites
+        should do the same thing.  The following problem setup is designed
+        to ensure that all interpret solver criteria correctly and achieve
+        the "same" tolerance in the same number of iterations.
+
         Consider a steady-state 1D diffusion problem with a
         position-dependent diffusivity and Dirichlet boundary conditions:
 
@@ -492,7 +497,8 @@ class Solver(object):
 
            \phi_0 &= \phi_\text{analytical} + \mathcal{O}(\sigma)
            \\
-           r = L \phi_0 - b &= L \phi_\text{analytical} - b + L \mathcal{O}(\sigma)
+           r = L \phi_0 - b
+           &= L \phi_\text{analytical} - b + L \mathcal{O}(\sigma)
            \\
            &= L \mathcal{O}(\sigma)
            \\
@@ -511,7 +517,8 @@ class Solver(object):
            &= \mathcal{O}(4 N \sqrt{N} \sigma)
 
         >>> rnorm = solver._residualNorm(L, x, b)
-        >>> print(numerix.allclose(rnorm, 4 * N * numerix.sqrt(N * variance), rtol=0.1))
+        >>> print(numerix.allclose(rnorm, 4 * N * numerix.sqrt(N * variance),
+        ...                        rtol=0.1))
         True
 
         Calculate the error of the initial condition (probably could be
