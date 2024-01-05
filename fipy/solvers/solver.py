@@ -289,13 +289,6 @@ class Solver(object):
 
         return (L, x, b)
 
-    @property
-    def _norms(self):
-        L, x, b = self._Lxb
-        return (self._matrixNorm(L, x, b),
-                self._rhsNorm(L, x, b),
-                self._residualNorm(L, x, b))
-
     def _adaptLegacyTolerance(self, L, x, b):
         raise NotImplementedError
 
@@ -428,59 +421,146 @@ class Solver(object):
         >>> phi_analytical = ((((phiR - phiL)/fp.numerix.log(2.))
         ...                    * fp.numerix.log(1 + mesh.x))
         ...                   + phiL)
-        >>> phi_analytical.name = r"$\phi_{analytical}$"
+        >>> phi_analytical.name = r"$\phi_\mathrm{analytical}$"
 
         >>> fp.numerix.random.seed(12345)
-        >>> phi_initial = phi_analytical + fp.GaussianNoiseVariable(mesh=mesh, variance=1e-3)
+        >>> variance = 1e-3
+        >>> phi_initial = phi_analytical + fp.GaussianNoiseVariable(mesh=mesh, variance=variance)
         >>> phi.value = phi_initial
         >>> phi.constrain(phiL, where=mesh.facesLeft)
         >>> phi.constrain(phiR, where=mesh.facesRight)
         >>> D = fp.FaceVariable(mesh=mesh, value=1 + mesh.faceCenters[0])
         >>> eq = fp.DiffusionTerm(coeff=D) == 0
 
-        The norm of the matrix will be :math:`\mathcal{O}(8 N)`.
-        The norm of the right-hand side will be :math:`math{O}(8000 N}`.
-        We choose the initial condition such that the order of the initial
-        residual is :math:`\mathcal{O}(400 / N}`.
+        For reproducibility between suites, we select a solver with
+        predictable characteristics (that counts out GMRES) and no
+        preconditioning.
 
-        >>> # Solver = fp.LinearPCGSolver
-        >>> # Solver = fp.LinearGMRESSolver
-        >>> # Solver = fp.LinearGMRESSolver
         >>> Solver = fp.LinearCGSSolver
-
         >>> solver = Solver(precon=None)
-        >>> solver = eq._prepareLinearSystem(var=phi, solver=solver, boundaryConditions=(), dt=1.)
-        >>> Lnorm, bnorm, rnorm = solver._norms
+
+        >>> solver = eq._prepareLinearSystem(var=phi,
+        ...                                  solver=solver,
+        ...                                  boundaryConditions=(),
+        ...                                  dt=1.)
+        >>> L, x, b = solver._Lxb
+
+        The problem parameters were chosen to give good separation between the
+        different convergence norms.
+
+        The norm of the matrix is the infinity norm
+
+        .. math::
+
+           \left\| L_{ij}\right\|_\infty &= \max_i \sum_j \left| A_ij \right|
+           \\
+           &= \max_i \left[
+               \left| -N(1 + x_i) \right|
+               + \left| 2N(1 + x_i) \right|
+               + \left| -N(1 + x_i) \right|
+           \right]
+           \\
+           &= \max_i 4N(1 + x_i)
+           &= \mathcal{O}(8 N)
+
+        >>> Lnorm = solver._matrixNorm(L, x, b)
+        >>> print(numerix.allclose(Lnorm, 8 * N, rtol=0.1))
+        True
+
+        The right-hand-side vector is zero except at the boundaries,
+        where the contribution is
+
+        .. math::
+
+           \frac{(1 + x) \phi_{BC} A_f}{d_{AP}} &= (1 + x) \phi_{BC} 2 N
+           \\
+           &= 2 N \phi_L = 2000 N\qquad\text{at $x = 0$}
+           \\
+           &= 4 N \phi_R = 8000 N\qquad\text{at $x = 1$}
+
+        Thus the :math:`L_2` norm of the right-hand-side vector is
+        :math:`\left\| b \right\|_2 = \math{O}(8000 N}`.
+
+        >>> bnorm = solver._rhsNorm(L, x, b)
+        >>> print(numerix.allclose(bnorm, 8000 * N, rtol=0.1))
+        True
+
+        We choose the initial condition such that the initial residual will
+        be small.
+
+        .. math::
+
+           \phi_0 &= \phi_\text{analytical} + \mathcal{O}(\sigma)
+           \\
+           r = L \phi_0 - b &= L \phi_\text{analytical} - b + L \mathcal{O}(\sigma)
+           \\
+           &= L \mathcal{O}(\sigma)
+           \\
+           \left\| r \right\|_2 &= \left\| L \mathcal{O}(\sigma) \right\|_2
+           \\
+           &= \sqrt{\sum_{0 \le i < N} \left[
+               N(1 + x_i) \mathcal{O}(\sigma)
+               + 2N(1 + x_i) \mathcal{O}(\sigma)
+               + N(1 + x_i) \mathcal{O}(\sigma)
+           \right]^2}
+           \\
+           &= 4 N \mathcal{O}(\sigma) \sqrt{\sum_{0 \le i < N} (1 + x_i)^2}
+           \\
+           &= \text{probably $\sqrt{\pi}$ or something}
+           \\
+           &= \mathcal{O}(4 N \sqrt{N} \sigma)
+
+        >>> rnorm = solver._residualNorm(L, x, b)
+        >>> print(numerix.allclose(rnorm, 4 * N * numerix.sqrt(N * variance), rtol=0.1))
+        True
+
+        Calculate the error of the initial condition (probably could be
+        estimated via truncation error blah blah blah).
+
         >>> enorm = fp.numerix.L2norm(phi - phi_analytical) / fp.numerix.L2norm(phi_analytical)
-        >>> print("|L| = {Lnorm}".format(**locals()))
-        >>> print("|b| = {bnorm}".format(**locals()))
-        >>> print("|r| = {rnorm}".format(**locals()))
-        >>> print("|e| = {enorm}".format(**locals()))
+
+        >>> from fipy.solvers.convergence import Convergence
+
+        Check that:
+        - the solution is converged,
+        - the solver reaches the desired residual for the
+          criterion, without overshooting too much.  Most get close, but
+          "unscaled" overshoots a lot for most suites.
+        - the iteration count is as expected
+        - the error has been reduced from the initial guess
 
         >>> criteria = [
-        ...     ("unscaled", 1.),
-        ...     ("RHS", bnorm),
-        ...     ("matrix", Lnorm),
-        ...     ("initial", rnorm)
+        ...     ("unscaled", 1., 0.06, 114),
+        ...     ("RHS", bnorm, 0.6, 2),
+        ...     ("matrix", Lnorm, 0.6, 58),
+        ...     ("initial", rnorm, 0.6, 110)
         ... ]
         >>> # criteria += ["solution"]  doctest: +TRILINOS_SOLVER
         >>> criteria += [
-        ...     ("preconditioned", bnorm),
-        ...     ("natural", bnorm)
+        ...     ("preconditioned", bnorm, 0.6, 2),
+        ...     ("natural", bnorm, 0.6, 6)
         ... ] # doctest: +PETSC_SOLVER
-        >>> for (criterion, target) in criteria:
+        >>> satisfied = []
+        >>> for (criterion, target, lower_bound, iterations) in criteria:
         ...     phi.setValue(phi_initial)
         ...     with Solver(criterion=criterion, precon=None) as s:
         ...         res = eq.sweep(var=phi, solver=s)
-        ...         # print(s.convergence)
-        ...         print(",".join([s.convergence.suite,
-        ...                         criterion,
-        ...                         s.convergence.status_name,
-        ...                         str(s.convergence.residual),
-        ...                         str(s.convergence.residual / (s.tolerance * target)),
-        ...                         str(s.convergence.iterations),
-        ...                         str(fp.numerix.L2norm(phi - phi_analytical) / fp.numerix.L2norm(phi_analytical))
-        ...                        ]))
+        ...         error = (fp.numerix.L2norm(phi - phi_analytical)
+        ...                  / fp.numerix.L2norm(phi_analytical))
+        ...         checks = [isinstance(s.convergence, Convergence),
+        ...                   (lower_bound
+        ...                    < (s.convergence.residual
+        ...                       / (s.tolerance * target))
+        ...                    < 1.0),
+        ...                   s.convergence.iterations == iterations,
+        ...                   error < enorm]
+        ...         print(criterion, checks, s.convergence.iterations)
+        ...         satisfied.append(all(checks))
+        >>> print(all(satisfied))
+        True
+
+        # str(fp.numerix.L2norm(phi - phi_analytical) / fp.numerix.L2norm(phi_analytical))
+
         """
         pass
 
