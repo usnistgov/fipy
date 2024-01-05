@@ -64,7 +64,7 @@ class TrilinosSolver(Solver):
         del self._globalVectors
 
     def _rhsNorm(self, L, x, b):
-        return b.Norm2()
+        return float(b.Norm2())
 
     def _matrixNorm(self, L, x, b):
         return L.NormInf()
@@ -79,7 +79,7 @@ class TrilinosSolver(Solver):
         # then C is an Epetra.Vector with *no map* !!!?!?!
         residualVector -= b
 
-        return residualVector, residualVector.Norm2()
+        return residualVector, float(residualVector.Norm2())
 
     @property
     def _Lxb(self):
