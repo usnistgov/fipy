@@ -498,7 +498,10 @@ and cannot be solved by the default :class:`~fipy.solvers.pysparse.linearPCGSolv
 We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
 
->>> solver = DefaultAsymmetricSolver(tolerance=1e-10)
+>>> if fipy.solver_suite == "petsc":
+...     solver = DefaultAsymmetricSolver(divergence_tolerance=1e8)
+... else:
+...     solver = None
 
 >>> phase.updateOld()
 >>> C.updateOld()
