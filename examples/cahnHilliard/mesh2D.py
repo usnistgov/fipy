@@ -84,10 +84,7 @@ evolution of their problem.
 
 >>> dexp = -5
 >>> elapsed = 0.
->>> if __name__ == "__main__":
-...     duration = 0.1
-... else:
-...     duration = 1000.
+>>> duration = 1000.
 
 >>> while elapsed < duration:
 ...     dt = min(100, numerix.exp(dexp))
