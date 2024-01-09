@@ -1,0 +1,23 @@
+fipy.terms.coupledBinaryTerm
+============================
+
+.. automodule:: fipy.terms.coupledBinaryTerm
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

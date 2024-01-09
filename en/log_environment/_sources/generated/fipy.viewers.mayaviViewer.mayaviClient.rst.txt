@@ -1,0 +1,29 @@
+fipy.viewers.mayaviViewer.mayaviClient
+======================================
+
+.. automodule:: fipy.viewers.mayaviViewer.mayaviClient
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MayaviClient
+   
+   
+
+   
+   
+   
+
+
+
