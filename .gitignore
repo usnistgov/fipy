@@ -6,7 +6,6 @@
 FiPy.egg-info
 MANIFEST.in
 dist/
-documentation/_build/
 generated/
 *.logamgx
 *.dump.gz
