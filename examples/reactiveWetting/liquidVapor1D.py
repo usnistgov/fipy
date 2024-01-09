@@ -276,6 +276,25 @@ sweeps. The major quirk in this scheme is the requirement of updating the
 elegantly by calling ``cacheMatrix()`` only on the necessary part of the
 equation. This currently doesn't work properly in :term:`FiPy`.
 
+Beginning with :term:`FiPy` :error:`4`, solver :ref:`CONVERGENCE`
+tolerance is normalized by the magnitude of the right-hand-side (RHS)
+vector.  For this particular problem, the initial residual is much smaller
+than the RHS and so the solver gets "stuck".  Changing the normalization to
+use the initial residual at the beginning of each sweep allows the solution
+to progress.  Another option would be to scale the tolerance appropriately,
+but the value is so small (:math:`\sim 10^{-22}`) that this results in
+underflow issues for some solvers.
+
+>>> solver = coupledEqn.getDefaultSolver(criterion="initial")
+
+.. note::
+
+   :ref:`PETSC` intrinsically wants to use `"preconditioned"`
+   normalization, which prevents the solver from getting "stuck" because
+   the preconditioner effectively scales the RHS to be similar in magnitude
+   to the residual.  Unfortunately, this normalization is not available for
+   the other solver suites, so we don't use it as the default.
+
 >>> while timestep < totalSteps:
 ... 
 ...     sweep = 0
@@ -296,13 +315,13 @@ equation. This currently doesn't work properly in :term:`FiPy`.
 ...         dt = min(dt, dx / max(abs(velocity)) * cfl)
 ... 
 ...         coupledEqn.cacheMatrix()
-...         residual = coupledEqn.sweep(dt=dt)
-... 
+...         residual = coupledEqn.sweep(dt=dt, solver=solver)
+...
 ...         if initialResidual is None:
 ...             initialResidual = residual
 ... 
 ...         residual = residual / initialResidual
-... 
+...
 ...         if residual > previousResidual * 1.1 or sweep > 20:
 ...             density[:] = density.old
 ...             velocity[:] = velocity.old
