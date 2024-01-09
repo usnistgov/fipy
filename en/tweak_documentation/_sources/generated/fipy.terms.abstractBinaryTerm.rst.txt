@@ -1,0 +1,23 @@
+fipy.terms.abstractBinaryTerm
+=============================
+
+.. automodule:: fipy.terms.abstractBinaryTerm
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

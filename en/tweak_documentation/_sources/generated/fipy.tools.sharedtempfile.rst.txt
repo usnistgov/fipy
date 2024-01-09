@@ -1,0 +1,29 @@
+fipy.tools.sharedtempfile
+=========================
+
+.. automodule:: fipy.tools.sharedtempfile
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      SharedTemporaryFile
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
