@@ -55,19 +55,37 @@ class PETScKrylovSolver(PETScSolver):
     def _adaptLegacyTolerance(self, L, x, b):
         return (1., PETSc.KSP.NormType.DEFAULT)
 
+    def _adaptNormToRHSNorm(self, norm, L, x, b):
+        """Scale desired norm to RHS, unless impossible
+
+        Attempt to adapt scaling based on what PETSc does with pathological
+        norms.
+        """
+        rhs = self._rhsNorm(L, x, b)
+        if rhs == 0:
+            r0 = self._residualNorm(L, x, b)
+            if r0 == 0:
+                factor = norm
+            else:
+                factor = norm / r0
+        else:
+            factor = norm / rhs
+
+        return factor
+
     def _adaptUnscaledTolerance(self, L, x, b):
-        factor = 1. / self._rhsNorm(L, x, b)
+        factor = self._adaptNormToRHSNorm(1., L, x, b)
         return (factor, PETSc.KSP.NormType.UNPRECONDITIONED)
 
     def _adaptRHSTolerance(self, L, x, b):
         return (1., PETSc.KSP.NormType.UNPRECONDITIONED)
 
     def _adaptMatrixTolerance(self, L, x, b):
-        factor = self._matrixNorm(L, x, b) / self._rhsNorm(L, x, b)
+        factor = self._adaptNormToRHSNorm(self._matrixNorm(L, x, b), L, x, b)
         return (factor, PETSc.KSP.NormType.UNPRECONDITIONED)
 
     def _adaptInitialTolerance(self, L, x, b):
-        factor = self._residualNorm(L, x, b) / self._rhsNorm(L, x, b)
+        factor = self._adaptNormToRHSNorm(self._residualNorm(L, x, b), L, x, b)
         return (factor, PETSc.KSP.NormType.UNPRECONDITIONED)
 
     def _adaptPreconditionedTolerance(self, L, x, b):

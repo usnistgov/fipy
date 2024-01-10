@@ -64,7 +64,13 @@ class CylindricalUniformGrid1D(UniformGrid1D):
             >>> from fipy import *
             >>> mesh = CylindricalUniformGrid1D(nx=3., dx=1.)
             >>> var = CellVariable(mesh=mesh)
-            >>> DiffusionTerm().solve(var)
+
+        The residual and the b-vector are both zero, so use "unscaled"
+        normalization and no preconditioning.  Again, we don't care about
+        the answer, we just want it to be quiet.
+
+            >>> solver = DefaultSolver(criterion="unscaled", precon=None)
+            >>> DiffusionTerm().solve(var, solver=solver)
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell
         volumes were being returned as `binOps` rather than arrays.
