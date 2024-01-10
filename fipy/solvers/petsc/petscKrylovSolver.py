@@ -22,7 +22,7 @@ class PETScKrylovSolver(PETScSolver):
 
     def __init__(self, tolerance="default",
                  absolute_tolerance=None,
-                 divergence_tolerance=None,
+                 divergence_tolerance=1e100,
                  criterion="default",
                  iterations="default", precon="default"):
         """
