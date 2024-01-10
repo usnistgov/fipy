@@ -1,0 +1,29 @@
+fipy.solvers.pyAMG.linearPCGSolver
+==================================
+
+.. automodule:: fipy.solvers.pyAMG.linearPCGSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearPCGSolver
+   
+   
+
+   
+   
+   
+
+
+

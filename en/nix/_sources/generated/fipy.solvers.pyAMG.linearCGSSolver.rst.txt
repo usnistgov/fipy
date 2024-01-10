@@ -1,0 +1,29 @@
+fipy.solvers.pyAMG.linearCGSSolver
+==================================
+
+.. automodule:: fipy.solvers.pyAMG.linearCGSSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearCGSSolver
+   
+   
+
+   
+   
+   
+
+
+
