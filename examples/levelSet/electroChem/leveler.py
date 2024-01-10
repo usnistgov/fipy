@@ -26,7 +26,7 @@ results displayed on the screen. This example requires :term:`gmsh` to
 construct the mesh.
 
 .. index::
-   module: gmsh
+   pair: module; gmsh
 
 This example models the case when suppressor, accelerator and leveler
 additives are present in the electrolyte. The suppressor is

@@ -172,7 +172,7 @@ If we are running this example interactively, we create viewers for
 the phase and temperature fields
 
 .. index::
-   module: fipy.viewers
+   pair: module; fipy.viewers
 
 >>> if __name__ == '__main__':
 ...     phaseViewer = Viewer(vars=phase)

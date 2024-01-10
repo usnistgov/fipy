@@ -78,7 +78,7 @@ and set a step-function initial condition
 If we are running interactively, we'll want a viewer to see the results
 
 .. index::
-   module: fipy.viewers
+   pair: module; fipy.viewers
 
 >>> from fipy import input
 >>> if __name__ == '__main__':
@@ -465,7 +465,7 @@ is to do a least-squared fit to determine the interface velocity and
 thickness
 
 .. index::
-   module: scipy
+   pair: module; scipy
 
 >>> try:
 ...     def tanhResiduals(p, y, x, t):
