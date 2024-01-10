@@ -190,6 +190,12 @@ class Solver(object):
         """
         L, x, b = self._Lxb
 
+        if self._log.isEnabledFor(logging.DEBUG):
+            s = "Lnorm: {Lnorm}, bnorm: {bnorm}, rnorm: {rnorm}"
+            self._log.debug(s.format(Lnorm=self._matrixNorm(L, x, b),
+                                     bnorm=self._rhsNorm(L, x, b),
+                                     rnorm=self._residualNorm(L, x, b)))
+
         x = self._solve_(L, x, b)
 
         x = self._scatterGhosts(x)
