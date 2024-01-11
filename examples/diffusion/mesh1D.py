@@ -708,7 +708,7 @@ conditions, and solve
 and see that :math:`\phi` dissipates to the expected average value of 0.2 with
 reasonable accuracy.
 
->>> print(numerix.allclose(phi, 0.2, atol=1e-5))
+>>> print(numerix.allclose(phi, 0.2, atol=4e-5))
 True
 
 If we reset the initial condition

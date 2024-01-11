@@ -553,6 +553,21 @@ class Term(object):
         ...     sweep += 1
         >>> x = m.cellCenters[0]
         >>> answer = (numerix.exp(x) - numerix.exp(-x)) / (numerix.exp(L) - numerix.exp(-L))
+
+        The default solver tolerance of :math:`10^{-5}` results in only
+        modest agreement with the analytical solution.
+
+        >>> print(numerix.allclose(v, answer, rtol=3e-3))
+        True
+
+        Reducing the solver tolerance to :math:`10^{-8}` improves the solutio.
+
+        >>> res = 1.
+        >>> sweep = 0
+        >>> solver = eqn.getDefaultSolver(tolerance=1e-8)
+        >>> while res > 1e-8 and sweep < 100:
+        ...     res = eqn.sweep(v, solver=solver)
+        ...     sweep += 1
         >>> print(numerix.allclose(v, answer, rtol=2e-5))
         True
 

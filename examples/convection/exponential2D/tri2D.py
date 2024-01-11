@@ -27,7 +27,10 @@ This example solves the steady-state convection-diffusion equation as described 
 >>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
->>> eq.solve(var = var)
+It should be possible to drive this steady-state solution to high accuracy.
+
+>>> solver = eq.getDefaultSolver(tolerance=1e-10)
+>>> eq.solve(var=var, solver=solver)
 
 The analytical solution test for this problem is given by:
 
@@ -36,8 +39,8 @@ The analytical solution test for this problem is given by:
 >>> CC = 1. - numerix.exp(-convCoeff[axis] * x / diffCoeff)
 >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD
->>> print(var.allclose(analyticalArray, rtol = 1e-10, atol = 1e-10))
-1
+>>> print(var.allclose(analyticalArray, rtol=1e-10, atol=1e-10))
+True
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = var)
