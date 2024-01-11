@@ -121,11 +121,17 @@ tolerance is normalized by the magnitude of the right-hand-side (RHS)
 vector.  For this particular problem, the initial residual is much smaller
 than the RHS and so the solver gets "stuck".  Changing the normalization to
 use the initial residual at the beginning of each sweep allows the solution
-to progress.  Another option would be to scale the tolerance appropriately,
-but the value is so small (:math:`\sim 10^{-22}`) that this results in
-underflow issues for some solvers.
+to progress.
 
->>> solver = coupledEqn.getDefaultSolver(criterion="initial")
+>>> from fipy.solvers import solver_suite
+>>> if solver_suite == "petsc":
+...     # PETSc's default ILU preconditioner does not behave well
+...     # for this problem
+...     from fipy import SSORPreconditioner
+...     precon = SSORPreconditioner()
+... else:
+...     precon = "default"
+>>> solver = coupledEqn.getDefaultSolver(criterion="initial", precon=precon)
 
 .. note::
 
