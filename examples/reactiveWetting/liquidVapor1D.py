@@ -285,7 +285,7 @@ to progress.  Another option would be to scale the tolerance appropriately,
 but the value is so small (:math:`\sim 10^{-22}`) that this results in
 underflow issues for some solvers.
 
->>> solver = coupledEqn.getDefaultSolver(criterion="initial")
+>>> solver = coupledEqn.getDefaultSolver(criterion="initial", tolerance=1e-12)
 
 .. note::
 

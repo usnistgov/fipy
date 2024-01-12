@@ -267,7 +267,32 @@ PETSc_ and SciPy_ Krylov solvers accept an additional
 
 PETSc_ Krylov solvers accept a third ``divergence_tolerance`` parameter,
 such that a divergence is detected if ``residual > divergence_tolerance *
-scale``.
+scale``.  Because of `the way the convergence test is coded
+<https://gitlab.com/petsc/petsc/-/blob/main/src/ksp/ksp/interface/iterativ.c#L1598>`_,
+if the initial residual is much larger than the norm of the right-hand-side
+vector, PETSc_ will abort with |KSP_DIVERGED_DTOL|_ without ever trying to
+solve.  If this occurs, either ``divergence_tolerance`` should be increased
+or another convergence criterion should be used.
+
+.. note::
+
+   See :mod:`examples.diffusion.mesh1D`,
+   :mod:`examples.diffusion.steadyState.mesh1D.inputPeriodic`,
+   :mod:`examples.elphf.diffusion.mesh1D`,
+   :mod:`examples.elphf.phaseDiffusion`, :mod:`examples.phase.binary`,
+   :mod:`examples.phase.quaternary`, and
+   :mod:`examples.reactiveWetting.liquidVapor1D` for several examples where
+   :code:`criterion="initial"` is used to address this situation.
+
+.. note::
+
+   ``divergence_tolerance`` never caused a problem in previous versions of
+   :term:`FiPy` because the default behavior of PETSc_ is to zero out the
+   initial guess before trying to solve and then never do a test against
+   ``divergence_tolerance``.  This resulted in behavior (number of
+   iterations and ultimate residual) that was very different from the other
+   solver suites and so :term:`FiPy` now directs PETSc to use the initial
+   guess.
 
 Reporting
 =========

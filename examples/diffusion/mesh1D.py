@@ -782,7 +782,13 @@ The solution is to run the transient problem and to take one enormous time step
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 
->>> (TransientTerm() == DiffusionTerm(D)).solve(var=phi, dt=1e6*dt)
+>>> eq = (TransientTerm() == DiffusionTerm(D))
+
+The initial residual is much larger than the norm of the right-hand-side
+vector, so we use `"initial"` tolerance scaling.
+
+>>> solver = eq.getDefaultSolver(criterion="initial")
+>>> eq.solve(var=phi, dt=1e6*dt, solver=solver)
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 >>> from fipy import input

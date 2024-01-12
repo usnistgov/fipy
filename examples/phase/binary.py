@@ -497,12 +497,10 @@ and cannot be solved by the default :class:`~fipy.solvers.pysparse.linearPCGSolv
 
 We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
+The initial residual of the diffusion equation is much larger than the norm
+of the right-hand-side vector, so we use `"initial"` tolerance scaling.
 
->>> from fipy.solvers import solver_suite
->>> if solver_suite == "petsc":
-...     solver = DefaultAsymmetricSolver(divergence_tolerance=1e8)
-... else:
-...     solver = None
+>>> solver = DefaultAsymmetricSolver(criterion="initial")
 
 >>> phase.updateOld()
 >>> C.updateOld()

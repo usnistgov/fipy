@@ -6,6 +6,8 @@ from petsc4py import PETSc
 from .petscSolver import PETScSolver
 from .preconditioners.defaultPreconditioner import DefaultPreconditioner
 
+from fipy.tools import numerix
+
 __all__ = ["PETScKrylovSolver"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
@@ -22,7 +24,7 @@ class PETScKrylovSolver(PETScSolver):
 
     def __init__(self, tolerance="default",
                  absolute_tolerance=None,
-                 divergence_tolerance=1e100,
+                 divergence_tolerance=None,
                  criterion="default",
                  iterations="default", precon="default"):
         """
@@ -55,38 +57,91 @@ class PETScKrylovSolver(PETScSolver):
     def _adaptLegacyTolerance(self, L, x, b):
         return (1., PETSc.KSP.NormType.DEFAULT)
 
-    def _adaptNormToRHSNorm(self, norm, L, x, b):
-        """Scale desired norm to RHS, unless impossible
+    def _convergenceTest(self, ksp, its, rnorm, scale):
+        """Replace `KSPConvergedDefault()` with custom normalization
 
-        Attempt to adapt scaling based on what PETSc does with pathological
-        norms.
+        Modeled on `KSPConvergedDefault()
+        <https://gitlab.com/petsc/petsc/-/blob/main/src/ksp/ksp/interface/iterativ.c#L1512>`_.
+        Simplisitically, converged if `rnorm <= rtol * scale`.
+
+        It would be much nicer (and less expensive) if they would just let
+        you specify how to calculate rnorm0!
+        `KSPConvergedDefaultSetUIRNorm()` isn't exposed to petsc4py, and it
+        wouldn't help with "unscaled" or "matrix".
+
+        Parameters
+        ----------
+        ksp : ~petsc4py.PETSc.KSP
+            Krylov solver object.
+        its : int
+            Number of iterations performed.
+        rnorm : float
+            Norm of the residual to test.
+        scale : float
+            How to interpret magnitude of tolerance.
+
+        Returns
+        -------
+        bool
+            Whether solution is converged.
         """
-        rhs = self._rhsNorm(L, x, b)
-        if rhs == 0:
-            r0 = self._residualNorm(L, x, b)
-            if r0 == 0:
-                factor = norm
-            else:
-                factor = norm / r0
-        else:
-            factor = norm / rhs
 
-        return factor
+        reason = PETSc.KSP.ConvergedReason.CONVERGED_ITERATING
+
+        min_it = 0
+
+        if numerix.isnan(rnorm) or numerix.isinf(rnorm):
+            pcreason = PCReduceFailedReason
+            if pcreason:
+                reason = PETSc.KSP.ConvergedReason.DIVERGED_PCSETUP_FAILED
+                self._log.debug("Linear solver pcsetup fails, "
+                                "declaring divergence")
+            else:
+                reason = PETSc.KSP.ConvergedReason.DIVERGED_NANORINF
+                self._log.debug("Linear solver has created a not a number (NaN) "
+                                "as the residual norm, declaring divergence")
+        elif its >= min_it:
+            if rnorm <= max(ksp.rtol * scale, ksp.atol):
+                if rnorm < ksp.atol:
+                    reason = PETSc.KSP.ConvergedReason.CONVERGED_ATOL
+                    self._log.debug("Linear solver has converged. "
+                                    "Residual norm {rnorm:14.12e} is less "
+                                    "than absolute tolerance {atol:14.12e} "
+                                    "at iteration {its}".format(rnorm=rnorm,
+                                                                atol=ksp.atol,
+                                                                its=its))
+                else:
+                    reason = PETSc.KSP.ConvergedReason.CONVERGED_RTOL
+                    self._log.debug("Linear solver has converged. "
+                                    "Residual norm {rnorm:14.12e} is less "
+                                    "than relative tolerance {rtol:14.12e} "
+                                    "times residual scale {scale:14.12e} "
+                                    "at iteration {its}".format(rnorm=rnorm,
+                                                                rtol=ksp.rtol,
+                                                                scale=scale,
+                                                                its=its))
+        elif rnorm >= ksp.dtol * scale:
+            reason = PETSc.KSP.ConvergedReason.DIVERGED_DTOL
+            self._log.debug("Linear solver is diverging. "
+                            "Residual scale {scale:14.12e}, "
+                            "current residual norm {rnorm:14.12e} "
+                            "at iteration {its}".format(rnorm=rnorm,
+                                                        scale=scale,
+                                                        its=its))
+
+        return reason
 
     def _adaptUnscaledTolerance(self, L, x, b):
-        factor = self._adaptNormToRHSNorm(1., L, x, b)
-        return (factor, PETSc.KSP.NormType.UNPRECONDITIONED)
+        return (1., self._convergenceTest)
 
     def _adaptRHSTolerance(self, L, x, b):
         return (1., PETSc.KSP.NormType.UNPRECONDITIONED)
 
     def _adaptMatrixTolerance(self, L, x, b):
-        factor = self._adaptNormToRHSNorm(self._matrixNorm(L, x, b), L, x, b)
-        return (factor, PETSc.KSP.NormType.UNPRECONDITIONED)
+        return (self._matrixNorm(L, x, b), self._convergenceTest)
 
     def _adaptInitialTolerance(self, L, x, b):
-        factor = self._adaptNormToRHSNorm(self._residualNorm(L, x, b), L, x, b)
-        return (factor, PETSc.KSP.NormType.UNPRECONDITIONED)
+        return (self._residualNorm(L, x, b), self._convergenceTest)
 
     def _adaptPreconditionedTolerance(self, L, x, b):
         return (1., PETSc.KSP.NormType.PRECONDITIONED)
@@ -121,10 +176,16 @@ class PETScKrylovSolver(PETScSolver):
         ksp.setOperators(L)
 
         tolerance_scale, suite_criterion = self._adaptTolerance(L, x, b)
-
-        rtol, divtol = (self.scale_tolerance(tol, tolerance_scale)
-                        for tol in (self.tolerance,
-                                    self.divergence_tolerance))
+        if suite_criterion == self._convergenceTest:
+            ksp.setConvergenceTest(suite_criterion,
+                                   kargs=dict(scale=tolerance_scale))
+            suite_criterion = PETSc.KSP.NormType.PRECONDITIONED
+            rtol = self.tolerance
+            divtol = self.divergence_tolerance
+        else:
+            rtol, divtol = (self.scale_tolerance(tol, tolerance_scale)
+                            for tol in (self.tolerance,
+                                        self.divergence_tolerance))
 
         ksp.setTolerances(rtol=rtol,
                           atol=self.absolute_tolerance,

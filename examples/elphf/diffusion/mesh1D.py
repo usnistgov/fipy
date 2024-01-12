@@ -77,7 +77,10 @@ We separate the solution domain into two different concentration regimes
 >>> substitutionals[1].setValue(0.6)
 >>> substitutionals[1].setValue(0.3, where=x > L / 2)
 
-We create one diffusion equation for each substitutional component
+We create one diffusion equation for each substitutional component.  The
+initial residual is much larger than the norm of the right-hand-side
+vector, so we use `"initial"` tolerance scaling with a tolerance and
+preconditioner that will drive to an accurate solution.
 
 >>> from fipy import solver_suite
 
@@ -99,7 +102,7 @@ We create one diffusion equation for each substitutional component
 ...         preconditioner = ILUPreconditioner()
 ...     else:
 ...         preconditioner = "default"
-...     Cj.solver = DefaultAsymmetricSolver(precon=preconditioner, iterations=3200)
+...     Cj.solver = DefaultAsymmetricSolver(criterion="initial", precon=preconditioner, iterations=3200)
 
 If we are running interactively, we create a viewer to see the results
 
