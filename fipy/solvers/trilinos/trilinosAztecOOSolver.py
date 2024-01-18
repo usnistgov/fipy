@@ -12,6 +12,7 @@ _reason = {AztecOO.AZ_normal : 'AztecOO.AZ_normal',
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
+from fipy.tools.timer import Timer
 
 __all__ = ["TrilinosAztecOOSolver"]
 from future.utils import text_to_native_str
@@ -51,12 +52,22 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
 
-        if self.preconditioner is not None:
-            self.preconditioner._applyToSolver(solver=Solver, matrix=L)
-        else:
-            Solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
+        self._log.debug("BEGIN precondition")
 
-        output = Solver.Iterate(self.iterations, self.tolerance)
+        with Timer() as t:
+            if self.preconditioner is not None:
+                self.preconditioner._applyToSolver(solver=Solver, matrix=L)
+            else:
+                Solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
+
+        self._log.debug("END precondition - {} ns".format(t.elapsed))
+
+        self._log.debug("BEGIN solve")
+
+        with Timer() as t:
+            output = Solver.Iterate(self.iterations, self.tolerance)
+
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         if self.preconditioner is not None:
             if hasattr(self.preconditioner, 'Prec'):

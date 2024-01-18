@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
+from fipy.tools.timer import Timer
 
 __all__ = ["PysparseSolver"]
 from future.utils import text_to_native_str
@@ -37,13 +38,23 @@ class PysparseSolver(_PysparseMatrixSolver):
 
         A = L.matrix
 
-        if self.preconditioner is None:
-            P = None
-        else:
-            P, A = self.preconditioner._applyToMatrix(A)
+        self._log.debug("BEGIN precondition")
 
-        info, iter, relres = self.solveFnc(A, b, x, self.tolerance,
-                                           self.iterations, P)
+        with Timer() as t:
+            if self.preconditioner is None:
+                P = None
+            else:
+                P, A = self.preconditioner._applyToMatrix(A)
+
+        self._log.debug("END precondition - {} ns".format(t.elapsed))
+
+        self._log.debug("BEGIN solve")
+
+        with Timer() as t:
+            info, iter, relres = self.solveFnc(A, b, x, self.tolerance,
+                                               self.iterations, P)
+
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         self._raiseWarning(info, iter, relres)
 
