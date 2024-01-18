@@ -8,6 +8,7 @@ import os
 
 from fipy import input
 from fipy.tools import numerix
+from fipy.tools.timer import Timer
 from fipy.terms import AbstractBaseClassError
 from fipy.terms import SolutionVariableRequiredError
 
@@ -121,53 +122,56 @@ class Term(object):
 
         self._log.debug("BEGIN _prepareLinearSystem")
 
-        solver = self.getDefaultSolver(var, solver)
+        with Timer() as t:
+            solver = self.getDefaultSolver(var, solver)
 
-        var = self._verifyVar(var)
-        self._checkVar(var)
+            var = self._verifyVar(var)
+            self._checkVar(var)
 
-        if type(boundaryConditions) not in (type(()), type([])):
-            boundaryConditions = (boundaryConditions,)
+            if type(boundaryConditions) not in (type(()), type([])):
+                boundaryConditions = (boundaryConditions,)
 
-        for bc in boundaryConditions:
-            bc._resetBoundaryConditionApplied()
+            for bc in boundaryConditions:
+                bc._resetBoundaryConditionApplied()
 
-        if 'FIPY_DISPLAY_MATRIX' in os.environ:
-            if not hasattr(self, "_viewer"):
-                from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
-                Term._viewer = MatplotlibSparseMatrixViewer()
+            if 'FIPY_DISPLAY_MATRIX' in os.environ:
+                if not hasattr(self, "_viewer"):
+                    from fipy.viewers.matplotlibViewer.matplotlibSparseMatrixViewer import MatplotlibSparseMatrixViewer
+                    Term._viewer = MatplotlibSparseMatrixViewer()
 
-        var, matrix, RHSvector = self._buildAndAddMatrices(var,
-                                                           self._getMatrixClass(solver, var),
-                                                           boundaryConditions=boundaryConditions,
-                                                           dt=dt,
-                                                           transientGeomCoeff=self._getTransientGeomCoeff(var),
-                                                           diffusionGeomCoeff=self._getDiffusionGeomCoeff(var),
-                                                           buildExplicitIfOther=self._buildExplcitIfOther)
+            (var,
+             matrix,
+             RHSvector) = self._buildAndAddMatrices(var,
+                                                    self._getMatrixClass(solver, var),
+                                                    boundaryConditions=boundaryConditions,
+                                                    dt=dt,
+                                                    transientGeomCoeff=self._getTransientGeomCoeff(var),
+                                                    diffusionGeomCoeff=self._getDiffusionGeomCoeff(var),
+                                                    buildExplicitIfOther=self._buildExplcitIfOther)
 
-        self._buildCache(matrix, RHSvector)
+            self._buildCache(matrix, RHSvector)
 
-        solver._storeMatrix(var=var, matrix=matrix, RHSvector=RHSvector)
+            solver._storeMatrix(var=var, matrix=matrix, RHSvector=RHSvector)
 
-        if 'FIPY_DISPLAY_MATRIX' in os.environ:
-            if var is None:
-                name = ""
-            else:
-                if not hasattr(var, "name"):
+            if 'FIPY_DISPLAY_MATRIX' in os.environ:
+                if var is None:
                     name = ""
                 else:
-                    name = var.name
-            self._viewer.title = r"%s %s" % (name, repr(self))
-            from fipy.variables.coupledCellVariable import _CoupledCellVariable
-            if isinstance(solver.RHSvector, _CoupledCellVariable):
-                RHSvector = solver.RHSvector.globalValue
-            else:
-                RHSvector = solver.RHSvector
-            self._viewer.plot(matrix=solver.matrix, RHSvector=RHSvector)
-            from fipy import input
-            input()
+                    if not hasattr(var, "name"):
+                        name = ""
+                    else:
+                        name = var.name
+                self._viewer.title = r"%s %s" % (name, repr(self))
+                from fipy.variables.coupledCellVariable import _CoupledCellVariable
+                if isinstance(solver.RHSvector, _CoupledCellVariable):
+                    RHSvector = solver.RHSvector.globalValue
+                else:
+                    RHSvector = solver.RHSvector
+                self._viewer.plot(matrix=solver.matrix, RHSvector=RHSvector)
+                from fipy import input
+                input()
 
-        self._log.debug("END _prepareLinearSystem")
+        self._log.debug("END _prepareLinearSystem - {} ns".format(t.elapsed))
 
         return solver
 
@@ -193,11 +197,12 @@ class Term(object):
 
         self._log.debug("BEGIN solve")
 
-        solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
+        with Timer() as t:
+            solver = self._prepareLinearSystem(var, solver, boundaryConditions, dt)
 
-        solver._solve()
+            solver._solve()
 
-        self._log.debug("END solve")
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
     def sweep(self, var=None, solver=None, boundaryConditions=(), dt=None, underRelaxation=None, residualFn=None, cacheResidual=False, cacheError=False):
         r"""
@@ -238,25 +243,30 @@ class Term(object):
         residual : ~fipy.variables.cellVariable.CellVariable
             The residual vector :math:`\vec{r}=\mathsf{L}\vec{x} - \vec{b}`
         """
-        solver = self._prepareLinearSystem(var=var, solver=solver, boundaryConditions=boundaryConditions, dt=dt)
-        solver._applyUnderRelaxation(underRelaxation=underRelaxation)
-        residual = solver._calcResidual(residualFn=residualFn)
+        self._log.debug("BEGIN sweep")
 
-        if cacheResidual or cacheError:
-            self.residualVector = solver._calcResidualVector(residualFn=residualFn)
+        with Timer() as t:
+            solver = self._prepareLinearSystem(var=var, solver=solver, boundaryConditions=boundaryConditions, dt=dt)
+            solver._applyUnderRelaxation(underRelaxation=underRelaxation)
+            residual = solver._calcResidual(residualFn=residualFn)
 
-        if cacheError:
-            self.errorVector = solver.var.copy()
-            var_tmp = solver.var
-            RHS_tmp = solver.RHSvector
-            solver._storeMatrix(var=self.errorVector, matrix=solver.matrix, RHSvector=self.residualVector)
+            if cacheResidual or cacheError:
+                self.residualVector = solver._calcResidualVector(residualFn=residualFn)
+
+            if cacheError:
+                self.errorVector = solver.var.copy()
+                var_tmp = solver.var
+                RHS_tmp = solver.RHSvector
+                solver._storeMatrix(var=self.errorVector, matrix=solver.matrix, RHSvector=self.residualVector)
+                solver._solve()
+                solver._storeMatrix(var=var_tmp, matrix=solver.matrix, RHSvector=RHS_tmp)
+
+            if not cacheResidual:
+                self.residualVector = None
+
             solver._solve()
-            solver._storeMatrix(var=var_tmp, matrix=solver.matrix, RHSvector=RHS_tmp)
 
-        if not cacheResidual:
-            self.residualVector = None
-
-        solver._solve()
+        self._log.debug("END sweep - {} ns".format(t.elapsed))
 
         return residual
 

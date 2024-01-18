@@ -3,6 +3,7 @@ __docformat__ = 'restructuredtext'
 
 from ..pysparseMatrixSolver import PysparseMatrixSolver
 from fipy.tools import numerix
+from fipy.tools.timer import Timer
 
 __all__ = ["PysparseSolver"]
 from future.utils import text_to_native_str
@@ -41,19 +42,22 @@ class PysparseSolver(PysparseMatrixSolver):
 
         self._log.debug("BEGIN precondition")
 
-        if self.preconditioner is None:
-            P = None
-        else:
-            P, L = self.preconditioner._applyToMatrix(L)
+        with Timer() as t:
+            if self.preconditioner is None:
+                P = None
+            else:
+                P, L = self.preconditioner._applyToMatrix(L)
 
-        self._log.debug("END precondition")
+        self._log.debug("END precondition - {} ns".format(t.elapsed))
+
         self._log.debug("BEGIN solve")
 
-        info, iter, relres = self.solveFnc(L, b, x,
-                                           self.tolerance * tolerance_scale,
-                                           self.iterations, P)
+        with Timer() as t:
+            info, iter, relres = self.solveFnc(L, b, x,
+                                               self.tolerance * tolerance_scale,
+                                               self.iterations, P)
 
-        self._log.debug("END solve")
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         self._setConvergence(suite="pysparse",
                              code=info,

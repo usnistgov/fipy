@@ -3,6 +3,7 @@ __docformat__ = 'restructuredtext'
 
 from petsc4py import PETSc
 
+from fipy.tools.timer import Timer
 from .petscSolver import PETScSolver
 from .preconditioners.defaultPreconditioner import DefaultPreconditioner
 
@@ -195,20 +196,22 @@ class PETScKrylovSolver(PETScSolver):
 
         self._log.debug("BEGIN precondition")
 
-        if self.preconditioner is None:
-            ksp.getPC().setType("none")
-        else:
-            self.preconditioner._applyToSolver(solver=ksp, matrix=L)
+        with Timer() as t:
+            if self.preconditioner is None:
+                ksp.getPC().setType("none")
+            else:
+                self.preconditioner._applyToSolver(solver=ksp, matrix=L)
 
-        self._log.debug("END precondition")
+        self._log.debug("END precondition - {} ns".format(t.elapsed))
 
         ksp.setFromOptions()
 
         self._log.debug("BEGIN solve")
 
-        ksp.solve(b, x)
+        with Timer() as t:
+            ksp.solve(b, x)
 
-        self._log.debug("END solve")
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         self._setConvergence(suite="petsc",
                              code=ksp.reason,

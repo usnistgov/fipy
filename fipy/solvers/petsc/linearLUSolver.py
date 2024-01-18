@@ -5,6 +5,7 @@ __docformat__ = 'restructuredtext'
 
 from petsc4py import PETSc
 
+from fipy.tools.timer import Timer
 from .petscSolver import PETScSolver
 from .preconditioners.luPreconditioner import LUPreconditioner
 
@@ -86,19 +87,20 @@ class LinearLUSolver(PETScSolver):
 
         self._log.debug("BEGIN solve")
 
-        for iteration in range(self.iterations):
-            residualVector, residual = self._residualVectorAndNorm(L, x, b)
+        with Timer() as t:
+            for iteration in range(self.iterations):
+                residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
-            if residual <= self.tolerance * tolerance_scale:
-                break
+                if residual <= self.tolerance * tolerance_scale:
+                    break
 
-            xError = x.copy()
+                xError = x.copy()
 
-            ksp.solve(residualVector, xError)
+                ksp.solve(residualVector, xError)
 
-            x -= xError
+                x -= xError
 
-        self._log.debug("END solve")
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         self._setConvergence(suite="petsc",
                              code=PETSc.KSP.ConvergedReason.CONVERGED_ITS,

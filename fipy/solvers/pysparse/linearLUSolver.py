@@ -8,6 +8,7 @@ from pysparse.direct import superlu
 
 from .pysparseSolver import PysparseSolver
 from fipy.tools import numerix
+from fipy.tools.timer import Timer
 
 __all__ = ["LinearLUSolver"]
 from future.utils import text_to_native_str
@@ -83,20 +84,21 @@ class LinearLUSolver(PysparseSolver):
 
         self._log.debug("BEGIN solve")
 
-        LU = superlu.factorize(L.to_csr())
+        with Timer() as t:
+            LU = superlu.factorize(L.to_csr())
 
-        for iteration in range(self.iterations):
-            residualVector, residual = self._residualVectorAndNorm(L, x, b)
+            for iteration in range(self.iterations):
+                residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
-            if residual <= self.tolerance * tolerance_scale:
-                break
+                if residual <= self.tolerance * tolerance_scale:
+                    break
 
-            xError = numerix.zeros(len(b), 'd')
+                xError = numerix.zeros(len(b), 'd')
 
-            LU.solve(residualVector, xError)
-            x[:] = x - xError
+                LU.solve(residualVector, xError)
+                x[:] = x - xError
 
-        self._log.debug("END solve")
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         self._setConvergence(suite="pysparse",
                              code=0,

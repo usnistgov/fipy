@@ -7,6 +7,7 @@ import pyamgx
 from fipy.solvers.solver import Solver
 from fipy.matrices.scipyMatrix import _ScipyMeshMatrix
 from fipy.tools import numerix
+from fipy.tools.timer import Timer
 
 __all__ = ["PyAMGXSolver"]
 from future.utils import text_to_native_str
@@ -117,9 +118,15 @@ class PyAMGXSolver(Solver):
 
     def _solve_(self, L, x, b):
         # transfer data from CPU to GPU
-        self.x_gpu.upload(x)
-        self.b_gpu.upload(b)
-        self.A_gpu.upload_CSR(L)
+
+        self._log.debug("BEGIN cpu2gpu")
+
+        with Timer() as t:
+            self.x_gpu.upload(x)
+            self.b_gpu.upload(b)
+            self.A_gpu.upload_CSR(L)
+
+        self._log.debug("END cpu2gpu - {elapsed} ns".format(elapsed=t.elapsed))
 
         tolerance_scale, suite_criterion = self._adaptTolerance(L, x, b)
         config_dict = self.config_dict.copy()
@@ -136,12 +143,19 @@ class PyAMGXSolver(Solver):
 
         self._log.debug("BEGIN solve")
 
-        solver.solve(self.b_gpu, self.x_gpu)
+        with Timer() as t:
+            solver.solve(self.b_gpu, self.x_gpu)
 
-        self._log.debug("END solve")
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         # download values from GPU to CPU
-        self.x_gpu.download(x)
+
+        self._log.debug("BEGIN gpu2cpu")
+
+        with Timer() as t:
+            self.x_gpu.download(x)
+
+        self._log.debug("END gpu2cpu - {} ns".format(t.elapsed))
 
         if solver.iterations_number == -1:
             residual = None

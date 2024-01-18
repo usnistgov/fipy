@@ -8,6 +8,7 @@ from PyTrilinos import Epetra
 from PyTrilinos import Amesos
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
+from fipy.tools.timer import Timer
 
 __all__ = ["LinearLUSolver"]
 from future.utils import text_to_native_str
@@ -82,21 +83,22 @@ class LinearLUSolver(TrilinosSolver):
 
         self._log.debug("BEGIN solve")
 
-        for iteration in range(self.iterations):
-            residualVector, residual = self._residualVectorAndNorm(L, x, b)
+        with Timer() as t:
+            for iteration in range(self.iterations):
+                residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
-            if residual <= self.tolerance * tolerance_scale:
-                break
+                if residual <= self.tolerance * tolerance_scale:
+                    break
 
-            xError = Epetra.Vector(L.RowMap())
+                xError = Epetra.Vector(L.RowMap())
 
-            Problem = Epetra.LinearProblem(L, xError, residualVector)
-            Solver = self.Factory.Create(text_to_native_str("Klu"), Problem)
-            Solver.Solve()
+                Problem = Epetra.LinearProblem(L, xError, residualVector)
+                Solver = self.Factory.Create(text_to_native_str("Klu"), Problem)
+                Solver.Solve()
 
-            x[:] = x - xError
+                x[:] = x - xError
 
-        self._log.debug("END solve")
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         self._setConvergence(suite="trilinos",
                              code=AztecOO.AZ_normal,

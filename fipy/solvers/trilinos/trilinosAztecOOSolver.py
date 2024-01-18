@@ -5,6 +5,7 @@ from PyTrilinos import AztecOO
 
 from .trilinosSolver import TrilinosSolver
 from .preconditioners.jacobiPreconditioner import JacobiPreconditioner
+from fipy.tools.timer import Timer
 
 __all__ = ["TrilinosAztecOOSolver"]
 from future.utils import text_to_native_str
@@ -71,17 +72,20 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
         self._log.debug("BEGIN precondition")
 
-        if self.preconditioner is None:
-            solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
-        else:
-            self.preconditioner._applyToSolver(solver=solver, matrix=L)
+        with Timer() as t:
+            if self.preconditioner is None:
+                solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
+            else:
+                self.preconditioner._applyToSolver(solver=solver, matrix=L)
 
-        self._log.debug("END precondition")
+        self._log.debug("END precondition - {} ns".format(t.elapsed))
+
         self._log.debug("BEGIN solve")
 
-        solver.Iterate(self.iterations, rtol)
+        with Timer() as t:
+            solver.Iterate(self.iterations, rtol)
 
-        self._log.debug("END solve")
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         if self.preconditioner is not None:
             if hasattr(self.preconditioner, 'Prec'):

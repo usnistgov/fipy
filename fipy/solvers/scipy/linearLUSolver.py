@@ -7,6 +7,7 @@ from scipy.sparse.linalg import splu
 
 from fipy.solvers.scipy.scipySolver import ScipySolver
 from fipy.tools import numerix
+from fipy.tools.timer import Timer
 
 __all__ = ["LinearLUSolver"]
 from future.utils import text_to_native_str
@@ -60,22 +61,23 @@ class LinearLUSolver(ScipySolver):
 
         self._log.debug("BEGIN solve")
 
-        LU = splu(L.asformat("csc"),
-                  diag_pivot_thresh=maxdiag,
-                  relax=1,
-                  panel_size=10,
-                  permc_spec=3)
+        with Timer() as t:
+            LU = splu(L.asformat("csc"),
+                      diag_pivot_thresh=maxdiag,
+                      relax=1,
+                      panel_size=10,
+                      permc_spec=3)
 
-        for iteration in range(min(self.iterations, 10)):
-            residualVector, residual = self._residualVectorAndNorm(L, x, b)
+            for iteration in range(min(self.iterations, 10)):
+                residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
-            if residual <= self.tolerance * tolerance_scale:
-                break
+                if residual <= self.tolerance * tolerance_scale:
+                    break
 
-            xError = LU.solve(residualVector)
-            x[:] = x - xError
+                xError = LU.solve(residualVector)
+                x[:] = x - xError
 
-        self._log.debug("END solve")
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         self._setConvergence(suite="scipy",
                              code=0,

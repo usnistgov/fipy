@@ -10,6 +10,7 @@ import warnings
 
 from .scipySolver import ScipySolver
 from fipy.tools import numerix
+from fipy.tools.timer import Timer
 
 class ScipyKrylovSolver(ScipySolver):
     """
@@ -64,22 +65,25 @@ class ScipyKrylovSolver(ScipySolver):
 
         self._log.debug("BEGIN precondition")
 
-        if self.preconditioner is None:
-            M = None
-        else:
-            M, _ = self.preconditioner._applyToMatrix(L)
+        with Timer() as t:
+            if self.preconditioner is None:
+                M = None
+            else:
+                M, _ = self.preconditioner._applyToMatrix(L)
 
-        self._log.debug("END precondition")
+        self._log.debug("END precondition - {} ns".format(t.elapsed))
+
         self._log.debug("BEGIN solve")
 
-        x, info = self.solveFnc(L, b, x,
-                                tol=rtol,
-                                atol=self.absolute_tolerance,
-                                maxiter=self.iterations,
-                                M=M,
-                                callback=self._countIterations)
+        with Timer() as t:
+            x, info = self.solveFnc(L, b, x,
+                                    tol=rtol,
+                                    atol=self.absolute_tolerance,
+                                    maxiter=self.iterations,
+                                    M=M,
+                                    callback=self._countIterations)
 
-        self._log.debug("END solve")
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         self._setConvergence(suite="scipy",
                              code=numerix.sign(info),
