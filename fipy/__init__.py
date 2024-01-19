@@ -74,7 +74,10 @@ _fipy_environment = {
 }
 
 if _log.isEnabledFor(logging.DEBUG):
-    _fipy_environment["conda"] = environment.conda_info()
+    try:
+        _fipy_environment["conda"] = environment.conda_info()
+    except:
+        pass
 
 _log.debug(json.dumps(_fipy_environment))
 
