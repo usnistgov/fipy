@@ -69,6 +69,7 @@ from fipy.tools.logging import environment
 
 _fipy_environment = {
     "argv": sys.argv,
+    "environ": dict(os.environ),
     "platform": environment.platform_info(),
     "package": environment.package_info()
 }
