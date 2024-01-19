@@ -35,19 +35,19 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.tools.logging.environment &#8212; FiPy 3.4.4+9.g9db4ae960 documentation</title>
+    <title>fipy.tools.logging.environment &#8212; FiPy 3.4.4+12.g871d0d4f6 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c033cd1c"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=1a49a9be"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+9.g9db4ae960 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+12.g871d0d4f6 documentation" href="../contents.html" />
     <link rel="up" title="fipy.tools.logging" href="fipy.tools.logging.html" />
     <link rel="next" title="fipy.tools.numerix" href="fipy.tools.numerix.html" />
     <link rel="prev" title="fipy.tools.logging" href="fipy.tools.logging.html" />
@@ -125,7 +125,10 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.tools.logging.environment.package_info" title="fipy.tools.logging.environment.package_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">package_info</span></code></a>()</p></td>
 <td><p>Collect information about installed packages FiPy uses.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.tools.logging.environment.platform_info" title="fipy.tools.logging.environment.platform_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">platform_info</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.tools.logging.environment.pip_info" title="fipy.tools.logging.environment.pip_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pip_info</span></code></a>([python])</p></td>
+<td><p>Collect information about pip environment.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.tools.logging.environment.platform_info" title="fipy.tools.logging.environment.platform_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">platform_info</span></code></a>()</p></td>
 <td><p>Collect information about platform Python is running in.</p></td>
 </tr>
 </tbody>
@@ -163,6 +166,23 @@ environment.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="fipy.tools.logging.environment.pip_info">
+<span class="sig-prename descclassname"><span class="pre">fipy.tools.logging.environment.</span></span><span class="sig-name descname"><span class="pre">pip_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">python</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'python'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.logging.environment.pip_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect information about pip environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>python</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Name of Python executable (default: “python”).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Result of <cite>pip list –format json</cite>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="fipy.tools.logging.environment.platform_info">
 <span class="sig-prename descclassname"><span class="pre">fipy.tools.logging.environment.</span></span><span class="sig-name descname"><span class="pre">platform_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tools.logging.environment.platform_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Collect information about platform Python is running in.</p>
@@ -180,7 +200,7 @@ environment.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Jan 09, 2024.
+                Last updated on Jan 19, 2024.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -190,7 +210,7 @@ environment.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+9.g9db4ae960
+Version 3.4.4+12.g871d0d4f6
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
@@ -198,6 +218,7 @@ Version 3.4.4+9.g9db4ae960
 <li><a class="reference internal" href="#">fipy.tools.logging.environment</a><ul>
 <li><a class="reference internal" href="#fipy.tools.logging.environment.conda_info"><code class="docutils literal notranslate"><span class="pre">conda_info()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.tools.logging.environment.package_info"><code class="docutils literal notranslate"><span class="pre">package_info()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.tools.logging.environment.pip_info"><code class="docutils literal notranslate"><span class="pre">pip_info()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.tools.logging.environment.platform_info"><code class="docutils literal notranslate"><span class="pre">platform_info()</span></code></a></li>
 </ul>
 </li>

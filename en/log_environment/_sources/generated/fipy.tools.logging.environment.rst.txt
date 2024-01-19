@@ -15,6 +15,7 @@ fipy.tools.logging.environment
    
       conda_info
       package_info
+      pip_info
       platform_info
    
    
