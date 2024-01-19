@@ -187,6 +187,10 @@ class Solver(object):
 
     def _solve(self):
         """Solve system of equations posed for FiPy
+
+        Common method invoked by :class:`~fipy.terms.term.Term`, which then
+        calls solver-suite-specific :math:`~fipy.solvers.solver._solve_`
+        methods.
         """
         L, x, b = self._Lxb
 
