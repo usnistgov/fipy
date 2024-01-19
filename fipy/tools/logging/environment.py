@@ -3,7 +3,7 @@ import platform
 import subprocess
 import sys
 
-__all__ = ["conda_info", "package_info", "platform_info"]
+__all__ = ["conda_info", "pip_info", "package_info", "platform_info"]
 
 def conda_info(conda="conda"):
     """Collect information about conda environment.
@@ -34,6 +34,26 @@ def conda_info(conda="conda"):
     info["conda_env"] = json.loads(stdout)
 
     return info
+
+def pip_info(python="python"):
+    """Collect information about pip environment.
+
+    Parameters
+    ----------
+    python : str
+        Name of Python executable (default: "python").
+
+    Returns
+    -------
+    list of dict
+        Result of `pip list --format json`.
+    """
+    info = {}
+    p = subprocess.Popen([python, "-m", "pip", "list", "--format", "json"], stdout=subprocess.PIPE)
+    stdout, _ = p.communicate()
+    stdout = stdout.decode('ascii')
+
+    return json.loads(stdout)
 
 def package_info():
     """Collect information about installed packages FiPy uses.

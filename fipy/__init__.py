@@ -79,6 +79,11 @@ if _log.isEnabledFor(logging.DEBUG):
     except:
         pass
 
+    try:
+        _fipy_environment["pip"] = environment.pip_info()
+    except:
+        pass
+
 _log.debug(json.dumps(_fipy_environment))
 
 
