@@ -24,6 +24,7 @@ version of :term:`FiPy`. To test your installation use::
 
    The SciPy solvers are the only availabe solvers currently.
 
+
 .. _Nix: https://nixos.org/nix/
 .. _Nixpkgs:  https://nixos.org/nixpkgs/
 .. _nix.dev: https://nix.dev
