@@ -9,12 +9,6 @@ fipy.tools.logging
 
    
    
-   .. rubric:: Functions
-
-   .. autosummary::
-   
-      package_info
-   
    
 
    
@@ -26,4 +20,12 @@ fipy.tools.logging
    
 
 
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fipy.tools.logging.environment
 
