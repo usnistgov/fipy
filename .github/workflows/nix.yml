@@ -22,12 +22,12 @@ jobs:
       - uses: actions/cache/restore@v3
         with:
           path: /run/user/${{ env.UID }}/http_cache.sqlite
-          key: ${{ runner.os}}-http_cache.sqlite
+          key: ${{ runner.os }}-http_cache.sqlite
       - run: nix develop --command bash -c "python setup.py test"
       - run: nix develop --command bash -c "py.test --nbval --sanitize-with examples/sanitize.cfg examples/index.ipynb"
       - uses: actions/cache/save@v3
         if: always()
         with:
           path: /run/user/${{ env.UID }}/http_cache.sqlite
-          key: ${{ runner.os}}-http_cache.sqlite
+          key: ${{ runner.os }}-http_cache.sqlite
         
