@@ -22,7 +22,7 @@ version of :term:`FiPy`. To test your installation use::
 
 .. note::
 
-   The SciPy solvers are the only availabe solvers currently.
+   The SciPy solvers are the only available solvers currently.
 
 
 .. _Nix: https://nixos.org/nix/
