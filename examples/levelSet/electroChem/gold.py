@@ -27,7 +27,7 @@ default boundary layer depth and thus requires `gmsh` to construct a
 more complex mesh.
 
 .. index::
-   module: gmsh
+   pair: module; gmsh
 
 There are a few differences between the gold superfill model presented
 in this example and in :mod:`examples.levelSet.electroChem.simpleTrenchSystem`.

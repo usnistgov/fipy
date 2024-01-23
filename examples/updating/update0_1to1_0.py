@@ -138,7 +138,7 @@ and test the solution against the analytical result
 or
 
 .. index::
-   module: fipy.numerix
+   pair: module; fipy.numerix
 
 >>> axis = 0
 >>> x = mesh.getCellCenters()[:, axis]

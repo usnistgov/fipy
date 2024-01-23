@@ -88,7 +88,7 @@ or
 If the problem is run interactively, we can view the result:
 
 .. index::
-   module: fipy.viewers
+   pair: module; fipy.viewers
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var)
