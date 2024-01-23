@@ -38,6 +38,7 @@ fipy.tools
    fipy.tools.parser
    fipy.tools.sharedtempfile
    fipy.tools.test
+   fipy.tools.timer
    fipy.tools.vector
    fipy.tools.version
 
