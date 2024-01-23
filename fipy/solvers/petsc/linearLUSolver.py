@@ -6,6 +6,7 @@ __docformat__ = 'restructuredtext'
 from petsc4py import PETSc
 
 from fipy.solvers.petsc.petscSolver import PETScSolver
+from fipy.tools.timer import Timer
 
 __all__ = ["LinearLUSolver"]
 
@@ -41,20 +42,25 @@ class LinearLUSolver(PETScSolver):
         ksp.setOperators(L)
         ksp.setFromOptions()
 
-        for iteration in range(self.iterations):
-            errorVector = L * x - b
-            tol = errorVector.norm()
+        self._log.debug("BEGIN solve")
 
-            if iteration == 0:
-                tol0 = tol
+        with Timer() as t:
+            for iteration in range(self.iterations):
+                errorVector = L * x - b
+                tol = errorVector.norm()
 
-            if tol <= self.tolerance * tol0:
-                break
+                if iteration == 0:
+                    tol0 = tol
 
-            xError = x.copy()
+                if tol <= self.tolerance * tol0:
+                    break
 
-            ksp.solve(errorVector, xError)
-            x -= xError
+                xError = x.copy()
+
+                ksp.solve(errorVector, xError)
+                x -= xError
+
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         self._log.debug('solver: %s', ksp.type)
         self._log.debug('precon: %s', ksp.getPC().type)

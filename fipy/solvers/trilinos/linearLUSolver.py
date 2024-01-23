@@ -7,6 +7,7 @@ from PyTrilinos import Epetra
 from PyTrilinos import Amesos
 
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
+from fipy.tools.timer import Timer
 
 __all__ = ["LinearLUSolver"]
 from future.utils import text_to_native_str
@@ -45,31 +46,36 @@ class LinearLUSolver(TrilinosSolver):
 
     def _solve_(self, L, x, b):
 
-        for iteration in range(self.iterations):
-             # errorVector = L*x - b
-             errorVector = Epetra.Vector(L.RangeMap())
-             L.Multiply(False, x, errorVector)
-             # If A is an Epetra.Vector with map M
-             # and B is an Epetra.Vector with map M
-             # and C = A - B
-             # then C is an Epetra.Vector with *no map* !!!?!?!
-             errorVector -= b
+        self._log.debug("BEGIN solve")
 
-             tol = errorVector.Norm1()
+        with Timer() as t:
+            for iteration in range(self.iterations):
+                 # errorVector = L*x - b
+                 errorVector = Epetra.Vector(L.RangeMap())
+                 L.Multiply(False, x, errorVector)
+                 # If A is an Epetra.Vector with map M
+                 # and B is an Epetra.Vector with map M
+                 # and C = A - B
+                 # then C is an Epetra.Vector with *no map* !!!?!?!
+                 errorVector -= b
 
-             if iteration == 0:
-                 tol0 = tol
+                 tol = errorVector.Norm1()
 
-             if (tol / tol0) <= self.tolerance:
-                 break
+                 if iteration == 0:
+                     tol0 = tol
 
-             xError = Epetra.Vector(L.RowMap())
+                 if (tol / tol0) <= self.tolerance:
+                     break
 
-             Problem = Epetra.LinearProblem(L, xError, errorVector)
-             Solver = self.Factory.Create(text_to_native_str("Klu"), Problem)
-             Solver.Solve()
+                 xError = Epetra.Vector(L.RowMap())
 
-             x[:] = x - xError
+                 Problem = Epetra.LinearProblem(L, xError, errorVector)
+                 Solver = self.Factory.Create(text_to_native_str("Klu"), Problem)
+                 Solver.Solve()
+
+                 x[:] = x - xError
+
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
         self._log.debug('residual: %s', errorVector.Norm2())
