@@ -379,7 +379,7 @@ to the left and a fixed gradient of
 
 to the right:
 
->>> phi = CellVariable(mesh=mesh)
+>>> phi = CellVariable(mesh=mesh, name="solution variable")
 >>> phi.faceGrad.constrain([gradRight], mesh.facesRight)
 >>> phi.constrain(valueLeft, mesh.facesLeft)
 
