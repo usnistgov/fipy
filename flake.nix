@@ -41,6 +41,8 @@
       }));
    in
      rec {
+       packages.fipy = env;
+       packages.default = self.packages.${system}.fipy;
        devShells.default = env;
      }
   ));
