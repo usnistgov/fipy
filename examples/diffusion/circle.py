@@ -41,7 +41,7 @@ The mesh created by :term:`Gmsh` is then imported into :term:`FiPy` using the
 Using this mesh, we can construct a solution variable
 
 .. index::
-   object: fipy.variables.cellVariable.CellVariable
+   pair: object; fipy.variables.cellVariable.CellVariable
 
 >>> phi = CellVariable(name = "solution variable",
 ...                    mesh = mesh,
@@ -63,8 +63,8 @@ We can now create a :class:`Viewer <~fipy.viewers.viewer.AbstractViewer>` to see
 We set up a transient diffusion equation
 
 .. index::
-   object: fipy.terms.transientTerm.TransientTerm
-   object: fipy.terms.implicitDiffusionTerm.DiffusionTerm
+   pair: object; fipy.terms.transientTerm.TransientTerm
+   pair: object; fipy.terms.implicitDiffusionTerm.DiffusionTerm
 
 >>> D = 1.
 >>> eq = TransientTerm() == DiffusionTerm(coeff=D)
@@ -98,7 +98,7 @@ If we wanted to plot or analyze the results of this calculation with
 another application, we could export tab-separated-values with
 
 .. index::
-   object: fipy.viewers.tsvViewer.TSVViewer
+   pair: object; fipy.viewers.tsvViewer.TSVViewer
 
 ::
 
@@ -124,7 +124,7 @@ vertical positions
 ...                              mesh=mesh) # doctest: +GMSH
 
 .. index::
-    module: scipy
+    pair: module; scipy
     single: sqrt; arcsin; cos
 
 >>> x0 = radius * numerix.cos(numerix.arcsin(y)) # doctest: +GMSH

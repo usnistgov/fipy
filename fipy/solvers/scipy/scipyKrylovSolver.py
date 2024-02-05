@@ -4,6 +4,7 @@ __docformat__ = 'restructuredtext'
 __all__ = []
 
 from fipy.solvers.scipy.scipySolver import _ScipySolver
+from fipy.tools.timer import Timer
 
 class _ScipyKrylovSolver(_ScipySolver):
     """
@@ -14,16 +15,27 @@ class _ScipyKrylovSolver(_ScipySolver):
 
     def _solve_(self, L, x, b):
         A = L.matrix
-        if self.preconditioner is None:
-            M = None
-        else:
-            M = self.preconditioner._applyToMatrix(A)
 
-        x, info = self.solveFnc(A, b, x,
-                                tol=self.tolerance,
-                                maxiter=self.iterations,
-                                M=M,
-                                atol='legacy')
+        self._log.debug("BEGIN precondition")
+
+        with Timer() as t:
+            if self.preconditioner is None:
+                M = None
+            else:
+                M = self.preconditioner._applyToMatrix(A)
+
+        self._log.debug("END precondition - {} ns".format(t.elapsed))
+
+        self._log.debug("BEGIN solve")
+
+        with Timer() as t:
+            x, info = self.solveFnc(A, b, x,
+                                    tol=self.tolerance,
+                                    maxiter=self.iterations,
+                                    M=M,
+                                    atol='legacy')
+
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         if info < 0:
             self._log.debug('failure: %s', self._warningList[info].__class__.__name__)

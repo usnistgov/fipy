@@ -161,7 +161,7 @@ class test(_test):
             yield "examples.test._suite"
 
     def printPackageInfo(self):
-        from fipy.tools.logging import package_info
+        from fipy.tools.logging.environment import package_info
 
         packages = package_info()
 

@@ -54,7 +54,7 @@ simulate more realistic boundary layer depths but will also have more
 complex meshes requiring the :command:`gmsh` software.
 
 .. index::
-   module: gmsh
+   pair: module; gmsh
 
 .. this is kind of nasty, but reST tables can't handle what we need, particularly decimal alignment
 

@@ -5,7 +5,7 @@ In the following examples, we solve the same set of equations as in
 with different initial conditions and a 2D mesh:
 
 .. index::
-   module: fipy.tools.parser
+   pair: module; fipy.tools.parser
 
 >>> from fipy.tools.parser import parse
 
@@ -158,7 +158,7 @@ which is not meaningful in the liquid phase, we weight the orientation
 by the phase
 
 .. index::
-   module: fipy.viewers
+   pair: module; fipy.viewers
 
 >>> if __name__ == '__main__':
 ...     phaseViewer = Viewer(vars=phase, datamin=0., datamax=1.)
@@ -227,7 +227,7 @@ Ryo Kobayashi's FORTRAN code:
 We save the variables to disk.
 
 .. index::
-   module: fipy.tools.dump
+   pair: module; fipy.tools.dump
 
 >>> (f, filename) = dump.write({'phase' : phase, 'theta' : theta}, extension = '.gz')
 

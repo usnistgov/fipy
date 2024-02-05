@@ -127,7 +127,7 @@ or
 If we are running interactively, we create a viewer to see the results
 
 .. index::
-   module: fipy.viewers
+   pair: module; fipy.viewers
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var, datamin=0., datamax=1.0)

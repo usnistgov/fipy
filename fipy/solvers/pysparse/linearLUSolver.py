@@ -8,6 +8,7 @@ from pysparse.direct import superlu
 
 from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
 from fipy.tools import numerix
+from fipy.tools.timer import Timer
 
 __all__ = ["LinearLUSolver"]
 from future.utils import text_to_native_str
@@ -54,19 +55,24 @@ class LinearLUSolver(PysparseSolver):
         L = L * (1 / maxdiag)
         b = b * (1 / maxdiag)
 
-        LU = superlu.factorize(L.matrix.to_csr())
+        self._log.debug("BEGIN solve")
 
-        error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
+        with Timer() as t:
+            LU = superlu.factorize(L.matrix.to_csr())
 
-        for iteration in range(self.iterations):
-            errorVector = L * x - b
+            error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
 
-            if numerix.sqrt(numerix.sum(errorVector**2))  <= self.tolerance * error0:
-                break
+            for iteration in range(self.iterations):
+                errorVector = L * x - b
 
-            xError = numerix.zeros(len(b), 'd')
-            LU.solve(errorVector, xError)
-            x[:] = x - xError
+                if numerix.sqrt(numerix.sum(errorVector**2))  <= self.tolerance * error0:
+                    break
+
+                xError = numerix.zeros(len(b), 'd')
+                LU.solve(errorVector, xError)
+                x[:] = x - xError
+
+        self._log.debug("END solve - {} ns".format(t.elapsed))
 
         self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
         self._log.debug('residual: %s', numerix.sqrt(numerix.sum(errorVector**2)))
