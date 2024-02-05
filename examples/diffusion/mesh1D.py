@@ -373,14 +373,14 @@ The boundary conditions are a fixed value of
 
 >>> valueLeft = 0.
 
-to the left and a fixed flux of
+to the left and a fixed gradient of
 
->>> fluxRight = 1.
+>>> gradRight = 1.
 
 to the right:
 
->>> phi = CellVariable(mesh=mesh)
->>> phi.faceGrad.constrain([fluxRight], mesh.facesRight)
+>>> phi = CellVariable(mesh=mesh, name="solution variable")
+>>> phi.faceGrad.constrain([gradRight], mesh.facesRight)
 >>> phi.constrain(valueLeft, mesh.facesLeft)
 
 We re-initialize the solution variable
@@ -469,8 +469,8 @@ variables for the correct and incorrect solution
 
 >>> phiT = CellVariable(name="correct", mesh=mesh)
 >>> phiF = CellVariable(name="incorrect", mesh=mesh)
->>> phiT.faceGrad.constrain([fluxRight], mesh.facesRight)
->>> phiF.faceGrad.constrain([fluxRight], mesh.facesRight)
+>>> phiT.faceGrad.constrain([gradRight], mesh.facesRight)
+>>> phiF.faceGrad.constrain([gradRight], mesh.facesRight)
 >>> phiT.constrain(valueLeft, mesh.facesLeft)
 >>> phiF.constrain(valueLeft, mesh.facesLeft)
 >>> phiT.setValue(0)
