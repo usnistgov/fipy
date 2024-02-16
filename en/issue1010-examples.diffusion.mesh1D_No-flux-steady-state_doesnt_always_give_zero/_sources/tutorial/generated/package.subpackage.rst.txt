@@ -1,0 +1,32 @@
+package.subpackage
+==================
+
+.. automodule:: package.subpackage
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   package.subpackage.base
+   package.subpackage.object
+
