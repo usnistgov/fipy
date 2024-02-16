@@ -720,24 +720,30 @@ If we reset the initial condition
 
 and solve the steady-state problem
 
->>> DiffusionTerm(coeff=D).solve(var=phi) #doctest: +PYSPARSE_SOLVER
+>>> try:
+...     DiffusionTerm(coeff=D).solve(var=phi)
+... except:
+...     pass
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 >>> from fipy import input
 >>> if __name__ == '__main__':
-...     input("No-flux - stead-state failure. \
+...     input("No-flux - steady-state failure. \
 ... Press <return> to proceed...")
 
->>> print(numerix.allclose(phi, 0.0)) #doctest: +PYSPARSE_SOLVER
-True
+>>> print(numerix.allclose(phi, 0.2, atol=1e-5))
+False
+
+>>> print(phi)
 
 .. image:: /figures/examples/diffusion/mesh1D-noflux_steady_fail.*
    :width: 90%
    :align: center
    :alt: (failed) steady-state solution for no-flux boundary conditions
 
-we find that the value is uniformly zero! What happened to our no-flux boundary
-conditions?
+Depending on the solver, we find that the value may be uniformly zero,
+infinity, or NaN, or the solver may just fail!
+What happened to our no-flux boundary conditions?
 
 The problem is that in the implicit discretization of :math:`\nabla\cdot(D\nabla\phi) = 0`,
 
