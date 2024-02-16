@@ -208,7 +208,7 @@ def _OperatorVariableClass(baseClass=object):
                     # Removed in Python 3
                     stack.append("`" + stack.pop() + "`")
                 elif ins.opname == 'BINARY_SUBSCR':
-                    stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
+                    stack.append(stack.pop(-2) + "[" + str(stack.pop()) + "]")
                 elif ins.opname == 'RETURN_VALUE':
                     s = stack.pop()
                     if style == 'C':
@@ -370,6 +370,11 @@ def _testBinOp(self):
 
         >>> ttns((v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id=""))
         '(((var000[i] / var001[i]) - (var010[i] * var011[i])) + (var10[i] * var11[i]))'
+
+    Test that the representation of indexing works correctly
+
+        >>> ttns(v1[1]._getRepresentation())
+        'Variable(value=array([1, 2, 3, 4]))[1]'
 
     Check that unit works for a `binOp`
 
