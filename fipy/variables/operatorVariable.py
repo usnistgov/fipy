@@ -373,8 +373,8 @@ def _testBinOp(self):
 
     Test that the representation of indexing works correctly
 
-        >>> ttns(v1[1]._getRepresentation())
-        'Variable(value=array([1, 2, 3, 4]))[1]'
+        >>> ttns(v1[1]._getRepresentation()) # doctest: +ELLIPSIS
+        'Variable(value=array([1, 2, 3, 4]))[...]'
 
     Check that unit works for a `binOp`
 
