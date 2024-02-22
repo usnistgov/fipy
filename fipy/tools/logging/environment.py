@@ -25,6 +25,7 @@ def conda_info(conda="conda"):
     stdout = stdout.decode('ascii')
 
     info["conda_info"] = json.loads(stdout)
+
     p = subprocess.Popen([conda, "env", "export",
                           "--name", info["conda_info"]["active_prefix_name"],
                           "--json"],
@@ -53,7 +54,9 @@ def pip_info(python="python"):
     stdout, _ = p.communicate()
     stdout = stdout.decode('ascii')
 
-    return json.loads(stdout)
+    info["pip"] = json.loads(stdout)
+
+    return info
 
 def nix_info():
     """Collect information about nix environment.
@@ -83,7 +86,8 @@ def nix_info():
     stdout, _ = p.communicate()
     stdout = stdout.decode('ascii')
 
-    info["nix_info"] = json.loads(stdout)
+    info["nix"] = json.loads(stdout)
+
     return info
 
 def package_info():
