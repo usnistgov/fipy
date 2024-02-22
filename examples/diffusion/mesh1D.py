@@ -734,8 +734,6 @@ and solve the steady-state problem
 >>> print(numerix.allclose(phi, 0.2, atol=1e-5))
 False
 
->>> print(phi)
-
 .. image:: /figures/examples/diffusion/mesh1D-noflux_steady_fail.*
    :width: 90%
    :align: center
