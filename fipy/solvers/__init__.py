@@ -190,6 +190,12 @@ register_skipper(flag='NOT_PYAMGX_SOLVER',
                  test=lambda: solver_suite != 'pyamgx',
                  why="the PyAMGX solver is being used.",
                  skipWarning=True)
+
+register_skipper(flag='NOT_TRILINOS_SOLVER',
+                 test=lambda: solver_suite not in ['trilinos', 'no-pysparse'],
+                 why="the Trilinos solvers are being used.",
+                 skipWarning=True)
+
 del register_skipper
 
 _log.info("Solver suite is %s", solver_suite)
