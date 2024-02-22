@@ -731,7 +731,7 @@ and solve the steady-state problem
 ...     input("No-flux - steady-state failure. \
 ... Press <return> to proceed...")
 
->>> print(numerix.allclose(phi, 0.2, atol=1e-5))
+>>> print(numerix.allclose(phi, 0.2, atol=1e-5)) # doctest: +NOT_TRILINOS_SOLVER
 False
 
 .. image:: /figures/examples/diffusion/mesh1D-noflux_steady_fail.*
@@ -742,6 +742,8 @@ False
 Depending on the solver, we find that the value may be uniformly zero,
 infinity, or NaN, or the solver may just fail!
 What happened to our no-flux boundary conditions?
+Trilinos actually manages to get the correct solution, but this should not
+be relied on; this problem has an infinite number of solutions.
 
 The problem is that in the implicit discretization of :math:`\nabla\cdot(D\nabla\phi) = 0`,
 
