@@ -1,0 +1,35 @@
+examples.benchmarking
+=====================
+
+.. automodule:: examples.benchmarking
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   examples.benchmarking.benchmarker
+   examples.benchmarking.size
+   examples.benchmarking.steps
+   examples.benchmarking.utils
+   examples.benchmarking.versions
+
