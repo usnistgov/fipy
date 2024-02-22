@@ -3,19 +3,19 @@
 # input_hash: 583426b33c8084a186f4e2ef7fe734fb25fffbcc8c1ed03bba715591a23e83d6
 @EXPLICIT
 https://conda.anaconda.org/conda-forge/osx-64/bzip2-1.0.8-h10d778d_5.conda#6097a6ca9ada32699b5fc4312dd6ef18
-https://conda.anaconda.org/conda-forge/osx-64/c-ares-1.23.0-h10d778d_0.conda#8da823fabbad661eefc48b779d89a4ac
-https://conda.anaconda.org/conda-forge/osx-64/ca-certificates-2023.11.17-h8857fd0_0.conda#c687e9d14c49e3d3946d50a413cdbf16
+https://conda.anaconda.org/conda-forge/osx-64/c-ares-1.26.0-h10d778d_0.conda#04a8ab3d4f9a9446b286c4a90f665148
+https://conda.anaconda.org/conda-forge/osx-64/ca-certificates-2024.2.2-h8857fd0_0.conda#f2eacee8c33c43692f1ccfd33d0f50b1
 https://conda.anaconda.org/conda-forge/noarch/font-ttf-dejavu-sans-mono-2.37-hab24e00_0.tar.bz2#0c96522c6bdaed4b1566d11387caaf45
 https://conda.anaconda.org/conda-forge/noarch/font-ttf-inconsolata-3.000-h77eed37_0.tar.bz2#34893075a5c9e55cdafac56607368fc6
 https://conda.anaconda.org/conda-forge/noarch/font-ttf-source-code-pro-2.038-h77eed37_0.tar.bz2#4d59c254e01d9cde7957100457e2d5fb
 https://conda.anaconda.org/conda-forge/noarch/font-ttf-ubuntu-0.83-h77eed37_1.conda#6185f640c43843e5ad6fd1c5372c3f80
 https://conda.anaconda.org/conda-forge/osx-64/jpeg-9e-hb7f2c08_3.conda#6b55131ae9445ef38746dc6b080acda9
-https://conda.anaconda.org/conda-forge/osx-64/jxrlib-1.1-h35c211d_2.tar.bz2#1c2379fd9d5d4ecb151231f6282e699d
+https://conda.anaconda.org/conda-forge/osx-64/jxrlib-1.1-h10d778d_3.conda#cfaf81d843a80812fe16a68bdae60562
 https://conda.anaconda.org/conda-forge/osx-64/libcxx-16.0.6-hd57cbcb_0.conda#7d6972792161077908b62971802f289a
 https://conda.anaconda.org/conda-forge/osx-64/libdeflate-1.14-hb7f2c08_0.tar.bz2#ce2a6075114c9b64ad8cace52492feee
 https://conda.anaconda.org/conda-forge/osx-64/libev-4.33-h10d778d_2.conda#899db79329439820b7e8f8de41bca902
 https://conda.anaconda.org/conda-forge/osx-64/libexpat-2.5.0-hf0c8a7f_1.conda#6c81cb022780ee33435cca0127dd43c9
-https://conda.anaconda.org/conda-forge/osx-64/libiconv-1.17-hd75f5a5_1.conda#c4069fa5c051d41093d3fd52caffa285
+https://conda.anaconda.org/conda-forge/osx-64/libiconv-1.17-hd75f5a5_2.conda#6c3628d047e151efba7cf08c5e54d1ca
 https://conda.anaconda.org/conda-forge/osx-64/libwebp-base-1.3.2-h0dc2134_0.conda#4e7e9d244e87d66c18d36894fd6a8ae5
 https://conda.anaconda.org/conda-forge/osx-64/libzlib-1.2.13-h8a1eda9_5.conda#4a3ad23f6e16f99c04e166767193d700
 https://conda.anaconda.org/conda-forge/osx-64/llvm-openmp-17.0.6-hb6ac08f_0.conda#f260ab897df05f729fc3e65dbb0850ef
@@ -39,8 +39,8 @@ https://conda.anaconda.org/conda-forge/osx-64/lerc-4.0.0-hb486fe8_0.tar.bz2#f9d6
 https://conda.anaconda.org/conda-forge/osx-64/libffi-3.2.1-hb1e8313_1007.tar.bz2#be8b6ba3b6710a89ab891bbed151659c
 https://conda.anaconda.org/conda-forge/osx-64/libgfortran4-7.5.0-h1a10cd1_23.tar.bz2#c26272f23d01f8cde50ed0c776c0edb1
 https://conda.anaconda.org/conda-forge/osx-64/libllvm13-13.0.1-h64f94b2_2.tar.bz2#bac1c6f12f44f40e19274e6e04e9bad5
-https://conda.anaconda.org/conda-forge/osx-64/libpng-1.6.39-ha978bb4_0.conda#35e4928794c5391aec14ffdf1deaaee5
-https://conda.anaconda.org/conda-forge/osx-64/libsqlite-3.44.2-h92b6c6a_0.conda#d4419f90019e6a2b152cd4d32f73a82f
+https://conda.anaconda.org/conda-forge/osx-64/libpng-1.6.42-h92b6c6a_0.conda#7654da21e9d7ca6a8c87fbc77448588e
+https://conda.anaconda.org/conda-forge/osx-64/libsqlite-3.45.1-h92b6c6a_0.conda#e451d14a5412cdc68be50493df251f55
 https://conda.anaconda.org/conda-forge/osx-64/libxcb-1.13-h0d85af4_1004.tar.bz2#eb7860935e14aec936065cbc21a1a962
 https://conda.anaconda.org/conda-forge/osx-64/lz4-c-1.8.3-h6de7cb9_1001.tar.bz2#bacc4bc848109b87398b5ae18e6c4e00
 https://conda.anaconda.org/conda-forge/osx-64/ncurses-6.4-h93d8f39_2.conda#e58f366bd4d767e9ab97ab8b272e7670
@@ -57,7 +57,7 @@ https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.5-h829000d_0.conda#80abc4
 https://conda.anaconda.org/conda-forge/noarch/fonts-conda-ecosystem-1-0.tar.bz2#fee5683a3f04bd15cbd8318b096a27ab
 https://conda.anaconda.org/conda-forge/osx-64/freetype-2.12.1-h60636b9_2.conda#25152fce119320c980e5470e64834b50
 https://conda.anaconda.org/conda-forge/osx-64/hdf4-4.2.15-h7aa5921_5.tar.bz2#a5e171d71c6b524409de40d81c098758
-https://conda.anaconda.org/conda-forge/osx-64/libclang-13.0.1-root_63002_h09a4f16_5.conda#b8edd5b76e41a44c34741452f49c5d76
+https://conda.anaconda.org/conda-forge/osx-64/libclang-13.0.1-default_h255f2f3_6.conda#c450e334a4d41707e1294549ab107d6e
 https://conda.anaconda.org/conda-forge/osx-64/libedit-3.1.20191231-h0678c8f_2.tar.bz2#6016a8a1d0e63cac3de2c352cd40208b
 https://conda.anaconda.org/conda-forge/osx-64/libgfortran-4.0.0-7_5_0_h1a10cd1_23.tar.bz2#617b1e5089026c0a2fe551ecccd58a79
 https://conda.anaconda.org/conda-forge/osx-64/libglib-2.66.3-h2575888_0.tar.bz2#557d756f15d46b5c43293c0850211c73
@@ -66,7 +66,7 @@ https://conda.anaconda.org/conda-forge/osx-64/libssh2-1.10.0-h7535e13_3.tar.bz2#
 https://conda.anaconda.org/conda-forge/osx-64/libtiff-4.4.0-h6268bbc_5.conda#551fc78ba147767ea5905d0746e2fbb5
 https://conda.anaconda.org/conda-forge/osx-64/libxml2-2.9.14-h1faee8b_4.conda#e881e89ca1e2ba6c663329ce464e277b
 https://conda.anaconda.org/conda-forge/osx-64/mysql-common-8.0.32-h7ebae80_0.conda#c38eebf92d4b044a18f00eddd3e2c7c9
-https://conda.anaconda.org/conda-forge/osx-64/nss-3.95-hfeb00ea_0.conda#635525316f129644b60e3772e67fe5d8
+https://conda.anaconda.org/conda-forge/osx-64/nss-3.98-ha05da47_0.conda#79d062716d8e1f77cf806c6fe0f4405c
 https://conda.anaconda.org/conda-forge/osx-64/openexr-3.1.5-h07d71dc_2.conda#b52f840cde373f3a43708f4f932fed6e
 https://conda.anaconda.org/conda-forge/osx-64/readline-8.2-h9e318b2_1.conda#f17f77f2acf4d344734bda76829ce14e
 https://conda.anaconda.org/conda-forge/osx-64/xorg-libx11-1.8.4-hb7f2c08_0.conda#c5074f389aeca9718911a2fc64ebdaf5
@@ -76,7 +76,7 @@ https://conda.anaconda.org/conda-forge/osx-64/lcms2-2.14-h90f4b2a_0.tar.bz2#e56c
 https://conda.anaconda.org/conda-forge/osx-64/libopenblas-0.3.12-openmp_h63d9170_1.tar.bz2#eef885eb44a8d6e11edfa18cb5d024dc
 https://conda.anaconda.org/conda-forge/osx-64/mysql-libs-8.0.32-hc37e033_0.conda#8cb44fb9c6257c34757ba1ed723cf496
 https://conda.anaconda.org/conda-forge/osx-64/openjpeg-2.5.0-h5d0d7b0_1.tar.bz2#be533cc782981a0ec5eed28aa618470a
-https://conda.anaconda.org/conda-forge/osx-64/sqlite-3.44.2-h7461747_0.conda#ac6662948d2ccf800474dfdf59fb94bc
+https://conda.anaconda.org/conda-forge/osx-64/sqlite-3.45.1-h7461747_0.conda#239ff6ffc3ee45898db19e3cbbf40f88
 https://conda.anaconda.org/conda-forge/osx-64/xorg-libxext-1.3.4-hb7f2c08_2.conda#0f98aff18e0455f0bdc4326c04f98883
 https://conda.anaconda.org/conda-forge/osx-64/xorg-libxfixes-5.0.3-h0d85af4_1004.tar.bz2#6ecbef6618bb15e389a8bb5618e579f6
 https://conda.anaconda.org/conda-forge/osx-64/xorg-libxrender-0.9.10-h0d85af4_1003.tar.bz2#b455388502383b388c5ee5b6f5ee4509
