@@ -76,12 +76,17 @@ _fipy_environment = {
 
 if _log.isEnabledFor(logging.DEBUG):
     try:
-        _fipy_environment["conda"] = environment.conda_info()
+        _fipy_environment.update(environment.conda_info())
     except:
         pass
 
     try:
-        _fipy_environment["pip"] = environment.pip_info()
+        _fipy_environment.update(environment.pip_info())
+    except:
+        pass
+
+    try:
+        _fipy_environment.update(environment.nix_info())
     except:
         pass
 
