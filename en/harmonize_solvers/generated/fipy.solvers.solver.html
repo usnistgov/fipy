@@ -1,0 +1,1470 @@
+
+<!DOCTYPE html>
+
+
+<!--[if IEMobile 7]><html class="iem7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html class="no-js"  lang="en" dir="ltr" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# book: http://ogp.me/ns/book# profile: http://ogp.me/ns/profile# video: http://ogp.me/ns/video# product: http://ogp.me/ns/product# content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#"><!--<![endif]-->
+
+  <head>
+<meta charset="utf-8" />
+<link rel="shortcut icon" href="https://www.nist.gov/sites/all/themes/nist_style/favicon.ico" type="image/vnd.microsoft.icon" />
+<script type="text/x-mathjax-config">MathJax.Hub.Config({
+  extensions: ['tex2jax.js'],
+  jax: ['input/TeX','output/HTML-CSS'],
+  tex2jax: {
+    inlineMath: [ ['$$','$$'], ['\\(','\\)'] ],
+    processEscapes: true,
+    processClass: 'tex2jax',
+    ignoreClass: 'html'
+  },
+  showProcessingMessages: false,
+  messageStyle: 'none'
+});
+</script>
+<meta name="MobileOptimized" content="width">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+
+      <!--[if lt IE 9]>
+    <script src="https://www.nist.gov/sites/all/themes/zen/js/html5-respond.js"></script>
+    <![endif]-->
+    <!--[if (gte IE 6)&(lte IE 8)]>
+  <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
+  <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>fipy.solvers.solver &#8212; FiPy 3.4.4+302.geced40cb7 documentation</title>
+    <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=7353f965"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="FiPy 3.4.4+302.geced40cb7 documentation" href="../contents.html" />
+    <link rel="up" title="fipy.solvers" href="fipy.solvers.html" />
+    <link rel="next" title="fipy.solvers.test" href="fipy.solvers.test.html" />
+    <link rel="prev" title="fipy.solvers.scipy.scipySolver" href="fipy.solvers.scipy.scipySolver.html" />
+  
+ 
+
+
+  <link rel="stylesheet" href="https://pages.nist.gov/nist-header-footer/css/nist-combined.css">
+  <script src="https://code.jquery.com/jquery-3.6.2.min.js" type="text/javascript" defer="defer"></script>
+  <script src="https://pages.nist.gov/nist-header-footer/js/nist-header-footer.js" type="text/javascript" defer="defer"></script>
+
+
+  </head>
+<!--  <body role="document">-->
+  <body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-414011 node-type-software hide-breadcrumb section-services-resources page-panels is-panel" role="document">
+      <div id="page" class="mini-header">
+
+
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fipy.solvers.test.html" title="fipy.solvers.test"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fipy.solvers.scipy.scipySolver.html" title="fipy.solvers.scipy.scipySolver"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html"><img src="../_static/fipy.png" alt="FiPy logo"
+                 style="vertical-align: middle; margin-top: -1px"/>
+        FiPy</a> &gt;</li>
+
+          <li class="nav-item nav-item-1"><a href="../API.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code> Package Documentation</a> &gt;</li>
+          <li class="nav-item nav-item-2"><a href="fipy.html" >fipy</a> &gt;</li>
+          <li class="nav-item nav-item-3"><a href="fipy.solvers.html" accesskey="U">fipy.solvers</a> &gt;</li> 
+      </ul>
+    </div>
+
+  <div id="main" class="clearfix" role="main" tabindex="-1">
+    <div class="main__inner">
+      <div class="page-info">
+        <a id="main-content"></a>
+      </div>
+
+      <div class="document">
+        <div class="documentwrapper">
+
+      <div id="content" class="column">
+      <div id="block-nist-www-content" class="nist-block">
+        <section class="nist-page__content usa-section clearfix">
+
+         
+
+        <div class="grid-container margin-top-4">
+        <div class="grid-row grid-gap-6">
+
+  <div class="nist-page__region nist-page__region--content tablet-lg:grid-col-8">
+              <div class="body" role="main">
+		
+  <section id="module-fipy.solvers.solver">
+<span id="fipy-solvers-solver"></span><h1>fipy.solvers.solver<a class="headerlink" href="#module-fipy.solvers.solver" title="Permalink to this heading">¶</a></h1>
+<p>The iterative solvers may output warnings if the solution is considered
+unsatisfactory. If you are not interested in these warnings, you can invoke
+python with a warning filter such as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -Wignore::fipy.SolverConvergenceWarning myscript.py
+</pre></div>
+</div>
+<p>If you are extremely concerned about your preconditioner for some reason, you
+can abort whenever it has problems with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -Werror::fipy.PreconditionerWarning myscript.py
+</pre></div>
+</div>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Solver</span></code></a>([tolerance, criterion, iterations, ...])</p></td>
+<td><p>The base <cite>LinearXSolver</cite> class.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Exceptions</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.solver.BreakdownWarning" title="fipy.solvers.solver.BreakdownWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BreakdownWarning</span></code></a>(solver, iter, relres)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning" title="fipy.solvers.solver.IllConditionedPreconditionerWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning</span></code></a>(solver, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning" title="fipy.solvers.solver.IllegalInputOrBreakdownWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning</span></code></a>(solver, iter, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.solver.LossOfPrecisionWarning" title="fipy.solvers.solver.LossOfPrecisionWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LossOfPrecisionWarning</span></code></a>(solver, iter, relres)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.solver.MatrixIllConditionedWarning" title="fipy.solvers.solver.MatrixIllConditionedWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning</span></code></a>(solver, iter, relres)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.solver.MaximumIterationWarning" title="fipy.solvers.solver.MaximumIterationWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MaximumIterationWarning</span></code></a>(solver, iter, relres)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.solver.NormalConvergence" title="fipy.solvers.solver.NormalConvergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NormalConvergence</span></code></a>(solver, iter, relres)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.solver.ParameterWarning" title="fipy.solvers.solver.ParameterWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ParameterWarning</span></code></a>(solver, iter, relres)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning" title="fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning</span></code></a>(...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning" title="fipy.solvers.solver.PreconditionerWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PreconditionerWarning</span></code></a>(solver, iter, relres)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning" title="fipy.solvers.solver.ScalarQuantityOutOfRangeWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ScalarQuantityOutOfRangeWarning</span></code></a>(solver, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning" title="fipy.solvers.solver.SolverConvergenceWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a>(solver, iter, relres)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.solver.StagnatedSolverWarning" title="fipy.solvers.solver.StagnatedSolverWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StagnatedSolverWarning</span></code></a>(solver, iter, relres)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.BreakdownWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">BreakdownWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.BreakdownWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning" title="fipy.solvers.solver.SolverConvergenceWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.BreakdownWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.BreakdownWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.BreakdownWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.BreakdownWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.BreakdownWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.BreakdownWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.BreakdownWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.BreakdownWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.BreakdownWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.BreakdownWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.BreakdownWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.BreakdownWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.BreakdownWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.BreakdownWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.BreakdownWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.BreakdownWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.BreakdownWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.BreakdownWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.BreakdownWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.BreakdownWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllConditionedPreconditionerWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">IllConditionedPreconditionerWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning" title="fipy.solvers.solver.PreconditionerWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">PreconditionerWarning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllConditionedPreconditionerWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllConditionedPreconditionerWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllConditionedPreconditionerWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllConditionedPreconditionerWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllConditionedPreconditionerWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllConditionedPreconditionerWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllConditionedPreconditionerWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllConditionedPreconditionerWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllConditionedPreconditionerWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllConditionedPreconditionerWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllegalInputOrBreakdownWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">IllegalInputOrBreakdownWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning" title="fipy.solvers.solver.SolverConvergenceWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllegalInputOrBreakdownWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllegalInputOrBreakdownWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllegalInputOrBreakdownWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllegalInputOrBreakdownWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllegalInputOrBreakdownWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllegalInputOrBreakdownWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllegalInputOrBreakdownWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllegalInputOrBreakdownWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllegalInputOrBreakdownWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.IllegalInputOrBreakdownWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.LossOfPrecisionWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">LossOfPrecisionWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.LossOfPrecisionWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning" title="fipy.solvers.solver.SolverConvergenceWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.LossOfPrecisionWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.LossOfPrecisionWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.LossOfPrecisionWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.LossOfPrecisionWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.LossOfPrecisionWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.LossOfPrecisionWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.LossOfPrecisionWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.LossOfPrecisionWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.LossOfPrecisionWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.LossOfPrecisionWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.LossOfPrecisionWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.LossOfPrecisionWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.LossOfPrecisionWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.LossOfPrecisionWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.LossOfPrecisionWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.LossOfPrecisionWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.LossOfPrecisionWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.LossOfPrecisionWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.LossOfPrecisionWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.LossOfPrecisionWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MatrixIllConditionedWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">MatrixIllConditionedWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MatrixIllConditionedWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning" title="fipy.solvers.solver.SolverConvergenceWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MatrixIllConditionedWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MatrixIllConditionedWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MatrixIllConditionedWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MatrixIllConditionedWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MatrixIllConditionedWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MatrixIllConditionedWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MatrixIllConditionedWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MatrixIllConditionedWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MatrixIllConditionedWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MatrixIllConditionedWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MatrixIllConditionedWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MatrixIllConditionedWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MaximumIterationWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">MaximumIterationWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MaximumIterationWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning" title="fipy.solvers.solver.SolverConvergenceWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MaximumIterationWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.MaximumIterationWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MaximumIterationWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.MaximumIterationWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MaximumIterationWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MaximumIterationWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MaximumIterationWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MaximumIterationWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MaximumIterationWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MaximumIterationWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MaximumIterationWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MaximumIterationWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MaximumIterationWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MaximumIterationWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MaximumIterationWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MaximumIterationWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MaximumIterationWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MaximumIterationWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.MaximumIterationWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.MaximumIterationWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.NormalConvergence">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">NormalConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.NormalConvergence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning" title="fipy.solvers.solver.SolverConvergenceWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.NormalConvergence.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.NormalConvergence.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.NormalConvergence.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.NormalConvergence.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.NormalConvergence.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.NormalConvergence.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.NormalConvergence.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.NormalConvergence.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.NormalConvergence.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.NormalConvergence.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.NormalConvergence.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.NormalConvergence.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.NormalConvergence.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.NormalConvergence.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.NormalConvergence.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.NormalConvergence.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.NormalConvergence.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.NormalConvergence.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.NormalConvergence.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.NormalConvergence.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ParameterWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">ParameterWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ParameterWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning" title="fipy.solvers.solver.SolverConvergenceWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ParameterWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.ParameterWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ParameterWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.ParameterWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ParameterWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ParameterWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ParameterWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ParameterWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ParameterWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ParameterWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ParameterWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ParameterWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ParameterWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ParameterWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ParameterWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ParameterWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ParameterWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ParameterWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ParameterWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ParameterWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">PreconditionerNotPositiveDefiniteWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning" title="fipy.solvers.solver.PreconditionerWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">PreconditionerWarning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">PreconditionerWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning" title="fipy.solvers.solver.SolverConvergenceWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.PreconditionerWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.PreconditionerWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ScalarQuantityOutOfRangeWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">ScalarQuantityOutOfRangeWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning" title="fipy.solvers.solver.SolverConvergenceWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.solvers.solver.Solver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">Solver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.Solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>The base <cite>LinearXSolver</cite> class.</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>This class is abstract. Always create one of its subclasses.</p>
+</div>
+<p>Create a <cite>Solver</cite> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Required residual tolerance.</p></li>
+<li><p><strong>criterion</strong> (<code class="docutils literal notranslate"><span class="pre">{'default',</span> <span class="pre">'initial',</span> <span class="pre">'unscaled',</span> <span class="pre">'RHS',</span> <span class="pre">'matrix',</span> <span class="pre">'solution',</span> <span class="pre">'preconditioned',</span> <span class="pre">'natural',</span> <span class="pre">'legacy'}</span></code>, <em>optional</em>) – Interpretation of <code class="docutils literal notranslate"><span class="pre">tolerance</span></code>.
+See <a class="reference internal" href="../SOLVERS.html#convergence"><span class="std std-ref">Convergence</span></a> for more information.</p></li>
+<li><p><strong>iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of iterative steps to perform.</p></li>
+<li><p><strong>precon</strong> (<a class="reference internal" href="fipy.solvers.preconditioner.html#fipy.solvers.preconditioner.Preconditioner" title="fipy.solvers.preconditioner.Preconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">Preconditioner</span></code></a>) – Preconditioner to use.  Not all solver suites support
+preconditioners.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.Solver.DEFAULT_ITERATIONS">
+<span class="sig-name descname"><span class="pre">DEFAULT_ITERATIONS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1000</span></em><a class="headerlink" href="#fipy.solvers.solver.Solver.DEFAULT_ITERATIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default maximum number of iterative steps to perform</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.Solver.DEFAULT_PRECONDITIONER">
+<span class="sig-name descname"><span class="pre">DEFAULT_PRECONDITIONER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#fipy.solvers.solver.Solver.DEFAULT_PRECONDITIONER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default preconditioner to apply to the matrix</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.Solver.DEFAULT_TOLERANCE">
+<span class="sig-name descname"><span class="pre">DEFAULT_TOLERANCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-05</span></em><a class="headerlink" href="#fipy.solvers.solver.Solver.DEFAULT_TOLERANCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default tolerance for linear solves unless <cite>criterion=”legacy”</cite></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.Solver.LEGACY_TOLERANCE">
+<span class="sig-name descname"><span class="pre">LEGACY_TOLERANCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-10</span></em><a class="headerlink" href="#fipy.solvers.solver.Solver.LEGACY_TOLERANCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default tolerance for linear solves if <cite>criterion=”legacy”</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.Solver.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.Solver.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fipy.solvers.solver.Solver.default_tolerance">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_tolerance</span></span><a class="headerlink" href="#fipy.solvers.solver.Solver.default_tolerance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default tolerance for linear solve</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.SolverConvergenceWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">SolverConvergenceWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.SolverConvergenceWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Warning" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Warning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.SolverConvergenceWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.SolverConvergenceWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.SolverConvergenceWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.SolverConvergenceWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.SolverConvergenceWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.SolverConvergenceWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.SolverConvergenceWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.SolverConvergenceWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.SolverConvergenceWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.SolverConvergenceWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.SolverConvergenceWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.SolverConvergenceWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.SolverConvergenceWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.SolverConvergenceWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.SolverConvergenceWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.SolverConvergenceWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.SolverConvergenceWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.SolverConvergenceWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.SolverConvergenceWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.SolverConvergenceWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.solver.StagnatedSolverWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.solver.</span></span><span class="sig-name descname"><span class="pre">StagnatedSolverWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.StagnatedSolverWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning" title="fipy.solvers.solver.SolverConvergenceWarning"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.StagnatedSolverWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.solver.StagnatedSolverWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.solver.StagnatedSolverWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.solver.StagnatedSolverWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.StagnatedSolverWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.StagnatedSolverWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.StagnatedSolverWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.StagnatedSolverWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.StagnatedSolverWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.StagnatedSolverWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.StagnatedSolverWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.StagnatedSolverWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.StagnatedSolverWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.StagnatedSolverWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.StagnatedSolverWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.StagnatedSolverWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.StagnatedSolverWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.StagnatedSolverWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.solver.StagnatedSolverWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.solver.StagnatedSolverWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                <div class='last-updated'>
+                Last updated on Apr 02, 2024.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                </div>
+              </div>
+  </div>  
+  <aside class="nist-page__region nist-page__region--sidebar-second tablet-lg:grid-col-4">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+<strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
+Version 3.4.4+302.geced40cb7
+
+  <div class="sphinxsidebarsection">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">fipy.solvers.solver</a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.BreakdownWarning"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.BreakdownWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.BreakdownWarning.__context__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.BreakdownWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.BreakdownWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.BreakdownWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.BreakdownWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.BreakdownWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.BreakdownWarning.__str__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.BreakdownWarning.add_note"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.BreakdownWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__context__"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.__str__"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.add_note"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllConditionedPreconditionerWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__context__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__str__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.add_note"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.IllegalInputOrBreakdownWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.LossOfPrecisionWarning"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.LossOfPrecisionWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.LossOfPrecisionWarning.__context__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.LossOfPrecisionWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.LossOfPrecisionWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.LossOfPrecisionWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.LossOfPrecisionWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.LossOfPrecisionWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.LossOfPrecisionWarning.__str__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.LossOfPrecisionWarning.add_note"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.LossOfPrecisionWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MatrixIllConditionedWarning"><code class="docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__context__"><code class="docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MatrixIllConditionedWarning.__str__"><code class="docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MatrixIllConditionedWarning.add_note"><code class="docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MatrixIllConditionedWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MaximumIterationWarning"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.MaximumIterationWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MaximumIterationWarning.__context__"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MaximumIterationWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MaximumIterationWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MaximumIterationWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MaximumIterationWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MaximumIterationWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MaximumIterationWarning.__str__"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MaximumIterationWarning.add_note"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.MaximumIterationWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.NormalConvergence"><code class="docutils literal notranslate"><span class="pre">NormalConvergence</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.NormalConvergence.__cause__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.NormalConvergence.__context__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.NormalConvergence.__delattr__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.NormalConvergence.__getattribute__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.NormalConvergence.__reduce__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.NormalConvergence.__repr__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.NormalConvergence.__setattr__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.NormalConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.NormalConvergence.add_note"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.NormalConvergence.with_traceback"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ParameterWarning"><code class="docutils literal notranslate"><span class="pre">ParameterWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.ParameterWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ParameterWarning.__context__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ParameterWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ParameterWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ParameterWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ParameterWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ParameterWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ParameterWarning.__str__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ParameterWarning.add_note"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ParameterWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning"><code class="docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__context__"><code class="docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.__str__"><code class="docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.add_note"><code class="docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning"><code class="docutils literal notranslate"><span class="pre">PreconditionerWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">PreconditionerWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning.__context__"><code class="docutils literal notranslate"><span class="pre">PreconditionerWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">PreconditionerWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">PreconditionerWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">PreconditionerWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">PreconditionerWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">PreconditionerWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning.__str__"><code class="docutils literal notranslate"><span class="pre">PreconditionerWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning.add_note"><code class="docutils literal notranslate"><span class="pre">PreconditionerWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.PreconditionerWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">PreconditionerWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning"><code class="docutils literal notranslate"><span class="pre">ScalarQuantityOutOfRangeWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">ScalarQuantityOutOfRangeWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__context__"><code class="docutils literal notranslate"><span class="pre">ScalarQuantityOutOfRangeWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">ScalarQuantityOutOfRangeWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">ScalarQuantityOutOfRangeWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">ScalarQuantityOutOfRangeWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">ScalarQuantityOutOfRangeWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">ScalarQuantityOutOfRangeWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.__str__"><code class="docutils literal notranslate"><span class="pre">ScalarQuantityOutOfRangeWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.add_note"><code class="docutils literal notranslate"><span class="pre">ScalarQuantityOutOfRangeWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.ScalarQuantityOutOfRangeWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">ScalarQuantityOutOfRangeWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.Solver"><code class="docutils literal notranslate"><span class="pre">Solver</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.Solver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">Solver.DEFAULT_ITERATIONS</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.Solver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">Solver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.Solver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">Solver.DEFAULT_TOLERANCE</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.Solver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">Solver.LEGACY_TOLERANCE</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.Solver.__repr__"><code class="docutils literal notranslate"><span class="pre">Solver.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.Solver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">Solver.default_tolerance</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning"><code class="docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">SolverConvergenceWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning.__context__"><code class="docutils literal notranslate"><span class="pre">SolverConvergenceWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">SolverConvergenceWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">SolverConvergenceWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">SolverConvergenceWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">SolverConvergenceWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">SolverConvergenceWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning.__str__"><code class="docutils literal notranslate"><span class="pre">SolverConvergenceWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning.add_note"><code class="docutils literal notranslate"><span class="pre">SolverConvergenceWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.SolverConvergenceWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">SolverConvergenceWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.solver.StagnatedSolverWarning"><code class="docutils literal notranslate"><span class="pre">StagnatedSolverWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.solver.StagnatedSolverWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">StagnatedSolverWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.StagnatedSolverWarning.__context__"><code class="docutils literal notranslate"><span class="pre">StagnatedSolverWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.StagnatedSolverWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">StagnatedSolverWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.StagnatedSolverWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">StagnatedSolverWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.StagnatedSolverWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">StagnatedSolverWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.StagnatedSolverWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">StagnatedSolverWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.StagnatedSolverWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">StagnatedSolverWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.StagnatedSolverWarning.__str__"><code class="docutils literal notranslate"><span class="pre">StagnatedSolverWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.StagnatedSolverWarning.add_note"><code class="docutils literal notranslate"><span class="pre">StagnatedSolverWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.solver.StagnatedSolverWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">StagnatedSolverWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<div class="sphinxsidebarsection">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="fipy.solvers.scipy.scipySolver.html"
+                        title="previous chapter">fipy.solvers.scipy.scipySolver</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fipy.solvers.test.html"
+                        title="next chapter">fipy.solvers.test</a></p>
+</div>
+  <div class="sphinxsidebarsection">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/generated/fipy.solvers.solver.rst.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  </div>
+<div class="sphinxsidebarsection">
+<div id="searchbox" style="display: none" role="search">
+  <div data-layout-content-preview-placeholder-label="&quot;Sphinx
+  Search&quot; field" class="nist-block nist-block--search">
+  <h2 id="searchlabel">Quick search</h2>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+  </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+</div>
+<div class="sphinxsidebarsection" id="contact-wrapper">
+  
+        <div data-layout-content-preview-placeholder-label="&quot;Related
+        organization tree&quot; views block" class="nist-block nist-block--org">
+          
+          <h2 class="nist-block__title">Organizations</h2>
+              
+              <div class="views-element-container"><div
+              class="js-view-dom-id-70b0923f677edbe3dda361030ef8dc373cd0ca94065c39cfd81338de767f1019">
+
+            <div class="nist-related-orgs"><div class="term-tree-list"><ul
+            class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters" hreflang="en">NIST
+            Headquarters</a><ul class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs"
+            hreflang="en">Laboratory Programs</a><ul class="term"><li
+            class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs/material-measurement-laboratory"
+            hreflang="en">Material Measurement Laboratory</a>
+			<ul
+			class="term"><li
+			class="selected"><a href="https://www.nist.gov/mml/msed"
+			hreflang="en">Materials Science and Engineering
+			Division</a></li><li
+			class="selected"><a href="https://www.nist.gov/mml/ctcms"
+			hreflang="en">Center for Theoretical and
+			              Computational Materials Science</a></li></ul>
+                          </li></ul></li></ul></li></ul></div></div>
+          <div class="nist-related-orgs"></div>
+          <div class="nist-related-orgs"></div>
+
+
+
+        </div>
+        </div>
+
+          </div>
+
+
+          <div data-layout-content-preview-placeholder-label="&quot;NIST
+          Staff&quot; field" class="nist-block nist-block--contact">
+
+          <h2 class="nist-block__title">NIST Staff</h2>
+
+                  <div class="nist-field nist-field--label-hidden
+                  nist-field--link-list entity-reference nist-field__items
+                  nist-field--no-margin">
+                            <div class="nist-field__item
+                            nist-field--no-margin"><a
+                            href="https://www.nist.gov/people/jonathan-e-guyer"
+                            hreflang="en">Jonathan E. Guyer</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/daniel-wheeler"
+                                hreflang="en">Daniel Wheeler</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/james-warren"
+                                hreflang="en">James A. Warren</a></div>
+                  </div>
+
+
+          </div>
+
+          <div data-layout-content-preview-placeholder-label="&quot;Contact&quot; field"
+          class="nist-block nist-block--contact nist-block--mail">
+
+          <h2 class="nist-block__title">
+          <a class="" href="../docs/source/CONTACT.html" style="">Contact</a>
+          </h2>
+
+          </div>
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+  </aside>
+        </div>
+      </div>
+
+      <div class="panel-region--postface">
+      <div class="inner region-inner inside">
+        
+<div class="pane pane--nist-node-date-pane" >
+
+    </div>
+      </div>
+    </div>
+
+        </section>
+        </div>
+      </div>
+
+      </div>  
+    </div>          
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  
+
+
+  <!-- Taken from https://www.filamentgroup.com/lab/html-includes/#another-demo%3A-including-another-html-file -->
+  <iframe src="../_static/ntd2d_menu.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    </div>
+  </body>
+</html>
