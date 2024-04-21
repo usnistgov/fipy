@@ -168,14 +168,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
             return None
 
-    def _getCoefficientMatrixForTests(self, SparseMatrix, var, coeff):
-        """
-        This method was introduced because `__getCoefficientMatrix` is private, but
-        the tests in `DiffusionTerm` need to call it.
-        """
-        return self.__getCoefficientMatrix(SparseMatrix, var, coeff)
-
-    def __getCoefficientMatrix(self, SparseMatrix, var, coeff):
+    def _getCoefficientMatrix(self, SparseMatrix, var, coeff):
         mesh = var.mesh
 
         id1, id2 = mesh._adjacentCellIDs
@@ -233,11 +226,11 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
         return coefficientMatrix
 
-    def __bcAdd(self, coefficientMatrix, boundaryB, LL, bb):
+    def _bcAdd(self, coefficientMatrix, boundaryB, LL, bb):
         coefficientMatrix += LL
         boundaryB += bb
 
-    def __doBCs(self, SparseMatrix, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
+    def _doBCs(self, SparseMatrix, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
         for boundaryCondition in higherOrderBCs:
             LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffs)
             if 'FIPY_DISPLAY_MATRIX' in os.environ:
@@ -245,7 +238,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 self._viewer.plot(matrix=LL, RHSvector=bb)
                 from fipy import input
                 input()
-            self.__bcAdd(coefficientMatrix, boundaryB, LL, bb)
+            self._bcAdd(coefficientMatrix, boundaryB, LL, bb)
 
         return coefficientMatrix, boundaryB
 
