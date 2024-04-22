@@ -242,6 +242,75 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
         return coefficientMatrix, boundaryB
 
+    def _calcConstraints(self, var):
+        """Determine contributions to matrix and RHS due to constraints on `var`
+
+        Where the variable :math:`\phi`, has its value constrained to
+        :math:`\phi\rvert_{\partial\Omega_V} = V` on boundary faces
+        :math:`\partial\Omega_V`, the contributions to the matrix and RHS
+        vector are:
+
+        .. math::
+
+           \begin{align}
+              \mathsf{L} &= -\nabla\cdot\left(\frac{\Gamma}{d_{fP}}\hat{n}\right)_{f\in\partial\Omega_V} V_P
+              \\
+              &\approx -\sum_{f\in\partial\Omega_V}(\frac{\Gamma}{d_{fP}}\hat{n}\cdot\hat{n})_f A_f
+              \\
+              \vec{b} &= -\nabla\cdot\left(\frac{\Gamma V}{d_{fP}}\hat{n}\right)_{f\in\partial\Omega_V} V_P
+              \\
+              &\approx -\sum_{f\in\partial\Omega_V}(\frac{\Gamma V}{d_{fP}}\hat{n}\cdot\hat{n})_f A_f
+           \end{align}
+
+
+        Where the gradient of `var` is constrained to
+        :math:`\nabla\phi\rvert_{\partial\Omega_G} = \vec{G}` on boundary
+        faces :math:`\partial\Omega_G`, the contributions to the RHS
+        vector are:
+
+        .. math::
+
+           \begin{align}
+               \vec{b} &= -\nabla\cdot\left(\Gamma\vec{G}\right)_{f\in\partial\Omega_G} V_P
+               \\
+               &\approx -\sum_{f\in\partial\Omega_G}(\Gamma\vec{G}\cdot\hat{n})_f A_f
+           \end{align}
+
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            The constrained variable
+
+        Returns
+        -------
+        None
+        """
+        if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
+
+            normals = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
+
+            if len(var.shape) == 1 and len(self.nthCoeff.shape) > 1:
+                nthCoeffFaceGrad = var.faceGrad.dot(self.nthCoeff)
+                normalsNthCoeff =  normals.dot(self.nthCoeff)
+            else:
+
+                if self.nthCoeff.shape != () and not isinstance(self.nthCoeff, FaceVariable):
+                    coeff = self.nthCoeff[..., numerix.newaxis]
+                else:
+                    coeff = self.nthCoeff
+
+                nthCoeffFaceGrad = coeff[numerix.newaxis] * var.faceGrad[:, numerix.newaxis]
+                s = (slice(0, None, None),) + (numerix.newaxis,) * (len(coeff.shape) - 1) + (slice(0, None, None),)
+                normalsNthCoeff = coeff[numerix.newaxis] * normals[s]
+
+            constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * \
+                                                normalsNthCoeff / mesh._cellDistances
+
+            self.constraintB = -((var.faceGrad.constraintMask * nthCoeffFaceGrad
+                                  constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence
+                                 * mesh.cellVolumes)
+            self.constraintL = -constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
+
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
         Test to ensure that a changing coefficient influences the boundary conditions.
