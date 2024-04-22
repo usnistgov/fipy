@@ -68,7 +68,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
         return self.__class__(coeff=negatedCoeff, var=self.var)
 
-    def __getBoundaryConditions(self, boundaryConditions):
+    def _getBoundaryConditions(self, boundaryConditions):
         higherOrderBCs = []
         lowerOrderBCs = []
 
@@ -81,7 +81,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
         return higherOrderBCs, lowerOrderBCs
 
-    def __getRotationTensor(self, mesh):
+    def _getRotationTensor(self, mesh):
         if not hasattr(self, 'rotationTensor'):
 
             rotationTensor = FaceVariable(mesh=mesh, rank=2)
@@ -160,7 +160,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                         raise IndexError('diffusion coefficient tensor is not an appropriate shape for this mesh')
 
                 faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh.faceNormals)
-                rotationTensor = self.__getRotationTensor(mesh)
+                rotationTensor = self._getRotationTensor(mesh)
                 rotationTensor[:, 0] = rotationTensor[:, 0] / mesh._cellDistances
 
                 tmpBop = faceNormals.dot(coeff).dot(rotationTensor) * mesh._faceAreas
