@@ -20,6 +20,9 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         if self.__class__ is _AbstractDiffusionTerm:
             raise AbstractBaseClassError
 
+        self.constraintL = {}
+        self.constraintB = {}
+
         if type(coeff) not in (type(()), type([])):
             coeff = [coeff]
 
@@ -285,7 +288,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         -------
         None
         """
-        if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
+        if (var not in self.constraintL) or (var not in self.constraintB):
 
             normals = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
 
@@ -306,10 +309,10 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * \
                                                 normalsNthCoeff / mesh._cellDistances
 
-            self.constraintB = -((var.faceGrad.constraintMask * nthCoeffFaceGrad
-                                  constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence
-                                 * mesh.cellVolumes)
-            self.constraintL = -constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
+            self.constraintL[var] = -constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
+            self.constraintB[var] = -((var.faceGrad.constraintMask * nthCoeffFaceGrad
+                                       constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence
+                                      * mesh.cellVolumes)
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
