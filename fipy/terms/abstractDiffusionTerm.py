@@ -183,9 +183,6 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         id1 = self._reshapeIDs(var, id1)
         id2 = self._reshapeIDs(var, id2)
 
-##         print 'id1',id1
-##         print 'id2',id2
-
         facesPerCell = mesh._facesPerCell[..., mesh._localNonOverlappingCellIDs]
         coefficientMatrix = self._getMatrix(SparseMatrix=SparseMatrix, mesh=mesh, nonZerosPerRow=facesPerCell + 1)
         interiorCoeff = numerix.take(coeff, interiorFaces, axis=-1).ravel()
@@ -193,39 +190,6 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         coefficientMatrix.addAt(-interiorCoeff, id1.ravel(), id2.swapaxes(0, 1).ravel())
         coefficientMatrix.addAt(-interiorCoeff, id2.ravel(), id1.swapaxes(0, 1).ravel())
         coefficientMatrix.addAt(interiorCoeff, id2.ravel(), id2.swapaxes(0, 1).ravel())
-
-##         print 'coefficientMatrix',coefficientMatrix
-##         raw_input('stopped')
-
-##         interiorCoeff = numerix.array(coeff)
-
-##         interiorCoeff[...,mesh.exteriorFaces.value] = 0
-##         print 'interiorCoeff',interiorCoeff
-##         interiorCoeff = numerix.take(interiorCoeff, mesh.cellFaceIDs, axis=-1)
-## ##        print interiorCoeff.shape
-## ##        print interiorCoeff[:,:,0]
-## ##        print interiorCoeff[:,:,1]
-
-##         coefficientMatrix = self._getMatrix(SparseMatrix=SparseMatrix, mesh=mesh, nonZerosPerRow=mesh._facesPerCell + 1)
-
-## ##        print 'numerix.sum(interiorCoeff, -2)',numerix.sum(interiorCoeff, -2)
-## ##        print numerix.sum(interiorCoeff, -2).ravel()
-## ##        raw_input('stopped')
-## ##        coefficientMatrix.addAtDiagonal(numerix.sum(interiorCoeff, -2).ravel())
-## ##        print 'coefficientMatrix',coefficientMatrix
-
-##         del interiorCoeff
-
-##         interiorFaces = mesh.interiorFaceIDs
-##         interiorFaceCellIDs = mesh.interiorFaceCellIDs
-
-##         interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
-
-##         print 'interiorCoeff',interiorCoeff
-##         raw_input('stopped')
-##         coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[0], interiorFaceCellIDs[1])
-##         interiorCoeff = -numerix.take(coeff, interiorFaces, axis=-1)
-##         coefficientMatrix.addAt(interiorCoeff, interiorFaceCellIDs[1], interiorFaceCellIDs[0])
 
         return coefficientMatrix
 
