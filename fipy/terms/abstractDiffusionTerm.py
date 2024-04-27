@@ -113,15 +113,6 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
         return self.rotationTensor
 
-    def __calcAnisotropySource(self, coeff, mesh, var):
-
-        if not hasattr(self, 'anisotropySource'):
-            if len(coeff) > 1:
-                unconstrainedVar = var + 0
-                gradients = unconstrainedVar.grad.harmonicFaceValue.dot(self.__getRotationTensor(mesh))
-                from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
-                self.anisotropySource = _AddOverFacesVariable(gradients[1:].dot(coeff[1:])) * mesh.cellVolumes
-
     def _isotropicOrthogonalCoeff(self, coeff, mesh):
         """Geometric coefficient for isotropic diffusion on orthogonal mesh
 
@@ -422,6 +413,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
+
         Test to ensure that a changing coefficient influences the boundary conditions.
 
         >>> from fipy import *
@@ -457,142 +449,310 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
         """
 
-        var, L, b = self.__higherOrderbuildMatrix(var, SparseMatrix, boundaryConditions=boundaryConditions, dt=dt, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
-        mesh = var.mesh
+        if self.order > 2:
+            buildFn = self._higherOrderBuildMatrix
+        elif self.order == 2:
+            buildFn = self._secondOrderBuildMatrix
+        elif self.order == 0:
+            buildFn = self._zerothOrderBuildMatrix
+        else:
+            raise ValueError("Order of diffusion coefficient must be non-zero and even, not {}".format(self.order))
 
-        if self.order == 2:
+        return buildFn(var=var,
+                       SparseMatrix=SparseMatrix,
+                       boundaryConditions=boundaryConditions,
+                       dt=dt,
+                       transientGeomCoeff=transientGeomCoeff,
+                       diffusionGeomCoeff=diffusionGeomCoeff)
 
-            if (not hasattr(self, 'constraintL')) or (not hasattr(self, 'constraintB')):
+    def _calcAnisotropySource(self, coeff, var):
 
-                normals = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
+        if not hasattr(self, 'anisotropySource'):
+            if len(coeff) > 1:
+                mesh = var.mesh
+                unconstrainedVar = var + 0
+                gradients = unconstrainedVar.grad.harmonicFaceValue.dot(self._getRotationTensor(mesh))
+                from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
+                self.anisotropySource = _AddOverFacesVariable(gradients[1:].dot(coeff[1:])) * mesh.cellVolumes
 
-                if len(var.shape) == 1 and len(self.nthCoeff.shape) > 1:
-                    nthCoeffFaceGrad = var.faceGrad.dot(self.nthCoeff)
-                    normalsNthCoeff =  normals.dot(self.nthCoeff)
-                else:
+    def _calcCoeffDict(self, var):
+        """Matrix contributions to cells on either side of face
 
-                    if self.nthCoeff.shape != () and not isinstance(self.nthCoeff, FaceVariable):
-                        coeff = self.nthCoeff[..., numerix.newaxis]
-                    else:
-                        coeff = self.nthCoeff
+        Returns
+        -------
+        dict
+            .. table:: Stencil contributions
+               :widths: auto
 
-                    nthCoeffFaceGrad = coeff[numerix.newaxis] * var.faceGrad[:, numerix.newaxis]
-                    s = (slice(0, None, None),) + (numerix.newaxis,) * (len(coeff.shape) - 1) + (slice(0, None, None),)
-                    normalsNthCoeff = coeff[numerix.newaxis] * normals[s]
+               ==============  ============
+                     key           value
+               ==============  ============
+               `cell1diag`     `-geomCoeff`
+               `cell1offdiag`  `geomCoeff`
+               `cell2offdiag`  `geomCoeff`
+               `cell2diag`     `-geomCoeff`
+               ==============  ============
 
-                self.constraintB = -(var.faceGrad.constraintMask * nthCoeffFaceGrad).divergence * mesh.cellVolumes
+        Notes
+        -----
+        For 2nd-order diffusion, if the diffusion coefficient is
+        anisotropic or the mesh is nonorthogonal, also sets
+        :prop:`~fipy.terms.abstractDiffusionTerm._AbstractDiffusionTerm.anisotropySource`.
+        """
+        if not hasattr(self, 'coeffDict'):
 
-                constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * \
-                                                    normalsNthCoeff / mesh._cellDistances
+            coeff = self._getGeomCoeff(var)
 
-                self.constraintB -= (constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence * mesh.cellVolumes
+            coeffDict = {
+                'cell 1 diag':     -coeff[0],
+                'cell 1 offdiag':  coeff[0]
+                }
 
-                ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells))
+            coeffDict['cell 1 diag'].dontCacheMe()
+            coeffDict['cell 1 offdiag'].dontCacheMe()
 
-                self.constraintL = -constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
+            coeffDict['cell 2 offdiag'] = coeffDict['cell 1 offdiag']
+            coeffDict['cell 2 diag'] = coeffDict['cell 1 diag']
 
-            ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells,
-                                                       dtype=INDEX_TYPE))
-            L.addAt(self.constraintL.ravel(), ids.ravel(), ids.swapaxes(0, 1).ravel())
-            b += numerix.reshape(self.constraintB.ravel(), ids.shape).sum(-2).ravel()
+            self.coeffDict = coeffDict
 
-        return (var, L, b)
+            if self.order == 2:
+                self._calcAnisotropySource(coeff, var)
 
-    def __higherOrderbuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
+            del coeff
+
+    def _higherOrderBuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        """Recursively build matrix and RHS vector
+
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            Solution variable of N cells.
+        SparseMatrix : class
+            ~fipy.matrices.sparseMatrix.SparseMatrix class to build into.
+        boundaryConditions : tuple of ~fipy.boundaryConditions.boundaryCondition.BoundaryCondition
+            Old-style (pre-contraint) boundary conditions to apply.
+        dt : float
+            Time step.
+        transientGeomCoeff : ~fipy.variables.cellVariable.CellVariable
+            Unused.
+        diffusionGeomCoeff : ~fipy.variables.faceVariable.FaceVariable
+            Unused.
+
+        Returns
+        -------
+        var : ~fipy.variables.cellVariable.CellVariable
+            Solution variable of N cells.
+            Why pass in `var` and then pass it back out?
+        L : ~fipy.matrices.sparseMatrix.SparseMatrix
+            The NxN sparse matrix from this and all lower-order
+            contributions.
+        b : array_like
+            The length-N right-hand-side vector from this and all
+            lower-order contributions.
+
+        Notes
+        -----
+        Given an :math:`O^{th}`-order diffusion term
+
+        .. math::
+
+             \nabla\cdot\{\Gamma_2 \nabla [\nabla\cdot(\Gamma_4 \nabla \cdots \{ \Gamma_O \nabla \phi \})]\}
+
+        recursively determines the matrix
+
+        .. math::
+
+             \mathsf{L} = \mathsf{L}_O \mathsf{L}_{O-2} \frac{1}{V_P} \mathsf{I}
+
+        and the right-hand-side vector
+
+        .. math::
+
+             \mathbf{b} = \mathbf{b}_O + \mathsf{L}_O \mathbf{b}_{O-2} \frac{1}{V_P}
+        """
         mesh = var.mesh
 
         N = mesh.numberOfCells
         M = mesh._maxFacesPerCell
 
-        if self.order > 2:
+        higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
 
-            higherOrderBCs, lowerOrderBCs = self.__getBoundaryConditions(boundaryConditions)
+        (var,
+         lowerOrderL,
+         lowerOrderb) = self.lowerOrderDiffusionTerm._buildMatrix(var=var,
+                                                                  SparseMatrix=SparseMatrix,
+                                                                  boundaryConditions=lowerOrderBCs,
+                                                                  dt=dt,
+                                                                  transientGeomCoeff=transientGeomCoeff,
+                                                                  diffusionGeomCoeff=diffusionGeomCoeff)
+        del lowerOrderBCs
 
-            var, lowerOrderL, lowerOrderb = self.lowerOrderDiffusionTerm._buildMatrix(var = var, SparseMatrix=SparseMatrix,
-                                                                                      boundaryConditions = lowerOrderBCs,
-                                                                                      dt = dt, transientGeomCoeff=transientGeomCoeff,
-                                                                                      diffusionGeomCoeff=diffusionGeomCoeff)
-            del lowerOrderBCs
+        lowerOrderb = lowerOrderb / mesh.cellVolumes
+        volMatrix = SparseMatrix(mesh=var.mesh, nonZerosPerRow=1)
 
-            lowerOrderb = lowerOrderb / mesh.cellVolumes
-            volMatrix = SparseMatrix(mesh=var.mesh, nonZerosPerRow=1)
+        volMatrix.addAtDiagonal(1. / mesh.cellVolumes)
+        lowerOrderL = volMatrix * lowerOrderL
+        del volMatrix
 
-            volMatrix.addAtDiagonal(1. / mesh.cellVolumes)
-            lowerOrderL = volMatrix * lowerOrderL
-            del volMatrix
+        self._calcCoeffDict(var)
 
-            if not hasattr(self, 'coeffDict'):
+        L = self._getCoefficientMatrix(SparseMatrix, var, self.coeffDict['cell 1 diag'])
+        L, b = self._doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict,
+                           L, numerix.zeros(len(var.ravel()), 'd'))
 
-                coeff = self._getGeomCoeff(var)[0]
-                minusCoeff = -coeff
+        del higherOrderBCs
 
-                coeff.dontCacheMe()
-                minusCoeff.dontCacheMe()
+        b = numerix.asarray(L * lowerOrderb) + b
+        del lowerOrderb
 
-                self.coeffDict = {
-                    'cell 1 diag':     minusCoeff,
-                    'cell 1 offdiag':  coeff
-                    }
-                del coeff
-                del minusCoeff
+        L = L * lowerOrderL
+        del lowerOrderL
 
-                self.coeffDict['cell 2 offdiag'] = self.coeffDict['cell 1 offdiag']
-                self.coeffDict['cell 2 diag'] = self.coeffDict['cell 1 diag']
+        return (var, L, b)
 
+    def _secondOrderBuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        """Build the 2nd-order matrix and RHS vector
 
-            mm = self.__getCoefficientMatrix(SparseMatrix, var, self.coeffDict['cell 1 diag'])
-            L, b = self.__doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict,
-                               mm, numerix.zeros(len(var.ravel()), 'd'))
+        .. math::
 
-            del higherOrderBCs
-            del mm
+           \nabla\cdot(\Gamma_0 \nabla \phi)
 
-            b = numerix.asarray(L * lowerOrderb) + b
-            del lowerOrderb
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            Solution variable of N cells.
+        SparseMatrix : class
+            ~fipy.matrices.sparseMatrix.SparseMatrix class to build into.
+        boundaryConditions : tuple of ~fipy.boundaryConditions.boundaryCondition.BoundaryCondition
+            Old-style (pre-contraint) boundary conditions to apply.
+        dt : float
+            Time step.
+        transientGeomCoeff : ~fipy.variables.cellVariable.CellVariable
+            Unused.
+        diffusionGeomCoeff : ~fipy.variables.faceVariable.FaceVariable
+            Unused.
 
-            L = L * lowerOrderL
-            del lowerOrderL
+        Returns
+        -------
+        var : ~fipy.variables.cellVariable.CellVariable
+            Solution variable of N cells.
+            Why pass in `var` and then pass it back out?
+        L : ~fipy.matrices.sparseMatrix.SparseMatrix
+            The NxN sparse matrix from this second-order contribution.
+        b : array_like
+            Right-hand-side vector from this second-order contribution.
 
-        elif self.order == 2:
+        Notes
+        -----
+        Given a 2nd-order diffusion term
 
-            if not hasattr(self, 'coeffDict'):
+        .. math::
 
-                coeff = self._getGeomCoeff(var)
-                minusCoeff = -coeff[0]
+             \nabla\cdot(\Gamma_0 \nabla \phi)
 
-                coeff[0].dontCacheMe()
-                minusCoeff.dontCacheMe()
+        determines the matrix
 
-                self.coeffDict = {
-                    'cell 1 diag':    minusCoeff,
-                    'cell 1 offdiag':  coeff[0]
-                    }
+        .. math::
 
-                self.coeffDict['cell 2 offdiag'] = self.coeffDict['cell 1 offdiag']
-                self.coeffDict['cell 2 diag'] = self.coeffDict['cell 1 diag']
+             \mathsf{L} = \mathsf{L}_2
 
-                self.__calcAnisotropySource(coeff, mesh, var)
+        and the right-hand-side vector
 
-                del coeff
-                del minusCoeff
+        .. math::
 
-            higherOrderBCs, lowerOrderBCs = self.__getBoundaryConditions(boundaryConditions)
-            del lowerOrderBCs
+             \mathbf{b} = \mathbf{b}_2
+        """
+        mesh = var.mesh
 
-            L, b = self.__doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict,
-                               self.__getCoefficientMatrix(SparseMatrix, var, self.coeffDict['cell 1 diag']), numerix.zeros(len(var.ravel()), 'd'))
+        N = mesh.numberOfCells
+        M = mesh._maxFacesPerCell
 
-            if hasattr(self, 'anisotropySource'):
-                b -= self.anisotropySource
+        higherOrderBCs, lowerOrderBCs = self._getBoundaryConditions(boundaryConditions)
+        del lowerOrderBCs
 
-            del higherOrderBCs
+        self._calcCoeffDict(var)
 
+        L = self._getCoefficientMatrix(SparseMatrix, var, self.coeffDict['cell 1 diag'])
+        L, b = self._doBCs(SparseMatrix, higherOrderBCs, N, M, self.coeffDict,
+                           L, numerix.zeros(len(var.ravel()), 'd'))
 
-        else:
+        del higherOrderBCs
 
-            L = SparseMatrix(mesh=mesh, nonZerosPerRow=1)
-            L.addAtDiagonal(mesh.cellVolumes)
-            b = numerix.zeros(len(var.ravel()), 'd')
+        if hasattr(self, 'anisotropySource'):
+            b -= self.anisotropySource
+
+        self._calcConstraints(var)
+
+        ids = self._reshapeIDs(var, numerix.arange(mesh.numberOfCells,
+                                                   dtype=INDEX_TYPE))
+        L.addAt(self.constraintL[var].ravel(),
+                ids.ravel(),
+                ids.swapaxes(0, 1).ravel())
+        b += numerix.reshape(self.constraintB[var].ravel(),
+                             ids.shape).sum(-2).ravel()
+
+        return (var, L, b)
+
+    def _zerothOrderBuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
+        """Recursively build the 0th-order matrix and RHS vector
+
+        The purpose of diffusion order 0 is to enable recursive
+        construction of higher-order diffusion terms.
+
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            Solution variable of N cells.
+        SparseMatrix : class
+            ~fipy.matrices.sparseMatrix.SparseMatrix class to build into.
+        boundaryConditions : tuple of ~fipy.boundaryConditions.boundaryCondition.BoundaryCondition
+            Unused.
+        dt : float
+            Unused.
+        transientGeomCoeff : ~fipy.variables.cellVariable.CellVariable
+            Unused.
+        diffusionGeomCoeff : ~fipy.variables.faceVariable.FaceVariable
+            Unused.
+
+        Returns
+        -------
+        var : ~fipy.variables.cellVariable.CellVariable
+            Solution variable of N cells.
+            Why pass in `var` and then pass it back out?
+        L : ~fipy.matrices.sparseMatrix.SparseMatrix
+            The NxN sparse matrix from this zeroth-order contribution.
+        b : array_like
+            Right-hand-side vector from this zeroth-order contribution.
+
+        Notes
+        -----
+        Given a 0th-order diffusion term
+
+        .. math::
+
+             \phi
+
+        determines the matrix
+
+        .. math::
+
+             \mathsf{L} = V_P \mathsf{I}
+
+        and the right-hand-side vector
+
+        .. math::
+
+             \mathbf{b} = \mathbf{0}
+        """
+        mesh = var.mesh
+
+        N = mesh.numberOfCells
+        M = mesh._maxFacesPerCell
+
+        L = SparseMatrix(mesh=mesh, nonZerosPerRow=1)
+        L.addAtDiagonal(mesh.cellVolumes)
+        b = numerix.zeros(len(var.ravel()), 'd')
 
         return (var, L, b)
 
