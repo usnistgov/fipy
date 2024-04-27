@@ -122,19 +122,106 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 from fipy.variables.addOverFacesVariable import _AddOverFacesVariable
                 self.anisotropySource = _AddOverFacesVariable(gradients[1:].dot(coeff[1:])) * mesh.cellVolumes
 
+    def _isotropicOrthogonalCoeff(self, coeff, mesh):
+        """Geometric coefficient for isotropic diffusion on orthogonal mesh
+
+        Parameters
+        ----------
+        coeff : array_like
+            Diffusion coefficient.
+        mesh : ~fipy.meshes.mesh.Mesh
+            Geometry and topology.
+
+        Returns
+        -------
+        ~fipy.variables.faceVariable.FaceVariable
+            Contribution to the matrix, consisting of a rank-1 vector at
+            each face, composed of the normal contribution.
+
+        Notes
+        -----
+        .. math::
+
+           \left(\Gamma_0 \frac{A_f}{d_{AP}}\right)^T
+        """
+        if coeff.shape != () and not isinstance(coeff, FaceVariable):
+            # increase dimension of non-scalar coefficient such that
+            # it projects to each cell or face it applies to
+            coeff = coeff[..., numerix.newaxis]
+
+        return (coeff * FaceVariable(mesh=mesh, value=mesh._faceAreas)
+                / mesh._cellDistances)[numerix.newaxis, ...]
+
+    def _anisotropicOrNonorthogonalCoeff(self, coeff, mesh, anisotropicRank):
+        """Geometric coefficient for anisotropic diffusion or nonorthogonal mesh
+
+        Parameters
+        ----------
+        coeff : array_like
+            Diffusion coefficient.
+        mesh : ~fipy.meshes.mesh.Mesh
+            Geometry and topology.
+        anisotropyRank : int
+            ???
+
+        Returns
+        -------
+        ~fipy.variables.faceVariable.FaceVariable
+            Contribution to the matrix, consisting of a rank-1 vector at
+            each face, composed of the normal contribution and the
+            tangential contribution(s).
+
+        Notes
+        -----
+        .. math::
+
+           \hat{n}\cdot\Gamma_0\cdot\mathsf{R} A_f
+
+        where :math:`\mathsf{R}` is the rotation tensor.  The normal
+        component of the rotation tensor is scaled by the cell distances.
+        """
+        if anisotropicRank < 2:
+            coeff = coeff * numerix.identity(mesh.dim)
+
+        if anisotropicRank > 0:
+            shape = numerix.getShape(coeff)
+            if mesh.dim != shape[0] or mesh.dim != shape[1]:
+                raise IndexError('diffusion coefficient tensor is not an appropriate shape for this mesh')
+
+        faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh.faceNormals)
+        rotationTensor = self._getRotationTensor(mesh)
+        rotationTensor[:, 0] = rotationTensor[:, 0] / mesh._cellDistances
+
+        return faceNormals.dot(coeff).dot(rotationTensor) * mesh._faceAreas
+
     def _calcGeomCoeff(self, var):
+        """Geometric cofficient
+
+        Combination of diffusion coefficient and geometric factor.
+
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            Solution variable.
+
+        Returns
+        -------
+        ~fipy.variables.faceVariable.FaceVariable
+            Contribution to the matrix, consisting of a rank-1 vector at
+            each face, composed of the normal contribution and (for
+            nonorthogonal meshes or anisotropic diffusion) the tangential
+            contribution(s).
+        """
 
         mesh = var.mesh
         if self.nthCoeff is not None:
 
             coeff = self.nthCoeff
 
-            shape = numerix.getShape(coeff)
-
             if isinstance(coeff, FaceVariable):
                 rank = coeff.rank
             else:
-                rank = len(shape)
+                rank = len(numerix.getShape(coeff))
 
             if var.rank == 0:
                 anisotropicRank = rank
@@ -145,28 +232,11 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
             if anisotropicRank == 0 and self._treatMeshAsOrthogonal(mesh):
 
-                if coeff.shape != () and not isinstance(coeff, FaceVariable):
-                    coeff = coeff[..., numerix.newaxis]
-
-                tmpBop = (coeff * FaceVariable(mesh=mesh, value=mesh._faceAreas) / mesh._cellDistances)[numerix.newaxis,:]
+                return self._isotropicOrthogonalCoeff(coeff, mesh)
 
             else:
 
-                if anisotropicRank == 1 or anisotropicRank == 0:
-                    coeff = coeff * numerix.identity(mesh.dim)
-
-                if anisotropicRank > 0:
-                    shape = numerix.getShape(coeff)
-                    if mesh.dim != shape[0] or mesh.dim != shape[1]:
-                        raise IndexError('diffusion coefficient tensor is not an appropriate shape for this mesh')
-
-                faceNormals = FaceVariable(mesh=mesh, rank=1, value=mesh.faceNormals)
-                rotationTensor = self._getRotationTensor(mesh)
-                rotationTensor[:, 0] = rotationTensor[:, 0] / mesh._cellDistances
-
-                tmpBop = faceNormals.dot(coeff).dot(rotationTensor) * mesh._faceAreas
-
-            return tmpBop
+                return self._anisotropicOrNonorthogonalCoeff(coeff, mesh, anisotropicRank)
 
         else:
 
