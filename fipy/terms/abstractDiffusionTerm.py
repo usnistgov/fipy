@@ -280,39 +280,128 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
         return coefficientMatrix, boundaryB
 
+    def _constrainValue(self, var):
+        """Determine value constraint contributions to matrix and RHS
+
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            Constrained solution variable
+
+        Returns
+        -------
+        L : ~fipy.matrices.sparseMatrix.SparseMatrix
+            The NxN sparse matrix contribution.
+        b : array_like
+            The length-N right-hand-side vector contribution.
+
+        Notes
+        -----
+        For the variable :math:`\phi`, with its value constrained to
+        :math:`\phi\rvert_{\partial\Omega_V} = V` on boundary faces
+        :math:`\partial\Omega_V`, determines the matrix contribution
+
+        .. math::
+
+             \begin{align}
+                \mathsf{L} &= -\nabla\cdot\left(\frac{\Gamma}{d_{fP}}\hat{n}\right)_{f\in\partial\Omega_V} V_P
+                \\
+                &\approx -\sum_{f\in\partial\Omega_V}(\frac{\Gamma}{d_{fP}}\hat{n}\cdot\hat{n})_f A_f
+             \end{align}
+
+        and the right-hand-side vector contribution
+
+        .. math::
+
+             \begin{align}
+                \mathbf{b} &= -\nabla\cdot\left(\frac{\Gamma V}{d_{fP}}\hat{n}\right)_{f\in\partial\Omega_V} V_P
+                \\
+                &\approx -\sum_{f\in\partial\Omega_V}(\frac{\Gamma V}{d_{fP}}\hat{n}\cdot\hat{n})_f A_f
+             \end{align}
+        """
+        mesh = var.mesh
+        normals = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
+
+        if len(var.shape) == 1 and len(self.nthCoeff.shape) > 1:
+            normalsNthCoeff =  normals.dot(self.nthCoeff)
+        else:
+
+            if self.nthCoeff.shape != () and not isinstance(self.nthCoeff, FaceVariable):
+                coeff = self.nthCoeff[..., numerix.newaxis]
+            else:
+                coeff = self.nthCoeff
+
+            s = (slice(0, None, None),) + (numerix.newaxis,) * (len(coeff.shape) - 1) + (slice(0, None, None),)
+            normalsNthCoeff = coeff[numerix.newaxis] * normals[s]
+
+        constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * \
+                                            normalsNthCoeff / mesh._cellDistances
+
+        L = -constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
+        b = -(constrainedNormalsDotCoeffOverdAP
+              * var.arithmeticFaceValue).divergence * mesh.cellVolumes
+
+        return L, b
+
+    def _constrainGradient(self, var):
+        """Determine gradient constraint contributions to matrix and RHS
+
+        Parameters
+        ----------
+        var : ~fipy.variables.cellVariable.CellVariable
+            Constrained solution variable of N cells.
+
+        Returns
+        -------
+        L : ~fipy.matrices.sparseMatrix.SparseMatrix
+            The NxN sparse matrix contribution.
+        b : array_like
+            The length-N right-hand-side vector contribution
+
+        Notes
+        -----
+        For the variable :math:`\phi`, with its gradient constrained to
+        :math:`\nabla\phi\rvert_{\partial\Omega_G} = \vec{G}` on boundary
+        faces :math:`\partial\Omega_G`, determines the matrix contribution
+
+        .. math::
+
+             \begin{align}
+                \mathsf{L} &= \mathsf{0}
+             \end{align}
+
+        and the right-hand-side vector contribution
+
+        .. math::
+
+             \begin{align}
+                 \mathbf{b} &= -\nabla\cdot\left(\Gamma\vec{G}\right)_{f\in\partial\Omega_G} V_P
+                 \\
+                 &\approx -\sum_{f\in\partial\Omega_G}(\Gamma\vec{G}\cdot\hat{n})_f A_f
+             \end{align}
+        """
+        if len(var.shape) == 1 and len(self.nthCoeff.shape) > 1:
+            # var is scalar field and self.nthCoeff is vector (or tensor)
+            nthCoeffFaceGrad = var.faceGrad.dot(self.nthCoeff)
+        else:
+            # var is vector or tensor field or self.nthCoeff is scalar
+            if not (self.nthCoeff.shape == () or isinstance(self.nthCoeff, FaceVariable)):
+                # self.nthCoeff is not a scalar or a FaceVariable
+                coeff = self.nthCoeff[..., numerix.newaxis]
+            else:
+                # self.nthCoeff is a scalar or a FaceVariable
+                coeff = self.nthCoeff
+
+            nthCoeffFaceGrad = coeff[numerix.newaxis] * var.faceGrad[:, numerix.newaxis]
+
+        b = -(var.faceGrad.constraintMask
+              * nthCoeffFaceGrad).divergence * mesh.cellVolumes
+
+        return 0, b
+
+
     def _calcConstraints(self, var):
         """Determine contributions to matrix and RHS due to constraints on `var`
-
-        Where the variable :math:`\phi`, has its value constrained to
-        :math:`\phi\rvert_{\partial\Omega_V} = V` on boundary faces
-        :math:`\partial\Omega_V`, the contributions to the matrix and RHS
-        vector are:
-
-        .. math::
-
-           \begin{align}
-              \mathsf{L} &= -\nabla\cdot\left(\frac{\Gamma}{d_{fP}}\hat{n}\right)_{f\in\partial\Omega_V} V_P
-              \\
-              &\approx -\sum_{f\in\partial\Omega_V}(\frac{\Gamma}{d_{fP}}\hat{n}\cdot\hat{n})_f A_f
-              \\
-              \vec{b} &= -\nabla\cdot\left(\frac{\Gamma V}{d_{fP}}\hat{n}\right)_{f\in\partial\Omega_V} V_P
-              \\
-              &\approx -\sum_{f\in\partial\Omega_V}(\frac{\Gamma V}{d_{fP}}\hat{n}\cdot\hat{n})_f A_f
-           \end{align}
-
-
-        Where the gradient of `var` is constrained to
-        :math:`\nabla\phi\rvert_{\partial\Omega_G} = \vec{G}` on boundary
-        faces :math:`\partial\Omega_G`, the contributions to the RHS
-        vector are:
-
-        .. math::
-
-           \begin{align}
-               \vec{b} &= -\nabla\cdot\left(\Gamma\vec{G}\right)_{f\in\partial\Omega_G} V_P
-               \\
-               &\approx -\sum_{f\in\partial\Omega_G}(\Gamma\vec{G}\cdot\hat{n})_f A_f
-           \end{align}
 
         Parameters
         ----------
@@ -324,30 +413,15 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         None
         """
         if (var not in self.constraintL) or (var not in self.constraintB):
+            LL, bb = self._constrainValue(var)
 
-            normals = FaceVariable(mesh=mesh, rank=1, value=mesh._orientedFaceNormals)
+            self.constraintL[var] = LL
+            self.constraintB[var] = bb
 
-            if len(var.shape) == 1 and len(self.nthCoeff.shape) > 1:
-                nthCoeffFaceGrad = var.faceGrad.dot(self.nthCoeff)
-                normalsNthCoeff =  normals.dot(self.nthCoeff)
-            else:
+            LL, bb = self._constrainGradient(var)
 
-                if self.nthCoeff.shape != () and not isinstance(self.nthCoeff, FaceVariable):
-                    coeff = self.nthCoeff[..., numerix.newaxis]
-                else:
-                    coeff = self.nthCoeff
-
-                nthCoeffFaceGrad = coeff[numerix.newaxis] * var.faceGrad[:, numerix.newaxis]
-                s = (slice(0, None, None),) + (numerix.newaxis,) * (len(coeff.shape) - 1) + (slice(0, None, None),)
-                normalsNthCoeff = coeff[numerix.newaxis] * normals[s]
-
-            constrainedNormalsDotCoeffOverdAP = var.arithmeticFaceValue.constraintMask * \
-                                                normalsNthCoeff / mesh._cellDistances
-
-            self.constraintL[var] = -constrainedNormalsDotCoeffOverdAP.divergence * mesh.cellVolumes
-            self.constraintB[var] = -((var.faceGrad.constraintMask * nthCoeffFaceGrad
-                                       constrainedNormalsDotCoeffOverdAP * var.arithmeticFaceValue).divergence
-                                      * mesh.cellVolumes)
+            self.constraintL[var] += LL
+            self.constraintB[var] += bb
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
         """
