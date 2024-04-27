@@ -12,7 +12,7 @@ from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import numerix
 from fipy.terms import TermMultiplyError
 from fipy.terms import AbstractBaseClassError
-from fipy.variables.faceVariable import FaceVariable
+from fipy.variables import Variable, FaceVariable, CellVariable
 
 class _AbstractDiffusionTerm(_UnaryTerm):
 
@@ -32,11 +32,9 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         if len(coeff) > 0:
             self.nthCoeff = coeff[0]
 
-            from fipy.variables.variable import Variable
             if not isinstance(self.nthCoeff, Variable):
                 self.nthCoeff = Variable(value = self.nthCoeff)
 
-            from fipy.variables.cellVariable import CellVariable
             if isinstance(self.nthCoeff, CellVariable):
                 self.nthCoeff = self.nthCoeff.arithmeticFaceValue
 
