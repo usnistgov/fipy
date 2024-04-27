@@ -33,7 +33,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             self.nthCoeff = coeff[0]
 
             if not isinstance(self.nthCoeff, Variable):
-                self.nthCoeff = Variable(value = self.nthCoeff)
+                self.nthCoeff = Variable(value=self.nthCoeff)
 
             if isinstance(self.nthCoeff, CellVariable):
                 self.nthCoeff = self.nthCoeff.arithmeticFaceValue
@@ -44,7 +44,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         _UnaryTerm.__init__(self, coeff=coeff, var=var)
 
         if self.order > 0:
-            self.lowerOrderDiffusionTerm = self.__class__(coeff = coeff[1:])
+            self.lowerOrderDiffusionTerm = self.__class__(coeff=coeff[1:], var=var)
 
     def __mul__(self, other):
         if isinstance(other, (int, float)):
@@ -87,8 +87,9 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             rotationTensor[:, 0] = self._getNormals(mesh)
 
             if mesh.dim == 2:
-                rotationTensor[:, 1] = rotationTensor[:, 0].dot((((0, 1), (-1, 0))))
-            elif mesh.dim ==3:
+                rotationTensor[:, 1] = rotationTensor[:, 0].dot(((( 0, 1),
+                                                                  (-1, 0))))
+            elif mesh.dim == 3:
                 epsilon = 1e-20
 
                 div = numerix.sqrt(1 - rotationTensor[2, 0]**2)
@@ -96,7 +97,9 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
                 rotationTensor[0, 1] = 1
                 rotationTensor[:, 1] = numerix.where(flag,
-                                                     rotationTensor[:, 0].dot((((0, 1, 0), (-1, 0, 0), (0, 0, 0)))) / div,
+                                                     rotationTensor[:, 0].dot(((( 0, 1, 0),
+                                                                                (-1, 0, 0),
+                                                                                ( 0, 0, 0)))) / div,
                                                      rotationTensor[:, 1])
 
 
