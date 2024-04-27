@@ -264,10 +264,6 @@ class _AbstractDiffusionTerm(_UnaryTerm):
 
         return coefficientMatrix
 
-    def _bcAdd(self, coefficientMatrix, boundaryB, LL, bb):
-        coefficientMatrix += LL
-        boundaryB += bb
-
     def _doBCs(self, SparseMatrix, higherOrderBCs, N, M, coeffs, coefficientMatrix, boundaryB):
         for boundaryCondition in higherOrderBCs:
             LL, bb = boundaryCondition._buildMatrix(SparseMatrix, N, M, coeffs)
@@ -276,7 +272,8 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 self._viewer.plot(matrix=LL, RHSvector=bb)
                 from fipy import input
                 input()
-            self._bcAdd(coefficientMatrix, boundaryB, LL, bb)
+            coefficientMatrix += LL
+            boundaryB += bb
 
         return coefficientMatrix, boundaryB
 
