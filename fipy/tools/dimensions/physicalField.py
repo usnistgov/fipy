@@ -864,18 +864,17 @@ class PhysicalField(object):
 
         Returns the NumPy sctype of the underlying array.
 
-            >>> PhysicalField(1, 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+            >>> PhysicalField(1, 'm').getsctype() == numerix.array(1).dtype
             True
-            >>> PhysicalField(1., 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1.))
+            >>> PhysicalField(1., 'm').getsctype() == numerix.array(1.).dtype
             True
-            >>> PhysicalField((1, 1.), 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array((1., 1.)))
+            >>> PhysicalField((1, 1.), 'm').getsctype() == numerix.array((1., 1.)).dtype
             True
 
         """
 
         if not hasattr(self, 'typecode'):
-            self.typecode = numerix.obj2sctype(rep=numerix.array(self.numericValue),
-                                               default=default)
+            self.typecode = numerix.asarray(self.numericValue).dtype
 
         return self.typecode
 

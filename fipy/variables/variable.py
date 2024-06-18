@@ -772,17 +772,17 @@ class Variable(object):
 
         Returns the Numpy `sctype` of the underlying array.
 
-            >>> Variable(1).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+            >>> Variable(1).getsctype() == numerix.array(1).dtype
             True
-            >>> Variable(1.).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1.))
+            >>> Variable(1.).getsctype() == numerix.array(1.).dtype
             True
-            >>> Variable((1, 1.)).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array((1., 1.)))
+            >>> Variable((1, 1.)).getsctype() == numerix.array((1., 1.)))
             True
 
         """
 
         if not hasattr(self, 'typecode'):
-            self.typecode = numerix.obj2sctype(rep=self.numericValue, default=default)
+            self.typecode = numerix.asarray(self.numericValue).dtypes
 
         return self.typecode
 
@@ -923,7 +923,7 @@ class Variable(object):
             self.canInline = False
             argDict['result'] = self.value
             self.canInline = True
-            self.typecode = numerix.obj2sctype(argDict['result'])
+            self.typecode = argDict['result'].dtype
         else:
             if self._value is None:
                 if self.getsctype() == numerix.bool_:

@@ -80,7 +80,7 @@ class _CoupledCellVariable(object):
         [6 7]
         >>> print(v2)
         [8 9]
-        >>> v.getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+        >>> v.getsctype() == numerix.array(1).dtype
         True
 
         """
@@ -96,9 +96,7 @@ class _CoupledCellVariable(object):
         return iter(self.value)
 
     def getsctype(self, default=None):
-        if not hasattr(self, 'typecode'):
-            self.typecode = numerix.obj2sctype(rep=self.numericValue, default=default)
-        return self.typecode
+        return self.numericValue.dtype
 
     def ravel(self):
         return self.value.ravel()

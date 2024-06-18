@@ -56,7 +56,7 @@ class CellVariable(MeshVariable):
             >>> print(b)
             [2]
             >>> from builtins import str
-            >>> print(str(b.getsctype()) == str(numerix.NUMERIX.obj2sctype(numerix.array(1))))
+            >>> print(str(b.getsctype()) == str(numerix.array(1).dtype)
             True
 
         replacing with the same thing is no problem
