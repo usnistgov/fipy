@@ -447,12 +447,6 @@ class Variable(object):
         self._value[index] = value
         self._markFresh()
 
-    def itemset(self, value):
-        if self._value is None:
-            self._getValue()
-        self._value.itemset(value)
-        self._markFresh()
-
     def put(self, indices, value):
         if self._value is None:
             self._getValue()
@@ -714,10 +708,7 @@ class Variable(object):
 
         value = self._makeValue(value=tmp, unit=unit, array=None)
 
-        if numerix.getShape(self._value) == ():
-            self._value.itemset(value)
-        else:
-            self._value[:] = value
+        self._value[...] = value
 
         self._markFresh()
 

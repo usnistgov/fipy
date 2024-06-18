@@ -520,36 +520,6 @@ class PhysicalField(object):
             value = self._inMyUnits(value).value
         self.value[index] = value
 
-    def itemset(self, value):
-        """
-        Assign the value of a scalar array, performing appropriate
-        conversions.
-
-            >>> a = PhysicalField(4., "m")
-            >>> a.itemset(PhysicalField("6 ft"))
-            >>> print(a.allclose("1.8288 m"))
-            1
-            >>> a = PhysicalField(((3., 4.), (5., 6.)), "m")
-            >>> try: #doctest: +IGNORE_EXCEPTION_DETAIL
-            ...     a.itemset(PhysicalField("6 ft"))
-            ... except IndexError:
-            ...     # NumPy 1.7 has changed the exception type
-            ...     raise ValueError("can only place a scalar for an  array of size 1")
-            Traceback (most recent call last):
-                ...
-            ValueError: can only convert an array of size 1 to a Python scalar
-            >>> a.itemset(PhysicalField("2 min"))
-            Traceback (most recent call last):
-                ...
-            TypeError: Incompatible units
-        """
-        if isinstance(value, string_types):
-            value = PhysicalField(value)
-        if isinstance(value, PhysicalField) or _isVariable(value):
-            value = self._inMyUnits(value).value
-        self.value.itemset(value)
-
-
 ##    __array_priority__ and __array_wrap__ are required to override
 ##    the default behavior of numpy. If a numpy array and a Variable
 ##    are in a binary operation and numpy is first, then numpy will,
