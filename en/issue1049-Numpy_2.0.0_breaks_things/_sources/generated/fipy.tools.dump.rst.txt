@@ -1,0 +1,30 @@
+fipy.tools.dump
+===============
+
+.. automodule:: fipy.tools.dump
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      read
+      write
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

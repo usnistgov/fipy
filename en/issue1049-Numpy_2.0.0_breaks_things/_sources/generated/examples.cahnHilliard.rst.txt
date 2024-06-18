@@ -1,0 +1,37 @@
+examples.cahnHilliard
+=====================
+
+.. automodule:: examples.cahnHilliard
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   examples.cahnHilliard.mesh2D
+   examples.cahnHilliard.mesh2DCoupled
+   examples.cahnHilliard.mesh3D
+   examples.cahnHilliard.sphere
+   examples.cahnHilliard.sphereDaemon
+   examples.cahnHilliard.tanh1D
+   examples.cahnHilliard.test
+
