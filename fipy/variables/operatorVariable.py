@@ -221,7 +221,7 @@ def _OperatorVariableClass(baseClass=object):
                     # LOAD_METHOD new in Python 3.7
                     stack.append(stack.pop() + "." + ins.argval)
                 elif ins.opname == 'COMPARE_OP':
-                    stack.append(stack.pop(-2) + " " + dis.cmp_op[ins.arg] + " " + stack.pop())
+                    stack.append(stack.pop(-2) + " " + ins.argrepr + " " + stack.pop())
                 elif ins.opname == 'LOAD_GLOBAL':
                     # Changed in Python 3.11
                     stack.append(ins.argval)
