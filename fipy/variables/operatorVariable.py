@@ -386,11 +386,11 @@ def _testBinOp(self):
 
         >>> a = -(numerix.sin(Variable() * Variable()))
 
-    Check that `getTypeCode()` works as expected.
+    Check that `dtype` works as expected.
 
         >>> a = Variable(1.) * Variable(1)
-        >>> print(a.getsctype() == numerix.float64)
-        1
+        >>> issubclass(a.dtype.type, numerix.floating)
+        True
 
     The following test is to correct an `--inline` bug that was
     being thrown by the Cahn-Hilliard example. The fix for this

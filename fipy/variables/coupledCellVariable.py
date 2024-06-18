@@ -80,7 +80,7 @@ class _CoupledCellVariable(object):
         [6 7]
         >>> print(v2)
         [8 9]
-        >>> v.getsctype() == numerix.array(1).dtype
+        >>> issubclass(v.dtype.type, numerix.integer)
         True
 
         """
@@ -95,7 +95,8 @@ class _CoupledCellVariable(object):
     def __iter__(self):
         return iter(self.value)
 
-    def getsctype(self, default=None):
+    @property
+    def dtype(self):
         return self.numericValue.dtype
 
     def ravel(self):

@@ -859,24 +859,21 @@ class PhysicalField(object):
                 unit = units[i]
             return tuple(result)
 
-    def getsctype(self, default=None):
+    @property
+    def dtype(self):
         """
 
         Returns the NumPy sctype of the underlying array.
 
-            >>> PhysicalField(1, 'm').getsctype() == numerix.array(1).dtype
+            >>> issubclass(PhysicalField(1, 'm').dtype.type, numerix.integer)
             True
-            >>> PhysicalField(1., 'm').getsctype() == numerix.array(1.).dtype
+            >>> issubclass(PhysicalField(1., 'm').dtype.type, numerix.floating)
             True
-            >>> PhysicalField((1, 1.), 'm').getsctype() == numerix.array((1., 1.)).dtype
+            >>> issubclass(PhysicalField((1, 1.), 'm').dtype.type, numerix.floating)
             True
 
         """
-
-        if not hasattr(self, 'typecode'):
-            self.typecode = numerix.asarray(self.numericValue).dtype
-
-        return self.typecode
+        return numerix.asarray(self.numericValue).dtype
 
     def _getUnit(self):
         """

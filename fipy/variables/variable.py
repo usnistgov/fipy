@@ -703,7 +703,7 @@ class Variable(object):
 
         """
         if where is not None:
-            tmp = numerix.empty(numerix.getShape(where), self.getsctype())
+            tmp = numerix.empty(numerix.getShape(where), self.dtype)
             tmp[:] = value
             tmp = numerix.where(where, tmp, self.value)
         else:
@@ -767,24 +767,21 @@ class Variable(object):
 
     shape = property(_getShape)
 
-    def getsctype(self, default=None):
+    @property
+    def dtype(self):
         """
 
-        Returns the Numpy `sctype` of the underlying array.
+        Returns the Numpy `dtype` of the underlying array.
 
-            >>> Variable(1).getsctype() == numerix.array(1).dtype
+            >>> issubclass(Variable(1).dtype.type, numerix.integer)
             True
-            >>> Variable(1.).getsctype() == numerix.array(1.).dtype
+            >>> issubclass(Variable(1.).dtype.type, numerix.floating)
             True
-            >>> Variable((1, 1.)).getsctype() == numerix.array((1., 1.)))
+            >>> issubclass(Variable((1, 1.)).dtype.type, numerix.floating)
             True
 
         """
-
-        if not hasattr(self, 'typecode'):
-            self.typecode = numerix.asarray(self.numericValue).dtypes
-
-        return self.typecode
+        return numerix.asarray(self.numericValue).dtype
 
     @property
     def itemsize(self):
@@ -926,10 +923,10 @@ class Variable(object):
             self.typecode = argDict['result'].dtype
         else:
             if self._value is None:
-                if self.getsctype() == numerix.bool_:
+                if self.dtype is numerix.dtype(bool):
                     argDict['result'] = numerix.empty(dim, numerix.int8)
                 else:
-                    argDict['result'] = numerix.empty(dim, self.getsctype())
+                    argDict['result'] = numerix.empty(dim, self.dtype)
             else:
                 argDict['result'] = self._value
 
@@ -943,8 +940,8 @@ class Variable(object):
             if resultShape == ():
                 argDict['result'] = numerix.reshape(argDict['result'], resultShape)
 
-            if self.getsctype() == numerix.bool_:
-                argDict['result'] = numerix.asarray(argDict['result'], dtype=self.getsctype())
+            if issubclass(self.dtype.type, numerix.bool):
+                argDict['result'] = numerix.asarray(argDict['result'], dtype=self.dtype)
 
         return argDict['result']
 
