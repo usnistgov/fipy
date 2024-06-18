@@ -1229,7 +1229,7 @@ class AbstractMesh(object):
         """return minimum of all the minima on all processors
         """
         if len(x) == 0:
-            minx = numerix.infty
+            minx = numerix.inf
         else:
             minx = min(x)
 
@@ -1239,7 +1239,7 @@ class AbstractMesh(object):
         """return maximum of all the maxima on all processors
         """
         if len(x) == 0:
-            maxx = -numerix.infty
+            maxx = -numerix.inf
         else:
             maxx = max(x)
 
