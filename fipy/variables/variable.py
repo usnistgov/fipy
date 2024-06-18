@@ -940,7 +940,7 @@ class Variable(object):
             if resultShape == ():
                 argDict['result'] = numerix.reshape(argDict['result'], resultShape)
 
-            if issubclass(self.dtype.type, numerix.bool):
+            if numerix.issubdtype(item.dtype, bool):
                 argDict['result'] = numerix.asarray(argDict['result'], dtype=self.dtype)
 
         return argDict['result']

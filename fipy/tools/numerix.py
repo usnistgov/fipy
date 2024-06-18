@@ -257,15 +257,15 @@ def sum(arr, axis=0):
 
 def _isFloat(arr):
     if isinstance(arr, NUMERIX.ndarray):
-        return NUMERIX.issubclass_(arr.dtype.type, NUMERIX.floating)
+        return issubclass(arr.dtype.type, NUMERIX.floating)
     else:
-        return NUMERIX.issubclass_(arr.__class__, float)
+        return issubclass(arr.__class__, float)
 
 def _isInt(arr):
     if isinstance(arr, NUMERIX.ndarray):
-        return NUMERIX.issubclass_(arr.dtype.type, NUMERIX.integer)
+        return issubclass(arr.dtype.type, NUMERIX.integer)
     else:
-        return NUMERIX.issubclass_(arr.__class__, int)
+        return issubclass(arr.__class__, int)
 
 def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separator=' ', array_output=0):
     r"""

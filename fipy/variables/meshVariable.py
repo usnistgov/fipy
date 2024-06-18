@@ -603,10 +603,7 @@ class MeshVariable(Variable):
 
         def _isbool(item):
             if hasattr(item, "dtype"):
-                # This ridiculosity because numpy 2.0.0 removed obj2sctype
-                # and isinstance(dtype, np.dtype) doesn't work the way
-                # they say it does
-                return item.dtype is numerix.dtype(bool)
+                return numerix.issubdtype(item.dtype, bool)
             else:
                 return type(item) is bool
 
