@@ -84,6 +84,9 @@ class _CoupledCellVariable(object):
         True
 
         """
+        if not copy:
+            copy = numerix.copy_if_needed
+
         return numerix.array(self.value, dtype=dtype, copy=copy)
 
     def __neg__(self):

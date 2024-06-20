@@ -597,6 +597,9 @@ class PhysicalField(object):
         else:
             value = self.inSIUnits().value
 
+        if not copy:
+            copy = numerix.copy_if_needed
+
         return numerix.array(value, dtype=dtype, copy=copy)
 
 #         if self.unit.isDimensionlessOrAngle():

@@ -77,6 +77,26 @@ except ImportError:
 
 from fipy.tools import inline
 
+# ---------------------
+
+# Lifted from https://github.com/scipy/scipy/pull/20172/files
+# Copyright (c) 2001-2002 Enthought, Inc. 2003-2024, SciPy Developers
+# BSD 3-Clause "New" or "Revised" License
+#
+# as suggested by https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
+if NUMERIX.lib.NumpyVersion(NUMERIX.__version__) >= "2.0.0":
+    copy_if_needed = None
+elif NUMERIX.lib.NumpyVersion(NUMERIX.__version__) < "1.28.0":
+    copy_if_needed = False
+else:
+    # 2.0.0 dev versions, handle cases where copy may or may not exist
+    try:
+        NUMERIX.array([1]).__array__(copy=None)  # type: ignore[call-overload]
+        copy_if_needed = None
+    except TypeError:
+        copy_if_needed = False
+# ---------------------
+
 # we want NumPy's __all__, with adjustments
 import sys
 __all__ = list(sys.modules['numpy'].__dict__.setdefault('__all__', []))

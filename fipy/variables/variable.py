@@ -158,6 +158,8 @@ class Variable(object):
             >>> numerix.array(v)
             array([ 0.002,  0.003])
         """
+        if not copy:
+            copy = numerix.copy_if_needed
 
         return numerix.array(self.value, dtype=dtype, copy=copy)
 
