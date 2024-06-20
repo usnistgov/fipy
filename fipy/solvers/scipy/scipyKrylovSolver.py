@@ -30,7 +30,7 @@ class _ScipyKrylovSolver(_ScipySolver):
 
         with Timer() as t:
             x, info = self.solveFnc(A, b, x,
-                                    tol=self.tolerance,
+                                    rtol=self.tolerance,
                                     maxiter=self.iterations,
                                     M=M,
                                     atol='legacy')
