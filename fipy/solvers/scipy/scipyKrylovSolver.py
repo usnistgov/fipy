@@ -33,7 +33,7 @@ class _ScipyKrylovSolver(_ScipySolver):
                                     rtol=self.tolerance,
                                     maxiter=self.iterations,
                                     M=M,
-                                    atol='legacy')
+                                    atol=0.0)
 
         self._log.debug("END solve - {} ns".format(t.elapsed))
 
