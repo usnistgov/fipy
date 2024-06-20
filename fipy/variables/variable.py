@@ -132,15 +132,11 @@ class Variable(object):
             cannotInline = ["expi", "logical_and", "logical_or", "logical_not", "logical_xor", "sign",
                             "conjugate", "dot", "allclose", "allequal"]
             if len(args) == 1:
-                result = args[0]._UnaryOperatorVariable(op=func, opShape=arr.shape, canInline=func.__name__ not in cannotInline)
+                result = args[0]._UnaryOperatorVariable(op=func, opShape=arr.shape, canInline=func.__name__ not in cannotInline, return_scalar=return_scalar)
             elif len(args) == 2:
-                result = args[0]._BinaryOperatorVariable(op=func, other=args[1], opShape=arr.shape, canInline=func.__name__ not in cannotInline)
+                result = args[0]._BinaryOperatorVariable(op=func, other=args[1], opShape=arr.shape, canInline=func.__name__ not in cannotInline, return_scalar=return_scalar)
             else:
                 result = NotImplemented
-
-            if return_scalar and result != NotImplemented:
-                # NumPy 2.0 compatibility
-                result = result[()]
 
         return result
 
@@ -989,7 +985,7 @@ class Variable(object):
         return operatorVariable._OperatorVariableClass(baseClass=baseClass)
 
     def _UnaryOperatorVariable(self, op, operatorClass=None, opShape=None, canInline=True, unit=None,
-                               valueMattersForUnit=False):
+                               valueMattersForUnit=False, return_scalar=False):
         """
         Check that unit works for `unOp`
 
@@ -1008,6 +1004,9 @@ class Variable(object):
         valueMattersForUnit : bool
             Whether value of `self` should be used when determining unit,
             e.g., ???
+        return_scalar : bool
+            Whether to reduce returned zero rank array to a scalar
+            # Introduced in NumPy 2.0
         """
         operatorClass = operatorClass or self._OperatorVariableClass()
         from fipy.variables import unaryOperatorVariable
@@ -1026,7 +1025,7 @@ class Variable(object):
 
         return unOp(op=op, var=[self], opShape=opShape, canInline=canInline, unit=unit,
                     inlineComment=inline._operatorVariableComment(canInline=canInline),
-                    valueMattersForUnit=[valueMattersForUnit])
+                    valueMattersForUnit=[valueMattersForUnit], return_scalar=return_scalar)
 
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
@@ -1047,7 +1046,7 @@ class Variable(object):
         return (opShape, baseClass, other)
 
     def _BinaryOperatorVariable(self, op, other, operatorClass=None, opShape=None, canInline=True, unit=None,
-                                value0mattersForUnit=False, value1mattersForUnit=False):
+                                value0mattersForUnit=False, value1mattersForUnit=False, return_scalar=False):
         """
         Parameters
         ----------
@@ -1066,6 +1065,9 @@ class Variable(object):
         value1MattersForUnit : bool
             Whether value of `self` should be used when determining unit,
             e.g., `__pow__`
+        return_scalar : bool
+            Whether to reduce returned zero rank array to a scalar
+            # Introduced in NumPy 2.0
         """
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
@@ -1087,7 +1089,8 @@ class Variable(object):
 
         return binOp(op=op, var=[self, other], opShape=opShape, canInline=canInline, unit=unit,
                      inlineComment=inline._operatorVariableComment(canInline=canInline),
-                     valueMattersForUnit=[value0mattersForUnit, value1mattersForUnit])
+                     valueMattersForUnit=[value0mattersForUnit, value1mattersForUnit],
+                     return_scalar=return_scalar)
 
     def __add__(self, other):
         from fipy.terms.term import Term

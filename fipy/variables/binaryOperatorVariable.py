@@ -45,7 +45,11 @@ def _BinaryOperatorVariable(operatorClass=None):
                     self.var[1] = physicalField.PhysicalField(value=self.var[1])
                 val1 = self.var[1]
 
-            return self.op(self.var[0].value, val1)
+            value = self.op(self.var[0].value, val1)
+            if self.return_scalar:
+                value = value[()]
+
+            return value
 
         @property
         def unit(self):

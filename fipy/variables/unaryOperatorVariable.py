@@ -33,7 +33,11 @@ def _UnaryOperatorVariable(operatorClass=None):
 
     class unOp(operatorClass):
         def _calcValue_(self):
-            return self.op(self.var[0].value)
+            value = self.op(self.var[0].value)
+            if self.return_scalar:
+                value = value[()]
+
+            return value
 
         @property
         def unit(self):

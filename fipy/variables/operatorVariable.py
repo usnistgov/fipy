@@ -14,7 +14,7 @@ from fipy.tools import numerix
 
 def _OperatorVariableClass(baseClass=object):
     class _OperatorVariable(baseClass):
-        def __init__(self, op, var, opShape=(), canInline=True, unit=None, inlineComment=None, valueMattersForUnit=None, *args, **kwargs):
+        def __init__(self, op, var, opShape=(), canInline=True, unit=None, inlineComment=None, valueMattersForUnit=None, return_scalar=False, *args, **kwargs):
             self.op = op
             self.var = var
             self.opShape = opShape
@@ -23,6 +23,7 @@ def _OperatorVariableClass(baseClass=object):
                 self.valueMattersForUnit = [False for v in var]
             else:
                 self.valueMattersForUnit = valueMattersForUnit
+            self.return_scalar = return_scalar
             self.canInline = canInline  #allows for certain functions to opt out of --inline
             baseClass.__init__(self, value=None, *args, **kwargs)
             self.name = ''
