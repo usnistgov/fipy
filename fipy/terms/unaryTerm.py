@@ -106,7 +106,7 @@ class _UnaryTerm(Term):
 
     def _checkVar(self, var):
         if ((var is not None)
-            and issubclass(var.dtype.type, numerix.floating)):
+            and not issubclass(var.dtype.type, numerix.floating)):
             import warnings
             warnings.warn("""sweep() or solve() are likely to produce erroneous results when `var` does not contain floats.""",
                           UserWarning, stacklevel=4)
