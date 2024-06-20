@@ -105,7 +105,7 @@ __all__.extend(sorted(["getUnit", "put", "reshape", "getShape",
                        "rank", "sum", "tostring", "dot",
                        "sqrtDot", "nearest", "allequal", "allclose", "all",
                        "isclose", "take", "indices", "empty", "loadtxt",
-                       "savetxt", "L1norm", "L2norm", "LINFnorm", "in1d"],
+                       "savetxt", "L1norm", "L2norm", "LINFnorm"],
                       key=str.lower))
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
@@ -959,134 +959,6 @@ def _broadcastShape(shape1, shape2):
 
     shape1, shape2, broadcastshape = _broadcastShapes(shape1, shape2)
     return broadcastshape
-
-if not hasattr(NUMERIX, "in1d"):
-    # this handy function was introduced at some point (but it's not in 1.4.1)
-    # we define if necessary
-
-    def in1d(ar1, ar2, assume_unique=False):
-        """
-        Test whether each element of a 1D array is also present in a second array.
-
-        Returns a Boolean array the same length as `ar1` that is True
-        where an element of `ar1` is in `ar2` and False otherwise.
-
-        Parameters
-        ----------
-        ar1 : array_like, shape (M,)
-            Input array.
-        ar2 : array_like
-            The values against which to test each value of `ar1`.
-        assume_unique : bool, optional
-            If True, the input arrays are both assumed to be unique, which
-            can speed up the calculation.  Default is False.
-
-        Returns
-        -------
-        mask : ndarray of bools, shape(M,)
-            The values `ar1[mask]` are in `ar2`.
-
-        See Also
-        --------
-        numpy.lib.arraysetops : Module with a number of other functions for
-                                performing set operations on arrays.
-
-        Notes
-        -----
-        `in1d` can be considered as an element-wise function version of the
-        python keyword `in`, for 1D sequences. ``in1d(a, b)`` is roughly
-        equivalent to ``np.array([item in b for item in a])``.
-
-        .. versionadded:: NOT 1.4.0 !!!!
-
-        Examples
-        --------
-        >>> test = NUMERIX.array([0, 1, 2, 5, 0])
-        >>> states = [0, 2]
-        >>> mask = in1d(test, states)
-        >>> mask
-        array([ True, False,  True, False,  True], dtype=bool)
-        >>> test[mask]
-        array([0, 2, 0])
-
-        """
-        if not assume_unique:
-
-            try:
-                ar1, rev_idx = NUMERIX.unique(ar1, return_inverse=True)
-            except TypeError:
-                ar1, rev_idx = NUMERIX.unique1d(ar1, return_inverse=True)
-
-            ar2 = NUMERIX.unique(ar2)
-
-        ar = NUMERIX.concatenate( (ar1, ar2) )
-        # We need this to be a stable sort, so always use 'mergesort'
-        # here. The values from the first array should always come before
-        # the values from the second array.
-        order = ar.argsort(kind='mergesort')
-        sar = ar[order]
-        equal_adj = (sar[1:] == sar[:-1])
-        flag = NUMERIX.concatenate( (equal_adj, [False] ) )
-        indx = order.argsort(kind='mergesort')[:len( ar1 )]
-
-        if assume_unique:
-            return flag[indx]
-        else:
-            return flag[indx][rev_idx]
-
-def _in1dMA(ar1, ar2, assume_unique=False, invert=False):
-    """
-    Test whether each unmasked element of an array is also present and
-    unmasked in a second array.
-    The output is always a masked array. See `numpy.in1d` for more details.
-    We recommend using :func:`isin` instead of `in1d` for new code.
-
-    Parameters
-    ----------
-    ar1 : (M,) array_like
-        Input array.
-    ar2 : array_like
-        The values against which to test each value of `ar1`.
-    assume_unique : bool, optional
-        If True, the input arrays are both assumed to be unique, which
-        can speed up the calculation.  Default is False.
-    invert : bool, optional
-        If True, the values in the returned array are inverted (that is,
-        False where an element of `ar1` is in `ar2` and True otherwise).
-        Default is False. ``np.in1d(a, b, invert=True)`` is equivalent
-        to (but is faster than) ``np.invert(in1d(a, b))``.
-
-    Returns
-    -------
-    in1d : (M,) ndarray, bool
-        The values `ar1[in1d]` are in `ar2`.
-
-    See Also
-    --------
-    isin       : Version of this function that preserves the shape of ar1.
-    numpy.in1d : Equivalent function for ndarrays.
-
-    Notes
-    -----
-    .. versionadded:: 1.4.0
-
-    Replaces buggy `numpy.ma.in1d`, fixed in
-    https://github.com/numpy/numpy/pull/20011.
-    """
-    ar1, ar2 = MA.asarray(ar1), MA.asarray(ar2)
-    m = MA.getmask(ar1)
-    res = MA.empty_like(ar1, dtype='bool')
-    if ar1.mask is not MA.nomask:
-        ar1 = ar1[~ar1.mask]
-    if ar2.mask is not MA.nomask:
-        ar2 = ar2[~ar2.mask]
-    out = NUMERIX.in1d(ar1, ar2, assume_unique=assume_unique,
-                      invert=invert)
-    if m is not MA.nomask:
-        res[~m] = out
-    else:
-        res[:] = out
-    return res
 
 def _invert_indices(arr, axis=-1):
     """Invert an index array

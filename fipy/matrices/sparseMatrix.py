@@ -239,7 +239,7 @@ class _Mesh2Matrix(object):
         if overlapping:
             mask = numerix.ones(id1.shape, dtype=bool)
         else:
-            mask = numerix.in1d(id1, globalNonOverlappihgIDs)
+            mask = numerix.isin(id1, globalNonOverlappihgIDs)
 
         id1 = self.matrix()._mesh2matrix(id1[mask])
         id2 = numerix.asarray(id2)[mask]
@@ -275,7 +275,7 @@ class _Mesh2Matrix(object):
     @property
     def bodies(self):
         if self._bodies is None:
-            self._bodies = numerix.in1d(self.mesh._globalOverlappingCellIDs,
+            self._bodies = numerix.isin(self.mesh._globalOverlappingCellIDs,
                                         self.mesh._globalNonOverlappingCellIDs)
         return self._bodies
 
