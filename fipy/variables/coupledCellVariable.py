@@ -64,7 +64,7 @@ class _CoupledCellVariable(object):
         from fipy.tools.dimensions import physicalField
         return physicalField._unity
 
-    def __array__(self, t=None):
+    def __array__(self, dtype=None, copy=None):
         """
         Attempt to convert the `_CoupledCellVariable` to a numerix `array` object
 
@@ -84,7 +84,7 @@ class _CoupledCellVariable(object):
         True
 
         """
-        return numerix.array(self.value, t)
+        return numerix.array(self.value, dtype=dtype, copy=copy)
 
     def __neg__(self):
         return _CoupledCellVariable([-var for var in self.vars])

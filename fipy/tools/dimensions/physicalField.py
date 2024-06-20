@@ -567,7 +567,7 @@ class PhysicalField(object):
 
         return result
 
-    def __array__(self, t = None):
+    def __array__(self, dtype=None, copy=None):
         """
         Return a dimensionless `PhysicalField` as a Numeric_ ``array``.
 
@@ -597,7 +597,7 @@ class PhysicalField(object):
         else:
             value = self.inSIUnits().value
 
-        return numerix.array(value, t)
+        return numerix.array(value, dtype=dtype, copy=copy)
 
 #         if self.unit.isDimensionlessOrAngle():
 #             value = self.numericValue

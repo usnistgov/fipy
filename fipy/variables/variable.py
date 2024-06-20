@@ -144,7 +144,7 @@ class Variable(object):
 
         return result
 
-    def __array__(self, t=None):
+    def __array__(self, dtype=None, copy=None):
         """
         Attempt to convert the `Variable` to a numerix `array` object
 
@@ -159,7 +159,7 @@ class Variable(object):
             array([ 0.002,  0.003])
         """
 
-        return numerix.array(self.value, t)
+        return numerix.array(self.value, dtype=dtype, copy=copy)
 
 ##    def _get_array_interface(self):
 ##        return self._array.__array_interface__
