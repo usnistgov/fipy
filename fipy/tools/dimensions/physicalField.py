@@ -531,7 +531,7 @@ class PhysicalField(object):
 
     __array_priority__ = 100.0
 
-    def __array_wrap__(self, arr, context=None):
+    def __array_wrap__(self, arr, context=None, return_scalar=False):
         """
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
@@ -560,6 +560,10 @@ class PhysicalField(object):
             meth = getattr(args[0], func.__name__, None)
             if meth is not None and callable(meth):
                 result = meth(*args[1:])
+
+            if return_scalar:
+                # NumPy 2.0 compatibility
+                result = result[()]
 
         return result
 

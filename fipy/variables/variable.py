@@ -106,7 +106,7 @@ class Variable(object):
 
     __array_priority__ = 100.0
 
-    def __array_wrap__(self, arr, context=None):
+    def __array_wrap__(self, arr, context=None, return_scalar=False):
         """
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
@@ -137,6 +137,10 @@ class Variable(object):
                 result = args[0]._BinaryOperatorVariable(op=func, other=args[1], opShape=arr.shape, canInline=func.__name__ not in cannotInline)
             else:
                 result = NotImplemented
+
+            if return_scalar and result != NotImplemented:
+                # NumPy 2.0 compatibility
+                result = result[()]
 
         return result
 
