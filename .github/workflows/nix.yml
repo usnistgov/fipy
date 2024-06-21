@@ -27,7 +27,10 @@ jobs:
           nix develop --command bash -c "python setup.py test > test.out 2>&1" || true
           status=$?
           # echo ::set-output name=errors::`cat test.out`
-          cat test.out >> $GITHUB_OUTPUT
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "text<<$EOF" >> $GITHUB_OUTPUT
+          echo "FiPy messages: $(cat test.out)." >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
           exit $status
       - run: nix develop --command bash -c "py.test --nbval --nbval-sanitize-with examples/sanitize.cfg examples/index.ipynb"
       - uses: actions/cache/save@v3
