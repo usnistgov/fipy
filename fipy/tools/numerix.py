@@ -350,7 +350,8 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
                                     precision=precision,
                                     max_line_width=max_line_width,
                                     suppress_small=suppress_small,
-                                    separator=separator)
+                                    separator=separator,
+                                    legacy=False) # override legacy formatting for tests
 
 #########################
 #                       #
