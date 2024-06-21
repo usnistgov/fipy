@@ -45,11 +45,11 @@ class TestProgram(unittest.TestProgram):
 
     def runTests(self):
         from fipy.tools import numerix
-        # printoptions = numerix.get_printoptions()
+        printoptions = numerix.get_printoptions()
         # if "legacy" in printoptions:
         #     numerix.set_printoptions(legacy="1.13")
         import sys
-        print('printoptions testProgram before:', numerix.get_printoptions(), file=sys.stderr)
+        print('printoptions testProgram before:', printoptions, file=sys.stderr)
         if "legacy" in printoptions:
             numerix.set_printoptions(legacy="1.13")
         print('printoptions testProgram after:', numerix.get_printoptions(), file=sys.stderr)
