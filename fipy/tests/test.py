@@ -231,6 +231,7 @@ class test(_test):
 
         import sys
         printoptions = numerix.get_printoptions()
+        print('hello **********************', file=sys.stdout)
         print('printoptions test 0:', printoptions, file=sys.stderr)
         if "legacy" in printoptions:
             numerix.set_printoptions(legacy="1.13")
