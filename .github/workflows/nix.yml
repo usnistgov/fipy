@@ -26,7 +26,8 @@ jobs:
       - run: |
           nix develop --command bash -c "python setup.py test > test.out 2>&1" || true
           status=$?
-          echo ::set-output name=errors::`cat test.out`
+          # echo ::set-output name=errors::`cat test.out`
+          cat test.out >> $GITHUB_OUTPUT
           exit $status
       - run: nix develop --command bash -c "py.test --nbval --nbval-sanitize-with examples/sanitize.cfg examples/index.ipynb"
       - uses: actions/cache/save@v3
