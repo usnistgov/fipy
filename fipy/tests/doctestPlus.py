@@ -268,9 +268,12 @@ def testmod(m=None, name=None, globs=None, verbose=None,
 
     from fipy.tools import numerix
     printoptions = numerix.get_printoptions()
+    import sys
+    print('printoptions doctestPlus before:', printoptions, file=sys.stderr)
     if "legacy" in printoptions:
         numerix.set_printoptions(legacy="1.13")
-
+    print('printoptions doctestPlus after:', numerix.get_printoptions(), file=sys.stderr)
+    
     for test in finder.find(m, name, globs=globs, extraglobs=extraglobs):
         runner.run(test)
 

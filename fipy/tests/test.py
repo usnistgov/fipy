@@ -228,9 +228,19 @@ class test(_test):
         loader_class = loader_ep.load(require=False)
 
         from fipy.tools import numerix
+
+        import sys
         printoptions = numerix.get_printoptions()
+        print('printoptions test 0:', printoptions, file=sys.stderr)
         if "legacy" in printoptions:
             numerix.set_printoptions(legacy="1.13")
+        print('printoptions test 1:', numerix.get_printoptions(), file=sys.stderr)
+
+
+
+        # printoptions = numerix.get_printoptions()
+        # if "legacy" in printoptions:
+        #     numerix.set_printoptions(legacy="1.13")
 
         if self.deprecation_errors:
             test_program_class = DeprecationErroringTestProgram
@@ -251,8 +261,15 @@ class test(_test):
             else:
                 raise
 
+        import sys
+        print('printoptions test 2:', numerix.get_printoptions(), file=sys.stderr)
         if "legacy" in printoptions:
             numerix.set_printoptions(legacy=printoptions["legacy"])
+        print('printoptions test 3:', numerix.get_printoptions(), file=sys.stderr)
+
+        
+        # if "legacy" in printoptions:
+        #     numerix.set_printoptions(legacy=printoptions["legacy"])
 
         if self.timetests is not None:
             from fipy.tests.doctestPlus import _DocTestTimes
