@@ -2,14 +2,14 @@
   description = "Python environment for fipy";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, utils}: (utils.lib.eachSystem ["x86_64-linux" "x86_64-darwin" ] (system:
+  outputs = { self, nixpkgs, utils}: (utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ] (system:
     let
       pkgs = nixpkgs.legacyPackages.${system};
-      pypkgs = pkgs.python310Packages;
+      pypkgs = pkgs.python312Packages;
 
       env = (pypkgs.fipy.overridePythonAttrs (old: rec {
 
