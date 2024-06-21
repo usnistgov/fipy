@@ -50,6 +50,7 @@ class TestProgram(unittest.TestProgram):
         #     numerix.set_printoptions(legacy="1.13")
         import sys
         print('printoptions testProgram before:', printoptions, file=sys.stderr)
+        raise Exception(f'printoptions testProgram before: {printoptions}')
         if "legacy" in printoptions:
             numerix.set_printoptions(legacy="1.13")
         print('printoptions testProgram after:', numerix.get_printoptions(), file=sys.stderr)
