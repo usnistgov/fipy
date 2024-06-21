@@ -270,6 +270,7 @@ def testmod(m=None, name=None, globs=None, verbose=None,
     printoptions = numerix.get_printoptions()
     import sys
     print('printoptions doctestPlus before:', printoptions, file=sys.stderr)
+    raise Exception(f'printoptions doctestPlus before: {printoptions}')
     if "legacy" in printoptions:
         numerix.set_printoptions(legacy="1.13")
     print('printoptions doctestPlus after:', numerix.get_printoptions(), file=sys.stderr)
