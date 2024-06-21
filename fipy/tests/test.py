@@ -233,6 +233,7 @@ class test(_test):
         printoptions = numerix.get_printoptions()
         print('hello **********************', file=sys.stdout)
         print('printoptions test 0:', printoptions, file=sys.stderr)
+        raise Exception(f'printoptions test 0: {printoptions}')
         if "legacy" in printoptions:
             numerix.set_printoptions(legacy="1.13")
         print('printoptions test 1:', numerix.get_printoptions(), file=sys.stderr)
