@@ -28,9 +28,9 @@ jobs:
           status=$?
           # echo ::set-output name=errors::`cat test.out`
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "text<<$EOF" >> $GITHUB_OUTPUT
-          echo "FiPy messages: $(cat test.out)." >> $GITHUB_OUTPUT
-          echo "$EOF" >> $GITHUB_OUTPUT
+          echo "text<<$EOF" >> $GITHUB_STEP_SUMMARY
+          echo "FiPy messages: $(cat test.out)." >> $GITHUB_STEP_SUMMARY
+          echo "$EOF" >> $GITHUB_STEP_SUMMARY
           exit $status
       - run: nix develop --command bash -c "py.test --nbval --nbval-sanitize-with examples/sanitize.cfg examples/index.ipynb"
       - uses: actions/cache/save@v3
