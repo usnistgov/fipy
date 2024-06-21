@@ -317,6 +317,9 @@ def tostring(arr, max_line_width=75, precision=8, suppress_small=False, separato
           >>> print(tostring(array(1.123456), precision=3))
           1.123
 
+          Test to test numerix printing
+          >>> NUMERIX.get_printoptions()
+          
     Parameters
     ----------
     max_line_width: int
