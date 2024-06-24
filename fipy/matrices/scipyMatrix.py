@@ -627,7 +627,9 @@ class _ScipyIdentityMeshMatrix(_ScipyIdentityMatrix):
         _ScipyIdentityMatrix.__init__(self, size=mesh.numberOfCells)
 
 def _test():
+    print('in scipyMatrix.py _test')
     import fipy.tests.doctestPlus
+    print('fipy.tests.doctestPlus.__path__:', fipy.tests.doctestPlus.__path__)    
     return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":

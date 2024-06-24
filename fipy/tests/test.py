@@ -8,6 +8,8 @@ import unittest
 import warnings
 import sys
 
+print('imported test.py')
+
 __all__ = ["DeprecationErroringTestProgram", "test"]
 __all__ = [text_to_native_str(n) for n in __all__]
 
@@ -172,6 +174,7 @@ class test(_test):
         print()
 
     def run_tests(self):
+        print('run_tests 0')
         import sys
         if self.Trilinos or self.trilinos or self.no_pysparse:
             try:
@@ -188,7 +191,7 @@ class test(_test):
             except ImportError as a:
                 print("!!! Trilinos library is not installed", file=sys.stderr)
                 return
-
+        print('run_tests 1')
         if self.pyamgx:
             try:
                 ## Unregister the function pyamgx.finalize
@@ -209,24 +212,24 @@ class test(_test):
             except ImportError as e:
                 print("!!! pyamgx package is not installed", file=sys.stederr)
                 return
-
+        print('run_tests 2')
         if self.inline:
             try:
                 import weave
             except ImportError as a:
                 print("!!! weave library is not installed", file=sys.stderr)
                 return
-
+        print('run_tests 3')
         if self.pythoncompiled is not None:
             import os
             os.environ['PYTHONCOMPILED'] = self.pythoncompiled
-
+        print('run_tests 4')
         self.printPackageInfo()
-
+        print('run_tests 5')
         from pkg_resources import EntryPoint
         loader_ep = EntryPoint.parse("x="+self.test_loader)
         loader_class = loader_ep.load(require=False)
-
+        print('run_tests 6')
         from fipy.tools import numerix
 
         import sys
