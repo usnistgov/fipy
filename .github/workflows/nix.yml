@@ -24,8 +24,10 @@ jobs:
           path: /run/user/${{ env.UID }}/http_cache.sqlite
           key: ${{ runner.os }}-http_cache.sqlite
       - run: |
+          nix develop --command bash -c "python setup.py egginfo"
+          nix develop --command bash -c "python setup.py test > test.out 2>&1" || true
           # nix develop --command bash -c "python -c 'import fipy; fipy.test()' > test.out 2>&1" || true
-          nix develop --command bash -c "python -c 'import fipy; print(fipy.__path__)' > test.out 2>&1" || true
+          # nix develop --command bash -c "python -c 'import fipy; print(fipy.__path__)' > test.out 2>&1" || true
           status=$?
           # echo ::set-output name=errors::`cat test.out`
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
