@@ -12,6 +12,9 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 _DocTestTimes = []
 
+import fipy
+print(fipy.__path__)
+print('after fipy path')
 from fipy.tests.lateImportTest import _LateImportTestCase, _LateImportTestSuite
 
 def _getScript(name = '__main__'):
