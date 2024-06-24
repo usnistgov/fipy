@@ -245,6 +245,7 @@ def testmod(m=None, name=None, globs=None, verbose=None,
     first unexpected exception or failure. This allows failures to be
     postmortem debugged.
     """
+    print('got here 1')
     # If no module was given, then use __main__.
     if m is None:
         # DWA - m will still be None if this wasn't invoked from the command
@@ -255,7 +256,7 @@ def testmod(m=None, name=None, globs=None, verbose=None,
     # Check that we were actually given a module.
     if not inspect.ismodule(m):
         raise TypeError("testmod: module required; %r" % (m,))
-
+    print('got here 2')
     # If no name was given, then use the module's name.
     if name is None:
         name = m.__name__
@@ -264,11 +265,13 @@ def testmod(m=None, name=None, globs=None, verbose=None,
     finder = doctest.DocTestFinder(exclude_empty=exclude_empty,
                                    parser=_SelectiveDocTestParser())
 
+    print('got here 3')    
     if raise_on_error:
         runner = doctest.DebugRunner(verbose=verbose, optionflags=optionflags)
     else:
         runner = doctest.DocTestRunner(verbose=verbose, optionflags=optionflags)
 
+    print('got here 4')        
     from fipy.tools import numerix
     printoptions = numerix.get_printoptions()
     import sys
