@@ -23,15 +23,16 @@ jobs:
         with:
           path: /run/user/${{ env.UID }}/http_cache.sqlite
           key: ${{ runner.os }}-http_cache.sqlite
-      - run: |
-          nix develop --command bash -c "python setup.py egg_info && python setup.py test > test.out 2>&1" || true
-          status=$?
-          # echo ::set-output name=errors::`cat test.out`
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "text<<$EOF" >> $GITHUB_STEP_SUMMARY
-          echo "FiPy messages: $(cat test.out)." >> $GITHUB_STEP_SUMMARY
-          echo "$EOF" >> $GITHUB_STEP_SUMMARY
-          exit $status  
+      - run: nix develop --command bash -c "python setup.py egg_info"
+      - run: nix develop --command bash -c "python setup.py test"
+          # nix develop --command bash -c "python setup.py egg_info && python setup.py test > test.out 2>&1" || true
+          # status=$?
+          # # echo ::set-output name=errors::`cat test.out`
+          # EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          # echo "text<<$EOF" >> $GITHUB_STEP_SUMMARY
+          # echo "FiPy messages: $(cat test.out)." >> $GITHUB_STEP_SUMMARY
+          # echo "$EOF" >> $GITHUB_STEP_SUMMARY
+          # exit run  
       - run: nix develop --command bash -c "py.test --nbval --nbval-sanitize-with examples/sanitize.cfg examples/index.ipynb"
       - uses: actions/cache/save@v3
         if: always()
