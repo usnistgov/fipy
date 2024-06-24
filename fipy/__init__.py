@@ -170,8 +170,12 @@ def test(*args):
     """
 
     from setuptools import setup
+    import fipy.tests.test
+    print('in __init__.py')
+    prinit("fipy.tests.test.__path__:", fipy.tests.test.__path__)
     from fipy.tests.test import test
     import tempfile
+    
 
     tmpDir = tempfile.mkdtemp()
 
