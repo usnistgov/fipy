@@ -59,7 +59,8 @@ class Variable(object):
             Variable(value=array(3))
             >>> Variable(value=3, unit="m")
             Variable(value=PhysicalField(3,'m'))
-            >>> Variable(value=3, unit="m", array=numerix.zeros((3, 2), 'l'))
+            >>> Variable(value=3, unit="m", array=numerix.zeros((3, 2),
+            ...                                                 dtype=int))
             Variable(value=PhysicalField(array([[3, 3],
                    [3, 3],
                    [3, 3]]),'m'))
