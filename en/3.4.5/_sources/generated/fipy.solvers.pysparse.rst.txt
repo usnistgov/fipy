@@ -1,0 +1,37 @@
+fipy.solvers.pysparse
+=====================
+
+.. automodule:: fipy.solvers.pysparse
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fipy.solvers.pysparse.linearCGSSolver
+   fipy.solvers.pysparse.linearGMRESSolver
+   fipy.solvers.pysparse.linearJORSolver
+   fipy.solvers.pysparse.linearLUSolver
+   fipy.solvers.pysparse.linearPCGSolver
+   fipy.solvers.pysparse.preconditioners
+   fipy.solvers.pysparse.pysparseSolver
+

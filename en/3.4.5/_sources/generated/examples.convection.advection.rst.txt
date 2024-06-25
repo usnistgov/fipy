@@ -1,0 +1,33 @@
+examples.convection.advection
+=============================
+
+.. automodule:: examples.convection.advection
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   examples.convection.advection.explicitUpwind
+   examples.convection.advection.implicitUpwind
+   examples.convection.advection.vanLeerUpwind
+

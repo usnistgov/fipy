@@ -1,0 +1,29 @@
+fipy.solvers.scipy.linearGMRESSolver
+====================================
+
+.. automodule:: fipy.solvers.scipy.linearGMRESSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearGMRESSolver
+   
+   
+
+   
+   
+   
+
+
+

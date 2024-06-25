@@ -1,0 +1,29 @@
+fipy.solvers.pyAMG.linearLUSolver
+=================================
+
+.. automodule:: fipy.solvers.pyAMG.linearLUSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearLUSolver
+   
+   
+
+   
+   
+   
+
+
+
