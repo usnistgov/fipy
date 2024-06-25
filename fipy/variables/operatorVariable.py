@@ -14,7 +14,7 @@ from fipy.tools import numerix
 
 def _OperatorVariableClass(baseClass=object):
     class _OperatorVariable(baseClass):
-        def __init__(self, op, var, opShape=(), canInline=True, unit=None, inlineComment=None, valueMattersForUnit=None, *args, **kwargs):
+        def __init__(self, op, var, opShape=(), canInline=True, unit=None, inlineComment=None, valueMattersForUnit=None, return_scalar=False, *args, **kwargs):
             self.op = op
             self.var = var
             self.opShape = opShape
@@ -23,6 +23,7 @@ def _OperatorVariableClass(baseClass=object):
                 self.valueMattersForUnit = [False for v in var]
             else:
                 self.valueMattersForUnit = valueMattersForUnit
+            self.return_scalar = return_scalar
             self.canInline = canInline  #allows for certain functions to opt out of --inline
             baseClass.__init__(self, value=None, *args, **kwargs)
             self.name = ''
@@ -138,12 +139,6 @@ def _OperatorVariableClass(baseClass=object):
                     62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
         }
 
-        # introduced in Python 3.11
-        _binary_op = {
-            0: "+", 1: "&", 2: "//", 3: "<<", 4: "@", 5: "*", 6: "%", 7: "|",
-            8: "**", 9: ">>", 10: "-", 11: "/", 12: "^"
-        }
-
         def _py2kInstructions(self, bytecodes, style, argDict, id, freshen):
             def _popIndex():
                 return bytecodes.pop(0) + bytecodes.pop(0) * 256
@@ -221,7 +216,7 @@ def _OperatorVariableClass(baseClass=object):
                     # LOAD_METHOD new in Python 3.7
                     stack.append(stack.pop() + "." + ins.argval)
                 elif ins.opname == 'COMPARE_OP':
-                    stack.append(stack.pop(-2) + " " + dis.cmp_op[ins.arg] + " " + stack.pop())
+                    stack.append(stack.pop(-2) + " " + ins.argrepr + " " + stack.pop())
                 elif ins.opname == 'LOAD_GLOBAL':
                     # Changed in Python 3.11
                     stack.append(ins.argval)
@@ -249,7 +244,7 @@ def _OperatorVariableClass(baseClass=object):
                     pass
                 elif ins.opname == 'BINARY_OP':
                     # New in Python 3.11
-                    stack.append(stack.pop(-2) + " " + self._binary_op[ins.argval] + " " + stack.pop())
+                    stack.append(stack.pop(-2) + " " + ins.argrepr + " " + stack.pop())
                 elif ins.opname == 'PRECALL':
                     # New in Python 3.11
                     pass
@@ -386,11 +381,11 @@ def _testBinOp(self):
 
         >>> a = -(numerix.sin(Variable() * Variable()))
 
-    Check that `getTypeCode()` works as expected.
+    Check that `dtype` works as expected.
 
         >>> a = Variable(1.) * Variable(1)
-        >>> print(a.getsctype() == numerix.float64)
-        1
+        >>> issubclass(a.dtype.type, numerix.floating)
+        True
 
     The following test is to correct an `--inline` bug that was
     being thrown by the Cahn-Hilliard example. The fix for this
