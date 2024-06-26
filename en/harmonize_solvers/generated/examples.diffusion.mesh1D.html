@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.diffusion.mesh1D &#8212; FiPy 3.4.4+302.geced40cb7 documentation</title>
+    <title>examples.diffusion.mesh1D &#8212; FiPy 3.4.5+306.gb0d350d3c documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,13 +43,13 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=7353f965"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=a794d035"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+302.geced40cb7 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+306.gb0d350d3c documentation" href="../contents.html" />
     <link rel="up" title="examples.diffusion" href="examples.diffusion.html" />
     <link rel="next" title="examples.diffusion.mesh20x20" href="examples.diffusion.mesh20x20.html" />
     <link rel="prev" title="examples.diffusion.explicit.tri2D" href="examples.diffusion.explicit.tri2D.html" />
@@ -449,13 +449,13 @@ coefficient on the mesh faces</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">valueLeft</span> <span class="o">=</span> <span class="mf">0.</span>
 </pre></div>
 </div>
-<p>to the left and a fixed flux of</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fluxRight</span> <span class="o">=</span> <span class="mf">1.</span>
+<p>to the left and a fixed gradient of</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gradRight</span> <span class="o">=</span> <span class="mf">1.</span>
 </pre></div>
 </div>
 <p>to the right:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">faceGrad</span><span class="o">.</span><span class="n">constrain</span><span class="p">([</span><span class="n">fluxRight</span><span class="p">],</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesRight</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;solution variable&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">faceGrad</span><span class="o">.</span><span class="n">constrain</span><span class="p">([</span><span class="n">gradRight</span><span class="p">],</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesRight</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phi</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="n">valueLeft</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesLeft</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -528,8 +528,8 @@ taken if there is time dependence in the parameters in transient problems.</p>
 variables for the correct and incorrect solution</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phiT</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;correct&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phiF</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;incorrect&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phiT</span><span class="o">.</span><span class="n">faceGrad</span><span class="o">.</span><span class="n">constrain</span><span class="p">([</span><span class="n">fluxRight</span><span class="p">],</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesRight</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phiF</span><span class="o">.</span><span class="n">faceGrad</span><span class="o">.</span><span class="n">constrain</span><span class="p">([</span><span class="n">fluxRight</span><span class="p">],</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesRight</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phiT</span><span class="o">.</span><span class="n">faceGrad</span><span class="o">.</span><span class="n">constrain</span><span class="p">([</span><span class="n">gradRight</span><span class="p">],</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesRight</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phiF</span><span class="o">.</span><span class="n">faceGrad</span><span class="o">.</span><span class="n">constrain</span><span class="p">([</span><span class="n">gradRight</span><span class="p">],</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesRight</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phiT</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="n">valueLeft</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesLeft</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phiF</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="n">valueLeft</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">facesLeft</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phiT</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -753,7 +753,10 @@ reasonable accuracy.</p>
 </pre></div>
 </div>
 <p>and solve the steady-state problem</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">D</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">phi</span><span class="p">)</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">D</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="o">=</span><span class="n">phi</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">except</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">pass</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="nb">input</span>
@@ -762,13 +765,16 @@ reasonable accuracy.</p>
 <span class="gp">... </span><span class="s2">Press &lt;return&gt; to proceed...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span> 
-<span class="go">True</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">))</span> 
+<span class="go">False</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/mesh1D-noflux_steady_fail.png"><img alt="(failed) steady-state solution for no-flux boundary conditions" class="align-center" src="../_images/mesh1D-noflux_steady_fail.png" style="width: 90%;" /></a>
-<p>we find that the value is uniformly zero! What happened to our no-flux boundary
-conditions?</p>
+<p>Depending on the solver, we find that the value may be uniformly zero,
+infinity, or NaN, or the solver may just fail!
+What happened to our no-flux boundary conditions?
+Trilinos actually manages to get the correct solution, but this should not
+be relied on; this problem has an infinite number of solutions.</p>
 <p>The problem is that in the implicit discretization of <span class="math notranslate nohighlight">\(\nabla\cdot(D\nabla\phi) = 0\)</span>,</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{vmatrix}
@@ -874,7 +880,7 @@ mixture of plain scripts and doctest documentation/tests.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 02, 2024.
+                Last updated on Jun 26, 2024.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -884,7 +890,7 @@ mixture of plain scripts and doctest documentation/tests.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+302.geced40cb7
+Version 3.4.5+306.gb0d350d3c
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

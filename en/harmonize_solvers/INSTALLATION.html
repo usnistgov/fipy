@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; FiPy 3.4.4+302.geced40cb7 documentation</title>
+    <title>Installation &#8212; FiPy 3.4.5+306.gb0d350d3c documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,12 +43,12 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=7353f965"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=a794d035"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.4+302.geced40cb7 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+306.gb0d350d3c documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Git practices" href="ADMINISTRATA.html" />
     <link rel="prev" title="Contact" href="CONTACT.html" />
@@ -500,7 +500,7 @@ not).</p>
 <p>Past releases of FiPy are tagged as</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">x.y.z</span></code></dt><dd><p>Any released version of FiPy will be designated with a fixed tag: The
-current version of FiPy is 3.4.4+302.geced40cb7.  (Legacy <code class="docutils literal notranslate"><span class="pre">version-x_y_z</span></code> tags
+current version of FiPy is 3.4.5+306.gb0d350d3c.  (Legacy <code class="docutils literal notranslate"><span class="pre">version-x_y_z</span></code> tags
 are retained for historical purposes, but won’t be added to.)</p>
 </dd>
 </dl>
@@ -533,54 +533,24 @@ The <a class="reference external" href="http://git-scm.com/book">Pro Git book</a
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> now has a <a class="reference external" href="https://nixos.org/nix/">Nix</a> expression for installing <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
 using <a class="reference external" href="https://nixos.org/nix/">Nix</a>. <a class="reference external" href="https://nixos.org/nix/">Nix</a> is a powerful package manager for Linux and other
 Unix systems that makes package management reliable and
-reproducible. The recipe works on both Linux and Mac OS X.</p>
-<section id="getting-started-with-nix">
-<h4>Getting Started with Nix<a class="headerlink" href="#getting-started-with-nix" title="Permalink to this heading">¶</a></h4>
-<p>There are a number of tutorials on getting started with <a class="reference external" href="https://nixos.org/nix/">Nix</a>. The
-page that I used when getting started is on the Blog of the HPC team
-of GRICAD,</p>
-<p><a class="reference external" href="https://gricad.github.io/calcul/nix/tuto/2017/07/04/nix-tutorial.html">https://gricad.github.io/calcul/nix/tuto/2017/07/04/nix-tutorial.html</a></p>
-<p>I also made my own notes,</p>
-<p><a class="reference external" href="https://github.com/wd15/nixes/blob/master/NIX-NOTES.md">https://github.com/wd15/nixes/blob/master/NIX-NOTES.md</a></p>
-<p>which are a succinct steps that I use when setting up a new system with
-Nix.</p>
-</section>
+reproducible. The recipe works on both Linux and Mac OS X. Go to
+<a class="reference external" href="https://nix.dev">nix.dev</a> to get started with Nix.</p>
 <section id="installing">
 <h4>Installing<a class="headerlink" href="#installing" title="Permalink to this heading">¶</a></h4>
 <p>Once you have a working Nix installation use:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nix-shell --pure
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nix develop
 </pre></div>
 </div>
 <p>in the base <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> directory to install <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> with Python
-3 by default. Modify the <cite>shell.nix</cite> file to use another version of
-Python. <code class="docutils literal notranslate"><span class="pre">nix-shell</span></code> drops the user into a shell with a working
+3 by default. <code class="docutils literal notranslate"><span class="pre">nix</span> <span class="pre">develop</span></code> drops the user into a shell with a working
 version of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>. To test your installation use:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nix-shell --pure --command &quot;python setup.py test&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ nix develop --command bash -c &quot;python setup.py test&quot;
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> is currently not available as part of the Nix
-<a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> installation.</p>
+<p>The SciPy solvers are the only available solvers currently.</p>
 </div>
-</section>
-<section id="additional-packages">
-<h4>Additional Packages<a class="headerlink" href="#additional-packages" title="Permalink to this heading">¶</a></h4>
-<p>To install additional packages available from <a class="reference external" href="https://nixos.org/nixpkgs/">Nixpkgs</a> include them in
-the <cite>nativeBuildInputs</cite> list in <cite>shell.nix</cite>.</p>
-</section>
-<section id="using-pip">
-<h4>Using Pip<a class="headerlink" href="#using-pip" title="Permalink to this heading">¶</a></h4>
-<p>Packages unavailable from Nix can be installed using <a class="reference internal" href="glossary.html#term-pip"><span class="xref std std-term">Pip</span></a>. In
-this case, the installation has been set up so that the Nix shell
-knows about a <code class="docutils literal notranslate"><span class="pre">.local</span></code> directory in the base <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> directory
-used by <a class="reference internal" href="glossary.html#term-pip"><span class="xref std std-term">Pip</span></a> for installation.  So, for example, to install the
-<code class="docutils literal notranslate"><span class="pre">toolz</span></code> package from within the Nix shell use:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m pip install --user toolz
-</pre></div>
-</div>
-<p>The <code class="docutils literal notranslate"><span class="pre">.local</span></code> directory will persist after the Nix shell has been
-closed.</p>
 </section>
 </section>
 </section>
@@ -588,7 +558,7 @@ closed.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 02, 2024.
+                Last updated on Jun 26, 2024.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -598,7 +568,7 @@ closed.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+302.geced40cb7
+Version 3.4.5+306.gb0d350d3c
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
@@ -637,10 +607,7 @@ Version 3.4.4+302.geced40cb7
 </li>
 <li><a class="reference internal" href="#nix">Nix</a><ul>
 <li><a class="reference internal" href="#nix-installation">Nix Installation</a><ul>
-<li><a class="reference internal" href="#getting-started-with-nix">Getting Started with Nix</a></li>
 <li><a class="reference internal" href="#installing">Installing</a></li>
-<li><a class="reference internal" href="#additional-packages">Additional Packages</a></li>
-<li><a class="reference internal" href="#using-pip">Using Pip</a></li>
 </ul>
 </li>
 </ul>

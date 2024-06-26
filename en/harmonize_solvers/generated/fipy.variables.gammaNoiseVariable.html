@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.variables.gammaNoiseVariable &#8212; FiPy 3.4.4+302.geced40cb7 documentation</title>
+    <title>fipy.variables.gammaNoiseVariable &#8212; FiPy 3.4.5+306.gb0d350d3c documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,13 +43,13 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=7353f965"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=a794d035"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+302.geced40cb7 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+306.gb0d350d3c documentation" href="../contents.html" />
     <link rel="up" title="fipy.variables" href="fipy.variables.html" />
     <link rel="next" title="fipy.variables.gaussCellGradVariable" href="fipy.variables.gaussCellGradVariable.html" />
     <link rel="prev" title="fipy.variables.faceVariable" href="fipy.variables.faceVariable.html" />
@@ -238,7 +238,7 @@ distribution</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.gammaNoiseVariable.GammaNoiseVariable.__array__">
-<span class="sig-name descname"><span class="pre">__array__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.__array__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__array__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.__array__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attempt to convert the <cite>Variable</cite> to a numerix <cite>array</cite> object</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
@@ -255,7 +255,7 @@ distribution</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.variables.gammaNoiseVariable.GammaNoiseVariable.__array_wrap__">
-<span class="sig-name descname"><span class="pre">__array_wrap__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.__array_wrap__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__array_wrap__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_scalar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.__array_wrap__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Required to prevent numpy not calling the reverse binary operations.
 Both the following tests are examples ufuncs.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span> <span class="o">*</span> <span class="n">Variable</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])))</span> 
@@ -314,7 +314,7 @@ method that has a memory requirement on the order of <cite>Ncells</cite> by
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>points</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a>) – A point or set of points in the format (X, Y, Z)</p></li>
 <li><p><strong>order</strong> (<code class="docutils literal notranslate"><span class="pre">{`0`,</span> <span class="pre">`1`}</span></code>) – The order of interpolation, default is 0</p></li>
-<li><p><strong>nearestCellIDs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v1.26)"><span class="xref std std-term">array_like</span></a>) – Optional argument if user can calculate own
+<li><p><strong>nearestCellIDs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.0)"><span class="xref std std-term">array_like</span></a>) – Optional argument if user can calculate own
 nearest cell IDs array, shape should be same as points</p></li>
 </ul>
 </dd>
@@ -746,6 +746,20 @@ need to be a <a class="reference internal" href="fipy.variables.meshVariable.htm
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="fipy.variables.gammaNoiseVariable.GammaNoiseVariable.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the Numpy <cite>dtype</cite> of the underlying array.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">Variable</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">))</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="fipy.variables.gammaNoiseVariable.GammaNoiseVariable.faceGrad">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">faceGrad</span></span><a class="headerlink" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.faceGrad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <span class="math notranslate nohighlight">\(\nabla \phi\)</span> as a rank-1 <cite>FaceVariable</cite> using differencing
@@ -804,20 +818,6 @@ of the adjacent cells:</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gaussGrad</span></span><a class="headerlink" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.gaussGrad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return <span class="math notranslate nohighlight">\(\frac{1}{V_P} \sum_f \vec{n} \phi_f A_f\)</span>
 as a rank-1 <cite>CellVariable</cite> (first-order gradient).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="fipy.variables.gammaNoiseVariable.GammaNoiseVariable.getsctype">
-<span class="sig-name descname"><span class="pre">getsctype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.getsctype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the Numpy <cite>sctype</cite> of the underlying array.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Variable</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">getsctype</span><span class="p">()</span> <span class="o">==</span> <span class="n">numerix</span><span class="o">.</span><span class="n">NUMERIX</span><span class="o">.</span><span class="n">obj2sctype</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Variable</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span><span class="o">.</span><span class="n">getsctype</span><span class="p">()</span> <span class="o">==</span> <span class="n">numerix</span><span class="o">.</span><span class="n">NUMERIX</span><span class="o">.</span><span class="n">obj2sctype</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mf">1.</span><span class="p">))</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Variable</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">))</span><span class="o">.</span><span class="n">getsctype</span><span class="p">()</span> <span class="o">==</span> <span class="n">numerix</span><span class="o">.</span><span class="n">NUMERIX</span><span class="o">.</span><span class="n">obj2sctype</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)))</span>
-<span class="go">True</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py property">
@@ -1185,7 +1185,7 @@ values.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Apr 02, 2024.
+                Last updated on Jun 26, 2024.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -1195,7 +1195,7 @@ values.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+302.geced40cb7
+Version 3.4.5+306.gb0d350d3c
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
@@ -1234,11 +1234,11 @@ Version 3.4.4+302.geced40cb7
 <li><a class="reference internal" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.constraintMask"><code class="docutils literal notranslate"><span class="pre">GammaNoiseVariable.constraintMask</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.copy"><code class="docutils literal notranslate"><span class="pre">GammaNoiseVariable.copy()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.dot"><code class="docutils literal notranslate"><span class="pre">GammaNoiseVariable.dot()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.dtype"><code class="docutils literal notranslate"><span class="pre">GammaNoiseVariable.dtype</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.faceGrad"><code class="docutils literal notranslate"><span class="pre">GammaNoiseVariable.faceGrad</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.faceGradAverage"><code class="docutils literal notranslate"><span class="pre">GammaNoiseVariable.faceGradAverage</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.faceValue"><code class="docutils literal notranslate"><span class="pre">GammaNoiseVariable.faceValue</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.gaussGrad"><code class="docutils literal notranslate"><span class="pre">GammaNoiseVariable.gaussGrad</span></code></a></li>
-<li><a class="reference internal" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.getsctype"><code class="docutils literal notranslate"><span class="pre">GammaNoiseVariable.getsctype()</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.globalValue"><code class="docutils literal notranslate"><span class="pre">GammaNoiseVariable.globalValue</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.grad"><code class="docutils literal notranslate"><span class="pre">GammaNoiseVariable.grad</span></code></a></li>
 <li><a class="reference internal" href="#fipy.variables.gammaNoiseVariable.GammaNoiseVariable.harmonicFaceValue"><code class="docutils literal notranslate"><span class="pre">GammaNoiseVariable.harmonicFaceValue</span></code></a></li>

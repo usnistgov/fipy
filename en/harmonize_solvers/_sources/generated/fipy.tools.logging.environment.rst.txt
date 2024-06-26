@@ -14,7 +14,9 @@ fipy.tools.logging.environment
    .. autosummary::
    
       conda_info
+      nix_info
       package_info
+      pip_info
       platform_info
    
    
