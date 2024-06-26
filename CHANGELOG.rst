@@ -16,7 +16,7 @@ This maintenance release:
 - Addresses compatibility with recent releases of
   Python 3.12, NumPy 2.0, SciPy 1.14, and PETSc 3.20.
 - Adds `conda-lock <https://github.com/conda/conda-lock>`_ environment
-  lock files with specified compatible versions of FiPy prerequisistes.
+  lock files with specified compatible versions of FiPy prerequisites.
 - Fixes numerous documentation errors.
 
 .. attention::
@@ -43,7 +43,7 @@ Pulls
   (`#991 <https://github.com/usnistgov/fipy/pull/991>`_)
 - Log much more information about FiPy environment
   (`#990 <https://github.com/usnistgov/fipy/pull/990>`_)
-- Fix inclusion of environments/README.rst
+- Fix inclusion of `environments/README.rst`
   (`#988 <https://github.com/usnistgov/fipy/pull/988>`_)
 - Environment pinning
   (`#985 <https://github.com/usnistgov/fipy/pull/985>`_)
@@ -54,12 +54,12 @@ Fixes
 - `#1049 <https://github.com/usnistgov/fipy/issues/1049>`_:
   Numpy 2.0.0 breaks things
 - `#1010 <https://github.com/usnistgov/fipy/issues/1010>`_:
-  examples.diffusion.mesh1D No-flux - steady-state doesn't always give
+  `examples.diffusion.mesh1D` No-flux - steady-state doesn't always give
   zero
 - `#1000 <https://github.com/usnistgov/fipy/issues/1000>`_:
-  examples.diffusion.mesh1D constrains a gradient but calls it a flux
+  `examples.diffusion.mesh1D` constrains a gradient but calls it a flux
 - `#997 <https://github.com/usnistgov/fipy/issues/997>`_:
-  future.standard_library breaking python 3.12 compatibility
+  `future.standard_library` breaking python 3.12 compatibility
 - `#967 <https://github.com/usnistgov/fipy/issues/967>`_:
   Sign error in Robin condition
 - `#963 <https://github.com/usnistgov/fipy/issues/963>`_:
@@ -75,7 +75,7 @@ Fixes
 - `#673 <https://github.com/usnistgov/fipy/issues/673>`_:
   Deprecations don't properly format properties
 - `#512 <https://github.com/usnistgov/fipy/issues/512>`_:
-  Default coefficient of ImplicitSourceTerm is 0
+  Default coefficient of `ImplicitSourceTerm` is 0
 
 --------------------------
 Version 3.4.4 - 2023-06-27
