@@ -383,7 +383,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             nthCoeffFaceGrad = coeff[numerix.newaxis] * var.faceGrad[:, numerix.newaxis]
 
         b = -(var.faceGrad.constraintMask
-              * nthCoeffFaceGrad).divergence * mesh.cellVolumes
+              * nthCoeffFaceGrad).divergence * var.mesh.cellVolumes
 
         return 0, b
 
