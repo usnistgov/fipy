@@ -63,13 +63,13 @@ class TransientTerm(CellTerm):
     >>> for step in range(steps):
     ...     var.updateOld()
     ...     for sweep in range(sweeps):
-    ...         eq.solve(var, dt = dt)
+    ...         eq.solve(var, dt=dt)
 
     Compare the final result with the analytical solution.
 
     >>> from fipy.tools import numerix
-    >>> print(var.allclose(numerix.sqrt(k * dt * steps + phi0**2)))
-    1
+    >>> print(var.allclose(numerix.sqrt(k * dt * steps + phi0**2), rtol=2e-5))
+    True
     """
 
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):

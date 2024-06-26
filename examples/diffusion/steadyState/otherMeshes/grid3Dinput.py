@@ -4,13 +4,17 @@
 """
 Test case for the `Grid3D`.
 
-   >>> DiffusionTerm().solve(var)
-   >>> DiffusionTerm().solve(var2)
+   >>> eq3D = DiffusionTerm()
+   >>> solver = eq3D.getDefaultSolver(tolerance=1e-6)
+   >>> eq3D.solve(var, solver=solver)
+   >>> eq2D = DiffusionTerm()
+   >>> solver = eq2D.getDefaultSolver(tolerance=1e-6)
+   >>> eq2D.solve(var2, solver=solver)
    >>> a = numerix.array(var.globalValue)
    >>> b = numerix.array(var2.globalValue)
    >>> c = numerix.ravel(numerix.array((b, b, b)))
    >>> print(numerix.allclose(a, c))
-   1
+   True
 
 """
 from __future__ import unicode_literals

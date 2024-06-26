@@ -1,42 +1,44 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-from fipy.solvers.pysparseMatrixSolver import _PysparseMatrixSolver
+from ..pysparseMatrixSolver import PysparseMatrixSolver
+from fipy.tools import numerix
 from fipy.tools.timer import Timer
 
 __all__ = ["PysparseSolver"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class PysparseSolver(_PysparseMatrixSolver):
+class PysparseSolver(PysparseMatrixSolver):
     """
     The base `pysparseSolver` class.
 
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
-    def __init__(self, *args, **kwargs):
-        if self.__class__ is PysparseSolver:
-            raise NotImplementedError("can't instantiate abstract base class")
-
-        super(PysparseSolver, self).__init__(*args, **kwargs)
 
     def _solve_(self, L, x, b):
-        """
-        `_solve_` is only for use by solvers which may use
-        preconditioning. If you are writing a solver which
-        doesn't use preconditioning, this must be overridden.
+        """Solve system of equations posed for PySparse
 
         Parameters
         ----------
-        L : ~fipy.matrices.pysparseMatrix._PysparseMeshMatrix
-            Matrix
+        L : ~pysparse.spmatrix.ll_mat
+            Sparse matrix
+        x : array_like
+            Solution vector
+        b : array_like
+            Right hand side vector
+
+        Returns
+        -------
         x : ndarray
             Solution vector
-        b : ndarray
-            Right hand side vector
         """
 
-        A = L.matrix
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
+
+        # Pysparse returns the relative residual,
+        # which changes depending on which solver is used
+        legacy_norm = self._legacyNorm(L, x, b)
 
         self._log.debug("BEGIN precondition")
 
@@ -44,43 +46,57 @@ class PysparseSolver(_PysparseMatrixSolver):
             if self.preconditioner is None:
                 P = None
             else:
-                P, A = self.preconditioner._applyToMatrix(A)
+                P, L = self.preconditioner._applyToMatrix(L)
 
         self._log.debug("END precondition - {} ns".format(t.elapsed))
 
         self._log.debug("BEGIN solve")
 
         with Timer() as t:
-            info, iter, relres = self.solveFnc(A, b, x, self.tolerance,
+            info, iter, relres = self.solveFnc(L, b, x,
+                                               self.tolerance * tolerance_scale,
                                                self.iterations, P)
 
         self._log.debug("END solve - {} ns".format(t.elapsed))
 
-        self._raiseWarning(info, iter, relres)
+        self._setConvergence(suite="pysparse",
+                             code=info,
+                             iterations=iter + 1,
+                             tolerance_scale=tolerance_scale,
+                             residual=relres * legacy_norm)
 
-        self._log.debug('iterations: %d / %d', iter, self.iterations)
-        if info < 0:
-            self._log.debug('failure: %s', self._warningList[info].__class__.__name__)
-        self._log.debug('relres: %s', relres)
+        self.convergence.warn()
 
-    def _solve(self):
+        return x
 
-        if self.var.mesh.communicator.Nproc > 1:
-            raise Exception("Pysparse solvers cannot be used with multiple processors")
+    def _rhsNorm(self, L, x, b):
+        return numerix.L2norm(b)
 
-        array = self.var.numericValue.ravel()
+    def _matrixNorm(self, L, x, b):
+        return L.norm('inf')
 
-        from fipy.terms import SolutionVariableNumberError
+    def _residualVectorAndNorm(self, L, x, b):
+        y = numerix.empty((L.shape[0],))
+        L.matvec(x, y)
+        residualVector = y - b
 
-        if ((self.matrix == 0)
-            or (self.matrix.matrix.shape[0] != self.matrix.matrix.shape[1])
-            or (self.matrix.matrix.shape[0] != len(array))):
+        return residualVector, numerix.L2norm(residualVector)
 
-            raise SolutionVariableNumberError
+    def _adaptUnscaledTolerance(self, L, x, b):
+        factor = 1. / self._legacyNorm(L, x, b)
+        return (factor, None)
 
-        self._solve_(self.matrix, array, self.RHSvector)
-        factor = self.var.unit.factor
-        if factor != 1:
-            array /= self.var.unit.factor
+    def _adaptRHSTolerance(self, L, x, b):
+        factor = self._rhsNorm(L, x, b) / self._legacyNorm(L, x, b)
+        return (factor, None)
 
-        self.var[:] = array.reshape(self.var.shape)
+    def _adaptMatrixTolerance(self, L, x, b):
+        factor = self._matrixNorm(L, x, b) / self._legacyNorm(L, x, b)
+        return (factor, None)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        factor = self._residualNorm(L, x, b) / self._legacyNorm(L, x, b)
+        return (factor, None)
+
+    def _adaptLegacyTolerance(self, L, x, b):
+        return (1., None)

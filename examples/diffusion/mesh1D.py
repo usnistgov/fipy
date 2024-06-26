@@ -708,7 +708,7 @@ conditions, and solve
 and see that :math:`\phi` dissipates to the expected average value of 0.2 with
 reasonable accuracy.
 
->>> print(numerix.allclose(phi, 0.2, atol=1e-5))
+>>> print(numerix.allclose(phi, 0.2, atol=4e-5))
 True
 
 If we reset the initial condition
@@ -788,7 +788,13 @@ The solution is to run the transient problem and to take one enormous time step
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 
->>> (TransientTerm() == DiffusionTerm(D)).solve(var=phi, dt=1e6*dt)
+>>> eq = (TransientTerm() == DiffusionTerm(D))
+
+The initial residual is much larger than the norm of the right-hand-side
+vector, so we use `"initial"` tolerance scaling.
+
+>>> solver = eq.getDefaultSolver(criterion="initial")
+>>> eq.solve(var=phi, dt=1e6*dt, solver=solver)
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 >>> from fipy import input
