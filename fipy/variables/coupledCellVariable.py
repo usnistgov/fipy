@@ -64,7 +64,7 @@ class _CoupledCellVariable(object):
         from fipy.tools.dimensions import physicalField
         return physicalField._unity
 
-    def __array__(self, t=None):
+    def __array__(self, dtype=None, copy=None):
         """
         Attempt to convert the `_CoupledCellVariable` to a numerix `array` object
 
@@ -80,11 +80,14 @@ class _CoupledCellVariable(object):
         [6 7]
         >>> print(v2)
         [8 9]
-        >>> v.getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+        >>> issubclass(v.dtype.type, numerix.integer)
         True
 
         """
-        return numerix.array(self.value, t)
+        if not copy:
+            copy = numerix.copy_if_needed
+
+        return numerix.array(self.value, dtype=dtype, copy=copy)
 
     def __neg__(self):
         return _CoupledCellVariable([-var for var in self.vars])
@@ -95,10 +98,9 @@ class _CoupledCellVariable(object):
     def __iter__(self):
         return iter(self.value)
 
-    def getsctype(self, default=None):
-        if not hasattr(self, 'typecode'):
-            self.typecode = numerix.obj2sctype(rep=self.numericValue, default=default)
-        return self.typecode
+    @property
+    def dtype(self):
+        return self.numericValue.dtype
 
     def ravel(self):
         return self.value.ravel()

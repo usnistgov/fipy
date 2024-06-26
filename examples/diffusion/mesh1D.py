@@ -373,14 +373,14 @@ The boundary conditions are a fixed value of
 
 >>> valueLeft = 0.
 
-to the left and a fixed flux of
+to the left and a fixed gradient of
 
->>> fluxRight = 1.
+>>> gradRight = 1.
 
 to the right:
 
->>> phi = CellVariable(mesh=mesh)
->>> phi.faceGrad.constrain([fluxRight], mesh.facesRight)
+>>> phi = CellVariable(mesh=mesh, name="solution variable")
+>>> phi.faceGrad.constrain([gradRight], mesh.facesRight)
 >>> phi.constrain(valueLeft, mesh.facesLeft)
 
 We re-initialize the solution variable
@@ -469,8 +469,8 @@ variables for the correct and incorrect solution
 
 >>> phiT = CellVariable(name="correct", mesh=mesh)
 >>> phiF = CellVariable(name="incorrect", mesh=mesh)
->>> phiT.faceGrad.constrain([fluxRight], mesh.facesRight)
->>> phiF.faceGrad.constrain([fluxRight], mesh.facesRight)
+>>> phiT.faceGrad.constrain([gradRight], mesh.facesRight)
+>>> phiF.faceGrad.constrain([gradRight], mesh.facesRight)
 >>> phiT.constrain(valueLeft, mesh.facesLeft)
 >>> phiF.constrain(valueLeft, mesh.facesLeft)
 >>> phiT.setValue(0)
@@ -720,7 +720,10 @@ If we reset the initial condition
 
 and solve the steady-state problem
 
->>> DiffusionTerm(coeff=D).solve(var=phi) #doctest: +PYSPARSE_SOLVER
+>>> try:
+...     DiffusionTerm(coeff=D).solve(var=phi)
+... except:
+...     pass
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 >>> from fipy import input
@@ -728,16 +731,19 @@ and solve the steady-state problem
 ...     input("No-flux - steady-state failure. \
 ... Press <return> to proceed...")
 
->>> print(numerix.allclose(phi, 0.0)) #doctest: +PYSPARSE_SOLVER
-True
+>>> print(numerix.allclose(phi, 0.2, atol=1e-5)) # doctest: +NOT_TRILINOS_SOLVER
+False
 
 .. image:: /figures/examples/diffusion/mesh1D-noflux_steady_fail.*
    :width: 90%
    :align: center
    :alt: (failed) steady-state solution for no-flux boundary conditions
 
-we find that the value is uniformly zero! What happened to our no-flux boundary
-conditions?
+Depending on the solver, we find that the value may be uniformly zero,
+infinity, or NaN, or the solver may just fail!
+What happened to our no-flux boundary conditions?
+Trilinos actually manages to get the correct solution, but this should not
+be relied on; this problem has an infinite number of solutions.
 
 The problem is that in the implicit discretization of :math:`\nabla\cdot(D\nabla\phi) = 0`,
 

@@ -520,36 +520,6 @@ class PhysicalField(object):
             value = self._inMyUnits(value).value
         self.value[index] = value
 
-    def itemset(self, value):
-        """
-        Assign the value of a scalar array, performing appropriate
-        conversions.
-
-            >>> a = PhysicalField(4., "m")
-            >>> a.itemset(PhysicalField("6 ft"))
-            >>> print(a.allclose("1.8288 m"))
-            1
-            >>> a = PhysicalField(((3., 4.), (5., 6.)), "m")
-            >>> try: #doctest: +IGNORE_EXCEPTION_DETAIL
-            ...     a.itemset(PhysicalField("6 ft"))
-            ... except IndexError:
-            ...     # NumPy 1.7 has changed the exception type
-            ...     raise ValueError("can only place a scalar for an  array of size 1")
-            Traceback (most recent call last):
-                ...
-            ValueError: can only convert an array of size 1 to a Python scalar
-            >>> a.itemset(PhysicalField("2 min"))
-            Traceback (most recent call last):
-                ...
-            TypeError: Incompatible units
-        """
-        if isinstance(value, string_types):
-            value = PhysicalField(value)
-        if isinstance(value, PhysicalField) or _isVariable(value):
-            value = self._inMyUnits(value).value
-        self.value.itemset(value)
-
-
 ##    __array_priority__ and __array_wrap__ are required to override
 ##    the default behavior of numpy. If a numpy array and a Variable
 ##    are in a binary operation and numpy is first, then numpy will,
@@ -561,7 +531,7 @@ class PhysicalField(object):
 
     __array_priority__ = 100.0
 
-    def __array_wrap__(self, arr, context=None):
+    def __array_wrap__(self, arr, context=None, return_scalar=False):
         """
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
@@ -591,9 +561,13 @@ class PhysicalField(object):
             if meth is not None and callable(meth):
                 result = meth(*args[1:])
 
+            if return_scalar:
+                # NumPy 2.0 compatibility
+                result = result[()]
+
         return result
 
-    def __array__(self, t = None):
+    def __array__(self, dtype=None, copy=None):
         """
         Return a dimensionless `PhysicalField` as a Numeric_ ``array``.
 
@@ -623,7 +597,10 @@ class PhysicalField(object):
         else:
             value = self.inSIUnits().value
 
-        return numerix.array(value, t)
+        if not copy:
+            copy = numerix.copy_if_needed
+
+        return numerix.array(value, dtype=dtype, copy=copy)
 
 #         if self.unit.isDimensionlessOrAngle():
 #             value = self.numericValue
@@ -859,25 +836,21 @@ class PhysicalField(object):
                 unit = units[i]
             return tuple(result)
 
-    def getsctype(self, default=None):
+    @property
+    def dtype(self):
         """
 
         Returns the NumPy sctype of the underlying array.
 
-            >>> PhysicalField(1, 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+            >>> issubclass(PhysicalField(1, 'm').dtype.type, numerix.integer)
             True
-            >>> PhysicalField(1., 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1.))
+            >>> issubclass(PhysicalField(1., 'm').dtype.type, numerix.floating)
             True
-            >>> PhysicalField((1, 1.), 'm').getsctype() == numerix.NUMERIX.obj2sctype(numerix.array((1., 1.)))
+            >>> issubclass(PhysicalField((1, 1.), 'm').dtype.type, numerix.floating)
             True
 
         """
-
-        if not hasattr(self, 'typecode'):
-            self.typecode = numerix.obj2sctype(rep=numerix.array(self.numericValue),
-                                               default=default)
-
-        return self.typecode
+        return numerix.asarray(self.numericValue).dtype
 
     def _getUnit(self):
         """

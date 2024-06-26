@@ -59,7 +59,8 @@ class Variable(object):
             Variable(value=array(3))
             >>> Variable(value=3, unit="m")
             Variable(value=PhysicalField(3,'m'))
-            >>> Variable(value=3, unit="m", array=numerix.zeros((3, 2), 'l'))
+            >>> Variable(value=3, unit="m", array=numerix.zeros((3, 2),
+            ...                                                 dtype=int))
             Variable(value=PhysicalField(array([[3, 3],
                    [3, 3],
                    [3, 3]]),'m'))
@@ -106,7 +107,7 @@ class Variable(object):
 
     __array_priority__ = 100.0
 
-    def __array_wrap__(self, arr, context=None):
+    def __array_wrap__(self, arr, context=None, return_scalar=False):
         """
         Required to prevent numpy not calling the reverse binary operations.
         Both the following tests are examples ufuncs.
@@ -132,15 +133,15 @@ class Variable(object):
             cannotInline = ["expi", "logical_and", "logical_or", "logical_not", "logical_xor", "sign",
                             "conjugate", "dot", "allclose", "allequal"]
             if len(args) == 1:
-                result = args[0]._UnaryOperatorVariable(op=func, opShape=arr.shape, canInline=func.__name__ not in cannotInline)
+                result = args[0]._UnaryOperatorVariable(op=func, opShape=arr.shape, canInline=func.__name__ not in cannotInline, return_scalar=return_scalar)
             elif len(args) == 2:
-                result = args[0]._BinaryOperatorVariable(op=func, other=args[1], opShape=arr.shape, canInline=func.__name__ not in cannotInline)
+                result = args[0]._BinaryOperatorVariable(op=func, other=args[1], opShape=arr.shape, canInline=func.__name__ not in cannotInline, return_scalar=return_scalar)
             else:
                 result = NotImplemented
 
         return result
 
-    def __array__(self, t=None):
+    def __array__(self, dtype=None, copy=None):
         """
         Attempt to convert the `Variable` to a numerix `array` object
 
@@ -154,8 +155,10 @@ class Variable(object):
             >>> numerix.array(v)
             array([ 0.002,  0.003])
         """
+        if not copy:
+            copy = numerix.copy_if_needed
 
-        return numerix.array(self.value, t)
+        return numerix.array(self.value, dtype=dtype, copy=copy)
 
 ##    def _get_array_interface(self):
 ##        return self._array.__array_interface__
@@ -447,12 +450,6 @@ class Variable(object):
         self._value[index] = value
         self._markFresh()
 
-    def itemset(self, value):
-        if self._value is None:
-            self._getValue()
-        self._value.itemset(value)
-        self._markFresh()
-
     def put(self, indices, value):
         if self._value is None:
             self._getValue()
@@ -703,7 +700,7 @@ class Variable(object):
 
         """
         if where is not None:
-            tmp = numerix.empty(numerix.getShape(where), self.getsctype())
+            tmp = numerix.empty(numerix.getShape(where), self.dtype)
             tmp[:] = value
             tmp = numerix.where(where, tmp, self.value)
         else:
@@ -714,10 +711,7 @@ class Variable(object):
 
         value = self._makeValue(value=tmp, unit=unit, array=None)
 
-        if numerix.getShape(self._value) == ():
-            self._value.itemset(value)
-        else:
-            self._value[:] = value
+        self._value[...] = value
 
         self._markFresh()
 
@@ -767,24 +761,21 @@ class Variable(object):
 
     shape = property(_getShape)
 
-    def getsctype(self, default=None):
+    @property
+    def dtype(self):
         """
 
-        Returns the Numpy `sctype` of the underlying array.
+        Returns the Numpy `dtype` of the underlying array.
 
-            >>> Variable(1).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1))
+            >>> issubclass(Variable(1).dtype.type, numerix.integer)
             True
-            >>> Variable(1.).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array(1.))
+            >>> issubclass(Variable(1.).dtype.type, numerix.floating)
             True
-            >>> Variable((1, 1.)).getsctype() == numerix.NUMERIX.obj2sctype(numerix.array((1., 1.)))
+            >>> issubclass(Variable((1, 1.)).dtype.type, numerix.floating)
             True
 
         """
-
-        if not hasattr(self, 'typecode'):
-            self.typecode = numerix.obj2sctype(rep=self.numericValue, default=default)
-
-        return self.typecode
+        return numerix.asarray(self.numericValue).dtype
 
     @property
     def itemsize(self):
@@ -923,13 +914,13 @@ class Variable(object):
             self.canInline = False
             argDict['result'] = self.value
             self.canInline = True
-            self.typecode = numerix.obj2sctype(argDict['result'])
+            self.typecode = argDict['result'].dtype
         else:
             if self._value is None:
-                if self.getsctype() == numerix.bool_:
+                if self.dtype is numerix.dtype(bool):
                     argDict['result'] = numerix.empty(dim, numerix.int8)
                 else:
-                    argDict['result'] = numerix.empty(dim, self.getsctype())
+                    argDict['result'] = numerix.empty(dim, self.dtype)
             else:
                 argDict['result'] = self._value
 
@@ -943,8 +934,8 @@ class Variable(object):
             if resultShape == ():
                 argDict['result'] = numerix.reshape(argDict['result'], resultShape)
 
-            if self.getsctype() == numerix.bool_:
-                argDict['result'] = numerix.asarray(argDict['result'], dtype=self.getsctype())
+            if numerix.issubdtype(item.dtype, bool):
+                argDict['result'] = numerix.asarray(argDict['result'], dtype=self.dtype)
 
         return argDict['result']
 
@@ -995,7 +986,7 @@ class Variable(object):
         return operatorVariable._OperatorVariableClass(baseClass=baseClass)
 
     def _UnaryOperatorVariable(self, op, operatorClass=None, opShape=None, canInline=True, unit=None,
-                               valueMattersForUnit=False):
+                               valueMattersForUnit=False, return_scalar=False):
         """
         Check that unit works for `unOp`
 
@@ -1014,6 +1005,9 @@ class Variable(object):
         valueMattersForUnit : bool
             Whether value of `self` should be used when determining unit,
             e.g., ???
+        return_scalar : bool
+            Whether to reduce returned zero rank array to a scalar
+            # Introduced in NumPy 2.0
         """
         operatorClass = operatorClass or self._OperatorVariableClass()
         from fipy.variables import unaryOperatorVariable
@@ -1032,7 +1026,7 @@ class Variable(object):
 
         return unOp(op=op, var=[self], opShape=opShape, canInline=canInline, unit=unit,
                     inlineComment=inline._operatorVariableComment(canInline=canInline),
-                    valueMattersForUnit=[valueMattersForUnit])
+                    valueMattersForUnit=[valueMattersForUnit], return_scalar=return_scalar)
 
     def _shapeClassAndOther(self, opShape, operatorClass, other):
         """
@@ -1053,7 +1047,7 @@ class Variable(object):
         return (opShape, baseClass, other)
 
     def _BinaryOperatorVariable(self, op, other, operatorClass=None, opShape=None, canInline=True, unit=None,
-                                value0mattersForUnit=False, value1mattersForUnit=False):
+                                value0mattersForUnit=False, value1mattersForUnit=False, return_scalar=False):
         """
         Parameters
         ----------
@@ -1072,6 +1066,9 @@ class Variable(object):
         value1MattersForUnit : bool
             Whether value of `self` should be used when determining unit,
             e.g., `__pow__`
+        return_scalar : bool
+            Whether to reduce returned zero rank array to a scalar
+            # Introduced in NumPy 2.0
         """
         if not isinstance(other, Variable):
             from fipy.variables.constant import _Constant
@@ -1093,7 +1090,8 @@ class Variable(object):
 
         return binOp(op=op, var=[self, other], opShape=opShape, canInline=canInline, unit=unit,
                      inlineComment=inline._operatorVariableComment(canInline=canInline),
-                     valueMattersForUnit=[value0mattersForUnit, value1mattersForUnit])
+                     valueMattersForUnit=[value0mattersForUnit, value1mattersForUnit],
+                     return_scalar=return_scalar)
 
     def __add__(self, other):
         from fipy.terms.term import Term

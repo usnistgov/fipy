@@ -91,9 +91,9 @@ class MeshVariable(Variable):
 
         if not "array" in locals():
             if numerix._isPhysical(value):
-                dtype = numerix.obj2sctype(value.value)
+                dtype = value.value.dtype
             else:
-                dtype = numerix.obj2sctype(value)
+                dtype = value.dtype
             #print "meshvariable elshape: ",self.elementshape
             #print "meshvariable _getShapeFromMesh: ",self._getShapeFromMesh(mesh)
             array = numerix.zeros(self.elementshape
@@ -128,7 +128,7 @@ class MeshVariable(Variable):
             globalIDs = numerix.concatenate(self.mesh.communicator.allgather(globalIDs))
 
             globalValue = numerix.empty(localValue.shape[:-1] + (max(globalIDs) + 1,),
-                                        dtype=numerix.obj2sctype(localValue))
+                                        dtype=localValue.dtype)
             globalValue[..., globalIDs] = numerix.concatenate(self.mesh.communicator.allgather(localValue), axis=-1)
 
             return globalValue
@@ -600,9 +600,16 @@ class MeshVariable(Variable):
             else:
                 index = (index,)
         indexshape = numerix._indexShape(index=index, arrayShape=self.shape)
+
+        def _isbool(item):
+            if hasattr(item, "dtype"):
+                return numerix.issubdtype(item.dtype, bool)
+            else:
+                return type(item) is bool
+
         if (len(indexshape) > 0
             and indexshape[-1] == self.shape[-1]
-            and numerix.obj2sctype(index[-1]) != numerix.obj2sctype(bool)):
+            and not _isbool(index[-1])):
             return self._OperatorVariableClass()
         else:
             return Variable._OperatorVariableClass(self, baseClass=Variable)

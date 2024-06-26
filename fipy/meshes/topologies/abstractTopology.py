@@ -228,10 +228,10 @@ class _AbstractTopology(object):
                 ||
         ```
         """
-        return (numerix._in1dMA(self.mesh.faceCellIDs[0],
-                                self._localNonOverlappingCellIDs).filled(False)
-                | numerix._in1dMA(self.mesh.faceCellIDs[1],
-                                  self._localNonOverlappingCellIDs).filled(False))
+        return (numerix.isin(self.mesh.faceCellIDs[0],
+                             self._localNonOverlappingCellIDs).filled(False)
+                | numerix.isin(self.mesh.faceCellIDs[1],
+                               self._localNonOverlappingCellIDs).filled(False))
 
     @property
     def _localNonOverlappingFaceIDs(self):

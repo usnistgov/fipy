@@ -216,6 +216,11 @@ register_skipper(flag='TRILINOS_SOLVER',
                  test=lambda: (solver_suite == 'trilinos') or (solver_suite == 'no-pysparse'),
                  why="the Trilinos solvers are not being used.",
                  skipWarning=True)
+                 
+register_skipper(flag='NOT_TRILINOS_SOLVER',
+                 test=lambda: solver_suite not in ['trilinos', 'no-pysparse'],
+                 why="the Trilinos solvers are being used.",
+                 skipWarning=True)
 
 del register_skipper
 

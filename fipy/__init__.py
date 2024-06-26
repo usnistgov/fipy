@@ -63,12 +63,26 @@ from fipy.tools.logging import environment
 
 _fipy_environment = {
     "argv": sys.argv,
+    "environ": dict(os.environ),
     "platform": environment.platform_info(),
     "package": environment.package_info()
 }
 
 if _log.isEnabledFor(logging.DEBUG):
-    _fipy_environment["conda"] = environment.conda_info()
+    try:
+        _fipy_environment.update(environment.conda_info())
+    except:
+        pass
+
+    try:
+        _fipy_environment.update(environment.pip_info())
+    except:
+        pass
+
+    try:
+        _fipy_environment.update(environment.nix_info())
+    except:
+        pass
 
 _log.debug(json.dumps(_fipy_environment))
 

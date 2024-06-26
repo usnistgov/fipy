@@ -52,10 +52,15 @@ class LinearLUSolver(ScipySolver):
         x : ndarray
             Solution vector
         """
-        diag = L.diagonal()
-        maxdiag = max(numerix.absolute(diag))
-        L = L * (1 / maxdiag)
-        b = b * (1 / maxdiag)
+        self._log.debug("BEGIN precondition")
+
+        with Timer() as t:
+            diag = L.diagonal()
+            maxdiag = max(numerix.absolute(diag))
+            L = L * (1 / maxdiag)
+            b = b * (1 / maxdiag)
+
+        self._log.debug("END precondition - {} ns".format(t.elapsed))
 
         tolerance_scale, _ = self._adaptTolerance(L, x, b)
 

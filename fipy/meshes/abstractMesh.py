@@ -390,11 +390,11 @@ class AbstractMesh(object):
             self_faceVertexIDs = MA.masked_values(self_faceVertexIDs, -1)
 
         # want self's Faces for which all faceVertexIDs are in vertexCorrelates
-        self_matchingFaces = numerix.in1d(self_faceVertexIDs,
+        self_matchingFaces = numerix.isin(self_faceVertexIDs,
                                           vertexCorrelates[0]).reshape(self_faceVertexIDs.shape).all(axis=0).nonzero()[0]
 
         # want other's Faces for which all faceVertexIDs are in vertexCorrelates
-        other_matchingFaces = numerix.in1d(other_faceVertexIDs,
+        other_matchingFaces = numerix.isin(other_faceVertexIDs,
                                            vertexCorrelates[1]).reshape(other_faceVertexIDs.shape).all(axis=0).nonzero()[0]
 
         # map other's Vertex IDs to new Vertex IDs,
@@ -432,9 +432,9 @@ class AbstractMesh(object):
         other_faceHash = other_faceHash[face_sort]
         other_matchingFaces = other_matchingFaces[face_sort]
 
-        self_matchingFaces = self_matchingFaces[numerix.in1d(self_faceHash,
+        self_matchingFaces = self_matchingFaces[numerix.isin(self_faceHash,
                                                              other_faceHash)]
-        other_matchingFaces = other_matchingFaces[numerix.in1d(other_faceHash,
+        other_matchingFaces = other_matchingFaces[numerix.isin(other_faceHash,
                                                                self_faceHash)]
 
         faceCorrelates = numerix.array((self_matchingFaces,
@@ -1235,7 +1235,7 @@ class AbstractMesh(object):
         """return minimum of all the minima on all processors
         """
         if len(x) == 0:
-            minx = numerix.infty
+            minx = numerix.inf
         else:
             minx = min(x)
 
@@ -1245,7 +1245,7 @@ class AbstractMesh(object):
         """return maximum of all the maxima on all processors
         """
         if len(x) == 0:
-            maxx = -numerix.infty
+            maxx = -numerix.inf
         else:
             maxx = max(x)
 

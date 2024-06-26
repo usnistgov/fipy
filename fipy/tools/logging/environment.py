@@ -3,7 +3,7 @@ import platform
 import subprocess
 import sys
 
-__all__ = ["conda_info", "package_info", "platform_info"]
+__all__ = ["conda_info", "pip_info", "package_info", "platform_info", "nix_info"]
 
 def conda_info(conda="conda"):
     """Collect information about conda environment.
@@ -25,6 +25,7 @@ def conda_info(conda="conda"):
     stdout = stdout.decode('ascii')
 
     info["conda_info"] = json.loads(stdout)
+
     p = subprocess.Popen([conda, "env", "export",
                           "--name", info["conda_info"]["active_prefix_name"],
                           "--json"],
@@ -32,6 +33,60 @@ def conda_info(conda="conda"):
     stdout, _ = p.communicate()
     stdout = stdout.decode('ascii')
     info["conda_env"] = json.loads(stdout)
+
+    return info
+
+def pip_info(python="python"):
+    """Collect information about pip environment.
+
+    Parameters
+    ----------
+    python : str
+        Name of Python executable (default: "python").
+
+    Returns
+    -------
+    list of dict
+        Result of `pip list --format json`.
+    """
+    info = {}
+    p = subprocess.Popen([python, "-m", "pip", "list", "--format", "json"], stdout=subprocess.PIPE)
+    stdout, _ = p.communicate()
+    stdout = stdout.decode('ascii')
+
+    info["pip"] = json.loads(stdout)
+
+    return info
+
+def nix_info():
+    """Collect information about nix environment.
+
+    Returns
+    -------
+    dict
+        Result of `nix derivation show .#fipy `.
+    """
+    info = {}
+
+    # Better output would be from
+    #
+    #     $ nix-store -q --tree $(nix-store --realize $(nix eval --raw .#fipy.drvPath))
+    #
+    # However, this is difficult to execute and can require another build.
+    # Also doesn't return json.
+
+    p = subprocess.Popen(
+        [
+         "nix",
+         "derivation",
+         "show",
+         ".#fipy"
+        ], stdout=subprocess.PIPE)
+
+    stdout, _ = p.communicate()
+    stdout = stdout.decode('ascii')
+
+    info["nix"] = json.loads(stdout)
 
     return info
 

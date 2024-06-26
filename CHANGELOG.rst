@@ -11,6 +11,76 @@ Change Log
 Version |release|
 -----------------
 
+This maintenance release:
+
+- Addresses compatibility with recent releases of
+  Python 3.12, NumPy 2.0, SciPy 1.14, and PETSc 3.20.
+- Adds `conda-lock <https://github.com/conda/conda-lock>`_ environment
+  lock files with specified compatible versions of FiPy prerequisites.
+- Fixes numerous documentation errors.
+
+.. attention::
+
+   SciPy 1.13.0 generates one test suite error for
+   ``fipy.matrices.scipyMatrix._ScipyMatrix.CSR``.  Either ignore the test
+   failure or upgrade to SciPy >= 1.13.1
+
+.. attention::
+
+   PETSc 3.21 crashes our test suite when running in parallel (`#1054
+   <https://github.com/usnistgov/fipy/issues/1054>`_).  PETSc <= 3.20 is
+   recommended, although `petsc 3.20.2_*_102 is broken on macOS
+   <https://github.com/conda-forge/petsc-feedstock/issues/180>`_.
+
+Pulls
+-----
+
+- Introduce Timer context manager
+  (`#995 <https://github.com/usnistgov/fipy/pull/995>`_)
+- switch nix recipe to flake
+  (`#992 <https://github.com/usnistgov/fipy/pull/992>`_)
+- Tweak documentation
+  (`#991 <https://github.com/usnistgov/fipy/pull/991>`_)
+- Log much more information about FiPy environment
+  (`#990 <https://github.com/usnistgov/fipy/pull/990>`_)
+- Fix inclusion of `environments/README.rst`
+  (`#988 <https://github.com/usnistgov/fipy/pull/988>`_)
+- Environment pinning
+  (`#985 <https://github.com/usnistgov/fipy/pull/985>`_)
+
+Fixes
+-----
+
+- `#1049 <https://github.com/usnistgov/fipy/issues/1049>`_:
+  Numpy 2.0.0 breaks things
+- `#1010 <https://github.com/usnistgov/fipy/issues/1010>`_:
+  `examples.diffusion.mesh1D` No-flux - steady-state doesn't always give
+  zero
+- `#1000 <https://github.com/usnistgov/fipy/issues/1000>`_:
+  `examples.diffusion.mesh1D` constrains a gradient but calls it a flux
+- `#997 <https://github.com/usnistgov/fipy/issues/997>`_:
+  `future.standard_library` breaking python 3.12 compatibility
+- `#967 <https://github.com/usnistgov/fipy/issues/967>`_:
+  Sign error in Robin condition
+- `#963 <https://github.com/usnistgov/fipy/issues/963>`_:
+  PETSc 3.20.0 broke the world
+- `#961 <https://github.com/usnistgov/fipy/issues/961>`_:
+  Representation of index variables is broken
+- `#952 <https://github.com/usnistgov/fipy/issues/952>`_:
+  Uncaught Exception from the no-flux steady-state diffusion example
+- `#944 <https://github.com/usnistgov/fipy/issues/944>`_:
+  Having problem with Viewer
+- `#865 <https://github.com/usnistgov/fipy/issues/865>`_:
+  Sphinx search is broken on website
+- `#673 <https://github.com/usnistgov/fipy/issues/673>`_:
+  Deprecations don't properly format properties
+- `#512 <https://github.com/usnistgov/fipy/issues/512>`_:
+  Default coefficient of `ImplicitSourceTerm` is 0
+
+--------------------------
+Version 3.4.4 - 2023-06-27
+--------------------------
+
 This maintenance release adds :ref:`LOGGING` and resolves compatibility issues
 with recent builds of :term:`PETSc` and :term:`NumPy`.
 
