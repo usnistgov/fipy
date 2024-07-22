@@ -2,7 +2,7 @@
   description = "Python environment for fipy";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/de02e640d0e7787441326133b6de1b44b2d3865f";
     utils.url = "github:numtide/flake-utils";
   };
 
@@ -15,6 +15,8 @@
 
         src = pkgs.lib.cleanSource ./.;
 
+        disabled = pypkgs.pythonOlder "3.7";
+          
         nativeBuildInputs = with pypkgs; [
           pip
           pkgs.openssh
@@ -24,6 +26,7 @@
           jupyterlab
           traitlets
           notebook
+          scipy
         ] ++ propagatedBuildInputs;
 
         propagatedBuildInputs = old.propagatedBuildInputs;
