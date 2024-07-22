@@ -16,8 +16,8 @@
         src = pkgs.lib.cleanSource ./.;
 
         disabled = pypkgs.pythonOlder "3.7";
-          
-        nativeBuildInputs = with pypkgs; [
+
+        nativeBuildInputs_ = with pypkgs; [
           pip
           pkgs.openssh
           nbval
@@ -27,26 +27,30 @@
           traitlets
           notebook
           scipy
-        ] ++ propagatedBuildInputs;
+        ];
 
-        propagatedBuildInputs = old.propagatedBuildInputs;
+        nativeBuildInputs = propagatedBuildInputs;
+
+        propagatedBuildInputs = old.propagatedBuildInputs ++ nativeBuildInputs_;
 
         postShellHook = ''
           SOURCE_DATE_EPOCH=$(date +%s)
           export PYTHONUSERBASE=$PWD/.local
           export USER_SITE=`python -c "import site; print(site.USER_SITE)"`
-          export PYTHONPATH=$PYTHONPATH:$USER_SITE:$(pwd)
+          export PYTHONPATH=$PYTHONPATH:$USER_SITE:$(pwd):$PWD
           export PATH=$PATH:$PYTHONUSERBASE/bin
 
           export OMPI_MCA_plm_rsh_agent=${pkgs.openssh}/bin/ssh
-
         '';
       }));
    in
      rec {
        packages.fipy = env;
        packages.default = self.packages.${system}.fipy;
-       devShells.default = env;
+       devShells.default = pkgs.mkShell {
+        packages = [ env ];
+       };
+       devShells.develop = env;
      }
   ));
 }
