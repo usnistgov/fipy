@@ -12,12 +12,9 @@ dependencies:
   - pip
   - mpich
   - mpi4py
-  # petsc 3.20.2_*_102 is broken on macOS,
-  # as a result of linking scotch 7.0.2
-  # https://github.com/conda-forge/petsc-feedstock/issues/180
-  - scotch <7
-  # petsc 3.21 has parallel failure when running tests
-  - petsc4py < 3.21
+  # petsc >= 3.20.3 has parallel failures when running tests
+  - petsc4py < 3.20.3
+  - petsc < 3.20.3
 platforms:
   - linux-64
   - osx-64
