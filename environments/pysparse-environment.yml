@@ -1,6 +1,10 @@
 channels:
   - conda-forge
 dependencies:
+  # setuptools 72.x breaks `test` and `test_suite`.
+  # [72.1.0](https://setuptools.pypa.io/en/stable/history.html#v72-1-0)
+  # restores `test`, but `test_suite`still doesn't work right.
+  - setuptools <= 72.0
   - python
   - numpy
   - scipy

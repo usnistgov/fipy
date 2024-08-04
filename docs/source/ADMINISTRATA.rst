@@ -105,6 +105,17 @@ We use the :term:`Azure` and :term:`GitHub Actions` cloud services for
 |.azure/pipelines.yml|_, |.github/workflows/NISTtheDocs2Death.yml|_, and
 |.github/workflows/nix.yml|_.
 
+.. note::
+
+   In order to focus on breakages introduced by changes to :term:`FiPy`, a
+   `pull request`_ is normally built with one of the :ref:`CONDALOCKFILES`,
+   whereas the nightly builds use an :file:`environment.yml` in order to
+   catch breakages introduced by :term:`FiPy`'s prerequisites.
+
+   A `pull request`_ may be tested with the latest prerequisites by setting
+   the ``CONDA_ENVIRONMENT_NOT_LOCK`` environment variable in
+   `Azure at queue time`_.
+
 .. |Tests|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
 .. _Tests:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
 .. |Documentation| image:: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml/badge.svg
@@ -118,6 +129,9 @@ We use the :term:`Azure` and :term:`GitHub Actions` cloud services for
 .. _.github/workflows/NISTtheDocs2Death.yml: https://github.com/usnistgov/fipy/blob/master/.github/workflows/NISTtheDocs2Death.yml
 .. |.github/workflows/nix.yml| replace::    :file:`{FiPySource}/.github/workflows/nix.yml`
 .. _.github/workflows/nix.yml: https://github.com/usnistgov/fipy/blob/master/.github/workflows/nix.yml
+.. _Azure at queue time: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#allow-at-queue-time
+
+.. _CONDALOCKFILES:
 
 ===============
 Conda Lockfiles
