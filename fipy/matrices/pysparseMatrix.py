@@ -392,6 +392,10 @@ class _PysparseMatrix(_SparseMatrix):
 
         return _PysparseMatrix(matrix=A_T)
 
+    def zeroEntries(self):
+        _, irow, jcol = self.matrix.find()
+        self.matrix.put(0, irow, jcol)
+
 class _PysparseMatrixFromShape(_PysparseMatrix):
 
     def __init__(self, rows, cols,

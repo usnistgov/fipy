@@ -7,8 +7,7 @@ __all__ = ["LinearPCGSolver"]
 class LinearPCGSolver(PETScKrylovSolver):
 
     """
-    The `LinearPCGSolver` is an interface to the cg solver in PETSc,
-    using no preconditioner by default.
+    The `LinearPCGSolver` is an interface to the cg solver in PETSc.
 
     """
       
