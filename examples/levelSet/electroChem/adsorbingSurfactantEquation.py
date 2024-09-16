@@ -296,7 +296,7 @@ class AdsorbingSurfactantEquation(object):
         var : ~fipy.variables.surfactantVariable.SurfactantVariable
             A `SurfactantVariable` to be solved for.  Provides the initial
             condition, the old value and holds the solution on completion.
-        solver : ~f[py.solvers.solver.Solver
+        solver : ~fipy.solvers.solver.Solver
             The iterative solver to be used to solve the linear system of
             equations.
         boundaryConditions : :obj:`tuple` of ~fipy.boundaryConditions.boundaryCondition.BoundaryCondition

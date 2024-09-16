@@ -38,6 +38,9 @@ class _TrilinosMatrix(_SparseMatrix):
     Allows basic python operations __add__, __sub__ etc.
     Facilitate matrix populating in an easy way.
     """
+
+    INDEX_TYPE = numerix.int32
+
     def __init__(self, matrix, nonZerosPerRow=None):
         """
         Parameters
@@ -145,7 +148,7 @@ class _TrilinosMatrix(_SparseMatrix):
             # Depending on which one is more filled, pick the order of operations
             if self.matrix.Filled() and other.matrix.NumGlobalNonzeros() \
                                             > self.matrix.NumGlobalNonzeros():
-                tempBandwidth = other.matrix.NumGlobalNonzeros() / self.matrix.NumGlobalRows()+1
+                tempBandwidth = other.matrix.NumGlobalNonzeros() // self.matrix.NumGlobalRows()+1
 
                 tempMatrix = Epetra.CrsMatrix(Epetra.Copy, self.rowMap, tempBandwidth)
 
@@ -711,6 +714,9 @@ class _TrilinosMatrix(_SparseMatrix):
         A_T_bis.FillComplete(domainMap, rangeMap)
 
         return _TrilinosMatrix(matrix=A_T_bis)
+
+    def zeroEntries(self):
+        self.matrix.PutScalar(0)
 
 class _TrilinosMatrixFromShape(_TrilinosMatrix):
     def __init__(self, rows, cols,

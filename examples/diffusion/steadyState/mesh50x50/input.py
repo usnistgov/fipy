@@ -6,12 +6,14 @@ The difference being that the mesh is two dimensional.
 
 The result is again tested in the same way:
 
-    >>> DiffusionTerm().solve(var)
+    >>> eq = DiffusionTerm()
+    >>> solver = eq.getDefaultSolver(tolerance=1e-10)
+    >>> eq.solve(var, solver=solver)
     >>> Lx = nx * dx
     >>> x = mesh.cellCenters[0]
     >>> analyticalArray = valueLeft + (valueRight - valueLeft) * x / Lx
     >>> print(var.allclose(analyticalArray, rtol = 1e-9))
-    1
+    True
 
 """
 from __future__ import unicode_literals
