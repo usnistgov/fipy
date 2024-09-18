@@ -1,0 +1,29 @@
+fipy.solvers.petsc.preconditioners.defaultPreconditioner
+========================================================
+
+.. automodule:: fipy.solvers.petsc.preconditioners.defaultPreconditioner
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DefaultPreconditioner
+   
+   
+
+   
+   
+   
+
+
+
