@@ -1,0 +1,37 @@
+fipy.solvers.scipy
+==================
+
+.. automodule:: fipy.solvers.scipy
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fipy.solvers.scipy.linearBicgstabSolver
+   fipy.solvers.scipy.linearCGSSolver
+   fipy.solvers.scipy.linearGMRESSolver
+   fipy.solvers.scipy.linearLUSolver
+   fipy.solvers.scipy.linearPCGSolver
+   fipy.solvers.scipy.scipyKrylovSolver
+   fipy.solvers.scipy.scipySolver
+

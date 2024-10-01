@@ -1,0 +1,1072 @@
+
+<!DOCTYPE html>
+
+
+<!--[if IEMobile 7]><html class="iem7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if lte IE 6]><html class="lt-ie9 lt-ie8 lt-ie7 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (IE 7)&(!IEMobile)]><html class="lt-ie9 lt-ie8 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9 no-js"  lang="en" dir="ltr"><![endif]-->
+<!--[if (gte IE 9)|(gt IEMobile 7)]><!--><html class="no-js"  lang="en" dir="ltr" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# book: http://ogp.me/ns/book# profile: http://ogp.me/ns/profile# video: http://ogp.me/ns/video# product: http://ogp.me/ns/product# content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#"><!--<![endif]-->
+
+  <head>
+<meta charset="utf-8" />
+<link rel="shortcut icon" href="https://www.nist.gov/sites/all/themes/nist_style/favicon.ico" type="image/vnd.microsoft.icon" />
+<script type="text/x-mathjax-config">MathJax.Hub.Config({
+  extensions: ['tex2jax.js'],
+  jax: ['input/TeX','output/HTML-CSS'],
+  tex2jax: {
+    inlineMath: [ ['$$','$$'], ['\\(','\\)'] ],
+    processEscapes: true,
+    processClass: 'tex2jax',
+    ignoreClass: 'html'
+  },
+  showProcessingMessages: false,
+  messageStyle: 'none'
+});
+</script>
+<meta name="MobileOptimized" content="width">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+
+      <!--[if lt IE 9]>
+    <script src="https://www.nist.gov/sites/all/themes/zen/js/html5-respond.js"></script>
+    <![endif]-->
+    <!--[if (gte IE 6)&(lte IE 8)]>
+  <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
+  <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>fipy.variables.meshVariable &#8212; FiPy 3.4.5+11.gae84214f4 documentation</title>
+    <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=eb243e96"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="FiPy 3.4.5+11.gae84214f4 documentation" href="../contents.html" />
+    <link rel="up" title="fipy.variables" href="fipy.variables.html" />
+    <link rel="next" title="fipy.variables.minmodCellToFaceVariable" href="fipy.variables.minmodCellToFaceVariable.html" />
+    <link rel="prev" title="fipy.variables.levelSetDiffusionVariable" href="fipy.variables.levelSetDiffusionVariable.html" />
+  
+ 
+
+
+  <link rel="stylesheet" href="https://pages.nist.gov/nist-header-footer/css/nist-combined.css">
+  <script src="https://code.jquery.com/jquery-3.6.2.min.js" type="text/javascript" defer="defer"></script>
+  <script src="https://pages.nist.gov/nist-header-footer/js/nist-header-footer.js" type="text/javascript" defer="defer"></script>
+
+
+  </head>
+<!--  <body role="document">-->
+  <body class="html not-front not-logged-in no-sidebars page-node page-node- page-node-414011 node-type-software hide-breadcrumb section-services-resources page-panels is-panel" role="document">
+      <div id="page" class="mini-header">
+
+
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fipy.variables.minmodCellToFaceVariable.html" title="fipy.variables.minmodCellToFaceVariable"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fipy.variables.levelSetDiffusionVariable.html" title="fipy.variables.levelSetDiffusionVariable"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html"><img src="../_static/fipy.png" alt="FiPy logo"
+                 style="vertical-align: middle; margin-top: -1px"/>
+        FiPy</a> &gt;</li>
+
+          <li class="nav-item nav-item-1"><a href="../API.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy</span></code> Package Documentation</a> &gt;</li>
+          <li class="nav-item nav-item-2"><a href="fipy.html" >fipy</a> &gt;</li>
+          <li class="nav-item nav-item-3"><a href="fipy.variables.html" accesskey="U">fipy.variables</a> &gt;</li> 
+      </ul>
+    </div>
+
+  <div id="main" class="clearfix" role="main" tabindex="-1">
+    <div class="main__inner">
+      <div class="page-info">
+        <a id="main-content"></a>
+      </div>
+
+      <div class="document">
+        <div class="documentwrapper">
+
+      <div id="content" class="column">
+      <div id="block-nist-www-content" class="nist-block">
+        <section class="nist-page__content usa-section clearfix">
+
+         
+
+        <div class="grid-container margin-top-4">
+        <div class="grid-row grid-gap-6">
+
+  <div class="nist-page__region nist-page__region--content tablet-lg:grid-col-8">
+              <div class="body" role="main">
+		
+  <section id="module-fipy.variables.meshVariable">
+<span id="fipy-variables-meshvariable"></span><h1>fipy.variables.meshVariable<a class="headerlink" href="#module-fipy.variables.meshVariable" title="Permalink to this heading">¶</a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable" title="fipy.variables.meshVariable.MeshVariable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeshVariable</span></code></a>(*args, **kwds)</p></td>
+<td><p>Abstract base class for a <cite>Variable</cite> that is defined on a mesh</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.variables.meshVariable.</span></span><span class="sig-name descname"><span class="pre">MeshVariable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fipy.variables.variable.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a></p>
+<p>Abstract base class for a <cite>Variable</cite> that is defined on a mesh</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>This class is abstract. Always create one of its subclasses.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mesh</strong> (<a class="reference internal" href="fipy.meshes.mesh.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><em>Mesh</em></a>) – the mesh that defines the geometry of this <cite>Variable</cite></p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the user-readable name of the <cite>Variable</cite></p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><em>array_like</em>) – the initial value</p></li>
+<li><p><strong>rank</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the rank (number of dimensions) of each element of this
+<cite>Variable</cite>. Default: 0</p></li>
+<li><p><strong>elementshape</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – the shape of each element of this variable
+Default: <cite>rank * (mesh.dim,)</cite></p></li>
+<li><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference internal" href="fipy.tools.dimensions.physicalField.html#fipy.tools.dimensions.physicalField.PhysicalUnit" title="fipy.tools.dimensions.physicalField.PhysicalUnit"><em>PhysicalUnit</em></a>) – The physical units of the variable</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__abs__">
+<span class="sig-name descname"><span class="pre">__abs__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__abs__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Following test it to fix a bug with C inline string using
+<cite>abs()</cite> instead of <cite>fabs()</cite></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="mf">2.3</span><span class="p">)</span> <span class="o">-</span> <span class="n">Variable</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)))</span>
+<span class="go">1.1</span>
+</pre></div>
+</div>
+<p>Check representation works with different versions of numpy</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="mf">2.3</span><span class="p">))))</span>
+<span class="go">numerix.fabs(Variable(value=array(2.3)))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__and__">
+<span class="sig-name descname"><span class="pre">__and__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__and__" title="Permalink to this definition">¶</a></dt>
+<dd><p>This test case has been added due to a weird bug that was appearing.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">equal</span><span class="p">((</span><span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span>  <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">)</span>
+<span class="go">[0 0 0 1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.meshes</span> <span class="kn">import</span> <span class="n">Grid1D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.variables.cellVariable</span> <span class="kn">import</span> <span class="n">CellVariable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allequal</span><span class="p">((</span><span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span>  <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="n">b</span><span class="p">)</span>
+<span class="go">[0 0 0 1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__array__">
+<span class="sig-name descname"><span class="pre">__array__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__array__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to convert the <cite>Variable</cite> to a numerix <cite>array</cite> object</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<span class="go">[2 3]</span>
+</pre></div>
+</div>
+<p>A dimensional <cite>Variable</cite> will convert to the numeric value in its base units</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;mm&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="go">array([ 0.002,  0.003])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__array_wrap__">
+<span class="sig-name descname"><span class="pre">__array_wrap__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_scalar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__array_wrap__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required to prevent numpy not calling the reverse binary operations.
+Both the following tests are examples ufuncs.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span> <span class="o">*</span> <span class="n">Variable</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])))</span> 
+<span class="go">&lt;class &#39;fipy.variables.binaryOperatorVariable...binOp&#39;&gt;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">gamma</span> <span class="k">as</span> <span class="n">Gamma</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">Gamma</span><span class="p">(</span><span class="n">Variable</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]))))</span> 
+<span class="go">&lt;class &#39;fipy.variables.unaryOperatorVariable...unOp&#39;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__bool__">
+<span class="sig-name descname"><span class="pre">__bool__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__bool__" title="Permalink to this definition">¶</a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)))</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))))</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>“Evaluate” the <cite>Variable</cite> and return its value</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">())</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">(Variable(value=array(3)) + 4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">()</span>
+<span class="go">7</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if a <cite>Variable</cite> is equal to another quantity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">(Variable(value=array(3)) == 4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">()</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__ge__">
+<span class="sig-name descname"><span class="pre">__ge__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__ge__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if a <cite>Variable</cite> is greater than or equal to another quantity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">(Variable(value=array(3)) &gt;= 4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">()</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">())</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">())</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__getitem__" title="Permalink to this definition">¶</a></dt>
+<dd><p>“Evaluate” the <cite>Variable</cite> and return the specified element</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">((</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">),</span> <span class="p">(</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">)),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;4 m&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="go">10.0 m</span>
+</pre></div>
+</div>
+<p>It is an error to slice a <cite>Variable</cite> whose <cite>value</cite> is not sliceable</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span>  <span class="o">...</span>
+<span class="gr">IndexError</span>: <span class="n">0-d arrays can&#39;t be indexed</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__getstate__">
+<span class="sig-name descname"><span class="pre">__getstate__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__getstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used internally to collect the necessary information to <code class="docutils literal notranslate"><span class="pre">pickle</span></code> the
+<a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable" title="fipy.variables.meshVariable.MeshVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshVariable</span></code></a> to persistent storage.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__gt__">
+<span class="sig-name descname"><span class="pre">__gt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__gt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if a <cite>Variable</cite> is greater than another quantity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">(Variable(value=array(3)) &gt; 4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">())</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">())</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__hash__">
+<span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return hash(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__invert__">
+<span class="sig-name descname"><span class="pre">__invert__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__invert__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns logical “not” of the <cite>Variable</cite></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="o">~</span><span class="n">a</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__le__">
+<span class="sig-name descname"><span class="pre">__le__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__le__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if a <cite>Variable</cite> is less than or equal to another quantity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">(Variable(value=array(3)) &lt;= 4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">()</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">())</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">())</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__lt__">
+<span class="sig-name descname"><span class="pre">__lt__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__lt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if a <cite>Variable</cite> is less than another quantity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">(Variable(value=array(3)) &lt; 4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">()</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">())</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="mi">1000000000000000000</span> <span class="o">*</span> <span class="n">Variable</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="n">Variable</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.</span><span class="p">)</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>Python automatically reverses the arguments when necessary</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="mi">4</span> <span class="o">&gt;</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">(Variable(value=array(3)) &lt; 4)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__ne__">
+<span class="sig-name descname"><span class="pre">__ne__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__ne__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if a <cite>Variable</cite> is not equal to another quantity</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">(Variable(value=array(3)) != 4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">()</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__new__">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__new__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__nonzero__">
+<span class="sig-name descname"><span class="pre">__nonzero__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__nonzero__" title="Permalink to this definition">¶</a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)))</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))))</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">...</span>
+<span class="gr">ValueError</span>: <span class="n">The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__or__">
+<span class="sig-name descname"><span class="pre">__or__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__or__" title="Permalink to this definition">¶</a></dt>
+<dd><p>This test case has been added due to a weird bug that was appearing.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">equal</span><span class="p">((</span><span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span>  <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">|</span> <span class="n">b</span><span class="p">)</span>
+<span class="go">[0 1 1 1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.meshes</span> <span class="kn">import</span> <span class="n">Grid1D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.variables.cellVariable</span> <span class="kn">import</span> <span class="n">CellVariable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allequal</span><span class="p">((</span><span class="n">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span>  <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">|</span> <span class="n">b</span><span class="p">)</span>
+<span class="go">[0 1 1 1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__pow__">
+<span class="sig-name descname"><span class="pre">__pow__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__pow__" title="Permalink to this definition">¶</a></dt>
+<dd><p>return self**other, or self raised to power other</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;mol/l&quot;</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">1.0 mol**3/l**3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">Variable</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;mol/l&quot;</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+<span class="go">&lt;PhysicalUnit mol**3/l**3&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__setstate__">
+<span class="sig-name descname"><span class="pre">__setstate__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used internally to create a new <cite>Variable</cite> from <code class="docutils literal notranslate"><span class="pre">pickled</span></code>
+persistent storage.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.all">
+<span class="sig-name descname"><span class="pre">all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.all" title="Permalink to this definition">¶</a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.allclose">
+<span class="sig-name descname"><span class="pre">allclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.allclose" title="Permalink to this definition">¶</a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">allclose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">allclose</span><span class="p">((</span><span class="mi">1</span><span class="p">,)))</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<p>The following test is to check that the system does not run
+out of memory.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.tools</span> <span class="kn">import</span> <span class="n">numerix</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10000</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">)))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.any">
+<span class="sig-name descname"><span class="pre">any</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.any" title="Permalink to this definition">¶</a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">())</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">any</span><span class="p">())</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.constrain">
+<span class="sig-name descname"><span class="pre">constrain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.constrain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constrain the <cite>Variable</cite> to have a <cite>value</cite> at an index or mask location specified by <cite>where</cite>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="go">[2 1 2 3]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="go">[ 2 10 10 10]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="go">[ 2 10  5 10]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="go">[2 6 5 6]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="go">[8 8 8 8]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="go">[8 8 8 8]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">v</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="go">[ 2 10  5 10]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.variables.cellVariable</span> <span class="kn">import</span> <span class="n">CellVariable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.meshes</span> <span class="kn">import</span> <span class="n">Grid2D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cellCenters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">constrain</span><span class="p">(((</span><span class="mf">0.</span><span class="p">,),</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">,)),</span> <span class="n">where</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">facesLeft</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">faceValue</span><span class="p">)</span>
+<span class="go">[[ 0.5  1.5  0.5  1.5  0.5  1.5  0.   1.   1.5  0.   1.   1.5]</span>
+<span class="go"> [ 0.5  0.5  1.   1.   1.5  1.5 -1.   0.5  0.5 -1.   1.5  1.5]]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (float or <cite>array_like</cite>) – The value of the constraint</p></li>
+<li><p><strong>where</strong> (<cite>array_like</cite> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – The constraint mask or index specifying the location of the
+constraint</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.constraintMask">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">constraintMask</span></span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.constraintMask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that <cite>constraintMask</cite> returns a Variable that updates itself whenever the constraints change.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cellCenters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">facesLeft</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v0</span><span class="o">.</span><span class="n">faceValue</span><span class="o">.</span><span class="n">constraintMask</span><span class="p">)</span>
+<span class="go">[False False False False False False  True False False  True False False]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v0</span><span class="o">.</span><span class="n">faceValue</span><span class="p">)</span>
+<span class="go">[ 0.  0.  0.  0.  0.  0.  1.  0.  0.  1.  0.  0.]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v0</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mf">3.</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">facesRight</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v0</span><span class="o">.</span><span class="n">faceValue</span><span class="o">.</span><span class="n">constraintMask</span><span class="p">)</span>
+<span class="go">[False False False False False False  True False  True  True False  True]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v0</span><span class="o">.</span><span class="n">faceValue</span><span class="p">)</span>
+<span class="go">[ 0.  0.  0.  0.  0.  0.  1.  0.  3.  1.  0.  3.]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v1</span><span class="o">.</span><span class="n">constraintMask</span><span class="p">)</span>
+<span class="go">[ True False False False]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+<span class="go">[ 1.  0.  0.  0.]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v1</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mf">3.</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">y</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v1</span><span class="o">.</span><span class="n">constraintMask</span><span class="p">)</span>
+<span class="go">[ True False False  True]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+<span class="go">[ 1.  0.  0.  3.]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an duplicate of the <cite>Variable</cite></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Variable(value=array(3))</span>
+</pre></div>
+</div>
+<p>The duplicate will not reflect changes made to the original</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Variable(value=array(3))</span>
+</pre></div>
+</div>
+<p>Check that this works for arrays.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Variable(value=array([0, 1, 2]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">Variable(value=array([0, 1, 2]))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.dot">
+<span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opShape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operatorClass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.dot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the mesh-element–by–mesh-element (cell-by-cell, face-by-face,
+etc.) scalar product</p>
+<div class="math notranslate nohighlight">
+\[ext{self} \cdot         ext{other}\]</div>
+<p>Both <cite>self</cite> and <cite>other</cite> can be of arbitrary rank, and <cite>other</cite> does not
+need to be a <a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable" title="fipy.variables.meshVariable.MeshVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshVariable</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the Numpy <cite>dtype</cite> of the underlying array.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">Variable</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">issubclass</span><span class="p">(</span><span class="n">Variable</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.</span><span class="p">))</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">floating</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.inBaseUnits">
+<span class="sig-name descname"><span class="pre">inBaseUnits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.inBaseUnits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the <cite>Variable</cite> with all units reduced to
+their base SI elements.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;2.7 Hartree*Nav&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">inBaseUnits</span><span class="p">()</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="s2">&quot;7088849.01085 kg*m**2/s**2/mol&quot;</span><span class="p">))</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.inUnitsOf">
+<span class="sig-name descname"><span class="pre">inUnitsOf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">units</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.inUnitsOf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns one or more <cite>Variable</cite> objects that express the same
+physical quantity in different units.  The units are specified by
+strings containing their names.  The units must be compatible with
+the unit of the object.  If one unit is specified, the return value
+is a single <cite>Variable</cite>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">freeze</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;0 degC&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">freeze</span><span class="o">.</span><span class="n">inUnitsOf</span><span class="p">(</span><span class="s1">&#39;degF&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="s2">&quot;32.0 degF&quot;</span><span class="p">))</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<p>If several units are specified, the return value is a tuple of
+<cite>Variable</cite> instances with with one element per unit such that
+the sum of all quantities in the tuple equals the the original
+quantity and all the values except for the last one are integers.
+This is used to convert to irregular unit systems like
+hour/minute/second.  The original object will not be changed.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">314159.</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">zip</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allclose</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">inUnitsOf</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">),</span>
+<span class="gp">... </span>                                                        <span class="p">[</span><span class="s1">&#39;3.0 d&#39;</span><span class="p">,</span> <span class="s1">&#39;15.0 h&#39;</span><span class="p">,</span> <span class="s1">&#39;15.0 min&#39;</span><span class="p">,</span> <span class="s1">&#39;59.0 s&#39;</span><span class="p">])],</span>
+<span class="gp">... </span>                       <span class="kc">True</span><span class="p">))</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.mag">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mag</span></span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.mag" title="Permalink to this definition">¶</a></dt>
+<dd><p>The magnitude of the <a class="reference internal" href="fipy.variables.variable.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a>,
+e.g., <span class="math notranslate nohighlight">\(|\vec{\psi}| = \sqrt{\vec{\psi}\cdot\vec{\psi}}\)</span>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.max">
+<span class="sig-name descname"><span class="pre">max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the maximum along a given axis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.min">
+<span class="sig-name descname"><span class="pre">min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.min" title="Permalink to this definition">¶</a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">Grid2D</span><span class="p">,</span> <span class="n">CellVariable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cellCenters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+<span class="go">0.25</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.rdot">
+<span class="sig-name descname"><span class="pre">rdot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opShape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">operatorClass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.rdot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the mesh-element–by–mesh-element (cell-by-cell, face-by-face,
+etc.) scalar product</p>
+<div class="math notranslate nohighlight">
+\[ext{other} \cdot        ext{self}\]</div>
+<p>Both <cite>self</cite> and <cite>other</cite> can be of arbitrary rank, and <cite>other</cite> does not
+need to be a <a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable" title="fipy.variables.meshVariable.MeshVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshVariable</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.release">
+<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove <cite>constraint</cite> from <cite>self</cite></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.boundaryConditions.constraint</span> <span class="kn">import</span> <span class="n">Constraint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c1</span> <span class="o">=</span> <span class="n">Constraint</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">v</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span><span class="o">.</span><span class="n">release</span><span class="p">(</span><span class="n">constraint</span><span class="o">=</span><span class="n">c1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="go">[ 2 10 10 10]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.setValue">
+<span class="sig-name descname"><span class="pre">setValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.setValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value of the Variable. Can take a masked array.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">[5 2 5]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">[4 2 6]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="go">[4 5 6]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">[3 3 3]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">numerix</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">b</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="go">[3 4 5]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">setValue</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> 
+<span class="gt">Traceback (most recent call last):</span>
+<span class="w">    </span><span class="o">....</span>
+<span class="gr">ValueError</span>: <span class="n">shape mismatch: objects cannot be broadcast to a single shape</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.shape" title="Permalink to this definition">¶</a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.meshes</span> <span class="kn">import</span> <span class="n">Grid2D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.variables.cellVariable</span> <span class="kn">import</span> <span class="n">CellVariable</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">var</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allequal</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,)))</span> 
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allequal</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">arithmeticFaceValue</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">17</span><span class="p">,)))</span> 
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allequal</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span> 
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">numerix</span><span class="o">.</span><span class="n">allequal</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">faceGrad</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">17</span><span class="p">)))</span> 
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Have to account for zero length arrays</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">Grid1D</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">Grid1D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">elementshape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numerix</span><span class="o">.</span><span class="n">allequal</span><span class="p">((</span><span class="n">v</span> <span class="o">*</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.std">
+<span class="sig-name descname"><span class="pre">std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate standard deviation of all the elements of a <a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable" title="fipy.variables.meshVariable.MeshVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeshVariable</span></code></a>.</p>
+<p>Adapted from <a class="reference external" href="http://mpitutorial.com/tutorials/mpi-reduce-and-allreduce/">http://mpitutorial.com/tutorials/mpi-reduce-and-allreduce/</a></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">fipy</span> <span class="k">as</span> <span class="nn">fp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">Grid2D</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dy</span><span class="o">=</span><span class="mf">5.</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">var</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">CellVariable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">),</span> <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">((</span><span class="n">var</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="mf">1.25</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.unit">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unit</span></span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.unit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the unit object of <cite>self</cite>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;1 m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">unit</span>
+<span class="go">&lt;PhysicalUnit m&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fipy.variables.meshVariable.MeshVariable.value">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#fipy.variables.meshVariable.MeshVariable.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>“Evaluate” the <cite>Variable</cite> and return its value (longhand)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">(Variable(value=array(3)) + 4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">value</span>
+<span class="go">7</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                <div class='last-updated'>
+                Last updated on Oct 01, 2024.
+                Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
+                </div>
+              </div>
+  </div>  
+  <aside class="nist-page__region nist-page__region--sidebar-second tablet-lg:grid-col-4">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+<strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
+Version 3.4.5+11.gae84214f4
+
+  <div class="sphinxsidebarsection">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">fipy.variables.meshVariable</a><ul>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable"><code class="docutils literal notranslate"><span class="pre">MeshVariable</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__abs__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__abs__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__and__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__and__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__array__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__array__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__array_wrap__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__array_wrap__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__bool__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__bool__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__call__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__call__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__eq__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__eq__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__ge__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__ge__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__getitem__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__getitem__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__getstate__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__getstate__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__gt__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__gt__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__hash__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__hash__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__invert__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__invert__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__le__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__le__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__lt__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__lt__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__ne__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__ne__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__new__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__new__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__nonzero__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__nonzero__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__or__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__or__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__pow__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__pow__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__repr__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__setstate__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__setstate__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.__str__"><code class="docutils literal notranslate"><span class="pre">MeshVariable.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.all"><code class="docutils literal notranslate"><span class="pre">MeshVariable.all()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.allclose"><code class="docutils literal notranslate"><span class="pre">MeshVariable.allclose()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.any"><code class="docutils literal notranslate"><span class="pre">MeshVariable.any()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.constrain"><code class="docutils literal notranslate"><span class="pre">MeshVariable.constrain()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.constraintMask"><code class="docutils literal notranslate"><span class="pre">MeshVariable.constraintMask</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.copy"><code class="docutils literal notranslate"><span class="pre">MeshVariable.copy()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.dot"><code class="docutils literal notranslate"><span class="pre">MeshVariable.dot()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.dtype"><code class="docutils literal notranslate"><span class="pre">MeshVariable.dtype</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.inBaseUnits"><code class="docutils literal notranslate"><span class="pre">MeshVariable.inBaseUnits()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.inUnitsOf"><code class="docutils literal notranslate"><span class="pre">MeshVariable.inUnitsOf()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.mag"><code class="docutils literal notranslate"><span class="pre">MeshVariable.mag</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.max"><code class="docutils literal notranslate"><span class="pre">MeshVariable.max()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.min"><code class="docutils literal notranslate"><span class="pre">MeshVariable.min()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.rdot"><code class="docutils literal notranslate"><span class="pre">MeshVariable.rdot()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.release"><code class="docutils literal notranslate"><span class="pre">MeshVariable.release()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.setValue"><code class="docutils literal notranslate"><span class="pre">MeshVariable.setValue()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.shape"><code class="docutils literal notranslate"><span class="pre">MeshVariable.shape</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.std"><code class="docutils literal notranslate"><span class="pre">MeshVariable.std()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.unit"><code class="docutils literal notranslate"><span class="pre">MeshVariable.unit</span></code></a></li>
+<li><a class="reference internal" href="#fipy.variables.meshVariable.MeshVariable.value"><code class="docutils literal notranslate"><span class="pre">MeshVariable.value</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+<div class="sphinxsidebarsection">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="fipy.variables.levelSetDiffusionVariable.html"
+                        title="previous chapter">fipy.variables.levelSetDiffusionVariable</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fipy.variables.minmodCellToFaceVariable.html"
+                        title="next chapter">fipy.variables.minmodCellToFaceVariable</a></p>
+</div>
+  <div class="sphinxsidebarsection">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/generated/fipy.variables.meshVariable.rst.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+  </div>
+<div class="sphinxsidebarsection">
+<div id="searchbox" style="display: none" role="search">
+  <div data-layout-content-preview-placeholder-label="&quot;Sphinx
+  Search&quot; field" class="nist-block nist-block--search">
+  <h2 id="searchlabel">Quick search</h2>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+  </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+</div>
+<div class="sphinxsidebarsection" id="contact-wrapper">
+  
+        <div data-layout-content-preview-placeholder-label="&quot;Related
+        organization tree&quot; views block" class="nist-block nist-block--org">
+          
+          <h2 class="nist-block__title">Organizations</h2>
+              
+              <div class="views-element-container"><div
+              class="js-view-dom-id-70b0923f677edbe3dda361030ef8dc373cd0ca94065c39cfd81338de767f1019">
+
+            <div class="nist-related-orgs"><div class="term-tree-list"><ul
+            class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters" hreflang="en">NIST
+            Headquarters</a><ul class="term"><li class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs"
+            hreflang="en">Laboratory Programs</a><ul class="term"><li
+            class="selected"><a
+            href="https://www.nist.gov/nist-organizations/nist-headquarters/laboratory-programs/material-measurement-laboratory"
+            hreflang="en">Material Measurement Laboratory</a>
+			<ul
+			class="term"><li
+			class="selected"><a href="https://www.nist.gov/mml/msed"
+			hreflang="en">Materials Science and Engineering
+			Division</a></li><li
+			class="selected"><a href="https://www.nist.gov/mml/ctcms"
+			hreflang="en">Center for Theoretical and
+			              Computational Materials Science</a></li></ul>
+                          </li></ul></li></ul></li></ul></div></div>
+          <div class="nist-related-orgs"></div>
+          <div class="nist-related-orgs"></div>
+
+
+
+        </div>
+        </div>
+
+          </div>
+
+
+          <div data-layout-content-preview-placeholder-label="&quot;NIST
+          Staff&quot; field" class="nist-block nist-block--contact">
+
+          <h2 class="nist-block__title">NIST Staff</h2>
+
+                  <div class="nist-field nist-field--label-hidden
+                  nist-field--link-list entity-reference nist-field__items
+                  nist-field--no-margin">
+                            <div class="nist-field__item
+                            nist-field--no-margin"><a
+                            href="https://www.nist.gov/people/jonathan-e-guyer"
+                            hreflang="en">Jonathan E. Guyer</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/daniel-wheeler"
+                                hreflang="en">Daniel Wheeler</a></div>
+                                <div class="nist-field__item
+                                nist-field--no-margin"><a
+                                href="https://www.nist.gov/people/james-warren"
+                                hreflang="en">James A. Warren</a></div>
+                  </div>
+
+
+          </div>
+
+          <div data-layout-content-preview-placeholder-label="&quot;Contact&quot; field"
+          class="nist-block nist-block--contact nist-block--mail">
+
+          <h2 class="nist-block__title">
+          <a class="" href="../docs/source/CONTACT.html" style="">Contact</a>
+          </h2>
+
+          </div>
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+  </aside>
+        </div>
+      </div>
+
+      <div class="panel-region--postface">
+      <div class="inner region-inner inside">
+        
+<div class="pane pane--nist-node-date-pane" >
+
+    </div>
+      </div>
+    </div>
+
+        </section>
+        </div>
+      </div>
+
+      </div>  
+    </div>          
+
+    </div>
+
+  </div>
+
+</div>
+
+
+  
+
+
+  <!-- Taken from https://www.filamentgroup.com/lab/html-includes/#another-demo%3A-including-another-html-file -->
+  <iframe src="../_static/ntd2d_menu.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    </div>
+  </body>
+</html>
