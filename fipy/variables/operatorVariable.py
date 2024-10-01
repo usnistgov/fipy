@@ -238,7 +238,7 @@ def _OperatorVariableClass(baseClass=object):
                     stack.append(stack.pop() + "(" + ", ".join(args + kwargs) + ")")
                 elif ins.opname == 'LOAD_DEREF':
                     # Changed in Python 3.11
-                    stack.append(op.__closure__[ins.arg-1].cell_contents)
+                    stack.append(ins.argrepr)
                 elif ins.opname == 'RESUME':
                     # New in Python 3.11
                     pass
@@ -1262,7 +1262,7 @@ def _testBinOp(self):
         >>> vcv.dot(vcv) # doctest: +ELLIPSIS
         (...MeshVariable._dot(CellVariable(value=array([[0, 1, 2],
                [1, 2, 3]]), mesh=UniformGrid2D(dx=1.0, nx=3, dy=1.0, ny=1)), CellVariable(value=array([[0, 1, 2],
-               [1, 2, 3]]), mesh=UniformGrid2D(dx=1.0, nx=3, dy=1.0, ny=1)), ...))
+               [1, 2, 3]]), mesh=UniformGrid2D(dx=1.0, nx=3, dy=1.0, ny=1)), index))
     """
     pass
 
