@@ -250,8 +250,8 @@ def _OperatorVariableClass(baseClass=object):
                     pass
                 elif ins.opname == 'CALL':
                     # New in Python 3.11
-                    kwargs = [kw + "=" + str(stack.pop()) for kw in kws]
-                    positionals = [stack.pop() for _ in range(ins.argval - len(kws))]
+                    kwargs = [kw + "=" + str(stack.pop()) for kw in kws][::-1]
+                    positionals = [stack.pop() for _ in range(ins.argval - len(kws))][::-1]
                     callable = stack.pop()
                     if len(stack) > 0:
                         call_self = callable
