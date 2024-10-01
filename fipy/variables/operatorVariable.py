@@ -1257,7 +1257,7 @@ def _testBinOp(self):
         [[ 0  1  2  3  4  5  6  7  8]
          [ 0 -1 -2 -3 -4 -5 -6 -7 -8]]
 
-    Test binOp with unusual index argument
+    Test operator variable with unusual index argument
 
         >>> vcv.dot(vcv) # doctest: +ELLIPSIS
         (...MeshVariable._dot(CellVariable(value=array([[0, 1, 2],
