@@ -1257,6 +1257,12 @@ def _testBinOp(self):
         [[ 0  1  2  3  4  5  6  7  8]
          [ 0 -1 -2 -3 -4 -5 -6 -7 -8]]
 
+    Test binOp with unusual index argument
+
+        >>> vcv.dot(vcv) # doctest: +ELLIPSIS
+        (...MeshVariable._dot(CellVariable(value=array([[0, 1, 2],
+               [1, 2, 3]]), mesh=UniformGrid2D(dx=1.0, nx=3, dy=1.0, ny=1)), CellVariable(value=array([[0, 1, 2],
+               [1, 2, 3]]), mesh=UniformGrid2D(dx=1.0, nx=3, dy=1.0, ny=1)), ...))
     """
     pass
 
