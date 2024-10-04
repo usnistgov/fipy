@@ -238,7 +238,7 @@ def _OperatorVariableClass(baseClass=object):
                     stack.append(stack.pop() + "(" + ", ".join(args + kwargs) + ")")
                 elif ins.opname == 'LOAD_DEREF':
                     # Changed in Python 3.11
-                    stack.append(op.__closure__[ins.arg-1].cell_contents)
+                    stack.append(ins.argrepr)
                 elif ins.opname == 'RESUME':
                     # New in Python 3.11
                     pass
@@ -250,8 +250,8 @@ def _OperatorVariableClass(baseClass=object):
                     pass
                 elif ins.opname == 'CALL':
                     # New in Python 3.11
-                    kwargs = [kw + "=" + str(stack.pop()) for kw in kws]
-                    positionals = [stack.pop() for _ in range(ins.argval - len(kws))]
+                    kwargs = [kw + "=" + str(stack.pop()) for kw in kws][::-1]
+                    positionals = [stack.pop() for _ in range(ins.argval - len(kws))][::-1]
                     callable = stack.pop()
                     if len(stack) > 0:
                         call_self = callable
@@ -1257,6 +1257,12 @@ def _testBinOp(self):
         [[ 0  1  2  3  4  5  6  7  8]
          [ 0 -1 -2 -3 -4 -5 -6 -7 -8]]
 
+    Test operator variable with unusual index argument
+
+        >>> vcv.dot(vcv) # doctest: +ELLIPSIS
+        (...MeshVariable._dot(CellVariable(value=array([[0, 1, 2],
+               [1, 2, 3]]), mesh=UniformGrid2D(dx=1.0, nx=3, dy=1.0, ny=1)), CellVariable(value=array([[0, 1, 2],
+               [1, 2, 3]]), mesh=UniformGrid2D(dx=1.0, nx=3, dy=1.0, ny=1)), index))
     """
     pass
 
