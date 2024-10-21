@@ -891,7 +891,7 @@ can be constrained to have a Robin condition at faces identified by
 >>> a = FaceVariable(mesh=mesh, value=..., rank=1)
 >>> b = FaceVariable(mesh=mesh, value=..., rank=0)
 >>> g = FaceVariable(mesh=mesh, value=..., rank=0)
->>> RobinCoeff = (mask * Gamma0 * n / (dPf.dot(a) + b)
+>>> RobinCoeff = mask * Gamma0 * n / (dPf.dot(a) + b)
 >>> eqn = (TransientTerm() == DiffusionTerm(coeff=Gamma) + (RobinCoeff * g).divergence
 ...        - ImplicitSourceTerm(coeff=(RobinCoeff * n.dot(a)).divergence)
 
