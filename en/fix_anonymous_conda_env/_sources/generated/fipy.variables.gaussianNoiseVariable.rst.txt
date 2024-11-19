@@ -1,0 +1,29 @@
+fipy.variables.gaussianNoiseVariable
+====================================
+
+.. automodule:: fipy.variables.gaussianNoiseVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      GaussianNoiseVariable
+   
+   
+
+   
+   
+   
+
+
+

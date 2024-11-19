@@ -1,0 +1,23 @@
+examples.diffusion.explicit.mixedelement
+========================================
+
+.. automodule:: examples.diffusion.explicit.mixedelement
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
