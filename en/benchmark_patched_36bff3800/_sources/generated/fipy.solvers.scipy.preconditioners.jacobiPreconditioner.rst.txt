@@ -1,0 +1,29 @@
+fipy.solvers.scipy.preconditioners.jacobiPreconditioner
+=======================================================
+
+.. automodule:: fipy.solvers.scipy.preconditioners.jacobiPreconditioner
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      JacobiPreconditioner
+   
+   
+
+   
+   
+   
+
+
+
