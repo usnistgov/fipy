@@ -38,6 +38,9 @@ class NonUniformGrid1D(Mesh1D):
                  _BuilderClass=_NonuniformGrid1DBuilder,
                  _RepresentationClass=_Grid1DRepresentation,
                  _TopologyClass=_Grid1DTopology):
+        
+        if not isinstance(nx, int) or nx < 0:
+            raise ValueError("nx must be a non-negative integer")
 
         builder = _BuilderClass()
 

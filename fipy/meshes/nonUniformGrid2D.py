@@ -22,6 +22,8 @@ class NonUniformGrid2D(Mesh2D):
     """
     def __init__(self, dx=1., dy=1., nx=None, ny=None, overlap=2, communicator=parallelComm,
                  _RepresentationClass=_Grid2DRepresentation, _TopologyClass=_Grid2DTopology):
+        if (not isinstance(nx, int) or nx < 0) and (not isinstance(ny, int) or ny < 0):
+            raise ValueError("nx must be a non-negative integer")
 
         builder = _NonuniformGrid2DBuilder()
 

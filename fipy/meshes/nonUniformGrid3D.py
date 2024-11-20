@@ -32,6 +32,9 @@ class NonUniformGrid3D(Mesh):
     def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallelComm,
                  _RepresentationClass=_Grid3DRepresentation, _TopologyClass=_Grid3DTopology):
 
+        if (not isinstance(nx, int) or nx < 0) and (not isinstance(ny, int) or ny < 0) and (not isinstance(nz, int) or nz < 0):
+            raise ValueError("nx must be a non-negative integer")
+
         builder = _NonuniformGrid3DBuilder()
 
         self.args = {
