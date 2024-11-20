@@ -1,0 +1,46 @@
+fipy.tools.numerix
+==================
+
+.. automodule:: fipy.tools.numerix
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      L1norm
+      L2norm
+      LINFnorm
+      all
+      allclose
+      allequal
+      dot
+      getShape
+      getUnit
+      isclose
+      nearest
+      put
+      rank
+      reshape
+      sqrtDot
+      sum
+      take
+      tostring
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

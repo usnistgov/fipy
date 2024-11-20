@@ -1,0 +1,29 @@
+fipy.solvers.scipy.scipyKrylovSolver
+====================================
+
+.. automodule:: fipy.solvers.scipy.scipyKrylovSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ScipyKrylovSolver
+   
+   
+
+   
+   
+   
+
+
+

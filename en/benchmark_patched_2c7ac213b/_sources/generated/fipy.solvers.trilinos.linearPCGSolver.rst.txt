@@ -1,0 +1,29 @@
+fipy.solvers.trilinos.linearPCGSolver
+=====================================
+
+.. automodule:: fipy.solvers.trilinos.linearPCGSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearPCGSolver
+   
+   
+
+   
+   
+   
+
+
+
