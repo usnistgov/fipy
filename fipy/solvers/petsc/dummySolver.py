@@ -12,4 +12,4 @@ class DummySolver(PETScSolver):
     """
       
     def _solve_(self, L, x, b):
-        pass
+        return x

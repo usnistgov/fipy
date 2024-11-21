@@ -3,14 +3,14 @@ __docformat__ = 'restructuredtext'
 
 from pysparse.itsolvers import krylov
 
-from fipy.solvers.pysparse.preconditioners import SsorPreconditioner
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
+from .linearRHSSolver import LinearRHSSolver
+from .preconditioners import SSORPreconditioner
 
 __all__ = ["LinearPCGSolver"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class LinearPCGSolver(PysparseSolver):
+class LinearPCGSolver(LinearRHSSolver):
     """
 
     The `LinearPCGSolver` solves a linear system of equations using the
@@ -27,14 +27,9 @@ class LinearPCGSolver(PysparseSolver):
 
     """
 
-    def __init__(self, precon=SsorPreconditioner(), *args, **kwargs):
-        """
-        Parameters
-        ----------
-        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner, optional
-        """
-        super(LinearPCGSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = krylov.pcg
+    solveFnc = staticmethod(krylov.pcg)
+
+    DEFAULT_PRECONDITIONER = SSORPreconditioner
 
     def _canSolveAsymmetric(self):
         return False
