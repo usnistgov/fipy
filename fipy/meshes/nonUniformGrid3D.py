@@ -31,7 +31,7 @@ class NonUniformGrid3D(Mesh):
     """
     def __init__(self, dx = 1., dy = 1., dz = 1., nx = None, ny = None, nz = None, overlap=2, communicator=parallelComm,
                  _RepresentationClass=_Grid3DRepresentation, _TopologyClass=_Grid3DTopology):
-
+    
         builder = _NonuniformGrid3DBuilder()
 
         self.args = {
