@@ -7,9 +7,13 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 import os
 import warnings
+import scipy
 
 from .scipySolver import ScipySolver
 from fipy.tools import numerix
+from fipy.tools.version import Version, parse_version
+
+scipy_has_tol = (parse_version(scipy.__version__) < Version("1.12"))
 
 class ScipyKrylovSolver(ScipySolver):
     """
@@ -58,12 +62,17 @@ class ScipyKrylovSolver(ScipySolver):
         self._log.debug("END precondition")
         self._log.debug("BEGIN solve")
 
-        x, info = self.solveFnc(A, b, x,
-                                tol=rtol,
+        if scipy_has_tol:
+            tolerance = dict(tol=rtol)
+        else:
+            tolerance = dict(rtol=rtol)
+
+        x, info = self.solveFnc(L, b, x,
                                 atol=self.absolute_tolerance,
                                 maxiter=self.iterations,
                                 M=M,
-                                callback=self._countIterations)
+                                callback=self._countIterations,
+                                **tolerance)
 
         self._log.debug("END solve")
 
