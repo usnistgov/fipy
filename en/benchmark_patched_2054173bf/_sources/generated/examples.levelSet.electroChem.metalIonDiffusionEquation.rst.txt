@@ -1,0 +1,23 @@
+examples.levelSet.electroChem.metalIonDiffusionEquation
+=======================================================
+
+.. automodule:: examples.levelSet.electroChem.metalIonDiffusionEquation
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
