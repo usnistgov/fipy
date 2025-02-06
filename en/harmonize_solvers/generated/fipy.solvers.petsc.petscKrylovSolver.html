@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.solvers.petsc.petscKrylovSolver &#8212; FiPy 3.4.5+307.g2c7ac213b documentation</title>
+    <title>fipy.solvers.petsc.petscKrylovSolver &#8212; FiPy 3.4.5+308.gbf598029e documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,12 +43,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=827fe83b"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=eab0b229"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+307.g2c7ac213b documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+308.gbf598029e documentation" href="../contents.html" />
     <link rel="up" title="fipy.solvers.petsc" href="fipy.solvers.petsc.html" />
     <link rel="next" title="fipy.solvers.petsc.petscSolver" href="fipy.solvers.petsc.petscSolver.html" />
     <link rel="prev" title="fipy.solvers.petsc.petscConvergence" href="fipy.solvers.petsc.petscConvergence.html" />
@@ -141,12 +141,12 @@ It provides the code to call all Krylov solvers from the PETSc package.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Required relative error tolerance.</p></li>
-<li><p><strong>absolute_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Required absolute error tolerance.</p></li>
-<li><p><strong>divergence_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Required divergence error tolerance.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Required relative error tolerance.</p></li>
+<li><p><strong>absolute_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Required absolute error tolerance.</p></li>
+<li><p><strong>divergence_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Required divergence error tolerance.</p></li>
 <li><p><strong>criterion</strong> (<code class="docutils literal notranslate"><span class="pre">{'default',</span> <span class="pre">'unscaled',</span> <span class="pre">'RHS',</span> <span class="pre">'matrix',</span> <span class="pre">'initial',</span> <span class="pre">'preconditioned',</span> <span class="pre">'natural',</span> <span class="pre">'legacy'}</span></code>) – Interpretation of <code class="docutils literal notranslate"><span class="pre">tolerance</span></code>.
 See <a class="reference internal" href="../SOLVERS.html#convergence"><span class="std std-ref">Convergence</span></a> for more information.</p></li>
-<li><p><strong>iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of iterative steps to perform.</p></li>
+<li><p><strong>iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of iterative steps to perform.</p></li>
 <li><p><strong>precon</strong> (<a class="reference internal" href="fipy.solvers.petsc.preconditioners.petscPreconditioner.html#fipy.solvers.petsc.preconditioners.petscPreconditioner.PETScPreconditioner" title="fipy.solvers.petsc.preconditioners.petscPreconditioner.PETScPreconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">PETScPreconditioner</span></code></a>, <em>optional</em>) – Preconditioner to apply to the matrix.  A value of None means
 to perform an unpreconditioned solve.  (default:
 <a class="reference internal" href="fipy.solvers.petsc.preconditioners.defaultPreconditioner.html#fipy.solvers.petsc.preconditioners.defaultPreconditioner.DefaultPreconditioner" title="fipy.solvers.petsc.preconditioners.defaultPreconditioner.DefaultPreconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultPreconditioner</span></code></a>).</p></li>
@@ -195,7 +195,7 @@ to perform an unpreconditioned solve.  (default:
 
 
                 <div class='last-updated'>
-                Last updated on Jun 26, 2024.
+                Last updated on Feb 06, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -205,7 +205,7 @@ to perform an unpreconditioned solve.  (default:
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+307.g2c7ac213b
+Version 3.4.5+308.gbf598029e
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.tests.doctestPlus &#8212; FiPy 3.4.5+307.g2c7ac213b documentation</title>
+    <title>fipy.tests.doctestPlus &#8212; FiPy 3.4.5+308.gbf598029e documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,12 +43,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=827fe83b"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=eab0b229"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+307.g2c7ac213b documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+308.gbf598029e documentation" href="../contents.html" />
     <link rel="up" title="fipy.tests" href="fipy.tests.html" />
     <link rel="next" title="fipy.tests.lateImportTest" href="fipy.tests.lateImportTest.html" />
     <link rel="prev" title="fipy.tests" href="fipy.tests.html" />
@@ -146,11 +146,11 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>flag</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the option flag</p></li>
+<li><p><strong>flag</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Name of the option flag</p></li>
 <li><p><strong>test</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">function</span></code>) – A function which should return <cite>True</cite> if the test should be run</p></li>
-<li><p><strong>why</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Explanation for why the test was skipped (to be used in a string
+<li><p><strong>why</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Explanation for why the test was skipped (to be used in a string
 “<code class="docutils literal notranslate"><span class="pre">Skipped</span> <span class="pre">%%(count)d</span> <span class="pre">doctest</span> <span class="pre">examples</span> <span class="pre">because</span> <span class="pre">%%(why)s</span></code>”)</p></li>
-<li><p><strong>skipWarning</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether or not to report on tests skipped by this flag (default <cite>True</cite>)</p></li>
+<li><p><strong>skipWarning</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether or not to report on tests skipped by this flag (default <cite>True</cite>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -166,7 +166,7 @@
 <dt class="sig sig-object py" id="fipy.tests.doctestPlus.testmod">
 <span class="sig-prename descclassname"><span class="pre">fipy.tests.doctestPlus.</span></span><span class="sig-name descname"><span class="pre">testmod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optionflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extraglobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.doctestPlus.testmod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test examples in the given module.  Return (#failures, #tests).</p>
-<p>Largely duplicated from <a class="reference external" href="https://docs.python.org/3/library/doctest.html#doctest.testmod" title="(in Python v3.12)"><code class="xref py py-func docutils literal notranslate"><span class="pre">doctest.testmod()</span></code></a>, but using
+<p>Largely duplicated from <a class="reference external" href="https://docs.python.org/3/library/doctest.html#doctest.testmod" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">doctest.testmod()</span></code></a>, but using
 <code class="xref py py-class docutils literal notranslate"><span class="pre">_SelectiveDocTestParser</span></code>.</p>
 <p>Test examples in docstrings in functions and classes reachable
 from module m (or the current module if m is not supplied), starting
@@ -229,7 +229,7 @@ postmortem debugged.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Jun 26, 2024.
+                Last updated on Feb 06, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -239,7 +239,7 @@ postmortem debugged.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+307.g2c7ac213b
+Version 3.4.5+308.gbf598029e
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

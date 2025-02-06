@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.meshes.gmshMesh &#8212; FiPy 3.4.5+307.g2c7ac213b documentation</title>
+    <title>fipy.meshes.gmshMesh &#8212; FiPy 3.4.5+308.gbf598029e documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,12 +43,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=827fe83b"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=eab0b229"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+307.g2c7ac213b documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+308.gbf598029e documentation" href="../contents.html" />
     <link rel="up" title="fipy.meshes" href="fipy.meshes.html" />
     <link rel="next" title="fipy.meshes.grid1D" href="fipy.meshes.grid1D.html" />
     <link rel="prev" title="fipy.meshes.factoryMeshes" href="fipy.meshes.factoryMeshes.html" />
@@ -163,10 +163,10 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException" title="fipy.meshes.gmshMesh.GmshException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GmshException</span></code></a></p></td>
-<td><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> raised for Gmsh error conditions.</p></td>
+<td><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> raised for Gmsh error conditions.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.meshes.gmshMesh.MeshExportError" title="fipy.meshes.gmshMesh.MeshExportError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MeshExportError</span></code></a></p></td>
-<td><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> raised when FiPy mesh cannot be exported to Gmsh.</p></td>
+<td><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> raised when FiPy mesh cannot be exported to Gmsh.</p></td>
 </tr>
 </tbody>
 </table>
@@ -373,10 +373,10 @@ different locations</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – (i) the path to an <cite>MSH</cite> file, (ii) a path to a
+<li><p><strong>arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – (i) the path to an <cite>MSH</cite> file, (ii) a path to a
 Gmsh geometry (<cite>.geo</cite>) file, or (iii) a Gmsh geometry script</p></li>
-<li><p><strong>coordDimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Dimension of shapes</p></li>
-<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The number of overlapping cells for parallel
+<li><p><strong>coordDimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Dimension of shapes</p></li>
+<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The number of overlapping cells for parallel
 simulations. Generally 1 is adequate. Higher order equations or
 discretizations require more. If <cite>overlap</cite> is greater than one,
 communication reverts to serial, as Gmsh only provides one layer
@@ -756,7 +756,7 @@ using the <cite>extrudeFunc</cite> and the number of layers.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>extrudeFunc</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">function</span></code>) – Takes the vertex coordinates and returns the displaced values</p></li>
-<li><p><strong>layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of layers in the extruded mesh (number of times
+<li><p><strong>layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of layers in the extruded mesh (number of times
 <cite>extrudeFunc</cite> will be called)</p></li>
 </ul>
 </dd>
@@ -968,10 +968,10 @@ been previously partitioned with the number of partitions matching
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – (i) the path to an <cite>MSH</cite> file, (ii) a path to a
+<li><p><strong>arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – (i) the path to an <cite>MSH</cite> file, (ii) a path to a
 Gmsh geometry (<cite>.geo</cite>) file, or (iii) a Gmsh geometry script</p></li>
-<li><p><strong>coordDimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Dimension of shapes</p></li>
-<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The number of overlapping cells for parallel
+<li><p><strong>coordDimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Dimension of shapes</p></li>
+<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The number of overlapping cells for parallel
 simulations. Generally 1 is adequate. Higher order equations or
 discretizations require more. If <cite>overlap</cite> is greater than one,
 communication reverts to serial, as Gmsh only provides one layer
@@ -1351,7 +1351,7 @@ using the <cite>extrudeFunc</cite> and the number of layers.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>extrudeFunc</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">function</span></code>) – Takes the vertex coordinates and returns the displaced values</p></li>
-<li><p><strong>layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of layers in the extruded mesh (number of times
+<li><p><strong>layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of layers in the extruded mesh (number of times
 <cite>extrudeFunc</cite> will be called)</p></li>
 </ul>
 </dd>
@@ -1563,9 +1563,9 @@ been previously partitioned with the number of partitions matching
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – (i) the path to an <cite>MSH</cite> file, (ii) a path to a
+<li><p><strong>arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – (i) the path to an <cite>MSH</cite> file, (ii) a path to a
 Gmsh geometry (<cite>.geo</cite>) file, or (iii) a Gmsh geometry script</p></li>
-<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The number of overlapping cells for parallel
+<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The number of overlapping cells for parallel
 simulations. Generally 1 is adequate. Higher order equations or
 discretizations require more. If <cite>overlap</cite> is greater than one,
 communication reverts to serial, as Gmsh only provides one layer
@@ -2115,8 +2115,8 @@ y-axis running from bottom to top.</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">GmshException</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
-<p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> raised for Gmsh error conditions.</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> raised for Gmsh error conditions.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshException.__cause__">
 <span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshException.__cause__" title="Permalink to this definition">¶</a></dt>
@@ -2184,7 +2184,7 @@ set self.__traceback__ to tb and return self.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.GmshFile">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">GmshFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">communicator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileIsTemporary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.meshes.gmshMesh.GmshFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Base class for Gmsh mesh storage files.</p>
 </dd></dl>
 
@@ -2564,7 +2564,7 @@ using the <cite>extrudeFunc</cite> and the number of layers.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>extrudeFunc</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">function</span></code>) – Takes the vertex coordinates and returns the displaced values</p></li>
-<li><p><strong>layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of layers in the extruded mesh (number of times
+<li><p><strong>layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of layers in the extruded mesh (number of times
 <cite>extrudeFunc</cite> will be called)</p></li>
 </ul>
 </dd>
@@ -3324,18 +3324,18 @@ version must be &gt;= 2.5.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Gmsh output file</p></li>
-<li><p><strong>dimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Dimension of mesh</p></li>
-<li><p><strong>coordDimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Dimension of shapes</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Gmsh output file</p></li>
+<li><p><strong>dimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Dimension of mesh</p></li>
+<li><p><strong>coordDimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Dimension of shapes</p></li>
 <li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommWrapper</span></code></a>) – Generally, <cite>fipy.tools.serialComm</cite> or <cite>fipy.tools.parallelComm</cite>.
 Select <cite>~fipy.tools.serialComm</cite> to create a serial mesh when
 running in parallel; mostly used for test purposes.</p></li>
-<li><p><strong>gmshOutput</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Output (if any) from Gmsh run that created <cite>.msh</cite> file</p></li>
-<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Beginning with <cite>r</cite> for reading and <cite>w</cite> for writing.
+<li><p><strong>gmshOutput</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Output (if any) from Gmsh run that created <cite>.msh</cite> file</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Beginning with <cite>r</cite> for reading and <cite>w</cite> for writing.
 The file will be created if it doesn’t exist when opened for writing;
 it will be truncated when opened for writing.
 Add a <cite>b</cite> to the mode for binary files.</p></li>
-<li><p><strong>fileIsTemporary</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If <cite>True</cite>, <cite>filename</cite> should be cleaned up on deletion</p></li>
+<li><p><strong>fileIsTemporary</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – If <cite>True</cite>, <cite>filename</cite> should be cleaned up on deletion</p></li>
 </ul>
 </dd>
 </dl>
@@ -3372,7 +3372,7 @@ Add a <cite>b</cite> to the mode for binary files.</p></li>
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MeshExportError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.meshes.gmshMesh.</span></span><span class="sig-name descname"><span class="pre">MeshExportError</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.MeshExportError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fipy.meshes.gmshMesh.GmshException" title="fipy.meshes.gmshMesh.GmshException"><code class="xref py py-class docutils literal notranslate"><span class="pre">GmshException</span></code></a></p>
-<p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> raised when FiPy mesh cannot be exported to Gmsh.</p>
+<p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> raised when FiPy mesh cannot be exported to Gmsh.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="fipy.meshes.gmshMesh.MeshExportError.__cause__">
 <span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.meshes.gmshMesh.MeshExportError.__cause__" title="Permalink to this definition">¶</a></dt>
@@ -3459,15 +3459,15 @@ we have to retrieve it from the gmsh binary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Gmsh output file</p></li>
-<li><p><strong>dimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Dimension of mesh</p></li>
-<li><p><strong>coordDimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Dimension of shapes</p></li>
-<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The number of overlapping cells for parallel
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Gmsh output file</p></li>
+<li><p><strong>dimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Dimension of mesh</p></li>
+<li><p><strong>coordDimensions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Dimension of shapes</p></li>
+<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – The number of overlapping cells for parallel
 simulations. Generally 1 is adequate. Higher order equations or
 discretizations require more. If <cite>overlap</cite> is greater than one,
 communication reverts to serial, as Gmsh only provides one layer
 of ghost cells.</p></li>
-<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Beginning with <cite>r</cite> for reading and <cite>w</cite> for writing.
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – Beginning with <cite>r</cite> for reading and <cite>w</cite> for writing.
 The file will be created if it doesn’t exist when opened for writing;
 it will be truncated when opened for writing.
 Add a <cite>b</cite> to the mode for binary files.</p></li>
@@ -3487,7 +3487,7 @@ Add a <cite>b</cite> to the mode for binary files.</p></li>
 
 
                 <div class='last-updated'>
-                Last updated on Jun 26, 2024.
+                Last updated on Feb 06, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -3497,7 +3497,7 @@ Add a <cite>b</cite> to the mode for binary files.</p></li>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+307.g2c7ac213b
+Version 3.4.5+308.gbf598029e
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
