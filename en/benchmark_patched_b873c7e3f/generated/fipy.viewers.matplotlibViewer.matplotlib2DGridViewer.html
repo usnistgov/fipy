@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.viewers.matplotlibViewer.matplotlib2DGridViewer &#8212; FiPy 3.4.4+241.gc246c5c9f documentation</title>
+    <title>fipy.viewers.matplotlibViewer.matplotlib2DGridViewer &#8212; FiPy 3.4.4+242.g7539436cb documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,12 +43,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=db334d2a"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=762d8403"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.4+241.gc246c5c9f documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.4+242.g7539436cb documentation" href="../contents.html" />
     <link rel="up" title="fipy.viewers.matplotlibViewer" href="fipy.viewers.matplotlibViewer.html" />
     <link rel="next" title="fipy.viewers.matplotlibViewer.matplotlib2DViewer" href="fipy.viewers.matplotlibViewer.matplotlib2DViewer.html" />
     <link rel="prev" title="fipy.viewers.matplotlibViewer.matplotlib2DGridContourViewer" href="fipy.viewers.matplotlibViewer.matplotlib2DGridContourViewer.html" />
@@ -162,7 +162,7 @@
 <li><p><strong>vars</strong> (<a class="reference internal" href="fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a>) – the <cite>Variable</cite> to display.</p></li>
 <li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <em>optional</em>) – displayed at the top of the <cite>Viewer</cite> window</p></li>
 <li><p><strong>limits</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – a (deprecated) alternative to limit keyword arguments</p></li>
-<li><p><strong>cmap</strong> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.9.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colormap</span></code></a>, <em>optional</em>) – the <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.9.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colormap</span></code></a>.
+<li><p><strong>cmap</strong> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.10.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colormap</span></code></a>, <em>optional</em>) – the <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.10.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colormap</span></code></a>.
 Defaults to <cite>matplotlib.cm.jet</cite></p></li>
 <li><p><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. Any limit set to
 a (default) value of <cite>None</cite> will autoscale.</p></li>
@@ -177,7 +177,7 @@ a (default) value of <cite>None</cite> will autoscale.</p></li>
 <li><p><strong>datamax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. Any limit set to
 a (default) value of <cite>None</cite> will autoscale.</p></li>
 <li><p><strong>colorbar</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <em>optional</em>) – plot a color bar in specified orientation if not <cite>None</cite></p></li>
-<li><p><strong>axes</strong> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.9.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>, <em>optional</em>) – if not <cite>None</cite>, <cite>vars</cite> will be plotted into this Matplotlib <cite>Axes</cite> object</p></li>
+<li><p><strong>axes</strong> (<a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>, <em>optional</em>) – if not <cite>None</cite>, <cite>vars</cite> will be plotted into this Matplotlib <cite>Axes</cite> object</p></li>
 <li><p><strong>figaspect</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – desired aspect ratio of figure. If arg is a number, use that aspect
 ratio. If arg is <cite>auto</cite>, the aspect ratio will be determined from
 the Variable’s mesh.</p></li>
@@ -187,31 +187,31 @@ the Variable’s mesh.</p></li>
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib2DGridViewer.Matplotlib2DGridViewer.axes">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">axes</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib2DGridViewer.Matplotlib2DGridViewer.axes" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.9.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>.</p>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib2DGridViewer.Matplotlib2DGridViewer.cmap">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cmap</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib2DGridViewer.Matplotlib2DGridViewer.cmap" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.9.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colormap</span></code></a>.</p>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.10.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colormap</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib2DGridViewer.Matplotlib2DGridViewer.colorbar">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">colorbar</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib2DGridViewer.Matplotlib2DGridViewer.colorbar" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/colorbar_api.html#matplotlib.colorbar.Colorbar" title="(in Matplotlib v3.9.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colorbar</span></code></a>.</p>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/colorbar_api.html#matplotlib.colorbar.Colorbar" title="(in Matplotlib v3.10.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colorbar</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib2DGridViewer.Matplotlib2DGridViewer.fig">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fig</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib2DGridViewer.Matplotlib2DGridViewer.fig" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.9.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>.</p>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="fipy.viewers.matplotlibViewer.matplotlib2DGridViewer.Matplotlib2DGridViewer.id">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#fipy.viewers.matplotlibViewer.matplotlib2DGridViewer.Matplotlib2DGridViewer.id" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.9.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> number.</p>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> number.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -310,7 +310,7 @@ display.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Nov 20, 2024.
+                Last updated on Feb 06, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -320,7 +320,7 @@ display.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.4+241.gc246c5c9f
+Version 3.4.4+242.g7539436cb
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
