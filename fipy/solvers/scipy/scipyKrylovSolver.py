@@ -5,9 +5,13 @@ __all__ = []
 
 import os
 import warnings
+import scipy
 
 from .scipySolver import _ScipySolver
 from fipy.tools import numerix
+from fipy.tools.version import Version, parse_version
+
+scipy_has_tol = (parse_version(scipy.__version__) < Version("1.12"))
 
 class _ScipyKrylovSolver(_ScipySolver):
     """
@@ -50,12 +54,17 @@ class _ScipyKrylovSolver(_ScipySolver):
 
         self._log.debug("BEGIN solve")
 
+        if scipy_has_tol:
+            tolerance = dict(tol=self.tolerance * tolerance_factor)
+        else:
+            tolerance = dict(rtol=self.tolerance * tolerance_factor)
+
         x, info = self.solveFnc(A, b, x,
-                                tol=self.tolerance * tolerance_factor,
                                 maxiter=self.iterations,
                                 M=M,
                                 atol='legacy',
-                                callback=self._countIterations)
+                                callback=self._countIterations,
+                                **tolerance)
 
         self._log.debug("END solve")
 
