@@ -67,7 +67,7 @@ class ScipyKrylovSolver(ScipySolver):
         else:
             tolerance = dict(rtol=rtol)
 
-        x, info = self.solveFnc(L, b, x,
+        x, info = self.solveFnc(A, b, x,
                                 atol=self.absolute_tolerance,
                                 maxiter=self.iterations,
                                 M=M,
