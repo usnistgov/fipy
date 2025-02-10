@@ -67,8 +67,6 @@ class ScipyKrylovSolver(ScipySolver):
 
         rtol = self.scale_tolerance(self.tolerance, tolerance_scale)
 
-        A = L.matrix
-
         self._log.debug("BEGIN precondition")
 
         with Timer() as t:
@@ -87,7 +85,7 @@ class ScipyKrylovSolver(ScipySolver):
             else:
                 tolerance = dict(rtol=rtol)
 
-            x, info = self.solveFnc(A, b, x,
+            x, info = self.solveFnc(L, b, x,
                                     atol=self.absolute_tolerance,
                                     maxiter=self.iterations,
                                     M=M,
