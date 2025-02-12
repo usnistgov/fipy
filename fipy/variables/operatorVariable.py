@@ -291,6 +291,8 @@ def _OperatorVariableClass(baseClass=object):
                     stack.append(self._unop[ins.opcode] + '(' + stack.pop() + ')')
                 elif ins.opcode in self._binop:
                     stack.append(stack.pop(-2) + " " + self._binop[ins.opcode] + " " + stack.pop())
+                elif ins.opname == 'UNARY_NEGATIVE':
+                     stack.append("-" + stack.pop())
                 else:
                     raise SyntaxError("Unknown instruction: %s" % repr(ins))
 
