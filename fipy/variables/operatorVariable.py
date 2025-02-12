@@ -222,6 +222,10 @@ def _OperatorVariableClass(baseClass=object):
                     stack.append(ins.argval)
                 elif ins.opname == 'LOAD_FAST':
                     stack.append(self.__var(ins.arg, style=style, argDict=argDict, id=id, freshen=freshen))
+                elif ins.opname == 'LOAD_FAST_LOAD_FAST':
+                    # New in Python 3.13
+                    for arg in range(len(self.var)):
+                        stack.append(self.__var(arg, style=style, argDict=argDict, id=id, freshen=freshen))
                 elif ins.opname in ['CALL_FUNCTION', 'CALL_METHOD']:
                     # Removed in Python 3.11
                     # args are last ins.arg items on stack
