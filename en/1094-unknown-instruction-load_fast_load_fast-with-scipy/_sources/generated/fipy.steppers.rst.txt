@@ -1,0 +1,44 @@
+fipy.steppers
+=============
+
+.. automodule:: fipy.steppers
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      L1error
+      L2error
+      LINFerror
+      error
+      residual
+      sweepMonotonic
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fipy.steppers.pidStepper
+   fipy.steppers.pseudoRKQSStepper
+   fipy.steppers.stepper
+

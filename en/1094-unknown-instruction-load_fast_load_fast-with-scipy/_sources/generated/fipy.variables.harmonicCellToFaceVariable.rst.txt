@@ -1,0 +1,23 @@
+fipy.variables.harmonicCellToFaceVariable
+=========================================
+
+.. automodule:: fipy.variables.harmonicCellToFaceVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
