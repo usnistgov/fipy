@@ -26,7 +26,7 @@ class LinearJORSolver(PysparseSolver):
     }
 
     def __init__(self, tolerance=1e-10, criterion="default",
-                 iterations=1000, relaxation=1.0):
+                 iterations=1000, relaxation=1.0, precon=None):
         """
         Create a `LinearJORSolver` object.
 
@@ -41,6 +41,8 @@ class LinearJORSolver(PysparseSolver):
             Maximum number of iterative steps to perform.
         relaxation : float
             Fraction of update to apply
+        precon
+            *ignored*
         """
         super(LinearJORSolver, self).__init__(tolerance=tolerance, criterion=criterion,
                                               iterations=iterations, precon=None)
