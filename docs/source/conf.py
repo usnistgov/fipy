@@ -130,8 +130,8 @@ napoleon_numpy_docstring = True
 # [@MadPhysicist](https://stackoverflow.com/users/2988730/mad-physicist)
 # [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 # https://stackoverflow.com/a/66182779
-napoleon_use_param = True
-# napoleon_preprocess_types = True
+# Corrected for https://github.com/sphinx-doc/sphinx/issues/10963
+napoleon_preprocess_types = True
 napoleon_type_aliases = {
     'array-like': ':term:`array-like <array_like>`',
     'array_like': ':term:`array_like`'
@@ -244,6 +244,8 @@ latex_elements = {
         \definecolor{bluish}{rgb}{0.216,0.188,0.533}
 
         \newcommand{\fipylogo}{\scalebox{10}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}}
+
+        \usepackage{pdflscape}
     """,
     'printindex': r'\footnotesize\raggedright\printindex',
 }
@@ -332,6 +334,7 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
 
 def setup(app):
     app.connect('autodoc-skip-member', autodoc_skip_member)
+    app.add_css_file('widetable.css')
     
 # lifted from astropy/astropy@e68ca1a1
 

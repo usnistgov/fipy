@@ -232,6 +232,11 @@ vector are required by the SIMPLE algorithm. Additionally, the
 factor to relax the solution. This argument cannot be passed to
 :meth:`~fipy.terms.term.Term.solve`.
 
+The pressure corrector needs to work a bit harder than the other equations, so
+we allow it to iterate longer to drive to a more demanding tolerance.
+
+>>> solver = pressureCorrectionEq.getDefaultSolver(tolerance=1e-10, iterations=2000)
+
 .. index::
    single: sweep
    single: cacheMatrix
@@ -273,7 +278,7 @@ factor to relax the solution. This argument cannot be passed to
 ...     ## solve the pressure correction equation
 ...     pressureCorrectionEq.cacheRHSvector()
 ...     ## left bottom point must remain at pressure 0, so no correction
-...     pres = pressureCorrectionEq.sweep(var=pressureCorrection)
+...     pres = pressureCorrectionEq.sweep(var=pressureCorrection, solver=solver)
 ...     rhs = pressureCorrectionEq.RHSvector
 ... 
 ...     ## update the pressure using the corrected value
