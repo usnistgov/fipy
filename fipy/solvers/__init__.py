@@ -62,6 +62,8 @@ if solver_suite is None and _desired_solver in ["pysparse", None]:
             raise SerialSolverError()
         from fipy.solvers.pysparse import *
         __all__.extend(pysparse.__all__)
+        from fipy.solvers.pysparse.preconditioners import preconditioner
+        __all__.extend(["preconditioner"])
         _mesh_matrices = _import_mesh_matrices(suite="Pysparse")
         solver_suite = "pysparse"
     except Exception as inst:
@@ -74,6 +76,8 @@ if solver_suite is None and _desired_solver in ["petsc", None]:
 
         from fipy.solvers.petsc import *
         __all__.extend(petsc.__all__)
+        from fipy.solvers.petsc.preconditioners import preconditioner
+        __all__.extend(["preconditioner"])
 
         from fipy.solvers.petsc.comms.serialPETScCommWrapper import SerialPETScCommWrapper
         serialComm = SerialPETScCommWrapper()
@@ -93,6 +97,8 @@ if solver_suite is None and _desired_solver in ["trilinos", "no-pysparse", None]
     try:
         from fipy.solvers.trilinos import *
         __all__.extend(trilinos.__all__)
+        from fipy.solvers.trilinos.preconditioners import preconditioner
+        __all__.extend(["preconditioner"])
         
         from fipy.solvers.trilinos.comms.serialEpetraCommWrapper import SerialEpetraCommWrapper
         serialComm = SerialEpetraCommWrapper()
@@ -123,6 +129,8 @@ if solver_suite is None and _desired_solver in ["scipy", None]:
             raise SerialSolverError()
         from fipy.solvers.scipy import *
         __all__.extend(scipy.__all__)
+        from fipy.solvers.scipy.preconditioners import preconditioner
+        __all__.extend(["preconditioner"])
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver_suite = "scipy"
     except Exception as inst:
@@ -134,6 +142,8 @@ if solver_suite is None and _desired_solver in ["pyamg", None]:
             raise SerialSolverError()
         from fipy.solvers.pyAMG import *
         __all__.extend(pyAMG.__all__)
+        from fipy.solvers.pyAMG.preconditioners import preconditioner
+        __all__.extend(["preconditioner"])
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver_suite = "pyamg"
     except Exception as inst:
@@ -145,6 +155,8 @@ if solver_suite is None and _desired_solver in ["pyamgx", None]:
             raise  SerialSolverError('pyamgx')
         from fipy.solvers.pyamgx import *
         __all__.extend(pyamgx.__all__)
+        from fipy.solvers.pyamgx.preconditioners import preconditioner
+        __all__.extend(["preconditioner"])
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver_suite = "pyamgx"
     except Exception as inst:
