@@ -63,7 +63,7 @@ if solver_suite is None and _desired_solver in ["pysparse", None]:
         from fipy.solvers.pysparse import *
         __all__.extend(pysparse.__all__)
         from fipy.solvers.pysparse.preconditioners import preconditioner
-        __all__.extend(["preconditioner"])
+        __all__.extend([text_to_native_str("preconditioner")])
         _mesh_matrices = _import_mesh_matrices(suite="Pysparse")
         solver_suite = "pysparse"
     except Exception as inst:
