@@ -71,6 +71,7 @@ _log.debug(json.dumps(_fipy_environment))
 from fipy.boundaryConditions import *
 from fipy.meshes import *
 from fipy.solvers import *
+from fipy.solvers import solver
 from fipy.steppers import *
 from fipy.terms import *
 from fipy.tools import *
