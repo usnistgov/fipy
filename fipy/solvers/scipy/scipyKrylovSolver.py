@@ -62,7 +62,7 @@ class _ScipyKrylovSolver(_ScipySolver):
         x, info = self.solveFnc(A, b, x,
                                 maxiter=self.iterations,
                                 M=M,
-                                atol='legacy',
+                                atol=0.,
                                 callback=self._countIterations,
                                 **tolerance)
 
