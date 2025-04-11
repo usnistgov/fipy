@@ -358,7 +358,7 @@ for line in open('nitpick-exceptions'):
 html_context = {
     'display_github': True,
     'github_user': 'usnistgov',
-    'github_repo': 'fypy',
+    'github_repo': 'fipy',
 }
 
 html_baseurl = "https://pages.nist.gov/fipy/en/latest/"
