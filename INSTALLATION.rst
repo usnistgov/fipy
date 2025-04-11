@@ -9,7 +9,7 @@
 .. |.FiPy| replace:: FiPy
 .. _.FiPy: https://pages.nist.gov/fipy/en/latest/glossary.html#term-FiPy
 .. |.~fipy.viewers.vtkViewer.VTKViewer| replace:: ``VTKViewer()``
-.. _.~fipy.viewers.vtkViewer.VTKViewer: https://github.com/usnistgov/fypy/blob/2730380faa50d1b2f9cc6d5a1b5d9f9f4a41bd1f/fipy/viewers/vtkViewer/__init__.py#L11-L38
+.. _.~fipy.viewers.vtkViewer.VTKViewer: https://github.com/usnistgov/fipy/blob/a0ac6b38be15d30fcfa019c8b6a818adb46ed1bb/fipy/viewers/vtkViewer/__init__.py#L11-L38
 .. |.flagsandenvironmentvariables| replace:: Command-line Flags and Environment Variables
 .. _.flagsandenvironmentvariables: https://pages.nist.gov/fipy/en/latest/USAGE.html#flagsandenvironmentvariables
 .. |.Gmsh| replace:: Gmsh
