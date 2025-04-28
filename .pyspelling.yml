@@ -124,6 +124,9 @@ matrix:
       # Ignore reStructuredText substitution definitions
       - open: '^\.\. \|[^|]+\|'
         close: '$'
+      # Ignore reStructuredText link target definitions
+      - open: '^\.\. _[^:]'
+        close: '$'
       # Ignore reStructuredText substitutions
       - open: '\|'
         content: '[^|]*'
