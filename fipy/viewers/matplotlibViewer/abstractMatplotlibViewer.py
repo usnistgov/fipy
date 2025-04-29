@@ -120,7 +120,8 @@ class AbstractMatplotlibViewer(AbstractViewer):
         if colorbar:
             self._colorbar = self.fig.colorbar(mappable=self._mappable,
                                                orientation=colorbar,
-                                               label=self.vars[0].name)
+                                               label=self.vars[0].name,
+                                               ax=self.axes)
 
         self.title = title
 
