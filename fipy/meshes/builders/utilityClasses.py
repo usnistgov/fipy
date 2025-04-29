@@ -107,20 +107,34 @@ class _NonuniformNumPts(_AbstractNumPts):
         newNs = []
 
         for a, d, n in zip(axis, ds, ns):
-            if n is not None and (not isinstance(n, int) or n <= 0):
-                raise ValueError(f"Number of points along {a} (n{a}) must be a positive integer. Got: {n}")
+            if n is not None and (not isinstance(n, int) or n < 0):
+                raise ValueError("Number of points along {a} (n{a}) must be a non-negative integer. Got: {n}".format(a=a, n=n))
             newNs.append(_NonuniformNumPts._calcNumPts(d=d, n=n, axis=a))
 
         return newNs
 
     @staticmethod
     def _calcNumPts(d, n=None, axis="x"):
+        """
+        Calculate the number of cells along the specified axis, based
+        on either the specified number or on the number elements in the
+        cell  `d` spacings.
+
+        Used by the `Grid` meshes.
+
+        This tests a bug that was occurring with `PeriodicGrid1D` when
+        using a numpy float as the argument for the grid spacing.
+
+           >>> from fipy.meshes.periodicGrid1D import PeriodicGrid1D
+           >>> PeriodicGrid1D(nx=2, dx=numerix.float32(1.))
+           PeriodicGrid1D(dx=1.0, nx=2)
+        """
         if type(d) in [int, float] or numerix.shape(d) == ():
             n = int(n or 1)
         else:
             n = int(n or len(d))
             if n != len(d) and len(d) != 1:
-                raise IndexError(f"n{axis} != len(d{axis})")
+                raise IndexError("n{axis} != len(d{axis})".format(axis=axis))
 
         return n
 
