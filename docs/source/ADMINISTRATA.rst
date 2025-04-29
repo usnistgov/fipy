@@ -155,6 +155,29 @@ The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
    Do not merge new lockfiles to ``master`` without validating that
    everything still works.
 
+=====================
+README-like documents
+=====================
+
+The contents of
+
+ * :file:`CHANGELOG.rst`
+ * :file:`INSTALLATION.rst`
+ * :file:`README.rst`
+
+are managed by the
+`sphinx-readme <https://sphinx-readme.readthedocs.io/>`_ extension.
+In order to make changes
+
+ * Make edits to the corresponding files in :file:`docs/source/`.
+ * Run::
+
+    $ make -C docs html
+
+   to re-render the 3 affected files.
+
+ * Add and commit the resulting changes.
+ bu
 ================
 Making a Release
 ================
