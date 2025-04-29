@@ -8,25 +8,23 @@ Overview
 | |GitHub|_ |PyPI|_  |CondaForge|_ |Binder|_
 | |gitter|_ |OpenHub|_
 
-.. only:: latex
+:term:`FiPy` is an object oriented, partial differential equation (PDE)
+solver, written in :term:`Python`, based on a standard finite volume
+(FV) approach. The framework has been developed in the Materials Science
+and Engineering Division (MSED_) and Center for Theoretical and
+Computational Materials Science (CTCMS_), in the Material Measurement
+Laboratory (MML_) at the National Institute of Standards and Technology
+(NIST_).
 
-   :term:`FiPy` is an object oriented, partial differential equation (PDE)
-   solver, written in :term:`Python`, based on a standard finite volume
-   (FV) approach. The framework has been developed in the Materials Science
-   and Engineering Division (MSED_) and Center for Theoretical and
-   Computational Materials Science (CTCMS_), in the Material Measurement
-   Laboratory (MML_) at the National Institute of Standards and Technology
-   (NIST_).
-
-   The solution of coupled sets of PDEs is ubiquitous to the numerical
-   simulation of science problems.  Numerous PDE solvers exist, using a
-   variety of languages and numerical approaches. Many are proprietary,
-   expensive and difficult to customize.  As a result, scientists spend
-   considerable resources repeatedly developing limited tools for
-   specific problems.  Our approach, combining the FV method and :term:`Python`,
-   provides a tool that is extensible, powerful and freely available. A
-   significant advantage to :term:`Python` is the existing suite of tools for
-   array calculations, sparse matrices and data rendering.
+The solution of coupled sets of PDEs is ubiquitous to the numerical
+simulation of science problems.  Numerous PDE solvers exist, using a
+variety of languages and numerical approaches. Many are proprietary,
+expensive and difficult to customize.  As a result, scientists spend
+considerable resources repeatedly developing limited tools for
+specific problems.  Our approach, combining the FV method and :term:`Python`,
+provides a tool that is extensible, powerful and freely available. A
+significant advantage to :term:`Python` is the existing suite of tools for
+array calculations, sparse matrices and data rendering.
 
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
@@ -38,12 +36,10 @@ eluting stents :cite:`Saylor:2011p2794`, reactive wetting :cite:`PhysRevE.82.051
 photovoltaics :cite:`Hangarter:2011p2795` and a level set treatment of the
 electrodeposition process :cite:`NIST:damascene:2001`.
 
-.. only:: latex
+The latest information about :term:`FiPy` can be found at
+http://www.ctcms.nist.gov/fipy/.
 
-   The latest information about :term:`FiPy` can be found at
-   http://www.ctcms.nist.gov/fipy/.
-
-   See the latest updates in the :ref:`CHANGELOG`.
+See the latest updates in the :ref:`CHANGELOG`.
 
 ---------------------------------
 Even if you don't read manuals...
