@@ -1,5 +1,6 @@
 sphinx
 pandas
 sphinxcontrib-bibtex
+sphinx-readme
 numpydoc
 -e .
