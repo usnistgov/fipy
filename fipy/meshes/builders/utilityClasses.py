@@ -108,7 +108,9 @@ class _NonuniformNumPts(_AbstractNumPts):
 
         for a, d, n in zip(axis, ds, ns):
             if n is not None and (not isinstance(n, int) or n < 0):
-                raise ValueError("Number of points along {a} (n{a}) must be a non-negative integer. Got: {n}".format(a=a, n=n))
+                raise ValueError("Number of points along {a} (n{a}) must "
+                                 "be a non-negative integer. "
+                                 "Got: {n}".format(a=a, n=n))
             newNs.append(_NonuniformNumPts._calcNumPts(d=d, n=n, axis=a))
 
         return newNs
@@ -162,8 +164,10 @@ class _UniformNumPts(_AbstractNumPts):
         """
         validatedNs = []
         for i, n in enumerate(ns):
-            if n is not None and (not isinstance(n, int) or n <= 0):
-                raise ValueError(f"Number of points along dimension {i} must be a positive integer. Got: {n}")
+            if n is not None and (not isinstance(n, int) or n < 0):
+                raise ValueError("Number of points along dimension {i} must "
+                                 "be a non-negative integer. "
+                                 "Got: {n}".format(i=i, n=n))
             validatedNs.append(int(n))
         return validatedNs
 if __name__ == '__main__':
