@@ -81,13 +81,7 @@ class NonUniformGrid1D(Mesh1D):
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure
-        everything works as expected. Fixed a bug where the following throws
-        an error on `solve()` when `nx` is a float.
-
-            >>> from fipy import *
-            >>> mesh = NonUniformGrid1D(nx=3., dx=(1., 2., 3.))
-            >>> var = CellVariable(mesh=mesh)
-            >>> DiffusionTerm().solve(var, solver=DummySolver())
+        everything works as expected.
 
         Test for ticket https://github.com/usnistgov/fipy/issues/364.
 

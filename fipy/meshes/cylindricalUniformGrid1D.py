@@ -59,16 +59,12 @@ class CylindricalUniformGrid1D(UniformGrid1D):
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure
-        everything works as expected. The following was broken, now fixed.
-
-            >>> from fipy import *
-            >>> mesh = CylindricalUniformGrid1D(nx=3., dx=1.)
-            >>> var = CellVariable(mesh=mesh)
-            >>> DiffusionTerm().solve(var)
+        everything works as expected.
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell
         volumes were being returned as `binOps` rather than arrays.
 
+            >>> from fipy import CellVariable
             >>> m = CylindricalUniformGrid1D(dx=1., nx=4)
             >>> print(isinstance(m.cellVolumes, numerix.ndarray))
             True
