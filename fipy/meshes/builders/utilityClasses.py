@@ -88,16 +88,35 @@ class _NonuniformNumPts(_AbstractNumPts):
 
     @staticmethod
     def calcNs(ns, ds):
+        """
+        Calculate the number of points for a non-uniform grid.
+
+        Parameters
+        ----------
+        ns : list
+            Number of grid spacings in each direction, e.g., [nx, ny, nz].
+        ds : list
+            Spacing in each grid direction, e.g., [dx, dy, dz].
+
+        Returns
+        -------
+        newNs : list
+            Validated and computed number of points for each axis.
+        """
         axis = ["x", "y", "z"][:len(ns)]
         newNs = []
 
         for a, d, n in zip(axis, ds, ns):
+            if n is not None and (not isinstance(n, int) or n < 0):
+                raise ValueError("Number of points along {a} (n{a}) must "
+                                 "be a non-negative integer. "
+                                 "Got: {n}".format(a=a, n=n))
             newNs.append(_NonuniformNumPts._calcNumPts(d=d, n=n, axis=a))
 
         return newNs
 
     @staticmethod
-    def _calcNumPts(d, n = None, axis = "x"):
+    def _calcNumPts(d, n=None, axis="x"):
         """
         Calculate the number of cells along the specified axis, based
         on either the specified number or on the number elements in the
@@ -112,13 +131,12 @@ class _NonuniformNumPts(_AbstractNumPts):
            >>> PeriodicGrid1D(nx=2, dx=numerix.float32(1.))
            PeriodicGrid1D(dx=1.0, nx=2)
         """
-
         if type(d) in [int, float] or numerix.shape(d) == ():
             n = int(n or 1)
         else:
             n = int(n or len(d))
             if n != len(d) and len(d) != 1:
-                raise IndexError("n%s != len(d%s)" % (axis, axis))
+                raise IndexError("n{axis} != len(d{axis})".format(axis=axis))
 
         return n
 
@@ -129,8 +147,29 @@ class _UniformNumPts(_AbstractNumPts):
 
     @staticmethod
     def calcNs(ns, ds):
-        return [int(x) for x in ns]
+        """
+        Calculate the number of points for a uniform grid.
 
+        Parameters
+        ----------
+        ns : list
+            Number of grid spacings in each direction, e.g., [nx, ny, nz].
+        ds : list
+            Spacing in each grid direction, e.g., [dx, dy, dz].
+
+        Returns
+        -------
+        validatedNs : list
+            Validated and computed number of points for each axis.
+        """
+        validatedNs = []
+        for i, n in enumerate(ns):
+            if n is not None and (not isinstance(n, int) or n < 0):
+                raise ValueError("Number of points along dimension {i} must "
+                                 "be a non-negative integer. "
+                                 "Got: {n}".format(i=i, n=n))
+            validatedNs.append(int(n))
+        return validatedNs
 if __name__ == '__main__':
     import doctest
     doctest.testmod()

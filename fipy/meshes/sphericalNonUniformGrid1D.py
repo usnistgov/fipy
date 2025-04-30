@@ -79,18 +79,12 @@ class SphericalNonUniformGrid1D(NonUniformGrid1D):
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure
-        everything works as expected. Fixed a bug where the following throws
-        an error on solve() when `nx` is a float.
-
-            >>> from fipy import CellVariable, DiffusionTerm
-            >>> mesh = SphericalNonUniformGrid1D(nx=3., dx=(1., 2., 3.))
-            >>> var = CellVariable(mesh=mesh)
-            >>> var.constrain(0., where=mesh.facesRight)
-            >>> DiffusionTerm().solve(var)
+        everything works as expected.
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell
         volumes were being returned as `binOps` rather than arrays.
 
+            >>> from fipy import CellVariable
             >>> m = SphericalNonUniformGrid1D(dx=(1., 2., 3., 4.), nx=4)
             >>> print(isinstance(m.cellVolumes, numerix.ndarray))
             True
