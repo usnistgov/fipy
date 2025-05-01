@@ -1,11 +1,14 @@
 from __future__ import division
 from __future__ import unicode_literals
 from fipy.steppers.stepper import Stepper
+from fipy.tools.decorators import deprecate
 
 __all__ = ["PIDStepper"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
+@deprecate(version="3.4.3",
+           message="Use the :term:`steppyngstounes` package instead.")
 class PIDStepper(Stepper):
     """
     Adaptive stepper using a PID controller, based on::
