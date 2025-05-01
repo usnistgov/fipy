@@ -155,6 +155,11 @@ The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
    Do not merge new lockfiles to ``master`` without validating that
    everything still works.
 
+.. attention::
+
+   As of 2025-04-30, locking 
+   :file:`environment/locks/trilinos-environment.yml` is extremely slow.
+
 =====================
 README-like documents
 =====================
