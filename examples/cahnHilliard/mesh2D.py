@@ -28,7 +28,7 @@ weighting of the two effects and :math:`D` is a rate constant.
 
 We can simulate this process in :term:`FiPy` with a simple script:
 
->>> from fipy import CellVariable, Grid2D, GaussianNoiseVariable, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer
+>>> from fipy import CellVariable, Grid2D, GaussianNoiseVariable, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer, DefaultSolver
 >>> from fipy.tools import numerix
 
 (Note that all of the functionality of NumPy is imported along with :term:`FiPy`, although
@@ -93,7 +93,7 @@ evolution of their problem.
 ...     dt = min(100, numerix.exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(phi, dt=dt, solver=LinearLUSolver())
+...     eq.solve(phi, dt=dt, solver=DefaultSolver(precon="none"))
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 ...     elif (max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3) and elapsed > 10.:
