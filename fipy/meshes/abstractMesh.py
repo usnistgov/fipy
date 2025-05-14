@@ -1182,7 +1182,7 @@ class AbstractMesh(object):
         # _cellToCellIDs is masked for boundary faces,
         # so sum up how many adjacent cells are not masked.
         if numerix.MA.is_masked(self._cellToCellIDs):
-            neighborsPerCell = (~(self._cellToCellIDs.mask)).sum(axis=0)
+            neighborsPerCell = (~self._cellToCellIDs.mask).sum(axis=0)
         else:
             neighborsPerCell = self._facesPerCell
         return neighborsPerCell
