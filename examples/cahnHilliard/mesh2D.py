@@ -77,6 +77,12 @@ geometric means, and :term:`FiPy` makes it easy to obtain these, too.
 ...       == DiffusionTerm(coeff=D * a**2 * (1 - 6 * PHI * (1 - PHI)))
 ...       - DiffusionTerm(coeff=(D, epsilon**2)))
 
+>>> import fipy.solvers.solver
+>>> if fipy.solvers.solver_suite in ['petsc']:
+...     solver = DefaultSolver(precon="none")
+... else:
+...     solver = DefaultSolver()
+
 Because the evolution of a spinodal microstructure slows with time, we
 use exponentially increasing time steps to keep the simulation
 "interesting". The :term:`FiPy` user always has direct control over the
@@ -93,7 +99,7 @@ evolution of their problem.
 ...     dt = min(100, numerix.exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(phi, dt=dt, solver=DefaultSolver(precon="none"))
+...     eq.solve(phi, dt=dt, solver=solver)
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 ...     elif (max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3) and elapsed > 10.:
