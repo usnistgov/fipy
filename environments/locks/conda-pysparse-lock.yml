@@ -9,7 +9,7 @@
 # To update a single package to the latest version compatible with the version constraints in the source:
 #     conda-lock lock  --lockfile conda-pysparse-lock.yml --update PACKAGE
 # To re-solve the entire environment, e.g. after changing a version constraint in the source file:
-#     conda-lock -f environment.yml -f pysparse-environment.yml -f ../base-environment.yml -f ../pysparse-environment.yml --lockfile conda-pysparse-lock.yml
+#     conda-lock -f ../pysparse-environment.yml --lockfile conda-pysparse-lock.yml
 version: 1
 metadata:
   content_hash:
@@ -22,9 +22,6 @@ metadata:
   - linux-64
   - osx-64
   sources:
-  - environment.yml
-  - pysparse-environment.yml
-  - ../base-environment.yml
   - ../pysparse-environment.yml
 package:
 - name: _libgcc_mutex
@@ -886,35 +883,35 @@ package:
   category: main
   optional: false
 - name: gettext
-  version: 0.23.1
+  version: 0.24.1
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
-    gettext-tools: 0.23.1
-    libasprintf: 0.23.1
-    libasprintf-devel: 0.23.1
+    gettext-tools: 0.24.1
+    libasprintf: 0.24.1
+    libasprintf-devel: 0.24.1
     libgcc: '>=13'
-    libgettextpo: 0.23.1
-    libgettextpo-devel: 0.23.1
+    libgettextpo: 0.24.1
+    libgettextpo-devel: 0.24.1
     libstdcxx: '>=13'
-  url: https://conda.anaconda.org/conda-forge/linux-64/gettext-0.23.1-h5888daf_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/gettext-0.24.1-h5888daf_0.conda
   hash:
-    md5: 0754038c806eae440582da1c3af85577
-    sha256: 9d93e75a63a8ca8f86d1be09f68f1211754e6f1e9ee4fa6d90b9d46ee0f1dabb
+    md5: c63e7590d4d6f4c85721040ed8b12888
+    sha256: 88db27c666e1f8515174bf622a3e2ad983c94d69e3a23925089e476b9b06ad00
   category: main
   optional: false
 - name: gettext-tools
-  version: 0.23.1
+  version: 0.24.1
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
     libgcc: '>=13'
-  url: https://conda.anaconda.org/conda-forge/linux-64/gettext-tools-0.23.1-h5888daf_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/gettext-tools-0.24.1-h5888daf_0.conda
   hash:
-    md5: 2f659535feef3cfb782f7053c8775a32
-    sha256: dd2b54a823ea994c2a7908fcce40e1e612ca00cb9944f2382624ff2d3aa8db03
+    md5: d54305672f0361c2f3886750e7165b5f
+    sha256: 3ba33868630b903e3cda7a9176363cdf02710fb8f961efed5f8200c4d53fb4e3
   category: main
   optional: false
 - name: glib
@@ -1460,31 +1457,31 @@ package:
   category: main
   optional: false
 - name: libasprintf
-  version: 0.23.1
+  version: 0.24.1
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
     libgcc: '>=13'
     libstdcxx: '>=13'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libasprintf-0.23.1-h8e693c7_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/libasprintf-0.24.1-h8e693c7_0.conda
   hash:
-    md5: 988f4937281a66ca19d1adb3b5e3f859
-    sha256: 13b863584fccbb9089de73a2442e540703ce4873e4719c9d98c98e4a8e12f9d1
+    md5: 57566a81dd1e5aa3d98ac7582e8bfe03
+    sha256: e30733a729eb6efd9cb316db0202897c882d46f6c20a0e647b4de8ec921b7218
   category: main
   optional: false
 - name: libasprintf-devel
-  version: 0.23.1
+  version: 0.24.1
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
-    libasprintf: 0.23.1
+    libasprintf: 0.24.1
     libgcc: '>=13'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libasprintf-devel-0.23.1-h8e693c7_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/libasprintf-devel-0.24.1-h8e693c7_0.conda
   hash:
-    md5: 2827e722a963b779ce878ef9b5474534
-    sha256: b05a859fe5a2b43574f3a5d93552061232b92d17017b27ecab1eccca1dbb2fe4
+    md5: 8f66ed2e34507b7ae44afa31c3e4ec79
+    sha256: ccbfc465456133042eea3e8d69bae009893f57a47a786f772c0af382bda7ad99
   category: main
   optional: false
 - name: libblas
@@ -1742,55 +1739,55 @@ package:
   category: main
   optional: false
 - name: libgcc
-  version: 14.2.0
+  version: 15.1.0
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
     _openmp_mutex: '>=4.5'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libgcc-14.2.0-h767d61c_2.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/libgcc-15.1.0-h767d61c_2.conda
   hash:
-    md5: ef504d1acbd74b7cc6849ef8af47dd03
-    sha256: 3a572d031cb86deb541d15c1875aaa097baefc0c580b54dc61f5edab99215792
+    md5: ea8ac52380885ed41c1baa8f1d6d2b93
+    sha256: 0024f9ab34c09629621aefd8603ef77bf9d708129b0dd79029e502c39ffc2195
   category: main
   optional: false
 - name: libgcc-ng
-  version: 14.2.0
+  version: 15.1.0
   manager: conda
   platform: linux-64
   dependencies:
-    libgcc: 14.2.0
-  url: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-14.2.0-h69a702a_2.conda
+    libgcc: 15.1.0
+  url: https://conda.anaconda.org/conda-forge/linux-64/libgcc-ng-15.1.0-h69a702a_2.conda
   hash:
-    md5: a2222a6ada71fb478682efe483ce0f92
-    sha256: fb7558c328b38b2f9d2e412c48da7890e7721ba018d733ebdfea57280df01904
+    md5: ddca86c7040dd0e73b2b69bd7833d225
+    sha256: 0ab5421a89f090f3aa33841036bb3af4ed85e1f91315b528a9d75fab9aad51ae
   category: main
   optional: false
 - name: libgettextpo
-  version: 0.23.1
+  version: 0.24.1
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
     libgcc: '>=13'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libgettextpo-0.23.1-h5888daf_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/libgettextpo-0.24.1-h5888daf_0.conda
   hash:
-    md5: a09ce5decdef385bcce78c32809fa794
-    sha256: 190097140d9c16637aa516757d8087f17e8c22cc844c87288da64404b81ef43c
+    md5: 2ee6d71b72f75d50581f2f68e965efdb
+    sha256: 104f2341546e295d1136ab3010e81391bd3fd5be0f095db59266e8eba2082d37
   category: main
   optional: false
 - name: libgettextpo-devel
-  version: 0.23.1
+  version: 0.24.1
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
     libgcc: '>=13'
-    libgettextpo: 0.23.1
-  url: https://conda.anaconda.org/conda-forge/linux-64/libgettextpo-devel-0.23.1-h5888daf_0.conda
+    libgettextpo: 0.24.1
+  url: https://conda.anaconda.org/conda-forge/linux-64/libgettextpo-devel-0.24.1-h5888daf_0.conda
   hash:
-    md5: 7a5d5c245a6807deab87558e9efd3ef0
-    sha256: 90f29ec7a7e2d758cb61459e643dcb54933dcf92194be6c29b0a1591fcbb163e
+    md5: 8f04c7aae6a46503bc36d1ed5abc8c7c
+    sha256: a9a0cba030778eb2944a1f235dba51e503b66f8be0ce6f55f745173a515c3644
   category: main
   optional: false
 - name: libgfortran
@@ -1932,15 +1929,15 @@ package:
   category: main
   optional: false
 - name: libgomp
-  version: 14.2.0
+  version: 15.1.0
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libgomp-14.2.0-h767d61c_2.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/libgomp-15.1.0-h767d61c_2.conda
   hash:
-    md5: 06d02030237f4d5b3d9a7e7d348fe3c6
-    sha256: 1a3130e0b9267e781b89399580f3163632d59fe5b0142900d63052ab1a53490e
+    md5: fbe7d535ff9d3a168c148e07358cd5b1
+    sha256: 05fff3dc7e80579bc28de13b511baec281c4343d703c406aefd54389959154fb
   category: main
   optional: false
 - name: libiconv
@@ -2015,10 +2012,10 @@ package:
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
     libgcc: '>=13'
-  url: https://conda.anaconda.org/conda-forge/linux-64/liblzma-5.8.1-hb9d3cd8_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/liblzma-5.8.1-hb9d3cd8_1.conda
   hash:
-    md5: 0e87378639676987af32fee53ba32258
-    sha256: f4f21dfc54b08d462f707b771ecce3fa9bc702a2a05b55654f64154f48b141ef
+    md5: a76fd702c93cd2dfd89eff30a5fd45a8
+    sha256: eeff241bddc8f1b87567dd6507c9f441f7f472c27f0860a07628260c000ef27c
   category: main
   optional: false
 - name: liblzma-devel
@@ -2029,10 +2026,10 @@ package:
     __glibc: '>=2.17,<3.0.a0'
     libgcc: '>=13'
     liblzma: 5.8.1
-  url: https://conda.anaconda.org/conda-forge/linux-64/liblzma-devel-5.8.1-hb9d3cd8_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/liblzma-devel-5.8.1-hb9d3cd8_1.conda
   hash:
-    md5: 8f456db836b4d3d00d3b6a6cc47009d8
-    sha256: 09738df1c1475cc7d35c4bf1062b8cdd4a110809aa49c240a4131e63609c974e
+    md5: 5499e2dd2f567a818b9f111e47caebd2
+    sha256: f157a2da5f7bf2c5ce5a18c52ccc76c39f075f7fbb1584d585a8d25c1b17cb92
   category: main
   optional: false
 - name: libnetcdf
@@ -2239,28 +2236,28 @@ package:
   category: main
   optional: false
 - name: libstdcxx
-  version: 14.2.0
+  version: 15.1.0
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
-    libgcc: 14.2.0
-  url: https://conda.anaconda.org/conda-forge/linux-64/libstdcxx-14.2.0-h8f9b012_2.conda
+    libgcc: 15.1.0
+  url: https://conda.anaconda.org/conda-forge/linux-64/libstdcxx-15.1.0-h8f9b012_2.conda
   hash:
-    md5: a78c856b6dc6bf4ea8daeb9beaaa3fb0
-    sha256: 8f5bd92e4a24e1d35ba015c5252e8f818898478cb3bc50bd8b12ab54707dc4da
+    md5: 1cb1c67961f6dd257eae9e9691b341aa
+    sha256: 6ae3d153e78f6069d503d9309f2cac6de5b93d067fc6433160a4c05226a5dad4
   category: main
   optional: false
 - name: libstdcxx-ng
-  version: 14.2.0
+  version: 15.1.0
   manager: conda
   platform: linux-64
   dependencies:
-    libstdcxx: 14.2.0
-  url: https://conda.anaconda.org/conda-forge/linux-64/libstdcxx-ng-14.2.0-h4852527_2.conda
+    libstdcxx: 15.1.0
+  url: https://conda.anaconda.org/conda-forge/linux-64/libstdcxx-ng-15.1.0-h4852527_2.conda
   hash:
-    md5: c75da67f045c2627f59e6fcb5f4e3a9b
-    sha256: e86f38b007cf97cc2c67cd519f2de12a313c4ee3f5ef11652ad08932a5e34189
+    md5: 9d2072af184b5caa29492bf2344597bb
+    sha256: 11bea86e11de7d6bce87589197a383344df3fa0a3552dab7e931785ff1159a5b
   category: main
   optional: false
 - name: libtiff
@@ -4093,10 +4090,10 @@ package:
     liblzma-devel: 5.8.1
     xz-gpl-tools: 5.8.1
     xz-tools: 5.8.1
-  url: https://conda.anaconda.org/conda-forge/linux-64/xz-5.8.1-hbcc6ac9_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/xz-5.8.1-hbcc6ac9_1.conda
   hash:
-    md5: c9880133bf4750a4c848f8d2c78d498c
-    sha256: 65f32402dc69fb20dc9b6307793405f45b6fd979a55534e1a4f2d39bcabea303
+    md5: 46600bb863ef3f2f565e7e0458f3d3bc
+    sha256: 178b04c2f35261a1f9a272901d2533c88d50416745509450ca56f7bc76f4a268
   category: main
   optional: false
 - name: xz
@@ -4118,10 +4115,10 @@ package:
     __glibc: '>=2.17,<3.0.a0'
     libgcc: '>=13'
     liblzma: 5.8.1
-  url: https://conda.anaconda.org/conda-forge/linux-64/xz-gpl-tools-5.8.1-hbcc6ac9_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/xz-gpl-tools-5.8.1-hbcc6ac9_1.conda
   hash:
-    md5: 9177ea2e6886b8070012e1d68531ab2f
-    sha256: f48787ef798a44d7ef5618427af7881ae0229a930810963c43acc5444abe2437
+    md5: 23d49402c43d1ea67aca3685acedc0ae
+    sha256: 1f66e240fd37f66dfaff27f55f0e69008c4fdbbb02766cd2e0a60d2de85d49b4
   category: main
   optional: false
 - name: xz-tools
@@ -4132,10 +4129,10 @@ package:
     __glibc: '>=2.17,<3.0.a0'
     libgcc: '>=13'
     liblzma: 5.8.1
-  url: https://conda.anaconda.org/conda-forge/linux-64/xz-tools-5.8.1-hb9d3cd8_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/xz-tools-5.8.1-hb9d3cd8_1.conda
   hash:
-    md5: 908d29a6cfd9e9a78d07012f5d1a8707
-    sha256: ec01d8c97f77c80a2bf42050b761e199663a4a35d22fc194c950802589e15e59
+    md5: 966d5f3958ecfaf49a9a060dfb81eb85
+    sha256: d219c162f2bf0bb851bfe4fbcb70f118b4f518e0e1c46ae72726bc5b9dde6f24
   category: main
   optional: false
 - name: zipp

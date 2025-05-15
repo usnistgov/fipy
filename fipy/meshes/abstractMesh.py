@@ -1177,6 +1177,17 @@ class AbstractMesh(object):
         return facesPerCell
 
     @property
+    def _neighborsPerCell(self):
+        # _facesPerCell does not account for cells on the boundary
+        # _cellToCellIDs is masked for boundary faces,
+        # so sum up how many adjacent cells are not masked.
+        if numerix.MA.is_masked(self._cellToCellIDs):
+            neighborsPerCell = (~self._cellToCellIDs.mask).sum(axis=0)
+        else:
+            neighborsPerCell = self._facesPerCell
+        return neighborsPerCell
+
+    @property
     def _cellFaceVertices(self):
         return numerix.take(self.faceVertexIDs, self.cellFaceIDs, axis=1)
 

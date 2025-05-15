@@ -193,7 +193,7 @@ In order to make changes
    to re-render the 3 affected files.
 
  * Add and commit the resulting changes.
- bu
+
 ================
 Making a Release
 ================
