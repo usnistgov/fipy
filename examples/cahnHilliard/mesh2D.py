@@ -28,7 +28,7 @@ weighting of the two effects and :math:`D` is a rate constant.
 
 We can simulate this process in :term:`FiPy` with a simple script:
 
->>> from fipy import CellVariable, Grid2D, GaussianNoiseVariable, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer
+>>> from fipy import CellVariable, Grid2D, GaussianNoiseVariable, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer, DefaultSolver
 >>> from fipy.tools import numerix
 
 (Note that all of the functionality of NumPy is imported along with :term:`FiPy`, although
@@ -77,6 +77,14 @@ geometric means, and :term:`FiPy` makes it easy to obtain these, too.
 ...       == DiffusionTerm(coeff=D * a**2 * (1 - 6 * PHI * (1 - PHI)))
 ...       - DiffusionTerm(coeff=(D, epsilon**2)))
 
+>>> import fipy.solvers.solver
+>>> if fipy.solvers.solver_suite in ['petsc']:
+...     solver = DefaultSolver(precon="none")
+... elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+...     solver = LinearLUSolver()
+... else:
+...     solver = DefaultSolver()
+
 Because the evolution of a spinodal microstructure slows with time, we
 use exponentially increasing time steps to keep the simulation
 "interesting". The :term:`FiPy` user always has direct control over the
@@ -93,7 +101,7 @@ evolution of their problem.
 ...     dt = min(100, numerix.exp(dexp))
 ...     elapsed += dt
 ...     dexp += 0.01
-...     eq.solve(phi, dt=dt, solver=LinearLUSolver())
+...     eq.solve(phi, dt=dt, solver=solver)
 ...     if __name__ == "__main__":
 ...         viewer.plot()
 ...     elif (max(phi.globalValue) > 0.7) and (min(phi.globalValue) < 0.3) and elapsed > 10.:
