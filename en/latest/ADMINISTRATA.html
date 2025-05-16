@@ -35,19 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Git practices &#8212; FiPy 3.4.5+12.g2730380fa documentation</title>
+    <title>Git practices &#8212; FiPy 3.4.5+18.gc2e6a32bb documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1dd020ce"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=8330c547"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/ADMINISTRATA.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+12.g2730380fa documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+18.gc2e6a32bb documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Solvers" href="SOLVERS.html" />
     <link rel="prev" title="Installation" href="INSTALLATION.html" />
@@ -236,6 +237,32 @@ the <code class="docutils literal notranslate"><span class="pre">CONDA_ENVIRONME
 everything still works.</p>
 </div>
 </section>
+<section id="readme-like-documents">
+<h1>README-like documents<a class="headerlink" href="#readme-like-documents" title="Permalink to this heading">¶</a></h1>
+<p>The contents of</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code></p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">INSTALLATION.rst</span></code></p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">README.rst</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>are managed by the
+<a class="reference external" href="https://sphinx-readme.readthedocs.io/">sphinx-readme</a> extension.
+In order to make changes</p>
+<blockquote>
+<div><ul>
+<li><p>Make edits to the corresponding files in <code class="file docutils literal notranslate"><span class="pre">docs/source/</span></code>.</p></li>
+<li><p>Run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make -C docs html
+</pre></div>
+</div>
+<p>to re-render the 3 affected files.</p>
+</li>
+<li><p>Add and commit the resulting changes.</p></li>
+</ul>
+</div></blockquote>
+</section>
 <section id="making-a-release">
 <h1>Making a Release<a class="headerlink" href="#making-a-release" title="Permalink to this heading">¶</a></h1>
 <div class="admonition attention">
@@ -328,7 +355,7 @@ into <code class="file docutils literal notranslate"><span class="pre">docs/buil
 </ul>
 </dd>
 </dl>
-<p>to a <a class="reference external" href="https://github.com/usnistgov/fipy/releases">GitHub release</a> associated with tag x.y.</p>
+<p>to a <a class="reference external" href="https://github.com/usnistgov/fipy/releases">GitHub release</a> associated with tag <cite>x.y</cite>.</p>
 <p>Upload the build products to PyPI with <a class="reference external" href="https://pypi.org/project/twine">twine</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ twine upload dist/FiPy-${FIPY_VERSION}.*
 </pre></div>
@@ -368,7 +395,7 @@ request to update the <a class="reference external" href="https://github.com/con
 
 
                 <div class='last-updated'>
-                Last updated on Feb 14, 2025.
+                Last updated on May 16, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -378,7 +405,7 @@ request to update the <a class="reference external" href="https://github.com/con
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+12.g2730380fa
+Version 3.4.5+18.gc2e6a32bb
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
@@ -394,6 +421,7 @@ Version 3.4.5+12.g2730380fa
 </li>
 <li><a class="reference internal" href="#continuous-integration">Continuous Integration</a></li>
 <li><a class="reference internal" href="#conda-lockfiles">Conda Lockfiles</a></li>
+<li><a class="reference internal" href="#readme-like-documents">README-like documents</a></li>
 <li><a class="reference internal" href="#making-a-release">Making a Release</a><ul>
 <li><a class="reference internal" href="#source">Source</a></li>
 <li><a class="reference internal" href="#release-from-master">Release from master</a></li>

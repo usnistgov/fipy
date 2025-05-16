@@ -35,19 +35,20 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Overview &#8212; FiPy 3.4.5+12.g2730380fa documentation</title>
+    <title>Overview &#8212; FiPy 3.4.5+18.gc2e6a32bb documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1dd020ce"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=8330c547"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/README.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+12.g2730380fa documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+18.gc2e6a32bb documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Contact" href="CONTACT.html" />
     <link rel="prev" title="Introduction" href="introduction.html" />
@@ -118,6 +119,22 @@
 <div class="line"><a class="reference external" href="https://github.com/usnistgov/fipy"><img alt="GitHub" src="https://img.shields.io/github/contributors/usnistgov/fipy.svg" /></a> <a class="reference external" href="https://pypi.python.org/pypi/FiPy"><img alt="PyPI" src="https://img.shields.io/pypi/v/fipy.svg" /></a>  <a class="reference external" href="https://anaconda.org/conda-forge/fipy"><img alt="CondaForge" src="https://img.shields.io/conda/pn/conda-forge/fipy?label=conda-forge" /></a> <a class="reference external" href="https://mybinder.org/v2/gh/usnistgov/fipy/master?filepath=examples%2Findex.ipynb"><img alt="Binder" src="https://mybinder.org/badge.svg" /></a></div>
 <div class="line"><a class="reference external" href="https://gitter.im/usnistgov/fipy?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=body_badge"><img alt="gitter" src="https://badges.gitter.im/usnistgov/fipy.svg" /></a> <a class="reference external" href="https://www.openhub.net/p/fipy"><img alt="OpenHub" src="https://www.openhub.net/p/fipy/widgets/project_thin_badge.gif" /></a></div>
 </div>
+<p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is an object oriented, partial differential equation (PDE)
+solver, written in <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a>, based on a standard finite volume
+(FV) approach. The framework has been developed in the Materials Science
+and Engineering Division (<a class="reference external" href="http://www.nist.gov/mml/msed/">MSED</a>) and Center for Theoretical and
+Computational Materials Science (<a class="reference external" href="http://www.ctcms.nist.gov/">CTCMS</a>), in the Material Measurement
+Laboratory (<a class="reference external" href="http://www.nist.gov/mml/">MML</a>) at the National Institute of Standards and Technology
+(<a class="reference external" href="http://www.nist.gov/">NIST</a>).</p>
+<p>The solution of coupled sets of PDEs is ubiquitous to the numerical
+simulation of science problems.  Numerous PDE solvers exist, using a
+variety of languages and numerical approaches. Many are proprietary,
+expensive and difficult to customize.  As a result, scientists spend
+considerable resources repeatedly developing limited tools for
+specific problems.  Our approach, combining the FV method and <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a>,
+provides a tool that is extensible, powerful and freely available. A
+significant advantage to <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> is the existing suite of tools for
+array calculations, sparse matrices and data rendering.</p>
 <p>The <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
 combinations of coupled elliptic, hyperbolic and parabolic PDEs. Currently
@@ -127,6 +144,9 @@ dendritic, and electrochemical phase transformations, as well as drug
 eluting stents <span id="id4">[<a class="reference internal" href="references.html#id33" title="David M Saylor, Jonathan E Guyer, Daniel Wheeler, and James A Warren. Predicting microstructure development during casting of drug-eluting coatings. Acta Biomaterialia, 7(2):604–613, Jan 2011. doi:10.1016/j.actbio.2010.09.019.">4</a>]</span>, reactive wetting <span id="id5">[<a class="reference internal" href="references.html#id31" title="Daniel Wheeler, James A. Warren, and William J. Boettinger. Modeling the early stages of reactive wetting. Physical Review E, 82(5):051601, Nov 2010. doi:10.1103/PhysRevE.82.051601.">5</a>]</span>,
 photovoltaics <span id="id6">[<a class="reference internal" href="references.html#id32" title="C. M Hangarter, B. H Hamadani, J. E Guyer, H Xu, R Need, and D Josell. Three dimensionally structured interdigitated back contact thin film heterojunction solar cells. Journal of Applied Physics, 109(7):073514, Jan 2011. doi:10.1063/1.3561487.">6</a>]</span> and a level set treatment of the
 electrodeposition process <span id="id7">[<a class="reference internal" href="references.html#id11" title="D. Josell, D. Wheeler, W. H. Huber, and T. P. Moffat. Superconformal electrodeposition in submicron features. Physical Review Letters, 87(1):016102, 2001. doi:10.1103/PhysRevLett.87.016102.">7</a>]</span>.</p>
+<p>The latest information about <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> can be found at
+<a class="reference external" href="http://www.ctcms.nist.gov/fipy/">http://www.ctcms.nist.gov/fipy/</a>.</p>
+<p>See the latest updates in the <a class="reference internal" href="CHANGELOG.html#changelog"><span class="std std-ref">Change Log</span></a>.</p>
 <section id="even-if-you-don-t-read-manuals">
 <h2>Even if you don’t read manuals…<a class="headerlink" href="#even-if-you-don-t-read-manuals" title="Permalink to this heading">¶</a></h2>
 <p>…please read <a class="reference internal" href="INSTALLATION.html#installation"><span class="std std-ref">Installation</span></a>, <a class="reference internal" href="USAGE.html#usage"><span class="std std-ref">Using FiPy</span></a> and <a class="reference internal" href="FAQ.html#faq"><span class="std std-ref">Frequently Asked Questions</span></a>, as well
@@ -228,7 +248,7 @@ path given above.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Feb 14, 2025.
+                Last updated on May 16, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -238,7 +258,7 @@ path given above.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+12.g2730380fa
+Version 3.4.5+18.gc2e6a32bb
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
