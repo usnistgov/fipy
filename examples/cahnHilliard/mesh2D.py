@@ -77,7 +77,7 @@ geometric means, and :term:`FiPy` makes it easy to obtain these, too.
 ...       == DiffusionTerm(coeff=D * a**2 * (1 - 6 * PHI * (1 - PHI)))
 ...       - DiffusionTerm(coeff=(D, epsilon**2)))
 
->>> import fipy.solvers.solver_suite
+>>> import fipy.solvers
 >>> if fipy.solvers.solver_suite in ['petsc']:
 ...     solver = DefaultSolver(precon="none")
 ... elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
