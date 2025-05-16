@@ -6,7 +6,7 @@ As in :mod:`examples.phase.simple`, we will examine a 1D problem
 .. index::
    single: Grid1D
 
->>> from fipy import CellVariable, Variable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer
+>>> from fipy import CellVariable, Variable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer, DefaultAsymmetricSolver
 >>> from fipy.tools import numerix
 
 >>> nx = 400
@@ -567,7 +567,11 @@ equations) as a test for how long to sweep.
 We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
 
->>> solver = LinearLUSolver(tolerance=1e-10)
+>>> import fipy.solvers.solver
+... if fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+...     solver = LinearLUSolver(tolerance=1e-10)
+... else:
+...     solver = DefaultAsymmetricSolver(tolerance=1e-10)
 
 >>> phase.updateOld()
 >>> C.updateOld()
