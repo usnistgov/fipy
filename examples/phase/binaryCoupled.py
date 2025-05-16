@@ -567,8 +567,8 @@ equations) as a test for how long to sweep.
 We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
 
->>> import fipy.solvers
-... if fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+>>> import fipy.solvers.solver
+>>> if fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
 ...     solver = LinearLUSolver(tolerance=1e-10)
 ... else:
 ...     solver = DefaultAsymmetricSolver(tolerance=1e-10)
