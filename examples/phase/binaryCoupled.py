@@ -573,10 +573,9 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ...     if fipy.solvers.solver_suite == 'petsc':
 ...         solver = DefaultAsymmetricSolver(tolerance=1e-10)
 ...     elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
-...         from fipy import MultilevelDDPreconditioner
 ...         # Trilinos scales by initial residual
 ...         # b-vector L2norm is ~1e15
-...         solver = DefaultAsymmetricSolver(tolerance=1e-24, precon=MultilevelDDPreconditioner())
+...         solver = DefaultAsymmetricSolver(tolerance=1e-24)
 ... else:
 ...     solver = LinearLUSolver(tolerance=1e-10)
 
