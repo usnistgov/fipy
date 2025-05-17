@@ -568,10 +568,17 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
 
 >>> import fipy.solvers.solver
->>> if fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
-...     solver = LinearLUSolver(tolerance=1e-10)
+>>> from fipy.tools import parallelComm
+>>> if parallelComm.Nproc > 1:
+...     if fipy.solvers.solver_suite == 'petsc':
+...         solver = DefaultAsymmetricSolver(tolerance=1e-10)
+...     elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+...         from fipy import MultilevelDDPreconditioner
+...         # Trilinos scales by initial residual
+...         # b-vector L2norm is ~1e15
+...         solver = DefaultAsymmetricSolver(tolerance=1e-24, precon=MultilevelDDPreconditioner())
 ... else:
-...     solver = DefaultAsymmetricSolver(tolerance=1e-10)
+...     solver = LinearLUSolver(tolerance=1e-10)
 
 >>> phase.updateOld()
 >>> C.updateOld()
@@ -737,6 +744,8 @@ old values before we get started.
 ...             phase.updateOld()
 ...             C.updateOld()
 ...             elapsed.value = step.end
+...             if __name__ == '__main__':
+...                 viewer.plot()
 ...         else:
 ...             phase.value = phase.old
 ...             C.value = C.old
