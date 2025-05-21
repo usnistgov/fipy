@@ -48,7 +48,7 @@ class VTKCellViewer(VTKViewer):
         >>> VTKCellViewer(vars=(v1, v2, v3)).plot(fname) # doctest: +TVTK
         >>> r = tvtk.DataSetReader() # doctest: +TVTK
         >>> r.file_name = fname # doctest: +TVTK
-        >>> r.update() # doctest: +TVTK
+        >>> _ = r.update() # doctest: +TVTK
         >>> c = r.output.cell_data # doctest: +TVTK
         >>> numerix.allclose(c.get_array("x*x").to_array(),
         ...                  v1.value) # doctest: +TVTK, +SERIAL
@@ -71,7 +71,7 @@ class VTKCellViewer(VTKViewer):
         >>> VTKCellViewer(vars=(v1, v2, v3)).plot(fname) # doctest: +TVTK
         >>> r = tvtk.DataSetReader() # doctest: +TVTK
         >>> r.file_name = fname # doctest: +TVTK
-        >>> r.update() # doctest: +TVTK
+        >>> _ = r.update() # doctest: +TVTK
         >>> c = r.output.cell_data # doctest: +TVTK
         >>> numerix.allclose(c.get_array("x*y").to_array(),
         ...                  v1.value) # doctest: +TVTK, +SERIAL
@@ -96,7 +96,7 @@ class VTKCellViewer(VTKViewer):
         >>> VTKCellViewer(vars=(v1, v2, v3)).plot(fname) # doctest: +TVTK
         >>> r = tvtk.DataSetReader() # doctest: +TVTK
         >>> r.file_name = fname # doctest: +TVTK
-        >>> r.update() # doctest: +TVTK
+        >>> _ = r.update() # doctest: +TVTK
         >>> c = r.output.cell_data # doctest: +TVTK
         >>> numerix.allclose(c.get_array("x*y").to_array(),
         ...                  v1.value) # doctest: +TVTK, +SERIAL
@@ -119,7 +119,7 @@ class VTKCellViewer(VTKViewer):
         >>> VTKCellViewer(vars=(v1, v2, v3)).plot(filename=fname) # doctest: +TVTK
         >>> r = tvtk.DataSetReader() # doctest: +TVTK
         >>> r.file_name = fname # doctest: +TVTK
-        >>> r.update() # doctest: +TVTK
+        >>> _ = r.update() # doctest: +TVTK
         >>> c = r.output.cell_data # doctest: +TVTK
         >>> numerix.allclose(c.get_array("x*y*z").to_array(),
         ...                  v1.value) # doctest: +TVTK, +SERIAL

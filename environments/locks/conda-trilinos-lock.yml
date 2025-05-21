@@ -9,12 +9,12 @@
 # To update a single package to the latest version compatible with the version constraints in the source:
 #     conda-lock lock  --lockfile conda-trilinos-lock.yml --update PACKAGE
 # To re-solve the entire environment, e.g. after changing a version constraint in the source file:
-#     conda-lock -f environment.yml -f trilinos-environment.yml -f ../base-environment.yml -f ../trilinos-environment.yml --lockfile conda-trilinos-lock.yml
+#     conda-lock -f ../trilinos-environment.yml --lockfile conda-trilinos-lock.yml
 version: 1
 metadata:
   content_hash:
-    linux-64: 903314de23c8c6c59c127f5d0c57b76cf92f0820b7bdccb34c83dfd3e5ae2d3b
-    osx-64: bd5a407401d81811f433d5a11592909c5c502a85c4cb996ee75fd1b557ede24c
+    linux-64: a8147547cddcc6dc4667b3b615386aef29ebb994160bb87eef6d03c5a1dba5a3
+    osx-64: 02b6cefe952872a316dbfd19149bb8cf82660eed9ae0d5d02c271c3fc11de103
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -22,9 +22,6 @@ metadata:
   - linux-64
   - osx-64
   sources:
-  - environment.yml
-  - trilinos-environment.yml
-  - ../base-environment.yml
   - ../trilinos-environment.yml
 package:
 - name: _libgcc_mutex
@@ -2081,15 +2078,15 @@ package:
   category: main
   optional: false
 - name: libcxx
-  version: 20.1.4
+  version: 20.1.5
   manager: conda
   platform: osx-64
   dependencies:
     __osx: '>=10.13'
-  url: https://conda.anaconda.org/conda-forge/osx-64/libcxx-20.1.4-hf95d169_1.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/libcxx-20.1.5-hf95d169_0.conda
   hash:
-    md5: 2d8e0efc0788d49051e7e02ad6571340
-    sha256: 63676ac19e9819ae01506cfd353b2d202188981c753ea34634c4afbf3c1c6a2c
+    md5: 9dde68cee0a231b19e189954ac29027b
+    sha256: 9003bd12988a54713602999999737590f3b023b0cadb2b316cd3ac256d6740d6
   category: main
   optional: false
 - name: libcxx-devel
@@ -4057,7 +4054,7 @@ package:
   manager: conda
   platform: osx-64
   dependencies:
-    python: ''
+    python: '>=3.8'
   url: https://conda.anaconda.org/conda-forge/noarch/packaging-25.0-pyh29332c3_1.conda
   hash:
     md5: 58335b26c38bf4a20f399384c33cbcf9
@@ -5938,5 +5935,35 @@ package:
   hash:
     md5: 4cb2cd56f039b129bb0e491c1164167e
     sha256: efa04a98cb149643fa54c4dad5a0179e36a5fbc88427ea0eec88ceed87fd0f96
+  category: main
+  optional: false
+- name: steppyngstounes
+  version: '0.1'
+  manager: pip
+  platform: linux-64
+  dependencies:
+    numpy: '*'
+    scipy: '*'
+  url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
+  hash:
+    sha256: 78af46189f9f58a92047a6803db9ea86bb614095
+  source:
+    type: url
+    url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
+  category: main
+  optional: false
+- name: steppyngstounes
+  version: '0.1'
+  manager: pip
+  platform: osx-64
+  dependencies:
+    numpy: '*'
+    scipy: '*'
+  url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
+  hash:
+    sha256: 78af46189f9f58a92047a6803db9ea86bb614095
+  source:
+    type: url
+    url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
   category: main
   optional: false

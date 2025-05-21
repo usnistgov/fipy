@@ -9,12 +9,12 @@
 # To update a single package to the latest version compatible with the version constraints in the source:
 #     conda-lock lock  --lockfile conda-pysparse-lock.yml --update PACKAGE
 # To re-solve the entire environment, e.g. after changing a version constraint in the source file:
-#     conda-lock -f environment.yml -f pysparse-environment.yml -f ../base-environment.yml -f ../pysparse-environment.yml --lockfile conda-pysparse-lock.yml
+#     conda-lock -f ../pysparse-environment.yml --lockfile conda-pysparse-lock.yml
 version: 1
 metadata:
   content_hash:
-    linux-64: 0b84823f33ab6dc349db1461c37a035dc18138f43628b52e8f2c35dc8a03573f
-    osx-64: 17234cc5f7eac21e8e0ca82d71e21d5944d8e11df6264e2ff3bd436ddb667f56
+    linux-64: 3ddf95af4758eca8f7a66fb8b8a847b6097f465fa70819642be7e5116fc013d7
+    osx-64: efc6463fa2f4300f7d459d5bec6d097bb63c95c4cf521f36ece87cd1c9952bd2
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -22,9 +22,6 @@ metadata:
   - linux-64
   - osx-64
   sources:
-  - environment.yml
-  - pysparse-environment.yml
-  - ../base-environment.yml
   - ../pysparse-environment.yml
 package:
 - name: _libgcc_mutex
@@ -4213,5 +4210,35 @@ package:
   hash:
     md5: 80abc41d0c48b82fe0f04e7f42f5cb7e
     sha256: d54e31d3d8de5e254c0804abd984807b8ae5cd3708d758a8bf1adff1f5df166c
+  category: main
+  optional: false
+- name: steppyngstounes
+  version: '0.1'
+  manager: pip
+  platform: linux-64
+  dependencies:
+    numpy: '*'
+    scipy: '*'
+  url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
+  hash:
+    sha256: 78af46189f9f58a92047a6803db9ea86bb614095
+  source:
+    type: url
+    url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
+  category: main
+  optional: false
+- name: steppyngstounes
+  version: '0.1'
+  manager: pip
+  platform: osx-64
+  dependencies:
+    numpy: '*'
+    scipy: '*'
+  url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
+  hash:
+    sha256: 78af46189f9f58a92047a6803db9ea86bb614095
+  source:
+    type: url
+    url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
   category: main
   optional: false

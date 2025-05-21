@@ -155,6 +155,22 @@ The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
    Do not merge new lockfiles to ``master`` without validating that
    everything still works.
 
+.. attention::
+
+   As of 2025-04-30, locking 
+   :file:`environment/locks/trilinos-environment.yml` is extremely slow.
+
+.. attention::
+
+   Due to an issue with URL encoding, it may be necessary to replace
+   ``%21`` with ``!`` in the
+   :file:`environments/locks/conda-${solver}-lock.yml` files before calling
+   :command:`conda-lock render`.
+
+   See `conda/conda-lock#764 <https://github.com/conda/conda-lock/issues/764>`_, 
+   `mamba-org/mamba#3737 <https://github.com/mamba-org/mamba/issues/3737>`_,
+   `conda/conda#14481 <https://github.com/conda/conda/pull/14481>`_.
+
 =====================
 README-like documents
 =====================

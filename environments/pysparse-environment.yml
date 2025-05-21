@@ -16,6 +16,8 @@ dependencies:
   - gmsh <4.0|>=4.5.2
   - pip
   - pysparse
+  - pip:
+    - git+https://github.com/usnistgov/steppyngstounes.git
 platforms:
   - linux-64
   - osx-64

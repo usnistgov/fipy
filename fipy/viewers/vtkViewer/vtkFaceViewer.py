@@ -52,7 +52,7 @@ class VTKFaceViewer(VTKViewer):
         >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname) # doctest: +TVTK
         >>> r = tvtk.DataSetReader() # doctest: +TVTK
         >>> r.file_name = fname # doctest: +TVTK
-        >>> r.update() # doctest: +TVTK
+        >>> _ = r.update() # doctest: +TVTK
         >>> p = r.output.point_data # doctest: +TVTK
         >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0, 1)[0],
         ...                  v3.value) # doctest: +TVTK, +SERIAL
@@ -84,7 +84,7 @@ class VTKFaceViewer(VTKViewer):
         >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname) # doctest: +TVTK
         >>> r = tvtk.DataSetReader() # doctest: +TVTK
         >>> r.file_name = fname # doctest: +TVTK
-        >>> r.update() # doctest: +TVTK
+        >>> _ = r.update() # doctest: +TVTK
         >>> p = r.output.point_data # doctest: +TVTK
         >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0, 1)[0:2],
         ...                  v3.value) # doctest: +TVTK, +SERIAL
@@ -118,7 +118,7 @@ class VTKFaceViewer(VTKViewer):
         >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname) # doctest: +TVTK
         >>> r = tvtk.DataSetReader() # doctest: +TVTK
         >>> r.file_name = fname # doctest: +TVTK
-        >>> r.update() # doctest: +TVTK
+        >>> _ = r.update() # doctest: +TVTK
         >>> p = r.output.point_data # doctest: +TVTK
         >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0, 1)[0:2],
         ...                  v3.value) # doctest: +TVTK, +SERIAL
@@ -150,7 +150,7 @@ class VTKFaceViewer(VTKViewer):
         >>> VTKFaceViewer(vars=(v3, v4, v5)).plot(fname) # doctest: +TVTK
         >>> r = tvtk.DataSetReader() # doctest: +TVTK
         >>> r.file_name = fname # doctest: +TVTK
-        >>> r.update() # doctest: +TVTK
+        >>> _ = r.update() # doctest: +TVTK
         >>> p = r.output.point_data # doctest: +TVTK
         >>> numerix.allclose(p.get_array("v1.faceGrad").to_array().swapaxes(0, 1),
         ...                  v3.value) # doctest: +TVTK, +SERIAL
