@@ -6,7 +6,7 @@ dependencies:
   # [72.1.0](https://setuptools.pypa.io/en/stable/history.html#v72-1-0)
   # restores `test`, but `test_suite`still doesn't work right.
   - setuptools <= 72.0
-  - python<=3.8
+  - python<3.9
   - numpy
   - scipy
   - matplotlib-base
