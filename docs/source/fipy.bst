@@ -301,8 +301,8 @@ FUNCTION {bbl.fifth}
 FUNCTION {bbl.st}
 { "st" }
 
-FUNCTION {bbl.nd}
-{ "nd" }
+FUNCTION {bbl.and}
+{ "and" }
 
 FUNCTION {bbl.rd}
 { "rd" }
@@ -342,7 +342,7 @@ FUNCTION {eng.ord}
        duplicate$ "1" =
          { pop$ bbl.st * }
          { duplicate$ "2" =
-             { pop$ bbl.nd * }
+             { pop$ bbl.and * }
              { "3" =
                  { bbl.rd * }
                  { bbl.th * }
@@ -462,7 +462,7 @@ MACRO {angl} {"Annals of Glaciology"}
 MACRO {andmet} {"Annalen der Meteorologie"}
 MACRO {andgeo} {"Annales de Geophysique"}
 MACRO {andphy} {"Annales de Physique"}
-MACRO {afmgb} {"Archiv f\^^b{u}r Meteorologie, Geophysik und Bioklimatologie"}
+MACRO {afmgb} {"Archive f\^^b{u}r Meteorologie, Geophysik und Bioklimatologie"}
 MACRO {ass}{"Astrophysics and Space Science"}
 MACRO {atph} {"Atm\'osphera"}
 MACRO {aao} {"Atmosphere-Ocean"}
