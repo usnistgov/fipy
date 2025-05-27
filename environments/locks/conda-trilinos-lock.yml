@@ -13,8 +13,8 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: a8147547cddcc6dc4667b3b615386aef29ebb994160bb87eef6d03c5a1dba5a3
-    osx-64: 02b6cefe952872a316dbfd19149bb8cf82660eed9ae0d5d02c271c3fc11de103
+    linux-64: ab464b94b89777d8d4b9463b7075d6952b7e8f4c081fbafd33a10c9efc2d479a
+    osx-64: de57f78967a23e7ea6cf8c76ce82c647074b5c1a8caf1836481b44923f4801cb
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -3335,15 +3335,15 @@ package:
   category: main
   optional: false
 - name: llvm-openmp
-  version: 20.1.4
+  version: 20.1.5
   manager: conda
   platform: osx-64
   dependencies:
     __osx: '>=10.13'
-  url: https://conda.anaconda.org/conda-forge/osx-64/llvm-openmp-20.1.4-ha54dae1_0.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/llvm-openmp-20.1.5-ha54dae1_0.conda
   hash:
-    md5: 985619d7704847d30346abb6feeb8351
-    sha256: 5830f3a9109e52cb8476685e9ccd4ff207517c95ff453c47e6ed35221715b879
+    md5: 7b6a67507141ea93541943f0c011a872
+    sha256: f858ef4cbc7f449da06e7e5cf62d6db0f8269e4e723144be35b0ef3531e28591
   category: main
   optional: false
 - name: loguru
