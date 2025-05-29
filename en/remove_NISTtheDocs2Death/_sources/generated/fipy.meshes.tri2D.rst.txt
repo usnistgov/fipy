@@ -1,0 +1,29 @@
+fipy.meshes.tri2D
+=================
+
+.. automodule:: fipy.meshes.tri2D
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Tri2D
+   
+   
+
+   
+   
+   
+
+
+

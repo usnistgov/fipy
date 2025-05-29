@@ -1,0 +1,29 @@
+fipy.solvers.trilinos.linearBicgstabSolver
+==========================================
+
+.. automodule:: fipy.solvers.trilinos.linearBicgstabSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearBicgstabSolver
+   
+   
+
+   
+   
+   
+
+
+
