@@ -571,7 +571,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 >>> from fipy.tools import parallelComm
 >>> if parallelComm.Nproc > 1:
 ...     if fipy.solvers.solver_suite == 'petsc':
-...         solver = DefaultAsymmetricSolver(tolerance=1e-10)
+...         solver = DefaultAsymmetricSolver(tolerance=1e-10, precon='hypre')
 ...     elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
 ...         # Trilinos scales by initial residual
 ...         # b-vector L2norm is ~1e15
