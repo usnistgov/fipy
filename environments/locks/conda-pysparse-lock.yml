@@ -9,12 +9,12 @@
 # To update a single package to the latest version compatible with the version constraints in the source:
 #     conda-lock lock  --lockfile conda-pysparse-lock.yml --update PACKAGE
 # To re-solve the entire environment, e.g. after changing a version constraint in the source file:
-#     conda-lock -f environment.yml -f pysparse-environment.yml -f ../base-environment.yml -f ../pysparse-environment.yml --lockfile conda-pysparse-lock.yml
+#     conda-lock -f ../pysparse-environment.yml --lockfile conda-pysparse-lock.yml
 version: 1
 metadata:
   content_hash:
-    linux-64: 7c61da166384b4147b5cf764c24bf11ac236d99f31d50468ace7fd7b42c141f1
-    osx-64: 476b98df509ae11d34da5b25967cca399e4d6d959d6992ef6db3a6f065fd34e6
+    linux-64: 3ddf95af4758eca8f7a66fb8b8a847b6097f465fa70819642be7e5116fc013d7
+    osx-64: efc6463fa2f4300f7d459d5bec6d097bb63c95c4cf521f36ece87cd1c9952bd2
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -22,9 +22,6 @@ metadata:
   - linux-64
   - osx-64
   sources:
-  - environment.yml
-  - pysparse-environment.yml
-  - ../base-environment.yml
   - ../pysparse-environment.yml
 package:
 - name: _libgcc_mutex
@@ -72,11 +69,11 @@ package:
   manager: conda
   platform: osx-64
   dependencies:
+    configobj: ''
+    pyface: ''
     python: ''
     traits: ''
-    configobj: ''
     traitsui: ''
-    pyface: ''
   url: https://conda.anaconda.org/conda-forge/noarch/apptools-5.1.0-pyh44b312d_0.tar.bz2
   hash:
     md5: 67f86126bb65837378ddd31caff9f420
@@ -126,9 +123,9 @@ package:
   manager: conda
   platform: osx-64
   dependencies:
+    backports: ''
     python: ''
     setuptools: ''
-    backports: ''
   url: https://conda.anaconda.org/conda-forge/noarch/backports.functools_lru_cache-1.6.1-py_0.tar.bz2
   hash:
     md5: d36df15eaef96549ce6231e3088fba54
@@ -478,9 +475,9 @@ package:
   manager: conda
   platform: osx-64
   dependencies:
+    apptools: ''
     python: ''
     traits: ''
-    apptools: ''
   url: https://conda.anaconda.org/conda-forge/noarch/envisage-4.9.2-pyh9f0ad1d_1.tar.bz2
   hash:
     md5: 98cae4e1d4abb104578a855f68ad8b3b
@@ -727,10 +724,10 @@ package:
   manager: conda
   platform: osx-64
   dependencies:
-    font-ttf-ubuntu: ''
+    font-ttf-dejavu-sans-mono: ''
     font-ttf-inconsolata: ''
     font-ttf-source-code-pro: ''
-    font-ttf-dejavu-sans-mono: ''
+    font-ttf-ubuntu: ''
   url: https://conda.anaconda.org/conda-forge/noarch/fonts-conda-forge-1-0.tar.bz2
   hash:
     md5: f766549260d6815b0c52253f1fb1bb29
@@ -1635,9 +1632,9 @@ package:
   manager: conda
   platform: linux-64
   dependencies:
-    ncurses: '>=6.5,<7.0a0'
     __glibc: '>=2.17,<3.0.a0'
     libgcc: '>=13'
+    ncurses: '>=6.5,<7.0a0'
   url: https://conda.anaconda.org/conda-forge/linux-64/libedit-3.1.20250104-pl5321h7949ede_0.conda
   hash:
     md5: c277e0a4d549b03ac1e9d6cbbe3d017b
@@ -2832,8 +2829,8 @@ package:
   manager: conda
   platform: osx-64
   dependencies:
-    python: '>=2.7'
     pyparsing: '>=2.0.2'
+    python: '>=2.7'
   url: https://conda.anaconda.org/conda-forge/noarch/packaging-20.9-pyh44b312d_0.tar.bz2
   hash:
     md5: be69a38e912054a62dc82cc3c7711a64
@@ -2967,11 +2964,11 @@ package:
   manager: conda
   platform: osx-64
   dependencies:
-    python: ''
-    importlib_resources: ''
     importlib_metadata: ''
+    importlib_resources: ''
     pygments: ''
     pyqt: ''
+    python: ''
     traits: ''
   url: https://conda.anaconda.org/conda-forge/noarch/pyface-7.3.0-pyh44b312d_1.tar.bz2
   hash:
@@ -3101,11 +3098,11 @@ package:
     libgcc-ng: '>=7.3.0'
     libstdcxx-ng: '>=7.3.0'
     openssl: '>=1.1.1a,<1.1.2a'
+    pip: ''
     readline: '>=8.0,<9.0a0'
     sqlite: '>=3.30.1,<4.0a0'
     tk: '>=8.6.10,<8.7.0a0'
     zlib: '>=1.2.11,<1.3.0a0'
-    pip: ''
   url: https://conda.anaconda.org/conda-forge/linux-64/python-2.7.15-h5a48372_1011_cpython.tar.bz2
   hash:
     md5: d1824ac0987155f58a03b7ffda01db38
@@ -3120,11 +3117,11 @@ package:
     libcxx: '>=9.0.1'
     libffi: '>=3.2.1,<3.3.0a0'
     openssl: '>=1.1.1a,<1.1.2a'
+    pip: ''
     readline: '>=8.0,<9.0a0'
     sqlite: '>=3.30.1,<4.0a0'
     tk: '>=8.6.10,<8.7.0a0'
     zlib: '>=1.2.11,<1.3.0a0'
-    pip: ''
   url: https://conda.anaconda.org/conda-forge/osx-64/python-2.7.15-h8e446fc_1011_cpython.tar.bz2
   hash:
     md5: a5cf8ee833c6eb0900c88553c101334a
@@ -3259,9 +3256,9 @@ package:
   manager: conda
   platform: linux-64
   dependencies:
+    __glibc: '>=2.17,<3.0.a0'
     libgcc: '>=13'
     libstdcxx: '>=13'
-    __glibc: '>=2.17,<3.0.a0'
   url: https://conda.anaconda.org/conda-forge/linux-64/rapidjson-1.1.0.post20240409-h3f2d84a_2.conda
   hash:
     md5: 65e2f30d532b4ae2063a424c185cc678
@@ -3639,9 +3636,9 @@ package:
   manager: conda
   platform: osx-64
   dependencies:
+    pyface: '>=6'
     python: ''
     traits: ''
-    pyface: '>=6'
   url: https://conda.anaconda.org/conda-forge/noarch/traitsui-6.1.3-py_0.tar.bz2
   hash:
     md5: 038f4ac8b63c8555e19d8c83766720d1
@@ -4156,8 +4153,8 @@ package:
   manager: conda
   platform: osx-64
   dependencies:
-    python: ''
     more-itertools: ''
+    python: ''
   url: https://conda.anaconda.org/conda-forge/noarch/zipp-1.0.0-py_0.tar.bz2
   hash:
     md5: a3f50802a987a528c837113c7b705253
@@ -4213,5 +4210,35 @@ package:
   hash:
     md5: 80abc41d0c48b82fe0f04e7f42f5cb7e
     sha256: d54e31d3d8de5e254c0804abd984807b8ae5cd3708d758a8bf1adff1f5df166c
+  category: main
+  optional: false
+- name: steppyngstounes
+  version: '0.1'
+  manager: pip
+  platform: linux-64
+  dependencies:
+    numpy: '*'
+    scipy: '*'
+  url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
+  hash:
+    sha256: 78af46189f9f58a92047a6803db9ea86bb614095
+  source:
+    type: url
+    url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
+  category: main
+  optional: false
+- name: steppyngstounes
+  version: '0.1'
+  manager: pip
+  platform: osx-64
+  dependencies:
+    numpy: '*'
+    scipy: '*'
+  url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
+  hash:
+    sha256: 78af46189f9f58a92047a6803db9ea86bb614095
+  source:
+    type: url
+    url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
   category: main
   optional: false
