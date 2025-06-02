@@ -731,15 +731,15 @@ old values before we get started.
 >>> if __name__ == '__main__':
 ...     input("Re-equilbrated phase field. Press <return> to proceed...")
 
-.. image:: binary/binary-0.000899.*
+.. image:: /figures/examples/phase/binary/binary-0.000899.*
    :width: 30%
    :alt: phase and composition fields at t=0.000899, compared with final phase diagram concentrations
 
-.. image:: binary/binary-8.949963.*
+.. image:: /figures/examples/phase/binary/-8.949963.*
    :width: 30%
    :alt: phase and composition fields at t=8.949963, compared with final phase diagram concentrations
 
-.. image:: binary/binary-1080000.000000.*
+.. image:: /figures/examples/phase/binary/binary-1080000.000000.*
    :width: 30%
    :alt: phase and composition fields at t=1080000, compared with final phase diagram concentrations
 
