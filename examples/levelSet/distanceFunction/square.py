@@ -5,7 +5,7 @@ given by:
 
 .. math::
 
-   \abs{\nabla \phi} &= 1 \\
+   \lvert\nabla \phi\rvert &= 1 \\
    \phi &= 0 \qquad \text{at} \qquad \begin{cases}
        x = \left( L / 3, 2 L / 3 \right)
        & \text{for $L / 3 \le y \le 2 L / 3$} \\

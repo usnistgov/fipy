@@ -4,7 +4,7 @@ The 2D level set equation can be written,
 
 .. math::
 
-   \abs{\nabla \phi} = 1
+   \lvert\nabla \phi\rvert = 1
 
 and the boundary condition for a circle is given by, :math:`\phi = 0` at
 :math:`(x - L / 2)^2 + (y - L / 2)^2 = (L / 4)^2`.

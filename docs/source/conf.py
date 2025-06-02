@@ -247,10 +247,6 @@ latex_elements = {
         \usepackage{siunitx}
         \usepackage{changepage}
 
-        \DeclareMathOperator{\erf}{erf}
-        \DeclareMathOperator{\Ei}{ei}
-        \providecommand{\abs}[1]{\lvert#1\rvert}
-
 
         \authoraddress{Materials Science and Engineering Division \\
         and the Center for Theoretical and Computational Materials Science \\

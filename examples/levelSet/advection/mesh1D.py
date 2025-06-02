@@ -4,7 +4,7 @@ This example first solves the distance function equation in one dimension:
 
 .. math::
 
-   \abs{\nabla \phi} = 1
+   \lvert\nabla \phi\rvert = 1
 
 with :math:`\phi = 0` at :math:`x = L / 5`.
 
