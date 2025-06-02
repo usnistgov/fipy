@@ -730,6 +730,14 @@ old values before we get started.
 
 >>> dt = dt0
 
+>>> mass_tolerance = 1e-6
+>>> residual_tolerance = 1e-3
+
+>>> if ((parallelComm.Nproc > 1)
+...     and (fipy.solvers.solver_suite in ['trilinos', 'no-pysparse'])):
+...     # Trilinos on linux in parallel doesn't conserve as well
+...     mass_tolerance = 1e-5
+
 >>> for checkpoint in SequenceStepper(start=float(elapsed), stop=totaltime,
 ...                                   sizes=(dt0 * 2**(n/2) for n in count(7))):
 ...     for step in PIDStepper(start=checkpoint.begin,
@@ -737,8 +745,9 @@ old values before we get started.
 ...                            size=dt):
 ...         for sweep in range(2):
 ...             res = eq.sweep(dt=step.size, solver=solver)
-...         err = max(res / 1e-3,
-...                   abs(Cavg.value - 0.5) / 1e-6)
+...             # print(step.begin, step.size, sweep, res)
+...         err = max(res / residual_tolerance,
+...                   abs(Cavg.value - 0.5) / mass_tolerance)
 ...         if step.succeeded(error=err):
 ...             phase.updateOld()
 ...             C.updateOld()
