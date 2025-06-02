@@ -754,7 +754,7 @@ trapped in the solid phase diffuses outward
 solid reaches the new position of the interface, the solidification front
 begins to move, driven by diffusion in the solid.  When the solute in the
 solid becomes uniform, the interface stalls again after :math:`\\approx
-4000~{\\second}`, having moved another
+4000~\\mathrm{s}`, having moved another
 :math:`3.2~\\mathrm{\\mu m}` (recall the estimate of
 :math:`1000~\\mathrm{s}` for equilibration in the solid).  After this
 point, there is essentially no further motion of the interface and barely
