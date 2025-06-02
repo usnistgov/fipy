@@ -630,10 +630,10 @@ barrier heights is negligible:
    \\left(L_B + L_A\\right) \\frac{T_M^A - T_M^B}{T_M^A + T_M^B}
    \\frac{1}{\\Delta x}
    \\\\
-   &\\approx \\qty{0.28}{\\centi\\meter\\per\\second}
+   &\\approx 0.28~\\unit{\\centi\\meter\\per\\second}
 
 To get a :math:`\\text{CFL} = \\vec{u}_\\phi \\Delta t / \\Delta x < 1`, we need a
-time step of about :math:`\\qty{10^{-5}}{\\second}`.
+time step of about :math:`10^{-5}~\\unit{\\second}`.
 
 >>> dt0 = 1.e-5
 
@@ -667,10 +667,10 @@ expected values.
 
 We can estimate the time to equilibration by examining the time for the
 diffusion field to become uniform.  In the liquid, this will take
-:math:`\\mathcal{O}((\\qty{10}{\\micro\\meter})^2 / D_l) =
-\\qty{0.1}{\\second}` and in the solid
-:math:`\\mathcal{O}((\\qty{10}{\\micro\\meter})^2 / D_s) =
-\\qty{1000}{\\second}`.
+:math:`\\mathcal{O}((10~\\unit{\\micro\\meter})^2 / D_l) =
+0.1~\\unit{\\second}` and in the solid
+:math:`\\mathcal{O}((10~\\unit{\\micro\\meter})^2 / D_s) =
+1000~\\unit{\\second}`.
 
 Not wanting to take a hundred-million steps, we employ adaptive time
 stepping, using the :term:`steppyingstounes` package.  This package takes
@@ -743,20 +743,20 @@ old values before we get started.
    :width: 30%
    :alt: phase and composition fields at t=1080000, compared with final phase diagram concentrations
 
-The interface moves :math:`\\approx \\qty{3.4}{\\micro\\meter}` in
-:math:`\\qty{80}{\\milli\\second}`, driven by diffusion in the liquid
-phase (compare the estimate above of :math:`\\qty{0.1}{\\second}`).
+The interface moves :math:`\\approx 3.4~\\unit{\\micro\\meter}` in
+:math:`80~\\unit{\\milli\\second}`, driven by diffusion in the liquid
+phase (compare the estimate above of :math:`0.1~\\unit{\\second}`).
 For the next
-:math:`\\qty{20}{\\second}`, the interface stalls while the solute step
+:math:`20~\\unit{\\second}`, the interface stalls while the solute step
 trapped in the solid phase diffuses outward
-(:math:`(\\qty{3.4}{\\micro\\meter})^2 / D_s =
-\mathcal{O}(\\qty{100}{\\second})`).  Once the solute gradient in the
+(:math:`(3.4~\\unit{\\micro\\meter})^2 / D_s =
+\mathcal{O}(100~\\unit{\\second})`).  Once the solute gradient in the
 solid reaches the new position of the interface, the solidification front
 begins to move, driven by diffusion in the solid.  When the solute in the
 solid becomes uniform, the interface stalls again after :math:`\\approx
-\\qty{4000}{\\second}`, having moved another
-:math:`\\qty{3.2}{\\micro\\meter}` (recall the estimate of
-:math:`\\qty{1000}{\\second}` for equilibration in the solid).  After this
+4000~\\unit{\\second}`, having moved another
+:math:`3.2~\\unit{\\micro\\meter}` (recall the estimate of
+:math:`1000~\\unit{\\second}` for equilibration in the solid).  After this
 point, there is essentially no further motion of the interface and barely
 perceptible changes in the concentration field.  The fact that the
 interface does not reach the predicted phase fraction is due to the fact
