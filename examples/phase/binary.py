@@ -743,20 +743,20 @@ old values before we get started.
    :width: 30%
    :alt: phase and composition fields at t=1080000, compared with final phase diagram concentrations
 
-The interface moves :math:`\\approx 3.4~{\\micro\\meter}` in
-:math:`80~{\\milli\\second}`, driven by diffusion in the liquid
-phase (compare the estimate above of :math:`0.1~{\\second}`).
+The interface moves :math:`\\approx 3.4~\\mathrm{\\mu m}` in
+:math:`80~\\mathrm{ms}`, driven by diffusion in the liquid
+phase (compare the estimate above of :math:`0.1~\\mathrm{s}`).
 For the next
-:math:`20~{\\second}`, the interface stalls while the solute step
+:math:`20~\\mathrm{s}`, the interface stalls while the solute step
 trapped in the solid phase diffuses outward
-(:math:`(3.4~{\\micro\\meter})^2 / D_s =
-\mathcal{O}(100~{\\second})`).  Once the solute gradient in the
+(:math:`(3.4~\\mathrm{\\mu m})^2 / D_s =
+\mathcal{O}(100~\\mathrm{s})`).  Once the solute gradient in the
 solid reaches the new position of the interface, the solidification front
 begins to move, driven by diffusion in the solid.  When the solute in the
 solid becomes uniform, the interface stalls again after :math:`\\approx
 4000~{\\second}`, having moved another
-:math:`3.2~{\\micro\\meter}` (recall the estimate of
-:math:`1000~{\\second}` for equilibration in the solid).  After this
+:math:`3.2~\\mathrm{\\mu m}` (recall the estimate of
+:math:`1000~\\mathrm{s}` for equilibration in the solid).  After this
 point, there is essentially no further motion of the interface and barely
 perceptible changes in the concentration field.  The fact that the
 interface does not reach the predicted phase fraction is due to the fact
