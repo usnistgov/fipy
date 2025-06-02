@@ -683,7 +683,7 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 >>> if __name__ == '__main__':
 ...     input("Moving phase field. Press <return> to proceed...")
 
-.. image:: /figures/examples/phase/binary/moving.*
+.. image:: /figures/examples/phase/binary/binaryCoupled-0.000080.*
    :width: 90%
    :align: center
 
