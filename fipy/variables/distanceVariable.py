@@ -71,7 +71,7 @@ class DistanceVariable(CellVariable):
 
     .. math::
 
-       \abs{\nabla \phi} = 1
+       \lvert\nabla \phi\rvert = 1
 
     using the fast marching method with an initial condition defined
     by the zero level set.  The solution can either be first or second
