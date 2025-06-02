@@ -222,6 +222,20 @@ html_show_copyright = False
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'FiPydoc'
 
+mathjax3_config = {
+    "loader": {
+        "load": ["[custom]/siunitx.js", '[tex]/gensymb', '[tex]/color', '[tex]/html', '[tex]/cancel'],
+        "paths": {
+            "custom": "../_static/"
+        }
+    },
+    "tex": {
+        "packages": {
+            '[+]': ['siunitx', 'gensymb', 'color', 'html', 'cancel']
+        },
+    }
+}
+
 # -- Options for LaTeX output --------------------------------------------------
 
 latex_elements = {
@@ -229,7 +243,7 @@ latex_elements = {
     'preamble': r"""
         \usepackage{nist}
 
-        \usepackage[amssymb]{SIunits}
+        \usepackage{siunitx}
         \usepackage{changepage}
 
         \DeclareMathOperator{\erf}{erf}

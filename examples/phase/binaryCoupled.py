@@ -590,10 +590,10 @@ barrier heights is negligible:
    \\left(L_B + L_A\\right) \\frac{T_M^A - T_M^B}{T_M^A + T_M^B}
    \\frac{1}{\\Delta x}
    \\\\
-   &\\approx \\unit{0.28}{\\centi\\meter\\per\\second}
+   &\\approx \\qty{0.28}{\\centi\\meter\\per\\second}
 
 To get a :math:`\\text{CFL} = \\vec{u}_\\phi \\Delta t / \\Delta x < 1`, we need a
-time step of about :math:`\\unit{10^{-5}}{\\second}`.
+time step of about :math:`\\qty{10^{-5}}{\\second}`.
 
 >>> dt = 1.e-5
 
