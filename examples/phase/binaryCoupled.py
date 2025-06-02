@@ -659,10 +659,10 @@ barrier heights is negligible:
    \\left(L_B + L_A\\right) \\frac{T_M^A - T_M^B}{T_M^A + T_M^B}
    \\frac{1}{\\Delta x}
    \\\\
-   &\\approx 0.28~{\\centi\\meter\\per\\second}
+   &\\approx 0.28~\\mathrm{cm/s}
 
 To get a :math:`\\text{CFL} = \\vec{u}_\\phi \\Delta t / \\Delta x < 1`, we need a
-time step of about :math:`10^{-5}~{\\second}`.
+time step of about :math:`10^{-5}~\\mathrm{s}`.
 
 >>> dt0 = 1.e-5
 
@@ -695,10 +695,10 @@ expected values.
 
 We can estimate the time to equilibration by examining the time for the
 diffusion field to become uniform.  In the liquid, this will take
-:math:`\\mathcal{O}((10~{\\micro\\meter})^2 / D_l) =
-0.1~{\\second}` and in the solid
-:math:`\\mathcal{O}((10~{\\micro\\meter})^2 / D_s) =
-1000~{\\second}`.
+:math:`\\mathcal{O}((10~\\mathrm{\\mu m})^2 / D_l) =
+0.1~\\mathrm{s}` and in the solid
+:math:`\\mathcal{O}((10~\\mathrm{\\mu m})^2 / D_s) =
+1000~\\mathrm{s}`.
 
 Not wanting to take a hundred-million steps, we employ adaptive time
 stepping, using the :term:`steppyingstounes` package.  This package takes
