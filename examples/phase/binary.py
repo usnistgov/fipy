@@ -735,7 +735,7 @@ old values before we get started.
    :width: 30%
    :alt: phase and composition fields at t=0.000899, compared with final phase diagram concentrations
 
-.. image:: /figures/examples/phase/binary/-8.949963.*
+.. image:: /figures/examples/phase/binary/binary-8.949963.*
    :width: 30%
    :alt: phase and composition fields at t=8.949963, compared with final phase diagram concentrations
 
