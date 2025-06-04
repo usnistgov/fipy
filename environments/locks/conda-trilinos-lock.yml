@@ -13,8 +13,8 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: ab464b94b89777d8d4b9463b7075d6952b7e8f4c081fbafd33a10c9efc2d479a
-    osx-64: de57f78967a23e7ea6cf8c76ce82c647074b5c1a8caf1836481b44923f4801cb
+    linux-64: 99f36722785275f511f61dba0aa8267fea33b96f93fc90f1ea77879c461d1694
+    osx-64: 656476a245acad6126a3ec667a05754f29c369ff1baccfd0b25acac1ae64ae19
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -2078,15 +2078,15 @@ package:
   category: main
   optional: false
 - name: libcxx
-  version: 20.1.5
+  version: 20.1.6
   manager: conda
   platform: osx-64
   dependencies:
     __osx: '>=10.13'
-  url: https://conda.anaconda.org/conda-forge/osx-64/libcxx-20.1.5-hf95d169_0.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/libcxx-20.1.6-hf95d169_0.conda
   hash:
-    md5: 9dde68cee0a231b19e189954ac29027b
-    sha256: 9003bd12988a54713602999999737590f3b023b0cadb2b316cd3ac256d6740d6
+    md5: 460934df319a215557816480e9ea78cf
+    sha256: fbc7a8ef613669f3133bb2b0bc5b36f4c51987bb74769b018377fac96610863b
   category: main
   optional: false
 - name: libcxx-devel
@@ -2124,20 +2124,6 @@ package:
     sha256: 0153de9987fa6e8dd5be45920470d579af433d4560bfd77318a72b3fd75fb6dc
   category: main
   optional: false
-- name: libdrm
-  version: 2.4.124
-  manager: conda
-  platform: linux-64
-  dependencies:
-    __glibc: '>=2.17,<3.0.a0'
-    libgcc: '>=13'
-    libpciaccess: '>=0.18,<0.19.0a0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libdrm-2.4.124-hb9d3cd8_0.conda
-  hash:
-    md5: 8bc89311041d7fcb510238cf0848ccae
-    sha256: f0d5ffbdf3903a7840184d14c14154b503e1a96767c328f61d99ad24b6963e52
-  category: main
-  optional: false
 - name: libedit
   version: 3.1.20250104
   manager: conda
@@ -2163,19 +2149,6 @@ package:
   hash:
     md5: 1f4ed31220402fcddc083b4bff406868
     sha256: 6cc49785940a99e6a6b8c6edbb15f44c2dd6c789d9c283e5ee7bdfedd50b4cd6
-  category: main
-  optional: false
-- name: libegl
-  version: 1.7.0
-  manager: conda
-  platform: linux-64
-  dependencies:
-    __glibc: '>=2.17,<3.0.a0'
-    libglvnd: 1.7.0
-  url: https://conda.anaconda.org/conda-forge/linux-64/libegl-1.7.0-ha4b6fd6_2.conda
-  hash:
-    md5: c151d5eb730e9b7480e6d48c0fc44048
-    sha256: 7fd5408d359d05a969133e47af580183fbf38e2235b562193d427bb9dad79723
   category: main
   optional: false
 - name: libev
@@ -2406,20 +2379,6 @@ package:
     sha256: 02fc48106e1ca65cf7de15f58ec567f866f6e8e9dcced157d0cff89f0768bb59
   category: main
   optional: false
-- name: libgl
-  version: 1.7.0
-  manager: conda
-  platform: linux-64
-  dependencies:
-    __glibc: '>=2.17,<3.0.a0'
-    libglvnd: 1.7.0
-    libglx: 1.7.0
-  url: https://conda.anaconda.org/conda-forge/linux-64/libgl-1.7.0-ha4b6fd6_2.conda
-  hash:
-    md5: 928b8be80851f5d8ffb016f9c81dae7a
-    sha256: dc2752241fa3d9e40ce552c1942d0a4b5eeb93740c9723873f6fcf8d39ef8d2d
-  category: main
-  optional: false
 - name: libglib
   version: 2.80.2
   manager: conda
@@ -2459,20 +2418,13 @@ package:
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
-    libdrm: '>=2.4.123,<2.5.0a0'
-    libegl: '>=1.7.0,<2.0a0'
     libgcc: '>=13'
-    libgl: '>=1.7.0,<2.0a0'
+    libopengl: '>=1.7.0,<2.0a0'
     libstdcxx: '>=13'
-    libxcb: '>=1.17.0,<2.0a0'
-    xorg-libx11: '>=1.8.10,<2.0a0'
-    xorg-libxdamage: '>=1.1.6,<2.0a0'
-    xorg-libxext: '>=1.3.6,<2.0a0'
-    xorg-libxxf86vm: '>=1.1.5,<2.0a0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libglu-9.0.3-h03adeef_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/libglu-9.0.3-h5888daf_1.conda
   hash:
-    md5: b1df5affe904efe82ef890826b68881d
-    sha256: cabd78b5ede1f3f161037d3a6cfb6b8a262ec474f9408859c364ef55ba778097
+    md5: 8422fcc9e5e172c91e99aef703b3ce65
+    sha256: a0105eb88f76073bbb30169312e797ed5449ebb4e964a756104d6e54633d17ef
   category: main
   optional: false
 - name: libglvnd
@@ -2485,20 +2437,6 @@ package:
   hash:
     md5: 434ca7e50e40f4918ab701e3facd59a0
     sha256: 1175f8a7a0c68b7f81962699751bb6574e6f07db4c9f72825f978e3016f46850
-  category: main
-  optional: false
-- name: libglx
-  version: 1.7.0
-  manager: conda
-  platform: linux-64
-  dependencies:
-    __glibc: '>=2.17,<3.0.a0'
-    libglvnd: 1.7.0
-    xorg-libx11: '>=1.8.10,<2.0a0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libglx-1.7.0-ha4b6fd6_2.conda
-  hash:
-    md5: c8013e438185f33b13814c5c488acd5c
-    sha256: 2d35a679624a93ce5b3e9dd301fff92343db609b79f0363e6d0ceb3a6478bfa7
   category: main
   optional: false
 - name: libgomp
@@ -2838,6 +2776,19 @@ package:
     sha256: 9895bccdbaa34958ab7dd1f29de66d1dfb94c551c7bb5a663666a500c67ee93c
   category: main
   optional: false
+- name: libopengl
+  version: 1.7.0
+  manager: conda
+  platform: linux-64
+  dependencies:
+    __glibc: '>=2.17,<3.0.a0'
+    libglvnd: 1.7.0
+  url: https://conda.anaconda.org/conda-forge/linux-64/libopengl-1.7.0-ha4b6fd6_2.conda
+  hash:
+    md5: 7df50d44d4a14d6c31a2c54f2cd92157
+    sha256: 215086c108d80349e96051ad14131b751d17af3ed2cb5a34edd62fa89bfe8ead
+  category: main
+  optional: false
 - name: libopus
   version: 1.5.2
   manager: conda
@@ -2861,18 +2812,6 @@ package:
   hash:
     md5: dd0f9f16dfae1d1518312110051586f6
     sha256: 1ca09dddde2f1b7bab1a8b1e546910be02e32238ebaa2f19e50e443b17d0660f
-  category: main
-  optional: false
-- name: libpciaccess
-  version: '0.18'
-  manager: conda
-  platform: linux-64
-  dependencies:
-    libgcc-ng: '>=12'
-  url: https://conda.anaconda.org/conda-forge/linux-64/libpciaccess-0.18-hd590300_0.conda
-  hash:
-    md5: 48f4330bfcd959c3cfb704d424903c82
-    sha256: c0a30ac74eba66ea76a4f0a39acc7833f5ed783a632ca3bb6665b2d81aabd2fb
   category: main
   optional: false
 - name: libpng
@@ -3335,15 +3274,15 @@ package:
   category: main
   optional: false
 - name: llvm-openmp
-  version: 20.1.5
+  version: 20.1.6
   manager: conda
   platform: osx-64
   dependencies:
     __osx: '>=10.13'
-  url: https://conda.anaconda.org/conda-forge/osx-64/llvm-openmp-20.1.5-ha54dae1_0.conda
+  url: https://conda.anaconda.org/conda-forge/osx-64/llvm-openmp-20.1.6-ha54dae1_0.conda
   hash:
-    md5: 7b6a67507141ea93541943f0c011a872
-    sha256: f858ef4cbc7f449da06e7e5cf62d6db0f8269e4e723144be35b0ef3531e28591
+    md5: c55751d61e1f8be539e0e4beffad3e5a
+    sha256: 75aa1b58b86a17aaa3b7882fe994d8f72440aa938d2d3c84e434b4104cfca096
   category: main
   optional: false
 - name: loguru
@@ -5402,7 +5341,7 @@ package:
   manager: conda
   platform: osx-64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/osx-64/x264-1!164.3095-h775f41a_2.tar.bz2
+  url: https://conda.anaconda.org/conda-forge/osx-64/x264-1%21164.3095-h775f41a_2.tar.bz2
   hash:
     md5: 23e9c3180e2c0f9449bb042914ec2200
     sha256: de611da29f4ed0733a330402e163f9260218e6ba6eae593a5f945827d0ee1069
@@ -5552,22 +5491,6 @@ package:
     sha256: b4d2225135aa44e551576c4f3cf999b3252da6ffe7b92f0ad45bb44b887976fc
   category: main
   optional: false
-- name: xorg-libxdamage
-  version: 1.1.6
-  manager: conda
-  platform: linux-64
-  dependencies:
-    __glibc: '>=2.17,<3.0.a0'
-    libgcc: '>=13'
-    xorg-libx11: '>=1.8.10,<2.0a0'
-    xorg-libxext: '>=1.3.6,<2.0a0'
-    xorg-libxfixes: '>=6.0.1,<7.0a0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/xorg-libxdamage-1.1.6-hb9d3cd8_0.conda
-  hash:
-    md5: b5fcc7172d22516e1f965490e65e33a4
-    sha256: 43b9772fd6582bf401846642c4635c47a9b0e36ca08116b3ec3df36ab96e0ec0
-  category: main
-  optional: false
 - name: xorg-libxdmcp
   version: 1.1.5
   manager: conda
@@ -5704,21 +5627,6 @@ package:
   hash:
     md5: 279b0de5f6ba95457190a1c459a64e31
     sha256: a8afba4a55b7b530eb5c8ad89737d60d60bc151a03fbef7a2182461256953f0e
-  category: main
-  optional: false
-- name: xorg-libxxf86vm
-  version: 1.1.6
-  manager: conda
-  platform: linux-64
-  dependencies:
-    __glibc: '>=2.17,<3.0.a0'
-    libgcc: '>=13'
-    xorg-libx11: '>=1.8.10,<2.0a0'
-    xorg-libxext: '>=1.3.6,<2.0a0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/xorg-libxxf86vm-1.1.6-hb9d3cd8_0.conda
-  hash:
-    md5: 5efa5fa6243a622445fdfd72aee15efa
-    sha256: 8a4e2ee642f884e6b78c20c0892b85dd9b2a6e64a6044e903297e616be6ca35b
   category: main
   optional: false
 - name: xorg-renderproto
@@ -5938,30 +5846,24 @@ package:
   category: main
   optional: false
 - name: steppyngstounes
-  version: '0.1'
+  version: 0.0.0
   manager: pip
   platform: linux-64
-  dependencies:
-    numpy: '*'
-    scipy: '*'
+  dependencies: {}
   url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
-  hash:
-    sha256: 78af46189f9f58a92047a6803db9ea86bb614095
+  hash: {}
   source:
     type: url
     url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
   category: main
   optional: false
 - name: steppyngstounes
-  version: '0.1'
+  version: 0.0.0
   manager: pip
   platform: osx-64
-  dependencies:
-    numpy: '*'
-    scipy: '*'
+  dependencies: {}
   url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
-  hash:
-    sha256: 78af46189f9f58a92047a6803db9ea86bb614095
+  hash: {}
   source:
     type: url
     url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095

@@ -19,7 +19,7 @@ dependencies:
   - mpi4py
   - pytrilinos
   - pip:
-    - git+https://github.com/usnistgov/steppyngstounes.git
+    - steppyngstounes
 platforms:
   - linux-64
   - osx-64
