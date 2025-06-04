@@ -706,7 +706,7 @@ care of many of the messy details of stepping, like overshoot, underflow,
 and step size adaptation, while keeping the structure of our solve loop
 largely intact.
 
->>> from steppyngstounes import SequenceStepper, PIDStepper
+>>> from steppyngstounes import SequenceStepper, PIDStepper # doctest: +STEPPYNGSTOUNES
 >>> from itertools import count
 
 Assuming the process is dominated by diffusion, we can take steps that
@@ -738,7 +738,7 @@ old values before we get started.
 ...     # Trilinos on linux in parallel doesn't conserve as well
 ...     mass_tolerance = 1e-5
 
->>> for checkpoint in SequenceStepper(start=float(elapsed), stop=totaltime,
+>>> for checkpoint in SequenceStepper(start=float(elapsed), stop=totaltime,     # doctest: +STEPPYNGSTOUNES
 ...                                   sizes=(dt0 * 2**(n/2) for n in count(7))):
 ...     for step in PIDStepper(start=checkpoint.begin,
 ...                            stop=checkpoint.end,
