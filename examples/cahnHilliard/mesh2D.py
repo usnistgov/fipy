@@ -79,7 +79,7 @@ geometric means, and :term:`FiPy` makes it easy to obtain these, too.
 
 >>> import fipy.solvers.solver
 >>> if fipy.solvers.solver_suite in ['petsc']:
-...     solver = DefaultSolver(precon="none")
+...     solver = DefaultSolver(precon=None)
 ... elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
 ...     solver = LinearLUSolver()
 ... else:
