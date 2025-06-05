@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Git practices &#8212; FiPy 3.4.5+308.gbf598029e documentation</title>
+    <title>Git practices &#8212; FiPy 3.4.5+335.gfbc37579c documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,12 +43,13 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=eab0b229"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6ce7f5e6"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/ADMINISTRATA.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+308.gbf598029e documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+335.gfbc37579c documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Solvers" href="SOLVERS.html" />
     <link rel="prev" title="Installation" href="INSTALLATION.html" />
@@ -199,15 +200,25 @@ doing a <a class="reference external" href="https://help.github.com/en/articles/
 <section id="continuous-integration">
 <span id="continuousintegration"></span><h1>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this heading">¶</a></h1>
 <div class="line-block">
-<div class="line"><a class="reference external" href="https://dev.azure.com/guyer/FiPy/_build?definitionId=2"><img alt="Tests" src="https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master" /></a> <a class="reference external" href="https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml"><img alt="Documentation" src="https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/usnistgov/fipy/actions/workflows/nix.yml"><img alt="nix" src="https://github.com/usnistgov/fipy/actions/workflows/nix.yml/badge.svg" /></a></div>
+<div class="line"><a class="reference external" href="https://dev.azure.com/guyer/FiPy/_build?definitionId=2"><img alt="Tests" src="https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master" /></a> <a class="reference external" href="https://github.com/usnistgov/fipy/actions/workflows/Docs4NIST.yml"><img alt="Documentation" src="https://github.com/usnistgov/fipy/actions/workflows/Docs4NIST.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/usnistgov/fipy/actions/workflows/nix.yml"><img alt="nix" src="https://github.com/usnistgov/fipy/actions/workflows/nix.yml/badge.svg" /></a></div>
 </div>
 <p>We use the <a class="reference internal" href="glossary.html#term-Azure"><span class="xref std std-term">Azure</span></a> and <a class="reference internal" href="glossary.html#term-GitHub-Actions"><span class="xref std std-term">GitHub Actions</span></a> cloud services for
 <a class="reference internal" href="glossary.html#term-Continuous-Integration"><span class="xref std std-term">Continuous Integration</span></a> (CI).  These CIs are configured in
-<a class="reference external" href="https://github.com/usnistgov/fipy/blob/master/.azure/pipelines.yml"><code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/.azure/pipelines.yml</span></code></a>, <a class="reference external" href="https://github.com/usnistgov/fipy/blob/master/.github/workflows/NISTtheDocs2Death.yml"><code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/.github/workflows/NISTtheDocs2Death.yml</span></code></a>, and
+<a class="reference external" href="https://github.com/usnistgov/fipy/blob/master/.azure/pipelines.yml"><code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/.azure/pipelines.yml</span></code></a>, <a class="reference external" href="https://github.com/usnistgov/fipy/blob/master/.github/workflows/Docs4NIST.yml"><code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/.github/workflows/Docs4NIST.yml</span></code></a>, and
 <a class="reference external" href="https://github.com/usnistgov/fipy/blob/master/.github/workflows/nix.yml"><code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/.github/workflows/nix.yml</span></code></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In order to focus on breakages introduced by changes to <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>, a
+<a class="reference external" href="https://github.com/usnistgov/fipy/pulls">pull request</a> is normally built with one of the <a class="reference internal" href="#condalockfiles"><span class="std std-ref">Conda Lockfiles</span></a>,
+whereas the nightly builds use an <code class="file docutils literal notranslate"><span class="pre">environment.yml</span></code> in order to
+catch breakages introduced by <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>’s prerequisites.</p>
+<p>A <a class="reference external" href="https://github.com/usnistgov/fipy/pulls">pull request</a> may be tested with the latest prerequisites by setting
+the <code class="docutils literal notranslate"><span class="pre">CONDA_ENVIRONMENT_NOT_LOCK</span></code> environment variable in
+<a class="reference external" href="https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&amp;tabs=yaml%2Cbatch#allow-at-queue-time">Azure at queue time</a>.</p>
+</div>
 </section>
 <section id="conda-lockfiles">
-<h1>Conda Lockfiles<a class="headerlink" href="#conda-lockfiles" title="Permalink to this heading">¶</a></h1>
+<span id="condalockfiles"></span><h1>Conda Lockfiles<a class="headerlink" href="#conda-lockfiles" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference external" href="https://github.com/conda/conda-lock">conda-lock</a> lockfiles in
 <code class="file docutils literal notranslate"><span class="pre">environments/locks/</span></code> can be updated with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ for solver in petsc pysparse scipy trilinos
@@ -226,6 +237,47 @@ doing a <a class="reference external" href="https://help.github.com/en/articles/
 <p>Do not merge new lockfiles to <code class="docutils literal notranslate"><span class="pre">master</span></code> without validating that
 everything still works.</p>
 </div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>As of 2025-04-30, locking
+<code class="file docutils literal notranslate"><span class="pre">environment/locks/trilinos-environment.yml</span></code> is extremely slow.</p>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Due to an issue with URL encoding, it may be necessary to replace
+<code class="docutils literal notranslate"><span class="pre">%21</span></code> with <code class="docutils literal notranslate"><span class="pre">!</span></code> in the
+<code class="file docutils literal notranslate"><span class="pre">environments/locks/conda-$</span><em><span class="pre">solver</span></em><span class="pre">-lock.yml</span></code> files before calling
+<strong class="command">conda-lock render</strong>.</p>
+<p>See <a class="reference external" href="https://github.com/conda/conda-lock/issues/764">conda/conda-lock#764</a>,
+<a class="reference external" href="https://github.com/mamba-org/mamba/issues/3737">mamba-org/mamba#3737</a>,
+<a class="reference external" href="https://github.com/conda/conda/pull/14481">conda/conda#14481</a>.</p>
+</div>
+</section>
+<section id="readme-like-documents">
+<h1>README-like documents<a class="headerlink" href="#readme-like-documents" title="Permalink to this heading">¶</a></h1>
+<p>The contents of</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="file docutils literal notranslate"><span class="pre">CHANGELOG.rst</span></code></p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">INSTALLATION.rst</span></code></p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">README.rst</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>are managed by the
+<a class="reference external" href="https://sphinx-readme.readthedocs.io/">sphinx-readme</a> extension.
+In order to make changes</p>
+<blockquote>
+<div><ul>
+<li><p>Make edits to the corresponding files in <code class="file docutils literal notranslate"><span class="pre">docs/source/</span></code>.</p></li>
+<li><p>Run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ make -C docs html
+</pre></div>
+</div>
+<p>to re-render the 3 affected files.</p>
+</li>
+<li><p>Add and commit the resulting changes.</p></li>
+</ul>
+</div></blockquote>
 </section>
 <section id="making-a-release">
 <h1>Making a Release<a class="headerlink" href="#making-a-release" title="Permalink to this heading">¶</a></h1>
@@ -319,7 +371,7 @@ into <code class="file docutils literal notranslate"><span class="pre">docs/buil
 </ul>
 </dd>
 </dl>
-<p>to a <a class="reference external" href="https://github.com/usnistgov/fipy/releases">GitHub release</a> associated with tag x.y.</p>
+<p>to a <a class="reference external" href="https://github.com/usnistgov/fipy/releases">GitHub release</a> associated with tag <cite>x.y</cite>.</p>
 <p>Upload the build products to PyPI with <a class="reference external" href="https://pypi.org/project/twine">twine</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ twine upload dist/FiPy-${FIPY_VERSION}.*
 </pre></div>
@@ -359,7 +411,7 @@ request to update the <a class="reference external" href="https://github.com/con
 
 
                 <div class='last-updated'>
-                Last updated on Feb 06, 2025.
+                Last updated on Jun 05, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -369,7 +421,7 @@ request to update the <a class="reference external" href="https://github.com/con
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+308.gbf598029e
+Version 3.4.5+335.gfbc37579c
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
@@ -385,6 +437,7 @@ Version 3.4.5+308.gbf598029e
 </li>
 <li><a class="reference internal" href="#continuous-integration">Continuous Integration</a></li>
 <li><a class="reference internal" href="#conda-lockfiles">Conda Lockfiles</a></li>
+<li><a class="reference internal" href="#readme-like-documents">README-like documents</a></li>
 <li><a class="reference internal" href="#making-a-release">Making a Release</a><ul>
 <li><a class="reference internal" href="#source">Source</a></li>
 <li><a class="reference internal" href="#release-from-master">Release from master</a></li>

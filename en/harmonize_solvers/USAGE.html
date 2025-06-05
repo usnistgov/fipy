@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using FiPy &#8212; FiPy 3.4.5+308.gbf598029e documentation</title>
+    <title>Using FiPy &#8212; FiPy 3.4.5+335.gfbc37579c documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,13 +43,14 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=eab0b229"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6ce7f5e6"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/USAGE.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+308.gbf598029e documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+335.gfbc37579c documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Frequently Asked Questions" href="FAQ.html" />
     <link rel="prev" title="Viewers" href="VIEWERS.html" />
@@ -934,7 +935,7 @@ its neighboring cell.  We can, in turn, substitute this back into
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">FaceVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="o">=...</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">FaceVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="o">=...</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">FaceVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">value</span><span class="o">=...</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">RobinCoeff</span> <span class="o">=</span> <span class="p">(</span><span class="n">mask</span> <span class="o">*</span> <span class="n">Gamma0</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="p">(</span><span class="n">dPf</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">RobinCoeff</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">*</span> <span class="n">Gamma0</span> <span class="o">*</span> <span class="n">n</span> <span class="o">/</span> <span class="p">(</span><span class="n">dPf</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eqn</span> <span class="o">=</span> <span class="p">(</span><span class="n">TransientTerm</span><span class="p">()</span> <span class="o">==</span> <span class="n">DiffusionTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="n">Gamma</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">RobinCoeff</span> <span class="o">*</span> <span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">divergence</span>
 <span class="gp">... </span>       <span class="o">-</span> <span class="n">ImplicitSourceTerm</span><span class="p">(</span><span class="n">coeff</span><span class="o">=</span><span class="p">(</span><span class="n">RobinCoeff</span> <span class="o">*</span> <span class="n">n</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">))</span><span class="o">.</span><span class="n">divergence</span><span class="p">)</span>
 </pre></div>
@@ -1075,6 +1076,17 @@ with <span class="math notranslate nohighlight">\(\phi = 0.25\)</span>.</p>
 </section>
 </section>
 </section>
+<section id="adaptive-stepping">
+<h2>Adaptive Stepping<a class="headerlink" href="#adaptive-stepping" title="Permalink to this heading">¶</a></h2>
+<p>Step size can be controlled with the <a class="reference internal" href="glossary.html#term-steppyngstounes"><span class="xref std std-term">steppyngstounes</span></a> package.
+Demonstrations of its use are found in <a class="reference internal" href="generated/examples.phase.binary.html#module-examples.phase.binary" title="examples.phase.binary"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.phase.binary</span></code></a> and
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.phase.binaryCoupled.</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The old <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy.steppers</span></code> classes are now deprecated.  They were
+undocumented and did not work very well.</p>
+</div>
+</section>
 <section id="running-under-python-2">
 <span id="runningunderpython2"></span><h2>Running under Python 2<a class="headerlink" href="#running-under-python-2" title="Permalink to this heading">¶</a></h2>
 <p>Thanks to the <a class="reference external" href="http://python-future.org">future</a> package and to the contributions of <a class="reference external" href="https://github.com/pya">pya</a> and
@@ -1145,7 +1157,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
 
 
                 <div class='last-updated'>
-                Last updated on Feb 06, 2025.
+                Last updated on Jun 05, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -1155,7 +1167,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+308.gbf598029e
+Version 3.4.5+335.gfbc37579c
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
@@ -1193,6 +1205,7 @@ Version 3.4.5+308.gbf598029e
 </li>
 </ul>
 </li>
+<li><a class="reference internal" href="#adaptive-stepping">Adaptive Stepping</a></li>
 <li><a class="reference internal" href="#running-under-python-2">Running under Python 2</a></li>
 <li><a class="reference internal" href="#manual">Manual</a></li>
 </ul>
