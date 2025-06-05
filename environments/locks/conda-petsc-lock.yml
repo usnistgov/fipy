@@ -13,9 +13,9 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: b84fd41299d9de4bfc39807673eda13298461aedec2642c3b242a13213ccdba1
-    osx-64: befbcec0f811f814103436b3925711793d9e982d62c162ab2438fcbcc4a0fa14
-    osx-arm64: 28bae6b0c3e476643a9c744b3b24cfdffafe595900139d4f029814d6acd5794f
+    linux-64: 43b417435c36b84a66c17e3cd7b8f4e197e9982de7b01d5357a7cf2188c5a058
+    osx-64: b9c017c0559b04e9864b69db9fa7c6e4bebf2b4bca9d03d118955e78fa655882
+    osx-arm64: 8e8010767791be82f086d2183928133a5986563443c62b501bc859a1136164e7
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -8756,6 +8756,48 @@ package:
     sha256: c94e55de40bbcabf834b5b2870d4121efa45158df3e5a6d4ee75b15e8ed9719f
   category: main
   optional: false
+- name: steppyngstounes
+  version: 0.1.1
+  manager: conda
+  platform: linux-64
+  dependencies:
+    numpy: ''
+    python: '>=3.9'
+    scipy: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/steppyngstounes-0.1.1-pyhd8ed1ab_0.conda
+  hash:
+    md5: e3c8c824fc1ee74a59f793dfddd4cb83
+    sha256: fe1287830e09955196026158ce127ad98e6c46d1fdb16c96c4ece4a27ad93bc1
+  category: main
+  optional: false
+- name: steppyngstounes
+  version: 0.1.1
+  manager: conda
+  platform: osx-64
+  dependencies:
+    numpy: ''
+    python: '>=3.9'
+    scipy: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/steppyngstounes-0.1.1-pyhd8ed1ab_0.conda
+  hash:
+    md5: e3c8c824fc1ee74a59f793dfddd4cb83
+    sha256: fe1287830e09955196026158ce127ad98e6c46d1fdb16c96c4ece4a27ad93bc1
+  category: main
+  optional: false
+- name: steppyngstounes
+  version: 0.1.1
+  manager: conda
+  platform: osx-arm64
+  dependencies:
+    numpy: ''
+    python: '>=3.9'
+    scipy: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/steppyngstounes-0.1.1-pyhd8ed1ab_0.conda
+  hash:
+    md5: e3c8c824fc1ee74a59f793dfddd4cb83
+    sha256: fe1287830e09955196026158ce127ad98e6c46d1fdb16c96c4ece4a27ad93bc1
+  category: main
+  optional: false
 - name: superlu
   version: 7.0.1
   manager: conda
@@ -10147,41 +10189,5 @@ package:
   hash:
     md5: e6f69c7bcccdefa417f056fa593b40f0
     sha256: 0d02046f57f7a1a3feae3e9d1aa2113788311f3cf37a3244c71e61a93177ba67
-  category: main
-  optional: false
-- name: steppyngstounes
-  version: 0.0.0
-  manager: pip
-  platform: linux-64
-  dependencies: {}
-  url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
-  hash: {}
-  source:
-    type: url
-    url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
-  category: main
-  optional: false
-- name: steppyngstounes
-  version: 0.0.0
-  manager: pip
-  platform: osx-64
-  dependencies: {}
-  url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
-  hash: {}
-  source:
-    type: url
-    url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
-  category: main
-  optional: false
-- name: steppyngstounes
-  version: 0.0.0
-  manager: pip
-  platform: osx-arm64
-  dependencies: {}
-  url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
-  hash: {}
-  source:
-    type: url
-    url: git+https://github.com/usnistgov/steppyngstounes@78af46189f9f58a92047a6803db9ea86bb614095
   category: main
   optional: false

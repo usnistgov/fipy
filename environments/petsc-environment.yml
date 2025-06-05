@@ -20,8 +20,7 @@ dependencies:
   # petsc >= 3.20.3 has parallel failures when running tests
   - petsc4py < 3.20.3|>=3.23.0
   - petsc < 3.20.3|>=3.23.0
-  - pip:
-    - steppyngstounes
+  - steppyngstounes
 platforms:
   - linux-64
   - osx-64

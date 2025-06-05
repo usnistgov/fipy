@@ -5330,7 +5330,7 @@ package:
   platform: linux-64
   dependencies:
     libgcc-ng: '>=9.3.0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/x264-1!161.3030-h7f98852_1.tar.bz2
+  url: https://conda.anaconda.org/conda-forge/linux-64/x264-1%21161.3030-h7f98852_1.tar.bz2
   hash:
     md5: 4c9106542ee02c991b64b575ca4ea029
     sha256: d8b0b52d1239536889b410d2eef380e9812f5ccc5e28dcc2675abb092f1b1155

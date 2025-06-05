@@ -15,8 +15,8 @@ dependencies:
   - mayavi # [unix]
   - traitsui <7.0.0
   - gmsh <4.0|>=4.5.2
-  - pip
   - pysparse
+  - pip
   - pip:
     - steppyngstounes
 platforms:
