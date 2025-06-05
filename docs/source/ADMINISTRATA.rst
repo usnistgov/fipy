@@ -102,22 +102,36 @@ Continuous Integration
 
 We use the :term:`Azure` and :term:`GitHub Actions` cloud services for
 :term:`Continuous Integration` (CI).  These CIs are configured in
-|.azure/pipelines.yml|_, |.github/workflows/NISTtheDocs2Death.yml|_, and
+|.azure/pipelines.yml|_, |.github/workflows/Docs4NIST.yml|_, and
 |.github/workflows/nix.yml|_.
+
+.. note::
+
+   In order to focus on breakages introduced by changes to :term:`FiPy`, a
+   `pull request`_ is normally built with one of the :ref:`CONDALOCKFILES`,
+   whereas the nightly builds use an :file:`environment.yml` in order to
+   catch breakages introduced by :term:`FiPy`'s prerequisites.
+
+   A `pull request`_ may be tested with the latest prerequisites by setting
+   the ``CONDA_ENVIRONMENT_NOT_LOCK`` environment variable in
+   `Azure at queue time`_.
 
 .. |Tests|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
 .. _Tests:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
-.. |Documentation| image:: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml/badge.svg
-.. _Documentation: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml
+.. |Documentation| image:: https://github.com/usnistgov/fipy/actions/workflows/Docs4NIST.yml/badge.svg
+.. _Documentation: https://github.com/usnistgov/fipy/actions/workflows/Docs4NIST.yml
 .. |nix|           image:: https://github.com/usnistgov/fipy/actions/workflows/nix.yml/badge.svg
 .. _nix:           https://github.com/usnistgov/fipy/actions/workflows/nix.yml
 
 .. |.azure/pipelines.yml| replace::    :file:`{FiPySource}/.azure/pipelines.yml`
 .. _.azure/pipelines.yml: https://github.com/usnistgov/fipy/blob/master/.azure/pipelines.yml
-.. |.github/workflows/NISTtheDocs2Death.yml| replace::    :file:`{FiPySource}/.github/workflows/NISTtheDocs2Death.yml`
-.. _.github/workflows/NISTtheDocs2Death.yml: https://github.com/usnistgov/fipy/blob/master/.github/workflows/NISTtheDocs2Death.yml
+.. |.github/workflows/Docs4NIST.yml| replace::    :file:`{FiPySource}/.github/workflows/Docs4NIST.yml`
+.. _.github/workflows/Docs4NIST.yml: https://github.com/usnistgov/fipy/blob/master/.github/workflows/Docs4NIST.yml
 .. |.github/workflows/nix.yml| replace::    :file:`{FiPySource}/.github/workflows/nix.yml`
 .. _.github/workflows/nix.yml: https://github.com/usnistgov/fipy/blob/master/.github/workflows/nix.yml
+.. _Azure at queue time: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#allow-at-queue-time
+
+.. _CONDALOCKFILES:
 
 ===============
 Conda Lockfiles
@@ -140,6 +154,45 @@ The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
 
    Do not merge new lockfiles to ``master`` without validating that
    everything still works.
+
+.. attention::
+
+   As of 2025-04-30, locking 
+   :file:`environment/locks/trilinos-environment.yml` is extremely slow.
+
+.. attention::
+
+   Due to an issue with URL encoding, it may be necessary to replace
+   ``%21`` with ``!`` in the
+   :file:`environments/locks/conda-${solver}-lock.yml` files before calling
+   :command:`conda-lock render`.
+
+   See `conda/conda-lock#764 <https://github.com/conda/conda-lock/issues/764>`_, 
+   `mamba-org/mamba#3737 <https://github.com/mamba-org/mamba/issues/3737>`_,
+   `conda/conda#14481 <https://github.com/conda/conda/pull/14481>`_.
+
+=====================
+README-like documents
+=====================
+
+The contents of
+
+ * :file:`CHANGELOG.rst`
+ * :file:`INSTALLATION.rst`
+ * :file:`README.rst`
+
+are managed by the
+`sphinx-readme <https://sphinx-readme.readthedocs.io/>`_ extension.
+In order to make changes
+
+ * Make edits to the corresponding files in :file:`docs/source/`.
+ * Run::
+
+    $ make -C docs html
+
+   to re-render the 3 affected files.
+
+ * Add and commit the resulting changes.
 
 ================
 Making a Release
@@ -239,7 +292,7 @@ Attach
  * :file:`dist/FiPy-{x.y}.zip`
  * :file:`dist/FiPy-{x.y}.pdf`
 
-to a `GitHub release`_ associated with tag x.y.
+to a `GitHub release`_ associated with tag `x.y`.
 
 Upload the build products to PyPI with twine_::
 

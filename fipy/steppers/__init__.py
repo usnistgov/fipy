@@ -11,12 +11,70 @@ from fipy.steppers.stepper import Stepper
 from fipy.steppers.pseudoRKQSStepper import PseudoRKQSStepper
 from fipy.steppers.pidStepper import PIDStepper
 from fipy.tools.numerix import L1norm
+from fipy.tools.decorators import deprecate
 
 __all__ = ["L1error", "L2error", "LINFerror", "sweepMonotonic",
            "error", "residual"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
+@deprecate(version="4.0",
+           message="Pass a ``residualFn`` to :meth:`~fipy.terms.term.Term.sweep`.")
+def residual(var, matrix, RHSvector):
+    r"""
+    Determines the residual for the current solution matrix and variable.
+
+    .. math::
+
+        \|\mathsf{L}\vec{x} - \vec{b}\|_\infty
+
+    where :math:`\|\vec{\xi}\|_\infty` is the :math:`L^\infty` norm of :math:`\vec{\xi}`.
+
+    Parameters
+    ----------
+    var : ~fipy.variables.cellVariable.CellVariable
+        The `CellVariable` in question, *prior* to solution.
+    matrix : ~fipy.matrices.sparseMatrix._SparseMatrix
+        The coefficient matrix at this step/sweep
+    RHSvector : ndarray
+        The right hand side vector
+    """
+    from fipy.tools.numerix import array, LINFnorm
+
+    Lx = matrix * array(var)
+    return LINFnorm(Lx - RHSvector)
+
+@deprecate(version="4.0",
+           message="Calculate error explicitly with "
+                   ":mod:`~fipy.tools.numerix`.")
+def error(var, matrix, RHSvector, norm=L1norm):
+    r"""
+    .. math::
+
+       \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_?}
+       {\|\mathtt{var}^\text{old}\|_?}
+
+    where :math:`\|\vec{x}\|_?` is the normalization of :math:`\vec{x}` provided
+    by :func:`~fipy.steppers.norm`.
+
+    Parameters
+    ----------
+    var : ~fipy.variables.cellVariable.CellVariable
+        The `CellVariable` in question.
+    matrix
+        *(ignored)*
+    RHSvector
+        *(ignored)*
+    norm : function
+        A function that will normalize its `array` argument and return
+        a single number (default: :func:`~fipy.tools.numerix.L1norm`).
+    """
+    denom = norm(var.old)
+    return norm(var - var.old) / (denom + (denom == 0))
+
+@deprecate(version="4.0",
+           message="Calculate error explicitly with "
+                   ":mod:`~fipy.tools.numerix.L1norm`.")
 def L1error(var, matrix, RHSvector):
     r"""
     .. math::
@@ -38,6 +96,9 @@ def L1error(var, matrix, RHSvector):
     from fipy.tools.numerix import L1norm
     return error(var, matrix, RHSvector, L1norm)
 
+@deprecate(version="4.0",
+           message="Calculate error explicitly with "
+                   ":mod:`~fipy.tools.numerix.L2norm`.")
 def L2error(var, matrix, RHSvector):
     r"""
     .. math::
@@ -59,6 +120,9 @@ def L2error(var, matrix, RHSvector):
     from fipy.tools.numerix import L2norm
     return error(var, matrix, RHSvector, L2norm)
 
+@deprecate(version="4.0",
+           message="Calculate error explicitly with "
+                   ":mod:`~fipy.tools.numerix.LINFnorm`.")
 def LINFerror(var, matrix, RHSvector):
     r"""
     .. math::
@@ -80,6 +144,8 @@ def LINFerror(var, matrix, RHSvector):
     from fipy.tools.numerix import LINFnorm
     return error(var, matrix, RHSvector, LINFnorm)
 
+@deprecate(version="4.0",
+           message="Use the :term:`steppyngstounes` package instead.")
 def sweepMonotonic(fn, *args, **kwargs):
     """
     Repeatedly calls :func:`fn(*args, **kwargs)` until the residual returned by
@@ -105,52 +171,3 @@ def sweepMonotonic(fn, *args, **kwargs):
         res = fn(*args, **kwargs)
 
     return res
-
-def residual(var, matrix, RHSvector):
-    r"""
-    Determines the residual for the current solution matrix and variable.
-
-    .. math::
-
-        \|\mathsf{L}\vec{x} - \vec{b}\|_\infty
-
-    where :math:`\|\vec{\xi}\|_\infty` is the :math:`L^\infty` norm of :math:`\vec{\xi}`.
-
-    Parameters
-    ----------
-    var : ~fipy.variables.cellVariable.CellVariable
-        The `CellVariable` in question, *prior* to solution.
-    matrix : ~fipy.matrices.sparseMatrix._SparseMatrix
-        The coefficient matrix at this step/sweep
-    RHSvector : ndarray
-        The right hand side vector
-    """
-    from fipy.tools.numerix import array, LINFnorm
-
-    Lx = matrix * array(var)
-    return LINFnorm(Lx - RHSvector)
-
-def error(var, matrix, RHSvector, norm=L1norm):
-    r"""
-    .. math::
-
-       \frac{\|\mathtt{var} - \mathtt{var}^\text{old}\|_?}
-       {\|\mathtt{var}^\text{old}\|_?}
-
-    where :math:`\|\vec{x}\|_?` is the normalization of :math:`\vec{x}` provided
-    by `norm`.
-
-    Parameters
-    ----------
-    var : ~fipy.variables.cellVariable.CellVariable
-        The `CellVariable` in question.
-    matrix
-        *(ignored)*
-    RHSvector
-        *(ignored)*
-    norm : function
-        A function that will normalize its `array` argument and return
-        a single number (default: :func:`~fipy.tools.numerix.L1norm`).
-    """
-    denom = norm(var.old)
-    return norm(var - var.old) / (denom + (denom == 0))

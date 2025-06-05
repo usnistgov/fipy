@@ -27,7 +27,7 @@ def conda_info(conda="conda"):
     info["conda_info"] = json.loads(stdout)
 
     p = subprocess.Popen([conda, "env", "export",
-                          "--name", info["conda_info"]["active_prefix_name"],
+                          "--prefix", info["conda_info"]["active_prefix"],
                           "--json"],
                          stdout=subprocess.PIPE)
     stdout, _ = p.communicate()

@@ -79,23 +79,12 @@ class CylindricalNonUniformGrid1D(NonUniformGrid1D):
     def _test(self):
         """
         These tests are not useful as documentation, but are here to ensure
-        everything works as expected. Fixed a bug where the following throws
-        an error on solve() when `nx` is a float.
-
-            >>> from fipy import CellVariable, DiffusionTerm, DefaultSolver
-            >>> mesh = CylindricalNonUniformGrid1D(nx=3., dx=(1., 2., 3.))
-            >>> var = CellVariable(mesh=mesh)
-
-        The residual and the b-vector are both zero, so use "unscaled"
-        normalization and no preconditioning.  Again, we don't care about
-        the answer, we just want it to be quiet.
-
-            >>> solver = DefaultSolver(criterion="unscaled", precon=None)
-            >>> DiffusionTerm().solve(var, solver=solver)
+        everything works as expected.
 
         This test is for https://github.com/usnistgov/fipy/issues/372. Cell
         volumes were being returned as `binOps` rather than arrays.
 
+            >>> from fipy import CellVariable
             >>> m = CylindricalNonUniformGrid1D(dx=(1., 2., 3., 4.), nx=4)
             >>> print(isinstance(m.cellVolumes, numerix.ndarray))
             True

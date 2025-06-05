@@ -87,7 +87,7 @@ matrix:
       delimiters:
       # Ignore text between inline back ticks
       - open: '(- )?(?P<open>`+)'
-        close: '(?P=open)'
+        close: '(?P=open)_?'
       # Ignore doctest blocks
       #  Source consists of a PS1 line followed by zero or more PS2 lines.
       #  Want consists of any non-blank lines that do not start with PS1.
@@ -106,7 +106,7 @@ matrix:
       - open: '\s'
         content: '\w*'
         close: '_'
-      # Ignore reStructredText hyperlink target
+      # Ignore reStructuredText hyperlink target
       - open: '\.\.[ \t]+_[^:]*:'
         close: '$'
       # Ignore reStructuredText header ---
@@ -125,7 +125,11 @@ matrix:
       - open: '^\.\. \|[^|]+\|'
         close: '$'
       # Ignore reStructuredText substitutions
-      - open: '\|'
+      - open: '\|[^.\s]'
+        content: '[^|]*'
+        close: '\|_?'
+      # Ignore reStructuredText dotted substitutions
+      - open: '\|\.+'
         content: '[^|]*'
         close: '\|_?'
       # Ignore reStructuredText toctree

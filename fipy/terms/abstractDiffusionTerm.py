@@ -245,7 +245,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         id1 = self._reshapeIDs(var, id1)
         id2 = self._reshapeIDs(var, id2)
 
-        facesPerCell = mesh._facesPerCell[..., mesh._localNonOverlappingCellIDs]
+        facesPerCell = mesh._neighborsPerCell[..., mesh._localNonOverlappingCellIDs]
         coefficientMatrix = self._getMatrix(SparseMatrix=SparseMatrix, mesh=mesh, nonZerosPerRow=facesPerCell + 1)
         interiorCoeff = numerix.take(coeff, interiorFaces, axis=-1).ravel()
         coefficientMatrix.addAt(interiorCoeff, id1.ravel(), id1.swapaxes(0, 1).ravel())

@@ -36,6 +36,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.imgconverter',
               'sphinx.ext.napoleon',
+              'sphinx_readme',
               'redirecting_html',
               'sphinxcontrib.bibtex',
               'matplotlib.sphinxext.plot_directive']
@@ -354,3 +355,22 @@ for line in open('nitpick-exceptions'):
     target = target.strip()
     nitpick_ignore.append((dtype, target))
 
+
+# sphinx-readme options
+# See https://sphinx-readme.readthedocs.io/en/latest/configuration/configuring.html
+html_context = {
+    'display_github': True,
+    'github_user': 'usnistgov',
+    'github_repo': 'fipy',
+}
+
+html_baseurl = "https://pages.nist.gov/fipy/en/latest/"
+
+readme_src_files = [
+    "CHANGELOG.rst",
+    "INSTALLATION.rst",
+    "README.rst",
+]
+readme_docs_url_type = "code"
+
+readme_raw_directive = False

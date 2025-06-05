@@ -6,7 +6,7 @@ As in :mod:`examples.phase.simple`, we will examine a 1D problem
 .. index::
    single: Grid1D
 
->>> from fipy import CellVariable, Variable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer
+>>> from fipy import CellVariable, Variable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, LinearLUSolver, Viewer, DefaultAsymmetricSolver
 >>> from fipy.tools import numerix
 
 >>> nx = 400
@@ -480,12 +480,23 @@ We plot the result against the sharp interface solution
 >>> sharp.setValue(Cs, where=x < L * fraction)
 >>> sharp.setValue(Cl, where=x >= L * fraction)
 
+>>> elapsed = Variable(value=0.) # s
+
 .. index::
    pair: module; fipy.viewers
 
 >>> if __name__ == '__main__':
-...     viewer = Viewer(vars=(phase, C, sharp),
-...                     datamin=0., datamax=1.)
+...     try:
+...         from examples.phase.phaseViewer import PhaseViewer
+...
+...         viewer = PhaseViewer(phase=phase, C=C, sharp=sharp,
+...                              elapsed=elapsed,
+...                              L=L, deltaA=deltaA,
+...                              tmin=1e-5, tmax=300 * 3600,
+...                              datamin=0., datamax=1.)
+...     except ImportError:
+...         viewer = Viewer(vars=(phase, C, sharp),
+...                         datamin=0., datamax=1.)
 ...     viewer.plot()
 
 Because the phase field interface will not move, and because we've seen in
@@ -509,7 +520,17 @@ equations) as a test for how long to sweep.
 We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
 
->>> solver = LinearLUSolver(tolerance=1e-10)
+>>> import fipy.solvers.solver
+>>> from fipy.tools import parallelComm
+>>> if parallelComm.Nproc > 1:
+...     if fipy.solvers.solver_suite == 'petsc':
+...         solver = DefaultAsymmetricSolver(tolerance=1e-10, precon='hypre')
+...     elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+...         # Trilinos scales by initial residual
+...         # b-vector L2norm is ~1e15
+...         solver = DefaultAsymmetricSolver(tolerance=1e-24)
+... else:
+...     solver = LinearLUSolver(tolerance=1e-10)
 
 >>> phase.updateOld()
 >>> C.updateOld()
@@ -517,7 +538,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 >>> initialRes = None
 >>> sweep = 0
 
->>> while res > 1e-4 and sweep < 20:
+>>> while res > 1e-8 and sweep < 100:
 ...     res = eq.sweep(dt=dt, solver=solver)
 ...     if initialRes is None:
 ...         initialRes = res
@@ -532,6 +553,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 .. image:: /figures/examples/phase/binary/stationary.*
    :width: 90%
    :align: center
+   :alt: phase and composition fields in equilibrium, compared with phase diagram concentrations
 
 We verify that the bulk phases have shifted to the predicted solidus and
 liquidus compositions
@@ -579,38 +601,34 @@ barrier heights is negligible:
    \\vec{u}_\\phi &= \\frac{D_\\phi}{C} \\nabla \\phi
    \\\\
    &\\approx
-   \\frac{Dl \\frac{1}{2} V_m}{R T}
+   \\frac{D_l \\frac{1}{2} V_m}{R T}
    \\left[
        \\frac{L_B\\left(T - T_M^B\\right)}{T_M^B}
        - \\frac{L_A\\left(T - T_M^A\\right)}{T_M^A}
    \\right] \\frac{1}{\\Delta x}
    \\\\
    &\\approx
-   \\frac{Dl \\frac{1}{2} V_m}{R T}
+   \\frac{D_l \\frac{1}{2} V_m}{R T}
    \\left(L_B + L_A\\right) \\frac{T_M^A - T_M^B}{T_M^A + T_M^B}
    \\frac{1}{\\Delta x}
    \\\\
-   &\\approx \\unit{0.28}{\\centi\\meter\\per\\second}
+   &\\approx 0.28~\\mathrm{cm/s}
 
 To get a :math:`\\text{CFL} = \\vec{u}_\\phi \\Delta t / \\Delta x < 1`, we need a
-time step of about :math:`\\unit{10^{-5}}{\\second}`.
+time step of about :math:`10^{-5}~\\mathrm{s}`.
 
->>> dt = 1.e-5
-
->>> if __name__ == '__main__':
-...     timesteps = 100
-... else:
-...     timesteps = 10
+>>> dt0 = 1.e-5
 
 >>> from builtins import range
->>> for i in range(timesteps):
+>>> for i in range(8):
 ...     phase.updateOld()
 ...     C.updateOld()
 ...     res = 1e+10
 ...     sweep = 0
-...     while res > 1e-3 and sweep < 20:
-...         res = eq.sweep(dt=dt, solver=solver)
+...     while (res > 1e-3 or abs(Cavg.value - 0.5) > 1e-8) and sweep < 20:
+...         res = eq.sweep(dt=dt0, solver=solver)
 ...         sweep += 1
+...     elapsed.value = (i + 1) * dt0
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
@@ -618,15 +636,126 @@ time step of about :math:`\\unit{10^{-5}}{\\second}`.
 >>> if __name__ == '__main__':
 ...     input("Moving phase field. Press <return> to proceed...")
 
-.. image:: /figures/examples/phase/binary/moving.*
+.. image:: /figures/examples/phase/binary/binaryCoupled-0.000080.*
    :width: 90%
    :align: center
 
-We see that the composition on either side of the interface approach the
+We see that the composition on either side of the interface approaches the
 sharp-interface solidus and liquidus, but it will take a great many more
 timesteps to reach equilibrium. If we waited sufficiently long, we
 could again verify the final concentrations and phase fraction against the
 expected values.
+
+We can estimate the time to equilibration by examining the time for the
+diffusion field to become uniform.  In the liquid, this will take
+:math:`\\mathcal{O}((10~\\mathrm{\\mu m})^2 / D_l) =
+0.1~\\mathrm{s}` and in the solid
+:math:`\\mathcal{O}((10~\\mathrm{\\mu m})^2 / D_s) =
+1000~\\mathrm{s}`.
+
+Not wanting to take a hundred-million steps, we employ adaptive time
+stepping, using the :term:`steppyingstounes` package.  This package takes
+care of many of the messy details of stepping, like overshoot, underflow,
+and step size adaptation, while keeping the structure of our solve loop
+largely intact.
+
+>>> from steppyngstounes import SequenceStepper, PIDStepper # doctest: +STEPPYNGSTOUNES
+>>> from itertools import count
+
+Assuming the process is dominated by diffusion, we can take steps that
+increase geometrically.  Since we're unsure if diffusion is the only
+process controlling dynamics, we take each increasing step with an adaptive
+stepper that uses a `PID controller`_ to keep the equation residuals and
+mass conservation within acceptable limits.  The total number of solves is
+not strongly sensitive to the number of sweeps, but two sweeps seems to be
+both sufficient and efficient.
+
+We'll only advance the step if it's successful, so we need to update the
+old values before we get started.
+
+>>> phase.updateOld()
+>>> C.updateOld()
+
+>>> if __name__ == '__main__':
+...     totaltime = 300 * 3600 # 300 h
+... else:
+...     totaltime = 32e-5 # 320 us
+
+>>> dt = dt0
+
+>>> mass_tolerance = 1e-6
+>>> residual_tolerance = 1e-3
+
+>>> if ((parallelComm.Nproc > 1)
+...     and (fipy.solvers.solver_suite in ['trilinos', 'no-pysparse'])):
+...     # Trilinos on linux in parallel doesn't conserve as well
+...     mass_tolerance = 1e-5
+
+>>> for checkpoint in SequenceStepper(start=float(elapsed), stop=totaltime,     # doctest: +STEPPYNGSTOUNES
+...                                   sizes=(dt0 * 2**(n/2) for n in count(7))):
+...     for step in PIDStepper(start=checkpoint.begin,
+...                            stop=checkpoint.end,
+...                            size=dt):
+...         for sweep in range(2):
+...             res = eq.sweep(dt=step.size, solver=solver)
+...             # print(step.begin, step.size, sweep, res)
+...         err = max(res / residual_tolerance,
+...                   abs(Cavg.value - 0.5) / mass_tolerance)
+...         if step.succeeded(error=err):
+...             phase.updateOld()
+...             C.updateOld()
+...             elapsed.value = step.end
+...             if __name__ == '__main__':
+...                 viewer.plot()
+...         else:
+...             phase.value = phase.old
+...             C.value = C.old
+...     # the last step might have been smaller than possible,
+...     # if it was near the end of the checkpoint range
+...     dt = step.want
+...     _ = checkpoint.succeeded()
+...     if __name__ == '__main__':
+...         viewer.plot()
+
+>>> from fipy import input
+>>> if __name__ == '__main__':
+...     input("Re-equilbrated phase field. Press <return> to proceed...")
+
+.. image:: /figures/examples/phase/binary/binaryCoupled-0.000899.*
+   :width: 30%
+   :alt: phase and composition fields at t=0.000899, compared with final phase diagram concentrations
+
+.. image:: /figures/examples/phase/binary/binaryCoupled-8.949963.*
+   :width: 30%
+   :alt: phase and composition fields at t=8.949963, compared with final phase diagram concentrations
+
+.. image:: /figures/examples/phase/binary/binaryCoupled-1080000.000000.*
+   :width: 30%
+   :alt: phase and composition fields at t=1080000, compared with final phase diagram concentrations
+
+The interface moves :math:`\\approx 2.8~\\mathrm{\\mu m}` in
+:math:`70~\\mathrm{ms}`, driven by diffusion in the liquid
+phase (compare the estimate above of :math:`0.1~\\mathrm{s}`).
+For the next
+:math:`12~\\mathrm{s}`, the interface stalls while the solute step
+trapped in the solid phase diffuses outward
+(:math:`(2.8~\\mathrm{\\mu m})^2 / D_s =
+\mathcal{O}(80~\\mathrm{s})`).  Once the solute gradient in the
+solid reaches the new position of the interface, the solidification front
+begins to move, driven by diffusion in the solid.  When the solute in the
+solid becomes uniform, the interface stalls again after :math:`\\approx
+4000~\\mathrm{s}`, having moved another
+:math:`2.9~\\mathrm{\\mu m}` (recall the estimate of
+:math:`1000~\\mathrm{s}` for equilibration in the solid).  After this
+point, there is essentially no further motion of the interface and barely
+perceptible changes in the concentration field.
+
+.. note::
+
+   This evolution is qualitatively consistent with that seen in
+   :mod:`examples.phase.binary`, but the interface does not move as far and
+   the bulk concentrations are further from the phase diagram values.  The
+   computation also takes substantially longer than the uncoupled variant.
 
 .. rubric:: Footnotes
 
@@ -640,6 +769,8 @@ expected values.
    as a :class:`~fipy.variables.variable.Variable`
 
 .. _CFL limit: http://en.wikipedia.org/wiki/Courant-Friedrichs-Lewy_condition
+
+.. _PID controller: https://en.wikipedia.org/wiki/PID_controller
 """
 from __future__ import unicode_literals
 

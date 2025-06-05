@@ -1,3 +1,101 @@
+.. |.AppVeyor| replace:: AppVeyor
+.. _.AppVeyor: https://pages.nist.gov/fipy/en/latest/glossary.html#term-AppVeyor
+.. |.boundaryconditions| replace:: Boundary Conditions
+.. _.boundaryconditions: https://pages.nist.gov/fipy/en/latest/USAGE.html#boundaryconditions
+.. |.chap-colon-efficiency| replace:: Efficiency
+.. _.chap-colon-efficiency: https://pages.nist.gov/fipy/en/latest/EFFICIENCY.html#chap-efficiency
+.. |.CircleCI| replace:: CircleCI
+.. _.CircleCI: https://pages.nist.gov/fipy/en/latest/glossary.html#term-CircleCI
+.. |.conda| replace:: conda
+.. _.conda: https://pages.nist.gov/fipy/en/latest/glossary.html#term-conda
+.. |.continuousintegration| replace:: Continuous Integration
+.. _.continuousintegration: https://pages.nist.gov/fipy/en/latest/ADMINISTRATA.html#continuousintegration
+.. |.coupledequations| replace:: Coupled and Vector Equations
+.. _.coupledequations: https://pages.nist.gov/fipy/en/latest/USAGE.html#coupledequations
+.. |.examples.levelSet.distanceFunction.circle| replace:: ``examples.levelSet.distanceFunction.circle``
+.. _.examples.levelSet.distanceFunction.circle: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/examples/levelSet/distanceFunction/circle.py
+.. |.examples.updating.update1_0to2_0| replace:: ``examples.updating.update1_0to2_0``
+.. _.examples.updating.update1_0to2_0: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/examples/updating/update1_0to2_0.py
+.. |.examples.updating.update2_0to3_0| replace:: ``examples.updating.update2_0to3_0``
+.. _.examples.updating.update2_0to3_0: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/examples/updating/update2_0to3_0.py
+.. |.faq| replace:: Frequently Asked Questions
+.. _.faq: https://pages.nist.gov/fipy/en/latest/FAQ.html#faq
+.. |.FiPy| replace:: FiPy
+.. _.FiPy: https://pages.nist.gov/fipy/en/latest/glossary.html#term-FiPy
+.. |.~fipy.meshes.mesh.Mesh| replace:: ``Mesh``
+.. _.~fipy.meshes.mesh.Mesh: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/meshes/mesh.py#L22-L848
+.. |.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm| replace:: ``ImplicitSourceTerm``
+.. _.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/terms/implicitSourceTerm.py#L11-L62
+.. |.~fipy.terms.term.Term.solve| replace:: ``solve()``
+.. _.~fipy.terms.term.Term.solve: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/terms/term.py#L169-L196
+.. |.~fipy.terms.term.Term.sweep| replace:: ``sweep()``
+.. _.~fipy.terms.term.Term.sweep: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/terms/term.py#L198-L262
+.. |.~fipy.terms.transientTerm.TransientTerm| replace:: ``TransientTerm``
+.. _.~fipy.terms.transientTerm.TransientTerm: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/terms/transientTerm.py#L12-L194
+.. |.~fipy.tools.numerix| replace:: ``numerix``
+.. _.~fipy.tools.numerix: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/tools/numerix.py
+.. |.~fipy.variables.cellVariable.CellVariable| replace:: ``CellVariable``
+.. _.~fipy.variables.cellVariable.CellVariable: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/variables/cellVariable.py#L13-L661
+.. |.~fipy.variables.faceVariable.FaceVariable| replace:: ``FaceVariable``
+.. _.~fipy.variables.faceVariable.FaceVariable: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/variables/faceVariable.py#L9-L86
+.. |.~fipy.viewers.matplotlibViewer.MatplotlibViewer| replace:: ``MatplotlibViewer()``
+.. _.~fipy.viewers.matplotlibViewer.MatplotlibViewer: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/viewers/matplotlibViewer/__init__.py#L12-L122
+.. |.installation| replace:: Installation
+.. _.installation: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#installation
+.. |.linux| replace:: linux
+.. _.linux: https://pages.nist.gov/fipy/en/latest/glossary.html#term-linux
+.. |.logging| replace:: Logging
+.. _.logging: https://pages.nist.gov/fipy/en/latest/USAGE.html#logging
+.. |.lsmlibdoc| replace:: LSMLIB
+.. _.lsmlibdoc: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#lsmlibdoc
+.. |.macOS| replace:: macOS
+.. _.macOS: https://pages.nist.gov/fipy/en/latest/glossary.html#term-macOS
+.. |.Matplotlib| replace:: Matplotlib
+.. _.Matplotlib: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Matplotlib
+.. |.matplotlib| replace:: ``matplotlib``
+.. _.matplotlib: https://matplotlib.org/stable/index.html#module-matplotlib
+.. |.Mayavi| replace:: Mayavi
+.. _.Mayavi: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Mayavi
+.. |.MayaVi| replace:: MayaVi
+.. _.MayaVi: https://pages.nist.gov/fipy/en/latest/glossary.html#term-MayaVi
+.. |.meshingwithgmsh| replace:: Meshing with Gmsh
+.. _.meshingwithgmsh: https://pages.nist.gov/fipy/en/latest/USAGE.html#meshingwithgmsh
+.. |.Numeric| replace:: Numeric
+.. _.Numeric: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Numeric
+.. |.NumPy| replace:: NumPy
+.. _.NumPy: https://pages.nist.gov/fipy/en/latest/glossary.html#term-NumPy
+.. |.numpy| replace:: ``numpy``
+.. _.numpy: https://numpy.org/doc/stable/reference/index.html#module-numpy
+.. |.parallel| replace:: Solving in Parallel
+.. _.parallel: https://pages.nist.gov/fipy/en/latest/USAGE.html#parallel
+.. |.PETSc| replace:: PETSc
+.. _.PETSc: https://pages.nist.gov/fipy/en/latest/glossary.html#term-PETSc
+.. |.pip| replace:: pip
+.. _.pip: https://pages.nist.gov/fipy/en/latest/glossary.html#term-pip
+.. |.pyamg| replace:: PyAMG
+.. _.pyamg: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#pyamg
+.. |.Pysparse| replace:: Pysparse
+.. _.Pysparse: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Pysparse
+.. |.Python| replace:: Python
+.. _.Python: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Python
+.. |.Python 3| replace:: Python 3
+.. _.Python 3: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Python-3
+.. |.scikitfmm| replace:: Scikit-fmm
+.. _.scikitfmm: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#scikitfmm
+.. |.scipy| replace:: ``scipy``
+.. _.scipy: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/solvers/scipy/__init__.py
+.. |.solvers| replace:: Solvers
+.. _.solvers: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#solvers
+.. |.Sphinx| replace:: Sphinx
+.. _.Sphinx: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Sphinx
+.. |.TravisCI| replace:: TravisCI
+.. _.TravisCI: https://pages.nist.gov/fipy/en/latest/glossary.html#term-TravisCI
+.. |.Trilinos| replace:: Trilinos
+.. _.Trilinos: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Trilinos
+.. |.Windows| replace:: Windows
+.. _.Windows: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Windows
+
+
 .. Generate incremental updates to this file with
    $ python setup.py changelog <OPTIONS>
 
@@ -19,18 +117,26 @@ This maintenance release:
   lock files with specified compatible versions of FiPy prerequisites.
 - Fixes numerous documentation errors.
 
-.. attention::
 
-   SciPy 1.13.0 generates one test suite error for
-   ``fipy.matrices.scipyMatrix._ScipyMatrix.CSR``.  Either ignore the test
-   failure or upgrade to SciPy >= 1.13.1
+.. list-table::
+   :header-rows: 1
+   
+   * - 🔔️ Attention
+   * - SciPy 1.13.0 generates one test suite error for
+       ``fipy.matrices.scipyMatrix._ScipyMatrix.CSR``.  Either ignore the test
+       failure or upgrade to SciPy >= 1.13.1
 
-.. attention::
 
-   PETSc 3.21 crashes our test suite when running in parallel (`#1054
-   <https://github.com/usnistgov/fipy/issues/1054>`_).  PETSc <= 3.20 is
-   recommended, although `petsc 3.20.2_*_102 is broken on macOS
-   <https://github.com/conda-forge/petsc-feedstock/issues/180>`_.
+
+.. list-table::
+   :header-rows: 1
+   
+   * - 🔔️ Attention
+   * - PETSc 3.21 crashes our test suite when running in parallel (`#1054
+       <https://github.com/usnistgov/fipy/issues/1054>`_).  PETSc <= 3.20 is
+       recommended, although `petsc 3.20.2_*_102 is broken on macOS
+       <https://github.com/conda-forge/petsc-feedstock/issues/180>`_.
+
 
 Pulls
 -----
@@ -81,8 +187,8 @@ Fixes
 Version 3.4.4 - 2023-06-27
 --------------------------
 
-This maintenance release adds :ref:`LOGGING` and resolves compatibility issues
-with recent builds of :term:`PETSc` and :term:`NumPy`.
+This maintenance release adds |.logging|_ and resolves compatibility issues
+with recent builds of |.PETSc|_ and |.NumPy|_.
 
 Pulls
 -----
@@ -112,7 +218,7 @@ Version 3.4.3 - 2022-06-15
 This maintenance release adds a new example contributed by
 `@Jon83Carvalho <https://github.com/Jon83Carvalho>`_,
 clarifies many points in the documentation,
-migrates all :ref:`CONTINUOUSINTEGRATION` to
+migrates all |.continuousintegration|_ to
 `Azure <https://dev.azure.com>`_,
 updates to using
 `wheels <https://packaging.python.org/en/latest/specifications/binary-distribution-format/>`_
@@ -222,14 +328,18 @@ Version 3.4.2.1 - 2020-08-01
 This release fixes assorted viewer issues, fixes a problem with convection
 boundary conditions, and introduces spherical meshes.
 
-.. attention::
 
-   There are
-   `known <https://travis-ci.com/github/usnistgov/fipy/builds/177879719>`_
-   `failures <https://app.circleci.com/pipelines/github/usnistgov/fipy/248/workflows/4babcd98-aafc-4931-a353-64bbb3c93cb6>`_
-   with the VTK viewers (bitrot has started to set
-   in since the `demise of Python 2.7`_).  There's also a new parallel
-   failure in `NonUniformGrid1D` that we need to figure out.
+.. list-table::
+   :header-rows: 1
+   
+   * - 🔔️ Attention
+   * - There are
+       `known <https://travis-ci.com/github/usnistgov/fipy/builds/177879719>`_
+       `failures <https://app.circleci.com/pipelines/github/usnistgov/fipy/248/workflows/4babcd98-aafc-4931-a353-64bbb3c93cb6>`_
+       with the VTK viewers (bitrot has started to set
+       in since the `demise of Python 2.7`_).  There's also a new parallel
+       failure in `NonUniformGrid1D` that we need to figure out.
+
 
 .. _demise of Python 2.7: https://www.python.org/dev/peps/pep-0373/#update
 
@@ -261,7 +371,7 @@ Fixes
 Version 3.4.1 - 2020-02-14
 --------------------------
 
-This release is primarily for compatibility with :mod:`numpy` 1.18.
+This release is primarily for compatibility with |.numpy|_ 1.18.
 
 Pulls
 -----
@@ -283,8 +393,8 @@ Fixes
 Version 3.4 - 2020-02-06
 ------------------------
 
-This release adds support for the :term:`PETSc` solvers for
-:ref:`PARALLEL`.
+This release adds support for the |.PETSc|_ solvers for
+|.parallel|_.
 
 Pulls
 -----
@@ -386,12 +496,12 @@ Version 3.2 - 2019-04-22
 ------------------------
 
 This is predominantly a `DevOps`_ release.  The focus has been on making
-FiPy easier to install with :term:`conda`.  It's also possible to install a
-minimal set of prerequisites with :term:`pip`.  Further, :term:`FiPy` is
+FiPy easier to install with |.conda|_.  It's also possible to install a
+minimal set of prerequisites with |.pip|_.  Further, |.FiPy|_ is
 automatically tested on all major platforms using cloud-based
-:ref:`CONTINUOUSINTEGRATION` (:term:`linux` with :term:`CircleCI`,
-:term:`macOS` with :term:`TravisCI`, and :term:`Windows` with
-:term:`AppVeyor`).
+|.continuousintegration|_ (|.linux|_ with |.CircleCI|_,
+|.macOS|_ with |.TravisCI|_, and |.Windows|_ with
+|.AppVeyor|_).
 
 Pulls
 -----
@@ -600,7 +710,7 @@ Pulls
   (`#463 <https://github.com/usnistgov/fipy/pull/463>`_)
 - Fix typeset analytical solution
   (`#460 <https://github.com/usnistgov/fipy/pull/460>`_)
-- Clear `pdflatex` build errors by removing :term:`Python` from heading
+- Clear `pdflatex` build errors by removing |.Python|_ from heading
   (`#459 <https://github.com/usnistgov/fipy/pull/459>`_)
 - purge gist from viewers and optional module lists in `setup.py`
   (`#456 <https://github.com/usnistgov/fipy/pull/456>`_)
@@ -720,13 +830,13 @@ Version 3.1 - 2013-09-30
 
 The significant changes since version 3.0 are:
 
-- Level sets are now handled by :ref:`LSMLIBDOC` or :ref:`SCIKITFMM` 
+- Level sets are now handled by |.lsmlibdoc|_ or |.scikitfmm|_ 
   solver libraries. These libraries are orders of magnitude faster than the 
-  original, :term:`Python`-only prototype.
-- The :term:`Matplotlib` :func:`streamplot()` function can be used to display 
+  original, |.Python|_-only prototype.
+- The |.Matplotlib|_ :func:`streamplot()` function can be used to display 
   vector fields.
 - Version control was switched to the Git_ distributed version control 
-  system. This system should make it much easier for :term:`FiPy` users to 
+  system. This system should make it much easier for |.FiPy|_ users to 
   participate in development.
 
 .. _Git:       https://github.com/usnistgov/fipy
@@ -891,29 +1001,33 @@ necessary.
 
 The significant changes since version 2.1 are:
 
-- :ref:`CoupledEquations` are now supported.
-- A more robust mechanism for specifying :ref:`BoundaryConditions` is now 
+- |.coupledequations|_ are now supported.
+- A more robust mechanism for specifying |.boundaryconditions|_ is now 
   used.
-- Most :class:`~fipy.meshes.mesh.Mesh`\es can be partitioned by 
-  :ref:`MeshingWithGmsh`.
-- :ref:`PYAMG` and :ref:`SCIPY` have been added to the :ref:`SOLVERS`.
-- FiPy is capable of running under :term:`Python 3`.
+- Most |.~fipy.meshes.mesh.Mesh|_\es can be partitioned by 
+  |.meshingwithgmsh|_.
+- |.pyamg|_ and |.scipy|_ have been added to the |.solvers|_.
+- FiPy is capable of running under |.Python 3|_.
 - "getter" and "setter" methods have been pervasively changed to Python 
   properties.
 - The test suite now runs much faster.
 - Tests can now be run on a full install using `fipy.test()`.
-- The functions of the :mod:`~fipy.tools.numerix` module are no longer 
-  included in the :mod:`fipy` namespace.  See
-  :mod:`examples.updating.update2_0to3_0` for details.
-- Equations containing a :class:`~fipy.terms.transientTerm.TransientTerm`,
+- The functions of the |.~fipy.tools.numerix|_ module are no longer 
+  included in the ``fipy`` namespace.  See
+  |.examples.updating.update2_0to3_0|_ for details.
+- Equations containing a |.~fipy.terms.transientTerm.TransientTerm|_,
   must specify the timestep by passing a ``dt=`` argument when calling
-  :meth:`~fipy.terms.term.Term.solve` or :meth:`~fipy.terms.term.Term.sweep`.
+  |.~fipy.terms.term.Term.solve|_ or |.~fipy.terms.term.Term.sweep|_.
 
-.. warning::
 
-   :term:`FiPy` 3 brought unavoidable syntax changes from :term:`FiPy` 2.
-   Please see :mod:`examples.updating.update2_0to3_0` for guidance on the
-   changes that you will need to make to your :term:`FiPy` 2.x scripts.
+.. list-table::
+   :header-rows: 1
+   
+   * - 🚩 Warning
+   * - |.FiPy|_ 3 brought unavoidable syntax changes from |.FiPy|_ 2.
+       Please see |.examples.updating.update2_0to3_0|_ for guidance on the
+       changes that you will need to make to your |.FiPy|_ 2.x scripts.
+
 
 Fixes
 -----
@@ -1097,7 +1211,7 @@ Version 2.1.2 - 2011-04-20
 
 The significant changes since version 2.1.1 are:
 
-- :term:`Trilinos` efficiency improvements
+- |.Trilinos|_ efficiency improvements
 - Diagnostics of the parallel environment
 
 Fixes
@@ -1124,10 +1238,10 @@ Version 2.1.1 - 2010-10-05
 
 The significant changes since version 2.1 are:
 
-- :class:`~fipy.viewers.matplotlibViewer.MatplotlibViewer` can display 
+- |.~fipy.viewers.matplotlibViewer.MatplotlibViewer|_ can display 
   into an existing set of Matplotlib axes.
 
-- :term:`Pysparse` and :term:`Trilinos` are now completely independent.
+- |.Pysparse|_ and |.Trilinos|_ are now completely independent.
 
 Fixes
 -----
@@ -1152,22 +1266,22 @@ Version 2.1 - 2010-04-01
 ------------------------
 
 The relatively small change in version number belies significant advances
-in :term:`FiPy` capabilities.  This release did not receive a "full"
+in |.FiPy|_ capabilities.  This release did not receive a "full"
 version increment because it is completely (er...  [#almost]_) compatible
 with older scripts.
 
 The significant changes since version 2.0.2 are:
 
-- :term:`FiPy` can use :term:`Trilinos` for :ref:`PARALLEL`.
+- |.FiPy|_ can use |.Trilinos|_ for |.parallel|_.
 
-- We have switched from :term:`MayaVi` 1 to :term:`Mayavi` 2. This 
-  :class:`~fipy.viewers.viewer.Viewer` is an independent process that 
+- We have switched from |.MayaVi|_ 1 to |.Mayavi|_ 2. This 
+  ``Viewer`` is an independent process that 
   allows interaction with the display while a simulation is running.
 
-- Documentation has been switched to :term:`Sphinx`, allowing the entire manual
+- Documentation has been switched to |.Sphinx|_, allowing the entire manual
   to be available on the web and for our documentation to link to the
-  documentation for packages such as :mod:`numpy`, :mod:`scipy`,
-  :mod:`matplotlib`, and for :term:`Python` itself.
+  documentation for packages such as |.numpy|_, |.scipy|_,
+  |.matplotlib|_, and for |.Python|_ itself.
 
 Fixes
 -----
@@ -1190,20 +1304,20 @@ Fixes
 - `#153 <https://github.com/usnistgov/fipy/issues/153>`_:
   Switch documentation to use `:math:` directive
 
-.. [#almost] Only two examples from :term:`FiPy` 2.0 fail when run with
-   :term:`FiPy` 2.1:
+.. [#almost] Only two examples from |.FiPy|_ 2.0 fail when run with
+   |.FiPy|_ 2.1:
 
     * :file:`examples/phase/symmetry.py` fails because
-      :class:`~fipy.meshes.mesh.Mesh` no longer provides a
+      |.~fipy.meshes.mesh.Mesh|_ no longer provides a
       ``getCells`` method. The mechanism
       for enforcing symmetry in the updated example is both clearer and
       faster.
 
-    * :mod:`examples.levelSet.distanceFunction.circle` fails because of a
+    * |.examples.levelSet.distanceFunction.circle|_ fails because of a
       change in the comparison of masked values.
 
    Both of these are subtle issues unlikely to affect very many
-   :term:`FiPy` users.
+   |.FiPy|_ users.
 
 --------------------------
 Version 2.0.3 - 2010-03-17
@@ -1254,16 +1368,20 @@ Fixes
 Version 2.0 - 2009-02-09
 ------------------------
 
-.. warning::
 
-   :term:`FiPy` 2 brings unavoidable syntax changes. Please see
-   :mod:`examples.updating.update1_0to2_0` for guidance on the changes that
-   you will need to make to your :term:`FiPy` 1.x scripts.
+.. list-table::
+   :header-rows: 1
+   
+   * - 🚩 Warning
+   * - |.FiPy|_ 2 brings unavoidable syntax changes. Please see
+       |.examples.updating.update1_0to2_0|_ for guidance on the changes that
+       you will need to make to your |.FiPy|_ 1.x scripts.
+
 
 The significant changes since version 1.2 are:
 
-- :class:`~fipy.variables.cellVariable.CellVariable` and
-  :class:`~fipy.variables.faceVariable.FaceVariable` objects can hold
+- |.~fipy.variables.cellVariable.CellVariable|_ and
+  |.~fipy.variables.faceVariable.FaceVariable|_ objects can hold
   values of any rank.
 
 - Much simpler syntax for specifying
@@ -1271,10 +1389,10 @@ The significant changes since version 1.2 are:
   ``Face``\s for boundary conditions.
 
 - Automated determination of the Péclet number and partitioning of 
-  :class:`~fipy.terms.implicitSourceTerm.ImplicitSourceTerm` coefficients
+  |.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm|_ coefficients
   between the matrix diagonal and the right-hand-side-vector.
 
-- Simplified :class:`~fipy.viewers.viewer.Viewer` syntax.
+- Simplified ``Viewer`` syntax.
 
 - Support for the `Trilinos solvers`_.
 
@@ -1456,8 +1574,8 @@ The significant changes since version 1.1 are:
 
 - `--inline` automatically generates C code from `Variable` expressions.
 
-- :term:`FiPy` has been updated to use the :term:`Python` :term:`NumPy` module.
-  :term:`FiPy` no longer works with the older :term:`Numeric` module.
+- |.FiPy|_ has been updated to use the |.Python|_ |.NumPy|_ module.
+  |.FiPy|_ no longer works with the older |.Numeric|_ module.
 
 Fixes
 -----
@@ -1513,10 +1631,10 @@ The significant changes since version 1.0 are:
   * introducing ``UniformGrid`` classes that calculate geometric
     arrays on the fly.
 
-  Details of these improvements are presented in :ref:`chap:Efficiency`.
+  Details of these improvements are presented in |.chap-colon-efficiency|_.
 
 - Installation on Windows has been made considerably easier by
-  constructing executable installers for :term:`FiPy` and its
+  constructing executable installers for |.FiPy|_ and its
   dependencies.
 
 - The arithmetic for ``Variable`` subclasses now works, and returns
@@ -1529,7 +1647,7 @@ The significant changes since version 1.0 are:
 - Many of the examples have been completely rewritten
 
   * A basic 1D diffusion problem now serves as a general tutorial for 
-    setting up any problem in :term:`FiPy`. 
+    setting up any problem in |.FiPy|_. 
   * Several more phase field examples have been added that should make it 
     clearer how to get from the simple 1D case to the more elaborate 
     multicomponent, multidimensional, and anisotropic models.
@@ -1540,7 +1658,7 @@ The significant changes since version 1.0 are:
 
 - A clear distinction has been made between solving an equation via `solve()`
   and iterating an non-linear equation to solution via `sweep()`. An extensive 
-  explanation of the concepts involved has been added to the :ref:`FAQ`.
+  explanation of the concepts involved has been added to the |.faq|_.
 
 - Added a `MultiViewer` class that automatically groups several viewers 
   together if the variables couldn't be displayed by a single viewer.
@@ -1551,9 +1669,9 @@ The significant changes since version 1.0 are:
 
 - The repository has been converted from a CVS to a Subversion_
   repository. Details on how to check out the new repository are given
-  in :ref:`INSTALLATION`.
+  in |.installation|_.
 
-- The :term:`FiPy` repository has also been moved from Sourceforge_ to the
+- The |.FiPy|_ repository has also been moved from Sourceforge_ to the
   `Materials Digital Library Pathway`_.
 
 ..  _Subversion: https://subversion.apache.org/
@@ -1564,7 +1682,7 @@ The significant changes since version 1.0 are:
 Version 1.0 - 2005-09-16
 ------------------------
 
-Numerous changes have been made since :term:`FiPy` 0.1 was released, but the most
+Numerous changes have been made since |.FiPy|_ 0.1 was released, but the most
 significant ones are:
 
 - ``Equation`` objects no longer exist. PDEs are constructed from ``Term`` 
@@ -1590,7 +1708,7 @@ significant ones are:
 
 - A number of `NoiseVariable` objects have been added.
 
-- A new viewer based on :term:`Matplotlib` has been added.
+- A new viewer based on |.Matplotlib|_ has been added.
 
 - The `PyX` viewer has been removed.
 
@@ -1615,7 +1733,7 @@ significant ones are:
   This system is still experimental. Please tell us if you find situations
   that don't work.
 
-The syntax of :term:`FiPy` 1.0 scripts is incompatible with earlier
+The syntax of |.FiPy|_ 1.0 scripts is incompatible with earlier
 releases.  A tutorial for updating your existing scripts can be found in
 :file:`examples/updating/update0_1to1_0.py`.
 
@@ -1691,3 +1809,4 @@ Version 0.1 - 2004-11-05
 ------------------------
 
 Original release
+
