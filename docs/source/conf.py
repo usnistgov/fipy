@@ -36,6 +36,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.imgconverter',
               'sphinx.ext.napoleon',
+              'sphinx.ext.mathjax',
               'sphinx_readme',
               'redirecting_html',
               'sphinxcontrib.bibtex',
@@ -222,6 +223,20 @@ html_show_copyright = False
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'FiPydoc'
 
+mathjax3_config = {
+    "loader": {
+        "load": ["[custom]/siunitx.js", '[tex]/gensymb', '[tex]/color', '[tex]/html', '[tex]/cancel'],
+        "paths": {
+            "custom": "../_static/"
+        }
+    },
+    "tex": {
+        "packages": {
+            '[+]': ['siunitx', 'gensymb', 'color', 'html', 'cancel']
+        },
+    }
+}
+
 # -- Options for LaTeX output --------------------------------------------------
 
 latex_elements = {
@@ -229,12 +244,8 @@ latex_elements = {
     'preamble': r"""
         \usepackage{nist}
 
-        \usepackage[amssymb]{SIunits}
+        \usepackage{siunitx}
         \usepackage{changepage}
-
-        \DeclareMathOperator{\erf}{erf}
-        \DeclareMathOperator{\Ei}{ei}
-        \providecommand{\abs}[1]{\lvert#1\rvert}
 
 
         \authoraddress{Materials Science and Engineering Division \\

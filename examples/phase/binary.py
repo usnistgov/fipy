@@ -21,8 +21,8 @@ The Helmholtz free energy functional can be written as the integral
    \\mathcal{F}\\left(\\phi, C, T\\right)
    = \\int_\\mathcal{V} \\left\\{
        f(\\phi, C, T)
-       + \\frac{\\kappa_\\phi}{2}\\abs{\\nabla\\phi}^2
-       + \\frac{\\kappa_C}{2}\\abs{\\nabla C}^2
+       + \\frac{\\kappa_\\phi}{2}\\lvert\\nabla\\phi\\rvert^2
+       + \\frac{\\kappa_C}{2}\\lvert\\nabla C\\rvert^2
    \\right\\} dV
 
 over the volume :math:`\\mathcal{V}` as a function of phase :math:`\\phi` [#phi]_
@@ -572,10 +572,10 @@ barrier heights is negligible:
    \\left(L_B + L_A\\right) \\frac{T_M^A - T_M^B}{T_M^A + T_M^B}
    \\frac{1}{\\Delta x}
    \\\\
-   &\\approx \\unit{0.28}{\\centi\\meter\\per\\second}
+   &\\approx \\qty{0.28}{\\centi\\meter\\per\\second}
 
 To get a :math:`\\text{CFL} = \\vec{u}_\\phi \\Delta t / \\Delta x < 1`, we need a
-time step of about :math:`\\unit{10^{-5}}{\\second}`.
+time step of about :math:`\\qty{10^{-5}}{\\second}`.
 
 >>> dt = 1.e-5
 

@@ -1121,8 +1121,7 @@ or::
 
    $ conda install --channel conda-forge matplotlib pandas imagemagick
 
-   The PDF file requires `SIunits.sty`_ available, e.g., from
-   `texlive-science`_.
+   The PDF file requires `siunitx`_.
 
    Spelling is checked automatically in the course of
    :ref:`CONTINUOUSINTEGRATION`. If you wish to check manually, you will
@@ -1134,5 +1133,4 @@ or::
    $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/en/en_US.dic?id=a4473e06b56bfe35187e302754f6baaa8d75e54f
 
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
-.. _SIunits.sty: https://ctan.org/pkg/siunits
-.. _texlive-science: https://packages.debian.org/stretch/texlive-science
+.. _siunitx: https://ctan.org/pkg/siunitx
