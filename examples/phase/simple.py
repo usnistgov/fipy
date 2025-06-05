@@ -434,7 +434,7 @@ In order to have a stable numerical solution, the interface must not move
 more than one grid point per time step,
 we thus set the timestep according to the grid spacing :math:`\Delta x`,
 the linear kinetic coefficient :math:`\beta`, and the undercooling
-:math:`\lvert T_m - T\rvert`
+:math:`\abs{T_m - T}`
 Again we use the :meth:`~fipy.terms.term.Term.sweep` method as a replacement for
 :meth:`~fipy.terms.term.Term.solve`.
 

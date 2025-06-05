@@ -39,7 +39,7 @@ the size of each time step and `steps` is the number of time steps.
 >>> var.constrain(valueRight, where=bigMesh.facesRight)
 
 In a semi-infinite domain, the analytical solution for this transient diffusion
-problem is given by :math:`\phi = 1 - \mathrm{erf}((L - x)/2\sqrt{D t})`, which is a
+problem is given by :math:`\phi = 1 - \erf((L - x)/2\sqrt{D t})`, which is a
 reasonable approximation at early times. At late times, the solution is just a
 straight line. If the :term:`SciPy` library is available, the result is tested
 against the expected profile:

@@ -22,8 +22,8 @@ The Helmholtz free energy functional can be written as the integral
    \\mathcal{F}\\left(\\phi, C, T\\right)
    = \\int_\\mathcal{V} \\left\\{
        f(\\phi, C, T)
-       + \\frac{\\kappa_\\phi}{2}\\lvert\\nabla\\phi\\rvert^2
-       + \\frac{\\kappa_C}{2}\\lvert\\nabla C\\rvert^2
+       + \\frac{\\kappa_\\phi}{2}\\abs{\\nabla\\phi}^2
+       + \\frac{\\kappa_C}{2}\\abs{\\nabla C}^2
    \\right\\} dV
 
 over the volume :math:`\\mathcal{V}` as a function of phase :math:`\\phi`

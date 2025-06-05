@@ -19,20 +19,20 @@ class FirstOrderAdvectionTerm(_NonDiffusionTerm):
 
     .. math::
 
-       u \lvert\nabla \phi\rvert
+       u \abs{\nabla \phi}
 
     from the advection equation given by:
 
     .. math::
 
-       \frac{\partial \phi}{\partial t} + u \lvert\nabla \phi\rvert = 0
+       \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0
 
     The construction of the gradient magnitude term requires upwinding.
     The formula used here is given by:
 
     .. math::
 
-       u_P \lvert\nabla \phi\rvert_P = \max \left( u_P , 0 \right) \left[  \sum_A \min \left( \frac{ \phi_A - \phi_P } { d_{AP}}, 0 \right)^2 \right]^{1/2} +  \min \left( u_P , 0 \right) \left[  \sum_A \max \left( \frac{ \phi_A - \phi_P } { d_{AP}}, 0 \right)^2 \right]^{1/2}
+       u_P \abs{\nabla \phi}_P = \max \left( u_P , 0 \right) \left[  \sum_A \min \left( \frac{ \phi_A - \phi_P } { d_{AP}}, 0 \right)^2 \right]^{1/2} +  \min \left( u_P , 0 \right) \left[  \sum_A \max \left( \frac{ \phi_A - \phi_P } { d_{AP}}, 0 \right)^2 \right]^{1/2}
 
     Here are some simple test cases for this problem:
 

@@ -19,13 +19,13 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
 
     .. math::
 
-       u \lvert\nabla \phi\rvert
+       u \abs{\nabla \phi}
 
     from the advection equation given by:
 
     .. math::
 
-       \frac{\partial \phi}{\partial t} + u \lvert\nabla \phi\rvert = 0
+       \frac{\partial \phi}{\partial t} + u \abs{\nabla \phi} = 0
 
     The construction of the gradient magnitude term requires upwinding as in the standard
     `FirstOrderAdvectionTerm`. The higher order terms are incorporated as follows.
@@ -33,7 +33,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
 
     .. math::
 
-       u_P \lvert\nabla \phi\rvert_P = \max \left( u_P , 0 \right) \left[  \sum_A \min \left( D_{AP}, 0 \right)^2 \right]^{1/2} +  \min \left( u_P , 0 \right) \left[  \sum_A \max \left( D_{AP}, 0 \right)^2 \right]^{1/2}
+       u_P \abs{\nabla \phi}_P = \max \left( u_P , 0 \right) \left[  \sum_A \min \left( D_{AP}, 0 \right)^2 \right]^{1/2} +  \min \left( u_P , 0 \right) \left[  \sum_A \max \left( D_{AP}, 0 \right)^2 \right]^{1/2}
 
     where,
 
@@ -45,8 +45,8 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
 
     .. math::
 
-       m\left(x, y\right) &= x \qquad \text{if $\lvert x\rvert \le \lvert y\rvert \forall xy \ge 0$} \\
-       m\left(x, y\right) &= y \qquad \text{if $\lvert x\rvert > \lvert y\rvert \forall xy \ge 0$} \\
+       m\left(x, y\right) &= x \qquad \text{if $\abs{x} \le \abs{y} \forall xy \ge 0$} \\
+       m\left(x, y\right) &= y \qquad \text{if $\abs{x} > \abs{y} \forall xy \ge 0$} \\
        m\left(x, y\right) &= 0 \qquad \text{if $xy < 0$}
 
     also,
@@ -117,7 +117,7 @@ class AdvectionTerm(FirstOrderAdvectionTerm):
 
     .. math::
 
-       -\lvert\nabla \phi\rvert = -\left|\frac{\partial \phi}{\partial x}\right| = - 2 \lvert x\rvert
+       -\abs{\nabla \phi} = -\left|\frac{\partial \phi}{\partial x}\right| = - 2 \abs{x}
 
     Build the test case in the following way,
 

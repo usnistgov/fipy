@@ -54,7 +54,7 @@ required to execute the necessary time steps:
 ...     eq.solve(var=var, dt=timeStepDuration)
 
 The analytical solution for this transient diffusion problem is given
-by :math:`\phi = \mathrm{erf}(x/2\sqrt{D t})`.
+by :math:`\phi = \erf(x/2\sqrt{D t})`.
 
 The result is tested against the expected profile:
 
