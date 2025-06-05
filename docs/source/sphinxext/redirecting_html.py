@@ -19,7 +19,7 @@ class RedirectingHTMLBuilder(StandaloneHTMLBuilder):
                 uri = node['refuri']
                 uri = urlparse(uri)
                 if uri.scheme in ["http", "https"]:
-                    if not uri.netloc.endswith("nist.gov"):
+                    if not (uri.hostname and (uri.hostname == "nist.gov" or uri.hostname.endswith(".nist.gov"))):
                         node['refuri'] = "/cgi-bin/redirect.py?url=" + uri.geturl()
             except KeyError:
                 continue
