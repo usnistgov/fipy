@@ -1,10 +1,13 @@
 from __future__ import unicode_literals
 from fipy.steppers.stepper import Stepper
+from fipy.tools.decorators import deprecate
 
 __all__ = ["PseudoRKQSStepper"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
+@deprecate(version="4.0",
+           message="Use the :term:`steppyngstounes` package instead.")
 class PseudoRKQSStepper(Stepper):
     """
     Adaptive stepper based on the ``rkqs`` (Runge-Kutta

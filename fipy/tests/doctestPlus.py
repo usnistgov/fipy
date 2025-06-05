@@ -116,6 +116,18 @@ register_skipper(flag="SCIPY",
                  test=_checkForSciPy,
                  why="the `scipy` package cannot be imported")
 
+def _checkForSteppyngstounes():
+    hasSteppyngstounes = True
+    try:
+        import steppyngstounes
+    except Exception:
+        hasSteppyngstounes = False
+    return hasSteppyngstounes
+
+register_skipper(flag="STEPPYNGSTOUNES",
+                 test=_checkForSteppyngstounes,
+                 why="the `steppyngstounes` package cannot be imported")
+
 class _SelectiveDocTestParser(doctest.DocTestParser):
     """
     Custom doctest parser that adds support for skipping test examples

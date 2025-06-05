@@ -14,10 +14,12 @@ dependencies:
   - packaging
   - mayavi
   - gmsh <4.0|>=4.5.2
-  - pip
   - mpich
   - mpi4py
   - pytrilinos
+  - pip
+  - pip:
+    - steppyngstounes
 platforms:
   - linux-64
   - osx-64

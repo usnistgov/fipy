@@ -16,4 +16,4 @@ dependencies:
   - packaging
   - mayavi
   - gmsh <4.0|>=4.5.2
-  - pip
+  - steppyngstounes
