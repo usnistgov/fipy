@@ -1,4 +1,3 @@
 ---
 exclude_paths:
   - docs/source/_themes/**
-  - docs/source/_static/siunitx.js
