@@ -3,14 +3,14 @@ __docformat__ = 'restructuredtext'
 
 from pysparse.itsolvers import krylov
 
-from fipy.solvers.pysparse.preconditioners import JacobiPreconditioner
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
+from .linearInitialSolver import LinearInitialSolver
+from .preconditioners import JacobiPreconditioner
 
 __all__ = ["LinearGMRESSolver"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class LinearGMRESSolver(PysparseSolver):
+class LinearGMRESSolver(LinearInitialSolver):
     """
 
     The `LinearGMRESSolver` solves a linear system of equations using the
@@ -25,11 +25,6 @@ class LinearGMRESSolver(PysparseSolver):
 
     """
 
-    def __init__(self, precon=JacobiPreconditioner(), *args, **kwargs):
-        """
-        Parameters
-        ----------
-        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner, optional
-        """
-        super(LinearGMRESSolver, self).__init__(precon=precon, *args, **kwargs)
-        self.solveFnc = krylov.gmres
+    solveFnc = staticmethod(krylov.gmres)
+
+    DEFAULT_PRECONDITIONER = JacobiPreconditioner

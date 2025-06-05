@@ -2,6 +2,7 @@ from __future__ import division
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
+from fipy.solvers import INDEX_TYPE
 from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 from fipy.tools import inline
 from fipy.tools import numerix
@@ -112,16 +113,20 @@ class CellTerm(_NonDiffusionTerm):
         L.addAtDiagonal(updatePyArray)
 
     def _buildMatrixNoInline_(self, L, oldArray, b, dt, coeffVectors):
-        ids = self._reshapeIDs(oldArray, numerix.arange(oldArray.shape[-1]))
-        b += (oldArray.value[numerix.newaxis] * coeffVectors['old value']).sum(-2).ravel() / dt
+        ids = self._reshapeIDs(oldArray, numerix.arange(oldArray.shape[-1],
+                                                        dtype=INDEX_TYPE))
+        b += (oldArray.value[numerix.newaxis]
+              * coeffVectors['old value']).sum(-2).ravel() / dt
         b += coeffVectors['b vector'][numerix.newaxis].sum(-2).ravel()
-        L.addAt(coeffVectors['new value'].ravel() / dt, ids.ravel(), ids.swapaxes(0, 1).ravel())
-        L.addAt(coeffVectors['diagonal'].ravel(), ids.ravel(), ids.swapaxes(0, 1).ravel())
+        L.addAt(coeffVectors['new value'].ravel() / dt,
+                ids.ravel(), ids.swapaxes(0, 1).ravel())
+        L.addAt(coeffVectors['diagonal'].ravel(),
+                ids.ravel(), ids.swapaxes(0, 1).ravel())
 
     def _buildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
 
         b = numerix.zeros(var.shape, 'd').ravel()
-        L = SparseMatrix(mesh=var.mesh, nonZerosPerRow=1)
+        L = self._getMatrix(SparseMatrix=SparseMatrix, mesh=var.mesh, nonZerosPerRow=1)
 
         coeffVectors = self._getCoeffVectors_(var=var, transientGeomCoeff=transientGeomCoeff, diffusionGeomCoeff=diffusionGeomCoeff)
 

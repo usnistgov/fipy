@@ -508,8 +508,10 @@ and cannot be solved by the default :class:`~fipy.solvers.pysparse.linearPCGSolv
 
 We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
+The initial residual of the diffusion equation is much larger than the norm
+of the right-hand-side vector, so we use `"initial"` tolerance scaling.
 
->>> solver = DefaultAsymmetricSolver(tolerance=1e-10)
+>>> solver = DefaultAsymmetricSolver(criterion="initial")
 
 >>> phase.updateOld()
 >>> C.updateOld()

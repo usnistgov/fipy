@@ -278,6 +278,14 @@ package.
    print a variety of diagnostic information.  All other solvers should use
    `Logging`_ and :envvar:`FIPY_LOG_CONFIG`.
 
+.. envvar:: FIPY_DEFAULT_CRITERION
+
+   Changes the default solver :ref:`CONVERGENCE` criterion to the specified
+   value.  Valid choices are "``legacy``", "``unscaled``", "``RHS``",
+   "``matrix``", "``initial``", "``solution``", "``preconditioned``",
+   "``natural``", "``default``".  A value of "``default``" is admittedly
+   circular, but it works.
+
 .. envvar:: FIPY_VIEWER
 
    Forces the use of the specified viewer. Valid values are any
@@ -303,7 +311,7 @@ package.
    :ref:`PETSC` solvers in order to see what options are possible.  Ignored
    if solver is not :ref:`PETSC`.
 
-.. _PETSc configuration options: https://docs.petsc.org/en/latest/manual/other/#sec-options
+.. _PETSc configuration options: https://petsc.org/main/manual/other/#runtime-options
 
 .. _PARALLEL:
 
@@ -1076,13 +1084,13 @@ Thanks to the future_ package and to the contributions of pya_ and
 woodscn_, :term:`FiPy` runs under both :term:`Python 3` and :term:`Python`
 2.7, without conversion or modification.
 
-Because :term:`Python` itself will `drop support for Python 2.7 on January
-1, 2020`_ and many of the prerequisites for :term:`FiPy` have `pledged to
-drop support for Python 2.7 no later than 2020`_, we have prioritized adding
+Because :term:`Python` itself `dropped support for Python 2.7 on January
+1, 2020`_ and many of the prerequisites for :term:`FiPy` `pledged to
+drop support for Python 2.7 no later than 2020`_, we prioritized adding
 support for better :term:`Python 3` solvers, starting with
 :term:`petsc4py`.
 
-Because the faster :term:`PySparse` and :term:`Trilinos` solvers are not
+Because the faster :term:`PySparse` solvers are not
 available under :term:`Python 3`, we will maintain :term:`Python` 2.x
 support as long as practical. Be aware that the conda-forge_ packages that
 :term:`FiPy` depends upon are not well-maintained on :term:`Python` 2.x
@@ -1094,7 +1102,7 @@ become available on conda-forge_.
 .. _future: http://python-future.org
 .. _pya: https://github.com/pya
 .. _woodscn: https://github.com/pya
-.. _drop support for Python 2.7 on January 1, 2020: https://www.python.org/dev/peps/pep-0373/#update
+.. _dropped support for Python 2.7 on January 1, 2020: https://www.python.org/dev/peps/pep-0373/#update
 .. _pledged to drop support for Python 2.7 no later than 2020: https://python3statement.org
 
 ------
