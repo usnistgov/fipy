@@ -13,33 +13,33 @@
 .. |.coupledequations| replace:: Coupled and Vector Equations
 .. _.coupledequations: https://pages.nist.gov/fipy/en/latest/USAGE.html#coupledequations
 .. |.examples.levelSet.distanceFunction.circle| replace:: ``examples.levelSet.distanceFunction.circle``
-.. _.examples.levelSet.distanceFunction.circle: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/examples/levelSet/distanceFunction/circle.py
+.. _.examples.levelSet.distanceFunction.circle: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/examples/levelSet/distanceFunction/circle.py
 .. |.examples.updating.update1_0to2_0| replace:: ``examples.updating.update1_0to2_0``
-.. _.examples.updating.update1_0to2_0: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/examples/updating/update1_0to2_0.py
+.. _.examples.updating.update1_0to2_0: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/examples/updating/update1_0to2_0.py
 .. |.examples.updating.update2_0to3_0| replace:: ``examples.updating.update2_0to3_0``
-.. _.examples.updating.update2_0to3_0: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/examples/updating/update2_0to3_0.py
+.. _.examples.updating.update2_0to3_0: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/examples/updating/update2_0to3_0.py
 .. |.faq| replace:: Frequently Asked Questions
 .. _.faq: https://pages.nist.gov/fipy/en/latest/FAQ.html#faq
 .. |.FiPy| replace:: FiPy
 .. _.FiPy: https://pages.nist.gov/fipy/en/latest/glossary.html#term-FiPy
 .. |.~fipy.meshes.mesh.Mesh| replace:: ``Mesh``
-.. _.~fipy.meshes.mesh.Mesh: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/fipy/meshes/mesh.py#L22-L848
+.. _.~fipy.meshes.mesh.Mesh: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/meshes/mesh.py#L22-L848
 .. |.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm| replace:: ``ImplicitSourceTerm``
-.. _.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/fipy/terms/implicitSourceTerm.py#L11-L62
+.. _.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/terms/implicitSourceTerm.py#L11-L62
 .. |.~fipy.terms.term.Term.solve| replace:: ``solve()``
-.. _.~fipy.terms.term.Term.solve: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/fipy/terms/term.py#L169-L196
+.. _.~fipy.terms.term.Term.solve: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/terms/term.py#L169-L196
 .. |.~fipy.terms.term.Term.sweep| replace:: ``sweep()``
-.. _.~fipy.terms.term.Term.sweep: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/fipy/terms/term.py#L198-L262
+.. _.~fipy.terms.term.Term.sweep: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/terms/term.py#L198-L262
 .. |.~fipy.terms.transientTerm.TransientTerm| replace:: ``TransientTerm``
-.. _.~fipy.terms.transientTerm.TransientTerm: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/fipy/terms/transientTerm.py#L12-L194
+.. _.~fipy.terms.transientTerm.TransientTerm: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/terms/transientTerm.py#L12-L194
 .. |.~fipy.tools.numerix| replace:: ``numerix``
-.. _.~fipy.tools.numerix: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/fipy/tools/numerix.py
+.. _.~fipy.tools.numerix: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/tools/numerix.py
 .. |.~fipy.variables.cellVariable.CellVariable| replace:: ``CellVariable``
-.. _.~fipy.variables.cellVariable.CellVariable: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/fipy/variables/cellVariable.py#L13-L661
+.. _.~fipy.variables.cellVariable.CellVariable: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/variables/cellVariable.py#L13-L661
 .. |.~fipy.variables.faceVariable.FaceVariable| replace:: ``FaceVariable``
-.. _.~fipy.variables.faceVariable.FaceVariable: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/fipy/variables/faceVariable.py#L9-L86
+.. _.~fipy.variables.faceVariable.FaceVariable: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/variables/faceVariable.py#L9-L86
 .. |.~fipy.viewers.matplotlibViewer.MatplotlibViewer| replace:: ``MatplotlibViewer()``
-.. _.~fipy.viewers.matplotlibViewer.MatplotlibViewer: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/fipy/viewers/matplotlibViewer/__init__.py#L12-L122
+.. _.~fipy.viewers.matplotlibViewer.MatplotlibViewer: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/viewers/matplotlibViewer/__init__.py#L12-L122
 .. |.installation| replace:: Installation
 .. _.installation: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#installation
 .. |.linux| replace:: linux
@@ -83,7 +83,7 @@
 .. |.scikitfmm| replace:: Scikit-fmm
 .. _.scikitfmm: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#scikitfmm
 .. |.scipy| replace:: ``scipy``
-.. _.scipy: https://github.com/usnistgov/fipy/blob/f0ee6b25fb5f1e7063be3a5195d547c83cfd0ddc/fipy/solvers/scipy/__init__.py
+.. _.scipy: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/solvers/scipy/__init__.py
 .. |.solvers| replace:: Solvers
 .. _.solvers: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#solvers
 .. |.Sphinx| replace:: Sphinx

@@ -102,7 +102,7 @@ Continuous Integration
 
 We use the :term:`Azure` and :term:`GitHub Actions` cloud services for
 :term:`Continuous Integration` (CI).  These CIs are configured in
-|.azure/pipelines.yml|_, |.github/workflows/NISTtheDocs2Death.yml|_, and
+|.azure/pipelines.yml|_, |.github/workflows/Docs4NIST.yml|_, and
 |.github/workflows/nix.yml|_.
 
 .. note::
@@ -118,15 +118,15 @@ We use the :term:`Azure` and :term:`GitHub Actions` cloud services for
 
 .. |Tests|         image:: https://dev.azure.com/guyer/FiPy/_apis/build/status/usnistgov.fipy?branchName=master
 .. _Tests:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
-.. |Documentation| image:: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml/badge.svg
-.. _Documentation: https://github.com/usnistgov/fipy/actions/workflows/NISTtheDocs2Death.yml
+.. |Documentation| image:: https://github.com/usnistgov/fipy/actions/workflows/Docs4NIST.yml/badge.svg
+.. _Documentation: https://github.com/usnistgov/fipy/actions/workflows/Docs4NIST.yml
 .. |nix|           image:: https://github.com/usnistgov/fipy/actions/workflows/nix.yml/badge.svg
 .. _nix:           https://github.com/usnistgov/fipy/actions/workflows/nix.yml
 
 .. |.azure/pipelines.yml| replace::    :file:`{FiPySource}/.azure/pipelines.yml`
 .. _.azure/pipelines.yml: https://github.com/usnistgov/fipy/blob/master/.azure/pipelines.yml
-.. |.github/workflows/NISTtheDocs2Death.yml| replace::    :file:`{FiPySource}/.github/workflows/NISTtheDocs2Death.yml`
-.. _.github/workflows/NISTtheDocs2Death.yml: https://github.com/usnistgov/fipy/blob/master/.github/workflows/NISTtheDocs2Death.yml
+.. |.github/workflows/Docs4NIST.yml| replace::    :file:`{FiPySource}/.github/workflows/Docs4NIST.yml`
+.. _.github/workflows/Docs4NIST.yml: https://github.com/usnistgov/fipy/blob/master/.github/workflows/Docs4NIST.yml
 .. |.github/workflows/nix.yml| replace::    :file:`{FiPySource}/.github/workflows/nix.yml`
 .. _.github/workflows/nix.yml: https://github.com/usnistgov/fipy/blob/master/.github/workflows/nix.yml
 .. _Azure at queue time: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#allow-at-queue-time
