@@ -303,7 +303,8 @@ want, and then issue supplemental commands for the underlying plotting
 package. The better option is to make a "subclass" of the :term:`FiPy`
 :class:`Viewer <viewer.AbstractViewer>` that comes closest to producing the image you want. You can
 then override just the behavior you wan to change, while letting :term:`FiPy` do
-most of the heavy lifting. See :mod:`examples.phase.anisotropy` and
+most of the heavy lifting. See :mod:`examples.phase.anisotropy`,
+:mod:`examples.phase.binary`, :mod:`examples.phase.binaryCoupled`, and
 :mod:`examples.phase.polyxtal` for examples of creating a custom
 :term:`Matplotlib` :class:`Viewer <viewer.AbstractViewer>` class; see
 :mod:`examples.cahnHilliard.sphere` for an example of creating a custom

@@ -33,6 +33,7 @@ examples.phase
    examples.phase.binaryCoupled
    examples.phase.impingement
    examples.phase.missOrientation
+   examples.phase.phaseViewer
    examples.phase.polyxtal
    examples.phase.polyxtalCoupled
    examples.phase.quaternary
