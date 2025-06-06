@@ -622,9 +622,9 @@ expected values.
 
 We can estimate the time to equilibration by examining the time for the
 diffusion field to become uniform.  In the liquid, this will take
-:math:`\\mathcal{O}((10~\\mathrm{\mu m})^2 / D_l) =
+:math:`\\mathcal{O}((10~\\mathrm{\\mu m})^2 / D_l) =
 0.1~\\mathrm{s}` and in the solid
-:math:`\\mathcal{O}((10~\\mathrm{\mu m})^2 / D_s) =
+:math:`\\mathcal{O}((10~\\mathrm{\\mu m})^2 / D_s) =
 1000~\\mathrm{s}`.
 
 Not wanting to take a hundred-million steps, we employ adaptive time
@@ -705,7 +705,7 @@ For the next
 :math:`20~\\mathrm{s}`, the interface stalls while the solute step
 trapped in the solid phase diffuses outward
 (:math:`(3.4~\\mathrm{\\mu m})^2 / D_s =
-\mathcal{O}(100~\\mathrm{s})`).  Once the solute gradient in the
+\\mathcal{O}(100~\\mathrm{s})`).  Once the solute gradient in the
 solid reaches the new position of the interface, the solidification front
 begins to move, driven by diffusion in the solid.  When the solute in the
 solid becomes uniform, the interface stalls again after :math:`\\approx

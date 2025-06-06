@@ -740,7 +740,7 @@ For the next
 :math:`12~\\mathrm{s}`, the interface stalls while the solute step
 trapped in the solid phase diffuses outward
 (:math:`(2.8~\\mathrm{\\mu m})^2 / D_s =
-\mathcal{O}(80~\\mathrm{s})`).  Once the solute gradient in the
+\\mathcal{O}(80~\\mathrm{s})`).  Once the solute gradient in the
 solid reaches the new position of the interface, the solidification front
 begins to move, driven by diffusion in the solid.  When the solute in the
 solid becomes uniform, the interface stalls again after :math:`\\approx
