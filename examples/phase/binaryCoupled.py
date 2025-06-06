@@ -487,7 +487,7 @@ We plot the result against the sharp interface solution
 
 >>> if __name__ == '__main__':
 ...     try:
-...         from examples.phase.phaseViewer import PhaseViewer
+...         from phaseViewer import PhaseViewer
 ...
 ...         viewer = PhaseViewer(phase=phase, C=C, sharp=sharp,
 ...                              elapsed=elapsed,
