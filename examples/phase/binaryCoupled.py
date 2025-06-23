@@ -696,8 +696,6 @@ old values before we get started.
 ...             phase.updateOld()
 ...             C.updateOld()
 ...             elapsed.value = step.end
-...             if __name__ == '__main__':
-...                 viewer.plot()
 ...         else:
 ...             phase.value = phase.old
 ...             C.value = C.old
