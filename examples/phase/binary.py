@@ -517,7 +517,7 @@ of the right-hand-side vector, so we use `"initial"` tolerance scaling.
 >>> C.updateOld()
 >>> phaseRes = 1e+10
 >>> diffRes = 1e+10
->>> while phaseRes > 1e-3 or diffRes > 1e-3 or abs(Cavg.value - 0.5) > 5e-7:
+>>> while phaseRes > 1e-8 or diffRes > 1e-8 or abs(Cavg.value - 0.5) > 5e-7:
 ...     phaseRes = phaseEq.sweep(var=phase, dt=dt)
 ...     diffRes = diffusionEq.sweep(var=C, dt=dt, solver=solver)
 >>> from fipy import input
@@ -598,7 +598,7 @@ time step of about :math:`10^{-5}~\\mathrm{s}`.
 ...     C.updateOld()
 ...     phaseRes = 1e+10
 ...     diffRes = 1e+10
-...     while phaseRes > 1e-3 or diffRes > 1e-3 or abs(Cavg.value - 0.5) > 1e-6:
+...     while phaseRes > 5e-8 or diffRes > 1e-14 or abs(Cavg.value - 0.5) > 5e-7:
 ...         phaseRes = phaseEq.sweep(var=phase, dt=dt0)
 ...         diffRes = diffusionEq.sweep(var=C, dt=dt0, solver=solver)
 ...     elapsed.value = (i + 1) * dt0
@@ -667,7 +667,7 @@ old values before we get started.
 ...             diffRes = diffusionEq.sweep(var=C, dt=step.size, solver=solver)
 ...         err = max(phaseRes / 1e-3,
 ...                   diffRes / 1e-3,
-...                   abs(Cavg.value - 0.5) / 1e-6)
+...                   abs(Cavg.value - 0.5) / 5e-7)
 ...         if step.succeeded(error=err):
 ...             phase.updateOld()
 ...             C.updateOld()
