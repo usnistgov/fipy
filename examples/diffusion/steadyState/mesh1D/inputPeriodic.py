@@ -38,7 +38,7 @@ The initial residual is much larger than the norm of the right-hand-side
 vector, so we use `"initial"` tolerance scaling with a tolerance that will
 drive to an accurate solution.
 
->>> solver = eq.getDefaultSolver(criterion="initial", tolerance=1e-8)
+>>> solver = eq.getDefaultSolver(criterion="initial", tolerance=1e-12)
 >>> eq.solve(var=var, dt=1., solver=solver)
 
 >>> if __name__ == '__main__':
