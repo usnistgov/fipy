@@ -494,7 +494,7 @@ We plot the result against the sharp interface solution
 ...                              L=L, deltaA=deltaA,
 ...                              tmin=1e-5, tmax=300 * 3600,
 ...                              datamin=0., datamax=1.)
-...     except ImportError:
+...     except Exception:
 ...         viewer = Viewer(vars=(phase, C, sharp),
 ...                         datamin=0., datamax=1.)
 ...     viewer.plot()
@@ -538,7 +538,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 >>> initialRes = None
 >>> sweep = 0
 
->>> while res > 1e-8 and sweep < 100:
+>>> while res > 1e-5 and sweep < 100:
 ...     res = eq.sweep(dt=dt, solver=solver)
 ...     if initialRes is None:
 ...         initialRes = res
@@ -625,7 +625,7 @@ time step of about :math:`10^{-5}~\\mathrm{s}`.
 ...     C.updateOld()
 ...     res = 1e+10
 ...     sweep = 0
-...     while (res > 1e-3 or abs(Cavg.value - 0.5) > 1e-8) and sweep < 20:
+...     while (res > 1e-3 or abs(Cavg.value - 0.5) > 2e-6) and sweep < 20:
 ...         res = eq.sweep(dt=dt0, solver=solver)
 ...         sweep += 1
 ...     elapsed.value = (i + 1) * dt0
@@ -683,14 +683,6 @@ old values before we get started.
 
 >>> dt = dt0
 
->>> mass_tolerance = 1e-6
->>> residual_tolerance = 1e-3
-
->>> if ((parallelComm.Nproc > 1)
-...     and (fipy.solvers.solver_suite in ['trilinos', 'no-pysparse'])):
-...     # Trilinos on linux in parallel doesn't conserve as well
-...     mass_tolerance = 1e-5
-
 >>> for checkpoint in SequenceStepper(start=float(elapsed), stop=totaltime,     # doctest: +STEPPYNGSTOUNES
 ...                                   sizes=(dt0 * 2**(n/2) for n in count(7))):
 ...     for step in PIDStepper(start=checkpoint.begin,
@@ -698,9 +690,8 @@ old values before we get started.
 ...                            size=dt):
 ...         for sweep in range(2):
 ...             res = eq.sweep(dt=step.size, solver=solver)
-...             # print(step.begin, step.size, sweep, res)
-...         err = max(res / residual_tolerance,
-...                   abs(Cavg.value - 0.5) / mass_tolerance)
+...         err = max(res / 1e-3,
+...                   abs(Cavg.value - 0.5) / 2e-6)
 ...         if step.succeeded(error=err):
 ...             phase.updateOld()
 ...             C.updateOld()
