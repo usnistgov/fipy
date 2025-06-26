@@ -41,7 +41,7 @@ The solution is allowed to evolve for ``steps = 100`` time steps.
 
 >>> from builtins import range
 >>> for step in range(steps):
-...     phaseEq.solve(phase, dt = timeStepDuration)
+...     phaseEq.solve(phase, dt=timeStepDuration, solver=solver)
 
 The solution is compared with test data. The test data was created
 with a FORTRAN code written by Ryo Kobayashi for phase field
@@ -100,11 +100,20 @@ phaseEq = TransientTerm(phaseTransientCoeff) == \
           - ImplicitSourceTerm(implicitSource) \
           + (mPhiVar > 0) * mPhiVar * phase
 
+from fipy import solver_suite
+if solver_suite in ["trilinos", "no-pysparse"]:
+    from fipy import ILUPreconditioner
+    preconditioner = ILUPreconditioner()
+else:
+    preconditioner = "default"
+from fipy import DefaultAsymmetricSolver
+solver = DefaultAsymmetricSolver(precon=preconditioner)
+
 if __name__ == '__main__':
 
     phaseViewer = Viewer(vars = phase)
     phaseViewer.plot()
     for step in range(steps):
-        phaseEq.solve(phase, dt = timeStepDuration)
+        phaseEq.solve(phase, dt=timeStepDuration, solver=solver)
         phaseViewer.plot()
     input('finished')

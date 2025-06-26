@@ -98,8 +98,8 @@ preconditioner that will drive to an accurate solution.
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
 ...     if solver_suite in ["trilinos", "no-pysparse"]:
-...         from fipy import ILUPreconditioner
-...         preconditioner = ILUPreconditioner()
+...         from fipy import MultilevelNSSAPreconditioner
+...         preconditioner = MultilevelNSSAPreconditioner()
 ...     else:
 ...         preconditioner = "default"
 ...     Cj.solver = DefaultAsymmetricSolver(criterion="initial", precon=preconditioner, iterations=3200)
