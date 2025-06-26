@@ -23,7 +23,7 @@ class KSP_AbsoluteToleranceConvergence(AbsoluteToleranceConvergence):
     suite = "petsc"
 
 class KSP_RelativeToleranceConvergence(RelativeToleranceConvergence):
-    """Residual 2-norm decreased by a factor of rtol, from 2-norm of right
+    """Residual 2-norm decreased by a factor of `rtol`, from 2-norm of right
     hand side.
     """
     status_code = PETSc.KSP.ConvergedReason.CONVERGED_RTOL
@@ -39,9 +39,9 @@ class KSP_NormalRelativeToleranceConvergence(KSP_RelativeToleranceConvergence):
     status_name = "KSP_CONVERGED_RTOL_NORMAL"
 
 class KSP_IterationConvergence(IterationConvergence):
-    """Used by the KSPPREONLY solver after the single iteration of the
-    preconditioner is applied.  Also used when the KSPConvergedSkip()
-    convergence test routine is set in KSP.
+    """Used by the `KSPPREONLY` solver after the single iteration of the
+    preconditioner is applied.  Also used when the `KSPConvergedSkip()`
+    convergence test routine is set in `KSP`.
     """
     status_code = PETSc.KSP.ConvergedReason.CONVERGED_ITS
     status_name = "KSP_CONVERGED_ITS"
@@ -53,8 +53,8 @@ class KSP_HappyBreakdownConvergence(HappyBreakdownConvergence):
     suite = "petsc"
 
 class KSP_IteratingConvergence(IteratingConvergence):
-    """This flag is returned if you call KSPGetConvergedReason() while the
-    KSPSolve() is still running.
+    """This flag is returned if you call `KSPGetConvergedReason()` while the
+    `KSPSolve()` is still running.
     """
     status_code = PETSc.KSP.ConvergedReason.CONVERGED_ITERATING
     status_name = "KSP_CONVERGED_ITERATING"
@@ -73,7 +73,7 @@ class KSP_NullDivergence(NullDivergence):
     suite = "petsc"
 
 class KSP_ToleranceDivergence(ToleranceDivergence):
-    """Residual norm increased by a factor of divtol.
+    """Residual norm increased by a factor of `divtol`.
     """
     status_code = PETSc.KSP.ConvergedReason.DIVERGED_DTOL
     status_name = "KSP_DIVERGED_DTOL"
@@ -99,7 +99,7 @@ class KSP_IndefiniteMatrixDivergence(IllConditionedDivergence):
 
 class KSP_NonSymmetricDivergence(IllConditionedDivergence):
     """It appears the operator or preconditioner is not symmetric and this
-    Krylov method (KSPCG, KSPMINRES, KSPCR) requires symmetry
+    Krylov method (`KSPCG`, `KSPMINRES`, `KSPCR`) requires symmetry
     """
     status_code = PETSc.KSP.ConvergedReason.DIVERGED_NONSYMMETRIC
     status_name = "KSP_DIVERGED_NONSYMMETRIC"
@@ -109,7 +109,7 @@ class KSP_PreconditioningDivergence(PreconditioningDivergence):
     """It was not possible to build or use the requested preconditioner.
     This is usually due to a zero pivot in a factorization.  It can also
     result from a failure in a subpreconditioner inside a nested
-    preconditioner such as PCFIELDSPLIT.
+    preconditioner such as `PCFIELDSPLIT`.
     """
     status_code = PETSc.KSP.ConvergedReason.DIVERGED_PCSETUP_FAILED
     status_name = "KSP_DIVERGED_PC_FAILED"
@@ -117,7 +117,7 @@ class KSP_PreconditioningDivergence(PreconditioningDivergence):
 
 class KSP_IndefinitePreconditionerDivergence(IllConditionedPreconditionerDivergence):
     """It appears the preconditioner is indefinite (has both positive and
-    negative eigenvalues) and this Krylov method (KSPCG) requires it to be
+    negative eigenvalues) and this Krylov method (`KSPCG`) requires it to be
     positive definite.
     """
     status_code = PETSc.KSP.ConvergedReason.DIVERGED_INDEFINITE_PC

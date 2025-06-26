@@ -66,13 +66,13 @@ class CGPreconditioner(PyAMGXPreconditioner):
     pctype = "PCG"
 
 class DILUPreconditioner(PyAMGXPreconditioner):
-    """DILU preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
+    """Diagonal Incomplete LU preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
 
     pctype = "MULTICOLOR_DILU"
 
 class FGMRESPreconditioner(PyAMGXPreconditioner):
-    """Flexible Generalized Mimumal Residual preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
+    """Flexible Generalized Minimum Residual preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
 
     pctype = "FGMRES"
@@ -84,7 +84,7 @@ class GaussSeidelPreconditioner(PyAMGXPreconditioner):
     pctype = "MULTICOLOR_GS"
 
 class ILUPreconditioner(PyAMGXPreconditioner):
-    """ILU preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
+    """Incomplete LU preconditioner for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.
     """
 
     pctype = "MULTICOLOR_GS"

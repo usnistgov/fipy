@@ -18,7 +18,7 @@ class Pysparse_RHSZeroConvergence(RHSZeroConvergence):
     suite = "pysparse"
 
 class Pysparse_RelativeToleranceConvergence(RelativeToleranceConvergence):
-    """Residual 2-norm decreased by a factor of rtol, from 2-norm of right
+    """Residual 2-norm decreased by a factor of `rtol`, from 2-norm of right
     hand side.
     """
     status_code = 0

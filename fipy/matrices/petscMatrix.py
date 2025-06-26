@@ -187,16 +187,16 @@ class _PETScMatrix(_SparseMatrix):
         return list(range(self._shape[1])), list(range(self._shape[0]))
 
     def _setRCV(self, vector, id1, id2, addv=False):
-        """Insert values based on triplet of rows, columns, and values
+        """Insert values based on triplet of rows, columns, and values::
 
-        L[id2[k], id1[k]] = vector[k]
+           L[id2[k], id1[k]] = vector[k]
 
         :meth:`~PETSc.Mat.setValuesRCV` is, helpfully, described as
         `Undocumented. `https://github.com/petsc/petsc/blob/c373386401c23a900b8d8448dc0b1bd4ba1cb6ca/src/binding/petsc4py/src/petsc4py/PETSc/Mat.pyx#L2541C28-L2541C28>`_
         8^P (even that was only done in
         `v3.20.0 <https://github.com/petsc/petsc/commit/55a74a43bb44613d95e937906bec3b8c3581b432>`_).
 
-        The sourcecode is not terribly helpful, but, fortunately,
+        The source code is not terribly helpful, but, fortunately,
         Firedrake's `petsc_sparse()` shows what to do.
         (https://www.firedrakeproject.org/_modules/firedrake/preconditioners/fdm.html).
 

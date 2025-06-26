@@ -191,7 +191,7 @@ we iterate the solution in time, plotting as we go if running interactively,
 The ``theta`` equation is a bit more sensitive than the ``phase`` equation,
 so we require a stricter tolerance.
 
->>> solver = thetaEq.getDefaultSolver(tolerance=1e-7)
+>>> solver = thetaEq.getDefaultSolver(tolerance=1e-9)
 
 >>> steps = 10
 >>> from builtins import range

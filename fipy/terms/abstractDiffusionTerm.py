@@ -144,7 +144,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 / mesh._cellDistances)[numerix.newaxis, ...]
 
     def _anisotropicOrNonorthogonalCoeff(self, coeff, mesh, anisotropicRank):
-        """Geometric coefficient for anisotropic diffusion or nonorthogonal mesh
+        """Geometric coefficient for anisotropic diffusion or non-orthogonal mesh
 
         Parameters
         ----------
@@ -186,7 +186,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         return faceNormals.dot(coeff).dot(rotationTensor) * mesh._faceAreas
 
     def _calcGeomCoeff(self, var):
-        """Geometric cofficient
+        """Geometric coefficient
 
         Combination of diffusion coefficient and geometric factor.
 
@@ -612,7 +612,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         return (var, L, b)
 
     def _secondOrderBuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        """Build the 2nd-order matrix and RHS vector
+        r"""Build the 2nd-order matrix and RHS vector
 
         .. math::
 

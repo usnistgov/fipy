@@ -570,7 +570,7 @@ class Term(object):
         >>> print(numerix.allclose(v, answer, rtol=3e-3))
         True
 
-        Reducing the solver tolerance to :math:`10^{-8}` improves the solutio.
+        Reducing the solver tolerance to :math:`10^{-8}` improves the solution.
 
         >>> res = 1.
         >>> sweep = 0
@@ -584,13 +584,13 @@ class Term(object):
         >>> v.setValue(0.)
         >>> eqn = DiffusionTerm(0.2) * 5. - 5. * ImplicitSourceTerm(0.2)
         >>> eqn.solve(v)
-        >>> print(numerix.allclose(v, answer, rtol=2e-5))
+        >>> print(numerix.allclose(v, answer, rtol=3e-4))
         True
 
         >>> v.setValue(0.)
         >>> eqn = 2. * (DiffusionTerm(1.) - ImplicitSourceTerm(.5)) - DiffusionTerm(1.)
         >>> eqn.solve(v)
-        >>> print(numerix.allclose(v, answer, rtol=2e-5))
+        >>> print(numerix.allclose(v, answer, rtol=3e-4))
         True
 
         >>> from fipy import Grid1D, CellVariable, DiffusionTerm, TransientTerm

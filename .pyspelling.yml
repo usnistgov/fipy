@@ -73,6 +73,10 @@ matrix:
       - open: '(^(?P<indent>[ \t]*)See Also\n)(^(?P=indent)--------\n)'
         content: '^(?P=indent)(.*\n)*'
         close: '(^[ \t]*$)'
+      # Ignore NumPy docstring Attributes
+      - open: '(^(?P<indent>[ \t]*)Attributes\n)(^(?P=indent)----------\n)'
+        content: '^(?P=indent)(.*\n)*'
+        close: '(^[ \t]*$)'
   - pyspelling.filters.url:
 - name: reST
   sources:
@@ -139,7 +143,7 @@ matrix:
       - open: '\.\.\s+autosummary::'
         close: '(?P<autosummary>(?:((?P<indent>[ ]+).*$)|(\n))+)'
       # Ignore reStructuredText directives
-      - open: '\.\.\s+(automodule|cmdoption|currentmodule|envvar|image|include|only)::'
+      - open: '\.\.\s+(automodule|cmdoption|currentmodule|envvar|image|include|only|tabularcolumns)::'
         close: '$'
       # Ignore mailto
       - open: '<mailto:'

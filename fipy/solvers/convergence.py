@@ -115,14 +115,14 @@ class Convergence(ConvergenceBase):
     message = "User requested convergence criteria is satisfied. Iterations: {0}. Relative error: {1}"
 
 class AbsoluteToleranceConvergence(Convergence):
-    """Absolute tolerance satisfied.
+    """Absolute tolerance satisfied::
 
        residual < atol * scale
     """
     pass
 
 class RelativeToleranceConvergence(Convergence):
-    """Relative tolerance satisfied.
+    """Relative tolerance satisfied::
 
        residual < rtol * scale
     """

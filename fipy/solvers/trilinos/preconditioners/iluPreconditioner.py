@@ -10,7 +10,7 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class ILUPreconditioner(DomDecompPreconditioner):
-    """ILU Domain Decomposition preconditioner for :class:`~fipy.solvers.trilinos.trilinosSolver.TrilinosSolver`.
+    """Incomplete LU Domain Decomposition preconditioner for :class:`~fipy.solvers.trilinos.trilinosSolver.TrilinosSolver`.
     """
 
     def _applyToSolver(self, solver, matrix):

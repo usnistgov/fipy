@@ -398,7 +398,7 @@ class Solver(object):
         pass
 
     def _test(self):
-        """
+        r"""
         >>> import fipy as fp
 
         For sufficiently constrained circumstances, all solver suites
@@ -576,9 +576,6 @@ class Solver(object):
         ...         satisfied.append(all(checks))
         >>> print(all(satisfied))
         True
-
-        # str(fp.numerix.L2norm(phi - phi_analytical) / fp.numerix.L2norm(phi_analytical))
-
         """
         pass
 

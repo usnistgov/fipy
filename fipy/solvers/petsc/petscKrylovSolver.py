@@ -61,12 +61,12 @@ class PETScKrylovSolver(PETScSolver):
     def _convergenceTest(self, ksp, its, rnorm, scale):
         """Replace `KSPConvergedDefault()` with custom normalization
 
-        Modeled on `KSPConvergedDefault()
-        <https://gitlab.com/petsc/petsc/-/blob/main/src/ksp/ksp/interface/iterativ.c#L1512>`_.
-        Simplisitically, converged if `rnorm <= rtol * scale`.
+        Modeled on
+        `KSPConvergedDefault() <https://gitlab.com/petsc/petsc/-/blob/main/src/ksp/ksp/interface/iterativ.c#L1512>`_.
+        Simplistically, converged if `rnorm <= rtol * scale`.
 
         It would be much nicer (and less expensive) if they would just let
-        you specify how to calculate rnorm0!
+        you specify how to calculate `rnorm0`!
         `KSPConvergedDefaultSetUIRNorm()` isn't exposed to petsc4py, and it
         wouldn't help with "unscaled" or "matrix".
 
