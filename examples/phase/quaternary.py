@@ -361,7 +361,7 @@ scaling.
 .. index::
    single: DefaultAsymmetricSolver
 
->>> solver = DefaultAsymmetricSolver(criterion="initial")
+>>> solver = DefaultAsymmetricSolver(criterion="initial", tolerance=1e-8)
 
 
 >>> dt = 10000

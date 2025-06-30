@@ -143,7 +143,8 @@ vector, so we use `"initial"` tolerance scaling for those equations
 ...                        + PowerLawConvectionTerm(coeff=convectionCoeff))
 ...
 ...     for Cj in substitutionals + interstitials:
-...         Cj.solver = Cj.equation.getDefaultSolver(criterion="initial")
+...         Cj.solver = Cj.equation.getDefaultSolver(criterion="initial",
+...                                                  tolerance=1e-7)
 
 >>> makeEquations(phase, substitutionals, interstitials)
 

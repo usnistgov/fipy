@@ -102,7 +102,10 @@ preconditioner that will drive to an accurate solution.
 ...         preconditioner = MultilevelNSSAPreconditioner()
 ...     else:
 ...         preconditioner = "default"
-...     Cj.solver = DefaultAsymmetricSolver(criterion="initial", precon=preconditioner, iterations=3200)
+...     Cj.solver = DefaultAsymmetricSolver(criterion="initial",
+...                                         precon=preconditioner,
+...                                         iterations=3200,
+...                                         tolerance=1e-13)
 
 If we are running interactively, we create a viewer to see the results
 
