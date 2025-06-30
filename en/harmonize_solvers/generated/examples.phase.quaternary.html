@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.phase.quaternary &#8212; FiPy 3.4.5+342.g04834ac6e documentation</title>
+    <title>examples.phase.quaternary &#8212; FiPy 3.4.5+345.g7342620b4 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,14 +43,14 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=acfe530b"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=0be43348"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.phase.quaternary.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+342.g04834ac6e documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+345.g7342620b4 documentation" href="../contents.html" />
     <link rel="up" title="examples.phase" href="examples.phase.html" />
     <link rel="next" title="examples.phase.simple" href="examples.phase.simple.html" />
     <link rel="prev" title="examples.phase.polyxtalCoupled" href="examples.phase.polyxtalCoupled.html" />
@@ -445,7 +445,7 @@ the solidus and liquidus concentrations</p>
 <p>and again iterate to equilibrium.  The initial residual is much larger than
 the norm of the right-hand-side vector, so we use <cite>“initial”</cite> tolerance
 scaling.</p>
-<div class="doctest highlight-default notranslate" id="index-5"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">solver</span> <span class="o">=</span> <span class="n">DefaultAsymmetricSolver</span><span class="p">(</span><span class="n">criterion</span><span class="o">=</span><span class="s2">&quot;initial&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate" id="index-5"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">solver</span> <span class="o">=</span> <span class="n">DefaultAsymmetricSolver</span><span class="p">(</span><span class="n">criterion</span><span class="o">=</span><span class="s2">&quot;initial&quot;</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="mi">10000</span>
@@ -485,7 +485,7 @@ their equilibrium values in each phase</p>
 
 
                 <div class='last-updated'>
-                Last updated on Jun 26, 2025.
+                Last updated on Jun 30, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -495,7 +495,7 @@ their equilibrium values in each phase</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+342.g04834ac6e
+Version 3.4.5+345.g7342620b4
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

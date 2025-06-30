@@ -28,6 +28,7 @@ fipy.solvers.petsc.preconditioners
    :recursive:
 
    fipy.solvers.petsc.preconditioners.defaultPreconditioner
+   fipy.solvers.petsc.preconditioners.hyprePreconditioner
    fipy.solvers.petsc.preconditioners.icPreconditioner
    fipy.solvers.petsc.preconditioners.iluPreconditioner
    fipy.solvers.petsc.preconditioners.jacobiPreconditioner

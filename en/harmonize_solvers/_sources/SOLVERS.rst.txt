@@ -298,7 +298,7 @@ Reporting
 =========
 
 Different solver suites also report different levels of detail about why
-they succed or fail.  This information is captured as a
+they succeed or fail.  This information is captured as a
 :class:`~fipy.solvers.convergence.Convergence` or
 :class:`~fipy.solvers.convergence.Divergence` property of the
 :class:`~fipy.solvers.solver.Solver` after calling

@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.solvers.petsc.petscConvergence &#8212; FiPy 3.4.5+342.g04834ac6e documentation</title>
+    <title>fipy.solvers.petsc.petscConvergence &#8212; FiPy 3.4.5+345.g7342620b4 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,13 +43,13 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=acfe530b"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=0be43348"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/fipy.solvers.petsc.petscConvergence.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+342.g04834ac6e documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+345.g7342620b4 documentation" href="../contents.html" />
     <link rel="up" title="fipy.solvers.petsc" href="fipy.solvers.petsc.html" />
     <link rel="next" title="fipy.solvers.petsc.petscKrylovSolver" href="fipy.solvers.petsc.petscKrylovSolver.html" />
     <link rel="prev" title="fipy.solvers.petsc.linearPCGSolver" href="fipy.solvers.petsc.linearPCGSolver.html" />
@@ -137,13 +137,13 @@
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.petsc.petscConvergence.KSP_IndefinitePreconditionerDivergence" title="fipy.solvers.petsc.petscConvergence.KSP_IndefinitePreconditionerDivergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KSP_IndefinitePreconditionerDivergence</span></code></a>(...)</p></td>
-<td><p>It appears the preconditioner is indefinite (has both positive and negative eigenvalues) and this Krylov method (KSPCG) requires it to be positive definite.</p></td>
+<td><p>It appears the preconditioner is indefinite (has both positive and negative eigenvalues) and this Krylov method (<cite>KSPCG</cite>) requires it to be positive definite.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.petsc.petscConvergence.KSP_IteratingConvergence" title="fipy.solvers.petsc.petscConvergence.KSP_IteratingConvergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KSP_IteratingConvergence</span></code></a>(solver, iterations, ...)</p></td>
-<td><p>This flag is returned if you call KSPGetConvergedReason() while the KSPSolve() is still running.</p></td>
+<td><p>This flag is returned if you call <cite>KSPGetConvergedReason()</cite> while the <cite>KSPSolve()</cite> is still running.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.petsc.petscConvergence.KSP_IterationConvergence" title="fipy.solvers.petsc.petscConvergence.KSP_IterationConvergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KSP_IterationConvergence</span></code></a>(solver, iterations, ...)</p></td>
-<td><p>Used by the KSPPREONLY solver after the single iteration of the preconditioner is applied.</p></td>
+<td><p>Used by the <cite>KSPPREONLY</cite> solver after the single iteration of the preconditioner is applied.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.petsc.petscConvergence.KSP_IterationDivergence" title="fipy.solvers.petsc.petscConvergence.KSP_IterationDivergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KSP_IterationDivergence</span></code></a>(solver, iterations, ...)</p></td>
 <td><p>Ran out of iterations before any convergence criteria was reached</p></td>
@@ -152,7 +152,7 @@
 <td><p>Residual norm became Not-a-number or Inf likely due to 0/0.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.petsc.petscConvergence.KSP_NonSymmetricDivergence" title="fipy.solvers.petsc.petscConvergence.KSP_NonSymmetricDivergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KSP_NonSymmetricDivergence</span></code></a>(solver, ...[, ...])</p></td>
-<td><p>It appears the operator or preconditioner is not symmetric and this Krylov method (KSPCG, KSPMINRES, KSPCR) requires symmetry</p></td>
+<td><p>It appears the operator or preconditioner is not symmetric and this Krylov method (<cite>KSPCG</cite>, <cite>KSPMINRES</cite>, <cite>KSPCR</cite>) requires symmetry</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.petsc.petscConvergence.KSP_NormalAbsoluteToleranceConvergence" title="fipy.solvers.petsc.petscConvergence.KSP_NormalAbsoluteToleranceConvergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KSP_NormalAbsoluteToleranceConvergence</span></code></a>(...)</p></td>
 <td><p></p></td>
@@ -167,10 +167,10 @@
 <td><p>It was not possible to build or use the requested preconditioner.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.petsc.petscConvergence.KSP_RelativeToleranceConvergence" title="fipy.solvers.petsc.petscConvergence.KSP_RelativeToleranceConvergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KSP_RelativeToleranceConvergence</span></code></a>(solver, ...)</p></td>
-<td><p>Residual 2-norm decreased by a factor of rtol, from 2-norm of right hand side.</p></td>
+<td><p>Residual 2-norm decreased by a factor of <cite>rtol</cite>, from 2-norm of right hand side.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.petsc.petscConvergence.KSP_ToleranceDivergence" title="fipy.solvers.petsc.petscConvergence.KSP_ToleranceDivergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KSP_ToleranceDivergence</span></code></a>(solver, iterations, ...)</p></td>
-<td><p>Residual norm increased by a factor of divtol.</p></td>
+<td><p>Residual norm increased by a factor of <cite>divtol</cite>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -243,7 +243,7 @@ Try a different preconditioner, or a different initial Level.)</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.petsc.petscConvergence.</span></span><span class="sig-name descname"><span class="pre">KSP_IndefinitePreconditionerDivergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actual_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.petsc.petscConvergence.KSP_IndefinitePreconditionerDivergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fipy.solvers.convergence.html#fipy.solvers.convergence.IllConditionedPreconditionerDivergence" title="fipy.solvers.convergence.IllConditionedPreconditionerDivergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">IllConditionedPreconditionerDivergence</span></code></a></p>
 <p>It appears the preconditioner is indefinite (has both positive and
-negative eigenvalues) and this Krylov method (KSPCG) requires it to be
+negative eigenvalues) and this Krylov method (<cite>KSPCG</cite>) requires it to be
 positive definite.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.petsc.petscConvergence.KSP_IndefinitePreconditionerDivergence.__str__">
@@ -257,8 +257,8 @@ positive definite.</p>
 <dt class="sig sig-object py" id="fipy.solvers.petsc.petscConvergence.KSP_IteratingConvergence">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.petsc.petscConvergence.</span></span><span class="sig-name descname"><span class="pre">KSP_IteratingConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actual_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.petsc.petscConvergence.KSP_IteratingConvergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fipy.solvers.convergence.html#fipy.solvers.convergence.IteratingConvergence" title="fipy.solvers.convergence.IteratingConvergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">IteratingConvergence</span></code></a></p>
-<p>This flag is returned if you call KSPGetConvergedReason() while the
-KSPSolve() is still running.</p>
+<p>This flag is returned if you call <cite>KSPGetConvergedReason()</cite> while the
+<cite>KSPSolve()</cite> is still running.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.petsc.petscConvergence.KSP_IteratingConvergence.__str__">
 <span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.petsc.petscConvergence.KSP_IteratingConvergence.__str__" title="Permalink to this definition">¶</a></dt>
@@ -271,9 +271,9 @@ KSPSolve() is still running.</p>
 <dt class="sig sig-object py" id="fipy.solvers.petsc.petscConvergence.KSP_IterationConvergence">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.petsc.petscConvergence.</span></span><span class="sig-name descname"><span class="pre">KSP_IterationConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actual_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.petsc.petscConvergence.KSP_IterationConvergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fipy.solvers.convergence.html#fipy.solvers.convergence.IterationConvergence" title="fipy.solvers.convergence.IterationConvergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">IterationConvergence</span></code></a></p>
-<p>Used by the KSPPREONLY solver after the single iteration of the
-preconditioner is applied.  Also used when the KSPConvergedSkip()
-convergence test routine is set in KSP.</p>
+<p>Used by the <cite>KSPPREONLY</cite> solver after the single iteration of the
+preconditioner is applied.  Also used when the <cite>KSPConvergedSkip()</cite>
+convergence test routine is set in <cite>KSP</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.petsc.petscConvergence.KSP_IterationConvergence.__str__">
 <span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.petsc.petscConvergence.KSP_IterationConvergence.__str__" title="Permalink to this definition">¶</a></dt>
@@ -313,7 +313,7 @@ convergence test routine is set in KSP.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.petsc.petscConvergence.</span></span><span class="sig-name descname"><span class="pre">KSP_NonSymmetricDivergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actual_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.petsc.petscConvergence.KSP_NonSymmetricDivergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fipy.solvers.convergence.html#fipy.solvers.convergence.IllConditionedDivergence" title="fipy.solvers.convergence.IllConditionedDivergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">IllConditionedDivergence</span></code></a></p>
 <p>It appears the operator or preconditioner is not symmetric and this
-Krylov method (KSPCG, KSPMINRES, KSPCR) requires symmetry</p>
+Krylov method (<cite>KSPCG</cite>, <cite>KSPMINRES</cite>, <cite>KSPCR</cite>) requires symmetry</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.petsc.petscConvergence.KSP_NonSymmetricDivergence.__str__">
 <span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.petsc.petscConvergence.KSP_NonSymmetricDivergence.__str__" title="Permalink to this definition">¶</a></dt>
@@ -365,7 +365,7 @@ Krylov method (KSPCG, KSPMINRES, KSPCR) requires symmetry</p>
 <p>It was not possible to build or use the requested preconditioner.
 This is usually due to a zero pivot in a factorization.  It can also
 result from a failure in a subpreconditioner inside a nested
-preconditioner such as PCFIELDSPLIT.</p>
+preconditioner such as <cite>PCFIELDSPLIT</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.petsc.petscConvergence.KSP_PreconditioningDivergence.__str__">
 <span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.petsc.petscConvergence.KSP_PreconditioningDivergence.__str__" title="Permalink to this definition">¶</a></dt>
@@ -378,7 +378,7 @@ preconditioner such as PCFIELDSPLIT.</p>
 <dt class="sig sig-object py" id="fipy.solvers.petsc.petscConvergence.KSP_RelativeToleranceConvergence">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.petsc.petscConvergence.</span></span><span class="sig-name descname"><span class="pre">KSP_RelativeToleranceConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actual_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.petsc.petscConvergence.KSP_RelativeToleranceConvergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fipy.solvers.convergence.html#fipy.solvers.convergence.RelativeToleranceConvergence" title="fipy.solvers.convergence.RelativeToleranceConvergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelativeToleranceConvergence</span></code></a></p>
-<p>Residual 2-norm decreased by a factor of rtol, from 2-norm of right
+<p>Residual 2-norm decreased by a factor of <cite>rtol</cite>, from 2-norm of right
 hand side.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.petsc.petscConvergence.KSP_RelativeToleranceConvergence.__str__">
@@ -392,7 +392,7 @@ hand side.</p>
 <dt class="sig sig-object py" id="fipy.solvers.petsc.petscConvergence.KSP_ToleranceDivergence">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.petsc.petscConvergence.</span></span><span class="sig-name descname"><span class="pre">KSP_ToleranceDivergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actual_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.petsc.petscConvergence.KSP_ToleranceDivergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fipy.solvers.convergence.html#fipy.solvers.convergence.ToleranceDivergence" title="fipy.solvers.convergence.ToleranceDivergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">ToleranceDivergence</span></code></a></p>
-<p>Residual norm increased by a factor of divtol.</p>
+<p>Residual norm increased by a factor of <cite>divtol</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.petsc.petscConvergence.KSP_ToleranceDivergence.__str__">
 <span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.petsc.petscConvergence.KSP_ToleranceDivergence.__str__" title="Permalink to this definition">¶</a></dt>
@@ -405,7 +405,7 @@ hand side.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Jun 26, 2025.
+                Last updated on Jun 30, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -415,7 +415,7 @@ hand side.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+342.g04834ac6e
+Version 3.4.5+345.g7342620b4
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

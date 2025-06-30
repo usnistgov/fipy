@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.solvers.pysparse.pysparseConvergence &#8212; FiPy 3.4.5+342.g04834ac6e documentation</title>
+    <title>fipy.solvers.pysparse.pysparseConvergence &#8212; FiPy 3.4.5+345.g7342620b4 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,14 +43,14 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=acfe530b"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=0be43348"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/fipy.solvers.pysparse.pysparseConvergence.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+342.g04834ac6e documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+345.g7342620b4 documentation" href="../contents.html" />
     <link rel="up" title="fipy.solvers.pysparse" href="fipy.solvers.pysparse.html" />
     <link rel="next" title="fipy.solvers.pysparse.pysparseSolver" href="fipy.solvers.pysparse.pysparseSolver.html" />
     <link rel="prev" title="fipy.solvers.pysparse.preconditioners.ssorPreconditioner" href="fipy.solvers.pysparse.preconditioners.ssorPreconditioner.html" />
@@ -144,7 +144,7 @@
 <td><p><span class="math notranslate nohighlight">\(\vec{b} = 0\)</span>, so exact solution is <span class="math notranslate nohighlight">\(\vec{x} = 0\)</span>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.pysparse.pysparseConvergence.Pysparse_RelativeToleranceConvergence" title="fipy.solvers.pysparse.pysparseConvergence.Pysparse_RelativeToleranceConvergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pysparse_RelativeToleranceConvergence</span></code></a>(...[, ...])</p></td>
-<td><p>Residual 2-norm decreased by a factor of rtol, from 2-norm of right hand side.</p></td>
+<td><p>Residual 2-norm decreased by a factor of <cite>rtol</cite>, from 2-norm of right hand side.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.pysparse.pysparseConvergence.Pysparse_StagnatedDivergence" title="fipy.solvers.pysparse.pysparseConvergence.Pysparse_StagnatedDivergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pysparse_StagnatedDivergence</span></code></a>(solver, ...[, ...])</p></td>
 <td><p>The method stagnated.</p></td>
@@ -249,7 +249,7 @@ positive definite.</p>
 <dt class="sig sig-object py" id="fipy.solvers.pysparse.pysparseConvergence.Pysparse_RelativeToleranceConvergence">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.pysparse.pysparseConvergence.</span></span><span class="sig-name descname"><span class="pre">Pysparse_RelativeToleranceConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actual_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.pysparse.pysparseConvergence.Pysparse_RelativeToleranceConvergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fipy.solvers.convergence.html#fipy.solvers.convergence.RelativeToleranceConvergence" title="fipy.solvers.convergence.RelativeToleranceConvergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelativeToleranceConvergence</span></code></a></p>
-<p>Residual 2-norm decreased by a factor of rtol, from 2-norm of right
+<p>Residual 2-norm decreased by a factor of <cite>rtol</cite>, from 2-norm of right
 hand side.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.pysparse.pysparseConvergence.Pysparse_RelativeToleranceConvergence.__str__">
@@ -276,7 +276,7 @@ hand side.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Jun 26, 2025.
+                Last updated on Jun 30, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -286,7 +286,7 @@ hand side.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+342.g04834ac6e
+Version 3.4.5+345.g7342620b4
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
