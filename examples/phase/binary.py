@@ -511,7 +511,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 The initial residual of the diffusion equation is much larger than the norm
 of the right-hand-side vector, so we use `"initial"` tolerance scaling.
 
->>> solver = DefaultAsymmetricSolver(criterion="initial")
+>>> solver = DefaultAsymmetricSolver(criterion="initial", tolerance=1e-10)
 
 >>> phase.updateOld()
 >>> C.updateOld()
