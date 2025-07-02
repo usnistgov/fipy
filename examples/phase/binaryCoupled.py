@@ -513,7 +513,9 @@ non-linear problem to convergence. We use the "residual" of the equations
 equations) as a test for how long to sweep.
 
 .. index::
-   single: LinearLUSolver
+   single: DefaultAsymmetricSolver
+   single: LinearBicgstabSolver
+   single: HYPREPreconditioner
    single: solve
    single: sweep
 
@@ -521,16 +523,19 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
 
 >>> import fipy.solvers.solver
->>> from fipy.tools import parallelComm
->>> if parallelComm.Nproc > 1:
-...     if fipy.solvers.solver_suite == 'petsc':
-...         solver = DefaultAsymmetricSolver(tolerance=1e-10, precon='hypre')
-...     elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
-...         # Trilinos scales by initial residual
-...         # b-vector L2norm is ~1e15
-...         solver = DefaultAsymmetricSolver(tolerance=1e-24)
+>>> if fipy.solvers.solver_suite == 'petsc':
+...     from fipy import HYPREPreconditioner
+...     solver = DefaultAsymmetricSolver(criterion="initial",
+...                                      precon=HYPREPreconditioner(),
+...                                      tolerance=1e-10)
+... elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+...     from fipy import LinearBicgstabSolver
+...     solver = LinearBicgstabSolver(criterion="initial",
+...                                   tolerance=1e-10)
 ... else:
-...     solver = LinearLUSolver(tolerance=1e-10)
+...     solver = DefaultAsymmetricSolver(criterion="initial",
+...                                      precon=None,
+...                                      tolerance=1e-10)
 
 >>> phase.updateOld()
 >>> C.updateOld()
