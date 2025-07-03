@@ -202,6 +202,25 @@ register_skipper(flag='SCIPY_SOLVER',
                  why="the SciPy solvers are not being used.",
                  skipWarning=True)
 
+def _hasSciPyPythonSolvers():
+    from fipy.tools.version import Version, parse_version
+    try:
+        import scipy
+        return ((solver_suite == 'scipy')
+                and (parse_version(scipy.__version__) >= Version("1.12")))
+    except:
+        return False
+
+register_skipper(flag='SCIPY_PYTHON_SOLVER',
+                 test=_hasSciPyPythonSolvers,
+                 why="the SciPy PYTHON solvers are not being used.",
+                 skipWarning=True)
+
+register_skipper(flag='NOT_SCIPY_PYTHON_SOLVER',
+                 test=lambda: not _hasSciPyPythonSolvers(),
+                 why="the SciPy PYTHON solvers are being used.",
+                 skipWarning=True)
+
 register_skipper(flag='PYAMG_SOLVER',
                  test=lambda: solver_suite == 'pyamg',
                  why="the PyAMG solvers are not being used.",

@@ -546,12 +546,22 @@ class Solver(object):
         - the iteration count is as expected
         - the error has been reduced from the initial guess
 
+        SciPy 1.12 translated all of their solvers from FORTRAN to Python
+        and the iteration counts went up for some reason.
+
+        >>> criteria = [
+        ...     ("unscaled", 1., 0.003, 118),
+        ...     ("RHS", bnorm, 0.6, 2),
+        ...     ("matrix", Lnorm, 0.6, 60),
+        ...     ("initial", rnorm, 0.6, 114)
+        ... ] # doctest: +SCIPY_PYTHON_SOLVER
         >>> criteria = [
         ...     ("unscaled", 1., 0.003, 114),
         ...     ("RHS", bnorm, 0.6, 2),
         ...     ("matrix", Lnorm, 0.6, 58),
         ...     ("initial", rnorm, 0.6, 110)
-        ... ]
+        ... ] # doctest: +NOT_SCIPY_PYTHON_SOLVER
+
         >>> # criteria += ["solution"]  doctest: +TRILINOS_SOLVER
         >>> criteria += [
         ...     ("preconditioned", bnorm, 0.6, 2),
@@ -573,9 +583,11 @@ class Solver(object):
         ...                                    iterations,
         ...                                    atol=1),
         ...                   error < enorm]
+        ...         print(criterion, s.convergence, target, lower_bound, s.convergence.residual / (s.tolerance * target), iterations, s.convergence.iterations, error, enorm)
         ...         satisfied.append(all(checks))
         >>> print(all(satisfied))
         True
+        >>> print(satisfied)
         """
         pass
 
