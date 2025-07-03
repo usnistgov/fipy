@@ -22,8 +22,6 @@ class PysparseMatrixSolver(Solver):
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
-    solveFnc = None
-
     @property
     def _matrixClass(self):
         return _PysparseMeshMatrix
