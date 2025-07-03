@@ -559,7 +559,7 @@ class Solver(object):
         >>> criteria["preconditioned"] = (bnorm, 0.6, 2, 2) # doctest: +PETSC_SOLVER
         >>> criteria["natural"] = (bnorm, 0.6, 6, 6) # doctest: +PETSC_SOLVER
 
-        PETSc in parallel on linux needs fewer iterations?
+        PETSc in parallel on Linux needs fewer iterations?
 
         >>> criteria["initial"] = (rnorm, 0.6, 110, 105) # doctest: +PETSC_SOLVER
 
