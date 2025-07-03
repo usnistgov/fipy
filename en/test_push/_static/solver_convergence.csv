@@ -1,9 +1,0 @@
-,,PETSc_,pyamgx_,PySparse_,SciPy_,Trilinos_
-:class:`~fipy.solvers.convergence.Convergence`,Convergence criteria met.,,|AMGX_SOLVE_SUCCESS|_,,|SciPy_0|_,|AZ_normal|_
-:class:`~fipy.solvers.convergence.IterationConvergence`,Requested iterations complete (and no residual calculated).,|KSP_CONVERGED_ITS|_,,,,
-:class:`~fipy.solvers.convergence.AbsoluteToleranceConvergence`,"Converged, residual is as small as seems reasonable on this machine.",|KSP_CONVERGED_ATOL|_,,|PySparse_2|_,,
-:class:`~fipy.solvers.convergence.RHSZeroConvergence`,"Converged, :math:`\mathbf{b} = 0`, so the exact solution is :math:`\mathbf{x} = 0`.",,,|PySparse_1|_,,
-:class:`~fipy.solvers.convergence.RelativeToleranceConvergence`,"Converged, relative error appears to be less than tolerance.",|KSP_CONVERGED_RTOL|_,,|PySparse_0|_,,
-:class:`~fipy.solvers.convergence.HappyBreakdownConvergence`,"""Exact"" solution found and more iterations will just make things worse.",|KSP_CONVERGED_HAPPY_BREAKDOWN|_,,,,
-:class:`~fipy.solvers.convergence.LossOfAccuracyConvergence`,The iterative solver has terminated due to a lack of accuracy in the recursive residual (caused by rounding errors).,,,,,|AZ_loss|_
-:class:`~fipy.solvers.convergence.IteratingConvergence`,Solve still in progress.,|KSP_CONVERGED_ITERATING|_,,,,
