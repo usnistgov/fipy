@@ -570,7 +570,7 @@ class Solver(object):
         >>> criteria["matrix"] = (Lnorm, 0.6, 60, 58)  # doctest: +SCIPY_PYTHON_SOLVER
         >>> criteria["initial"] = (rnorm, 0.6, 114, 110)  # doctest: +SCIPY_PYTHON_SOLVER
 
-        >>> satisfied = []
+        >>> satisfied = {}
         >>> for criterion, (target, lower_bound, iter_upper, iter_lower) in criteria.items():
         ...     phi.setValue(phi_initial)
         ...     with Solver(criterion=criterion, precon=None) as s:
@@ -586,9 +586,11 @@ class Solver(object):
         ...                    <= s.convergence.iterations
         ...                    <= iter_upper),
         ...                   error < enorm]
-        ...         satisfied.append(all(checks))
-        >>> print(all(satisfied))
+        ...         print(criterion, s.convergence, target, lower_bound, s.convergence.residual / (s.tolerance * target), iter_lower, s.convergence.iterations, iter_upper, error / enorm)
+        ...         satisfied[criterion] = all(checks)
+        >>> print(all(satisfied.values()))
         True
+        >>> print(satisfied)
         """
         pass
 
