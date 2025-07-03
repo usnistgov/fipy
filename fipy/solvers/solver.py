@@ -596,11 +596,9 @@ class Solver(object):
         ...                    <= s.convergence.iterations
         ...                    <= iter_upper),
         ...                   error < enorm]
-        ...         print(criterion, s.convergence, target, lower_bound, s.convergence.residual / (s.tolerance * target), iter_lower, s.convergence.iterations, iter_upper, error / enorm)
         ...         satisfied[criterion] = all(checks)
         >>> print(all(satisfied.values()))
         True
-        >>> print(satisfied)
         """
         pass
 
