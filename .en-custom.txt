@@ -192,6 +192,7 @@ Lobkovsky
 lockfiles
 LSMLIB
 MacBook
+macOS
 Malalasekera
 Malengier
 Materialia
