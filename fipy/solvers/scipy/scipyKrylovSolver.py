@@ -44,6 +44,9 @@ class ScipyKrylovSolver(ScipySolver):
         factor = self._residualNorm(L, x, b) / self._rhsNorm(L, x, b)
         return (factor, None)
 
+    def _doSolve(self, *args, **kwargs):
+        return self.solveFnc(*args, **kwargs)
+
     def _solve_(self, L, x, b):
         """Solve system of equations posed for SciPy
 
@@ -85,7 +88,7 @@ class ScipyKrylovSolver(ScipySolver):
             else:
                 tolerance = dict(rtol=rtol)
 
-            x, info = self.solveFnc(L, b, x,
+            x, info = self._doSolve(L, b, x,
                                     atol=self.absolute_tolerance,
                                     maxiter=self.iterations,
                                     M=M,

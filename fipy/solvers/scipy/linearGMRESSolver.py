@@ -16,3 +16,6 @@ class LinearGMRESSolver(ScipyKrylovSolver):
     """
 
     solveFnc = staticmethod(gmres)
+
+    def _doSolve(self, *args, **kwargs):
+        return self.solveFnc(*args, **kwargs, callback_type='legacy')
