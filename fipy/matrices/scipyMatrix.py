@@ -261,9 +261,6 @@ class _ScipyMatrix(_SparseMatrix):
         ids = numerix.arange(len(vector))
         self.addAt(vector, ids, ids)
 
-    def exportMmf(self, filename):
-        mmwrite(filename, self.matrix)
-
     @property
     def numpyArray(self):
         return self.matrix.toarray()
