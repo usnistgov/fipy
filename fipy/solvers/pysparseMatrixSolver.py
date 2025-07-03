@@ -26,5 +26,6 @@ class PysparseMatrixSolver(Solver):
     def _matrixClass(self):
         return _PysparseMeshMatrix
 
+    @staticmethod
     def solveFnc(*args, **kwargs):
         raise NotImplementedError()
