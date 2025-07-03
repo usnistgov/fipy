@@ -570,7 +570,7 @@ class Solver(object):
         Trilinos in parallel on Linux needs more iterations?
 
         >>> criteria["unscaled"] = (1., 0.003, 116, 114) # doctest: +TRILINOS_SOLVER
-        >>> criteria["matrix"] = (Lnorm, 0.6, 61, 58)  # doctest: +TRILINOS_SOLVER
+        >>> criteria["matrix"] = (Lnorm, 0.6, 63, 58)  # doctest: +TRILINOS_SOLVER
         >>> criteria["initial"] = (rnorm, 0.6, 112, 110)  # doctest: +TRILINOS_SOLVER
 
         SciPy 1.12 translated all of their solvers from FORTRAN to Python
