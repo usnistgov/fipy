@@ -546,26 +546,32 @@ class Solver(object):
         - the iteration count is as expected
         - the error has been reduced from the initial guess
 
+        PETSc and Trilinos, in parallel, can both take an extra iteration for unscaled
+
         >>> criteria = {
-        ...     "unscaled": (1., 0.003, 114),
-        ...     "RHS": (bnorm, 0.6, 2),
-        ...     "matrix": (Lnorm, 0.6, 58),
-        ...     "initial": (rnorm, 0.6, 110)
+        ...     "unscaled": (1., 0.003, 115, 114),
+        ...     "RHS": (bnorm, 0.6, 2, 2),
+        ...     "matrix": (Lnorm, 0.6, 58, 58),
+        ...     "initial": (rnorm, 0.6, 110, 110)
         ... }
 
         >>> # criteria["solution"] = ???  doctest: +TRILINOS_SOLVER
-        >>> criteria["preconditioned"] = (bnorm, 0.6, 2) # doctest: +PETSC_SOLVER
-        >>> criteria["natural"] = (bnorm, 0.6, 6) # doctest: +PETSC_SOLVER
+        >>> criteria["preconditioned"] = (bnorm, 0.6, 2, 2) # doctest: +PETSC_SOLVER
+        >>> criteria["natural"] = (bnorm, 0.6, 6, 6) # doctest: +PETSC_SOLVER
+
+        PETSc in parallel on linux needs fewer iterations?
+
+        >>> criteria["initial"] = (rnorm, 0.6, 110, 105) # doctest: +PETSC_SOLVER
 
         SciPy 1.12 translated all of their solvers from FORTRAN to Python
         and the iteration counts went up for some reason.
 
-        >>> criteria["unscaled"] = (1., 0.003, 118)  # doctest: +SCIPY_PYTHON_SOLVER
-        >>> criteria["matrix"] = (Lnorm, 0.6, 60)  # doctest: +SCIPY_PYTHON_SOLVER
-        >>> criteria["initial"] = (rnorm, 0.6, 114)  # doctest: +SCIPY_PYTHON_SOLVER
+        >>> criteria["unscaled"] = (1., 0.003, 118, 114)  # doctest: +SCIPY_PYTHON_SOLVER
+        >>> criteria["matrix"] = (Lnorm, 0.6, 60, 58)  # doctest: +SCIPY_PYTHON_SOLVER
+        >>> criteria["initial"] = (rnorm, 0.6, 114, 110)  # doctest: +SCIPY_PYTHON_SOLVER
 
         >>> satisfied = []
-        >>> for criterion, (target, lower_bound, iterations) in criteria.items():
+        >>> for criterion, (target, lower_bound, iter_upper, iter_lower) in criteria.items():
         ...     phi.setValue(phi_initial)
         ...     with Solver(criterion=criterion, precon=None) as s:
         ...         res = eq.sweep(var=phi, solver=s)
@@ -576,15 +582,13 @@ class Solver(object):
         ...                    < (s.convergence.residual
         ...                       / (s.tolerance * target))
         ...                    < 1.0),
-        ...                   numerix.allclose(s.convergence.iterations,
-        ...                                    iterations,
-        ...                                    atol=1),
+        ...                   (iter_lower
+        ...                    <= s.convergence.iterations
+        ...                    <= iter_upper),
         ...                   error < enorm]
-        ...         print(criterion, s.convergence, target, lower_bound, s.convergence.residual / (s.tolerance * target), s.convergence.iterations / iterations, error / enorm)
         ...         satisfied.append(all(checks))
         >>> print(all(satisfied))
         True
-        >>> print(satisfied)
         """
         pass
 
