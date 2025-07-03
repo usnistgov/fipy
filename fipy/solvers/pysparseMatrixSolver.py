@@ -25,3 +25,6 @@ class PysparseMatrixSolver(Solver):
     @property
     def _matrixClass(self):
         return _PysparseMeshMatrix
+
+    def _solveFunc(*args, **kwargs):
+        raise NotImplementedError()
