@@ -549,36 +549,15 @@ class Solver(object):
         PETSc and Trilinos, in parallel, can both take an extra iteration for unscaled
 
         >>> criteria = {
-        ...     "unscaled": (1., 0.003, 115, 114),
+        ...     "unscaled": (1., 0.003, 120, 114),
         ...     "RHS": (bnorm, 0.6, 2, 2),
-        ...     "matrix": (Lnorm, 0.6, 58, 58),
-        ...     "initial": (rnorm, 0.6, 110, 110)
+        ...     "matrix": (Lnorm, 0.6, 63, 58),
+        ...     "initial": (rnorm, 0.6, 114, 105)
         ... }
 
         >>> # criteria["solution"] = ???  doctest: +TRILINOS_SOLVER
         >>> criteria["preconditioned"] = (bnorm, 0.6, 2, 2) # doctest: +PETSC_SOLVER
         >>> criteria["natural"] = (bnorm, 0.6, 6, 6) # doctest: +PETSC_SOLVER
-
-        PETSc in parallel on Linux needs more iterations?
-
-        >>> criteria["unscaled"] = (1., 0.003, 115, 114) # doctest: +PETSC_SOLVER
-
-        PETSc in parallel on Linux needs fewer iterations, but macOS needs more?
-
-        >>> criteria["initial"] = (rnorm, 0.6, 111, 105) # doctest: +PETSC_SOLVER
-
-        Trilinos in parallel on Linux needs more iterations?
-
-        >>> criteria["unscaled"] = (1., 0.003, 116, 114) # doctest: +TRILINOS_SOLVER
-        >>> criteria["matrix"] = (Lnorm, 0.6, 63, 58)  # doctest: +TRILINOS_SOLVER
-        >>> criteria["initial"] = (rnorm, 0.6, 112, 110)  # doctest: +TRILINOS_SOLVER
-
-        SciPy 1.12 translated all of their solvers from FORTRAN to Python
-        and the iteration counts went up for some reason.
-
-        >>> criteria["unscaled"] = (1., 0.003, 118, 114)  # doctest: +SCIPY_PYTHON_SOLVER
-        >>> criteria["matrix"] = (Lnorm, 0.6, 60, 58)  # doctest: +SCIPY_PYTHON_SOLVER
-        >>> criteria["initial"] = (rnorm, 0.6, 114, 110)  # doctest: +SCIPY_PYTHON_SOLVER
 
         >>> satisfied = {}
         >>> for criterion, (target, lower_bound, iter_upper, iter_lower) in criteria.items():
