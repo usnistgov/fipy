@@ -559,9 +559,19 @@ class Solver(object):
         >>> criteria["preconditioned"] = (bnorm, 0.6, 2, 2) # doctest: +PETSC_SOLVER
         >>> criteria["natural"] = (bnorm, 0.6, 6, 6) # doctest: +PETSC_SOLVER
 
-        PETSc in parallel on Linux needs fewer iterations?
+        PETSc in parallel on Linux needs more iterations?
 
-        >>> criteria["initial"] = (rnorm, 0.6, 110, 105) # doctest: +PETSC_SOLVER
+        >>> criteria["unscaled"] = (1., 0.003, 115, 114) # doctest: +PETSC_SOLVER
+
+        PETSc in parallel on Linux needs fewer iterations, but macOS needs more?
+
+        >>> criteria["initial"] = (rnorm, 0.6, 111, 105) # doctest: +PETSC_SOLVER
+
+        Trilinos in parallel on Linux needs more iterations?
+
+        >>> criteria["unscaled"] = (1., 0.003, 116, 114) # doctest: +TRILINOS_SOLVER
+        >>> criteria["matrix"] = (Lnorm, 0.6, 61, 58)  # doctest: +TRILINOS_SOLVER
+        >>> criteria["initial"] = (rnorm, 0.6, 112, 110)  # doctest: +TRILINOS_SOLVER
 
         SciPy 1.12 translated all of their solvers from FORTRAN to Python
         and the iteration counts went up for some reason.
