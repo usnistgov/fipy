@@ -313,6 +313,17 @@ package.
 
 .. _PETSc configuration options: https://petsc.org/main/manual/other/#runtime-options
 
+-------------
+Solver Suites
+-------------
+
+Numerical solution of partial differential equations calls for solving
+sparse linear algebra.  :term:`FiPy` supports several different
+:ref:`SOLVERS`.  To the greatest extent possible, they have all be
+configured to do the "same thing", but each presents different capabilities
+in terms of matrix preconditioning and overall performance tuning.
+
+
 .. _PARALLEL:
 
 -------------------
