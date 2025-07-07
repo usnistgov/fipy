@@ -5,6 +5,7 @@ from petsc4py import PETSc
 
 from fipy.tools.timer import Timer
 from .petscSolver import PETScSolver
+from .preconditioners.petscPreconditioner import PETScPreconditioner
 from .preconditioners.defaultPreconditioner import DefaultPreconditioner
 
 from fipy.tools import numerix
@@ -199,8 +200,10 @@ class PETScKrylovSolver(PETScSolver):
         with Timer() as t:
             if self.preconditioner is None:
                 ksp.getPC().setType("none")
-            else:
+            elif isinstance(self.preconditioner, PETScPreconditioner):
                 self.preconditioner._applyToSolver(solver=ksp, matrix=L)
+            else:
+                ksp.getPC().setType(self.preconditioner)
 
         self._log.debug("END precondition - {} ns".format(t.elapsed))
 
