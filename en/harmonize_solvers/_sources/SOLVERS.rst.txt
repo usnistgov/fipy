@@ -6,14 +6,19 @@ Solvers
 
 :term:`FiPy` requires either PETSc_, pyamgx_, Pysparse_, SciPy_, or
 Trilinos_ solver suites to be installed in order to solve linear systems.
-From our experiences, :term:`FiPy` runs most efficiently in serial when Pysparse_
-is the linear solver.  PETSc_ and Trilinos_ are the most complete of the
+PETSc_ and Trilinos_ are the most complete of the
 solvers due to their numerous preconditioning and solver capabilities and
-they also allow :term:`FiPy` to :ref:`run in parallel <PARALLEL>`.
-Although less efficient than Pysparse_ and less capable than PETSc_ or
-Trilinos_, SciPy_ is a very popular package, widely available and easy to
-install.  For this reason, SciPy_ may be the best linear solver choice when
-first installing and testing :term:`FiPy`.  pyamgx_ offers the possibility
+they also allow :term:`FiPy` to :ref:`run in parallel <PARALLEL>`. PETSc_
+is better maintained than Trilinos_ and tends to be easier to install.
+The sparse linear algebra solvers from the popular SciPy_ package are
+widely available and easy to install. Although they do not perform as well
+as the other suites and lack many of the features of PETSc_ or Trilinos_,
+they may be the best linear solver choice when
+first installing and testing :term:`FiPy`.
+While the Pysparse_ linear solvers offer a modest advantage in serial, be
+aware that they require :term:`Python` 2.7, which is no longer supported.
+FiPy support for Pysparse_ will be dropped soon.
+pyamgx_ offers the possibility
 of solving sparse sparse linear systems on the GPU; be aware that both
 hardware and software configuration is non-trivial.
 
@@ -89,6 +94,11 @@ install and use :term:`Pysparse` is :term:`NumPy`.
 
 .. warning::
 
+   Support for :term:`Python` 2.7 and, thus, for :term:`Pysparse`
+   will be dropped soon.
+
+.. warning::
+
    :term:`FiPy` requires version 1.0 or higher of :term:`Pysparse`.
 
 .. _SCIPY:
@@ -100,7 +110,7 @@ SciPy
 http://www.scipy.org/
 
 The :mod:`scipy.sparse` module provides a basic set of serial Krylov
-solvers, but no preconditioners.
+solvers and a limited collection of preconditioners.
 
 .. _PYAMG:
 
@@ -165,7 +175,7 @@ SciPy_ cannot solve, and it enables parallel execution of
 
 .. tip::
 
-   :term:`Trilinos` parallel efficiency is greatly improved by also
+   :term:`Trilinos` parallel efficiency is somewhat improved by also
    installing :term:`Pysparse`.  If :term:`Pysparse` is not installed, be
    sure to use the ``--no-pysparse`` flag.
 

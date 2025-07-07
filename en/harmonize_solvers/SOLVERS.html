@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Solvers &#8212; FiPy 3.4.5+363.gdbada5f1a documentation</title>
+    <title>Solvers &#8212; FiPy 3.4.5+365.g6fe96ec8c documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,14 +43,14 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=31bbad69"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=8d7841f2"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/SOLVERS.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+363.gdbada5f1a documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+365.g6fe96ec8c documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Viewers" href="VIEWERS.html" />
     <link rel="prev" title="Git practices" href="ADMINISTRATA.html" />
@@ -118,14 +118,19 @@
 <span id="id1"></span><h1>Solvers<a class="headerlink" href="#solvers" title="Permalink to this heading">¶</a></h1>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> requires either <a class="reference internal" href="#petsc">PETSc</a>, <a class="reference internal" href="#pyamgx">pyamgx</a>, <a class="reference internal" href="#pysparse">Pysparse</a>, <a class="reference internal" href="#scipy">SciPy</a>, or
 <a class="reference internal" href="#trilinos">Trilinos</a> solver suites to be installed in order to solve linear systems.
-From our experiences, <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> runs most efficiently in serial when <a class="reference internal" href="#pysparse">Pysparse</a>
-is the linear solver.  <a class="reference internal" href="#petsc">PETSc</a> and <a class="reference internal" href="#trilinos">Trilinos</a> are the most complete of the
+<a class="reference internal" href="#petsc">PETSc</a> and <a class="reference internal" href="#trilinos">Trilinos</a> are the most complete of the
 solvers due to their numerous preconditioning and solver capabilities and
-they also allow <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> to <a class="reference internal" href="USAGE.html#parallel"><span class="std std-ref">run in parallel</span></a>.
-Although less efficient than <a class="reference internal" href="#pysparse">Pysparse</a> and less capable than <a class="reference internal" href="#petsc">PETSc</a> or
-<a class="reference internal" href="#trilinos">Trilinos</a>, <a class="reference internal" href="#scipy">SciPy</a> is a very popular package, widely available and easy to
-install.  For this reason, <a class="reference internal" href="#scipy">SciPy</a> may be the best linear solver choice when
-first installing and testing <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>.  <a class="reference internal" href="#pyamgx">pyamgx</a> offers the possibility
+they also allow <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> to <a class="reference internal" href="USAGE.html#parallel"><span class="std std-ref">run in parallel</span></a>. <a class="reference internal" href="#petsc">PETSc</a>
+is better maintained than <a class="reference internal" href="#trilinos">Trilinos</a> and tends to be easier to install.
+The sparse linear algebra solvers from the popular <a class="reference internal" href="#scipy">SciPy</a> package are
+widely available and easy to install. Although they do not perform as well
+as the other suites and lack many of the features of <a class="reference internal" href="#petsc">PETSc</a> or <a class="reference internal" href="#trilinos">Trilinos</a>,
+they may be the best linear solver choice when
+first installing and testing <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>.
+While the <a class="reference internal" href="#pysparse">Pysparse</a> linear solvers offer a modest advantage in serial, be
+aware that they require <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.7, which is no longer supported.
+FiPy support for <a class="reference internal" href="#pysparse">Pysparse</a> will be dropped soon.
+<a class="reference internal" href="#pyamgx">pyamgx</a> offers the possibility
 of solving sparse sparse linear systems on the GPU; be aware that both
 hardware and software configuration is non-trivial.</p>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> chooses the solver suite based on system availability or based
@@ -190,6 +195,11 @@ install and use <a class="reference internal" href="glossary.html#term-Pysparse"
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
+<p>Support for <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.7 and, thus, for <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a>
+will be dropped soon.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> requires version 1.0 or higher of <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a>.</p>
 </div>
 </section>
@@ -197,7 +207,7 @@ install and use <a class="reference internal" href="glossary.html#term-Pysparse"
 <span id="id4"></span><h2>SciPy<a class="headerlink" href="#scipy" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="http://www.scipy.org/">http://www.scipy.org/</a></p>
 <p>The <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse" title="(in SciPy v1.16.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.sparse</span></code></a> module provides a basic set of serial Krylov
-solvers, but no preconditioners.</p>
+solvers and a limited collection of preconditioners.</p>
 </section>
 <section id="pyamg">
 <span id="id5"></span><h2>PyAMG<a class="headerlink" href="#pyamg" title="Permalink to this heading">¶</a></h2>
@@ -246,7 +256,7 @@ of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xre
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p><a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> parallel efficiency is greatly improved by also
+<p><a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> parallel efficiency is somewhat improved by also
 installing <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a>.  If <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a> is not installed, be
 sure to use the <code class="docutils literal notranslate"><span class="pre">--no-pysparse</span></code> flag.</p>
 </div>
@@ -389,13 +399,13 @@ is not explicitly included in these tables.</p>
 <section id="default">
 <h3><code class="docutils literal notranslate"><span class="pre">default</span></code><a class="headerlink" href="#default" title="Permalink to this heading">¶</a></h3>
 <p>The setting <code class="docutils literal notranslate"><span class="pre">criterion=&quot;default&quot;</span></code> applies the same scaling (<code class="docutils literal notranslate"><span class="pre">RHS</span></code>) to
-all solvers.  This behavior is new in version 3.4.5+363.gdbada5f1a; prior to that, the
+all solvers.  This behavior is new in version 3.4.5+365.g6fe96ec8c; prior to that, the
 default behavior was the same as <code class="docutils literal notranslate"><span class="pre">criterion=&quot;legacy&quot;</span></code>.</p>
 </section>
 <section id="legacy">
 <h3><code class="docutils literal notranslate"><span class="pre">legacy</span></code><a class="headerlink" href="#legacy" title="Permalink to this heading">¶</a></h3>
 <p>The setting <code class="docutils literal notranslate"><span class="pre">criterion=&quot;legacy&quot;</span></code> restores the behavior of FiPy prior to
-version 3.4.5+363.gdbada5f1a and is equivalent to what the particular suite and solver
+version 3.4.5+365.g6fe96ec8c and is equivalent to what the particular suite and solver
 does if not specifically configured.  The <code class="docutils literal notranslate"><span class="pre">legacy</span></code> row of the table is a
 best effort at documenting what will happen.</p>
 <div class="admonition note">
@@ -659,7 +669,7 @@ solver capabilities.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Jul 03, 2025.
+                Last updated on Jul 07, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -669,7 +679,7 @@ solver capabilities.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+363.gdbada5f1a
+Version 3.4.5+365.g6fe96ec8c
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
