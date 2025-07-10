@@ -152,7 +152,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             Diffusion coefficient.
         mesh : ~fipy.meshes.mesh.Mesh
             Geometry and topology.
-        anisotropyRank : int
+        anisotropicRank : int
             ???
 
         Returns
