@@ -494,7 +494,7 @@ class Solver(object):
            &= 4 N \phi_R = 8000 N\qquad\text{at $x = 1$}
 
         Thus the :math:`L_2` norm of the right-hand-side vector is
-        :math:`\left\| b \right\|_2 = \math{O}(8000 N}`.
+        :math:`\left\| b \right\|_2 = \mathcal{O}(8000 N)`.
 
         >>> bnorm = solver._rhsNorm(L, x, b)
         >>> print(numerix.allclose(bnorm, 8000 * N, rtol=0.1))
