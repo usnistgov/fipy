@@ -279,7 +279,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         Returns
         -------
         L : ~fipy.matrices.sparseMatrix.SparseMatrix
-            The NxN sparse matrix contribution.
+            The :math:`N \times N` sparse matrix contribution.
         b : array_like
             The length-N right-hand-side vector contribution.
 
@@ -342,7 +342,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         Returns
         -------
         L : ~fipy.matrices.sparseMatrix.SparseMatrix
-            The NxN sparse matrix contribution.
+            The :math:`N \times N` sparse matrix contribution.
         b : array_like
             The length-N right-hand-side vector contribution
 
@@ -545,7 +545,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             Solution variable of N cells.
             Why pass in `var` and then pass it back out?
         L : ~fipy.matrices.sparseMatrix.SparseMatrix
-            The NxN sparse matrix from this and all lower-order
+            The :math:`N \times N` sparse matrix from this and all lower-order
             contributions.
         b : array_like
             The length-N right-hand-side vector from this and all
@@ -639,7 +639,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             Solution variable of N cells.
             Why pass in `var` and then pass it back out?
         L : ~fipy.matrices.sparseMatrix.SparseMatrix
-            The NxN sparse matrix from this second-order contribution.
+            The :math:`N \times N` sparse matrix from this second-order contribution.
         b : array_like
             Right-hand-side vector from this second-order contribution.
 
@@ -721,7 +721,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             Solution variable of N cells.
             Why pass in `var` and then pass it back out?
         L : ~fipy.matrices.sparseMatrix.SparseMatrix
-            The NxN sparse matrix from this zeroth-order contribution.
+            The :math:`N \times N` sparse matrix from this zeroth-order contribution.
         b : array_like
             Right-hand-side vector from this zeroth-order contribution.
 
