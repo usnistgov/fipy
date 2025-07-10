@@ -19,7 +19,7 @@ While the Pysparse_ linear solvers offer a modest advantage in serial, be
 aware that they require :term:`Python` 2.7, which is no longer supported.
 FiPy support for Pysparse_ will be dropped soon.
 pyamgx_ offers the possibility
-of solving sparse sparse linear systems on the GPU; be aware that both
+of solving sparse linear systems on the GPU; be aware that both
 hardware and software configuration is non-trivial.
 
 :term:`FiPy` chooses the solver suite based on system availability or based
@@ -68,7 +68,7 @@ communication (see :ref:`PARALLEL` for more details).
    interfaces.
 
 .. note:: While, for consistency with other solver suites, :term:`FiPy` does
-   implement some precoditioner objects for :term:`PETSc`, you can also
+   implement some preconditioner objects for :term:`PETSc`, you can also
    simply pass one of the `PCType strings`_ in the `precon=` argument when
    declaring the solver.
 
