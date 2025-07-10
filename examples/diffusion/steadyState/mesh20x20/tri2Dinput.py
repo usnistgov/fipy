@@ -1,7 +1,7 @@
 """
 
 This input file again solves a 2D diffusion problem on a triangular mesh.
-We increase the solver tolerance from the default :math:`10^{-5}` in order
+We refine the solver tolerance from the default :math:`10^{-5}` in order
 to achieve a good solution.
 
     >>> eq = DiffusionTerm()
