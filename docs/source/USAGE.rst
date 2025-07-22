@@ -375,8 +375,8 @@ processors.  We compare solution time vs number of Slurm_ tasks (available
 cores) for a `Method of Manufactured Solutions Allen-Cahn problem`_.
 
 .. plot:: pyplots/scaling.py
-
-   Scaling behavior of different solver packages
+   :caption: Scaling behavior of different solver packages
+   :align: center
 
 "Speedup" relative to :ref:`PySparse` (bigger numbers are better) versus
 number of tasks (processes) on a log-log plot.  The number of threads per
@@ -510,8 +510,8 @@ slots for a `Method of Manufactured Solutions Allen-Cahn problem`_.
 :term:`OpenMP` threading always slows down FiPy performance.
 
 .. plot:: pyplots/cpus_vs_threads.py
-
-   Effect of having more :term:`OpenMP` threads for each :term:`MPI` rank
+   :caption: Effect of having more :term:`OpenMP` threads for each :term:`MPI` rank
+   :align: center
 
 "Speedup" relative to one thread (bigger numbers are better) versus number
 of threads for 32 Slurm_ tasks on a log-log plot.  :term:`OpenMP` threads
