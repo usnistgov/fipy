@@ -1102,13 +1102,14 @@ support for better :term:`Python 3` solvers, starting with
 :term:`petsc4py`.
 
 Because the faster :term:`PySparse` solvers are not
-available under :term:`Python 3`, we will maintain :term:`Python` 2.x
+available under :term:`Python 3`, we have maintained :term:`Python` 2.x
 support as long as practical. Be aware that the conda-forge_ packages that
 :term:`FiPy` depends upon are not well-maintained on :term:`Python` 2.x
 and our support for that configuration is rapidly becoming impractical,
-despite the present performance benefits. Hopefully, we will learn
-how to optimize our use of :ref:`PETSc` and/or :ref:`Trilinos` 12.12 will
-become available on conda-forge_.
+despite the performance benefits. Now that we have learned
+how to optimize our use of :ref:`PETSc` and :ref:`Trilinos`, the
+performance margin of :term:`PySparse` is small and support for
+:term:`Python` 2.x will be dropped soon.
 
 .. _future: http://python-future.org
 .. _pya: https://github.com/pya
