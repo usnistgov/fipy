@@ -13,7 +13,7 @@ This example is similar to the example found in
 :func:`~fipy.meshes.factoryMeshes.Grid1D` object.
 
 Here, one time step is executed to implicitly find the steady state
-solution.  We increase the solver tolerance from the default
+solution.  We refine the solver tolerance from the default
 :math:`10^{-5}` in order to achieve a good solution.
 
     >>> eq = DiffusionTerm()

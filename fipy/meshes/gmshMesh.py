@@ -17,7 +17,7 @@ import warnings
 
 _log = logging.getLogger(__name__)
 
-from fipy.tools import numerix as nx
+from fipy.tools import numerix
 from fipy.tools import parallelComm
 from fipy.tools import serialComm
 from fipy.tools.version import Version, parse_version
@@ -309,18 +309,18 @@ class GmshFile(object):
             raise MeshExportError("Element type unsupported by Gmsh")
 
     def _orderVertices(self, vertexCoords, vertices):
-        coordinates = nx.take(vertexCoords, vertices, axis=1)
-        centroid = nx.add.reduce(coordinates, axis=1) / coordinates.shape[1]
-        coordinates = coordinates - centroid[..., nx.newaxis]
+        coordinates = numerix.take(vertexCoords, vertices, axis=1)
+        centroid = numerix.add.reduce(coordinates, axis=1) / coordinates.shape[1]
+        coordinates = coordinates - centroid[..., numerix.newaxis]
 
         # to prevent div by zero
-        coordinates = nx.where(coordinates == 0, 1.e-10, coordinates)
+        coordinates = numerix.where(coordinates == 0, 1.e-10, coordinates)
 
         # angles go from -pi / 2 to 3*pi / 2
-        angles = nx.arctan(coordinates[1] / coordinates[0]) \
-                + nx.where(coordinates[0] < 0, nx.pi, 0)
-        sortorder = nx.argsort(angles)
-        return nx.take(vertices, sortorder)
+        angles = numerix.arctan(coordinates[1] / coordinates[0]) \
+                + numerix.where(coordinates[0] < 0, numerix.pi, 0)
+        sortorder = numerix.argsort(angles)
+        return numerix.take(vertices, sortorder)
 
     def write(self, obj, time=0.0, timeindex=0):
         pass
@@ -390,7 +390,7 @@ class POSFile(GmshFile):
         nb_scalar_pyramids2 = nb_vector_pyramids2 = nb_tensor_pyramids2 = 0
         nb_text2d = nb_text2d_chars = nb_text3d = nb_text3d_chars = 0
 
-        nonOverlapping = nx.zeros((var.mesh.numberOfCells,), dtype=bool)
+        nonOverlapping = numerix.zeros((var.mesh.numberOfCells,), dtype=bool)
         nonOverlapping[..., var.mesh._localNonOverlappingCellIDs] = True
 
         cellTopology = var.mesh._cellTopology
@@ -603,12 +603,12 @@ class MSHFile(GmshFile):
         `facesToVertices` and `cellsToFaces`.
         """
 
-        allShapes  = nx.unique(shapeTypes).tolist()
+        allShapes  = numerix.unique(shapeTypes).tolist()
         maxFaces   = max([self.numFacesPerCell[x] for x in allShapes])
 
         # `cellsToFaces` must be padded with -1; see mesh.py
         currNumFaces = 0
-        cellsToFaces = nx.ones((numCells, maxFaces), 'l') * -1
+        cellsToFaces = numerix.ones((numCells, maxFaces), 'l') * -1
         facesDict    = {}
         uniqueFaces  = []
 
@@ -669,7 +669,7 @@ class MSHFile(GmshFile):
         maxFaceLen = max([len(f) for f in uniqueFaces])
         uniqueFaces = [[-1] * (maxFaceLen - len(f)) + f for f in uniqueFaces]
 
-        facesToVertices = nx.array(uniqueFaces, dtype=INDEX_TYPE)
+        facesToVertices = numerix.array(uniqueFaces, dtype=INDEX_TYPE)
 
         return facesToVertices.swapaxes(0, 1)[::-1], cellsToFaces.swapaxes(0, 1).copy('C'), facesDict
 
@@ -680,9 +680,9 @@ class MSHFile(GmshFile):
 
         for entity in entitiesNodes:
             try:
-                vertIndices = vertexMap[nx.array(entity)]
+                vertIndices = vertexMap[numerix.array(entity)]
             except IndexError:
-                vertIndices = nx.ones((len(entity),), dtype=INDEX_TYPE) * -1
+                vertIndices = numerix.ones((len(entity),), dtype=INDEX_TYPE) * -1
             entitiesVertices.append(vertIndices)
 
         return entitiesVertices
@@ -811,11 +811,11 @@ class MSHFile(GmshFile):
             cellsToGmshVerts = cellsData.nodes + ghostsData.nodes
             numCellsTotal    = len(cellsData.nodes) + len(ghostsData.nodes)
             allShapeTypes    = cellsData.shapes + ghostsData.shapes
-            allShapeTypes    = nx.array(allShapeTypes)
-            allShapeTypes    = nx.delete(allShapeTypes, nx.s_[numCellsTotal:])
-            self.physicalCellMap = nx.array(cellsData.physicalEntities
+            allShapeTypes    = numerix.array(allShapeTypes)
+            allShapeTypes    = numerix.delete(allShapeTypes, numerix.s_[numCellsTotal:])
+            self.physicalCellMap = numerix.array(cellsData.physicalEntities
                                             + ghostsData.physicalEntities)
-            self.geometricalCellMap = nx.array(cellsData.geometricalEntities
+            self.geometricalCellMap = numerix.array(cellsData.geometricalEntities
                                                + ghostsData.geometricalEntities)
 
             if numCellsTotal < 1:
@@ -853,8 +853,8 @@ class MSHFile(GmshFile):
                                                                facesData.geometricalEntities):
                 faceEntitiesDict[' '.join([str(x) for x in sorted(face)])] = (physicalEntity, geometricalEntity)
 
-            self.physicalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
-            self.geometricalFaceMap = nx.zeros(facesToV.shape[-1:], 'l')
+            self.physicalFaceMap = numerix.zeros(facesToV.shape[-1:], 'l')
+            self.geometricalFaceMap = numerix.zeros(facesToV.shape[-1:], 'l')
             for face in list(facesDict.keys()):
                 # not all faces are necessarily tagged
                 if face in faceEntitiesDict:
@@ -872,10 +872,10 @@ class MSHFile(GmshFile):
         # convert lists of cell vertices to a properly oriented masked array
         maxVerts = max([len(v) for v in cellsToVertIDs])
         # ticket:539 - NumPy 1.7 casts to array before concatenation and empty array defaults to float
-        cellsToVertIDs = [nx.concatenate((v, nx.array([-1] * (maxVerts-len(v)),
+        cellsToVertIDs = [numerix.concatenate((v, numerix.array([-1] * (maxVerts-len(v)),
                                          dtype=INDEX_TYPE)))
                           for v in cellsToVertIDs]
-        cellsToVertIDs = nx.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0, 1)
+        cellsToVertIDs = numerix.MA.masked_equal(cellsToVertIDs, value=-1).swapaxes(0, 1)
 
         _log.debug("Done with cells and faces.")
         return (vertexCoords, facesToV, cellsToF,
@@ -962,10 +962,10 @@ class MSHFile(GmshFile):
                 """For more complicated meshes, some cells may have fewer
                 faces than others. If this is the case, ignore the
                 `--` entries."""
-                if faceNum is nx.MA.masked:
+                if faceNum is numerix.MA.masked:
                     continue
                 for vertexNum in faceVertexIDs[..., faceNum]:
-                    if vertexNum not in vertexList and vertexNum is not nx.MA.masked:
+                    if vertexNum not in vertexList and vertexNum is not numerix.MA.masked:
                         vertexList.append(vertexNum)
 
             if dimensions == 2:
@@ -1018,15 +1018,15 @@ class MSHFile(GmshFile):
         because we want to avoid loading the entire `.msh` file into memory.
         """
         allVerts     = [v for c in cellsToGmshVerts for v in c] # flatten
-        allVerts     = nx.unique(nx.array(allVerts, dtype=nx.INT_DTYPE)) # remove dups
-        allVerts     = nx.sort(allVerts)
+        allVerts     = numerix.unique(numerix.array(allVerts, dtype=numerix.INT_DTYPE)) # remove dups
+        allVerts     = numerix.sort(allVerts)
         maxVertIdx   = allVerts[-1] + 1 # add one to offset zero
-        vertGIDtoIdx = nx.ones(maxVertIdx, 'l') * -1 # gmsh ID -> vertexCoords idx
-        vertexCoords = nx.empty((len(allVerts), self.coordDimensions))
+        vertGIDtoIdx = numerix.ones(maxVertIdx, 'l') * -1 # gmsh ID -> vertexCoords idx
+        vertexCoords = numerix.empty((len(allVerts), self.coordDimensions))
         nodeCount    = 0
 
         # establish map. This works because allVerts is a sorted set.
-        vertGIDtoIdx[allVerts] = nx.arange(len(allVerts))
+        vertGIDtoIdx[allVerts] = numerix.arange(len(allVerts))
 
         nodesFile = open(self.nodesPath, 'r')
         nodesFile.readline() # skip number of nodes
@@ -1040,7 +1040,7 @@ class MSHFile(GmshFile):
 
             if nodeID == allVerts[nodeCount]:
                 newVert = [float(x) for x in line[1:self.coordDimensions+1]]
-                vertexCoords[nodeCount,:] = nx.array(newVert)
+                vertexCoords[nodeCount,:] = numerix.array(newVert)
                 nodeCount += 1
 
             if len(allVerts) == nodeCount:
@@ -1316,7 +1316,7 @@ class _GmshTopology(_MeshTopology):
         global parallel mesh. Does not include the IDs of boundary cells.
 
         E.g., would return [0, 1, 4, 5] for mesh A
-        
+
         ```
             A        B
         ------------------
@@ -1328,7 +1328,7 @@ class _GmshTopology(_MeshTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return nx.asarray(self.mesh.cellGlobalIDs,
+        return numerix.asarray(self.mesh.cellGlobalIDs,
                           dtype=INDEX_TYPE)
 
     @property
@@ -1350,7 +1350,7 @@ class _GmshTopology(_MeshTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return nx.asarray(self.mesh.cellGlobalIDs + self.mesh.gCellGlobalIDs,
+        return numerix.asarray(self.mesh.cellGlobalIDs + self.mesh.gCellGlobalIDs,
                           dtype=INDEX_TYPE)
 
     @property
@@ -1372,7 +1372,7 @@ class _GmshTopology(_MeshTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return nx.arange(len(self.mesh.cellGlobalIDs),
+        return numerix.arange(len(self.mesh.cellGlobalIDs),
                          dtype=INDEX_TYPE)
 
     @property
@@ -1394,7 +1394,7 @@ class _GmshTopology(_MeshTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return nx.arange(len(self.mesh.cellGlobalIDs)
+        return numerix.arange(len(self.mesh.cellGlobalIDs)
                          + len(self.mesh.gCellGlobalIDs),
                          dtype=INDEX_TYPE)
 
@@ -1419,7 +1419,7 @@ class _GmshTopology(_MeshTopology):
 
         .. note:: Trivial except for parallel meshes
         """
-        return nx.arange(self.mesh.numberOfFaces,
+        return numerix.arange(self.mesh.numberOfFaces,
                          dtype=INDEX_TYPE)[..., self._nonOverlappingFaces]
 
 
@@ -1682,7 +1682,7 @@ class Gmsh2D(Mesh2D):
 
     def __setstate__(self, state):
         super(Gmsh2D, self).__setstate__(state)
-        self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
+        self.cellGlobalIDs = list(numerix.arange(self.cellFaceIDs.shape[-1]))
         self.gCellGlobalIDs = []
         self.communicator = serialComm
         self.mshFile = None
@@ -1827,7 +1827,7 @@ class Gmsh2D(Mesh2D):
 
         >>> os.remove(mshFile)
 
-        >>> print(nx.allclose(sqrTri.cellVolumes, [1., 0.5])) # doctest: +GMSH
+        >>> print(numerix.allclose(sqrTri.cellVolumes, [1., 0.5])) # doctest: +GMSH
         True
 
 
@@ -2069,7 +2069,7 @@ class Gmsh3D(Mesh):
 
     def __setstate__(self, state):
         super(Gmsh3D, self).__setstate__(state)
-        self.cellGlobalIDs = list(nx.arange(self.cellFaceIDs.shape[-1]))
+        self.cellGlobalIDs = list(numerix.arange(self.cellFaceIDs.shape[-1]))
         self.gCellGlobalIDs = []
         self.communicator = serialComm
         self.mshFile = None
@@ -2181,7 +2181,7 @@ class Gmsh3D(Mesh):
 
         >>> os.remove(mshFile)
 
-        >>> print(nx.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3])) # doctest: +GMSH
+        >>> print(numerix.allclose(tetPriPyr.cellVolumes, [1./6, 1., 2./3])) # doctest: +GMSH
         True
 
         Write tetrahedron, prism, and pyramid volumes out as a `POS` file
@@ -2351,7 +2351,7 @@ class GmshGrid2D(Gmsh2D):
 
     @property
     def _meshSpacing(self):
-        return nx.array((self.dx, self.dy))[..., nx.newaxis]
+        return numerix.array((self.dx, self.dy))[..., numerix.newaxis]
 
     def _makeGridGeo(self, dx, dy, nx, ny):
         height = ny * dy
@@ -2425,7 +2425,7 @@ class GmshGrid3D(Gmsh3D):
 
     @property
     def _meshSpacing(self):
-        return nx.array((self.dx, self.dy, self.dz))[..., nx.newaxis]
+        return numerix.array((self.dx, self.dy, self.dz))[..., numerix.newaxis]
 
     def _makeGridGeo(self, dx, dy, dz, nx, ny, nz):
         height = ny * dy
@@ -2464,7 +2464,7 @@ class GmshGrid3D(Gmsh3D):
         to ensure they're performing similarly.
 
         >>> from fipy import *
-        >>> from fipy.tools import numerix as nx
+        >>> from fipy.tools import numerix
 
         >>> yogmsh = GmshGrid3D(dx=5, dy=5, dz=5, nx=5, ny=5, nz=5,
         ...                     communicator=serialComm) # doctest: +GMSH
@@ -2495,7 +2495,7 @@ class GmshGrid3D(Gmsh3D):
         ...           1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,
         ...           1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.]
 
-        >>> nx.allclose(mesh._faceAreas, faceAreas) # doctest: +GMSH
+        >>> numerix.allclose(mesh._faceAreas, faceAreas) # doctest: +GMSH
         True
 
         >>> cellAreas = [[ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
@@ -2505,7 +2505,7 @@ class GmshGrid3D(Gmsh3D):
         ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.],
         ...            [ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.]]
 
-        >>> nx.allclose(mesh._cellAreas, cellAreas) # doctest: +GMSH
+        >>> numerix.allclose(mesh._cellAreas, cellAreas) # doctest: +GMSH
         True
         """
 

@@ -1,14 +1,19 @@
 from petsc4py import PETSc
 
-from ..convergence import (Convergence, AbsoluteToleranceConvergence,
-                           RelativeToleranceConvergence, IterationConvergence,
-                           IterationDivergence, HappyBreakdownConvergence,
+from ..convergence import (Convergence,
+                           AbsoluteToleranceConvergence,
+                           HappyBreakdownConvergence,
                            IteratingConvergence,
-                           Divergence, BreakdownDivergence,
+                           IterationConvergence,
+                           RelativeToleranceConvergence,
+                           Divergence,
+                           BreakdownDivergence,
                            IllConditionedDivergence,
+                           IterationDivergence,
+                           NullDivergence,
+                           OutOfRangeDivergence,
                            PreconditioningDivergence,
                            IllConditionedPreconditionerDivergence,
-                           OutOfRangeDivergence, NullDivergence,
                            ToleranceDivergence)
 
 # "The values KSP_CONVERGED_CG_NEG_CURVE, KSP_CONVERGED_CG_CONSTRAINED, and
