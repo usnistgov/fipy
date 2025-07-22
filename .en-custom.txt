@@ -48,6 +48,7 @@ CEAC
 CFL
 CGS
 CHANGELOG
+Choleski
 Cickovski
 CircleCI
 CIs
@@ -112,6 +113,7 @@ fipy
 FiPy
 FiPy's
 fipy.tools.comms.commWrapper.CommWrapper
+Firedrake's
 FIXME
 FV
 FVM
@@ -143,11 +145,13 @@ Hamadani
 Hangarter
 hedron
 Hentschel
+Hessenberg
 heterojunction
 hexahedron
 Hinsen
 Hohenberg
 HPC
+HYPRE
 iff
 IFPACK
 indices
@@ -175,17 +179,20 @@ Kobayashi
 Kobayashi's
 Kornyei
 Krylov
+KSP
 levelling
 levelset
 LHS
 linearization
 linearize
 linearizing
+Linux
 liquidus
 Lobkovsky
 lockfiles
 LSMLIB
 MacBook
+macOS
 Malalasekera
 Malengier
 Materialia
@@ -258,6 +265,7 @@ PEG-SPS-Cl
 Peric
 performant
 PETSc
+PETSc's
 petsc4py
 phiCoupled
 photovoltaics
@@ -282,6 +290,7 @@ pyamgx
 Pygist
 PyPI
 pysparse
+PySparse
 PythonXY
 pytrilinos
 PyTrilinos
@@ -323,6 +332,7 @@ stiffnesses
 subdirectory
 submicrometer
 submodule
+subpreconditioner
 substitutional
 substitutionals
 subviewers

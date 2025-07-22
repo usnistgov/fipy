@@ -13,9 +13,12 @@ This example is similar to the example found in
 :func:`~fipy.meshes.factoryMeshes.Grid1D` object.
 
 Here, one time step is executed to implicitly find the steady state
-solution.
+solution.  We refine the solver tolerance from the default
+:math:`10^{-5}` in order to achieve a good solution.
 
-    >>> DiffusionTerm().solve(var)
+    >>> eq = DiffusionTerm()
+    >>> solver = eq.getDefaultSolver(tolerance=1e-8)
+    >>> eq.solve(var, solver=solver)
 
 To test the solution, the analytical result is required. The `x`
 coordinates from the mesh are gathered and the length of the domain,
@@ -30,7 +33,7 @@ Finally the analytical and numerical results are compared with a
 tolerance of `1e-10`.
 
     >>> print(var.allclose(analyticalArray))
-    1
+    True
 
 """
 from __future__ import print_function
