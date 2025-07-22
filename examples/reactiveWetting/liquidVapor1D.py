@@ -276,7 +276,7 @@ sweeps. The major quirk in this scheme is the requirement of updating the
 elegantly by calling ``cacheMatrix()`` only on the necessary part of the
 equation. This currently doesn't work properly in :term:`FiPy`.
 
-Beginning with :term:`FiPy` :error:`4`, solver :ref:`CONVERGENCE`
+Beginning with :term:`FiPy` 4, solver :ref:`CONVERGENCE`
 tolerance is normalized by the magnitude of the right-hand-side (RHS)
 vector.  For this particular problem, the initial residual is much smaller
 than the RHS and so the solver gets "stuck".  Changing the normalization to

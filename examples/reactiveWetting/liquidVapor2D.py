@@ -116,7 +116,7 @@ A 2D version of the 1D example.
 ...     totalSteps = 1
 ...     totalSweeps = 1
 
-Beginning with :term:`FiPy` :error:`4`, solver :ref:`CONVERGENCE`
+Beginning with :term:`FiPy` 4, solver :ref:`CONVERGENCE`
 tolerance is normalized by the magnitude of the right-hand-side (RHS)
 vector.  For this particular problem, the initial residual is much smaller
 than the RHS and so the solver gets "stuck".  Changing the normalization to
