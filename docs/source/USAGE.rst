@@ -344,7 +344,7 @@ class meshes. Currently, the only remaining serial-only meshes are
 .. tip::
 
    You are strongly advised to force the use of only one :term:`OpenMP`
-   thread with :ref:`Trilinos`::
+   thread with :ref:`PETSc` and :ref:`Trilinos`::
 
        $ export OMP_NUM_THREADS=1
 
