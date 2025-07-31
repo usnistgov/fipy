@@ -350,13 +350,6 @@ class meshes. Currently, the only remaining serial-only meshes are
 
    See :ref:`THREADS_VS_RANKS` for more information.
 
-.. note::
-
-   `Trilinos 12.12 has support for Python 3`_, but
-   `PyTrilinos on conda-forge`_ presently only provides 12.10, which is
-   limited to Python 2.x. :ref:`PETSC` is available for both :term:`Python
-   3` and :term:`Python` 2.7.
-
 It should not generally be necessary to change anything in your script.
 Simply invoke::
 
@@ -364,7 +357,7 @@ Simply invoke::
 
 or::
 
-    $ mpirun -np {# of processors} python myScript.py --trilinos
+    $ FIPY_SOLVERS=trilinos mpirun -np {# of processors} python myScript.py
 
 instead of::
 
@@ -375,42 +368,30 @@ processors.  We compare solution time vs number of Slurm_ tasks (available
 cores) for a `Method of Manufactured Solutions Allen-Cahn problem`_.
 
 .. plot:: pyplots/scaling.py
-   :caption: Scaling behavior of different solver packages
    :align: center
+   :alt: "Speedup" relative to PySparse versus number of tasks (processes) on a log-log plot.
 
-"Speedup" relative to :ref:`PySparse` (bigger numbers are better) versus
-number of tasks (processes) on a log-log plot.  The number of threads per
-:term:`MPI` rank is indicated by the line style (see legend).
-:term:`OpenMP` threads :math:`\times` :term:`MPI` ranks = Slurm_ tasks.
+   Scaling behavior of different solver packages [#MMS]_.
 
 A few things can be observed in this plot:
 
 - Both :ref:`PETSc` and :ref:`Trilinos` exhibit power law scaling, but the
-  power is only about 0.7.  At least one source of this poor scaling is
-  that our "``...Grid...``" meshes parallelize by dividing the mesh into
+  power is less than 0.8.  At least one source of this less-than-optimal scaling
+  is that our "``...Grid...``" meshes parallelize by dividing the mesh into
   slabs, which leads to more communication overhead than more compact
   partitions.  The "``...Gmsh...``" meshes partition more efficiently, but
   carry more overhead in other ways.  We'll be making efforts to improve
   the partitioning of the "``...Grid...``" meshes in a future release.
 
-- :ref:`PETSc` and :ref:`Trilinos` have fairly comparable performance, but
-  lag :ref:`PySparse` by a considerable margin.  The :ref:`SciPy` solvers
-  are even worse.  Some of this discrepancy may be because the different
-  packages are not all doing the same thing.  Different solver packages
-  have different default solvers and preconditioners.  Moreover, the
-  meaning of the solution tolerance depends on the normalization the solver
-  uses and it is not always obvious which of several possibilities a
-  particular package employs.  We will endeavor to normalize the
-  normalizations in a future release.
+- :ref:`PETSc` has comparable serial performance to :ref:`PySparse`
+  and :ref:`Trilinos` lags somewhat.
 
-- :ref:`PETSc` with one thread is faster than with two threads until the
-  number of tasks reaches about 10 and is faster than with four threads
-  until the number of tasks reaches more than 20.  :ref:`Trilinos` with one
-  thread is faster than with two threads until the number of tasks is more
-  than 30.  We don't fully understand the reasons for this, but there may be
-  a *modest* benefit, *when using a large number of cpus*, to allow two to
-  four :term:`OpenMP` threads per :term:`MPI` rank.  See
-  :ref:`THREADS_VS_RANKS` for caveats and more information.
+- The :ref:`SciPy` solvers are about three times slower than :ref:`PETSc`
+  and :ref:`PySparse` and only run in serial.  :ref:`Windows` users may
+  consider installing `Windows Subsystem for Linux`_ to gain access to the
+  parallel solver suites; switching to :ref:`PETSc` can
+  yield a ten-fold improvement in performance on an 8-core laptop and 
+  sixty-fold on a 64-core workstation.
 
 These results are likely both problem and architecture dependent.  You
 should develop an understanding of the scaling behavior of your own codes
@@ -470,6 +451,7 @@ you need to do something with the entire solution, you can use
 .. _Trilinos 12.12 has support for Python 3 : https://github.com/trilinos/Trilinos/issues/3203
 .. _PyTrilinos on conda-forge: https://anaconda.org/conda-forge/pytrilinos
 .. _Slurm: https://slurm.schedmd.com
+.. _Windows Subsystem for Linux: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
 
 .. _THREADS_VS_RANKS:
 
@@ -496,26 +478,29 @@ current session, you may prefer to restrict its use to :term:`FiPy` runs::
    $ OMP_NUM_THREADS=1 mpirun -np {# of processors} python myScript.py --trilinos
 
 The difference can be extreme.  We have observed the :term:`FiPy` test
-suite to run in `just over two minutes`_ when ``OMP_NUM_THREADS=1``,
-compared to `over an hour and 23 minutes`_ when :term:`OpenMP` threads are
-unrestricted. We don't know why, but `other platforms`_ do not suffer the
-same degree of degradation.
+suite to run in just over two minutes when ``OMP_NUM_THREADS=1``,
+compared to over an hour and 23 minutes when :term:`OpenMP` threads are
+unrestricted.
+This issue is not limited to :term:`FiPy` or the parallel solver suites it
+uses; see
+`Can There Be Too Much Parallelism? <https://www.youtube.com/watch?v=hy5yDxvLCDA>`_
+for a deeper look at the different threading settings available and their
+effects.
 
 Conceivably, allowing these parallel solvers unfettered access to
 :term:`OpenMP` threads with no :term:`MPI` communication at all could perform
 as well or better than purely :term:`MPI`
 parallelization.  The plot below demonstrates this is not the case.  We
 compare solution time vs number of :term:`OpenMP` threads for fixed number of
-slots for a `Method of Manufactured Solutions Allen-Cahn problem`_.
+slots for a `Method of Manufactured Solutions Allen-Cahn problem`_
+(:term:`OpenMP` threads :math:`\times` :term:`MPI` ranks = Slurm_ tasks).
 :term:`OpenMP` threading always slows down FiPy performance.
 
 .. plot:: pyplots/cpus_vs_threads.py
-   :caption: Effect of having more :term:`OpenMP` threads for each :term:`MPI` rank
    :align: center
+   :alt: "Speedup" relative to one thread versus number of threads on a log-log plot.
 
-"Speedup" relative to one thread (bigger numbers are better) versus number
-of threads for 32 Slurm_ tasks on a log-log plot.  :term:`OpenMP` threads
-:math:`\times` :term:`MPI` ranks = Slurm_ tasks.
+   Effect of having more :term:`OpenMP` threads for each :term:`MPI` rank [#MMS]_.
 
 See https://www.mail-archive.com/fipy@nist.gov/msg03393.html for further
 analysis.
@@ -525,9 +510,6 @@ but this is not the configuration of the version available from conda-forge_
 and building Trilinos, at least, is |NotFun (TM)|_.
 
 .. _Global Interpreter Lock:     https://docs.python.org/2.7/c-api/init.html#thread-state-and-the-global-interpreter-lock
-.. _just over two minutes:       https://circleci.com/gh/guyer/fipy/461
-.. _over an hour and 23 minutes: https://circleci.com/gh/guyer/fipy/423
-.. _other platforms:             https://travis-ci.org/usnistgov/fipy/builds/509556033
 .. _Method of Manufactured Solutions Allen-Cahn problem:  https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb
 .. _conda-forge:                 https://conda-forge.github.io/
 .. |NotFun (TM)|                 unicode:: NotFun U+2122
@@ -1169,3 +1151,10 @@ or::
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
 .. _SIunits.sty: https://ctan.org/pkg/siunits
 .. _texlive-science: https://packages.debian.org/stretch/texlive-science
+
+.. [#MMS] Calculations are of an
+   `Method of Manufactured Solutions Allen-Cahn problem`_.  Solutions are
+   on a :math:`2048\times 1024` mesh and the ``LinearGMRESSolver`` and
+   ``JacobiPreconditioner`` are used for all solver suites.  Solution
+   tolerance is ``1e-10`` using the ``"RHS"`` :ref:`convergence criterion
+   <CONVERGENCE>`.
