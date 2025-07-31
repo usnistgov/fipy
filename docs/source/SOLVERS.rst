@@ -8,12 +8,13 @@ Solvers
 Trilinos_ solver suites to be installed in order to solve linear systems.
 PETSc_ and Trilinos_ are the most complete of the
 solvers due to their numerous preconditioning and solver capabilities and
-they also allow :term:`FiPy` to :ref:`run in parallel <PARALLEL>`. PETSc_
-is better maintained than Trilinos_ and tends to be easier to install.
+they also allow :term:`FiPy` to :ref:`run in parallel <PARALLEL>`.
+The :term:`Python` interface for PETSc_
+is better maintained than for Trilinos_ and tends to be easier to install.
 The sparse linear algebra solvers from the popular SciPy_ package are
 widely available and easy to install. Although they do not perform as well
 as the other suites and lack many of the features of PETSc_ or Trilinos_,
-they may be the best linear solver choice when
+they may be the easiest linear solver choice when
 first installing and testing :term:`FiPy`.
 While the Pysparse_ linear solvers offer a modest advantage in serial, be
 aware that they require :term:`Python` 2.7, which is no longer supported.
@@ -49,6 +50,9 @@ argument. In the absence of :ref:`FlagsAndEnvironmentVariables`,
 :term:`FiPy`'s order of precedence when choosing the
 solver suite for generic solvers is PySparse_ followed by
 PETSc_, Trilinos_, SciPy_, PyAMG_, and pyamgx_.
+
+.. note:: :term:`FiPy` has not been designed to mix different solver
+   suites during a given problem run
 
 .. _PETSC:
 
@@ -158,11 +162,6 @@ SciPy_ cannot solve, and it enables parallel execution of
 
 .. attention::
 
-   :term:`FiPy` runs more efficiently when :term:`Pysparse` is
-   installed alongside :term:`Trilinos`.
-
-.. attention::
-
    :term:`Trilinos` is a large software suite with its own set of
    prerequisites, and can be difficult to set up. It is not necessary
    for most problems, and is **not** recommended for a basic install
@@ -176,8 +175,7 @@ SciPy_ cannot solve, and it enables parallel execution of
 .. tip::
 
    :term:`Trilinos` parallel efficiency is somewhat improved by also
-   installing :term:`Pysparse`.  If :term:`Pysparse` is not installed, be
-   sure to use the ``--no-pysparse`` flag.
+   installing :term:`Pysparse`.
 
 .. note::
 
@@ -261,8 +259,9 @@ best effort at documenting what will happen.
       "use the default for the current ``KSPType``".  Discerning the actual
       behavior would require burning the code in a bowl of chicken entrails.
       (It is reasonable to assume |KSP_NORM_PRECONDITIONED|_ for
-      left-preconditioned solvers and |KSP_NORM_UNPRECONDITIONED|_ otherwise;
-      even the PETSc_ documentation says that |KSP_NORM_NATURAL|_ is `"weird"
+      left-preconditioned solvers and |KSP_NORM_UNPRECONDITIONED|_
+      otherwise.
+    - Even the PETSc_ documentation says that |KSP_NORM_NATURAL|_ is `"weird"
       <https://petsc.org/main/manualpages/KSP/KSPCGS/#developer-note>`_).
 
 ``absolute_tolerance``
