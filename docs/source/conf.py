@@ -222,6 +222,11 @@ html_show_copyright = False
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'FiPydoc'
 
+mathjax3_config = {
+  "loader": {"load": ['[tex]/textmacros']},
+  "tex": {"packages": {'[+]': ['textmacros']}}
+}
+
 # -- Options for LaTeX output --------------------------------------------------
 
 latex_elements = {

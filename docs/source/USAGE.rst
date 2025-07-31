@@ -602,19 +602,19 @@ In this case the matrix system will have the form
 
    \left(
    \begin{array}{c|c}
-   \text{\ttfamily Term00} & \text{\ttfamily Term01} \\ \hline
-   \text{\ttfamily Term10} & \text{\ttfamily Term11}
+   {\tt Term00} & {\tt Term01} \\ \hline
+   {\tt Term10} & {\tt Term11}
    \end{array} \right)
    \left(
    \begin{array}{c}
-   \text{\ttfamily var0}  \\ \hline
-   \text{\ttfamily var1}
+   {\tt var0}  \\ \hline
+   {\tt var1}
    \end{array} \right)
    =
    \left(
    \begin{array}{c}
-   \text{\ttfamily source0}  \\ \hline
-   \text{\ttfamily source1}
+   {\tt source0}  \\ \hline
+   {\tt source1}
    \end{array} \right)
 
 :term:`FiPy` tries to make sensible decisions regarding each term's
@@ -692,7 +692,7 @@ boundaries are zero flux.  For the equation
 .. math::
 
     \frac{\partial\phi}{\partial t}
-    &= \nabla\cdot\left(\vec{a}\phi\right) + \nabla\cdot\left(b\nabla\phi\right)
+    = \nabla\cdot\left(\vec{a}\phi\right) + \nabla\cdot\left(b\nabla\phi\right)
 
 the condition on the boundary :math:`S` is
 
