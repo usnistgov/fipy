@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.legend import Legend
 import pandas as pd
+from scipy.io import mmread
 
 def plot_all(df, output, color_by_suite=True,
              by=["package.solver", "solver_class", "preconditioner"],
@@ -161,21 +162,26 @@ if __name__ == "__main__":
              ymin=1e-4, ymax=1e2, style="none", linewidth=2,
              ax=axs[1,0], title="(c) solve time", legends=False)
 
-    inner_grid = outer_grid[1, 1].subgridspec(2, 2, wspace=0, hspace=0)
+    inner_grid = outer_grid[1, 1].subgridspec(2, 2) #, wspace=0, hspace=0)
     subaxs = inner_grid.subplots()
 
-    plot_all(all, None, by=["package.solver", "fipy_rev"],
-             xdata="numberOfElements", xlabel="number of cells",
-             ydata="prepare2elapsed", ylabel="prepare time / elapsed time",
-             ymin=0, ymax=1, ax=subaxs[1,1], title="(d) prepare fraction", legends=False,
-             logy=False)
+    coo = mmread("scaling.mtx")
 
-    for ax in np.concatenate([subaxs.flat, [axs[1,1]]]):
+    subaxs[0,0].imshow(coo.todense() != 0, cmap="gray_r")
+    subaxs[0,0].set_title("sparsity")
+
+    data = np.load("scaling.npz")
+    subaxs[1,1].imshow(data["C"])
+    subaxs[1,1].set_title("solution")
+
+    for ax in [subaxs[0,1], subaxs[1,0], subaxs[1,1], axs[1,1]]:
         ax.spines.top.set_visible(False)
         ax.spines.bottom.set_visible(False)
         ax.spines.left.set_visible(False)
         ax.spines.right.set_visible(False)
         ax.set(xticks=[], yticks=[])
+
+    subaxs[0,0].set(xticks=[], yticks=[])
 
     plt.tight_layout()
     plt.show()
