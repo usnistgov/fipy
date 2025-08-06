@@ -54,6 +54,66 @@ PETSc_, Trilinos_, SciPy_, PyAMG_, and pyamgx_.
 .. note:: :term:`FiPy` has not been designed to mix different solver
    suites during a given problem run
 
+Serial performance is compared for the different suites (see
+:ref:`PARALLEL` for an analysis of parallel performance).
+
+.. plot:: pyplots/scaling.py
+   :align: center
+   :alt: Wall time vs mesh size on a log-log plot.
+
+   Comparison of serial performance for different solver suites, solvers
+   and preconditioners [#Binary]_.  (a) Total elapsed time, (b) time to
+   prepare the matrix, and (c) time to solve the matrix as a function of
+   mesh size.  and different versions of :term:`FiPy` [#FIPYversion]_.  The
+   light-colored bands in (a) and (b) denote plus-or-minus one standard
+   deviation, based on five runs.  The fine traces in (c) denote each
+   available combination of solver and preconditioner.  The thick traces in
+   (c) show the ``LinearGMRESSolver`` and ``JacobiPreconditioner`` for each
+   solver suite.
+
+We can see:
+
+- For sufficiently large problems, building the matrix can be expected to
+  scale as the number of cells :math:`N` and solving the matrix should scale
+  as :math:`N\,\ln N`.  There are not sufficient data points to
+  differentiate these slopes.
+- Below about 1000 cells, the time to prepare the matrix is insensitive to
+  mesh size and this dominates the overall elapsed time.
+- There is nearly three orders of magnitude between the fastest
+  solver/preconditioner and the slowest.  This particular problem is not
+  especially sensitive to choice of solver and preconditioner, as preparing
+  the matrix takes 70 % to 80 % of the overall time, but it can be worth
+  optimizing the choice for more complex systems of equations.
+- `PETSc 3.19 <https://petsc.org/release/changes/319/>`_ introduced
+  changes to "provide reasonable performance when no preallocation
+  information is provided". Our experience is opposite that;
+  :term:`FiPy` did not supply preallocation information prior to version
+  4.0, but matrix preparation performance was fine with older :ref:`PETSC`
+  releases.  Matrix preparation time is terrible when older :term:`FiPy` is
+  combined with newer :ref:`PETSC`.  :term:`FiPy` 4.0 does supply preallocation
+  information and matrix preparation time is comparable for all tested
+  versions of :ref:`PETSC`.
+- The :ref:`PETSC` and :ref:`PYSPARSE` solvers are about three times faster
+  than the :ref:`SCIPY` or :ref:`TRILINOS` solvers (the :ref:`TRILINOS`
+  solve time is generally good, but we have not been able to achieve the
+  same level of performance for matrix preparation).
+
+.. [#Binary] Calculations are of diffusion of a binary alloy in a frozen
+   two-phase field.  Solutions are on a square
+   :class:`~fipy.meshes.grid2D.Grid2D`.  All available solvers and
+   preconditioners are attempted.  Solution tolerance is ``1e-10`` using
+   the ``"RHS"`` :ref:`convergence criterion <CONVERGENCE>`.  Simulations
+   were run on an AMD Epyc 7702 CPU with 64 cores featuring two-thread
+   Simultaneous Multi-Threading (SMT) and 512 GB of memory.
+
+.. [#FIPYversion] :term:`FiPy` version 3.4.4 has different interpretations
+   of :ref:`CONVERGENCE` for different solver suites (and even for
+   different solvers). Benchmarks used a patched version
+   (`371d28468 <https://github.com/usnistgov/fipy/tree/371d28468>`_) that
+   provided more logging information and normalized interpretation of
+   tolerance, but without any of the improvements in matrix and solver
+   efficiency of version 4.0.
+
 .. _PETSC:
 
 -----
