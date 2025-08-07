@@ -1,8 +1,13 @@
 from __future__ import unicode_literals
 import numpy as np
+
 from matplotlib import pyplot as plt
+from matplotlib.colorbar import ColorbarBase
+from matplotlib.colors import Normalize
 from matplotlib.lines import Line2D
 from matplotlib.legend import Legend
+from matplotlib.patches import Patch
+
 import pandas as pd
 from scipy.io import mmread
 
@@ -84,7 +89,7 @@ def plot_all(df, output, color_by_suite=True,
     if logx & logy:
         N = np.logspace(3, 6, 100)
         ax.loglog(N, N * 1e-3, linewidth=0.5, color="black")
-        ax.text(3.3e4, 4.3e1, r"$\sim N$", rotation=45)
+        ax.text(3.3e3, 4.5e0, r"$\sim N$", rotation=45)
         ax.loglog(N, N * np.log(N) * 1e-8, linewidth=0.5, color="black")
         ax.text(3.3e4, 2.3e-3, r"$\sim N\, \ln N$", rotation=45)
 
@@ -100,8 +105,9 @@ def plot_all(df, output, color_by_suite=True,
             ax.legend(handles[::2], labels[::2],  loc="upper left")
 
         legend_elements = [Line2D([0], [0], color="black", marker="o", fillstyle="none", linestyle="--"),
-                           Line2D([0], [0], color="black", marker="o")]
-        leg = Legend(ax, handles=legend_elements, labels=["FiPy 3.4.4 (371d28468)", "FiPy 4.0 (a5f233aa7)"],
+                           Line2D([0], [0], color="black", marker="o"),
+                           Patch(facecolor="black", edgecolor=None, alpha=0.1)]
+        leg = Legend(ax, handles=legend_elements, labels=["FiPy 3.4.4 (371d28468)", "FiPy 4.0 (a5f233aa7)", "$\pm 1$ standard deviation"],
                      loc='lower right') #, frameon=False)
         ax.add_artist(leg)
     else:
@@ -134,9 +140,12 @@ if __name__ == "__main__":
     all["prepare2solve"] = all["prepare_seconds"] / all["solve_seconds"]
     all["prepare2elapsed"] = all["prepare_seconds"] / all["elapsed_seconds"]
 
-    fig = plt.figure(figsize=(12.8, 12.8))
+    fig = plt.figure(figsize=(10, 10))
     outer_grid = fig.add_gridspec(2, 2)
     axs = outer_grid.subplots()
+    
+    axs[0,0].sharey(axs[0,1])
+    axs[0,0].sharex(axs[1,0])
 
     plot_all(all, None, by=["package.solver", "fipy_rev"],
              xdata="numberOfElements", xlabel="number of cells",
@@ -162,26 +171,59 @@ if __name__ == "__main__":
              ymin=1e-4, ymax=1e2, style="none", linewidth=2,
              ax=axs[1,0], title="(c) solve time", legends=False)
 
-    inner_grid = outer_grid[1, 1].subgridspec(2, 2) #, wspace=0, hspace=0)
-    subaxs = inner_grid.subplots()
-
+    legend_elements = [Line2D([0], [0], color="black", marker="", linewidth=0.2, alpha=0.2),
+                       Line2D([0], [0], color="black", marker="o")]
+    leg = Legend(axs[1,0], handles=legend_elements, labels=["each solver & preconditioner", "LinearGMRESSolver & JacobiPreconditioner"],
+                 loc='upper left') #, frameon=False)
+    axs[1,0].add_artist(leg)
+             
+    inner_fig = fig.add_subfigure(outer_grid[1, 1])
+    inner_grid = inner_fig.add_gridspec(10, 10)
+    
+    sparse_fig = inner_fig.add_subfigure(inner_grid[1:5, :6])
+    sparse_fig.suptitle("sparse linear system")
+    
+    sparse_grid = sparse_fig.add_gridspec(16, 24)
+    
+    L_ax = sparse_fig.add_subplot(sparse_grid[:, :16])
+    c_ax = sparse_fig.add_subplot(sparse_grid[:, 16])
+    b_ax = sparse_fig.add_subplot(sparse_grid[:, 17:])
+    soln_ax = inner_fig.add_subplot(inner_grid[-5:-1, -5:-1])
+    
     coo = mmread("scaling.mtx")
+    rhs = np.load("scaling.rhs.npz")
 
-    subaxs[0,0].imshow(coo.todense() != 0, cmap="gray_r")
-    subaxs[0,0].set_title("sparsity")
+    L = coo.todense()
+    b = rhs["rhs"][:, np.newaxis]
+    loc = None
+    
+    # t = SymmetricalLogTransform(base=10, linthresh=1, linscale=1)
+    # L = t.transform(coo.todense().flat).reshape((36, 36))
+    # b = t.transform(rhs["rhs"]).reshape((36, 1))
+    # loc = SymmetricalLogLocator(base=10, linthresh=1)
 
-    data = np.load("scaling.npz")
-    subaxs[1,1].imshow(data["C"])
-    subaxs[1,1].set_title("solution")
+    zRange = max(abs(L).max(), abs(b).max())
 
-    for ax in [subaxs[0,1], subaxs[1,0], subaxs[1,1], axs[1,1]]:
-        ax.spines.top.set_visible(False)
-        ax.spines.bottom.set_visible(False)
-        ax.spines.left.set_visible(False)
-        ax.spines.right.set_visible(False)
+    L_ax.matshow(L, cmap="RdBu", vmin=-zRange, vmax=zRange)
+    b_ax.imshow(b, cmap="RdBu", vmin=-zRange, vmax=zRange, aspect=0.5)
+    
+    norm = Normalize(vmin=-zRange, vmax=zRange)
+    ColorbarBase(ax=c_ax, cmap="RdBu", norm=norm, orientation='vertical',
+                 format=None, ticks=loc)
+                 
+    L_ax.text(0.5, -0.1, "L",
+              transform=L_ax.transAxes, horizontalalignment='center', verticalalignment='baseline')
+    b_ax.text(0.5, -0.1, "b",
+              transform=b_ax.transAxes, horizontalalignment='center', verticalalignment='baseline')
+
+    for ax in [L_ax, b_ax, soln_ax]:
         ax.set(xticks=[], yticks=[])
+    
+    axs[1, 1].axis('off')
 
-    subaxs[0,0].set(xticks=[], yticks=[])
+    data = np.load("initial.npz")
+    soln_ax.imshow(0.7 - 0.4 * data["phi"])
+    soln_ax.set_title("initial condition")
 
     plt.tight_layout()
     plt.show()

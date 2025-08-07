@@ -65,12 +65,6 @@ Serial performance is compared for the different suites (see
    and preconditioners, and different versions of :term:`FiPy` [#Binary]_
    [#FIPYversion]_ .  (a) Total elapsed time, (b) time to prepare the
    matrix, and (c) time to solve the matrix as a function of mesh size.
-   The light-colored bands in (a) and (b) denote plus-or-minus one standard
-   deviation, based on all supported combinations of solver and
-   preconditioner.  The fine traces in (c) denote each available
-   combination of solver and preconditioner.  The thick traces in (c) show
-   the combination of ``LinearGMRESSolver`` and ``JacobiPreconditioner``
-   for each solver suite.
 
 We can see:
 
@@ -102,7 +96,9 @@ We can see:
 
 .. [#Binary] Calculations are of diffusion of a binary alloy in a frozen
    two-phase field.  Solutions are on a square
-   :class:`~fipy.meshes.grid2D.Grid2D`.  All available solvers and
+   :class:`~fipy.meshes.grid2D.Grid2D`.  The initial condition is sampled
+   from the center of a well-evolved :math:`1024\times 1024` nucleation
+   simulation.  All available solvers and
    preconditioners are attempted.  Solution tolerance is ``1e-10`` using
    the ``"RHS"`` :ref:`convergence criterion <CONVERGENCE>`.  Simulations
    were run on an AMD Epyc 7702 CPU with 64 cores featuring two-thread
