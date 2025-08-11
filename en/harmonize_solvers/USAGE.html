@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using FiPy &#8212; FiPy 3.4.5+419.ga754f2074 documentation</title>
+    <title>Using FiPy &#8212; FiPy 3.4.5+436.gceaa4b813 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,14 +43,15 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=31f64444"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=073d30a3"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/USAGE.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+419.ga754f2074 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+436.gceaa4b813 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Frequently Asked Questions" href="FAQ.html" />
     <link rel="prev" title="Viewers" href="VIEWERS.html" />
@@ -460,18 +461,11 @@ class meshes. Currently, the only remaining serial-only meshes are
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>You are strongly advised to force the use of only one <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a>
-thread with <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a>:</p>
+thread with <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> and <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ export OMP_NUM_THREADS=1
 </pre></div>
 </div>
 <p>See <a class="reference internal" href="#threads-vs-ranks"><span class="std std-ref">OpenMP Threads vs. MPI Ranks</span></a> for more information.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><a class="reference external" href="https://github.com/trilinos/Trilinos/issues/3203">Trilinos 12.12 has support for Python 3</a>, but
-<a class="reference external" href="https://anaconda.org/conda-forge/pytrilinos">PyTrilinos on conda-forge</a> presently only provides 12.10, which is
-limited to Python 2.x. <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> is available for both <a class="reference internal" href="glossary.html#term-Python-3"><span class="xref std std-term">Python
-3</span></a> and <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.7.</p>
 </div>
 <p>It should not generally be necessary to change anything in your script.
 Simply invoke:</p>
@@ -479,57 +473,13 @@ Simply invoke:</p>
 </pre></div>
 </div>
 <p>or:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mpirun -np {# of processors} python myScript.py --trilinos
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ FIPY_SOLVERS=trilinos mpirun -np {# of processors} python myScript.py
 </pre></div>
 </div>
 <p>instead of:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myScript.py
 </pre></div>
 </div>
-<p>The following plot shows the scaling behavior for multiple
-processors.  We compare solution time vs number of <a class="reference external" href="https://slurm.schedmd.com">Slurm</a> tasks (available
-cores) for a <a class="reference external" href="https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb">Method of Manufactured Solutions Allen-Cahn problem</a>.</p>
-<p>(<a class="reference download internal" download="" href="_downloads/cced5b21464d27105d74e2e70589d458/scaling.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/965fb0ddae901eae3640ac71b96588c0/scaling.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/188bdbb853451a8b9871cf058a1904a5/scaling.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/33375c2edf4eda3d9a4d82bd2b098eb3/scaling.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
-<figure class="align-center" id="id5">
-<img alt="_images/scaling.png" class="plot-directive" src="_images/scaling.png" />
-<figcaption>
-<p><span class="caption-text">Scaling behavior of different solver packages</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-<p>“Speedup” relative to <a class="reference internal" href="SOLVERS.html#pysparse"><span class="std std-ref">Pysparse</span></a> (bigger numbers are better) versus
-number of tasks (processes) on a log-log plot.  The number of threads per
-<a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> rank is indicated by the line style (see legend).
-<a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads <span class="math notranslate nohighlight">\(\times\)</span> <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> ranks = <a class="reference external" href="https://slurm.schedmd.com">Slurm</a> tasks.</p>
-<p>A few things can be observed in this plot:</p>
-<ul class="simple">
-<li><p>Both <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> and <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> exhibit power law scaling, but the
-power is only about 0.7.  At least one source of this poor scaling is
-that our “<code class="docutils literal notranslate"><span class="pre">...Grid...</span></code>” meshes parallelize by dividing the mesh into
-slabs, which leads to more communication overhead than more compact
-partitions.  The “<code class="docutils literal notranslate"><span class="pre">...Gmsh...</span></code>” meshes partition more efficiently, but
-carry more overhead in other ways.  We’ll be making efforts to improve
-the partitioning of the “<code class="docutils literal notranslate"><span class="pre">...Grid...</span></code>” meshes in a future release.</p></li>
-<li><p><a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> and <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> have fairly comparable performance, but
-lag <a class="reference internal" href="SOLVERS.html#pysparse"><span class="std std-ref">Pysparse</span></a> by a considerable margin.  The <a class="reference internal" href="SOLVERS.html#scipy"><span class="std std-ref">SciPy</span></a> solvers
-are even worse.  Some of this discrepancy may be because the different
-packages are not all doing the same thing.  Different solver packages
-have different default solvers and preconditioners.  Moreover, the
-meaning of the solution tolerance depends on the normalization the solver
-uses and it is not always obvious which of several possibilities a
-particular package employs.  We will endeavor to normalize the
-normalizations in a future release.</p></li>
-<li><p><a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> with one thread is faster than with two threads until the
-number of tasks reaches about 10 and is faster than with four threads
-until the number of tasks reaches more than 20.  <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> with one
-thread is faster than with two threads until the number of tasks is more
-than 30.  We don’t fully understand the reasons for this, but there may be
-a <em>modest</em> benefit, <em>when using a large number of cpus</em>, to allow two to
-four <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads per <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> rank.  See
-<a class="reference internal" href="#threads-vs-ranks"><span class="std std-ref">OpenMP Threads vs. MPI Ranks</span></a> for caveats and more information.</p></li>
-</ul>
-<p>These results are likely both problem and architecture dependent.  You
-should develop an understanding of the scaling behavior of your own codes
-before doing “production” runs.</p>
 <p>The easiest way to confirm that <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is properly configured to
 solve in parallel is to run one of the examples, e.g.,:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mpirun -np 2 examples/diffusion/mesh1D.py
@@ -603,27 +553,30 @@ current session, you may prefer to restrict its use to <a class="reference inter
 </pre></div>
 </div>
 <p>The difference can be extreme.  We have observed the <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> test
-suite to run in <a class="reference external" href="https://circleci.com/gh/guyer/fipy/461">just over two minutes</a> when <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS=1</span></code>,
-compared to <a class="reference external" href="https://circleci.com/gh/guyer/fipy/423">over an hour and 23 minutes</a> when <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads are
-unrestricted. We don’t know why, but <a class="reference external" href="https://travis-ci.org/usnistgov/fipy/builds/509556033">other platforms</a> do not suffer the
-same degree of degradation.</p>
+suite to run in just over two minutes when <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS=1</span></code>,
+compared to over an hour and 23 minutes when <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads are
+unrestricted.
+This issue is not limited to <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> or the parallel solver suites it
+uses; see
+<a class="reference external" href="https://www.youtube.com/watch?v=hy5yDxvLCDA">Can There Be Too Much Parallelism?</a>
+for a deeper look at the different threading settings available and their
+effects.</p>
 <p>Conceivably, allowing these parallel solvers unfettered access to
 <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads with no <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> communication at all could perform
 as well or better than purely <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a>
 parallelization.  The plot below demonstrates this is not the case.  We
 compare solution time vs number of <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads for fixed number of
-slots for a <a class="reference external" href="https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb">Method of Manufactured Solutions Allen-Cahn problem</a>.
+slots for a <a class="reference external" href="https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb">Method of Manufactured Solutions Allen-Cahn problem</a>
+(<a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads <span class="math notranslate nohighlight">\(\times\)</span> <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> ranks = <a class="reference external" href="https://slurm.schedmd.com">Slurm</a> tasks).
 <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threading always slows down FiPy performance.</p>
 <p>(<a class="reference download internal" download="" href="_downloads/76035fb889c1da7c99487979d3ef9dc0/cpus_vs_threads.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/af83c796a463824191b838259b7146cf/cpus_vs_threads.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/2c7a98645dcbf8604878db88d4fefcb4/cpus_vs_threads.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/07989a4846b7c5398222c21ccf73ea93/cpus_vs_threads.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-center" id="id7">
-<img alt="_images/cpus_vs_threads.png" class="plot-directive" src="_images/cpus_vs_threads.png" />
+<img alt="&quot;Speedup&quot; relative to one thread versus number of threads on a log-log plot." class="plot-directive" src="_images/cpus_vs_threads.png" />
 <figcaption>
-<p><span class="caption-text">Effect of having more <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads for each <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> rank</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Effect of having more <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads for each <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> rank
+<a class="footnote-reference brackets" href="#mms2" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
-<p>“Speedup” relative to one thread (bigger numbers are better) versus number
-of threads for 32 <a class="reference external" href="https://slurm.schedmd.com">Slurm</a> tasks on a log-log plot.  <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> threads
-<span class="math notranslate nohighlight">\(\times\)</span> <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> ranks = <a class="reference external" href="https://slurm.schedmd.com">Slurm</a> tasks.</p>
 <p>See <a class="reference external" href="https://www.mail-archive.com/fipy&#64;nist.gov/msg03393.html">https://www.mail-archive.com/fipy&#64;nist.gov/msg03393.html</a> for further
 analysis.</p>
 <p>It may be possible to configure these packages to use only one <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> thread,
@@ -689,19 +642,19 @@ generated. The syntax for generating coupled equations has the form:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\left(
 \begin{array}{c|c}
-\text{\ttfamily Term00} &amp; \text{\ttfamily Term01} \\ \hline
-\text{\ttfamily Term10} &amp; \text{\ttfamily Term11}
+{\tt Term00} &amp; {\tt Term01} \\ \hline
+{\tt Term10} &amp; {\tt Term11}
 \end{array} \right)
 \left(
 \begin{array}{c}
-\text{\ttfamily var0}  \\ \hline
-\text{\ttfamily var1}
+{\tt var0}  \\ \hline
+{\tt var1}
 \end{array} \right)
 =
 \left(
 \begin{array}{c}
-\text{\ttfamily source0}  \\ \hline
-\text{\ttfamily source1}
+{\tt source0}  \\ \hline
+{\tt source1}
 \end{array} \right)\end{split}\]</div>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> tries to make sensible decisions regarding each term’s
 location in the matrix and the ordering of the variable column
@@ -761,7 +714,7 @@ Allen-Cahn</a> 4th- and 2nd-order equations</p>
 boundaries are zero flux.  For the equation</p>
 <div class="math notranslate nohighlight">
 \[\frac{\partial\phi}{\partial t}
-&amp;= \nabla\cdot\left(\vec{a}\phi\right) + \nabla\cdot\left(b\nabla\phi\right)\]</div>
+= \nabla\cdot\left(\vec{a}\phi\right) + \nabla\cdot\left(b\nabla\phi\right)\]</div>
 <p>the condition on the boundary <span class="math notranslate nohighlight">\(S\)</span> is</p>
 <div class="math notranslate nohighlight">
 \[\hat{n}\cdot\left(\vec{a}\phi + b\nabla\phi\right) = 0\qquad\text{on $S$.}\]</div>
@@ -1161,12 +1114,20 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
 </pre></div>
 </div>
 </div>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="mms2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id5">1</a>,<a role="doc-backlink" href="#id6">2</a>)</span>
+<p>Calculations are of a
+<a class="reference external" href="https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb">Method of Manufactured Solutions Allen-Cahn problem</a>.</p>
+</aside>
+</aside>
 </section>
 </section>
 
 
                 <div class='last-updated'>
-                Last updated on Jul 22, 2025.
+                Last updated on Aug 11, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -1176,7 +1137,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+419.ga754f2074
+Version 3.4.5+436.gceaa4b813
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
