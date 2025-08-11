@@ -86,13 +86,6 @@ def plot_all(df, output, color_by_suite=True,
                                 color=color,
                                 alpha=0.1)
 
-    if logx & logy:
-        N = np.logspace(3, 6, 100)
-        ax.loglog(N, N * 1e-3, linewidth=0.5, color="black")
-        ax.text(3.3e3, 4.5e0, r"$\sim N$", rotation=45)
-        ax.loglog(N, N * np.log(N) * 1e-8, linewidth=0.5, color="black")
-        ax.text(3.3e4, 2.3e-3, r"$\sim N\, \ln N$", rotation=45)
-
     if legends:
         if color_by_suite:
             legend_elements = [Line2D([0], [0], color=c, label=s, marker=m)
@@ -104,14 +97,24 @@ def plot_all(df, output, color_by_suite=True,
             handles, labels = ax.get_legend_handles_labels()
             ax.legend(handles[::2], labels[::2],  loc="upper left")
 
-        legend_elements = [Line2D([0], [0], color="black", marker="o", fillstyle="none", linestyle="--"),
-                           Line2D([0], [0], color="black", marker="o"),
-                           Patch(facecolor="black", edgecolor=None, alpha=0.1)]
-        leg = Legend(ax, handles=legend_elements, labels=["FiPy 3.4.4 (371d28468)", "FiPy 4.0 (a5f233aa7)", "$\pm 1$ standard deviation"],
+        legend_elements = [Line2D([0], [0], color="black", marker="o", fillstyle="none", linestyle="--", label="FiPy 3.4.4 (371d28468)"),
+                           Line2D([0], [0], color="black", marker="o", label="FiPy 4.0 (a5f233aa7)"),
+                           Patch(facecolor="black", edgecolor=None, alpha=0.1, label="$\pm 1$ standard deviation"),
+                           Line2D([0], [0], color="black", linestyle="-", linewidth=1, alpha=0.1, label=r"$\sim N$"),
+                           Line2D([0], [0], color="black", linestyle=":", linewidth=1, alpha=0.1, label=r"$N \log N$")]
+        leg = Legend(ax, handles=legend_elements, labels=["FiPy 3.4.4 (371d28468)", "FiPy 4.0 (a5f233aa7)", "$\pm 1$ standard deviation", r"$\sim N$", r"$\sim N\, \log N$"],
                      loc='lower right') #, frameon=False)
         ax.add_artist(leg)
     else:
         ax.get_legend().remove()
+
+    ax.autoscale(False)
+    if logx & logy:
+        N = np.logspace(0, 7, 100)
+        for n in range(-10, 3, 2):
+            ax.axline((1, 10**n), (10, 10**(n+1)), color="black", linewidth=1, alpha=0.1)
+        for n in range(-14, 4, 2):
+            ax.loglog(N, N * np.log(N) * 10**n, linewidth=1, color="black", alpha=0.1, linestyle=":")
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
@@ -157,25 +160,30 @@ if __name__ == "__main__":
              ydata="prepare_seconds", ylabel="time / s",
              ymin=1e-4, ymax=1e2, ax=axs[0,1], title="(b) prepare time", legends=False)
 
-    plot_all(all, None,
-             by=["package.solver", "fipy_rev", "solver_class", "preconditioner"],
+    plot_all(all, None, by=["package.solver", "fipy_rev"],
              xdata="numberOfElements", xlabel="number of cells",
              ydata="solve_seconds", ylabel="time / s",
-             ymin=1e-4, ymax=1e2, linewidth=0.2, alpha=0.2, style="none", show_marker=False,
-             ax=axs[1,0], title="(c) solve time", legends=False)
-    plot_all(all[((all["solver_class"] == "LinearGMRESSolver")
-                  & (all["preconditioner"] == "JacobiPreconditioner"))], None,
-             by=["package.solver", "fipy_rev"],
-             xdata="numberOfElements", xlabel="number of cells",
-             ydata="solve_seconds", ylabel="time / s",
-             ymin=1e-4, ymax=1e2, style="none", linewidth=2,
-             ax=axs[1,0], title="(c) solve time", legends=False)
+             ymin=1e-4, ymax=1e2, ax=axs[1,0], title="(c) solve time", legends=False)
 
-    legend_elements = [Line2D([0], [0], color="black", marker="", linewidth=0.2, alpha=0.2),
-                       Line2D([0], [0], color="black", marker="o")]
-    leg = Legend(axs[1,0], handles=legend_elements, labels=["each solver & preconditioner", "LinearGMRESSolver & JacobiPreconditioner"],
-                 loc='upper left') #, frameon=False)
-    axs[1,0].add_artist(leg)
+#     plot_all(all, None,
+#              by=["package.solver", "fipy_rev", "solver_class", "preconditioner"],
+#              xdata="numberOfElements", xlabel="number of cells",
+#              ydata="solve_seconds", ylabel="time / s",
+#              ymin=1e-4, ymax=1e2, linewidth=0.2, alpha=0.2, style="none", show_marker=False,
+#              ax=axs[1,0], title="(c) solve time", legends=False)
+#     plot_all(all[((all["solver_class"] == "LinearGMRESSolver")
+#                   & (all["preconditioner"] == "JacobiPreconditioner"))], None,
+#              by=["package.solver", "fipy_rev"],
+#              xdata="numberOfElements", xlabel="number of cells",
+#              ydata="solve_seconds", ylabel="time / s",
+#              ymin=1e-4, ymax=1e2, style="none", linewidth=2,
+#              ax=axs[1,0], title="(c) solve time", legends=False)
+
+#     legend_elements = [Line2D([0], [0], color="black", marker="", linewidth=0.2, alpha=0.2),
+#                        Line2D([0], [0], color="black", marker="o")]
+#     leg = Legend(axs[1,0], handles=legend_elements, labels=["each solver & preconditioner", "LinearGMRESSolver & JacobiPreconditioner"],
+#                  loc='upper left') #, frameon=False)
+#     axs[1,0].add_artist(leg)
              
     inner_fig = fig.add_subfigure(outer_grid[1, 1])
     inner_grid = inner_fig.add_gridspec(10, 10)
@@ -186,8 +194,8 @@ if __name__ == "__main__":
     sparse_grid = sparse_fig.add_gridspec(16, 24)
     
     L_ax = sparse_fig.add_subplot(sparse_grid[:, :16])
-    c_ax = sparse_fig.add_subplot(sparse_grid[:, 16])
-    b_ax = sparse_fig.add_subplot(sparse_grid[:, 17:])
+    c_ax = sparse_fig.add_subplot(sparse_grid[:, -5])
+    b_ax = sparse_fig.add_subplot(sparse_grid[:, 16:-5])
     soln_ax = inner_fig.add_subplot(inner_grid[-5:-1, -5:-1])
     
     coo = mmread("serial_scaling.mtx")
