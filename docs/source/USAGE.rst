@@ -363,40 +363,6 @@ instead of::
 
     $ python myScript.py
 
-The following plot shows the scaling behavior for multiple
-processors.  We compare solution time vs number of Slurm_ tasks (available
-cores) for a `Method of Manufactured Solutions Allen-Cahn problem`_.
-
-.. plot:: pyplots/scaling.py
-   :align: center
-   :alt: "Speedup" relative to PySparse versus number of tasks (processes) on a log-log plot.
-
-   Scaling behavior of different solver packages [#MMS]_.
-
-A few things can be observed in this plot:
-
-- Both :ref:`PETSc` and :ref:`Trilinos` exhibit power law scaling, but the
-  power is less than 0.8.  At least one source of this less-than-optimal scaling
-  is that our "``...Grid...``" meshes parallelize by dividing the mesh into
-  slabs, which leads to more communication overhead than more compact
-  partitions.  The "``...Gmsh...``" meshes partition more efficiently, but
-  carry more overhead in other ways.  We'll be making efforts to improve
-  the partitioning of the "``...Grid...``" meshes in a future release.
-
-- :ref:`PETSc` has comparable serial performance to :ref:`PySparse`
-  and :ref:`Trilinos` lags somewhat.
-
-- The :ref:`SciPy` solvers are about three times slower than :ref:`PETSc`
-  and :ref:`PySparse` and only run in serial.  :ref:`Windows` users may
-  consider installing `Windows Subsystem for Linux`_ to gain access to the
-  parallel solver suites; switching to :ref:`PETSc` can
-  yield a ten-fold improvement in performance on an 8-core laptop and 
-  sixty-fold on a 64-core workstation.
-
-These results are likely both problem and architecture dependent.  You
-should develop an understanding of the scaling behavior of your own codes
-before doing "production" runs.
-
 The easiest way to confirm that :term:`FiPy` is properly configured to
 solve in parallel is to run one of the examples, e.g.,::
 
@@ -451,7 +417,6 @@ you need to do something with the entire solution, you can use
 .. _Trilinos 12.12 has support for Python 3 : https://github.com/trilinos/Trilinos/issues/3203
 .. _PyTrilinos on conda-forge: https://anaconda.org/conda-forge/pytrilinos
 .. _Slurm: https://slurm.schedmd.com
-.. _Windows Subsystem for Linux: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
 
 .. _THREADS_VS_RANKS:
 
@@ -500,7 +465,8 @@ slots for a `Method of Manufactured Solutions Allen-Cahn problem`_
    :align: center
    :alt: "Speedup" relative to one thread versus number of threads on a log-log plot.
 
-   Effect of having more :term:`OpenMP` threads for each :term:`MPI` rank [#MMS]_.
+   Effect of having more :term:`OpenMP` threads for each :term:`MPI` rank
+   [#MMS2]_.
 
 See https://www.mail-archive.com/fipy@nist.gov/msg03393.html for further
 analysis.
@@ -1152,9 +1118,5 @@ or::
 .. _SIunits.sty: https://ctan.org/pkg/siunits
 .. _texlive-science: https://packages.debian.org/stretch/texlive-science
 
-.. [#MMS] Calculations are of an
-   `Method of Manufactured Solutions Allen-Cahn problem`_.  Solutions are
-   on a :math:`2048\times 1024` mesh and the ``LinearGMRESSolver`` and
-   ``JacobiPreconditioner`` are used for all solver suites.  Solution
-   tolerance is ``1e-10`` using the ``"RHS"`` :ref:`convergence criterion
-   <CONVERGENCE>`.
+.. [#MMS2] Calculations are of a
+   `Method of Manufactured Solutions Allen-Cahn problem`_.

@@ -210,8 +210,7 @@ Performance Comparison
 Serial Performance
 ==================
 
-Serial performance is compared for the different suites (see
-:ref:`PARALLEL` for an analysis of parallel performance).
+Serial performance is compared for the different suites.
 
 .. plot:: pyplots/serial_scaling.py
    :align: center
@@ -245,11 +244,118 @@ We can see:
   performance was fine with older :ref:`PETSC` releases.  :term:`FiPy` 4.0
   does supply preallocation information and matrix preparation time is
   comparable for all tested versions of :ref:`PETSC`.
-- The :ref:`SCIPY` solvers are considerably slower than the other suites,
-  but, at least for this problem, their overall performance is on par with
-  the other suites, due to faster matrix build time.  See :ref:`PARALLEL`
-  for a case where :ref:`SCIPY` lags significantly.
+- There is considerable dispersion about the mean solve time for different
+  solvers and preconditioners.  On the other hand, the time to prepare the
+  matrix is insensitive to the choice of solver and preconditioner and
+  shows a high degree of consistency from run to run.
 
+.. plot:: pyplots/serial_fraction.py
+   :align: center
+   :alt: Fraction of time spent preparing matrix vs mesh size on a linear-log plot
+
+   Ratio of time to prepare the matrix to the combined time to prepare and
+   solve the matrix for different solver suites, solvers
+   and preconditioners, and different versions of :term:`FiPy`
+   [#FIPYversion]_ [#Binary]_.
+
+In principle, we'd like to spend as little time preparing the matrix,
+relative to solving it, as possible.  This metric can be deceptive.  For
+this problem, :ref:`Trilinos` has the lowest ratio of prepare to elapsed
+time, but it takes three times as long to both prepare and solve as
+:ref:`PySparse` or :ref:`SciPy` and twice as long as :ref:`PETSc`.  This is
+even with all suites using the same solver and preconditioner
+(unpreconditioned ``LinearPCGSolver``, one of the fastest combinations for
+all suites *for this problem*).  For your own work, focus on identifying
+the solver and preconditioner with the lowest overall time to build and
+solve; this will counterintuitively have the highest ratio of prepare to
+elapsed time.  Prepare time to elapsed time is a more useful metric for the
+:term:`FiPy` developers; just as :term:`FiPy` 4.0 brought considerable
+reductions in matrix build time, we will continue to seek opportunities to
+optimize.
+
+Parallel Performance
+====================
+
+The following plot shows the scaling behavior for multiple
+processors.  We compare solution time vs number of Slurm_ tasks (available
+cores) for a `Method of Manufactured Solutions Allen-Cahn problem`_.
+
+.. plot:: pyplots/parallel_scaling.py
+   :align: center
+   :alt: "Speedup" relative to PySparse versus number of tasks (processes) on a log-log plot.
+
+   Parallel scaling behavior of different solver packages and different
+   versions of :term:`FiPy` [#FIPYversion]_ [#MMS]_.
+
+A few things can be observed in this plot:
+
+- :term:`FiPy` 4.0 is roughly three times faster in serial and more than
+  six times faster in parallel than :term:`FiPy` 3.4.4 when using the
+  :ref:`PETSC` solvers.  :term:`FiPy` 4.0 roughly twice as fast in serial
+  and three times as fast in parallel when using the :ref:`TRILINOS`
+  solvers.
+
+- :ref:`PETSc` has comparable serial performance to :ref:`PySparse`
+  and :ref:`Trilinos` lags somewhat.
+
+- The :ref:`SciPy` solvers are about eight times slower than either :ref:`PETSc`
+  or :ref:`PySparse` and only run in serial.  :term:`Windows` users may
+  consider installing `Windows Subsystem for Linux`_ to gain access to the
+  parallel solver suites; switching to :ref:`PETSc` can
+  yield a forty-fold improvement in performance on an 8-core laptop and
+  hundred-fold on a 64-core workstation.
+
+- :term:`FiPy` 4.0
+  exhibits better parallel scaling than :term:`FiPy` 3.4.4.  `Amdahl's
+  Law`_, :math:`\text{speedup} = p / (1 + \sigma(p - 1))`, does not fit the
+  performance data nearly as well as `Gunther's Law`_,
+  :math:`\text{speedup} = p / (1 + \sigma(p - 1) + \kappa p (p-1))`, where
+  :math:`p` is the number of parallel tasks, :math:`\sigma` is the fraction
+  limited by serial processes, and :math:`\kappa` is `"coherency" (which is
+  not well understood)`_.
+
+  .. table::
+
+     +------------+----------+------------+------------+--------------+
+     |            |          | Amdahl     |         Gunther           |
+     +------------+----------+------------+------------+--------------+
+     |            |          | serial / % | serial / % | coherency    |
+     +============+==========+============+============+==============+
+     | FiPy 3.4.4 | petsc    | 8.65(27)   | 5.19(15)   | 0.000786(36) |
+     +            +----------+------------+------------+--------------+
+     |            | trilinos | 4.25(14)   | 1.96(11)   | 0.000457(22) |
+     +------------+----------+------------+------------+--------------+
+     | FiPy 4.0   | petsc    | 2.61(11)   | 0.774(85)  | 0.000342(16) |
+     +            +----------+------------+------------+--------------+
+     |            | trilinos | 2.19(11)   | 0.180(10)  | 0.000368(20) |
+     +------------+----------+------------+------------+--------------+
+
+
+At least one source of less-than-optimal scaling is that our
+"``...Grid...``" meshes parallelize by dividing the mesh into slabs, which
+leads to more communication overhead than more compact partitions.  The
+"``...Gmsh...``" meshes partition more efficiently, but carry more overhead
+in other ways.  We'll be making efforts to improve the partitioning of the
+"``...Grid...``" meshes in a future release.
+
+These results are likely both problem and architecture dependent.  You
+should develop an understanding of the scaling behavior of your own codes
+before doing "production" runs.
+
+.. _Method of Manufactured Solutions Allen-Cahn problem:  https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb
+.. _Slurm: https://slurm.schedmd.com
+.. _Windows Subsystem for Linux: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
+.. _Amdahl's Law: https://en.wikipedia.org/wiki/Amdahl%27s_law
+.. _Gunther's Law: https://doi.org/10.48550/arXiv.0808.1431
+.. _"coherency" (which is not well understood): https://learn.microsoft.com/en-us/archive/blogs/ddperf/parallel-scalability-isnt-childs-play-part-2-amdahls-law-vs-gunthers-law
+
+.. [#FIPYversion] :term:`FiPy` version 3.4.4 has different interpretations
+   of :ref:`CONVERGENCE` for different solver suites (and even for
+   different solvers). Benchmarks used a patched version
+   (`371d28468 <https://github.com/usnistgov/fipy/tree/371d28468>`_) that
+   provided more logging information and normalized interpretation of
+   tolerance, but without any of the improvements in matrix and solver
+   efficiency of version 4.0.
 
 .. [#Binary] Calculations are of diffusion of a binary alloy in a frozen
    two-phase field.  Solutions are on a square
@@ -262,14 +368,17 @@ We can see:
    the ``"RHS"`` :ref:`convergence criterion <CONVERGENCE>`.  Simulations
    were run on an AMD Epyc 7702 CPU with 64 cores featuring two-thread
    Simultaneous Multi-Threading (SMT) and 512 GB of memory.
+   :ref:`OMP_NUM_THREADS was set to 1 <THREADS_VS_RANKS>`.
 
-.. [#FIPYversion] :term:`FiPy` version 3.4.4 has different interpretations
-   of :ref:`CONVERGENCE` for different solver suites (and even for
-   different solvers). Benchmarks used a patched version
-   (`371d28468 <https://github.com/usnistgov/fipy/tree/371d28468>`_) that
-   provided more logging information and normalized interpretation of
-   tolerance, but without any of the improvements in matrix and solver
-   efficiency of version 4.0.
+.. [#MMS] Calculations are of a
+   `Method of Manufactured Solutions Allen-Cahn problem`_.  Solutions are
+   on a :math:`2048\times 1024` :class:`~fipy.meshes.grid2D.Grid2D`
+   and the ``LinearGMRESSolver`` and ``JacobiPreconditioner`` are used for
+   all solver suites.  Solution tolerance is ``1e-10`` using the ``"RHS"``
+   :ref:`convergence criterion <CONVERGENCE>`.  Simulations were run on an
+   AMD Epyc 7702 CPU with 64 cores featuring two-thread Simultaneous
+   Multi-Threading (SMT) and 512 GB of memory.
+   :ref:`OMP_NUM_THREADS was set to 1 <THREADS_VS_RANKS>`.
 
 .. _CONVERGENCE:
 
