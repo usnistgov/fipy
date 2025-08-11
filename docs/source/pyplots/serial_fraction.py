@@ -141,29 +141,57 @@ if __name__ == "__main__":
     all["prepare2solve"] = all["prepare_seconds"] / all["solve_seconds"]
     all["prepare2elapsed"] = all["prepare_seconds"] / all["elapsed_seconds"]
 
-    fig, axs = plt.subplots(3, 2, sharex=True, sharey=True, figsize=(6, 9))
+#     fig, axs = plt.subplots(2, 3, sharex=True, sharey=True, figsize=(9, 6))
+    fig = plt.figure(figsize=(9, 6))
+    grid = fig.add_gridspec(2, 3)
+    axs = grid.subplots()
 
-    for suite, ax, subfig in [["pysparse", axs[0,0], "a"],
-                              ["scipy", axs[0,1], "b"],
-                              ["petsc 3.18.5", axs[1,0], "c"],
+    axs[0,0].sharey(axs[0,1])
+    axs[0,1].sharey(axs[0,2])
+    axs[1,0].sharey(axs[1,1])
+    axs[0,0].sharex(axs[1,0])
+    axs[0,1].sharex(axs[1,1])
+
+    for suite, ax, letter in [["pysparse", axs[0,0], "a"],
+                              ["scipy", axs[1,0], "b"],
+                              ["petsc 3.18.5", axs[0,1], "c"],
                               ["petsc 3.20.2", axs[1,1], "d"],
-                              ["trilinos", axs[2,0], "e"]]:
+                              ["trilinos", axs[0,2], "e"]]:
         suite_data = all[all["package.solver"] == suite]
         plot_all(suite_data, None,
                  by=["package.solver", "fipy_rev", "solver_class", "preconditioner"],
                  xdata="numberOfElements", xlabel="number of cells",
                  ydata="prepare2elapsed", ylabel="prepare time / elapsed time",
-                 ymin=0, ymax=1, ax=ax, title=f"({subfig}) {suite}",
+                 ymin=0, ymax=1, ax=ax, title=f"({letter}) {suite}",
                  linewidth=1, alpha=0.1, style="none", show_marker=False,
                  logy=False, legends="")
-        plot_all(suite_data[((suite_data["solver_class"] == "LinearGMRESSolver")
-                             & (suite_data["preconditioner"] == "JacobiPreconditioner"))], None,
+        plot_all(suite_data[((suite_data["solver_class"] == "LinearPCGSolver")
+                             & (suite_data["preconditioner"] == "unpreconditioned"))], None,
                  by=["package.solver", "fipy_rev"],
                  xdata="numberOfElements", xlabel="number of cells",
                  ydata="prepare2elapsed", ylabel="prepare time / elapsed time",
-                 ymin=0, ymax=1, ax=ax, title=f"({subfig}) {suite}",
+                 ymin=0, ymax=1, ax=ax, title=f"({letter}) {suite}",
                  linewidth=2, style="none", show_marker=False,
                  logy=False, legends="")
+
+    axs[1, 2].axis('off')
+
+    legend_elements = [Line2D([0], [0], color="black", marker="", linestyle="--"),
+                       Line2D([0], [0], color="black", marker="")]
+    leg = Legend(axs[1, 2],
+                 handles=legend_elements,
+                 labels=["FiPy 3.4.4 (371d28468)", "FiPy 4.0 (a5f233aa7)"],
+                 loc='lower left') #, frameon=False)
+    axs[1, 2].add_artist(leg)
+
+    legend_elements = [Line2D([0], [0], color="black", marker="", linewidth=1, alpha=0.1),
+                       Line2D([0], [0], color="black", marker="", linewidth=2)]
+    leg = Legend(axs[1, 2],
+                 handles=legend_elements,
+                 labels=["each solver & precoditioner",
+                         "LinearPCGSolver\nunpreconditioned"],
+                 loc='upper left') #, frameon=False)
+    axs[1, 2].add_artist(leg)
 
     plt.tight_layout()
     plt.show()
