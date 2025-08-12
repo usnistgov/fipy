@@ -284,9 +284,9 @@ equation to a set of discrete linear equations that can then be solved
 to obtain the value of the dependent variable at each CV center. This
 results in a sparse linear system that requires an efficient iterative
 scheme to solve. The iterative schemes available to :term:`FiPy` are
-currently encapsulated in the :term:`Pysparse` and :term:`PyTrilinos`
-suites of solvers and include most common solvers such as the conjugate
-gradient method and LU decomposition.
+encapsulated in the suites of solvers described in :ref:`SOLVERS`and
+include most common solvers such as the conjugate gradient method and LU
+decomposition.
 
 Combining Equations :eq:`num:tra`, :eq:`num:con`,
 :eq:`num:dif` and :eq:`num:sou`, the complete

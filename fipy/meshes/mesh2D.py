@@ -19,6 +19,8 @@ from fipy.meshes.mesh import Mesh
 from fipy.meshes.representations.meshRepresentation import _MeshRepresentation
 from fipy.meshes.topologies.meshTopology import _Mesh2DTopology
 
+from fipy.solvers import INDEX_TYPE
+
 def _orderVertices(vertexCoords, vertices):
     coordinates = numerix.take(vertexCoords, vertices)
     centroid = numerix.add.reduce(coordinates) / coordinates.shape[0]
@@ -94,7 +96,8 @@ class Mesh2D(Mesh):
     @property
     def _nonOrthogonality(self):
 
-        exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],), 'l')
+        exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],),
+                                          dtype=INDEX_TYPE)
         numerix.put(exteriorFaceArray, numerix.nonzero(self.exteriorFaces), 1)
         unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0)
         # what we put in for the "fill" doesn't matter because only exterior

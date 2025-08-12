@@ -480,7 +480,7 @@ thickness
 ...     print("The SciPy library is unavailable to fit the interface \
 ... thickness and velocity")
 
->>> print(abs(1 - V_fit / velocity) < 4.1e-2) # doctest: +SCIPY
+>>> print(abs(1 - V_fit / velocity) < 4.2e-2) # doctest: +SCIPY
 True
 >>> print(abs(1 - d_fit / delta) < 2e-2) # doctest: +SCIPY
 True

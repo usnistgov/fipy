@@ -211,7 +211,8 @@ the implementation of :term:`FiPy`.  Python is
    :mod:`unittest`),
 
  * actively used and extended by other scientists and
-   mathematicians (:term:`SciPy`, :term:`NumPy`, :term:`ScientificPython`, :term:`Pysparse`).
+   mathematicians (:term:`SciPy`, :term:`NumPy`,
+   :ref:`PETSC`, :ref:`TRILINOS`, ...).
 
  * easily integrated with low-level languages such as C
    (:mod:`~weave`, :mod:`~weave.blitz`, :term:`PyRex`).

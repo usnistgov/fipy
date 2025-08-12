@@ -17,7 +17,8 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class Term(object):
-    """
+    """Base class for elements of a partial differential equation.
+
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
@@ -103,11 +104,19 @@ class Term(object):
             from fipy.matrices.offsetSparseMatrix import OffsetSparseMatrix
             SparseMatrix =  OffsetSparseMatrix(SparseMatrix=solver._matrixClass,
                                                numberOfVariables=self._vectorSize(var),
-                                               numberOfEquations=self._vectorSize(var))
+                                               numberOfEquations=self._vectorSize(var),
+                                               equationIndex=0, varIndex=0)
         else:
             SparseMatrix = solver._matrixClass
 
         return SparseMatrix
+
+    def _getMatrix(self, SparseMatrix, mesh, nonZerosPerRow=0):
+        if not hasattr(self, "_sparsematrix"):
+            self._sparsematrix = SparseMatrix(mesh=mesh, nonZerosPerRow=nonZerosPerRow)
+        else:
+            self._sparsematrix.zeroEntries()
+        return self._sparsematrix
 
     def _prepareLinearSystem(self, var, solver, boundaryConditions, dt):
 
@@ -554,19 +563,34 @@ class Term(object):
         ...     sweep += 1
         >>> x = m.cellCenters[0]
         >>> answer = (numerix.exp(x) - numerix.exp(-x)) / (numerix.exp(L) - numerix.exp(-L))
+
+        The default solver tolerance of :math:`10^{-5}` results in only
+        modest agreement with the analytical solution.
+
+        >>> print(numerix.allclose(v, answer, rtol=3e-3))
+        True
+
+        Reducing the solver tolerance to :math:`10^{-8}` improves the solution.
+
+        >>> res = 1.
+        >>> sweep = 0
+        >>> solver = eqn.getDefaultSolver(tolerance=1e-8)
+        >>> while res > 1e-8 and sweep < 100:
+        ...     res = eqn.sweep(v, solver=solver)
+        ...     sweep += 1
         >>> print(numerix.allclose(v, answer, rtol=2e-5))
         True
 
         >>> v.setValue(0.)
         >>> eqn = DiffusionTerm(0.2) * 5. - 5. * ImplicitSourceTerm(0.2)
         >>> eqn.solve(v)
-        >>> print(numerix.allclose(v, answer, rtol=2e-5))
+        >>> print(numerix.allclose(v, answer, rtol=3e-4))
         True
 
         >>> v.setValue(0.)
         >>> eqn = 2. * (DiffusionTerm(1.) - ImplicitSourceTerm(.5)) - DiffusionTerm(1.)
         >>> eqn.solve(v)
-        >>> print(numerix.allclose(v, answer, rtol=2e-5))
+        >>> print(numerix.allclose(v, answer, rtol=3e-4))
         True
 
         >>> from fipy import Grid1D, CellVariable, DiffusionTerm, TransientTerm

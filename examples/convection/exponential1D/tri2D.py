@@ -34,8 +34,10 @@ Here the axes are reversed (``nx = 1``, ``ny = 1000``) and
 >>> eq = (DiffusionTerm(coeff=diffCoeff)
 ...       + ExponentialConvectionTerm(coeff=convCoeff))
 
->>> eq.solve(var = var,
-...          solver=DefaultAsymmetricSolver(iterations=10000))
+It should be possible to drive this steady-state solution to high accuracy.
+
+>>> solver = DefaultAsymmetricSolver(tolerance=1e-10, iterations=10000)
+>>> eq.solve(var=var, solver=solver)
 
 The analytical solution test for this problem is given by:
 
@@ -45,8 +47,8 @@ The analytical solution test for this problem is given by:
 >>> DD = 1. - numerix.exp(-convCoeff[axis] * L / diffCoeff)
 >>> analyticalArray = CC / DD
 
->>> print(var.allclose(analyticalArray, rtol = 1e-6, atol = 1e-6))
-1
+>>> print(var.allclose(analyticalArray, rtol=1e-6, atol=1e-6))
+True
 
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars = var)

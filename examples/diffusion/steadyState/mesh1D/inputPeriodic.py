@@ -33,7 +33,13 @@ A `TransientTerm` is used to provide some fixed point, otherwise the
 solver has no fixed value and can become unstable.
 
 >>> eq = TransientTerm(coeff=1e-8) - DiffusionTerm()
->>> eq.solve(var=var, dt=1.)
+
+The initial residual is much larger than the norm of the right-hand-side
+vector, so we use `"initial"` tolerance scaling with a tolerance that will
+drive to an accurate solution.
+
+>>> solver = eq.getDefaultSolver(criterion="initial", tolerance=1e-12)
+>>> eq.solve(var=var, dt=1., solver=solver)
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()
@@ -41,7 +47,7 @@ solver has no fixed value and can become unstable.
 The result of the calculation will be the average value over the domain.
 
 >>> print(var.allclose((valueLeft + valueRight) / 2., rtol = 1e-5))
-1
+True
 
 """
 from __future__ import unicode_literals

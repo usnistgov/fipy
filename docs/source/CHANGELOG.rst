@@ -82,7 +82,7 @@ Version 3.4.4 - 2023-06-27
 --------------------------
 
 This maintenance release adds :ref:`LOGGING` and resolves compatibility issues
-with recent builds of :term:`PETSc` and :term:`NumPy`.
+with recent builds of :ref:`PETSC` and :term:`NumPy`.
 
 Pulls
 -----
@@ -283,7 +283,7 @@ Fixes
 Version 3.4 - 2020-02-06
 ------------------------
 
-This release adds support for the :term:`PETSc` solvers for
+This release adds support for the :ref:`PETSC` solvers for
 :ref:`PARALLEL`.
 
 Pulls
@@ -1097,7 +1097,7 @@ Version 2.1.2 - 2011-04-20
 
 The significant changes since version 2.1.1 are:
 
-- :term:`Trilinos` efficiency improvements
+- :ref:`TRILINOS` efficiency improvements
 - Diagnostics of the parallel environment
 
 Fixes
@@ -1127,7 +1127,7 @@ The significant changes since version 2.1 are:
 - :class:`~fipy.viewers.matplotlibViewer.MatplotlibViewer` can display 
   into an existing set of Matplotlib axes.
 
-- :term:`Pysparse` and :term:`Trilinos` are now completely independent.
+- :ref:`PYSPARSE` and :ref:`TRILINOS` are now completely independent.
 
 Fixes
 -----
@@ -1158,7 +1158,7 @@ with older scripts.
 
 The significant changes since version 2.0.2 are:
 
-- :term:`FiPy` can use :term:`Trilinos` for :ref:`PARALLEL`.
+- :term:`FiPy` can use :ref:`TRILINOS` for :ref:`PARALLEL`.
 
 - We have switched from :term:`MayaVi` 1 to :term:`Mayavi` 2. This 
   :class:`~fipy.viewers.viewer.Viewer` is an independent process that 
