@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Solvers &#8212; FiPy 3.4.5+436.gceaa4b813 documentation</title>
+    <title>Solvers &#8212; FiPy 3.4.5+440.g092986266 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=073d30a3"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=41e939dc"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/SOLVERS.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+436.gceaa4b813 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+440.g092986266 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Viewers" href="VIEWERS.html" />
     <link rel="prev" title="Git practices" href="ADMINISTRATA.html" />
@@ -170,20 +170,20 @@ suites during a given problem run</p>
 <section id="petsc">
 <span id="id2"></span><h2>PETSc<a class="headerlink" href="#petsc" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://www.mcs.anl.gov/petsc">https://www.mcs.anl.gov/petsc</a></p>
-<p><a class="reference internal" href="glossary.html#term-PETSc"><span class="xref std std-term">PETSc</span></a> (the Portable, Extensible Toolkit for Scientific Computation)
+<p>PETSc (the Portable, Extensible Toolkit for Scientific Computation)
 is a suite of data structures and routines for the scalable (parallel)
 solution of scientific applications modeled by partial differential
 equations.  It employs the <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> standard for all message-passing
 communication (see <a class="reference internal" href="USAGE.html#parallel"><span class="std std-ref">Solving in Parallel</span></a> for more details).</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p><a class="reference internal" href="glossary.html#term-PETSc"><span class="xref std std-term">PETSc</span></a> requires the <a class="reference internal" href="glossary.html#term-petsc4py"><span class="xref std std-term">petsc4py</span></a> and <a class="reference internal" href="glossary.html#term-mpi4py"><span class="xref std std-term">mpi4py</span></a>
+<p>PETSc requires the <a class="reference internal" href="glossary.html#term-petsc4py"><span class="xref std std-term">petsc4py</span></a> and <a class="reference internal" href="glossary.html#term-mpi4py"><span class="xref std std-term">mpi4py</span></a>
 interfaces.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>While, for consistency with other solver suites, <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> does
-implement some preconditioner objects for <a class="reference internal" href="glossary.html#term-PETSc"><span class="xref std std-term">PETSc</span></a>, you can also
+implement some preconditioner objects for PETSc, you can also
 simply pass one of the <a class="reference external" href="https://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCType.html">PCType strings</a> in the <cite>precon=</cite> argument when
 declaring the solver.</p>
 </div>
@@ -191,23 +191,27 @@ declaring the solver.</p>
 <section id="pysparse">
 <span id="id3"></span><h2>Pysparse<a class="headerlink" href="#pysparse" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="http://pysparse.sourceforge.net">http://pysparse.sourceforge.net</a></p>
-<p><a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a> is a fast serial sparse matrix library for <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a>.
+<p>Pysparse is a fast serial sparse matrix library for <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a>.
 It provides several sparse matrix storage formats and conversion methods.
 It also implements a number of iterative solvers, preconditioners, and
 interfaces to efficient factorization packages. The only requirement to
-install and use <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a> is <a class="reference internal" href="glossary.html#term-NumPy"><span class="xref std std-term">NumPy</span></a>.</p>
+install and use Pysparse is <a class="reference internal" href="glossary.html#term-NumPy"><span class="xref std std-term">NumPy</span></a>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p><a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a> is archaic and limited to <a class="reference internal" href="USAGE.html#runningunderpython2"><span class="std std-ref">Running under Python 2</span></a>.</p>
+<p>Pysparse is archaic and limited to <a class="reference internal" href="USAGE.html#runningunderpython2"><span class="std std-ref">Running under Python 2</span></a>.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Support for <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.7 and, thus, for <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a>
+<p>Support for <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.7 and, thus, for Pysparse
 will be dropped soon.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> requires version 1.0 or higher of <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a>.</p>
+<p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> requires version 1.0 or higher of Pysparse.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Pysparse sparse solvers only operate in serial.</p>
 </div>
 </section>
 <section id="scipy">
@@ -215,55 +219,64 @@ will be dropped soon.</p>
 <p><a class="reference external" href="http://www.scipy.org/">http://www.scipy.org/</a></p>
 <p>The <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse" title="(in SciPy v1.16.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.sparse</span></code></a> module provides a basic set of serial Krylov
 solvers and a limited collection of preconditioners.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The SciPy sparse solvers only operate in serial.</p>
+</div>
 </section>
 <section id="pyamg">
 <span id="id5"></span><h2>PyAMG<a class="headerlink" href="#pyamg" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="http://code.google.com/p/pyamg/">http://code.google.com/p/pyamg/</a></p>
-<p>The <a class="reference internal" href="glossary.html#term-PyAMG"><span class="xref std std-term">PyAMG</span></a> package provides adaptive multigrid preconditioners that
+<p>The PyAMG package provides adaptive multigrid preconditioners that
 can be used in conjunction with the <a class="reference internal" href="#scipy">SciPy</a> solvers.</p>
 </section>
 <section id="pyamgx">
 <span id="id6"></span><h2>pyamgx<a class="headerlink" href="#pyamgx" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://pyamgx.readthedocs.io/">https://pyamgx.readthedocs.io/</a></p>
-<p>The <a class="reference internal" href="glossary.html#term-pyamgx"><span class="xref std std-term">pyamgx</span></a> package is a <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> interface to the
-NVIDIA <a class="reference external" href="https://github.com/NVIDIA/AMGX">AMGX</a>
-library.  <a class="reference internal" href="glossary.html#term-pyamgx"><span class="xref std std-term">pyamgx</span></a> can be used to construct complex solvers and
+<p>The pyamgx package is a <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> interface to the NVIDIA <a class="reference external" href="https://github.com/NVIDIA/AMGX">AMGX</a>
+library.  pyamgx can be used to construct complex solvers and
 preconditioners to solve sparse sparse linear systems on the GPU.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While <a class="reference external" href="https://github.com/NVIDIA/AMGX">AMGX</a> matrix solve takes advantage of GPU parallelism, the pyamgx
+library uses <a class="reference internal" href="#scipy"><span class="std std-ref">SciPy</span></a> to build the matrix and thus suffers a
+significant serial bottleneck.</p>
+</div>
 </section>
 <section id="trilinos">
 <span id="id7"></span><h2>Trilinos<a class="headerlink" href="#trilinos" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="http://trilinos.sandia.gov">http://trilinos.sandia.gov</a></p>
-<p><a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> provides a more complete set of solvers and
+<p>Trilinos provides a more complete set of solvers and
 preconditioners than either <a class="reference internal" href="#pysparse">Pysparse</a> or
-<a class="reference internal" href="#scipy">SciPy</a>. <a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> preconditioning allows for iterative
+<a class="reference internal" href="#scipy">SciPy</a>. Trilinos preconditioning allows for iterative
 solutions to some difficult problems that <a class="reference internal" href="#pysparse">Pysparse</a> and
 <a class="reference internal" href="#scipy">SciPy</a> cannot solve, and it enables parallel execution of
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> (see <a class="reference internal" href="USAGE.html#parallel"><span class="std std-ref">Solving in Parallel</span></a> for more details).</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p>Be sure to build or install the <a class="reference internal" href="glossary.html#term-PyTrilinos"><span class="xref std std-term">PyTrilinos</span></a> interface to
-<a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a>.</p>
+Trilinos.</p>
 </div>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p><a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> is a large software suite with its own set of
+<p>Trilinos is a large software suite with its own set of
 prerequisites, and can be difficult to set up. It is not necessary
 for most problems, and is <strong>not</strong> recommended for a basic install
 of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>.</p>
 </div>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p><a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> <em>must</em> be compiled with <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> support for
+<p>Trilinos <em>must</em> be compiled with <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> support for
 <a class="reference internal" href="USAGE.html#parallel"><span class="std std-ref">Solving in Parallel</span></a>.</p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p><a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> parallel efficiency is somewhat improved by also
-installing <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a>.</p>
+<p>Trilinos parallel efficiency is somewhat improved by also
+installing Pysparse.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> solvers frequently give intermediate output that
+<p>Trilinos solvers frequently give intermediate output that
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> cannot suppress. The most commonly encountered
 messages are</p>
 <blockquote>
@@ -390,8 +403,9 @@ performance data nearly as well as <a class="reference external" href="https://d
 <span class="math notranslate nohighlight">\(\text{speedup} = p / (1 + \sigma(p - 1) + \kappa p (p-1))\)</span>, where
 <span class="math notranslate nohighlight">\(p\)</span> is the number of parallel tasks, <span class="math notranslate nohighlight">\(\sigma\)</span> is the fraction
 limited by serial processes, and <span class="math notranslate nohighlight">\(\kappa\)</span> is <a class="reference external" href="https://learn.microsoft.com/en-us/archive/blogs/ddperf/parallel-scalability-isnt-childs-play-part-2-amdahls-law-vs-gunthers-law">“coherency” (which is
-not well understood)</a>.</p>
-<table class="docutils align-default">
+somewhat nebulous)</a>.</p>
+<table class="docutils align-default" id="id43">
+<caption><span class="caption-text">Parallel scaling fitting parameters (smaller numbers are better)</span><a class="headerlink" href="#id43" title="Permalink to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"></th>
 <th class="head"></th>
@@ -476,9 +490,9 @@ Simultaneous Multi-Threading (SMT) and 512 GB of memory.
 on a <span class="math notranslate nohighlight">\(2048\times 1024\)</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid2D</span></code>
 and the <code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver</span></code> and <code class="docutils literal notranslate"><span class="pre">JacobiPreconditioner</span></code> are used for
 all solver suites.  Solution tolerance is <code class="docutils literal notranslate"><span class="pre">1e-10</span></code> using the <code class="docutils literal notranslate"><span class="pre">&quot;RHS&quot;</span></code>
-<a class="reference internal" href="#convergence"><span class="std std-ref">convergence criterion</span></a>.  Simulations were run on an
-AMD Epyc 7702 CPU with 64 cores featuring two-thread Simultaneous
-Multi-Threading (SMT) and 512 GB of memory.
+<a class="reference internal" href="#convergence"><span class="std std-ref">convergence criterion</span></a>.  Five replicates of each
+simulation were run on an AMD Epyc 7702 CPU with 64 cores featuring
+two-thread Simultaneous Multi-Threading (SMT) and 512 GB of memory.
 <a class="reference internal" href="USAGE.html#threads-vs-ranks"><span class="std std-ref">OMP_NUM_THREADS was set to 1</span></a>.</p>
 </aside>
 </aside>
@@ -491,8 +505,8 @@ We endeavor to harmonize this behavior by allowing the strings in the
 “criterion” column to be passed as an argument when instantiating a
 <a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code></a>.  Convergence is detected if
 <code class="docutils literal notranslate"><span class="pre">residual</span> <span class="pre">&lt;</span> <span class="pre">tolerance</span> <span class="pre">*</span> <span class="pre">scale</span></code>.</p>
-<table class="wideshow longtable docutils align-default" id="id43">
-<caption><span class="caption-text">Residual Criteria</span><a class="headerlink" href="#id43" title="Permalink to this table">¶</a></caption>
+<table class="wideshow longtable docutils align-default" id="id44">
+<caption><span class="caption-text">Residual Criteria</span><a class="headerlink" href="#id44" title="Permalink to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head stub"><p>criterion</p></th>
 <th class="head"><p>residual</p></th>
@@ -596,13 +610,13 @@ is not explicitly included in these tables.</p>
 <section id="default">
 <h3><code class="docutils literal notranslate"><span class="pre">default</span></code><a class="headerlink" href="#default" title="Permalink to this heading">¶</a></h3>
 <p>The setting <code class="docutils literal notranslate"><span class="pre">criterion=&quot;default&quot;</span></code> applies the same scaling (<code class="docutils literal notranslate"><span class="pre">RHS</span></code>) to
-all solvers.  This behavior is new in version 3.4.5+436.gceaa4b813; prior to that, the
+all solvers.  This behavior is new in <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 4.0; prior to that, the
 default behavior was the same as <code class="docutils literal notranslate"><span class="pre">criterion=&quot;legacy&quot;</span></code>.</p>
 </section>
 <section id="legacy">
 <h3><code class="docutils literal notranslate"><span class="pre">legacy</span></code><a class="headerlink" href="#legacy" title="Permalink to this heading">¶</a></h3>
-<p>The setting <code class="docutils literal notranslate"><span class="pre">criterion=&quot;legacy&quot;</span></code> restores the behavior of FiPy prior to
-version 3.4.5+436.gceaa4b813 and is equivalent to what the particular suite and solver
+<p>The setting <code class="docutils literal notranslate"><span class="pre">criterion=&quot;legacy&quot;</span></code> restores the behavior of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
+prior to version 4.0 and is equivalent to what the particular suite and solver
 does if not specifically configured.  The <code class="docutils literal notranslate"><span class="pre">legacy</span></code> row of the table is a
 best effort at documenting what will happen.</p>
 <div class="admonition note">
@@ -616,7 +630,7 @@ with different scaling.</p></li>
 behavior would require burning the code in a bowl of chicken entrails.
 (It is reasonable to assume <a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_PRECONDITIONED/"><code class="docutils literal notranslate"><span class="pre">KSP_NORM_PRECONDITIONED</span></code></a> for
 left-preconditioned solvers and <a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED/"><code class="docutils literal notranslate"><span class="pre">KSP_NORM_UNPRECONDITIONED</span></code></a>
-otherwise.</p></li>
+otherwise.)</p></li>
 <li><p>Even the <a class="reference internal" href="#petsc">PETSc</a> documentation says that <a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_NATURAL/"><code class="docutils literal notranslate"><span class="pre">KSP_NORM_NATURAL</span></code></a> is <a class="reference external" href="https://petsc.org/main/manualpages/KSP/KSPCGS/#developer-note">“weird”</a>).</p></li>
 </ul>
 </div>
@@ -666,8 +680,8 @@ they succeed or fail.  This information is captured as a
 <a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code></a> after calling
 <a class="reference internal" href="generated/fipy.terms.term.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a> or
 <a class="reference internal" href="generated/fipy.terms.term.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a>.</p>
-<table class="wideshow longtable docutils align-default" id="id44">
-<caption><span class="caption-text">Convergence Status Codes</span><a class="headerlink" href="#id44" title="Permalink to this table">¶</a></caption>
+<table class="wideshow longtable docutils align-default" id="id45">
+<caption><span class="caption-text">Convergence Status Codes</span><a class="headerlink" href="#id45" title="Permalink to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head stub"></th>
 <th class="head"></th>
@@ -745,8 +759,8 @@ they succeed or fail.  This information is captured as a
 </tr>
 </tbody>
 </table>
-<table class="wideshow longtable docutils align-default" id="id45">
-<caption><span class="caption-text">Divergence Status Codes</span><a class="headerlink" href="#id45" title="Permalink to this table">¶</a></caption>
+<table class="wideshow longtable docutils align-default" id="id46">
+<caption><span class="caption-text">Divergence Status Codes</span><a class="headerlink" href="#id46" title="Permalink to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head stub"></th>
 <th class="head"></th>
@@ -867,7 +881,7 @@ solver capabilities.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 11, 2025.
+                Last updated on Aug 12, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -877,7 +891,7 @@ solver capabilities.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+436.gceaa4b813
+Version 3.4.5+440.g092986266
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

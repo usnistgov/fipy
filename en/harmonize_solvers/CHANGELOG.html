@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; FiPy 3.4.5+436.gceaa4b813 documentation</title>
+    <title>Change Log &#8212; FiPy 3.4.5+440.g092986266 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,13 +43,13 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=073d30a3"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=41e939dc"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/CHANGELOG.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+436.gceaa4b813 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+440.g092986266 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Glossary" href="glossary.html" />
     <link rel="prev" title="Publications" href="PUBLICATIONS.html" />
@@ -116,7 +116,7 @@
   <section id="change-log">
 <span id="changelog"></span><h1>Change Log<a class="headerlink" href="#change-log" title="Permalink to this heading">¶</a></h1>
 <section id="version-release">
-<h2>Version 3.4.5+436.gceaa4b813<a class="headerlink" href="#version-release" title="Permalink to this heading">¶</a></h2>
+<h2>Version 3.4.5+440.g092986266<a class="headerlink" href="#version-release" title="Permalink to this heading">¶</a></h2>
 <p>This maintenance release:</p>
 <ul class="simple">
 <li><p>Addresses compatibility with recent releases of
@@ -187,7 +187,7 @@ Default coefficient of <cite>ImplicitSourceTerm</cite> is 0</p></li>
 <section id="version-3-4-4-2023-06-27">
 <h2>Version 3.4.4 - 2023-06-27<a class="headerlink" href="#version-3-4-4-2023-06-27" title="Permalink to this heading">¶</a></h2>
 <p>This maintenance release adds <a class="reference internal" href="USAGE.html#logging"><span class="std std-ref">Logging</span></a> and resolves compatibility issues
-with recent builds of <a class="reference internal" href="glossary.html#term-PETSc"><span class="xref std std-term">PETSc</span></a> and <a class="reference internal" href="glossary.html#term-NumPy"><span class="xref std std-term">NumPy</span></a>.</p>
+with recent builds of <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> and <a class="reference internal" href="glossary.html#term-NumPy"><span class="xref std std-term">NumPy</span></a>.</p>
 <section id="id20">
 <h3>Pulls<a class="headerlink" href="#id20" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
@@ -386,7 +386,7 @@ FORTRAN array ordering is deprecated</p></li>
 </section>
 <section id="version-3-4-2020-02-06">
 <h2>Version 3.4 - 2020-02-06<a class="headerlink" href="#version-3-4-2020-02-06" title="Permalink to this heading">¶</a></h2>
-<p>This release adds support for the <a class="reference internal" href="glossary.html#term-PETSc"><span class="xref std std-term">PETSc</span></a> solvers for
+<p>This release adds support for the <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> solvers for
 <a class="reference internal" href="USAGE.html#parallel"><span class="std std-ref">Solving in Parallel</span></a>.</p>
 <section id="id88">
 <h3>Pulls<a class="headerlink" href="#id88" title="Permalink to this heading">¶</a></h3>
@@ -1196,7 +1196,7 @@ Slicing a vector Variable should produce a scalar Variable</p></li>
 <h2>Version 2.1.2 - 2011-04-20<a class="headerlink" href="#version-2-1-2-2011-04-20" title="Permalink to this heading">¶</a></h2>
 <p>The significant changes since version 2.1.1 are:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> efficiency improvements</p></li>
+<li><p><a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> efficiency improvements</p></li>
 <li><p>Diagnostics of the parallel environment</p></li>
 </ul>
 <section id="id412">
@@ -1225,7 +1225,7 @@ Concatenated <cite>Mesh</cite> garbled by <cite>dump.write</cite>/<cite>read</ci
 <ul class="simple">
 <li><p><a class="reference internal" href="generated/fipy.viewers.matplotlibViewer.html#fipy.viewers.matplotlibViewer.MatplotlibViewer" title="fipy.viewers.matplotlibViewer.MatplotlibViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatplotlibViewer</span></code></a> can display
 into an existing set of Matplotlib axes.</p></li>
-<li><p><a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a> and <a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> are now completely independent.</p></li>
+<li><p><a class="reference internal" href="SOLVERS.html#pysparse"><span class="std std-ref">Pysparse</span></a> and <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> are now completely independent.</p></li>
 </ul>
 <section id="id420">
 <h3>Fixes<a class="headerlink" href="#id420" title="Permalink to this heading">¶</a></h3>
@@ -1255,7 +1255,7 @@ version increment because it is completely (er…  <a class="footnote-reference 
 with older scripts.</p>
 <p>The significant changes since version 2.0.2 are:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> can use <a class="reference internal" href="glossary.html#term-Trilinos"><span class="xref std std-term">Trilinos</span></a> for <a class="reference internal" href="USAGE.html#parallel"><span class="std std-ref">Solving in Parallel</span></a>.</p></li>
+<li><p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> can use <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> for <a class="reference internal" href="USAGE.html#parallel"><span class="std std-ref">Solving in Parallel</span></a>.</p></li>
 <li><p>We have switched from <a class="reference internal" href="glossary.html#term-MayaVi"><span class="xref std std-term">MayaVi</span></a> 1 to <a class="reference internal" href="glossary.html#term-Mayavi"><span class="xref std std-term">Mayavi</span></a> 2. This
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code> is an independent process that
 allows interaction with the display while a simulation is running.</p></li>
@@ -1762,7 +1762,7 @@ Some tests fail on windows XP</p></li>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 11, 2025.
+                Last updated on Aug 12, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -1772,13 +1772,13 @@ Some tests fail on windows XP</p></li>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+436.gceaa4b813
+Version 3.4.5+440.g092986266
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Change Log</a><ul>
-<li><a class="reference internal" href="#version-release">Version 3.4.5+436.gceaa4b813</a><ul>
+<li><a class="reference internal" href="#version-release">Version 3.4.5+440.g092986266</a><ul>
 <li><a class="reference internal" href="#pulls">Pulls</a></li>
 <li><a class="reference internal" href="#fixes">Fixes</a></li>
 </ul>

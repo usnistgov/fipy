@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Finite Volume Method &#8212; FiPy 3.4.5+436.gceaa4b813 documentation</title>
+    <title>Finite Volume Method &#8212; FiPy 3.4.5+440.g092986266 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=073d30a3"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=41e939dc"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/numerical/discret.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+436.gceaa4b813 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+440.g092986266 documentation" href="../contents.html" />
     <link rel="up" title="Theoretical and Numerical Background" href="index.html" />
     <link rel="next" title="Numerical Schemes" href="scheme.html" />
     <link rel="prev" title="General Conservation Equation" href="equation.html" />
@@ -125,10 +125,10 @@ divided in such a way is generally known as a mesh (as we will see, a
 faces and cells (see Figure <a class="reference internal" href="#fig-meshcartoon"><span class="std std-ref">Mesh</span></a>).  In the FVM the
 variables of interest are averaged over control volumes (CVs).  The
 CVs are either defined by the cells or are centered on the vertices.</p>
-<figure class="align-center" id="id2">
+<figure class="align-center" id="id4">
 <span id="fig-meshcartoon"></span><a class="reference internal image-reference" href="../_images/meshcartoon.png"><img alt="../_images/meshcartoon.png" src="../_images/meshcartoon.png" style="width: 50%;" /></a>
 <figcaption>
-<p><span class="caption-text">Mesh</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Mesh</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 <div class="legend">
 <p>A mesh consists of cells, faces and vertices. For the purposes of
 <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>, the divider between two cells is known as a face for all
@@ -171,10 +171,10 @@ located to calculate interpolations. For this reason, the VC-FVM is
 less efficient and requires more storage (a larger matrix band width)
 than the CC-FVM. However, the mesh topology does not have the same
 restrictions as the CC-FVM. <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> does not have a VC-FVM capability.</p>
-<figure class="align-center" id="id3">
+<figure class="align-center" id="id5">
 <span id="fig-vc-cc-fv"></span><a class="reference internal image-reference" href="../_images/vc-cc-fv.png"><img alt="../_images/vc-cc-fv.png" src="../_images/vc-cc-fv.png" style="width: 50%;" /></a>
 <figcaption>
-<p><span class="caption-text">CV structure for an unstructured mesh</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">CV structure for an unstructured mesh</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 <div class="legend">
 <p>(a) <span class="math notranslate nohighlight">\(\Omega_a\)</span> represents a vertex-based CV and (b)
 <span class="math notranslate nohighlight">\(\Omega_1\)</span>, <span class="math notranslate nohighlight">\(\Omega_2\)</span>, <span class="math notranslate nohighlight">\(\Omega_3\)</span> and
@@ -348,9 +348,9 @@ equation to a set of discrete linear equations that can then be solved
 to obtain the value of the dependent variable at each CV center. This
 results in a sparse linear system that requires an efficient iterative
 scheme to solve. The iterative schemes available to <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> are
-currently encapsulated in the <a class="reference internal" href="../glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a> and <a class="reference internal" href="../glossary.html#term-PyTrilinos"><span class="xref std std-term">PyTrilinos</span></a>
-suites of solvers and include most common solvers such as the conjugate
-gradient method and LU decomposition.</p>
+encapsulated in the suites of solvers described in :ref:<a href="#id2"><span class="problematic" id="id3">`</span></a>SOLVERS`and
+include most common solvers such as the conjugate gradient method and LU
+decomposition.</p>
 <p>Combining Equations <a class="reference internal" href="#equation-num-tra">(1)</a>, <a class="reference internal" href="#equation-num-con">(2)</a>,
 <a class="reference internal" href="#equation-num-dif">(3)</a> and <a class="reference internal" href="#equation-num-sou">(4)</a>, the complete
 discretization for equation <a class="reference internal" href="equation.html#equation-num-gen">(2)</a> can now be written for
@@ -385,7 +385,7 @@ D_f &amp;= \frac{A_f \Gamma_f}{d_{AP}}.\end{split}\]</div>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 11, 2025.
+                Last updated on Aug 12, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -395,7 +395,7 @@ D_f &amp;= \frac{A_f \Gamma_f}{d_{AP}}.\end{split}\]</div>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+436.gceaa4b813
+Version 3.4.5+440.g092986266
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

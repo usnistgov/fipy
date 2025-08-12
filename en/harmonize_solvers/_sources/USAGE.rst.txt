@@ -69,7 +69,7 @@ verbose debugging information save to a file::
 
     >>> log.setLevel(logging.DEBUG)
 
-To restrict logging to, e.g., information about the :term:`PETSc` solvers::
+To restrict logging to, e.g., information about the :ref:`PETSC` solvers::
 
     >>> petsc = logging.Filter('fipy.solvers.petsc')
     >>> logfile.addFilter(petsc)

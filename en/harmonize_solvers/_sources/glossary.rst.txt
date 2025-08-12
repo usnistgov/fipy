@@ -13,12 +13,6 @@ Glossary
       A cloud-based :term:`Continuous Integration` tool.
       See https://dev.azure.com.
 
-   Buildbot
-      The Buildbot is a system to automate the compile/test cycle
-      required by most software projects to validate code changes.
-      No longer used for :term:`FiPy`.
-      See http://trac.buildbot.net/.
-
    CircleCI
       A cloud-based :term:`Continuous Integration` tool.
       See https://circleci.com.
@@ -97,7 +91,7 @@ Glossary
       (:term:`MPI`) standard for the Python programming language, allowing
       any Python program to exploit multiple processors.  For
       :ref:`PARALLEL`, :term:`FiPy` requires this package, in addition to
-      :term:`PETSc` or :term:`Trilinos`.  See
+      :ref:`PETSC` or :ref:`TRILINOS`.  See
       https://mpi4py.readthedocs.io.
 
    numarray
@@ -122,32 +116,14 @@ Glossary
       "Python Data Analysis Library" provides high-performance data structures
       for flexible, extensible analysis. See http://pandas.pydata.org.
 
-   PETSc
-      The Portable, Extensible Toolkit for Scientific Computation is a
-      suite of data structures and routines for the scalable (parallel)
-      solution of scientific applications modeled by partial differential
-      equations. See https://www.mcs.anl.gov/petsc and :ref:`PETSC`.
-
    petsc4py
-      :term:`Python` wrapper for :term:`PETSc`. See
+      :term:`Python` wrapper for :ref:`PETSC`. See
       https://petsc4py.readthedocs.io/.
 
    pip
       "pip installs python" is a tool for installing and managing Python
       packages, such as those found in :term:`PyPI`.
       See http://www.pip-installer.org.
-
-   PyAMG
-      A suite of python-based preconditioners. See
-      http://code.google.com/p/pyamg/
-      and :ref:`PYAMG`.
-
-   pyamgx
-      a :term:`Python` interface to the NVIDIA 
-      `AMGX <https://github.com/NVIDIA/AMGX>`_ library, which can be used
-      to construct complex solvers and preconditioners to solve sparse
-      sparse linear systems on the GPU. See https://pyamgx.readthedocs.io/
-      and :ref:`PYAMGX`.
 
    PyPI
       The Python Package Index is a repository of software for the
@@ -157,12 +133,6 @@ Glossary
    Pyrex
       A mechanism for mixing C and Python code.
       See http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/.
-
-   Pysparse
-      The :mod:`pysparse` :term:`Python` package provides sparse
-      matrix storage, solvers, and linear algebra routines. See
-      http://pysparse.sourceforge.net
-      and :ref:`PYSPARSE`.
 
    Python
       The programming language that :term:`FiPy` (and your scripts) are
@@ -177,7 +147,7 @@ Glossary
       and :pep:`3000`.
 
    PyTrilinos
-      :term:`Python` wrapper for :term:`Trilinos`. See
+      :term:`Python` wrapper for :ref:`TRILINOS`. See
       http://trilinos.sandia.gov/packages/pytrilinos/.
 
    PyxViewer
@@ -190,9 +160,8 @@ Glossary
    SciPy
       The :mod:`scipy` package provides a wide range of scientific and
       mathematical operations. :term:`FiPy` can use
-      :term:`Scipy`'s solver suite for linear solutions. See
+      :ref:`SCIPY` solver suite for linear solutions. See
       http://www.scipy.org/.
-      and :ref:`SCIPY`.
 
    Sphinx
       The tools used to generate the :term:`FiPy` documentation.
@@ -207,15 +176,6 @@ Glossary
    TravisCI
       A cloud-based :term:`Continuous Integration` tool.
       See https://travis-ci.org.
-
-   Trilinos
-      This package provides sparse matrix storage, solvers, and
-      preconditioners, and can be used instead of :term:`Pysparse`.
-      :term:`Trilinos` preconditioning allows for iterative solutions
-      to some difficult problems that :term:`Pysparse` cannot
-      solve. See
-      http://trilinos.sandia.gov
-      and :ref:`TRILINOS`.
 
    Weave
       The :mod:`weave` package can enhance performance with C language
