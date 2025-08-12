@@ -105,6 +105,9 @@ install and use Pysparse is :term:`NumPy`.
 
    :term:`FiPy` requires version 1.0 or higher of Pysparse.
 
+.. note::
+
+   The Pysparse sparse solvers only operate in serial.
 
 .. _SCIPY:
 
@@ -116,6 +119,10 @@ http://www.scipy.org/
 
 The :mod:`scipy.sparse` module provides a basic set of serial Krylov
 solvers and a limited collection of preconditioners.
+
+.. note::
+
+   The SciPy sparse solvers only operate in serial.
 
 .. _PYAMG:
 
@@ -139,6 +146,12 @@ https://pyamgx.readthedocs.io/
 The pyamgx package is a :term:`Python` interface to the NVIDIA AMGX_
 library.  pyamgx can be used to construct complex solvers and
 preconditioners to solve sparse sparse linear systems on the GPU.
+
+.. note::
+
+   While AMGX_ matrix solve takes advantage of GPU parallelism, the pyamgx
+   library uses :ref:`SCIPY` to build the matrix and thus suffers a
+   significant serial bottleneck.
 
 .. _AMGX: https://github.com/NVIDIA/AMGX
 
