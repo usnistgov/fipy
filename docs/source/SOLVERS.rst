@@ -62,17 +62,17 @@ PETSc
 
 https://www.mcs.anl.gov/petsc
 
-:term:`PETSc` (the Portable, Extensible Toolkit for Scientific Computation)
+PETSc (the Portable, Extensible Toolkit for Scientific Computation)
 is a suite of data structures and routines for the scalable (parallel)
 solution of scientific applications modeled by partial differential
 equations.  It employs the :term:`MPI` standard for all message-passing
 communication (see :ref:`PARALLEL` for more details).
 
-.. attention:: :term:`PETSc` requires the :term:`petsc4py` and :term:`mpi4py`
+.. attention:: PETSc requires the :term:`petsc4py` and :term:`mpi4py`
    interfaces.
 
 .. note:: While, for consistency with other solver suites, :term:`FiPy` does
-   implement some preconditioner objects for :term:`PETSc`, you can also
+   implement some preconditioner objects for PETSc, you can also
    simply pass one of the `PCType strings`_ in the `precon=` argument when
    declaring the solver.
 
@@ -86,24 +86,25 @@ Pysparse
 
 http://pysparse.sourceforge.net
 
-:term:`Pysparse` is a fast serial sparse matrix library for :term:`Python`.
+Pysparse is a fast serial sparse matrix library for :term:`Python`.
 It provides several sparse matrix storage formats and conversion methods.
 It also implements a number of iterative solvers, preconditioners, and
 interfaces to efficient factorization packages. The only requirement to
-install and use :term:`Pysparse` is :term:`NumPy`.
+install and use Pysparse is :term:`NumPy`.
 
 .. warning::
 
-   :term:`Pysparse` is archaic and limited to :ref:`RunningUnderPython2`.
+   Pysparse is archaic and limited to :ref:`RunningUnderPython2`.
 
 .. warning::
 
-   Support for :term:`Python` 2.7 and, thus, for :term:`Pysparse`
+   Support for :term:`Python` 2.7 and, thus, for Pysparse
    will be dropped soon.
 
 .. warning::
 
-   :term:`FiPy` requires version 1.0 or higher of :term:`Pysparse`.
+   :term:`FiPy` requires version 1.0 or higher of Pysparse.
+
 
 .. _SCIPY:
 
@@ -124,7 +125,7 @@ PyAMG
 
 http://code.google.com/p/pyamg/
 
-The :term:`PyAMG` package provides adaptive multigrid preconditioners that
+The PyAMG package provides adaptive multigrid preconditioners that
 can be used in conjunction with the SciPy_ solvers.
 
 .. _PYAMGX:
@@ -135,10 +136,11 @@ pyamgx
 
 https://pyamgx.readthedocs.io/
 
-The :term:`pyamgx` package is a :term:`Python` interface to the 
-NVIDIA `AMGX <https://github.com/NVIDIA/AMGX>`_
-library.  :term:`pyamgx` can be used to construct complex solvers and
+The pyamgx package is a :term:`Python` interface to the NVIDIA AMGX_
+library.  pyamgx can be used to construct complex solvers and
 preconditioners to solve sparse sparse linear systems on the GPU.
+
+.. _AMGX: https://github.com/NVIDIA/AMGX
 
 .. _TRILINOS:
 
@@ -148,9 +150,9 @@ Trilinos
 
 http://trilinos.sandia.gov
 
-:term:`Trilinos` provides a more complete set of solvers and
+Trilinos provides a more complete set of solvers and
 preconditioners than either Pysparse_ or
-SciPy_. :term:`Trilinos` preconditioning allows for iterative
+SciPy_. Trilinos preconditioning allows for iterative
 solutions to some difficult problems that Pysparse_ and
 SciPy_ cannot solve, and it enables parallel execution of
 :term:`FiPy` (see :ref:`PARALLEL` for more details).
@@ -158,28 +160,28 @@ SciPy_ cannot solve, and it enables parallel execution of
 .. attention::
 
    Be sure to build or install the :term:`PyTrilinos` interface to
-   :term:`Trilinos`.
+   Trilinos.
 
 .. attention::
 
-   :term:`Trilinos` is a large software suite with its own set of
+   Trilinos is a large software suite with its own set of
    prerequisites, and can be difficult to set up. It is not necessary
    for most problems, and is **not** recommended for a basic install
    of :term:`FiPy`.
 
 .. attention::
 
-   :term:`Trilinos` *must* be compiled with :term:`MPI` support for
+   Trilinos *must* be compiled with :term:`MPI` support for
    :ref:`PARALLEL`.
 
 .. tip::
 
-   :term:`Trilinos` parallel efficiency is somewhat improved by also
-   installing :term:`Pysparse`.
+   Trilinos parallel efficiency is somewhat improved by also
+   installing Pysparse.
 
 .. note::
 
-    :term:`Trilinos` solvers frequently give intermediate output that
+    Trilinos solvers frequently give intermediate output that
     :term:`FiPy` cannot suppress. The most commonly encountered
     messages are
 
