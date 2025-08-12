@@ -8,6 +8,7 @@ advects
 Alber
 Allen-Cahn
 al.
+Amdahl's
 Amesos
 AMG
 AMGX
@@ -61,6 +62,7 @@ conda
 CondaForge
 conda-forge
 conjunctionality
+counterintuitively
 cpu
 cpus
 Crank-Nicolson
@@ -366,6 +368,7 @@ undercooling
 unpickle
 unpickled
 unpickling
+unpreconditioned
 upwinding
 url
 vcs
