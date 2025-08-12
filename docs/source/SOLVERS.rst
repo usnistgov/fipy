@@ -327,9 +327,9 @@ A few things can be observed in this plot:
   :math:`\text{speedup} = p / (1 + \sigma(p - 1) + \kappa p (p-1))`, where
   :math:`p` is the number of parallel tasks, :math:`\sigma` is the fraction
   limited by serial processes, and :math:`\kappa` is `"coherency" (which is
-  not well understood)`_.
+  somewhat nebulous)`_.
 
-  .. table::
+  .. table:: Parallel scaling fitting parameters (smaller numbers are better)
 
      +------------+----------+------------+------------+--------------+
      |            |          | Amdahl     |         Gunther           |
@@ -362,7 +362,7 @@ before doing "production" runs.
 .. _Windows Subsystem for Linux: https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux
 .. _Amdahl's Law: https://en.wikipedia.org/wiki/Amdahl%27s_law
 .. _Gunther's Law: https://doi.org/10.48550/arXiv.0808.1431
-.. _"coherency" (which is not well understood): https://learn.microsoft.com/en-us/archive/blogs/ddperf/parallel-scalability-isnt-childs-play-part-2-amdahls-law-vs-gunthers-law
+.. _"coherency" (which is somewhat nebulous): https://learn.microsoft.com/en-us/archive/blogs/ddperf/parallel-scalability-isnt-childs-play-part-2-amdahls-law-vs-gunthers-law
 
 .. [#FIPYversion] :term:`FiPy` version 3.4.4 has different interpretations
    of :ref:`CONVERGENCE` for different solver suites (and even for
@@ -390,9 +390,9 @@ before doing "production" runs.
    on a :math:`2048\times 1024` :class:`~fipy.meshes.grid2D.Grid2D`
    and the ``LinearGMRESSolver`` and ``JacobiPreconditioner`` are used for
    all solver suites.  Solution tolerance is ``1e-10`` using the ``"RHS"``
-   :ref:`convergence criterion <CONVERGENCE>`.  Simulations were run on an
-   AMD Epyc 7702 CPU with 64 cores featuring two-thread Simultaneous
-   Multi-Threading (SMT) and 512 GB of memory.
+   :ref:`convergence criterion <CONVERGENCE>`.  Five replicates of each
+   simulation were run on an AMD Epyc 7702 CPU with 64 cores featuring
+   two-thread Simultaneous Multi-Threading (SMT) and 512 GB of memory.
    :ref:`OMP_NUM_THREADS was set to 1 <THREADS_VS_RANKS>`.
 
 .. _CONVERGENCE:
@@ -431,14 +431,14 @@ We endeavor to harmonize this behavior by allowing the strings in the
 ===========
 
 The setting ``criterion="default"`` applies the same scaling (``RHS``) to
-all solvers.  This behavior is new in version |release|; prior to that, the
+all solvers.  This behavior is new in :term:`FiPy` 4.0; prior to that, the
 default behavior was the same as ``criterion="legacy"``.
 
 ``legacy``
 ==========
 
-The setting ``criterion="legacy"`` restores the behavior of FiPy prior to
-version |release| and is equivalent to what the particular suite and solver
+The setting ``criterion="legacy"`` restores the behavior of :term:`FiPy`
+prior to version 4.0 and is equivalent to what the particular suite and solver
 does if not specifically configured.  The ``legacy`` row of the table is a
 best effort at documenting what will happen.
 
@@ -452,7 +452,7 @@ best effort at documenting what will happen.
       behavior would require burning the code in a bowl of chicken entrails.
       (It is reasonable to assume |KSP_NORM_PRECONDITIONED|_ for
       left-preconditioned solvers and |KSP_NORM_UNPRECONDITIONED|_
-      otherwise.
+      otherwise.)
     - Even the PETSc_ documentation says that |KSP_NORM_NATURAL|_ is `"weird"
       <https://petsc.org/main/manualpages/KSP/KSPCGS/#developer-note>`_).
 
