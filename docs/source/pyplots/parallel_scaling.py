@@ -128,7 +128,7 @@ def USL(p, sigma, kappa, baseline=1):
     return baseline * p / (1 + sigma * (p - 1) + kappa * p * (p - 1))
 
 if __name__ == "__main__":
-    all = pd.read_json("parallel_scaling.json")
+    all = pd.read_json("all_4469018.json")
 
     all.loc[all["suite"] == "no-pysparse", "suite"] = "trilinos"
 

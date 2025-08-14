@@ -304,21 +304,14 @@ cores) for a `Method of Manufactured Solutions Allen-Cahn problem`_.
 
 A few things can be observed in this plot:
 
-- :term:`FiPy` 4.0 is roughly three times faster in serial and more than
-  six times faster in parallel than :term:`FiPy` 3.4.4 when using the
-  :ref:`PETSC` solvers.  :term:`FiPy` 4.0 roughly twice as fast in serial
-  and three times as fast in parallel when using the :ref:`TRILINOS`
-  solvers.
+- :ref:`PETSc`, :ref:`PySparse`, :ref:`Trilinos`, and :ref:`SciPy` have
+  comparable serial performance, with :ref:`SciPy` edging out the other
+  three for this particular problem.
 
-- :ref:`PETSc` has comparable serial performance to :ref:`PySparse`
-  and :ref:`Trilinos` lags somewhat.
-
-- The :ref:`SciPy` solvers are about eight times slower than either :ref:`PETSc`
-  or :ref:`PySparse` and only run in serial.  :term:`Windows` users may
-  consider installing `Windows Subsystem for Linux`_ to gain access to the
-  parallel solver suites; switching to :ref:`PETSc` can
-  yield a forty-fold improvement in performance on an 8-core laptop and
-  hundred-fold on a 64-core workstation.
+- :term:`FiPy` 4.0 is roughly the same speed in serial, but more than
+  twice as fast in parallel compared to :term:`FiPy` 3.4.4 when using the
+  :ref:`PETSC` solvers.  :term:`FiPy` 4.0 is roughly twice as fast
+  using the :ref:`TRILINOS` solvers, whether in serial or parallel.
 
 - :term:`FiPy` 4.0
   exhibits better parallel scaling than :term:`FiPy` 3.4.4.  `Amdahl's
@@ -336,13 +329,13 @@ A few things can be observed in this plot:
      +------------+----------+------------+------------+--------------+
      |            |          | serial / % | serial / % | coherency    |
      +============+==========+============+============+==============+
-     | FiPy 3.4.4 | petsc    | 8.65(27)   | 5.19(15)   | 0.000786(36) |
+     | FiPy 3.4.4 | petsc    | 4.70(61)   | 0.90(23)   | 0.000787(54) |
      +            +----------+------------+------------+--------------+
-     |            | trilinos | 4.25(14)   | 1.96(11)   | 0.000457(22) |
+     |            | trilinos | 2.52(24)   | 0.618(78)  | 0.000350(15) |
      +------------+----------+------------+------------+--------------+
-     | FiPy 4.0   | petsc    | 2.61(11)   | 0.774(85)  | 0.000342(16) |
+     | FiPy 4.0   | petsc    | 1.69(20)   | 1.00(19)   | 0.000283(35) |
      +            +----------+------------+------------+--------------+
-     |            | trilinos | 2.19(11)   | 0.180(10)  | 0.000368(20) |
+     |            | trilinos | 2.51(34)   | 0.07(17)   | 0.000483(35) |
      +------------+----------+------------+------------+--------------+
 
 
@@ -388,10 +381,10 @@ before doing "production" runs.
 .. [#MMS] Calculations are of a
    `Method of Manufactured Solutions Allen-Cahn problem`_.  Solutions are
    on a :math:`2048\times 1024` :class:`~fipy.meshes.grid2D.Grid2D`
-   and the ``LinearGMRESSolver`` and ``JacobiPreconditioner`` are used for
+   and the ``LinearPCGSolver`` with no preconditioner is used for
    all solver suites.  Solution tolerance is ``1e-10`` using the ``"RHS"``
-   :ref:`convergence criterion <CONVERGENCE>`.  Five replicates of each
-   simulation were run on an AMD Epyc 7702 CPU with 64 cores featuring
+   :ref:`convergence criterion <CONVERGENCE>`.  Each
+   simulation was run on an AMD Epyc 7702 CPU with 64 cores featuring
    two-thread Simultaneous Multi-Threading (SMT) and 512 GB of memory.
    :ref:`OMP_NUM_THREADS was set to 1 <THREADS_VS_RANKS>`.
 
