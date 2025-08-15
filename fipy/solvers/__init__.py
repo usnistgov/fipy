@@ -146,16 +146,6 @@ if solver_suite is None and _desired_solver in ["scipy", None]:
     except Exception as inst:
         _exceptions["scipy"] = inst
 
-if solver_suite is None and _desired_solver in ["pyamg", None]:
-    try:
-        if _Nproc > 1:
-            raise SerialSolverError()
-        from fipy.solvers.pyAMG import *
-        _mesh_matrices = _import_mesh_matrices(suite="Scipy")
-        solver_suite = "pyamg"
-    except Exception as inst:
-        _exceptions["pyamg"] = inst
-
 if solver_suite is None and _desired_solver in ["pyamgx", None]:
     try:
         if _Nproc > 1:
@@ -200,11 +190,6 @@ register_skipper(flag='NOT_PYAMGX_SOLVER',
 register_skipper(flag='SCIPY_SOLVER',
                  test=lambda: solver_suite == 'scipy',
                  why="the SciPy solvers are not being used.",
-                 skipWarning=True)
-
-register_skipper(flag='PYAMG_SOLVER',
-                 test=lambda: solver_suite == 'pyamg',
-                 why="the PyAMG solvers are not being used.",
                  skipWarning=True)
 
 register_skipper(flag='PYAMGX_SOLVER',

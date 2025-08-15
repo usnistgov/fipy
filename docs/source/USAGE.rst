@@ -209,11 +209,6 @@ environment variable:
 
    Forces the use of the :ref:`SCIPY` solvers.
 
-.. cmdoption:: --pyamg
-
-   Forces the use of the :ref:`PYAMG` preconditioners in conjunction
-   with the :ref:`SCIPY` solvers.
-
 .. cmdoption:: --pyamgx
 
    Forces the use of the :ref:`PYAMGX` solvers.
@@ -269,14 +264,7 @@ package.
 
    Forces the use of the specified suite of linear solvers.  Valid
    (case-insensitive) choices are "``petsc``", "``scipy``", "``pysparse``",
-   "``trilinos``", "``no-pysparse``", and "``pyamg``".
-
-.. envvar:: FIPY_VERBOSE_SOLVER
-
-   If present, causes the
-   :class:`~fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver` to
-   print a variety of diagnostic information.  All other solvers should use
-   `Logging`_ and :envvar:`FIPY_LOG_CONFIG`.
+   "``trilinos``", and "``no-pysparse``".
 
 .. envvar:: FIPY_DEFAULT_CRITERION
 

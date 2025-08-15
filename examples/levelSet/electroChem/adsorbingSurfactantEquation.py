@@ -307,12 +307,8 @@ class AdsorbingSurfactantEquation(object):
         self.dt.setValue(dt)
         if solver is None:
             import fipy.solvers.solver
-            if fipy.solvers.solver_suite == 'pyamg':
-                from fipy.solvers.pyAMG.linearGeneralSolver import LinearGeneralSolver
-                solver = LinearGeneralSolver(tolerance=1e-15, iterations=2000)
-            else:
-                from fipy.solvers import LinearPCGSolver
-                solver = LinearPCGSolver()
+            from fipy.solvers import LinearPCGSolver
+            solver = LinearPCGSolver()
 
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)

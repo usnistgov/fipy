@@ -9,7 +9,7 @@ if solver_suite == 'trilinos':
     docTestModuleNames = ('trilinosMatrix', 'pysparseMatrix')
 elif solver_suite == 'no-pysparse':
     docTestModuleNames = ('trilinosMatrix',)
-elif solver_suite == 'scipy' or solver_suite == 'pyamg':
+elif solver_suite == 'scipy':
     docTestModuleNames = ('scipyMatrix',)
 elif solver_suite == 'pysparse':
     docTestModuleNames = ('pysparseMatrix',)
