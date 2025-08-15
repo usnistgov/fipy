@@ -11,7 +11,7 @@ import pyamgx
 from .preconditioners import *
 
 from .pyAMGXSolver import *
-from .linearPCGSolver import *
+from .linearCGSolver import *
 from .linearGMRESSolver import *
 from .linearFGMRESSolver import *
 from .linearBiCGStabSolver import *
@@ -24,7 +24,7 @@ from . import pyamgxConvergence
 pyamgx.initialize()
 atexit.register(pyamgx.finalize)
 
-DefaultSolver = LinearPCGSolver
+DefaultSolver = LinearCGSolver
 DefaultAsymmetricSolver = LinearLUSolver
 DummySolver = DefaultSolver
 GeneralSolver = LinearLUSolver

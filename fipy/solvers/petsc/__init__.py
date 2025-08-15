@@ -3,7 +3,7 @@ import logging
 _log = logging.getLogger(__name__)
 
 from .linearLUSolver import *
-from .linearPCGSolver import *
+from .linearCGSolver import *
 from .linearGMRESSolver import *
 from .linearBicgSolver import *
 from .linearCGSSolver import *

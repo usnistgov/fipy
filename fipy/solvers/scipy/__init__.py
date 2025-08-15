@@ -10,7 +10,7 @@ from .linearCGSSolver import *
 from .linearGMRESSolver import *
 from .linearBicgstabSolver import *
 from .linearLUSolver import *
-from .linearPCGSolver import *
+from .linearCGSolver import *
 
 from . import scipyConvergence
 

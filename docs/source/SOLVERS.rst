@@ -279,7 +279,7 @@ this problem, :ref:`Trilinos` has the lowest ratio of prepare to elapsed
 time, but it takes three times as long to both prepare and solve as
 :ref:`PySparse` or :ref:`SciPy` and twice as long as :ref:`PETSc`.  This is
 even with all suites using the same solver and preconditioner
-(unpreconditioned ``LinearPCGSolver``, one of the fastest combinations for
+(unpreconditioned ``LinearCGSolver``, one of the fastest combinations for
 all suites *for this problem*).  For your own work, focus on identifying
 the solver and preconditioner with the lowest overall time to build and
 solve; this will counterintuitively have the highest ratio of prepare to
@@ -381,7 +381,7 @@ before doing "production" runs.
 .. [#MMS] Calculations are of a
    `Method of Manufactured Solutions Allen-Cahn problem`_.  Solutions are
    on a :math:`2048\times 1024` :class:`~fipy.meshes.grid2D.Grid2D`
-   and the ``LinearPCGSolver`` with no preconditioner is used for
+   and the ``LinearCGSolver`` with no preconditioner is used for
    all solver suites.  Solution tolerance is ``1e-10`` using the ``"RHS"``
    :ref:`convergence criterion <CONVERGENCE>`.  Each
    simulation was run on an AMD Epyc 7702 CPU with 64 cores featuring

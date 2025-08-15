@@ -2,12 +2,12 @@ from __future__ import unicode_literals
 from fipy.solvers.pyamgx import PyAMGXSolver
 from fipy.solvers.pyamgx.preconditioners import JacobiPreconditioner
 
-__all__ = ["LinearPCGSolver"]
+__all__ = ["LinearCGSolver", "LinearPCGSolver"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class LinearPCGSolver(PyAMGXSolver):
-    """Interface to the preconditioned conjugate gradient (:term:`PCG`)
+class LinearCGSolver(PyAMGXSolver):
+    """Interface to the conjugate gradient (:term:`CG`)
     solver in :ref:`PYAMGX`.
 
     Uses :class:`~fipy.solvers.pyamgx.preconditioners.JacobiPreconditioner` by default.
@@ -31,3 +31,5 @@ class LinearPCGSolver(PyAMGXSolver):
 
     def _canSolveAsymmetric(self):
         return False
+
+LinearPCGSolver = LinearCGSolver

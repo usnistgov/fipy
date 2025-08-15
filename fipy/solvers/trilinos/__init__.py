@@ -52,7 +52,7 @@ _dealWithTrilinosImportPathologies()
 from .preconditioners import *
 
 from .linearCGSSolver import *
-from .linearPCGSolver import *
+from .linearCGSolver import *
 from .linearGMRESSolver import *
 from .linearLUSolver import *
 from .linearBicgstabSolver import *
