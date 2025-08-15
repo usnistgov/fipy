@@ -12,10 +12,12 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearGMRESSolver(TrilinosAztecOOSolver):
 
-    """
-    The `LinearGMRESSolver` is an interface to the GMRES solver in Trilinos,
-    using the `MultilevelDDPreconditioner` by default.
+    """Interface to the generalized minimal residual (:term:`GMRES`) solver
+    in :ref:`TRILINOS`.
 
+    Uses the
+    :class:`~fipy.solvers.trilinos.preconditioners.multilevelDDPreconditioner.MultilevelDDPreconditioner`
+    by default.
     """
 
     solver = AztecOO.AZ_gmres

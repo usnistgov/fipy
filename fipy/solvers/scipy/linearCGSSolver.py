@@ -10,9 +10,10 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearCGSSolver(ScipyKrylovSolver):
-    """
-    The `LinearCGSSolver` is an interface to the CGS solver in Scipy,
-    with no preconditioning by default.
+    """Interface to the conjugate gradient squared (:term:`CGS`) solver in
+    :ref:`SciPy`.
+
+    No preconditioning by default.
     """
 
     solveFnc = staticmethod(cgs)

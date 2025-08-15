@@ -7,9 +7,11 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class ClassicalAMGSolver(PyAMGXSolver):
-    """
-    The `ClassicalAMGSolver` is an interface to the classical AMG solver in
-    AMGX, with a Jacobi smoother by default.
+    """Interface to the classical algebraic multigrid (:term:`AMG`) solver
+    in :ref:`PYAMGX`.
+
+    Uses a :class:`~fipy.solvers.pyamgx.smoothers.BlockJacobiSmoother`
+    smoother by default.
     """
 
     CONFIG_DICT = {

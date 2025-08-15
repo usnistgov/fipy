@@ -11,20 +11,11 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearPCGSolver(LinearRHSSolver):
-    """
+    """Interface to preconditioned conjugate gradient method (:term:`PCG`)
+    of :ref:`Pysparse`.
 
-    The `LinearPCGSolver` solves a linear system of equations using the
-    preconditioned conjugate gradient method (PCG) with symmetric successive
-    over-relaxation (SSOR) preconditioning by default. Alternatively,
-    Jacobi preconditioning can be specified through `precon`.
-    The PCG method solves systems with
-    a symmetric positive definite coefficient matrix.
-
-    The `LinearPCGSolver` is a wrapper class for the the Pysparse_
-    `itsolvers.pcg()` and `precon.ssor()` methods.
-
-    .. _Pysparse: http://pysparse.sourceforge.net
-
+    Uses :class:`~fipy.solvers.pysparse.preconditioners.SSORPreconditioner`
+    by default.
     """
 
     solveFnc = staticmethod(krylov.pcg)

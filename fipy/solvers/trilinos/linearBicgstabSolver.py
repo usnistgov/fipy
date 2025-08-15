@@ -12,10 +12,12 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearBicgstabSolver(TrilinosAztecOOSolver):
 
-    """
-    The `LinearBicgstabSolver` is an interface to the biconjugate gradient
-    stabilized solver in Trilinos, using the `JacobiPreconditioner` by default.
+    """Interface to the Biconjugate Gradient (Stabilized) (:term:`BiCGSTAB`)
+    solver in :ref:`TRILINOS`.
 
+    Uses the
+    :class:`~fipy.solvers.trilinos.preconditioners.jacobiPreconditioner.JacobiPreconditioner`
+    by default.
     """
 
     solver = AztecOO.AZ_bicgstab

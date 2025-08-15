@@ -14,18 +14,8 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearCGSSolver(LinearRHSSolver):
 
-    """
-
-    The `LinearCGSSolver` solves a linear system of equations using
-    the conjugate gradient squared method (CGS), a variant of the
-    biconjugate gradient method (BiCG). CGS solves linear systems with
-    a general non-symmetric coefficient matrix.
-
-    The `LinearCGSSolver` is a wrapper class for the the Pysparse_
-    `itsolvers.cgs()` method.
-
-    .. _Pysparse: http://pysparse.sourceforge.net
-
+    """Interface to the conjugate gradient squared (:term:`CGS`) solver in
+    :ref:`Pysparse`.
     """
 
     solveFnc = staticmethod(krylov.cgs)

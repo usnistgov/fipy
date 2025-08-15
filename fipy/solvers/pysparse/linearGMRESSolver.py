@@ -11,18 +11,10 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearGMRESSolver(LinearInitialSolver):
-    """
+    """Interface to the Generalized Minimum RESidual (:term:`GMRES`) solver
+    in :ref:`Pysparse`.
 
-    The `LinearGMRESSolver` solves a linear system of equations using the
-    generalized minimal residual method (GMRES) with Jacobi
-    preconditioning. GMRES solves systems with a general non-symmetric
-    coefficient matrix.
-
-    The `LinearGMRESSolver` is a wrapper class for the the Pysparse_
-    `itsolvers.gmres()` and `precon.jacobi()` methods.
-
-    .. _Pysparse: http://pysparse.sourceforge.net
-
+    Uses :class:`~fipy.solvers.pysparse.preconditioners.JacobiPreconditioner` by default.
     """
 
     solveFnc = staticmethod(krylov.gmres)

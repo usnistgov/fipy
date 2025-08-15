@@ -9,9 +9,10 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearBicgstabSolver(ScipyKrylovSolver):
-    """
-    The `LinearBicgstabSolver` is an interface to the Bicgstab solver in
-    Scipy, with no preconditioning by default.
+    """Interface to the Biconjugate Gradient (Stabilized) (:term:`BiCGSTAB`)
+    solver in :ref:`Scipy`.
+
+    No preconditioning by default.
     """
 
     solveFnc = staticmethod(bicgstab)

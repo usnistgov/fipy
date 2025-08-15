@@ -12,10 +12,12 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearPCGSolver(TrilinosAztecOOSolver):
 
-    """
-    The `LinearPCGSolver` is an interface to the cg solver in Trilinos, using
-    the `MultilevelSGSPreconditioner` by default.
+    """Interface to the conjugate gradient (:term:`CG`) solver in
+    :ref:`TRILINOS`.
 
+    Uses the
+    :class:`~fipy.solvers.trilinos.preconditioners.multilevelDDPreconditioner.MultilevelDDPreconditioner`
+    by default.
     """
 
     solver = AztecOO.AZ_cg

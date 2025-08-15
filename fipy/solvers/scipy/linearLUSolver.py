@@ -14,10 +14,7 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearLUSolver(ScipySolver):
-    """
-    The `LinearLUSolver` solves a linear system of equations using
-    LU-factorization.  The `LinearLUSolver` is a wrapper class for the
-    the Scipy `scipy.sparse.linalg.splu` module.
+    """Interface to :term:`LU`-factorization in :ref:`SciPy`.
     """
 
     def _adaptLegacyTolerance(self, L, x, b):

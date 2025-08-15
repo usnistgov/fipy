@@ -16,9 +16,9 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearLUSolver(TrilinosSolver):
 
-    """
-    The `LinearLUSolver` is an interface to the Amesos KLU solver in Trilinos.
+    """Interface to the Amesos KLU solver in :ref:`TRILINOS`.
 
+    KLU is a direct, serial :term:`LU` solver.
     """
 
     def __init__(self, tolerance="default", criterion="default", precon=None,

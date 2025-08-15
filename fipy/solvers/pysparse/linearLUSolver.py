@@ -15,17 +15,7 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearLUSolver(PysparseSolver):
-    """
-
-    The `LinearLUSolver` solves a linear system of equations using
-    LU-factorization. This method solves systems with a general
-    non-symmetric coefficient matrix using partial pivoting.
-
-    The `LinearLUSolver` is a wrapper class for the the Pysparse_
-    `superlu.factorize()` method.
-
-    .. _Pysparse: http://pysparse.sourceforge.net
-
+    """Interface to :term:`LU`-factorization in :ref:`Pysparse`.
     """
 
     def __init__(self, tolerance="default", criterion="default",

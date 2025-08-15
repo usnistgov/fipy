@@ -13,10 +13,9 @@ __all__ = ["LinearLUSolver"]
 
 class LinearLUSolver(PETScSolver):
 
-    """
-    The `LinearLUSolver` is an interface to the LU preconditioner in PETSc.
-    A direct solve is performed.
+    """Interface to the :term:`LU` preconditioner in :ref:`PETSC`.
 
+    A direct solve is performed.
     """
 
     def __init__(self, tolerance="default", criterion="default",

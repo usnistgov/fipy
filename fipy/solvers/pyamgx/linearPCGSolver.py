@@ -7,9 +7,10 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearPCGSolver(PyAMGXSolver):
-    """
-    The `LinearPCGSolver` is an interface to the PCG solver in
-    AMGX, with no preconditioning by default.
+    """Interface to the preconditioned conjugate gradient (:term:`PCG`)
+    solver in :ref:`PYAMGX`.
+
+    Uses :class:`~fipy.solvers.pyamgx.preconditioners.JacobiPreconditioner` by default.
     """
 
     CONFIG_DICT = {

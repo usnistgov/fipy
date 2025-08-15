@@ -10,9 +10,10 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearPCGSolver(ScipyKrylovSolver):
-    """
-    The `LinearPCGSolver` is an interface to the CG solver in Scipy,
-    with no preconditioning by default.
+    """Interface to the preconditioned conjugate gradient (:term:`PCG`) solver
+    in :ref:`Scipy`.
+
+    No preconditioning by default.
     """
 
     solveFnc = staticmethod(cg)

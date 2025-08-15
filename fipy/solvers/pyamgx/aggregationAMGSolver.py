@@ -7,9 +7,11 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class AggregationAMGSolver(PyAMGXSolver):
-    """
-    The `AggregationAMGSolver` is an interface to the aggregation AMG solver in
-    AMGX, with a Jacobi smoother by default.
+    """Interface to the aggregation algebraic multigrid (:term:`AMG`) solver
+    in :ref:`PYAMGX`.
+
+    Uses a :class:`~fipy.solvers.pyamgx.smoothers.BlockJacobiSmoother`
+    smoother by default.
     """
 
     CONFIG_DICT = {

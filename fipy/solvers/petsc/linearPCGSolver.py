@@ -6,9 +6,8 @@ __all__ = ["LinearPCGSolver"]
 
 class LinearPCGSolver(PETScKrylovSolver):
 
-    """
-    The `LinearPCGSolver` is an interface to the cg solver in PETSc.
-
+    """Interface to the conjugate graident (:term:`CG`) solver in
+    :ref:`PETSC`.
     """
       
     solver = 'cg'

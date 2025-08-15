@@ -12,12 +12,8 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearJORSolver(PysparseSolver):
-    """
-
-    The `LinearJORSolver` solves a linear system of equations using
-    Jacobi over-relaxation. This method solves systems with a general
-    non-symmetric coefficient matrix.
-
+    """Solves a linear system of equations using Jacobi over-relaxation
+    (:term:`JOR`).
     """
 
     def __init__(self, tolerance="default", criterion="default",
