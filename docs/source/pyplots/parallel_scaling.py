@@ -175,7 +175,7 @@ if __name__ == "__main__":
         ax.plot(fit_tasks, amdahl_bl(fit_tasks, *popt), color=color, linestyle="--")
         print(f"Amdahl")
         sigma = ufloat(popt[0], np.sqrt(pcov[0][0]))
-        print(f"{sigma = :0.2u%S}")
+        print(f"{sigma = :0.1u%S}")
 
         USL_bl = partial(USL, baseline=baseline)
         popt, pcov = curve_fit(USL_bl, d["tasks"], d["speedup"])
@@ -183,8 +183,8 @@ if __name__ == "__main__":
         print(f"Gunther")
         sigma = ufloat(popt[0], np.sqrt(pcov[0][0]))
         kappa = ufloat(popt[1], np.sqrt(pcov[1][1]))
-        print(f"{sigma = :0.2u%S}")
-        print(f"{kappa = :0.2uS}")
+        print(f"{sigma = :0.1u%S}")
+        print(f"{kappa = :0.1uS}")
         print()
 
     legend_elements = [Line2D([0], [0], color="black", marker="o", fillstyle="none", linestyle=""),
