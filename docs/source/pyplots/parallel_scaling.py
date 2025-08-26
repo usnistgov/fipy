@@ -16,6 +16,7 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import pandas as pd
 from scipy.io import mmread
 from scipy.optimize import curve_fit
+from uncertainties import ufloat
 
 
 def plot_all(df, output, color_by_suite=True,
@@ -173,14 +174,18 @@ if __name__ == "__main__":
         popt, pcov = curve_fit(amdahl_bl, d["tasks"], d["speedup"])
         ax.plot(fit_tasks, amdahl_bl(fit_tasks, *popt), color=color, linestyle="--")
         print(f"Amdahl")
-        print(f"sigma = {popt[0]} +/- {np.sqrt(pcov[0][0])}")
+        sigma = ufloat(popt[0], np.sqrt(pcov[0][0]))
+        print(f"{sigma = :0.2u%S}")
 
         USL_bl = partial(USL, baseline=baseline)
         popt, pcov = curve_fit(USL_bl, d["tasks"], d["speedup"])
         ax.plot(fit_tasks, USL_bl(fit_tasks, *popt), color=color, linestyle="-")
         print(f"Gunther")
-        print(f"sigma={popt[0]} +/- {np.sqrt(pcov[0][0])}")
-        print(f"kappa={popt[1]} +/- {np.sqrt(pcov[1][1])}")
+        sigma = ufloat(popt[0], np.sqrt(pcov[0][0]))
+        kappa = ufloat(popt[1], np.sqrt(pcov[1][1]))
+        print(f"{sigma = :0.2u%S}")
+        print(f"{kappa = :0.2uS}")
+        print()
 
     legend_elements = [Line2D([0], [0], color="black", marker="o", fillstyle="none", linestyle=""),
                        Line2D([0], [0], color="black", marker="o", linestyle=""),
