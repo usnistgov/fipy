@@ -38,7 +38,7 @@ Glossary
 
    CGS
       Conjugate Gradient Squared method for solving sparse matrices, a
-      variant of :ref:`BiCG`.  CGS solves linear systems with a general
+      variant of :term:`BiCG`.  CGS solves linear systems with a general
       non-symmetric coefficient matrix.
       See https://en.wikipedia.org/wiki/Conjugate_gradient_squared_method.
 
@@ -65,7 +65,7 @@ Glossary
       See http://www.ctcms.nist.gov/fipy.
 
    FGMRES
-      Flexible Inner-Outer Preconditioned :ref:`GMRES` algorithm for
+      Flexible Inner-Outer Preconditioned :term:`GMRES` algorithm for
       solving sparse matrices.  FGMRES solves systems with a general
       non-symmetric coefficient matrix.
       See https://doi.org/10.1137/0914028.
