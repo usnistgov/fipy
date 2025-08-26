@@ -329,13 +329,13 @@ A few things can be observed in this plot:
      +------------+----------+------------+------------+--------------+
      |            |          | serial / % | serial / % | coherency    |
      +============+==========+============+============+==============+
-     | FiPy 3.4.4 | petsc    | 4.70(61)   | 0.90(23)   | 0.000787(54) |
+     | FiPy 3.4.4 | petsc    | 4.70(26)   | 0.911(93)  | 0.000783(22) |
      +            +----------+------------+------------+--------------+
-     |            | trilinos | 2.52(24)   | 0.618(78)  | 0.000350(15) |
+     |            | trilinos | 2.61(10)   | 0.785(96)  | 0.000338(18) |
      +------------+----------+------------+------------+--------------+
-     | FiPy 4.0   | petsc    | 1.69(20)   | 1.00(19)   | 0.000283(35) |
+     | FiPy 4.0   | petsc    | 1.698(81)  | 0.126(73)  | 0.000280(13) |
      +            +----------+------------+------------+--------------+
-     |            | trilinos | 2.51(34)   | 0.07(17)   | 0.000483(35) |
+     |            | trilinos | 2.168(98)  | 0.40(14)   | 0.000323(26) |
      +------------+----------+------------+------------+--------------+
 
 
@@ -383,8 +383,8 @@ before doing "production" runs.
    on a :math:`2048\times 1024` :class:`~fipy.meshes.grid2D.Grid2D`
    and the ``LinearCGSolver`` with no preconditioner is used for
    all solver suites.  Solution tolerance is ``1e-10`` using the ``"RHS"``
-   :ref:`convergence criterion <CONVERGENCE>`.  Each
-   simulation was run on an AMD Epyc 7702 CPU with 64 cores featuring
+   :ref:`convergence criterion <CONVERGENCE>`.  Five replicates of each
+   simulation were run on an AMD Epyc 7702 CPU with 64 cores featuring
    two-thread Simultaneous Multi-Threading (SMT) and 512 GB of memory.
    :ref:`OMP_NUM_THREADS was set to 1 <THREADS_VS_RANKS>`.
 
