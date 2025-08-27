@@ -27,10 +27,5 @@ fipy.solvers.pyAMG
    :toctree:
    :recursive:
 
-   fipy.solvers.pyAMG.linearCGSSolver
-   fipy.solvers.pyAMG.linearGMRESSolver
-   fipy.solvers.pyAMG.linearGeneralSolver
-   fipy.solvers.pyAMG.linearLUSolver
-   fipy.solvers.pyAMG.linearPCGSolver
    fipy.solvers.pyAMG.preconditioners
 

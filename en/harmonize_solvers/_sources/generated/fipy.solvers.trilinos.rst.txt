@@ -31,9 +31,9 @@ fipy.solvers.trilinos
    fipy.solvers.trilinos.comms
    fipy.solvers.trilinos.linearBicgstabSolver
    fipy.solvers.trilinos.linearCGSSolver
+   fipy.solvers.trilinos.linearCGSolver
    fipy.solvers.trilinos.linearGMRESSolver
    fipy.solvers.trilinos.linearLUSolver
-   fipy.solvers.trilinos.linearPCGSolver
    fipy.solvers.trilinos.preconditioners
    fipy.solvers.trilinos.trilinosAztecOOSolver
    fipy.solvers.trilinos.trilinosMLTest

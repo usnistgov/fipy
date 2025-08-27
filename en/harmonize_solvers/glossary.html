@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Glossary &#8212; FiPy 3.4.5+441.g5c25b4570 documentation</title>
+    <title>Glossary &#8212; FiPy 3.4.5+454.g6d55a7cf6 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,13 +43,13 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=a4fb7c06"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=de290812"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/glossary.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+441.g5c25b4570 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+454.g6d55a7cf6 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Examples" href="EXAMPLES.html" />
     <link rel="prev" title="Change Log" href="CHANGELOG.html" />
@@ -116,11 +116,35 @@
   <section id="glossary">
 <span id="id1"></span><h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this heading">¶</a></h1>
 <dl class="simple glossary">
+<dt id="term-AMG">AMG<a class="headerlink" href="#term-AMG" title="Permalink to this term">¶</a></dt><dd><p>Algebraic multigrid method for solving sparse matrices.
+AMG solves linear systems with a general non-symmetric coefficient
+matrix.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/Multigrid_method#Algebraic_multigrid_(AMG">https://en.wikipedia.org/wiki/Multigrid_method#Algebraic_multigrid_(AMG</a>).</p>
+</dd>
 <dt id="term-AppVeyor">AppVeyor<a class="headerlink" href="#term-AppVeyor" title="Permalink to this term">¶</a></dt><dd><p>A cloud-based <a class="reference internal" href="#term-Continuous-Integration"><span class="xref std std-term">Continuous Integration</span></a> tool.
 See <a class="reference external" href="https://www.appveyor.com">https://www.appveyor.com</a>.</p>
 </dd>
 <dt id="term-Azure">Azure<a class="headerlink" href="#term-Azure" title="Permalink to this term">¶</a></dt><dd><p>A cloud-based <a class="reference internal" href="#term-Continuous-Integration"><span class="xref std std-term">Continuous Integration</span></a> tool.
 See <a class="reference external" href="https://dev.azure.com">https://dev.azure.com</a>.</p>
+</dd>
+<dt id="term-BiCG">BiCG<a class="headerlink" href="#term-BiCG" title="Permalink to this term">¶</a></dt><dd><p>Biconjugate gradient method for solving sparse matrices.
+BiCG solves linear systems with a general non-symmetric coefficient
+matrix.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/Biconjugate_gradient_method">https://en.wikipedia.org/wiki/Biconjugate_gradient_method</a>.</p>
+</dd>
+<dt id="term-BiCGSTAB">BiCGSTAB<a class="headerlink" href="#term-BiCGSTAB" title="Permalink to this term">¶</a></dt><dd><p>Biconjugate gradient (stabilized) method for solving sparse matrices.
+BiCGSTAB solves linear systems with a general non-symmetric
+coefficient matrix.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/Biconjugate_gradient_stabilized_method">https://en.wikipedia.org/wiki/Biconjugate_gradient_stabilized_method</a>.</p>
+</dd>
+<dt id="term-CG">CG<a class="headerlink" href="#term-CG" title="Permalink to this term">¶</a></dt><dd><p>Conjugate Gradient method for solving sparse matrices.  CG solves
+linear systems with a symmetric positive-definite coefficient matrix.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/Conjugate_gradient_method">https://en.wikipedia.org/wiki/Conjugate_gradient_method</a>.</p>
+</dd>
+<dt id="term-CGS">CGS<a class="headerlink" href="#term-CGS" title="Permalink to this term">¶</a></dt><dd><p>Conjugate Gradient Squared method for solving sparse matrices, a
+variant of <a class="reference internal" href="#term-BiCG"><span class="xref std std-term">BiCG</span></a>.  CGS solves linear systems with a general
+non-symmetric coefficient matrix.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/Conjugate_gradient_squared_method">https://en.wikipedia.org/wiki/Conjugate_gradient_squared_method</a>.</p>
 </dd>
 <dt id="term-CircleCI">CircleCI<a class="headerlink" href="#term-CircleCI" title="Permalink to this term">¶</a></dt><dd><p>A cloud-based <a class="reference internal" href="#term-Continuous-Integration"><span class="xref std std-term">Continuous Integration</span></a> tool.
 See <a class="reference external" href="https://circleci.com">https://circleci.com</a>.</p>
@@ -140,8 +164,17 @@ See <a class="reference external" href="https://en.wikipedia.org/wiki/Continuous
 <dt id="term-FiPy">FiPy<a class="headerlink" href="#term-FiPy" title="Permalink to this term">¶</a></dt><dd><p>The eponymous software package.
 See <a class="reference external" href="http://www.ctcms.nist.gov/fipy">http://www.ctcms.nist.gov/fipy</a>.</p>
 </dd>
+<dt id="term-FGMRES">FGMRES<a class="headerlink" href="#term-FGMRES" title="Permalink to this term">¶</a></dt><dd><p>Flexible Inner-Outer Preconditioned <a class="reference internal" href="#term-GMRES"><span class="xref std std-term">GMRES</span></a> algorithm for
+solving sparse matrices.  FGMRES solves systems with a general
+non-symmetric coefficient matrix.
+See <a class="reference external" href="https://doi.org/10.1137/0914028">https://doi.org/10.1137/0914028</a>.</p>
+</dd>
 <dt id="term-GitHub-Actions">GitHub Actions<a class="headerlink" href="#term-GitHub-Actions" title="Permalink to this term">¶</a></dt><dd><p>A cloud-based <a class="reference internal" href="#term-Continuous-Integration"><span class="xref std std-term">Continuous Integration</span></a> tool.
 See <a class="reference external" href="https://github.com/features/actions">https://github.com/features/actions</a>.</p>
+</dd>
+<dt id="term-GMRES">GMRES<a class="headerlink" href="#term-GMRES" title="Permalink to this term">¶</a></dt><dd><p>Generalized Minimal RESidual method for solving sparse matrices.
+GMRES solves systems with a general non-symmetric coefficient matrix.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/Generalized_minimal_residual_method">https://en.wikipedia.org/wiki/Generalized_minimal_residual_method</a>.</p>
 </dd>
 <dt id="term-Gmsh">Gmsh<a class="headerlink" href="#term-Gmsh" title="Permalink to this term">¶</a></dt><dd><p>A free and Open Source 3D (and 2D!) finite element grid generator. It
 also has a CAD engine and post-processor that <a class="reference internal" href="#term-FiPy"><span class="xref std std-term">FiPy</span></a> does not
@@ -150,12 +183,20 @@ make use of. See <a class="reference external" href="http://www.geuz.org/gmsh">h
 <dt id="term-IPython">IPython<a class="headerlink" href="#term-IPython" title="Permalink to this term">¶</a></dt><dd><p>An improved <a class="reference internal" href="#term-Python"><span class="xref std std-term">Python</span></a> shell that integrates nicely with
 <a class="reference internal" href="VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a>. See <a class="reference external" href="http://ipython.scipy.org/">http://ipython.scipy.org/</a>.</p>
 </dd>
+<dt id="term-JOR">JOR<a class="headerlink" href="#term-JOR" title="Permalink to this term">¶</a></dt><dd><p>Jacobi over-relaxation method for solving sparse matrices.  JOR
+solves systems with a general non-symmetric coefficient matrix.</p>
+</dd>
 <dt id="term-JSON">JSON<a class="headerlink" href="#term-JSON" title="Permalink to this term">¶</a></dt><dd><p>JavaScript Object Notation.  A text format suitable for storing
 structured information such as <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>.
 See <a class="reference external" href="https://www.json.org/">https://www.json.org/</a>.</p>
 </dd>
 <dt id="term-linux">linux<a class="headerlink" href="#term-linux" title="Permalink to this term">¶</a></dt><dd><p>An operating system.
 See <a class="reference external" href="http://www.linux.org">http://www.linux.org</a>.</p>
+</dd>
+<dt id="term-LU">LU<a class="headerlink" href="#term-LU" title="Permalink to this term">¶</a></dt><dd><p>Lower-Upper decomposition method for solving sparse matrices.  LU
+solves systems with a general non-symmetric coefficient matrix using
+partial pivoting.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/LU_decomposition">https://en.wikipedia.org/wiki/LU_decomposition</a>.</p>
 </dd>
 <dt id="term-macOS">macOS<a class="headerlink" href="#term-macOS" title="Permalink to this term">¶</a></dt><dd><p>An operating system.
 See <a class="reference external" href="http://www.apple.com/macos">http://www.apple.com/macos</a>.</p>
@@ -204,6 +245,10 @@ C/C++ programs. See
 </dd>
 <dt id="term-pandas">pandas<a class="headerlink" href="#term-pandas" title="Permalink to this term">¶</a></dt><dd><p>“Python Data Analysis Library” provides high-performance data structures
 for flexible, extensible analysis. See <a class="reference external" href="http://pandas.pydata.org">http://pandas.pydata.org</a>.</p>
+</dd>
+<dt id="term-PCG">PCG<a class="headerlink" href="#term-PCG" title="Permalink to this term">¶</a></dt><dd><p>Preconditioned conjugate gradient method for solving sparse matrices.
+PCG solves systems with a symmetric positive definite coefficient matrix.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/Conjugate_gradient_method">https://en.wikipedia.org/wiki/Conjugate_gradient_method</a>.</p>
 </dd>
 <dt id="term-petsc4py">petsc4py<a class="headerlink" href="#term-petsc4py" title="Permalink to this term">¶</a></dt><dd><p><a class="reference internal" href="#term-Python"><span class="xref std std-term">Python</span></a> wrapper for <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a>. See
 <a class="reference external" href="https://petsc4py.readthedocs.io/">https://petsc4py.readthedocs.io/</a>.</p>
@@ -264,7 +309,7 @@ See <a class="reference external" href="http://www.microsoft.com/windows">http:/
 
 
                 <div class='last-updated'>
-                Last updated on Aug 12, 2025.
+                Last updated on Aug 27, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -274,7 +319,7 @@ See <a class="reference external" href="http://www.microsoft.com/windows">http:/
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+441.g5c25b4570
+Version 3.4.5+454.g6d55a7cf6
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

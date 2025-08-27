@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using FiPy &#8212; FiPy 3.4.5+441.g5c25b4570 documentation</title>
+    <title>Using FiPy &#8212; FiPy 3.4.5+454.g6d55a7cf6 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=a4fb7c06"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=de290812"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/USAGE.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+441.g5c25b4570 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+454.g6d55a7cf6 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Frequently Asked Questions" href="FAQ.html" />
     <link rel="prev" title="Viewers" href="VIEWERS.html" />
@@ -309,13 +309,6 @@ environment variable:</p>
 </dd></dl>
 
 <dl class="std cmdoption">
-<dt class="sig sig-object std" id="cmdoption-pyamg">
-<span class="sig-name descname"><span class="pre">--pyamg</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-pyamg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Forces the use of the <a class="reference internal" href="SOLVERS.html#pyamg"><span class="std std-ref">PyAMG</span></a> preconditioners in conjunction
-with the <a class="reference internal" href="SOLVERS.html#scipy"><span class="std std-ref">SciPy</span></a> solvers.</p>
-</dd></dl>
-
-<dl class="std cmdoption">
 <dt class="sig sig-object std" id="cmdoption-pyamgx">
 <span class="sig-name descname"><span class="pre">--pyamgx</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-pyamgx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forces the use of the <a class="reference internal" href="SOLVERS.html#pyamgx"><span class="std std-ref">pyamgx</span></a> solvers.</p>
@@ -381,16 +374,7 @@ files can be found in <code class="file docutils literal notranslate"><em><span 
 <span class="sig-name descname"><span class="pre">FIPY_SOLVERS</span></span><a class="headerlink" href="#envvar-FIPY_SOLVERS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forces the use of the specified suite of linear solvers.  Valid
 (case-insensitive) choices are “<code class="docutils literal notranslate"><span class="pre">petsc</span></code>”, “<code class="docutils literal notranslate"><span class="pre">scipy</span></code>”, “<code class="docutils literal notranslate"><span class="pre">pysparse</span></code>”,
-“<code class="docutils literal notranslate"><span class="pre">trilinos</span></code>”, “<code class="docutils literal notranslate"><span class="pre">no-pysparse</span></code>”, and “<code class="docutils literal notranslate"><span class="pre">pyamg</span></code>”.</p>
-</dd></dl>
-
-<dl class="std envvar">
-<dt class="sig sig-object std" id="envvar-FIPY_VERBOSE_SOLVER">
-<span class="sig-name descname"><span class="pre">FIPY_VERBOSE_SOLVER</span></span><a class="headerlink" href="#envvar-FIPY_VERBOSE_SOLVER" title="Permalink to this definition">¶</a></dt>
-<dd><p>If present, causes the
-<a class="reference internal" href="generated/fipy.solvers.pyAMG.linearGeneralSolver.html#fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver" title="fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearGeneralSolver</span></code></a> to
-print a variety of diagnostic information.  All other solvers should use
-<a class="reference internal" href="#logging">Logging</a> and <span class="target" id="index-2"></span><a class="reference internal" href="#envvar-FIPY_LOG_CONFIG"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">FIPY_LOG_CONFIG</span></code></a>.</p>
+“<code class="docutils literal notranslate"><span class="pre">trilinos</span></code>”, and “<code class="docutils literal notranslate"><span class="pre">no-pysparse</span></code>”.</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -1058,14 +1042,14 @@ undocumented and did not work very well.</p>
 drop support for Python 2.7 no later than 2020</a>, we prioritized adding
 support for better <a class="reference internal" href="glossary.html#term-Python-3"><span class="xref std std-term">Python 3</span></a> solvers, starting with
 <a class="reference internal" href="glossary.html#term-petsc4py"><span class="xref std std-term">petsc4py</span></a>.</p>
-<p>Because the faster <span class="xref std std-term">PySparse</span> solvers are not
+<p>Because the faster <a class="reference internal" href="SOLVERS.html#pysparse"><span class="std std-ref">Pysparse</span></a> solvers are not
 available under <a class="reference internal" href="glossary.html#term-Python-3"><span class="xref std std-term">Python 3</span></a>, we have maintained <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.x
 support as long as practical. Be aware that the <a class="reference external" href="https://conda-forge.github.io/">conda-forge</a> packages that
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> depends upon are not well-maintained on <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.x
 and our support for that configuration is rapidly becoming impractical,
 despite the performance benefits. Now that we have learned
 how to optimize our use of <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> and <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a>, the
-performance margin of <span class="xref std std-term">PySparse</span> is small and support for
+performance margin of <a class="reference internal" href="SOLVERS.html#pysparse"><span class="std std-ref">Pysparse</span></a> is small and support for
 <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.x will be dropped soon.</p>
 </section>
 <section id="manual">
@@ -1127,7 +1111,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
 
 
                 <div class='last-updated'>
-                Last updated on Aug 12, 2025.
+                Last updated on Aug 27, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -1137,7 +1121,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+441.g5c25b4570
+Version 3.4.5+454.g6d55a7cf6
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

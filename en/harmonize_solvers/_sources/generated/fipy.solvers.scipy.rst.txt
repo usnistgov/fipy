@@ -29,9 +29,9 @@ fipy.solvers.scipy
 
    fipy.solvers.scipy.linearBicgstabSolver
    fipy.solvers.scipy.linearCGSSolver
+   fipy.solvers.scipy.linearCGSolver
    fipy.solvers.scipy.linearGMRESSolver
    fipy.solvers.scipy.linearLUSolver
-   fipy.solvers.scipy.linearPCGSolver
    fipy.solvers.scipy.preconditioners
    fipy.solvers.scipy.scipyConvergence
    fipy.solvers.scipy.scipyKrylovSolver

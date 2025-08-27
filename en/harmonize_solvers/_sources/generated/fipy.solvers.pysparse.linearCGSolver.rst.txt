@@ -1,7 +1,7 @@
-fipy.solvers.pyAMG.linearGMRESSolver
+fipy.solvers.pysparse.linearCGSolver
 ====================================
 
-.. automodule:: fipy.solvers.pyAMG.linearGMRESSolver
+.. automodule:: fipy.solvers.pysparse.linearCGSolver
 
    
    
@@ -17,7 +17,8 @@ fipy.solvers.pyAMG.linearGMRESSolver
 
    .. autosummary::
    
-      LinearGMRESSolver
+      LinearCGSolver
+      LinearPCGSolver
    
    
 

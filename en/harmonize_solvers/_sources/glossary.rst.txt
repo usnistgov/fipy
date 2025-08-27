@@ -5,6 +5,12 @@ Glossary
 
 .. glossary::
 
+   AMG
+      Algebraic multigrid method for solving sparse matrices.
+      AMG solves linear systems with a general non-symmetric coefficient
+      matrix.
+      See https://en.wikipedia.org/wiki/Multigrid_method#Algebraic_multigrid_(AMG).
+
    AppVeyor
       A cloud-based :term:`Continuous Integration` tool.
       See https://www.appveyor.com.
@@ -12,6 +18,29 @@ Glossary
    Azure
       A cloud-based :term:`Continuous Integration` tool.
       See https://dev.azure.com.
+
+   BiCG
+      Biconjugate gradient method for solving sparse matrices.
+      BiCG solves linear systems with a general non-symmetric coefficient
+      matrix.
+      See https://en.wikipedia.org/wiki/Biconjugate_gradient_method.
+
+   BiCGSTAB
+      Biconjugate gradient (stabilized) method for solving sparse matrices.
+      BiCGSTAB solves linear systems with a general non-symmetric
+      coefficient matrix.
+      See https://en.wikipedia.org/wiki/Biconjugate_gradient_stabilized_method.
+
+   CG
+      Conjugate Gradient method for solving sparse matrices.  CG solves
+      linear systems with a symmetric positive-definite coefficient matrix.
+      See https://en.wikipedia.org/wiki/Conjugate_gradient_method.
+
+   CGS
+      Conjugate Gradient Squared method for solving sparse matrices, a
+      variant of :term:`BiCG`.  CGS solves linear systems with a general
+      non-symmetric coefficient matrix.
+      See https://en.wikipedia.org/wiki/Conjugate_gradient_squared_method.
 
    CircleCI
       A cloud-based :term:`Continuous Integration` tool.
@@ -35,9 +64,20 @@ Glossary
       The eponymous software package.
       See http://www.ctcms.nist.gov/fipy.
 
+   FGMRES
+      Flexible Inner-Outer Preconditioned :term:`GMRES` algorithm for
+      solving sparse matrices.  FGMRES solves systems with a general
+      non-symmetric coefficient matrix.
+      See https://doi.org/10.1137/0914028.
+
    GitHub Actions
       A cloud-based :term:`Continuous Integration` tool.
       See https://github.com/features/actions.
+
+   GMRES
+      Generalized Minimal RESidual method for solving sparse matrices.
+      GMRES solves systems with a general non-symmetric coefficient matrix.
+      See https://en.wikipedia.org/wiki/Generalized_minimal_residual_method.
 
    Gmsh
       A free and Open Source 3D (and 2D!) finite element grid generator. It
@@ -48,6 +88,10 @@ Glossary
       An improved :term:`Python` shell that integrates nicely with
       :ref:`MATPLOTLIB`. See http://ipython.scipy.org/.
 
+   JOR
+      Jacobi over-relaxation method for solving sparse matrices.  JOR
+      solves systems with a general non-symmetric coefficient matrix.
+
    JSON
       JavaScript Object Notation.  A text format suitable for storing
       structured information such as :class:`dict` or :class:`list`.
@@ -56,6 +100,12 @@ Glossary
    linux
       An operating system.
       See http://www.linux.org.
+
+   LU
+      Lower-Upper decomposition method for solving sparse matrices.  LU
+      solves systems with a general non-symmetric coefficient matrix using
+      partial pivoting.
+      See https://en.wikipedia.org/wiki/LU_decomposition.
 
    macOS
       An operating system.
@@ -115,6 +165,11 @@ Glossary
    pandas
       "Python Data Analysis Library" provides high-performance data structures
       for flexible, extensible analysis. See http://pandas.pydata.org.
+
+   PCG
+      Preconditioned conjugate gradient method for solving sparse matrices.
+      PCG solves systems with a symmetric positive definite coefficient matrix.
+      See https://en.wikipedia.org/wiki/Conjugate_gradient_method.
 
    petsc4py
       :term:`Python` wrapper for :ref:`PETSC`. See

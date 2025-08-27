@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Solvers &#8212; FiPy 3.4.5+441.g5c25b4570 documentation</title>
+    <title>Solvers &#8212; FiPy 3.4.5+454.g6d55a7cf6 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=a4fb7c06"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=de290812"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/SOLVERS.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+441.g5c25b4570 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+454.g6d55a7cf6 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Viewers" href="VIEWERS.html" />
     <link rel="prev" title="Git practices" href="ADMINISTRATA.html" />
@@ -303,9 +303,21 @@ tolerance may help.</p>
 </section>
 <section id="performance-comparison">
 <h2>Performance Comparison<a class="headerlink" href="#performance-comparison" title="Permalink to this heading">¶</a></h2>
+<p>Comparing different solver suites, or even different solvers, has
+historically been difficult.  The different suites have different
+interpretations of <a class="reference internal" href="#convergence"><span class="std std-ref">Convergence</span></a> and tolerance.  <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 4.0
+harmonizes the different suites so that, to the greatest extent possible,
+all interpret <a class="reference internal" href="#convergence"><span class="std std-ref">Convergence</span></a> and tolerance the same way.  In the course
+of doing this, a number of inefficiencies were found in the way that
+<a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> built sparse matrices.  To see the impact of these changes, we
+examine the serial and parallel scaling performance of the different solver
+suites for two different benchmark problems.</p>
 <section id="serial-performance">
 <h3>Serial Performance<a class="headerlink" href="#serial-performance" title="Permalink to this heading">¶</a></h3>
 <p>Serial performance is compared for the different suites.</p>
+<p>The following plot shows the serial scaling behavior for the different
+solvers.  We compare solution time vs number mesh cells for a diffusion
+problem.</p>
 <p>(<a class="reference download internal" download="" href="_downloads/b30306f6c53dcb621c35263f926e7260/serial_scaling.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/25e5b6f8bdb71e5cc93b1f306a26713f/serial_scaling.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/680d6b18ec08992169eb49f01e32c3d0/serial_scaling.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/badd8570d6dabf081e2fd5fb8cc230b8/serial_scaling.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
 <figure class="align-center" id="id37">
 <img alt="Wall time vs mesh size on a log-log plot." class="plot-directive" src="_images/serial_scaling.png" />
@@ -321,7 +333,7 @@ matrix, and (c) time to solve the matrix as functions of mesh size.
 <ul class="simple">
 <li><p>For sufficiently large problems, building the matrix can be expected to
 scale as the number of cells <span class="math notranslate nohighlight">\(N\)</span> and solving the matrix should scale
-as <span class="math notranslate nohighlight">\(N\,\ln N\)</span>.  There are not sufficient data points to
+as <span class="math notranslate nohighlight">\(N\,\ln N\)</span>.  There are not enough data points to
 differentiate these slopes.</p></li>
 <li><p>Below about 1000 cells, the time to prepare the matrix is insensitive to
 mesh size and this dominates the overall elapsed time.</p></li>
@@ -350,23 +362,25 @@ shows a high degree of consistency from run to run.</p></li>
 <p><span class="caption-text">Ratio of time to prepare the matrix to the combined time to prepare and
 solve the matrix for different solver suites, solvers
 and preconditioners, and different versions of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
-<a class="footnote-reference brackets" href="#fipyversion" id="id12" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#binary" id="id13" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</span><a class="headerlink" href="#id39" title="Permalink to this image">¶</a></p>
+<a class="footnote-reference brackets" href="#fipyversion" id="id12" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#binary" id="id13" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.  The thick lines highlight <code class="docutils literal notranslate"><span class="pre">LinearCGSolver</span></code>
+with no preconditioner, one of the better-performing combinations
+available in all suites.</span><a class="headerlink" href="#id39" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>In principle, we’d like to spend as little time preparing the matrix,
-relative to solving it, as possible.  This metric can be deceptive.  For
-this problem, <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a> has the lowest ratio of prepare to elapsed
-time, but it takes three times as long to both prepare and solve as
-<a class="reference internal" href="#pysparse"><span class="std std-ref">Pysparse</span></a> or <a class="reference internal" href="#scipy"><span class="std std-ref">SciPy</span></a> and twice as long as <a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a>.  This is
-even with all suites using the same solver and preconditioner
-(unpreconditioned <code class="docutils literal notranslate"><span class="pre">LinearPCGSolver</span></code>, one of the fastest combinations for
-all suites <em>for this problem</em>).  For your own work, focus on identifying
-the solver and preconditioner with the lowest overall time to build and
-solve; this will counterintuitively have the highest ratio of prepare to
-elapsed time.  Prepare time to elapsed time is a more useful metric for the
-<a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> developers; just as <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 4.0 brought considerable
-reductions in matrix build time, we will continue to seek opportunities to
-optimize.</p>
+relative to solving it, as possible.  This metric can be deceptive.  If we
+compare the case of unpreconditioned <code class="docutils literal notranslate"><span class="pre">LinearCGSolver</span></code>, one of the fastest
+combinations for all suites <em>for this problem</em>, we see that <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a>
+has the lowest ratio of prepare to elapsed time.  Examination of elapsed
+time, the quantity we really care about, shows that <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a> takes
+three times as long to both prepare and solve as <a class="reference internal" href="#pysparse"><span class="std std-ref">Pysparse</span></a> or
+<a class="reference internal" href="#scipy"><span class="std std-ref">SciPy</span></a> and twice as long as <a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a>.</p>
+<p>For your own work, focus on identifying the solver and preconditioner with
+the lowest overall time to build and solve; this will counterintuitively
+have the highest ratio of prepare-to-elapsed time.  Prepare time to elapsed
+time is a more useful metric for the <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> developers; just as
+<a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 4.0 brought considerable reductions in matrix build time, we
+will continue to seek opportunities to optimize.</p>
 </section>
 <section id="parallel-performance">
 <h3>Parallel Performance<a class="headerlink" href="#parallel-performance" title="Permalink to this heading">¶</a></h3>
@@ -383,19 +397,13 @@ versions of <a class="reference internal" href="glossary.html#term-FiPy"><span c
 </figure>
 <p>A few things can be observed in this plot:</p>
 <ul>
-<li><p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 4.0 is roughly three times faster in serial and more than
-six times faster in parallel than <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 3.4.4 when using the
-<a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a> solvers.  <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 4.0 roughly twice as fast in serial
-and three times as fast in parallel when using the <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a>
-solvers.</p></li>
-<li><p><a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a> has comparable serial performance to <a class="reference internal" href="#pysparse"><span class="std std-ref">Pysparse</span></a>
-and <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a> lags somewhat.</p></li>
-<li><p>The <a class="reference internal" href="#scipy"><span class="std std-ref">SciPy</span></a> solvers are about eight times slower than either <a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a>
-or <a class="reference internal" href="#pysparse"><span class="std std-ref">Pysparse</span></a> and only run in serial.  <a class="reference internal" href="glossary.html#term-Windows"><span class="xref std std-term">Windows</span></a> users may
-consider installing <a class="reference external" href="https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux">Windows Subsystem for Linux</a> to gain access to the
-parallel solver suites; switching to <a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a> can
-yield a forty-fold improvement in performance on an 8-core laptop and
-hundred-fold on a 64-core workstation.</p></li>
+<li><p><a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a>, <a class="reference internal" href="#pysparse"><span class="std std-ref">Pysparse</span></a>, <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a>, and <a class="reference internal" href="#scipy"><span class="std std-ref">SciPy</span></a> have
+comparable serial performance, with <a class="reference internal" href="#scipy"><span class="std std-ref">SciPy</span></a> edging out the other
+three for this particular problem.</p></li>
+<li><p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 4.0 is roughly the same speed in serial, but more than
+twice as fast in parallel compared to <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 3.4.4 when using the
+<a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a> solvers.  <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 4.0 is roughly twice as fast
+using the <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a> solvers, whether in serial or parallel.</p></li>
 <li><p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 4.0
 exhibits better parallel scaling than <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 3.4.4.  <a class="reference external" href="https://en.wikipedia.org/wiki/Amdahl%27s_law">Amdahl’s
 Law</a>, <span class="math notranslate nohighlight">\(\text{speedup} = p / (1 + \sigma(p - 1))\)</span>, does not fit the
@@ -422,25 +430,25 @@ somewhat nebulous)</a>.</p>
 <tbody>
 <tr class="row-odd"><td rowspan="2"><p>FiPy 3.4.4</p></td>
 <td><p>petsc</p></td>
-<td><p>8.65(27)</p></td>
-<td><p>5.19(15)</p></td>
-<td><p>0.000786(36)</p></td>
+<td><p>4.7(3)</p></td>
+<td><p>0.91(9)</p></td>
+<td><p>0.00078(2)</p></td>
 </tr>
 <tr class="row-even"><td><p>trilinos</p></td>
-<td><p>4.25(14)</p></td>
-<td><p>1.96(11)</p></td>
-<td><p>0.000457(22)</p></td>
+<td><p>2.6(1)</p></td>
+<td><p>0.8(1)</p></td>
+<td><p>0.00034(2)</p></td>
 </tr>
 <tr class="row-odd"><td rowspan="2"><p>FiPy 4.0</p></td>
 <td><p>petsc</p></td>
-<td><p>2.61(11)</p></td>
-<td><p>0.774(85)</p></td>
-<td><p>0.000342(16)</p></td>
+<td><p>1.70(8)</p></td>
+<td><p>0.13(7)</p></td>
+<td><p>0.00028(1)</p></td>
 </tr>
 <tr class="row-even"><td><p>trilinos</p></td>
-<td><p>2.19(11)</p></td>
-<td><p>0.180(10)</p></td>
-<td><p>0.000368(20)</p></td>
+<td><p>2.2(1)</p></td>
+<td><p>0.4(1)</p></td>
+<td><p>0.00032(3)</p></td>
 </tr>
 </tbody>
 </table>
@@ -488,7 +496,7 @@ Simultaneous Multi-Threading (SMT) and 512 GB of memory.
 <p>Calculations are of a
 <a class="reference external" href="https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb">Method of Manufactured Solutions Allen-Cahn problem</a>.  Solutions are
 on a <span class="math notranslate nohighlight">\(2048\times 1024\)</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid2D</span></code>
-and the <code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver</span></code> and <code class="docutils literal notranslate"><span class="pre">JacobiPreconditioner</span></code> are used for
+and the <code class="docutils literal notranslate"><span class="pre">LinearCGSolver</span></code> with no preconditioner is used for
 all solver suites.  Solution tolerance is <code class="docutils literal notranslate"><span class="pre">1e-10</span></code> using the <code class="docutils literal notranslate"><span class="pre">&quot;RHS&quot;</span></code>
 <a class="reference internal" href="#convergence"><span class="std std-ref">convergence criterion</span></a>.  Five replicates of each
 simulation were run on an AMD Epyc 7702 CPU with 64 cores featuring
@@ -881,7 +889,7 @@ solver capabilities.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 12, 2025.
+                Last updated on Aug 27, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -891,7 +899,7 @@ solver capabilities.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+441.g5c25b4570
+Version 3.4.5+454.g6d55a7cf6
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
