@@ -222,10 +222,24 @@ SciPy_ cannot solve, and it enables parallel execution of
 Performance Comparison
 ----------------------
 
+Comparing different solver suites, or even different solvers, has
+historically been difficult.  The different suites have different
+interpretations of :ref:`CONVERGENCE` and tolerance.  :term:`FiPy` 4.0
+harmonizes the different suites so that, to the greatest extent possible,
+all interpret :ref:`CONVERGENCE` and tolerance the same way.  In the course
+of doing this, a number of inefficiencies were found in the way that
+:term:`FiPy` built sparse matrices.  To see the impact of these changes, we
+examine the serial and parallel scaling performance of the different solver
+suites for two different benchmark problems.
+
 Serial Performance
 ==================
 
 Serial performance is compared for the different suites.
+
+The following plot shows the serial scaling behavior for the different
+solvers.  We compare solution time vs number mesh cells for a diffusion
+problem.
 
 .. plot:: pyplots/serial_scaling.py
    :align: center
@@ -241,7 +255,7 @@ We can see:
 
 - For sufficiently large problems, building the matrix can be expected to
   scale as the number of cells :math:`N` and solving the matrix should scale
-  as :math:`N\,\ln N`.  There are not sufficient data points to
+  as :math:`N\,\ln N`.  There are not enough data points to
   differentiate these slopes.
 - Below about 1000 cells, the time to prepare the matrix is insensitive to
   mesh size and this dominates the overall elapsed time.
