@@ -140,6 +140,13 @@ napoleon_type_aliases = {
 
 autosummary_generate = True
 
+# enable :numref:
+# note: :numref: doesn't work with .. plot::
+# https://github.com/matplotlib/matplotlib/issues/9346
+# There's a workaround, but it's gross
+# https://github.com/sfstoolbox/theory/issues/5
+numfig = True
+
 # numpydoc_show_class_members = False
 
 # -- Options for HTML output ---------------------------------------------------
