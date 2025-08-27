@@ -140,12 +140,16 @@ napoleon_type_aliases = {
 
 autosummary_generate = True
 
-# enable :numref:
+# ~~enable~~ disable :numref:
+#
 # note: :numref: doesn't work with .. plot::
 # https://github.com/matplotlib/matplotlib/issues/9346
+#
 # There's a workaround, but it's gross
 # https://github.com/sfstoolbox/theory/issues/5
-numfig = True
+#
+# Figure numbers skip by 2? Another .. plot:: glitch?
+numfig = False
 
 # numpydoc_show_class_members = False
 
