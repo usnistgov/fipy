@@ -285,22 +285,25 @@ We can see:
    Ratio of time to prepare the matrix to the combined time to prepare and
    solve the matrix for different solver suites, solvers
    and preconditioners, and different versions of :term:`FiPy`
-   [#FIPYversion]_ [#Binary]_.
+   [#FIPYversion]_ [#Binary]_.  The thick lines highlight ``LinearCGSolver``
+   with no preconditioner, one of the better-performing combinations
+   available in all suites.
 
 In principle, we'd like to spend as little time preparing the matrix,
-relative to solving it, as possible.  This metric can be deceptive.  For
-this problem, :ref:`Trilinos` has the lowest ratio of prepare to elapsed
-time, but it takes three times as long to both prepare and solve as
-:ref:`PySparse` or :ref:`SciPy` and twice as long as :ref:`PETSc`.  This is
-even with all suites using the same solver and preconditioner
-(unpreconditioned ``LinearCGSolver``, one of the fastest combinations for
-all suites *for this problem*).  For your own work, focus on identifying
-the solver and preconditioner with the lowest overall time to build and
-solve; this will counterintuitively have the highest ratio of prepare to
-elapsed time.  Prepare time to elapsed time is a more useful metric for the
-:term:`FiPy` developers; just as :term:`FiPy` 4.0 brought considerable
-reductions in matrix build time, we will continue to seek opportunities to
-optimize.
+relative to solving it, as possible.  This metric can be deceptive.  If we
+compare the case of unpreconditioned ``LinearCGSolver``, one of the fastest
+combinations for all suites *for this problem*, we see that :ref:`Trilinos`
+has the lowest ratio of prepare to elapsed time.  Examination of elapsed
+time, the quantity we really care about, shows that :ref:`Trilinos` takes
+three times as long to both prepare and solve as :ref:`PySparse` or
+:ref:`SciPy` and twice as long as :ref:`PETSc`.
+
+For your own work, focus on identifying the solver and preconditioner with
+the lowest overall time to build and solve; this will counterintuitively
+have the highest ratio of prepare-to-elapsed time.  Prepare time to elapsed
+time is a more useful metric for the :term:`FiPy` developers; just as
+:term:`FiPy` 4.0 brought considerable reductions in matrix build time, we
+will continue to seek opportunities to optimize.
 
 Parallel Performance
 ====================

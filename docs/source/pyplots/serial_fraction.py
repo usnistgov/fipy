@@ -165,7 +165,7 @@ if __name__ == "__main__":
                  ymin=0, ymax=1, ax=ax, title=f"({letter}) {suite}",
                  linewidth=1, alpha=0.1, style="none", show_marker=False,
                  logy=False, legends="")
-        plot_all(suite_data[((suite_data["solver_class"] == "LinearPCGSolver")
+        plot_all(suite_data[(suite_data["solver_class"].isin(["LinearCGSolver", "LinearPCGSolver"])
                              & (suite_data["preconditioner"] == "unpreconditioned"))], None,
                  by=["package.solver", "fipy_rev"],
                  xdata="numberOfElements", xlabel="number of cells",
@@ -189,7 +189,7 @@ if __name__ == "__main__":
     leg = Legend(axs[1, 2],
                  handles=legend_elements,
                  labels=["each solver & precoditioner",
-                         "LinearPCGSolver\nunpreconditioned"],
+                         "LinearCGSolver\nunpreconditioned"],
                  loc='upper left') #, frameon=False)
     axs[1, 2].add_artist(leg)
 
