@@ -13,8 +13,8 @@ from scipy.io import mmread
 from scipy.optimize import curve_fit
 from uncertainties import ufloat
 
-from plot_scaling import plot_scaling, suite_legend
-from plot_sparse import plot_sparse
+from plot_scaling import UncertaintyScalePlot
+from plot_sparse import LogSparsePlot
 
 def amdahl(p, sigma, baseline=1):
     return baseline * p / (1 + sigma * (p - 1))
@@ -38,9 +38,14 @@ if __name__ == "__main__":
         
     fig = plt.figure(figsize=(10, 10))
     ax = fig.add_subplot(1, 1, 1)
-    plot_scaling(all[all["nx"] == 2048], by=["suite", "fipy_rev"],
-                 xdata="tasks", ydata="speedup",
-                 ax=ax)
+    scaling = UncertaintyScalePlot(ax=ax,
+                                   line_style={
+                                       'a5f233aa7': ("", "full"),
+                                       '371d28468': ("", "none"),
+                                       "ef3db887e": ("", "full")
+                                   })
+    scaling.plot(all[all["nx"] == 2048], by=["suite", "fipy_rev"],
+                 xdata="tasks", ydata="speedup")
 
     ax.set_xscale('log')
     ax.set_yscale('log')
@@ -49,7 +54,7 @@ if __name__ == "__main__":
     ax.set_xlim(xmin=None, xmax=None)
     ax.set_ylim(ymin=1e-1, ymax=3e1)
 
-    suite_legend(suites=all[all["nx"] == 2048]["suite"], ax=ax, linestyle="")
+    scaling.suite_legend(suites=all[all["nx"] == 2048]["suite"], linestyle="")
 
     fit_tasks = np.logspace(0, 2, 100)
 
@@ -106,10 +111,10 @@ if __name__ == "__main__":
     inner_fig = fig.add_subfigure(outer_grid[2, 1])
     inner_grid = inner_fig.add_gridspec(10, 10)
     
-    sparse_fig = inner_fig.add_subfigure(inner_grid[:6, :9])
-    coo = mmread("parallel_scaling.mtx")
-    rhs = np.load("parallel_scaling.rhs.npz")["rhs"]
-    plot_sparse(coo, rhs, fig=sparse_fig, log=True)
+    sparse = LogSparsePlot(coo=mmread("parallel_scaling.mtx"),
+                           rhs=np.load("parallel_scaling.rhs.npz")["rhs"],
+                           fig=inner_fig.add_subfigure(inner_grid[:6, :9]))
+    sparse.plot()
     
     data = np.load("parallel_initial.npz")
     soln_ax = fig.add_subplot(outer_grid[2, 2],

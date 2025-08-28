@@ -7,7 +7,7 @@ from matplotlib.legend import Legend
 
 import pandas as pd
 
-from plot_scaling import plot_scaling
+from plot_scaling import ScalePlot
 
 if __name__ == "__main__":
     all = pd.read_json("serial_scaling.json")
@@ -40,19 +40,20 @@ if __name__ == "__main__":
                               ["petsc 3.20.2", axs[1,1], "d"],
                               ["trilinos", axs[0,2], "e"]]:
         suite_data = all[all["package.solver"] == suite]
-        plot_scaling(suite_data,
+
+        scaling = ScalePlot(ax=ax)
+        scaling.plot(suite_data,
                      by=["package.solver", "fipy_rev", "solver_class", "preconditioner"],
                      xdata="numberOfElements",
                      ydata="prepare2elapsed",
-                     ax=ax,
-                     linewidth=1, alpha=0.1, style="none", show_marker=False)
-        plot_scaling(suite_data[(suite_data["solver_class"].isin(["LinearCGSolver", "LinearPCGSolver"])
+                     linewidth=1, alpha=0.1, show_marker=False)
+
+        scaling.plot(suite_data[(suite_data["solver_class"].isin(["LinearCGSolver", "LinearPCGSolver"])
                                  & (suite_data["preconditioner"] == "unpreconditioned"))],
                      by=["package.solver", "fipy_rev"],
                      xdata="numberOfElements",
                      ydata="prepare2elapsed",
-                     ax=ax,
-                     linewidth=2, style="none", show_marker=False)
+                     linewidth=2, show_marker=False)
 
         ax.set_xscale('log')
         ax.set_yscale('linear')
