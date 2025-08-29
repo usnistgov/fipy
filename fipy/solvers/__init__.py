@@ -143,6 +143,13 @@ if solver_suite is None and _desired_solver in ["scipy", None]:
         from fipy.solvers.scipy import *
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver_suite = "scipy"
+
+        # if PyAMG is installed, then fetch its preconditioner(s)
+        try:
+            from fipy.solvers.pyAMG.preconditioners import *
+            _log.info("PyAMG preconditioners installed")
+        except ImportError as imp:
+            _log.info("PyAMG preconditioners not available: %s" % imp)
     except Exception as inst:
         _exceptions["scipy"] = inst
 

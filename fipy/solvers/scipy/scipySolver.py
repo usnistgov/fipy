@@ -36,8 +36,7 @@ class ScipySolver(Solver):
         iterations : int
             Maximum number of iterative steps to perform.
         precon
-            Preconditioner to use.  Not all solver suites support
-            preconditioners.
+            Preconditioner to use.
         """
         self.absolute_tolerance = absolute_tolerance
         super(ScipySolver, self).__init__(tolerance=tolerance, criterion=criterion,
