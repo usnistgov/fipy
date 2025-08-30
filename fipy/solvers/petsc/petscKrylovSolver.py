@@ -43,10 +43,15 @@ class PETScKrylovSolver(PETScSolver):
             See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.petsc.preconditioners.petscPreconditioner.PETScPreconditioner, optional
+        precon : ~fipy.solvers.petsc.preconditioners.petscPreconditioner.PETScPreconditioner or str, optional
             Preconditioner to apply to the matrix.  A value of None means
-            to perform an unpreconditioned solve.  (default:
+            to perform an unpreconditioned solve.  While, for consistency
+            with other solver suites, :term:`FiPy` does implement some
+            preconditioner objects for PETSc, you can also simply pass one
+            of the `PCType strings`_.  (default:
             :class:`~fipy.solvers.petsc.preconditioners.defaultPreconditioner.DefaultPreconditioner`).
+
+            .. _PCType strings: https://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCType.html
         """
         if self.__class__ is PETScKrylovSolver:
             raise NotImplementedError("can't instantiate abstract base class")
