@@ -161,7 +161,7 @@ preconditioners to solve sparse sparse linear systems on the GPU.
 Trilinos
 --------
 
-http://trilinos.sandia.gov
+https://trilinos.github.io/
 
 Trilinos provides a more complete set of solvers and
 preconditioners than either Pysparse_ or

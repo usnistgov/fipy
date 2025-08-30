@@ -26,7 +26,7 @@ class TrilinosMLTest(TrilinosSolver):
     def __init__(self, tolerance="default", iterations=5, MLOptions={}, testUnsupported=False):
         """
         For detailed information on the possible parameters for ML, see
-        http://trilinos.sandia.gov/packages/ml/documentation.html
+        https://trilinos.github.io/ml.html
 
         Currently, passing options to Aztec through ML is not supported.
 
