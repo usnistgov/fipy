@@ -11,6 +11,24 @@ Change Log
 Version |release|
 -----------------
 
+This release harmonizes the sparse :ref:`SOLVERS`:
+
+- Uses consistent interpretation of :ref:`CONVERGENCE` criteria.
+- Improves efficiency at building matrices.
+- Supports more preconditioners.
+- Logs solver status and performance.
+- Greatly expands documentation of the configuration and performance of
+  the supported :ref:`SOLVERS`.
+- Changes default tolerance to :math:`10^{-5}`. This is adequate for most
+  problems.
+- Removes "`pyamg`" from :envvar:`FIPY_SOLVERS` and "`--pyamg`" from
+  the :ref:`CommandLineFlags`.  :ref:`PYAMG` is implemented as a
+  preconditioner for :ref:`SCIPY`, not as a solver suite in its own right.
+
+--------------------------
+Version 3.4.5 - 2024-06-25
+--------------------------
+
 This maintenance release:
 
 - Addresses compatibility with recent releases of

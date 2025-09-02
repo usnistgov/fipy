@@ -162,6 +162,8 @@ available packages on the system. The `Command-line Flags`_ and
 `Environment Variables`_ sections below describe how to override
 :term:`FiPy`'s default behavior.
 
+.. _CommandLineFlags:
+
 Command-line Flags
 ==================
 
@@ -225,6 +227,7 @@ environment variable:
 
    Forces the use of the :ref:`SCIKITFMM` level set solver.
 
+.. _EnvironmentVariables:
 
 Environment Variables
 =====================
@@ -1018,7 +1021,7 @@ Adaptive Stepping
 
 Step size can be controlled with the :term:`steppyngstounes` package.
 Demonstrations of its use are found in :mod:`examples.phase.binary` and
-:mod:`examples.phase.binaryCoupled.`
+:mod:`examples.phase.binaryCoupled`.
 
 .. note::
 

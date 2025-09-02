@@ -407,7 +407,21 @@ We endeavor to harmonize this behavior by allowing the strings in the
 .. note:: PyAMG_ is a set of preconditioners applied on top of SciPy_, so
    is not explicitly included in these tables.
 
+Tolerance
+=========
 
+The default tolerance is :math:`10^{-5}` (the legacy tolerance, prior to
+:term:`FiPy` 4.0, was :math:`10^{-10}`).
+
+- :ref:`SCIPY` and :ref:`TRILINOS` can fail with `tolerance=1e-10`.
+  (`SCIPY_MAXIT` or `AZ_loss`, respectively) because they are unable to
+  make the residual any smaller than :math:`\mathcal{O}(10^{-9})`.
+- `tolerance=1e-5` is the default for :ref:`PETSC` and :ref:`SCIPY`.
+- :ref:`PYAMGX` defaults to :math:`10^{-12}`
+- :ref:`PYSPARSE` does not specify, but has examples that illustrate
+  :math:`10^{-12}`.
+- :ref:`TRILINOS` does not specify, but has examples that illustrate
+  :math:`10^{-8}`.
 
 ``default``
 ===========

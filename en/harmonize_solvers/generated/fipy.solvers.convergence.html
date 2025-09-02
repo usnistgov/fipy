@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.solvers.convergence &#8212; FiPy 3.4.5+460.g9f08c20c7 documentation</title>
+    <title>fipy.solvers.convergence &#8212; FiPy 3.4.5+463.gfc051aab7 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=9e7d0e67"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=86441b0e"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/fipy.solvers.convergence.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+460.g9f08c20c7 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+463.gfc051aab7 documentation" href="../contents.html" />
     <link rel="up" title="fipy.solvers" href="fipy.solvers.html" />
     <link rel="next" title="fipy.solvers.petsc" href="fipy.solvers.petsc.html" />
     <link rel="prev" title="fipy.solvers" href="fipy.solvers.html" />
@@ -123,7 +123,7 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.convergence.AbsoluteToleranceConvergence" title="fipy.solvers.convergence.AbsoluteToleranceConvergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AbsoluteToleranceConvergence</span></code></a>(solver, ...[, ...])</p></td>
-<td><p>Absolute tolerance satisfied.</p></td>
+<td><p>Absolute tolerance satisfied</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.convergence.BreakdownDivergence" title="fipy.solvers.convergence.BreakdownDivergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BreakdownDivergence</span></code></a>(solver, iterations, ...)</p></td>
 <td><p>Method broke down.</p></td>
@@ -171,7 +171,7 @@
 <td><p><span class="math notranslate nohighlight">\(\vec{b} = 0\)</span>, so exact solution is <span class="math notranslate nohighlight">\(\vec{x} = 0\)</span>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.convergence.RelativeToleranceConvergence" title="fipy.solvers.convergence.RelativeToleranceConvergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RelativeToleranceConvergence</span></code></a>(solver, ...[, ...])</p></td>
-<td><p>Relative tolerance satisfied.</p></td>
+<td><p>Relative tolerance satisfied</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#fipy.solvers.convergence.StagnatedDivergence" title="fipy.solvers.convergence.StagnatedDivergence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StagnatedDivergence</span></code></a>(solver, iterations, ...)</p></td>
 <td><p>The method stagnated.</p></td>
@@ -184,8 +184,8 @@
 <p class="rubric">Exceptions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DivergenceWarning</span></code>(divergence)</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.convergence.DivergenceWarning" title="fipy.solvers.convergence.DivergenceWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DivergenceWarning</span></code></a>(divergence)</p></td>
+<td><p>Warning raised when solver diverges.</p></td>
 </tr>
 </tbody>
 </table>
@@ -193,8 +193,11 @@
 <dt class="sig sig-object py" id="fipy.solvers.convergence.AbsoluteToleranceConvergence">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.convergence.</span></span><span class="sig-name descname"><span class="pre">AbsoluteToleranceConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actual_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.AbsoluteToleranceConvergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fipy.solvers.convergence.Convergence" title="fipy.solvers.convergence.Convergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Convergence</span></code></a></p>
-<p>Absolute tolerance satisfied:</p>
-<p>residual &lt; atol * scale</p>
+<p>Absolute tolerance satisfied</p>
+<dl class="simple">
+<dt>::</dt><dd><p>residual &lt; atol * scale</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.convergence.AbsoluteToleranceConvergence.__str__">
 <span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.AbsoluteToleranceConvergence.__str__" title="Permalink to this definition">¶</a></dt>
@@ -340,6 +343,75 @@ satisfy <cite>criterion</cite>.</p>
 <dt class="sig sig-object py" id="fipy.solvers.convergence.Divergence.__str__">
 <span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.Divergence.__str__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return str(self).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="fipy.solvers.convergence.DivergenceWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.convergence.</span></span><span class="sig-name descname"><span class="pre">DivergenceWarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">divergence</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.DivergenceWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#UserWarning" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserWarning</span></code></a></p>
+<p>Warning raised when solver diverges.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.convergence.DivergenceWarning.__cause__">
+<span class="sig-name descname"><span class="pre">__cause__</span></span><a class="headerlink" href="#fipy.solvers.convergence.DivergenceWarning.__cause__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception cause</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.convergence.DivergenceWarning.__context__">
+<span class="sig-name descname"><span class="pre">__context__</span></span><a class="headerlink" href="#fipy.solvers.convergence.DivergenceWarning.__context__" title="Permalink to this definition">¶</a></dt>
+<dd><p>exception context</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.convergence.DivergenceWarning.__delattr__">
+<span class="sig-name descname"><span class="pre">__delattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.DivergenceWarning.__delattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement delattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.convergence.DivergenceWarning.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.DivergenceWarning.__getattribute__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return getattr(self, name).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.convergence.DivergenceWarning.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.DivergenceWarning.__reduce__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.convergence.DivergenceWarning.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.DivergenceWarning.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.convergence.DivergenceWarning.__setattr__">
+<span class="sig-name descname"><span class="pre">__setattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.DivergenceWarning.__setattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement setattr(self, name, value).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.convergence.DivergenceWarning.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.DivergenceWarning.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.convergence.DivergenceWarning.add_note">
+<span class="sig-name descname"><span class="pre">add_note</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.DivergenceWarning.add_note" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.add_note(note) –
+add a note to the exception</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fipy.solvers.convergence.DivergenceWarning.with_traceback">
+<span class="sig-name descname"><span class="pre">with_traceback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.DivergenceWarning.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
 </dd></dl>
 
 </dd></dl>
@@ -491,8 +563,11 @@ satisfy <cite>criterion</cite>.</p>
 <dt class="sig sig-object py" id="fipy.solvers.convergence.RelativeToleranceConvergence">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.convergence.</span></span><span class="sig-name descname"><span class="pre">RelativeToleranceConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actual_code</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.RelativeToleranceConvergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fipy.solvers.convergence.Convergence" title="fipy.solvers.convergence.Convergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">Convergence</span></code></a></p>
-<p>Relative tolerance satisfied:</p>
-<p>residual &lt; rtol * scale</p>
+<p>Relative tolerance satisfied</p>
+<dl class="simple">
+<dt>::</dt><dd><p>residual &lt; rtol * scale</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.convergence.RelativeToleranceConvergence.__str__">
 <span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.convergence.RelativeToleranceConvergence.__str__" title="Permalink to this definition">¶</a></dt>
@@ -541,7 +616,7 @@ satisfy <cite>criterion</cite>.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+460.g9f08c20c7
+Version 3.4.5+463.gfc051aab7
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
@@ -573,6 +648,19 @@ Version 3.4.5+460.g9f08c20c7
 </li>
 <li><a class="reference internal" href="#fipy.solvers.convergence.Divergence"><code class="docutils literal notranslate"><span class="pre">Divergence</span></code></a><ul>
 <li><a class="reference internal" href="#fipy.solvers.convergence.Divergence.__str__"><code class="docutils literal notranslate"><span class="pre">Divergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fipy.solvers.convergence.DivergenceWarning"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.convergence.DivergenceWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__cause__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.convergence.DivergenceWarning.__context__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__context__</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.convergence.DivergenceWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__delattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.convergence.DivergenceWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__getattribute__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.convergence.DivergenceWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.convergence.DivergenceWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.convergence.DivergenceWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__setattr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.convergence.DivergenceWarning.__str__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.convergence.DivergenceWarning.add_note"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.add_note()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.convergence.DivergenceWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#fipy.solvers.convergence.HappyBreakdownConvergence"><code class="docutils literal notranslate"><span class="pre">HappyBreakdownConvergence</span></code></a><ul>

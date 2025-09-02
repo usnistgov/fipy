@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Solvers &#8212; FiPy 3.4.5+460.g9f08c20c7 documentation</title>
+    <title>Solvers &#8212; FiPy 3.4.5+463.gfc051aab7 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=9e7d0e67"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=86441b0e"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/SOLVERS.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+460.g9f08c20c7 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+463.gfc051aab7 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Viewers" href="VIEWERS.html" />
     <link rel="prev" title="Git practices" href="ADMINISTRATA.html" />
@@ -217,7 +217,7 @@ or <code class="docutils literal notranslate"><span class="pre">no-pysparse</spa
 <td></td>
 <td><p>✓</p></td>
 </tr>
-<tr class="row-even"><th class="stub"><p><span class="xref std std-ref">linux</span></p></th>
+<tr class="row-even"><th class="stub"><p><a class="reference internal" href="glossary.html#term-linux"><span class="xref std std-term">linux</span></a></p></th>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
@@ -225,7 +225,7 @@ or <code class="docutils literal notranslate"><span class="pre">no-pysparse</spa
 <td><p>✓</p></td>
 <td><p>✓</p></td>
 </tr>
-<tr class="row-odd"><th class="stub"><p><span class="xref std std-ref">macOS</span></p></th>
+<tr class="row-odd"><th class="stub"><p><a class="reference internal" href="glossary.html#term-macOS"><span class="xref std std-term">macOS</span></a></p></th>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
 <td></td>
@@ -233,7 +233,7 @@ or <code class="docutils literal notranslate"><span class="pre">no-pysparse</spa
 <td><p>✓</p></td>
 <td><p>✓</p></td>
 </tr>
-<tr class="row-even"><th class="stub"><p><span class="xref std std-ref">Windows</span></p></th>
+<tr class="row-even"><th class="stub"><p><a class="reference internal" href="glossary.html#term-Windows"><span class="xref std std-term">Windows</span></a></p></th>
 <td></td>
 <td><p>✓</p></td>
 <td></td>
@@ -655,6 +655,22 @@ We endeavor to harmonize this behavior by allowing the strings in the
 <p><a class="reference internal" href="#id10">PyAMG</a> is a set of preconditioners applied on top of <a class="reference internal" href="#id16">SciPy</a>, so
 is not explicitly included in these tables.</p>
 </div>
+<section id="tolerance">
+<h3>Tolerance<a class="headerlink" href="#tolerance" title="Permalink to this heading">¶</a></h3>
+<p>The default tolerance is <span class="math notranslate nohighlight">\(10^{-5}\)</span> (the legacy tolerance, prior to
+<a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 4.0, was <span class="math notranslate nohighlight">\(10^{-10}\)</span>).</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#id16"><span class="std std-ref">SciPy</span></a> and <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a> can fail with <cite>tolerance=1e-10</cite>.
+(<cite>SCIPY_MAXIT</cite> or <cite>AZ_loss</cite>, respectively) because they are unable to
+make the residual any smaller than <span class="math notranslate nohighlight">\(\mathcal{O}(10^{-9})\)</span>.</p></li>
+<li><p><cite>tolerance=1e-5</cite> is the default for <a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a> and <a class="reference internal" href="#id16"><span class="std std-ref">SciPy</span></a>.</p></li>
+<li><p><a class="reference internal" href="#id12"><span class="std std-ref">pyamgx</span></a> defaults to <span class="math notranslate nohighlight">\(10^{-12}\)</span></p></li>
+<li><p><a class="reference internal" href="#id14"><span class="std std-ref">Pysparse</span></a> does not specify, but has examples that illustrate
+<span class="math notranslate nohighlight">\(10^{-12}\)</span>.</p></li>
+<li><p><a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a> does not specify, but has examples that illustrate
+<span class="math notranslate nohighlight">\(10^{-8}\)</span>.</p></li>
+</ul>
+</section>
 <section id="default">
 <h3><code class="docutils literal notranslate"><span class="pre">default</span></code><a class="headerlink" href="#default" title="Permalink to this heading">¶</a></h3>
 <p>The setting <code class="docutils literal notranslate"><span class="pre">criterion=&quot;default&quot;</span></code> applies the same scaling (<code class="docutils literal notranslate"><span class="pre">RHS</span></code>) to
@@ -939,7 +955,7 @@ solver capabilities.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+460.g9f08c20c7
+Version 3.4.5+463.gfc051aab7
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
@@ -957,6 +973,7 @@ Version 3.4.5+460.g9f08c20c7
 </ul>
 </li>
 <li><a class="reference internal" href="#convergence">Convergence</a><ul>
+<li><a class="reference internal" href="#tolerance">Tolerance</a></li>
 <li><a class="reference internal" href="#default"><code class="docutils literal notranslate"><span class="pre">default</span></code></a></li>
 <li><a class="reference internal" href="#legacy"><code class="docutils literal notranslate"><span class="pre">legacy</span></code></a></li>
 <li><a class="reference internal" href="#absolute-tolerance"><code class="docutils literal notranslate"><span class="pre">absolute_tolerance</span></code></a></li>
