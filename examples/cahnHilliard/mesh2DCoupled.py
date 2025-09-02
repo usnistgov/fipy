@@ -3,8 +3,8 @@ r"""Solve the Cahn-Hilliard problem in two dimensions.
 .. warning:: This formulation has
    `serious performance problems`_
    and is **not automatically tested**.  Specifically, for non-trivial mesh
-   sizes, :term:`PySparse` requires enormous amounts of memory,
-   :term:`Trilinos` cannot solve the coupled form, and :term:`PETSc` cannot
+   sizes, :ref:`PySparse` requires enormous amounts of memory,
+   :ref:`Trilinos` cannot solve the coupled form, and :ref:`PETSc` cannot
    solve the vector form.
 
 .. _serious performance problems: https://github.com/usnistgov/fipy/issues/378

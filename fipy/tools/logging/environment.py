@@ -64,7 +64,9 @@ def nix_info():
     Returns
     -------
     dict
-        Result of `nix derivation show .#fipy `.
+        Result of::
+
+            nix derivation show .#fipy
     """
     info = {}
 

@@ -500,9 +500,10 @@ field through ``phaseTransformationVelocity``, it is necessary sweep this
 non-linear problem to convergence. We use the "residual" of the equations
 (a measure of how well they think they have solved the given set of linear
 equations) as a test for how long to sweep. Because of the
-:class:`~fipy.terms.convectionTerm.ConvectionTerm`, the solution matrix for ``diffusionEq`` is asymmetric
-and cannot be solved by the default :class:`~fipy.solvers.pysparse.linearPCGSolver.LinearPCGSolver`. Therefore, we use a
-:class:`~fipy.solvers.DefaultAsymmetricSolver` for this equation.
+:class:`~fipy.terms.convectionTerm.ConvectionTerm`, the solution matrix for
+``diffusionEq`` is asymmetric and cannot be solved by the default
+:class:`~fipy.solvers.pysparse.linearCGSolver.LinearCGSolver`.  Therefore,
+we use a :class:`~fipy.solvers.DefaultAsymmetricSolver` for this equation.
 
 .. .. index:: DefaultAsymmetricSolver, solve, sweep
 
@@ -628,7 +629,7 @@ diffusion field to become uniform.  In the liquid, this will take
 1000~\\mathrm{s}`.
 
 Not wanting to take a hundred-million steps, we employ adaptive time
-stepping, using the :term:`steppyingstounes` package.  This package takes
+stepping, using the :term:`steppyngstounes` package.  This package takes
 care of many of the messy details of stepping, like overshoot, underflow,
 and step size adaptation, while keeping the structure of our solve loop
 largely intact.

@@ -11,6 +11,7 @@ import logging
 import warnings
 
 __all__ = [
+    "DivergenceWarning",
     "ConvergenceBase",
     "Convergence",
     "AbsoluteToleranceConvergence",
@@ -59,6 +60,9 @@ class _ConvergenceMeta(type):
             cls.name_registry[(cls.suite, cls.status_name)] = cls
 
 class DivergenceWarning(UserWarning):
+    """Warning raised when solver diverges.
+    """
+
     def __init__(self, divergence):
         msg = "msg={status_name}, code={status_code}, residual={residual}".format(**divergence.info)
         super(DivergenceWarning, self).__init__(msg)
@@ -127,9 +131,10 @@ class Convergence(ConvergenceBase):
     message = "User requested convergence criteria is satisfied. Iterations: {0}. Relative error: {1}"
 
 class AbsoluteToleranceConvergence(Convergence):
-    """Absolute tolerance satisfied::
+    """Absolute tolerance satisfied
 
-       residual < atol * scale
+    ::
+        residual < atol * scale
     """
     pass
 
@@ -159,9 +164,10 @@ class RHSZeroConvergence(Convergence):
     pass
 
 class RelativeToleranceConvergence(Convergence):
-    """Relative tolerance satisfied::
+    """Relative tolerance satisfied
 
-       residual < rtol * scale
+    ::
+        residual < rtol * scale
     """
     pass
 

@@ -659,7 +659,7 @@ diffusion field to become uniform.  In the liquid, this will take
 1000~\\mathrm{s}`.
 
 Not wanting to take a hundred-million steps, we employ adaptive time
-stepping, using the :term:`steppyingstounes` package.  This package takes
+stepping, using the :term:`steppyngstounes` package.  This package takes
 care of many of the messy details of stepping, like overshoot, underflow,
 and step size adaptation, while keeping the structure of our solve loop
 largely intact.

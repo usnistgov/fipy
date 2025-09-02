@@ -39,7 +39,7 @@ class SolverModifyingPreconditioner(Preconditioner):
 
 
 class MatrixModifyingPreconditioner(Preconditioner):
-    """Base class for preconditioners that modify a :class:`~fipy.matrices.sparseMatrix.SparseMatrix`.
+    """Base class for preconditioners that modify a :class:`~fipy.matrices.sparseMatrix._SparseMatrix`.
     """
 
     def _applyToMatrix(self, matrix):
@@ -49,7 +49,7 @@ class MatrixModifyingPreconditioner(Preconditioner):
         -------
         preconditioner : object
             Preconditioning object appropriate for this solver suite.
-        matrix : :class:`~fipy.matrices.sparseMatrix.SparseMatrix`
+        matrix : :class:`~fipy.matrices.sparseMatrix._SparseMatrix`
             Matrix, possibly restructured to facilitate applying
             preconditioner.
         """

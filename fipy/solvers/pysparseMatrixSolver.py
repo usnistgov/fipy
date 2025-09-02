@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-__all__ = []
+__all__ = ["PysparseMatrixSolver"]
 
 from fipy.solvers.solver import Solver
 from fipy.matrices.pysparseMatrix import _PysparseMeshMatrix
