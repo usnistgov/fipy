@@ -49,7 +49,59 @@ uses a SciPy_ solver regardless of the command line
 argument. In the absence of :ref:`FlagsAndEnvironmentVariables`,
 :term:`FiPy`'s order of precedence when choosing the
 solver suite for generic solvers is PySparse_ followed by
-PETSc_, Trilinos_, SciPy_, PyAMG_, and pyamgx_.
+PETSc_, Trilinos_, SciPy_, and pyamgx_.
+
+.. .. raw:: latex
+
+    \begin{landscape}
+
+.. .. tabularcolumns:: \Y{.25}\Y{.10}\Y{.22}\Y{.16}\Y{.09}\Y{.06}\Y{.12}
+
+.. csv-table:: Solver Suite Features
+   :file: _static/solver_features.csv
+   :widths: 22, 13, 13, 13, 13, 13, 13
+   :header-rows: 1
+   :stub-columns: 1
+   :class: wideshow longtable
+
+..    :widths: 13,11,24,12,8,11,10,12
+
+.. .. raw:: latex
+
+    \end{landscape}
+
+.. _mpi4py:             https://mpi4py.readthedocs.io/
+.. |mpi4py|             replace:: :literal:`mpi4py`
+.. _mpi4py:             https://mpi4py.readthedocs.io/
+.. |petsc4py|           replace:: :literal:`petsc4py`
+.. _petsc4py:           https://petsc4py.readthedocs.io/
+.. |pyamg.|             replace:: :literal:`pyamg`
+.. _pyamg.:             https://pyamg.readthedocs.io/
+.. |pyamgx.|            replace:: :literal:`pyamgx`
+.. _pyamgx.:            https://pyamgx.readthedocs.io/
+.. |pysparse.|          replace:: :literal:`pysparse`
+.. _pysparse.:          https://pysparse.sourceforge.net/
+.. |PyTrilinos|         replace:: :literal:`PyTrilinos`
+.. _PyTrilinos:         https://trilinos.github.io/pytrilinos.html
+.. |PyTrilinos2.|       replace:: :literal:`PyTrilinos2`
+.. _PyTrilinos2.:       https://trilinos.github.io/pytrilinos2.html
+.. |scipy.|             replace:: :literal:`scipy`
+.. _scipy.:             https://docs.scipy.org/doc/scipy/
+
+.. [#pyamgx_parallel] While AMGX_ matrix solve takes advantage of GPU
+   parallelism, the ``pyamgx`` library uses :ref:`SCIPY` to build the matrix
+   and thus suffers a significant serial bottleneck.
+
+.. [#37_38]  |PyTrilinos|_ may be compatible with newer versions of Python,
+   but these are the most recent versions we've been able to get to install
+   using :term:`conda` (3.7 on :term:`linux` and 3.8 on :term:`macOS`).
+
+.. [#PyTrilinos2]  There is a more actively developed |PyTrilinos2.|_
+   package, which may be compable with more recent versions of
+   :term:`Python`, but :term:`FiPy` does not yet work with it.
+
+.. [#PySparse4Trilinos] Trilinos parallel efficiency is somewhat improved
+   by also installing |pysparse.|_.
 
 .. note:: :term:`FiPy` has not been designed to mix different solver
    suites during a given problem run
@@ -68,15 +120,31 @@ solution of scientific applications modeled by partial differential
 equations.  It employs the :term:`MPI` standard for all message-passing
 communication (see :ref:`PARALLEL` for more details).
 
-.. attention:: PETSc requires the :term:`petsc4py` and :term:`mpi4py`
-   interfaces.
+.. _PYAMG:
 
-.. note:: While, for consistency with other solver suites, :term:`FiPy` does
-   implement some preconditioner objects for PETSc, you can also
-   simply pass one of the `PCType strings`_ in the `precon=` argument when
-   declaring the solver.
+-----
+PyAMG
+-----
 
-.. _PCType strings: https://www.mcs.anl.gov/petsc/petsc-current/docs/manualpages/PC/PCType.html
+https://pyamg.readthedocs.io/
+
+The PyAMG package provides adaptive multigrid preconditioners that
+can be used in conjunction with the SciPy_ solvers. While PyAMG also has
+solvers, they are not currently implemented in :term:`FiPy`.
+
+.. _PYAMGX:
+
+------
+pyamgx
+------
+
+https://pyamgx.readthedocs.io/
+
+The pyamgx package is a :term:`Python` interface to the NVIDIA AMGX_
+library.  pyamgx can be used to construct complex solvers and
+preconditioners to solve sparse sparse linear systems on the GPU.
+
+.. _AMGX: https://github.com/NVIDIA/AMGX
 
 .. _PYSPARSE:
 
@@ -95,19 +163,8 @@ install and use Pysparse is :term:`NumPy`.
 .. warning::
 
    Pysparse is archaic and limited to :ref:`RunningUnderPython2`.
-
-.. warning::
-
    Support for :term:`Python` 2.7 and, thus, for Pysparse
    will be dropped soon.
-
-.. warning::
-
-   :term:`FiPy` requires version 1.0 or higher of Pysparse.
-
-.. note::
-
-   The Pysparse sparse solvers only operate in serial.
 
 .. _SCIPY:
 
@@ -115,45 +172,10 @@ install and use Pysparse is :term:`NumPy`.
 SciPy
 -----
 
-http://www.scipy.org/
+https://docs.scipy.org/doc/scipy/reference/sparse.html
 
 The :mod:`scipy.sparse` module provides a basic set of serial Krylov
 solvers and a limited collection of preconditioners.
-
-.. note::
-
-   The SciPy sparse solvers only operate in serial.
-
-.. _PYAMG:
-
------
-PyAMG
------
-
-http://code.google.com/p/pyamg/
-
-The PyAMG package provides adaptive multigrid preconditioners that
-can be used in conjunction with the SciPy_ solvers.
-
-.. _PYAMGX:
-
-------
-pyamgx
-------
-
-https://pyamgx.readthedocs.io/
-
-The pyamgx package is a :term:`Python` interface to the NVIDIA AMGX_
-library.  pyamgx can be used to construct complex solvers and
-preconditioners to solve sparse sparse linear systems on the GPU.
-
-.. note::
-
-   While AMGX_ matrix solve takes advantage of GPU parallelism, the pyamgx
-   library uses :ref:`SCIPY` to build the matrix and thus suffers a
-   significant serial bottleneck.
-
-.. _AMGX: https://github.com/NVIDIA/AMGX
 
 .. _TRILINOS:
 
@@ -161,62 +183,12 @@ preconditioners to solve sparse sparse linear systems on the GPU.
 Trilinos
 --------
 
-http://trilinos.sandia.gov
+https://trilinos.github.io/
 
-Trilinos provides a more complete set of solvers and
-preconditioners than either Pysparse_ or
-SciPy_. Trilinos preconditioning allows for iterative
-solutions to some difficult problems that Pysparse_ and
-SciPy_ cannot solve, and it enables parallel execution of
+Trilinos provides a complete set of sparse matrices, solvers, and
+preconditioners.  Trilinos preconditioning allows for iterative solutions
+to some difficult problems, and it enables parallel execution of
 :term:`FiPy` (see :ref:`PARALLEL` for more details).
-
-.. attention::
-
-   Be sure to build or install the :term:`PyTrilinos` interface to
-   Trilinos.
-
-.. attention::
-
-   Trilinos is a large software suite with its own set of
-   prerequisites, and can be difficult to set up. It is not necessary
-   for most problems, and is **not** recommended for a basic install
-   of :term:`FiPy`.
-
-.. attention::
-
-   Trilinos *must* be compiled with :term:`MPI` support for
-   :ref:`PARALLEL`.
-
-.. tip::
-
-   Trilinos parallel efficiency is somewhat improved by also
-   installing Pysparse.
-
-.. note::
-
-    Trilinos solvers frequently give intermediate output that
-    :term:`FiPy` cannot suppress. The most commonly encountered
-    messages are
-
-     ``Gen_Prolongator warning : Max eigen <= 0.0``
-        which is not significant to :term:`FiPy`.
-
-     ``Aztec status AZ_loss: loss of precision``
-        which indicates that there was some difficulty in solving the
-        problem to the requested tolerance due to precision limitations,
-        but usually does not prevent the solver from finding an adequate
-        solution.
-
-     ``Aztec status AZ_ill_cond: GMRES hessenberg ill-conditioned``
-        which indicates that GMRES is having trouble with the problem, and
-        may indicate that trying a different solver or preconditioner may
-        give more accurate results if GMRES fails.
-
-     ``Aztec status AZ_breakdown: numerical breakdown``
-        which usually indicates serious problems solving the equation which
-        forced the solver to stop before reaching an adequate solution.
-        Different solvers, different preconditioners, or a less restrictive
-        tolerance may help.
 
 ----------------------
 Performance Comparison

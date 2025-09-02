@@ -203,7 +203,7 @@ Glossary
 
    PyTrilinos
       :term:`Python` wrapper for :ref:`TRILINOS`. See
-      http://trilinos.sandia.gov/packages/pytrilinos/.
+      https://trilinos.github.io/pytrilinos.html.
 
    PyxViewer
       A now defunct python viewer.

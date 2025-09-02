@@ -191,9 +191,21 @@ script you call from the command line, e.g.::
 The following flags take precedence over the :envvar:`FIPY_SOLVERS`
 environment variable:
 
+.. cmdoption:: --petsc
+
+   Forces the use of the :ref:`PETSC` solvers.
+
+.. cmdoption:: --pyamgx
+
+   Forces the use of the :ref:`PYAMGX` solvers.
+
 .. cmdoption:: --pysparse
 
    Forces the use of the :ref:`PYSPARSE` solvers.
+
+.. cmdoption:: --scipy
+
+   Forces the use of the :ref:`SCIPY` solvers.
 
 .. cmdoption:: --trilinos
 
@@ -204,14 +216,6 @@ environment variable:
 
    Forces the use of the :ref:`TRILINOS` solvers without any use of
    :ref:`PYSPARSE`.
-
-.. cmdoption:: --scipy
-
-   Forces the use of the :ref:`SCIPY` solvers.
-
-.. cmdoption:: --pyamgx
-
-   Forces the use of the :ref:`PYAMGX` solvers.
 
 .. cmdoption:: --lsmlib
 
@@ -262,9 +266,9 @@ package.
 
 .. envvar:: FIPY_SOLVERS
 
-   Forces the use of the specified suite of linear solvers.  Valid
-   (case-insensitive) choices are "``petsc``", "``scipy``", "``pysparse``",
-   "``trilinos``", and "``no-pysparse``".
+   Forces the use of the specified suite of linear :ref:`SOLVERS`.  Valid
+   (case-insensitive) choices are "``petsc``", "``pyamgx``",
+   "``pysparse``", "``scipy``", "``trilinos``", and "``no-pysparse``".
 
 .. envvar:: FIPY_DEFAULT_CRITERION
 

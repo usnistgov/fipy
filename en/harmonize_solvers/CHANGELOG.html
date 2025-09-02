@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; FiPy 3.4.5+457.ge08d77813 documentation</title>
+    <title>Change Log &#8212; FiPy 3.4.5+460.g9f08c20c7 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,13 +43,13 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=bdeeaa1d"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=9e7d0e67"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/CHANGELOG.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+457.ge08d77813 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.4.5+460.g9f08c20c7 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Glossary" href="glossary.html" />
     <link rel="prev" title="Publications" href="PUBLICATIONS.html" />
@@ -116,7 +116,7 @@
   <section id="change-log">
 <span id="changelog"></span><h1>Change Log<a class="headerlink" href="#change-log" title="Permalink to this heading">¶</a></h1>
 <section id="version-release">
-<h2>Version 3.4.5+457.ge08d77813<a class="headerlink" href="#version-release" title="Permalink to this heading">¶</a></h2>
+<h2>Version 3.4.5+460.g9f08c20c7<a class="headerlink" href="#version-release" title="Permalink to this heading">¶</a></h2>
 <p>This maintenance release:</p>
 <ul class="simple">
 <li><p>Addresses compatibility with recent releases of
@@ -995,7 +995,7 @@ necessary.</p>
 used.</p></li>
 <li><p>Most <a class="reference internal" href="generated/fipy.meshes.mesh.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a>es can be partitioned by
 <a class="reference internal" href="USAGE.html#meshingwithgmsh"><span class="std std-ref">Meshing with Gmsh</span></a>.</p></li>
-<li><p><a class="reference internal" href="SOLVERS.html#pyamg"><span class="std std-ref">PyAMG</span></a> and <a class="reference internal" href="SOLVERS.html#scipy"><span class="std std-ref">SciPy</span></a> have been added to the <a class="reference internal" href="SOLVERS.html#solvers"><span class="std std-ref">Solvers</span></a>.</p></li>
+<li><p><a class="reference internal" href="SOLVERS.html#id10"><span class="std std-ref">PyAMG</span></a> and <a class="reference internal" href="SOLVERS.html#id16"><span class="std std-ref">SciPy</span></a> have been added to the <a class="reference internal" href="SOLVERS.html#solvers"><span class="std std-ref">Solvers</span></a>.</p></li>
 <li><p>FiPy is capable of running under <a class="reference internal" href="glossary.html#term-Python-3"><span class="xref std std-term">Python 3</span></a>.</p></li>
 <li><p>“getter” and “setter” methods have been pervasively changed to Python
 properties.</p></li>
@@ -1225,7 +1225,7 @@ Concatenated <cite>Mesh</cite> garbled by <cite>dump.write</cite>/<cite>read</ci
 <ul class="simple">
 <li><p><a class="reference internal" href="generated/fipy.viewers.matplotlibViewer.html#fipy.viewers.matplotlibViewer.MatplotlibViewer" title="fipy.viewers.matplotlibViewer.MatplotlibViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatplotlibViewer</span></code></a> can display
 into an existing set of Matplotlib axes.</p></li>
-<li><p><a class="reference internal" href="SOLVERS.html#pysparse"><span class="std std-ref">Pysparse</span></a> and <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> are now completely independent.</p></li>
+<li><p><a class="reference internal" href="SOLVERS.html#id14"><span class="std std-ref">Pysparse</span></a> and <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> are now completely independent.</p></li>
 </ul>
 <section id="id420">
 <h3>Fixes<a class="headerlink" href="#id420" title="Permalink to this heading">¶</a></h3>
@@ -1262,7 +1262,7 @@ allows interaction with the display while a simulation is running.</p></li>
 <li><p>Documentation has been switched to <a class="reference internal" href="glossary.html#term-Sphinx"><span class="xref std std-term">Sphinx</span></a>, allowing the entire manual
 to be available on the web and for our documentation to link to the
 documentation for packages such as <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v2.3)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a>, <a class="reference external" href="https://docs.scipy.org/doc/scipy/index.html#module-scipy" title="(in SciPy v1.16.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a>,
-<a class="reference external" href="https://matplotlib.org/stable/index.html#module-matplotlib" title="(in Matplotlib v3.10.5)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code></a>, and for <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> itself.</p></li>
+<a class="reference external" href="https://matplotlib.org/stable/index.html#module-matplotlib" title="(in Matplotlib v3.10.6)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code></a>, and for <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> itself.</p></li>
 </ul>
 <section id="id428">
 <h3>Fixes<a class="headerlink" href="#id428" title="Permalink to this heading">¶</a></h3>
@@ -1372,7 +1372,7 @@ values of any rank.</p></li>
 <a class="reference internal" href="generated/fipy.terms.implicitSourceTerm.html#fipy.terms.implicitSourceTerm.ImplicitSourceTerm" title="fipy.terms.implicitSourceTerm.ImplicitSourceTerm"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImplicitSourceTerm</span></code></a> coefficients
 between the matrix diagonal and the right-hand-side-vector.</p></li>
 <li><p>Simplified <code class="xref py py-class docutils literal notranslate"><span class="pre">Viewer</span></code> syntax.</p></li>
-<li><p>Support for the <a class="reference external" href="http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov">Trilinos solvers</a>.</p></li>
+<li><p>Support for the <a class="reference external" href="http://www.nist.gov/cgi-bin/redirect.py?url=https://trilinos.github.io">Trilinos solvers</a>.</p></li>
 <li><p>Support for anisotropic diffusion coefficients.</p></li>
 </ul>
 <ul class="simple">
@@ -1762,7 +1762,7 @@ Some tests fail on windows XP</p></li>
 
 
                 <div class='last-updated'>
-                Last updated on Aug 28, 2025.
+                Last updated on Sep 02, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -1772,13 +1772,13 @@ Some tests fail on windows XP</p></li>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+457.ge08d77813
+Version 3.4.5+460.g9f08c20c7
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Change Log</a><ul>
-<li><a class="reference internal" href="#version-release">Version 3.4.5+457.ge08d77813</a><ul>
+<li><a class="reference internal" href="#version-release">Version 3.4.5+460.g9f08c20c7</a><ul>
 <li><a class="reference internal" href="#pulls">Pulls</a></li>
 <li><a class="reference internal" href="#fixes">Fixes</a></li>
 </ul>
