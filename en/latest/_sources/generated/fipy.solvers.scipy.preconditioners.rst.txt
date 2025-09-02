@@ -1,0 +1,33 @@
+fipy.solvers.scipy.preconditioners
+==================================
+
+.. automodule:: fipy.solvers.scipy.preconditioners
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fipy.solvers.scipy.preconditioners.iluPreconditioner
+   fipy.solvers.scipy.preconditioners.jacobiPreconditioner
+   fipy.solvers.scipy.preconditioners.scipyPreconditioner
+

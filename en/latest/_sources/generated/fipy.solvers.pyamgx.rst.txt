@@ -36,5 +36,6 @@ fipy.solvers.pyamgx
    fipy.solvers.pyamgx.linearLUSolver
    fipy.solvers.pyamgx.preconditioners
    fipy.solvers.pyamgx.pyAMGXSolver
+   fipy.solvers.pyamgx.pyamgxConvergence
    fipy.solvers.pyamgx.smoothers
 

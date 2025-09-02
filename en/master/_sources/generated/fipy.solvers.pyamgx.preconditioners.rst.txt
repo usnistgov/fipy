@@ -13,6 +13,22 @@ fipy.solvers.pyamgx.preconditioners
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AMGPreconditioner
+      AggregationAMGPreconditioner
+      BiCGStabPreconditioner
+      CGPreconditioner
+      DILUPreconditioner
+      FGMRESPreconditioner
+      GaussSeidelPreconditioner
+      ILUPreconditioner
+      JacobiPreconditioner
+      PolynomialPreconditioner
+      PyAMGXPreconditioner
+   
    
 
    
@@ -20,12 +36,4 @@ fipy.solvers.pyamgx.preconditioners
    
 
 
-
-.. rubric:: Modules
-
-.. autosummary::
-   :toctree:
-   :recursive:
-
-   fipy.solvers.pyamgx.preconditioners.preconditioners
 

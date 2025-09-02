@@ -69,7 +69,7 @@ verbose debugging information save to a file::
 
     >>> log.setLevel(logging.DEBUG)
 
-To restrict logging to, e.g., information about the :term:`PETSc` solvers::
+To restrict logging to, e.g., information about the :ref:`PETSC` solvers::
 
     >>> petsc = logging.Filter('fipy.solvers.petsc')
     >>> logfile.addFilter(petsc)
@@ -162,6 +162,8 @@ available packages on the system. The `Command-line Flags`_ and
 `Environment Variables`_ sections below describe how to override
 :term:`FiPy`'s default behavior.
 
+.. _CommandLineFlags:
+
 Command-line Flags
 ==================
 
@@ -191,9 +193,21 @@ script you call from the command line, e.g.::
 The following flags take precedence over the :envvar:`FIPY_SOLVERS`
 environment variable:
 
+.. cmdoption:: --petsc
+
+   Forces the use of the :ref:`PETSC` solvers.
+
+.. cmdoption:: --pyamgx
+
+   Forces the use of the :ref:`PYAMGX` solvers.
+
 .. cmdoption:: --pysparse
 
    Forces the use of the :ref:`PYSPARSE` solvers.
+
+.. cmdoption:: --scipy
+
+   Forces the use of the :ref:`SCIPY` solvers.
 
 .. cmdoption:: --trilinos
 
@@ -205,19 +219,6 @@ environment variable:
    Forces the use of the :ref:`TRILINOS` solvers without any use of
    :ref:`PYSPARSE`.
 
-.. cmdoption:: --scipy
-
-   Forces the use of the :ref:`SCIPY` solvers.
-
-.. cmdoption:: --pyamg
-
-   Forces the use of the :ref:`PYAMG` preconditioners in conjunction
-   with the :ref:`SCIPY` solvers.
-
-.. cmdoption:: --pyamgx
-
-   Forces the use of the :ref:`PYAMGX` solvers.
-
 .. cmdoption:: --lsmlib
 
    Forces the use of the :ref:`LSMLIBDOC` level set solver.
@@ -226,6 +227,7 @@ environment variable:
 
    Forces the use of the :ref:`SCIKITFMM` level set solver.
 
+.. _EnvironmentVariables:
 
 Environment Variables
 =====================
@@ -267,16 +269,17 @@ package.
 
 .. envvar:: FIPY_SOLVERS
 
-   Forces the use of the specified suite of linear solvers.  Valid
-   (case-insensitive) choices are "``petsc``", "``scipy``", "``pysparse``",
-   "``trilinos``", "``no-pysparse``", and "``pyamg``".
+   Forces the use of the specified suite of linear :ref:`SOLVERS`.  Valid
+   (case-insensitive) choices are "``petsc``", "``pyamgx``",
+   "``pysparse``", "``scipy``", "``trilinos``", and "``no-pysparse``".
 
-.. envvar:: FIPY_VERBOSE_SOLVER
+.. envvar:: FIPY_DEFAULT_CRITERION
 
-   If present, causes the
-   :class:`~fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver` to
-   print a variety of diagnostic information.  All other solvers should use
-   `Logging`_ and :envvar:`FIPY_LOG_CONFIG`.
+   Changes the default solver :ref:`CONVERGENCE` criterion to the specified
+   value.  Valid choices are "``legacy``", "``unscaled``", "``RHS``",
+   "``matrix``", "``initial``", "``solution``", "``preconditioned``",
+   "``natural``", "``default``".  A value of "``default``" is admittedly
+   circular, but it works.
 
 .. envvar:: FIPY_VIEWER
 
@@ -303,7 +306,18 @@ package.
    :ref:`PETSC` solvers in order to see what options are possible.  Ignored
    if solver is not :ref:`PETSC`.
 
-.. _PETSc configuration options: https://docs.petsc.org/en/latest/manual/other/#sec-options
+.. _PETSc configuration options: https://petsc.org/main/manual/other/#runtime-options
+
+-------------
+Solver Suites
+-------------
+
+Numerical solution of partial differential equations calls for solving
+sparse linear algebra.  :term:`FiPy` supports several different
+:ref:`SOLVERS`.  To the greatest extent possible, they have all been
+configured to do the "same thing", but each presents different capabilities
+in terms of matrix preconditioning and overall performance tuning.
+
 
 .. _PARALLEL:
 
@@ -325,18 +339,11 @@ class meshes. Currently, the only remaining serial-only meshes are
 .. tip::
 
    You are strongly advised to force the use of only one :term:`OpenMP`
-   thread with :ref:`Trilinos`::
+   thread with :ref:`PETSc` and :ref:`Trilinos`::
 
        $ export OMP_NUM_THREADS=1
 
    See :ref:`THREADS_VS_RANKS` for more information.
-
-.. note::
-
-   `Trilinos 12.12 has support for Python 3`_, but
-   `PyTrilinos on conda-forge`_ presently only provides 12.10, which is
-   limited to Python 2.x. :ref:`PETSC` is available for both :term:`Python
-   3` and :term:`Python` 2.7.
 
 It should not generally be necessary to change anything in your script.
 Simply invoke::
@@ -345,57 +352,11 @@ Simply invoke::
 
 or::
 
-    $ mpirun -np {# of processors} python myScript.py --trilinos
+    $ FIPY_SOLVERS=trilinos mpirun -np {# of processors} python myScript.py
 
 instead of::
 
     $ python myScript.py
-
-The following plot shows the scaling behavior for multiple
-processors.  We compare solution time vs number of Slurm_ tasks (available
-cores) for a `Method of Manufactured Solutions Allen-Cahn problem`_.
-
-.. plot:: pyplots/scaling.py
-
-   Scaling behavior of different solver packages
-
-"Speedup" relative to :ref:`PySparse` (bigger numbers are better) versus
-number of tasks (processes) on a log-log plot.  The number of threads per
-:term:`MPI` rank is indicated by the line style (see legend).
-:term:`OpenMP` threads :math:`\times` :term:`MPI` ranks = Slurm_ tasks.
-
-A few things can be observed in this plot:
-
-- Both :ref:`PETSc` and :ref:`Trilinos` exhibit power law scaling, but the
-  power is only about 0.7.  At least one source of this poor scaling is
-  that our "``...Grid...``" meshes parallelize by dividing the mesh into
-  slabs, which leads to more communication overhead than more compact
-  partitions.  The "``...Gmsh...``" meshes partition more efficiently, but
-  carry more overhead in other ways.  We'll be making efforts to improve
-  the partitioning of the "``...Grid...``" meshes in a future release.
-
-- :ref:`PETSc` and :ref:`Trilinos` have fairly comparable performance, but
-  lag :ref:`PySparse` by a considerable margin.  The :ref:`SciPy` solvers
-  are even worse.  Some of this discrepancy may be because the different
-  packages are not all doing the same thing.  Different solver packages
-  have different default solvers and preconditioners.  Moreover, the
-  meaning of the solution tolerance depends on the normalization the solver
-  uses and it is not always obvious which of several possibilities a
-  particular package employs.  We will endeavor to normalize the
-  normalizations in a future release.
-
-- :ref:`PETSc` with one thread is faster than with two threads until the
-  number of tasks reaches about 10 and is faster than with four threads
-  until the number of tasks reaches more than 20.  :ref:`Trilinos` with one
-  thread is faster than with two threads until the number of tasks is more
-  than 30.  We don't fully understand the reasons for this, but there may be
-  a *modest* benefit, *when using a large number of cpus*, to allow two to
-  four :term:`OpenMP` threads per :term:`MPI` rank.  See
-  :ref:`THREADS_VS_RANKS` for caveats and more information.
-
-These results are likely both problem and architecture dependent.  You
-should develop an understanding of the scaling behavior of your own codes
-before doing "production" runs.
 
 The easiest way to confirm that :term:`FiPy` is properly configured to
 solve in parallel is to run one of the examples, e.g.,::
@@ -477,26 +438,30 @@ current session, you may prefer to restrict its use to :term:`FiPy` runs::
    $ OMP_NUM_THREADS=1 mpirun -np {# of processors} python myScript.py --trilinos
 
 The difference can be extreme.  We have observed the :term:`FiPy` test
-suite to run in `just over two minutes`_ when ``OMP_NUM_THREADS=1``,
-compared to `over an hour and 23 minutes`_ when :term:`OpenMP` threads are
-unrestricted. We don't know why, but `other platforms`_ do not suffer the
-same degree of degradation.
+suite to run in just over two minutes when ``OMP_NUM_THREADS=1``,
+compared to over an hour and 23 minutes when :term:`OpenMP` threads are
+unrestricted.
+This issue is not limited to :term:`FiPy` or the parallel solver suites it
+uses; see
+`Can There Be Too Much Parallelism? <https://www.youtube.com/watch?v=hy5yDxvLCDA>`_
+for a deeper look at the different threading settings available and their
+effects.
 
 Conceivably, allowing these parallel solvers unfettered access to
 :term:`OpenMP` threads with no :term:`MPI` communication at all could perform
 as well or better than purely :term:`MPI`
 parallelization.  The plot below demonstrates this is not the case.  We
 compare solution time vs number of :term:`OpenMP` threads for fixed number of
-slots for a `Method of Manufactured Solutions Allen-Cahn problem`_.
+slots for a `Method of Manufactured Solutions Allen-Cahn problem`_
+(:term:`OpenMP` threads :math:`\times` :term:`MPI` ranks = Slurm_ tasks).
 :term:`OpenMP` threading always slows down FiPy performance.
 
 .. plot:: pyplots/cpus_vs_threads.py
+   :align: center
+   :alt: "Speedup" relative to one thread versus number of threads on a log-log plot.
 
    Effect of having more :term:`OpenMP` threads for each :term:`MPI` rank
-
-"Speedup" relative to one thread (bigger numbers are better) versus number
-of threads for 32 Slurm_ tasks on a log-log plot.  :term:`OpenMP` threads
-:math:`\times` :term:`MPI` ranks = Slurm_ tasks.
+   [#MMS2]_.
 
 See https://www.mail-archive.com/fipy@nist.gov/msg03393.html for further
 analysis.
@@ -506,9 +471,6 @@ but this is not the configuration of the version available from conda-forge_
 and building Trilinos, at least, is |NotFun (TM)|_.
 
 .. _Global Interpreter Lock:     https://docs.python.org/2.7/c-api/init.html#thread-state-and-the-global-interpreter-lock
-.. _just over two minutes:       https://circleci.com/gh/guyer/fipy/461
-.. _over an hour and 23 minutes: https://circleci.com/gh/guyer/fipy/423
-.. _other platforms:             https://travis-ci.org/usnistgov/fipy/builds/509556033
 .. _Method of Manufactured Solutions Allen-Cahn problem:  https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb
 .. _conda-forge:                 https://conda-forge.github.io/
 .. |NotFun (TM)|                 unicode:: NotFun U+2122
@@ -583,19 +545,19 @@ In this case the matrix system will have the form
 
    \left(
    \begin{array}{c|c}
-   \text{\ttfamily Term00} & \text{\ttfamily Term01} \\ \hline
-   \text{\ttfamily Term10} & \text{\ttfamily Term11}
+   {\tt Term00} & {\tt Term01} \\ \hline
+   {\tt Term10} & {\tt Term11}
    \end{array} \right)
    \left(
    \begin{array}{c}
-   \text{\ttfamily var0}  \\ \hline
-   \text{\ttfamily var1}
+   {\tt var0}  \\ \hline
+   {\tt var1}
    \end{array} \right)
    =
    \left(
    \begin{array}{c}
-   \text{\ttfamily source0}  \\ \hline
-   \text{\ttfamily source1}
+   {\tt source0}  \\ \hline
+   {\tt source1}
    \end{array} \right)
 
 :term:`FiPy` tries to make sensible decisions regarding each term's
@@ -673,7 +635,7 @@ boundaries are zero flux.  For the equation
 .. math::
 
     \frac{\partial\phi}{\partial t}
-    &= \nabla\cdot\left(\vec{a}\phi\right) + \nabla\cdot\left(b\nabla\phi\right)
+    = \nabla\cdot\left(\vec{a}\phi\right) + \nabla\cdot\left(b\nabla\phi\right)
 
 the condition on the boundary :math:`S` is
 
@@ -1059,7 +1021,7 @@ Adaptive Stepping
 
 Step size can be controlled with the :term:`steppyngstounes` package.
 Demonstrations of its use are found in :mod:`examples.phase.binary` and
-:mod:`examples.phase.binaryCoupled.`
+:mod:`examples.phase.binaryCoupled`.
 
 .. note::
 
@@ -1076,25 +1038,26 @@ Thanks to the future_ package and to the contributions of pya_ and
 woodscn_, :term:`FiPy` runs under both :term:`Python 3` and :term:`Python`
 2.7, without conversion or modification.
 
-Because :term:`Python` itself will `drop support for Python 2.7 on January
-1, 2020`_ and many of the prerequisites for :term:`FiPy` have `pledged to
-drop support for Python 2.7 no later than 2020`_, we have prioritized adding
+Because :term:`Python` itself `dropped support for Python 2.7 on January
+1, 2020`_ and many of the prerequisites for :term:`FiPy` `pledged to
+drop support for Python 2.7 no later than 2020`_, we prioritized adding
 support for better :term:`Python 3` solvers, starting with
 :term:`petsc4py`.
 
-Because the faster :term:`PySparse` and :term:`Trilinos` solvers are not
-available under :term:`Python 3`, we will maintain :term:`Python` 2.x
+Because the faster :ref:`PySparse` solvers are not
+available under :term:`Python 3`, we have maintained :term:`Python` 2.x
 support as long as practical. Be aware that the conda-forge_ packages that
 :term:`FiPy` depends upon are not well-maintained on :term:`Python` 2.x
 and our support for that configuration is rapidly becoming impractical,
-despite the present performance benefits. Hopefully, we will learn
-how to optimize our use of :ref:`PETSc` and/or :ref:`Trilinos` 12.12 will
-become available on conda-forge_.
+despite the performance benefits. Now that we have learned
+how to optimize our use of :ref:`PETSc` and :ref:`Trilinos`, the
+performance margin of :ref:`PySparse` is small and support for
+:term:`Python` 2.x will be dropped soon.
 
 .. _future: http://python-future.org
 .. _pya: https://github.com/pya
 .. _woodscn: https://github.com/pya
-.. _drop support for Python 2.7 on January 1, 2020: https://www.python.org/dev/peps/pep-0373/#update
+.. _dropped support for Python 2.7 on January 1, 2020: https://www.python.org/dev/peps/pep-0373/#update
 .. _pledged to drop support for Python 2.7 no later than 2020: https://python3statement.org
 
 ------
@@ -1149,3 +1112,6 @@ or::
 .. _download the latest manual:  http://www.ctcms.nist.gov/fipy/download/
 .. _SIunits.sty: https://ctan.org/pkg/siunits
 .. _texlive-science: https://packages.debian.org/stretch/texlive-science
+
+.. [#MMS2] Calculations are of a
+   `Method of Manufactured Solutions Allen-Cahn problem`_.

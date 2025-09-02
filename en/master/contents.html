@@ -35,20 +35,21 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>FiPy Contents &#8212; FiPy 3.4.5+66.g2b1086a27 documentation</title>
+    <title>FiPy Contents &#8212; FiPy 3.4.5+67.gcb12895d3 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=09b6ca14"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b7f80988"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/contents.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+66.g2b1086a27 documentation" href="#" />
+    <link rel="top" title="FiPy 3.4.5+67.gcb12895d3 documentation" href="#" />
     <link rel="next" title="Introduction" href="introduction.html" />
   
  
@@ -193,11 +194,25 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="SOLVERS.html">Solvers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="SOLVERS.html#petsc">PETSc</a></li>
-<li class="toctree-l3"><a class="reference internal" href="SOLVERS.html#pysparse">Pysparse</a></li>
-<li class="toctree-l3"><a class="reference internal" href="SOLVERS.html#scipy">SciPy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="SOLVERS.html#pyamg">PyAMG</a></li>
-<li class="toctree-l3"><a class="reference internal" href="SOLVERS.html#pyamgx">pyamgx</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SOLVERS.html#id10">PyAMG</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SOLVERS.html#id12">pyamgx</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SOLVERS.html#id14">Pysparse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SOLVERS.html#id16">SciPy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="SOLVERS.html#trilinos">Trilinos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SOLVERS.html#performance-comparison">Performance Comparison</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="SOLVERS.html#serial-performance">Serial Performance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="SOLVERS.html#parallel-performance">Parallel Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="SOLVERS.html#convergence">Convergence</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="SOLVERS.html#tolerance">Tolerance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="SOLVERS.html#default"><code class="docutils literal notranslate"><span class="pre">default</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="SOLVERS.html#legacy"><code class="docutils literal notranslate"><span class="pre">legacy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="SOLVERS.html#absolute-tolerance"><code class="docutils literal notranslate"><span class="pre">absolute_tolerance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="SOLVERS.html#divergence-tolerance"><code class="docutils literal notranslate"><span class="pre">divergence_tolerance</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="SOLVERS.html#reporting">Reporting</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="VIEWERS.html">Viewers</a><ul>
@@ -216,6 +231,7 @@
 <li class="toctree-l4"><a class="reference internal" href="USAGE.html#environment-variables">Environment Variables</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="USAGE.html#solver-suites">Solver Suites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="USAGE.html#solving-in-parallel">Solving in Parallel</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="USAGE.html#openmp-threads-vs-mpi-ranks">OpenMP Threads vs. MPI Ranks</a></li>
 </ul>
@@ -323,7 +339,8 @@
 <li class="toctree-l2"><a class="reference internal" href="PUBLICATIONS.html">Publications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="PUBLICATIONS.html#presentations">Presentations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html">Change Log</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#version-release">Version 3.4.5+66.g2b1086a27</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#version-release">Version 3.4.5+67.gcb12895d3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="CHANGELOG.html#version-3-4-5-2024-06-25">Version 3.4.5 - 2024-06-25</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="CHANGELOG.html#pulls">Pulls</a></li>
 <li class="toctree-l4"><a class="reference internal" href="CHANGELOG.html#fixes">Fixes</a></li>
 </ul>
@@ -1708,6 +1725,106 @@
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.html#fipy.solvers.SerialSolverError.with_traceback"><code class="docutils literal notranslate"><span class="pre">SerialSolverError.with_traceback()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="generated/fipy.solvers.convergence.html">fipy.solvers.convergence</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.AbsoluteToleranceConvergence"><code class="docutils literal notranslate"><span class="pre">AbsoluteToleranceConvergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.AbsoluteToleranceConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">AbsoluteToleranceConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.BreakdownDivergence"><code class="docutils literal notranslate"><span class="pre">BreakdownDivergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.BreakdownDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">BreakdownDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.Convergence"><code class="docutils literal notranslate"><span class="pre">Convergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.Convergence.__str__"><code class="docutils literal notranslate"><span class="pre">Convergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.ConvergenceBase"><code class="docutils literal notranslate"><span class="pre">ConvergenceBase</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.ConvergenceBase.solver"><code class="docutils literal notranslate"><span class="pre">ConvergenceBase.solver</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.ConvergenceBase.iterations"><code class="docutils literal notranslate"><span class="pre">ConvergenceBase.iterations</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.ConvergenceBase.criterion"><code class="docutils literal notranslate"><span class="pre">ConvergenceBase.criterion</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.ConvergenceBase.tolerance_scale"><code class="docutils literal notranslate"><span class="pre">ConvergenceBase.tolerance_scale</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.ConvergenceBase.residual"><code class="docutils literal notranslate"><span class="pre">ConvergenceBase.residual</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.ConvergenceBase.status_code"><code class="docutils literal notranslate"><span class="pre">ConvergenceBase.status_code</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.ConvergenceBase.status_name"><code class="docutils literal notranslate"><span class="pre">ConvergenceBase.status_name</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.ConvergenceBase.actual_code"><code class="docutils literal notranslate"><span class="pre">ConvergenceBase.actual_code</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.ConvergenceBase.__str__"><code class="docutils literal notranslate"><span class="pre">ConvergenceBase.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.Divergence"><code class="docutils literal notranslate"><span class="pre">Divergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.Divergence.__str__"><code class="docutils literal notranslate"><span class="pre">Divergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.DivergenceWarning"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.DivergenceWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__cause__</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.DivergenceWarning.__context__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__context__</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.DivergenceWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__delattr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.DivergenceWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__getattribute__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.DivergenceWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__reduce__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.DivergenceWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__repr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.DivergenceWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__setattr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.DivergenceWarning.__str__"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.__str__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.DivergenceWarning.add_note"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.add_note()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.DivergenceWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">DivergenceWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.HappyBreakdownConvergence"><code class="docutils literal notranslate"><span class="pre">HappyBreakdownConvergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.HappyBreakdownConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">HappyBreakdownConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.IllConditionedDivergence"><code class="docutils literal notranslate"><span class="pre">IllConditionedDivergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.IllConditionedDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">IllConditionedDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.IllConditionedPreconditionerDivergence"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerDivergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.IllConditionedPreconditionerDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.IteratingConvergence"><code class="docutils literal notranslate"><span class="pre">IteratingConvergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.IteratingConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">IteratingConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.IterationConvergence"><code class="docutils literal notranslate"><span class="pre">IterationConvergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.IterationConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">IterationConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.IterationDivergence"><code class="docutils literal notranslate"><span class="pre">IterationDivergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.IterationDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">IterationDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.LossOfAccuracyConvergence"><code class="docutils literal notranslate"><span class="pre">LossOfAccuracyConvergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.LossOfAccuracyConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">LossOfAccuracyConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.NullDivergence"><code class="docutils literal notranslate"><span class="pre">NullDivergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.NullDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">NullDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.OutOfRangeDivergence"><code class="docutils literal notranslate"><span class="pre">OutOfRangeDivergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.OutOfRangeDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">OutOfRangeDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.PreconditioningDivergence"><code class="docutils literal notranslate"><span class="pre">PreconditioningDivergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.PreconditioningDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">PreconditioningDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.RHSZeroConvergence"><code class="docutils literal notranslate"><span class="pre">RHSZeroConvergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.RHSZeroConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">RHSZeroConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.RelativeToleranceConvergence"><code class="docutils literal notranslate"><span class="pre">RelativeToleranceConvergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.RelativeToleranceConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">RelativeToleranceConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.StagnatedDivergence"><code class="docutils literal notranslate"><span class="pre">StagnatedDivergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.StagnatedDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">StagnatedDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.ToleranceDivergence"><code class="docutils literal notranslate"><span class="pre">ToleranceDivergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.ToleranceDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">ToleranceDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l4"><a class="reference internal" href="generated/fipy.solvers.petsc.html">fipy.solvers.petsc</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.petsc.comms.html">fipy.solvers.petsc.comms</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.comms.parallelPETScCommWrapper.html">fipy.solvers.petsc.comms.parallelPETScCommWrapper</a><ul>
@@ -1738,98 +1855,223 @@
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.petsc.dummySolver.html">fipy.solvers.petsc.dummySolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.dummySolver.html#fipy.solvers.petsc.dummySolver.DummySolver"><code class="docutils literal notranslate"><span class="pre">DummySolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.dummySolver.html#fipy.solvers.petsc.dummySolver.DummySolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">DummySolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.dummySolver.html#fipy.solvers.petsc.dummySolver.DummySolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">DummySolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.dummySolver.html#fipy.solvers.petsc.dummySolver.DummySolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">DummySolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.dummySolver.html#fipy.solvers.petsc.dummySolver.DummySolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">DummySolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.dummySolver.html#fipy.solvers.petsc.dummySolver.DummySolver.__repr__"><code class="docutils literal notranslate"><span class="pre">DummySolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.dummySolver.html#fipy.solvers.petsc.dummySolver.DummySolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">DummySolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.petsc.linearBicgSolver.html">fipy.solvers.petsc.linearBicgSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.linearBicgSolver.html#fipy.solvers.petsc.linearBicgSolver.LinearBicgSolver"><code class="docutils literal notranslate"><span class="pre">LinearBicgSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearBicgSolver.html#fipy.solvers.petsc.linearBicgSolver.LinearBicgSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearBicgSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearBicgSolver.html#fipy.solvers.petsc.linearBicgSolver.LinearBicgSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearBicgSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearBicgSolver.html#fipy.solvers.petsc.linearBicgSolver.LinearBicgSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearBicgSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearBicgSolver.html#fipy.solvers.petsc.linearBicgSolver.LinearBicgSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearBicgSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearBicgSolver.html#fipy.solvers.petsc.linearBicgSolver.LinearBicgSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearBicgSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearBicgSolver.html#fipy.solvers.petsc.linearBicgSolver.LinearBicgSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearBicgSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSSolver.html">fipy.solvers.petsc.linearCGSSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSSolver.html#fipy.solvers.petsc.linearCGSSolver.LinearCGSSolver"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSSolver.html#fipy.solvers.petsc.linearCGSSolver.LinearCGSSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSSolver.html#fipy.solvers.petsc.linearCGSSolver.LinearCGSSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSSolver.html#fipy.solvers.petsc.linearCGSSolver.LinearCGSSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSSolver.html#fipy.solvers.petsc.linearCGSSolver.LinearCGSSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSSolver.html#fipy.solvers.petsc.linearCGSSolver.LinearCGSSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSSolver.html#fipy.solvers.petsc.linearCGSSolver.LinearCGSSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSolver.html">fipy.solvers.petsc.linearCGSolver</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSolver.html#fipy.solvers.petsc.linearCGSolver.LinearCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSolver.html#fipy.solvers.petsc.linearCGSolver.LinearCGSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSolver.html#fipy.solvers.petsc.linearCGSolver.LinearCGSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSolver.html#fipy.solvers.petsc.linearCGSolver.LinearCGSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSolver.html#fipy.solvers.petsc.linearCGSolver.LinearCGSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.LEGACY_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSolver.html#fipy.solvers.petsc.linearCGSolver.LinearCGSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSolver.html#fipy.solvers.petsc.linearCGSolver.LinearCGSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.default_tolerance</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.linearCGSolver.html#fipy.solvers.petsc.linearCGSolver.LinearPCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.petsc.linearGMRESSolver.html">fipy.solvers.petsc.linearGMRESSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.linearGMRESSolver.html#fipy.solvers.petsc.linearGMRESSolver.LinearGMRESSolver"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearGMRESSolver.html#fipy.solvers.petsc.linearGMRESSolver.LinearGMRESSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearGMRESSolver.html#fipy.solvers.petsc.linearGMRESSolver.LinearGMRESSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearGMRESSolver.html#fipy.solvers.petsc.linearGMRESSolver.LinearGMRESSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearGMRESSolver.html#fipy.solvers.petsc.linearGMRESSolver.LinearGMRESSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearGMRESSolver.html#fipy.solvers.petsc.linearGMRESSolver.LinearGMRESSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearGMRESSolver.html#fipy.solvers.petsc.linearGMRESSolver.LinearGMRESSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.petsc.linearLUSolver.html">fipy.solvers.petsc.linearLUSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.linearLUSolver.html#fipy.solvers.petsc.linearLUSolver.LinearLUSolver"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearLUSolver.html#fipy.solvers.petsc.linearLUSolver.LinearLUSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearLUSolver.html#fipy.solvers.petsc.linearLUSolver.LinearLUSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearLUSolver.html#fipy.solvers.petsc.linearLUSolver.LinearLUSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearLUSolver.html#fipy.solvers.petsc.linearLUSolver.LinearLUSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearLUSolver.html#fipy.solvers.petsc.linearLUSolver.LinearLUSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearLUSolver.html#fipy.solvers.petsc.linearLUSolver.LinearLUSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.petsc.linearPCGSolver.html">fipy.solvers.petsc.linearPCGSolver</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.linearPCGSolver.html#fipy.solvers.petsc.linearPCGSolver.LinearPCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver</span></code></a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.linearPCGSolver.html#fipy.solvers.petsc.linearPCGSolver.LinearPCGSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver.__repr__()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html">fipy.solvers.petsc.petscConvergence</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_AbsoluteToleranceConvergence"><code class="docutils literal notranslate"><span class="pre">KSP_AbsoluteToleranceConvergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_AbsoluteToleranceConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_AbsoluteToleranceConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_BreakdownBICGDivergence"><code class="docutils literal notranslate"><span class="pre">KSP_BreakdownBICGDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_BreakdownBICGDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_BreakdownBICGDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_BreakdownDivergence"><code class="docutils literal notranslate"><span class="pre">KSP_BreakdownDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_BreakdownDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_BreakdownDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_HappyBreakdownConvergence"><code class="docutils literal notranslate"><span class="pre">KSP_HappyBreakdownConvergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_HappyBreakdownConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_HappyBreakdownConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_IndefiniteMatrixDivergence"><code class="docutils literal notranslate"><span class="pre">KSP_IndefiniteMatrixDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_IndefiniteMatrixDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_IndefiniteMatrixDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_IndefinitePreconditionerDivergence"><code class="docutils literal notranslate"><span class="pre">KSP_IndefinitePreconditionerDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_IndefinitePreconditionerDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_IndefinitePreconditionerDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_IteratingConvergence"><code class="docutils literal notranslate"><span class="pre">KSP_IteratingConvergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_IteratingConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_IteratingConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_IterationConvergence"><code class="docutils literal notranslate"><span class="pre">KSP_IterationConvergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_IterationConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_IterationConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_IterationDivergence"><code class="docutils literal notranslate"><span class="pre">KSP_IterationDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_IterationDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_IterationDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_NanOrInfDivergence"><code class="docutils literal notranslate"><span class="pre">KSP_NanOrInfDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_NanOrInfDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_NanOrInfDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_NonSymmetricDivergence"><code class="docutils literal notranslate"><span class="pre">KSP_NonSymmetricDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_NonSymmetricDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_NonSymmetricDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_NormalAbsoluteToleranceConvergence"><code class="docutils literal notranslate"><span class="pre">KSP_NormalAbsoluteToleranceConvergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_NormalAbsoluteToleranceConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_NormalAbsoluteToleranceConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_NormalRelativeToleranceConvergence"><code class="docutils literal notranslate"><span class="pre">KSP_NormalRelativeToleranceConvergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_NormalRelativeToleranceConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_NormalRelativeToleranceConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_NullDivergence"><code class="docutils literal notranslate"><span class="pre">KSP_NullDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_NullDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_NullDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_PreconditioningDivergence"><code class="docutils literal notranslate"><span class="pre">KSP_PreconditioningDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_PreconditioningDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_PreconditioningDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_RelativeToleranceConvergence"><code class="docutils literal notranslate"><span class="pre">KSP_RelativeToleranceConvergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_RelativeToleranceConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_RelativeToleranceConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_ToleranceDivergence"><code class="docutils literal notranslate"><span class="pre">KSP_ToleranceDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscConvergence.html#fipy.solvers.petsc.petscConvergence.KSP_ToleranceDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">KSP_ToleranceDivergence.__str__()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.petsc.petscKrylovSolver.html">fipy.solvers.petsc.petscKrylovSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscKrylovSolver.html#fipy.solvers.petsc.petscKrylovSolver.PETScKrylovSolver"><code class="docutils literal notranslate"><span class="pre">PETScKrylovSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscKrylovSolver.html#fipy.solvers.petsc.petscKrylovSolver.PETScKrylovSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">PETScKrylovSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscKrylovSolver.html#fipy.solvers.petsc.petscKrylovSolver.PETScKrylovSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">PETScKrylovSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscKrylovSolver.html#fipy.solvers.petsc.petscKrylovSolver.PETScKrylovSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">PETScKrylovSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscKrylovSolver.html#fipy.solvers.petsc.petscKrylovSolver.PETScKrylovSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">PETScKrylovSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscKrylovSolver.html#fipy.solvers.petsc.petscKrylovSolver.PETScKrylovSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">PETScKrylovSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscKrylovSolver.html#fipy.solvers.petsc.petscKrylovSolver.PETScKrylovSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">PETScKrylovSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.petsc.petscSolver.html">fipy.solvers.petsc.petscSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.petscSolver.html#fipy.solvers.petsc.petscSolver.PETScSolver"><code class="docutils literal notranslate"><span class="pre">PETScSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscSolver.html#fipy.solvers.petsc.petscSolver.PETScSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">PETScSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscSolver.html#fipy.solvers.petsc.petscSolver.PETScSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">PETScSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscSolver.html#fipy.solvers.petsc.petscSolver.PETScSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">PETScSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscSolver.html#fipy.solvers.petsc.petscSolver.PETScSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">PETScSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscSolver.html#fipy.solvers.petsc.petscSolver.PETScSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">PETScSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.petscSolver.html#fipy.solvers.petsc.petscSolver.PETScSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">PETScSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.html">fipy.solvers.petsc.preconditioners</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.html#fipy.solvers.petsc.preconditioners.DefaultPreconditioner"><code class="docutils literal notranslate"><span class="pre">DefaultPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.html#fipy.solvers.petsc.preconditioners.HYPREPreconditioner"><code class="docutils literal notranslate"><span class="pre">HYPREPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.html#fipy.solvers.petsc.preconditioners.ICPreconditioner"><code class="docutils literal notranslate"><span class="pre">ICPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.html#fipy.solvers.petsc.preconditioners.ILUPreconditioner"><code class="docutils literal notranslate"><span class="pre">ILUPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.html#fipy.solvers.petsc.preconditioners.JacobiPreconditioner"><code class="docutils literal notranslate"><span class="pre">JacobiPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.html#fipy.solvers.petsc.preconditioners.LUPreconditioner"><code class="docutils literal notranslate"><span class="pre">LUPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.html#fipy.solvers.petsc.preconditioners.SSORPreconditioner"><code class="docutils literal notranslate"><span class="pre">SSORPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.defaultPreconditioner.html">fipy.solvers.petsc.preconditioners.defaultPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.defaultPreconditioner.html#fipy.solvers.petsc.preconditioners.defaultPreconditioner.DefaultPreconditioner"><code class="docutils literal notranslate"><span class="pre">DefaultPreconditioner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.hyprePreconditioner.html">fipy.solvers.petsc.preconditioners.hyprePreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.hyprePreconditioner.html#fipy.solvers.petsc.preconditioners.hyprePreconditioner.HYPREPreconditioner"><code class="docutils literal notranslate"><span class="pre">HYPREPreconditioner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.icPreconditioner.html">fipy.solvers.petsc.preconditioners.icPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.icPreconditioner.html#fipy.solvers.petsc.preconditioners.icPreconditioner.ICPreconditioner"><code class="docutils literal notranslate"><span class="pre">ICPreconditioner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.iluPreconditioner.html">fipy.solvers.petsc.preconditioners.iluPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.iluPreconditioner.html#fipy.solvers.petsc.preconditioners.iluPreconditioner.ILUPreconditioner"><code class="docutils literal notranslate"><span class="pre">ILUPreconditioner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.jacobiPreconditioner.html">fipy.solvers.petsc.preconditioners.jacobiPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.jacobiPreconditioner.html#fipy.solvers.petsc.preconditioners.jacobiPreconditioner.JacobiPreconditioner"><code class="docutils literal notranslate"><span class="pre">JacobiPreconditioner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.luPreconditioner.html">fipy.solvers.petsc.preconditioners.luPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.luPreconditioner.html#fipy.solvers.petsc.preconditioners.luPreconditioner.LUPreconditioner"><code class="docutils literal notranslate"><span class="pre">LUPreconditioner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.petscPreconditioner.html">fipy.solvers.petsc.preconditioners.petscPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.petscPreconditioner.html#fipy.solvers.petsc.preconditioners.petscPreconditioner.PETScPreconditioner"><code class="docutils literal notranslate"><span class="pre">PETScPreconditioner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.ssorPreconditioner.html">fipy.solvers.petsc.preconditioners.ssorPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.petsc.preconditioners.ssorPreconditioner.html#fipy.solvers.petsc.preconditioners.ssorPreconditioner.SSORPreconditioner"><code class="docutils literal notranslate"><span class="pre">SSORPreconditioner</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="generated/fipy.solvers.preconditioner.html">fipy.solvers.preconditioner</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.preconditioner.html#fipy.solvers.preconditioner.MatrixModifyingPreconditioner"><code class="docutils literal notranslate"><span class="pre">MatrixModifyingPreconditioner</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.preconditioner.html#fipy.solvers.preconditioner.Preconditioner"><code class="docutils literal notranslate"><span class="pre">Preconditioner</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.preconditioner.html#fipy.solvers.preconditioner.SolverModifyingPreconditioner"><code class="docutils literal notranslate"><span class="pre">SolverModifyingPreconditioner</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="generated/fipy.solvers.pyAMG.html">fipy.solvers.pyAMG</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearCGSSolver.html">fipy.solvers.pyAMG.linearCGSSolver</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearCGSSolver.html#fipy.solvers.pyAMG.linearCGSSolver.LinearCGSSolver"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver</span></code></a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearCGSSolver.html#fipy.solvers.pyAMG.linearCGSSolver.LinearCGSSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.__repr__()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearGMRESSolver.html">fipy.solvers.pyAMG.linearGMRESSolver</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearGMRESSolver.html#fipy.solvers.pyAMG.linearGMRESSolver.LinearGMRESSolver"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver</span></code></a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearGMRESSolver.html#fipy.solvers.pyAMG.linearGMRESSolver.LinearGMRESSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.__repr__()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearGeneralSolver.html">fipy.solvers.pyAMG.linearGeneralSolver</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearGeneralSolver.html#fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver"><code class="docutils literal notranslate"><span class="pre">LinearGeneralSolver</span></code></a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearGeneralSolver.html#fipy.solvers.pyAMG.linearGeneralSolver.LinearGeneralSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearGeneralSolver.__repr__()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearLUSolver.html">fipy.solvers.pyAMG.linearLUSolver</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearLUSolver.html#fipy.solvers.pyAMG.linearLUSolver.LinearLUSolver"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver</span></code></a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearLUSolver.html#fipy.solvers.pyAMG.linearLUSolver.LinearLUSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.__repr__()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearPCGSolver.html">fipy.solvers.pyAMG.linearPCGSolver</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearPCGSolver.html#fipy.solvers.pyAMG.linearPCGSolver.LinearPCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver</span></code></a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyAMG.linearPCGSolver.html#fipy.solvers.pyAMG.linearPCGSolver.LinearPCGSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver.__repr__()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyAMG.preconditioners.html">fipy.solvers.pyAMG.preconditioners</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner.html">fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner.html#fipy.solvers.pyAMG.preconditioners.smoothedAggregationPreconditioner.SmoothedAggregationPreconditioner"><code class="docutils literal notranslate"><span class="pre">SmoothedAggregationPreconditioner</span></code></a></li>
@@ -1842,28 +2084,52 @@
 <li class="toctree-l4"><a class="reference internal" href="generated/fipy.solvers.pyamgx.html">fipy.solvers.pyamgx</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyamgx.aggregationAMGSolver.html">fipy.solvers.pyamgx.aggregationAMGSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.aggregationAMGSolver.html#fipy.solvers.pyamgx.aggregationAMGSolver.AggregationAMGSolver"><code class="docutils literal notranslate"><span class="pre">AggregationAMGSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.aggregationAMGSolver.html#fipy.solvers.pyamgx.aggregationAMGSolver.AggregationAMGSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">AggregationAMGSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.aggregationAMGSolver.html#fipy.solvers.pyamgx.aggregationAMGSolver.AggregationAMGSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">AggregationAMGSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.aggregationAMGSolver.html#fipy.solvers.pyamgx.aggregationAMGSolver.AggregationAMGSolver.DEFAULT_SMOOTHER"><code class="docutils literal notranslate"><span class="pre">AggregationAMGSolver.DEFAULT_SMOOTHER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.aggregationAMGSolver.html#fipy.solvers.pyamgx.aggregationAMGSolver.AggregationAMGSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">AggregationAMGSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.aggregationAMGSolver.html#fipy.solvers.pyamgx.aggregationAMGSolver.AggregationAMGSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">AggregationAMGSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.aggregationAMGSolver.html#fipy.solvers.pyamgx.aggregationAMGSolver.AggregationAMGSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">AggregationAMGSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.aggregationAMGSolver.html#fipy.solvers.pyamgx.aggregationAMGSolver.AggregationAMGSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">AggregationAMGSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyamgx.classicalAMGSolver.html">fipy.solvers.pyamgx.classicalAMGSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.classicalAMGSolver.html#fipy.solvers.pyamgx.classicalAMGSolver.ClassicalAMGSolver"><code class="docutils literal notranslate"><span class="pre">ClassicalAMGSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.classicalAMGSolver.html#fipy.solvers.pyamgx.classicalAMGSolver.ClassicalAMGSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">ClassicalAMGSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.classicalAMGSolver.html#fipy.solvers.pyamgx.classicalAMGSolver.ClassicalAMGSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">ClassicalAMGSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.classicalAMGSolver.html#fipy.solvers.pyamgx.classicalAMGSolver.ClassicalAMGSolver.DEFAULT_SMOOTHER"><code class="docutils literal notranslate"><span class="pre">ClassicalAMGSolver.DEFAULT_SMOOTHER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.classicalAMGSolver.html#fipy.solvers.pyamgx.classicalAMGSolver.ClassicalAMGSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">ClassicalAMGSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.classicalAMGSolver.html#fipy.solvers.pyamgx.classicalAMGSolver.ClassicalAMGSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">ClassicalAMGSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.classicalAMGSolver.html#fipy.solvers.pyamgx.classicalAMGSolver.ClassicalAMGSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">ClassicalAMGSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.classicalAMGSolver.html#fipy.solvers.pyamgx.classicalAMGSolver.ClassicalAMGSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">ClassicalAMGSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearBiCGStabSolver.html">fipy.solvers.pyamgx.linearBiCGStabSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearBiCGStabSolver.html#fipy.solvers.pyamgx.linearBiCGStabSolver.LinearBiCGStabSolver"><code class="docutils literal notranslate"><span class="pre">LinearBiCGStabSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearBiCGStabSolver.html#fipy.solvers.pyamgx.linearBiCGStabSolver.LinearBiCGStabSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearBiCGStabSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearBiCGStabSolver.html#fipy.solvers.pyamgx.linearBiCGStabSolver.LinearBiCGStabSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearBiCGStabSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearBiCGStabSolver.html#fipy.solvers.pyamgx.linearBiCGStabSolver.LinearBiCGStabSolver.DEFAULT_SMOOTHER"><code class="docutils literal notranslate"><span class="pre">LinearBiCGStabSolver.DEFAULT_SMOOTHER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearBiCGStabSolver.html#fipy.solvers.pyamgx.linearBiCGStabSolver.LinearBiCGStabSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearBiCGStabSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearBiCGStabSolver.html#fipy.solvers.pyamgx.linearBiCGStabSolver.LinearBiCGStabSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearBiCGStabSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearBiCGStabSolver.html#fipy.solvers.pyamgx.linearBiCGStabSolver.LinearBiCGStabSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearBiCGStabSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearBiCGStabSolver.html#fipy.solvers.pyamgx.linearBiCGStabSolver.LinearBiCGStabSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearBiCGStabSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearCGSolver.html">fipy.solvers.pyamgx.linearCGSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearCGSolver.html#fipy.solvers.pyamgx.linearCGSolver.LinearCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearCGSolver.html#fipy.solvers.pyamgx.linearCGSolver.LinearCGSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearCGSolver.html#fipy.solvers.pyamgx.linearCGSolver.LinearCGSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearCGSolver.html#fipy.solvers.pyamgx.linearCGSolver.LinearCGSolver.DEFAULT_SMOOTHER"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_SMOOTHER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearCGSolver.html#fipy.solvers.pyamgx.linearCGSolver.LinearCGSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearCGSolver.html#fipy.solvers.pyamgx.linearCGSolver.LinearCGSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearCGSolver.html#fipy.solvers.pyamgx.linearCGSolver.LinearCGSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearCGSolver.html#fipy.solvers.pyamgx.linearCGSolver.LinearCGSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearCGSolver.html#fipy.solvers.pyamgx.linearCGSolver.LinearPCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver</span></code></a></li>
@@ -1871,50 +2137,86 @@
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearFGMRESSolver.html">fipy.solvers.pyamgx.linearFGMRESSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearFGMRESSolver.html#fipy.solvers.pyamgx.linearFGMRESSolver.LinearFGMRESSolver"><code class="docutils literal notranslate"><span class="pre">LinearFGMRESSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearFGMRESSolver.html#fipy.solvers.pyamgx.linearFGMRESSolver.LinearFGMRESSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearFGMRESSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearFGMRESSolver.html#fipy.solvers.pyamgx.linearFGMRESSolver.LinearFGMRESSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearFGMRESSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearFGMRESSolver.html#fipy.solvers.pyamgx.linearFGMRESSolver.LinearFGMRESSolver.DEFAULT_SMOOTHER"><code class="docutils literal notranslate"><span class="pre">LinearFGMRESSolver.DEFAULT_SMOOTHER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearFGMRESSolver.html#fipy.solvers.pyamgx.linearFGMRESSolver.LinearFGMRESSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearFGMRESSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearFGMRESSolver.html#fipy.solvers.pyamgx.linearFGMRESSolver.LinearFGMRESSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearFGMRESSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearFGMRESSolver.html#fipy.solvers.pyamgx.linearFGMRESSolver.LinearFGMRESSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearFGMRESSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearFGMRESSolver.html#fipy.solvers.pyamgx.linearFGMRESSolver.LinearFGMRESSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearFGMRESSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearGMRESSolver.html">fipy.solvers.pyamgx.linearGMRESSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearGMRESSolver.html#fipy.solvers.pyamgx.linearGMRESSolver.LinearGMRESSolver"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearGMRESSolver.html#fipy.solvers.pyamgx.linearGMRESSolver.LinearGMRESSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearGMRESSolver.html#fipy.solvers.pyamgx.linearGMRESSolver.LinearGMRESSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearGMRESSolver.html#fipy.solvers.pyamgx.linearGMRESSolver.LinearGMRESSolver.DEFAULT_SMOOTHER"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_SMOOTHER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearGMRESSolver.html#fipy.solvers.pyamgx.linearGMRESSolver.LinearGMRESSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearGMRESSolver.html#fipy.solvers.pyamgx.linearGMRESSolver.LinearGMRESSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearGMRESSolver.html#fipy.solvers.pyamgx.linearGMRESSolver.LinearGMRESSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearGMRESSolver.html#fipy.solvers.pyamgx.linearGMRESSolver.LinearGMRESSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearLUSolver.html">fipy.solvers.pyamgx.linearLUSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearLUSolver.html#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearLUSolver.html#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearLUSolver.html#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearLUSolver.html#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearLUSolver.html#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearLUSolver.html#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.linearLUSolver.html#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.html">fipy.solvers.pyamgx.preconditioners</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.preconditioners.html">fipy.solvers.pyamgx.preconditioners.preconditioners</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.preconditioners.html#fipy.solvers.pyamgx.preconditioners.preconditioners.Preconditioner"><code class="docutils literal notranslate"><span class="pre">Preconditioner</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.preconditioners.html#fipy.solvers.pyamgx.preconditioners.preconditioners.Preconditioner.__call__"><code class="docutils literal notranslate"><span class="pre">Preconditioner.__call__()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.html#fipy.solvers.pyamgx.preconditioners.AMGPreconditioner"><code class="docutils literal notranslate"><span class="pre">AMGPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.html#fipy.solvers.pyamgx.preconditioners.AggregationAMGPreconditioner"><code class="docutils literal notranslate"><span class="pre">AggregationAMGPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.html#fipy.solvers.pyamgx.preconditioners.BiCGStabPreconditioner"><code class="docutils literal notranslate"><span class="pre">BiCGStabPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.html#fipy.solvers.pyamgx.preconditioners.CGPreconditioner"><code class="docutils literal notranslate"><span class="pre">CGPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.html#fipy.solvers.pyamgx.preconditioners.DILUPreconditioner"><code class="docutils literal notranslate"><span class="pre">DILUPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.html#fipy.solvers.pyamgx.preconditioners.FGMRESPreconditioner"><code class="docutils literal notranslate"><span class="pre">FGMRESPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.html#fipy.solvers.pyamgx.preconditioners.GaussSeidelPreconditioner"><code class="docutils literal notranslate"><span class="pre">GaussSeidelPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.html#fipy.solvers.pyamgx.preconditioners.ILUPreconditioner"><code class="docutils literal notranslate"><span class="pre">ILUPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.html#fipy.solvers.pyamgx.preconditioners.JacobiPreconditioner"><code class="docutils literal notranslate"><span class="pre">JacobiPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.html#fipy.solvers.pyamgx.preconditioners.PolynomialPreconditioner"><code class="docutils literal notranslate"><span class="pre">PolynomialPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.preconditioners.html#fipy.solvers.pyamgx.preconditioners.PyAMGXPreconditioner"><code class="docutils literal notranslate"><span class="pre">PyAMGXPreconditioner</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyAMGXSolver.html">fipy.solvers.pyamgx.pyAMGXSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyAMGXSolver.html#fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver"><code class="docutils literal notranslate"><span class="pre">PyAMGXSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyAMGXSolver.html#fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">PyAMGXSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyAMGXSolver.html#fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">PyAMGXSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyAMGXSolver.html#fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver.DEFAULT_SMOOTHER"><code class="docutils literal notranslate"><span class="pre">PyAMGXSolver.DEFAULT_SMOOTHER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyAMGXSolver.html#fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">PyAMGXSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyAMGXSolver.html#fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">PyAMGXSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyAMGXSolver.html#fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">PyAMGXSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyAMGXSolver.html#fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">PyAMGXSolver.default_tolerance</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyamgxConvergence.html">fipy.solvers.pyamgx.pyamgxConvergence</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyamgxConvergence.html#fipy.solvers.pyamgx.pyamgxConvergence.pyamgx_BreakdownDivergence"><code class="docutils literal notranslate"><span class="pre">pyamgx_BreakdownDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyamgxConvergence.html#fipy.solvers.pyamgx.pyamgxConvergence.pyamgx_BreakdownDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">pyamgx_BreakdownDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyamgxConvergence.html#fipy.solvers.pyamgx.pyamgxConvergence.pyamgx_Convergence"><code class="docutils literal notranslate"><span class="pre">pyamgx_Convergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyamgxConvergence.html#fipy.solvers.pyamgx.pyamgxConvergence.pyamgx_Convergence.__str__"><code class="docutils literal notranslate"><span class="pre">pyamgx_Convergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyamgxConvergence.html#fipy.solvers.pyamgx.pyamgxConvergence.pyamgx_IterationDivergence"><code class="docutils literal notranslate"><span class="pre">pyamgx_IterationDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.pyamgxConvergence.html#fipy.solvers.pyamgx.pyamgxConvergence.pyamgx_IterationDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">pyamgx_IterationDivergence.__str__()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pyamgx.smoothers.html">fipy.solvers.pyamgx.smoothers</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.smoothers.smoothers.html">fipy.solvers.pyamgx.smoothers.smoothers</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pyamgx.smoothers.smoothers.html#fipy.solvers.pyamgx.smoothers.smoothers.Smoother"><code class="docutils literal notranslate"><span class="pre">Smoother</span></code></a><ul>
-<li class="toctree-l8"><a class="reference internal" href="generated/fipy.solvers.pyamgx.smoothers.smoothers.html#fipy.solvers.pyamgx.smoothers.smoothers.Smoother.__call__"><code class="docutils literal notranslate"><span class="pre">Smoother.__call__()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pyamgx.smoothers.html#fipy.solvers.pyamgx.smoothers.Smoother"><code class="docutils literal notranslate"><span class="pre">Smoother</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -1922,105 +2224,305 @@
 <li class="toctree-l4"><a class="reference internal" href="generated/fipy.solvers.pysparse.html">fipy.solvers.pysparse</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSSolver.html">fipy.solvers.pysparse.linearCGSSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSSolver.html#fipy.solvers.pysparse.linearCGSSolver.LinearCGSSolver"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSSolver.html#fipy.solvers.pysparse.linearCGSSolver.LinearCGSSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSSolver.html#fipy.solvers.pysparse.linearCGSSolver.LinearCGSSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSSolver.html#fipy.solvers.pysparse.linearCGSSolver.LinearCGSSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSSolver.html#fipy.solvers.pysparse.linearCGSSolver.LinearCGSSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSSolver.html#fipy.solvers.pysparse.linearCGSSolver.LinearCGSSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSSolver.html#fipy.solvers.pysparse.linearCGSSolver.LinearCGSSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSolver.html">fipy.solvers.pysparse.linearCGSolver</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSolver.html#fipy.solvers.pysparse.linearCGSolver.LinearCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSolver.html#fipy.solvers.pysparse.linearCGSolver.LinearCGSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSolver.html#fipy.solvers.pysparse.linearCGSolver.LinearCGSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSolver.html#fipy.solvers.pysparse.linearCGSolver.LinearCGSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSolver.html#fipy.solvers.pysparse.linearCGSolver.LinearCGSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.LEGACY_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSolver.html#fipy.solvers.pysparse.linearCGSolver.LinearCGSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSolver.html#fipy.solvers.pysparse.linearCGSolver.LinearCGSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.default_tolerance</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearCGSolver.html#fipy.solvers.pysparse.linearCGSolver.LinearPCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearGMRESSolver.html">fipy.solvers.pysparse.linearGMRESSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearGMRESSolver.html#fipy.solvers.pysparse.linearGMRESSolver.LinearGMRESSolver"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearGMRESSolver.html#fipy.solvers.pysparse.linearGMRESSolver.LinearGMRESSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearGMRESSolver.html#fipy.solvers.pysparse.linearGMRESSolver.LinearGMRESSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearGMRESSolver.html#fipy.solvers.pysparse.linearGMRESSolver.LinearGMRESSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearGMRESSolver.html#fipy.solvers.pysparse.linearGMRESSolver.LinearGMRESSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearGMRESSolver.html#fipy.solvers.pysparse.linearGMRESSolver.LinearGMRESSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearGMRESSolver.html#fipy.solvers.pysparse.linearGMRESSolver.LinearGMRESSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.default_tolerance</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearInitialSolver.html">fipy.solvers.pysparse.linearInitialSolver</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearInitialSolver.html#fipy.solvers.pysparse.linearInitialSolver.LinearInitialSolver"><code class="docutils literal notranslate"><span class="pre">LinearInitialSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearInitialSolver.html#fipy.solvers.pysparse.linearInitialSolver.LinearInitialSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearInitialSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearInitialSolver.html#fipy.solvers.pysparse.linearInitialSolver.LinearInitialSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearInitialSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearInitialSolver.html#fipy.solvers.pysparse.linearInitialSolver.LinearInitialSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearInitialSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearInitialSolver.html#fipy.solvers.pysparse.linearInitialSolver.LinearInitialSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearInitialSolver.LEGACY_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearInitialSolver.html#fipy.solvers.pysparse.linearInitialSolver.LinearInitialSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearInitialSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearInitialSolver.html#fipy.solvers.pysparse.linearInitialSolver.LinearInitialSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearInitialSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearJORSolver.html">fipy.solvers.pysparse.linearJORSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearJORSolver.html#fipy.solvers.pysparse.linearJORSolver.LinearJORSolver"><code class="docutils literal notranslate"><span class="pre">LinearJORSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearJORSolver.html#fipy.solvers.pysparse.linearJORSolver.LinearJORSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearJORSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearJORSolver.html#fipy.solvers.pysparse.linearJORSolver.LinearJORSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearJORSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearJORSolver.html#fipy.solvers.pysparse.linearJORSolver.LinearJORSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearJORSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearJORSolver.html#fipy.solvers.pysparse.linearJORSolver.LinearJORSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearJORSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearJORSolver.html#fipy.solvers.pysparse.linearJORSolver.LinearJORSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearJORSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearJORSolver.html#fipy.solvers.pysparse.linearJORSolver.LinearJORSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearJORSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearLUSolver.html">fipy.solvers.pysparse.linearLUSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearLUSolver.html#fipy.solvers.pysparse.linearLUSolver.LinearLUSolver"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearLUSolver.html#fipy.solvers.pysparse.linearLUSolver.LinearLUSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearLUSolver.html#fipy.solvers.pysparse.linearLUSolver.LinearLUSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearLUSolver.html#fipy.solvers.pysparse.linearLUSolver.LinearLUSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearLUSolver.html#fipy.solvers.pysparse.linearLUSolver.LinearLUSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearLUSolver.html#fipy.solvers.pysparse.linearLUSolver.LinearLUSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearLUSolver.html#fipy.solvers.pysparse.linearLUSolver.LinearLUSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearPCGSolver.html">fipy.solvers.pysparse.linearPCGSolver</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearPCGSolver.html#fipy.solvers.pysparse.linearPCGSolver.LinearPCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver</span></code></a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearPCGSolver.html#fipy.solvers.pysparse.linearPCGSolver.LinearPCGSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver.__repr__()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearRHSSolver.html">fipy.solvers.pysparse.linearRHSSolver</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearRHSSolver.html#fipy.solvers.pysparse.linearRHSSolver.LinearRHSSolver"><code class="docutils literal notranslate"><span class="pre">LinearRHSSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearRHSSolver.html#fipy.solvers.pysparse.linearRHSSolver.LinearRHSSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearRHSSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearRHSSolver.html#fipy.solvers.pysparse.linearRHSSolver.LinearRHSSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearRHSSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearRHSSolver.html#fipy.solvers.pysparse.linearRHSSolver.LinearRHSSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearRHSSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearRHSSolver.html#fipy.solvers.pysparse.linearRHSSolver.LinearRHSSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearRHSSolver.LEGACY_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearRHSSolver.html#fipy.solvers.pysparse.linearRHSSolver.LinearRHSSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearRHSSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.linearRHSSolver.html#fipy.solvers.pysparse.linearRHSSolver.LinearRHSSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearRHSSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pysparse.preconditioners.html">fipy.solvers.pysparse.preconditioners</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.preconditioners.html#fipy.solvers.pysparse.preconditioners.JacobiPreconditioner"><code class="docutils literal notranslate"><span class="pre">JacobiPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.preconditioners.html#fipy.solvers.pysparse.preconditioners.SSORPreconditioner"><code class="docutils literal notranslate"><span class="pre">SSORPreconditioner</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.preconditioners.jacobiPreconditioner.html">fipy.solvers.pysparse.preconditioners.jacobiPreconditioner</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.preconditioners.jacobiPreconditioner.html#fipy.solvers.pysparse.preconditioners.jacobiPreconditioner.JacobiPreconditioner"><code class="docutils literal notranslate"><span class="pre">JacobiPreconditioner</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.preconditioners.preconditioner.html">fipy.solvers.pysparse.preconditioners.preconditioner</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.preconditioners.preconditioner.html#fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner"><code class="docutils literal notranslate"><span class="pre">Preconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.preconditioners.pysparsePreconditioner.html">fipy.solvers.pysparse.preconditioners.pysparsePreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.preconditioners.pysparsePreconditioner.html#fipy.solvers.pysparse.preconditioners.pysparsePreconditioner.PysparsePreconditioner"><code class="docutils literal notranslate"><span class="pre">PysparsePreconditioner</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.preconditioners.ssorPreconditioner.html">fipy.solvers.pysparse.preconditioners.ssorPreconditioner</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.preconditioners.ssorPreconditioner.html#fipy.solvers.pysparse.preconditioners.ssorPreconditioner.SsorPreconditioner"><code class="docutils literal notranslate"><span class="pre">SsorPreconditioner</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.preconditioners.ssorPreconditioner.html#fipy.solvers.pysparse.preconditioners.ssorPreconditioner.SSORPreconditioner"><code class="docutils literal notranslate"><span class="pre">SSORPreconditioner</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html">fipy.solvers.pysparse.pysparseConvergence</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_AbsoluteToleranceConvergence"><code class="docutils literal notranslate"><span class="pre">Pysparse_AbsoluteToleranceConvergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_AbsoluteToleranceConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">Pysparse_AbsoluteToleranceConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_IllConditionedDivergence"><code class="docutils literal notranslate"><span class="pre">Pysparse_IllConditionedDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_IllConditionedDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">Pysparse_IllConditionedDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_IllConditionedPreconditionerDivergence"><code class="docutils literal notranslate"><span class="pre">Pysparse_IllConditionedPreconditionerDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_IllConditionedPreconditionerDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">Pysparse_IllConditionedPreconditionerDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_IterationDivergence"><code class="docutils literal notranslate"><span class="pre">Pysparse_IterationDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_IterationDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">Pysparse_IterationDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_NonPosDefPreconditioningDivergence"><code class="docutils literal notranslate"><span class="pre">Pysparse_NonPosDefPreconditioningDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_NonPosDefPreconditioningDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">Pysparse_NonPosDefPreconditioningDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_OutOfRangeDivergence"><code class="docutils literal notranslate"><span class="pre">Pysparse_OutOfRangeDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_OutOfRangeDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">Pysparse_OutOfRangeDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_RHSZeroConvergence"><code class="docutils literal notranslate"><span class="pre">Pysparse_RHSZeroConvergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_RHSZeroConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">Pysparse_RHSZeroConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_RelativeToleranceConvergence"><code class="docutils literal notranslate"><span class="pre">Pysparse_RelativeToleranceConvergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_RelativeToleranceConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">Pysparse_RelativeToleranceConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_StagnatedDivergence"><code class="docutils literal notranslate"><span class="pre">Pysparse_StagnatedDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseConvergence.html#fipy.solvers.pysparse.pysparseConvergence.Pysparse_StagnatedDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">Pysparse_StagnatedDivergence.__str__()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseSolver.html">fipy.solvers.pysparse.pysparseSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseSolver.html#fipy.solvers.pysparse.pysparseSolver.PysparseSolver"><code class="docutils literal notranslate"><span class="pre">PysparseSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseSolver.html#fipy.solvers.pysparse.pysparseSolver.PysparseSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">PysparseSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseSolver.html#fipy.solvers.pysparse.pysparseSolver.PysparseSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">PysparseSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseSolver.html#fipy.solvers.pysparse.pysparseSolver.PysparseSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">PysparseSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseSolver.html#fipy.solvers.pysparse.pysparseSolver.PysparseSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">PysparseSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseSolver.html#fipy.solvers.pysparse.pysparseSolver.PysparseSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">PysparseSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.pysparse.pysparseSolver.html#fipy.solvers.pysparse.pysparseSolver.PysparseSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">PysparseSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="generated/fipy.solvers.pysparseMatrixSolver.html">fipy.solvers.pysparseMatrixSolver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/fipy.solvers.pysparseMatrixSolver.html">fipy.solvers.pysparseMatrixSolver</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.pysparseMatrixSolver.html#fipy.solvers.pysparseMatrixSolver.PysparseMatrixSolver"><code class="docutils literal notranslate"><span class="pre">PysparseMatrixSolver</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparseMatrixSolver.html#fipy.solvers.pysparseMatrixSolver.PysparseMatrixSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">PysparseMatrixSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparseMatrixSolver.html#fipy.solvers.pysparseMatrixSolver.PysparseMatrixSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">PysparseMatrixSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparseMatrixSolver.html#fipy.solvers.pysparseMatrixSolver.PysparseMatrixSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">PysparseMatrixSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparseMatrixSolver.html#fipy.solvers.pysparseMatrixSolver.PysparseMatrixSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">PysparseMatrixSolver.LEGACY_TOLERANCE</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparseMatrixSolver.html#fipy.solvers.pysparseMatrixSolver.PysparseMatrixSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">PysparseMatrixSolver.__repr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.pysparseMatrixSolver.html#fipy.solvers.pysparseMatrixSolver.PysparseMatrixSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">PysparseMatrixSolver.default_tolerance</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l4"><a class="reference internal" href="generated/fipy.solvers.scipy.html">fipy.solvers.scipy</a><ul>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.scipy.linearBicgstabSolver.html">fipy.solvers.scipy.linearBicgstabSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.linearBicgstabSolver.html#fipy.solvers.scipy.linearBicgstabSolver.LinearBicgstabSolver"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearBicgstabSolver.html#fipy.solvers.scipy.linearBicgstabSolver.LinearBicgstabSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearBicgstabSolver.html#fipy.solvers.scipy.linearBicgstabSolver.LinearBicgstabSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearBicgstabSolver.html#fipy.solvers.scipy.linearBicgstabSolver.LinearBicgstabSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearBicgstabSolver.html#fipy.solvers.scipy.linearBicgstabSolver.LinearBicgstabSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearBicgstabSolver.html#fipy.solvers.scipy.linearBicgstabSolver.LinearBicgstabSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearBicgstabSolver.html#fipy.solvers.scipy.linearBicgstabSolver.LinearBicgstabSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSSolver.html">fipy.solvers.scipy.linearCGSSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSSolver.html#fipy.solvers.scipy.linearCGSSolver.LinearCGSSolver"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSSolver.html#fipy.solvers.scipy.linearCGSSolver.LinearCGSSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSSolver.html#fipy.solvers.scipy.linearCGSSolver.LinearCGSSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSSolver.html#fipy.solvers.scipy.linearCGSSolver.LinearCGSSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSSolver.html#fipy.solvers.scipy.linearCGSSolver.LinearCGSSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSSolver.html#fipy.solvers.scipy.linearCGSSolver.LinearCGSSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSSolver.html#fipy.solvers.scipy.linearCGSSolver.LinearCGSSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSolver.html">fipy.solvers.scipy.linearCGSolver</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSolver.html#fipy.solvers.scipy.linearCGSolver.LinearCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSolver.html#fipy.solvers.scipy.linearCGSolver.LinearCGSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSolver.html#fipy.solvers.scipy.linearCGSolver.LinearCGSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSolver.html#fipy.solvers.scipy.linearCGSolver.LinearCGSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSolver.html#fipy.solvers.scipy.linearCGSolver.LinearCGSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.LEGACY_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSolver.html#fipy.solvers.scipy.linearCGSolver.LinearCGSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSolver.html#fipy.solvers.scipy.linearCGSolver.LinearCGSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.default_tolerance</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.linearCGSolver.html#fipy.solvers.scipy.linearCGSolver.LinearPCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.scipy.linearGMRESSolver.html">fipy.solvers.scipy.linearGMRESSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.linearGMRESSolver.html#fipy.solvers.scipy.linearGMRESSolver.LinearGMRESSolver"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearGMRESSolver.html#fipy.solvers.scipy.linearGMRESSolver.LinearGMRESSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearGMRESSolver.html#fipy.solvers.scipy.linearGMRESSolver.LinearGMRESSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearGMRESSolver.html#fipy.solvers.scipy.linearGMRESSolver.LinearGMRESSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearGMRESSolver.html#fipy.solvers.scipy.linearGMRESSolver.LinearGMRESSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearGMRESSolver.html#fipy.solvers.scipy.linearGMRESSolver.LinearGMRESSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearGMRESSolver.html#fipy.solvers.scipy.linearGMRESSolver.LinearGMRESSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.scipy.linearLUSolver.html">fipy.solvers.scipy.linearLUSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.linearLUSolver.html#fipy.solvers.scipy.linearLUSolver.LinearLUSolver"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearLUSolver.html#fipy.solvers.scipy.linearLUSolver.LinearLUSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearLUSolver.html#fipy.solvers.scipy.linearLUSolver.LinearLUSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearLUSolver.html#fipy.solvers.scipy.linearLUSolver.LinearLUSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearLUSolver.html#fipy.solvers.scipy.linearLUSolver.LinearLUSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearLUSolver.html#fipy.solvers.scipy.linearLUSolver.LinearLUSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearLUSolver.html#fipy.solvers.scipy.linearLUSolver.LinearLUSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.scipy.linearPCGSolver.html">fipy.solvers.scipy.linearPCGSolver</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.linearPCGSolver.html#fipy.solvers.scipy.linearPCGSolver.LinearPCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver</span></code></a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.linearPCGSolver.html#fipy.solvers.scipy.linearPCGSolver.LinearPCGSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver.__repr__()</span></code></a></li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.scipy.preconditioners.html">fipy.solvers.scipy.preconditioners</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.preconditioners.html#fipy.solvers.scipy.preconditioners.ILUPreconditioner"><code class="docutils literal notranslate"><span class="pre">ILUPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.preconditioners.html#fipy.solvers.scipy.preconditioners.JacobiPreconditioner"><code class="docutils literal notranslate"><span class="pre">JacobiPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.preconditioners.iluPreconditioner.html">fipy.solvers.scipy.preconditioners.iluPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.preconditioners.iluPreconditioner.html#fipy.solvers.scipy.preconditioners.iluPreconditioner.ILUPreconditioner"><code class="docutils literal notranslate"><span class="pre">ILUPreconditioner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.preconditioners.jacobiPreconditioner.html">fipy.solvers.scipy.preconditioners.jacobiPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.preconditioners.jacobiPreconditioner.html#fipy.solvers.scipy.preconditioners.jacobiPreconditioner.JacobiPreconditioner"><code class="docutils literal notranslate"><span class="pre">JacobiPreconditioner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.preconditioners.scipyPreconditioner.html">fipy.solvers.scipy.preconditioners.scipyPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.preconditioners.scipyPreconditioner.html#fipy.solvers.scipy.preconditioners.scipyPreconditioner.ScipyPreconditioner"><code class="docutils literal notranslate"><span class="pre">ScipyPreconditioner</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyKrylovSolver.html">fipy.solvers.scipy.scipyKrylovSolver</a></li>
-<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.scipy.scipySolver.html">fipy.solvers.scipy.scipySolver</a></li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyConvergence.html">fipy.solvers.scipy.scipyConvergence</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyConvergence.html#fipy.solvers.scipy.scipyConvergence.SciPy_BreakdownDivergence"><code class="docutils literal notranslate"><span class="pre">SciPy_BreakdownDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyConvergence.html#fipy.solvers.scipy.scipyConvergence.SciPy_BreakdownDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">SciPy_BreakdownDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyConvergence.html#fipy.solvers.scipy.scipyConvergence.SciPy_Convergence"><code class="docutils literal notranslate"><span class="pre">SciPy_Convergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyConvergence.html#fipy.solvers.scipy.scipyConvergence.SciPy_Convergence.__str__"><code class="docutils literal notranslate"><span class="pre">SciPy_Convergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyConvergence.html#fipy.solvers.scipy.scipyConvergence.SciPy_IterationDivergence"><code class="docutils literal notranslate"><span class="pre">SciPy_IterationDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyConvergence.html#fipy.solvers.scipy.scipyConvergence.SciPy_IterationDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">SciPy_IterationDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyKrylovSolver.html">fipy.solvers.scipy.scipyKrylovSolver</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyKrylovSolver.html#fipy.solvers.scipy.scipyKrylovSolver.ScipyKrylovSolver"><code class="docutils literal notranslate"><span class="pre">ScipyKrylovSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyKrylovSolver.html#fipy.solvers.scipy.scipyKrylovSolver.ScipyKrylovSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">ScipyKrylovSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyKrylovSolver.html#fipy.solvers.scipy.scipyKrylovSolver.ScipyKrylovSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">ScipyKrylovSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyKrylovSolver.html#fipy.solvers.scipy.scipyKrylovSolver.ScipyKrylovSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">ScipyKrylovSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyKrylovSolver.html#fipy.solvers.scipy.scipyKrylovSolver.ScipyKrylovSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">ScipyKrylovSolver.LEGACY_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyKrylovSolver.html#fipy.solvers.scipy.scipyKrylovSolver.ScipyKrylovSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">ScipyKrylovSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipyKrylovSolver.html#fipy.solvers.scipy.scipyKrylovSolver.ScipyKrylovSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">ScipyKrylovSolver.default_tolerance</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.scipy.scipySolver.html">fipy.solvers.scipy.scipySolver</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.scipy.scipySolver.html#fipy.solvers.scipy.scipySolver.ScipySolver"><code class="docutils literal notranslate"><span class="pre">ScipySolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipySolver.html#fipy.solvers.scipy.scipySolver.ScipySolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">ScipySolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipySolver.html#fipy.solvers.scipy.scipySolver.ScipySolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">ScipySolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipySolver.html#fipy.solvers.scipy.scipySolver.ScipySolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">ScipySolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipySolver.html#fipy.solvers.scipy.scipySolver.ScipySolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">ScipySolver.LEGACY_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipySolver.html#fipy.solvers.scipy.scipySolver.ScipySolver.__repr__"><code class="docutils literal notranslate"><span class="pre">ScipySolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.scipy.scipySolver.html#fipy.solvers.scipy.scipySolver.ScipySolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">ScipySolver.default_tolerance</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="generated/fipy.solvers.solver.html">fipy.solvers.solver</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.BreakdownWarning"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.BreakdownWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__cause__</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.BreakdownWarning.__context__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__context__</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.BreakdownWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__delattr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.BreakdownWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__getattribute__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.BreakdownWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__reduce__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.BreakdownWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__repr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.BreakdownWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__setattr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.BreakdownWarning.__str__"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.__str__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.BreakdownWarning.add_note"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.add_note()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.BreakdownWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">BreakdownWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllConditionedPreconditionerWarning"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning</span></code></a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllConditionedPreconditionerWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.__cause__</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllConditionedPreconditionerWarning.__context__"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.__context__</span></code></a></li>
@@ -2032,6 +2534,32 @@
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllConditionedPreconditionerWarning.__str__"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.__str__()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllConditionedPreconditionerWarning.add_note"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.add_note()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllConditionedPreconditionerWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">IllConditionedPreconditionerWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllegalInputOrBreakdownWarning"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__cause__</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__context__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__context__</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__delattr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__getattribute__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__reduce__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__repr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__setattr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllegalInputOrBreakdownWarning.__str__"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.__str__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllegalInputOrBreakdownWarning.add_note"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.add_note()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.IllegalInputOrBreakdownWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">IllegalInputOrBreakdownWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.LossOfPrecisionWarning"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.LossOfPrecisionWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__cause__</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.LossOfPrecisionWarning.__context__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__context__</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.LossOfPrecisionWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__delattr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.LossOfPrecisionWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__getattribute__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.LossOfPrecisionWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__reduce__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.LossOfPrecisionWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__repr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.LossOfPrecisionWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__setattr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.LossOfPrecisionWarning.__str__"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.__str__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.LossOfPrecisionWarning.add_note"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.add_note()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.LossOfPrecisionWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">LossOfPrecisionWarning.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.MatrixIllConditionedWarning"><code class="docutils literal notranslate"><span class="pre">MatrixIllConditionedWarning</span></code></a><ul>
@@ -2058,6 +2586,32 @@
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.MaximumIterationWarning.__str__"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.__str__()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.MaximumIterationWarning.add_note"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.add_note()</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.MaximumIterationWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">MaximumIterationWarning.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.NormalConvergence"><code class="docutils literal notranslate"><span class="pre">NormalConvergence</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.NormalConvergence.__cause__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__cause__</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.NormalConvergence.__context__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__context__</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.NormalConvergence.__delattr__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__delattr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.NormalConvergence.__getattribute__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__getattribute__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.NormalConvergence.__reduce__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__reduce__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.NormalConvergence.__repr__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__repr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.NormalConvergence.__setattr__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__setattr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.NormalConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.__str__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.NormalConvergence.add_note"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.add_note()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.NormalConvergence.with_traceback"><code class="docutils literal notranslate"><span class="pre">NormalConvergence.with_traceback()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.ParameterWarning"><code class="docutils literal notranslate"><span class="pre">ParameterWarning</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.ParameterWarning.__cause__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__cause__</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.ParameterWarning.__context__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__context__</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.ParameterWarning.__delattr__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__delattr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.ParameterWarning.__getattribute__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__getattribute__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.ParameterWarning.__reduce__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__reduce__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.ParameterWarning.__repr__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__repr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.ParameterWarning.__setattr__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__setattr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.ParameterWarning.__str__"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.__str__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.ParameterWarning.add_note"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.add_note()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.ParameterWarning.with_traceback"><code class="docutils literal notranslate"><span class="pre">ParameterWarning.with_traceback()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.PreconditionerNotPositiveDefiniteWarning"><code class="docutils literal notranslate"><span class="pre">PreconditionerNotPositiveDefiniteWarning</span></code></a><ul>
@@ -2100,7 +2654,12 @@
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.Solver"><code class="docutils literal notranslate"><span class="pre">Solver</span></code></a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.Solver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">Solver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.Solver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">Solver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.Solver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">Solver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.Solver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">Solver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.Solver.__repr__"><code class="docutils literal notranslate"><span class="pre">Solver.__repr__()</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.Solver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">Solver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.SolverConvergenceWarning"><code class="docutils literal notranslate"><span class="pre">SolverConvergenceWarning</span></code></a><ul>
@@ -2133,6 +2692,33 @@
 </li>
 <li class="toctree-l4"><a class="reference internal" href="generated/fipy.solvers.test.html">fipy.solvers.test</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/fipy.solvers.trilinos.html">fipy.solvers.trilinos</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html">fipy.solvers.trilinos.aztecConvergence</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html#fipy.solvers.trilinos.aztecConvergence.AZ_BreakdownDivergence"><code class="docutils literal notranslate"><span class="pre">AZ_BreakdownDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html#fipy.solvers.trilinos.aztecConvergence.AZ_BreakdownDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">AZ_BreakdownDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html#fipy.solvers.trilinos.aztecConvergence.AZ_IllConditionedDivergence"><code class="docutils literal notranslate"><span class="pre">AZ_IllConditionedDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html#fipy.solvers.trilinos.aztecConvergence.AZ_IllConditionedDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">AZ_IllConditionedDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html#fipy.solvers.trilinos.aztecConvergence.AZ_IterationDivergence"><code class="docutils literal notranslate"><span class="pre">AZ_IterationDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html#fipy.solvers.trilinos.aztecConvergence.AZ_IterationDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">AZ_IterationDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html#fipy.solvers.trilinos.aztecConvergence.AZ_LossOfAccuracyConvergence"><code class="docutils literal notranslate"><span class="pre">AZ_LossOfAccuracyConvergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html#fipy.solvers.trilinos.aztecConvergence.AZ_LossOfAccuracyConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">AZ_LossOfAccuracyConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html#fipy.solvers.trilinos.aztecConvergence.AZ_NormalConvergence"><code class="docutils literal notranslate"><span class="pre">AZ_NormalConvergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html#fipy.solvers.trilinos.aztecConvergence.AZ_NormalConvergence.__str__"><code class="docutils literal notranslate"><span class="pre">AZ_NormalConvergence.__str__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html#fipy.solvers.trilinos.aztecConvergence.AZ_ParameterDivergence"><code class="docutils literal notranslate"><span class="pre">AZ_ParameterDivergence</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.aztecConvergence.html#fipy.solvers.trilinos.aztecConvergence.AZ_ParameterDivergence.__str__"><code class="docutils literal notranslate"><span class="pre">AZ_ParameterDivergence.__str__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.comms.html">fipy.solvers.trilinos.comms</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.comms.epetraCommWrapper.html">fipy.solvers.trilinos.comms.epetraCommWrapper</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.comms.epetraCommWrapper.html#fipy.solvers.trilinos.comms.epetraCommWrapper.EpetraCommWrapper"><code class="docutils literal notranslate"><span class="pre">EpetraCommWrapper</span></code></a><ul>
@@ -2165,46 +2751,86 @@
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearBicgstabSolver.html">fipy.solvers.trilinos.linearBicgstabSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearBicgstabSolver.html#fipy.solvers.trilinos.linearBicgstabSolver.LinearBicgstabSolver"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearBicgstabSolver.html#fipy.solvers.trilinos.linearBicgstabSolver.LinearBicgstabSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearBicgstabSolver.html#fipy.solvers.trilinos.linearBicgstabSolver.LinearBicgstabSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearBicgstabSolver.html#fipy.solvers.trilinos.linearBicgstabSolver.LinearBicgstabSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearBicgstabSolver.html#fipy.solvers.trilinos.linearBicgstabSolver.LinearBicgstabSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearBicgstabSolver.html#fipy.solvers.trilinos.linearBicgstabSolver.LinearBicgstabSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearBicgstabSolver.html#fipy.solvers.trilinos.linearBicgstabSolver.LinearBicgstabSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearBicgstabSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSSolver.html">fipy.solvers.trilinos.linearCGSSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSSolver.html#fipy.solvers.trilinos.linearCGSSolver.LinearCGSSolver"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSSolver.html#fipy.solvers.trilinos.linearCGSSolver.LinearCGSSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSSolver.html#fipy.solvers.trilinos.linearCGSSolver.LinearCGSSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSSolver.html#fipy.solvers.trilinos.linearCGSSolver.LinearCGSSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSSolver.html#fipy.solvers.trilinos.linearCGSSolver.LinearCGSSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSSolver.html#fipy.solvers.trilinos.linearCGSSolver.LinearCGSSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSSolver.html#fipy.solvers.trilinos.linearCGSSolver.LinearCGSSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearCGSSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSolver.html">fipy.solvers.trilinos.linearCGSolver</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSolver.html#fipy.solvers.trilinos.linearCGSolver.LinearCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSolver.html#fipy.solvers.trilinos.linearCGSolver.LinearCGSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSolver.html#fipy.solvers.trilinos.linearCGSolver.LinearCGSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSolver.html#fipy.solvers.trilinos.linearCGSolver.LinearCGSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSolver.html#fipy.solvers.trilinos.linearCGSolver.LinearCGSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.LEGACY_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSolver.html#fipy.solvers.trilinos.linearCGSolver.LinearCGSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSolver.html#fipy.solvers.trilinos.linearCGSolver.LinearCGSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearCGSolver.default_tolerance</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearCGSolver.html#fipy.solvers.trilinos.linearCGSolver.LinearPCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearGMRESSolver.html">fipy.solvers.trilinos.linearGMRESSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearGMRESSolver.html#fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearGMRESSolver.html#fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearGMRESSolver.html#fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearGMRESSolver.html#fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearGMRESSolver.html#fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearGMRESSolver.html#fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearGMRESSolver.html#fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearGMRESSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearLUSolver.html">fipy.solvers.trilinos.linearLUSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearLUSolver.html#fipy.solvers.trilinos.linearLUSolver.LinearLUSolver"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearLUSolver.html#fipy.solvers.trilinos.linearLUSolver.LinearLUSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearLUSolver.html#fipy.solvers.trilinos.linearLUSolver.LinearLUSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearLUSolver.html#fipy.solvers.trilinos.linearLUSolver.LinearLUSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearLUSolver.html#fipy.solvers.trilinos.linearLUSolver.LinearLUSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearLUSolver.html#fipy.solvers.trilinos.linearLUSolver.LinearLUSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.__repr__()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearPCGSolver.html">fipy.solvers.trilinos.linearPCGSolver</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearPCGSolver.html#fipy.solvers.trilinos.linearPCGSolver.LinearPCGSolver"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver</span></code></a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearPCGSolver.html#fipy.solvers.trilinos.linearPCGSolver.LinearPCGSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearPCGSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.linearLUSolver.html#fipy.solvers.trilinos.linearLUSolver.LinearLUSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.html">fipy.solvers.trilinos.preconditioners</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.html#fipy.solvers.trilinos.preconditioners.DomDecompPreconditioner"><code class="docutils literal notranslate"><span class="pre">DomDecompPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.html#fipy.solvers.trilinos.preconditioners.ICPreconditioner"><code class="docutils literal notranslate"><span class="pre">ICPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.html#fipy.solvers.trilinos.preconditioners.ILUPreconditioner"><code class="docutils literal notranslate"><span class="pre">ILUPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.html#fipy.solvers.trilinos.preconditioners.JacobiPreconditioner"><code class="docutils literal notranslate"><span class="pre">JacobiPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.html#fipy.solvers.trilinos.preconditioners.MultilevelDDMLPreconditioner"><code class="docutils literal notranslate"><span class="pre">MultilevelDDMLPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.html#fipy.solvers.trilinos.preconditioners.MultilevelDDPreconditioner"><code class="docutils literal notranslate"><span class="pre">MultilevelDDPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.html#fipy.solvers.trilinos.preconditioners.MultilevelNSSAPreconditioner"><code class="docutils literal notranslate"><span class="pre">MultilevelNSSAPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.html#fipy.solvers.trilinos.preconditioners.MultilevelSAPreconditioner"><code class="docutils literal notranslate"><span class="pre">MultilevelSAPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.html#fipy.solvers.trilinos.preconditioners.MultilevelSGSPreconditioner"><code class="docutils literal notranslate"><span class="pre">MultilevelSGSPreconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.html#fipy.solvers.trilinos.preconditioners.MultilevelSolverSmootherPreconditioner"><code class="docutils literal notranslate"><span class="pre">MultilevelSolverSmootherPreconditioner</span></code></a></li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.domDecompPreconditioner.html">fipy.solvers.trilinos.preconditioners.domDecompPreconditioner</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.domDecompPreconditioner.html#fipy.solvers.trilinos.preconditioners.domDecompPreconditioner.DomDecompPreconditioner"><code class="docutils literal notranslate"><span class="pre">DomDecompPreconditioner</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.icPreconditioner.html">fipy.solvers.trilinos.preconditioners.icPreconditioner</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.icPreconditioner.html#fipy.solvers.trilinos.preconditioners.icPreconditioner.ICPreconditioner"><code class="docutils literal notranslate"><span class="pre">ICPreconditioner</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.iluPreconditioner.html">fipy.solvers.trilinos.preconditioners.iluPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.iluPreconditioner.html#fipy.solvers.trilinos.preconditioners.iluPreconditioner.ILUPreconditioner"><code class="docutils literal notranslate"><span class="pre">ILUPreconditioner</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.jacobiPreconditioner.html">fipy.solvers.trilinos.preconditioners.jacobiPreconditioner</a><ul>
@@ -2223,6 +2849,10 @@
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.multilevelNSSAPreconditioner.html#fipy.solvers.trilinos.preconditioners.multilevelNSSAPreconditioner.MultilevelNSSAPreconditioner"><code class="docutils literal notranslate"><span class="pre">MultilevelNSSAPreconditioner</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.multilevelPreconditioner.html">fipy.solvers.trilinos.preconditioners.multilevelPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.multilevelPreconditioner.html#fipy.solvers.trilinos.preconditioners.multilevelPreconditioner.MultilevelPreconditioner"><code class="docutils literal notranslate"><span class="pre">MultilevelPreconditioner</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.multilevelSAPreconditioner.html">fipy.solvers.trilinos.preconditioners.multilevelSAPreconditioner</a><ul>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.multilevelSAPreconditioner.html#fipy.solvers.trilinos.preconditioners.multilevelSAPreconditioner.MultilevelSAPreconditioner"><code class="docutils literal notranslate"><span class="pre">MultilevelSAPreconditioner</span></code></a></li>
 </ul>
@@ -2235,36 +2865,56 @@
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.multilevelSolverSmootherPreconditioner.html#fipy.solvers.trilinos.preconditioners.multilevelSolverSmootherPreconditioner.MultilevelSolverSmootherPreconditioner"><code class="docutils literal notranslate"><span class="pre">MultilevelSolverSmootherPreconditioner</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.preconditioner.html">fipy.solvers.trilinos.preconditioners.preconditioner</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.preconditioner.html#fipy.solvers.trilinos.preconditioners.preconditioner.Preconditioner"><code class="docutils literal notranslate"><span class="pre">Preconditioner</span></code></a></li>
+<li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.trilinosPreconditioner.html">fipy.solvers.trilinos.preconditioners.trilinosPreconditioner</a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.preconditioners.trilinosPreconditioner.html#fipy.solvers.trilinos.preconditioners.trilinosPreconditioner.TrilinosPreconditioner"><code class="docutils literal notranslate"><span class="pre">TrilinosPreconditioner</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosAztecOOSolver.html">fipy.solvers.trilinos.trilinosAztecOOSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosAztecOOSolver.html#fipy.solvers.trilinos.trilinosAztecOOSolver.TrilinosAztecOOSolver"><code class="docutils literal notranslate"><span class="pre">TrilinosAztecOOSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosAztecOOSolver.html#fipy.solvers.trilinos.trilinosAztecOOSolver.TrilinosAztecOOSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">TrilinosAztecOOSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosAztecOOSolver.html#fipy.solvers.trilinos.trilinosAztecOOSolver.TrilinosAztecOOSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">TrilinosAztecOOSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosAztecOOSolver.html#fipy.solvers.trilinos.trilinosAztecOOSolver.TrilinosAztecOOSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">TrilinosAztecOOSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosAztecOOSolver.html#fipy.solvers.trilinos.trilinosAztecOOSolver.TrilinosAztecOOSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">TrilinosAztecOOSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosAztecOOSolver.html#fipy.solvers.trilinos.trilinosAztecOOSolver.TrilinosAztecOOSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">TrilinosAztecOOSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosAztecOOSolver.html#fipy.solvers.trilinos.trilinosAztecOOSolver.TrilinosAztecOOSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">TrilinosAztecOOSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosMLTest.html">fipy.solvers.trilinos.trilinosMLTest</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosMLTest.html#fipy.solvers.trilinos.trilinosMLTest.TrilinosMLTest"><code class="docutils literal notranslate"><span class="pre">TrilinosMLTest</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosMLTest.html#fipy.solvers.trilinos.trilinosMLTest.TrilinosMLTest.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">TrilinosMLTest.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosMLTest.html#fipy.solvers.trilinos.trilinosMLTest.TrilinosMLTest.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">TrilinosMLTest.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosMLTest.html#fipy.solvers.trilinos.trilinosMLTest.TrilinosMLTest.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">TrilinosMLTest.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosMLTest.html#fipy.solvers.trilinos.trilinosMLTest.TrilinosMLTest.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">TrilinosMLTest.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosMLTest.html#fipy.solvers.trilinos.trilinosMLTest.TrilinosMLTest.__repr__"><code class="docutils literal notranslate"><span class="pre">TrilinosMLTest.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosMLTest.html#fipy.solvers.trilinos.trilinosMLTest.TrilinosMLTest.default_tolerance"><code class="docutils literal notranslate"><span class="pre">TrilinosMLTest.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosNonlinearSolver.html">fipy.solvers.trilinos.trilinosNonlinearSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosNonlinearSolver.html#fipy.solvers.trilinos.trilinosNonlinearSolver.TrilinosNonlinearSolver"><code class="docutils literal notranslate"><span class="pre">TrilinosNonlinearSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosNonlinearSolver.html#fipy.solvers.trilinos.trilinosNonlinearSolver.TrilinosNonlinearSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">TrilinosNonlinearSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosNonlinearSolver.html#fipy.solvers.trilinos.trilinosNonlinearSolver.TrilinosNonlinearSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">TrilinosNonlinearSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosNonlinearSolver.html#fipy.solvers.trilinos.trilinosNonlinearSolver.TrilinosNonlinearSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">TrilinosNonlinearSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosNonlinearSolver.html#fipy.solvers.trilinos.trilinosNonlinearSolver.TrilinosNonlinearSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">TrilinosNonlinearSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosNonlinearSolver.html#fipy.solvers.trilinos.trilinosNonlinearSolver.TrilinosNonlinearSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">TrilinosNonlinearSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosNonlinearSolver.html#fipy.solvers.trilinos.trilinosNonlinearSolver.TrilinosNonlinearSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">TrilinosNonlinearSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l5"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosSolver.html">fipy.solvers.trilinos.trilinosSolver</a><ul>
 <li class="toctree-l6"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosSolver.html#fipy.solvers.trilinos.trilinosSolver.TrilinosSolver"><code class="docutils literal notranslate"><span class="pre">TrilinosSolver</span></code></a><ul>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosSolver.html#fipy.solvers.trilinos.trilinosSolver.TrilinosSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">TrilinosSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosSolver.html#fipy.solvers.trilinos.trilinosSolver.TrilinosSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">TrilinosSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosSolver.html#fipy.solvers.trilinos.trilinosSolver.TrilinosSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">TrilinosSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosSolver.html#fipy.solvers.trilinos.trilinosSolver.TrilinosSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">TrilinosSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosSolver.html#fipy.solvers.trilinos.trilinosSolver.TrilinosSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">TrilinosSolver.__repr__()</span></code></a></li>
+<li class="toctree-l7"><a class="reference internal" href="generated/fipy.solvers.trilinos.trilinosSolver.html#fipy.solvers.trilinos.trilinosSolver.TrilinosSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">TrilinosSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -4675,7 +5325,7 @@
 
 
                 <div class='last-updated'>
-                Last updated on Jul 22, 2025.
+                Last updated on Sep 02, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -4685,7 +5335,7 @@
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+66.g2b1086a27
+Version 3.4.5+67.gcb12895d3
 
 <div class="sphinxsidebarsection">
   <h4>Next topic</h4>

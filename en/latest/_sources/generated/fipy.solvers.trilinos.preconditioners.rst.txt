@@ -29,12 +29,14 @@ fipy.solvers.trilinos.preconditioners
 
    fipy.solvers.trilinos.preconditioners.domDecompPreconditioner
    fipy.solvers.trilinos.preconditioners.icPreconditioner
+   fipy.solvers.trilinos.preconditioners.iluPreconditioner
    fipy.solvers.trilinos.preconditioners.jacobiPreconditioner
    fipy.solvers.trilinos.preconditioners.multilevelDDMLPreconditioner
    fipy.solvers.trilinos.preconditioners.multilevelDDPreconditioner
    fipy.solvers.trilinos.preconditioners.multilevelNSSAPreconditioner
+   fipy.solvers.trilinos.preconditioners.multilevelPreconditioner
    fipy.solvers.trilinos.preconditioners.multilevelSAPreconditioner
    fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner
    fipy.solvers.trilinos.preconditioners.multilevelSolverSmootherPreconditioner
-   fipy.solvers.trilinos.preconditioners.preconditioner
+   fipy.solvers.trilinos.preconditioners.trilinosPreconditioner
 

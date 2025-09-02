@@ -35,21 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.cahnHilliard.tanh1D &#8212; FiPy 3.4.5+66.g2b1086a27 documentation</title>
+    <title>examples.cahnHilliard.tanh1D &#8212; FiPy 3.4.5+67.gcb12895d3 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=09b6ca14"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b7f80988"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.cahnHilliard.tanh1D.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+66.g2b1086a27 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+67.gcb12895d3 documentation" href="../contents.html" />
     <link rel="up" title="examples.cahnHilliard" href="examples.cahnHilliard.html" />
     <link rel="next" title="examples.cahnHilliard.test" href="examples.cahnHilliard.test.html" />
     <link rel="prev" title="examples.cahnHilliard.sphereDaemon" href="examples.cahnHilliard.sphereDaemon.html" />
@@ -194,11 +196,11 @@ way to express the equation to <a class="reference internal" href="../glossary.h
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eqch</span> <span class="o">=</span> <span class="n">TransientTerm</span><span class="p">()</span> <span class="o">==</span> <span class="n">diffTerm2</span> <span class="o">-</span> <span class="n">diffTerm4</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate" id="index-3"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">fipy.solvers.solver</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">fipy</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">solver_suite</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;pysparse&#39;</span><span class="p">,</span> <span class="s1">&#39;pyamgx&#39;</span><span class="p">]:</span>
+<div class="doctest highlight-default notranslate" id="index-3"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">fipy.solvers</span> <span class="kn">import</span> <span class="n">solver_suite</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">solver_suite</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;pysparse&#39;</span><span class="p">]:</span>
 <span class="gp">... </span>    <span class="n">solver</span> <span class="o">=</span> <span class="n">LinearLUSolver</span><span class="p">(</span><span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-15</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="gp">... </span><span class="k">else</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">solver</span> <span class="o">=</span> <span class="n">DefaultSolver</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">solver</span> <span class="o">=</span> <span class="n">DefaultSolver</span><span class="p">(</span><span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-15</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The solution to this 1D problem over an infinite domain is given by,</p>
@@ -244,7 +246,7 @@ we update the display and output data about the progression of the solution</p>
 
 
                 <div class='last-updated'>
-                Last updated on Jul 22, 2025.
+                Last updated on Sep 02, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -254,7 +256,7 @@ we update the display and output data about the progression of the solution</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+66.g2b1086a27
+Version 3.4.5+67.gcb12895d3
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

@@ -35,20 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.diffusion.steadyState.mesh1D.tri2Dinput &#8212; FiPy 3.4.5+66.g2b1086a27 documentation</title>
+    <title>examples.diffusion.steadyState.mesh1D.tri2Dinput &#8212; FiPy 3.4.5+67.gcb12895d3 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=09b6ca14"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b7f80988"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.diffusion.steadyState.mesh1D.tri2Dinput.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+66.g2b1086a27 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+67.gcb12895d3 documentation" href="../contents.html" />
     <link rel="up" title="examples.diffusion.steadyState.mesh1D" href="examples.diffusion.steadyState.mesh1D.html" />
     <link rel="next" title="examples.diffusion.steadyState.mesh20x20" href="examples.diffusion.steadyState.mesh20x20.html" />
     <link rel="prev" title="examples.diffusion.steadyState.mesh1D.inputPeriodic" href="examples.diffusion.steadyState.mesh1D.inputPeriodic.html" />
@@ -129,8 +132,11 @@ in the terminal.</p>
 <a class="reference internal" href="fipy.meshes.tri2D.html#fipy.meshes.tri2D.Tri2D" title="fipy.meshes.tri2D.Tri2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">fipy.meshes.tri2D.Tri2D</span></code></a> object rather than a
 <a class="reference internal" href="fipy.meshes.factoryMeshes.html#fipy.meshes.factoryMeshes.Grid1D" title="fipy.meshes.factoryMeshes.Grid1D"><code class="xref py py-func docutils literal notranslate"><span class="pre">Grid1D()</span></code></a> object.</p>
 <p>Here, one time step is executed to implicitly find the steady state
-solution.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DiffusionTerm</span><span class="p">()</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+solution.  We refine the solver tolerance from the default
+<span class="math notranslate nohighlight">\(10^{-5}\)</span> in order to achieve a good solution.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span> <span class="o">=</span> <span class="n">DiffusionTerm</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">solver</span> <span class="o">=</span> <span class="n">eq</span><span class="o">.</span><span class="n">getDefaultSolver</span><span class="p">(</span><span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">eq</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To test the solution, the analytical result is required. The <cite>x</cite>
@@ -145,14 +151,14 @@ compare with the numerical result,</p>
 <p>Finally the analytical and numerical results are compared with a
 tolerance of <cite>1e-10</cite>.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">analyticalArray</span><span class="p">))</span>
-<span class="go">1</span>
+<span class="go">True</span>
 </pre></div>
 </div>
 </section>
 
 
                 <div class='last-updated'>
-                Last updated on Jul 22, 2025.
+                Last updated on Sep 02, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -162,7 +168,7 @@ tolerance of <cite>1e-10</cite>.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+66.g2b1086a27
+Version 3.4.5+67.gcb12895d3
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>

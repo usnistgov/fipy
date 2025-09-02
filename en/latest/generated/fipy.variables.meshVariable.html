@@ -35,21 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.variables.meshVariable &#8212; FiPy 3.4.5+66.g2b1086a27 documentation</title>
+    <title>fipy.variables.meshVariable &#8212; FiPy 3.4.5+67.gcb12895d3 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=09b6ca14"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b7f80988"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/fipy.variables.meshVariable.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+66.g2b1086a27 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+67.gcb12895d3 documentation" href="../contents.html" />
     <link rel="up" title="fipy.variables" href="fipy.variables.html" />
     <link rel="next" title="fipy.variables.minmodCellToFaceVariable" href="fipy.variables.minmodCellToFaceVariable.html" />
     <link rel="prev" title="fipy.variables.levelSetDiffusionVariable" href="fipy.variables.levelSetDiffusionVariable.html" />
@@ -137,14 +139,14 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mesh</strong> (<a class="reference internal" href="fipy.meshes.mesh.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><em>Mesh</em></a>) – the mesh that defines the geometry of this <cite>Variable</cite></p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – the user-readable name of the <cite>Variable</cite></p></li>
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em> or </em><em>array_like</em>) – the initial value</p></li>
-<li><p><strong>rank</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the rank (number of dimensions) of each element of this
+<li><p><strong>mesh</strong> (<a class="reference internal" href="fipy.meshes.mesh.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a>) – the mesh that defines the geometry of this <cite>Variable</cite></p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – the user-readable name of the <cite>Variable</cite></p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array_like" title="(in NumPy v2.3)"><span class="xref std std-term">array_like</span></a>) – the initial value</p></li>
+<li><p><strong>rank</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the rank (number of dimensions) of each element of this
 <cite>Variable</cite>. Default: 0</p></li>
 <li><p><strong>elementshape</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code></a>) – the shape of each element of this variable
 Default: <cite>rank * (mesh.dim,)</cite></p></li>
-<li><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em> or </em><a class="reference internal" href="fipy.tools.dimensions.physicalField.html#fipy.tools.dimensions.physicalField.PhysicalUnit" title="fipy.tools.dimensions.physicalField.PhysicalUnit"><em>PhysicalUnit</em></a>) – The physical units of the variable</p></li>
+<li><p><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> or <a class="reference internal" href="fipy.tools.dimensions.physicalField.html#fipy.tools.dimensions.physicalField.PhysicalUnit" title="fipy.tools.dimensions.physicalField.PhysicalUnit"><code class="xref py py-class docutils literal notranslate"><span class="pre">PhysicalUnit</span></code></a>) – The physical units of the variable</p></li>
 </ul>
 </dd>
 </dl>
@@ -558,7 +560,7 @@ out of memory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (float or <cite>array_like</cite>) – The value of the constraint</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <cite>array_like</cite>) – The value of the constraint</p></li>
 <li><p><strong>where</strong> (<cite>array_like</cite> of <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></a>) – The constraint mask or index specifying the location of the
 constraint</p></li>
 </ul>
@@ -862,7 +864,7 @@ need to be a <a class="reference internal" href="#fipy.variables.meshVariable.Me
 
 
                 <div class='last-updated'>
-                Last updated on Jul 22, 2025.
+                Last updated on Sep 02, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -872,7 +874,7 @@ need to be a <a class="reference internal" href="#fipy.variables.meshVariable.Me
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+66.g2b1086a27
+Version 3.4.5+67.gcb12895d3
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

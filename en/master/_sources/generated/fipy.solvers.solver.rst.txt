@@ -27,9 +27,14 @@ fipy.solvers.solver
 
    .. autosummary::
    
+      BreakdownWarning
       IllConditionedPreconditionerWarning
+      IllegalInputOrBreakdownWarning
+      LossOfPrecisionWarning
       MatrixIllConditionedWarning
       MaximumIterationWarning
+      NormalConvergence
+      ParameterWarning
       PreconditionerNotPositiveDefiniteWarning
       PreconditionerWarning
       ScalarQuantityOutOfRangeWarning

@@ -1,0 +1,29 @@
+fipy.solvers.pysparse.linearRHSSolver
+=====================================
+
+.. automodule:: fipy.solvers.pysparse.linearRHSSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearRHSSolver
+   
+   
+
+   
+   
+   
+
+
+

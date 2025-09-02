@@ -42,7 +42,9 @@ fipy.solvers
    :toctree:
    :recursive:
 
+   fipy.solvers.convergence
    fipy.solvers.petsc
+   fipy.solvers.preconditioner
    fipy.solvers.pyAMG
    fipy.solvers.pyamgx
    fipy.solvers.pysparse

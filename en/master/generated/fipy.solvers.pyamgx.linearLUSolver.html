@@ -35,20 +35,21 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.solvers.pyamgx.linearLUSolver &#8212; FiPy 3.4.5+66.g2b1086a27 documentation</title>
+    <title>fipy.solvers.pyamgx.linearLUSolver &#8212; FiPy 3.4.5+67.gcb12895d3 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=09b6ca14"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b7f80988"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/fipy.solvers.pyamgx.linearLUSolver.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+66.g2b1086a27 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+67.gcb12895d3 documentation" href="../contents.html" />
     <link rel="up" title="fipy.solvers.pyamgx" href="fipy.solvers.pyamgx.html" />
     <link rel="next" title="fipy.solvers.pyamgx.preconditioners" href="fipy.solvers.pyamgx.preconditioners.html" />
     <link rel="prev" title="fipy.solvers.pyamgx.linearGMRESSolver" href="fipy.solvers.pyamgx.linearGMRESSolver.html" />
@@ -119,26 +120,56 @@
 <span id="fipy-solvers-pyamgx-linearlusolver"></span><h1>fipy.solvers.pyamgx.linearLUSolver<a class="headerlink" href="#module-fipy.solvers.pyamgx.linearLUSolver" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.pyamgx.linearLUSolver.</span></span><span class="sig-name descname"><span class="pre">LinearLUSolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_ScipySolver</span></code></p>
-<p>The <cite>LinearLUSolver</cite> solves a linear system of equations using
-LU-factorization.  The <cite>LinearLUSolver</cite> is a wrapper class for the
-the Scipy <cite>scipy.sparse.linalg.splu</cite> module.</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.pyamgx.linearLUSolver.</span></span><span class="sig-name descname"><span class="pre">LinearLUSolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absolute_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fipy.solvers.scipy.scipySolver.html#fipy.solvers.scipy.scipySolver.ScipySolver" title="fipy.solvers.scipy.scipySolver.ScipySolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScipySolver</span></code></a></p>
+<p>Interface to <a class="reference internal" href="../glossary.html#term-LU"><span class="xref std std-term">LU</span></a>-factorization in <a class="reference internal" href="../SOLVERS.html#id16"><span class="std std-ref">SciPy</span></a>.</p>
 <p>Create a <cite>Solver</cite> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Required error tolerance.</p></li>
-<li><p><strong>iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Maximum number of iterative steps to perform.</p></li>
-<li><p><strong>precon</strong> – Preconditioner to use.  Not all solver suites support
-preconditioners.</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Required relative error tolerance.</p></li>
+<li><p><strong>absolute_tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Required absolute error tolerance.</p></li>
+<li><p><strong>criterion</strong> (<code class="docutils literal notranslate"><span class="pre">{'default',</span> <span class="pre">'unscaled',</span> <span class="pre">'RHS',</span> <span class="pre">'matrix',</span> <span class="pre">'initial',</span> <span class="pre">'legacy',</span> <span class="pre">}</span></code>) – Interpretation of <code class="docutils literal notranslate"><span class="pre">tolerance</span></code>.
+See <a class="reference internal" href="../SOLVERS.html#convergence"><span class="std std-ref">Convergence</span></a> for more information.</p></li>
+<li><p><strong>iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of iterative steps to perform.</p></li>
+<li><p><strong>precon</strong> – Preconditioner to use.</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.DEFAULT_ITERATIONS">
+<span class="sig-name descname"><span class="pre">DEFAULT_ITERATIONS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1000</span></em><a class="headerlink" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.DEFAULT_ITERATIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default maximum number of iterative steps to perform</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.DEFAULT_PRECONDITIONER">
+<span class="sig-name descname"><span class="pre">DEFAULT_PRECONDITIONER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.DEFAULT_PRECONDITIONER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default preconditioner to apply to the matrix</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.DEFAULT_TOLERANCE">
+<span class="sig-name descname"><span class="pre">DEFAULT_TOLERANCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-05</span></em><a class="headerlink" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.DEFAULT_TOLERANCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default tolerance for linear solves unless <cite>criterion=”legacy”</cite></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.LEGACY_TOLERANCE">
+<span class="sig-name descname"><span class="pre">LEGACY_TOLERANCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1e-10</span></em><a class="headerlink" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.LEGACY_TOLERANCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default tolerance for linear solves if <cite>criterion=”legacy”</cite></p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.__repr__">
 <span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.__repr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.default_tolerance">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_tolerance</span></span><a class="headerlink" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.default_tolerance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default tolerance for linear solve</p>
 </dd></dl>
 
 </dd></dl>
@@ -147,7 +178,7 @@ preconditioners.</p></li>
 
 
                 <div class='last-updated'>
-                Last updated on Jul 22, 2025.
+                Last updated on Sep 02, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -157,14 +188,19 @@ preconditioners.</p></li>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+66.g2b1086a27
+Version 3.4.5+67.gcb12895d3
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">fipy.solvers.pyamgx.linearLUSolver</a><ul>
 <li><a class="reference internal" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver</span></code></a><ul>
+<li><a class="reference internal" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.DEFAULT_ITERATIONS"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_ITERATIONS</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.DEFAULT_PRECONDITIONER"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_PRECONDITIONER</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.DEFAULT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.DEFAULT_TOLERANCE</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.LEGACY_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.LEGACY_TOLERANCE</span></code></a></li>
 <li><a class="reference internal" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.__repr__"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#fipy.solvers.pyamgx.linearLUSolver.LinearLUSolver.default_tolerance"><code class="docutils literal notranslate"><span class="pre">LinearLUSolver.default_tolerance</span></code></a></li>
 </ul>
 </li>
 </ul>

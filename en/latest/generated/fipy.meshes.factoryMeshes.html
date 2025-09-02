@@ -35,20 +35,21 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.meshes.factoryMeshes &#8212; FiPy 3.4.5+66.g2b1086a27 documentation</title>
+    <title>fipy.meshes.factoryMeshes &#8212; FiPy 3.4.5+67.gcb12895d3 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=09b6ca14"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b7f80988"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/fipy.meshes.factoryMeshes.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+66.g2b1086a27 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+67.gcb12895d3 documentation" href="../contents.html" />
     <link rel="up" title="fipy.meshes" href="fipy.meshes.html" />
     <link rel="next" title="fipy.meshes.gmshMesh" href="fipy.meshes.gmshMesh.html" />
     <link rel="prev" title="fipy.meshes.cylindricalUniformGrid2D" href="fipy.meshes.cylindricalUniformGrid2D.html" />
@@ -153,13 +154,13 @@ the sum of <cite>dr</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Grid spacing in the radial direction. Alternative: <cite>dx</cite>.</p></li>
-<li><p><strong>nr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of cells in the radial direction. Alternative: <cite>nx</cite>.</p></li>
-<li><p><strong>Lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Domain length in the radial direction. Alternative: <cite>Lx</cite>.</p></li>
-<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the number of overlapping cells for parallel
+<li><p><strong>dr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Grid spacing in the radial direction. Alternative: <cite>dx</cite>.</p></li>
+<li><p><strong>nr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of cells in the radial direction. Alternative: <cite>nx</cite>.</p></li>
+<li><p><strong>Lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Domain length in the radial direction. Alternative: <cite>Lx</cite>.</p></li>
+<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the number of overlapping cells for parallel
 simulations. Generally 2 is adequate. Higher order equations or
 discretizations require more.</p></li>
-<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><em>CommWrapper</em></a>) – MPI communicator to use.  Select <a class="reference internal" href="fipy.tools.html#fipy.tools.serialComm" title="fipy.tools.serialComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">serialComm</span></code></a> to
+<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommWrapper</span></code></a>) – MPI communicator to use.  Select <a class="reference internal" href="fipy.tools.html#fipy.tools.serialComm" title="fipy.tools.serialComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">serialComm</span></code></a> to
 create a serial mesh when running in parallel; mostly used for test
 purposes.  (default: <a class="reference internal" href="fipy.tools.html#fipy.tools.parallelComm" title="fipy.tools.parallelComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parallelComm</span></code></a>).</p></li>
 </ul>
@@ -181,16 +182,16 @@ the sum of <cite>dr</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Grid spacing in the radial direction. Alternative: <cite>dx</cite>.</p></li>
-<li><p><strong>dz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – grid spacing in the vertical direction. Alternative: <cite>dy</cite>.</p></li>
-<li><p><strong>nr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of cells in the radial direction. Alternative: <cite>nx</cite>.</p></li>
-<li><p><strong>nz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of cells in the vertical direction. Alternative: <cite>ny</cite>.</p></li>
-<li><p><strong>Lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Domain length in the radial direction. Alternative: <cite>Lx</cite>.</p></li>
-<li><p><strong>Lz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Domain length in the vertical direction. Alternative: <cite>Ly</cite>.</p></li>
-<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the number of overlapping cells for parallel
+<li><p><strong>dr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Grid spacing in the radial direction. Alternative: <cite>dx</cite>.</p></li>
+<li><p><strong>dz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – grid spacing in the vertical direction. Alternative: <cite>dy</cite>.</p></li>
+<li><p><strong>nr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of cells in the radial direction. Alternative: <cite>nx</cite>.</p></li>
+<li><p><strong>nz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of cells in the vertical direction. Alternative: <cite>ny</cite>.</p></li>
+<li><p><strong>Lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Domain length in the radial direction. Alternative: <cite>Lx</cite>.</p></li>
+<li><p><strong>Lz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Domain length in the vertical direction. Alternative: <cite>Ly</cite>.</p></li>
+<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the number of overlapping cells for parallel
 simulations. Generally 2 is adequate. Higher order equations or
 discretizations require more.</p></li>
-<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><em>CommWrapper</em></a>) – MPI communicator to use.  Select <a class="reference internal" href="fipy.tools.html#fipy.tools.serialComm" title="fipy.tools.serialComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">serialComm</span></code></a> to
+<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommWrapper</span></code></a>) – MPI communicator to use.  Select <a class="reference internal" href="fipy.tools.html#fipy.tools.serialComm" title="fipy.tools.serialComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">serialComm</span></code></a> to
 create a serial mesh when running in parallel; mostly used for test
 purposes.  (default: <a class="reference internal" href="fipy.tools.html#fipy.tools.parallelComm" title="fipy.tools.parallelComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parallelComm</span></code></a>).</p></li>
 </ul>
@@ -211,13 +212,13 @@ of <cite>dx</cite> and <cite>nx</cite> will be the count of <cite>dx</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Grid spacing in the horizontal direction</p></li>
-<li><p><strong>nx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of cells in the horizontal direction</p></li>
-<li><p><strong>Lx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Domain length in the horizontal direction</p></li>
-<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of overlapping cells for parallel simulations.  Generally 2
+<li><p><strong>dx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Grid spacing in the horizontal direction</p></li>
+<li><p><strong>nx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of cells in the horizontal direction</p></li>
+<li><p><strong>Lx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Domain length in the horizontal direction</p></li>
+<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of overlapping cells for parallel simulations.  Generally 2
 is adequate.  Higher order equations or discretizations require
 more.</p></li>
-<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><em>CommWrapper</em></a>) – MPI communicator to use.  Select <a class="reference internal" href="fipy.tools.html#fipy.tools.serialComm" title="fipy.tools.serialComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">serialComm</span></code></a> to
+<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommWrapper</span></code></a>) – MPI communicator to use.  Select <a class="reference internal" href="fipy.tools.html#fipy.tools.serialComm" title="fipy.tools.serialComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">serialComm</span></code></a> to
 create a serial mesh when running in parallel; mostly used for test
 purposes.  (default: <a class="reference internal" href="fipy.tools.html#fipy.tools.parallelComm" title="fipy.tools.parallelComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parallelComm</span></code></a>).</p></li>
 </ul>
@@ -242,16 +243,16 @@ will be the sum of <cite>d{x,y}</cite> and <cite>n{x,y}</cite> will be the count
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Grid spacing in the horizontal direction</p></li>
-<li><p><strong>dy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Grid spacing in the vertical direction</p></li>
-<li><p><strong>nx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of cells in the horizontal direction</p></li>
-<li><p><strong>ny</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of cells in the vertical direction</p></li>
-<li><p><strong>Lx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Domain length in the horizontal direction</p></li>
-<li><p><strong>Ly</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Domain length in the vertical direction</p></li>
-<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of overlapping cells for parallel simulations.  Generally 2
+<li><p><strong>dx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Grid spacing in the horizontal direction</p></li>
+<li><p><strong>dy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Grid spacing in the vertical direction</p></li>
+<li><p><strong>nx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of cells in the horizontal direction</p></li>
+<li><p><strong>ny</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of cells in the vertical direction</p></li>
+<li><p><strong>Lx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Domain length in the horizontal direction</p></li>
+<li><p><strong>Ly</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Domain length in the vertical direction</p></li>
+<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of overlapping cells for parallel simulations.  Generally 2
 is adequate.  Higher order equations or discretizations require
 more.</p></li>
-<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><em>CommWrapper</em></a>) – MPI communicator to use.  Select <a class="reference internal" href="fipy.tools.html#fipy.tools.serialComm" title="fipy.tools.serialComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">serialComm</span></code></a> to
+<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommWrapper</span></code></a>) – MPI communicator to use.  Select <a class="reference internal" href="fipy.tools.html#fipy.tools.serialComm" title="fipy.tools.serialComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">serialComm</span></code></a> to
 create a serial mesh when running in parallel; mostly used for test
 purposes.  (default: <a class="reference internal" href="fipy.tools.html#fipy.tools.parallelComm" title="fipy.tools.parallelComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parallelComm</span></code></a>).</p></li>
 </ul>
@@ -273,19 +274,19 @@ count of <cite>d{x,y,z}</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Grid spacing in the horizontal direction</p></li>
-<li><p><strong>dy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Grid spacing in the vertical direction</p></li>
-<li><p><strong>dz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Grid spacing in the depth direction</p></li>
-<li><p><strong>nx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of cells in the horizontal direction</p></li>
-<li><p><strong>ny</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of cells in the vertical direction</p></li>
-<li><p><strong>nz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of cells in the depth direction</p></li>
-<li><p><strong>Lx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Domain length in the horizontal direction</p></li>
-<li><p><strong>Ly</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Domain length in the vertical direction</p></li>
-<li><p><strong>Lz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Domain length in the depth direction</p></li>
-<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of overlapping cells for parallel simulations.  Generally 2
+<li><p><strong>dx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Grid spacing in the horizontal direction</p></li>
+<li><p><strong>dy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Grid spacing in the vertical direction</p></li>
+<li><p><strong>dz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Grid spacing in the depth direction</p></li>
+<li><p><strong>nx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of cells in the horizontal direction</p></li>
+<li><p><strong>ny</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of cells in the vertical direction</p></li>
+<li><p><strong>nz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of cells in the depth direction</p></li>
+<li><p><strong>Lx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Domain length in the horizontal direction</p></li>
+<li><p><strong>Ly</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Domain length in the vertical direction</p></li>
+<li><p><strong>Lz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Domain length in the depth direction</p></li>
+<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of overlapping cells for parallel simulations.  Generally 2
 is adequate.  Higher order equations or discretizations require
 more.</p></li>
-<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><em>CommWrapper</em></a>) – MPI communicator to use.  Select <a class="reference internal" href="fipy.tools.html#fipy.tools.serialComm" title="fipy.tools.serialComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">serialComm</span></code></a> to
+<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommWrapper</span></code></a>) – MPI communicator to use.  Select <a class="reference internal" href="fipy.tools.html#fipy.tools.serialComm" title="fipy.tools.serialComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">serialComm</span></code></a> to
 create a serial mesh when running in parallel; mostly used for test
 purposes.  (default: <a class="reference internal" href="fipy.tools.html#fipy.tools.parallelComm" title="fipy.tools.parallelComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parallelComm</span></code></a>).</p></li>
 </ul>
@@ -306,13 +307,13 @@ the sum of <cite>dr</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Grid spacing in the radial direction. Alternative: <cite>dx</cite>.</p></li>
-<li><p><strong>nr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of cells in the radial direction. Alternative: <cite>nx</cite>.</p></li>
-<li><p><strong>Lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Domain length in the radial direction. Alternative: <cite>Lx</cite>.</p></li>
-<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – the number of overlapping cells for parallel
+<li><p><strong>dr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Grid spacing in the radial direction. Alternative: <cite>dx</cite>.</p></li>
+<li><p><strong>nr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Number of cells in the radial direction. Alternative: <cite>nx</cite>.</p></li>
+<li><p><strong>Lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Domain length in the radial direction. Alternative: <cite>Lx</cite>.</p></li>
+<li><p><strong>overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – the number of overlapping cells for parallel
 simulations. Generally 2 is adequate. Higher order equations or
 discretizations require more.</p></li>
-<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><em>CommWrapper</em></a>) – MPI communicator to use.  Select <a class="reference internal" href="fipy.tools.html#fipy.tools.serialComm" title="fipy.tools.serialComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">serialComm</span></code></a> to
+<li><p><strong>communicator</strong> (<a class="reference internal" href="fipy.tools.comms.commWrapper.html#fipy.tools.comms.commWrapper.CommWrapper" title="fipy.tools.comms.commWrapper.CommWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommWrapper</span></code></a>) – MPI communicator to use.  Select <a class="reference internal" href="fipy.tools.html#fipy.tools.serialComm" title="fipy.tools.serialComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">serialComm</span></code></a> to
 create a serial mesh when running in parallel; mostly used for test
 purposes.  (default: <a class="reference internal" href="fipy.tools.html#fipy.tools.parallelComm" title="fipy.tools.parallelComm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">parallelComm</span></code></a>).</p></li>
 </ul>
@@ -324,7 +325,7 @@ purposes.  (default: <a class="reference internal" href="fipy.tools.html#fipy.to
 
 
                 <div class='last-updated'>
-                Last updated on Jul 22, 2025.
+                Last updated on Sep 02, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -334,7 +335,7 @@ purposes.  (default: <a class="reference internal" href="fipy.tools.html#fipy.to
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+66.g2b1086a27
+Version 3.4.5+67.gcb12895d3
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

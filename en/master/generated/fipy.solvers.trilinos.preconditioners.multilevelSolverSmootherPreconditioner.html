@@ -35,22 +35,23 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.solvers.trilinos.preconditioners.multilevelSolverSmootherPreconditioner &#8212; FiPy 3.4.5+66.g2b1086a27 documentation</title>
+    <title>fipy.solvers.trilinos.preconditioners.multilevelSolverSmootherPreconditioner &#8212; FiPy 3.4.5+67.gcb12895d3 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=09b6ca14"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b7f80988"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/fipy.solvers.trilinos.preconditioners.multilevelSolverSmootherPreconditioner.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+66.g2b1086a27 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+67.gcb12895d3 documentation" href="../contents.html" />
     <link rel="up" title="fipy.solvers.trilinos.preconditioners" href="fipy.solvers.trilinos.preconditioners.html" />
-    <link rel="next" title="fipy.solvers.trilinos.preconditioners.preconditioner" href="fipy.solvers.trilinos.preconditioners.preconditioner.html" />
+    <link rel="next" title="fipy.solvers.trilinos.preconditioners.trilinosPreconditioner" href="fipy.solvers.trilinos.preconditioners.trilinosPreconditioner.html" />
     <link rel="prev" title="fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner" href="fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner.html" />
   
  
@@ -78,7 +79,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="fipy.solvers.trilinos.preconditioners.preconditioner.html" title="fipy.solvers.trilinos.preconditioners.preconditioner"
+          <a href="fipy.solvers.trilinos.preconditioners.trilinosPreconditioner.html" title="fipy.solvers.trilinos.preconditioners.trilinosPreconditioner"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner.html" title="fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner"
@@ -122,27 +123,27 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.solvers.trilinos.preconditioners.multilevelSolverSmootherPreconditioner.MultilevelSolverSmootherPreconditioner" title="fipy.solvers.trilinos.preconditioners.multilevelSolverSmootherPreconditioner.MultilevelSolverSmootherPreconditioner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MultilevelSolverSmootherPreconditioner</span></code></a>([levels])</p></td>
-<td><p>Multilevel preconditioner for Trilinos solvers using Aztec solvers as smoothers.</p></td>
+<td><p>Multilevel preconditioner using Aztec solvers as smoothers for <a class="reference internal" href="fipy.solvers.trilinos.trilinosSolver.html#fipy.solvers.trilinos.trilinosSolver.TrilinosSolver" title="fipy.solvers.trilinos.trilinosSolver.TrilinosSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrilinosSolver</span></code></a>.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="fipy.solvers.trilinos.preconditioners.multilevelSolverSmootherPreconditioner.MultilevelSolverSmootherPreconditioner">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.solvers.trilinos.preconditioners.multilevelSolverSmootherPreconditioner.</span></span><span class="sig-name descname"><span class="pre">MultilevelSolverSmootherPreconditioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.solvers.trilinos.preconditioners.multilevelSolverSmootherPreconditioner.MultilevelSolverSmootherPreconditioner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fipy.solvers.trilinos.preconditioners.preconditioner.html#fipy.solvers.trilinos.preconditioners.preconditioner.Preconditioner" title="fipy.solvers.trilinos.preconditioners.preconditioner.Preconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">Preconditioner</span></code></a></p>
-<p>Multilevel preconditioner for Trilinos solvers using Aztec solvers
-as smoothers.</p>
-<p>Initialize the multilevel preconditioner</p>
-<ul class="simple">
-<li><p><cite>levels</cite>: Maximum number of levels</p></li>
-</ul>
+<dd><p>Bases: <a class="reference internal" href="fipy.solvers.trilinos.preconditioners.multilevelPreconditioner.html#fipy.solvers.trilinos.preconditioners.multilevelPreconditioner.MultilevelPreconditioner" title="fipy.solvers.trilinos.preconditioners.multilevelPreconditioner.MultilevelPreconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultilevelPreconditioner</span></code></a></p>
+<p>Multilevel preconditioner using Aztec solvers as smoothers for <a class="reference internal" href="fipy.solvers.trilinos.trilinosSolver.html#fipy.solvers.trilinos.trilinosSolver.TrilinosSolver" title="fipy.solvers.trilinos.trilinosSolver.TrilinosSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">TrilinosSolver</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>levels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Maximum number of levels</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
 
 
                 <div class='last-updated'>
-                Last updated on Jul 22, 2025.
+                Last updated on Sep 02, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -152,7 +153,7 @@ as smoothers.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+66.g2b1086a27
+Version 3.4.5+67.gcb12895d3
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>
@@ -169,8 +170,8 @@ Version 3.4.5+66.g2b1086a27
   <p class="topless"><a href="fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner.html"
                         title="previous chapter">fipy.solvers.trilinos.preconditioners.multilevelSGSPreconditioner</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="fipy.solvers.trilinos.preconditioners.preconditioner.html"
-                        title="next chapter">fipy.solvers.trilinos.preconditioners.preconditioner</a></p>
+  <p class="topless"><a href="fipy.solvers.trilinos.preconditioners.trilinosPreconditioner.html"
+                        title="next chapter">fipy.solvers.trilinos.preconditioners.trilinosPreconditioner</a></p>
 </div>
   <div class="sphinxsidebarsection">
   <h3>This Page</h3>

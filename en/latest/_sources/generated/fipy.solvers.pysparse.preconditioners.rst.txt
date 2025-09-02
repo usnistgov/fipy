@@ -28,6 +28,6 @@ fipy.solvers.pysparse.preconditioners
    :recursive:
 
    fipy.solvers.pysparse.preconditioners.jacobiPreconditioner
-   fipy.solvers.pysparse.preconditioners.preconditioner
+   fipy.solvers.pysparse.preconditioners.pysparsePreconditioner
    fipy.solvers.pysparse.preconditioners.ssorPreconditioner
 

@@ -35,20 +35,21 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.levelSet.electroChem.matplotlibSurfactantViewer &#8212; FiPy 3.4.5+66.g2b1086a27 documentation</title>
+    <title>examples.levelSet.electroChem.matplotlibSurfactantViewer &#8212; FiPy 3.4.5+67.gcb12895d3 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/ntd2d.css?v=de7af573" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=09b6ca14"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b7f80988"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.levelSet.electroChem.matplotlibSurfactantViewer.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.4.5+66.g2b1086a27 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.4.5+67.gcb12895d3 documentation" href="../contents.html" />
     <link rel="up" title="examples.levelSet.electroChem" href="examples.levelSet.electroChem.html" />
     <link rel="next" title="examples.levelSet.electroChem.mayaviSurfactantViewer" href="examples.levelSet.electroChem.mayaviSurfactantViewer.html" />
     <link rel="prev" title="examples.levelSet.electroChem.lines" href="examples.levelSet.electroChem.lines.html" />
@@ -187,41 +188,41 @@ plotting package that displays a <cite>DistanceVariable</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>distanceVar</strong> (<a class="reference internal" href="fipy.variables.distanceVariable.html#fipy.variables.distanceVariable.DistanceVariable" title="fipy.variables.distanceVariable.DistanceVariable"><em>DistanceVariable</em></a>) – </p></li>
-<li><p><strong>levelSetValue</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – the value of the contour to be displayed</p></li>
-<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – displayed at the top of the <cite>Viewer</cite> window</p></li>
-<li><p><strong>animate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – whether to show only the initial condition and the
+<li><p><strong>distanceVar</strong> (<a class="reference internal" href="fipy.variables.distanceVariable.html#fipy.variables.distanceVariable.DistanceVariable" title="fipy.variables.distanceVariable.DistanceVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistanceVariable</span></code></a>) – </p></li>
+<li><p><strong>levelSetValue</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – the value of the contour to be displayed</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – displayed at the top of the <cite>Viewer</cite> window</p></li>
+<li><p><strong>animate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – whether to show only the initial condition and the
 moving top boundary or to show all contours (Default)</p></li>
-<li><p><strong>limits</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – a (deprecated) alternative to limit keyword arguments</p></li>
-<li><p><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>limits</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – a (deprecated) alternative to limit keyword arguments</p></li>
+<li><p><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>xmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>xmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>ymin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>ymin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>ymax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>ymax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>zmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>zmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>zmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>zmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>datamin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>datamin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>datamax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>datamax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
@@ -231,31 +232,31 @@ viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to
 <dl class="py property">
 <dt class="sig sig-object py" id="examples.levelSet.electroChem.matplotlibSurfactantViewer.MatplotlibSurfactantViewer.axes">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">axes</span></span><a class="headerlink" href="#examples.levelSet.electroChem.matplotlibSurfactantViewer.MatplotlibSurfactantViewer.axes" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>.</p>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html#matplotlib.axes.Axes" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="examples.levelSet.electroChem.matplotlibSurfactantViewer.MatplotlibSurfactantViewer.cmap">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cmap</span></span><a class="headerlink" href="#examples.levelSet.electroChem.matplotlibSurfactantViewer.MatplotlibSurfactantViewer.cmap" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colormap</span></code></a>.</p>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.colors.Colormap.html#matplotlib.colors.Colormap" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colormap</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="examples.levelSet.electroChem.matplotlibSurfactantViewer.MatplotlibSurfactantViewer.colorbar">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">colorbar</span></span><a class="headerlink" href="#examples.levelSet.electroChem.matplotlibSurfactantViewer.MatplotlibSurfactantViewer.colorbar" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/colorbar_api.html#matplotlib.colorbar.Colorbar" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colorbar</span></code></a>.</p>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/colorbar_api.html#matplotlib.colorbar.Colorbar" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Colorbar</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="examples.levelSet.electroChem.matplotlibSurfactantViewer.MatplotlibSurfactantViewer.fig">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fig</span></span><a class="headerlink" href="#examples.levelSet.electroChem.matplotlibSurfactantViewer.MatplotlibSurfactantViewer.fig" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>.</p>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="examples.levelSet.electroChem.matplotlibSurfactantViewer.MatplotlibSurfactantViewer.id">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#examples.levelSet.electroChem.matplotlibSurfactantViewer.MatplotlibSurfactantViewer.id" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> number.</p>
+<dd><p>The <a class="reference internal" href="../VIEWERS.html#matplotlib"><span class="std std-ref">Matplotlib</span></a> <a class="reference external" href="https://matplotlib.org/stable/api/_as_gen/matplotlib.figure.Figure.html#matplotlib.figure.Figure" title="(in Matplotlib v3.10.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a> number.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -270,7 +271,7 @@ viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to
 <dd><p>Update the display of the viewed variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – If not <cite>None</cite>, the name of a file to save the image into.</p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – If not <cite>None</cite>, the name of a file to save the image into.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -281,7 +282,7 @@ viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to
 <dd><p>Display a representation of the mesh</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – If not <cite>None</cite>, the name of a file to save the image into.</p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – If not <cite>None</cite>, the name of a file to save the image into.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -293,36 +294,36 @@ viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>limits</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – a (deprecated) alternative to limit keyword arguments</p></li>
-<li><p><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>limits</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <em>optional</em>) – a (deprecated) alternative to limit keyword arguments</p></li>
+<li><p><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>xmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>xmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>ymin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>ymin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>ymax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>ymax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>zmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>zmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>zmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>zmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>datamin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>datamin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
-<li><p><strong>datamax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
+<li><p><strong>datamax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <em>optional</em>) – displayed range of data. A 1D <cite>Viewer</cite> will only use <cite>xmin</cite> and
 <cite>xmax</cite>, a 2D viewer will also use <cite>ymin</cite> and <cite>ymax</cite>, and so on. All
 viewers will use <cite>datamin</cite> and <cite>datamax</cite>. Any limit set to a
 (default) value of <cite>None</cite> will autoscale.</p></li>
@@ -354,7 +355,7 @@ display.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Jul 22, 2025.
+                Last updated on Sep 02, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -364,7 +365,7 @@ display.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+66.g2b1086a27
+Version 3.4.5+67.gcb12895d3
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

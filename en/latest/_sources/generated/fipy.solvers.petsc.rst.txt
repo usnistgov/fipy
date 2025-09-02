@@ -31,9 +31,11 @@ fipy.solvers.petsc
    fipy.solvers.petsc.dummySolver
    fipy.solvers.petsc.linearBicgSolver
    fipy.solvers.petsc.linearCGSSolver
+   fipy.solvers.petsc.linearCGSolver
    fipy.solvers.petsc.linearGMRESSolver
    fipy.solvers.petsc.linearLUSolver
-   fipy.solvers.petsc.linearPCGSolver
+   fipy.solvers.petsc.petscConvergence
    fipy.solvers.petsc.petscKrylovSolver
    fipy.solvers.petsc.petscSolver
+   fipy.solvers.petsc.preconditioners
 

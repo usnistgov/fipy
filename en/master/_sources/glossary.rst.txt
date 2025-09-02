@@ -5,6 +5,12 @@ Glossary
 
 .. glossary::
 
+   AMG
+      Algebraic multigrid method for solving sparse matrices.
+      AMG solves linear systems with a general non-symmetric coefficient
+      matrix.
+      See https://en.wikipedia.org/wiki/Multigrid_method#Algebraic_multigrid_(AMG).
+
    AppVeyor
       A cloud-based :term:`Continuous Integration` tool.
       See https://www.appveyor.com.
@@ -13,11 +19,28 @@ Glossary
       A cloud-based :term:`Continuous Integration` tool.
       See https://dev.azure.com.
 
-   Buildbot
-      The Buildbot is a system to automate the compile/test cycle
-      required by most software projects to validate code changes.
-      No longer used for :term:`FiPy`.
-      See http://trac.buildbot.net/.
+   BiCG
+      Biconjugate gradient method for solving sparse matrices.
+      BiCG solves linear systems with a general non-symmetric coefficient
+      matrix.
+      See https://en.wikipedia.org/wiki/Biconjugate_gradient_method.
+
+   BiCGSTAB
+      Biconjugate gradient (stabilized) method for solving sparse matrices.
+      BiCGSTAB solves linear systems with a general non-symmetric
+      coefficient matrix.
+      See https://en.wikipedia.org/wiki/Biconjugate_gradient_stabilized_method.
+
+   CG
+      Conjugate Gradient method for solving sparse matrices.  CG solves
+      linear systems with a symmetric positive-definite coefficient matrix.
+      See https://en.wikipedia.org/wiki/Conjugate_gradient_method.
+
+   CGS
+      Conjugate Gradient Squared method for solving sparse matrices, a
+      variant of :term:`BiCG`.  CGS solves linear systems with a general
+      non-symmetric coefficient matrix.
+      See https://en.wikipedia.org/wiki/Conjugate_gradient_squared_method.
 
    CircleCI
       A cloud-based :term:`Continuous Integration` tool.
@@ -41,9 +64,20 @@ Glossary
       The eponymous software package.
       See http://www.ctcms.nist.gov/fipy.
 
+   FGMRES
+      Flexible Inner-Outer Preconditioned :term:`GMRES` algorithm for
+      solving sparse matrices.  FGMRES solves systems with a general
+      non-symmetric coefficient matrix.
+      See https://doi.org/10.1137/0914028.
+
    GitHub Actions
       A cloud-based :term:`Continuous Integration` tool.
       See https://github.com/features/actions.
+
+   GMRES
+      Generalized Minimal RESidual method for solving sparse matrices.
+      GMRES solves systems with a general non-symmetric coefficient matrix.
+      See https://en.wikipedia.org/wiki/Generalized_minimal_residual_method.
 
    Gmsh
       A free and Open Source 3D (and 2D!) finite element grid generator. It
@@ -54,6 +88,10 @@ Glossary
       An improved :term:`Python` shell that integrates nicely with
       :ref:`MATPLOTLIB`. See http://ipython.scipy.org/.
 
+   JOR
+      Jacobi over-relaxation method for solving sparse matrices.  JOR
+      solves systems with a general non-symmetric coefficient matrix.
+
    JSON
       JavaScript Object Notation.  A text format suitable for storing
       structured information such as :class:`dict` or :class:`list`.
@@ -62,6 +100,12 @@ Glossary
    linux
       An operating system.
       See http://www.linux.org.
+
+   LU
+      Lower-Upper decomposition method for solving sparse matrices.  LU
+      solves systems with a general non-symmetric coefficient matrix using
+      partial pivoting.
+      See https://en.wikipedia.org/wiki/LU_decomposition.
 
    macOS
       An operating system.
@@ -97,7 +141,7 @@ Glossary
       (:term:`MPI`) standard for the Python programming language, allowing
       any Python program to exploit multiple processors.  For
       :ref:`PARALLEL`, :term:`FiPy` requires this package, in addition to
-      :term:`PETSc` or :term:`Trilinos`.  See
+      :ref:`PETSC` or :ref:`TRILINOS`.  See
       https://mpi4py.readthedocs.io.
 
    numarray
@@ -122,32 +166,19 @@ Glossary
       "Python Data Analysis Library" provides high-performance data structures
       for flexible, extensible analysis. See http://pandas.pydata.org.
 
-   PETSc
-      The Portable, Extensible Toolkit for Scientific Computation is a
-      suite of data structures and routines for the scalable (parallel)
-      solution of scientific applications modeled by partial differential
-      equations. See https://www.mcs.anl.gov/petsc and :ref:`PETSC`.
+   PCG
+      Preconditioned conjugate gradient method for solving sparse matrices.
+      PCG solves systems with a symmetric positive definite coefficient matrix.
+      See https://en.wikipedia.org/wiki/Conjugate_gradient_method.
 
    petsc4py
-      :term:`Python` wrapper for :term:`PETSc`. See
+      :term:`Python` wrapper for :ref:`PETSC`. See
       https://petsc4py.readthedocs.io/.
 
    pip
       "pip installs python" is a tool for installing and managing Python
       packages, such as those found in :term:`PyPI`.
       See http://www.pip-installer.org.
-
-   PyAMG
-      A suite of python-based preconditioners. See
-      http://code.google.com/p/pyamg/
-      and :ref:`PYAMG`.
-
-   pyamgx
-      a :term:`Python` interface to the NVIDIA 
-      `AMGX <https://github.com/NVIDIA/AMGX>`_ library, which can be used
-      to construct complex solvers and preconditioners to solve sparse
-      sparse linear systems on the GPU. See https://pyamgx.readthedocs.io/
-      and :ref:`PYAMGX`.
 
    PyPI
       The Python Package Index is a repository of software for the
@@ -157,12 +188,6 @@ Glossary
    Pyrex
       A mechanism for mixing C and Python code.
       See http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/.
-
-   Pysparse
-      The :mod:`pysparse` :term:`Python` package provides sparse
-      matrix storage, solvers, and linear algebra routines. See
-      http://pysparse.sourceforge.net
-      and :ref:`PYSPARSE`.
 
    Python
       The programming language that :term:`FiPy` (and your scripts) are
@@ -177,8 +202,8 @@ Glossary
       and :pep:`3000`.
 
    PyTrilinos
-      :term:`Python` wrapper for :term:`Trilinos`. See
-      http://trilinos.sandia.gov/packages/pytrilinos/.
+      :term:`Python` wrapper for :ref:`TRILINOS`. See
+      https://trilinos.github.io/pytrilinos.html.
 
    PyxViewer
       A now defunct python viewer.
@@ -190,9 +215,8 @@ Glossary
    SciPy
       The :mod:`scipy` package provides a wide range of scientific and
       mathematical operations. :term:`FiPy` can use
-      :term:`Scipy`'s solver suite for linear solutions. See
+      :ref:`SCIPY` solver suite for linear solutions. See
       http://www.scipy.org/.
-      and :ref:`SCIPY`.
 
    Sphinx
       The tools used to generate the :term:`FiPy` documentation.
@@ -207,15 +231,6 @@ Glossary
    TravisCI
       A cloud-based :term:`Continuous Integration` tool.
       See https://travis-ci.org.
-
-   Trilinos
-      This package provides sparse matrix storage, solvers, and
-      preconditioners, and can be used instead of :term:`Pysparse`.
-      :term:`Trilinos` preconditioning allows for iterative solutions
-      to some difficult problems that :term:`Pysparse` cannot
-      solve. See
-      http://trilinos.sandia.gov
-      and :ref:`TRILINOS`.
 
    Weave
       The :mod:`weave` package can enhance performance with C language

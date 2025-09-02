@@ -13,6 +13,12 @@ fipy.solvers.pyamgx.smoothers
 
    
    
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Smoother
+   
    
 
    
@@ -20,12 +26,4 @@ fipy.solvers.pyamgx.smoothers
    
 
 
-
-.. rubric:: Modules
-
-.. autosummary::
-   :toctree:
-   :recursive:
-
-   fipy.solvers.pyamgx.smoothers.smoothers
 
