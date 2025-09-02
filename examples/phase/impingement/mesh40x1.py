@@ -188,12 +188,17 @@ and orientation variables.
 
 we iterate the solution in time, plotting as we go if running interactively,
 
+The ``theta`` equation is a bit more sensitive than the ``phase`` equation,
+so we require a stricter tolerance.
+
+>>> solver = thetaEq.getDefaultSolver(tolerance=1e-9)
+
 >>> steps = 10
 >>> from builtins import range
 >>> for i in range(steps):
 ...     theta.updateOld()
-...     thetaEq.solve(theta, dt = timeStepDuration)
-...     phaseEq.solve(phase, dt = timeStepDuration)
+...     thetaEq.solve(theta, dt=timeStepDuration, solver=solver)
+...     phaseEq.solve(phase, dt=timeStepDuration)
 ...     if __name__ == '__main__':
 ...         phaseViewer.plot()
 ...         thetaProductViewer.plot()
@@ -211,7 +216,7 @@ extracts the data and compares it with the ``theta`` variable.
 >>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz'))
 >>> testData = CellVariable(mesh=mesh, value=testData)
 >>> print(theta.allclose(testData))
-1
+True
 """
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'

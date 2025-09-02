@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from builtins import range
 __docformat__ = 'restructuredtext'
 
+from PyTrilinos import AztecOO
 from PyTrilinos import Epetra
 from PyTrilinos import Amesos
 
@@ -15,27 +16,29 @@ __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearLUSolver(TrilinosSolver):
 
-    """
-    The `LinearLUSolver` is an interface to the Amesos KLU solver in Trilinos.
+    """Interface to the Amesos KLU solver in :ref:`TRILINOS`.
 
+    KLU is a direct, serial :term:`LU` solver.
     """
 
-    def __init__(self, tolerance=1e-10, iterations=10, precon=None, maxIterations=10):
+    def __init__(self, tolerance="default", criterion="default", precon=None,
+                 iterations=10):
         """
         Parameters
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         precon
             *ignored*
         """
 
-        iterations = min(iterations, maxIterations)
-
-        TrilinosSolver.__init__(self, tolerance=tolerance,
-                                iterations=iterations, precon=None)
+        super(LinearLUSolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                             iterations=iterations, precon=None)
 
         if precon is not None:
             import warnings
@@ -43,39 +46,65 @@ class LinearLUSolver(TrilinosSolver):
                            UserWarning, stacklevel=2)
         self.Factory = Amesos.Factory()
 
+    def _adaptLegacyTolerance(self, L, x, b):
+        return self._adaptInitialTolerance(L, x, b)
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        return (1., None)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        return (self._rhsNorm(L, x, b), None)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        return (self._matrixNorm(L, x, b), None)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
+        """Solve system of equations posed for PyTrilinos
+
+        Parameters
+        ----------
+        L : Epetra.CrsMatrix
+            Sparse matrix
+        x : Epetra.Vector
+            Solution variable as non-ghosted vector
+        b : Epetra.Vector
+            Right-hand side as non-ghosted vector
+
+        Returns
+        -------
+        x : Epetra.Vector
+            Solution variable as non-ghosted vector
+        """
+
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         self._log.debug("BEGIN solve")
 
         with Timer() as t:
             for iteration in range(self.iterations):
-                 # errorVector = L*x - b
-                 errorVector = Epetra.Vector(L.RangeMap())
-                 L.Multiply(False, x, errorVector)
-                 # If A is an Epetra.Vector with map M
-                 # and B is an Epetra.Vector with map M
-                 # and C = A - B
-                 # then C is an Epetra.Vector with *no map* !!!?!?!
-                 errorVector -= b
+                residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
-                 tol = errorVector.Norm1()
+                if residual <= self.tolerance * tolerance_scale:
+                    break
 
-                 if iteration == 0:
-                     tol0 = tol
+                xError = Epetra.Vector(L.RowMap())
 
-                 if (tol / tol0) <= self.tolerance:
-                     break
+                Problem = Epetra.LinearProblem(L, xError, residualVector)
+                Solver = self.Factory.Create(text_to_native_str("Klu"), Problem)
+                Solver.Solve()
 
-                 xError = Epetra.Vector(L.RowMap())
-
-                 Problem = Epetra.LinearProblem(L, xError, errorVector)
-                 Solver = self.Factory.Create(text_to_native_str("Klu"), Problem)
-                 Solver.Solve()
-
-                 x[:] = x - xError
+                x[:] = x - xError
 
         self._log.debug("END solve - {} ns".format(t.elapsed))
 
-        self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
-        self._log.debug('residual: %s', errorVector.Norm2())
+        self._setConvergence(suite="trilinos",
+                             code=AztecOO.AZ_normal,
+                             iterations=iteration+1,
+                             residual=float(residual))
+
+        self.convergence.warn()
+
+        return x

@@ -261,7 +261,13 @@ equation
 
 is represented in :term:`FiPy` by
 
->>> DiffusionTerm(coeff=D).solve(var=phi)
+>>> from fipy.solvers import solver_suite
+>>> if solver_suite == "pysparse":
+...     from fipy import LinearLUSolver
+...     solver = LinearLUSolver()
+... else:
+...     solver = None
+>>> DiffusionTerm(coeff=D).solve(var=phi, solver=solver)
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()
@@ -389,7 +395,9 @@ We re-initialize the solution variable
 
 and obtain the steady-state solution with one implicit solution step
 
->>> DiffusionTerm(coeff = D).solve(var=phi)
+>>> eq = DiffusionTerm(coeff=D)
+>>> solver = eq.getDefaultSolver(tolerance=1e-7)
+>>> eq.solve(var=phi, solver=solver)
 
 The analytical solution is simply
 
@@ -409,7 +417,7 @@ or
 ...                        where=(L / 4. <= x) & (x < 3. * L / 4.))
 >>> phiAnalytical.setValue(x + 18. * L / 4.,
 ...                        where=3. * L / 4. <= x)
->>> print(phi.allclose(phiAnalytical, atol = 1e-8, rtol = 1e-8))
+>>> print(phi.allclose(phiAnalytical, atol=1e-8, rtol=1e-8))
 1
 
 And finally, we can plot the result
@@ -484,14 +492,16 @@ The relevant parameters are
 >>> alpha_false.setValue(0.1, where=(L / 4. <= X) & (X < 3. * L / 4.))
 >>> eqF = 0 == DiffusionTerm(coeff=alpha_false)
 >>> eqT = 0 == DiffusionTerm(coeff=k)
+
 >>> eqF.solve(var=phiF)
->>> eqT.solve(var=phiT)
+>>> solver = eqT.getDefaultSolver(tolerance=1e-7)
+>>> eqT.solve(var=phiT, solver=solver)
 
 Comparing to the correct analytical solution, :math:`\phi = x`
 
 >>> x = mesh.cellCenters[0]
 >>> phiAnalytical.setValue(x)
->>> print(phiT.allclose(phiAnalytical, atol = 1e-8, rtol = 1e-8)) # doctest: +SCIPY
+>>> print(phiT.allclose(phiAnalytical, atol=1e-8, rtol=1e-8)) # doctest: +SCIPY
 1
 
 and finally, plot
@@ -638,12 +648,14 @@ Finally, we can increase the number of steps to approach equilibrium, or we
 can just solve for it directly
 
 >>> eq = DiffusionTerm(coeff=D0 * (1 - phi[0]))
+>>> solver = eq.getDefaultSolver(tolerance=1e-6)
 
 >>> phi[0].setValue(valueRight)
 >>> res = 1e+10
 >>> while res > 1e-6:
 ...     res = eq.sweep(var=phi[0],
-...                    dt=timeStepDuration)
+...                    dt=timeStepDuration,
+...                    solver=solver)
 
 
 >>> print(phi[0].allclose(phiAnalytical, atol = 1e-1))
@@ -708,7 +720,7 @@ conditions, and solve
 and see that :math:`\phi` dissipates to the expected average value of 0.2 with
 reasonable accuracy.
 
->>> print(numerix.allclose(phi, 0.2, atol=1e-5))
+>>> print(numerix.allclose(phi, 0.2, atol=4e-5))
 True
 
 If we reset the initial condition
@@ -788,7 +800,13 @@ The solution is to run the transient problem and to take one enormous time step
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 
->>> (TransientTerm() == DiffusionTerm(D)).solve(var=phi, dt=1e6*dt)
+>>> eq = (TransientTerm() == DiffusionTerm(D))
+
+The initial residual is much larger than the norm of the right-hand-side
+vector, so we use `"initial"` tolerance scaling.
+
+>>> solver = eq.getDefaultSolver(criterion="initial", tolerance=1e-9)
+>>> eq.solve(var=phi, dt=1e6*dt, solver=solver)
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 >>> from fipy import input

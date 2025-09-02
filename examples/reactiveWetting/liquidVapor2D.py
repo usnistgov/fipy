@@ -116,6 +116,31 @@ A 2D version of the 1D example.
 ...     totalSteps = 1
 ...     totalSweeps = 1
 
+Beginning with :term:`FiPy` 4, solver :ref:`CONVERGENCE`
+tolerance is normalized by the magnitude of the right-hand-side (RHS)
+vector.  For this particular problem, the initial residual is much smaller
+than the RHS and so the solver gets "stuck".  Changing the normalization to
+use the initial residual at the beginning of each sweep allows the solution
+to progress.
+
+>>> from fipy.solvers import solver_suite
+>>> if solver_suite == "petsc":
+...     # PETSc's default ILU preconditioner does not behave well
+...     # for this problem
+...     from fipy import SSORPreconditioner
+...     precon = SSORPreconditioner()
+... else:
+...     precon = "default"
+>>> solver = coupledEqn.getDefaultSolver(criterion="initial", precon=precon)
+
+.. note::
+
+   :ref:`PETSC` intrinsically wants to use `"preconditioned"`
+   normalization, which prevents the solver from getting "stuck" because
+   the preconditioner effectively scales the RHS to be similar in magnitude
+   to the residual.  Unfortunately, this normalization is not available for
+   the other solver suites, so we don't use it as the default.
+
 >>> while timestep < totalSteps:
 ... 
 ...     sweep = 0
@@ -140,7 +165,7 @@ A 2D version of the 1D example.
 ...         dt = min(dt, dx / max(abs(velocityVector.mag)) * cfl)
 ... 
 ...         coupledEqn.cacheMatrix()
-...         residual = coupledEqn.sweep(dt=dt)
+...         residual = coupledEqn.sweep(dt=dt, solver=solver)
 ... 
 ...         if initialResidual is None:
 ...             initialResidual = residual

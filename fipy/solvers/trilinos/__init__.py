@@ -49,15 +49,17 @@ def _dealWithTrilinosImportPathologies():
 
 _dealWithTrilinosImportPathologies()
 
-from fipy.solvers.trilinos.preconditioners import *
+from .preconditioners import *
 
-from fipy.solvers.trilinos.linearCGSSolver import *
-from fipy.solvers.trilinos.linearPCGSolver import *
-from fipy.solvers.trilinos.linearGMRESSolver import *
-from fipy.solvers.trilinos.linearLUSolver import *
-from fipy.solvers.trilinos.linearBicgstabSolver import *
+from .linearCGSSolver import *
+from .linearCGSolver import *
+from .linearGMRESSolver import *
+from .linearLUSolver import *
+from .linearBicgstabSolver import *
 
-from fipy.solvers.trilinos.trilinosMLTest import *
+from .trilinosMLTest import *
+
+from . import aztecConvergence
 
 DefaultSolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearGMRESSolver

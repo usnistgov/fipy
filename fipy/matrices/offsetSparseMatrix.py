@@ -5,18 +5,21 @@ __all__ = ["OffsetSparseMatrix"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-def OffsetSparseMatrix(SparseMatrix, numberOfVariables, numberOfEquations):
+def OffsetSparseMatrix(SparseMatrix,
+                       numberOfVariables, numberOfEquations,
+                       equationIndex, varIndex):
     """
     Used in binary terms. `equationIndex` and `varIndex` need to be set statically before instantiation.
     """
 
     class OffsetSparseMatrixClass(SparseMatrix):
-        equationIndex = 0
-        varIndex = 0
-
         def __init__(self, mesh, nonZerosPerRow=1, exactNonZeros=False,
                      numberOfVariables=numberOfVariables,
-                     numberOfEquations=numberOfEquations):
+                     numberOfEquations=numberOfEquations,
+                     equationIndex=equationIndex,
+                     varIndex=varIndex):
+            self.equationIndex = equationIndex
+            self.varIndex = varIndex
             if hasattr(nonZerosPerRow, "__iter__"):
                 # nonZerosPerRow is an iterable for each row.
                 # need to pad rows for other equations with zeros.

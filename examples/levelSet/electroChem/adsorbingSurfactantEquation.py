@@ -296,7 +296,7 @@ class AdsorbingSurfactantEquation(object):
         var : ~fipy.variables.surfactantVariable.SurfactantVariable
             A `SurfactantVariable` to be solved for.  Provides the initial
             condition, the old value and holds the solution on completion.
-        solver : ~f[py.solvers.solver.Solver
+        solver : ~fipy.solvers.solver.Solver
             The iterative solver to be used to solve the linear system of
             equations.
         boundaryConditions : :obj:`tuple` of ~fipy.boundaryConditions.boundaryCondition.BoundaryCondition
@@ -307,12 +307,8 @@ class AdsorbingSurfactantEquation(object):
         self.dt.setValue(dt)
         if solver is None:
             import fipy.solvers.solver
-            if fipy.solvers.solver_suite == 'pyamg':
-                from fipy.solvers.pyAMG.linearGeneralSolver import LinearGeneralSolver
-                solver = LinearGeneralSolver(tolerance=1e-15, iterations=2000)
-            else:
-                from fipy.solvers import LinearPCGSolver
-                solver = LinearPCGSolver()
+            from fipy.solvers import LinearPCGSolver
+            solver = LinearPCGSolver()
 
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)

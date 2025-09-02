@@ -131,14 +131,25 @@ napoleon_numpy_docstring = True
 # [@MadPhysicist](https://stackoverflow.com/users/2988730/mad-physicist)
 # [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 # https://stackoverflow.com/a/66182779
-napoleon_use_param = True
-# napoleon_preprocess_types = True
+# Corrected for https://github.com/sphinx-doc/sphinx/issues/10963
+napoleon_preprocess_types = True
 napoleon_type_aliases = {
     'array-like': ':term:`array-like <array_like>`',
     'array_like': ':term:`array_like`'
 }
 
 autosummary_generate = True
+
+# ~~enable~~ disable :numref:
+#
+# note: :numref: doesn't work with .. plot::
+# https://github.com/matplotlib/matplotlib/issues/9346
+#
+# There's a workaround, but it's gross
+# https://github.com/sfstoolbox/theory/issues/5
+#
+# Figure numbers skip by 2? Another .. plot:: glitch?
+numfig = False
 
 # numpydoc_show_class_members = False
 
@@ -222,6 +233,11 @@ html_show_copyright = False
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'FiPydoc'
 
+mathjax3_config = {
+  "loader": {"load": ['[tex]/textmacros']},
+  "tex": {"packages": {'[+]': ['textmacros']}}
+}
+
 # -- Options for LaTeX output --------------------------------------------------
 
 latex_elements = {
@@ -245,6 +261,8 @@ latex_elements = {
         \definecolor{bluish}{rgb}{0.216,0.188,0.533}
 
         \newcommand{\fipylogo}{\scalebox{10}{\rotatebox{4}{\textcolor{redish}{\( \varphi \)}}\kern-.70em\raisebox{-.15em}{\textcolor{bluish}{\( \pi\)}}}}
+
+        \usepackage{pdflscape}
     """,
     'printindex': r'\footnotesize\raggedright\printindex',
 }
@@ -333,7 +351,8 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
 
 def setup(app):
     app.connect('autodoc-skip-member', autodoc_skip_member)
-
+    app.add_css_file('widetable.css')
+    
 # lifted from astropy/astropy@e68ca1a1
 
 # Enable nitpicky mode - which ensures that all references in the docs

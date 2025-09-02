@@ -1,19 +1,17 @@
 from __future__ import unicode_literals
 from pysparse.precon import precon
 
-from fipy.solvers.pysparse.preconditioners.preconditioner import Preconditioner
+from fipy.solvers.pysparse.preconditioners.pysparsePreconditioner import PysparsePreconditioner
 
 __all__ = ["JacobiPreconditioner"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class JacobiPreconditioner(Preconditioner):
+class JacobiPreconditioner(PysparsePreconditioner):
+    """Jacobi preconditioner for :class:`~fipy.solvers.pysparse.pysparseSolver.PysparseSolver`.
+
+    Wrapper class for :func:`pysparse.precon.jacobi`.
     """
-    Jacobi preconditioner for Pysparse.
-    Really just a wrapper class for `pysparse.precon.jacobi`.
-    """
-    def _applyToMatrix(self, A):
-        """
-        Returns (preconditioning matrix, resulting matrix)
-        """
-        return precon.jacobi(A), A.to_csr()
+
+    def _applyToMatrix(self, matrix):
+        return precon.jacobi(matrix), matrix.to_csr()

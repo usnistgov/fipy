@@ -55,8 +55,6 @@ def _parseSolver():
         return "trilinos"
     elif '--pysparse' in args:
         return "pysparse"
-    elif '--pyamg' in args:
-        return 'pyamg'
     elif '--scipy' in args:
         return 'scipy'
     elif '--pyamgx' in args:

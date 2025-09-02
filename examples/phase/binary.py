@@ -476,7 +476,7 @@ We plot the result against the sharp interface solution
 
 >>> if __name__ == '__main__':
 ...     try:
-...         from examples.phase.phaseViewer import PhaseViewer
+...         from phaseViewer import PhaseViewer
 ...
 ...         viewer = PhaseViewer(phase=phase, C=C, sharp=sharp,
 ...                              elapsed=elapsed,
@@ -500,22 +500,25 @@ field through ``phaseTransformationVelocity``, it is necessary sweep this
 non-linear problem to convergence. We use the "residual" of the equations
 (a measure of how well they think they have solved the given set of linear
 equations) as a test for how long to sweep. Because of the
-:class:`~fipy.terms.convectionTerm.ConvectionTerm`, the solution matrix for ``diffusionEq`` is asymmetric
-and cannot be solved by the default :class:`~fipy.solvers.pysparse.linearPCGSolver.LinearPCGSolver`. Therefore, we use a
-:class:`~fipy.solvers.DefaultAsymmetricSolver` for this equation.
+:class:`~fipy.terms.convectionTerm.ConvectionTerm`, the solution matrix for
+``diffusionEq`` is asymmetric and cannot be solved by the default
+:class:`~fipy.solvers.pysparse.linearCGSolver.LinearCGSolver`.  Therefore,
+we use a :class:`~fipy.solvers.DefaultAsymmetricSolver` for this equation.
 
 .. .. index:: DefaultAsymmetricSolver, solve, sweep
 
 We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
+The initial residual of the diffusion equation is much larger than the norm
+of the right-hand-side vector, so we use `"initial"` tolerance scaling.
 
->>> solver = DefaultAsymmetricSolver(tolerance=1e-10)
+>>> solver = DefaultAsymmetricSolver(criterion="initial", tolerance=1e-10)
 
 >>> phase.updateOld()
 >>> C.updateOld()
 >>> phaseRes = 1e+10
 >>> diffRes = 1e+10
->>> while phaseRes > 1e-3 or diffRes > 1e-3 or abs(Cavg.value - 0.5) > 5e-7:
+>>> while phaseRes > 1e-8 or diffRes > 1e-8 or abs(Cavg.value - 0.5) > 5e-7:
 ...     phaseRes = phaseEq.sweep(var=phase, dt=dt)
 ...     diffRes = diffusionEq.sweep(var=C, dt=dt, solver=solver)
 >>> from fipy import input
@@ -596,7 +599,7 @@ time step of about :math:`10^{-5}~\\mathrm{s}`.
 ...     C.updateOld()
 ...     phaseRes = 1e+10
 ...     diffRes = 1e+10
-...     while phaseRes > 1e-3 or diffRes > 1e-3 or abs(Cavg.value - 0.5) > 1e-6:
+...     while phaseRes > 5e-8 or diffRes > 1e-14 or abs(Cavg.value - 0.5) > 5e-7:
 ...         phaseRes = phaseEq.sweep(var=phase, dt=dt0)
 ...         diffRes = diffusionEq.sweep(var=C, dt=dt0, solver=solver)
 ...     elapsed.value = (i + 1) * dt0
@@ -620,13 +623,13 @@ expected values.
 
 We can estimate the time to equilibration by examining the time for the
 diffusion field to become uniform.  In the liquid, this will take
-:math:`\\mathcal{O}((10~\\mathrm{\mu m})^2 / D_l) =
+:math:`\\mathcal{O}((10~\\mathrm{\\mu m})^2 / D_l) =
 0.1~\\mathrm{s}` and in the solid
-:math:`\\mathcal{O}((10~\\mathrm{\mu m})^2 / D_s) =
+:math:`\\mathcal{O}((10~\\mathrm{\\mu m})^2 / D_s) =
 1000~\\mathrm{s}`.
 
 Not wanting to take a hundred-million steps, we employ adaptive time
-stepping, using the :term:`steppyingstounes` package.  This package takes
+stepping, using the :term:`steppyngstounes` package.  This package takes
 care of many of the messy details of stepping, like overshoot, underflow,
 and step size adaptation, while keeping the structure of our solve loop
 largely intact.
@@ -665,7 +668,7 @@ old values before we get started.
 ...             diffRes = diffusionEq.sweep(var=C, dt=step.size, solver=solver)
 ...         err = max(phaseRes / 1e-3,
 ...                   diffRes / 1e-3,
-...                   abs(Cavg.value - 0.5) / 1e-6)
+...                   abs(Cavg.value - 0.5) / 5e-7)
 ...         if step.succeeded(error=err):
 ...             phase.updateOld()
 ...             C.updateOld()
@@ -703,7 +706,7 @@ For the next
 :math:`20~\\mathrm{s}`, the interface stalls while the solute step
 trapped in the solid phase diffuses outward
 (:math:`(3.4~\\mathrm{\\mu m})^2 / D_s =
-\mathcal{O}(100~\\mathrm{s})`).  Once the solute gradient in the
+\\mathcal{O}(100~\\mathrm{s})`).  Once the solute gradient in the
 solid reaches the new position of the interface, the solidification front
 begins to move, driven by diffusion in the solid.  When the solute in the
 solid becomes uniform, the interface stalls again after :math:`\\approx

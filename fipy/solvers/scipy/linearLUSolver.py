@@ -5,7 +5,7 @@ __docformat__ = 'restructuredtext'
 
 from scipy.sparse.linalg import splu
 
-from fipy.solvers.scipy.scipySolver import _ScipySolver
+from fipy.solvers.scipy.scipySolver import ScipySolver
 from fipy.tools import numerix
 from fipy.tools.timer import Timer
 
@@ -13,47 +13,79 @@ __all__ = ["LinearLUSolver"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class LinearLUSolver(_ScipySolver):
+class LinearLUSolver(ScipySolver):
+    """Interface to :term:`LU`-factorization in :ref:`SciPy`.
     """
-    The `LinearLUSolver` solves a linear system of equations using
-    LU-factorization.  The `LinearLUSolver` is a wrapper class for the
-    the Scipy `scipy.sparse.linalg.splu` module.
-    """
+
+    def _adaptLegacyTolerance(self, L, x, b):
+        return self._adaptInitialTolerance(L, x, b)
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        return (1., None)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        return (self._rhsNorm(L, x, b), None)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        return (self._matrixNorm(L, x, b), None)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
-        diag = L.takeDiagonal()
-        maxdiag = max(numerix.absolute(diag))
+        """Solve system of equations posed for SciPy
 
+        Parameters
+        ----------
+        L : ~scipy.sparse.csr_matrix
+            Sparse matrix
+        x : ndarray
+            Solution vector
+        b : ndarray
+            Right hand side vector
+
+        Returns
+        -------
+        x : ndarray
+            Solution vector
+        """
         self._log.debug("BEGIN precondition")
 
         with Timer() as t:
+            diag = L.diagonal()
+            maxdiag = max(numerix.absolute(diag))
             L = L * (1 / maxdiag)
             b = b * (1 / maxdiag)
 
         self._log.debug("END precondition - {} ns".format(t.elapsed))
 
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
+
         self._log.debug("BEGIN solve")
 
         with Timer() as t:
-            LU = splu(L.matrix.asformat("csc"), diag_pivot_thresh=1.,
-                                                relax=1,
-                                                panel_size=10,
-                                                permc_spec=3)
-
-            error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
+            LU = splu(L.asformat("csc"),
+                      diag_pivot_thresh=maxdiag,
+                      relax=1,
+                      panel_size=10,
+                      permc_spec=3)
 
             for iteration in range(min(self.iterations, 10)):
-                errorVector = L * x - b
+                residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
-                if numerix.sqrt(numerix.sum(errorVector**2))  <= self.tolerance * error0:
+                if residual <= self.tolerance * tolerance_scale:
                     break
 
-                xError = LU.solve(errorVector)
+                xError = LU.solve(residualVector)
                 x[:] = x - xError
 
         self._log.debug("END solve - {} ns".format(t.elapsed))
 
-        self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
-        self._log.debug('residual: %s', numerix.sqrt(numerix.sum(errorVector**2)))
+        self._setConvergence(suite="scipy",
+                             code=0,
+                             iterations=iteration+1,
+                             residual=residual)
+
+        self.convergence.warn()
 
         return x

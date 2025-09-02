@@ -11,6 +11,7 @@ from fipy.meshes.builders.utilityClasses import (_UniformNumPts,
                                                  _DOffsets,
                                                  _UniformOrigin,
                                                  _NonuniformNumPts)
+from fipy.solvers import INDEX_TYPE
 
 class _Grid2DBuilder(_AbstractGridBuilder):
 
@@ -126,7 +127,7 @@ class _Grid2DBuilder(_AbstractGridBuilder):
             `cells = (f1, f2, f3, f4)` going anticlockwise.
             `f1` etc. refer to the faces
             """
-            cellFaceIDs = numerix.zeros((4, nx * ny), 'l')
+            cellFaceIDs = numerix.zeros((4, nx * ny), dtype=INDEX_TYPE)
 
             inline._runInline("""
                 int ID = j * ni + i;
@@ -150,8 +151,8 @@ class _Grid2DBuilder(_AbstractGridBuilder):
             `cells = (f1, f2, f3, f4)` going anticlockwise.
             `f1` etc. refer to the faces
             """
-            cellFaceIDs = numerix.zeros((4, nx * ny), 'l')
-            faceIDs = numerix.arange(numFaces)
+            cellFaceIDs = numerix.zeros((4, nx * ny), dtype=INDEX_TYPE)
+            faceIDs = numerix.arange(numFaces, dtype=INDEX_TYPE)
             if numFaces > 0:
                 cellFaceIDs[0,:] = faceIDs[:numHorizFaces - nx]
                 cellFaceIDs[2,:] = cellFaceIDs[0,:] + nx

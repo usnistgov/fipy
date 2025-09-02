@@ -103,11 +103,11 @@ we create the Cahn-Hilliard equation:
    single: LinearLUSolver
    single: DefaultSolver
 
->>> import fipy.solvers.solver
->>> if fipy.solvers.solver_suite in ['pysparse', 'pyamgx']:
+>>> from fipy.solvers import solver_suite
+>>> if solver_suite in ['pysparse']:
 ...     solver = LinearLUSolver(tolerance=1e-15, iterations=100)
 ... else:
-...     solver = DefaultSolver()
+...     solver = DefaultSolver(tolerance=1e-15, iterations=100)
 
 The solution to this 1D problem over an infinite domain is given by,
 

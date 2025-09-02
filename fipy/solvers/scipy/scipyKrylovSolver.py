@@ -1,20 +1,74 @@
 from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-__all__ = []
+__all__ = ["ScipyKrylovSolver"]
+from future.utils import text_to_native_str
+__all__ = [text_to_native_str(n) for n in __all__]
 
-from fipy.solvers.scipy.scipySolver import _ScipySolver
+import os
+import warnings
+import scipy
+
+from .scipySolver import ScipySolver
+from fipy.tools import numerix
 from fipy.tools.timer import Timer
+from fipy.tools.version import Version, parse_version
 
-class _ScipyKrylovSolver(_ScipySolver):
+scipy_has_tol = (parse_version(scipy.__version__) < Version("1.12"))
+
+class ScipyKrylovSolver(ScipySolver):
     """
     The base `ScipyKrylovSolver` class.
 
     .. attention:: This class is abstract. Always create one of its subclasses.
     """
 
+    def _countIterations(self, xk):
+        self.actualIterations += 1
+
+    def _adaptLegacyTolerance(self, L, x, b):
+        return self._adaptRHSTolerance(L, x, b)
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        factor = 1. / self._rhsNorm(L, x, b)
+        return (factor, None)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        return (1., None)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        factor = self._matrixNorm(L, x, b) / self._rhsNorm(L, x, b)
+        return (factor, None)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        factor = self._residualNorm(L, x, b) / self._rhsNorm(L, x, b)
+        return (factor, None)
+
+    def _doSolve(self, *args, **kwargs):
+        return self.solveFnc(*args, **kwargs)
+
     def _solve_(self, L, x, b):
-        A = L.matrix
+        """Solve system of equations posed for SciPy
+
+        Parameters
+        ----------
+        L : ~scipy.sparse.csr_matrix
+            Sparse matrix
+        x : ndarray
+            Solution vector
+        b : ndarray
+            Right hand side vector
+
+        Returns
+        -------
+        x : ndarray
+            Solution vector
+        """
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
+
+        self.actualIterations = 0
+
+        rtol = self.scale_tolerance(self.tolerance, tolerance_scale)
 
         self._log.debug("BEGIN precondition")
 
@@ -22,22 +76,34 @@ class _ScipyKrylovSolver(_ScipySolver):
             if self.preconditioner is None:
                 M = None
             else:
-                M = self.preconditioner._applyToMatrix(A)
+                M, _ = self.preconditioner._applyToMatrix(L)
 
         self._log.debug("END precondition - {} ns".format(t.elapsed))
 
         self._log.debug("BEGIN solve")
 
         with Timer() as t:
-            x, info = self.solveFnc(A, b, x,
-                                    rtol=self.tolerance,
+            if scipy_has_tol:
+                tolerance = dict(tol=rtol)
+            else:
+                tolerance = dict(rtol=rtol)
+
+            x, info = self._doSolve(L, b, x,
+                                    atol=self.absolute_tolerance,
                                     maxiter=self.iterations,
                                     M=M,
-                                    atol=0.0)
+                                    callback=self._countIterations,
+                                    **tolerance)
 
         self._log.debug("END solve - {} ns".format(t.elapsed))
 
-        if info < 0:
-            self._log.debug('failure: %s', self._warningList[info].__class__.__name__)
+        self._setConvergence(suite="scipy",
+                             code=numerix.sign(info),
+                             actual_code=info,
+                             iterations=self.actualIterations,
+                             tolerance_scale=tolerance_scale,
+                             residual=self._residualNorm(L, x, b))
+
+        self.convergence.warn()
 
         return x

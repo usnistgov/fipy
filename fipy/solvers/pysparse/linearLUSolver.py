@@ -6,7 +6,7 @@ __docformat__ = 'restructuredtext'
 
 from pysparse.direct import superlu
 
-from fipy.solvers.pysparse.pysparseSolver import PysparseSolver
+from .pysparseSolver import PysparseSolver
 from fipy.tools import numerix
 from fipy.tools.timer import Timer
 
@@ -15,21 +15,11 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearLUSolver(PysparseSolver):
+    """Interface to :term:`LU`-factorization in :ref:`Pysparse`.
     """
 
-    The `LinearLUSolver` solves a linear system of equations using
-    LU-factorization. This method solves systems with a general
-    non-symmetric coefficient matrix using partial pivoting.
-
-    The `LinearLUSolver` is a wrapper class for the the Pysparse_
-    `superlu.factorize()` method.
-
-    .. _Pysparse: http://pysparse.sourceforge.net
-
-    """
-
-    def __init__(self, tolerance=1e-10, iterations=10,
-                       maxIterations=10, precon=None):
+    def __init__(self, tolerance="default", criterion="default",
+                 iterations=10, precon=None):
         """
         Creates a `LinearLUSolver`.
 
@@ -37,42 +27,74 @@ class LinearLUSolver(PysparseSolver):
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.pysparse.preconditioners.preconditioner.Preconditioner
+        precon
             *ignored*
         """
+        super(LinearLUSolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                             iterations=iterations, precon=None)
 
-        iterations = min(iterations, maxIterations)
+    def _adaptLegacyTolerance(self, L, x, b):
+        return self._adaptInitialTolerance(L, x, b)
 
-        super(LinearLUSolver, self).__init__(tolerance = tolerance,
-                                             iterations = iterations)
+    def _adaptUnscaledTolerance(self, L, x, b):
+        return (1., None)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        return (self._rhsNorm(L, x, b), None)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        return (self._matrixNorm(L, x, b), None)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
-        diag = L.takeDiagonal()
-        maxdiag = max(numerix.absolute(diag))
+        """Solve system of equations posed for PySparse
 
-        L = L * (1 / maxdiag)
-        b = b * (1 / maxdiag)
+        Parameters
+        ----------
+        L : ~pysparse.spmatrix.ll_mat
+            Sparse matrix
+        x : array_like
+            Solution vector
+        b : array_like
+            Right hand side vector
+
+        Returns
+        -------
+        x : ndarray
+            Solution vector
+        """
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
         self._log.debug("BEGIN solve")
 
         with Timer() as t:
-            LU = superlu.factorize(L.matrix.to_csr())
-
-            error0 = numerix.sqrt(numerix.sum((L * x - b)**2))
+            LU = superlu.factorize(L.to_csr())
 
             for iteration in range(self.iterations):
-                errorVector = L * x - b
+                residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
-                if numerix.sqrt(numerix.sum(errorVector**2))  <= self.tolerance * error0:
+                if residual <= self.tolerance * tolerance_scale:
                     break
 
                 xError = numerix.zeros(len(b), 'd')
-                LU.solve(errorVector, xError)
+
+                LU.solve(residualVector, xError)
                 x[:] = x - xError
 
         self._log.debug("END solve - {} ns".format(t.elapsed))
 
-        self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
-        self._log.debug('residual: %s', numerix.sqrt(numerix.sum(errorVector**2)))
+        self._setConvergence(suite="pysparse",
+                             code=0,
+                             iterations=iteration+1,
+                             residual=residual)
+
+        self.convergence.warn()
+
+        return x

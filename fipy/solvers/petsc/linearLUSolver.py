@@ -5,35 +5,75 @@ __docformat__ = 'restructuredtext'
 
 from petsc4py import PETSc
 
-from fipy.solvers.petsc.petscSolver import PETScSolver
 from fipy.tools.timer import Timer
+from .petscSolver import PETScSolver
+from .preconditioners.luPreconditioner import LUPreconditioner
 
 __all__ = ["LinearLUSolver"]
 
 class LinearLUSolver(PETScSolver):
 
-    """
-    The `LinearLUSolver` is an interface to the LU preconditioner in PETSc.
+    """Interface to the :term:`LU` preconditioner in :ref:`PETSC`.
+
     A direct solve is performed.
-
     """
 
-    def __init__(self, tolerance=1e-10, iterations=10, precon="lu"):
+    def __init__(self, tolerance="default", criterion="default",
+                 iterations=10, precon=None):
         """
-        :Parameters:
-          - `tolerance`: The required error tolerance.
-          - `iterations`: The maximum number of iterative steps to perform.
-          - `precon`: *Ignored*.
+        Parameters
+        ----------
+        tolerance : float
+            Required error tolerance.
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
+        iterations : int
+            Maximum number of iterative steps to perform.
+        precon
+            *ignored*
+        """
+        super(LinearLUSolver, self).__init__(tolerance=tolerance,
+                                             criterion=criterion,
+                                             iterations=iterations,
+                                             precon=LUPreconditioner())
 
-        """
-        PETScSolver.__init__(self, tolerance=tolerance,
-                             iterations=iterations, precon="lu")
+    def _adaptLegacyTolerance(self, L, x, b):
+        return self._adaptInitialTolerance(L, x, b)
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        return (1., None)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        return (self._rhsNorm(L, x, b), None)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        return (self._matrixNorm(L, x, b), None)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        return (self._residualNorm(L, x, b), None)
 
     def _solve_(self, L, x, b):
+        """Solve system of equations posed for PETSc
+
+        Parameters
+        ----------
+        L : PETSc.Mat
+            Sparse matrix
+        x : PETSc.Vec
+            Solution variable as ghosted vector
+        b : PETSc.Vec
+            Right-hand side as ghosted vector
+
+        Returns
+        -------
+        x : PETSc.Vec
+            Solution variable as ghosted vector
+        """
         ksp = PETSc.KSP()
         ksp.create(PETSc.COMM_WORLD)
         ksp.setType("preonly")
-        ksp.getPC().setType(self.preconditioner)
+        self.preconditioner._applyToSolver(solver=ksp, matrix=L)
         # TODO: SuperLU invoked with PCFactorSetMatSolverType(pc, MATSOLVERSUPERLU)
         #       see: http://www.mcs.anl.gov/petsc/petsc-dev/src/ksp/ksp/examples/tutorials/ex52.c.html
         # PETSc.PC().setFactorSolverType("superlu")
@@ -42,27 +82,32 @@ class LinearLUSolver(PETScSolver):
         ksp.setOperators(L)
         ksp.setFromOptions()
 
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
+
         self._log.debug("BEGIN solve")
 
         with Timer() as t:
             for iteration in range(self.iterations):
-                errorVector = L * x - b
-                tol = errorVector.norm()
+                residualVector, residual = self._residualVectorAndNorm(L, x, b)
 
-                if iteration == 0:
-                    tol0 = tol
-
-                if tol <= self.tolerance * tol0:
+                if residual <= self.tolerance * tolerance_scale:
                     break
 
                 xError = x.copy()
 
-                ksp.solve(errorVector, xError)
+                ksp.solve(residualVector, xError)
+
                 x -= xError
 
         self._log.debug("END solve - {} ns".format(t.elapsed))
 
-        self._log.debug('solver: %s', ksp.type)
-        self._log.debug('precon: %s', ksp.getPC().type)
-        self._log.debug('iterations: %d / %d', iteration+1, self.iterations)
-        self._log.debug('residual: %s', errorVector.norm(1))
+        self._setConvergence(suite="petsc",
+                             code=PETSc.KSP.ConvergedReason.CONVERGED_ITS,
+                             iterations=iteration+1,
+                             residual=residual,
+                             ksp_solver=ksp.type,
+                             ksp_precon=ksp.getPC().type)
+
+        self.convergence.warn()
+
+        return x

@@ -16,6 +16,8 @@ class _SparseMatrix(object):
     numpyArray = property()
     _shape = property()
 
+    INDEX_TYPE = int
+
     def __init__(self):
         pass
 
@@ -132,6 +134,11 @@ class _SparseMatrix(object):
     def T(self):
         raise NotImplementedError
 
+    def zeroEntries(self):
+        """Insert zeros into nonzero matrix entries.
+        """
+        raise NotImplementedError
+
     def _matrix2mesh(self, ids):
         """Convert matrix row indices to mesh cell indices
         """
@@ -187,6 +194,14 @@ class _Mesh2Matrix(object):
         N = len(IDs)
         return (numerix.vstack([IDs] * M) + numerix.indices((M, N))[0] * L).flatten()
 
+    def _cellsToMatrixMask(self, overlapping, M):
+        if overlapping:
+            L = self.mesh.numberOfCells
+            mask = numerix.ones((M * L,), dtype=bool)
+        else:
+            mask = self.bodies
+        return numerix.hstack([mask] * M)
+
     def _cellIDsToGlobalRowIDs(self, IDs):
         return self._cellIDsToGlobalIDs(IDs, M=self.numberOfEquations,
                                         L=self.mesh.globalNumberOfCells)
@@ -195,13 +210,21 @@ class _Mesh2Matrix(object):
         return self._cellIDsToGlobalIDs(IDs, M=self.numberOfEquations,
                                         L=self.mesh.numberOfCells)
 
+    def _cellsToRowMask(self, overlapping):
+        return self._cellsToMatrixMask(overlapping,
+                                       M=self.numberOfEquations)
+
     @property
     def globalNonOverlappingRowIDs(self):
-        return self._cellIDsToGlobalRowIDs(self.mesh._globalNonOverlappingCellIDs)
+        if not hasattr(self, "_globalNonOverlappingRowIDs"):
+            self._globalNonOverlappingRowIDs = self._cellIDsToGlobalRowIDs(self.mesh._globalNonOverlappingCellIDs)
+        return self._globalNonOverlappingRowIDs
 
     @property
     def globalOverlappingRowIDs(self):
-        return self._cellIDsToGlobalRowIDs(self.mesh._globalOverlappingCellIDs)
+        if not hasattr(self, "_globalOverlappingRowIDs"):
+            self._globalOverlappingRowIDs = self._cellIDsToGlobalRowIDs(self.mesh._globalOverlappingCellIDs)
+        return self._globalOverlappingRowIDs
 
     @property
     def localNonOverlappingRowIDs(self):
@@ -215,13 +238,21 @@ class _Mesh2Matrix(object):
         return self._cellIDsToGlobalIDs(IDs, M=self.numberOfVariables,
                                         L=self.mesh.numberOfCells)
 
+    def _cellsToColMask(self, overlapping):
+        return self._cellsToMatrixMask(overlapping,
+                                       M=self.numberOfVariables)
+
     @property
     def globalNonOverlappingColIDs(self):
-        return self._cellIDsToGlobalColIDs(self.mesh._globalNonOverlappingCellIDs)
+        if not hasattr(self, "_globalNonOverlappingColIDs"):
+            self._globalNonOverlappingColIDs = self._cellIDsToGlobalColIDs(self.mesh._globalNonOverlappingCellIDs)
+        return self._globalNonOverlappingColIDs
 
     @property
     def globalOverlappingColIDs(self):
-        return self._cellIDsToGlobalColIDs(self.mesh._globalOverlappingCellIDs)
+        if not hasattr(self, "_globalOverlappingColIDs"):
+            self._globalOverlappingColIDs = self._cellIDsToGlobalColIDs(self.mesh._globalOverlappingCellIDs)
+        return self._globalOverlappingColIDs
 
     @property
     def localOverlappingColIDs(self):
@@ -231,17 +262,10 @@ class _Mesh2Matrix(object):
     def localNonOverlappingColIDs(self):
         return self._cellIDsToLocalColIDs(self.mesh._localNonOverlappingCellIDs)
 
-    def _getStencil_(self, id1, id2,
-                     globalOverlappihgIDs, globalNonOverlappihgIDs,
-                     overlapping=False):
-        id1 = globalOverlappihgIDs[id1]
-
-        if overlapping:
-            mask = numerix.ones(id1.shape, dtype=bool)
-        else:
-            mask = numerix.isin(id1, globalNonOverlappihgIDs)
-
-        id1 = self.matrix()._mesh2matrix(id1[mask])
+    def _getStencil_(self, id1, id2, globalOverlappihgIDs, mask):
+        mask = mask[id1]
+        id1 = globalOverlappihgIDs[id1][mask]
+        id1 = self.matrix()._mesh2matrix(id1)
         id2 = numerix.asarray(id2)[mask]
 
         return id1, id2, mask
@@ -275,8 +299,9 @@ class _Mesh2Matrix(object):
     @property
     def bodies(self):
         if self._bodies is None:
-            self._bodies = numerix.isin(self.mesh._globalOverlappingCellIDs,
-                                        self.mesh._globalNonOverlappingCellIDs)
+            self._bodies = numerix.zeros(self.mesh._localOverlappingCellIDs.shape,
+                                         dtype=bool)
+            self._bodies[self.mesh._localNonOverlappingCellIDs] = True
         return self._bodies
 
     @property
@@ -292,15 +317,14 @@ class _RowMesh2Matrix(_Mesh2Matrix):
     def _getStencil(self, id1, id2, overlapping=False):
         return self._getStencil_(id1, id2,
                                  self.globalOverlappingRowIDs,
-                                 self.globalNonOverlappingRowIDs,
-                                 overlapping)
+                                 self._cellsToRowMask(overlapping))
 
 class _ColMesh2Matrix(_Mesh2Matrix):
     def _getStencil(self, id1, id2, overlapping=False):
-        id2, id1, mask = self._getStencil_(id2, id1,
-                                           self.globalOverlappingColIDs,
-                                           self.globalNonOverlappingColIDs,
-                                           overlapping)
+        (id2, id1,
+         mask) = self._getStencil_(id2, id1,
+                                   self.globalOverlappingColIDs,
+                                   self._cellsToColMask(overlapping))
 
         return id1, id2, mask
 
@@ -308,7 +332,9 @@ class _RowColMesh2Matrix(_RowMesh2Matrix):
     def _getStencil(self, id1, id2, overlapping=False):
         id2 = self.globalOverlappingColIDs[id2]
 
-        id1, id2, mask = super(_RowColMesh2Matrix, self)._getStencil(id1, id2, overlapping)
+        (id1, id2,
+         mask) = super(_RowColMesh2Matrix, self)._getStencil(id1, id2,
+                                                             overlapping)
 
         id2 = self.matrix()._mesh2matrix(id2)
 

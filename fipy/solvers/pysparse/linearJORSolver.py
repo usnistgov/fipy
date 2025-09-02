@@ -12,33 +12,36 @@ from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearJORSolver(PysparseSolver):
+    """Solves a linear system of equations using Jacobi over-relaxation
+    (:term:`JOR`).
     """
 
-    The `LinearJORSolver` solves a linear system of equations using
-    Jacobi over-relaxation. This method solves systems with a general
-    non-symmetric coefficient matrix.
-
-    """
-    def __init__(self, tolerance=1e-10, iterations=1000, relaxation=1.0):
+    def __init__(self, tolerance="default", criterion="default",
+                 iterations="default", relaxation=1.0, precon=None):
         """
-        The `Solver` class should not be invoked directly.
+        Create a `LinearJORSolver` object.
 
         Parameters
         ----------
         tolerance : float
             Required error tolerance.
+        criterion : {'default', 'unscaled', 'RHS', 'matrix', 'initial', 'legacy'}
+            Interpretation of ``tolerance``.
+            See :ref:`CONVERGENCE` for more information.
         iterations : int
             Maximum number of iterative steps to perform.
         relaxation : float
             Fraction of update to apply
+        precon
+            *ignored*
         """
-        super(LinearJORSolver, self).__init__(tolerance=tolerance,
-                                              iterations=iterations)
+        super(LinearJORSolver, self).__init__(tolerance=tolerance, criterion=criterion,
+                                              iterations=iterations, precon=None)
         self.relaxation = relaxation
 
     def _solve_(self, L, x, b):
 
-        d = L.takeDiagonal()
+        d = L.diagonal()
         D = _PysparseMatrixFromShape(size=len(d))
         D.putDiagonal(d)
 
@@ -46,17 +49,24 @@ class LinearJORSolver(PysparseSolver):
         tol = 1e+10
         xold = x.copy()
 
-        for iteration in range(self.iterations):
-            if tol <= self.tolerance:
-                break
+        tolerance_scale, _ = self._adaptTolerance(L, x, b)
 
-            residual = L * x - b
+        for iteration in range(self.iterations):
+            residual = numerix.L2norm(L * x - b)
+
+            if residual <= self.tolerance * tolerance_scale:
+                break
 
             xold[:] = x
             x[:] = (-(LU) * x + b) / d
 
             x[:] = xold + self.relaxation * (x - xold)
 
-            tol = max(abs(residual))
+        self._setConvergence(suite="pysparse",
+                             code=0,
+                             iterations=iteration+1,
+                             residual=residual / tolerance_scale)
 
-            print(iteration, tol)
+        self.convergence.warn()
+
+        return x

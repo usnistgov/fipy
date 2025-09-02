@@ -3,15 +3,8 @@ __docformat__ = 'restructuredtext'
 
 from PyTrilinos import AztecOO
 
-_reason = {AztecOO.AZ_normal : 'AztecOO.AZ_normal',
-           AztecOO.AZ_param : 'AztecOO.AZ_param',
-           AztecOO.AZ_breakdown : 'AztecOO.AZ_breakdown',
-           AztecOO.AZ_loss : 'AztecOO.AZ_loss',
-           AztecOO.AZ_ill_cond : 'AztecOO.AZ_ill_cond',
-           AztecOO.AZ_maxits : 'AztecOO.AZ_maxits'}
-
-from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
-from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
+from .trilinosSolver import TrilinosSolver
+from .preconditioners.jacobiPreconditioner import JacobiPreconditioner
 from fipy.tools.timer import Timer
 
 __all__ = ["TrilinosAztecOOSolver"]
@@ -26,46 +19,71 @@ class TrilinosAztecOOSolver(TrilinosSolver):
 
     """
 
-    def __init__(self, tolerance=1e-10, iterations=1000, precon=JacobiPreconditioner()):
-        """
-        Parameters
-        ----------
-        tolerance : float
-            Required error tolerance.
-        iterations : int
-            Maximum number of iterative steps to perform.
-        precon : ~fipy.solvers.trilinos.preconditioners.preconditioner.Preconditioner
-        """
-        if self.__class__ is TrilinosAztecOOSolver:
-            raise NotImplementedError("can't instantiate abstract base class")
+    DEFAULT_PRECONDITIONER = JacobiPreconditioner
 
-        TrilinosSolver.__init__(self, tolerance=tolerance,
-                                iterations=iterations, precon=None)
-        self.preconditioner = precon
+    def _adaptLegacyTolerance(self, L, x, b):
+        return self._adaptInitialTolerance(L, x, b)
+
+    def _adaptUnscaledTolerance(self, L, x, b):
+        return (1., AztecOO.AZ_noscaled)
+
+    def _adaptRHSTolerance(self, L, x, b):
+        return (1., AztecOO.AZ_rhs)
+
+    def _adaptMatrixTolerance(self, L, x, b):
+        return (1., AztecOO.AZ_Anorm)
+
+    def _adaptInitialTolerance(self, L, x, b):
+        return (1., AztecOO.AZ_r0)
+
+    def _adaptSolutionTolerance(self, L, x, b):
+        return (1., AztecOO.AZ_sol)
 
     def _solve_(self, L, x, b):
+        """Solve system of equations posed for PyTrilinos
 
-        Solver = AztecOO.AztecOO(L, x, b)
-        Solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
+        Parameters
+        ----------
+        L : Epetra.CrsMatrix
+            Sparse matrix
+        x : Epetra.Vector
+            Solution variable as non-ghosted vector
+        b : Epetra.Vector
+            Right-hand side as non-ghosted vector
 
-##        Solver.SetAztecOption(AztecOO.AZ_kspace, 30)
+        Returns
+        -------
+        x : Epetra.Vector
+            Solution variable as non-ghosted vector
+        """
 
-        Solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
+        solver = AztecOO.AztecOO(L, x, b)
+        solver.SetAztecOption(AztecOO.AZ_solver, self.solver)
+
+##        solver.SetAztecOption(AztecOO.AZ_kspace, 30)
+
+        solver.SetAztecOption(AztecOO.AZ_output, AztecOO.AZ_none)
+
+        tolerance_scale, suite_criterion = self._adaptTolerance(L, x, b)
+
+        rtol = self.scale_tolerance(self.tolerance, tolerance_scale)
+
+        solver.SetAztecOption(AztecOO.AZ_conv, suite_criterion)
 
         self._log.debug("BEGIN precondition")
 
         with Timer() as t:
-            if self.preconditioner is not None:
-                self.preconditioner._applyToSolver(solver=Solver, matrix=L)
+            if self.preconditioner is None:
+                solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
             else:
-                Solver.SetAztecOption(AztecOO.AZ_precond, AztecOO.AZ_none)
+                self.preconditioner._applyToSolver(solver=solver, matrix=L)
 
         self._log.debug("END precondition - {} ns".format(t.elapsed))
 
         self._log.debug("BEGIN solve")
 
         with Timer() as t:
-            output = Solver.Iterate(self.iterations, self.tolerance)
+            solver.Iterate(self.iterations, rtol)
 
         self._log.debug("END solve - {} ns".format(t.elapsed))
 
@@ -73,12 +91,18 @@ class TrilinosAztecOOSolver(TrilinosSolver):
             if hasattr(self.preconditioner, 'Prec'):
                 del self.preconditioner.Prec
 
-        status = Solver.GetAztecStatus()
-        self._log.debug('iterations: %d / %d', status[AztecOO.AZ_its], self.iterations)
-        self._log.debug('failure: %s', _reason[status[AztecOO.AZ_why]])
-        self._log.debug('AztecOO.AZ_r: %s', status[AztecOO.AZ_r])
-        self._log.debug('AztecOO.AZ_scaled_r: %s', status[AztecOO.AZ_scaled_r])
-        self._log.debug('AztecOO.AZ_solve_time: %s', status[AztecOO.AZ_solve_time])
-        self._log.debug('AztecOO.AZ_Aztec_version: %s', status[AztecOO.AZ_Aztec_version])
+        status = solver.GetAztecStatus()
 
-        return output
+        self._setConvergence(suite="trilinos",
+                             code=int(status[AztecOO.AZ_why]),
+                             iterations=int(status[AztecOO.AZ_its]),
+                             tolerance_scale=tolerance_scale,
+                             residual=status[AztecOO.AZ_r],
+                             scaled_residual=status[AztecOO.AZ_scaled_r],
+                             convergence_residual=status[AztecOO.AZ_rec_r],
+                             solve_time=status[AztecOO.AZ_solve_time],
+                             Aztec_version=status[AztecOO.AZ_Aztec_version])
+
+        self.convergence.warn()
+
+        return x

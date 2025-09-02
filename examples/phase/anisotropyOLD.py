@@ -183,13 +183,22 @@ the phase and temperature fields
 
 we iterate the solution in time, plotting as we go if running interactively,
 
+>>> from fipy import solver_suite
+>>> if solver_suite in ["trilinos", "no-pysparse"]:
+...     from fipy import MultilevelNSSAPreconditioner
+...     preconditioner = MultilevelNSSAPreconditioner()
+... else:
+...     preconditioner = "default"
+>>> from fipy import DefaultAsymmetricSolver
+>>> solver = DefaultAsymmetricSolver(precon=preconditioner)
+
 >>> steps = 10
 >>> from builtins import range
 >>> for i in range(steps):
 ...     phase.updateOld()
 ...     temperature.updateOld()
-...     phaseEq.solve(phase, dt=timeStepDuration)
-...     temperatureEq.solve(temperature, dt=timeStepDuration)
+...     phaseEq.solve(phase, dt=timeStepDuration, solver=solver)
+...     temperatureEq.solve(temperature, dt=timeStepDuration, solver=solver)
 ...     if i%10 == 0 and __name__ == '__main__':
 ...         phaseViewer.plot()
 ...         temperatureViewer.plot()

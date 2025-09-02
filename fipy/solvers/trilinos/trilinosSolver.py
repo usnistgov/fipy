@@ -13,11 +13,6 @@ class TrilinosSolver(Solver):
     .. attention:: This class is abstract. Always create one of its subclasses.
 
     """
-    def __init__(self, *args, **kwargs):
-        if self.__class__ is TrilinosSolver:
-            raise NotImplementedError("can't instantiate abstract base class")
-        else:
-            Solver.__init__(self, *args, **kwargs)
 
     def _storeMatrix(self, var, matrix, RHSvector):
         self.var = var
@@ -29,7 +24,7 @@ class TrilinosSolver(Solver):
 
     @property
     def _globalMatrixAndVectors(self):
-        if not hasattr(self, 'globalVectors'):
+        if not hasattr(self, '_globalVectors'):
             globalMatrix = self.matrix.asTrilinosMeshMatrix()
 
             mesh = self.var.mesh
@@ -60,35 +55,69 @@ class TrilinosSolver(Solver):
 
             overlappingVector = Epetra.Vector(globalMatrix.colMap, self.var)
 
-            self.globalVectors = (globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector)
+            self._globalVectors = (globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector)
 
-        return self.globalVectors
+        return self._globalVectors
 
     def _deleteGlobalMatrixAndVectors(self):
         self.matrix.flush()
-        del self.globalVectors
+        del self._globalVectors
 
-    def _solve(self):
-        from fipy.terms import SolutionVariableNumberError
+    def _rhsNorm(self, L, x, b):
+        return float(b.Norm2())
 
-        globalMatrix, nonOverlappingVector, nonOverlappingRHSvector, overlappingVector = self._globalMatrixAndVectors
+    def _matrixNorm(self, L, x, b):
+        return L.NormInf()
 
-        if not (globalMatrix.rangeMap.SameAs(globalMatrix.domainMap)
-                and globalMatrix.rangeMap.SameAs(nonOverlappingVector.Map())):
+    def _residualVectorAndNorm(self, L, x, b):
+        # residualVector = L*x - b
+        residualVector = Epetra.Vector(L.RangeMap())
+        L.Multiply(False, x, residualVector)
+        # If A is an Epetra.Vector with map M
+        # and B is an Epetra.Vector with map M
+        # and C = A - B
+        # then C is an Epetra.Vector with *no map* !!!?!?!
+        residualVector -= b
+
+        return residualVector, float(residualVector.Norm2())
+
+    @property
+    def _Lxb(self):
+        """Matrix, solution vector, and right-hand side vector
+
+        Returns
+        -------
+        L : Epetra.CrsMatrix
+            Sparse matrix
+        x : Epetra.Vector
+            Solution variable as non-ghosted vector
+        b : Epetra.Vector
+            Right-hand side as non-ghosted vector
+        """
+        L, x, b, _ = self._globalMatrixAndVectors
+
+        if not (L.rangeMap.SameAs(L.domainMap)
+                and L.rangeMap.SameAs(x.Map())):
+
+            from fipy.terms import SolutionVariableNumberError
 
             raise SolutionVariableNumberError
 
-        self._solve_(globalMatrix.matrix,
-                     nonOverlappingVector,
-                     nonOverlappingRHSvector)
+        return (L.matrix, x, b)
 
-        overlappingVector.Import(nonOverlappingVector,
+    def _scatterGhosts(self, x):
+        """Distribute ghost values (if any) across processes
+        """
+        globalMatrix, _, _, overlappingVector = self._globalMatrixAndVectors
+
+        overlappingVector.Import(x,
                                  Epetra.Import(globalMatrix.colMap,
                                                globalMatrix.domainMap),
                                  Epetra.Insert)
 
-        self.var.value = numerix.reshape(numerix.array(overlappingVector), self.var.shape)
+        return numerix.asarray(overlappingVector)
 
+    def _cleanup(self):
         self._deleteGlobalMatrixAndVectors()
         del self.var
         del self.RHSvector

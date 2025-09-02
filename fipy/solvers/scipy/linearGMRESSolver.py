@@ -3,29 +3,20 @@ __docformat__ = 'restructuredtext'
 
 from scipy.sparse.linalg import gmres
 
-from fipy.solvers.scipy.scipyKrylovSolver import _ScipyKrylovSolver
+from fipy.solvers.scipy.scipyKrylovSolver import ScipyKrylovSolver
 
 __all__ = ["LinearGMRESSolver"]
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
-class LinearGMRESSolver(_ScipyKrylovSolver):
-    """
-    The `LinearGMRESSolver` is an interface to the GMRES solver in
-    Scipy, with no preconditioning by default.
+class LinearGMRESSolver(ScipyKrylovSolver):
+    """Interface to the Generalized Minimum RESidual (:term:`GMRES`) solver
+    in :ref:`SciPy`.
+
+    No preconditioning by default.
     """
 
-    def __init__(self, tolerance=1e-15, iterations=2000, precon=None):
-        """
-        Parameters
-        ----------
-        tolerance : float
-            Required error tolerance.
-        iterations : int
-            Maximum number of iterative steps to perform.
-        precon
-            Preconditioner to use.
-        """
+    solveFnc = staticmethod(gmres)
 
-        super(LinearGMRESSolver, self).__init__(tolerance=tolerance, iterations=iterations, precon=precon)
-        self.solveFnc = gmres
+    def _doSolve(self, *args, **kwargs):
+        return self.solveFnc(*args, **kwargs, callback_type='legacy')

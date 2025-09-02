@@ -354,12 +354,14 @@ If we're running interactively, we create a viewer
 ...                     datamin=0, datamax=1)
 ...     viewer.plot()
 
-and again iterate to equilibrium
+and again iterate to equilibrium.  The initial residual is much larger than
+the norm of the right-hand-side vector, so we use `"initial"` tolerance
+scaling.
 
 .. index::
    single: DefaultAsymmetricSolver
 
->>> solver = DefaultAsymmetricSolver(tolerance=1e-10)
+>>> solver = DefaultAsymmetricSolver(criterion="initial", tolerance=1e-8)
 
 
 >>> dt = 10000

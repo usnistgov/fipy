@@ -487,14 +487,14 @@ We plot the result against the sharp interface solution
 
 >>> if __name__ == '__main__':
 ...     try:
-...         from examples.phase.phaseViewer import PhaseViewer
+...         from phaseViewer import PhaseViewer
 ...
 ...         viewer = PhaseViewer(phase=phase, C=C, sharp=sharp,
 ...                              elapsed=elapsed,
 ...                              L=L, deltaA=deltaA,
 ...                              tmin=1e-5, tmax=300 * 3600,
 ...                              datamin=0., datamax=1.)
-...     except ImportError:
+...     except Exception:
 ...         viewer = Viewer(vars=(phase, C, sharp),
 ...                         datamin=0., datamax=1.)
 ...     viewer.plot()
@@ -513,7 +513,9 @@ non-linear problem to convergence. We use the "residual" of the equations
 equations) as a test for how long to sweep.
 
 .. index::
-   single: LinearLUSolver
+   single: DefaultAsymmetricSolver
+   single: LinearBicgstabSolver
+   single: HYPREPreconditioner
    single: solve
    single: sweep
 
@@ -521,16 +523,19 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ":meth:`~fipy.terms.term.Term.solve`" because we require the residual.
 
 >>> import fipy.solvers.solver
->>> from fipy.tools import parallelComm
->>> if parallelComm.Nproc > 1:
-...     if fipy.solvers.solver_suite == 'petsc':
-...         solver = DefaultAsymmetricSolver(tolerance=1e-10, precon='hypre')
-...     elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
-...         # Trilinos scales by initial residual
-...         # b-vector L2norm is ~1e15
-...         solver = DefaultAsymmetricSolver(tolerance=1e-24)
+>>> if fipy.solvers.solver_suite == 'petsc':
+...     from fipy import HYPREPreconditioner
+...     solver = DefaultAsymmetricSolver(criterion="initial",
+...                                      precon=HYPREPreconditioner(),
+...                                      tolerance=1e-10)
+... elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+...     from fipy import LinearBicgstabSolver
+...     solver = LinearBicgstabSolver(criterion="initial",
+...                                   tolerance=1e-10)
 ... else:
-...     solver = LinearLUSolver(tolerance=1e-10)
+...     solver = DefaultAsymmetricSolver(criterion="initial",
+...                                      precon=None,
+...                                      tolerance=1e-10)
 
 >>> phase.updateOld()
 >>> C.updateOld()
@@ -538,7 +543,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 >>> initialRes = None
 >>> sweep = 0
 
->>> while res > 1e-8 and sweep < 100:
+>>> while res > 1e-5 and sweep < 100:
 ...     res = eq.sweep(dt=dt, solver=solver)
 ...     if initialRes is None:
 ...         initialRes = res
@@ -625,7 +630,7 @@ time step of about :math:`10^{-5}~\\mathrm{s}`.
 ...     C.updateOld()
 ...     res = 1e+10
 ...     sweep = 0
-...     while (res > 1e-3 or abs(Cavg.value - 0.5) > 1e-8) and sweep < 20:
+...     while (res > 1e-3 or abs(Cavg.value - 0.5) > 2e-6) and sweep < 20:
 ...         res = eq.sweep(dt=dt0, solver=solver)
 ...         sweep += 1
 ...     elapsed.value = (i + 1) * dt0
@@ -654,7 +659,7 @@ diffusion field to become uniform.  In the liquid, this will take
 1000~\\mathrm{s}`.
 
 Not wanting to take a hundred-million steps, we employ adaptive time
-stepping, using the :term:`steppyingstounes` package.  This package takes
+stepping, using the :term:`steppyngstounes` package.  This package takes
 care of many of the messy details of stepping, like overshoot, underflow,
 and step size adaptation, while keeping the structure of our solve loop
 largely intact.
@@ -683,14 +688,6 @@ old values before we get started.
 
 >>> dt = dt0
 
->>> mass_tolerance = 1e-6
->>> residual_tolerance = 1e-3
-
->>> if ((parallelComm.Nproc > 1)
-...     and (fipy.solvers.solver_suite in ['trilinos', 'no-pysparse'])):
-...     # Trilinos on linux in parallel doesn't conserve as well
-...     mass_tolerance = 1e-5
-
 >>> for checkpoint in SequenceStepper(start=float(elapsed), stop=totaltime,     # doctest: +STEPPYNGSTOUNES
 ...                                   sizes=(dt0 * 2**(n/2) for n in count(7))):
 ...     for step in PIDStepper(start=checkpoint.begin,
@@ -698,15 +695,12 @@ old values before we get started.
 ...                            size=dt):
 ...         for sweep in range(2):
 ...             res = eq.sweep(dt=step.size, solver=solver)
-...             # print(step.begin, step.size, sweep, res)
-...         err = max(res / residual_tolerance,
-...                   abs(Cavg.value - 0.5) / mass_tolerance)
+...         err = max(res / 1e-3,
+...                   abs(Cavg.value - 0.5) / 2e-6)
 ...         if step.succeeded(error=err):
 ...             phase.updateOld()
 ...             C.updateOld()
 ...             elapsed.value = step.end
-...             if __name__ == '__main__':
-...                 viewer.plot()
 ...         else:
 ...             phase.value = phase.old
 ...             C.value = C.old
@@ -740,7 +734,7 @@ For the next
 :math:`12~\\mathrm{s}`, the interface stalls while the solute step
 trapped in the solid phase diffuses outward
 (:math:`(2.8~\\mathrm{\\mu m})^2 / D_s =
-\mathcal{O}(80~\\mathrm{s})`).  Once the solute gradient in the
+\\mathcal{O}(80~\\mathrm{s})`).  Once the solute gradient in the
 solid reaches the new position of the interface, the solidification front
 begins to move, driven by diffusion in the solid.  When the solute in the
 solid becomes uniform, the interface stalls again after :math:`\\approx

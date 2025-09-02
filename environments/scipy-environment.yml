@@ -1,5 +1,3 @@
-# This environment is redundant to environment.yml.
-# Present for symmetry with other solvers.
 channels:
   - conda-forge
   - nodefaults
@@ -11,6 +9,7 @@ dependencies:
   - python
   - numpy
   - scipy
+  - pyAMG
   - matplotlib-base
   - future
   - packaging

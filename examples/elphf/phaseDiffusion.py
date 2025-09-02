@@ -82,7 +82,9 @@ in the solute and a liquid phase rich in the solvent.
 
 We create the phase equation as in :mod:`examples.elphf.phase`
 and create the diffusion equations for the different species as in
-:mod:`examples.elphf.diffusion.mesh1D`
+:mod:`examples.elphf.diffusion.mesh1D`.  The initial residual of the
+diffusion equations is much larger than the norm of the right-hand-side
+vector, so we use `"initial"` tolerance scaling for those equations
 
 >>> def makeEquations(phase, substitutionals, interstitials):
 ...     phase.equation = TransientTerm(coeff = 1/phase.mobility) \
@@ -139,6 +141,10 @@ and create the diffusion equations for the different species as in
 ...         Cj.equation = (TransientTerm()
 ...                        == DiffusionTerm(coeff=Cj.diffusivity)
 ...                        + PowerLawConvectionTerm(coeff=convectionCoeff))
+...
+...     for Cj in substitutionals + interstitials:
+...         Cj.solver = Cj.equation.getDefaultSolver(criterion="initial",
+...                                                  tolerance=1e-7)
 
 >>> makeEquations(phase, substitutionals, interstitials)
 
@@ -180,8 +186,9 @@ iterating to equilibrium
 ...         field.updateOld()
 ...     phase.equation.solve(var = phase, dt = dt)
 ...     for field in substitutionals + interstitials:
-...         field.equation.solve(var = field,
-...                              dt = dt)
+...         field.equation.solve(var=field,
+...                              dt=dt,
+...                              solver=field.solver)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
@@ -262,8 +269,9 @@ and again iterate to equilibrium
 ...         field.updateOld()
 ...     phase.equation.solve(var = phase, dt = dt)
 ...     for field in substitutionals + interstitials:
-...         field.equation.solve(var = field,
-...                              dt = dt)
+...         field.equation.solve(var=field,
+...                              dt=dt,
+...                              solver=field.solver)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
@@ -354,8 +362,9 @@ and again iterate to equilibrium
 ...         field.updateOld()
 ...     phase.equation.solve(var = phase, dt = dt)
 ...     for field in substitutionals + interstitials:
-...         field.equation.solve(var = field,
-...                              dt = dt)
+...         field.equation.solve(var=field,
+...                              dt=dt,
+...                              solver=field.solver)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 

@@ -6,6 +6,7 @@ __all__ = ['FirstOrderAdvectionTerm']
 from future.utils import text_to_native_str
 __all__ = [text_to_native_str(n) for n in __all__]
 
+from fipy.solvers import INDEX_TYPE
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 
@@ -98,7 +99,8 @@ class FirstOrderAdvectionTerm(_NonDiffusionTerm):
 
         cellValues = numerix.repeat(oldArray[numerix.newaxis, ...], NCellFaces, axis = 0)
 
-        cellIDs = numerix.repeat(numerix.arange(NCells)[numerix.newaxis, ...], NCellFaces, axis = 0)
+        cellIDs = numerix.arange(NCells, dtype=INDEX_TYPE)[numerix.newaxis, ...]
+        cellIDs = numerix.repeat(cellIDs, NCellFaces, axis = 0)
         cellToCellIDs = mesh._cellToCellIDs
 
         if NCells > 0:
@@ -135,9 +137,6 @@ class FirstOrderAdvectionTerm(_NonDiffusionTerm):
             from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
             from fipy.solvers.trilinos.linearGMRESSolver import LinearGMRESSolver
             return solver or LinearGMRESSolver(precon=JacobiPreconditioner(), *args, **kwargs)
-        elif fipy.solvers.solver_suite == 'pyamg':
-            from fipy.solvers.pyAMG.linearGeneralSolver import LinearGeneralSolver
-            return solver or LinearGeneralSolver(tolerance=1e-15, iterations=2000, *args, **kwargs)
         else:
             from fipy.solvers import DefaultAsymmetricSolver
             return solver or DefaultAsymmetricSolver(*args, **kwargs)

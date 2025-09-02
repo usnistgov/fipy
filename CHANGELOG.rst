@@ -6,40 +6,46 @@
 .. _.chap-colon-efficiency: https://pages.nist.gov/fipy/en/latest/EFFICIENCY.html#chap-efficiency
 .. |.CircleCI| replace:: CircleCI
 .. _.CircleCI: https://pages.nist.gov/fipy/en/latest/glossary.html#term-CircleCI
+.. |.commandlineflags| replace:: Command-line Flags
+.. _.commandlineflags: https://pages.nist.gov/fipy/en/latest/USAGE.html#commandlineflags
 .. |.conda| replace:: conda
 .. _.conda: https://pages.nist.gov/fipy/en/latest/glossary.html#term-conda
 .. |.continuousintegration| replace:: Continuous Integration
 .. _.continuousintegration: https://pages.nist.gov/fipy/en/latest/ADMINISTRATA.html#continuousintegration
+.. |.convergence| replace:: Convergence
+.. _.convergence: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#convergence
 .. |.coupledequations| replace:: Coupled and Vector Equations
 .. _.coupledequations: https://pages.nist.gov/fipy/en/latest/USAGE.html#coupledequations
 .. |.examples.levelSet.distanceFunction.circle| replace:: ``examples.levelSet.distanceFunction.circle``
-.. _.examples.levelSet.distanceFunction.circle: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/examples/levelSet/distanceFunction/circle.py
+.. _.examples.levelSet.distanceFunction.circle: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/examples/levelSet/distanceFunction/circle.py
 .. |.examples.updating.update1_0to2_0| replace:: ``examples.updating.update1_0to2_0``
-.. _.examples.updating.update1_0to2_0: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/examples/updating/update1_0to2_0.py
+.. _.examples.updating.update1_0to2_0: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/examples/updating/update1_0to2_0.py
 .. |.examples.updating.update2_0to3_0| replace:: ``examples.updating.update2_0to3_0``
-.. _.examples.updating.update2_0to3_0: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/examples/updating/update2_0to3_0.py
+.. _.examples.updating.update2_0to3_0: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/examples/updating/update2_0to3_0.py
 .. |.faq| replace:: Frequently Asked Questions
 .. _.faq: https://pages.nist.gov/fipy/en/latest/FAQ.html#faq
 .. |.FiPy| replace:: FiPy
 .. _.FiPy: https://pages.nist.gov/fipy/en/latest/glossary.html#term-FiPy
 .. |.~fipy.meshes.mesh.Mesh| replace:: ``Mesh``
-.. _.~fipy.meshes.mesh.Mesh: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/meshes/mesh.py#L22-L848
+.. _.~fipy.meshes.mesh.Mesh: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/fipy/meshes/mesh.py#L24-L852
 .. |.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm| replace:: ``ImplicitSourceTerm``
-.. _.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/terms/implicitSourceTerm.py#L11-L62
+.. _.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/fipy/terms/implicitSourceTerm.py#L11-L62
 .. |.~fipy.terms.term.Term.solve| replace:: ``solve()``
-.. _.~fipy.terms.term.Term.solve: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/terms/term.py#L169-L196
+.. _.~fipy.terms.term.Term.solve: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/fipy/terms/term.py#L178-L205
 .. |.~fipy.terms.term.Term.sweep| replace:: ``sweep()``
-.. _.~fipy.terms.term.Term.sweep: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/terms/term.py#L198-L262
+.. _.~fipy.terms.term.Term.sweep: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/fipy/terms/term.py#L207-L271
 .. |.~fipy.terms.transientTerm.TransientTerm| replace:: ``TransientTerm``
-.. _.~fipy.terms.transientTerm.TransientTerm: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/terms/transientTerm.py#L12-L194
+.. _.~fipy.terms.transientTerm.TransientTerm: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/fipy/terms/transientTerm.py#L12-L194
 .. |.~fipy.tools.numerix| replace:: ``numerix``
-.. _.~fipy.tools.numerix: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/tools/numerix.py
+.. _.~fipy.tools.numerix: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/fipy/tools/numerix.py
 .. |.~fipy.variables.cellVariable.CellVariable| replace:: ``CellVariable``
-.. _.~fipy.variables.cellVariable.CellVariable: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/variables/cellVariable.py#L13-L661
+.. _.~fipy.variables.cellVariable.CellVariable: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/fipy/variables/cellVariable.py#L13-L661
 .. |.~fipy.variables.faceVariable.FaceVariable| replace:: ``FaceVariable``
-.. _.~fipy.variables.faceVariable.FaceVariable: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/variables/faceVariable.py#L9-L86
+.. _.~fipy.variables.faceVariable.FaceVariable: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/fipy/variables/faceVariable.py#L9-L86
 .. |.~fipy.viewers.matplotlibViewer.MatplotlibViewer| replace:: ``MatplotlibViewer()``
-.. _.~fipy.viewers.matplotlibViewer.MatplotlibViewer: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/viewers/matplotlibViewer/__init__.py#L12-L122
+.. _.~fipy.viewers.matplotlibViewer.MatplotlibViewer: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/fipy/viewers/matplotlibViewer/__init__.py#L12-L122
+.. |.FIPY_SOLVERS| replace:: FIPY_SOLVERS
+.. _.FIPY_SOLVERS: https://pages.nist.gov/fipy/en/latest/USAGE.html#envvar-FIPY_SOLVERS
 .. |.installation| replace:: Installation
 .. _.installation: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#installation
 .. |.linux| replace:: linux
@@ -68,14 +74,14 @@
 .. _.numpy: https://numpy.org/doc/stable/reference/index.html#module-numpy
 .. |.parallel| replace:: Solving in Parallel
 .. _.parallel: https://pages.nist.gov/fipy/en/latest/USAGE.html#parallel
-.. |.PETSc| replace:: PETSc
-.. _.PETSc: https://pages.nist.gov/fipy/en/latest/glossary.html#term-PETSc
+.. |.petsc| replace:: PETSc
+.. _.petsc: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#petsc
 .. |.pip| replace:: pip
 .. _.pip: https://pages.nist.gov/fipy/en/latest/glossary.html#term-pip
 .. |.pyamg| replace:: PyAMG
-.. _.pyamg: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#pyamg
-.. |.Pysparse| replace:: Pysparse
-.. _.Pysparse: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Pysparse
+.. _.pyamg: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#id10
+.. |.pysparse| replace:: Pysparse
+.. _.pysparse: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#id14
 .. |.Python| replace:: Python
 .. _.Python: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Python
 .. |.Python 3| replace:: Python 3
@@ -83,15 +89,15 @@
 .. |.scikitfmm| replace:: Scikit-fmm
 .. _.scikitfmm: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#scikitfmm
 .. |.scipy| replace:: ``scipy``
-.. _.scipy: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/solvers/scipy/__init__.py
+.. _.scipy: https://github.com/usnistgov/fipy/blob/9f08c20c7816d76114ec6e6d6defa8c9724d27c6/fipy/solvers/scipy/__init__.py
 .. |.solvers| replace:: Solvers
 .. _.solvers: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#solvers
 .. |.Sphinx| replace:: Sphinx
 .. _.Sphinx: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Sphinx
 .. |.TravisCI| replace:: TravisCI
 .. _.TravisCI: https://pages.nist.gov/fipy/en/latest/glossary.html#term-TravisCI
-.. |.Trilinos| replace:: Trilinos
-.. _.Trilinos: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Trilinos
+.. |.trilinos| replace:: Trilinos
+.. _.trilinos: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#trilinos
 .. |.Windows| replace:: Windows
 .. _.Windows: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Windows
 
@@ -108,6 +114,24 @@ Change Log
 -----------------
 Version |release|
 -----------------
+
+This release harmonizes the sparse |.solvers|_:
+
+- Uses consistent interpretation of |.convergence|_ criteria.
+- Improves efficiency at building matrices.
+- Supports more preconditioners.
+- Logs solver status and performance.
+- Greatly expands documentation of the configuration and performance of
+  the supported |.solvers|_.
+- Changes default tolerance to :math:`10^{-5}`. This is adequate for most
+  problems.
+- Removes "`pyamg`" from |.FIPY_SOLVERS|_ and "`--pyamg`" from
+  the |.commandlineflags|_.  |.pyamg|_ is implemented as a
+  preconditioner for |.scipy|_, not as a solver suite in its own right.
+
+--------------------------
+Version 3.4.5 - 2024-06-25
+--------------------------
 
 This maintenance release:
 
@@ -188,7 +212,7 @@ Version 3.4.4 - 2023-06-27
 --------------------------
 
 This maintenance release adds |.logging|_ and resolves compatibility issues
-with recent builds of |.PETSc|_ and |.NumPy|_.
+with recent builds of |.petsc|_ and |.NumPy|_.
 
 Pulls
 -----
@@ -393,7 +417,7 @@ Fixes
 Version 3.4 - 2020-02-06
 ------------------------
 
-This release adds support for the |.PETSc|_ solvers for
+This release adds support for the |.petsc|_ solvers for
 |.parallel|_.
 
 Pulls
@@ -1211,7 +1235,7 @@ Version 2.1.2 - 2011-04-20
 
 The significant changes since version 2.1.1 are:
 
-- |.Trilinos|_ efficiency improvements
+- |.trilinos|_ efficiency improvements
 - Diagnostics of the parallel environment
 
 Fixes
@@ -1241,7 +1265,7 @@ The significant changes since version 2.1 are:
 - |.~fipy.viewers.matplotlibViewer.MatplotlibViewer|_ can display 
   into an existing set of Matplotlib axes.
 
-- |.Pysparse|_ and |.Trilinos|_ are now completely independent.
+- |.pysparse|_ and |.trilinos|_ are now completely independent.
 
 Fixes
 -----
@@ -1272,7 +1296,7 @@ with older scripts.
 
 The significant changes since version 2.0.2 are:
 
-- |.FiPy|_ can use |.Trilinos|_ for |.parallel|_.
+- |.FiPy|_ can use |.trilinos|_ for |.parallel|_.
 
 - We have switched from |.MayaVi|_ 1 to |.Mayavi|_ 2. This 
   ``Viewer`` is an independent process that 
@@ -1398,7 +1422,7 @@ The significant changes since version 1.2 are:
 
 - Support for anisotropic diffusion coefficients.
 
-.. _Trilinos solvers: http://www.nist.gov/cgi-bin/exit_nist.cgi?url=http://trilinos.sandia.gov
+.. _Trilinos solvers: http://www.nist.gov/cgi-bin/redirect.py?url=https://trilinos.github.io
 
 - `#167 <https://github.com/usnistgov/fipy/issues/167>`_:
   example showing how to go from 1.2 to 2.0
