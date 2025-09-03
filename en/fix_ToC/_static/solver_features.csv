@@ -1,0 +1,18 @@
+,:ref:`PETSC`,:ref:`PYAMG`,:ref:`PYAMGX`,:ref:`PYSPARSE`,:ref:`SCIPY`,:ref:`TRILINOS`
+:envvar:`FIPY_SOLVERS`,``petsc``,,``pyamgx``,``pysparse``,``scipy``,"``trilinos``
+or ``no-pysparse``"
+solvers,✓,,✓,✓,✓,✓
+preconditioners,✓,✓,✓,✓,✓,✓
+parallel,✓,,[#pyamgx_parallel]_,,,✓
+:term:`linux`,✓,✓,✓,✓,✓,✓
+:term:`macOS`,✓,✓,,✓,✓,✓
+:term:`Windows`,,✓,,✓,✓,
+requirements,"|petsc4py|_,
+|mpi4py|_","|pyamg.|_,
+|scipy.|_","|pyamgx.|_,
+|scipy.|_,
+:term:`python` >= 2.7 or >= 3.5","|pysparse.|_ >= 1.0,
+:term:`python` < 3",|scipy.|_,"|PyTrilinos|_,
+|mpi4py|_,
+:term:`python` >=3.7,<3.9  [#37_38]_ [#PyTrilinos2]_,
+(|pysparse.|_ [#PySparse4Trilinos]_)"
