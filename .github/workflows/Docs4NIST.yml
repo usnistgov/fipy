@@ -14,3 +14,4 @@ jobs:
             git config --global --add safe.directory /github/workspace
           formats: |-
             pdf
+          hidden: true
