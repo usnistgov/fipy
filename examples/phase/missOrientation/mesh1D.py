@@ -93,7 +93,7 @@ phaseEq = TransientTerm(phaseTransientCoeff) == \
           + (mPhiVar > 0) * mPhiVar * phase
 
 from fipy import solver_suite
-if solver_suite in ["trilinos", "no-pysparse"]:
+if solver_suite in ["trilinos"]:
     from fipy import ILUPreconditioner
     preconditioner = ILUPreconditioner()
 else:

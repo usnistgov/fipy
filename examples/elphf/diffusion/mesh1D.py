@@ -97,7 +97,7 @@ preconditioner that will drive to an accurate solution.
 ...     Cj.equation = (TransientTerm()
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
-...     if solver_suite in ["trilinos", "no-pysparse"]:
+...     if solver_suite in ["trilinos"]:
 ...         from fipy import MultilevelNSSAPreconditioner
 ...         preconditioner = MultilevelNSSAPreconditioner()
 ...     else:

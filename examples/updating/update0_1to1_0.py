@@ -245,7 +245,7 @@ in the `diffusionTerm` parameter.
 The :class:`Iterator` class still exists, but it is no longer necessary.  Instead,
 the solution to an implicit steady-state problem like this can simply be
 obtained by telling the equation to solve itself (with an appropriate
-`solver` if desired, although the default :class:`~fipy.solvers.pysparse.linearCGSolver.LinearPCGSolver` is usually
+`solver` if desired, although the default solver is usually
 suitable):
 
 >>> from fipy.solvers import *
