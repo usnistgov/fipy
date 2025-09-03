@@ -1,0 +1,29 @@
+package.subpackage.object
+=========================
+
+.. automodule:: package.subpackage.object
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Object
+   
+   
+
+   
+   
+   
+
+
+
