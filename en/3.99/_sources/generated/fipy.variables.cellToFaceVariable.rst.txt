@@ -1,0 +1,23 @@
+fipy.variables.cellToFaceVariable
+=================================
+
+.. automodule:: fipy.variables.cellToFaceVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
