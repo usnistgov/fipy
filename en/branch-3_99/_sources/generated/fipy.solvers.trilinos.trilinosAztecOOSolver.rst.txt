@@ -1,0 +1,29 @@
+fipy.solvers.trilinos.trilinosAztecOOSolver
+===========================================
+
+.. automodule:: fipy.solvers.trilinos.trilinosAztecOOSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TrilinosAztecOOSolver
+   
+   
+
+   
+   
+   
+
+
+

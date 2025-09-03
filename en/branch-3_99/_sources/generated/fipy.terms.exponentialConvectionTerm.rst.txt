@@ -1,0 +1,29 @@
+fipy.terms.exponentialConvectionTerm
+====================================
+
+.. automodule:: fipy.terms.exponentialConvectionTerm
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ExponentialConvectionTerm
+   
+   
+
+   
+   
+   
+
+
+
