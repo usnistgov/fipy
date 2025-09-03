@@ -9,6 +9,7 @@ __docformat__ = 'restructuredtext'
 
 import logging
 import os
+from packaging.version import Version, parse as parse_version
 from subprocess import Popen, PIPE
 import sys
 import tempfile
@@ -20,7 +21,6 @@ _log = logging.getLogger(__name__)
 from fipy.tools import numerix
 from fipy.tools import parallelComm
 from fipy.tools import serialComm
-from fipy.tools.version import Version, parse_version
 from fipy.tests.doctestPlus import register_skipper
 
 from fipy.meshes.mesh import Mesh

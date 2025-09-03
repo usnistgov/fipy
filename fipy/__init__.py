@@ -45,11 +45,6 @@ import sys
 if 'FIPY_LOG_CONFIG' in os.environ:
     with open(os.environ['FIPY_LOG_CONFIG'], mode='r') as fp:
         logging.config.dictConfig(json.load(fp))
-else:
-    # Needed for Python 2.7 to avoid
-    # 'No handlers could be found for logger "fipy"'.
-    # Should do nothing in Py3k.
-    logging.basicConfig()
 
 _log = logging.getLogger(__name__)
 
