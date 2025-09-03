@@ -8,16 +8,12 @@
 .. _.environment: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#environment
 .. |.FiPy| replace:: FiPy
 .. _.FiPy: https://pages.nist.gov/fipy/en/latest/glossary.html#term-FiPy
-.. |.~fipy.viewers.vtkViewer.VTKViewer| replace:: ``VTKViewer()``
-.. _.~fipy.viewers.vtkViewer.VTKViewer: https://github.com/usnistgov/fipy/blob/cb12895d33946bd12c2a44d6ba495974a6d79397/fipy/viewers/vtkViewer/__init__.py#L11-L38
 .. |.flagsandenvironmentvariables| replace:: Command-line Flags and Environment Variables
 .. _.flagsandenvironmentvariables: https://pages.nist.gov/fipy/en/latest/USAGE.html#flagsandenvironmentvariables
 .. |.Gmsh| replace:: Gmsh
 .. _.Gmsh: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Gmsh
 .. |.installation| replace:: Installation
 .. _.installation: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#installation
-.. |.Mayavi| replace:: Mayavi
-.. _.Mayavi: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Mayavi
 .. |.NumPy| replace:: NumPy
 .. _.NumPy: https://pages.nist.gov/fipy/en/latest/glossary.html#term-NumPy
 .. |.optionalpackages| replace:: Optional Packages
@@ -188,19 +184,6 @@ of the merits of and relationship between the different methods.
     $ conda create --name <MYFIPYENV> --channel conda-forge \
         python=3 numpy scipy matplotlib-base future packaging mpich \
         mpi4py petsc4py mayavi "gmsh <4.0|>=4.5.2"
-
-  or::
-
-    $ conda create --name <MYFIPYENV> --channel conda-forge \
-        python=2.7 numpy scipy matplotlib-base future packaging \
-        pysparse mayavi "traitsui<7.0.0" "gmsh<4.0"
-
-  .. attention::
-
-     Bit rot has started to set in for Python 2.7.  One consequence is that
-     |.~fipy.viewers.vtkViewer.VTKViewer|_\s can raise errors
-     (probably other uses of |.Mayavi|_, too). Hence, the constraint
-     of `"traitsui<7.0.0"`.
 
 .. _conda-lock: https://github.com/conda/conda-lock
 

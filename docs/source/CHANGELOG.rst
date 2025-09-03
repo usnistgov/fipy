@@ -1145,7 +1145,7 @@ The significant changes since version 2.1 are:
 - :class:`~fipy.viewers.matplotlibViewer.MatplotlibViewer` can display 
   into an existing set of Matplotlib axes.
 
-- :ref:`PYSPARSE` and :ref:`TRILINOS` are now completely independent.
+- :term:`PYSPARSE` and :ref:`TRILINOS` are now completely independent.
 
 Fixes
 -----

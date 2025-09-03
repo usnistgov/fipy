@@ -4,7 +4,7 @@
 Solvers
 =======
 
-:term:`FiPy` requires either PETSc_, pyamgx_, Pysparse_, SciPy_, or
+:term:`FiPy` requires either PETSc_, pyamgx_, SciPy_, or
 Trilinos_ solver suites to be installed in order to solve linear systems.
 PETSc_ and Trilinos_ are the most complete of the
 solvers due to their numerous preconditioning and solver capabilities and
@@ -16,18 +16,18 @@ widely available and easy to install. Although they do not perform as well
 as the other suites and lack many of the features of PETSc_ or Trilinos_,
 they may be the easiest linear solver choice when
 first installing and testing :term:`FiPy`.
-While the Pysparse_ linear solvers offer a modest advantage in serial, be
-aware that they require :term:`Python` 2.7, which is no longer supported.
-FiPy support for Pysparse_ will be dropped soon.
 pyamgx_ offers the possibility
 of solving sparse linear systems on the GPU; be aware that both
 hardware and software configuration is non-trivial.
+The :term:`Pysparse` solver suite is no longer supported, as it requires
+:term:`Python` 2.7; if you need :term:`Pysparse`, please use :term:`FiPy`
+3.99.
 
 :term:`FiPy` chooses the solver suite based on system availability or based
 on the user supplied :ref:`FlagsAndEnvironmentVariables`. For example,
-passing ``--no-pysparse``::
+passing ``--trilinos``::
 
-    $ python -c "from fipy import *; print DefaultSolver" --no-pysparse
+    $ python -c "from fipy import *; print DefaultSolver" --trilinos
     <class 'fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver'>
 
 uses a :ref:`TRILINOS` solver. Setting :envvar:`FIPY_SOLVERS`
@@ -42,14 +42,19 @@ be imported and instantiated overriding any other directives. For
 example::
 
     $ python -c "from fipy.solvers.scipy import DefaultSolver; \
-    >   print DefaultSolver" --no-pysparse
+    >   print DefaultSolver" --trilinos
     <class 'fipy.solvers.scipy.linearLUSolver.LinearLUSolver'>
 
 uses a SciPy_ solver regardless of the command line
-argument. In the absence of :ref:`FlagsAndEnvironmentVariables`,
+argument.
+
+.. note:: :term:`FiPy` has not been designed to mix different solver
+   suites during a given problem run
+
+In the absence of :ref:`FlagsAndEnvironmentVariables`,
 :term:`FiPy`'s order of precedence when choosing the
-solver suite for generic solvers is PySparse_ followed by
-PETSc_, Trilinos_, SciPy_, and pyamgx_.
+solver suite for generic solvers is PETSc_ followed by Trilinos_, SciPy_,
+and pyamgx_.
 
 .. .. raw:: latex
 
@@ -59,7 +64,7 @@ PETSc_, Trilinos_, SciPy_, and pyamgx_.
 
 .. csv-table:: Solver Suite Features
    :file: _static/solver_features.csv
-   :widths: 22, 13, 13, 13, 13, 13, 13
+   :widths: 22, 13, 13, 13, 13, 13
    :header-rows: 1
    :stub-columns: 1
    :class: wideshow longtable
@@ -79,8 +84,6 @@ PETSc_, Trilinos_, SciPy_, and pyamgx_.
 .. _pyamg.:             https://pyamg.readthedocs.io/
 .. |pyamgx.|            replace:: :literal:`pyamgx`
 .. _pyamgx.:            https://pyamgx.readthedocs.io/
-.. |pysparse.|          replace:: :literal:`pysparse`
-.. _pysparse.:          https://pysparse.sourceforge.net/
 .. |PyTrilinos|         replace:: :literal:`PyTrilinos`
 .. _PyTrilinos:         https://trilinos.github.io/pytrilinos.html
 .. |PyTrilinos2.|       replace:: :literal:`PyTrilinos2`
@@ -99,12 +102,6 @@ PETSc_, Trilinos_, SciPy_, and pyamgx_.
 .. [#PyTrilinos2]  There is a more actively developed |PyTrilinos2.|_
    package, which may be compable with more recent versions of
    :term:`Python`, but :term:`FiPy` does not yet work with it.
-
-.. [#PySparse4Trilinos] Trilinos parallel efficiency is somewhat improved
-   by also installing |pysparse.|_.
-
-.. note:: :term:`FiPy` has not been designed to mix different solver
-   suites during a given problem run
 
 .. _PETSC:
 
@@ -146,26 +143,6 @@ preconditioners to solve sparse sparse linear systems on the GPU.
 
 .. _AMGX: https://github.com/NVIDIA/AMGX
 
-.. _PYSPARSE:
-
---------
-Pysparse
---------
-
-http://pysparse.sourceforge.net
-
-Pysparse is a fast serial sparse matrix library for :term:`Python`.
-It provides several sparse matrix storage formats and conversion methods.
-It also implements a number of iterative solvers, preconditioners, and
-interfaces to efficient factorization packages. The only requirement to
-install and use Pysparse is :term:`NumPy`.
-
-.. warning::
-
-   Pysparse is archaic and limited to :ref:`RunningUnderPython2`.
-   Support for :term:`Python` 2.7 and, thus, for Pysparse
-   will be dropped soon.
-
 .. _SCIPY:
 
 -----
@@ -203,6 +180,11 @@ of doing this, a number of inefficiencies were found in the way that
 :term:`FiPy` built sparse matrices.  To see the impact of these changes, we
 examine the serial and parallel scaling performance of the different solver
 suites for two different benchmark problems.
+
+.. note::
+
+   Although the legacy :term:`Pysparse` solver suite is no longer supported, its
+   performance is included here for reference.
 
 Serial Performance
 ==================
@@ -267,7 +249,7 @@ compare the case of unpreconditioned ``LinearCGSolver``, one of the fastest
 combinations for all suites *for this problem*, we see that :ref:`Trilinos`
 has the lowest ratio of prepare to elapsed time.  Examination of elapsed
 time, the quantity we really care about, shows that :ref:`Trilinos` takes
-three times as long to both prepare and solve as :ref:`PySparse` or
+three times as long to both prepare and solve as :term:`Pysparse` or
 :ref:`SciPy` and twice as long as :ref:`PETSc`.
 
 For your own work, focus on identifying the solver and preconditioner with
@@ -286,14 +268,14 @@ cores) for a `Method of Manufactured Solutions Allen-Cahn problem`_.
 
 .. plot:: pyplots/parallel_scaling.py
    :align: center
-   :alt: "Speedup" relative to PySparse versus number of tasks (processes) on a log-log plot.
+   :alt: "Speedup" relative to :term:`Pysparse` versus number of tasks (processes) on a log-log plot.
 
    Parallel scaling behavior of different solver packages and different
    versions of :term:`FiPy` [#FIPYversion]_ [#MMS]_.
 
 A few things can be observed in this plot:
 
-- :ref:`PETSc`, :ref:`PySparse`, :ref:`Trilinos`, and :ref:`SciPy` have
+- :ref:`PETSc`, :term:`Pysparse`, :ref:`Trilinos`, and :ref:`SciPy` have
   comparable serial performance, with :ref:`SciPy` edging out the other
   three for this particular problem.
 
@@ -418,8 +400,6 @@ The default tolerance is :math:`10^{-5}` (the legacy tolerance, prior to
   make the residual any smaller than :math:`\mathcal{O}(10^{-9})`.
 - `tolerance=1e-5` is the default for :ref:`PETSC` and :ref:`SCIPY`.
 - :ref:`PYAMGX` defaults to :math:`10^{-12}`
-- :ref:`PYSPARSE` does not specify, but has examples that illustrate
-  :math:`10^{-12}`.
 - :ref:`TRILINOS` does not specify, but has examples that illustrate
   :math:`10^{-8}`.
 
@@ -441,8 +421,6 @@ best effort at documenting what will happen.
 .. note::
 
     - All LU solvers use ``"initial"`` scaling.
-    - PySparse_ has two different groups of solvers,
-      with different scaling.
     - PETSc_ accepts |KSP_NORM_DEFAULT|_ in order to
       "use the default for the current ``KSPType``".  Discerning the actual
       behavior would require burning the code in a bowl of chicken entrails.
@@ -599,25 +577,6 @@ they succeed or fail.  This information is captured as a
 .. _AMGX_SOLVE_FAILED:             https://github.com/NVIDIA/AMGX/blob/main/doc/AMGX_Reference.pdf
 .. |AMGX_SOLVE_DIVERGED|           replace:: :literal:`AMGX_SOLVE_DIVERGED`
 .. _AMGX_SOLVE_DIVERGED:           https://github.com/NVIDIA/AMGX/blob/main/doc/AMGX_Reference.pdf
-
-.. |PySparse_2|                    replace:: :literal:`2`
-.. _PySparse_2:                    http://pysparse.sourceforge.net/itsolvers.html
-.. |PySparse_1|                    replace:: :literal:`1`
-.. _PySparse_1:                    http://pysparse.sourceforge.net/itsolvers.html
-.. |PySparse_0|                    replace:: :literal:`0`
-.. _PySparse_0:                    http://pysparse.sourceforge.net/itsolvers.html
-.. |PySparse_neg1|                 replace:: :literal:`-1`
-.. _PySparse_neg1:                 http://pysparse.sourceforge.net/itsolvers.html
-.. |PySparse_neg2|                 replace:: :literal:`-2`
-.. _PySparse_neg2:                 http://pysparse.sourceforge.net/itsolvers.html
-.. |PySparse_neg3|                 replace:: :literal:`-3`
-.. _PySparse_neg3:                 http://pysparse.sourceforge.net/itsolvers.html
-.. |PySparse_neg4|                 replace:: :literal:`-4`
-.. _PySparse_neg4:                 http://pysparse.sourceforge.net/itsolvers.html
-.. |PySparse_neg5|                 replace:: :literal:`-5`
-.. _PySparse_neg5:                 http://pysparse.sourceforge.net/itsolvers.html
-.. |PySparse_neg6|                 replace:: :literal:`-6`
-.. _PySparse_neg6:                 http://pysparse.sourceforge.net/itsolvers.html
 
 .. |SciPy_0|                       replace:: :literal:`0`
 .. _SciPy_0:                       https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.gmres.html

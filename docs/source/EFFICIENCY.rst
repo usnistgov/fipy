@@ -87,18 +87,3 @@ The :option:`--no-cache` flag is the default option.
  :mod:`examples.levelSet.electroChem.simpleTrenchSystem`      62                   62                 2.0                   2.8
 ======================================================== ==================== ================= ====================== ==================
 
-Efficiency discussion of Pysparse and Trilinos
-==================================================================
-
-Trilinos provides multigrid capabilities which are beneficial for
-some problems, but has significant overhead compared to Pysparse.
-The matrix-building step takes significantly longer in Trilinos,
-and the solvers also have more overhead costs in memory and
-performance than the equivalent Pysparse solvers. However, the
-multigrid preconditioning capabilities of Trilinos can, in some
-cases, provide enough of a speedup in the solution step to make up
-for the overhead costs. This depends greatly on the specifics of
-the problem, but is most likely in the cases when the problem is
-large and when Pysparse cannot solve the problem with an iterative
-solver and must use an LU solver, while Trilinos can still have
-success with an iterative method.
