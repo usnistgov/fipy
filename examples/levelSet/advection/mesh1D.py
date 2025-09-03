@@ -76,7 +76,6 @@ The result can be tested with the following code:
 1
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

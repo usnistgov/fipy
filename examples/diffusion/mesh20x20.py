@@ -101,7 +101,6 @@ and test the value of the bottom-right corner cell.
 >>> if __name__ == '__main__':
 ...     input("Implicit steady-state diffusion. Press <return> to proceed...")
 """
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

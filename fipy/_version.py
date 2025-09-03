@@ -10,7 +10,6 @@
 
 """Git implementation of _version.py."""
 from __future__ import print_function
-from __future__ import unicode_literals
 
 
 from builtins import object

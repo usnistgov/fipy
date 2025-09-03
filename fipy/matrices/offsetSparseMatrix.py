@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from fipy.tools import numerix
 
 __all__ = ["OffsetSparseMatrix"]

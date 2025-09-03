@@ -113,7 +113,6 @@ True
    :alt: evolution of Cahn-Hilliard phase separation at t = 30, 100 and 1000
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

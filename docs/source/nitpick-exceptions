@@ -105,7 +105,6 @@ py:func numerix.max
 py:func numerix.min
 py:mod Numeric
 py:func streamplot
-py:class future.types.newobject.newobject
 
 # Python exceptions
 py:class exceptions.Exception

@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from fipy.variables.meshVariable import MeshVariable
 from fipy.tools import numerix
 

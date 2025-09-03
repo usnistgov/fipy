@@ -10,7 +10,6 @@ only used for the diffusion in the boundary layer.
 
 """
 from __future__ import division
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

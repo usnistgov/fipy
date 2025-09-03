@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from fipy.solvers.pyamgx import PyAMGXSolver
 from fipy.solvers.pyamgx.smoothers import BlockJacobiSmoother
 

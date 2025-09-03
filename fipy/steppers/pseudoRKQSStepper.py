@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from fipy.steppers.stepper import Stepper
 from fipy.tools.decorators import deprecate
 

@@ -94,7 +94,6 @@ the result is more accurate,
 1
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

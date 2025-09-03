@@ -31,7 +31,6 @@ electrodeposition process :cite:`NIST:damascene:2001`.
 .. _MSED:                 http://www.nist.gov/mml/msed/
 .. _NIST:                 http://www.nist.gov/
 """
-from __future__ import unicode_literals
 from builtins import input
 __docformat__ = 'restructuredtext'
 

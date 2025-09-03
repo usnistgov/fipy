@@ -165,7 +165,6 @@ If we are running interactively, we plot the error
    :align: center
    :alt: error in solution to steady-state phase field equation
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

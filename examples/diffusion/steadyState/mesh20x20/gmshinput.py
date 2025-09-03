@@ -10,7 +10,6 @@ the non-orthogonality error, this uses a `SkewedGrid2D`, which is a
 
 """
 from __future__ import division
-from __future__ import unicode_literals
 
 from fipy import input
 if __name__ == '__main__':

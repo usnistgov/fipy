@@ -218,7 +218,6 @@ the data and compares it with the `phase` variable.
 >>> print(phase.allclose(testData))
 1
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

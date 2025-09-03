@@ -1,5 +1,4 @@
 from __future__ import division
-from __future__ import unicode_literals
 from builtins import object
 from builtins import str
 from future.utils import string_types

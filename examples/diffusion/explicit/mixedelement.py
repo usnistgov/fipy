@@ -78,7 +78,6 @@ We check the answer against the analytical result
 ...     viewer.plot()
 ...     input('finished')
 """
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

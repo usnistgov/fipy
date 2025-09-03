@@ -1,5 +1,4 @@
 from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.cellToFaceVariable import _CellToFaceVariable

@@ -1,6 +1,5 @@
 """Restriction on value of a :class:`~fipy.variables.variable.Variable`
 """
-from __future__ import unicode_literals
 from builtins import object
 __docformat__ = 'restructuredtext'
 

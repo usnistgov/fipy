@@ -337,7 +337,6 @@ The non-uniform temperature results from the release of latent
 heat at the solidifying interface. The dendrite arms grow fastest
 where the temperature gradient is steepest.
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

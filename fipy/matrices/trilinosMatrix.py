@@ -1,5 +1,4 @@
 from __future__ import division
-from __future__ import unicode_literals
 from builtins import range
 from builtins import str
 from future.utils import text_to_native_str

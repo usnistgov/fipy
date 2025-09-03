@@ -180,7 +180,6 @@ can be obtained by running this example.
 """
 from __future__ import absolute_import
 from __future__ import division
-from __future__ import unicode_literals
 from builtins import range
 __docformat__ = 'restructuredtext'
 

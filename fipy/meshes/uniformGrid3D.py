@@ -1,5 +1,4 @@
 from __future__ import division
-from __future__ import unicode_literals
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools import parallelComm

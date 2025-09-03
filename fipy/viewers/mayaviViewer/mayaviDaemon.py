@@ -19,7 +19,6 @@ Run::
 to see available options.
 """
 from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 # Standard imports.

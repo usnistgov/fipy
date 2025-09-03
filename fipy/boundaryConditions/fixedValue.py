@@ -1,6 +1,5 @@
 """Boundary condition of order 0
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 """Fixed value (Dirichlet) boundary condition

@@ -218,7 +218,6 @@ extracts the data and compares it with the ``theta`` variable.
 >>> print(theta.allclose(testData))
 True
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

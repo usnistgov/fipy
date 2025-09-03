@@ -79,7 +79,6 @@ The following code tests the results with a different algorithm:
 >>> numerix.allclose(testResult, topRight, atol = 1e-10)
 1
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

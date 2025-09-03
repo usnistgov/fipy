@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from fipy.solvers.scipy.linearLUSolver import LinearLUSolver
 
 __all__ = ["LinearLUSolver"]

@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.solvers.scipy.scipyKrylovSolver import ScipyKrylovSolver

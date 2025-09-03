@@ -1,6 +1,5 @@
 """Solving sparse linear systems
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from builtins import str

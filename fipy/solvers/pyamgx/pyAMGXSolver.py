@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 
 from scipy.sparse import csr_matrix, linalg
 

@@ -54,7 +54,6 @@ data and compares it with the ``theta`` variable.
 1
 """
 from __future__ import division
-from __future__ import unicode_literals
 from builtins import range
 __docformat__ = 'restructuredtext'
 

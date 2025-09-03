@@ -4,7 +4,6 @@
 
     This is built for a non-mixed element mesh.
 """
-from __future__ import unicode_literals
 
 from fipy.tools import numerix
 from fipy.tools.numerix import MA

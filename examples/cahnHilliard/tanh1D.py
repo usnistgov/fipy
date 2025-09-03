@@ -156,7 +156,6 @@ We compare the analytical solution with the numerical result,
 1
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

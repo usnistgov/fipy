@@ -139,7 +139,6 @@ True
 >>> print(substitutionals[1].allclose(0.45, rtol = 2e-7, atol = 2e-7))
 True
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

@@ -5,7 +5,6 @@
 Test case for the `Grid3D`. Diffusion problem with boundary conditions: 0 on front, 10 on back, and 5 on all other sides.
 
 """
-from __future__ import unicode_literals
 
 from fipy import input
 from fipy import CellVariable, Grid3D, Viewer

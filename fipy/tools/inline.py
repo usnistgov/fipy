@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from builtins import range
 __all__ = ["doInline"]
 from future.utils import text_to_native_str

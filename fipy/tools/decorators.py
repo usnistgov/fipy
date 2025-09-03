@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 ## ###################################################################
  # Portions of this code are copied and/or derived from numpy.lib.utils
  #

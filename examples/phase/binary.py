@@ -735,7 +735,6 @@ in the sharp interface treatment.
 .. _PID controller: https://en.wikipedia.org/wiki/PID_controller
 """
 
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

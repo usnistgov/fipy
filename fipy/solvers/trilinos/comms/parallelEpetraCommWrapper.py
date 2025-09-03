@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from mpi4py import MPI
 
 from fipy.tools import numerix

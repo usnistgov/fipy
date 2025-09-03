@@ -36,7 +36,6 @@ Take the tangent of an array.
 """
 from __future__ import print_function
 from __future__ import division
-from __future__ import unicode_literals
 
 from builtins import range
 from builtins import str
