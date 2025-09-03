@@ -7,10 +7,9 @@ Introduction
 
    README
    INSTALLATION
-   ADMINISTRATA
+   USAGE
    SOLVERS
    VIEWERS
-   USAGE
    FAQ
    EFFICIENCY
    numerical/index
@@ -19,4 +18,5 @@ Introduction
    CREDITS
    PUBLICATIONS
    CHANGELOG
+   ADMINISTRATA
    glossary
