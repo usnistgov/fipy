@@ -36,7 +36,6 @@ tolerance of `1e-10`.
     True
 
 """
-from __future__ import print_function
 from __future__ import division
 __docformat__ = 'restructuredtext'
 

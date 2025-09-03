@@ -1,4 +1,3 @@
-from __future__ import print_function
 from builtins import str
 from setuptools.command.test import test as _test
 from future.utils import text_to_native_str

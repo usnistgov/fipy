@@ -30,7 +30,6 @@ The result is again tested in the same way:
     1
 
 """
-from __future__ import print_function
 
 from builtins import range
 from fipy import input

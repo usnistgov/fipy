@@ -1,4 +1,3 @@
-from __future__ import print_function
 from builtins import str
 from PyTrilinos import Epetra
 from PyTrilinos import NOX

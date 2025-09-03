@@ -1,4 +1,3 @@
-from __future__ import print_function
 from builtins import range
 __all__ = ["PRINT"]
 from future.utils import text_to_native_str

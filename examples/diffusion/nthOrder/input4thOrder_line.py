@@ -12,7 +12,6 @@
    1
 
 """
-from __future__ import print_function
 from __future__ import division
 __docformat__ = 'restructuredtext'
 

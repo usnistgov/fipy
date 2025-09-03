@@ -12,7 +12,6 @@ can abort whenever it has problems with::
 
 """
 from __future__ import division
-from __future__ import print_function
 from builtins import object
 from builtins import str
 __docformat__ = 'restructuredtext'
