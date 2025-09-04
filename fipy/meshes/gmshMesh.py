@@ -1,4 +1,3 @@
-from builtins import object
 from builtins import zip
 from builtins import str
 __docformat__ = 'restructuredtext'

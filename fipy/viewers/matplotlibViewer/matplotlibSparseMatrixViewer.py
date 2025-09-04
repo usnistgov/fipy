@@ -1,4 +1,3 @@
-from builtins import object
 from builtins import zip
 from matplotlib import cm
 from matplotlib import pyplot

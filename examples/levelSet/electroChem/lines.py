@@ -1,4 +1,3 @@
-from builtins import object
 __all__ = []
 
 class _Vertex(object):

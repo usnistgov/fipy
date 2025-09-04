@@ -1,6 +1,5 @@
 """Restriction on value of a :class:`~fipy.variables.variable.Variable`
 """
-from builtins import object
 __docformat__ = 'restructuredtext'
 
 __all__ = ["Constraint"]

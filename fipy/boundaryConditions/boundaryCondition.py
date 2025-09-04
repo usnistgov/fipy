@@ -1,6 +1,5 @@
 """Boundary condition base class
 """
-from builtins import object
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix

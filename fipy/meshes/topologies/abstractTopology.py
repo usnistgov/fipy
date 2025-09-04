@@ -1,4 +1,3 @@
-from builtins import object
 __docformat__ = 'restructuredtext'
 
 from ...tools import numerix
