@@ -5,8 +5,6 @@ from PyTrilinos import ML
 from .trilinosPreconditioner import TrilinosPreconditioner
 
 __all__ = ["MultilevelPreconditioner"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class MultilevelPreconditioner(TrilinosPreconditioner):
     """Base class for multilevel preconditioners  for :class:`~fipy.solvers.trilinos.trilinosSolver.TrilinosSolver`.

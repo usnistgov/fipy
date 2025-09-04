@@ -16,8 +16,6 @@ from fipy.meshes.topologies.gridTopology import _Grid1DTopology
 from fipy.solvers import INDEX_TYPE
 
 __all__ = ["UniformGrid1D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class UniformGrid1D(UniformGrid):
     """

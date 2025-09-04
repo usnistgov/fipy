@@ -4,8 +4,6 @@ from fipy.tools import numerix
 from fipy.solvers.trilinos.comms.epetraCommWrapper import EpetraCommWrapper
 
 __all__ = ["ParallelEpetraCommWrapper"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class ParallelEpetraCommWrapper(EpetraCommWrapper):
     """MPI Communicator wrapper

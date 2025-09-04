@@ -1,8 +1,6 @@
 __docformat__ = 'restructuredtext'
 
 __all__ = ["JacobiPreconditioner"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 from scipy.sparse import diags
 from scipy.sparse.linalg import LinearOperator, spsolve

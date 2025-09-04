@@ -30,8 +30,6 @@ __all__ = [
     "StagnatedDivergence",
     "ToleranceDivergence"
 ]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class _ConvergenceMeta(type):
     # We use __init__ rather than __new__ here because we want

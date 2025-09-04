@@ -177,8 +177,7 @@ data and compares it with the `theta` variable.
    single: loadtxt
 
 >>> import os
->>> from future.utils import text_to_native_str
->>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz')).flat
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz').flat
 
 We step the solution in time, plotting as we go if running interactively,
 

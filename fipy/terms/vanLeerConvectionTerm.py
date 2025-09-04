@@ -4,8 +4,6 @@ from fipy.terms.explicitUpwindConvectionTerm import ExplicitUpwindConvectionTerm
 from fipy.tools import numerix
 
 __all__ = ["VanLeerConvectionTerm"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class VanLeerConvectionTerm(ExplicitUpwindConvectionTerm):
 

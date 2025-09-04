@@ -4,8 +4,6 @@ import optparse
 import sys, os
 
 __all__ = ["parse"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 def parse(larg, action = None, type = None, default = None):
     """

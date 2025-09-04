@@ -1,6 +1,5 @@
 from builtins import range
 from builtins import str
-from future.utils import text_to_native_str
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -473,7 +472,7 @@ class _TrilinosMatrix(_SparseMatrix):
         Exports the matrix to a Matrix Market file of the given `filename`.
         """
         self.fillComplete()
-        EpetraExt.RowMatrixToMatrixMarketFile(text_to_native_str(filename), self.matrix)
+        EpetraExt.RowMatrixToMatrixMarketFile(filename, self.matrix)
 
     @property
     def numpyArray(self):

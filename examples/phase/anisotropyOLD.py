@@ -213,8 +213,7 @@ the data and compares it with the `phase` variable.
    single: allclose
 
 >>> import os
->>> from future.utils import text_to_native_str
->>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz'))
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
 >>> print(phase.allclose(testData))
 1
 """

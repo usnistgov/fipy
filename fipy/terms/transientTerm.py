@@ -5,8 +5,6 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
 __all__ = ["TransientTerm"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class TransientTerm(CellTerm):
     r"""

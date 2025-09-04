@@ -7,8 +7,6 @@ from fipy.tools import inline
 from fipy.tools import numerix
 
 __all__ = ["PowerLawConvectionTerm"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class _PowerLawConvectionTermAlpha(FaceVariable):
     """

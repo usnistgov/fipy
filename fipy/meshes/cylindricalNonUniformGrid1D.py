@@ -10,8 +10,6 @@ from fipy.tools import parallelComm
 from fipy.meshes.nonUniformGrid1D import NonUniformGrid1D
 
 __all__ = ["CylindricalNonUniformGrid1D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class CylindricalNonUniformGrid1D(NonUniformGrid1D):
     """

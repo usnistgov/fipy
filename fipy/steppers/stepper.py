@@ -4,8 +4,6 @@ __docformat__ = 'restructuredtext'
 from fipy.tools.decorators import deprecate
 
 __all__ = ["Stepper"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 @deprecate(version="4.0",
            message="Use the :term:`steppyngstounes` package instead.")

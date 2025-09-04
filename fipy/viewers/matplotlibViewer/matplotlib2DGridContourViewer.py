@@ -7,8 +7,6 @@ from fipy.tools import numerix
 from fipy.viewers.matplotlibViewer.abstractMatplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["Matplotlib2DGridContourViewer"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
     """Displays a contour plot of a 2D `CellVariable` object.

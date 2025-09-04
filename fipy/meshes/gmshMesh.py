@@ -31,8 +31,6 @@ __all__ = ["GmshException", "MeshExportError",
            "GmshFile", "MSHFile", "POSFile",
            "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D",
            "GmshGrid2D", "GmshGrid3D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 def _checkForGmsh():
     hasGmsh = True

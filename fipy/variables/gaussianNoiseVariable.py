@@ -4,8 +4,6 @@ from fipy.tools.numerix import random, sqrt
 from fipy.variables.noiseVariable import NoiseVariable
 
 __all__ = ["GaussianNoiseVariable"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class GaussianNoiseVariable(NoiseVariable):
     r"""

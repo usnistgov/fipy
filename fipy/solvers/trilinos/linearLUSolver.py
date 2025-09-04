@@ -9,8 +9,6 @@ from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.tools.timer import Timer
 
 __all__ = ["LinearLUSolver"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearLUSolver(TrilinosSolver):
 
@@ -91,7 +89,7 @@ class LinearLUSolver(TrilinosSolver):
                 xError = Epetra.Vector(L.RowMap())
 
                 Problem = Epetra.LinearProblem(L, xError, residualVector)
-                Solver = self.Factory.Create(text_to_native_str("Klu"), Problem)
+                Solver = self.Factory.Create("Klu", Problem)
                 Solver.Solve()
 
                 x[:] = x - xError

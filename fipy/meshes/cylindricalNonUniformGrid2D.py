@@ -11,8 +11,6 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 from fipy.tools import parallelComm
 
 __all__ = ["CylindricalNonUniformGrid2D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class CylindricalNonUniformGrid2D(NonUniformGrid2D):
     """

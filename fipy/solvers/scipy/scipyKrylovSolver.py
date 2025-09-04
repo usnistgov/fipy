@@ -1,8 +1,6 @@
 __docformat__ = 'restructuredtext'
 
 __all__ = ["ScipyKrylovSolver"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 import os
 from packaging.version import Version, parse as parse_version

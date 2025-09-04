@@ -8,8 +8,6 @@ from fipy.variables.variable import Variable
 from fipy.tools.dimensions.physicalField import PhysicalField
 
 __all__ = ["BoundaryCondition"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class BoundaryCondition(object):
     """Generic boundary condition base class.

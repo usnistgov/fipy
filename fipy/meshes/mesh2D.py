@@ -32,8 +32,6 @@ def _orderVertices(vertexCoords, vertices):
     return numerix.take(vertices, sortorder)
 
 __all__ = ["Mesh2D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class Mesh2D(Mesh):
     def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serialComm, _RepresentationClass=_MeshRepresentation, _TopologyClass=_Mesh2DTopology):

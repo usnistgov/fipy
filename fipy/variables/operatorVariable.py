@@ -292,35 +292,33 @@ def _testBinOp(self):
         >>> v3 = Variable((9, 10, 11, 12))
         >>> v4 = Variable((13, 14, 15, 16))
 
-        >>> from future.utils import text_to_native_str as ttns
-
-        >>> ttns((v1 * v2)._getRepresentation())
+        >>> (v1 * v2)._getRepresentation()
         '(Variable(value=array([1, 2, 3, 4])) * Variable(value=array([5, 6, 7, 8])))'
 
-        >>> ttns((v1 * v2)._getRepresentation(style='C', id=""))
+        >>> (v1 * v2)._getRepresentation(style='C', id="")
         '(var0[i] * var1[i])'
 
-        >>> ttns((v1 * v2 + v3 * v4)._getRepresentation(style='C', id=""))
+        >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C', id="")
         '((var00[i] * var01[i]) + (var10[i] * var11[i]))'
 
-        >>> ttns((v1 - v2)._getRepresentation(style='C', id=""))
+        >>> (v1 - v2)._getRepresentation(style='C', id="")
         '(var0[i] - var1[i])'
 
-        >>> ttns((v1 / v2)._getRepresentation(style='C', id=""))
+        >>> (v1 / v2)._getRepresentation(style='C', id="")
         '(var0[i] / var1[i])'
 
-        >>> ttns((v1 - 1)._getRepresentation(style='C', id=""))
+        >>> (v1 - 1)._getRepresentation(style='C', id="")
         '(var0[i] - var1)'
 
-        >>> ttns((5 * v2)._getRepresentation(style='C', id=""))
+        >>> (5 * v2)._getRepresentation(style='C', id="")
         '(var0[i] * var1)'
 
-        >>> ttns((v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id=""))
+        >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id="")
         '(((var000[i] / var001[i]) - (var010[i] * var011[i])) + (var10[i] * var11[i]))'
 
     Test that the representation of indexing works correctly
 
-        >>> ttns(v1[1]._getRepresentation()) # doctest: +ELLIPSIS
+        >>> v1[1]._getRepresentation() # doctest: +ELLIPSIS
         'Variable(value=array([1, 2, 3, 4]))[...]'
 
     Check that unit works for a `binOp`

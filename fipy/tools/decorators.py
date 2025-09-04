@@ -43,8 +43,6 @@ import sys
 import warnings
 
 __all__ = ["deprecate"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 # Stolen from `numpy.lib.utils`
 if sys.version_info < (2, 4):

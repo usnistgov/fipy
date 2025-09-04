@@ -1,21 +1,10 @@
 from builtins import str
 from setuptools.command.test import test as _test
-from future.utils import text_to_native_str
-from future.utils import string_types
 import unittest
 import warnings
 import sys
 
 __all__ = ["DeprecationErroringTestProgram", "test"]
-__all__ = [text_to_native_str(n) for n in __all__]
-
-def _nativize_all(t):
-    def _nativize(s):
-        if isinstance(s, string_types):
-            s = text_to_native_str(s)
-        return s
-
-    return tuple([_nativize(s) for s in t])
 
 class DeprecationErroringTestProgram(unittest.TestProgram):
     """`TestProgram` that overrides inability of standard
@@ -74,7 +63,6 @@ class test(_test):
         ('lsmlib', None, "run FiPy using the LSMLIB level set solver (default)"),
         ('deprecation-errors', None, "raise Exceptions for all DeprecationWarnings"),
        ]
-    user_options = [_nativize_all(u) for u in user_options]
 
     def initialize_options(self):
         _test.initialize_options(self)

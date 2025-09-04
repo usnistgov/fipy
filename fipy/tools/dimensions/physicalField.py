@@ -47,8 +47,6 @@ from fipy.tools.dimensions.NumberDict import _NumberDict
 from functools import reduce
 
 __all__ = ["PhysicalField", "PhysicalUnit"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 # Class definitions
 
@@ -1796,7 +1794,7 @@ class PhysicalUnit(object):
             num = '1'
         else:
             num = num[1:]
-        return text_to_native_str(num + denom)
+        return num + denom
 
 # Helper functions
 

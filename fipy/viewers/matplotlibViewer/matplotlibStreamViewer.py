@@ -7,8 +7,6 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.viewers.matplotlibViewer.abstractMatplotlib2DViewer import AbstractMatplotlib2DViewer
 
 __all__ = ["MatplotlibStreamViewer"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class MatplotlibStreamViewer(AbstractMatplotlib2DViewer):
     """Displays a stream plot of a 2D rank-1 `CellVariable` or

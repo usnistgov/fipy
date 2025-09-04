@@ -3,8 +3,6 @@ from builtins import range
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractMesh", "MeshAdditionError"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 from fipy.tools import serialComm
 from fipy.tools import numerix

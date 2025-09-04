@@ -10,8 +10,6 @@ from fipy.meshes.builders import _PeriodicGrid1DBuilder
 from fipy.meshes.topologies.gridTopology import _PeriodicGrid1DTopology
 
 __all__ = ["PeriodicGrid1D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class PeriodicGrid1D(NonUniformGrid1D):
     """

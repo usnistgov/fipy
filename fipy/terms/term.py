@@ -11,8 +11,6 @@ from fipy.terms import AbstractBaseClassError
 from fipy.terms import SolutionVariableRequiredError
 
 __all__ = ["Term"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class Term(object):
     """Base class for elements of a partial differential equation.

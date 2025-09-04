@@ -11,8 +11,6 @@ from fipy.meshes.representations.gridRepresentation import _Grid2DRepresentation
 from fipy.meshes.topologies.gridTopology import _Grid2DTopology
 
 __all__ = ["NonUniformGrid2D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class NonUniformGrid2D(Mesh2D):
     """

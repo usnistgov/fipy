@@ -212,8 +212,7 @@ extracts the data and compares it with the ``theta`` variable.
    single: loadtxt
 
 >>> import os
->>> from future.utils import text_to_native_str
->>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz'))
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
 >>> testData = CellVariable(mesh=mesh, value=testData)
 >>> print(theta.allclose(testData))
 True

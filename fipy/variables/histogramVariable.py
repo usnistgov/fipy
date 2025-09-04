@@ -5,8 +5,6 @@ from fipy.meshes import Grid1D
 from fipy.tools import numerix
 
 __all__ = ["HistogramVariable"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class HistogramVariable(CellVariable):
     def __init__(self, distribution, dx = 1., nx = None, offset = 0.):

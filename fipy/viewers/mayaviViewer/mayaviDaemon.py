@@ -42,8 +42,6 @@ except ImportError as e:
 from fipy.tools.numerix import array, concatenate, where, zeros
 
 __all__ = ["MayaviDaemon", "main"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 ######################################################################
 class MayaviDaemon(Mayavi):

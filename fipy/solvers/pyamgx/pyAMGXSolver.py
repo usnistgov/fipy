@@ -9,8 +9,6 @@ from fipy.tools import numerix
 from fipy.tools.timer import Timer
 
 __all__ = ["PyAMGXSolver"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class PyAMGXSolver(Solver):
 
