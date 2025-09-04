@@ -1,4 +1,3 @@
-from past.utils import old_div
 __docformat__ = 'restructuredtext'
 
 from petsc4py import PETSc
