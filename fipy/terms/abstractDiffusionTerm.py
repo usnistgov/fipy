@@ -4,7 +4,6 @@ __all__ = []
 
 import os
 
-from fipy import input
 from fipy.solvers import INDEX_TYPE
 from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import numerix

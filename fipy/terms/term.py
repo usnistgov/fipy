@@ -3,7 +3,6 @@ __docformat__ = 'restructuredtext'
 import logging
 import os
 
-from fipy import input
 from fipy.tools import numerix
 from fipy.tools.timer import Timer
 from fipy.terms import AbstractBaseClassError

@@ -103,6 +103,8 @@ if parallelComm.Nproc > 1:
         else:
             return ""
     input = mpi_input
+else:
+    input = input_original
 
 _saved_stdout = sys.stdout
 
