@@ -1,4 +1,3 @@
-from __future__ import division
 from fipy.tools import numerix
 from fipy.tools.numerix import MA
 from fipy.tools import parallelComm

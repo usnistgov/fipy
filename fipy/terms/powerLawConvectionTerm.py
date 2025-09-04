@@ -1,4 +1,3 @@
-from __future__ import division
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.asymmetricConvectionTerm import _AsymmetricConvectionTerm

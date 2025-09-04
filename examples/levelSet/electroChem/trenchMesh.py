@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-from __future__ import division
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix

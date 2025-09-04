@@ -1,4 +1,3 @@
-from __future__ import division
 from builtins import object
 from builtins import str
 from future.utils import string_types

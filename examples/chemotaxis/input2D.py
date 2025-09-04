@@ -4,7 +4,6 @@ Input file for chemotaxis modeling.
 
 Here are some test cases for the model.
 
->>> from __future__ import division
 
 >>> from builtins import input
 >>> from builtins import range

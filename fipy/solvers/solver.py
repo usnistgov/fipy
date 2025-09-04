@@ -11,7 +11,6 @@ can abort whenever it has problems with::
     $ python -Werror::fipy.PreconditionerWarning myscript.py
 
 """
-from __future__ import division
 from builtins import object
 from builtins import str
 __docformat__ = 'restructuredtext'

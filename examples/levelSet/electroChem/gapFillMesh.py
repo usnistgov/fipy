@@ -9,7 +9,6 @@ boundary layer. This region consists of very large elements and is
 only used for the diffusion in the boundary layer.
 
 """
-from __future__ import division
 
 __docformat__ = 'restructuredtext'
 

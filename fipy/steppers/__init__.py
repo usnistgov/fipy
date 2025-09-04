@@ -3,7 +3,6 @@
 Use `steppyngstounes <https://pages.nist.gov/steppyngstounes/en/latest>`_
 instead.
 """
-from __future__ import division
 __docformat__ = 'restructuredtext'
 
 from fipy.steppers.stepper import Stepper

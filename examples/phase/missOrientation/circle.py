@@ -55,7 +55,6 @@ data and compares it with the ``phase`` variable.
 1
 
 """
-from __future__ import division
 from builtins import range
 __docformat__ = 'restructuredtext'
 

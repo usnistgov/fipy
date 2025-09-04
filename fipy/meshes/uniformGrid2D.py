@@ -1,7 +1,6 @@
 """
 2D rectangular Mesh with constant spacing in x and constant spacing in y
 """
-from __future__ import division
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix

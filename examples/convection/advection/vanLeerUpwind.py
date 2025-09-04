@@ -28,7 +28,6 @@ should do better than this.
 >>> print(var1.max() > 0.77)
 1
 """
-from __future__ import division
 
 from builtins import range
 __docformat__ = 'restructuredtext'

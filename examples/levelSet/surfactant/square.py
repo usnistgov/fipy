@@ -18,7 +18,6 @@ Advect the interface and check the position.
 
 
 """
-from __future__ import division
 from builtins import range
 __docformat__ = 'restructuredtext'
 

@@ -1,4 +1,3 @@
-from __future__ import division
 __all__ = []
 
 from fipy.tools import numerix

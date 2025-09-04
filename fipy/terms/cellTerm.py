@@ -1,4 +1,3 @@
-from __future__ import division
 __docformat__ = 'restructuredtext'
 
 from fipy.solvers import INDEX_TYPE

@@ -30,7 +30,6 @@ recommended values from CODATA_. Other conversion factors
 .. _CODATA:                                     http://www.codata.org/
 .. _Appendix B of NIST Special Publication 811: http://physics.nist.gov/Pubs/SP811/appenB9.html
 """
-from __future__ import division
 from builtins import object
 from builtins import range
 from builtins import map

@@ -1,7 +1,6 @@
 """
 1D Mesh
 """
-from __future__ import division
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix

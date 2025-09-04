@@ -16,7 +16,6 @@ A simple analytical answer can be used to test the result:
    True
 
 """
-from __future__ import division
 
 from fipy import input
 from fipy import FaceVariable, Tri2D, CellVariable, DiffusionTerm, Viewer

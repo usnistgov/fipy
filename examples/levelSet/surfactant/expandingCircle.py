@@ -55,7 +55,6 @@ Test for the correct position of the interface:
 1
 
 """
-from __future__ import division
 from builtins import range
 __docformat__ = 'restructuredtext'
 

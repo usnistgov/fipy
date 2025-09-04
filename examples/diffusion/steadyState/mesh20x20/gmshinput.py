@@ -9,7 +9,6 @@ the non-orthogonality error, this uses a `SkewedGrid2D`, which is a
 `Grid2D` with each interior vertex moved in a random direction.
 
 """
-from __future__ import division
 
 from fipy import input
 if __name__ == '__main__':

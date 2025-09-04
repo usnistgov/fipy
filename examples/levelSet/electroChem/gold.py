@@ -70,7 +70,6 @@ resemble the image below.
     :sort:
 """
 from __future__ import absolute_import
-from __future__ import division
 __docformat__ = 'restructuredtext'
 
 from fipy import input

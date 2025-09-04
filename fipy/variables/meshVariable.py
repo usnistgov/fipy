@@ -1,4 +1,3 @@
-from __future__ import division
 
 from builtins import str
 __docformat__ = 'restructuredtext'
