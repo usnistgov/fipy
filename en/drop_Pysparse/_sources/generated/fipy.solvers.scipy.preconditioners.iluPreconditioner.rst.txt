@@ -1,0 +1,29 @@
+fipy.solvers.scipy.preconditioners.iluPreconditioner
+====================================================
+
+.. automodule:: fipy.solvers.scipy.preconditioners.iluPreconditioner
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ILUPreconditioner
+   
+   
+
+   
+   
+   
+
+
+
