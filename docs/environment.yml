@@ -6,7 +6,6 @@ dependencies:
   - numpy
   - scipy
   - matplotlib-base
-  - future
   - packaging
   - mpich
   - mpi4py

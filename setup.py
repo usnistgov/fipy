@@ -36,7 +36,7 @@ VERSION = versioneer.get_version()
 
 DIST = setup(
     name="FiPy",
-    install_requires=["numpy", "scipy", "matplotlib", "future"],
+    install_requires=["numpy", "scipy", "matplotlib"],
     version=VERSION,
     download_url="https://github.com/usnistgov/fipy/archive/{}.zip".format(VERSION),
     author="Jonathan Guyer, Daniel Wheeler, & Jim Warren",
