@@ -3,7 +3,6 @@ __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractMatplotlibViewer"]
 
-from future.builtins import super
 
 from fipy.viewers.viewer import AbstractViewer
 

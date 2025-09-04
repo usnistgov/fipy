@@ -1,6 +1,5 @@
 __docformat__ = 'restructuredtext'
 
-from future.builtins import super
 
 from fipy.tools import numerix
 
