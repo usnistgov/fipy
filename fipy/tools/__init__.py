@@ -11,7 +11,6 @@
     Parallel MPI communicator when running in parallel.
 """
 
-from __future__ import absolute_import
 from builtins import range
 
 from fipy.solvers import serialComm, parallelComm

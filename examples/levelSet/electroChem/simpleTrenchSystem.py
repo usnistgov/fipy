@@ -127,7 +127,6 @@ resemble the image below.
 .. .. bibmissing:: /refs.bib
     :sort:
 """
-from __future__ import absolute_import
 from builtins import range
 __docformat__ = 'restructuredtext'
 
