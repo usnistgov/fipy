@@ -1,4 +1,3 @@
-from builtins import str
 from setuptools.command.test import test as _test
 import unittest
 import warnings

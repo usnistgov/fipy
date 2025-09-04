@@ -245,7 +245,6 @@ iterating to equilibrium
     >>> thisTimeStep = 0.
     >>> print("%3s: %20s | %20s | %20s | %20s" % ("i", "elapsed", "this", "next dt", "residual"))
     >>> residual = 0.
-    >>> from builtins import str
     >>> for i in range(500): # iterate
     ...     if thisTimeStep == 0.:
     ...         tsv.plot(filename = "%s.tsv" % str(elapsed * timeStep))

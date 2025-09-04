@@ -1,4 +1,3 @@
-from builtins import str
 from PyTrilinos import Epetra
 from PyTrilinos import NOX
 

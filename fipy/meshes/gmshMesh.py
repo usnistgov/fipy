@@ -1,4 +1,3 @@
-from builtins import str
 __docformat__ = 'restructuredtext'
 
 import logging
@@ -1791,7 +1790,6 @@ class Gmsh2D(Mesh2D):
 
         >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallelComm.Nproc)]
         >>> numtags = 2 + 1 + len(partitions)
-        >>> from builtins import str
         >>> partitions = " ".join([str(i) for i in [parallelComm.Nproc] + partitions])
 
         >>> output = f.write('''$MeshFormat
@@ -2140,7 +2138,6 @@ class Gmsh3D(Mesh):
 
         >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallelComm.Nproc)]
         >>> numtags = 2 + 1 + len(partitions)
-        >>> from builtins import str
         >>> partitions = " ".join([str(i) for i in [parallelComm.Nproc] + partitions])
 
         >>> output = f.write('''$MeshFormat

@@ -31,7 +31,6 @@ recommended values from CODATA_. Other conversion factors
 .. _Appendix B of NIST Special Publication 811: http://physics.nist.gov/Pubs/SP811/appenB9.html
 """
 from builtins import map
-from builtins import str
 __docformat__ = 'restructuredtext'
 
 import re
@@ -1651,7 +1650,6 @@ class PhysicalUnit(object):
 
             >>> a = PhysicalField("1. K").unit
             >>> b = PhysicalField("1. degF").unit
-            >>> from builtins import str
             >>> [str(numerix.round(element, 6)) for element in b.conversionTupleTo(a)]
             ['0.555556', '459.67']
         """

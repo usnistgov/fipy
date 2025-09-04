@@ -11,7 +11,6 @@ can abort whenever it has problems with::
     $ python -Werror::fipy.PreconditionerWarning myscript.py
 
 """
-from builtins import str
 __docformat__ = 'restructuredtext'
 
 import logging

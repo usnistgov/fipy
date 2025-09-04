@@ -2,7 +2,6 @@
 """
 __docformat__ = 'restructuredtext'
 
-from builtins import str
 
 import logging
 

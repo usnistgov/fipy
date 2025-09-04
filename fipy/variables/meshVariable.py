@@ -1,5 +1,4 @@
 
-from builtins import str
 __docformat__ = 'restructuredtext'
 
 from fipy.variables.variable import Variable
