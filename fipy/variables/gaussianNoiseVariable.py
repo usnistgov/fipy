@@ -78,7 +78,6 @@ class GaussianNoiseVariable(NoiseVariable):
     ...                     datamin=-5, datamax=5)
     ...     histoplot = Viewer(vars=(histogram, gauss))
 
-    >>> from builtins import range
     >>> for i in range(10):
     ...     noise.scramble()
     ...     if __name__ == '__main__':

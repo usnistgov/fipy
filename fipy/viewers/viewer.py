@@ -256,7 +256,6 @@ class AbstractViewer(object, metaclass=_MetaViewer):
             ...                 ymin=0.1, ymax=0.9,
             ...                 # datamin=1.1, datamax=4.0,
             ...                 title="{cls.__name__} test")
-            >>> from builtins import range
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
@@ -291,7 +290,6 @@ class AbstractViewer(object, metaclass=_MetaViewer):
 
             >>> viewer = {cls.__name__}(vars=fp.numerix.sin(k * xyVar).faceGrad,
             ...                 title="{cls.__name__} test")
-            >>> from builtins import range
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
@@ -320,7 +318,6 @@ class AbstractViewer(object, metaclass=_MetaViewer):
             ...                     ymin=0.1, ymax=0.9,
             ...                     datamin=1.1, datamax=4.0,
             ...                     title="{cls.__name__} test")
-            >>> from builtins import range
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()

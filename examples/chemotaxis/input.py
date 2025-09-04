@@ -6,7 +6,6 @@ Here are some test cases for the model.
 
 
 >>> from builtins import input
->>> from builtins import range
 >>> from examples.chemotaxis.parameters import parameters
 >>> from fipy import CellVariable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer, numerix
 

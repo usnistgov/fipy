@@ -1,5 +1,4 @@
 from builtins import object
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractMesh", "MeshAdditionError"]

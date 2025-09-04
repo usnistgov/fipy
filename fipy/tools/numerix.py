@@ -35,7 +35,6 @@ Take the tangent of an array.
 
 """
 
-from builtins import range
 from builtins import str
 from builtins import zip
 __docformat__ = 'restructuredtext'

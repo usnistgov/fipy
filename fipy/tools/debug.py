@@ -1,4 +1,3 @@
-from builtins import range
 __all__ = ["PRINT"]
 
 def PRINT(label, arg="", stall=True):

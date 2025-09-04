@@ -22,7 +22,6 @@ conservation of surfactant:
 >>> surfactantBefore = numerix.sum(surfactantVariable * mesh.cellVolumes)
 >>> totalTime = 0
 >>> steps = 5
->>> from builtins import range
 >>> for step in range(steps):
 ...     velocity.setValue(surfactantVariable.interfaceVar * k)
 ...     distanceVariable.extendVariable(velocity)
@@ -55,7 +54,6 @@ Test for the correct position of the interface:
 1
 
 """
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import input

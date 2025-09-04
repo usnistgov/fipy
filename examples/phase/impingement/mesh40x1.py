@@ -194,7 +194,6 @@ so we require a stricter tolerance.
 >>> solver = thetaEq.getDefaultSolver(tolerance=1e-9)
 
 >>> steps = 10
->>> from builtins import range
 >>> for i in range(steps):
 ...     theta.updateOld()
 ...     thetaEq.solve(theta, dt=timeStepDuration, solver=solver)

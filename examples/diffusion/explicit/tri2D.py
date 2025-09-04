@@ -18,7 +18,6 @@ and `steps` is the number of time steps.
 
 A loop is required to execute the necessary time steps:
 
-    >>> from builtins import range
     >>> for step in range(steps):
     ...     eq.solve(var, solver=solver, dt=timeStepDuration)
 
@@ -31,7 +30,6 @@ The result is again tested in the same way:
 
 """
 
-from builtins import range
 from fipy import input
 from fipy import CellVariable, Tri2D, TransientTerm, ExplicitDiffusionTerm, DefaultSolver, Viewer
 from fipy.tools import numerix

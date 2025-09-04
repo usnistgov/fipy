@@ -187,7 +187,6 @@ and iterate the solution in time, plotting as we go,
 ...     steps = 10000
 ... else:
 ...     steps = 10
->>> from builtins import range
 >>> for i in range(steps):
 ...     phase.updateOld()
 ...     dT.updateOld()

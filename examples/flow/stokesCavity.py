@@ -244,7 +244,6 @@ we allow it to iterate longer to drive to a more demanding tolerance.
    single: cacheRHSvector
    single: RHSvector
 
->>> from builtins import range
 >>> for sweep in range(sweeps):
 ... 
 ...     ## solve the Stokes equations to get starred values

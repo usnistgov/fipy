@@ -127,7 +127,6 @@ resemble the image below.
 .. .. bibmissing:: /refs.bib
     :sort:
 """
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import input

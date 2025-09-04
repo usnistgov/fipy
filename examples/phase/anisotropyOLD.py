@@ -193,7 +193,6 @@ we iterate the solution in time, plotting as we go if running interactively,
 >>> solver = DefaultAsymmetricSolver(precon=preconditioner)
 
 >>> steps = 10
->>> from builtins import range
 >>> for i in range(steps):
 ...     phase.updateOld()
 ...     temperature.updateOld()

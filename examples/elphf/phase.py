@@ -119,7 +119,6 @@ We separate the phase field into electrode and electrolyte regimes
 Even though we are solving the steady-state problem (:math:`M_\phi = \infty`) we
 still must sweep the solution several times to equilibrate
 
->>> from builtins import range
 >>> for step in range(10):
 ...     phase.equation.solve(var = phase, dt=1.)
 

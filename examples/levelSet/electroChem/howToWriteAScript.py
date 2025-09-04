@@ -391,7 +391,6 @@ is calculated with the CFL number and the maximum extension velocity.
 :math:`v_\text{ext}` throughout the whole domain using
 :math:`\nabla\phi\cdot\nabla v_\text{ext} = 0`.
 
->>> from builtins import range
 >>> for step in range(numberOfSteps):
 ...
 ...     if viewer is not None:

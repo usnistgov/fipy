@@ -58,7 +58,6 @@ and solve the equation by repeatedly looping in time:
 
 >>> timeStepDuration = 10 * 0.9 * dx**2 / (2 * D)
 >>> steps = 10
->>> from builtins import range
 >>> for step in range(steps):
 ...     eq.solve(var=phi,
 ...              dt=timeStepDuration)

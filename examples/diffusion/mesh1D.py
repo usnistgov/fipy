@@ -141,7 +141,6 @@ the result is tested against the expected profile:
 
 We then solve the equation by repeatedly looping in time:
 
->>> from builtins import range
 >>> for step in range(steps):
 ...     eqX.solve(var=phi,
 ...               dt=timeStepDuration)
@@ -187,7 +186,6 @@ and rerun with much larger time steps
 
 >>> timeStepDuration *= 10
 >>> steps //= 10
->>> from builtins import range
 >>> for step in range(steps):
 ...     eqI.solve(var=phi,
 ...               dt=timeStepDuration)
@@ -229,7 +227,6 @@ and apply the Crank-Nicholson scheme until the end, when we apply one step
 of the fully implicit scheme to drive down the error
 (see, *e.g.*, section 19.2 of :cite:`NumericalRecipes`).
 
->>> from builtins import range
 >>> for step in range(steps - 1):
 ...     eqCN.solve(var=phi,
 ...                dt=timeStepDuration)
@@ -606,7 +603,6 @@ We now repeatedly run the problem with increasing numbers of
 sweeps.
 
 >>> from fipy import input
->>> from builtins import range
 >>> for sweeps in range(1, 5):
 ...     phi[0].setValue(valueRight)
 ...     for step in range(steps):
@@ -696,7 +692,6 @@ conditions, and solve
 >>> dt = 10. * dx**2 / (2 * D)
 >>> steps = 200
 
->>> from builtins import range
 >>> for step in range(steps):
 ...     eq.solve(var=phi, dt=dt)
 ...     if __name__ == '__main__':

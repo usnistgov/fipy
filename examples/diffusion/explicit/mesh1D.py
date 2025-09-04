@@ -49,7 +49,6 @@ required to execute the necessary time steps:
 
 >>> timeStepDuration = 0.1
 >>> steps = 100
->>> from builtins import range
 >>> for step in range(steps):
 ...     eq.solve(var=var, dt=timeStepDuration)
 

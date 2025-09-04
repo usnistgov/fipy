@@ -592,7 +592,6 @@ time step of about :math:`10^{-5}~\\mathrm{s}`.
 
 >>> dt0 = 1.e-5
 
->>> from builtins import range
 >>> for i in range(8):
 ...     phase.updateOld()
 ...     C.updateOld()

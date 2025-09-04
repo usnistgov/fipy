@@ -1,4 +1,3 @@
-from builtins import range
 from builtins import str
 __docformat__ = 'restructuredtext'
 

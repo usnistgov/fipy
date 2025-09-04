@@ -178,7 +178,6 @@ can be obtained by running this example.
 .. .. bibmissing:: /refs.bib
     :sort:
 """
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import CellVariable, SurfactantVariable, TransientTerm, FirstOrderAdvectionTerm, GeneralSolver, Viewer

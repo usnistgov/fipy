@@ -25,7 +25,6 @@ class UniformNoiseVariable(NoiseVariable):
     ...                     datamin=0, datamax=1)
     ...     histoplot = Viewer(vars=histogram)
 
-    >>> from builtins import range
     >>> for i in range(10):
     ...     noise.scramble()
     ...     if __name__ == '__main__':

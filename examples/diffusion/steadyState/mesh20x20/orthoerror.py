@@ -5,7 +5,6 @@ and runs a 1D diffusion problem on them all. It computes the RMS non-orthogonali
 for each mesh and displays them in a graph, allowing the relationship of error to non-orthogonality to be investigated.
 """
 
-from builtins import range
 if __name__ == '__main__':
 
     import sys

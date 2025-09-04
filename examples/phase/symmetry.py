@@ -63,7 +63,6 @@ The following code tests the results with a different algorithm:
 >>> bottomRight = numerix.zeros((N // 2, N // 2), 'd')
 >>> topLeft = numerix.zeros((N // 2, N // 2), 'd')
 >>> topRight = numerix.zeros((N // 2, N // 2), 'd')
->>> from builtins import range
 >>> for j in range(N // 2):
 ...     for i in range(N // 2):
 ...         x = dx * (i + 0.5)

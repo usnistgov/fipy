@@ -6,7 +6,6 @@ True
 
 """
 
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import input

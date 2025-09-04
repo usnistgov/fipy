@@ -1,6 +1,5 @@
 from builtins import object
 from builtins import zip
-from builtins import range
 from builtins import str
 __docformat__ = 'restructuredtext'
 
@@ -1573,7 +1572,6 @@ class Gmsh2D(Mesh2D):
 
     >>> error = []
     >>> bkg = None
-    >>> from builtins import range
     >>> for refine in range(4):
     ...     square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
     ...     x, y = square.cellCenters # doctest: +GMSH
@@ -1793,7 +1791,6 @@ class Gmsh2D(Mesh2D):
 
         We need to do a little fancy footwork to account for multiple processes
 
-        >>> from builtins import range
         >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallelComm.Nproc)]
         >>> numtags = 2 + 1 + len(partitions)
         >>> from builtins import str
@@ -2143,7 +2140,6 @@ class Gmsh3D(Mesh):
 
         We need to do a little fancy footwork to account for multiple processes
 
-        >>> from builtins import range
         >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallelComm.Nproc)]
         >>> numtags = 2 + 1 + len(partitions)
         >>> from builtins import str

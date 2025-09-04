@@ -1,4 +1,3 @@
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import AztecOO

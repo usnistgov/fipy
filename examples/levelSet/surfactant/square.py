@@ -7,7 +7,6 @@ Advect the interface and check the position.
 
    >>> distanceVariable.calcDistanceFunction() #doctest: +LSM
    >>> initialSurfactant = numerix.sum(surfactantVariable)
-   >>> from builtins import range
    >>> for step in range(steps):
    ...     distanceVariable.updateOld()
    ...     surfactantEquation.solve(surfactantVariable, dt=1)
@@ -18,7 +17,6 @@ Advect the interface and check the position.
 
 
 """
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import input

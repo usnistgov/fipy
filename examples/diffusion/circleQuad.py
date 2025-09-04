@@ -80,7 +80,6 @@ We first step through the transient problem
 
 >>> timeStepDuration = 10 * 0.9 * cellSize**2 / (2 * D)
 >>> steps = 10
->>> from builtins import range
 >>> for step in range(steps):
 ...     eq.solve(var=phi,
 ...              dt=timeStepDuration) # doctest: +GMSH

@@ -5,7 +5,6 @@ Meshes contain cells, faces, and vertices.
 
 This is built for a non-mixed element mesh.
 """
-from builtins import range
 from builtins import zip
 __docformat__ = 'restructuredtext'
 
