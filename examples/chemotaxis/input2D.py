@@ -5,7 +5,6 @@ Input file for chemotaxis modeling.
 Here are some test cases for the model.
 
 
->>> from builtins import input
 >>> from examples.chemotaxis.parameters import parameters
 >>> from fipy import CellVariable, Grid2D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer, numerix
 

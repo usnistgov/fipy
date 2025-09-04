@@ -37,7 +37,6 @@ class copy_script(Command):
                 ans = 'no'
 
             if ("no".find(ans.lower()) is 0):
-                from builtins import input
                 self.To = input("Please give a name for the ouput file: ")
                 self.finalize_options()
 
