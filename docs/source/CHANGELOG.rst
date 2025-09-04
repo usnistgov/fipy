@@ -13,7 +13,7 @@ Version |release|
 
 This release
 
-- harmonizes the sparse :ref:`SOLVERS`:
+- Harmonizes the sparse :ref:`SOLVERS`:
     - Uses consistent interpretation of :ref:`CONVERGENCE` criteria.
     - Improves efficiency at building matrices.
     - Supports more preconditioners.
@@ -25,8 +25,8 @@ This release
     - Removes "`pyamg`" from :envvar:`FIPY_SOLVERS` and "`--pyamg`" from
       the :ref:`CommandLineFlags`.  :ref:`PYAMG` is implemented as a
       preconditioner for :ref:`SCIPY`, not as a solver suite in its own right.
-- drops support for :term:`Pysparse`, which required :term:`Python` 2.7, 
-  which is years beyond end of life.
+- Drops support for :term:`Pysparse`, which required :term:`Python` 2.7.
+- Drops support for :term:`Python` 2.7, which is years beyond end of life.
 
 --------------------------
 Version 3.4.5 - 2024-06-25
