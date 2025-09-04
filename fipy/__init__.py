@@ -47,9 +47,8 @@ if 'FIPY_LOG_CONFIG' in os.environ:
 _log = logging.getLogger(__name__)
 
 # __version__ needs to be defined before calling package_info()
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
+from . import _version
+__version__ = _version.get_versions()['version']
 
 
 from fipy.tools.logging import environment
