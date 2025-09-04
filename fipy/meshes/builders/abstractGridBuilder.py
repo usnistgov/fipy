@@ -1,4 +1,3 @@
-from builtins import zip
 __docformat__ = 'restructuredtext'
 
 __all__ = []

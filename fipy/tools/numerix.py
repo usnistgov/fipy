@@ -36,7 +36,6 @@ Take the tangent of an array.
 """
 
 from builtins import str
-from builtins import zip
 __docformat__ = 'restructuredtext'
 
 import numpy as NUMERIX
