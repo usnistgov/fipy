@@ -5324,7 +5324,7 @@ package:
   manager: conda
   platform: osx-64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/osx-64/x264-1%21164.3095-h775f41a_2.tar.bz2
+  url: https://conda.anaconda.org/conda-forge/osx-64/x264-1!164.3095-h775f41a_2.tar.bz2
   hash:
     md5: 23e9c3180e2c0f9449bb042914ec2200
     sha256: de611da29f4ed0733a330402e163f9260218e6ba6eae593a5f945827d0ee1069
