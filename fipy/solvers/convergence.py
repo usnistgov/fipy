@@ -2,7 +2,6 @@ from builtins import object
 from builtins import str
 __docformat__ = 'restructuredtext'
 
-from future.utils import with_metaclass
 
 import json
 import logging
@@ -63,7 +62,7 @@ class DivergenceWarning(UserWarning):
         msg = "msg={status_name}, code={status_code}, residual={residual}".format(**divergence.info)
         super(DivergenceWarning, self).__init__(msg)
 
-class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
+class ConvergenceBase(object, metaclass=_ConvergenceMeta):
     """Information about whether and why a solver converged.
 
     Attributes

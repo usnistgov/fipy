@@ -5,12 +5,8 @@ __all__ = ["AbstractViewer"]
 
 import sys
 
-from future.utils import with_metaclass
-
 # Pattern for accessing classmethods on construction
 # https://stackoverflow.com/a/13901161/2019542
-# adapted for future
-# https://python-future.org/compatible_idioms.html#metaclasses
 class _MetaViewer(type):
     def __new__(mcl, classname, bases, classdict):
         """Create new viewer with class-appropriate doctests"""
@@ -23,7 +19,7 @@ class _MetaViewer(type):
 
         return cls
 
-class AbstractViewer(with_metaclass(_MetaViewer, object)):
+class AbstractViewer(object, metaclass=_MetaViewer):
     """Base class for FiPy Viewers
 
     .. attention:: This class is abstract. Always create one of its subclasses.
