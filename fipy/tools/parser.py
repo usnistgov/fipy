@@ -49,12 +49,8 @@ def parse(larg, action = None, type = None, default = None):
 def _parseSolver():
     args = [s.lower() for s in sys.argv[1:]]
     # any command-line specified solver takes precedence over environment variables
-    if '--no-pysparse' in args:
-        return "no-pysparse"
-    elif '--trilinos' in args:
+    if '--trilinos' in args:
         return "trilinos"
-    elif '--pysparse' in args:
-        return "pysparse"
     elif '--scipy' in args:
         return 'scipy'
     elif '--pyamgx' in args:

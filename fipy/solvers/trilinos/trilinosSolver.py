@@ -6,6 +6,7 @@ from PyTrilinos import EpetraExt
 
 from fipy.solvers.solver import Solver
 from fipy.tools import numerix
+from fipy.matrices.trilinosMatrix import _TrilinosMeshMatrix
 
 class TrilinosSolver(Solver):
 
@@ -124,9 +125,7 @@ class TrilinosSolver(Solver):
 
     @property
     def _matrixClass(self):
-        from fipy.solvers import _MeshMatrix
-        # could be Trilinos or Pysparse, depending on configuration
-        return _MeshMatrix
+        return _TrilinosMeshMatrix
 
     def _calcResidualVector(self, residualFn=None):
         if residualFn is not None:

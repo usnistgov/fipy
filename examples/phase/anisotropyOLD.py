@@ -184,7 +184,7 @@ the phase and temperature fields
 we iterate the solution in time, plotting as we go if running interactively,
 
 >>> from fipy import solver_suite
->>> if solver_suite in ["trilinos", "no-pysparse"]:
+>>> if solver_suite in ["trilinos"]:
 ...     from fipy import MultilevelNSSAPreconditioner
 ...     preconditioner = MultilevelNSSAPreconditioner()
 ... else:
