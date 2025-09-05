@@ -36,7 +36,7 @@ class copy_script(Command):
                    and ("no".find(ans.lower()) != 0)):
                 ans = input("The file '%s' already exists. Overwrite? [n] "%self.To)
 
-            if ans is '':
+            if ans == '':
                 ans = 'no'
 
             if ("no".find(ans.lower()) == 0):
