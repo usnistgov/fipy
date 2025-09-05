@@ -1303,7 +1303,7 @@ The significant changes since version 1.2 are:
 
 - Support for anisotropic diffusion coefficients.
 
-.. _Trilinos solvers: http://www.nist.gov/cgi-bin/redirect.py?url=https://trilinos.github.io
+.. _Trilinos solvers: https://trilinos.github.io
 
 - `#167 <https://github.com/usnistgov/fipy/issues/167>`_:
   example showing how to go from 1.2 to 2.0
