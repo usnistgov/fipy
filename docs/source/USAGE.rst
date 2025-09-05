@@ -1050,7 +1050,7 @@ or::
 
    $ python -m pip install numpydoc
 
-   Some embeded figures require `matplotlib`, `pandas`, and `imagemagick`::
+   Some embedded figures require `matplotlib`, `pandas`, and `imagemagick`::
 
    $ conda install --channel conda-forge matplotlib pandas imagemagick
 
