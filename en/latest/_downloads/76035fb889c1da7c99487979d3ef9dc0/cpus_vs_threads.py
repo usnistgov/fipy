@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from matplotlib import pyplot as plt
 import matplotlib.ticker as ticker
 import pandas as pd

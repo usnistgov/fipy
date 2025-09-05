@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; FiPy 3.99+1.g57d671f09 documentation</title>
+    <title>Installation &#8212; FiPy 3.99+2.g43389af1f documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,13 +43,13 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=676a3a9d"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=16b05d09"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/INSTALLATION.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.99+1.g57d671f09 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.99+2.g43389af1f documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Using FiPy" href="USAGE.html" />
     <link rel="prev" title="Contact" href="CONTACT.html" />
@@ -155,7 +155,7 @@ packages necessary to run <a class="reference internal" href="glossary.html#term
 with the <a class="reference external" href="https://conda.io">conda</a> package manager.  In addition to the scientific
 <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> stack, <a class="reference external" href="https://conda.io">conda</a> also provides virtual environment
 management.  Keeping separate installations is useful <em>e.g.</em> for
-comparing <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2 and <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 3 software stacks, or when
+comparing different versions of <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a>, or when
 the user does not have sufficient privileges to install software
 system-wide.</p>
 <p>In addition to the default packages, many other developers provide
@@ -225,7 +225,7 @@ generate a FiPy environment that consistently works.</p>
 incompatible packages.</p>
 <p>e.g.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create --name &lt;MYFIPYENV&gt; --channel conda-forge \
-    python=3 numpy scipy matplotlib-base future packaging mpich \
+    python=3 numpy scipy matplotlib-base packaging mpich \
     mpi4py petsc4py mayavi &quot;gmsh &lt;4.0|&gt;=4.5.2&quot;
 </pre></div>
 </div>
@@ -274,8 +274,7 @@ an installation.  You may wish to consider using the alternative
 to run and visualize <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> simulations. On <a class="reference external" href="http://www.microsoft.com/windows/">Windows</a>, there
 are fewer packages available via <a class="reference external" href="https://conda.io">conda</a>, particularly amongst the
 sparse matrix <a class="reference internal" href="SOLVERS.html#solvers"><span class="std std-ref">Solvers</span></a>, but the system still should be
-functional. Significantly, you will need to download and install
-<a class="reference internal" href="glossary.html#term-Gmsh"><span class="xref std std-term">Gmsh</span></a> manually when using Python 2.7.</p>
+functional.</p>
 </div>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
@@ -350,7 +349,7 @@ process.</p>
 on many operating systems, which you can check by opening a terminal
 and typing <code class="docutils literal notranslate"><span class="pre">python</span></code>, <em>e.g.</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python
-Python 2.7.15 | ...
+Python 3.10.10 | ...
 ...
 Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
 &gt;&gt;&gt;
@@ -360,10 +359,8 @@ Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;licen
 &lt;<a class="reference external" href="http://www.python.org/download">http://www.python.org/download</a>&gt;.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> requires at least version 2.7.x of <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a>.</p>
+<p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> <a class="reference external" href="sunset-python-2">no longer supports Python 2</a>.</p>
 </div>
-<p><a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> along with many of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>’s required and optional
-packages is available with one of the following distributions.</p>
 </section>
 <section id="numpy">
 <h3>NumPy<a class="headerlink" href="#numpy" title="Permalink to this heading">¶</a></h3>
@@ -488,7 +485,7 @@ not).</p>
 <p>Past releases of FiPy are tagged as</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">x.y.z</span></code></dt><dd><p>Any released version of FiPy will be designated with a fixed tag: The
-current version of FiPy is 3.99+1.g57d671f09.  (Legacy <code class="docutils literal notranslate"><span class="pre">version-x_y_z</span></code> tags
+current version of FiPy is 3.99+2.g43389af1f.  (Legacy <code class="docutils literal notranslate"><span class="pre">version-x_y_z</span></code> tags
 are retained for historical purposes, but won’t be added to.)</p>
 </dd>
 </dl>
@@ -556,7 +553,7 @@ version of <a class="reference internal" href="glossary.html#term-FiPy"><span cl
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.99+1.g57d671f09
+Version 3.99+2.g43389af1f
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

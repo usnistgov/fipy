@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.phase.missOrientation.modCircle &#8212; FiPy 3.99+1.g57d671f09 documentation</title>
+    <title>examples.phase.missOrientation.modCircle &#8212; FiPy 3.99+2.g43389af1f documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=676a3a9d"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=16b05d09"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.phase.missOrientation.modCircle.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.99+1.g57d671f09 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.99+2.g43389af1f documentation" href="../contents.html" />
     <link rel="up" title="examples.phase.missOrientation" href="examples.phase.missOrientation.html" />
     <link rel="next" title="examples.phase.missOrientation.test" href="examples.phase.missOrientation.test.html" />
     <link rel="prev" title="examples.phase.missOrientation.mesh1D" href="examples.phase.missOrientation.mesh1D.html" />
@@ -141,8 +141,7 @@ T &amp;= 1 \qquad \forall x\end{split}\]</div>
 <span class="math notranslate nohighlight">\(\phi = 1\)</span> for <span class="math notranslate nohighlight">\(x = 0\)</span> and <span class="math notranslate nohighlight">\(x = L\)</span>.</p>
 <p>Here the phase equation is solved with an explicit technique.</p>
 <p>The solution is allowed to evolve for <code class="docutils literal notranslate"><span class="pre">steps</span> <span class="pre">=</span> <span class="pre">100</span></code> time steps.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">range</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">phaseEq</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">phase</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">timeStepDuration</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -151,8 +150,7 @@ with a FORTRAN code written by Ryo Kobayashi for phase field
 modeling. The following code opens the file <code class="file docutils literal notranslate"><span class="pre">modCircle.gz</span></code> extracts the
 data and compares it with the <code class="docutils literal notranslate"><span class="pre">phase</span></code> variable.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">future.utils</span> <span class="kn">import</span> <span class="n">text_to_native_str</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">testData</span> <span class="o">=</span> <span class="n">numerix</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">text_to_native_str</span><span class="p">(</span><span class="s1">&#39;.gz&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">testData</span> <span class="o">=</span> <span class="n">numerix</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.gz&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">testData</span><span class="p">))</span>
 <span class="go">1</span>
 </pre></div>
@@ -171,7 +169,7 @@ data and compares it with the <code class="docutils literal notranslate"><span c
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.99+1.g57d671f09
+Version 3.99+2.g43389af1f
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>
