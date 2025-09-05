@@ -1038,7 +1038,7 @@ class _PETScMeshMatrix(_PETScRowMeshMatrix):
         pass
 
 class _PETScIdentityMatrix(_PETScMatrixFromShape):
-    """Represents a sparse identity matrix for pysparse.
+    """Represents a sparse identity matrix for PETSc
     """
     def __init__(self, size, nonZerosPerRow=1, comm=PETSc.COMM_SELF):
         """Create a sparse matrix with `1` in the diagonal

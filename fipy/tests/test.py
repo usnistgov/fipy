@@ -59,13 +59,10 @@ class test(_test):
         ('inline', None, "run FiPy with inline compilation enabled"),
         ('pythoncompiled=', None, "directory in which to put weave's work product"),
         ('Trilinos', None, "run FiPy using Trilinos solvers"),
-        ('Pysparse', None, "run FiPy using Pysparse solvers (default)"),
         ('trilinos', None, "run FiPy using Trilinos solvers"),
-        ('pysparse', None, "run FiPy using Pysparse solvers (default)"),
         ('scipy', None, "run FiPy using SciPy solvers"),
         ('Scipy', None, "run FiPy using SciPy solvers"),
         ('petsc', None, "run FiPy using PETSc solvers"),
-        ('no-pysparse', None, "run FiPy without using the Pysparse solvers"),
         ('pyamgx', None, "run FiPy using the pyamgx solvers"),
         ('all', None, "run all non-interactive FiPy tests (default)"),
         ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
@@ -95,10 +92,7 @@ class test(_test):
         self.cache = False
         self.no_cache = True
         self.Trilinos = False
-        self.Pysparse = False
         self.trilinos = False
-        self.pysparse = False
-        self.no_pysparse = False
         self.pyamgx = False
         self.scipy = False
         self.petsc = False
@@ -171,7 +165,7 @@ class test(_test):
 
     def run_tests(self):
         import sys
-        if self.Trilinos or self.trilinos or self.no_pysparse:
+        if self.Trilinos or self.trilinos:
             try:
                 ## The import scipy statement is added to allow
                 ## the --Trilinos tests to run without throwing a

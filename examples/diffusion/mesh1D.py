@@ -261,13 +261,7 @@ equation
 
 is represented in :term:`FiPy` by
 
->>> from fipy.solvers import solver_suite
->>> if solver_suite == "pysparse":
-...     from fipy import LinearLUSolver
-...     solver = LinearLUSolver()
-... else:
-...     solver = None
->>> DiffusionTerm(coeff=D).solve(var=phi, solver=solver)
+>>> DiffusionTerm(coeff=D).solve(var=phi)
 
 >>> if __name__ == '__main__':
 ...     viewer.plot()

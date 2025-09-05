@@ -133,7 +133,7 @@ class FirstOrderAdvectionTerm(_NonDiffusionTerm):
             warnings.warn("%s cannot solve asymmetric matrices" % solver)
 
         import fipy.solvers.solver
-        if fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+        if fipy.solvers.solver_suite == 'trilinos':
             from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
             from fipy.solvers.trilinos.linearGMRESSolver import LinearGMRESSolver
             return solver or LinearGMRESSolver(precon=JacobiPreconditioner(), *args, **kwargs)

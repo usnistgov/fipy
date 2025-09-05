@@ -501,9 +501,8 @@ non-linear problem to convergence. We use the "residual" of the equations
 (a measure of how well they think they have solved the given set of linear
 equations) as a test for how long to sweep. Because of the
 :class:`~fipy.terms.convectionTerm.ConvectionTerm`, the solution matrix for
-``diffusionEq`` is asymmetric and cannot be solved by the default
-:class:`~fipy.solvers.pysparse.linearCGSolver.LinearCGSolver`.  Therefore,
-we use a :class:`~fipy.solvers.DefaultAsymmetricSolver` for this equation.
+``diffusionEq`` is asymmetric, so we use a
+:class:`~fipy.solvers.DefaultAsymmetricSolver` for this equation.
 
 .. .. index:: DefaultAsymmetricSolver, solve, sweep
 

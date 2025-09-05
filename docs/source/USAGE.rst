@@ -201,23 +201,13 @@ environment variable:
 
    Forces the use of the :ref:`PYAMGX` solvers.
 
-.. cmdoption:: --pysparse
-
-   Forces the use of the :ref:`PYSPARSE` solvers.
-
 .. cmdoption:: --scipy
 
    Forces the use of the :ref:`SCIPY` solvers.
 
 .. cmdoption:: --trilinos
 
-   Forces the use of the :ref:`TRILINOS` solvers, but uses
-   :ref:`PYSPARSE` to construct the matrices.
-
-.. cmdoption:: --no-pysparse
-
-   Forces the use of the :ref:`TRILINOS` solvers without any use of
-   :ref:`PYSPARSE`.
+   Forces the use of the :ref:`TRILINOS` solvers.
 
 .. cmdoption:: --lsmlib
 
@@ -271,7 +261,7 @@ package.
 
    Forces the use of the specified suite of linear :ref:`SOLVERS`.  Valid
    (case-insensitive) choices are "``petsc``", "``pyamgx``",
-   "``pysparse``", "``scipy``", "``trilinos``", and "``no-pysparse``".
+   "``scipy``", and "``trilinos``".
 
 .. envvar:: FIPY_DEFAULT_CRITERION
 
@@ -1044,14 +1034,11 @@ drop support for Python 2.7 no later than 2020`_, we prioritized adding
 support for better :term:`Python 3` solvers, starting with
 :term:`petsc4py`.
 
-Because the faster :ref:`PySparse` solvers are not
-available under :term:`Python 3`, we have maintained :term:`Python` 2.x
+We have maintained :term:`Python` 2.x
 support as long as practical. Be aware that the conda-forge_ packages that
 :term:`FiPy` depends upon are not well-maintained on :term:`Python` 2.x
 and our support for that configuration is rapidly becoming impractical,
-despite the performance benefits. Now that we have learned
-how to optimize our use of :ref:`PETSc` and :ref:`Trilinos`, the
-performance margin of :ref:`PySparse` is small and support for
+despite the performance benefits. Support for
 :term:`Python` 2.x will be dropped soon.
 
 .. _future: http://python-future.org

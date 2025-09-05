@@ -79,9 +79,7 @@
 .. |.pip| replace:: pip
 .. _.pip: https://pages.nist.gov/fipy/en/latest/glossary.html#term-pip
 .. |.pyamg| replace:: PyAMG
-.. _.pyamg: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#id10
-.. |.pysparse| replace:: Pysparse
-.. _.pysparse: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#id14
+.. _.pyamg: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#id9
 .. |.Python| replace:: Python
 .. _.Python: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Python
 .. |.Python 3| replace:: Python 3
@@ -1265,7 +1263,7 @@ The significant changes since version 2.1 are:
 - |.~fipy.viewers.matplotlibViewer.MatplotlibViewer|_ can display 
   into an existing set of Matplotlib axes.
 
-- |.pysparse|_ and |.trilinos|_ are now completely independent.
+- ``PYSPARSE`` and |.trilinos|_ are now completely independent.
 
 Fixes
 -----

@@ -16,8 +16,6 @@
 .. _.Gmsh: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Gmsh
 .. |.installation| replace:: Installation
 .. _.installation: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#installation
-.. |.Mayavi| replace:: Mayavi
-.. _.Mayavi: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Mayavi
 .. |.NumPy| replace:: NumPy
 .. _.NumPy: https://pages.nist.gov/fipy/en/latest/glossary.html#term-NumPy
 .. |.optionalpackages| replace:: Optional Packages
@@ -188,19 +186,6 @@ of the merits of and relationship between the different methods.
     $ conda create --name <MYFIPYENV> --channel conda-forge \
         python=3 numpy scipy matplotlib-base future packaging mpich \
         mpi4py petsc4py mayavi "gmsh <4.0|>=4.5.2"
-
-  or::
-
-    $ conda create --name <MYFIPYENV> --channel conda-forge \
-        python=2.7 numpy scipy matplotlib-base future packaging \
-        pysparse mayavi "traitsui<7.0.0" "gmsh<4.0"
-
-  .. attention::
-
-     Bit rot has started to set in for Python 2.7.  One consequence is that
-     |.~fipy.viewers.vtkViewer.VTKViewer|_\s can raise errors
-     (probably other uses of |.Mayavi|_, too). Hence, the constraint
-     of `"traitsui<7.0.0"`.
 
 .. _conda-lock: https://github.com/conda/conda-lock
 

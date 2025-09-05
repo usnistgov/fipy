@@ -528,7 +528,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ...     solver = DefaultAsymmetricSolver(criterion="initial",
 ...                                      precon=HYPREPreconditioner(),
 ...                                      tolerance=1e-10)
-... elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+... elif fipy.solvers.solver_suite in ['trilinos']:
 ...     from fipy import LinearBicgstabSolver
 ...     solver = LinearBicgstabSolver(criterion="initial",
 ...                                   tolerance=1e-10)
