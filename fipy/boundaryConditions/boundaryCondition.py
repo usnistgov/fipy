@@ -43,7 +43,7 @@ class BoundaryCondition(object):
         self.boundaryConditionApplied = False
 
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
-        """Return the effect of this boundary condition on the equation
+        r"""Return the effect of this boundary condition on the equation
         solution matrices.
 
         `_buildMatrix()` is called by each `Term` of each `Equation`.

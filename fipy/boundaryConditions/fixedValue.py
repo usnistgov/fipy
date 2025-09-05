@@ -40,7 +40,7 @@ class FixedValue(BoundaryCondition):
 
 
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
-        """Set boundary equal to value.
+        r"""Set boundary equal to value.
 
         A `tuple` of (`LL`, `bb`) is calculated, to be added to the
         Term's (:math:`\mathsf{L}`, :math:`\mathsf{b}`) matrices.

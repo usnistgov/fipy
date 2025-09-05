@@ -17,8 +17,8 @@ def MatplotlibViewer(vars, title=None, limits={}, cmap=None, colorbar='vertical'
     and rank.
 
     It is possible to view different
-    :class:`~fipy.variables.variable.Variable`\s against different Matplotlib_
-    `Axes`
+    :class:`~fipy.variables.variable.Variable` instances against different
+    Matplotlib_ `Axes`
 
     >>> from matplotlib import pyplot as plt
     >>> from fipy import *

@@ -414,7 +414,7 @@ class CellVariable(MeshVariable):
 
     @property
     @deprecate(new_name="~fipy.variables.cellVariable.CellVariable.grad",
-               new_string="use :attr:`%s`\ ``.``\ "
+               new_string=r"use :attr:`%s`\ ``.``\ "
                           ":attr:`~fipy.variables.cellVariable.CellVariable.arithmeticFaceValue` "
                           "instead",
                version=3.3)
