@@ -1022,7 +1022,9 @@ Demonstrations of its use are found in :mod:`examples.phase.binary` and
 Manual
 ------
 
-You can view the manual online at <http://pages.nist.gov/fipy>.
+You can view the manual online at <http://pages.nist.gov/fipy> (a PDF
+version is available from the variant popup menu in the bottom right of
+those documentation pages).
 Alternatively, it may be possible to build a fresh copy by issuing the
 following command in the :file:`docs/` directory::
 

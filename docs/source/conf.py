@@ -36,7 +36,6 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.imgconverter',
               'sphinx.ext.napoleon',
               'sphinx_readme',
-              'redirecting_html',
               'sphinxcontrib.bibtex',
               'matplotlib.sphinxext.plot_directive']
 
