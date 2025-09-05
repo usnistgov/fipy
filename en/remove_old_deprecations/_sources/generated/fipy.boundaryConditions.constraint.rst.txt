@@ -1,0 +1,29 @@
+fipy.boundaryConditions.constraint
+==================================
+
+.. automodule:: fipy.boundaryConditions.constraint
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Constraint
+   
+   
+
+   
+   
+   
+
+
+

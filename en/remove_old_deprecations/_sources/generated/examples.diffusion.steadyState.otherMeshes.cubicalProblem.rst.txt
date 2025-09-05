@@ -1,0 +1,23 @@
+examples.diffusion.steadyState.otherMeshes.cubicalProblem
+=========================================================
+
+.. automodule:: examples.diffusion.steadyState.otherMeshes.cubicalProblem
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
