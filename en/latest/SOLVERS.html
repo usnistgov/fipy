@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Solvers &#8212; FiPy 3.4.5+68.g5e0cd0fdd documentation</title>
+    <title>Solvers &#8212; FiPy 3.99+1.g57d671f09 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f2ad0c66"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=676a3a9d"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/SOLVERS.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.4.5+68.g5e0cd0fdd documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.99+1.g57d671f09 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Viewers" href="VIEWERS.html" />
     <link rel="prev" title="Using FiPy" href="USAGE.html" />
@@ -117,28 +117,28 @@
 		
   <section id="solvers">
 <span id="id1"></span><h1>Solvers<a class="headerlink" href="#solvers" title="Permalink to this heading">¶</a></h1>
-<p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> requires either <a class="reference internal" href="#petsc">PETSc</a>, <a class="reference internal" href="#id12">pyamgx</a>, <a class="reference internal" href="#id14">Pysparse</a>, <a class="reference internal" href="#id16">SciPy</a>, or
+<p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> requires either <a class="reference internal" href="#petsc">PETSc</a>, <a class="reference internal" href="#id11">pyamgx</a>, <a class="reference internal" href="#id13">SciPy</a>, or
 <a class="reference internal" href="#trilinos">Trilinos</a> solver suites to be installed in order to solve linear systems.
 <a class="reference internal" href="#petsc">PETSc</a> and <a class="reference internal" href="#trilinos">Trilinos</a> are the most complete of the
 solvers due to their numerous preconditioning and solver capabilities and
 they also allow <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> to <a class="reference internal" href="USAGE.html#parallel"><span class="std std-ref">run in parallel</span></a>.
 The <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> interface for <a class="reference internal" href="#petsc">PETSc</a>
 is better maintained than for <a class="reference internal" href="#trilinos">Trilinos</a> and tends to be easier to install.
-The sparse linear algebra solvers from the popular <a class="reference internal" href="#id16">SciPy</a> package are
+The sparse linear algebra solvers from the popular <a class="reference internal" href="#id13">SciPy</a> package are
 widely available and easy to install. Although they do not perform as well
 as the other suites and lack many of the features of <a class="reference internal" href="#petsc">PETSc</a> or <a class="reference internal" href="#trilinos">Trilinos</a>,
 they may be the easiest linear solver choice when
 first installing and testing <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>.
-While the <a class="reference internal" href="#id14">Pysparse</a> linear solvers offer a modest advantage in serial, be
-aware that they require <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.7, which is no longer supported.
-FiPy support for <a class="reference internal" href="#id14">Pysparse</a> will be dropped soon.
-<a class="reference internal" href="#id12">pyamgx</a> offers the possibility
+<a class="reference internal" href="#id11">pyamgx</a> offers the possibility
 of solving sparse linear systems on the GPU; be aware that both
-hardware and software configuration is non-trivial.</p>
+hardware and software configuration is non-trivial.
+The <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a> solver suite is no longer supported, as it requires
+<a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.7; if you need <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a>, please use <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
+3.99.</p>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> chooses the solver suite based on system availability or based
 on the user supplied <a class="reference internal" href="USAGE.html#flagsandenvironmentvariables"><span class="std std-ref">Command-line Flags and Environment Variables</span></a>. For example,
-passing <code class="docutils literal notranslate"><span class="pre">--no-pysparse</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -c &quot;from fipy import *; print DefaultSolver&quot; --no-pysparse
+passing <code class="docutils literal notranslate"><span class="pre">--trilinos</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -c &quot;from fipy import *; print DefaultSolver&quot; --trilinos
 &lt;class &#39;fipy.solvers.trilinos.linearGMRESSolver.LinearGMRESSolver&#39;&gt;
 </pre></div>
 </div>
@@ -149,37 +149,41 @@ $ python -c &quot;from fipy import *; print DefaultSolver&quot;
 &lt;class &#39;fipy.solvers.scipy.linearLUSolver.LinearLUSolver&#39;&gt;
 </pre></div>
 </div>
-<p>uses a <a class="reference internal" href="#id16">SciPy</a> solver. Suite-specific solver classes can also
+<p>uses a <a class="reference internal" href="#id13">SciPy</a> solver. Suite-specific solver classes can also
 be imported and instantiated overriding any other directives. For
 example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -c &quot;from fipy.solvers.scipy import DefaultSolver; \
-&gt;   print DefaultSolver&quot; --no-pysparse
+&gt;   print DefaultSolver&quot; --trilinos
 &lt;class &#39;fipy.solvers.scipy.linearLUSolver.LinearLUSolver&#39;&gt;
 </pre></div>
 </div>
-<p>uses a <a class="reference internal" href="#id16">SciPy</a> solver regardless of the command line
-argument. In the absence of <a class="reference internal" href="USAGE.html#flagsandenvironmentvariables"><span class="std std-ref">Command-line Flags and Environment Variables</span></a>,
+<p>uses a <a class="reference internal" href="#id13">SciPy</a> solver regardless of the command line
+argument.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> has not been designed to mix different solver
+suites during a given problem run</p>
+</div>
+<p>In the absence of <a class="reference internal" href="USAGE.html#flagsandenvironmentvariables"><span class="std std-ref">Command-line Flags and Environment Variables</span></a>,
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>’s order of precedence when choosing the
-solver suite for generic solvers is <a class="reference internal" href="#id14">PySparse</a> followed by
-<a class="reference internal" href="#petsc">PETSc</a>, <a class="reference internal" href="#trilinos">Trilinos</a>, <a class="reference internal" href="#id16">SciPy</a>, and <a class="reference internal" href="#id12">pyamgx</a>.</p>
-<table class="wideshow longtable docutils align-default" id="id48">
-<caption><span class="caption-text">Solver Suite Features</span><a class="headerlink" href="#id48" title="Permalink to this table">¶</a></caption>
+solver suite for generic solvers is <a class="reference internal" href="#petsc">PETSc</a> followed by <a class="reference internal" href="#trilinos">Trilinos</a>, <a class="reference internal" href="#id13">SciPy</a>,
+and <a class="reference internal" href="#id11">pyamgx</a>.</p>
+<table class="wideshow longtable docutils align-default" id="id41">
+<caption><span class="caption-text">Solver Suite Features</span><a class="headerlink" href="#id41" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 22.0%" />
-<col style="width: 13.0%" />
-<col style="width: 13.0%" />
-<col style="width: 13.0%" />
-<col style="width: 13.0%" />
-<col style="width: 13.0%" />
-<col style="width: 13.0%" />
+<col style="width: 25.3%" />
+<col style="width: 14.9%" />
+<col style="width: 14.9%" />
+<col style="width: 14.9%" />
+<col style="width: 14.9%" />
+<col style="width: 14.9%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head stub"></th>
 <th class="head"><p><a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a></p></th>
-<th class="head"><p><a class="reference internal" href="#id10"><span class="std std-ref">PyAMG</span></a></p></th>
-<th class="head"><p><a class="reference internal" href="#id12"><span class="std std-ref">pyamgx</span></a></p></th>
-<th class="head"><p><a class="reference internal" href="#id14"><span class="std std-ref">Pysparse</span></a></p></th>
-<th class="head"><p><a class="reference internal" href="#id16"><span class="std std-ref">SciPy</span></a></p></th>
+<th class="head"><p><a class="reference internal" href="#id9"><span class="std std-ref">PyAMG</span></a></p></th>
+<th class="head"><p><a class="reference internal" href="#id11"><span class="std std-ref">pyamgx</span></a></p></th>
+<th class="head"><p><a class="reference internal" href="#id13"><span class="std std-ref">SciPy</span></a></p></th>
 <th class="head"><p><a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a></p></th>
 </tr>
 </thead>
@@ -188,10 +192,8 @@ solver suite for generic solvers is <a class="reference internal" href="#id14">P
 <td><p><code class="docutils literal notranslate"><span class="pre">petsc</span></code></p></td>
 <td></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">pyamgx</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">pysparse</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">scipy</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">trilinos</span></code>
-or <code class="docutils literal notranslate"><span class="pre">no-pysparse</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">trilinos</span></code></p></td>
 </tr>
 <tr class="row-odd"><th class="stub"><p>solvers</p></th>
 <td><p>✓</p></td>
@@ -199,10 +201,8 @@ or <code class="docutils literal notranslate"><span class="pre">no-pysparse</spa
 <td><p>✓</p></td>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
-<td><p>✓</p></td>
 </tr>
 <tr class="row-even"><th class="stub"><p>preconditioners</p></th>
-<td><p>✓</p></td>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
@@ -214,11 +214,9 @@ or <code class="docutils literal notranslate"><span class="pre">no-pysparse</spa
 <td></td>
 <td><p><a class="footnote-reference brackets" href="#pyamgx-parallel" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></td>
 <td></td>
-<td></td>
 <td><p>✓</p></td>
 </tr>
 <tr class="row-even"><th class="stub"><p><a class="reference internal" href="glossary.html#term-linux"><span class="xref std std-term">linux</span></a></p></th>
-<td><p>✓</p></td>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
@@ -231,13 +229,11 @@ or <code class="docutils literal notranslate"><span class="pre">no-pysparse</spa
 <td></td>
 <td><p>✓</p></td>
 <td><p>✓</p></td>
-<td><p>✓</p></td>
 </tr>
 <tr class="row-even"><th class="stub"><p><a class="reference internal" href="glossary.html#term-Windows"><span class="xref std std-term">Windows</span></a></p></th>
 <td></td>
 <td><p>✓</p></td>
 <td></td>
-<td><p>✓</p></td>
 <td><p>✓</p></td>
 <td></td>
 </tr>
@@ -249,13 +245,10 @@ or <code class="docutils literal notranslate"><span class="pre">no-pysparse</spa
 <td><p><a class="reference external" href="https://pyamgx.readthedocs.io/"><code class="docutils literal notranslate"><span class="pre">pyamgx</span></code></a>,
 <a class="reference external" href="https://docs.scipy.org/doc/scipy/"><code class="docutils literal notranslate"><span class="pre">scipy</span></code></a>,
 <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">python</span></a> &gt;= 2.7 or &gt;= 3.5</p></td>
-<td><p><a class="reference external" href="https://pysparse.sourceforge.net/"><code class="docutils literal notranslate"><span class="pre">pysparse</span></code></a> &gt;= 1.0,
-<a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">python</span></a> &lt; 3</p></td>
 <td><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/"><code class="docutils literal notranslate"><span class="pre">scipy</span></code></a></p></td>
 <td><p><a class="reference external" href="https://trilinos.github.io/pytrilinos.html"><code class="docutils literal notranslate"><span class="pre">PyTrilinos</span></code></a>,
 <a class="reference external" href="https://mpi4py.readthedocs.io/"><code class="docutils literal notranslate"><span class="pre">mpi4py</span></code></a>,
-<a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">python</span></a> &gt;=3.7,&lt;3.9  <a class="footnote-reference brackets" href="#id7" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#id8" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>,
-(<a class="reference external" href="https://pysparse.sourceforge.net/"><code class="docutils literal notranslate"><span class="pre">pysparse</span></code></a> <a class="footnote-reference brackets" href="#pysparse4trilinos" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>)</p></td>
+<a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">python</span></a> &gt;=3.7,&lt;3.9  <a class="footnote-reference brackets" href="#id6" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#id7" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -263,34 +256,24 @@ or <code class="docutils literal notranslate"><span class="pre">no-pysparse</spa
 <aside class="footnote brackets" id="pyamgx-parallel" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
 <p>While <a class="reference external" href="https://github.com/NVIDIA/AMGX">AMGX</a> matrix solve takes advantage of GPU
-parallelism, the <code class="docutils literal notranslate"><span class="pre">pyamgx</span></code> library uses <a class="reference internal" href="#id16"><span class="std std-ref">SciPy</span></a> to build the matrix
+parallelism, the <code class="docutils literal notranslate"><span class="pre">pyamgx</span></code> library uses <a class="reference internal" href="#id13"><span class="std std-ref">SciPy</span></a> to build the matrix
 and thus suffers a significant serial bottleneck.</p>
 </aside>
-<aside class="footnote brackets" id="id7" role="doc-footnote">
+<aside class="footnote brackets" id="id6" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://trilinos.github.io/pytrilinos.html"><code class="docutils literal notranslate"><span class="pre">PyTrilinos</span></code></a> may be compatible with newer versions of Python,
 but these are the most recent versions we’ve been able to get to install
 using <a class="reference internal" href="glossary.html#term-conda"><span class="xref std std-term">conda</span></a> (3.7 on <a class="reference internal" href="glossary.html#term-linux"><span class="xref std std-term">linux</span></a> and 3.8 on <a class="reference internal" href="glossary.html#term-macOS"><span class="xref std std-term">macOS</span></a>).</p>
 </aside>
-<aside class="footnote brackets" id="id8" role="doc-footnote">
+<aside class="footnote brackets" id="id7" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">3</a><span class="fn-bracket">]</span></span>
 <p>There is a more actively developed <a class="reference external" href="https://trilinos.github.io/pytrilinos2.html"><code class="docutils literal notranslate"><span class="pre">PyTrilinos2</span></code></a>
 package, which may be compable with more recent versions of
 <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a>, but <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> does not yet work with it.</p>
 </aside>
-<aside class="footnote brackets" id="pysparse4trilinos" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">4</a><span class="fn-bracket">]</span></span>
-<p>Trilinos parallel efficiency is somewhat improved
-by also installing <a class="reference external" href="https://pysparse.sourceforge.net/"><code class="docutils literal notranslate"><span class="pre">pysparse</span></code></a>.</p>
 </aside>
-</aside>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> has not been designed to mix different solver
-suites during a given problem run</p>
-</div>
 <section id="petsc">
-<span id="id9"></span><h2>PETSc<a class="headerlink" href="#petsc" title="Permalink to this heading">¶</a></h2>
+<span id="id8"></span><h2>PETSc<a class="headerlink" href="#petsc" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://www.mcs.anl.gov/petsc">https://www.mcs.anl.gov/petsc</a></p>
 <p>PETSc (the Portable, Extensible Toolkit for Scientific Computation)
 is a suite of data structures and routines for the scalable (parallel)
@@ -298,43 +281,28 @@ solution of scientific applications modeled by partial differential
 equations.  It employs the <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> standard for all message-passing
 communication (see <a class="reference internal" href="USAGE.html#parallel"><span class="std std-ref">Solving in Parallel</span></a> for more details).</p>
 </section>
-<section id="id10">
-<span id="id11"></span><h2>PyAMG<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h2>
+<section id="id9">
+<span id="id10"></span><h2>PyAMG<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://pyamg.readthedocs.io/">https://pyamg.readthedocs.io/</a></p>
 <p>The PyAMG package provides adaptive multigrid preconditioners that
-can be used in conjunction with the <a class="reference internal" href="#id16">SciPy</a> solvers. While PyAMG also has
+can be used in conjunction with the <a class="reference internal" href="#id13">SciPy</a> solvers. While PyAMG also has
 solvers, they are not currently implemented in <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>.</p>
 </section>
-<section id="id12">
-<span id="id13"></span><h2>pyamgx<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h2>
+<section id="id11">
+<span id="id12"></span><h2>pyamgx<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://pyamgx.readthedocs.io/">https://pyamgx.readthedocs.io/</a></p>
 <p>The pyamgx package is a <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> interface to the NVIDIA <a class="reference external" href="https://github.com/NVIDIA/AMGX">AMGX</a>
 library.  pyamgx can be used to construct complex solvers and
 preconditioners to solve sparse sparse linear systems on the GPU.</p>
 </section>
-<section id="id14">
-<span id="id15"></span><h2>Pysparse<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h2>
-<p><a class="reference external" href="http://pysparse.sourceforge.net">http://pysparse.sourceforge.net</a></p>
-<p>Pysparse is a fast serial sparse matrix library for <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a>.
-It provides several sparse matrix storage formats and conversion methods.
-It also implements a number of iterative solvers, preconditioners, and
-interfaces to efficient factorization packages. The only requirement to
-install and use Pysparse is <a class="reference internal" href="glossary.html#term-NumPy"><span class="xref std std-term">NumPy</span></a>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Pysparse is archaic and limited to <a class="reference internal" href="USAGE.html#runningunderpython2"><span class="std std-ref">Running under Python 2</span></a>.
-Support for <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.7 and, thus, for Pysparse
-will be dropped soon.</p>
-</div>
-</section>
-<section id="id16">
-<span id="id17"></span><h2>SciPy<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h2>
+<section id="id13">
+<span id="id14"></span><h2>SciPy<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html">https://docs.scipy.org/doc/scipy/reference/sparse.html</a></p>
 <p>The <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse" title="(in SciPy v1.16.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.sparse</span></code></a> module provides a basic set of serial Krylov
 solvers and a limited collection of preconditioners.</p>
 </section>
 <section id="trilinos">
-<span id="id18"></span><h2>Trilinos<a class="headerlink" href="#trilinos" title="Permalink to this heading">¶</a></h2>
+<span id="id15"></span><h2>Trilinos<a class="headerlink" href="#trilinos" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="https://trilinos.github.io/">https://trilinos.github.io/</a></p>
 <p>Trilinos provides a complete set of sparse matrices, solvers, and
 preconditioners.  Trilinos preconditioning allows for iterative solutions
@@ -352,6 +320,11 @@ of doing this, a number of inefficiencies were found in the way that
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> built sparse matrices.  To see the impact of these changes, we
 examine the serial and parallel scaling performance of the different solver
 suites for two different benchmark problems.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the legacy <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a> solver suite is no longer supported, its
+performance is included here for reference.</p>
+</div>
 <section id="serial-performance">
 <h3>Serial Performance<a class="headerlink" href="#serial-performance" title="Permalink to this heading">¶</a></h3>
 <p>Serial performance is compared for the different suites.</p>
@@ -359,14 +332,14 @@ suites for two different benchmark problems.</p>
 solvers.  We compare solution time vs number mesh cells for a diffusion
 problem.</p>
 <p>(<a class="reference download internal" download="" href="_downloads/b30306f6c53dcb621c35263f926e7260/serial_scaling.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/25e5b6f8bdb71e5cc93b1f306a26713f/serial_scaling.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/680d6b18ec08992169eb49f01e32c3d0/serial_scaling.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/badd8570d6dabf081e2fd5fb8cc230b8/serial_scaling.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
-<figure class="align-center" id="id49">
+<figure class="align-center" id="id42">
 <img alt="Wall time vs mesh size on a log-log plot." class="plot-directive" src="_images/serial_scaling.png" />
 <figcaption>
 <p><span class="caption-text">Comparison of serial performance for different solver suites, solvers
 and preconditioners, and different versions of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
-<a class="footnote-reference brackets" href="#fipyversion" id="id19" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>.  (a) Total elapsed time, (b) time to prepare the
+<a class="footnote-reference brackets" href="#fipyversion" id="id16" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>.  (a) Total elapsed time, (b) time to prepare the
 matrix, and (c) time to solve the matrix as functions of mesh size.
-<a class="footnote-reference brackets" href="#binary" id="id20" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a></span><a class="headerlink" href="#id49" title="Permalink to this image">¶</a></p>
+<a class="footnote-reference brackets" href="#binary" id="id17" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a></span><a class="headerlink" href="#id42" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>We can see:</p>
@@ -396,15 +369,15 @@ matrix is insensitive to the choice of solver and preconditioner and
 shows a high degree of consistency from run to run.</p></li>
 </ul>
 <p>(<a class="reference download internal" download="" href="_downloads/560ee54a9de17c30f579a6de86326b23/serial_fraction.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/331f8f8fc53b6e8cb5ac4d1e98c8a20c/serial_fraction.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/8d58e66c52bfe340f51472e81860c025/serial_fraction.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/e415de6da2506cc55bb567cc5f8565e5/serial_fraction.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
-<figure class="align-center" id="id51">
+<figure class="align-center" id="id44">
 <img alt="Fraction of time spent preparing matrix vs mesh size on a linear-log plot" class="plot-directive" src="_images/serial_fraction.png" />
 <figcaption>
 <p><span class="caption-text">Ratio of time to prepare the matrix to the combined time to prepare and
 solve the matrix for different solver suites, solvers
 and preconditioners, and different versions of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a>
-<a class="footnote-reference brackets" href="#fipyversion" id="id23" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#binary" id="id24" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>.  The thick lines highlight <code class="docutils literal notranslate"><span class="pre">LinearCGSolver</span></code>
+<a class="footnote-reference brackets" href="#fipyversion" id="id20" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#binary" id="id21" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>.  The thick lines highlight <code class="docutils literal notranslate"><span class="pre">LinearCGSolver</span></code>
 with no preconditioner, one of the better-performing combinations
-available in all suites.</span><a class="headerlink" href="#id51" title="Permalink to this image">¶</a></p>
+available in all suites.</span><a class="headerlink" href="#id44" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>In principle, we’d like to spend as little time preparing the matrix,
@@ -413,8 +386,8 @@ compare the case of unpreconditioned <code class="docutils literal notranslate">
 combinations for all suites <em>for this problem</em>, we see that <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a>
 has the lowest ratio of prepare to elapsed time.  Examination of elapsed
 time, the quantity we really care about, shows that <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a> takes
-three times as long to both prepare and solve as <a class="reference internal" href="#id14"><span class="std std-ref">Pysparse</span></a> or
-<a class="reference internal" href="#id16"><span class="std std-ref">SciPy</span></a> and twice as long as <a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a>.</p>
+three times as long to both prepare and solve as <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a> or
+<a class="reference internal" href="#id13"><span class="std std-ref">SciPy</span></a> and twice as long as <a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a>.</p>
 <p>For your own work, focus on identifying the solver and preconditioner with
 the lowest overall time to build and solve; this will counterintuitively
 have the highest ratio of prepare-to-elapsed time.  Prepare time to elapsed
@@ -428,17 +401,17 @@ will continue to seek opportunities to optimize.</p>
 processors.  We compare solution time vs number of <a class="reference external" href="https://slurm.schedmd.com">Slurm</a> tasks (available
 cores) for a <a class="reference external" href="https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb">Method of Manufactured Solutions Allen-Cahn problem</a>.</p>
 <p>(<a class="reference download internal" download="" href="_downloads/e3d06715f88ef58501df1b5d3b4a3b7b/parallel_scaling.py"><code class="xref download docutils literal notranslate"><span class="pre">Source</span> <span class="pre">code</span></code></a>, <a class="reference download internal" download="" href="_downloads/1d6c0360095afd70c8f989cd28999808/parallel_scaling.png"><code class="xref download docutils literal notranslate"><span class="pre">png</span></code></a>, <a class="reference download internal" download="" href="_downloads/1dfe16cd9c5344972eb48d0ca3c8a648/parallel_scaling.hires.png"><code class="xref download docutils literal notranslate"><span class="pre">hires.png</span></code></a>, <a class="reference download internal" download="" href="_downloads/87ffb75fbccf40634dc61a94fd24a228/parallel_scaling.pdf"><code class="xref download docutils literal notranslate"><span class="pre">pdf</span></code></a>)</p>
-<figure class="align-center" id="id53">
-<img alt="&quot;Speedup&quot; relative to PySparse versus number of tasks (processes) on a log-log plot." class="plot-directive" src="_images/parallel_scaling.png" />
+<figure class="align-center" id="id46">
+<img alt="&quot;Speedup&quot; relative to :term:`Pysparse` versus number of tasks (processes) on a log-log plot." class="plot-directive" src="_images/parallel_scaling.png" />
 <figcaption>
 <p><span class="caption-text">Parallel scaling behavior of different solver packages and different
-versions of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> <a class="footnote-reference brackets" href="#fipyversion" id="id27" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#mms" id="id28" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a>.</span><a class="headerlink" href="#id53" title="Permalink to this image">¶</a></p>
+versions of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> <a class="footnote-reference brackets" href="#fipyversion" id="id24" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#mms" id="id25" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>.</span><a class="headerlink" href="#id46" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>A few things can be observed in this plot:</p>
 <ul>
-<li><p><a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a>, <a class="reference internal" href="#id14"><span class="std std-ref">Pysparse</span></a>, <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a>, and <a class="reference internal" href="#id16"><span class="std std-ref">SciPy</span></a> have
-comparable serial performance, with <a class="reference internal" href="#id16"><span class="std std-ref">SciPy</span></a> edging out the other
+<li><p><a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a>, <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a>, <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a>, and <a class="reference internal" href="#id13"><span class="std std-ref">SciPy</span></a> have
+comparable serial performance, with <a class="reference internal" href="#id13"><span class="std std-ref">SciPy</span></a> edging out the other
 three for this particular problem.</p></li>
 <li><p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 4.0 is roughly the same speed in serial, but more than
 twice as fast in parallel compared to <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 3.4.4 when using the
@@ -452,8 +425,8 @@ performance data nearly as well as <a class="reference external" href="https://d
 <span class="math notranslate nohighlight">\(p\)</span> is the number of parallel tasks, <span class="math notranslate nohighlight">\(\sigma\)</span> is the fraction
 limited by serial processes, and <span class="math notranslate nohighlight">\(\kappa\)</span> is <a class="reference external" href="https://learn.microsoft.com/en-us/archive/blogs/ddperf/parallel-scalability-isnt-childs-play-part-2-amdahls-law-vs-gunthers-law">“coherency” (which is
 somewhat nebulous)</a>.</p>
-<table class="docutils align-default" id="id55">
-<caption><span class="caption-text">Parallel scaling fitting parameters (smaller numbers are better)</span><a class="headerlink" href="#id55" title="Permalink to this table">¶</a></caption>
+<table class="docutils align-default" id="id48">
+<caption><span class="caption-text">Parallel scaling fitting parameters (smaller numbers are better)</span><a class="headerlink" href="#id48" title="Permalink to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head"></th>
 <th class="head"></th>
@@ -505,8 +478,8 @@ should develop an understanding of the scaling behavior of your own codes
 before doing “production” runs.</p>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="fipyversion" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id19">1</a>,<a role="doc-backlink" href="#id21">2</a>,<a role="doc-backlink" href="#id23">3</a>,<a role="doc-backlink" href="#id25">4</a>,<a role="doc-backlink" href="#id27">5</a>,<a role="doc-backlink" href="#id29">6</a>)</span>
+<span class="label"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id16">1</a>,<a role="doc-backlink" href="#id18">2</a>,<a role="doc-backlink" href="#id20">3</a>,<a role="doc-backlink" href="#id22">4</a>,<a role="doc-backlink" href="#id24">5</a>,<a role="doc-backlink" href="#id26">6</a>)</span>
 <p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> version 3.4.4 has different interpretations
 of <a class="reference internal" href="#convergence"><span class="std std-ref">Convergence</span></a> for different solver suites (and even for
 different solvers). Benchmarks used a patched version
@@ -516,8 +489,8 @@ tolerance, but without any of the improvements in matrix and solver
 efficiency of version 4.0.</p>
 </aside>
 <aside class="footnote brackets" id="binary" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id20">1</a>,<a role="doc-backlink" href="#id22">2</a>,<a role="doc-backlink" href="#id24">3</a>,<a role="doc-backlink" href="#id26">4</a>)</span>
+<span class="label"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id17">1</a>,<a role="doc-backlink" href="#id19">2</a>,<a role="doc-backlink" href="#id21">3</a>,<a role="doc-backlink" href="#id23">4</a>)</span>
 <p>Calculations are of diffusion of a binary alloy in a frozen
 two-phase field.  Solutions are on a square
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid2D</span></code>.  The initial condition is sampled
@@ -531,8 +504,8 @@ Simultaneous Multi-Threading (SMT) and 512 GB of memory.
 <a class="reference internal" href="USAGE.html#threads-vs-ranks"><span class="std std-ref">OMP_NUM_THREADS was set to 1</span></a>.</p>
 </aside>
 <aside class="footnote brackets" id="mms" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id28">1</a>,<a role="doc-backlink" href="#id30">2</a>)</span>
+<span class="label"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id25">1</a>,<a role="doc-backlink" href="#id27">2</a>)</span>
 <p>Calculations are of a
 <a class="reference external" href="https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb">Method of Manufactured Solutions Allen-Cahn problem</a>.  Solutions are
 on a <span class="math notranslate nohighlight">\(2048\times 1024\)</span> <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid2D</span></code>
@@ -547,66 +520,60 @@ two-thread Simultaneous Multi-Threading (SMT) and 512 GB of memory.
 </section>
 </section>
 <section id="convergence">
-<span id="id31"></span><h2>Convergence<a class="headerlink" href="#convergence" title="Permalink to this heading">¶</a></h2>
+<span id="id28"></span><h2>Convergence<a class="headerlink" href="#convergence" title="Permalink to this heading">¶</a></h2>
 <p>Different solver suites take different approaches to testing convergence.
 We endeavor to harmonize this behavior by allowing the strings in the
 “criterion” column to be passed as an argument when instantiating a
 <a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code></a>.  Convergence is detected if
 <code class="docutils literal notranslate"><span class="pre">residual</span> <span class="pre">&lt;</span> <span class="pre">tolerance</span> <span class="pre">*</span> <span class="pre">scale</span></code>.</p>
-<table class="wideshow longtable docutils align-default" id="id56">
-<caption><span class="caption-text">Residual Criteria</span><a class="headerlink" href="#id56" title="Permalink to this table">¶</a></caption>
+<table class="wideshow longtable docutils align-default" id="id49">
+<caption><span class="caption-text">Residual Criteria</span><a class="headerlink" href="#id49" title="Permalink to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head stub"><p>criterion</p></th>
 <th class="head"><p>residual</p></th>
 <th class="head"><p>scale</p></th>
-<th class="head"><p><a class="reference internal" href="#petsc">PETSc</a> <a class="footnote-reference brackets" href="#ksp-convergence-tests" id="id32" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a></p></th>
-<th class="head"><p><a class="reference internal" href="#id12">pyamgx</a> <a class="footnote-reference brackets" href="#amgx-convergence" id="id33" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a></p></th>
-<th class="head"><p><a class="reference internal" href="#id14">PySparse</a></p></th>
-<th class="head"><p><a class="reference internal" href="#id16">SciPy</a> <a class="footnote-reference brackets" href="#scipy-convergence-test" id="id34" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a></p></th>
-<th class="head"><p><a class="reference internal" href="#trilinos">Trilinos</a> <a class="footnote-reference brackets" href="#aztecoo-convergence" id="id35" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a></p></th>
+<th class="head"><p><a class="reference internal" href="#petsc">PETSc</a> <a class="footnote-reference brackets" href="#ksp-convergence-tests" id="id29" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a></p></th>
+<th class="head"><p><a class="reference internal" href="#id11">pyamgx</a> <a class="footnote-reference brackets" href="#amgx-convergence" id="id30" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a></p></th>
+<th class="head"><p><a class="reference internal" href="#id13">SciPy</a> <a class="footnote-reference brackets" href="#scipy-convergence-test" id="id31" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a></p></th>
+<th class="head"><p><a class="reference internal" href="#trilinos">Trilinos</a> <a class="footnote-reference brackets" href="#aztecoo-convergence" id="id32" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a></p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><th class="stub"><p><code class="docutils literal notranslate"><span class="pre">unscaled</span></code></p></th>
 <td><p><span class="math notranslate nohighlight">\(\|\mathsf{L}\vec{x} - \vec{b}\|_2\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(1\)</span></p></td>
-<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id36" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a></p></td>
+<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id33" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">ABSOLUTE</span></code></p></td>
-<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id37" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a></p></td>
-<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id38" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a></p></td>
+<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id34" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">AZ_noscaled</span></code></p></td>
 </tr>
 <tr class="row-odd"><th class="stub"><p><code class="docutils literal notranslate"><span class="pre">RHS</span></code></p></th>
 <td><p><span class="math notranslate nohighlight">\(\|\mathsf{L}\vec{x} - \vec{b}\|_2\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\|\vec{b}\|_2\)</span></p></td>
 <td><p><a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_UNPRECONDITIONED/"><code class="docutils literal notranslate"><span class="pre">KSP_NORM_UNPRECONDITIONED</span></code></a></p></td>
-<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id39" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a></p></td>
-<td><p><a class="reference external" href="https://sourceforge.net/p/pysparse/git/ci/master/tree/pysparse/itsolvers/src/cgs.c#l90">cgs</a>, <a class="reference external" href="https://sourceforge.net/p/pysparse/git/ci/master/tree/pysparse/itsolvers/src/pcg.c#l154">pcg</a>, <a class="reference external" href="https://sourceforge.net/p/pysparse/git/ci/master/tree/pysparse/itsolvers/src/qmrs.c#l139">qmres</a>, or <a class="footnote-reference brackets" href="#fipy-convergence-test" id="id40" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a></p></td>
+<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id35" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">default</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">AZ_rhs</span></code></p></td>
 </tr>
 <tr class="row-even"><th class="stub"><p><code class="docutils literal notranslate"><span class="pre">matrix</span></code></p></th>
 <td><p><span class="math notranslate nohighlight">\(\|\mathsf{L}\vec{x} - \vec{b}\|_2\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\|\mathsf{L}\|_\infty\)</span></p></td>
-<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id41" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a></p></td>
-<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id42" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a></p></td>
-<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id43" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a></p></td>
-<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id44" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a></p></td>
+<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id36" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a></p></td>
+<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id37" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a></p></td>
+<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id38" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">AZ_Anorm</span></code></p></td>
 </tr>
 <tr class="row-odd"><th class="stub"><p><code class="docutils literal notranslate"><span class="pre">initial</span></code></p></th>
 <td><p><span class="math notranslate nohighlight">\(\|\mathsf{L}\vec{x} - \vec{b}\|_2\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\|\mathsf{L}\vec{x} - \vec{b}\|_2^{(0)}\)</span></p></td>
-<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id45" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a></p></td>
+<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id39" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">RELATIVE_INI_CORE</span></code></p></td>
-<td><p><a class="reference external" href="https://sourceforge.net/p/pysparse/git/ci/master/tree/pysparse/itsolvers/src/bicgstab.c#l287">bicgstab</a>, <a class="reference external" href="https://sourceforge.net/p/pysparse/git/ci/master/tree/pysparse/itsolvers/src/gmres.c#l159">gmres</a>, <a class="reference external" href="https://sourceforge.net/p/pysparse/git/ci/master/tree/pysparse/itsolvers/src/minres.c#l195">minres</a>, or <a class="footnote-reference brackets" href="#fipy-convergence-test" id="id46" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a></p></td>
-<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id47" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a></p></td>
+<td><p><a class="footnote-reference brackets" href="#fipy-convergence-test" id="id40" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">AZ_r0</span></code></p></td>
 </tr>
 <tr class="row-even"><th class="stub"><p><code class="docutils literal notranslate"><span class="pre">solution</span></code></p></th>
 <td><p><span class="math notranslate nohighlight">\(\|\mathsf{L}\vec{x} - \vec{b}\|_\infty\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\|\mathsf{L}\|_\infty  * \|\vec{x}\|_1 + \|\vec{b}\|_\infty\)</span></p></td>
-<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -619,13 +586,11 @@ We endeavor to harmonize this behavior by allowing the strings in the
 <td></td>
 <td></td>
 <td></td>
-<td></td>
 </tr>
 <tr class="row-even"><th class="stub"><p><code class="docutils literal notranslate"><span class="pre">natural</span></code></p></th>
 <td><p><span class="math notranslate nohighlight">\(\sqrt{(\mathsf{L}\vec{x} - \vec{b})\mathsf{P}^{-1}(\mathsf{L}\vec{x} - \vec{b})}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(\left\|\vec{b}\right\|_2\)</span></p></td>
 <td><p><a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSP_NORM_NATURAL/"><code class="docutils literal notranslate"><span class="pre">KSP_NORM_NATURAL</span></code></a></p></td>
-<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -635,7 +600,6 @@ We endeavor to harmonize this behavior by allowing the strings in the
 <td></td>
 <td><p><a class="reference external" href="https://petsc.org/main/manualpages/KSP/KSPNormType/"><code class="docutils literal notranslate"><span class="pre">KSP_NORM_DEFAULT</span></code></a> (<code class="docutils literal notranslate"><span class="pre">RHS</span></code> or <code class="docutils literal notranslate"><span class="pre">preconditioned</span></code>)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">initial</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">RHS</span></code> or <code class="docutils literal notranslate"><span class="pre">initial</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">RHS</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">initial</span></code></p></td>
 </tr>
@@ -646,13 +610,12 @@ We endeavor to harmonize this behavior by allowing the strings in the
 <td><p><code class="docutils literal notranslate"><span class="pre">RHS</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">RHS</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">RHS</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">RHS</span></code></p></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a class="reference internal" href="#id10">PyAMG</a> is a set of preconditioners applied on top of <a class="reference internal" href="#id16">SciPy</a>, so
+<p><a class="reference internal" href="#id9">PyAMG</a> is a set of preconditioners applied on top of <a class="reference internal" href="#id13">SciPy</a>, so
 is not explicitly included in these tables.</p>
 </div>
 <section id="tolerance">
@@ -660,13 +623,11 @@ is not explicitly included in these tables.</p>
 <p>The default tolerance is <span class="math notranslate nohighlight">\(10^{-5}\)</span> (the legacy tolerance, prior to
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 4.0, was <span class="math notranslate nohighlight">\(10^{-10}\)</span>).</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#id16"><span class="std std-ref">SciPy</span></a> and <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a> can fail with <cite>tolerance=1e-10</cite>.
+<li><p><a class="reference internal" href="#id13"><span class="std std-ref">SciPy</span></a> and <a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a> can fail with <cite>tolerance=1e-10</cite>.
 (<cite>SCIPY_MAXIT</cite> or <cite>AZ_loss</cite>, respectively) because they are unable to
 make the residual any smaller than <span class="math notranslate nohighlight">\(\mathcal{O}(10^{-9})\)</span>.</p></li>
-<li><p><cite>tolerance=1e-5</cite> is the default for <a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a> and <a class="reference internal" href="#id16"><span class="std std-ref">SciPy</span></a>.</p></li>
-<li><p><a class="reference internal" href="#id12"><span class="std std-ref">pyamgx</span></a> defaults to <span class="math notranslate nohighlight">\(10^{-12}\)</span></p></li>
-<li><p><a class="reference internal" href="#id14"><span class="std std-ref">Pysparse</span></a> does not specify, but has examples that illustrate
-<span class="math notranslate nohighlight">\(10^{-12}\)</span>.</p></li>
+<li><p><cite>tolerance=1e-5</cite> is the default for <a class="reference internal" href="#petsc"><span class="std std-ref">PETSc</span></a> and <a class="reference internal" href="#id13"><span class="std std-ref">SciPy</span></a>.</p></li>
+<li><p><a class="reference internal" href="#id11"><span class="std std-ref">pyamgx</span></a> defaults to <span class="math notranslate nohighlight">\(10^{-12}\)</span></p></li>
 <li><p><a class="reference internal" href="#trilinos"><span class="std std-ref">Trilinos</span></a> does not specify, but has examples that illustrate
 <span class="math notranslate nohighlight">\(10^{-8}\)</span>.</p></li>
 </ul>
@@ -687,8 +648,6 @@ best effort at documenting what will happen.</p>
 <p class="admonition-title">Note</p>
 <ul class="simple">
 <li><p>All LU solvers use <code class="docutils literal notranslate"><span class="pre">&quot;initial&quot;</span></code> scaling.</p></li>
-<li><p><a class="reference internal" href="#id14">PySparse</a> has two different groups of solvers,
-with different scaling.</p></li>
 <li><p><a class="reference internal" href="#petsc">PETSc</a> accepts <a class="reference external" href="https://petsc.org/main/manualpages/KSP/KSPNormType/"><code class="docutils literal notranslate"><span class="pre">KSP_NORM_DEFAULT</span></code></a> in order to
 “use the default for the current <code class="docutils literal notranslate"><span class="pre">KSPType</span></code>”.  Discerning the actual
 behavior would require burning the code in a bowl of chicken entrails.
@@ -701,7 +660,7 @@ otherwise.)</p></li>
 </section>
 <section id="absolute-tolerance">
 <h3><code class="docutils literal notranslate"><span class="pre">absolute_tolerance</span></code><a class="headerlink" href="#absolute-tolerance" title="Permalink to this heading">¶</a></h3>
-<p><a class="reference internal" href="#petsc">PETSc</a> and <a class="reference internal" href="#id16">SciPy</a> Krylov solvers accept an additional
+<p><a class="reference internal" href="#petsc">PETSc</a> and <a class="reference internal" href="#id13">SciPy</a> Krylov solvers accept an additional
 <code class="docutils literal notranslate"><span class="pre">absolute_tolerance</span></code> parameter, such that convergence is detected if
 <code class="docutils literal notranslate"><span class="pre">residual</span> <span class="pre">&lt;</span> <span class="pre">max(tolerance</span> <span class="pre">*</span> <span class="pre">scale,</span> <span class="pre">absolute_tolerance</span></code>).</p>
 </section>
@@ -744,15 +703,14 @@ they succeed or fail.  This information is captured as a
 <a class="reference internal" href="generated/fipy.solvers.solver.html#fipy.solvers.solver.Solver" title="fipy.solvers.solver.Solver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Solver</span></code></a> after calling
 <a class="reference internal" href="generated/fipy.terms.term.html#fipy.terms.term.Term.solve" title="fipy.terms.term.Term.solve"><code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code></a> or
 <a class="reference internal" href="generated/fipy.terms.term.html#fipy.terms.term.Term.sweep" title="fipy.terms.term.Term.sweep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sweep()</span></code></a>.</p>
-<table class="wideshow longtable docutils align-default" id="id57">
-<caption><span class="caption-text">Convergence Status Codes</span><a class="headerlink" href="#id57" title="Permalink to this table">¶</a></caption>
+<table class="wideshow longtable docutils align-default" id="id50">
+<caption><span class="caption-text">Convergence Status Codes</span><a class="headerlink" href="#id50" title="Permalink to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head stub"></th>
 <th class="head"></th>
 <th class="head"><p><a class="reference internal" href="#petsc">PETSc</a></p></th>
-<th class="head"><p><a class="reference internal" href="#id12">pyamgx</a></p></th>
-<th class="head"><p><a class="reference internal" href="#id14">PySparse</a></p></th>
-<th class="head"><p><a class="reference internal" href="#id16">SciPy</a></p></th>
+<th class="head"><p><a class="reference internal" href="#id11">pyamgx</a></p></th>
+<th class="head"><p><a class="reference internal" href="#id13">SciPy</a></p></th>
 <th class="head"><p><a class="reference internal" href="#trilinos">Trilinos</a></p></th>
 </tr>
 </thead>
@@ -761,7 +719,6 @@ they succeed or fail.  This information is captured as a
 <td><p>Convergence criteria met.</p></td>
 <td></td>
 <td><p><a class="reference external" href="https://github.com/NVIDIA/AMGX/blob/main/doc/AMGX_Reference.pdf"><code class="docutils literal notranslate"><span class="pre">AMGX_SOLVE_SUCCESS</span></code></a></p></td>
-<td></td>
 <td><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.gmres.html"><code class="docutils literal notranslate"><span class="pre">0</span></code></a></p></td>
 <td><p><a class="reference external" href="https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf"><code class="docutils literal notranslate"><span class="pre">AZ_normal</span></code></a></p></td>
 </tr>
@@ -771,13 +728,11 @@ they succeed or fail.  This information is captured as a
 <td></td>
 <td></td>
 <td></td>
-<td></td>
 </tr>
 <tr class="row-even"><th class="stub"><p><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.AbsoluteToleranceConvergence" title="fipy.solvers.convergence.AbsoluteToleranceConvergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbsoluteToleranceConvergence</span></code></a></p></th>
 <td><p>Converged, residual is as small as seems reasonable on this machine.</p></td>
 <td><p><a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSP_CONVERGED_ATOL/"><code class="docutils literal notranslate"><span class="pre">KSP_CONVERGED_ATOL</span></code></a></p></td>
 <td></td>
-<td><p><a class="reference external" href="http://pysparse.sourceforge.net/itsolvers.html"><code class="docutils literal notranslate"><span class="pre">2</span></code></a></p></td>
 <td></td>
 <td></td>
 </tr>
@@ -785,7 +740,6 @@ they succeed or fail.  This information is captured as a
 <td><p>Converged, <span class="math notranslate nohighlight">\(\mathbf{b} = 0\)</span>, so the exact solution is <span class="math notranslate nohighlight">\(\mathbf{x} = 0\)</span>.</p></td>
 <td></td>
 <td></td>
-<td><p><a class="reference external" href="http://pysparse.sourceforge.net/itsolvers.html"><code class="docutils literal notranslate"><span class="pre">1</span></code></a></p></td>
 <td></td>
 <td></td>
 </tr>
@@ -793,7 +747,6 @@ they succeed or fail.  This information is captured as a
 <td><p>Converged, relative error appears to be less than tolerance.</p></td>
 <td><p><a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSP_CONVERGED_RTOL/"><code class="docutils literal notranslate"><span class="pre">KSP_CONVERGED_RTOL</span></code></a></p></td>
 <td></td>
-<td><p><a class="reference external" href="http://pysparse.sourceforge.net/itsolvers.html"><code class="docutils literal notranslate"><span class="pre">0</span></code></a></p></td>
 <td></td>
 <td></td>
 </tr>
@@ -803,11 +756,9 @@ they succeed or fail.  This information is captured as a
 <td></td>
 <td></td>
 <td></td>
-<td></td>
 </tr>
 <tr class="row-even"><th class="stub"><p><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.LossOfAccuracyConvergence" title="fipy.solvers.convergence.LossOfAccuracyConvergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">LossOfAccuracyConvergence</span></code></a></p></th>
 <td><p>The iterative solver has terminated due to a lack of accuracy in the recursive residual (caused by rounding errors).</p></td>
-<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -819,19 +770,17 @@ they succeed or fail.  This information is captured as a
 <td></td>
 <td></td>
 <td></td>
-<td></td>
 </tr>
 </tbody>
 </table>
-<table class="wideshow longtable docutils align-default" id="id58">
-<caption><span class="caption-text">Divergence Status Codes</span><a class="headerlink" href="#id58" title="Permalink to this table">¶</a></caption>
+<table class="wideshow longtable docutils align-default" id="id51">
+<caption><span class="caption-text">Divergence Status Codes</span><a class="headerlink" href="#id51" title="Permalink to this table">¶</a></caption>
 <thead>
 <tr class="row-odd"><th class="head stub"></th>
 <th class="head"></th>
 <th class="head"><p><a class="reference internal" href="#petsc">PETSc</a></p></th>
-<th class="head"><p><a class="reference internal" href="#id12">pyamgx</a></p></th>
-<th class="head"><p><a class="reference internal" href="#id14">PySparse</a></p></th>
-<th class="head"><p><a class="reference internal" href="#id16">SciPy</a></p></th>
+<th class="head"><p><a class="reference internal" href="#id11">pyamgx</a></p></th>
+<th class="head"><p><a class="reference internal" href="#id13">SciPy</a></p></th>
 <th class="head"><p><a class="reference internal" href="#trilinos">Trilinos</a></p></th>
 </tr>
 </thead>
@@ -840,7 +789,6 @@ they succeed or fail.  This information is captured as a
 <td><p>Illegal input or the iterative solver has broken down.</p></td>
 <td><p><a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSP_DIVERGED_BREAKDOWN/"><code class="docutils literal notranslate"><span class="pre">KSP_DIVERGED_BREAKDOWN</span></code></a></p></td>
 <td><p><a class="reference external" href="https://github.com/NVIDIA/AMGX/blob/main/doc/AMGX_Reference.pdf"><code class="docutils literal notranslate"><span class="pre">AMGX_SOLVE_FAILED</span></code></a></p></td>
-<td></td>
 <td><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.gmres.html"><code class="docutils literal notranslate"><span class="pre">&lt;0</span></code></a></p></td>
 <td><p><a class="reference external" href="https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf"><code class="docutils literal notranslate"><span class="pre">AZ_breakdown</span></code></a></p></td>
 </tr>
@@ -848,7 +796,6 @@ they succeed or fail.  This information is captured as a
 <td><p>Maximum number of iterations was reached.</p></td>
 <td><p><a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSP_DIVERGED_ITS/"><code class="docutils literal notranslate"><span class="pre">KSP_DIVERGED_ITS</span></code></a></p></td>
 <td><p><a class="reference external" href="https://github.com/NVIDIA/AMGX/blob/main/doc/AMGX_Reference.pdf"><code class="docutils literal notranslate"><span class="pre">AMGX_SOLVE_DIVERGED</span></code></a></p></td>
-<td><p><a class="reference external" href="http://pysparse.sourceforge.net/itsolvers.html"><code class="docutils literal notranslate"><span class="pre">-1</span></code></a></p></td>
 <td><p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.gmres.html"><code class="docutils literal notranslate"><span class="pre">&gt;0</span></code></a></p></td>
 <td><p><a class="reference external" href="https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf"><code class="docutils literal notranslate"><span class="pre">AZ_maxits</span></code></a></p></td>
 </tr>
@@ -856,7 +803,6 @@ they succeed or fail.  This information is captured as a
 <td><p>The system involving the preconditioner was ill-conditioned.</p></td>
 <td><p><a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSP_DIVERGED_PC_FAILED/"><code class="docutils literal notranslate"><span class="pre">KSP_DIVERGED_PC_FAILED</span></code></a></p></td>
 <td></td>
-<td><p><a class="reference external" href="http://pysparse.sourceforge.net/itsolvers.html"><code class="docutils literal notranslate"><span class="pre">-2</span></code></a></p></td>
 <td></td>
 <td></td>
 </tr>
@@ -864,7 +810,6 @@ they succeed or fail.  This information is captured as a
 <td><p>An inner product of the form <span class="math notranslate nohighlight">\(\mathbf{x}^T \mathsf{P}^{-1} \mathbf{x}\)</span> was not positive, so the preconditioning matrix <span class="math notranslate nohighlight">\(\mathsf{P}\)</span> does not appear to be positive definite.</p></td>
 <td><p><a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSP_DIVERGED_INDEFINITE_PC/"><code class="docutils literal notranslate"><span class="pre">KSP_DIVERGED_INDEFINITE_PC</span></code></a></p></td>
 <td></td>
-<td><p><a class="reference external" href="http://pysparse.sourceforge.net/itsolvers.html"><code class="docutils literal notranslate"><span class="pre">-3</span></code></a></p></td>
 <td></td>
 <td></td>
 </tr>
@@ -872,7 +817,6 @@ they succeed or fail.  This information is captured as a
 <td><p>The matrix <span class="math notranslate nohighlight">\(\mathsf{L}\)</span> appears to be ill-conditioned.</p></td>
 <td><p><a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSPConvergedReason/"><code class="docutils literal notranslate"><span class="pre">KSP_DIVERGED_INDEFINITE_MAT</span></code></a></p></td>
 <td></td>
-<td><p><a class="reference external" href="http://pysparse.sourceforge.net/itsolvers.html"><code class="docutils literal notranslate"><span class="pre">-4</span></code></a></p></td>
 <td></td>
 <td><p><a class="reference external" href="https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf"><code class="docutils literal notranslate"><span class="pre">AZ_ill_cond</span></code></a></p></td>
 </tr>
@@ -880,7 +824,6 @@ they succeed or fail.  This information is captured as a
 <td><p>The method stagnated.</p></td>
 <td></td>
 <td></td>
-<td><p><a class="reference external" href="http://pysparse.sourceforge.net/itsolvers.html"><code class="docutils literal notranslate"><span class="pre">-5</span></code></a></p></td>
 <td></td>
 <td></td>
 </tr>
@@ -888,14 +831,12 @@ they succeed or fail.  This information is captured as a
 <td><p>A scalar quantity became too small or too large to continue computing.</p></td>
 <td><p><a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSPConvergedReason/"><code class="docutils literal notranslate"><span class="pre">KSP_DIVERGED_NANORINF</span></code></a></p></td>
 <td></td>
-<td><p><a class="reference external" href="http://pysparse.sourceforge.net/itsolvers.html"><code class="docutils literal notranslate"><span class="pre">-6</span></code></a></p></td>
 <td></td>
 <td></td>
 </tr>
 <tr class="row-odd"><th class="stub"><p><a class="reference internal" href="generated/fipy.solvers.convergence.html#fipy.solvers.convergence.NullDivergence" title="fipy.solvers.convergence.NullDivergence"><code class="xref py py-class docutils literal notranslate"><span class="pre">NullDivergence</span></code></a></p></th>
 <td><p>Breakdown when solving the Hessenberg system within GMRES.</p></td>
 <td><p><a class="reference external" href="https://petsc.org/main/docs/manualpages/KSP/KSPConvergedReason/"><code class="docutils literal notranslate"><span class="pre">KSP_DIVERGED_NULL</span></code></a></p></td>
-<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -906,35 +847,34 @@ they succeed or fail.  This information is captured as a
 <td></td>
 <td></td>
 <td></td>
-<td></td>
 </tr>
 </tbody>
 </table>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="ksp-convergence-tests" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id32">8</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id29">7</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://petsc.org/release/docs/manual/ksp/#sec-convergencetests">https://petsc.org/release/docs/manual/ksp/#sec-convergencetests</a></p>
 </aside>
 <aside class="footnote brackets" id="amgx-convergence" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id33">9</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id30">8</a><span class="fn-bracket">]</span></span>
 <p><em>AMGX REFERENCE MANUAL</em>: 2.3 General Settings: <code class="docutils literal notranslate"><span class="pre">convergence</span></code>,
 October 2017, API Version 2,
 <a class="reference external" href="https://github.com/NVIDIA/AMGX/blob/main/doc/AMGX_Reference.pdf">https://github.com/NVIDIA/AMGX/blob/main/doc/AMGX_Reference.pdf</a></p>
 </aside>
 <aside class="footnote brackets" id="scipy-convergence-test" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id34">10</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id31">9</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://github.com/scipy/scipy/blob/2d1d5b042a09e131ffe191726aa6829b33590970/scipy/sparse/linalg/_isolve/iterative.py#L30">https://github.com/scipy/scipy/blob/2d1d5b042a09e131ffe191726aa6829b33590970/scipy/sparse/linalg/_isolve/iterative.py#L30</a></p>
 </aside>
 <aside class="footnote brackets" id="aztecoo-convergence" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id35">11</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id32">10</a><span class="fn-bracket">]</span></span>
 <p><em>AztecOO Users Guide</em>: 3.1  Aztec Options: <code class="docutils literal notranslate"><span class="pre">options[AZ_conv]</span></code>,
 SAND REPORT SAND2004-3796, Updated August 2007,
 For AztecOO Version 3.6 in Trilinos Release 8.0,
 <a class="reference external" href="https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf">https://trilinos.github.io/pdfs/AztecOOUserGuide.pdf</a></p>
 </aside>
 <aside class="footnote brackets" id="fipy-convergence-test" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id36">1</a>,<a role="doc-backlink" href="#id37">2</a>,<a role="doc-backlink" href="#id38">3</a>,<a role="doc-backlink" href="#id39">4</a>,<a role="doc-backlink" href="#id40">5</a>,<a role="doc-backlink" href="#id41">6</a>,<a role="doc-backlink" href="#id42">7</a>,<a role="doc-backlink" href="#id43">8</a>,<a role="doc-backlink" href="#id44">9</a>,<a role="doc-backlink" href="#id45">10</a>,<a role="doc-backlink" href="#id46">11</a>,<a role="doc-backlink" href="#id47">12</a>)</span>
+<span class="label"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id33">1</a>,<a role="doc-backlink" href="#id34">2</a>,<a role="doc-backlink" href="#id35">3</a>,<a role="doc-backlink" href="#id36">4</a>,<a role="doc-backlink" href="#id37">5</a>,<a role="doc-backlink" href="#id38">6</a>,<a role="doc-backlink" href="#id39">7</a>,<a role="doc-backlink" href="#id40">8</a>)</span>
 <p>Implemented by <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> using intrinsic
 solver capabilities.</p>
 </aside>
@@ -945,7 +885,7 @@ solver capabilities.</p>
 
 
                 <div class='last-updated'>
-                Last updated on Sep 03, 2025.
+                Last updated on Sep 05, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -955,17 +895,16 @@ solver capabilities.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.4.5+68.g5e0cd0fdd
+Version 3.99+1.g57d671f09
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Solvers</a><ul>
 <li><a class="reference internal" href="#petsc">PETSc</a></li>
-<li><a class="reference internal" href="#id10">PyAMG</a></li>
-<li><a class="reference internal" href="#id12">pyamgx</a></li>
-<li><a class="reference internal" href="#id14">Pysparse</a></li>
-<li><a class="reference internal" href="#id16">SciPy</a></li>
+<li><a class="reference internal" href="#id9">PyAMG</a></li>
+<li><a class="reference internal" href="#id11">pyamgx</a></li>
+<li><a class="reference internal" href="#id13">SciPy</a></li>
 <li><a class="reference internal" href="#trilinos">Trilinos</a></li>
 <li><a class="reference internal" href="#performance-comparison">Performance Comparison</a><ul>
 <li><a class="reference internal" href="#serial-performance">Serial Performance</a></li>

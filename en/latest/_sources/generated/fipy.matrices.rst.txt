@@ -29,7 +29,6 @@ fipy.matrices
 
    fipy.matrices.offsetSparseMatrix
    fipy.matrices.petscMatrix
-   fipy.matrices.pysparseMatrix
    fipy.matrices.scipyMatrix
    fipy.matrices.sparseMatrix
    fipy.matrices.test

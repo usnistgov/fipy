@@ -11,19 +11,22 @@ Change Log
 Version |release|
 -----------------
 
-This release harmonizes the sparse :ref:`SOLVERS`:
+This release
 
-- Uses consistent interpretation of :ref:`CONVERGENCE` criteria.
-- Improves efficiency at building matrices.
-- Supports more preconditioners.
-- Logs solver status and performance.
-- Greatly expands documentation of the configuration and performance of
-  the supported :ref:`SOLVERS`.
-- Changes default tolerance to :math:`10^{-5}`. This is adequate for most
-  problems.
-- Removes "`pyamg`" from :envvar:`FIPY_SOLVERS` and "`--pyamg`" from
-  the :ref:`CommandLineFlags`.  :ref:`PYAMG` is implemented as a
-  preconditioner for :ref:`SCIPY`, not as a solver suite in its own right.
+- harmonizes the sparse :ref:`SOLVERS`:
+    - Uses consistent interpretation of :ref:`CONVERGENCE` criteria.
+    - Improves efficiency at building matrices.
+    - Supports more preconditioners.
+    - Logs solver status and performance.
+    - Greatly expands documentation of the configuration and performance of
+      the supported :ref:`SOLVERS`.
+    - Changes default tolerance to :math:`10^{-5}`. This is adequate for most
+      problems.
+    - Removes "`pyamg`" from :envvar:`FIPY_SOLVERS` and "`--pyamg`" from
+      the :ref:`CommandLineFlags`.  :ref:`PYAMG` is implemented as a
+      preconditioner for :ref:`SCIPY`, not as a solver suite in its own right.
+- drops support for :term:`Pysparse`, which required :term:`Python` 2.7, 
+  which is years beyond end of life.
 
 --------------------------
 Version 3.4.5 - 2024-06-25
@@ -1145,7 +1148,7 @@ The significant changes since version 2.1 are:
 - :class:`~fipy.viewers.matplotlibViewer.MatplotlibViewer` can display 
   into an existing set of Matplotlib axes.
 
-- :ref:`PYSPARSE` and :ref:`TRILINOS` are now completely independent.
+- :term:`PYSPARSE` and :ref:`TRILINOS` are now completely independent.
 
 Fixes
 -----

@@ -47,8 +47,6 @@ fipy.solvers
    fipy.solvers.preconditioner
    fipy.solvers.pyAMG
    fipy.solvers.pyamgx
-   fipy.solvers.pysparse
-   fipy.solvers.pysparseMatrixSolver
    fipy.solvers.scipy
    fipy.solvers.solver
    fipy.solvers.test
