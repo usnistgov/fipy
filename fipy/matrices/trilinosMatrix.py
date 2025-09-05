@@ -1166,8 +1166,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
             True
 
         Should be able to multiply an overlapping value obtained from a
-        `CellVariable`.  This was required to make the obsolete
-        `--no-pysparse` flag work correctly.
+        `CellVariable`.
 
             >>> from fipy import *
             >>> m = Grid1D(nx=6)

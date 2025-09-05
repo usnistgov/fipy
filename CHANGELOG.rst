@@ -80,8 +80,6 @@
 .. _.pip: https://pages.nist.gov/fipy/en/latest/glossary.html#term-pip
 .. |.pyamg| replace:: PyAMG
 .. _.pyamg: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#id9
-.. |.Pysparse| replace:: Pysparse
-.. _.Pysparse: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Pysparse
 .. |.Python| replace:: Python
 .. _.Python: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Python
 .. |.Python 3| replace:: Python 3
