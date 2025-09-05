@@ -105,7 +105,7 @@ class AbstractMesh(object):
 
     @property
     def x(self):
-        """
+        r"""
         Equivalent to using :attr:`~fipy.meshes.abstractMesh.AbstractMesh.cellCenters`\ ``[0]``.
 
         >>> from fipy import *
@@ -116,7 +116,7 @@ class AbstractMesh(object):
 
     @property
     def y(self):
-        """
+        r"""
         Equivalent to using :attr:`~fipy.meshes.abstractMesh.AbstractMesh.cellCenters`\ ``[1]``.
 
         >>> from fipy import *
@@ -134,7 +134,7 @@ class AbstractMesh(object):
 
     @property
     def z(self):
-        """
+        r"""
         Equivalent to using :attr:`~fipy.meshes.abstractMesh.AbstractMesh.cellCenters`\ ``[2]``.
 
         >>> from fipy import *

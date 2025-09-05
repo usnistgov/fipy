@@ -30,13 +30,15 @@ class copy_script(Command):
         if os.path.exists(os.path.expanduser(self.To)):
             ans = "junk"
 
-            while (len(ans) > 0) and ("yes".find(ans.lower()) is not 0) and ("no".find(ans.lower()) is not 0):
+            while ((len(ans) > 0)
+                   and ("yes".find(ans.lower()) != 0)
+                   and ("no".find(ans.lower()) != 0)):
                 ans = input("The file '%s' already exists. Overwrite? [n] "%self.To)
 
-            if ans is '':
+            if ans == '':
                 ans = 'no'
 
-            if ("no".find(ans.lower()) is 0):
+            if ("no".find(ans.lower()) == 0):
                 self.To = input("Please give a name for the ouput file: ")
                 self.finalize_options()
 
