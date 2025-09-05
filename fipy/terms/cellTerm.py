@@ -1,5 +1,3 @@
-from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.solvers import INDEX_TYPE
@@ -11,8 +9,6 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.variables.faceVariable import FaceVariable
 
 __all__ = ["CellTerm"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class CellTerm(_NonDiffusionTerm):
     """

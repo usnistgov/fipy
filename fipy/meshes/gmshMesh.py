@@ -1,14 +1,8 @@
-from __future__ import print_function
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import object
-from builtins import zip
-from builtins import range
-from builtins import str
 __docformat__ = 'restructuredtext'
 
 import logging
 import os
+from packaging.version import Version, parse as parse_version
 from subprocess import Popen, PIPE
 import sys
 import tempfile
@@ -20,7 +14,6 @@ _log = logging.getLogger(__name__)
 from fipy.tools import numerix
 from fipy.tools import parallelComm
 from fipy.tools import serialComm
-from fipy.tools.version import Version, parse_version
 from fipy.tests.doctestPlus import register_skipper
 
 from fipy.meshes.mesh import Mesh
@@ -34,8 +27,6 @@ __all__ = ["GmshException", "MeshExportError",
            "GmshFile", "MSHFile", "POSFile",
            "Gmsh2D", "Gmsh2DIn3DSpace", "Gmsh3D",
            "GmshGrid2D", "GmshGrid3D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 def _checkForGmsh():
     hasGmsh = True
@@ -1578,7 +1569,6 @@ class Gmsh2D(Mesh2D):
 
     >>> error = []
     >>> bkg = None
-    >>> from builtins import range
     >>> for refine in range(4):
     ...     square = Gmsh2D(geo, background=bkg) # doctest: +GMSH
     ...     x, y = square.cellCenters # doctest: +GMSH
@@ -1798,10 +1788,8 @@ class Gmsh2D(Mesh2D):
 
         We need to do a little fancy footwork to account for multiple processes
 
-        >>> from builtins import range
         >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallelComm.Nproc)]
         >>> numtags = 2 + 1 + len(partitions)
-        >>> from builtins import str
         >>> partitions = " ".join([str(i) for i in [parallelComm.Nproc] + partitions])
 
         >>> output = f.write('''$MeshFormat
@@ -2148,10 +2136,8 @@ class Gmsh3D(Mesh):
 
         We need to do a little fancy footwork to account for multiple processes
 
-        >>> from builtins import range
         >>> partitions = [(i+1) * (-1 * (i != 0) + 1 * (i == 0)) for i in range(parallelComm.Nproc)]
         >>> numtags = 2 + 1 + len(partitions)
-        >>> from builtins import str
         >>> partitions = " ".join([str(i) for i in [parallelComm.Nproc] + partitions])
 
         >>> output = f.write('''$MeshFormat

@@ -2,7 +2,6 @@
 
 Prevent failure to import one test from stopping execution of other tests.
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = []

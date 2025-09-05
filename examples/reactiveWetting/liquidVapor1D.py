@@ -355,7 +355,6 @@ True
 .. .. bibmissing:: /refs.bib
     :sort:
 """
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

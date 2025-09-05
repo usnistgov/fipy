@@ -57,7 +57,7 @@ Recommended Method
    with the conda_ package manager.  In addition to the scientific
    :term:`Python` stack, conda_ also provides virtual environment
    management.  Keeping separate installations is useful *e.g.* for
-   comparing :term:`Python` 2 and :term:`Python` 3 software stacks, or when
+   comparing different versions of :term:`Python`, or when
    the user does not have sufficient privileges to install software
    system-wide.
 
@@ -120,8 +120,7 @@ You're now ready to move on to :ref:`USAGE`.
    to run and visualize :term:`FiPy` simulations. On Windows_, there
    are fewer packages available via conda_, particularly amongst the
    sparse matrix :ref:`SOLVERS`, but the system still should be
-   functional. Significantly, you will need to download and install
-   :term:`Gmsh` manually when using Python 2.7.
+   functional.
 
 .. attention::
 
@@ -227,7 +226,7 @@ on many operating systems, which you can check by opening a terminal
 and typing ``python``, *e.g.*::
 
     $ python
-    Python 2.7.15 | ...
+    Python 3.10.10 | ...
     ...
     Type "help", "copyright", "credits" or "license" for more information.
     >>>
@@ -237,12 +236,10 @@ If necessary, you can download_ and install it for your platform
 
 .. note::
 
-   :term:`FiPy` requires at least version 2.7.x of :term:`Python`.
+   :term:`FiPy` `no longer supports Python 2 <sunset-python-2>`_.
 
 .. _download: http://www.python.org/download/
-
-:term:`Python` along with many of :term:`FiPy`'s required and optional
-packages is available with one of the following distributions.
+.. _sunset-python-2: https://www.python.org/doc/sunset-python-2/
 
 NumPy
 =====

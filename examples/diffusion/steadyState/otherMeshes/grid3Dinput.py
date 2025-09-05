@@ -17,7 +17,6 @@ Test case for the `Grid3D`.
    True
 
 """
-from __future__ import unicode_literals
 
 from fipy import input
 from fipy import CellVariable, Grid2D, Grid3D, DiffusionTerm, Viewer

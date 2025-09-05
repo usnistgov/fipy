@@ -59,7 +59,6 @@ Advect the interface and check the position.
 ... 
 ...     viewer.plot()
 
->>> from builtins import range
 >>> for step in range(steps):
 ...     var.updateOld()
 ...     advEqn.solve(var, dt = timeStepDuration)
@@ -74,7 +73,6 @@ Advect the interface and check the position.
 1
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

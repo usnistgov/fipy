@@ -187,7 +187,6 @@ and iterate the solution in time, plotting as we go,
 ...     steps = 10000
 ... else:
 ...     steps = 10
->>> from builtins import range
 >>> for i in range(steps):
 ...     phase.updateOld()
 ...     dT.updateOld()
@@ -209,7 +208,6 @@ We note that this FiPy simulation is written in about 50 lines of code (excludin
 custom viewer), compared with over 800 lines of (fairly lucid) FORTRAN code used for
 the figures in :cite:`WarrenPolycrystal`.
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

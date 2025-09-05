@@ -193,7 +193,6 @@ we iterate the solution in time, plotting as we go if running interactively,
 >>> solver = DefaultAsymmetricSolver(precon=preconditioner)
 
 >>> steps = 10
->>> from builtins import range
 >>> for i in range(steps):
 ...     phase.updateOld()
 ...     temperature.updateOld()
@@ -213,12 +212,10 @@ the data and compares it with the `phase` variable.
    single: allclose
 
 >>> import os
->>> from future.utils import text_to_native_str
->>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz'))
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
 >>> print(phase.allclose(testData))
 1
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

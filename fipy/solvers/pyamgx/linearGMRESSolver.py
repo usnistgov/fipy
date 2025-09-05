@@ -1,10 +1,7 @@
-from __future__ import unicode_literals
 from fipy.solvers.pyamgx import PyAMGXSolver
 from fipy.solvers.pyamgx.preconditioners import JacobiPreconditioner
 
 __all__ = ["LinearGMRESSolver"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearGMRESSolver(PyAMGXSolver):
     """Interface to the Generalized Minimum RESidual (:term:`GMRES`) solver in

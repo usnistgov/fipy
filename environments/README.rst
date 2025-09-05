@@ -69,7 +69,7 @@ of the merits of and relationship between the different methods.
   e.g.::
 
     $ conda create --name <MYFIPYENV> --channel conda-forge \
-        python=3 numpy scipy matplotlib-base future packaging mpich \
+        python=3 numpy scipy matplotlib-base packaging mpich \
         mpi4py petsc4py mayavi "gmsh <4.0|>=4.5.2"
 
 .. _conda-lock: https://github.com/conda/conda-lock

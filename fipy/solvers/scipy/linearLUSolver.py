@@ -1,6 +1,3 @@
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 from scipy.sparse.linalg import splu
@@ -10,8 +7,6 @@ from fipy.tools import numerix
 from fipy.tools.timer import Timer
 
 __all__ = ["LinearLUSolver"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class LinearLUSolver(ScipySolver):
     """Interface to :term:`LU`-factorization in :ref:`SciPy`.

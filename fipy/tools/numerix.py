@@ -34,13 +34,7 @@ Take the tangent of an array.
    [ 0.  0.  0.]
 
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import unicode_literals
 
-from builtins import range
-from builtins import str
-from builtins import zip
 __docformat__ = 'restructuredtext'
 
 import numpy as NUMERIX
@@ -107,8 +101,6 @@ __all__.extend(sorted(["getUnit", "put", "reshape", "getShape",
                        "isclose", "take", "indices", "empty", "loadtxt",
                        "savetxt", "L1norm", "L2norm", "LINFnorm"],
                       key=str.lower))
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 def _isPhysical(arr):
     """

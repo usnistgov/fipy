@@ -1,4 +1,3 @@
-from __future__ import print_function
 import os
 from distutils.core import Command
 
@@ -38,7 +37,6 @@ class copy_script(Command):
                 ans = 'no'
 
             if ("no".find(ans.lower()) is 0):
-                from builtins import input
                 self.To = input("Please give a name for the ouput file: ")
                 self.finalize_options()
 

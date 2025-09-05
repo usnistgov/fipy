@@ -180,7 +180,6 @@ This problem does not have an analytical solution, so after
 iterating to equilibrium
 
 >>> dt = 10000
->>> from builtins import range
 >>> for i in range(5):
 ...     for field in [phase] + substitutionals + interstitials:
 ...         field.updateOld()
@@ -263,7 +262,6 @@ We make new equations
 and again iterate to equilibrium
 
 >>> dt = 10000
->>> from builtins import range
 >>> for i in range(5):
 ...     for field in [phase] + substitutionals + interstitials:
 ...         field.updateOld()
@@ -356,7 +354,6 @@ We make new equations
 and again iterate to equilibrium
 
 >>> dt = 10000
->>> from builtins import range
 >>> for i in range(5):
 ...     for field in [phase] + substitutionals + interstitials:
 ...         field.updateOld()
@@ -388,7 +385,6 @@ their respective phases
 >>> numerix.allclose(substitutionals[1](((0., L),)), (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
 1
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

@@ -31,8 +31,6 @@ electrodeposition process :cite:`NIST:damascene:2001`.
 .. _MSED:                 http://www.nist.gov/mml/msed/
 .. _NIST:                 http://www.nist.gov/
 """
-from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
 
 import json
@@ -45,18 +43,12 @@ import sys
 if 'FIPY_LOG_CONFIG' in os.environ:
     with open(os.environ['FIPY_LOG_CONFIG'], mode='r') as fp:
         logging.config.dictConfig(json.load(fp))
-else:
-    # Needed for Python 2.7 to avoid
-    # 'No handlers could be found for logger "fipy"'.
-    # Should do nothing in Py3k.
-    logging.basicConfig()
 
 _log = logging.getLogger(__name__)
 
 # __version__ needs to be defined before calling package_info()
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
+from . import _version
+__version__ = _version.get_versions()['version']
 
 
 from fipy.tools.logging import environment
@@ -110,6 +102,8 @@ if parallelComm.Nproc > 1:
         else:
             return ""
     input = mpi_input
+else:
+    input = input_original
 
 _saved_stdout = sys.stdout
 

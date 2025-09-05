@@ -1,8 +1,6 @@
 """Tools for displaying the values of :class:`~fipy.variables.variable.Variable` objects
 """
 
-from __future__ import unicode_literals
-from builtins import str
 __docformat__ = 'restructuredtext'
 
 try:

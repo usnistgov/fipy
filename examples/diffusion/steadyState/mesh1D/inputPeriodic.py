@@ -50,7 +50,6 @@ The result of the calculation will be the average value over the domain.
 True
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

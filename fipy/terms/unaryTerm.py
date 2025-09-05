@@ -1,11 +1,9 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = []
 
 import os
 
-from fipy import input
 from fipy.tools import numerix
 from fipy.terms.term import Term
 
@@ -82,6 +80,7 @@ class _UnaryTerm(Term):
              and "terms" in os.environ['FIPY_DISPLAY_MATRIX'].lower().split()):
              self._viewer.title = "%s %s" % (var.name, repr(self))
              self._viewer.plot(matrix=matrix, RHSvector=RHSvector)
+             from fipy import input
              input()
 
         return (var, matrix, RHSvector)

@@ -304,7 +304,6 @@ appropriate for the supplied `Variable` object(s):
 Please do not hesitate to contact us if this example does not help you
 convert your existing scripts to :term:`FiPy` 1.0.
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

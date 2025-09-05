@@ -39,7 +39,6 @@ Here the phase equation is solved with an explicit technique.
 
 The solution is allowed to evolve for ``steps = 100`` time steps.
 
->>> from builtins import range
 >>> for step in range(steps):
 ...     phaseEq.solve(phase, dt=timeStepDuration, solver=solver)
 
@@ -49,15 +48,11 @@ modeling. The following code opens the file :file:`circle.gz` extracts the
 data and compares it with the ``phase`` variable.
 
 >>> import os
->>> from future.utils import text_to_native_str
->>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz'))
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
 >>> print(phase.allclose(testData))
 1
 
 """
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import input

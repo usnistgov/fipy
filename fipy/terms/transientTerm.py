@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm
@@ -6,8 +5,6 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
 __all__ = ["TransientTerm"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class TransientTerm(CellTerm):
     r"""
@@ -59,7 +56,6 @@ class TransientTerm(CellTerm):
     A number of sweeps at each time step are required to let the
     relaxation take effect.
 
-    >>> from builtins import range
     >>> for step in range(steps):
     ...     var.updateOld()
     ...     for sweep in range(sweeps):

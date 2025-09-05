@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from petsc4py import PETSc
@@ -11,8 +10,6 @@ from .preconditioners.defaultPreconditioner import DefaultPreconditioner
 from fipy.tools import numerix
 
 __all__ = ["PETScKrylovSolver"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class PETScKrylovSolver(PETScSolver):
 

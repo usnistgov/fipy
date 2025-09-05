@@ -1,6 +1,3 @@
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import zip
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -29,7 +26,6 @@ class MatplotlibSurfactantViewer(AbstractMatplotlibViewer):
             >>> v = CellVariable(mesh=m, value=x**2 + y**2 - 10**2)
             >>> s = CellVariable(mesh=m, value=sin(x / 10) * cos(y / 30))
             >>> viewer = MatplotlibSurfactantViewer(distanceVar=v, surfactantVar=s)
-            >>> from builtins import range
             >>> for r in range(1, 200):
             ...     v.setValue(x**2 + y**2 - r**2)
             ...     viewer.plot()

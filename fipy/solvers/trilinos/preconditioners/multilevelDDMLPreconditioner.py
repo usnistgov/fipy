@@ -1,11 +1,8 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from .multilevelPreconditioner import MultilevelPreconditioner
 
 __all__ = ["MultilevelDDMLPreconditioner"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class MultilevelDDMLPreconditioner(MultilevelPreconditioner):
     """3-level algebraic domain decomposition multilevel preconditioner for :class:`~fipy.solvers.trilinos.trilinosSolver.TrilinosSolver`.
