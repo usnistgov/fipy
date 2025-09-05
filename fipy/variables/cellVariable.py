@@ -413,19 +413,6 @@ class CellVariable(MeshVariable):
         return self._faceGrad
 
     @property
-    @deprecate(new_name="~fipy.variables.cellVariable.CellVariable.grad",
-               new_string="use :attr:`%s`\ ``.``\ "
-                          ":attr:`~fipy.variables.cellVariable.CellVariable.arithmeticFaceValue` "
-                          "instead",
-               version=3.3)
-    def faceGradAverage(self):
-        r"""
-        Return :math:`\nabla \phi` as a rank-1 `FaceVariable` using averaging
-        for the normal direction(second-order gradient)
-        """
-        return self.grad.arithmeticFaceValue
-
-    @property
     def old(self):
         """
         Return the values of the `CellVariable` from the previous
