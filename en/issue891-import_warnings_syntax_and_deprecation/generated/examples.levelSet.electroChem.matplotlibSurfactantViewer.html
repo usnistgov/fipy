@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.levelSet.electroChem.matplotlibSurfactantViewer &#8212; FiPy 3.99+6.g8a2de8d02 documentation</title>
+    <title>examples.levelSet.electroChem.matplotlibSurfactantViewer &#8212; FiPy 3.99+8.g8ef330bce documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,13 +43,13 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=db91816a"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=a6181bed"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.levelSet.electroChem.matplotlibSurfactantViewer.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.99+6.g8a2de8d02 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.99+8.g8ef330bce documentation" href="../contents.html" />
     <link rel="up" title="examples.levelSet.electroChem" href="examples.levelSet.electroChem.html" />
     <link rel="next" title="examples.levelSet.electroChem.mayaviSurfactantViewer" href="examples.levelSet.electroChem.mayaviSurfactantViewer.html" />
     <link rel="prev" title="examples.levelSet.electroChem.lines" href="examples.levelSet.electroChem.lines.html" />
@@ -139,7 +139,6 @@ plotting package that displays a <cite>DistanceVariable</cite>.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">10</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">CellVariable</span><span class="p">(</span><span class="n">mesh</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">y</span> <span class="o">/</span> <span class="mi">30</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">viewer</span> <span class="o">=</span> <span class="n">MatplotlibSurfactantViewer</span><span class="p">(</span><span class="n">distanceVar</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">surfactantVar</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">range</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">v</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="n">viewer</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -365,7 +364,7 @@ display.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.99+6.g8a2de8d02
+Version 3.99+8.g8ef330bce
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

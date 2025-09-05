@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using FiPy &#8212; FiPy 3.99+6.g8a2de8d02 documentation</title>
+    <title>Using FiPy &#8212; FiPy 3.99+8.g8ef330bce documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=db91816a"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=a6181bed"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/USAGE.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.99+6.g8a2de8d02 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.99+8.g8ef330bce documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Solvers" href="SOLVERS.html" />
     <link rel="prev" title="Installation" href="INSTALLATION.html" />
@@ -516,7 +516,7 @@ available.  This may very well be an intentional optimization, where
 they are designed to have one <a class="reference internal" href="glossary.html#term-MPI"><span class="xref std std-term">MPI</span></a> rank per node of a cluster, so each
 of the child threads would help with computation but would not compete for
 I/O resources during ghost cell exchanges and file I/O. However, Python’s
-<a class="reference external" href="https://docs.python.org/2.7/c-api/init.html#thread-state-and-the-global-interpreter-lock">Global Interpreter Lock</a> (GIL) binds all of the child threads to the same
+<a class="reference external" href="https://docs.python.org/3/c-api/init.html#thread-state-and-the-global-interpreter-lock">Global Interpreter Lock</a> (GIL) binds all of the child threads to the same
 core as their parent!  So instead of improving performance, each core
 suffers a heavy overhead from managing those idling threads.</p>
 <p>The solution to this is to force these solvers to use only one <a class="reference internal" href="glossary.html#term-OpenMP"><span class="xref std std-term">OpenMP</span></a> thread:</p>
@@ -1024,23 +1024,6 @@ Demonstrations of its use are found in <a class="reference internal" href="gener
 undocumented and did not work very well.</p>
 </div>
 </section>
-<section id="running-under-python-2">
-<span id="runningunderpython2"></span><h2>Running under Python 2<a class="headerlink" href="#running-under-python-2" title="Permalink to this heading">¶</a></h2>
-<p>Thanks to the <a class="reference external" href="http://python-future.org">future</a> package and to the contributions of <a class="reference external" href="https://github.com/pya">pya</a> and
-<a class="reference external" href="https://github.com/pya">woodscn</a>, <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> runs under both <a class="reference internal" href="glossary.html#term-Python-3"><span class="xref std std-term">Python 3</span></a> and <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a>
-2.7, without conversion or modification.</p>
-<p>Because <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> itself <a class="reference external" href="https://www.python.org/dev/peps/pep-0373/#update">dropped support for Python 2.7 on January
-1, 2020</a> and many of the prerequisites for <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> <a class="reference external" href="https://python3statement.org">pledged to
-drop support for Python 2.7 no later than 2020</a>, we prioritized adding
-support for better <a class="reference internal" href="glossary.html#term-Python-3"><span class="xref std std-term">Python 3</span></a> solvers, starting with
-<a class="reference internal" href="glossary.html#term-petsc4py"><span class="xref std std-term">petsc4py</span></a>.</p>
-<p>We have maintained <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.x
-support as long as practical. Be aware that the <a class="reference external" href="https://conda-forge.github.io/">conda-forge</a> packages that
-<a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> depends upon are not well-maintained on <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.x
-and our support for that configuration is rapidly becoming impractical,
-despite the performance benefits. Support for
-<a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.x will be dropped soon.</p>
-</section>
 <section id="manual">
 <h2>Manual<a class="headerlink" href="#manual" title="Permalink to this heading">¶</a></h2>
 <p>You can view the manual online at &lt;<a class="reference external" href="http://pages.nist.gov/fipy">http://pages.nist.gov/fipy</a>&gt;.
@@ -1057,8 +1040,7 @@ following command in the <code class="file docutils literal notranslate"><span c
 <p class="admonition-title">Note</p>
 <p>This mechanism is intended primarily for the developers.  At a minimum,
 you will need <a class="reference external" href="http://www.sphinx-doc.org/">Sphinx</a>, plus all of its
-prerequisites.  We are currently building with Sphinx v7.0.  Python 2.7
-probably won’t work.</p>
+prerequisites.  We are currently building with Sphinx v7.0.</p>
 <p>We install via conda:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install --channel conda-forge sphinx
 </pre></div>
@@ -1110,7 +1092,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.99+6.g8a2de8d02
+Version 3.99+8.g8ef330bce
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
@@ -1150,7 +1132,6 @@ Version 3.99+6.g8a2de8d02
 </ul>
 </li>
 <li><a class="reference internal" href="#adaptive-stepping">Adaptive Stepping</a></li>
-<li><a class="reference internal" href="#running-under-python-2">Running under Python 2</a></li>
 <li><a class="reference internal" href="#manual">Manual</a></li>
 </ul>
 </li>
