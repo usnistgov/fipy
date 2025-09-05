@@ -1,12 +1,9 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools.numerix import random, sqrt
 from fipy.variables.noiseVariable import NoiseVariable
 
 __all__ = ["GaussianNoiseVariable"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class GaussianNoiseVariable(NoiseVariable):
     r"""
@@ -81,7 +78,6 @@ class GaussianNoiseVariable(NoiseVariable):
     ...                     datamin=-5, datamax=5)
     ...     histoplot = Viewer(vars=(histogram, gauss))
 
-    >>> from builtins import range
     >>> for i in range(10):
     ...     noise.scramble()
     ...     if __name__ == '__main__':

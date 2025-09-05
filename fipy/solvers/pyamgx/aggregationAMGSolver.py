@@ -1,10 +1,7 @@
-from __future__ import unicode_literals
 from fipy.solvers.pyamgx import PyAMGXSolver
 from fipy.solvers.pyamgx.smoothers import BlockJacobiSmoother
 
 __all__ = ["AggregationAMGSolver"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class AggregationAMGSolver(PyAMGXSolver):
     """Interface to the aggregation algebraic multigrid (:term:`AMG`) solver

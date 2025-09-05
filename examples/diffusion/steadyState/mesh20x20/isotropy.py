@@ -30,7 +30,6 @@ the diffusion coefficient, even though the coefficient is isotropic.
 >>> print(var.allclose(analyticalArray, atol = 0.025))
 1
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

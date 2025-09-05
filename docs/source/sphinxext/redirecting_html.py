@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from docutils import nodes
 try:
     from urllib.parse import urlparse

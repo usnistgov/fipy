@@ -113,19 +113,22 @@ Change Log
 Version |release|
 -----------------
 
-This release harmonizes the sparse |.solvers|_:
+This release
 
-- Uses consistent interpretation of |.convergence|_ criteria.
-- Improves efficiency at building matrices.
-- Supports more preconditioners.
-- Logs solver status and performance.
-- Greatly expands documentation of the configuration and performance of
-  the supported |.solvers|_.
-- Changes default tolerance to :math:`10^{-5}`. This is adequate for most
-  problems.
-- Removes "`pyamg`" from |.FIPY_SOLVERS|_ and "`--pyamg`" from
-  the |.commandlineflags|_.  |.pyamg|_ is implemented as a
-  preconditioner for |.scipy|_, not as a solver suite in its own right.
+- Harmonizes the sparse |.solvers|_:
+    - Uses consistent interpretation of |.convergence|_ criteria.
+    - Improves efficiency at building matrices.
+    - Supports more preconditioners.
+    - Logs solver status and performance.
+    - Greatly expands documentation of the configuration and performance of
+      the supported |.solvers|_.
+    - Changes default tolerance to :math:`10^{-5}`. This is adequate for most
+      problems.
+    - Removes "`pyamg`" from |.FIPY_SOLVERS|_ and "`--pyamg`" from
+      the |.commandlineflags|_.  |.pyamg|_ is implemented as a
+      preconditioner for |.scipy|_, not as a solver suite in its own right.
+- Drops support for |.Pysparse|_, which required |.Python|_ 2.7.
+- Drops support for |.Python|_ 2.7, which is years beyond end of life.
 
 --------------------------
 Version 3.4.5 - 2024-06-25

@@ -9,17 +9,16 @@ boundary layer. This region consists of very large elements and is
 only used for the diffusion in the boundary layer.
 
 """
-from __future__ import division
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
+
+from packaging.version import Version
 
 from fipy.meshes import Gmsh2D
 from fipy.meshes.gmshMesh import _gmshVersion
 from fipy.meshes import Grid2D
 from fipy.tools import serialComm
 from fipy.tools import parallelComm
-from fipy.tools.version import Version
 
 class GapFillMesh(Gmsh2D):
     """

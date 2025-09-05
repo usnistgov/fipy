@@ -592,7 +592,6 @@ time step of about :math:`10^{-5}~\\mathrm{s}`.
 
 >>> dt0 = 1.e-5
 
->>> from builtins import range
 >>> for i in range(8):
 ...     phase.updateOld()
 ...     C.updateOld()
@@ -735,7 +734,6 @@ in the sharp interface treatment.
 .. _PID controller: https://en.wikipedia.org/wiki/PID_controller
 """
 
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

@@ -4,10 +4,7 @@ Input file for chemotaxis modeling.
 
 Here are some test cases for the model.
 
->>> from __future__ import division
 
->>> from builtins import input
->>> from builtins import range
 >>> from examples.chemotaxis.parameters import parameters
 >>> from fipy import CellVariable, Grid1D, TransientTerm, DiffusionTerm, ImplicitSourceTerm, Viewer, numerix
 
@@ -108,7 +105,6 @@ Here are some test cases for the model.
 ...
 ...     input("finished")
 """
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

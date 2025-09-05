@@ -460,7 +460,7 @@ It may be possible to configure these packages to use only one :term:`OpenMP` th
 but this is not the configuration of the version available from conda-forge_
 and building Trilinos, at least, is |NotFun (TM)|_.
 
-.. _Global Interpreter Lock:     https://docs.python.org/2.7/c-api/init.html#thread-state-and-the-global-interpreter-lock
+.. _Global Interpreter Lock:     https://docs.python.org/3/c-api/init.html#thread-state-and-the-global-interpreter-lock
 .. _Method of Manufactured Solutions Allen-Cahn problem:  https://pages.nist.gov/pfhub/benchmarks/benchmark7.ipynb
 .. _conda-forge:                 https://conda-forge.github.io/
 .. |NotFun (TM)|                 unicode:: NotFun U+2122
@@ -1018,35 +1018,6 @@ Demonstrations of its use are found in :mod:`examples.phase.binary` and
    The old :mod:`fipy.steppers` classes are now deprecated.  They were
    undocumented and did not work very well.
 
-.. _RunningUnderPython2:
-
-----------------------
-Running under Python 2
-----------------------
-
-Thanks to the future_ package and to the contributions of pya_ and
-woodscn_, :term:`FiPy` runs under both :term:`Python 3` and :term:`Python`
-2.7, without conversion or modification.
-
-Because :term:`Python` itself `dropped support for Python 2.7 on January
-1, 2020`_ and many of the prerequisites for :term:`FiPy` `pledged to
-drop support for Python 2.7 no later than 2020`_, we prioritized adding
-support for better :term:`Python 3` solvers, starting with
-:term:`petsc4py`.
-
-We have maintained :term:`Python` 2.x
-support as long as practical. Be aware that the conda-forge_ packages that
-:term:`FiPy` depends upon are not well-maintained on :term:`Python` 2.x
-and our support for that configuration is rapidly becoming impractical,
-despite the performance benefits. Support for
-:term:`Python` 2.x will be dropped soon.
-
-.. _future: http://python-future.org
-.. _pya: https://github.com/pya
-.. _woodscn: https://github.com/pya
-.. _dropped support for Python 2.7 on January 1, 2020: https://www.python.org/dev/peps/pep-0373/#update
-.. _pledged to drop support for Python 2.7 no later than 2020: https://python3statement.org
-
 ------
 Manual
 ------
@@ -1065,8 +1036,7 @@ or::
 
    This mechanism is intended primarily for the developers.  At a minimum,
    you will need `Sphinx <http://www.sphinx-doc.org/>`_, plus all of its
-   prerequisites.  We are currently building with Sphinx v7.0.  Python 2.7
-   probably won't work.
+   prerequisites.  We are currently building with Sphinx v7.0.
 
    We install via conda::
 

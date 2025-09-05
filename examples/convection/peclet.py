@@ -29,7 +29,6 @@ with Péclet numbers over 1.
 >>> peclet = 1e-3
 >>> allcloseList = []
 >>> from fipy import input
->>> from builtins import str
 >>> while peclet < 1e4:
 ...     var[:] = valueLeft
 ...     diffCoeff = convCoeff * dx / peclet
@@ -55,7 +54,6 @@ with Péclet numbers over 1.
 [True, True, True, True, True, True, True]
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 if __name__ == '__main__':

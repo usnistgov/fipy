@@ -1,12 +1,9 @@
-from __future__ import unicode_literals
 from mpi4py import MPI
 
 from fipy.tools import numerix
 from fipy.solvers.trilinos.comms.epetraCommWrapper import EpetraCommWrapper
 
 __all__ = ["ParallelEpetraCommWrapper"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class ParallelEpetraCommWrapper(EpetraCommWrapper):
     """MPI Communicator wrapper
@@ -43,7 +40,6 @@ class ParallelEpetraCommWrapper(EpetraCommWrapper):
         a rank-dimensional list of `sendobj` objects.
         
         >>> m4count = self.mpi4py_comm.allgather(self.mpi4py_comm.Get_rank())
-        >>> from builtins import range
         >>> for i in range(self.mpi4py_comm.Get_size()):
         ...     assert m4count[i] == i
 

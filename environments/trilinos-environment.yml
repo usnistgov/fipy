@@ -10,7 +10,6 @@ dependencies:
   - numpy
   - scipy
   - matplotlib-base
-  - future
   - packaging
   - mayavi
   - gmsh <4.0|>=4.5.2

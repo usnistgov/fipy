@@ -1,20 +1,11 @@
-from __future__ import print_function
-from __future__ import unicode_literals
-from builtins import object
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractViewer"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 import sys
 
-from future.utils import with_metaclass
-
 # Pattern for accessing classmethods on construction
 # https://stackoverflow.com/a/13901161/2019542
-# adapted for future
-# https://python-future.org/compatible_idioms.html#metaclasses
 class _MetaViewer(type):
     def __new__(mcl, classname, bases, classdict):
         """Create new viewer with class-appropriate doctests"""
@@ -27,7 +18,7 @@ class _MetaViewer(type):
 
         return cls
 
-class AbstractViewer(with_metaclass(_MetaViewer, object)):
+class AbstractViewer(object, metaclass=_MetaViewer):
     """Base class for FiPy Viewers
 
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -264,7 +255,6 @@ class AbstractViewer(with_metaclass(_MetaViewer, object)):
             ...                 ymin=0.1, ymax=0.9,
             ...                 # datamin=1.1, datamax=4.0,
             ...                 title="{cls.__name__} test")
-            >>> from builtins import range
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
@@ -299,7 +289,6 @@ class AbstractViewer(with_metaclass(_MetaViewer, object)):
 
             >>> viewer = {cls.__name__}(vars=fp.numerix.sin(k * xyVar).faceGrad,
             ...                 title="{cls.__name__} test")
-            >>> from builtins import range
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()
@@ -328,7 +317,6 @@ class AbstractViewer(with_metaclass(_MetaViewer, object)):
             ...                     ymin=0.1, ymax=0.9,
             ...                     datamin=1.1, datamax=4.0,
             ...                     title="{cls.__name__} test")
-            >>> from builtins import range
             >>> for kval in range(10):
             ...     k.setValue(kval)
             ...     viewer.plot()

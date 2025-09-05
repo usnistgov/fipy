@@ -116,7 +116,6 @@ If we are running interactively, we create a viewer to see the results
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
->>> from builtins import range
 >>> for i in range(40):
 ...     for Cj in substitutionals:
 ...         Cj.equation.solve(var=Cj,
@@ -139,7 +138,6 @@ True
 >>> print(substitutionals[1].allclose(0.45, rtol = 2e-7, atol = 2e-7))
 True
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

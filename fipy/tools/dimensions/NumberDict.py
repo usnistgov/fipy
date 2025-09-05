@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 # Dictionary containing numbers
 #
 # These objects are meant to be used like arrays with generalized
@@ -9,7 +8,6 @@ from __future__ import unicode_literals
 # last revision: 1999-7-23
 #
 
-from builtins import str
 __all__ = []
 
 from fipy.tools.dimensions import DictWithDefault

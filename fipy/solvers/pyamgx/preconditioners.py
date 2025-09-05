@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 
 from fipy.solvers.preconditioner import SolverModifyingPreconditioner
 
@@ -13,8 +12,6 @@ __all__ = ["AMGPreconditioner",
            "JacobiPreconditioner",
            "PolynomialPreconditioner",
            "PyAMGXPreconditioner"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class PyAMGXPreconditioner(SolverModifyingPreconditioner):
     """Interface to pyamgx_ `preconditioner configuration`_ for :class:`~fipy.solvers.pyamgx.pyAMGXSolver.PyAMGXSolver`.

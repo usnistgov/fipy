@@ -36,9 +36,6 @@ tolerance of `1e-10`.
     True
 
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

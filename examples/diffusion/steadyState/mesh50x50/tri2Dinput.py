@@ -22,7 +22,6 @@ The result is again tested in the same way:
     True
 
 """
-from __future__ import unicode_literals
 
 from fipy import input
 from fipy import CellVariable, Tri2D, DiffusionTerm, Viewer
