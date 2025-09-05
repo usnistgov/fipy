@@ -1,0 +1,35 @@
+fipy.viewers.mayaviViewer.mayaviDaemon
+======================================
+
+.. automodule:: fipy.viewers.mayaviViewer.mayaviDaemon
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MayaviDaemon
+   
+   
+
+   
+   
+   
+
+
+
