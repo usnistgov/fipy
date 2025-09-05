@@ -93,6 +93,8 @@ Fixes
   Having problem with Viewer
 - `#865 <https://github.com/usnistgov/fipy/issues/865>`_:
   Sphinx search is broken on website
+- `#729 <https://github.com/usnistgov/fipy/issues/729>`_:
+  Python 3.8
 - `#673 <https://github.com/usnistgov/fipy/issues/673>`_:
   Deprecations don't properly format properties
 - `#512 <https://github.com/usnistgov/fipy/issues/512>`_:
