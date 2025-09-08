@@ -1,2 +1,0 @@
-RewriteEngine On
-RedirectMatch ^/fipy/$ https://pages.nist.gov/fipy/en/stable/
