@@ -278,7 +278,8 @@ Obtaining FiPy
 |.FiPy|_ is freely available for download via Git_ or as a
 `compressed archive`_. Please see
 |.documentation-colon-git|_ for instructions on obtaining |.FiPy|_
-with Git_.
+with Git_. Historical versions of |.FiPy|_ can be obtained from
+https://github.com/usnistgov/fipy/releases.
 
 
 .. list-table::
