@@ -140,7 +140,7 @@ Conda Lockfiles
 The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
 :file:`environments/locks/` can be updated with::
 
-    $ for solver in petsc pysparse scipy trilinos
+    $ for solver in petsc scipy trilinos
       do
         conda-lock lock \
           --file environments/${solver}-environment.yml \

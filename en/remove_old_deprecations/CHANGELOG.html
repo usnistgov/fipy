@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; FiPy 3.99+1.g4efb054f7 documentation</title>
+    <title>Change Log &#8212; FiPy 3.99+5.gde29bb8c4 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=3d56a7ca"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=fa630c1c"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/CHANGELOG.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.99+1.g4efb054f7 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.99+5.gde29bb8c4 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Git practices" href="ADMINISTRATA.html" />
     <link rel="prev" title="Publications" href="PUBLICATIONS.html" />
@@ -118,9 +118,11 @@
   <section id="change-log">
 <span id="changelog"></span><h1>Change Log<a class="headerlink" href="#change-log" title="Permalink to this heading">¶</a></h1>
 <section id="version-release">
-<h2>Version 3.99+1.g4efb054f7<a class="headerlink" href="#version-release" title="Permalink to this heading">¶</a></h2>
-<p>This release harmonizes the sparse <a class="reference internal" href="SOLVERS.html#solvers"><span class="std std-ref">Solvers</span></a>:</p>
+<h2>Version 3.99+5.gde29bb8c4<a class="headerlink" href="#version-release" title="Permalink to this heading">¶</a></h2>
+<p>This release</p>
 <ul class="simple">
+<li><dl class="simple">
+<dt>Harmonizes the sparse <a class="reference internal" href="SOLVERS.html#solvers"><span class="std std-ref">Solvers</span></a>:</dt><dd><ul>
 <li><p>Uses consistent interpretation of <a class="reference internal" href="SOLVERS.html#convergence"><span class="std std-ref">Convergence</span></a> criteria.</p></li>
 <li><p>Improves efficiency at building matrices.</p></li>
 <li><p>Supports more preconditioners.</p></li>
@@ -130,8 +132,14 @@ the supported <a class="reference internal" href="SOLVERS.html#solvers"><span cl
 <li><p>Changes default tolerance to <span class="math notranslate nohighlight">\(10^{-5}\)</span>. This is adequate for most
 problems.</p></li>
 <li><p>Removes “<cite>pyamg</cite>” from <span class="target" id="index-0"></span><a class="reference internal" href="USAGE.html#envvar-FIPY_SOLVERS"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">FIPY_SOLVERS</span></code></a> and “<cite>–pyamg</cite>” from
-the <a class="reference internal" href="USAGE.html#commandlineflags"><span class="std std-ref">Command-line Flags</span></a>.  <a class="reference internal" href="SOLVERS.html#id10"><span class="std std-ref">PyAMG</span></a> is implemented as a
-preconditioner for <a class="reference internal" href="SOLVERS.html#id16"><span class="std std-ref">SciPy</span></a>, not as a solver suite in its own right.</p></li>
+the <a class="reference internal" href="USAGE.html#commandlineflags"><span class="std std-ref">Command-line Flags</span></a>.  <a class="reference internal" href="SOLVERS.html#id9"><span class="std std-ref">PyAMG</span></a> is implemented as a
+preconditioner for <a class="reference internal" href="SOLVERS.html#id13"><span class="std std-ref">SciPy</span></a>, not as a solver suite in its own right.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Drops support for <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a>, which required <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.7.</p></li>
+<li><p>Drops support for <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.7, which is years beyond end of life.</p></li>
 </ul>
 </section>
 <section id="version-3-4-5-2024-06-25">
@@ -1014,7 +1022,7 @@ necessary.</p>
 used.</p></li>
 <li><p>Most <a class="reference internal" href="generated/fipy.meshes.mesh.html#fipy.meshes.mesh.Mesh" title="fipy.meshes.mesh.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a>es can be partitioned by
 <a class="reference internal" href="USAGE.html#meshingwithgmsh"><span class="std std-ref">Meshing with Gmsh</span></a>.</p></li>
-<li><p><a class="reference internal" href="SOLVERS.html#id10"><span class="std std-ref">PyAMG</span></a> and <a class="reference internal" href="SOLVERS.html#id16"><span class="std std-ref">SciPy</span></a> have been added to the <a class="reference internal" href="SOLVERS.html#solvers"><span class="std std-ref">Solvers</span></a>.</p></li>
+<li><p><a class="reference internal" href="SOLVERS.html#id9"><span class="std std-ref">PyAMG</span></a> and <a class="reference internal" href="SOLVERS.html#id13"><span class="std std-ref">SciPy</span></a> have been added to the <a class="reference internal" href="SOLVERS.html#solvers"><span class="std std-ref">Solvers</span></a>.</p></li>
 <li><p>FiPy is capable of running under <a class="reference internal" href="glossary.html#term-Python-3"><span class="xref std std-term">Python 3</span></a>.</p></li>
 <li><p>“getter” and “setter” methods have been pervasively changed to Python
 properties.</p></li>
@@ -1244,7 +1252,7 @@ Concatenated <cite>Mesh</cite> garbled by <cite>dump.write</cite>/<cite>read</ci
 <ul class="simple">
 <li><p><a class="reference internal" href="generated/fipy.viewers.matplotlibViewer.html#fipy.viewers.matplotlibViewer.MatplotlibViewer" title="fipy.viewers.matplotlibViewer.MatplotlibViewer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatplotlibViewer</span></code></a> can display
 into an existing set of Matplotlib axes.</p></li>
-<li><p><a class="reference internal" href="SOLVERS.html#id14"><span class="std std-ref">Pysparse</span></a> and <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> are now completely independent.</p></li>
+<li><p><a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">PYSPARSE</span></a> and <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> are now completely independent.</p></li>
 </ul>
 <section id="id420">
 <h3>Fixes<a class="headerlink" href="#id420" title="Permalink to this heading">¶</a></h3>
@@ -1781,7 +1789,7 @@ Some tests fail on windows XP</p></li>
 
 
                 <div class='last-updated'>
-                Last updated on Sep 05, 2025.
+                Last updated on Sep 08, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -1791,13 +1799,13 @@ Some tests fail on windows XP</p></li>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.99+1.g4efb054f7
+Version 3.99+5.gde29bb8c4
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Change Log</a><ul>
-<li><a class="reference internal" href="#version-release">Version 3.99+1.g4efb054f7</a></li>
+<li><a class="reference internal" href="#version-release">Version 3.99+5.gde29bb8c4</a></li>
 <li><a class="reference internal" href="#version-3-4-5-2024-06-25">Version 3.4.5 - 2024-06-25</a><ul>
 <li><a class="reference internal" href="#pulls">Pulls</a></li>
 <li><a class="reference internal" href="#fixes">Fixes</a></li>

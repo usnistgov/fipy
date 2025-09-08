@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>examples.phase.binaryCoupled &#8212; FiPy 3.99+1.g4efb054f7 documentation</title>
+    <title>examples.phase.binaryCoupled &#8212; FiPy 3.99+5.gde29bb8c4 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3d56a7ca"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=fa630c1c"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/examples.phase.binaryCoupled.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.99+1.g4efb054f7 documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.99+5.gde29bb8c4 documentation" href="../contents.html" />
     <link rel="up" title="examples.phase" href="examples.phase.html" />
     <link rel="next" title="examples.phase.impingement" href="examples.phase.impingement.html" />
     <link rel="prev" title="examples.phase.binary" href="examples.phase.binary.html" />
@@ -559,7 +559,7 @@ equations) as a test for how long to sweep.</p>
 <span class="gp">... </span>    <span class="n">solver</span> <span class="o">=</span> <span class="n">DefaultAsymmetricSolver</span><span class="p">(</span><span class="n">criterion</span><span class="o">=</span><span class="s2">&quot;initial&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                                     <span class="n">precon</span><span class="o">=</span><span class="n">HYPREPreconditioner</span><span class="p">(),</span>
 <span class="gp">... </span>                                     <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
-<span class="gp">... </span><span class="k">elif</span> <span class="n">fipy</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">solver_suite</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;trilinos&#39;</span><span class="p">,</span> <span class="s1">&#39;no-pysparse&#39;</span><span class="p">]:</span>
+<span class="gp">... </span><span class="k">elif</span> <span class="n">fipy</span><span class="o">.</span><span class="n">solvers</span><span class="o">.</span><span class="n">solver_suite</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;trilinos&#39;</span><span class="p">]:</span>
 <span class="gp">... </span>    <span class="kn">from</span> <span class="nn">fipy</span> <span class="kn">import</span> <span class="n">LinearBicgstabSolver</span>
 <span class="gp">... </span>    <span class="n">solver</span> <span class="o">=</span> <span class="n">LinearBicgstabSolver</span><span class="p">(</span><span class="n">criterion</span><span class="o">=</span><span class="s2">&quot;initial&quot;</span><span class="p">,</span>
 <span class="gp">... </span>                                  <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">)</span>
@@ -651,8 +651,7 @@ time step of about <span class="math notranslate nohighlight">\(10^{-5}~\mathrm{
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dt0</span> <span class="o">=</span> <span class="mf">1.e-5</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">range</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">phase</span><span class="o">.</span><span class="n">updateOld</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="n">C</span><span class="o">.</span><span class="n">updateOld</span><span class="p">()</span>
 <span class="gp">... </span>    <span class="n">res</span> <span class="o">=</span> <span class="mf">1e+10</span>
@@ -788,7 +787,7 @@ as a <a class="reference internal" href="fipy.variables.variable.html#fipy.varia
 
 
                 <div class='last-updated'>
-                Last updated on Sep 05, 2025.
+                Last updated on Sep 08, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -798,7 +797,7 @@ as a <a class="reference internal" href="fipy.variables.variable.html#fipy.varia
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.99+1.g4efb054f7
+Version 3.99+5.gde29bb8c4
 
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>
