@@ -298,16 +298,6 @@ Upload the build products to PyPI with twine_::
 
     $ twine upload dist/FiPy-${FIPY_VERSION}.*
 
-Upload the web site to CTCMS ::
-
-    $ export FIPY_WWWHOST=bunter:/u/WWW/wd15/fipy
-    $ export FIPY_WWWACTIVATE=updatewww
-    $ python setup.py upload_products --html
-
-.. warning:: Some versions of ``rsync`` on Mac OS X have caused problems
-   when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
-   does not have this problem.
-
 .. _GitHub release: https://github.com/usnistgov/fipy/releases
 
 ----------------------------

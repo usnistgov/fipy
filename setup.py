@@ -13,7 +13,6 @@ import versioneer
 
 from _setup.changelog import changelog
 from _setup.copy_script import copy_script
-from _setup.upload_products import upload_products
 from _setup.release import release
 
 LONG_DESCRIPTION = """
@@ -47,7 +46,6 @@ DIST = setup(
     long_description=LONG_DESCRIPTION,
     cmdclass=dict(
         {
-            "upload_products": upload_products,
             "copy_script": copy_script,
             "changelog": changelog,
             "release": release,
