@@ -103,7 +103,7 @@ class GaussianNoiseVariable(NoiseVariable):
 
     """
     def __init__(self, mesh, name = '', mean = 0., variance = 1., hasOld = 0):
-        """
+        r"""
         Parameters
         ----------
         mesh : ~fipy.meshes.mesh.Mesh

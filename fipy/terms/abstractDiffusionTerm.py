@@ -111,7 +111,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         return self.rotationTensor
 
     def _isotropicOrthogonalCoeff(self, coeff, mesh):
-        """Geometric coefficient for isotropic diffusion on orthogonal mesh
+        r"""Geometric coefficient for isotropic diffusion on orthogonal mesh
 
         Parameters
         ----------
@@ -141,7 +141,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
                 / mesh._cellDistances)[numerix.newaxis, ...]
 
     def _anisotropicOrNonorthogonalCoeff(self, coeff, mesh, anisotropicRank):
-        """Geometric coefficient for anisotropic diffusion or non-orthogonal mesh
+        r"""Geometric coefficient for anisotropic diffusion or non-orthogonal mesh
 
         Parameters
         ----------
@@ -266,7 +266,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         return coefficientMatrix, boundaryB
 
     def _constrainValue(self, var):
-        """Determine value constraint contributions to matrix and RHS
+        r"""Determine value constraint contributions to matrix and RHS
 
         Parameters
         ----------
@@ -329,7 +329,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         return L, b
 
     def _constrainGradient(self, var):
-        """Determine gradient constraint contributions to matrix and RHS
+        r"""Determine gradient constraint contributions to matrix and RHS
 
         Parameters
         ----------
@@ -519,7 +519,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
             del coeff
 
     def _higherOrderBuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        """Recursively build matrix and RHS vector
+        r"""Recursively build matrix and RHS vector
 
         Parameters
         ----------
@@ -692,7 +692,7 @@ class _AbstractDiffusionTerm(_UnaryTerm):
         return (var, L, b)
 
     def _zerothOrderBuildMatrix(self, var, SparseMatrix, boundaryConditions=(), dt=None, transientGeomCoeff=None, diffusionGeomCoeff=None):
-        """Recursively build the 0th-order matrix and RHS vector
+        r"""Recursively build the 0th-order matrix and RHS vector
 
         The purpose of diffusion order 0 is to enable recursive
         construction of higher-order diffusion terms.
