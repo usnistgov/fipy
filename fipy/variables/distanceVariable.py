@@ -310,7 +310,7 @@ class DistanceVariable(CellVariable):
 
     @property
     def cellInterfaceAreas(self):
-        """
+        r"""
         Returns the length of the interface that crosses the cell
 
         A simple 1D test:

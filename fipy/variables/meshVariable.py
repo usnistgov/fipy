@@ -229,7 +229,7 @@ class MeshVariable(Variable):
                 or ())
 
     def _dot(a, b, index):
-        """
+        r"""
         Workhorse method to calculate the scalar product
 
         .. math::
@@ -250,7 +250,7 @@ class MeshVariable(Variable):
     _dot = staticmethod(_dot)
 
     def __dot(A, B, operatorClass):
-        """
+        r"""
         Workhorse method to return a `_BinaryOperatorVariable` that will
         dynamically perform the mesh-element--by--mesh-element (cell-by-cell,
         face-by-face, etc.) scalar product
@@ -311,7 +311,7 @@ class MeshVariable(Variable):
     __dot = staticmethod(__dot)
 
     def dot(self, other, opShape=None, operatorClass=None):
-        """
+        r"""
         Return the mesh-element--by--mesh-element (cell-by-cell, face-by-face,
         etc.) scalar product
 
@@ -330,7 +330,7 @@ class MeshVariable(Variable):
         return MeshVariable.__dot(self, other, self._OperatorVariableClass(baseClass))
 
     def rdot(self, other, opShape=None, operatorClass=None):
-        """
+        r"""
         Return the mesh-element--by--mesh-element (cell-by-cell, face-by-face,
         etc.) scalar product
 
