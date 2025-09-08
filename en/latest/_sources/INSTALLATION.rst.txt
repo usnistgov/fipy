@@ -147,7 +147,8 @@ Obtaining FiPy
 :term:`FiPy` is freely available for download via Git_ or as a
 `compressed archive`_. Please see
 :ref:`documentation:GIT` for instructions on obtaining :term:`FiPy`
-with Git_.
+with Git_. Historical versions of :term:`FiPy` can be obtained from
+https://github.com/usnistgov/fipy/releases.
 
 .. warning::
 

@@ -93,6 +93,8 @@ Fixes
   Having problem with Viewer
 - `#865 <https://github.com/usnistgov/fipy/issues/865>`_:
   Sphinx search is broken on website
+- `#729 <https://github.com/usnistgov/fipy/issues/729>`_:
+  Python 3.8
 - `#673 <https://github.com/usnistgov/fipy/issues/673>`_:
   Deprecations don't properly format properties
 - `#512 <https://github.com/usnistgov/fipy/issues/512>`_:
@@ -1301,7 +1303,7 @@ The significant changes since version 1.2 are:
 
 - Support for anisotropic diffusion coefficients.
 
-.. _Trilinos solvers: http://www.nist.gov/cgi-bin/redirect.py?url=https://trilinos.github.io
+.. _Trilinos solvers: https://trilinos.github.io
 
 - `#167 <https://github.com/usnistgov/fipy/issues/167>`_:
   example showing how to go from 1.2 to 2.0
