@@ -257,4 +257,5 @@ class test(_test):
 
             barrier()
 
-        raise exitErr
+        if 'exitErr' in locals():
+            raise exitErr
