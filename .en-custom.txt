@@ -275,6 +275,7 @@ PID
 pipelines.yml
 plugin
 PNG
+popup
 POS
 POSIX
 pre-assembled
