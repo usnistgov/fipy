@@ -244,7 +244,6 @@ we allow it to iterate longer to drive to a more demanding tolerance.
    single: cacheRHSvector
    single: RHSvector
 
->>> from builtins import range
 >>> for sweep in range(sweeps):
 ... 
 ...     ## solve the Stokes equations to get starred values
@@ -315,7 +314,6 @@ Test values in the last cell.
 .. .. bibmissing:: /refs.bib
     :sort:
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

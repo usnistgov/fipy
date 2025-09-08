@@ -1,11 +1,8 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.abstractDiffusionTerm import _AbstractDiffusionTerm
 
 __all__ = ["ExplicitDiffusionTerm"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class ExplicitDiffusionTerm(_AbstractDiffusionTerm):
     r"""

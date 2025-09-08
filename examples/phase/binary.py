@@ -501,9 +501,8 @@ non-linear problem to convergence. We use the "residual" of the equations
 (a measure of how well they think they have solved the given set of linear
 equations) as a test for how long to sweep. Because of the
 :class:`~fipy.terms.convectionTerm.ConvectionTerm`, the solution matrix for
-``diffusionEq`` is asymmetric and cannot be solved by the default
-:class:`~fipy.solvers.pysparse.linearCGSolver.LinearCGSolver`.  Therefore,
-we use a :class:`~fipy.solvers.DefaultAsymmetricSolver` for this equation.
+``diffusionEq`` is asymmetric, so we use a
+:class:`~fipy.solvers.DefaultAsymmetricSolver` for this equation.
 
 .. .. index:: DefaultAsymmetricSolver, solve, sweep
 
@@ -593,7 +592,6 @@ time step of about :math:`10^{-5}~\\mathrm{s}`.
 
 >>> dt0 = 1.e-5
 
->>> from builtins import range
 >>> for i in range(8):
 ...     phase.updateOld()
 ...     C.updateOld()
@@ -736,7 +734,6 @@ in the sharp interface treatment.
 .. _PID controller: https://en.wikipedia.org/wiki/PID_controller
 """
 
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

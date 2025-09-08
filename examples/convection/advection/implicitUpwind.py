@@ -2,10 +2,7 @@
 This example shows the failure of advecting a square pulse with a first
 order implicit upwind scheme.
 """
-from __future__ import division
-from __future__ import unicode_literals
 
-from builtins import range
 from fipy import input
 from fipy import CellVariable, Grid1D, TransientTerm, PowerLawConvectionTerm, LinearLUSolver, Viewer
 from fipy.tools import numerix

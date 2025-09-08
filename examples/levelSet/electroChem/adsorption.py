@@ -46,7 +46,6 @@ True
 Start time stepping:
 
 >>> currentTime = 0.
->>> from builtins import range
 >>> for i in range(totalTimeSteps):
 ...     surfEqn.solve(surfactantVar, dt = dt)
 ...     bulkEqn.solve(bulkVar, dt = dt)
@@ -63,11 +62,6 @@ Compare the analytical and numerical results:
 
 
 """
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import input

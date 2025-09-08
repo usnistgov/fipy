@@ -16,7 +16,6 @@ The result is again tested in the same way:
     True
 
 """
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

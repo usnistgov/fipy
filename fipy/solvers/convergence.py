@@ -1,10 +1,5 @@
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import object
-from builtins import str
 __docformat__ = 'restructuredtext'
 
-from future.utils import with_metaclass
 
 import json
 import logging
@@ -32,8 +27,6 @@ __all__ = [
     "StagnatedDivergence",
     "ToleranceDivergence"
 ]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class _ConvergenceMeta(type):
     # We use __init__ rather than __new__ here because we want
@@ -67,7 +60,7 @@ class DivergenceWarning(UserWarning):
         msg = "msg={status_name}, code={status_code}, residual={residual}".format(**divergence.info)
         super(DivergenceWarning, self).__init__(msg)
 
-class ConvergenceBase(with_metaclass(_ConvergenceMeta, object)):
+class ConvergenceBase(object, metaclass=_ConvergenceMeta):
     """Information about whether and why a solver converged.
 
     Attributes

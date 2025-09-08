@@ -1,13 +1,9 @@
-from __future__ import unicode_literals
-from builtins import object
 
 from pyamg import smoothed_aggregation_solver
 
 from ...scipy.preconditioners.scipyPreconditioner import ScipyPreconditioner
 
 __all__ = ["SmoothedAggregationPreconditioner"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class SmoothedAggregationPreconditioner(ScipyPreconditioner):
     """Preconditioner based on `PyAMG smoothed_aggregation_solver`_ for :class:`~fipy.solvers.scipy.scipySolver.ScipySolver`.

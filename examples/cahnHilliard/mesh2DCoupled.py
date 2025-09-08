@@ -3,7 +3,7 @@ r"""Solve the Cahn-Hilliard problem in two dimensions.
 .. warning:: This formulation has
    `serious performance problems`_
    and is **not automatically tested**.  Specifically, for non-trivial mesh
-   sizes, :ref:`PySparse` requires enormous amounts of memory,
+   sizes, (obsolete) Pysparse required enormous amounts of memory,
    :ref:`Trilinos` cannot solve the coupled form, and :ref:`PETSc` cannot
    solve the vector form.
 
@@ -179,7 +179,6 @@ a vector format.
 True
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

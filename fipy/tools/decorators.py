@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 ## ###################################################################
  # Portions of this code are copied and/or derived from numpy.lib.utils
  #
@@ -38,14 +37,11 @@ from __future__ import unicode_literals
  # ###################################################################
  ##
 
-from builtins import object
 import re
 import sys
 import warnings
 
 __all__ = ["deprecate"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 # Stolen from `numpy.lib.utils`
 if sys.version_info < (2, 4):

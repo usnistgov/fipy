@@ -155,15 +155,15 @@ The following items **must** be changed in your scripts
  * Some modules, such as :mod:`fipy.solvers`, have been significantly rearranged.
    For example, you need to change
 
-   >>> from fipy.solvers.linearPCGSolver import LinearPCGSolver
+   >>> from fipy.solvers.linearCGSSolver import LinearCGSSolver
 
    to either
 
-   >>> from fipy import LinearPCGSolver
+   >>> from fipy import LinearCGSSolver
 
    or
 
-   >>> from fipy.solvers.pysparse.linearPCGSolver import LinearPCGSolver
+   >>> from fipy.solvers.petsc.linearCGSSolver import LinearCGSSolver
 
 
  * The :func:`numerix.max` and :func:`numerix.min` functions no longer exist. Either
@@ -285,6 +285,5 @@ to indicate that we may not maintain the old syntax indefinitely.
 
 .. _mailing list:         http://www.ctcms.nist.gov/fipy/mail.html
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 

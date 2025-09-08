@@ -62,7 +62,6 @@ against the expected profile:
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var)
 
->>> from builtins import range
 >>> for step in range(steps):
 ...     eqn.solve(var, dt=timeStepDuration)
 ...     if (step % 100) == 0 and (__name__ == '__main__'):
@@ -78,7 +77,6 @@ We check the answer against the analytical result
 ...     viewer.plot()
 ...     input('finished')
 """
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

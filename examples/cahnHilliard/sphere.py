@@ -109,7 +109,6 @@ evolution of their problem.
    :alt: Cahn-Hilliard phase separation on the surface of a sphere with a rendering of the mesh
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

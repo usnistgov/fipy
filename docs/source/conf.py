@@ -11,7 +11,6 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-from __future__ import unicode_literals
 import sys, os
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -123,7 +122,7 @@ autodoc_default_options = {
 }
 
 autodoc_mock_imports = ['pyamg', 'pyamgx', 'pysvn', 'PyTrilinos.NOX',
-                        'pysparse', 'PyTrilinos', 'petsc4py', 'mpi4py',
+                        'PyTrilinos', 'petsc4py', 'mpi4py',
                         'mayavi', 'enthought']
 
 napoleon_numpy_docstring = True

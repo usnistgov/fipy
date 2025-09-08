@@ -1,23 +1,9 @@
-from __future__ import print_function
-from __future__ import unicode_literals
-from builtins import str
 from setuptools.command.test import test as _test
-from future.utils import text_to_native_str
-from future.utils import string_types
 import unittest
 import warnings
 import sys
 
 __all__ = ["DeprecationErroringTestProgram", "test"]
-__all__ = [text_to_native_str(n) for n in __all__]
-
-def _nativize_all(t):
-    def _nativize(s):
-        if isinstance(s, string_types):
-            s = text_to_native_str(s)
-        return s
-
-    return tuple([_nativize(s) for s in t])
 
 class DeprecationErroringTestProgram(unittest.TestProgram):
     """`TestProgram` that overrides inability of standard
@@ -59,13 +45,10 @@ class test(_test):
         ('inline', None, "run FiPy with inline compilation enabled"),
         ('pythoncompiled=', None, "directory in which to put weave's work product"),
         ('Trilinos', None, "run FiPy using Trilinos solvers"),
-        ('Pysparse', None, "run FiPy using Pysparse solvers (default)"),
         ('trilinos', None, "run FiPy using Trilinos solvers"),
-        ('pysparse', None, "run FiPy using Pysparse solvers (default)"),
         ('scipy', None, "run FiPy using SciPy solvers"),
         ('Scipy', None, "run FiPy using SciPy solvers"),
         ('petsc', None, "run FiPy using PETSc solvers"),
-        ('no-pysparse', None, "run FiPy without using the Pysparse solvers"),
         ('pyamgx', None, "run FiPy using the pyamgx solvers"),
         ('all', None, "run all non-interactive FiPy tests (default)"),
         ('really-all', None, "run *all* FiPy tests (including those requiring user input)"),
@@ -79,7 +62,6 @@ class test(_test):
         ('lsmlib', None, "run FiPy using the LSMLIB level set solver (default)"),
         ('deprecation-errors', None, "raise Exceptions for all DeprecationWarnings"),
        ]
-    user_options = [_nativize_all(u) for u in user_options]
 
     def initialize_options(self):
         _test.initialize_options(self)
@@ -95,10 +77,7 @@ class test(_test):
         self.cache = False
         self.no_cache = True
         self.Trilinos = False
-        self.Pysparse = False
         self.trilinos = False
-        self.pysparse = False
-        self.no_pysparse = False
         self.pyamgx = False
         self.scipy = False
         self.petsc = False
@@ -171,7 +150,7 @@ class test(_test):
 
     def run_tests(self):
         import sys
-        if self.Trilinos or self.trilinos or self.no_pysparse:
+        if self.Trilinos or self.trilinos:
             try:
                 ## The import scipy statement is added to allow
                 ## the --Trilinos tests to run without throwing a
@@ -278,4 +257,5 @@ class test(_test):
 
             barrier()
 
-        raise exitErr
+        if 'exitErr' in locals():
+            raise exitErr

@@ -104,10 +104,7 @@ we create the Cahn-Hilliard equation:
    single: DefaultSolver
 
 >>> from fipy.solvers import solver_suite
->>> if solver_suite in ['pysparse']:
-...     solver = LinearLUSolver(tolerance=1e-15, iterations=100)
-... else:
-...     solver = DefaultSolver(tolerance=1e-15, iterations=100)
+>>> solver = DefaultSolver(tolerance=1e-15, iterations=100)
 
 The solution to this 1D problem over an infinite domain is given by,
 
@@ -137,7 +134,6 @@ We iterate the solution to equilibrium and, if we are running interactively,
 we update the display and output data about the progression of the solution
 
 >>> dexp=-5
->>> from builtins import range
 >>> for step in range(100):
 ...     dt = numerix.exp(dexp)
 ...     dt = min(10, dt)
@@ -159,7 +155,6 @@ We compare the analytical solution with the numerical result,
 1
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

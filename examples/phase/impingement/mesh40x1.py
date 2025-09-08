@@ -194,7 +194,6 @@ so we require a stricter tolerance.
 >>> solver = thetaEq.getDefaultSolver(tolerance=1e-9)
 
 >>> steps = 10
->>> from builtins import range
 >>> for i in range(steps):
 ...     theta.updateOld()
 ...     thetaEq.solve(theta, dt=timeStepDuration, solver=solver)
@@ -212,13 +211,11 @@ extracts the data and compares it with the ``theta`` variable.
    single: loadtxt
 
 >>> import os
->>> from future.utils import text_to_native_str
->>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz'))
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
 >>> testData = CellVariable(mesh=mesh, value=testData)
 >>> print(theta.allclose(testData))
 True
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

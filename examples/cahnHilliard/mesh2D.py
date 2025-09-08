@@ -80,7 +80,7 @@ geometric means, and :term:`FiPy` makes it easy to obtain these, too.
 >>> import fipy.solvers.solver
 >>> if fipy.solvers.solver_suite in ['petsc']:
 ...     solver = DefaultSolver(precon=None)
-... elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+... elif fipy.solvers.solver_suite in ['trilinos']:
 ...     solver = LinearLUSolver()
 ... else:
 ...     solver = DefaultSolver()
@@ -113,7 +113,6 @@ True
    :alt: evolution of Cahn-Hilliard phase separation at t = 30, 100 and 1000
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

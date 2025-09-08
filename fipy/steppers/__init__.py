@@ -3,8 +3,6 @@
 Use `steppyngstounes <https://pages.nist.gov/steppyngstounes/en/latest>`_
 instead.
 """
-from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.steppers.stepper import Stepper
@@ -15,8 +13,6 @@ from fipy.tools.decorators import deprecate
 
 __all__ = ["L1error", "L2error", "LINFerror", "sweepMonotonic",
            "error", "residual"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 @deprecate(version="4.0",
            message="Pass a ``residualFn`` to :meth:`~fipy.terms.term.Term.sweep`.")

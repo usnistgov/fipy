@@ -1,9 +1,6 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = ["VTKViewer"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 from fipy.viewers.viewer import AbstractViewer
 from fipy.tests.doctestPlus import register_skipper

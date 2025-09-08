@@ -1,8 +1,3 @@
-from __future__ import print_function
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import object
-from builtins import zip
 from matplotlib import cm
 from matplotlib import pyplot
 from matplotlib import rcParams
@@ -17,8 +12,6 @@ from scipy.io import mmio
 from fipy.tools import numerix
 
 __all__ = ["MatplotlibSparseMatrixViewer"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class MatplotlibSparseMatrixViewer(object):
     """Displays :class:`~fipy.matrices.sparseMatrix._SparseMatrix` objects using Matplotlib_.

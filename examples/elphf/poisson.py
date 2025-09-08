@@ -183,7 +183,6 @@ and again view the result
 >>> if __name__ == '__main__':
 ...     viewer.plot()
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

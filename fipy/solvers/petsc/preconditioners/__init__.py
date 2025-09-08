@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from .defaultPreconditioner import *
 from .icPreconditioner import *
 from .iluPreconditioner import *

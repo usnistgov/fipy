@@ -189,6 +189,12 @@ Glossary
       A mechanism for mixing C and Python code.
       See http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/.
 
+   Pysparse
+      Pysparse is an archaic sparse matrix library for :term:`Python`.  As
+      it requires :term:`Python` 2.7, Pysparse is no longer supported.  If
+      absolutely required, Pysparse can be used in :term:`FiPy` 3.99.
+      See http://pysparse.sourceforge.net.
+
    Python
       The programming language that :term:`FiPy` (and your scripts) are
       written in. See

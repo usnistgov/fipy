@@ -391,7 +391,6 @@ is calculated with the CFL number and the maximum extension velocity.
 :math:`v_\text{ext}` throughout the whole domain using
 :math:`\nabla\phi\cdot\nabla v_\text{ext} = 0`.
 
->>> from builtins import range
 >>> for step in range(numberOfSteps):
 ...
 ...     if viewer is not None:
@@ -429,7 +428,6 @@ to tell if something has changed or been broken.
 >>> if __name__ == '__main__':
 ...     input('finished')
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 def _run():

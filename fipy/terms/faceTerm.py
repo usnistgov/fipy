@@ -1,17 +1,13 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 import os
 
-from fipy import input
 from fipy.terms.nonDiffusionTerm import _NonDiffusionTerm
 from fipy.tools import vector
 from fipy.tools import numerix
 from fipy.tools import inline
 
 __all__ = ["FaceTerm"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class FaceTerm(_NonDiffusionTerm):
     """

@@ -1,18 +1,15 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = ["ScipyKrylovSolver"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 import os
-import warnings
+from packaging.version import Version, parse as parse_version
 import scipy
+import warnings
 
 from .scipySolver import ScipySolver
 from fipy.tools import numerix
 from fipy.tools.timer import Timer
-from fipy.tools.version import Version, parse_version
 
 scipy_has_tol = (parse_version(scipy.__version__) < Version("1.12"))
 

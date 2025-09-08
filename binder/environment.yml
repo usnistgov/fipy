@@ -4,7 +4,6 @@ channels:
   - defaults
 dependencies:
   - python >=3.6
-  - future
   - numpy
   - scipy
   - gmsh

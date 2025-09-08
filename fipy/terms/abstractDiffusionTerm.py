@@ -1,12 +1,9 @@
-from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = []
 
 import os
 
-from fipy import input
 from fipy.solvers import INDEX_TYPE
 from fipy.terms.unaryTerm import _UnaryTerm
 from fipy.tools import numerix

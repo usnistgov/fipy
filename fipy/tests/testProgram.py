@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 import unittest
@@ -14,7 +13,7 @@ class TestProgram(unittest.TestProgram):
 ##        numMesh = 0
         try:
             options, args = getopt.getopt(argv[1:], 'hHvq',
-                                          ['help', 'verbose', 'quiet', 'inline', 'Trilinos', 'Pysparse', 'pysparse', 'trilinos', 'no-pysparse', 'scipy', 'skfmm', 'lsmlib'])
+                                          ['help', 'verbose', 'quiet', 'inline', 'Trilinos', 'trilinos', 'scipy', 'skfmm', 'lsmlib'])
             for opt, value in options:
                 if opt in ('-h', '-H', '--help'):
                     self.usageExit()

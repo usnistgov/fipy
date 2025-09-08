@@ -528,7 +528,7 @@ We now use the ":meth:`~fipy.terms.term.Term.sweep`" method instead of
 ...     solver = DefaultAsymmetricSolver(criterion="initial",
 ...                                      precon=HYPREPreconditioner(),
 ...                                      tolerance=1e-10)
-... elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+... elif fipy.solvers.solver_suite in ['trilinos']:
 ...     from fipy import LinearBicgstabSolver
 ...     solver = LinearBicgstabSolver(criterion="initial",
 ...                                   tolerance=1e-10)
@@ -624,7 +624,6 @@ time step of about :math:`10^{-5}~\\mathrm{s}`.
 
 >>> dt0 = 1.e-5
 
->>> from builtins import range
 >>> for i in range(8):
 ...     phase.updateOld()
 ...     C.updateOld()
@@ -766,7 +765,6 @@ perceptible changes in the concentration field.
 
 .. _PID controller: https://en.wikipedia.org/wiki/PID_controller
 """
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

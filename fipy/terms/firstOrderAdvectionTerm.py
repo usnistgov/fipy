@@ -1,10 +1,6 @@
-from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = ['FirstOrderAdvectionTerm']
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 from fipy.solvers import INDEX_TYPE
 from fipy.tools import numerix
@@ -133,7 +129,7 @@ class FirstOrderAdvectionTerm(_NonDiffusionTerm):
             warnings.warn("%s cannot solve asymmetric matrices" % solver)
 
         import fipy.solvers.solver
-        if fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+        if fipy.solvers.solver_suite == 'trilinos':
             from fipy.solvers.trilinos.preconditioners.jacobiPreconditioner import JacobiPreconditioner
             from fipy.solvers.trilinos.linearGMRESSolver import LinearGMRESSolver
             return solver or LinearGMRESSolver(precon=JacobiPreconditioner(), *args, **kwargs)

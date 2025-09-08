@@ -1,8 +1,3 @@
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import range
-from builtins import str
-from future.utils import text_to_native_str
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -19,8 +14,7 @@ from fipy.tools import numerix
 # 1) Adding matrices - the matrix with fewer non-zeros gets added into the one
 # that has more; this works as long as it's nonzero entries are a subset of the
 # larger one's nonzero entries. Is true for all cases in fipy, but is not true
-# in the general case - this isn't a general matrix class like the pysparse
-# matrix class is.
+# in the general case.
 #
 # 2) addAt currently not guaranteed to work for fill-completed matrices, if
 # elements are being added in new spots.
@@ -476,7 +470,7 @@ class _TrilinosMatrix(_SparseMatrix):
         Exports the matrix to a Matrix Market file of the given `filename`.
         """
         self.fillComplete()
-        EpetraExt.RowMatrixToMatrixMarketFile(text_to_native_str(filename), self.matrix)
+        EpetraExt.RowMatrixToMatrixMarketFile(filename, self.matrix)
 
     @property
     def numpyArray(self):
@@ -1172,8 +1166,7 @@ class _TrilinosMeshMatrix(_TrilinosRowMeshMatrix):
             True
 
         Should be able to multiply an overlapping value obtained from a
-        `CellVariable`. This is required to make the `--no-pysparse` flag
-        work correctly.
+        `CellVariable`.
 
             >>> from fipy import *
             >>> m = Grid1D(nx=6)

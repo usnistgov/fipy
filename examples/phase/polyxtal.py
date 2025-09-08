@@ -203,7 +203,6 @@ color scheme of grain orientation won't be very informative "out of the box".
 Because all of Python is accessible and FiPy is object oriented, it is not hard
 to adapt one of the existing viewers to create a specialized display:
 
->>> from builtins import zip
 >>> if __name__ == "__main__":
 ...     try:
 ...         class OrientationViewer(Matplotlib2DGridViewer):
@@ -336,7 +335,6 @@ The non-uniform temperature results from the release of latent
 heat at the solidifying interface. The dendrite arms grow fastest
 where the temperature gradient is steepest.
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

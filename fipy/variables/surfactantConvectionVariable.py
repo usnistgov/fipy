@@ -1,10 +1,6 @@
-from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 __all__ = ['SurfactantConvectionVariable']
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 from fipy.tools.numerix import MA
 from fipy.tools import numerix
