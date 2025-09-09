@@ -62,12 +62,10 @@ copyright = u'works of NIST employees are not not subject to copyright protectio
 # built documents.
 #
 
-import fipy
-
-# The short X.Y version.
-version = fipy.__version__
-# The full version, including alpha/beta/rc tags.
-release = fipy.__version__
+from importlib.metadata import version as get_version
+release: str = get_version("fipy")
+# for example take major/minor
+version: str = ".".join(release.split('.')[:2])
 
 # Without this import, get metric craptons of
 #   TypeError("'>' not supported between instances of 'size' and 'int'")

@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "versioneer[toml]"]
+requires = ["setuptools>=80", "setuptools-scm[simple]>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -43,19 +43,10 @@ Issues = "https://github.com/usnistgov/fipy/issues"
 [tool.setuptools.packages.find]
 include = ["fipy*"]  # ["*"] by default
 
-[tool.versioneer]
-VCS = "git"
-style = "pep440"
-versionfile_source = "fipy/_version.py"
-versionfile_build = "fipy/_version.py"
-tag_prefix = ""
-parentdir_prefix = ""
-
 [project.scripts]
 "fipy_changelog" = "fipy.tools.changelog:app"
 "fipy_copy_script" = "fipy.tools.copy_script:app"
 "fipy_test" = "fipy.tests.test:app"
-"versioneer" = "versioneer:main"
 
 [tool.setuptools_scm]
 version_scheme = "no-guess-dev"
