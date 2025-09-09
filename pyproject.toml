@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "versioneer[toml]"]
+requires = ["setuptools", "versioneer[toml]", "typer"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -45,7 +45,10 @@ tag_prefix = ""
 parentdir_prefix = ""
 
 [project.scripts]
-"changelog" = "_setup.changelog:changelog"
-"copy_script" = "_setup.copy_script:copy_script"
-"release" = "_setup.release:release"
+"fipy_changelog" = "fipy.tools.changelog:app"
+"fipy_copy_script" = "fipy.tools.copy_script:app"
+"fipy_test" = "fipy.tests.test:app"
 "versioneer" = "versioneer:main"
+
+[tool.setuptools_scm]
+version_scheme = "no-guess-dev"
