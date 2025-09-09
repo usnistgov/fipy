@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools", "versioneer[toml]"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "FiPy"
+authors = [
+  { name="Jonathan Guyer" },
+  { name="Daniel Wheeler" },
+  { name="Jim Warren" },
+]
+description = "A finite volume PDE solver in Python"
+readme = "README.rst"
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Environment :: X11 Applications",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+license = "NIST-Software"
+license-files = ["LICEN[CS]E*"]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/usnistgov/fipy"
+Issues = "https://github.com/usnistgov/fipy/issues"
+
+[tool.setuptools.packages.find]
+include = ["fipy*"]  # ["*"] by default
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "fipy/_version.py"
+versionfile_build = "fipy/_version.py"
+tag_prefix = ""
+parentdir_prefix = ""
+
+[project.scripts]
+"changelog" = "_setup.changelog:changelog"
+"copy_script" = "_setup.copy_script:copy_script"
+"release" = "_setup.release:release"
+"versioneer" = "versioneer:main"
