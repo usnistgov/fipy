@@ -218,11 +218,11 @@ Check the issue_ list and update the :ref:`CHANGELOG`::
 
    You can use::
 
-      $ python setup.py changelog --after=<x.y>
+      $ fipy_changelog --after=<x.y>
 
    or::
 
-      $ python setup.py changelog --milestone=<x.z>
+      $ fipy_changelog --milestone=<x.z>
 
    to obtain a ReST-formatted list of every GitHub_ `pull request`_ and issue_
    closed since the last release.

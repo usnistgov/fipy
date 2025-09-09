@@ -1,67 +1,36 @@
-"""Uses basic authentication (Github username + password) to retrieve issues
-from a repository that username has access to. Supports Github API v3.
+"""Uses personal access token or basic authentication (Github username +
+password) to retrieve issues from a repository that username has access to.
+Supports Github API v3.
 Adapted from: https://gist.github.com/patrickfuller/e2ea8a94badc5b6967ef3ca0a9452a43
 """
 
-import os
 import textwrap
-from distutils.core import Command
+import typer
+from typer import Argument, Option
+from typing_extensions import Annotated
 
-__all__ = ["changelog"]
+__all__ = ["app"]
 
-class changelog(Command):
-    description = "Generate ReST change log from github issues and pull requests"
+class ChangeLog(object):
+    """Generate ReST change log from github issues and pull requests
+    """
 
-    # List of option tuples: long name, short name (None if no short
-    # name), and help string.
-    user_options = [
-        ('repository=', None,
-         "GitHub repository to obtain issues from (default: 'usnistgov/fipy')"),
-        ('tokenvar=', None,
-         "Environment variable holding GitHub personal access token "
-         "with 'repo' scope (default: 'FIPY_GITHUB_TOKEN')"),
-        ('username=', None,
-         "GitHub username to authenticate as (default: None). "
-         "Supersedes `tokenvar`. "
-         "Note: GitHub limits the rate of unauthenticated queries: "
-         "https://developer.github.com/v3/#rate-limiting"),
-        ('state=', None,
-         "Indicates the state of the issues to return. "
-         "Can be either `open`, `closed`, or `all`. (default: `closed`)"),
-        ('after=', None,
-         "Only issues closed at or after this tag, SHA, or date are returned."),
-        ('before=', None,
-         "Only issues closed at or before this tag, SHA, or date are returned."),
-        ('milestone=', None,
-         "A string referring to a milestone by its title field. "
-         "If the string `*` is passed, issues with any milestone are accepted. "
-         "If the string `none` is passed, "
-         "issues without milestones are returned. ")
-     ]
-
-    def initialize_options(self):
-        import github
-
-        self.repository = "usnistgov/fipy"
-        self.tokenvar = "FIPY_GITHUB_TOKEN"
-        self.username = None
-        self.auth = None
-        self.state = "closed"
-        self.after = None
-        self.before = None
-        self.milestone = None
-
-    def finalize_options(self):
-        if self.username is not None:
-            from getpass import getpass
-
-            password = getpass("Password for 'https://{}@github.com': ".format(self.username))
-            self.auth = (username, password)
-        else:
-            try:
-                self.auth = (os.environ[self.tokenvar],)
-            except KeyError:
-                pass
+    def __init__(self,
+        repository,
+        auth,
+        username,
+        state,
+        after,
+        before,
+        milestone
+    ):
+        self.repository = repository
+        self.auth = auth
+        self.username = username
+        self.state = state
+        self.after = after
+        self.before = before
+        self.milestone = milestone
 
     def _printReST(self, issues, label):
         """Print section of issues to stdout
@@ -85,7 +54,7 @@ class changelog(Command):
             try:
                 milestone = milestones[0]
             except IndexError:
-                raise KeyError("Milestone `{}` not found".format(self.milestone))
+                raise KeyError(f"Milestone `{self.milestone}` not found")
 
         return milestone
 
@@ -127,12 +96,8 @@ class changelog(Command):
         s = [textwrap.fill(x.title,
                            initial_indent=prefix,
                            subsequent_indent=hang)]
-        s += [u"{}(`#{} <{}>`_)".format(hang,
-                                        x.number,
-                                        x.html_url)]
-        s += ([u"{}Thanks to `@{} <{}>`_.".format(hang,
-                                                  x.user.login,
-                                                  x.user.html_url)]
+        s += [f"{hang}(`#{x.number} <{x.html_url}>`_)"]
+        s += ([f"{hang}Thanks to `@{x.user.login} <{x.user.html_url}>`_."]
                if x.user.login not in self.collaborators
                else [])
         return "\n".join(s)
@@ -140,8 +105,7 @@ class changelog(Command):
     def format_issue(self, x):
         prefix = "- "
         hang = " " * len(prefix)
-        s = [prefix + u"`#{} <{}>`_:".format(x.number,
-                                             x.html_url)]
+        s = [prefix + f"`#{x.number} <{x.html_url}>`_:"]
         s += [textwrap.fill(x.title,
                             initial_indent=hang,
                             subsequent_indent=hang)]
@@ -223,3 +187,67 @@ class changelog(Command):
 
         self._printReST(issues[ispull & issues['merged']], "Pulls")
         self._printReST(issues[isissue], "Fixes")
+
+def main(
+    repository: Annotated[
+        str,
+        Argument(help="GitHub repository to obtain issues from")
+    ] = "usnistgov/fipy",
+    token: Annotated[
+        str,
+        Argument(envvar="FIPY_GITHUB_TOKEN",
+                 help="GitHub personal access token with 'repo' scope")
+    ] = None,
+    username: Annotated[
+        str,
+        Option(help="GitHub username to authenticate as. "
+                    "Superseded by `token`. "
+                    "Note: GitHub limits the rate of unauthenticated queries: "
+                    "https://developer.github.com/v3/#rate-limiting")
+    ] = None,
+    state: Annotated[
+        str,
+        Option(help="Indicates the state of the issues to return. "
+                    "Can be either `open`, `closed`, or `all`.")
+    ] = "closed",
+    after: Annotated[
+        str,
+        Option(help="Only issues closed at or after this tag, SHA, or date are returned.")
+    ] = None,
+    before: Annotated[
+        str,
+        Option(help="Only issues closed at or before this tag, SHA, or date are returned.")
+    ] = None,
+    milestone: Annotated[
+        str,
+        Option(help="A string referring to a milestone by its title field. "
+                    "If the string `*` is passed, issues with any milestone are accepted. "
+                    "If the string `none` is passed, "
+                    "issues without milestones are returned. ")
+    ] = None,
+):
+    if token is not None:
+        auth = (token,)
+    elif username is not None:
+        from getpass import getpass
+
+        password = getpass(f"Password for 'https://{self.username}@github.com': ")
+        auth = (username, password)
+    else:
+        raise ValueError("Either a GitHub personal access token or a --username is required")
+
+    return ChangeLog(
+        repository=repository,
+        auth=auth,
+        username=username,
+        state=state,
+        after=after,
+        before=before,
+        milestone=milestone
+    ).run()
+
+app = typer.Typer()
+app.command()(main)
+
+if __name__ == "__main__":
+    app()
