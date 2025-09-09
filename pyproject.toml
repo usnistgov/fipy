@@ -11,6 +11,9 @@ authors = [
 ]
 description = "A finite volume PDE solver in Python"
 readme = "README.rst"
+dependencies = [
+    "typer",
+]
 requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
