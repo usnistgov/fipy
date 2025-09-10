@@ -55,7 +55,7 @@ def main():
     try:
         client.checkout(url, dir)
 
-        scanf_e = "[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?"
+        scanf_e = r"[-+]?(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?"
 
         reCPU = re.compile("cpu time: (%s) s / step / cell" % scanf_e)
         reRSZ = re.compile("max resident memory: (%s) B / cell" % scanf_e)

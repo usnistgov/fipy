@@ -1,4 +1,4 @@
-"""
+r"""
 
 This input file again solves an explicit 1D diffusion problem as in
 `./examples/diffusion/mesh1D.py` but on a mesh with both square and triangular
