@@ -111,7 +111,7 @@ examples <part:examples>`. To run the test cases in both :ref:`modules
 
    You may need to first run::
 
-        $ python setup.py egg_info
+        $ python -m build
 
    for this to work properly.
 
