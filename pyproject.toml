@@ -17,7 +17,7 @@ dependencies = [
     "matplotlib",
     "typer",
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
@@ -31,9 +31,8 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Visualization",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-# These fields aren't supported by python < 3.9
-# license = "NIST-Software"
-# license-files = ["LICEN[CS]E*"]
+license = "NIST-Software"
+license-files = ["LICEN[CS]E*"]
 dynamic = ["version"]
 
 [project.urls]
