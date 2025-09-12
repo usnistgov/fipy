@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "versioneer[toml]", "typer"]
+requires = ["setuptools", "versioneer[toml]"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -12,9 +12,12 @@ authors = [
 description = "A finite volume PDE solver in Python"
 readme = "README.rst"
 dependencies = [
+    "numpy",
+    "scipy",
+    "matplotlib",
     "typer",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.7"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
@@ -28,8 +31,9 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Visualization",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-license = "NIST-Software"
-license-files = ["LICEN[CS]E*"]
+# These fields aren't supported by python < 3.9
+# license = "NIST-Software"
+# license-files = ["LICEN[CS]E*"]
 dynamic = ["version"]
 
 [project.urls]
