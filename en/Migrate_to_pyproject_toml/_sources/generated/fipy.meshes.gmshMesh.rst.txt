@@ -1,0 +1,51 @@
+fipy.meshes.gmshMesh
+====================
+
+.. automodule:: fipy.meshes.gmshMesh
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      gmshVersion
+      openMSHFile
+      openPOSFile
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Gmsh2D
+      Gmsh2DIn3DSpace
+      Gmsh3D
+      GmshFile
+      GmshGrid2D
+      GmshGrid3D
+      MSHFile
+      POSFile
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      GmshException
+      MeshExportError
+   
+   
+
+
+

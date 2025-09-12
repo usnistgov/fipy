@@ -1,0 +1,29 @@
+fipy.solvers.petsc.preconditioners.iluPreconditioner
+====================================================
+
+.. automodule:: fipy.solvers.petsc.preconditioners.iluPreconditioner
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ILUPreconditioner
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,38 @@
+fipy.tests.test
+===============
+
+.. automodule:: fipy.tests.test
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+      paths_on_pythonpath
+      project_on_sys_path
+      run_tests
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DeprecationErroringTestProgram
+   
+   
+
+   
+   
+   
+
+
+
