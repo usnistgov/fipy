@@ -133,41 +133,37 @@ def doctest_raw_input(prompt):
         txt = _serial_doctest_raw_input(prompt)
 #     return txt
 
-def test(*args):
+def test(*args, **kwargs):
     r"""
-    Test `Fipy`. Equivalent to::
+    Test :term:`Fipy`. Equivalent to::
 
-        $ python setup.py test --modules
+        $ fipy_test --modules
 
-    Use
+    Use::
 
-    >>> import fipy
-    >>> fipy.test('--help')
+        $ fipy_test --help
 
     for a full list of options. Options can be passed in the same way
     as they are appended at the command line. For example, to test
-    `FiPy` with `Trilinos` and inlining switched on, use
+    :term:`FiPy` with :ref:`Trilinos` and inlining switched on, use
 
-    >>> fipy.test('--trilinos', '--inline')
+    >>> fipy.test(trilinos=True, inline=True)
 
     At the command line this would be::
 
-        $ python setup.py test --modules --trilinos --inline
+        $ fipy_test --modules --trilinos --inline
+
+    .. note::
+
+        A :command:`fipy_test` option like :option:`--deprecation-errors`
+        is equivalent to the :func:`~fipy.test` argument
+        ``deprecation_errors``.
 
     """
 
-    from setuptools import setup
-    from fipy.tests.test import test
-    import tempfile
-
-    tmpDir = tempfile.mkdtemp()
+    from fipy.tests.test import main
 
     try:
-        setup(name='FiPy',
-              script_args = ['egg_info', '--egg-base=' + tmpDir,
-                             'test', '--modules'] + list(args),
-              cmdclass={'test': test})
-    except SystemExit as exitErr:
-        import shutil
-        shutil.rmtree(tmpDir)
-        raise exitErr
+        main(modules=True, *args, **kwargs)
+    except SystemExit:
+        pass

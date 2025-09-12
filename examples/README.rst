@@ -27,7 +27,7 @@ These examples can be used in at least four ways:
 - Alternatively, these interactive Python_ sessions, known as doctest_
   blocks, can be invoked as automatic tests::
 
-    $ python setup.py test --examples
+    $ fipy_test --examples
 
   In this way, the documentation and the code are always certain to be
   consistent.

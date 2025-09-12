@@ -36,7 +36,7 @@ Merge updated state of ``master`` to the branch::
 
 Resolve any conflicts and test::
 
-    $ python setup.py test
+    $ fipy_test
 
 Submit branch for code review
 -----------------------------
