@@ -76,17 +76,18 @@ if _log.isEnabledFor(logging.DEBUG):
     try:
         _fipy_environment.update(environment.conda_info())
     except Exception as e:
-        _log.error("conda-info: " + str(e))
+        _log.error("conda-info: %s", e)
 
     try:
         _fipy_environment.update(environment.pip_info())
     except Exception as e:
-        _log.error("pip-info: " + str(e))
+        _log.error("pip-info: %s", e)
 
     try:
         _fipy_environment.update(environment.nix_info())
+        raise ValueError("wow!")
     except Exception as e:
-        _log.error("nix-info: " + str(e))
+        _log.error("nix-info: %s", e)
 
 _log.debug(json.dumps(_fipy_environment))
 
