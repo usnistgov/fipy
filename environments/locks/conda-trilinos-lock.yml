@@ -13,8 +13,8 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: 34e534b30b9b533e1b8e75557f2cda1a766020b87dbe75ec1cc2a0bd5263f014
-    osx-64: af2a108f179565c65703db8d0ec1fac1f5e351b43c65e32bae420c7d68adc1a8
+    linux-64: e50cbf8a0b4fa2c9698d9d3a16c4c48d435941dff89de88d31df68fd1ba6ba48
+    osx-64: cd5ed9b84aa1828e7f2001184c25627469cc8b4a9608e2e2df5117e00e0674d2
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -383,30 +383,6 @@ package:
     sha256: 1873ac45ea61f95750cb0b4e5e675d1c5b3def937e80c7eebb19297f76810be8
   category: main
   optional: false
-- name: colorama
-  version: 0.4.6
-  manager: conda
-  platform: linux-64
-  dependencies:
-    python: '>=3.7'
-  url: https://conda.anaconda.org/conda-forge/noarch/colorama-0.4.6-pyhd8ed1ab_0.tar.bz2
-  hash:
-    md5: 3faab06a954c2a04039983f2c4a50d99
-    sha256: 2c1b2e9755ce3102bca8d69e8f26e4f087ece73f50418186aee7c74bef8e1698
-  category: main
-  optional: false
-- name: colorama
-  version: 0.4.6
-  manager: conda
-  platform: osx-64
-  dependencies:
-    python: '>=3.7'
-  url: https://conda.anaconda.org/conda-forge/noarch/colorama-0.4.6-pyhd8ed1ab_0.tar.bz2
-  hash:
-    md5: 3faab06a954c2a04039983f2c4a50d99
-    sha256: 2c1b2e9755ce3102bca8d69e8f26e4f087ece73f50418186aee7c74bef8e1698
-  category: main
-  optional: false
 - name: configobj
   version: 5.0.9
   manager: conda
@@ -596,30 +572,6 @@ package:
   hash:
     md5: 8db88c2ed842243a263041cde57296ca
     sha256: cfa0a87bbe49b189e537314917a5f4f377027e007cbf5af0936401f1ed8836be
-  category: main
-  optional: false
-- name: exceptiongroup
-  version: 1.2.2
-  manager: conda
-  platform: linux-64
-  dependencies:
-    python: '>=3.7'
-  url: https://conda.anaconda.org/conda-forge/noarch/exceptiongroup-1.2.2-pyhd8ed1ab_0.conda
-  hash:
-    md5: d02ae936e42063ca46af6cdad2dbd1e0
-    sha256: e0edd30c4b7144406bb4da975e6bb97d6bc9c0e999aa4efe66ae108cada5d5b5
-  category: main
-  optional: false
-- name: exceptiongroup
-  version: 1.2.2
-  manager: conda
-  platform: osx-64
-  dependencies:
-    python: '>=3.7'
-  url: https://conda.anaconda.org/conda-forge/noarch/exceptiongroup-1.2.2-pyhd8ed1ab_0.conda
-  hash:
-    md5: d02ae936e42063ca46af6cdad2dbd1e0
-    sha256: e0edd30c4b7144406bb4da975e6bb97d6bc9c0e999aa4efe66ae108cada5d5b5
   category: main
   optional: false
 - name: expat
@@ -1625,30 +1577,6 @@ package:
   hash:
     md5: c808991d29b9838fb4d96ce8267ec9ec
     sha256: 2cb9db3e40033c3df72d3defc678a012840378fd55a67e4351363d4b321a0dc1
-  category: main
-  optional: false
-- name: iniconfig
-  version: 2.0.0
-  manager: conda
-  platform: linux-64
-  dependencies:
-    python: '>=3.7'
-  url: https://conda.anaconda.org/conda-forge/noarch/iniconfig-2.0.0-pyhd8ed1ab_0.conda
-  hash:
-    md5: f800d2da156d08e289b14e87e43c1ae5
-    sha256: 38740c939b668b36a50ef455b077e8015b8c9cf89860d421b3fff86048f49666
-  category: main
-  optional: false
-- name: iniconfig
-  version: 2.0.0
-  manager: conda
-  platform: osx-64
-  dependencies:
-    python: '>=3.7'
-  url: https://conda.anaconda.org/conda-forge/noarch/iniconfig-2.0.0-pyhd8ed1ab_0.conda
-  hash:
-    md5: f800d2da156d08e289b14e87e43c1ae5
-    sha256: 38740c939b668b36a50ef455b077e8015b8c9cf89860d421b3fff86048f49666
   category: main
   optional: false
 - name: jpeg
@@ -4195,32 +4123,6 @@ package:
     sha256: c81bdeadc4adcda216b2c7b373f0335f5c78cc480d1d55d10f21823590d7e46f
   category: main
   optional: false
-- name: pluggy
-  version: 1.0.0
-  manager: conda
-  platform: linux-64
-  dependencies:
-    importlib_metadata: '>=0.12'
-    python: '>=3.7,<3.8.0a0'
-    python_abi: 3.7.*
-  url: https://conda.anaconda.org/conda-forge/linux-64/pluggy-1.0.0-py37h89c1867_3.tar.bz2
-  hash:
-    md5: 6364b39df084274961ed1d21a8cd060b
-    sha256: e6b508c56da5679aea74ed2e54d4c7b6570025ca8ebed073688f6948c54add88
-  category: main
-  optional: false
-- name: pluggy
-  version: 1.5.0
-  manager: conda
-  platform: osx-64
-  dependencies:
-    python: '>=3.8'
-  url: https://conda.anaconda.org/conda-forge/noarch/pluggy-1.5.0-pyhd8ed1ab_0.conda
-  hash:
-    md5: d3483c8fc2dc2cc3f5cf43e26d60cabf
-    sha256: 33eaa3359948a260ebccf9cdc2fd862cea5a6029783289e13602d8e634cd9a26
-  category: main
-  optional: false
 - name: ply
   version: '3.11'
   manager: conda
@@ -4553,42 +4455,6 @@ package:
   hash:
     md5: 2a7de29fb590ca14b5243c4c812c8025
     sha256: a42f826e958a8d22e65b3394f437af7332610e43ee313393d1cf143f0a2d274b
-  category: main
-  optional: false
-- name: pytest
-  version: 7.4.4
-  manager: conda
-  platform: linux-64
-  dependencies:
-    colorama: ''
-    exceptiongroup: '>=1.0.0rc8'
-    iniconfig: ''
-    packaging: ''
-    pluggy: '>=0.12,<2.0'
-    python: '>=3.7'
-    tomli: '>=1.0.0'
-  url: https://conda.anaconda.org/conda-forge/noarch/pytest-7.4.4-pyhd8ed1ab_0.conda
-  hash:
-    md5: a9d145de8c5f064b5fa68fb34725d9f4
-    sha256: 8979721b7f86b183d21103f3ec2734783847d317c1b754f462f407efc7c60886
-  category: main
-  optional: false
-- name: pytest
-  version: 8.3.4
-  manager: conda
-  platform: osx-64
-  dependencies:
-    colorama: ''
-    exceptiongroup: '>=1.0.0rc8'
-    iniconfig: ''
-    packaging: ''
-    pluggy: <2,>=1.5
-    python: '>=3.8'
-    tomli: '>=1'
-  url: https://conda.anaconda.org/conda-forge/noarch/pytest-8.3.4-pyhd8ed1ab_0.conda
-  hash:
-    md5: ff8f2ef7f2636906b3781d0cf92388d0
-    sha256: 254256beab3dcf29907fbdccee6fbbb3371e9ac3782d2b1b5864596a0317818e
   category: main
   optional: false
 - name: python
@@ -5179,18 +5045,6 @@ package:
 - name: tomli
   version: 2.0.2
   manager: conda
-  platform: linux-64
-  dependencies:
-    python: '>=3.7'
-  url: https://conda.anaconda.org/conda-forge/noarch/tomli-2.0.2-pyhd8ed1ab_0.conda
-  hash:
-    md5: e977934e00b355ff55ed154904044727
-    sha256: 5e742ba856168b606ac3c814d247657b1c33b8042371f1a08000bdc5075bc0cc
-  category: main
-  optional: false
-- name: tomli
-  version: 2.0.2
-  manager: conda
   platform: osx-64
   dependencies:
     python: '>=3.7'
@@ -5471,7 +5325,7 @@ package:
   manager: conda
   platform: osx-64
   dependencies: {}
-  url: https://conda.anaconda.org/conda-forge/osx-64/x264-1%21164.3095-h775f41a_2.tar.bz2
+  url: https://conda.anaconda.org/conda-forge/osx-64/x264-1!164.3095-h775f41a_2.tar.bz2
   hash:
     md5: 23e9c3180e2c0f9449bb042914ec2200
     sha256: de611da29f4ed0733a330402e163f9260218e6ba6eae593a5f945827d0ee1069

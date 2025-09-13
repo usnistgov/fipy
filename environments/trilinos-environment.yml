@@ -13,7 +13,6 @@ dependencies:
   - mpich
   - mpi4py
   - pytrilinos
-  - pytest
   - pip
   - pip:
     - steppyngstounes
