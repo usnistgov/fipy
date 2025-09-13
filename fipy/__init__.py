@@ -1,10 +1,10 @@
 """An object oriented, partial differential equation (PDE) solver
 
-:term:`FiPy` is based on a standard finite volume (FV) approach. The
-framework has been developed in the Materials Science and Engineering Division
-(MSED_) and Center for Theoretical and Computational Materials Science (CTCMS_),
-in the Material Measurement Laboratory (MML_) at the National Institute of
-Standards and Technology (NIST_).
+:term:`FiPy` is based on a standard finite volume (FV) approach.  The
+framework has been developed in the Materials Science and Engineering
+Division (MSED_) and Center for Theoretical and Computational Materials
+Science (CTCMS_), in the Material Measurement Laboratory (MML_) at the
+National Institute of Standards and Technology (NIST_).
 
 The solution of coupled sets of PDEs is ubiquitous to the numerical
 simulation of science problems.  Numerous PDE solvers exist, using a
@@ -18,13 +18,14 @@ array calculations, sparse matrices and data rendering.
 
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
-combinations of coupled elliptic, hyperbolic and parabolic PDEs. Currently
+combinations of coupled elliptic, hyperbolic and parabolic PDEs.  Currently
 implemented models include phase field :cite:`BoettingerReview:2002`
-:cite:`ChenReview:2002` :cite:`McFaddenReview:2002` treatments of polycrystalline,
-dendritic, and electrochemical phase transformations, as well as drug
-eluting stents :cite:`Saylor:2011p2794`, reactive wetting :cite:`PhysRevE.82.051601`,
-photovoltaics :cite:`Hangarter:2011p2795` and a level set treatment of the
-electrodeposition process :cite:`NIST:damascene:2001`.
+:cite:`ChenReview:2002` :cite:`McFaddenReview:2002` treatments of
+polycrystalline, dendritic, and electrochemical phase transformations, as
+well as drug eluting stents :cite:`Saylor:2011p2794`, reactive wetting
+:cite:`PhysRevE.82.051601`, photovoltaics :cite:`Hangarter:2011p2795` and a
+level set treatment of the electrodeposition process
+:cite:`NIST:damascene:2001`.
 
 .. _MML:                  http://www.nist.gov/mml/
 .. _CTCMS:                http://www.ctcms.nist.gov/
