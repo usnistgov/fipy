@@ -39,6 +39,16 @@ import logging.config
 import os
 import sys
 
+from . import _version
+from fipy.boundaryConditions import *
+from fipy.meshes import *
+from fipy.solvers import *
+from fipy.terms import *
+from fipy.tools import *
+from fipy.tools.logging import environment
+from fipy.variables import *
+from fipy.viewers import *
+
 # configure logging before doing anything else, otherwise we'll miss things
 if 'FIPY_LOG_CONFIG' in os.environ:
     with open(os.environ['FIPY_LOG_CONFIG'], mode='r') as fp:
@@ -47,11 +57,7 @@ if 'FIPY_LOG_CONFIG' in os.environ:
 _log = logging.getLogger(__name__)
 
 # __version__ needs to be defined before calling package_info()
-from . import _version
 __version__ = _version.get_versions()['version']
-
-
-from fipy.tools.logging import environment
 
 _fipy_environment = {
     "argv": sys.argv,
@@ -63,29 +69,20 @@ _fipy_environment = {
 if _log.isEnabledFor(logging.DEBUG):
     try:
         _fipy_environment.update(environment.conda_info())
-    except:
+    except Exception:
         pass
 
     try:
         _fipy_environment.update(environment.pip_info())
-    except:
+    except Exception:
         pass
 
     try:
         _fipy_environment.update(environment.nix_info())
-    except:
+    except Exception:
         pass
 
 _log.debug(json.dumps(_fipy_environment))
-
-
-from fipy.boundaryConditions import *
-from fipy.meshes import *
-from fipy.solvers import *
-from fipy.terms import *
-from fipy.tools import *
-from fipy.variables import *
-from fipy.viewers import *
 
 # fipy needs to export raw_input whether or not parallel
 
@@ -93,14 +90,16 @@ input_original = input
 
 if parallelComm.Nproc > 1:
     def mpi_input(prompt=""):
+        """Replacement for `input` for multiple processes
+        """
         parallelComm.Barrier()
         sys.stdout.flush()
         if parallelComm.procID == 0:
             sys.stdout.write(prompt)
             sys.stdout.flush()
             return sys.stdin.readline()
-        else:
-            return ""
+
+        return ""
     input = mpi_input
 else:
     input = input_original
@@ -121,7 +120,6 @@ def doctest_raw_input(prompt):
     This routine attempts to be savvy about running in parallel.
     """
     try:
-        from fipy.tools import parallelComm
         parallelComm.Barrier()
         _saved_stdout.flush()
         if parallelComm.procID == 0:
@@ -131,7 +129,7 @@ def doctest_raw_input(prompt):
         parallelComm.Barrier()
     except ImportError:
         txt = _serial_doctest_raw_input(prompt)
-#     return txt
+    return txt
 
 def test(*args, **kwargs):
     r"""
