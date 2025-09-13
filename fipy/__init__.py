@@ -56,7 +56,7 @@ if 'FIPY_LOG_CONFIG' in os.environ:
     with open(
         os.environ['FIPY_LOG_CONFIG'],
         mode='r',
-        encoding="utf-8" # should be "locale" (PEP 597), needs py>3.9
+        encoding="utf-8"  # should be "locale" (PEP 597), needs py>3.9
     ) as config:
         logging.config.dictConfig(json.load(config))
 
@@ -76,18 +76,17 @@ if _log.isEnabledFor(logging.DEBUG):
     try:
         _fipy_environment.update(environment.conda_info())
     except Exception as e:
-        _log.error(f"conda-info: {e}")
+        _log.error("conda-info: " + str(e))
 
     try:
         _fipy_environment.update(environment.pip_info())
     except Exception as e:
-        _log.error(f"pip-info: {e}")
+        _log.error("pip-info: " + str(e))
 
     try:
         _fipy_environment.update(environment.nix_info())
-        raise ValueError("wow!")
     except Exception as e:
-        _log.error(f"nix-info: {e}")
+        _log.error("nix-info: " + str(e))
 
 _log.debug(json.dumps(_fipy_environment))
 
