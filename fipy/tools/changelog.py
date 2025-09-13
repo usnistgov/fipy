@@ -1,6 +1,6 @@
 """Uses personal access token or basic authentication (Github username +
 password) to retrieve issues from a repository that username has access to.
-Supports Github API v3.
+Supports Github API version 3.
 Adapted from: https://gist.github.com/patrickfuller/e2ea8a94badc5b6967ef3ca0a9452a43
 """
 
@@ -12,7 +12,7 @@ from typing_extensions import Annotated
 __all__ = ["app"]
 
 class ChangeLog(object):
-    """Generate ReST change log from github issues and pull requests
+    """Generate reST change log from github issues and pull requests
     """
 
     def __init__(self,
@@ -33,7 +33,7 @@ class ChangeLog(object):
         self.milestone = milestone
 
     def _printReST(self, issues, label):
-        """Print section of issues to stdout
+        """Print section of issues to ``stdout``
         """
         print()
         print(label)
@@ -61,9 +61,9 @@ class ChangeLog(object):
     def _getDateFromTagOrSHA(self, tagOrSHA):
         """Return date of tag or commit
 
-        If tagOrSHA is None, return intact to allow all dates.
-        If tagOrSHA corresponds to a tag.name, return date of its commit.
-        If tagOrSHA corresponds to a commit SHA, return date of its commit.
+        If ``tagOrSHA`` is None, return intact to allow all dates.
+        If ``tagOrSHA`` corresponds to a ``tag.name``, return date of its commit.
+        If ``tagOrSHA`` corresponds to a commit SHA, return date of its commit.
         Else assume it's a date string.
         """
         if tagOrSHA is None:
@@ -112,7 +112,7 @@ class ChangeLog(object):
         return "\n".join(s)
 
     def run(self):
-        """Requests issues from GitHub API and prints as ReST to stdout
+        """Requests issues from GitHub API and prints as reST to ``stdout``
         """
         import github
         import pandas as pd

@@ -30,8 +30,8 @@ def project_on_sys_path(include_dists=[]):
 @contextlib.contextmanager
 def paths_on_pythonpath(paths):
     """
-    Add the indicated paths to the head of the PYTHONPATH environment
-    variable so that subprocesses will also see the packages at
+    Add the indicated paths to the head of the :envvar:`PYTHONPATH`
+    environment variable so that subprocesses will also see the packages at
     these paths.
 
     Do this in a context that restores the value on exit.
