@@ -39,15 +39,17 @@ import logging.config
 import os
 import sys
 
-from . import _version
 from fipy.boundaryConditions import *
 from fipy.meshes import *
 from fipy.solvers import *
 from fipy.terms import *
 from fipy.tools import *
+from fipy.tools import parallelComm
 from fipy.tools.logging import environment
 from fipy.variables import *
 from fipy.viewers import *
+
+from . import _version
 
 # configure logging before doing anything else, otherwise we'll miss things
 if 'FIPY_LOG_CONFIG' in os.environ:
@@ -106,6 +108,7 @@ else:
 
 _saved_stdout = sys.stdout
 
+
 def _serial_doctest_raw_input(prompt):
     """Replacement for `raw_input()` that works in doctests
     """
@@ -113,6 +116,7 @@ def _serial_doctest_raw_input(prompt):
     _saved_stdout.write(prompt)
     _saved_stdout.flush()
     return sys.stdin.readline()
+
 
 def doctest_raw_input(prompt):
     """Replacement for `raw_input()` that works in doctests
@@ -130,6 +134,7 @@ def doctest_raw_input(prompt):
     except ImportError:
         txt = _serial_doctest_raw_input(prompt)
     return txt
+
 
 def test(*args, **kwargs):
     r"""
