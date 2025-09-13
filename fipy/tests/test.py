@@ -162,59 +162,69 @@ def _initialize_weave():
         print("!!! weave library is not installed", file=sys.stderr)
         return
 
+@contextlib.contextmanager
+def legacy_printoptions():
+    from fipy.tools import numerix
+    printoptions = numerix.get_printoptions()
+
+    try:
+        if "legacy" in printoptions:
+            numerix.set_printoptions(legacy="1.13")
+
+        yield
+    finally:
+        if "legacy" in printoptions:
+            numerix.set_printoptions(legacy=printoptions["legacy"])
+
+def save_testtimes(timetests):
+    from fipy.tests.doctestPlus import _DocTestTimes
+    import numpy
+    _DocTestTimes = numpy.rec.fromrecords(_DocTestTimes, formats='f8,S255', names='time,test')
+    _DocTestTimes.sort(order=('time', 'test'))
+
+    # Only write on proc 0.
+    # Doesn't use FiPy comms because this command can
+    # be run outside of FiPy (`fipy_test`)
+    try:
+        from mpi4py import MPI
+        procID = MPI.COMM_WORLD.rank
+        barrier = MPI.COMM_WORLD.barrier
+    except:
+        procID = 0
+        def barrier(*args):
+            pass
+
+    if procID == 0:
+        numpy.savetxt(timetests, _DocTestTimes[::-1],
+                      delimiter='\t',
+                      header="time\tmodule", comments='',
+                      fmt=("%.18e", "%s"))
+
+    barrier()
+
 def run_tests(test_program_class, test_args, timetests=None):
     _printPackageInfo()
 
-    from fipy.tools import numerix
-    printoptions = numerix.get_printoptions()
-    if "legacy" in printoptions:
-        numerix.set_printoptions(legacy="1.13")
-
-    try:
-        test_program_class(
-            None, None, [unittest.__file__]+test_args,
-            testLoader = unittest.TestLoader()
-            )
-    except SystemExit as exitErr:
-        # unittest.main(..., exit=...) not available until Python 2.7
-        from fipy.tests.doctestPlus import report_skips
-        report_skips()
-        if timetests is not None:
-            pass
-        else:
-            raise
-
-    if "legacy" in printoptions:
-        numerix.set_printoptions(legacy=printoptions["legacy"])
+    with legacy_printoptions():
+        try:
+            test_program_class(
+                None, None, [unittest.__file__]+test_args,
+                testLoader = unittest.TestLoader()
+                )
+        except SystemExit as exitErr:
+            # unittest.main(..., exit=...) not available until Python 2.7
+            from fipy.tests.doctestPlus import report_skips
+            report_skips()
+            if timetests is not None:
+                pass
+            else:
+                raise
 
     if timetests is not None:
-        from fipy.tests.doctestPlus import _DocTestTimes
-        import numpy
-        _DocTestTimes = numpy.rec.fromrecords(_DocTestTimes, formats='f8,S255', names='time,test')
-        _DocTestTimes.sort(order=('time', 'test'))
+        save_testtimes(timetests)
 
-        # Only write on proc 0.
-        # Doesn't use FiPy comms because this command can
-        # be run outside of FiPy (`fipy_test`)
-        try:
-            from mpi4py import MPI
-            procID = MPI.COMM_WORLD.rank
-            barrier = MPI.COMM_WORLD.barrier
-        except:
-            procID = 0
-            def barrier(*args):
-                pass
-
-        if procID == 0:
-            numpy.savetxt(timetests, _DocTestTimes[::-1],
-                          delimiter='\t',
-                          header="time\tmodule", comments='',
-                          fmt=("%.18e", "%s"))
-
-        barrier()
-
-        if 'exitErr' in locals():
-            raise exitErr
+    if 'exitErr' in locals():
+        raise exitErr
 
 def main(
     module_or_suite: Annotated[
