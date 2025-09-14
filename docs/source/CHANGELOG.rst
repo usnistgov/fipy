@@ -16,6 +16,38 @@ This release
 - Drops support for :term:`Pysparse`, which required :term:`Python` 2.7.
 - Drops support for :term:`Python` 2.7, which is years beyond end of life.
 
+Also see the coincident changes in :ref:`version399`.
+
+Pulls
+-----
+
+- Fix links
+  (`#1152 <https://github.com/usnistgov/fipy/pull/1152>`_)
+- Remove deprecated ``faceGradAverage``
+  (`#1149 <https://github.com/usnistgov/fipy/pull/1149>`_)
+- Drop Pysparse
+  (`#1145 <https://github.com/usnistgov/fipy/pull/1145>`_)
+
+Fixes
+-----
+
+- `#1110 <https://github.com/usnistgov/fipy/issues/1110>`_:
+  Google search returns FiPy 3.4.4; not 3.4.5
+- `#1055 <https://github.com/usnistgov/fipy/issues/1055>`_:
+  Update Scipy version in Nix build to remove test failure
+- `#1016 <https://github.com/usnistgov/fipy/issues/1016>`_:
+  CONTACT link broken on ``pages.nist.gov``
+- `#986 <https://github.com/usnistgov/fipy/issues/986>`_:
+  Redirect ``ctcms.nist.gov/fipy`` to ``pages.nist.gov/fipy``
+- `#969 <https://github.com/usnistgov/fipy/issues/969>`_:
+  Get rid of bone-headed redirects for non-NIST websites
+- `#891 <https://github.com/usnistgov/fipy/issues/891>`_:
+  import warnings: syntax & deprecation
+- `#803 <https://github.com/usnistgov/fipy/issues/803>`_:
+  Drop Python 2.7
+
+.. _version399:
+
 -------------------------
 Version 3.99 - ????-??-??
 -------------------------
