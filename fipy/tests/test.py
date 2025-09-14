@@ -281,10 +281,10 @@ class TestCommand(object):
         if self.timetests is None:
             return
 
-        _DocTestTimes = numpy.rec.fromrecords(_DocTestTimes,
+        doctesttimes = numpy.rec.fromrecords(_DocTestTimes,
                                 formats='f8,S255',
                                 names='time,test')
-        _DocTestTimes.sort(order=('time', 'test'))
+        doctesttimes.sort(order=('time', 'test'))
 
         # Only write on proc 0.
         # Doesn't use FiPy comms because this command can
@@ -300,7 +300,7 @@ class TestCommand(object):
 
         if procID == 0:
             numpy.savetxt(self.timetests,
-                          _DocTestTimes[::-1],
+                          doctesttimes[::-1],
                           delimiter='\t',
                           header="time\tmodule",
                           comments='',
