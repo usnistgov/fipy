@@ -269,16 +269,13 @@ Upon successful completion of the `Continuous Integration`_ systems, fetch
 the tagged build products from Azure_ Artifacts and place in
 :file:`{FiPySource}/dist/`:
 
- * :file:`dist-Linux/FiPy-{x.y}-none-any.whl`
- * :file:`dist-Linux/FiPy-{x.y}.tar.gz`
- * :file:`dist-Windows_NT/FiPy-{x.y}.zip`
- * :file:`dist-docs/FiPy-{x.y}.pdf`
- * :file:`dist-docs/html-{x.y}.tar.gz`
+ * :file:`dist-Linux/fipy-{x.y}-none-any.whl`
+ * :file:`dist-Linux/fipy-{x.y}.tar.gz`
 
-From the :file:`{FiPySource}` directory, unpack :file:`dist/html-{x.y}.tar.gz`
-into :file:`docs/build` with::
+.. note::
 
-    $ tar -xzf dist/html-{x.y}.tar.gz -C docs/build
+    Artificats are also created and tested in :file:`dist-Windows_NT`, but
+    they should be the same.
 
 .. _Azure:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
 
@@ -286,17 +283,12 @@ into :file:`docs/build` with::
 Upload
 ------
 
-Attach
- * :file:`dist/FiPy-{x.y}-none-any.whl`
- * :file:`dist/FiPy-{x.y}.tar.gz`
- * :file:`dist/FiPy-{x.y}.zip`
- * :file:`dist/FiPy-{x.y}.pdf`
-
-to a `GitHub release`_ associated with tag `x.y`.
+Attach :file:`dist/fipy-{x.y}-none-any.whl` to a `GitHub release`_
+associated with tag `x.y`.
 
 Upload the build products to PyPI with twine_::
 
-    $ twine upload dist/FiPy-${FIPY_VERSION}.*
+    $ twine upload dist/fipy-${FIPY_VERSION}*
 
 .. _GitHub release: https://github.com/usnistgov/fipy/releases
 
