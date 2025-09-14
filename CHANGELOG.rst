@@ -17,16 +17,25 @@
 .. |.coupledequations| replace:: Coupled and Vector Equations
 .. _.coupledequations: https://pages.nist.gov/fipy/en/latest/USAGE.html#coupledequations
 .. |.examples.levelSet.distanceFunction.circle| replace:: ``examples.levelSet.distanceFunction.circle``
+<<<<<<< HEAD
 .. _.examples.levelSet.distanceFunction.circle: https://github.com/usnistgov/fipy/blob/8ce469efe0e53f70b3c0c7996141b49d5f6df83a/examples/levelSet/distanceFunction/circle.py
 .. |.examples.updating.update1_0to2_0| replace:: ``examples.updating.update1_0to2_0``
 .. _.examples.updating.update1_0to2_0: https://github.com/usnistgov/fipy/blob/8ce469efe0e53f70b3c0c7996141b49d5f6df83a/examples/updating/update1_0to2_0.py
 .. |.examples.updating.update2_0to3_0| replace:: ``examples.updating.update2_0to3_0``
 .. _.examples.updating.update2_0to3_0: https://github.com/usnistgov/fipy/blob/8ce469efe0e53f70b3c0c7996141b49d5f6df83a/examples/updating/update2_0to3_0.py
+=======
+.. _.examples.levelSet.distanceFunction.circle: https://github.com/usnistgov/fipy/blob/3.99/examples/levelSet/distanceFunction/circle.py
+.. |.examples.updating.update1_0to2_0| replace:: ``examples.updating.update1_0to2_0``
+.. _.examples.updating.update1_0to2_0: https://github.com/usnistgov/fipy/blob/3.99/examples/updating/update1_0to2_0.py
+.. |.examples.updating.update2_0to3_0| replace:: ``examples.updating.update2_0to3_0``
+.. _.examples.updating.update2_0to3_0: https://github.com/usnistgov/fipy/blob/3.99/examples/updating/update2_0to3_0.py
+>>>>>>> 7861e396da (Update CHANGELOG for 3.99)
 .. |.faq| replace:: Frequently Asked Questions
 .. _.faq: https://pages.nist.gov/fipy/en/latest/FAQ.html#faq
 .. |.FiPy| replace:: FiPy
 .. _.FiPy: https://pages.nist.gov/fipy/en/latest/glossary.html#term-FiPy
 .. |.~fipy.meshes.mesh.Mesh| replace:: ``Mesh``
+<<<<<<< HEAD
 .. _.~fipy.meshes.mesh.Mesh: https://github.com/usnistgov/fipy/blob/8ce469efe0e53f70b3c0c7996141b49d5f6df83a/fipy/meshes/mesh.py#L19-L847
 .. |.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm| replace:: ``ImplicitSourceTerm``
 .. _.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm: https://github.com/usnistgov/fipy/blob/8ce469efe0e53f70b3c0c7996141b49d5f6df83a/fipy/terms/implicitSourceTerm.py#L8-L59
@@ -44,6 +53,27 @@
 .. _.~fipy.variables.faceVariable.FaceVariable: https://github.com/usnistgov/fipy/blob/8ce469efe0e53f70b3c0c7996141b49d5f6df83a/fipy/variables/faceVariable.py#L6-L82
 .. |.~fipy.viewers.matplotlibViewer.MatplotlibViewer| replace:: ``MatplotlibViewer()``
 .. _.~fipy.viewers.matplotlibViewer.MatplotlibViewer: https://github.com/usnistgov/fipy/blob/8ce469efe0e53f70b3c0c7996141b49d5f6df83a/fipy/viewers/matplotlibViewer/__init__.py#L11-L120
+=======
+.. _.~fipy.meshes.mesh.Mesh: https://github.com/usnistgov/fipy/blob/3.99/fipy/meshes/mesh.py#L24-L852
+.. |.fipy.steppers| replace:: ``fipy.steppers``
+.. _.fipy.steppers: https://github.com/usnistgov/fipy/blob/3.99/fipy/steppers/__init__.py
+.. |.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm| replace:: ``ImplicitSourceTerm``
+.. _.~fipy.terms.implicitSourceTerm.ImplicitSourceTerm: https://github.com/usnistgov/fipy/blob/3.99/fipy/terms/implicitSourceTerm.py#L11-L62
+.. |.~fipy.terms.term.Term.solve| replace:: ``solve()``
+.. _.~fipy.terms.term.Term.solve: https://github.com/usnistgov/fipy/blob/3.99/fipy/terms/term.py#L178-L205
+.. |.~fipy.terms.term.Term.sweep| replace:: ``sweep()``
+.. _.~fipy.terms.term.Term.sweep: https://github.com/usnistgov/fipy/blob/3.99/fipy/terms/term.py#L207-L271
+.. |.~fipy.terms.transientTerm.TransientTerm| replace:: ``TransientTerm``
+.. _.~fipy.terms.transientTerm.TransientTerm: https://github.com/usnistgov/fipy/blob/3.99/fipy/terms/transientTerm.py#L12-L194
+.. |.~fipy.tools.numerix| replace:: ``numerix``
+.. _.~fipy.tools.numerix: https://github.com/usnistgov/fipy/blob/3.99/fipy/tools/numerix.py
+.. |.~fipy.variables.cellVariable.CellVariable| replace:: ``CellVariable``
+.. _.~fipy.variables.cellVariable.CellVariable: https://github.com/usnistgov/fipy/blob/3.99/fipy/variables/cellVariable.py#L13-L661
+.. |.~fipy.variables.faceVariable.FaceVariable| replace:: ``FaceVariable``
+.. _.~fipy.variables.faceVariable.FaceVariable: https://github.com/usnistgov/fipy/blob/3.99/fipy/variables/faceVariable.py#L9-L86
+.. |.~fipy.viewers.matplotlibViewer.MatplotlibViewer| replace:: ``MatplotlibViewer()``
+.. _.~fipy.viewers.matplotlibViewer.MatplotlibViewer: https://github.com/usnistgov/fipy/blob/3.99/fipy/viewers/matplotlibViewer/__init__.py#L12-L122
+>>>>>>> 7861e396da (Update CHANGELOG for 3.99)
 .. |.FIPY_SOLVERS| replace:: FIPY_SOLVERS
 .. _.FIPY_SOLVERS: https://pages.nist.gov/fipy/en/latest/USAGE.html#envvar-FIPY_SOLVERS
 .. |.installation| replace:: Installation
@@ -60,10 +90,10 @@
 .. _.Matplotlib: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Matplotlib
 .. |.matplotlib| replace:: ``matplotlib``
 .. _.matplotlib: https://matplotlib.org/stable/index.html#module-matplotlib
-.. |.Mayavi| replace:: Mayavi
-.. _.Mayavi: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Mayavi
 .. |.MayaVi| replace:: MayaVi
 .. _.MayaVi: https://pages.nist.gov/fipy/en/latest/glossary.html#term-MayaVi
+.. |.Mayavi| replace:: Mayavi
+.. _.Mayavi: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Mayavi
 .. |.meshingwithgmsh| replace:: Meshing with Gmsh
 .. _.meshingwithgmsh: https://pages.nist.gov/fipy/en/latest/USAGE.html#meshingwithgmsh
 .. |.Numeric| replace:: Numeric
@@ -89,11 +119,17 @@
 .. |.scikitfmm| replace:: Scikit-fmm
 .. _.scikitfmm: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#scikitfmm
 .. |.scipy| replace:: ``scipy``
+<<<<<<< HEAD
 .. _.scipy: https://github.com/usnistgov/fipy/blob/8ce469efe0e53f70b3c0c7996141b49d5f6df83a/fipy/solvers/scipy/__init__.py
+=======
+.. _.scipy: https://github.com/usnistgov/fipy/blob/3.99/fipy/solvers/scipy/__init__.py
+>>>>>>> 7861e396da (Update CHANGELOG for 3.99)
 .. |.solvers| replace:: Solvers
 .. _.solvers: https://pages.nist.gov/fipy/en/latest/SOLVERS.html#solvers
 .. |.Sphinx| replace:: Sphinx
 .. _.Sphinx: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Sphinx
+.. |.steppyngstounes| replace:: ``steppyngstounes``
+.. _.steppyngstounes: https://pages.nist.gov/steppyngstounes/en/stable/_autosummary/steppyngstounes.html#module-steppyngstounes
 .. |.TravisCI| replace:: TravisCI
 .. _.TravisCI: https://pages.nist.gov/fipy/en/latest/glossary.html#term-TravisCI
 .. |.trilinos| replace:: Trilinos
@@ -117,6 +153,7 @@ Version |release|
 
 This release
 
+<<<<<<< HEAD
 - Harmonizes the sparse |.solvers|_:
     - Uses consistent interpretation of |.convergence|_ criteria.
     - Improves efficiency at building matrices.
@@ -131,6 +168,74 @@ This release
       preconditioner for |.scipy|_, not as a solver suite in its own right.
 - Drops support for |.Pysparse|_, which required |.Python|_ 2.7.
 - Drops support for |.Python|_ 2.7, which is years beyond end of life.
+=======
+- Uses consistent interpretation of |.convergence|_ criteria.
+- Improves efficiency at building matrices.
+- Supports more preconditioners.
+- Logs solver status and performance.
+- Greatly expands documentation of the configuration and performance of
+  the supported |.solvers|_.
+- Changes default tolerance to :math:`10^{-5}`. This is adequate for most
+  problems.
+- Removes "`pyamg`" from |.FIPY_SOLVERS|_ and ``--pyamg`` from
+  the |.commandlineflags|_.  |.pyamg|_ is implemented as a
+  preconditioner for |.scipy|_, not as a solver suite in its own right.
+>>>>>>> 7861e396da (Update CHANGELOG for 3.99)
+
+Pulls
+-----
+
+- Reorganize Table of Contents
+  (`#1143 <https://github.com/usnistgov/fipy/pull/1143>`_)
+- Link to proper CI for documentation
+  (`#1134 <https://github.com/usnistgov/fipy/pull/1134>`_)
+- Improve URL check implementation
+  (`#1130 <https://github.com/usnistgov/fipy/pull/1130>`_)
+  Thanks to `@arpitjain099 <https://github.com/arpitjain099>`_.
+- Patch sphinx_readme_
+  (`#1125 <https://github.com/usnistgov/fipy/pull/1125>`_)
+- Resolve issues introduced by PETSc 3.23.0
+  (`#1116 <https://github.com/usnistgov/fipy/pull/1116>`_)
+- Generate root .rst files with sphinx_readme_
+  (`#1105 <https://github.com/usnistgov/fipy/pull/1105>`_)
+  Thanks to `@obscurerichard <https://github.com/obscurerichard>`_.
+- Update byte-code for Python 3.13
+  (`#1095 <https://github.com/usnistgov/fipy/pull/1095>`_)
+- Handle exporting anonymous conda environment
+  (`#1082 <https://github.com/usnistgov/fipy/pull/1082>`_)
+- Fix representation of dotted variables (and other method calls)
+  (`#1074 <https://github.com/usnistgov/fipy/pull/1074>`_)
+- Prevent setuptools 72.x
+  (`#1067 <https://github.com/usnistgov/fipy/pull/1067>`_)
+- build(nix): update to using latest Nix master version
+  (`#1061 <https://github.com/usnistgov/fipy/pull/1061>`_)
+- Harmonize solvers
+  (`#1030 <https://github.com/usnistgov/fipy/pull/1030>`_)
+- Deprecate |.fipy.steppers|_ in favor of |.steppyngstounes|_
+  (`#777 <https://github.com/usnistgov/fipy/pull/777>`_)
+
+Fixes
+-----
+
+- `#1115 <https://github.com/usnistgov/fipy/issues/1115>`_:
+  "Create Anaconda environment from environments" times out on nightly
+  CI
+- `#1114 <https://github.com/usnistgov/fipy/issues/1114>`_:
+  Vtk tests broke with `vtk-base=9.4.2`
+- `#1087 <https://github.com/usnistgov/fipy/issues/1087>`_:
+  Recent version of matplotlib won't plot with colorbar.
+  Thanks to `@cgadal <https://github.com/cgadal>`_.
+- `#1069 <https://github.com/usnistgov/fipy/issues/1069>`_:
+  Cannot dot |.~fipy.variables.cellVariable.CellVariable|_\s
+- `#1063 <https://github.com/usnistgov/fipy/issues/1063>`_:
+  Nightly petsc build unable to load libscotcherr-6.so
+- `#1009 <https://github.com/usnistgov/fipy/issues/1009>`_:
+  Matplotlib 3.8 fails to plot irregular meshes
+- `#1002 <https://github.com/usnistgov/fipy/issues/1002>`_:
+  Setting nx, ny, nz to non-positive integer should generate an error.
+  Thanks to `@sridhar-mani <https://github.com/sridhar-mani>`_.
+
+.. _sphinx_readme:  https://sphinx-readme.readthedocs.io/en/latest/
 
 --------------------------
 Version 3.4.5 - 2024-06-25

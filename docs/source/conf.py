@@ -311,6 +311,7 @@ intersphinx_mapping = {
     'scipy': ('https://docs.scipy.org/doc/scipy/', None),
     'matplotlib': ('https://matplotlib.org/stable/', None),
     'mayavi': ('http://docs.enthought.com/mayavi/mayavi', None),
+    'steppyngstounes': ('https://pages.nist.gov/steppyngstounes/en/stable/', None),
 }
 
 def skip_numpy_not_numerix(app, what, name, obj, skip, options):

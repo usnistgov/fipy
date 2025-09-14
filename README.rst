@@ -1,7 +1,11 @@
 .. |.changelog| replace:: Change Log
 .. _.changelog: https://pages.nist.gov/fipy/en/latest/CHANGELOG.html#changelog
 .. |.examples.diffusion.mesh1D| replace:: ``examples.diffusion.mesh1D``
+<<<<<<< HEAD
 .. _.examples.diffusion.mesh1D: https://github.com/usnistgov/fipy/blob/8ce469efe0e53f70b3c0c7996141b49d5f6df83a/examples/diffusion/mesh1D.py
+=======
+.. _.examples.diffusion.mesh1D: https://github.com/usnistgov/fipy/blob/3.99/examples/diffusion/mesh1D.py
+>>>>>>> 7861e396da (Update CHANGELOG for 3.99)
 .. |.faq| replace:: Frequently Asked Questions
 .. _.faq: https://pages.nist.gov/fipy/en/latest/FAQ.html#faq
 .. |.FiPy| replace:: FiPy
