@@ -1,4 +1,5 @@
 import contextlib
+import logging
 import numpy
 import os
 from pathlib import Path
@@ -16,6 +17,7 @@ from fipy.tools import numerix
 
 __all__ = ["app"]
 
+_log = logging.getLogger(__name__)
 
 class DeprecationErroringTestProgram(unittest.TestProgram):
     """`TestProgram` that overrides inability of standard
@@ -214,52 +216,40 @@ class TestCommand(object):
 
     @staticmethod
     def initialize_trilinos():
+        ## The import scipy statement is added to allow
+        ## the --Trilinos tests to run without throwing a
+        ## segmentation fault. This is caused by weird
+        ## behavior in scipy and PyTrilinos depending on
+        ## the order in which modules are imported
         try:
-            ## The import scipy statement is added to allow
-            ## the --Trilinos tests to run without throwing a
-            ## segmentation fault. This is caused by weird
-            ## behavior in scipy and PyTrilinos depending on
-            ## the order in which modules are imported
-            try:
-                import scipy
-            except:
-                pass
-            import PyTrilinos
-        except ImportError as a:
-            print("!!! Trilinos library is not installed", file=sys.stderr)
-            return
+            import scipy
+        except:
+            pass
+        import PyTrilinos
 
 
     @staticmethod
     def initialize_pyamgx():
-        try:
-            ## Unregister the function pyamgx.finalize
-            ## from atexit. This prevents
-            ## pyamgx from printing an error message
-            ## about memory leaks and a dump of leaked memory.
-            ## The memory leaks happen because
-            ## the tests do not use the pyamgx solvers
-            ## "cleanly", i.e., they do not use the
-            ## `with` statement.
-            import pyamgx
-            import atexit
-            if hasattr(atexit, 'unregister'):
-                atexit.unregister(pyamgx.finalize)
-            else:
-                atexit._exithandlers.remove(
-                    (pyamgx.finalize, (), {}))
-        except ImportError as e:
-            print("!!! pyamgx package is not installed", file=sys.stederr)
-            return
+        ## Unregister the function pyamgx.finalize
+        ## from atexit. This prevents
+        ## pyamgx from printing an error message
+        ## about memory leaks and a dump of leaked memory.
+        ## The memory leaks happen because
+        ## the tests do not use the pyamgx solvers
+        ## "cleanly", i.e., they do not use the
+        ## `with` statement.
+        import pyamgx
+        import atexit
+        if hasattr(atexit, 'unregister'):
+            atexit.unregister(pyamgx.finalize)
+        else:
+            atexit._exithandlers.remove(
+                (pyamgx.finalize, (), {}))
 
 
     @staticmethod
     def initialize_weave():
-        try:
-            import weave
-        except ImportError as a:
-            print("!!! weave library is not installed", file=sys.stderr)
-            return
+        import weave
 
 
     @staticmethod
