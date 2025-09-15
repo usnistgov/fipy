@@ -23,7 +23,7 @@ jobs:
         with:
           path: /run/user/${{ env.UID }}/http_cache.sqlite
           key: ${{ runner.os }}-http_cache.sqlite
-      - run: nix develop --command bash -c "python -m pip install build"
+      - run: nix develop --command bash -c "python -m pip install --user build"
       - run: nix develop --command bash -c "python -m build"
       - run: nix develop --command bash -c "fipy_test"
       - run: nix develop --command bash -c "py.test --nbval --nbval-sanitize-with examples/sanitize.cfg examples/index.ipynb"
