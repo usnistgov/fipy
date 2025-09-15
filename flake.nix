@@ -27,6 +27,7 @@
           traitlets
           notebook
           scipy
+          typer
         ];
 
         nativeBuildInputs = propagatedBuildInputs;
