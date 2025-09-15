@@ -34,6 +34,7 @@ level set treatment of the electrodeposition process
 """
 __docformat__ = 'restructuredtext'
 
+from importlib.metadata import version as get_version
 import json
 import logging
 import logging.config
@@ -64,7 +65,8 @@ if 'FIPY_LOG_CONFIG' in os.environ:
 _log = logging.getLogger(__name__)
 
 # __version__ needs to be defined before calling package_info()
-__version__ = _version.get_versions()['version']
+
+__version__ = get_version("fipy")
 
 _fipy_environment = {
     "argv": sys.argv,
