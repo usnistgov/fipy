@@ -274,7 +274,7 @@ the tagged build products from Azure_ Artifacts and place in
 
 .. note::
 
-    Artificats are also created and tested in :file:`dist-Windows_NT`, but
+    Artifacts are also created and tested in :file:`dist-Windows_NT`, but
     they should be the same.
 
 .. _Azure:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
