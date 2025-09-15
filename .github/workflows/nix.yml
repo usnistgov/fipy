@@ -26,7 +26,7 @@ jobs:
       - run: # nix develop --command bash -c "python -m pip install --user build"
       - run: # nix develop --command bash -c "python -m build"
       - run: nix develop --command bash -c "fipy_test"
-      - run: nix develop --command bash -c "py.test --nbval --nbval-sanitize-with examples/sanitize.cfg examples/index.ipynb"
+      - run: nix develop --command bash -c "FIPY_VIEWER=dummy; py.test --nbval --nbval-sanitize-with examples/sanitize.cfg examples/index.ipynb"
       - uses: actions/cache/save@v3
         if: always()
         with:
