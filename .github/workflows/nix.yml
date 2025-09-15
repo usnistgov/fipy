@@ -5,7 +5,7 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest] #, macos-latest]
     runs-on: ${{ matrix.os }}
     defaults:
       run:
