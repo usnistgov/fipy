@@ -14,7 +14,7 @@
       env = (pypkgs.fipy.overridePythonAttrs (old: rec {
 
         src = pkgs.lib.cleanSource ./.;
-
+        format = "pyproject";
         disabled = pypkgs.pythonOlder "3.7";
 
         nativeBuildInputs_ = with pypkgs; [
@@ -29,6 +29,7 @@
           scipy
           typer
           build
+          versioneer
         ];
 
         nativeBuildInputs = propagatedBuildInputs;
