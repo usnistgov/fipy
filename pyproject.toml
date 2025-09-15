@@ -52,10 +52,14 @@ tag_prefix = ""
 parentdir_prefix = ""
 
 [project.scripts]
-"fipy_changelog" = "fipy.tools.changelog:app"
-"fipy_copy_script" = "fipy.tools.copy_script:app"
-"fipy_test" = "fipy.tests.test:app"
-"versioneer" = "versioneer:main"
+fipy_changelog = "fipy.tools.changelog:app"
+fipy_copy_script = "fipy.tools.copy_script:app"
+fipy_test = "fipy.tests.test:app"
+versioneer = "versioneer:main"
+
+[project.entry-points."fipy.viewers"]
+matplotlib = "fipy.viewers.matplotlibViewer:MatplotlibViewer"
+mayavi = "fipy.viewers.mayaviViewer:MayaviClient"
 
 [tool.setuptools_scm]
 version_scheme = "no-guess-dev"
