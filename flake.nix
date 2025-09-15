@@ -28,6 +28,7 @@
           notebook
           scipy
           typer
+          build
         ];
 
         nativeBuildInputs = propagatedBuildInputs;
