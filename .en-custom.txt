@@ -58,6 +58,7 @@ Cholesky
 Codacy
 CODATA
 colocated
+colorbar
 conda
 CondaForge
 conda-forge
@@ -322,6 +323,7 @@ scipy
 SciPy
 sctype
 serialComm
+setuptools
 SHA
 sha256
 sliceable

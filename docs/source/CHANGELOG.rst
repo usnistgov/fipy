@@ -99,7 +99,7 @@ Pulls
   (`#1125 <https://github.com/usnistgov/fipy/pull/1125>`_)
 - Resolve issues introduced by PETSc 3.23.0
   (`#1116 <https://github.com/usnistgov/fipy/pull/1116>`_)
-- Generate root .rst files with sphinx_readme_
+- Generate root ``.rst`` files with sphinx_readme_
   (`#1105 <https://github.com/usnistgov/fipy/pull/1105>`_)
   Thanks to `@obscurerichard <https://github.com/obscurerichard>`_.
 - Update byte-code for Python 3.13
@@ -108,7 +108,7 @@ Pulls
   (`#1082 <https://github.com/usnistgov/fipy/pull/1082>`_)
 - Fix representation of dotted variables (and other method calls)
   (`#1074 <https://github.com/usnistgov/fipy/pull/1074>`_)
-- Prevent setuptools 72.x
+- Prevent setuptools ``72.x``
   (`#1067 <https://github.com/usnistgov/fipy/pull/1067>`_)
 - build(nix): update to using latest Nix master version
   (`#1061 <https://github.com/usnistgov/fipy/pull/1061>`_)
@@ -124,18 +124,19 @@ Fixes
   "Create Anaconda environment from environments" times out on nightly
   CI
 - `#1114 <https://github.com/usnistgov/fipy/issues/1114>`_:
-  Vtk tests broke with `vtk-base=9.4.2`
+  VTK tests broke with `vtk-base=9.4.2`
 - `#1087 <https://github.com/usnistgov/fipy/issues/1087>`_:
   Recent version of matplotlib won't plot with colorbar.
   Thanks to `@cgadal <https://github.com/cgadal>`_.
 - `#1069 <https://github.com/usnistgov/fipy/issues/1069>`_:
   Cannot dot :class:`~fipy.variables.cellVariable.CellVariable`\s
 - `#1063 <https://github.com/usnistgov/fipy/issues/1063>`_:
-  Nightly petsc build unable to load libscotcherr-6.so
+  Nightly PETSc build unable to load ``libscotcherr-6.so``
 - `#1009 <https://github.com/usnistgov/fipy/issues/1009>`_:
   Matplotlib 3.8 fails to plot irregular meshes
 - `#1002 <https://github.com/usnistgov/fipy/issues/1002>`_:
-  Setting nx, ny, nz to non-positive integer should generate an error.
+  Setting ``nx``, ``ny``, ``nz`` to non-positive integer should generate an
+  error.
   Thanks to `@sridhar-mani <https://github.com/sridhar-mani>`_.
 
 .. _sphinx_readme:  https://sphinx-readme.readthedocs.io/en/latest/
