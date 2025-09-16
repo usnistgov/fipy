@@ -45,12 +45,12 @@ array calculations, sparse matrices and data rendering.
 The |.FiPy|_ framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
 combinations of coupled elliptic, hyperbolic and parabolic PDEs. Currently
-implemented models include phase field :cite:`BoettingerReview:2002`
-:cite:`ChenReview:2002` :cite:`McFaddenReview:2002` treatments of polycrystalline,
+implemented models include phase field `BoettingerReview:2002`
+`ChenReview:2002` `McFaddenReview:2002` treatments of polycrystalline,
 dendritic, and electrochemical phase transformations, as well as drug
-eluting stents :cite:`Saylor:2011p2794`, reactive wetting :cite:`PhysRevE.82.051601`,
-photovoltaics :cite:`Hangarter:2011p2795` and a level set treatment of the
-electrodeposition process :cite:`NIST:damascene:2001`.
+eluting stents `Saylor:2011p2794`, reactive wetting `PhysRevE.82.051601`,
+photovoltaics `Hangarter:2011p2795` and a level set treatment of the
+electrodeposition process `NIST:damascene:2001`.
 
 The latest information about |.FiPy|_ can be found at
 http://www.ctcms.nist.gov/fipy/.
@@ -104,7 +104,7 @@ Conventions and Notation
 
 |.FiPy|_ is driven by |.Python|_ script files than you can view or modify in any
 text editor.  |.FiPy|_ sessions are invoked from a command-line shell, such
-as :command:`tcsh` or :command:`bash`.
+as `tcsh` or `bash`.
 
 Throughout, text to be typed at the keyboard will appear ``like this``.
 Commands to be issued from an interactive shell will appear::
