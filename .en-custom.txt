@@ -58,6 +58,7 @@ Cholesky
 Codacy
 CODATA
 colocated
+colorbar
 conda
 CondaForge
 conda-forge
@@ -321,6 +322,7 @@ scipy
 SciPy
 sctype
 serialComm
+setuptools
 sha256
 sliceable
 smoothers
