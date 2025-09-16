@@ -1,11 +1,7 @@
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.decorators import deprecate
-
 __all__ = ["Stepper"]
 
-@deprecate(version="4.0",
-           message="Use the :term:`steppyngstounes` package instead.")
 class Stepper(object):
     """Rudimentary utility class for iterating time steps
 

@@ -36,7 +36,7 @@ Merge updated state of ``master`` to the branch::
 
 Resolve any conflicts and test::
 
-    $ python setup.py test
+    $ fipy_test
 
 Submit branch for code review
 -----------------------------
@@ -218,11 +218,11 @@ Check the issue_ list and update the :ref:`CHANGELOG`::
 
    You can use::
 
-      $ python setup.py changelog --after=<x.y>
+      $ fipy_changelog --after=<x.y>
 
    or::
 
-      $ python setup.py changelog --milestone=<x.z>
+      $ fipy_changelog --milestone=<x.z>
 
    to obtain a ReST-formatted list of every GitHub_ `pull request`_ and issue_
    closed since the last release.
@@ -269,16 +269,13 @@ Upon successful completion of the `Continuous Integration`_ systems, fetch
 the tagged build products from Azure_ Artifacts and place in
 :file:`{FiPySource}/dist/`:
 
- * :file:`dist-Linux/FiPy-{x.y}-none-any.whl`
- * :file:`dist-Linux/FiPy-{x.y}.tar.gz`
- * :file:`dist-Windows_NT/FiPy-{x.y}.zip`
- * :file:`dist-docs/FiPy-{x.y}.pdf`
- * :file:`dist-docs/html-{x.y}.tar.gz`
+ * :file:`dist-Linux/fipy-{x.y}-none-any.whl`
+ * :file:`dist-Linux/fipy-{x.y}.tar.gz`
 
-From the :file:`{FiPySource}` directory, unpack :file:`dist/html-{x.y}.tar.gz`
-into :file:`docs/build` with::
+.. note::
 
-    $ tar -xzf dist/html-{x.y}.tar.gz -C docs/build
+    Artifacts are also created and tested in :file:`dist-Windows_NT`, but
+    they should be the same.
 
 .. _Azure:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
 
@@ -286,27 +283,12 @@ into :file:`docs/build` with::
 Upload
 ------
 
-Attach
- * :file:`dist/FiPy-{x.y}-none-any.whl`
- * :file:`dist/FiPy-{x.y}.tar.gz`
- * :file:`dist/FiPy-{x.y}.zip`
- * :file:`dist/FiPy-{x.y}.pdf`
-
-to a `GitHub release`_ associated with tag `x.y`.
+Attach :file:`dist/fipy-{x.y}-none-any.whl` to a `GitHub release`_
+associated with tag `x.y`.
 
 Upload the build products to PyPI with twine_::
 
-    $ twine upload dist/FiPy-${FIPY_VERSION}.*
-
-Upload the web site to CTCMS ::
-
-    $ export FIPY_WWWHOST=bunter:/u/WWW/wd15/fipy
-    $ export FIPY_WWWACTIVATE=updatewww
-    $ python setup.py upload_products --html
-
-.. warning:: Some versions of ``rsync`` on Mac OS X have caused problems
-   when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
-   does not have this problem.
+    $ twine upload dist/fipy-${FIPY_VERSION}*
 
 .. _GitHub release: https://github.com/usnistgov/fipy/releases
 

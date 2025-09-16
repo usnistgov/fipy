@@ -14,7 +14,7 @@ and the word ``finished`` in the terminal at the end of the
 simulation. To obtain this example in a plain script file in order to
 edit and run type::
 
-    $ python setup.py copy_script --From examples/levelSet/electroChem/howToWriteAScript.py --To myScript.py
+    $ fipy_copy_script examples/levelSet/electroChem/howToWriteAScript.py myScript.py
 
 in the base :term:`FiPy` directory. The file :file:`myScript.py` will contain the
 script.

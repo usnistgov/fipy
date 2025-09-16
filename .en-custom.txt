@@ -322,6 +322,7 @@ scipy
 SciPy
 sctype
 serialComm
+SHA
 sha256
 sliceable
 smoothers
@@ -337,6 +338,8 @@ subdirectory
 submicrometer
 submodule
 subpreconditioner
+subprocess
+subprocesses
 substitutional
 substitutionals
 subviewers
@@ -373,6 +376,7 @@ unpickling
 unpreconditioned
 upwinding
 url
+username
 vcs
 VCS
 VC-FVM

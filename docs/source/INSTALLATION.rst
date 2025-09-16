@@ -190,12 +190,12 @@ been installed properly, you can install it by typing::
 
 or by unpacking the archive and typing::
 
-    $ python setup.py install
+    $ python -m pip install .
 
 at the command line in the base :term:`FiPy` directory. You can also install
 :term:`FiPy` in "development mode" by typing::
 
-    $ python setup.py develop
+    $ python -m pip install --editable .
 
 which allows the source code to be altered in place and executed without
 issuing further installation commands.
@@ -354,7 +354,7 @@ Conda_ and Nix_ are only ones of these we have the resources to support.
    $ python -m pip install scikit-fmm
    $ git clone https://github.com/usnistgov/fipy.git
    $ cd fipy
-   $ python setup.py develop
+   $ python -m pip install --editable .
 
 .. _Conda: https://conda.io
 .. _Stow: http://savannah.gnu.org/projects/stow/
