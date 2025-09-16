@@ -1,0 +1,34 @@
+fipy.meshes.factoryMeshes
+=========================
+
+.. automodule:: fipy.meshes.factoryMeshes
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      CylindricalGrid1D
+      CylindricalGrid2D
+      Grid1D
+      Grid2D
+      Grid3D
+      SphericalGrid1D
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

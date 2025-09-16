@@ -1,0 +1,34 @@
+examples.convection.exponential1D
+=================================
+
+.. automodule:: examples.convection.exponential1D
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   examples.convection.exponential1D.cylindricalMesh1D
+   examples.convection.exponential1D.cylindricalMesh1DNonUniform
+   examples.convection.exponential1D.mesh1D
+   examples.convection.exponential1D.tri2D
+
