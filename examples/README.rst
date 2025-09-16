@@ -27,7 +27,7 @@ These examples can be used in at least four ways:
 - Alternatively, these interactive Python_ sessions, known as doctest_
   blocks, can be invoked as automatic tests::
 
-    $ python setup.py test --examples
+    $ fipy_test --examples
 
   In this way, the documentation and the code are always certain to be
   consistent.
@@ -47,7 +47,7 @@ These examples can be used in at least four ways:
      To obtain a copy of an example, containing just the script instructions,
      type::
 
-       $ python setup.py copy_script --From x.py --To y.py
+       $ fipy_copy_script x.py y.py
 
 
 In addition to those presented in this manual, there are dozens of other

@@ -1,7 +1,5 @@
 __docformat__ = 'restructuredtext'
 
-from fipy.tools.decorators import deprecate
-
 __all__ = ["Stepper"]
 
 class Stepper(object):

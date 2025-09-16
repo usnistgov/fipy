@@ -1,5 +1,5 @@
 .. Generate incremental updates to this file with
-   $ python setup.py changelog <OPTIONS>
+   $ fipy_changelog <OPTIONS>
 
 .. _CHANGELOG:
 

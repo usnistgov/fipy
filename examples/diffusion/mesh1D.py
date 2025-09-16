@@ -852,7 +852,7 @@ Your own scripts will tend to look like this, although you can always write
 them as doctest scripts if you choose.  You can obtain a plain script
 like this from some `.../example.py` by typing::
 
-    $ python setup.py copy_script --From .../example.py --To myExample.py
+    $ fipy_copy_script .../example.py myExample.py
 
 at the command line.
 

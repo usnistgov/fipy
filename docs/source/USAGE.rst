@@ -105,13 +105,13 @@ This command runs all the test cases in :ref:`FiPy's modules
 examples <part:examples>`. To run the test cases in both :ref:`modules
 <part:modules>` and :ref:`examples <part:examples>`, use::
 
-    $ python setup.py test
+    $ fipy_test
 
 .. note::
 
    You may need to first run::
 
-        $ python setup.py egg_info
+        $ python -m build
 
    for this to work properly.
 
@@ -145,7 +145,7 @@ Parallel Tests
 If :term:`FiPy` is configured for :ref:`PARALLEL`, you can run the tests
 on multiple processor cores with::
 
-    $ mpirun -np {# of processors} python setup.py test --trilinos
+    $ mpirun -np {# of processors} fipy_test --trilinos
 
 or::
 
