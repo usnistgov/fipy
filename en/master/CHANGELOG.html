@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; FiPy 4.0 documentation</title>
+    <title>Change Log &#8212; FiPy 4.0+2.g73bc92c98 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=586d4295"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=7562d729"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/CHANGELOG.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 4.0 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 4.0+2.g73bc92c98 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Git practices" href="ADMINISTRATA.html" />
     <link rel="prev" title="Publications" href="PUBLICATIONS.html" />
@@ -118,7 +118,7 @@
   <section id="change-log">
 <span id="changelog"></span><h1>Change Log<a class="headerlink" href="#change-log" title="Permalink to this heading">¶</a></h1>
 <section id="version-release">
-<h2>Version 4.0<a class="headerlink" href="#version-release" title="Permalink to this heading">¶</a></h2>
+<h2>Version 4.0+2.g73bc92c98<a class="headerlink" href="#version-release" title="Permalink to this heading">¶</a></h2>
 <p>This release</p>
 <ul class="simple">
 <li><p>Drops support for <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a>, which required <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.7.</p></li>
@@ -132,7 +132,7 @@
 <section id="pulls">
 <h3>Pulls<a class="headerlink" href="#pulls" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>Migrate to pyproject.toml
+<li><p>Migrate to <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1154">#1154</a>)</p></li>
 <li><p>Fix links
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1152">#1152</a>)</p></li>
@@ -146,7 +146,7 @@
 <h3>Fixes<a class="headerlink" href="#fixes" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1137">#1137</a>:
-setuptools.sandbox is deprecated</p></li>
+<code class="docutils literal notranslate"><span class="pre">setuptools.sandbox</span></code> is deprecated</p></li>
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1110">#1110</a>:
 Google search returns FiPy 3.4.4; not 3.4.5</p></li>
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1108">#1108</a>:
@@ -169,7 +169,7 @@ in it</p></li>
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/803">#803</a>:
 Drop Python 2.7</p></li>
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/677">#677</a>:
-local variable ‘exitErr’ referenced before assignment in
+local variable <code class="docutils literal notranslate"><span class="pre">exitErr</span></code> referenced before assignment in
 <code class="docutils literal notranslate"><span class="pre">fipy.tests.test.test.run_tests()</span></code></p></li>
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/189">#189</a>:
 switch from <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> to <code class="docutils literal notranslate"><span class="pre">distribute</span></code>?</p></li>
@@ -206,7 +206,7 @@ Thanks to <a class="reference external" href="https://github.com/arpitjain099">&
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1125">#1125</a>)</p></li>
 <li><p>Resolve issues introduced by PETSc 3.23.0
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1116">#1116</a>)</p></li>
-<li><p>Generate root .rst files with <a class="reference external" href="https://sphinx-readme.readthedocs.io/en/latest/">sphinx_readme</a>
+<li><p>Generate root <code class="docutils literal notranslate"><span class="pre">.rst</span></code> files with <a class="reference external" href="https://sphinx-readme.readthedocs.io/en/latest/">sphinx_readme</a>
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1105">#1105</a>)
 Thanks to <a class="reference external" href="https://github.com/obscurerichard">&#64;obscurerichard</a>.</p></li>
 <li><p>Update byte-code for Python 3.13
@@ -215,7 +215,7 @@ Thanks to <a class="reference external" href="https://github.com/obscurerichard"
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1082">#1082</a>)</p></li>
 <li><p>Fix representation of dotted variables (and other method calls)
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1074">#1074</a>)</p></li>
-<li><p>Prevent setuptools 72.x
+<li><p>Prevent <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> <code class="docutils literal notranslate"><span class="pre">72.x</span></code>
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1067">#1067</a>)</p></li>
 <li><p>build(nix): update to using latest Nix master version
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1061">#1061</a>)</p></li>
@@ -232,18 +232,19 @@ Thanks to <a class="reference external" href="https://github.com/obscurerichard"
 “Create Anaconda environment from environments” times out on nightly
 CI</p></li>
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1114">#1114</a>:
-Vtk tests broke with <cite>vtk-base=9.4.2</cite></p></li>
+VTK tests broke with <cite>vtk-base=9.4.2</cite></p></li>
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1087">#1087</a>:
 Recent version of matplotlib won’t plot with colorbar.
 Thanks to <a class="reference external" href="https://github.com/cgadal">&#64;cgadal</a>.</p></li>
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1069">#1069</a>:
 Cannot dot <a class="reference internal" href="generated/fipy.variables.cellVariable.html#fipy.variables.cellVariable.CellVariable" title="fipy.variables.cellVariable.CellVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellVariable</span></code></a>s</p></li>
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1063">#1063</a>:
-Nightly petsc build unable to load libscotcherr-6.so</p></li>
+Nightly PETSc build unable to load <code class="docutils literal notranslate"><span class="pre">libscotcherr-6.so</span></code></p></li>
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1009">#1009</a>:
 Matplotlib 3.8 fails to plot irregular meshes</p></li>
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1002">#1002</a>:
-Setting nx, ny, nz to non-positive integer should generate an error.
+Setting <code class="docutils literal notranslate"><span class="pre">nx</span></code>, <code class="docutils literal notranslate"><span class="pre">ny</span></code>, <code class="docutils literal notranslate"><span class="pre">nz</span></code> to non-positive integer should generate an
+error.
 Thanks to <a class="reference external" href="https://github.com/sridhar-mani">&#64;sridhar-mani</a>.</p></li>
 </ul>
 </section>
@@ -1907,13 +1908,13 @@ Some tests fail on windows XP</p></li>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0
+Version 4.0+2.g73bc92c98
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Change Log</a><ul>
-<li><a class="reference internal" href="#version-release">Version 4.0</a><ul>
+<li><a class="reference internal" href="#version-release">Version 4.0+2.g73bc92c98</a><ul>
 <li><a class="reference internal" href="#pulls">Pulls</a></li>
 <li><a class="reference internal" href="#fixes">Fixes</a></li>
 </ul>
