@@ -21,9 +21,64 @@ This release harmonizes the sparse :ref:`SOLVERS`:
   the supported :ref:`SOLVERS`.
 - Changes default tolerance to :math:`10^{-5}`. This is adequate for most
   problems.
-- Removes "`pyamg`" from :envvar:`FIPY_SOLVERS` and "`--pyamg`" from
+- Removes "`pyamg`" from :envvar:`FIPY_SOLVERS` and :option:`--pyamg` from
   the :ref:`CommandLineFlags`.  :ref:`PYAMG` is implemented as a
   preconditioner for :ref:`SCIPY`, not as a solver suite in its own right.
+
+Pulls
+-----
+
+- Reorganize Table of Contents
+  (`#1143 <https://github.com/usnistgov/fipy/pull/1143>`_)
+- Link to proper CI for documentation
+  (`#1134 <https://github.com/usnistgov/fipy/pull/1134>`_)
+- Improve URL check implementation
+  (`#1130 <https://github.com/usnistgov/fipy/pull/1130>`_)
+  Thanks to `@arpitjain099 <https://github.com/arpitjain099>`_.
+- Patch sphinx_readme_
+  (`#1125 <https://github.com/usnistgov/fipy/pull/1125>`_)
+- Resolve issues introduced by PETSc 3.23.0
+  (`#1116 <https://github.com/usnistgov/fipy/pull/1116>`_)
+- Generate root .rst files with sphinx_readme_
+  (`#1105 <https://github.com/usnistgov/fipy/pull/1105>`_)
+  Thanks to `@obscurerichard <https://github.com/obscurerichard>`_.
+- Update byte-code for Python 3.13
+  (`#1095 <https://github.com/usnistgov/fipy/pull/1095>`_)
+- Handle exporting anonymous conda environment
+  (`#1082 <https://github.com/usnistgov/fipy/pull/1082>`_)
+- Fix representation of dotted variables (and other method calls)
+  (`#1074 <https://github.com/usnistgov/fipy/pull/1074>`_)
+- Prevent setuptools 72.x
+  (`#1067 <https://github.com/usnistgov/fipy/pull/1067>`_)
+- build(nix): update to using latest Nix master version
+  (`#1061 <https://github.com/usnistgov/fipy/pull/1061>`_)
+- Harmonize solvers
+  (`#1030 <https://github.com/usnistgov/fipy/pull/1030>`_)
+- Deprecate :mod:`fipy.steppers` in favor of :mod:`steppyngstounes`
+  (`#777 <https://github.com/usnistgov/fipy/pull/777>`_)
+
+Fixes
+-----
+
+- `#1115 <https://github.com/usnistgov/fipy/issues/1115>`_:
+  "Create Anaconda environment from environments" times out on nightly
+  CI
+- `#1114 <https://github.com/usnistgov/fipy/issues/1114>`_:
+  Vtk tests broke with `vtk-base=9.4.2`
+- `#1087 <https://github.com/usnistgov/fipy/issues/1087>`_:
+  Recent version of matplotlib won't plot with colorbar.
+  Thanks to `@cgadal <https://github.com/cgadal>`_.
+- `#1069 <https://github.com/usnistgov/fipy/issues/1069>`_:
+  Cannot dot :class:`~fipy.variables.cellVariable.CellVariable`\s
+- `#1063 <https://github.com/usnistgov/fipy/issues/1063>`_:
+  Nightly petsc build unable to load libscotcherr-6.so
+- `#1009 <https://github.com/usnistgov/fipy/issues/1009>`_:
+  Matplotlib 3.8 fails to plot irregular meshes
+- `#1002 <https://github.com/usnistgov/fipy/issues/1002>`_:
+  Setting nx, ny, nz to non-positive integer should generate an error.
+  Thanks to `@sridhar-mani <https://github.com/sridhar-mani>`_.
+
+.. _sphinx_readme:  https://sphinx-readme.readthedocs.io/en/latest/
 
 --------------------------
 Version 3.4.5 - 2024-06-25
