@@ -1,0 +1,29 @@
+fipy.solvers.petsc.comms.serialPETScCommWrapper
+===============================================
+
+.. automodule:: fipy.solvers.petsc.comms.serialPETScCommWrapper
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SerialPETScCommWrapper
+   
+   
+
+   
+   
+   
+
+
+

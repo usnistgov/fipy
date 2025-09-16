@@ -1,0 +1,69 @@
+fipy.variables
+==============
+
+.. automodule:: fipy.variables
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fipy.variables.addOverFacesVariable
+   fipy.variables.arithmeticCellToFaceVariable
+   fipy.variables.betaNoiseVariable
+   fipy.variables.binaryOperatorVariable
+   fipy.variables.cellToFaceVariable
+   fipy.variables.cellVariable
+   fipy.variables.constant
+   fipy.variables.constraintMask
+   fipy.variables.coupledCellVariable
+   fipy.variables.distanceVariable
+   fipy.variables.exponentialNoiseVariable
+   fipy.variables.faceGradContributionsVariable
+   fipy.variables.faceGradVariable
+   fipy.variables.faceVariable
+   fipy.variables.gammaNoiseVariable
+   fipy.variables.gaussCellGradVariable
+   fipy.variables.gaussianNoiseVariable
+   fipy.variables.harmonicCellToFaceVariable
+   fipy.variables.histogramVariable
+   fipy.variables.interfaceAreaVariable
+   fipy.variables.interfaceFlagVariable
+   fipy.variables.leastSquaresCellGradVariable
+   fipy.variables.levelSetDiffusionVariable
+   fipy.variables.meshVariable
+   fipy.variables.minmodCellToFaceVariable
+   fipy.variables.modCellGradVariable
+   fipy.variables.modCellToFaceVariable
+   fipy.variables.modFaceGradVariable
+   fipy.variables.modPhysicalField
+   fipy.variables.modularVariable
+   fipy.variables.noiseVariable
+   fipy.variables.operatorVariable
+   fipy.variables.scharfetterGummelFaceVariable
+   fipy.variables.surfactantConvectionVariable
+   fipy.variables.surfactantVariable
+   fipy.variables.test
+   fipy.variables.unaryOperatorVariable
+   fipy.variables.uniformNoiseVariable
+   fipy.variables.variable
+

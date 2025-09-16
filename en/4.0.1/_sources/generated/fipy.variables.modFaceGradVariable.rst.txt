@@ -1,0 +1,23 @@
+fipy.variables.modFaceGradVariable
+==================================
+
+.. automodule:: fipy.variables.modFaceGradVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
