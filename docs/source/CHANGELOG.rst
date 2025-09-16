@@ -15,12 +15,17 @@ This release
 
 - Drops support for :term:`Pysparse`, which required :term:`Python` 2.7.
 - Drops support for :term:`Python` 2.7, which is years beyond end of life.
+- Updates the packaging and installation of :term:`FiPy`.
 
-Also see the coincident changes in :ref:`version399`.
+.. note::
+
+   Also see the coincident changes in :ref:`version399`.
 
 Pulls
 -----
 
+- Migrate to pyproject.toml
+  (`#1154 <https://github.com/usnistgov/fipy/pull/1154>`_)
 - Fix links
   (`#1152 <https://github.com/usnistgov/fipy/pull/1152>`_)
 - Remove deprecated ``faceGradAverage``
@@ -31,8 +36,14 @@ Pulls
 Fixes
 -----
 
+- `#1137 <https://github.com/usnistgov/fipy/issues/1137>`_:
+  setuptools.sandbox is deprecated
 - `#1110 <https://github.com/usnistgov/fipy/issues/1110>`_:
   Google search returns FiPy 3.4.4; not 3.4.5
+- `#1108 <https://github.com/usnistgov/fipy/issues/1108>`_:
+  Legacy editable install is deprecated
+- `#1107 <https://github.com/usnistgov/fipy/issues/1107>`_:
+  The test command is disabled and references to it are deprecated
 - `#1055 <https://github.com/usnistgov/fipy/issues/1055>`_:
   Update Scipy version in Nix build to remove test failure
 - `#1016 <https://github.com/usnistgov/fipy/issues/1016>`_:
@@ -43,13 +54,21 @@ Fixes
   Get rid of bone-headed redirects for non-NIST websites
 - `#891 <https://github.com/usnistgov/fipy/issues/891>`_:
   import warnings: syntax & deprecation
+- `#872 <https://github.com/usnistgov/fipy/issues/872>`_:
+  ``fipy.test()`` has ``setuptools`` failure in a directory with anything
+  in it
 - `#803 <https://github.com/usnistgov/fipy/issues/803>`_:
   Drop Python 2.7
+- `#677 <https://github.com/usnistgov/fipy/issues/677>`_:
+  local variable 'exitErr' referenced before assignment in
+  ``fipy.tests.test.test.run_tests()``
+- `#189 <https://github.com/usnistgov/fipy/issues/189>`_:
+  switch from ``setuptools`` to ``distribute``?
 
 .. _version399:
 
 -------------------------
-Version 3.99 - ????-??-??
+Version 3.99 - 2025-09-16
 -------------------------
 
 This release harmonizes the sparse :ref:`SOLVERS`:
