@@ -9,6 +9,12 @@ fipy.tests.test
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      main
+   
    
 
    
@@ -18,7 +24,7 @@ fipy.tests.test
    .. autosummary::
    
       DeprecationErroringTestProgram
-      test
+      TestCommand
    
    
 

@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy.tests.test &#8212; FiPy 3.99+6.g69a677a0f documentation</title>
+    <title>fipy.tests.test &#8212; FiPy 3.99+7.g62c19bfa1 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,13 +43,13 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=fe5c9043"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=1ac83e7b"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/fipy.tests.test.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.99+6.g69a677a0f documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.99+7.g62c19bfa1 documentation" href="../contents.html" />
     <link rel="up" title="fipy.tests" href="fipy.tests.html" />
     <link rel="next" title="fipy.tests.testProgram" href="fipy.tests.testProgram.html" />
     <link rel="prev" title="fipy.tests.lateImportTest" href="fipy.tests.lateImportTest.html" />
@@ -117,63 +117,30 @@
 		
   <section id="module-fipy.tests.test">
 <span id="fipy-tests-test"></span><h1>fipy.tests.test<a class="headerlink" href="#module-fipy.tests.test" title="Permalink to this heading">¶</a></h1>
-<p class="rubric">Classes</p>
+<p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#fipy.tests.test.DeprecationErroringTestProgram" title="fipy.tests.test.DeprecationErroringTestProgram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeprecationErroringTestProgram</span></code></a>([module, ...])</p></td>
-<td><p><cite>TestProgram</cite> that overrides inability of standard <cite>TestProgram</cite> to throw errors on <cite>DeprecationWarning</cite></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#fipy.tests.test.test" title="fipy.tests.test.test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test</span></code></a>(dist, **kw)</p></td>
-<td><p>Construct the command for dist, updating vars(self) with any keyword parameters.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code>([module_or_suite, inline, ...])</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
-<dl class="py class">
-<dt class="sig sig-object py" id="fipy.tests.test.DeprecationErroringTestProgram">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.tests.test.</span></span><span class="sig-name descname"><span class="pre">DeprecationErroringTestProgram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module='__main__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaultTest=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argv=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testRunner=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testLoader=&lt;unittest.loader.TestLoader</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exit=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failfast=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catchbreak=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warnings=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tb_locals=False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.test.DeprecationErroringTestProgram" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestProgram</span></code></p>
-<p><cite>TestProgram</cite> that overrides inability of standard
-<cite>TestProgram</cite> to throw errors on <cite>DeprecationWarning</cite></p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="fipy.tests.test.test">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fipy.tests.test.</span></span><span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dist</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.test.test" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">test</span></code></p>
-<p>Construct the command for dist, updating
-vars(self) with any keyword parameters.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="fipy.tests.test.test.finalize_options">
-<span class="sig-name descname"><span class="pre">finalize_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.test.test.finalize_options" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set final values for all the options that this command supports.
-This is always called as late as possible, ie.  after any option
-assignments from the command-line or from other commands have been
-done.  Thus, this is the place to code option dependencies: if
-‘foo’ depends on ‘bar’, then it is safe to set ‘foo’ from ‘bar’ as
-long as ‘foo’ still has the same value it was assigned in
-‘initialize_options()’.</p>
-<p>This method must be implemented by all command classes.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="fipy.tests.test.test.initialize_options">
-<span class="sig-name descname"><span class="pre">initialize_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fipy.tests.test.test.initialize_options" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set default values for all the options that this command
-supports.  Note that these defaults may be overridden by other
-commands, by the setup script, by config files, or by the
-command-line.  Thus, this is not the place to code dependencies
-between options; generally, ‘initialize_options()’ implementations
-are just a bunch of “self.foo = None” assignments.</p>
-<p>This method must be implemented by all command classes.</p>
-</dd></dl>
-
-</dd></dl>
-
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeprecationErroringTestProgram</span></code>([module, ...])</p></td>
+<td><p><cite>TestProgram</cite> that overrides inability of standard <cite>TestProgram</cite> to throw errors on <cite>DeprecationWarning</cite></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TestCommand</span></code>(module_or_suite, inline, ...)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
                 <div class='last-updated'>
-                Last updated on Sep 09, 2025.
+                Last updated on Sep 16, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -183,23 +150,8 @@ are just a bunch of “self.foo = None” assignments.</p>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.99+6.g69a677a0f
+Version 3.99+7.g62c19bfa1
 
-  <div class="sphinxsidebarsection">
-  <h3><a href="../contents.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">fipy.tests.test</a><ul>
-<li><a class="reference internal" href="#fipy.tests.test.DeprecationErroringTestProgram"><code class="docutils literal notranslate"><span class="pre">DeprecationErroringTestProgram</span></code></a></li>
-<li><a class="reference internal" href="#fipy.tests.test.test"><code class="docutils literal notranslate"><span class="pre">test</span></code></a><ul>
-<li><a class="reference internal" href="#fipy.tests.test.test.finalize_options"><code class="docutils literal notranslate"><span class="pre">test.finalize_options()</span></code></a></li>
-<li><a class="reference internal" href="#fipy.tests.test.test.initialize_options"><code class="docutils literal notranslate"><span class="pre">test.initialize_options()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-  </div>
 <div class="sphinxsidebarsection">
   <h4>Previous topic</h4>
   <p class="topless"><a href="fipy.tests.lateImportTest.html"

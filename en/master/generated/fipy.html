@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>fipy &#8212; FiPy 3.99+6.g69a677a0f documentation</title>
+    <title>fipy &#8212; FiPy 3.99+7.g62c19bfa1 documentation</title>
     <link rel="stylesheet" href="../_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
@@ -43,13 +43,13 @@
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="../_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=fe5c9043"></script>
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=1ac83e7b"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/generated/fipy.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="FiPy 3.99+6.g69a677a0f documentation" href="../contents.html" />
+    <link rel="top" title="FiPy 3.99+7.g62c19bfa1 documentation" href="../contents.html" />
     <link rel="up" title="fipy Package Documentation" href="../API.html" />
     <link rel="next" title="fipy.boundaryConditions" href="fipy.boundaryConditions.html" />
     <link rel="prev" title="package.subpackage.object" href="../tutorial/generated/package.subpackage.object.html" />
@@ -116,11 +116,11 @@
   <section id="module-fipy">
 <span id="fipy"></span><h1>fipy<a class="headerlink" href="#module-fipy" title="Permalink to this heading">¶</a></h1>
 <p>An object oriented, partial differential equation (PDE) solver</p>
-<p><a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is based on a standard finite volume (FV) approach. The
-framework has been developed in the Materials Science and Engineering Division
-(<a class="reference external" href="http://www.nist.gov/mml/msed/">MSED</a>) and Center for Theoretical and Computational Materials Science (<a class="reference external" href="http://www.ctcms.nist.gov/">CTCMS</a>),
-in the Material Measurement Laboratory (<a class="reference external" href="http://www.nist.gov/mml/">MML</a>) at the National Institute of
-Standards and Technology (<a class="reference external" href="http://www.nist.gov/">NIST</a>).</p>
+<p><a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is based on a standard finite volume (FV) approach.  The
+framework has been developed in the Materials Science and Engineering
+Division (<a class="reference external" href="http://www.nist.gov/mml/msed/">MSED</a>) and Center for Theoretical and Computational Materials
+Science (<a class="reference external" href="http://www.ctcms.nist.gov/">CTCMS</a>), in the Material Measurement Laboratory (<a class="reference external" href="http://www.nist.gov/mml/">MML</a>) at the
+National Institute of Standards and Technology (<a class="reference external" href="http://www.nist.gov/">NIST</a>).</p>
 <p>The solution of coupled sets of PDEs is ubiquitous to the numerical
 simulation of science problems.  Numerous PDE solvers exist, using a
 variety of languages and numerical approaches. Many are proprietary,
@@ -132,21 +132,22 @@ significant advantage to <a class="reference internal" href="../glossary.html#te
 array calculations, sparse matrices and data rendering.</p>
 <p>The <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
-combinations of coupled elliptic, hyperbolic and parabolic PDEs. Currently
+combinations of coupled elliptic, hyperbolic and parabolic PDEs.  Currently
 implemented models include phase field <span id="id1">[<a class="reference internal" href="../references.html#id6" title="W. J. Boettinger, J. A. Warren, C. Beckermann, and A. Karma. Phase-field simulation of solidification. Annual Review of Materials Research, 32:163-194, 2002. doi:10.1146/annurev.matsci.32.101901.155803.">1</a>]</span>
-<span id="id2">[<a class="reference internal" href="../references.html#id7" title="L. Q. Chen. Phase-field mdoels for microstructure evolution. Annual Review of Materials Research, 32:113-140, 2002. doi:10.1146/annurev.matsci.32.112001.132041.">2</a>]</span> <span id="id3">[<a class="reference internal" href="../references.html#id9" title="G. B. McFadden. Phase-field models of solidification. Contemporary Mathematics, 306:107-145, 2002.">3</a>]</span> treatments of polycrystalline,
-dendritic, and electrochemical phase transformations, as well as drug
-eluting stents <span id="id4">[<a class="reference internal" href="../references.html#id33" title="David M Saylor, Jonathan E Guyer, Daniel Wheeler, and James A Warren. Predicting microstructure development during casting of drug-eluting coatings. Acta Biomaterialia, 7(2):604–613, Jan 2011. doi:10.1016/j.actbio.2010.09.019.">4</a>]</span>, reactive wetting <span id="id5">[<a class="reference internal" href="../references.html#id31" title="Daniel Wheeler, James A. Warren, and William J. Boettinger. Modeling the early stages of reactive wetting. Physical Review E, 82(5):051601, Nov 2010. doi:10.1103/PhysRevE.82.051601.">5</a>]</span>,
-photovoltaics <span id="id6">[<a class="reference internal" href="../references.html#id32" title="C. M Hangarter, B. H Hamadani, J. E Guyer, H Xu, R Need, and D Josell. Three dimensionally structured interdigitated back contact thin film heterojunction solar cells. Journal of Applied Physics, 109(7):073514, Jan 2011. doi:10.1063/1.3561487.">6</a>]</span> and a level set treatment of the
-electrodeposition process <span id="id7">[<a class="reference internal" href="../references.html#id11" title="D. Josell, D. Wheeler, W. H. Huber, and T. P. Moffat. Superconformal electrodeposition in submicron features. Physical Review Letters, 87(1):016102, 2001. doi:10.1103/PhysRevLett.87.016102.">7</a>]</span>.</p>
+<span id="id2">[<a class="reference internal" href="../references.html#id7" title="L. Q. Chen. Phase-field mdoels for microstructure evolution. Annual Review of Materials Research, 32:113-140, 2002. doi:10.1146/annurev.matsci.32.112001.132041.">2</a>]</span> <span id="id3">[<a class="reference internal" href="../references.html#id9" title="G. B. McFadden. Phase-field models of solidification. Contemporary Mathematics, 306:107-145, 2002.">3</a>]</span> treatments of
+polycrystalline, dendritic, and electrochemical phase transformations, as
+well as drug eluting stents <span id="id4">[<a class="reference internal" href="../references.html#id33" title="David M Saylor, Jonathan E Guyer, Daniel Wheeler, and James A Warren. Predicting microstructure development during casting of drug-eluting coatings. Acta Biomaterialia, 7(2):604–613, Jan 2011. doi:10.1016/j.actbio.2010.09.019.">4</a>]</span>, reactive wetting
+<span id="id5">[<a class="reference internal" href="../references.html#id31" title="Daniel Wheeler, James A. Warren, and William J. Boettinger. Modeling the early stages of reactive wetting. Physical Review E, 82(5):051601, Nov 2010. doi:10.1103/PhysRevE.82.051601.">5</a>]</span>, photovoltaics <span id="id6">[<a class="reference internal" href="../references.html#id32" title="C. M Hangarter, B. H Hamadani, J. E Guyer, H Xu, R Need, and D Josell. Three dimensionally structured interdigitated back contact thin film heterojunction solar cells. Journal of Applied Physics, 109(7):073514, Jan 2011. doi:10.1063/1.3561487.">6</a>]</span> and a
+level set treatment of the electrodeposition process
+<span id="id7">[<a class="reference internal" href="../references.html#id11" title="D. Josell, D. Wheeler, W. H. Huber, and T. P. Moffat. Superconformal electrodeposition in submicron features. Physical Review Letters, 87(1):016102, 2001. doi:10.1103/PhysRevLett.87.016102.">7</a>]</span>.</p>
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#fipy.doctest_raw_input" title="fipy.doctest_raw_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">doctest_raw_input</span></code></a>(prompt)</p></td>
 <td><p>Replacement for <cite>raw_input()</cite> that works in doctests</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#fipy.test" title="fipy.test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test</span></code></a>(*args)</p></td>
-<td><p>Test <cite>Fipy</cite>. Equivalent to::.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#fipy.test" title="fipy.test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Test <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">Fipy</span></a>. Equivalent to::.</p></td>
 </tr>
 </tbody>
 </table>
@@ -159,25 +160,30 @@ electrodeposition process <span id="id7">[<a class="reference internal" href="..
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fipy.test">
-<span class="sig-prename descclassname"><span class="pre">fipy.</span></span><span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.test" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test <cite>Fipy</cite>. Equivalent to:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py test --modules
+<span class="sig-prename descclassname"><span class="pre">fipy.</span></span><span class="sig-name descname"><span class="pre">test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fipy.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">Fipy</span></a>. Equivalent to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fipy_test --modules
 </pre></div>
 </div>
-<p>Use</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">fipy</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fipy</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="s1">&#39;--help&#39;</span><span class="p">)</span>
+<p>Use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fipy_test --help
 </pre></div>
 </div>
 <p>for a full list of options. Options can be passed in the same way
 as they are appended at the command line. For example, to test
-<cite>FiPy</cite> with <cite>Trilinos</cite> and inlining switched on, use</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fipy</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="s1">&#39;--trilinos&#39;</span><span class="p">,</span> <span class="s1">&#39;--inline&#39;</span><span class="p">)</span>
+<a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> with <a class="reference internal" href="../SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> and inlining switched on, use</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fipy</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">trilinos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>At the command line this would be:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py test --modules --trilinos --inline
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fipy_test --modules --trilinos --inline
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A <strong class="command">fipy_test</strong> option like <code class="xref std std-option docutils literal notranslate"><span class="pre">--deprecation-errors</span></code>
+is equivalent to the <a class="reference internal" href="#fipy.test" title="fipy.test"><code class="xref py py-func docutils literal notranslate"><span class="pre">test()</span></code></a> argument
+<code class="docutils literal notranslate"><span class="pre">deprecation_errors</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -196,22 +202,25 @@ as they are appended at the command line. For example, to test
 <tr class="row-even"><td><p><a class="reference internal" href="fipy.solvers.html#module-fipy.solvers" title="fipy.solvers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.solvers</span></code></a></p></td>
 <td><p>Solving sparse linear systems</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="fipy.terms.html#module-fipy.terms" title="fipy.terms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.terms</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="fipy.steppers.html#module-fipy.steppers" title="fipy.steppers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.steppers</span></code></a></p></td>
+<td><p>(Obsolete) utilities for iterating time steps</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="fipy.terms.html#module-fipy.terms" title="fipy.terms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.terms</span></code></a></p></td>
 <td><p><a class="reference internal" href="../numerical/discret.html#section-discretization"><span class="std std-ref">Discretizations</span></a> of partial differential equation expressions</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="fipy.testFiPy.html#module-fipy.testFiPy" title="fipy.testFiPy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.testFiPy</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="fipy.testFiPy.html#module-fipy.testFiPy" title="fipy.testFiPy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.testFiPy</span></code></a></p></td>
 <td><p>Test suite for <a class="reference internal" href="../glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> modules</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="fipy.tests.html#module-fipy.tests" title="fipy.tests"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.tests</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="fipy.tests.html#module-fipy.tests" title="fipy.tests"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.tests</span></code></a></p></td>
 <td><p>Unit testing scripts</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="fipy.tools.html#module-fipy.tools" title="fipy.tools"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.tools</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="fipy.tools.html#module-fipy.tools" title="fipy.tools"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.tools</span></code></a></p></td>
 <td><p>Utility modules, functions, and values</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="fipy.variables.html#module-fipy.variables" title="fipy.variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.variables</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="fipy.variables.html#module-fipy.variables" title="fipy.variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.variables</span></code></a></p></td>
 <td><p>Collections of values supporting lazy evaluation</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="fipy.viewers.html#module-fipy.viewers" title="fipy.viewers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.viewers</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="fipy.viewers.html#module-fipy.viewers" title="fipy.viewers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fipy.viewers</span></code></a></p></td>
 <td><p>Tools for displaying the values of <a class="reference internal" href="fipy.variables.variable.html#fipy.variables.variable.Variable" title="fipy.variables.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> objects</p></td>
 </tr>
 </tbody>
@@ -220,7 +229,7 @@ as they are appended at the command line. For example, to test
 
 
                 <div class='last-updated'>
-                Last updated on Sep 09, 2025.
+                Last updated on Sep 16, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -230,7 +239,7 @@ as they are appended at the command line. For example, to test
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.99+6.g69a677a0f
+Version 3.99+7.g62c19bfa1
 
   <div class="sphinxsidebarsection">
   <h3><a href="../contents.html">Table Of Contents</a></h3>

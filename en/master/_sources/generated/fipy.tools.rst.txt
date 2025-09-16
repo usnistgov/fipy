@@ -27,7 +27,9 @@ fipy.tools
    :toctree:
    :recursive:
 
+   fipy.tools.changelog
    fipy.tools.comms
+   fipy.tools.copy_script
    fipy.tools.debug
    fipy.tools.decorators
    fipy.tools.dimensions

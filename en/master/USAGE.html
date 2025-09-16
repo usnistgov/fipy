@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using FiPy &#8212; FiPy 3.99+6.g69a677a0f documentation</title>
+    <title>Using FiPy &#8212; FiPy 3.99+7.g62c19bfa1 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=fe5c9043"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1ac83e7b"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/USAGE.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.99+6.g69a677a0f documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.99+7.g62c19bfa1 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Solvers" href="SOLVERS.html" />
     <link rel="prev" title="Installation" href="INSTALLATION.html" />
@@ -200,13 +200,13 @@ example:</p>
 </div>
 <p>This command runs all the test cases in <a class="reference internal" href="API.html#part-modules"><span class="std std-ref">FiPy’s modules</span></a>, but doesn’t include any of the tests in <a class="reference internal" href="EXAMPLES.html#part-examples"><span class="std std-ref">FiPy’s
 examples</span></a>. To run the test cases in both <a class="reference internal" href="API.html#part-modules"><span class="std std-ref">modules</span></a> and <a class="reference internal" href="EXAMPLES.html#part-examples"><span class="std std-ref">examples</span></a>, use:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py test
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fipy_test
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You may need to first run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py egg_info
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m build
 </pre></div>
 </div>
 <p>for this to work properly.</p>
@@ -234,7 +234,7 @@ distribution by checking <a class="reference internal" href="glossary.html#term-
 <h3>Parallel Tests<a class="headerlink" href="#parallel-tests" title="Permalink to this heading">¶</a></h3>
 <p>If <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> is configured for <a class="reference internal" href="#parallel"><span class="std std-ref">Solving in Parallel</span></a>, you can run the tests
 on multiple processor cores with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mpirun -np {# of processors} python setup.py test --trilinos
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mpirun -np {# of processors} fipy_test --trilinos
 </pre></div>
 </div>
 <p>or:</p>
@@ -1020,7 +1020,7 @@ Demonstrations of its use are found in <a class="reference internal" href="gener
 <a class="reference internal" href="generated/examples.phase.binaryCoupled.html#module-examples.phase.binaryCoupled" title="examples.phase.binaryCoupled"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.phase.binaryCoupled</span></code></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The old <code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy.steppers</span></code> classes are now deprecated.  They were
+<p>The old <a class="reference internal" href="generated/fipy.steppers.html#module-fipy.steppers" title="fipy.steppers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fipy.steppers</span></code></a> classes are now deprecated.  They were
 undocumented and did not work very well.</p>
 </div>
 </section>
@@ -1084,7 +1084,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
 
 
                 <div class='last-updated'>
-                Last updated on Sep 09, 2025.
+                Last updated on Sep 16, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -1094,7 +1094,7 @@ $ wget -O en_US.dic https://cgit.freedesktop.org/libreoffice/dictionaries/plain/
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.99+6.g69a677a0f
+Version 3.99+7.g62c19bfa1
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>

@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Git practices &#8212; FiPy 3.99+6.g69a677a0f documentation</title>
+    <title>Git practices &#8212; FiPy 3.99+7.g62c19bfa1 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,13 +43,13 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=fe5c9043"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1ac83e7b"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/ADMINISTRATA.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 3.99+6.g69a677a0f documentation" href="contents.html" />
+    <link rel="top" title="FiPy 3.99+7.g62c19bfa1 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Glossary" href="glossary.html" />
     <link rel="prev" title="Change Log" href="CHANGELOG.html" />
@@ -144,7 +144,7 @@ $ git merge origin/master
 </pre></div>
 </div>
 <p>Resolve any conflicts and test:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py test
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fipy_test
 </pre></div>
 </div>
 </section>
@@ -298,11 +298,11 @@ In order to make changes</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can use:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py changelog --after=&lt;x.y&gt;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fipy_changelog --after=&lt;x.y&gt;
 </pre></div>
 </div>
 <p>or:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py changelog --milestone=&lt;x.z&gt;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fipy_changelog --milestone=&lt;x.z&gt;
 </pre></div>
 </div>
 <p>to obtain a ReST-formatted list of every <a class="reference external" href="https://github.com/">GitHub</a> <a class="reference external" href="https://github.com/usnistgov/fipy/pulls">pull request</a> and <a class="reference external" href="https://github.com/usnistgov/fipy/issues">issue</a>
@@ -347,46 +347,23 @@ the tagged build products from <a class="reference external" href="https://dev.a
 <code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em><span class="pre">/dist/</span></code>:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><code class="file docutils literal notranslate"><span class="pre">dist-Linux/FiPy-</span><em><span class="pre">x.y</span></em><span class="pre">-none-any.whl</span></code></p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">dist-Linux/FiPy-</span><em><span class="pre">x.y</span></em><span class="pre">.tar.gz</span></code></p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">dist-Windows_NT/FiPy-</span><em><span class="pre">x.y</span></em><span class="pre">.zip</span></code></p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">dist-docs/FiPy-</span><em><span class="pre">x.y</span></em><span class="pre">.pdf</span></code></p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">dist-docs/html-</span><em><span class="pre">x.y</span></em><span class="pre">.tar.gz</span></code></p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">dist-Linux/fipy-</span><em><span class="pre">x.y</span></em><span class="pre">-none-any.whl</span></code></p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">dist-Linux/fipy-</span><em><span class="pre">x.y</span></em><span class="pre">.tar.gz</span></code></p></li>
 </ul>
 </div></blockquote>
-<p>From the <code class="file docutils literal notranslate"><em><span class="pre">FiPySource</span></em></code> directory, unpack <code class="file docutils literal notranslate"><span class="pre">dist/html-</span><em><span class="pre">x.y</span></em><span class="pre">.tar.gz</span></code>
-into <code class="file docutils literal notranslate"><span class="pre">docs/build</span></code> with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ tar -xzf dist/html-{x.y}.tar.gz -C docs/build
-</pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Artifacts are also created and tested in <code class="file docutils literal notranslate"><span class="pre">dist-Windows_NT</span></code>, but
+they should be the same.</p>
 </div>
 </section>
 <section id="upload">
 <h2>Upload<a class="headerlink" href="#upload" title="Permalink to this heading">¶</a></h2>
-<dl class="simple">
-<dt>Attach</dt><dd><ul class="simple">
-<li><p><code class="file docutils literal notranslate"><span class="pre">dist/FiPy-</span><em><span class="pre">x.y</span></em><span class="pre">-none-any.whl</span></code></p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">dist/FiPy-</span><em><span class="pre">x.y</span></em><span class="pre">.tar.gz</span></code></p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">dist/FiPy-</span><em><span class="pre">x.y</span></em><span class="pre">.zip</span></code></p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">dist/FiPy-</span><em><span class="pre">x.y</span></em><span class="pre">.pdf</span></code></p></li>
-</ul>
-</dd>
-</dl>
-<p>to a <a class="reference external" href="https://github.com/usnistgov/fipy/releases">GitHub release</a> associated with tag <cite>x.y</cite>.</p>
+<p>Attach <code class="file docutils literal notranslate"><span class="pre">dist/fipy-</span><em><span class="pre">x.y</span></em><span class="pre">-none-any.whl</span></code> to a <a class="reference external" href="https://github.com/usnistgov/fipy/releases">GitHub release</a>
+associated with tag <cite>x.y</cite>.</p>
 <p>Upload the build products to PyPI with <a class="reference external" href="https://pypi.org/project/twine">twine</a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ twine upload dist/FiPy-${FIPY_VERSION}.*
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ twine upload dist/fipy-${FIPY_VERSION}*
 </pre></div>
-</div>
-<p>Upload the web site to CTCMS</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ export FIPY_WWWHOST=bunter:/u/WWW/wd15/fipy
-$ export FIPY_WWWACTIVATE=updatewww
-$ python setup.py upload_products --html
-</pre></div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Some versions of <code class="docutils literal notranslate"><span class="pre">rsync</span></code> on Mac OS X have caused problems
-when they try to upload erroneous <code class="docutils literal notranslate"><span class="pre">\rsrc</span></code> directories. Version 2.6.2
-does not have this problem.</p>
 </div>
 </section>
 <section id="update-conda-forge-feedstock">
@@ -411,7 +388,7 @@ request to update the <a class="reference external" href="https://github.com/con
 
 
                 <div class='last-updated'>
-                Last updated on Sep 09, 2025.
+                Last updated on Sep 16, 2025.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -421,7 +398,7 @@ request to update the <a class="reference external" href="https://github.com/con
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 3.99+6.g69a677a0f
+Version 3.99+7.g62c19bfa1
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
