@@ -4,6 +4,9 @@ Supports Github API version 3.
 Adapted from: https://gist.github.com/patrickfuller/e2ea8a94badc5b6967ef3ca0a9452a43
 """
 
+from datetime import timezone
+import github
+import pandas as pd
 import textwrap
 import typer
 from typer import Argument, Option
@@ -114,10 +117,8 @@ class ChangeLog(object):
     def run(self):
         """Requests issues from GitHub API and prints as reST to ``stdout``
         """
-        import github
-        import pandas as pd
         
-        self.gh = github.Github(*self.auth)
+        self.gh = github.Github(auth=self.auth)
         self.repo = self.gh.get_repo(self.repository)
 
         self.after = self._getDateFromTagOrSHA(self.after)
@@ -166,9 +167,15 @@ class ChangeLog(object):
                 r"created by .* on (.*), "
                 r"last modified: (.*)_")
         olddates = issues.body.str.extract(trac).apply(pd.to_datetime)
+        # Time zone was not recorded when we imported issues from trac.
+        # Arbitrarily assume UTC
+        olddates = olddates.apply(lambda s: s.dt.tz_localize(timezone.utc),
+                                  axis=0)
+
         issues.loc[olddates[1].notna(), "created_at"] = olddates[0]
         issues.loc[olddates[1].notna(), "updated_at"] = olddates[1]
         issues.loc[((issues.state == "closed")
+                    & issues["closed_at"].isna()
                     & olddates[1].notna()), "closed_at"] = olddates[1]
 
         if self.after is not None:
@@ -227,12 +234,12 @@ def main(
     ] = None,
 ):
     if token is not None:
-        auth = (token,)
+        auth = github.Auth.Token(token)
     elif username is not None:
         from getpass import getpass
 
         password = getpass(f"Password for 'https://{self.username}@github.com': ")
-        auth = (username, password)
+        auth = github.Auth.Login(login=username, password=password)
     else:
         raise ValueError("Either a GitHub personal access token or a --username is required")
 
