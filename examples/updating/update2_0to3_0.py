@@ -5,7 +5,7 @@ How to update scripts from version 2.0 to 3.0.
 this is very inconvenient for our users, but we hope you'll agree that the new
 syntax is easier to read and easier to use. We assure you that this is not
 something we do casually; it has been over two and a half years since our last
-incompatible change (when :term:`FiPy` 2.0 superceded :term:`FiPy` 1.0).
+incompatible change (when :term:`FiPy` 2.0 superseded :term:`FiPy` 1.0).
 
 All examples included with version 3.0 have been updated to use the new syntax,
 but any scripts you have written for :term:`FiPy` 2.0 will need to be updated. A

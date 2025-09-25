@@ -493,7 +493,7 @@ Fixes
 -----
 
 - `#655 <https://github.com/usnistgov/fipy/issues/655>`_:
-  When Python 2 and 3 are installed, Mayavi wont work.
+  When Python 2 and 3 are installed, Mayavi won't work.
   Thanks to `@Hendrik410 <https://github.com/Hendrik410>`_.
 - `#646 <https://github.com/usnistgov/fipy/issues/646>`_:
   Deprecate develop branch
