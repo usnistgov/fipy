@@ -261,13 +261,21 @@ practices`_ above)::
 
     $ git tag --annotate x.y master
 
+Build a local source distribution and wheel::
+
+    $ python -m build
+
+Confirm that the source distribution and wheel will be acceptable to PyPI::
+
+    $ twine check dist/fipy-{x.y}*
+
 Push the tag to GitHub_::
 
     $ git push --tags origin master
 
-Upon successful completion of the `Continuous Integration`_ systems, fetch
-the tagged build products from Azure_ Artifacts and place in
-:file:`{FiPySource}/dist/`:
+*Even though you just built them locally*, upon successful completion of the
+`Continuous Integration`_ systems, fetch the tagged build products from
+Azure_ Artifacts and place in :file:`{FiPySource}/dist/`:
 
  * :file:`dist-Linux/fipy-{x.y}-none-any.whl`
  * :file:`dist-Linux/fipy-{x.y}.tar.gz`
