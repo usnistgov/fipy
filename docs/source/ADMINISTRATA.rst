@@ -261,11 +261,11 @@ practices`_ above)::
 
     $ git tag --annotate x.y master
 
-Build a local source distribution and wheel:
+Build a local source distribution and wheel::
 
     $ python -m build
 
-Confirm that the source distribution and wheel will be acceptable to PyPI:
+Confirm that the source distribution and wheel will be acceptable to PyPI::
 
     $ twine check dist/fipy-{x.y}*
 
