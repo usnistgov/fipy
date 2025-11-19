@@ -36,17 +36,17 @@ class KSP_RelativeToleranceConvergence(RelativeToleranceConvergence):
     suite = "petsc"
 
 class KSP_NormalAbsoluteToleranceConvergence(KSP_AbsoluteToleranceConvergence):
-    try:
+    if hasattr(PETSc.KSP.ConvergedReason, "CONVERGED_ATOL_NORMAL_EQUATIONS"):
         status_code = PETSc.KSP.ConvergedReason.CONVERGED_ATOL_NORMAL_EQUATIONS
-    except AttributeError:
+    else:
         # CONVERGED_ATOL_NORMAL was deprecated in PETSc 3.24
         status_code = PETSc.KSP.ConvergedReason.CONVERGED_ATOL_NORMAL
     status_name = "KSP_CONVERGED_ATOL_NORMAL"
 
 class KSP_NormalRelativeToleranceConvergence(KSP_RelativeToleranceConvergence):
-    try:
+    if hasattr(PETSc.KSP.ConvergedReason, "CONVERGED_RTOL_NORMAL_EQUATIONS"):
         status_code = PETSc.KSP.ConvergedReason.CONVERGED_RTOL_NORMAL_EQUATIONS
-    except AttributeError:
+    else:
         # CONVERGED_RTOL_NORMAL was deprecated in PETSc 3.24
         status_code = PETSc.KSP.ConvergedReason.CONVERGED_RTOL_NORMAL
     status_name = "KSP_CONVERGED_RTOL_NORMAL"
