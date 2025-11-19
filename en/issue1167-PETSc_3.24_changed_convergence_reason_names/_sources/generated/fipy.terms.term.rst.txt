@@ -1,0 +1,29 @@
+fipy.terms.term
+===============
+
+.. automodule:: fipy.terms.term
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Term
+   
+   
+
+   
+   
+   
+
+
+

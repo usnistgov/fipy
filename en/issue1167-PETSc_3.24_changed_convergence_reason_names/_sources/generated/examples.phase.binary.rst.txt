@@ -1,0 +1,23 @@
+examples.phase.binary
+=====================
+
+.. automodule:: examples.phase.binary
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

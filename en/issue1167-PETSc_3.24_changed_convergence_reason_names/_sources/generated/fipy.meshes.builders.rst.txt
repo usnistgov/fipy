@@ -1,0 +1,36 @@
+fipy.meshes.builders
+====================
+
+.. automodule:: fipy.meshes.builders
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fipy.meshes.builders.abstractGridBuilder
+   fipy.meshes.builders.grid1DBuilder
+   fipy.meshes.builders.grid2DBuilder
+   fipy.meshes.builders.grid3DBuilder
+   fipy.meshes.builders.periodicGrid1DBuilder
+   fipy.meshes.builders.utilityClasses
+

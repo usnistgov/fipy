@@ -1,0 +1,29 @@
+fipy.variables.noiseVariable
+============================
+
+.. automodule:: fipy.variables.noiseVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      NoiseVariable
+   
+   
+
+   
+   
+   
+
+
+
