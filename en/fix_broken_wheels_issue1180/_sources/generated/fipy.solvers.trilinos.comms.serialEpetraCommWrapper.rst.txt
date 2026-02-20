@@ -1,0 +1,29 @@
+fipy.solvers.trilinos.comms.serialEpetraCommWrapper
+===================================================
+
+.. automodule:: fipy.solvers.trilinos.comms.serialEpetraCommWrapper
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SerialEpetraCommWrapper
+   
+   
+
+   
+   
+   
+
+
+

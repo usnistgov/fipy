@@ -1,0 +1,23 @@
+fipy.terms.nonDiffusionTerm
+===========================
+
+.. automodule:: fipy.terms.nonDiffusionTerm
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

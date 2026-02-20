@@ -1,0 +1,23 @@
+examples.diffusion.explicit.tri2D
+=================================
+
+.. automodule:: examples.diffusion.explicit.tri2D
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

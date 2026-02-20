@@ -1,0 +1,48 @@
+﻿fipy
+====
+
+.. automodule:: fipy
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      doctest_raw_input
+      test
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fipy.boundaryConditions
+   fipy.matrices
+   fipy.meshes
+   fipy.solvers
+   fipy.steppers
+   fipy.terms
+   fipy.testFiPy
+   fipy.tests
+   fipy.tools
+   fipy.variables
+   fipy.viewers
+

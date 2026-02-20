@@ -1,0 +1,29 @@
+fipy.variables.exponentialNoiseVariable
+=======================================
+
+.. automodule:: fipy.variables.exponentialNoiseVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ExponentialNoiseVariable
+   
+   
+
+   
+   
+   
+
+
+

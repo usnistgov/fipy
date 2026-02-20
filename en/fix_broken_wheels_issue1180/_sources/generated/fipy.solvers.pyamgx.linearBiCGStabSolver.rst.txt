@@ -1,0 +1,29 @@
+fipy.solvers.pyamgx.linearBiCGStabSolver
+========================================
+
+.. automodule:: fipy.solvers.pyamgx.linearBiCGStabSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearBiCGStabSolver
+   
+   
+
+   
+   
+   
+
+
+

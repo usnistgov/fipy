@@ -1,0 +1,53 @@
+fipy.solvers.convergence
+========================
+
+.. automodule:: fipy.solvers.convergence
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AbsoluteToleranceConvergence
+      BreakdownDivergence
+      Convergence
+      ConvergenceBase
+      Divergence
+      HappyBreakdownConvergence
+      IllConditionedDivergence
+      IllConditionedPreconditionerDivergence
+      IteratingConvergence
+      IterationConvergence
+      IterationDivergence
+      LossOfAccuracyConvergence
+      NullDivergence
+      OutOfRangeDivergence
+      PreconditioningDivergence
+      RHSZeroConvergence
+      RelativeToleranceConvergence
+      StagnatedDivergence
+      ToleranceDivergence
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      DivergenceWarning
+   
+   
+
+
+

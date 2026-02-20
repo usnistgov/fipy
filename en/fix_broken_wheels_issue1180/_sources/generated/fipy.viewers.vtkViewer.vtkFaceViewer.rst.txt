@@ -1,0 +1,29 @@
+fipy.viewers.vtkViewer.vtkFaceViewer
+====================================
+
+.. automodule:: fipy.viewers.vtkViewer.vtkFaceViewer
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      VTKFaceViewer
+   
+   
+
+   
+   
+   
+
+
+

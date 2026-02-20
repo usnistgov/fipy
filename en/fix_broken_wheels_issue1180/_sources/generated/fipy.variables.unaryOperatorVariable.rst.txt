@@ -1,0 +1,23 @@
+fipy.variables.unaryOperatorVariable
+====================================
+
+.. automodule:: fipy.variables.unaryOperatorVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

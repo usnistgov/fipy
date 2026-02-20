@@ -1,0 +1,29 @@
+fipy.terms.diffusionTermNoCorrection
+====================================
+
+.. automodule:: fipy.terms.diffusionTermNoCorrection
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DiffusionTermNoCorrection
+   
+   
+
+   
+   
+   
+
+
+
