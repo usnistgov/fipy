@@ -70,7 +70,7 @@ class TestCommand(object):
         really_all,
         examples,
         modules,
-        viewers,
+        interactive,
         cache,
         timetests,
         skfmm,
@@ -89,7 +89,7 @@ class TestCommand(object):
         self.really_all = really_all
         self.examples = examples
         self.modules = modules
-        self.viewers = viewers
+        self.interactive = interactive
         self.cache = cache
         self.timetests = timetests
         self.skfmm = skfmm
@@ -122,14 +122,13 @@ class TestCommand(object):
     def set_modules(self):
         if not (self.examples
                 or self.modules
-                or self.viewers
                 or self.module_or_suite):
             self.all = True
         if self.all or self.really_all:
             self.examples = True
             self.modules = True
         if self.really_all:
-            self.viewers = True
+            self.interactive = True
 
 
     @staticmethod
@@ -309,7 +308,7 @@ class TestCommand(object):
 
         self.printPackageInfo()
 
-        if self.viewers:
+        if self.interactive:
             cached_interactive = SKIP_INTERACTIVE
             SKIP_INTERACTIVE = False
 
@@ -340,7 +339,7 @@ class TestCommand(object):
             else:
                 raise
         finally:
-            if self.viewers:
+            if self.interactive:
                 SKIP_INTERACTIVE = cached_interactive
 
         self.save_testtimes()
@@ -393,7 +392,7 @@ def main(
         bool,
         Option(help="test FiPy code modules")
     ] = False,
-    viewers: Annotated[
+    interactive: Annotated[
         bool,
         Option(help="test FiPy viewer modules (requires user input)")
     ] = False,
@@ -434,7 +433,7 @@ def main(
         really_all,
         examples,
         modules,
-        viewers,
+        interactive,
         cache,
         timetests,
         skfmm,
