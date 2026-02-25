@@ -141,9 +141,9 @@ class MatplotlibVectorViewer(AbstractMatplotlib2DViewer):
     def _doctest_extra(cls):
         return ("""
             >>> for sparsity in numerix.arange(5000, 0, -500):
-            ...     viewer.quiver(sparsity=sparsity)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
+            ...     viewer.quiver(sparsity=sparsity)  # doctest:+INTERACTIVE
+            ...     viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
         """ + super()._doctest_extra())
 
 if __name__ == "__main__":

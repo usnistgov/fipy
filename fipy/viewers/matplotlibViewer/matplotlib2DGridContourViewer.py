@@ -115,7 +115,7 @@ class Matplotlib2DGridContourViewer(AbstractMatplotlib2DViewer):
     @classmethod
     def _doctest_extra(cls):
         return ("""
-            >>> viewer.levels = 2
+            >>> viewer.levels = 2  # doctest:+INTERACTIVE
         """ + super()._doctest_extra())
 
 def _test():

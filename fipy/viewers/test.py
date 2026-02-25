@@ -9,7 +9,10 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(testModuleNames = (
-        'vtkViewer.test',),
+        'vtkViewer.test',
+        'matplotlibViewer.test',
+        'mayaviViewer.test',
+        ),
                                    docTestModuleNames = (
         'tsvViewer',
         ), base = __name__)

@@ -264,8 +264,8 @@ class AbstractMatplotlibViewer(AbstractViewer):
     @classmethod
     def _doctest_extra(cls):
         return ("""
-            >>> viewer.cmap = "ocean"
-            >>> viewer.log = True
+            >>> viewer.cmap = "ocean"  # doctest:+INTERACTIVE
+            >>> viewer.log = True  # doctest:+INTERACTIVE
         """ + super()._doctest_extra())
 
 if __name__ == "__main__":

@@ -8,7 +8,8 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames=(
-        'matplotlibViewer',
+        'abstractMatplotlibViewer',
+        'abstractMatplotlib2DViewer',
         'matplotlib1DViewer',
         'matplotlib2DViewer',
         'matplotlib2DGridViewer',

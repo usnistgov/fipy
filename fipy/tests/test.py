@@ -10,10 +10,15 @@ from typing_extensions import Annotated
 import unittest
 import warnings
 
-from fipy.tests.doctestPlus import _DocTestTimes, report_skips
+from fipy.tests.doctestPlus import _DocTestTimes, report_skips, register_skipper
 from fipy.tools.logging.environment import package_info
 from fipy.tools import numerix
 
+SKIP_INTERACTIVE = True
+
+register_skipper(flag="INTERACTIVE",
+                 test=lambda: not SKIP_INTERACTIVE,
+                 why="interactive tests (viewers) were not requested")
 
 __all__ = ["app"]
 
@@ -187,16 +192,6 @@ class TestCommand(object):
         if self.module_or_suite:
             yield self.module_or_suite
 
-        if self.viewers:
-            print("*" * 60)
-            print("*" + "".center(58) + "*")
-            print("*" + "ATTENTION".center(58) + "*")
-            print("*" + "".center(58) + "*")
-            print("*" + "Some of the following tests require user interaction".center(58) + "*")
-            print("*" + "".center(58) + "*")
-            print("*" * 60)
-
-            yield "fipy.viewers.testinteractive._suite"
         if self.modules:
             yield "fipy.testFiPy._suite"
         if self.examples:
@@ -310,7 +305,21 @@ class TestCommand(object):
 
 
     def run_tests(self):
+        global SKIP_INTERACTIVE
+
         self.printPackageInfo()
+
+        if self.viewers:
+            cached_interactive = SKIP_INTERACTIVE
+            SKIP_INTERACTIVE = False
+
+            print("*" * 60)
+            print("*" + "".center(58) + "*")
+            print("*" + "ATTENTION".center(58) + "*")
+            print("*" + "".center(58) + "*")
+            print("*" + "Some of the following tests require user interaction".center(58) + "*")
+            print("*" + "".center(58) + "*")
+            print("*" * 60)
 
         try:
             # Run tests with current working directory on path
@@ -330,6 +339,9 @@ class TestCommand(object):
                 pass
             else:
                 raise
+        finally:
+            if self.viewers:
+                SKIP_INTERACTIVE = cached_interactive
 
         self.save_testtimes()
 

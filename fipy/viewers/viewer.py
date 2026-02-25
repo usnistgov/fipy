@@ -176,9 +176,9 @@ class AbstractViewer(object, metaclass=_MetaViewer):
     @classmethod
     def _doctest_extra(cls):
         return """
-            >>> viewer.title = "{cls.__name__} changed"
-            >>> viewer.plot()
-            >>> viewer._promptForOpinion()
+            >>> viewer.title = "{cls.__name__} changed" # doctest:+INTERACTIVE
+            >>> viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
         """.format(**locals())
 
     @staticmethod
@@ -237,10 +237,11 @@ class AbstractViewer(object, metaclass=_MetaViewer):
             ...                 xmin=10, xmax=90,
             ...                 datamin=1.1, datamax=4.0,
             ...                 title="{cls.__name__} test")
+            ... # doctest:+INTERACTIVE
             >>> for kval in fp.numerix.arange(0, 0.3, 0.03):
             ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
+            ...     viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
         """.format(**locals()) + cls._doctest_extra()
 
     @classmethod
@@ -255,10 +256,11 @@ class AbstractViewer(object, metaclass=_MetaViewer):
             ...                 ymin=0.1, ymax=0.9,
             ...                 # datamin=1.1, datamax=4.0,
             ...                 title="{cls.__name__} test")
+            ... # doctest:+INTERACTIVE
             >>> for kval in range(10):
             ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
+            ...     viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
         """.format(**locals()) + cls._doctest_extra()
 
     @classmethod
@@ -281,18 +283,19 @@ class AbstractViewer(object, metaclass=_MetaViewer):
             >>> xyVar = fp.CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = fp.Variable(name="k", value=1.)
             >>> viewer = {cls.__name__}(vars=fp.numerix.sin(k * xyVar).grad,
-            ...                 title="{cls.__name__} test")
+            ...                 title="{cls.__name__} test")  # doctest:+INTERACTIVE
             >>> for kval in fp.numerix.arange(1, 10):
             ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
+            ...     viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
 
             >>> viewer = {cls.__name__}(vars=fp.numerix.sin(k * xyVar).faceGrad,
             ...                 title="{cls.__name__} test")
+            ... # doctest:+INTERACTIVE
             >>> for kval in range(10):
             ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
+            ...     viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
         """.format(**locals()) + cls._doctest_extra()
 
     @classmethod
@@ -317,8 +320,9 @@ class AbstractViewer(object, metaclass=_MetaViewer):
             ...                     ymin=0.1, ymax=0.9,
             ...                     datamin=1.1, datamax=4.0,
             ...                     title="{cls.__name__} test")
+            ... # doctest:+INTERACTIVE
             >>> for kval in range(10):
             ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
+            ...     viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
         """.format(**locals()) + cls._doctest_extra()
