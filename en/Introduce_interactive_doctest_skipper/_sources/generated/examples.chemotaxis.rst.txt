@@ -1,0 +1,34 @@
+examples.chemotaxis
+===================
+
+.. automodule:: examples.chemotaxis
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   examples.chemotaxis.input
+   examples.chemotaxis.input2D
+   examples.chemotaxis.parameters
+   examples.chemotaxis.test
+

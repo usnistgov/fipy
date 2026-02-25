@@ -1,0 +1,29 @@
+fipy.solvers.pyamgx.aggregationAMGSolver
+========================================
+
+.. automodule:: fipy.solvers.pyamgx.aggregationAMGSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AggregationAMGSolver
+   
+   
+
+   
+   
+   
+
+
+

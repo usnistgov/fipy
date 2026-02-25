@@ -1,0 +1,32 @@
+fipy.tests.doctestPlus
+======================
+
+.. automodule:: fipy.tests.doctestPlus
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      execButNoTest
+      register_skipper
+      report_skips
+      testmod
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

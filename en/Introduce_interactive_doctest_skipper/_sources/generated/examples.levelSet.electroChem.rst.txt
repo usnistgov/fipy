@@ -1,0 +1,45 @@
+examples.levelSet.electroChem
+=============================
+
+.. automodule:: examples.levelSet.electroChem
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   examples.levelSet.electroChem.adsorbingSurfactantEquation
+   examples.levelSet.electroChem.adsorption
+   examples.levelSet.electroChem.gapFillDistanceVariable
+   examples.levelSet.electroChem.gapFillMesh
+   examples.levelSet.electroChem.gold
+   examples.levelSet.electroChem.howToWriteAScript
+   examples.levelSet.electroChem.leveler
+   examples.levelSet.electroChem.lines
+   examples.levelSet.electroChem.matplotlibSurfactantViewer
+   examples.levelSet.electroChem.mayaviSurfactantViewer
+   examples.levelSet.electroChem.metalIonDiffusionEquation
+   examples.levelSet.electroChem.simpleTrenchSystem
+   examples.levelSet.electroChem.surfactantBulkDiffusionEquation
+   examples.levelSet.electroChem.test
+   examples.levelSet.electroChem.trenchMesh
+

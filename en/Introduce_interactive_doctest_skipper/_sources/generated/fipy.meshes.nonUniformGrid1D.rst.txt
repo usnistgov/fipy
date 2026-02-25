@@ -1,0 +1,29 @@
+fipy.meshes.nonUniformGrid1D
+============================
+
+.. automodule:: fipy.meshes.nonUniformGrid1D
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      NonUniformGrid1D
+   
+   
+
+   
+   
+   
+
+
+

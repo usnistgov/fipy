@@ -1,0 +1,29 @@
+fipy.meshes.mesh1D
+==================
+
+.. automodule:: fipy.meshes.mesh1D
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Mesh1D
+   
+   
+
+   
+   
+   
+
+
+

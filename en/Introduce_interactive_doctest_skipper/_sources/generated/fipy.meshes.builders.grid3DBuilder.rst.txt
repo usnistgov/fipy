@@ -1,0 +1,23 @@
+fipy.meshes.builders.grid3DBuilder
+==================================
+
+.. automodule:: fipy.meshes.builders.grid3DBuilder
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

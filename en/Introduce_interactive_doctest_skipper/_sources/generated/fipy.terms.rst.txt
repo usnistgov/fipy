@@ -1,0 +1,75 @@
+fipy.terms
+==========
+
+.. automodule:: fipy.terms
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Exceptions
+
+   .. autosummary::
+   
+      AbstractBaseClassError
+      ExplicitVariableError
+      IncorrectSolutionVariable
+      SolutionVariableNumberError
+      SolutionVariableRequiredError
+      TermMultiplyError
+      TransientTermError
+      VectorCoeffError
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   fipy.terms.abstractBinaryTerm
+   fipy.terms.abstractConvectionTerm
+   fipy.terms.abstractDiffusionTerm
+   fipy.terms.abstractUpwindConvectionTerm
+   fipy.terms.advectionTerm
+   fipy.terms.asymmetricConvectionTerm
+   fipy.terms.binaryTerm
+   fipy.terms.cellTerm
+   fipy.terms.centralDiffConvectionTerm
+   fipy.terms.coupledBinaryTerm
+   fipy.terms.diffusionTerm
+   fipy.terms.diffusionTermCorrection
+   fipy.terms.diffusionTermNoCorrection
+   fipy.terms.explicitDiffusionTerm
+   fipy.terms.explicitSourceTerm
+   fipy.terms.explicitUpwindConvectionTerm
+   fipy.terms.exponentialConvectionTerm
+   fipy.terms.faceTerm
+   fipy.terms.firstOrderAdvectionTerm
+   fipy.terms.hybridConvectionTerm
+   fipy.terms.implicitDiffusionTerm
+   fipy.terms.implicitSourceTerm
+   fipy.terms.nonDiffusionTerm
+   fipy.terms.powerLawConvectionTerm
+   fipy.terms.residualTerm
+   fipy.terms.sourceTerm
+   fipy.terms.term
+   fipy.terms.test
+   fipy.terms.transientTerm
+   fipy.terms.unaryTerm
+   fipy.terms.upwindConvectionTerm
+   fipy.terms.vanLeerConvectionTerm
+
