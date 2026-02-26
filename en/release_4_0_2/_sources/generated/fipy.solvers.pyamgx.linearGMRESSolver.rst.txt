@@ -1,0 +1,29 @@
+fipy.solvers.pyamgx.linearGMRESSolver
+=====================================
+
+.. automodule:: fipy.solvers.pyamgx.linearGMRESSolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LinearGMRESSolver
+   
+   
+
+   
+   
+   
+
+
+

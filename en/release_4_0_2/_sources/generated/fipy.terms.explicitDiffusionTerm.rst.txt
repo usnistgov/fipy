@@ -1,0 +1,29 @@
+fipy.terms.explicitDiffusionTerm
+================================
+
+.. automodule:: fipy.terms.explicitDiffusionTerm
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ExplicitDiffusionTerm
+   
+   
+
+   
+   
+   
+
+
+

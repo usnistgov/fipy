@@ -1,0 +1,29 @@
+fipy.tools.debug
+================
+
+.. automodule:: fipy.tools.debug
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      PRINT
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

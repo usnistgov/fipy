@@ -1,0 +1,29 @@
+fipy.variables.scharfetterGummelFaceVariable
+============================================
+
+.. automodule:: fipy.variables.scharfetterGummelFaceVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ScharfetterGummelFaceVariable
+   
+   
+
+   
+   
+   
+
+
+

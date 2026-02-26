@@ -1,0 +1,23 @@
+fipy.tools.dimensions.DictWithDefault
+=====================================
+
+.. automodule:: fipy.tools.dimensions.DictWithDefault
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

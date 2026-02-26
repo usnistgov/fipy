@@ -1,0 +1,29 @@
+fipy.solvers.petsc.dummySolver
+==============================
+
+.. automodule:: fipy.solvers.petsc.dummySolver
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DummySolver
+   
+   
+
+   
+   
+   
+
+
+

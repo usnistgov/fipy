@@ -1,0 +1,40 @@
+examples.convection
+===================
+
+.. automodule:: examples.convection
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   examples.convection.advection
+   examples.convection.exponential1D
+   examples.convection.exponential1DBack
+   examples.convection.exponential1DSource
+   examples.convection.exponential2D
+   examples.convection.peclet
+   examples.convection.powerLaw1D
+   examples.convection.robin
+   examples.convection.source
+   examples.convection.test
+
