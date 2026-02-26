@@ -49,7 +49,6 @@ fipy.viewers
    fipy.viewers.mayaviViewer
    fipy.viewers.multiViewer
    fipy.viewers.test
-   fipy.viewers.testinteractive
    fipy.viewers.tsvViewer
    fipy.viewers.viewer
    fipy.viewers.vtkViewer
