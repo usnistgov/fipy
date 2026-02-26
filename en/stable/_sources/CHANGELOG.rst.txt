@@ -11,6 +11,29 @@ Change Log
 Version |release|
 -----------------
 
+
+Pulls
+-----
+
+- Add `typing_extensions` to dependencies
+  (`#1181 <https://github.com/usnistgov/fipy/pull/1181>`_)
+
+Fixes
+-----
+
+- `#1167 <https://github.com/usnistgov/fipy/issues/1167>`_:
+  PETSc 3.24 changed convergence reason names
+
+--------------------------
+Version 4.0.1 - 2025-09-16
+--------------------------
+
+Make README acceptable to twine
+
+------------------------
+Version 4.0 - 2025-09-16
+------------------------
+
 This release
 
 - Drops support for :term:`Pysparse`, which required :term:`Python` 2.7.
