@@ -35,7 +35,7 @@
   <script type="text/javascript" src="https://www.nist.gov/sites/all/themes/nist_style/js/selectivizr-min.js"></script>
   <![endif]--><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Change Log &#8212; FiPy 4.0.1+4.g6941272b6 documentation</title>
+    <title>Change Log &#8212; FiPy 4.0.1+5.g47c4c2f95 documentation</title>
     <link rel="stylesheet" href="_static/ntd2d.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
@@ -43,7 +43,7 @@
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/widetable.css?v=32b6a719" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=a1a0859e"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=2e0cc64f"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script>window.MathJax = {"loader": {"load": ["[tex]/textmacros"]}, "tex": {"packages": {"[+]": ["textmacros"]}}}</script>
@@ -51,7 +51,7 @@
     <link rel="canonical" href="https://pages.nist.gov/fipy/en/latest/CHANGELOG.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="FiPy 4.0.1+4.g6941272b6 documentation" href="contents.html" />
+    <link rel="top" title="FiPy 4.0.1+5.g47c4c2f95 documentation" href="contents.html" />
     <link rel="up" title="Introduction" href="introduction.html" />
     <link rel="next" title="Git practices" href="ADMINISTRATA.html" />
     <link rel="prev" title="Publications" href="PUBLICATIONS.html" />
@@ -118,7 +118,28 @@
   <section id="change-log">
 <span id="changelog"></span><h1>Change Log<a class="headerlink" href="#change-log" title="Permalink to this heading">¶</a></h1>
 <section id="version-release">
-<h2>Version 4.0.1+4.g6941272b6<a class="headerlink" href="#version-release" title="Permalink to this heading">¶</a></h2>
+<h2>Version 4.0.1+5.g47c4c2f95<a class="headerlink" href="#version-release" title="Permalink to this heading">¶</a></h2>
+<section id="pulls">
+<h3>Pulls<a class="headerlink" href="#pulls" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Add <cite>typing_extensions</cite> to dependencies
+(<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1181">#1181</a>)</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h3>Fixes<a class="headerlink" href="#fixes" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1167">#1167</a>:
+PETSc 3.24 changed convergence reason names</p></li>
+</ul>
+</section>
+</section>
+<section id="version-4-0-1-2025-09-16">
+<h2>Version 4.0.1 - 2025-09-16<a class="headerlink" href="#version-4-0-1-2025-09-16" title="Permalink to this heading">¶</a></h2>
+<p>Make README acceptable to twine</p>
+</section>
+<section id="version-4-0-2025-09-16">
+<h2>Version 4.0 - 2025-09-16<a class="headerlink" href="#version-4-0-2025-09-16" title="Permalink to this heading">¶</a></h2>
 <p>This release</p>
 <ul class="simple">
 <li><p>Drops support for <a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">Pysparse</span></a>, which required <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> 2.7.</p></li>
@@ -129,8 +150,8 @@
 <p class="admonition-title">Note</p>
 <p>Also see the coincident changes in <a class="reference internal" href="#version399"><span class="std std-ref">Version 3.99 - 2025-09-16</span></a>.</p>
 </div>
-<section id="pulls">
-<h3>Pulls<a class="headerlink" href="#pulls" title="Permalink to this heading">¶</a></h3>
+<section id="id3">
+<h3>Pulls<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Migrate to <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1154">#1154</a>)</p></li>
@@ -142,8 +163,8 @@
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1145">#1145</a>)</p></li>
 </ul>
 </section>
-<section id="fixes">
-<h3>Fixes<a class="headerlink" href="#fixes" title="Permalink to this heading">¶</a></h3>
+<section id="id8">
+<h3>Fixes<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1137">#1137</a>:
 <code class="docutils literal notranslate"><span class="pre">setuptools.sandbox</span></code> is deprecated</p></li>
@@ -192,8 +213,8 @@ problems.</p></li>
 the <a class="reference internal" href="USAGE.html#commandlineflags"><span class="std std-ref">Command-line Flags</span></a>.  <a class="reference internal" href="SOLVERS.html#id9"><span class="std std-ref">PyAMG</span></a> is implemented as a
 preconditioner for <a class="reference internal" href="SOLVERS.html#id13"><span class="std std-ref">SciPy</span></a>, not as a solver suite in its own right.</p></li>
 </ul>
-<section id="id18">
-<h3>Pulls<a class="headerlink" href="#id18" title="Permalink to this heading">¶</a></h3>
+<section id="id22">
+<h3>Pulls<a class="headerlink" href="#id22" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Reorganize Table of Contents
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/1143">#1143</a>)</p></li>
@@ -225,8 +246,8 @@ Thanks to <a class="reference external" href="https://github.com/obscurerichard"
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/777">#777</a>)</p></li>
 </ul>
 </section>
-<section id="id32">
-<h3>Fixes<a class="headerlink" href="#id32" title="Permalink to this heading">¶</a></h3>
+<section id="id36">
+<h3>Fixes<a class="headerlink" href="#id36" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1115">#1115</a>:
 “Create Anaconda environment from environments” times out on nightly
@@ -270,8 +291,8 @@ failure or upgrade to SciPy &gt;= 1.13.1</p>
 <p>PETSc 3.21 crashes our test suite when running in parallel (<a class="reference external" href="https://github.com/usnistgov/fipy/issues/1054">#1054</a>).  PETSc &lt;= 3.20 is
 recommended, although <a class="reference external" href="https://github.com/conda-forge/petsc-feedstock/issues/180">petsc 3.20.2_*_102 is broken on macOS</a>.</p>
 </div>
-<section id="id41">
-<h3>Pulls<a class="headerlink" href="#id41" title="Permalink to this heading">¶</a></h3>
+<section id="id45">
+<h3>Pulls<a class="headerlink" href="#id45" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Introduce Timer context manager
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/995">#995</a>)</p></li>
@@ -287,8 +308,8 @@ recommended, although <a class="reference external" href="https://github.com/con
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/985">#985</a>)</p></li>
 </ul>
 </section>
-<section id="id48">
-<h3>Fixes<a class="headerlink" href="#id48" title="Permalink to this heading">¶</a></h3>
+<section id="id52">
+<h3>Fixes<a class="headerlink" href="#id52" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/1049">#1049</a>:
 Numpy 2.0.0 breaks things</p></li>
@@ -324,8 +345,8 @@ Default coefficient of <cite>ImplicitSourceTerm</cite> is 0</p></li>
 <h2>Version 3.4.4 - 2023-06-27<a class="headerlink" href="#version-3-4-4-2023-06-27" title="Permalink to this heading">¶</a></h2>
 <p>This maintenance release adds <a class="reference internal" href="USAGE.html#logging"><span class="std std-ref">Logging</span></a> and resolves compatibility issues
 with recent builds of <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> and <a class="reference internal" href="glossary.html#term-NumPy"><span class="xref std std-term">NumPy</span></a>.</p>
-<section id="id62">
-<h3>Pulls<a class="headerlink" href="#id62" title="Permalink to this heading">¶</a></h3>
+<section id="id66">
+<h3>Pulls<a class="headerlink" href="#id66" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Fix numpy 1.25 issues
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/930">#930</a>)</p></li>
@@ -339,8 +360,8 @@ with recent builds of <a class="reference internal" href="SOLVERS.html#petsc"><s
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/791">#791</a>)</p></li>
 </ul>
 </section>
-<section id="id68">
-<h3>Fixes<a class="headerlink" href="#id68" title="Permalink to this heading">¶</a></h3>
+<section id="id72">
+<h3>Fixes<a class="headerlink" href="#id72" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/896">#896</a>:
 Poor garbage collection with petsc4py 3.18.3 (was “Memory leak in
@@ -360,8 +381,8 @@ updates to using
 for distribution,
 and substantially refactors matrices to work more consistently across
 solvers.</p>
-<section id="id70">
-<h3>Pulls<a class="headerlink" href="#id70" title="Permalink to this heading">¶</a></h3>
+<section id="id74">
+<h3>Pulls<a class="headerlink" href="#id74" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Update CI documentation to refer only to Azure
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/863">#863</a>)</p></li>
@@ -398,8 +419,8 @@ Thanks to <a class="reference external" href="https://github.com/Jon83Carvalho">
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/721">#721</a>)</p></li>
 </ul>
 </section>
-<section id="id88">
-<h3>Fixes<a class="headerlink" href="#id88" title="Permalink to this heading">¶</a></h3>
+<section id="id92">
+<h3>Fixes<a class="headerlink" href="#id92" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/862">#862</a>:
 Could not load the Qt platform plugin “<cite>xcb</cite>”</p></li>
@@ -471,8 +492,8 @@ with the VTK viewers (bitrot has started to set
 in since the <a class="reference external" href="https://www.python.org/dev/peps/pep-0373/#update">demise of Python 2.7</a>).  There’s also a new parallel
 failure in <cite>NonUniformGrid1D</cite> that we need to figure out.</p>
 </div>
-<section id="id115">
-<h3>Pulls<a class="headerlink" href="#id115" title="Permalink to this heading">¶</a></h3>
+<section id="id119">
+<h3>Pulls<a class="headerlink" href="#id119" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Move mailing list
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/747">#747</a>)</p></li>
@@ -486,8 +507,8 @@ Thanks to <a class="reference external" href="https://github.com/atismer">&#64;a
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/716">#716</a>)</p></li>
 </ul>
 </section>
-<section id="id120">
-<h3>Fixes<a class="headerlink" href="#id120" title="Permalink to this heading">¶</a></h3>
+<section id="id124">
+<h3>Fixes<a class="headerlink" href="#id124" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/726">#726</a>:
 <cite>MayaviClient</cite> not compatible with Python 3</p></li>
@@ -501,8 +522,8 @@ Issues Scaling <cite>Colorbar</cite> with <cite>Datamin</cite> and <cite>Datamax
 <section id="version-3-4-1-2020-02-14">
 <h2>Version 3.4.1 - 2020-02-14<a class="headerlink" href="#version-3-4-1-2020-02-14" title="Permalink to this heading">¶</a></h2>
 <p>This release is primarily for compatibility with <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v2.4)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a> 1.18.</p>
-<section id="id124">
-<h3>Pulls<a class="headerlink" href="#id124" title="Permalink to this heading">¶</a></h3>
+<section id="id128">
+<h3>Pulls<a class="headerlink" href="#id128" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Fix documentation
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/711">#711</a>)</p></li>
@@ -512,8 +533,8 @@ Issues Scaling <cite>Colorbar</cite> with <cite>Datamin</cite> and <cite>Datamax
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/708">#708</a>)</p></li>
 </ul>
 </section>
-<section id="id128">
-<h3>Fixes<a class="headerlink" href="#id128" title="Permalink to this heading">¶</a></h3>
+<section id="id132">
+<h3>Fixes<a class="headerlink" href="#id132" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/703">#703</a>:
 FORTRAN array ordering is deprecated</p></li>
@@ -524,8 +545,8 @@ FORTRAN array ordering is deprecated</p></li>
 <h2>Version 3.4 - 2020-02-06<a class="headerlink" href="#version-3-4-2020-02-06" title="Permalink to this heading">¶</a></h2>
 <p>This release adds support for the <a class="reference internal" href="SOLVERS.html#petsc"><span class="std std-ref">PETSc</span></a> solvers for
 <a class="reference internal" href="USAGE.html#parallel"><span class="std std-ref">Solving in Parallel</span></a>.</p>
-<section id="id130">
-<h3>Pulls<a class="headerlink" href="#id130" title="Permalink to this heading">¶</a></h3>
+<section id="id134">
+<h3>Pulls<a class="headerlink" href="#id134" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Add support for PETSc solvers
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/701">#701</a>)</p></li>
@@ -559,8 +580,8 @@ FORTRAN array ordering is deprecated</p></li>
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/658">#658</a>)</p></li>
 </ul>
 </section>
-<section id="id139">
-<h3>Fixes<a class="headerlink" href="#id139" title="Permalink to this heading">¶</a></h3>
+<section id="id143">
+<h3>Fixes<a class="headerlink" href="#id143" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/692">#692</a>:
 Can’t copy example scripts with the command line</p></li>
@@ -576,8 +597,8 @@ Automate release process</p></li>
 <p>This release brings support for Python 2 and Python 3 from the same source,
 without any translation.  Thanks to <a class="reference external" href="https://github.com/pya">&#64;pya</a> and
 <a class="reference external" href="https://github.com/woodscn">&#64;woodscn</a> for getting things started.</p>
-<section id="id143">
-<h3>Pulls<a class="headerlink" href="#id143" title="Permalink to this heading">¶</a></h3>
+<section id="id147">
+<h3>Pulls<a class="headerlink" href="#id147" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Automate spell check
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/657">#657</a>)</p></li>
@@ -592,8 +613,8 @@ without any translation.  Thanks to <a class="reference external" href="https://
 Thanks to <a class="reference external" href="https://github.com/xfong">&#64;xfong</a>.</p></li>
 </ul>
 </section>
-<section id="id149">
-<h3>Fixes<a class="headerlink" href="#id149" title="Permalink to this heading">¶</a></h3>
+<section id="id153">
+<h3>Fixes<a class="headerlink" href="#id153" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/655">#655</a>:
 When Python 2 and 3 are installed, Mayavi wont work.
@@ -631,8 +652,8 @@ automatically tested on all major platforms using cloud-based
 <a class="reference internal" href="ADMINISTRATA.html#continuousintegration"><span class="std std-ref">Continuous Integration</span></a> (<a class="reference internal" href="glossary.html#term-linux"><span class="xref std std-term">linux</span></a> with <a class="reference internal" href="glossary.html#term-CircleCI"><span class="xref std std-term">CircleCI</span></a>,
 <a class="reference internal" href="glossary.html#term-macOS"><span class="xref std std-term">macOS</span></a> with <a class="reference internal" href="glossary.html#term-TravisCI"><span class="xref std std-term">TravisCI</span></a>, and <a class="reference internal" href="glossary.html#term-Windows"><span class="xref std std-term">Windows</span></a> with
 <a class="reference internal" href="glossary.html#term-AppVeyor"><span class="xref std std-term">AppVeyor</span></a>).</p>
-<section id="id161">
-<h3>Pulls<a class="headerlink" href="#id161" title="Permalink to this heading">¶</a></h3>
+<section id="id165">
+<h3>Pulls<a class="headerlink" href="#id165" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Make badges work in GitHub and pdf
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/636">#636</a>)</p></li>
@@ -699,8 +720,8 @@ Thanks to <a class="reference external" href="https://github.com/gitter-badger">
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/489">#489</a>)</p></li>
 </ul>
 </section>
-<section id="id193">
-<h3>Fixes<a class="headerlink" href="#id193" title="Permalink to this heading">¶</a></h3>
+<section id="id197">
+<h3>Fixes<a class="headerlink" href="#id197" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/631">#631</a>:
 Clean up <code class="file docutils literal notranslate"><span class="pre">INSTALLATION.rst</span></code></p></li>
@@ -787,8 +808,8 @@ Gmsh 2.11 breaks <cite>GmshGrids</cite></p></li>
 </section>
 <section id="version-3-1-3-2017-01-17">
 <h2>Version 3.1.3 - 2017-01-17<a class="headerlink" href="#version-3-1-3-2017-01-17" title="Permalink to this heading">¶</a></h2>
-<section id="id232">
-<h3>Fixes<a class="headerlink" href="#id232" title="Permalink to this heading">¶</a></h3>
+<section id="id236">
+<h3>Fixes<a class="headerlink" href="#id236" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/502">#502</a>:
 gmane is defunct</p></li>
@@ -797,8 +818,8 @@ gmane is defunct</p></li>
 </section>
 <section id="version-3-1-2-2016-12-24">
 <h2>Version 3.1.2 - 2016-12-24<a class="headerlink" href="#version-3-1-2-2016-12-24" title="Permalink to this heading">¶</a></h2>
-<section id="id234">
-<h3>Pulls<a class="headerlink" href="#id234" title="Permalink to this heading">¶</a></h3>
+<section id="id238">
+<h3>Pulls<a class="headerlink" href="#id238" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>remove <cite>recvobj</cite> from calls to <cite>allgather</cite>, require <cite>sendobj</cite>
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/492">#492</a>)</p></li>
@@ -874,8 +895,8 @@ Thanks to <a class="reference external" href="https://github.com/raybsmith">&#64
 (<a class="reference external" href="https://github.com/usnistgov/fipy/pull/419">#419</a>)</p></li>
 </ul>
 </section>
-<section id="id269">
-<h3>Fixes<a class="headerlink" href="#id269" title="Permalink to this heading">¶</a></h3>
+<section id="id273">
+<h3>Fixes<a class="headerlink" href="#id273" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/498">#498</a>:
 nonlinear source term</p></li>
@@ -930,8 +951,8 @@ Updates to reflect move to Github</p></li>
 </section>
 <section id="version-3-1-1-2015-12-17">
 <h2>Version 3.1.1 - 2015-12-17<a class="headerlink" href="#version-3-1-1-2015-12-17" title="Permalink to this heading">¶</a></h2>
-<section id="id294">
-<h3>Fixes<a class="headerlink" href="#id294" title="Permalink to this heading">¶</a></h3>
+<section id="id298">
+<h3>Fixes<a class="headerlink" href="#id298" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/415">#415</a>:
 <cite>MatplotlibGrid2DViewer</cite> error with Matplotlib version 1.4.0</p></li>
@@ -967,8 +988,8 @@ vector fields.</p></li>
 system. This system should make it much easier for <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> users to
 participate in development.</p></li>
 </ul>
-<section id="id304">
-<h3>Fixes<a class="headerlink" href="#id304" title="Permalink to this heading">¶</a></h3>
+<section id="id308">
+<h3>Fixes<a class="headerlink" href="#id308" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/398">#398</a>:
 Home page needs out-of-NIST redirects</p></li>
@@ -1104,8 +1125,8 @@ Move <cite>ImplicitDiffusionTerm().solve(var) == 0</cite> “failure” from
 </section>
 <section id="version-3-0-1-2012-10-03">
 <h2>Version 3.0.1 - 2012-10-03<a class="headerlink" href="#version-3-0-1-2012-10-03" title="Permalink to this heading">¶</a></h2>
-<section id="id367">
-<h3>Fixes<a class="headerlink" href="#id367" title="Permalink to this heading">¶</a></h3>
+<section id="id371">
+<h3>Fixes<a class="headerlink" href="#id371" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/346">#346</a>:
 text in <cite>trunk/examples/convection/source.py</cite>
@@ -1150,8 +1171,8 @@ must specify the timestep by passing a <code class="docutils literal notranslate
 Please see <a class="reference internal" href="generated/examples.updating.update2_0to3_0.html#module-examples.updating.update2_0to3_0" title="examples.updating.update2_0to3_0"><code class="xref py py-mod docutils literal notranslate"><span class="pre">examples.updating.update2_0to3_0</span></code></a> for guidance on the
 changes that you will need to make to your <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 2.x scripts.</p>
 </div>
-<section id="id371">
-<h3>Fixes<a class="headerlink" href="#id371" title="Permalink to this heading">¶</a></h3>
+<section id="id375">
+<h3>Fixes<a class="headerlink" href="#id375" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/332">#332</a>:
 Inline failure on Ubuntu x86_64</p></li>
@@ -1276,8 +1297,8 @@ Navier-Stokes</p></li>
 </section>
 <section id="version-2-1-3-2012-01-17">
 <h2>Version 2.1.3 - 2012-01-17<a class="headerlink" href="#version-2-1-3-2012-01-17" title="Permalink to this heading">¶</a></h2>
-<section id="id430">
-<h3>Fixes<a class="headerlink" href="#id430" title="Permalink to this heading">¶</a></h3>
+<section id="id434">
+<h3>Fixes<a class="headerlink" href="#id434" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/282">#282</a>:
 remove deprecated getters and setters</p></li>
@@ -1335,8 +1356,8 @@ Slicing a vector Variable should produce a scalar Variable</p></li>
 <li><p><a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> efficiency improvements</p></li>
 <li><p>Diagnostics of the parallel environment</p></li>
 </ul>
-<section id="id454">
-<h3>Fixes<a class="headerlink" href="#id454" title="Permalink to this heading">¶</a></h3>
+<section id="id458">
+<h3>Fixes<a class="headerlink" href="#id458" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/232">#232</a>:
 Mayavi broken on windows because it has no <cite>SIGHUP</cite>.</p></li>
@@ -1363,8 +1384,8 @@ Concatenated <cite>Mesh</cite> garbled by <cite>dump.write</cite>/<cite>read</ci
 into an existing set of Matplotlib axes.</p></li>
 <li><p><a class="reference internal" href="glossary.html#term-Pysparse"><span class="xref std std-term">PYSPARSE</span></a> and <a class="reference internal" href="SOLVERS.html#trilinos"><span class="std std-ref">Trilinos</span></a> are now completely independent.</p></li>
 </ul>
-<section id="id462">
-<h3>Fixes<a class="headerlink" href="#id462" title="Permalink to this heading">¶</a></h3>
+<section id="id466">
+<h3>Fixes<a class="headerlink" href="#id466" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/199">#199</a>:
 dummy viewer results in
@@ -1387,7 +1408,7 @@ How to tell if parallel is configured properly?</p></li>
 <h2>Version 2.1 - 2010-04-01<a class="headerlink" href="#version-2-1-2010-04-01" title="Permalink to this heading">¶</a></h2>
 <p>The relatively small change in version number belies significant advances
 in <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> capabilities.  This release did not receive a “full”
-version increment because it is completely (er…  <a class="footnote-reference brackets" href="#almost" id="id469" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>) compatible
+version increment because it is completely (er…  <a class="footnote-reference brackets" href="#almost" id="id473" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>) compatible
 with older scripts.</p>
 <p>The significant changes since version 2.0.2 are:</p>
 <ul class="simple">
@@ -1400,8 +1421,8 @@ to be available on the web and for our documentation to link to the
 documentation for packages such as <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html#module-numpy" title="(in NumPy v2.4)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code></a>, <a class="reference external" href="https://docs.scipy.org/doc/scipy/index.html#module-scipy" title="(in SciPy v1.17.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a>,
 <a class="reference external" href="https://matplotlib.org/stable/index.html#module-matplotlib" title="(in Matplotlib v3.10.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code></a>, and for <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> itself.</p></li>
 </ul>
-<section id="id470">
-<h3>Fixes<a class="headerlink" href="#id470" title="Permalink to this heading">¶</a></h3>
+<section id="id474">
+<h3>Fixes<a class="headerlink" href="#id474" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/190">#190</a>:
 “matplotlib: list index out of range” when no title given, but only
@@ -1423,7 +1444,7 @@ Switch documentation to use <cite>:math:</cite> directive</p></li>
 </ul>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="almost" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id469">1</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id473">1</a><span class="fn-bracket">]</span></span>
 <p>Only two examples from <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 2.0 fail when run with
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 2.1:</p>
 <blockquote>
@@ -1445,8 +1466,8 @@ change in the comparison of masked values.</p></li>
 </section>
 <section id="version-2-0-3-2010-03-17">
 <h2>Version 2.0.3 - 2010-03-17<a class="headerlink" href="#version-2-0-3-2010-03-17" title="Permalink to this heading">¶</a></h2>
-<section id="id479">
-<h3>Fixes<a class="headerlink" href="#id479" title="Permalink to this heading">¶</a></h3>
+<section id="id483">
+<h3>Fixes<a class="headerlink" href="#id483" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/188">#188</a>:
 <cite>SMTPSenderRefused: (553, “5.1.8 &lt;trac&#64;matdl-osi.org&gt;… Domain of sender address trac&#64;matdl-osi.org does not exist”, u‘“FiPy” &lt;trac&#64;matdl-osi.org&gt;’)</cite></p></li>
@@ -1466,8 +1487,8 @@ Mesh refactor</p></li>
 </section>
 <section id="version-2-0-2-2009-06-11">
 <h2>Version 2.0.2 - 2009-06-11<a class="headerlink" href="#version-2-0-2-2009-06-11" title="Permalink to this heading">¶</a></h2>
-<section id="id486">
-<h3>Fixes<a class="headerlink" href="#id486" title="Permalink to this heading">¶</a></h3>
+<section id="id490">
+<h3>Fixes<a class="headerlink" href="#id490" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/176">#176</a>:
 Win32 distribution test error</p></li>
@@ -1480,8 +1501,8 @@ Win32 distribution test error</p></li>
 </section>
 <section id="version-2-0-1-2009-04-23">
 <h2>Version 2.0.1 - 2009-04-23<a class="headerlink" href="#version-2-0-1-2009-04-23" title="Permalink to this heading">¶</a></h2>
-<section id="id490">
-<h3>Fixes<a class="headerlink" href="#id490" title="Permalink to this heading">¶</a></h3>
+<section id="id494">
+<h3>Fixes<a class="headerlink" href="#id494" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/154">#154</a>:
 Update manuals</p></li>
@@ -1536,8 +1557,8 @@ Examples can be very fragile with respect to floating point</p></li>
 </section>
 <section id="version-1-2-3-2009-01-0">
 <h2>Version 1.2.3 - 2009-01-0<a class="headerlink" href="#version-1-2-3-2009-01-0" title="Permalink to this heading">¶</a></h2>
-<section id="id502">
-<h3>Fixes<a class="headerlink" href="#id502" title="Permalink to this heading">¶</a></h3>
+<section id="id506">
+<h3>Fixes<a class="headerlink" href="#id506" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/54">#54</a>:
 <cite>python setup.py test</cite> fails</p></li>
@@ -1546,8 +1567,8 @@ Examples can be very fragile with respect to floating point</p></li>
 </section>
 <section id="version-1-2-2-2008-12-30">
 <h2>Version 1.2.2 - 2008-12-30<a class="headerlink" href="#version-1-2-2-2008-12-30" title="Permalink to this heading">¶</a></h2>
-<section id="id504">
-<h3>Fixes<a class="headerlink" href="#id504" title="Permalink to this heading">¶</a></h3>
+<section id="id508">
+<h3>Fixes<a class="headerlink" href="#id508" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/161">#161</a>:
 get pysparse working with python 2.4</p></li>
@@ -1643,8 +1664,8 @@ float(&amp;infinity&amp;) issue on windows</p></li>
 </section>
 <section id="version-1-2-1-2008-02-08">
 <h2>Version 1.2.1 - 2008-02-08<a class="headerlink" href="#version-1-2-1-2008-02-08" title="Permalink to this heading">¶</a></h2>
-<section id="id547">
-<h3>Fixes<a class="headerlink" href="#id547" title="Permalink to this heading">¶</a></h3>
+<section id="id551">
+<h3>Fixes<a class="headerlink" href="#id551" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/122">#122</a>:
 check argument types for meshes</p></li>
@@ -1687,8 +1708,8 @@ Boundary conditions and Terms</p></li>
 <li><p><a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> has been updated to use the <a class="reference internal" href="glossary.html#term-Python"><span class="xref std std-term">Python</span></a> <a class="reference internal" href="glossary.html#term-NumPy"><span class="xref std std-term">NumPy</span></a> module.
 <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> no longer works with the older <a class="reference internal" href="glossary.html#term-Numeric"><span class="xref std std-term">Numeric</span></a> module.</p></li>
 </ul>
-<section id="id563">
-<h3>Fixes<a class="headerlink" href="#id563" title="Permalink to this heading">¶</a></h3>
+<section id="id567">
+<h3>Fixes<a class="headerlink" href="#id567" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/98">#98</a>:
 Windows patch for some broken test cases</p></li>
@@ -1822,8 +1843,8 @@ that don’t work.</p>
 <p>The syntax of <a class="reference internal" href="glossary.html#term-FiPy"><span class="xref std std-term">FiPy</span></a> 1.0 scripts is incompatible with earlier
 releases.  A tutorial for updating your existing scripts can be found in
 <code class="file docutils literal notranslate"><span class="pre">examples/updating/update0_1to1_0.py</span></code>.</p>
-<section id="id582">
-<h3>Fixes<a class="headerlink" href="#id582" title="Permalink to this heading">¶</a></h3>
+<section id="id586">
+<h3>Fixes<a class="headerlink" href="#id586" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/usnistgov/fipy/issues/49">#49</a>:
 Documentation for many <cite>ConvectionTerms</cite> is wrong</p></li>
@@ -1898,7 +1919,7 @@ Some tests fail on windows XP</p></li>
 
 
                 <div class='last-updated'>
-                Last updated on Feb 23, 2026.
+                Last updated on Feb 26, 2026.
                 Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.1.2.
                 </div>
               </div>
@@ -1908,135 +1929,141 @@ Some tests fail on windows XP</p></li>
         <div class="sphinxsidebarwrapper">
 
 <strong>FiPy: A Finite Volume PDE Solver Using Python</strong><br />
-Version 4.0.1+4.g6941272b6
+Version 4.0.1+5.g47c4c2f95
 
   <div class="sphinxsidebarsection">
   <h3><a href="contents.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Change Log</a><ul>
-<li><a class="reference internal" href="#version-release">Version 4.0.1+4.g6941272b6</a><ul>
+<li><a class="reference internal" href="#version-release">Version 4.0.1+5.g47c4c2f95</a><ul>
 <li><a class="reference internal" href="#pulls">Pulls</a></li>
 <li><a class="reference internal" href="#fixes">Fixes</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#version-4-0-1-2025-09-16">Version 4.0.1 - 2025-09-16</a></li>
+<li><a class="reference internal" href="#version-4-0-2025-09-16">Version 4.0 - 2025-09-16</a><ul>
+<li><a class="reference internal" href="#id3">Pulls</a></li>
+<li><a class="reference internal" href="#id8">Fixes</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#version-3-99-2025-09-16">Version 3.99 - 2025-09-16</a><ul>
-<li><a class="reference internal" href="#id18">Pulls</a></li>
-<li><a class="reference internal" href="#id32">Fixes</a></li>
+<li><a class="reference internal" href="#id22">Pulls</a></li>
+<li><a class="reference internal" href="#id36">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-4-5-2024-06-25">Version 3.4.5 - 2024-06-25</a><ul>
-<li><a class="reference internal" href="#id41">Pulls</a></li>
-<li><a class="reference internal" href="#id48">Fixes</a></li>
+<li><a class="reference internal" href="#id45">Pulls</a></li>
+<li><a class="reference internal" href="#id52">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-4-4-2023-06-27">Version 3.4.4 - 2023-06-27</a><ul>
-<li><a class="reference internal" href="#id62">Pulls</a></li>
-<li><a class="reference internal" href="#id68">Fixes</a></li>
+<li><a class="reference internal" href="#id66">Pulls</a></li>
+<li><a class="reference internal" href="#id72">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-4-3-2022-06-15">Version 3.4.3 - 2022-06-15</a><ul>
-<li><a class="reference internal" href="#id70">Pulls</a></li>
-<li><a class="reference internal" href="#id88">Fixes</a></li>
+<li><a class="reference internal" href="#id74">Pulls</a></li>
+<li><a class="reference internal" href="#id92">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-4-2-1-2020-08-01">Version 3.4.2.1 - 2020-08-01</a><ul>
-<li><a class="reference internal" href="#id115">Pulls</a></li>
-<li><a class="reference internal" href="#id120">Fixes</a></li>
+<li><a class="reference internal" href="#id119">Pulls</a></li>
+<li><a class="reference internal" href="#id124">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-4-1-2020-02-14">Version 3.4.1 - 2020-02-14</a><ul>
-<li><a class="reference internal" href="#id124">Pulls</a></li>
-<li><a class="reference internal" href="#id128">Fixes</a></li>
+<li><a class="reference internal" href="#id128">Pulls</a></li>
+<li><a class="reference internal" href="#id132">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-4-2020-02-06">Version 3.4 - 2020-02-06</a><ul>
-<li><a class="reference internal" href="#id130">Pulls</a></li>
-<li><a class="reference internal" href="#id139">Fixes</a></li>
+<li><a class="reference internal" href="#id134">Pulls</a></li>
+<li><a class="reference internal" href="#id143">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-3-2019-06-28">Version 3.3 - 2019-06-28</a><ul>
-<li><a class="reference internal" href="#id143">Pulls</a></li>
-<li><a class="reference internal" href="#id149">Fixes</a></li>
+<li><a class="reference internal" href="#id147">Pulls</a></li>
+<li><a class="reference internal" href="#id153">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-2-2019-04-22">Version 3.2 - 2019-04-22</a><ul>
-<li><a class="reference internal" href="#id161">Pulls</a></li>
-<li><a class="reference internal" href="#id193">Fixes</a></li>
+<li><a class="reference internal" href="#id165">Pulls</a></li>
+<li><a class="reference internal" href="#id197">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-1-3-2017-01-17">Version 3.1.3 - 2017-01-17</a><ul>
-<li><a class="reference internal" href="#id232">Fixes</a></li>
+<li><a class="reference internal" href="#id236">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-1-2-2016-12-24">Version 3.1.2 - 2016-12-24</a><ul>
-<li><a class="reference internal" href="#id234">Pulls</a></li>
-<li><a class="reference internal" href="#id269">Fixes</a></li>
+<li><a class="reference internal" href="#id238">Pulls</a></li>
+<li><a class="reference internal" href="#id273">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-1-1-2015-12-17">Version 3.1.1 - 2015-12-17</a><ul>
-<li><a class="reference internal" href="#id294">Fixes</a></li>
+<li><a class="reference internal" href="#id298">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-1-2013-09-30">Version 3.1 - 2013-09-30</a><ul>
-<li><a class="reference internal" href="#id304">Fixes</a></li>
+<li><a class="reference internal" href="#id308">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-3-0-1-2012-10-03">Version 3.0.1 - 2012-10-03</a><ul>
-<li><a class="reference internal" href="#id367">Fixes</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#version-3-0-2012-08-16">Version 3.0 - 2012-08-16</a><ul>
 <li><a class="reference internal" href="#id371">Fixes</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#version-3-0-2012-08-16">Version 3.0 - 2012-08-16</a><ul>
+<li><a class="reference internal" href="#id375">Fixes</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#version-2-1-3-2012-01-17">Version 2.1.3 - 2012-01-17</a><ul>
-<li><a class="reference internal" href="#id430">Fixes</a></li>
+<li><a class="reference internal" href="#id434">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-2-1-2-2011-04-20">Version 2.1.2 - 2011-04-20</a><ul>
-<li><a class="reference internal" href="#id454">Fixes</a></li>
+<li><a class="reference internal" href="#id458">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-2-1-1-2010-10-05">Version 2.1.1 - 2010-10-05</a><ul>
-<li><a class="reference internal" href="#id462">Fixes</a></li>
+<li><a class="reference internal" href="#id466">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-2-1-2010-04-01">Version 2.1 - 2010-04-01</a><ul>
-<li><a class="reference internal" href="#id470">Fixes</a></li>
+<li><a class="reference internal" href="#id474">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-2-0-3-2010-03-17">Version 2.0.3 - 2010-03-17</a><ul>
-<li><a class="reference internal" href="#id479">Fixes</a></li>
+<li><a class="reference internal" href="#id483">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-2-0-2-2009-06-11">Version 2.0.2 - 2009-06-11</a><ul>
-<li><a class="reference internal" href="#id486">Fixes</a></li>
+<li><a class="reference internal" href="#id490">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-2-0-1-2009-04-23">Version 2.0.1 - 2009-04-23</a><ul>
-<li><a class="reference internal" href="#id490">Fixes</a></li>
+<li><a class="reference internal" href="#id494">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-2-0-2009-02-09">Version 2.0 - 2009-02-09</a></li>
 <li><a class="reference internal" href="#version-1-2-3-2009-01-0">Version 1.2.3 - 2009-01-0</a><ul>
-<li><a class="reference internal" href="#id502">Fixes</a></li>
+<li><a class="reference internal" href="#id506">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-1-2-2-2008-12-30">Version 1.2.2 - 2008-12-30</a><ul>
-<li><a class="reference internal" href="#id504">Fixes</a></li>
+<li><a class="reference internal" href="#id508">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-1-2-1-2008-02-08">Version 1.2.1 - 2008-02-08</a><ul>
-<li><a class="reference internal" href="#id547">Fixes</a></li>
+<li><a class="reference internal" href="#id551">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-1-2-2007-02-12">Version 1.2 - 2007-02-12</a><ul>
-<li><a class="reference internal" href="#id563">Fixes</a></li>
+<li><a class="reference internal" href="#id567">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-1-1-2006-06-06">Version 1.1 - 2006-06-06</a></li>
 <li><a class="reference internal" href="#version-1-0-2005-09-16">Version 1.0 - 2005-09-16</a><ul>
-<li><a class="reference internal" href="#id582">Fixes</a></li>
+<li><a class="reference internal" href="#id586">Fixes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#version-0-1-1">Version 0.1.1</a></li>
