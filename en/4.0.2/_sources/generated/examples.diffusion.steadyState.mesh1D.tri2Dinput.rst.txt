@@ -1,0 +1,23 @@
+examples.diffusion.steadyState.mesh1D.tri2Dinput
+================================================
+
+.. automodule:: examples.diffusion.steadyState.mesh1D.tri2Dinput
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

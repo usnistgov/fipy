@@ -1,0 +1,29 @@
+fipy.terms.vanLeerConvectionTerm
+================================
+
+.. automodule:: fipy.terms.vanLeerConvectionTerm
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      VanLeerConvectionTerm
+   
+   
+
+   
+   
+   
+
+
+

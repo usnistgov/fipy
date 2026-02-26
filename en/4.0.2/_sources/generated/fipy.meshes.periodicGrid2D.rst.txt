@@ -1,0 +1,31 @@
+fipy.meshes.periodicGrid2D
+==========================
+
+.. automodule:: fipy.meshes.periodicGrid2D
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PeriodicGrid2D
+      PeriodicGrid2DLeftRight
+      PeriodicGrid2DTopBottom
+   
+   
+
+   
+   
+   
+
+
+

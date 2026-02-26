@@ -1,0 +1,29 @@
+fipy.viewers.matplotlibViewer.abstractMatplotlib2DViewer
+========================================================
+
+.. automodule:: fipy.viewers.matplotlibViewer.abstractMatplotlib2DViewer
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AbstractMatplotlib2DViewer
+   
+   
+
+   
+   
+   
+
+
+

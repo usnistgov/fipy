@@ -1,0 +1,34 @@
+examples.diffusion.explicit
+===========================
+
+.. automodule:: examples.diffusion.explicit
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   examples.diffusion.explicit.mesh1D
+   examples.diffusion.explicit.mixedelement
+   examples.diffusion.explicit.test
+   examples.diffusion.explicit.tri2D
+

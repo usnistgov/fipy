@@ -1,0 +1,23 @@
+fipy.matrices.sparseMatrix
+==========================
+
+.. automodule:: fipy.matrices.sparseMatrix
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

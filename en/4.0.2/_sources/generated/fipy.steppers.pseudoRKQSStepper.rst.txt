@@ -1,0 +1,23 @@
+fipy.steppers.pseudoRKQSStepper
+===============================
+
+.. automodule:: fipy.steppers.pseudoRKQSStepper
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,31 @@
+fipy.solvers.scipy.scipyConvergence
+===================================
+
+.. automodule:: fipy.solvers.scipy.scipyConvergence
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SciPy_BreakdownDivergence
+      SciPy_Convergence
+      SciPy_IterationDivergence
+   
+   
+
+   
+   
+   
+
+
+

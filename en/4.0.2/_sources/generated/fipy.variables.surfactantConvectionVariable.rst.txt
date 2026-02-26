@@ -1,0 +1,29 @@
+fipy.variables.surfactantConvectionVariable
+===========================================
+
+.. automodule:: fipy.variables.surfactantConvectionVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SurfactantConvectionVariable
+   
+   
+
+   
+   
+   
+
+
+

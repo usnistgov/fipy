@@ -1,0 +1,23 @@
+fipy.meshes.builders.periodicGrid1DBuilder
+==========================================
+
+.. automodule:: fipy.meshes.builders.periodicGrid1DBuilder
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

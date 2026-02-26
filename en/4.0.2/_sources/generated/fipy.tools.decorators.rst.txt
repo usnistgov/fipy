@@ -1,0 +1,29 @@
+fipy.tools.decorators
+=====================
+
+.. automodule:: fipy.tools.decorators
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      deprecate
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
