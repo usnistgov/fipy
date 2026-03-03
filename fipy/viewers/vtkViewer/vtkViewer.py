@@ -109,6 +109,10 @@ class VTKViewer(AbstractViewer):
 
     def raw(self):
         """
+        Returns a VTK object, which can be passed to a visualiser of choice. In
+        the example below, we pass this to the popular visualisation library
+        [`pyvista`](https://docs.pyvista.org/index.html).
+
         >>> from fipy import Grid3D, CellVariable
         >>> from fipy import VTKViewer # doctest: +TVTK
         >>> import pyvista as pv # doctest: +PYVISTA
