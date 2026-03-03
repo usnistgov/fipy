@@ -88,7 +88,7 @@ class VTKViewer(AbstractViewer):
 
         return (name, rank, value)
 
-    def plot(self, filename=None):
+    def _prepareVTK(self):
         data = self._data
 
         from fipy.tools import numerix
@@ -99,6 +99,8 @@ class VTKViewer(AbstractViewer):
             if not (numerix.array(value.shape) == 0).any():
                 data.get_array(name).to_array()[:] = value
 
+    def plot(self, filename=None):
+        self._prepareVTK()
         try:
             from tvtk.misc import write_data
         except ImportError as e:
@@ -121,16 +123,7 @@ class VTKViewer(AbstractViewer):
         >>> pv.wrap(vtk).plot() # doctest: +PYVISTA, +INTERACTIVE
         >>> viewer._promptForOpinion() # doctest: +TVTK, +INTERACTIVE
         """
-        data = self._data
-
-        from fipy.tools import numerix
-
-        for var in self.vars:
-            name, rank, value = self._nameRankValue(var)
-
-            if not (numerix.array(value.shape) == 0).any():
-                data.get_array(name).to_array()[:] = value
-
+        self._prepareVTK()
         from tvtk.api import tvtk
         return tvtk.to_vtk(self.dataset)
 
