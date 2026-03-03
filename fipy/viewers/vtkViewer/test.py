@@ -8,6 +8,7 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames=(
+        'vtkViewer',
         'vtkCellViewer',
         'vtkFaceViewer'
         ), base = __name__)

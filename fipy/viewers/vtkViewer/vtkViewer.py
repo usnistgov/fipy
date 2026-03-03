@@ -21,9 +21,21 @@ def _checkForTVTK():
         hasTVTK = False
     return hasTVTK
 
+def _checkForPyVista():
+    hasPyVista = True
+    try:
+        import pyvista
+    except Exception:
+        hasPyVista = False
+    return hasPyVista
+
 register_skipper(flag="TVTK",
                  test=_checkForTVTK,
                  why="the `tvtk` package cannot be imported")
+
+register_skipper(flag="PYVISTA",
+                 test=_checkForPyVista,
+                 why="the `pyvista` package cannot be imported")
 
 class VTKViewer(AbstractViewer):
     """Renders :class:`~fipy.variables.meshVariable.MeshVariable` data in VTK format
@@ -76,7 +88,7 @@ class VTKViewer(AbstractViewer):
 
         return (name, rank, value)
 
-    def plot(self, filename=None):
+    def _prepareVTK(self):
         data = self._data
 
         from fipy.tools import numerix
@@ -87,11 +99,37 @@ class VTKViewer(AbstractViewer):
             if not (numerix.array(value.shape) == 0).any():
                 data.get_array(name).to_array()[:] = value
 
+    def plot(self, filename=None):
+        self._prepareVTK()
         try:
             from tvtk.misc import write_data
         except ImportError as e:
             from enthought.tvtk.misc import write_data
         write_data(self.dataset, filename)
+
+    def raw(self):
+        """
+        Returns a VTK object, which can be passed to a visualizer of choice. In
+        the example below, we pass this to the popular visualization library
+        [`pyvista`](https://docs.pyvista.org/index.html).
+
+        >>> from fipy import Grid3D, CellVariable
+        >>> from fipy import VTKViewer # doctest: +TVTK
+        >>> import pyvista as pv # doctest: +PYVISTA
+
+        >>> mesh = Grid3D(dx=1, dy=1, dz=1, nx=10, ny=10, nz=10)
+        >>> var = CellVariable(mesh)
+        >>> var.setValue(1, where=mesh.cellCenters[0] > 5)
+        >>> var.setValue(2, where=mesh.cellCenters[0] <= 5)
+        >>> viewer = VTKViewer(vars=var) # doctest: +TVTK
+
+        >>> vtk = viewer.raw() # doctest: +PYVISTA, +TVTK
+        >>> pv.wrap(vtk).plot() # doctest: +PYVISTA, +INTERACTIVE
+        >>> viewer._promptForOpinion() # doctest: +TVTK, +INTERACTIVE
+        """
+        self._prepareVTK()
+        from tvtk.api import tvtk
+        return tvtk.to_vtk(self.dataset)
 
     def _getSuitableVars(self, vars):
         if type(vars) not in [type([]), type(())]:
@@ -103,41 +141,34 @@ class VTKViewer(AbstractViewer):
         vars = [var for var in vars if var.mesh==vars[0].mesh]
         return vars
 
+    def _test(self):
+        """
+        >>> from fipy import *
+        >>> m = Grid3D(nx=2, ny=1, nz=1)
+        >>> #     m = Grid3D(nx=3, ny=4, nz=5)
+        >>> x, y, z = m.cellCenters
+        >>> v1 = CellVariable(mesh=m, value=x*y*z, name="x*y*z")
+        >>> v2 = CellVariable(mesh=m, value=x*y*y, name="x*y*y")
+
+        >>> v3 = v1.grad
+        >>> v3.name = "v1.grad"
+        >>> v4 = v1.faceGrad
+        >>> v4.name = "v1.faceGrad"
+        >>> v5 = v1.harmonicFaceValue
+        >>> v5.name = "v1.harmonicFaceValue"
+        >>> v6 = v1.arithmeticFaceValue
+        >>> v6.name = "v1.arithmeticFaceValue"
+
+        >>> #     vw = VTKViewer(vars=(v1, v2))
+        >>> #     vw = VTKViewer(vars=(v1, v2, v3)) #, v4, v5, v6))
+        >>> vw = VTKViewer(vars=(v4, v5, v6))
+
+        >>> # vw.plot(filename="face.vtk")
+        """
+
+def _test():
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
 
 if __name__ == "__main__":
-#     import fipy.tests.doctestPlus
-#     fipy.tests.doctestPlus.execButNoTest()
-
-    from fipy import *
-    m = Grid3D(nx=2, ny=1, nz=1)
-#     m = Grid3D(nx=3, ny=4, nz=5)
-    x, y, z = m.cellCenters
-    v1 = CellVariable(mesh=m, value=x*y*z, name="x*y*z")
-    v2 = CellVariable(mesh=m, value=x*y*y, name="x*y*y")
-
-    v3 = v1.grad
-    v3.name = "v1.grad"
-    v4 = v1.faceGrad
-    v4.name = "v1.faceGrad"
-    v5 = v1.harmonicFaceValue
-    v5.name = "v1.harmonicFaceValue"
-    v6 = v1.arithmeticFaceValue
-    v6.name = "v1.arithmeticFaceValue"
-
-#     vw = VTKViewer(vars=(v1, v2))
-#     vw = VTKViewer(vars=(v1, v2, v3)) #, v4, v5, v6))
-    vw = VTKViewer(vars=(v4, v5, v6))
-
-    vw.plot(filename="face.vtk")
-
-#     m = Grid2D(nx=1, ny=2)
-#     x, y = m.cellCenters
-#     v1 = CellVariable(mesh=m, value=x*y, name="v1")
-#     v2 = CellVariable(mesh=m, value=x*x) #, name="v2")
-#     vw = VTKViewer(vars=(v1, v2))
-
-#     m = Grid1D(nx=10)
-#     x,  = m.cellCenters
-#     v1 = CellVariable(mesh=m, value=x*x, name="v1")
-#     v2 = CellVariable(mesh=m, value=x) #, name="v2")
-#     vw = VTKViewer(vars=(v1, v2))
+    _test()
