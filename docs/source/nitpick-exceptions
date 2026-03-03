@@ -52,7 +52,7 @@ py:class fipy.variables.meshVariable._MeshVariable
 py:class fipy.variables.cellToFaceVariable._CellToFaceVariable
 py:class fipy.variables.vectorCellVariable.VectorCellVariable
 py:class fipy.variables.vectorFaceVariable.VectorFaceVariable
-py:class fipy.varibles.meshVariable.MeshVariable
+py:class fipy.variables.meshVariable.MeshVariable
 
 # fipy.viewers
 py:class fipy.viewers.matplotlibViewer.matplotlib2DViewer.AbstractMatplotlib2DViewer
