@@ -26,8 +26,8 @@ class _Grid2DBuilder(_AbstractGridBuilder):
         Return True if all entries in `self.ds` are the same length, False
         otherwise.
 
-        Exists to get around the fact that `_calcPhysicalShape` and
-        `_calcMeshSpacing` don't work for cylindrical grids.
+        Exists to get around the fact that
+        `_calcMeshSpacing` doesn't work for cylindrical grids.
         """
 
         # if the first entry in `ds` is non-scalar
@@ -46,17 +46,6 @@ class _Grid2DBuilder(_AbstractGridBuilder):
 
     def _calcShape(self):
         return (self.ns[0], self.ns[1])
-
-    def _calcPhysicalShape(self):
-        """Return physical dimensions of `Grid2D`
-        """
-        from fipy.tools.dimensions.physicalField import PhysicalField
-
-        if self._dsUniformLen():
-            return PhysicalField(value = (self.ns[0] * self.ds[0] * self.scale,
-                                          self.ns[1] * self.ds[1] * self.scale))
-        else:
-            return None
 
     def _calcMeshSpacing(self):
         if self._dsUniformLen():
