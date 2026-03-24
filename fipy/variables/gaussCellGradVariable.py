@@ -66,9 +66,12 @@ class _GaussCellGradVariable(CellVariable):
 
         return self._makeValue(value = val)
 
-    def _calcValueNoInline(self, N, M, ids, orientations, volumes):
+    def _gradAreaPerCell(self, N, M, ids, orientations, volumes):
         contributions = numerix.take(self.faceGradientContributions, ids, axis=-1)
-        grad = numerix.array(numerix.sum(orientations * contributions, -2))
+        return numerix.array(numerix.sum(orientations * contributions, -2))
+
+    def _calcValueNoInline(self, N, M, ids, orientations, volumes):
+        grad = self._gradAreaPerCell(N, M, ids, orientations, volumes)
         return grad / volumes
 
     def _calcValue(self):

@@ -25,8 +25,8 @@ class _ModCellGradVariable(_GaussCellGradVariable):
                 ITEM(val, i, vec) += ITEM(orientations, i, &k) * ITEM(areaProj, id, vec) * ITEM(faceValues, id, NULL);
             }
 
+            ITEM(val, i, vec) = mod(ITEM(val, i, vec) * ITEM(avgFaceSize, i, vec) /  * ITEM(avgFaceSize, i, vec);
             ITEM(val, i, vec) /= ITEM(volumes, i, NULL);
-            ITEM(val, i, vec) = mod(ITEM(val, i, vec) * gridSpacing[vec[0]]) /  gridSpacing[vec[0]];
         """, val = val,
             ids = numerix.array(ids),
             orientations = numerix.array(orientations),
@@ -35,12 +35,12 @@ class _ModCellGradVariable(_GaussCellGradVariable):
             faceValues = numerix.array(self.var.arithmeticFaceValue),
             M = M,
             ni = N,
-            gridSpacing = numerix.array(self.mesh._meshSpacing),
+            avgFaceSize = self.mesh._averageFaceSizePerCell,
             shape=numerix.array(numerix.shape(val)))
 
         return self._makeValue(value = val)
 
-    def _calcValueNoInline(self, N, M, ids, orientations, volumes):
-        value = _GaussCellGradVariable._calcValueNoInline(self, N, M, ids, orientations, volumes)
-        gridSpacing = self.mesh._meshSpacing
-        return self.modPy(value * gridSpacing) / gridSpacing
+    def _gradAreaPerCell(self, N, M, ids, orientations, volumes):
+        gradArea = super(_ModCellGradVariable, self)._gradAreaPerCell(N, M, ids, orientations, volumes)
+        avgFaceSize = self.mesh._averageFaceSizePerCell
+        return self.modPy(gradArea / avgFaceSize) * avgFaceSize
