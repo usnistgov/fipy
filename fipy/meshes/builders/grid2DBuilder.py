@@ -21,29 +21,6 @@ class _Grid2DBuilder(_AbstractGridBuilder):
         self.numberOfVerticalColumns = self.spatialDict["numVerticalCols"]
         self.numberOfHorizontalRows = self.spatialDict["numHorizontalRows"]
 
-    def _dsUniformLen(self):
-        """
-        Return True if all entries in `self.ds` are the same length, False
-        otherwise.
-
-        Exists to get around the fact that
-        `_calcMeshSpacing` doesn't work for cylindrical grids.
-        """
-
-        # if the first entry in `ds` is non-scalar
-        if numerix.shape(self.ds[0]) != ():
-            lenDs = len(self.ds[0])
-
-            for d in self.ds[1:]:
-                if numerix.shape(d) == () or len(d) != lenDs:
-                    return False
-
-        # if any other entry in `ds` is non-scalar and first isn't
-        elif True in [numerix.shape(d) != () for d in self.ds[1:]]:
-            return False
-
-        return True
-
     def _calcShape(self):
         return (self.ns[0], self.ns[1])
 
