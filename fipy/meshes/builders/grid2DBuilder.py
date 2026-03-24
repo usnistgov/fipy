@@ -47,12 +47,6 @@ class _Grid2DBuilder(_AbstractGridBuilder):
     def _calcShape(self):
         return (self.ns[0], self.ns[1])
 
-    def _calcMeshSpacing(self):
-        if self._dsUniformLen():
-            return numerix.array((self.ds[0], self.ds[1]))[..., numerix.newaxis]
-        else:
-            return None
-
     @property
     def _specificGridData(self):
         return [self.numberOfHorizontalRows,

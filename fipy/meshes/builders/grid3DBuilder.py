@@ -23,9 +23,6 @@ class _Grid3DBuilder(_AbstractGridBuilder):
     def _calcShape(self):
         return (self.ns[0], self.ns[1], self.ns[2])
 
-    def _calcMeshSpacing(self):
-        return numerix.array((self.ds[0], self.ds[1], self.ds[2]))[..., numerix.newaxis]
-
     @property
     def _specificGridData(self):
         return [self.numberOfXYFaces,

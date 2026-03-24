@@ -68,7 +68,6 @@ class UniformGrid3D(UniformGrid):
          self.numberOfCells,
          self.shape,
          self.physicalShape,
-         self._meshSpacing,
          self.numberOfXYFaces,
          self.numberOfXZFaces,
          self.numberOfYZFaces,

@@ -163,8 +163,7 @@ class _AbstractGridBuilder(object):
                 self.numberOfFaces,
                 self.numberOfCells,
                 self._calcShape(),
-                self._calcPhysicalShape(),
-                self._calcMeshSpacing()]
+                self._calcPhysicalShape()]
 
     def _calcShape(self):
         raise NotImplementedError
@@ -182,9 +181,6 @@ class _AbstractGridBuilder(object):
 
         from fipy.tools.dimensions.physicalField import PhysicalField
         return PhysicalField(value=shape)
-
-    def _calcMeshSpacing(self):
-        raise NotImplementedError
 
     @property
     def _specificGridData(self):

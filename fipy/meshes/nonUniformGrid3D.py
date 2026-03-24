@@ -66,7 +66,6 @@ class NonUniformGrid3D(Mesh):
          self.numberOfCells,
          self.shape,
          self.physicalShape,
-         self._meshSpacing,
          self.numberOfXYFaces,
          self.numberOfXZFaces,
          self.numberOfYZFaces,

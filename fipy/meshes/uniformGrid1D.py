@@ -67,7 +67,6 @@ class UniformGrid1D(UniformGrid):
          self.numberOfCells,
          self.shape,
          self.physicalShape,
-         self._meshSpacing,
          self.occupiedNodes,
          self.origin) = builder.gridData
 
