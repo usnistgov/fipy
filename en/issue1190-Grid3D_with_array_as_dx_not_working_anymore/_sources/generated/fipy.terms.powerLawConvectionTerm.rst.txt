@@ -1,0 +1,29 @@
+fipy.terms.powerLawConvectionTerm
+=================================
+
+.. automodule:: fipy.terms.powerLawConvectionTerm
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      PowerLawConvectionTerm
+   
+   
+
+   
+   
+   
+
+
+

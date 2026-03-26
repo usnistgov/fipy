@@ -1,0 +1,23 @@
+fipy.variables.binaryOperatorVariable
+=====================================
+
+.. automodule:: fipy.variables.binaryOperatorVariable
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

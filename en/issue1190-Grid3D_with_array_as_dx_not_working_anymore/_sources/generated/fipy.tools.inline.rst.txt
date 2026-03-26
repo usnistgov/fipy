@@ -1,0 +1,23 @@
+fipy.tools.inline
+=================
+
+.. automodule:: fipy.tools.inline
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

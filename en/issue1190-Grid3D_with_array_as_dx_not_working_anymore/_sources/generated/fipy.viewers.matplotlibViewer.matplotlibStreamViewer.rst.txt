@@ -1,0 +1,29 @@
+fipy.viewers.matplotlibViewer.matplotlibStreamViewer
+====================================================
+
+.. automodule:: fipy.viewers.matplotlibViewer.matplotlibStreamViewer
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MatplotlibStreamViewer
+   
+   
+
+   
+   
+   
+
+
+

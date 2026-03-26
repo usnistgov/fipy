@@ -1,0 +1,33 @@
+examples.diffusion.steadyState.otherMeshes
+==========================================
+
+.. automodule:: examples.diffusion.steadyState.otherMeshes
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   examples.diffusion.steadyState.otherMeshes.cubicalProblem
+   examples.diffusion.steadyState.otherMeshes.grid3Dinput
+   examples.diffusion.steadyState.otherMeshes.prism
+

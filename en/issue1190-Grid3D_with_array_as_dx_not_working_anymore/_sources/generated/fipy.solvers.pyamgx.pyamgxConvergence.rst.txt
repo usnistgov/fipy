@@ -1,0 +1,31 @@
+fipy.solvers.pyamgx.pyamgxConvergence
+=====================================
+
+.. automodule:: fipy.solvers.pyamgx.pyamgxConvergence
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      pyamgx_BreakdownDivergence
+      pyamgx_Convergence
+      pyamgx_IterationDivergence
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,29 @@
+fipy.terms.implicitSourceTerm
+=============================
+
+.. automodule:: fipy.terms.implicitSourceTerm
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ImplicitSourceTerm
+   
+   
+
+   
+   
+   
+
+
+
