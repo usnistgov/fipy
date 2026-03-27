@@ -44,3 +44,20 @@ class _ModCellGradVariable(_GaussCellGradVariable):
         gradArea = super(_ModCellGradVariable, self)._gradAreaPerCell(N, M, ids, orientations, volumes)
         avgFaceSize = self.mesh._averageFaceSizePerCell
         return self.modPy(gradArea / avgFaceSize) * avgFaceSize
+
+    def _test(self):
+        r"""
+        >>> import fipy as fp
+        
+        Confirm that grids with different mesh spacings build correctly
+        
+        >>> baseMesh = fp.Grid3D(dx=[0.1, 0.2, 0.15], dy=0.1, dz=0.2, ny=5, nz=10)
+        """
+        pass
+
+def _test():
+    import fipy.tests.doctestPlus
+    return fipy.tests.doctestPlus.testmod()
+
+if __name__ == "__main__":
+    _test()
