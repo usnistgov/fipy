@@ -458,11 +458,6 @@ else:
         ## We can't use Numeric.dot on an array of vectors
         return sqrt(dot(a1, a2))
 
-def mag(arr):
-    """Magnitude of array `arr`
-    """
-    return sqrtDot(arr, arr)
-
 def nearest(data, points, max_mem=1e8):
     """find the indices of `data` that are closest to `points`
 
