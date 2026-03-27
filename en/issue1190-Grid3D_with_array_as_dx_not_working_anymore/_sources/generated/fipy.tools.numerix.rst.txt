@@ -23,7 +23,6 @@ fipy.tools.numerix
       getShape
       getUnit
       isclose
-      mag
       nearest
       put
       rank
