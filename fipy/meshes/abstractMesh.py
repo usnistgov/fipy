@@ -1188,6 +1188,12 @@ class AbstractMesh(object):
         return neighborsPerCell
 
     @property
+    def _averageFaceSizePerCell(self):
+        avgFaceSize = self._faceAreas[..., self.cellFaceIDs]
+        avgFaceSize = avgFaceSize.sum(axis=0)
+        return avgFaceSize / self._facesPerCell
+
+    @property
     def _cellFaceVertices(self):
         return numerix.take(self.faceVertexIDs, self.cellFaceIDs, axis=1)
 

@@ -2335,10 +2335,6 @@ class GmshGrid2D(Gmsh2D):
 
         Gmsh2D.__init__(self, arg, coordDimensions, communicator, overlap, background=None)
 
-    @property
-    def _meshSpacing(self):
-        return numerix.array((self.dx, self.dy))[..., numerix.newaxis]
-
     def _makeGridGeo(self, dx, dy, nx, ny):
         height = ny * dy
         width  = nx * dx
@@ -2408,10 +2404,6 @@ class GmshGrid3D(Gmsh3D):
                                 self.nx, self.ny, self.nz)
 
         Gmsh3D.__init__(self, arg, communicator=communicator, overlap=overlap)
-
-    @property
-    def _meshSpacing(self):
-        return numerix.array((self.dx, self.dy, self.dz))[..., numerix.newaxis]
 
     def _makeGridGeo(self, dx, dy, dz, nx, ny, nz):
         height = ny * dy

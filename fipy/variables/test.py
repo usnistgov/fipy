@@ -26,6 +26,7 @@ def _suite():
             'fipy.variables.cellToFaceVariable',
             'fipy.variables.faceGradVariable',
             'fipy.variables.gaussCellGradVariable',
+            'fipy.variables.modCellGradVariable',
             'fipy.variables.faceGradContributionsVariable',
             'fipy.variables.surfactantConvectionVariable',
             'fipy.variables.surfactantVariable',

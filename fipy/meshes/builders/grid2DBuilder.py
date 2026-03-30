@@ -21,48 +21,8 @@ class _Grid2DBuilder(_AbstractGridBuilder):
         self.numberOfVerticalColumns = self.spatialDict["numVerticalCols"]
         self.numberOfHorizontalRows = self.spatialDict["numHorizontalRows"]
 
-    def _dsUniformLen(self):
-        """
-        Return True if all entries in `self.ds` are the same length, False
-        otherwise.
-
-        Exists to get around the fact that `_calcPhysicalShape` and
-        `_calcMeshSpacing` don't work for cylindrical grids.
-        """
-
-        # if the first entry in `ds` is non-scalar
-        if numerix.shape(self.ds[0]) != ():
-            lenDs = len(self.ds[0])
-
-            for d in self.ds[1:]:
-                if numerix.shape(d) == () or len(d) != lenDs:
-                    return False
-
-        # if any other entry in `ds` is non-scalar and first isn't
-        elif True in [numerix.shape(d) != () for d in self.ds[1:]]:
-            return False
-
-        return True
-
     def _calcShape(self):
         return (self.ns[0], self.ns[1])
-
-    def _calcPhysicalShape(self):
-        """Return physical dimensions of `Grid2D`
-        """
-        from fipy.tools.dimensions.physicalField import PhysicalField
-
-        if self._dsUniformLen():
-            return PhysicalField(value = (self.ns[0] * self.ds[0] * self.scale,
-                                          self.ns[1] * self.ds[1] * self.scale))
-        else:
-            return None
-
-    def _calcMeshSpacing(self):
-        if self._dsUniformLen():
-            return numerix.array((self.ds[0], self.ds[1]))[..., numerix.newaxis]
-        else:
-            return None
 
     @property
     def _specificGridData(self):

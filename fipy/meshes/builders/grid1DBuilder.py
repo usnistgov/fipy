@@ -27,14 +27,6 @@ class _Grid1DBuilder(_AbstractGridBuilder):
     def _calcShape(self):
         return (self.ns[0],)
 
-    def _calcPhysicalShape(self):
-        """Return physical dimensions of `Grid1D`."""
-        from fipy.tools.dimensions.physicalField import PhysicalField
-        return PhysicalField(value = (self.ns[0] * self.ds[0] * self.scale,))
-
-    def _calcMeshSpacing(self):
-        return numerix.array((self.ds[0],))[..., numerix.newaxis]
-
     @staticmethod
     def createVertices(dx, nx):
         x = _AbstractGridBuilder.calcVertexCoordinates(dx, nx)

@@ -72,9 +72,5 @@ class SkewedGrid2D(Mesh2D):
         return PhysicalField(value = (self.nx * self.dx * self.scale, self.ny * self.dy * self.scale))
 
     @property
-    def _meshSpacing(self):
-        return numerix.array((self.dx, self.dy))[..., numerix.newaxis]
-
-    @property
     def shape(self):
         return (self.nx, self.ny)

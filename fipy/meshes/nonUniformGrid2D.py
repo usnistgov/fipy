@@ -51,7 +51,6 @@ class NonUniformGrid2D(Mesh2D):
          self.numberOfCells,
          self.shape,
          self.physicalShape,
-         self._meshSpacing,
          self.numberOfHorizontalRows,
          self.numberOfVerticalColumns,
          self.numberOfHorizontalFaces,

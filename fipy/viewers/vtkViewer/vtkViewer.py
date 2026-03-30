@@ -161,7 +161,7 @@ class VTKViewer(AbstractViewer):
 
         >>> #     vw = VTKViewer(vars=(v1, v2))
         >>> #     vw = VTKViewer(vars=(v1, v2, v3)) #, v4, v5, v6))
-        >>> vw = VTKViewer(vars=(v4, v5, v6))
+        >>> vw = VTKViewer(vars=(v4, v5, v6)) # doctest: +TVTK
 
         >>> # vw.plot(filename="face.vtk")
         """

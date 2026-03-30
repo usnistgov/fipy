@@ -62,7 +62,6 @@ class NonUniformGrid1D(Mesh1D):
          self.numberOfCells,
          self.shape,
          self.physicalShape,
-         self._meshSpacing,
          self.occupiedNodes,
          vertices,
          faces,

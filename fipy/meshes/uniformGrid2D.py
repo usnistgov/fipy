@@ -60,7 +60,6 @@ class UniformGrid2D(UniformGrid):
          self.numberOfCells,
          self.shape,
          self.physicalShape,
-         self._meshSpacing,
          self.numberOfHorizontalRows,
          self.numberOfVerticalColumns,
          self.numberOfHorizontalFaces,
