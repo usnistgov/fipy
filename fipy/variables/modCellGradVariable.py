@@ -25,7 +25,7 @@ class _ModCellGradVariable(_GaussCellGradVariable):
                 ITEM(val, i, vec) += ITEM(orientations, i, &k) * ITEM(areaProj, id, vec) * ITEM(faceValues, id, NULL);
             }
 
-            ITEM(val, i, vec) = mod(ITEM(val, i, vec) * ITEM(avgFaceSize, i, vec) / ITEM(avgFaceSize, i, vec);
+            ITEM(val, i, vec) = mod(ITEM(val, i, vec) * ITEM(avgFaceSize, i, vec)) / ITEM(avgFaceSize, i, vec);
             ITEM(val, i, vec) /= ITEM(volumes, i, NULL);
         """, val = val,
             ids = numerix.array(ids),
