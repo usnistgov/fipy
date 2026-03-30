@@ -48,10 +48,29 @@ class _ModCellGradVariable(_GaussCellGradVariable):
     def _test(self):
         r"""
         >>> import fipy as fp
+        >>> from fipy.tools.numerix import pi
+
+        >>> oneDMesh = fp.Grid1D(nx=3)
+
+        Confirm that `_ModCellGradVariable` calculates as expected
+
+        >>> modVar = fp.ModularVariable(mesh=oneDMesh,
+        ...                             value=[pi/4, -3 * pi / 4, 3 * pi / 4])
+        >>> print(numerix.allclose(modVar.grad,
+        ...                        [-pi/2, -3*pi/4, -pi/4]))
+        True
+
+        Confirm that `_GaussCellGradVariable` calculates as expected
         
+        >>> nomodVar = fp.CellVariable(mesh=oneDMesh,
+        ...                            value=[pi/4, -3 * pi / 4, 3 * pi / 4])
+        >>> print(numerix.allclose(nomodVar.grad,
+        ...                        [-pi/2, pi/4, 3*pi/4]))
+        True
+
         Confirm that grids with different mesh spacings build correctly
         
-        >>> baseMesh = fp.Grid3D(dx=[0.1, 0.2, 0.15], dy=0.1, dz=0.2, ny=5, nz=10)
+        >>> threeDMesh = fp.Grid3D(dx=[0.1, 0.2, 0.15], dy=0.1, dz=0.2, ny=5, nz=10)
         """
         pass
 
