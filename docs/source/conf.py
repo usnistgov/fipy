@@ -237,7 +237,13 @@ htmlhelp_basename = 'FiPydoc'
 
 mathjax3_config = {
   "loader": {"load": ['[tex]/textmacros']},
-  "tex": {"packages": {'[+]': ['textmacros']}}
+  "tex": {
+      "packages": {'[+]': ['textmacros']},
+      "macros": {
+          "erf": r"\operatorname{erf}",
+          "Ei": r"\operatorname{ei}"
+      }
+  }
 }
 
 # -- Options for LaTeX output --------------------------------------------------
