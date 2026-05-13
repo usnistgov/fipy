@@ -302,7 +302,7 @@ FUNCTION {bbl.st}
 { "st" }
 
 FUNCTION {bbl.nd}
-{ "and" }
+{ "nd" }
 
 FUNCTION {bbl.rd}
 { "rd" }
@@ -342,7 +342,7 @@ FUNCTION {eng.ord}
        duplicate$ "1" =
          { pop$ bbl.st * }
          { duplicate$ "2" =
-             { pop$ bbl.and * }
+             { pop$ bbl.nd * }
              { "3" =
                  { bbl.rd * }
                  { bbl.th * }
