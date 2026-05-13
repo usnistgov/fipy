@@ -58,7 +58,6 @@ and solve the equation by repeatedly looping in time:
 
 >>> timeStepDuration = 10 * 0.9 * dx**2 / (2 * D)
 >>> steps = 10
->>> from builtins import range
 >>> for step in range(steps):
 ...     eq.solve(dt=timeStepDuration)
 ...     if __name__ == '__main__':
@@ -98,7 +97,6 @@ and test the value of the bottom-right corner cell.
 >>> if __name__ == '__main__':
 ...     input("Implicit steady-state diffusion. Press <return> to proceed...")
 """
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

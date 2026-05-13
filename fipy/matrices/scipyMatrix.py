@@ -1,13 +1,12 @@
-from __future__ import unicode_literals
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 __all__ = []
 
 import scipy.sparse as sp
-from fipy.tools import numerix
+from scipy.io import mmwrite
 
 from fipy.matrices.sparseMatrix import _SparseMatrix
+from fipy.tools import numerix
 
 class _ScipyMatrix(_SparseMatrix):
 
@@ -374,6 +373,10 @@ class _ScipyMatrix(_SparseMatrix):
          [ 9.]]
         """
         return _ScipyMatrix(matrix=self.matrix.transpose(copy=True))
+
+    def zeroEntries(self):
+        id1, id2 = self.matrix.nonzero()
+        self.matrix[id1, id2] = 0
 
 class _ScipyMatrixFromShape(_ScipyMatrix):
 

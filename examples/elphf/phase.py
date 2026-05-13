@@ -119,7 +119,6 @@ We separate the phase field into electrode and electrolyte regimes
 Even though we are solving the steady-state problem (:math:`M_\phi = \infty`) we
 still must sweep the solution several times to equilibrate
 
->>> from builtins import range
 >>> for step in range(10):
 ...     phase.equation.solve(var = phase, dt=1.)
 
@@ -165,7 +164,6 @@ If we are running interactively, we plot the error
    :align: center
    :alt: error in solution to steady-state phase field equation
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

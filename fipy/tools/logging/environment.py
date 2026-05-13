@@ -64,7 +64,9 @@ def nix_info():
     Returns
     -------
     dict
-        Result of `nix derivation show .#fipy `.
+        Result of::
+
+            nix derivation show .#fipy
     """
     info = {}
 
@@ -102,7 +104,7 @@ def package_info():
 
     packages['python'] = sys.version #.replace('\n', '| ')
 
-    for pkg in ['fipy', 'numpy', 'pysparse', 'scipy', 'matplotlib', 'mpi4py', 'petsc4py', 'pyamgx']:
+    for pkg in ['fipy', 'numpy', 'scipy', 'matplotlib', 'mpi4py', 'petsc4py', 'pyamgx']:
         try:
             mod = __import__(pkg)
 

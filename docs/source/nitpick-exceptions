@@ -18,7 +18,6 @@ py:class fipy.meshes.gmshMesh.GmshImporter3D
 py:class fipy.meshes.gmshMesh.GmshImporter2DIn3DSpace
 
 # fipy.solvers
-py:class fipy.solvers.pysparseMatrixSolver._PysparseMatrixSolver
 py:class fipy.solvers.scipy.scipyKrylovSolver._ScipyKrylovSolver
 py:class fipy.solvers.scipy.scipySolver._ScipySolver
 
@@ -100,14 +99,12 @@ py:mod enthought.tvtk
 py:mod lsmlib
 py:mod matplotlib
 py:mod mayavi
-py:mod pysparse
 py:func numpy.sin
 py:class mayavi.plugins.app.Mayavi
 py:func numerix.max
 py:func numerix.min
 py:mod Numeric
 py:func streamplot
-py:class future.types.newobject.newobject
 
 # Python exceptions
 py:class exceptions.Exception

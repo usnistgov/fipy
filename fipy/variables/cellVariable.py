@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from .meshVariable import MeshVariable
@@ -7,8 +6,6 @@ from ..tools import numerix
 from ..tools.decorators import deprecate
 
 __all__ = ["CellVariable"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class CellVariable(MeshVariable):
     """
@@ -411,19 +408,6 @@ class CellVariable(MeshVariable):
             self._faceGrad = _FaceGradVariable(self)
 
         return self._faceGrad
-
-    @property
-    @deprecate(new_name="~fipy.variables.cellVariable.CellVariable.grad",
-               new_string="use :attr:`%s`\ ``.``\ "
-                          ":attr:`~fipy.variables.cellVariable.CellVariable.arithmeticFaceValue` "
-                          "instead",
-               version=3.3)
-    def faceGradAverage(self):
-        r"""
-        Return :math:`\nabla \phi` as a rank-1 `FaceVariable` using averaging
-        for the normal direction(second-order gradient)
-        """
-        return self.grad.arithmeticFaceValue
 
     @property
     def old(self):

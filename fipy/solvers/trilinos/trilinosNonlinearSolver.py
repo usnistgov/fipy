@@ -1,6 +1,3 @@
-from __future__ import print_function
-from __future__ import unicode_literals
-from builtins import str
 from PyTrilinos import Epetra
 from PyTrilinos import NOX
 
@@ -100,7 +97,7 @@ class _DummyJacobianSolver(TrilinosSolver):
 __all__ = ["TrilinosNonlinearSolver"]
 
 class TrilinosNonlinearSolver(TrilinosSolver):
-    def __init__(self, equation, jacobian=None, tolerance=1e-10, iterations=1000,
+    def __init__(self, equation, jacobian=None, tolerance="default", iterations="default",
                  printingOptions=None, solverOptions=None, linearSolverOptions=None,
                  lineSearchOptions=None, directionOptions=None, newtonOptions=None):
         TrilinosSolver.__init__(self, tolerance=tolerance, iterations=iterations, precon=None)

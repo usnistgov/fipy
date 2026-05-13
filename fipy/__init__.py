@@ -1,10 +1,10 @@
 """An object oriented, partial differential equation (PDE) solver
 
-:term:`FiPy` is based on a standard finite volume (FV) approach. The
-framework has been developed in the Materials Science and Engineering Division
-(MSED_) and Center for Theoretical and Computational Materials Science (CTCMS_),
-in the Material Measurement Laboratory (MML_) at the National Institute of
-Standards and Technology (NIST_).
+:term:`FiPy` is based on a standard finite volume (FV) approach.  The
+framework has been developed in the Materials Science and Engineering
+Division (MSED_) and Center for Theoretical and Computational Materials
+Science (CTCMS_), in the Material Measurement Laboratory (MML_) at the
+National Institute of Standards and Technology (NIST_).
 
 The solution of coupled sets of PDEs is ubiquitous to the numerical
 simulation of science problems.  Numerous PDE solvers exist, using a
@@ -18,21 +18,20 @@ array calculations, sparse matrices and data rendering.
 
 The :term:`FiPy` framework includes terms for transient diffusion,
 convection and standard sources, enabling the solution of arbitrary
-combinations of coupled elliptic, hyperbolic and parabolic PDEs. Currently
+combinations of coupled elliptic, hyperbolic and parabolic PDEs.  Currently
 implemented models include phase field :cite:`BoettingerReview:2002`
-:cite:`ChenReview:2002` :cite:`McFaddenReview:2002` treatments of polycrystalline,
-dendritic, and electrochemical phase transformations, as well as drug
-eluting stents :cite:`Saylor:2011p2794`, reactive wetting :cite:`PhysRevE.82.051601`,
-photovoltaics :cite:`Hangarter:2011p2795` and a level set treatment of the
-electrodeposition process :cite:`NIST:damascene:2001`.
+:cite:`ChenReview:2002` :cite:`McFaddenReview:2002` treatments of
+polycrystalline, dendritic, and electrochemical phase transformations, as
+well as drug eluting stents :cite:`Saylor:2011p2794`, reactive wetting
+:cite:`PhysRevE.82.051601`, photovoltaics :cite:`Hangarter:2011p2795` and a
+level set treatment of the electrodeposition process
+:cite:`NIST:damascene:2001`.
 
 .. _MML:                  http://www.nist.gov/mml/
 .. _CTCMS:                http://www.ctcms.nist.gov/
 .. _MSED:                 http://www.nist.gov/mml/msed/
 .. _NIST:                 http://www.nist.gov/
 """
-from __future__ import unicode_literals
-from builtins import input
 __docformat__ = 'restructuredtext'
 
 import json
@@ -41,31 +40,31 @@ import logging.config
 import os
 import sys
 
-# log uncaught exceptions
-def _excepthook(*args):
-  _log.error('Uncaught exception:', exc_info=args)
+from fipy.boundaryConditions import *
+from fipy.meshes import *
+from fipy.solvers import *
+from fipy.terms import *
+from fipy.tools import *
+from fipy.tools import parallelComm
+from fipy.tools.logging import environment
+from fipy.variables import *
+from fipy.viewers import *
 
-sys.excepthook = _excepthook
+from . import _version
 
 # configure logging before doing anything else, otherwise we'll miss things
 if 'FIPY_LOG_CONFIG' in os.environ:
-    with open(os.environ['FIPY_LOG_CONFIG'], mode='r') as fp:
-        logging.config.dictConfig(json.load(fp))
-else:
-    # Needed for Python 2.7 to avoid
-    # 'No handlers could be found for logger "fipy"'.
-    # Should do nothing in Py3k.
-    logging.basicConfig()
+    with open(
+        os.environ['FIPY_LOG_CONFIG'],
+        mode='r',
+        encoding="utf-8"  # should be "locale" (PEP 597), needs py>3.9
+    ) as config:
+        logging.config.dictConfig(json.load(config))
 
 _log = logging.getLogger(__name__)
 
 # __version__ needs to be defined before calling package_info()
-from ._version import get_versions
-__version__ = get_versions()['version']
-del get_versions
-
-
-from fipy.tools.logging import environment
+__version__ = _version.get_versions()['version']
 
 _fipy_environment = {
     "argv": sys.argv,
@@ -77,30 +76,21 @@ _fipy_environment = {
 if _log.isEnabledFor(logging.DEBUG):
     try:
         _fipy_environment.update(environment.conda_info())
-    except:
-        pass
+    except Exception as e:
+        _log.error("conda-info: %s", e)
 
     try:
         _fipy_environment.update(environment.pip_info())
-    except:
-        pass
+    except Exception as e:
+        _log.error("pip-info: %s", e)
 
     try:
         _fipy_environment.update(environment.nix_info())
-    except:
-        pass
+        raise ValueError("wow!")
+    except Exception as e:
+        _log.error("nix-info: %s", e)
 
 _log.debug(json.dumps(_fipy_environment))
-
-
-from fipy.boundaryConditions import *
-from fipy.meshes import *
-from fipy.solvers import *
-from fipy.steppers import *
-from fipy.terms import *
-from fipy.tools import *
-from fipy.variables import *
-from fipy.viewers import *
 
 # fipy needs to export raw_input whether or not parallel
 
@@ -108,17 +98,22 @@ input_original = input
 
 if parallelComm.Nproc > 1:
     def mpi_input(prompt=""):
+        """Replacement for `input` for multiple processes
+        """
         parallelComm.Barrier()
         sys.stdout.flush()
         if parallelComm.procID == 0:
             sys.stdout.write(prompt)
             sys.stdout.flush()
             return sys.stdin.readline()
-        else:
-            return ""
+
+        return ""
     input = mpi_input
+else:
+    input = input_original
 
 _saved_stdout = sys.stdout
+
 
 def _serial_doctest_raw_input(prompt):
     """Replacement for `raw_input()` that works in doctests
@@ -128,13 +123,13 @@ def _serial_doctest_raw_input(prompt):
     _saved_stdout.flush()
     return sys.stdin.readline()
 
+
 def doctest_raw_input(prompt):
     """Replacement for `raw_input()` that works in doctests
 
     This routine attempts to be savvy about running in parallel.
     """
     try:
-        from fipy.tools import parallelComm
         parallelComm.Barrier()
         _saved_stdout.flush()
         if parallelComm.procID == 0:
@@ -144,43 +139,40 @@ def doctest_raw_input(prompt):
         parallelComm.Barrier()
     except ImportError:
         txt = _serial_doctest_raw_input(prompt)
-#     return txt
+    return txt
 
-def test(*args):
+
+def test(*args, **kwargs):
     r"""
-    Test `Fipy`. Equivalent to::
+    Test :term:`Fipy`. Equivalent to::
 
-        $ python setup.py test --modules
+        $ fipy_test --modules
 
-    Use
+    Use::
 
-    >>> import fipy
-    >>> fipy.test('--help')
+        $ fipy_test --help
 
     for a full list of options. Options can be passed in the same way
     as they are appended at the command line. For example, to test
-    `FiPy` with `Trilinos` and inlining switched on, use
+    :term:`FiPy` with :ref:`Trilinos` and inlining switched on, use
 
-    >>> fipy.test('--trilinos', '--inline')
+    >>> fipy.test(trilinos=True, inline=True)
 
     At the command line this would be::
 
-        $ python setup.py test --modules --trilinos --inline
+        $ fipy_test --modules --trilinos --inline
+
+    .. note::
+
+        A :command:`fipy_test` option like :option:`--deprecation-errors`
+        is equivalent to the :func:`~fipy.test` argument
+        ``deprecation_errors``.
 
     """
 
-    from setuptools import setup
-    from fipy.tests.test import test
-    import tempfile
-
-    tmpDir = tempfile.mkdtemp()
+    from fipy.tests.test import main
 
     try:
-        setup(name='FiPy',
-              script_args = ['egg_info', '--egg-base=' + tmpDir,
-                             'test', '--modules'] + list(args),
-              cmdclass={'test': test})
-    except SystemExit as exitErr:
-        import shutil
-        shutil.rmtree(tmpDir)
-        raise exitErr
+        main(modules=True, *args, **kwargs)
+    except SystemExit:
+        pass

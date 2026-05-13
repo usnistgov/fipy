@@ -2,12 +2,15 @@ import logging
 
 _log = logging.getLogger(__name__)
 
-from fipy.solvers.petsc.linearLUSolver import *
-from fipy.solvers.petsc.linearPCGSolver import *
-from fipy.solvers.petsc.linearGMRESSolver import *
-from fipy.solvers.petsc.linearBicgSolver import *
-from fipy.solvers.petsc.linearCGSSolver import *
-from fipy.solvers.petsc.dummySolver import *
+from .linearLUSolver import *
+from .linearCGSolver import *
+from .linearGMRESSolver import *
+from .linearBicgSolver import *
+from .linearCGSSolver import *
+from .dummySolver import *
+from . import petscConvergence
+
+from .preconditioners import *
 
 DefaultSolver = LinearGMRESSolver
 DefaultAsymmetricSolver = LinearGMRESSolver

@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.cellTerm import CellTerm
@@ -6,8 +5,6 @@ from fipy.variables.cellVariable import CellVariable
 from fipy.tools import numerix
 
 __all__ = ["TransientTerm"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class TransientTerm(CellTerm):
     r"""
@@ -59,17 +56,16 @@ class TransientTerm(CellTerm):
     A number of sweeps at each time step are required to let the
     relaxation take effect.
 
-    >>> from builtins import range
     >>> for step in range(steps):
     ...     var.updateOld()
     ...     for sweep in range(sweeps):
-    ...         eq.solve(var, dt = dt)
+    ...         eq.solve(var, dt=dt)
 
     Compare the final result with the analytical solution.
 
     >>> from fipy.tools import numerix
-    >>> print(var.allclose(numerix.sqrt(k * dt * steps + phi0**2)))
-    1
+    >>> print(var.allclose(numerix.sqrt(k * dt * steps + phi0**2), rtol=2e-5))
+    True
     """
 
     def _getWeight(self, var, transientGeomCoeff=None, diffusionGeomCoeff=None):

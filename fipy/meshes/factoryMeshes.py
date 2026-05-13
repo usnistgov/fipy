@@ -1,13 +1,9 @@
-from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import parallelComm
 from fipy.tools import numerix
 
 __all__ = ["Grid3D", "Grid2D", "Grid1D", "CylindricalGrid2D", "CylindricalGrid1D", "SphericalGrid1D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 def _dnl(dx, nx, Lx):
     """

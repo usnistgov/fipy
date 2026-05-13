@@ -1,5 +1,3 @@
-from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -62,8 +60,6 @@ register_skipper(flag="SKFMM",
 
 
 __all__ = ["DistanceVariable"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class DistanceVariable(CellVariable):
     r"""
@@ -314,7 +310,7 @@ class DistanceVariable(CellVariable):
 
     @property
     def cellInterfaceAreas(self):
-        """
+        r"""
         Returns the length of the interface that crosses the cell
 
         A simple 1D test:

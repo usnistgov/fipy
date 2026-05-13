@@ -303,7 +303,8 @@ want, and then issue supplemental commands for the underlying plotting
 package. The better option is to make a "subclass" of the :term:`FiPy`
 :class:`Viewer <viewer.AbstractViewer>` that comes closest to producing the image you want. You can
 then override just the behavior you wan to change, while letting :term:`FiPy` do
-most of the heavy lifting. See :mod:`examples.phase.anisotropy` and
+most of the heavy lifting. See :mod:`examples.phase.anisotropy`,
+:mod:`examples.phase.binary`, :mod:`examples.phase.binaryCoupled`, and
 :mod:`examples.phase.polyxtal` for examples of creating a custom
 :term:`Matplotlib` :class:`Viewer <viewer.AbstractViewer>` class; see
 :mod:`examples.cahnHilliard.sphere` for an example of creating a custom
@@ -334,7 +335,7 @@ iterations
   :class:`~fipy.solvers.solver.Solver` object with the desired number of
   iterations and solution tolerance, *e.g.*
 
-  >>> mySolver = LinearPCGSolver(iterations=1234, tolerance=5e-6)
+  >>> mySolver = LinearCGSolver(iterations=1234, tolerance=5e-6)
   :
   :
   >>> eq.solve(..., solver=mySolver, ...)
@@ -452,7 +453,7 @@ Finally, we can (and often do) combine all three layers of repetition:
 >>> myVar = CellVariable(..., hasOld=1)
 :
 :
->>> mySolver = LinearPCGSolver(iterations=1234, tolerance=5e-6)
+>>> mySolver = LinearCGSolver(iterations=1234, tolerance=5e-6)
 :
 :
 >>> while elapsedTime < totalElapsedTime:

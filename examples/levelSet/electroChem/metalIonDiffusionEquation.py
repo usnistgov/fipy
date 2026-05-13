@@ -1,5 +1,3 @@
-from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 
@@ -84,7 +82,6 @@ def buildMetalIonDiffusionEquation(ionVar = None,
 
     >>> ionVar.constrain(cinf, mesh.facesRight)
 
-    >>> from builtins import range
     >>> for i in range(10):
     ...     eqn.solve(ionVar, dt = 1000)
 

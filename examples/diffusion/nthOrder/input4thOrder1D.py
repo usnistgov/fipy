@@ -15,7 +15,7 @@ We create an appropriate mesh
 .. index::
    single: Grid1D
 
->>> from fipy import CellVariable, Grid1D, NthOrderBoundaryCondition, DiffusionTerm, Viewer, GeneralSolver
+>>> from fipy import CellVariable, Grid1D, NthOrderBoundaryCondition, DiffusionTerm, Viewer, LinearLUSolver
 
 >>> nx = 500
 >>> dx = L / nx
@@ -56,11 +56,7 @@ We initialize the steady-state equation
 
 >>> eq = DiffusionTerm(coeff=(1, 1)) == 0
 
->>> import fipy.solvers.solver
->>> if fipy.solvers.solver_suite  == 'petsc':
-...     solver = GeneralSolver(precon='lu')
-... else:
-...     solver = GeneralSolver()
+>>> solver = LinearLUSolver()
 
 We perform one implicit timestep to achieve steady state
 
@@ -100,7 +96,6 @@ If the problem is run interactively, we can view the result:
    :alt: solution to biharmonic equation
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

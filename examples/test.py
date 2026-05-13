@@ -1,6 +1,5 @@
 """Run all the test cases in examples/
 """
-from __future__ import unicode_literals
 
 from fipy.tests.lateImportTest import _LateImportTestSuite
 import fipy.tests.testProgram

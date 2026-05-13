@@ -6,10 +6,8 @@ __all__ = ["LinearGMRESSolver"]
 
 class LinearGMRESSolver(PETScKrylovSolver):
 
-    """
-    The `LinearGMRESSolver` is an interface to the GMRES solver in PETSc,
-    using no preconditioner by default.
-
+    """Interface to the generalized minimal residual (:term:`GMRES`) solver
+    in :ref:`PETSC`.
     """
     
     solver = 'gmres'

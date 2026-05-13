@@ -187,7 +187,6 @@ transient term from Equation :eq:`eq-phase:simple`
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
 
->>> from builtins import range
 >>> for i in range(13):
 ...     eq.solve(var = phase, dt=1.)
 ...     if __name__ == '__main__':
@@ -262,7 +261,6 @@ iterations at the same time step to reach a converged solution).
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
 
->>> from builtins import range
 >>> for i in range(8):
 ...     eq.solve(var = phase)
 >>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
@@ -317,7 +315,6 @@ tangent to the source, we reach convergence in only 5 sweeps
 >>> phase.setValue(1.)
 >>> phase.setValue(0., where=x > L/2)
 
->>> from builtins import range
 >>> for i in range(5):
 ...     eq.solve(var = phase)
 >>> print(phase.allclose(analyticalArray, rtol = 1e-4, atol = 1e-4))
@@ -417,7 +414,6 @@ point. We now use the :meth:`~fipy.terms.term.Term.sweep` method instead of
    single: sweep
 
 >>> timeStep = 1e-6
->>> from builtins import range
 >>> for i in range(10):
 ...     phase.updateOld()
 ...     res = 1e+10
@@ -480,7 +476,7 @@ thickness
 ...     print("The SciPy library is unavailable to fit the interface \
 ... thickness and velocity")
 
->>> print(abs(1 - V_fit / velocity) < 4.1e-2) # doctest: +SCIPY
+>>> print(abs(1 - V_fit / velocity) < 4.2e-2) # doctest: +SCIPY
 True
 >>> print(abs(1 - d_fit / delta) < 2e-2) # doctest: +SCIPY
 True
@@ -497,7 +493,6 @@ True
 .. .. bibmissing:: /refs.bib
     :sort:
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

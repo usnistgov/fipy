@@ -1,12 +1,9 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.explicitSourceTerm import _ExplicitSourceTerm
 from fipy.variables.cellVariable import CellVariable
 
 __all__ = ["ResidualTerm"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class ResidualTerm(_ExplicitSourceTerm):
     r"""

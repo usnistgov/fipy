@@ -21,7 +21,6 @@ The result can be tested with the following code:
 
 
 >>> surfactantBefore = numerix.sum(surfactantVariable * mesh.cellVolumes)
->>> from builtins import range
 >>> for step in range(steps):
 ...     distanceVariable.updateOld()
 ...     surfactantEquation.solve(surfactantVariable, dt=1.)
@@ -38,10 +37,6 @@ The result can be tested with the following code:
 0.00813776069241
 
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import input

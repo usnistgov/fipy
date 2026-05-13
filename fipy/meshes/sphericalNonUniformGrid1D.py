@@ -1,7 +1,6 @@
 """
 1D Mesh
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -11,8 +10,6 @@ from fipy.tools import parallelComm
 from fipy.meshes.nonUniformGrid1D import NonUniformGrid1D
 
 __all__ = ["SphericalNonUniformGrid1D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class SphericalNonUniformGrid1D(NonUniformGrid1D):
     """

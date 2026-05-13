@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.terms.diffusionTermNoCorrection import DiffusionTermNoCorrection
@@ -43,7 +42,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> mesh = Grid1D(dx = 1., nx = 2)
         >>> term = DiffusionTerm(coeff = (1,))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> M = term._getCoefficientMatrix(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print(numerix.allclose(A,
         ...                        (( 1., -1.),
@@ -65,7 +64,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> from fipy.variables.faceVariable import FaceVariable
         >>> term = DiffusionTerm(coeff=FaceVariable(mesh=mesh, value=1))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> M = term._getCoefficientMatrix(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print(numerix.allclose(A, (( 1., -1.),
         ...                            (-1.,  1.)))) # doctest: +PROCESSOR_0
@@ -81,7 +80,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
 
         >>> term = DiffusionTerm(coeff=CellVariable(mesh=mesh, value=1))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> M = term._getCoefficientMatrix(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print(numerix.allclose(A,
         ...                        (( 1., -1.),
@@ -99,7 +98,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> from fipy.variables.variable import Variable
         >>> term = DiffusionTerm(coeff = Variable(value = 1))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> M = term._getCoefficientMatrix(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print(numerix.allclose(A,
         ...                        (( 1., -1.),
@@ -126,7 +125,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> var.constrain(4., mesh.facesRight)
         >>> term = DiffusionTerm(coeff = (1.,))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> M = term._getCoefficientMatrix(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print(numerix.allclose(A,
         ...                        (( 1., -1.),
@@ -154,7 +153,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
         >>> bcRight2 =  NthOrderBoundaryCondition(mesh.facesRight, 0., 2)
         >>> term = DiffusionTerm(coeff = (1., 1.))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> M = term._getCoefficientMatrix(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print(numerix.allclose(A,
         ...                        (( 1., -1.),
@@ -183,7 +182,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
 
         >>> term = DiffusionTerm(coeff = (-1., 1.))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> M = term._getCoefficientMatrix(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print(numerix.allclose(A,
         ...                        ((-1.,  1.),
@@ -215,7 +214,7 @@ class DiffusionTerm(DiffusionTermNoCorrection):
 
         >>> term = DiffusionTerm(coeff = (1., 1.))
         >>> coeff = term._getGeomCoeff(CellVariable(mesh=mesh))
-        >>> M = term._getCoefficientMatrixForTests(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
+        >>> M = term._getCoefficientMatrix(_MeshMatrix, CellVariable(mesh=mesh), coeff[0])
         >>> A = M.numpyArray
         >>> print(numerix.allclose(A,
         ...                        (( 2., -2.),

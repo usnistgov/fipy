@@ -52,7 +52,6 @@ The `advectionEquation` is constructed.
 
 The problem can then be solved by executing a serious of time steps.
 
->>> from builtins import range
 >>> if __name__ == '__main__':
 ...     viewer = Viewer(vars=var, datamin=-10., datamax=10.)
 ...     viewer.plot()
@@ -63,7 +62,6 @@ The problem can then be solved by executing a serious of time steps.
 
 The result can be tested with the following code:
 
->>> from builtins import range
 >>> for step in range(steps):
 ...     var.updateOld()
 ...     advEqn.solve(var, dt=timeStepDuration)
@@ -76,7 +74,6 @@ The result can be tested with the following code:
 1
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

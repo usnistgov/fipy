@@ -36,7 +36,7 @@ Merge updated state of ``master`` to the branch::
 
 Resolve any conflicts and test::
 
-    $ python setup.py test
+    $ fipy_test
 
 Submit branch for code review
 -----------------------------
@@ -140,7 +140,7 @@ Conda Lockfiles
 The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
 :file:`environments/locks/` can be updated with::
 
-    $ for solver in petsc pysparse scipy trilinos
+    $ for solver in petsc scipy trilinos
       do
         conda-lock lock \
           --file environments/${solver}-environment.yml \
@@ -154,6 +154,22 @@ The `conda-lock <https://github.com/conda/conda-lock>`_ lockfiles in
 
    Do not merge new lockfiles to ``master`` without validating that
    everything still works.
+
+.. attention::
+
+   As of 2025-04-30, locking 
+   :file:`environment/locks/trilinos-environment.yml` is extremely slow.
+
+.. attention::
+
+   Due to an issue with URL encoding, it may be necessary to replace
+   ``%21`` with ``!`` in the
+   :file:`environments/locks/conda-${solver}-lock.yml` files before calling
+   :command:`conda-lock render`.
+
+   See `conda/conda-lock#764 <https://github.com/conda/conda-lock/issues/764>`_, 
+   `mamba-org/mamba#3737 <https://github.com/mamba-org/mamba/issues/3737>`_,
+   `conda/conda#14481 <https://github.com/conda/conda/pull/14481>`_.
 
 =====================
 README-like documents
@@ -202,11 +218,11 @@ Check the issue_ list and update the :ref:`CHANGELOG`::
 
    You can use::
 
-      $ python setup.py changelog --after=<x.y>
+      $ fipy_changelog --after=<x.y>
 
    or::
 
-      $ python setup.py changelog --milestone=<x.z>
+      $ fipy_changelog --milestone=<x.z>
 
    to obtain a ReST-formatted list of every GitHub_ `pull request`_ and issue_
    closed since the last release.
@@ -245,24 +261,29 @@ practices`_ above)::
 
     $ git tag --annotate x.y master
 
+Build a local source distribution and wheel::
+
+    $ python -m build
+
+Confirm that the source distribution and wheel will be acceptable to PyPI::
+
+    $ twine check dist/fipy-{x.y}*
+
 Push the tag to GitHub_::
 
     $ git push --tags origin master
 
-Upon successful completion of the `Continuous Integration`_ systems, fetch
-the tagged build products from Azure_ Artifacts and place in
-:file:`{FiPySource}/dist/`:
+*Even though you just built them locally*, upon successful completion of the
+`Continuous Integration`_ systems, fetch the tagged build products from
+Azure_ Artifacts and place in :file:`{FiPySource}/dist/`:
 
- * :file:`dist-Linux/FiPy-{x.y}-none-any.whl`
- * :file:`dist-Linux/FiPy-{x.y}.tar.gz`
- * :file:`dist-Windows_NT/FiPy-{x.y}.zip`
- * :file:`dist-docs/FiPy-{x.y}.pdf`
- * :file:`dist-docs/html-{x.y}.tar.gz`
+ * :file:`dist-Linux/fipy-{x.y}-none-any.whl`
+ * :file:`dist-Linux/fipy-{x.y}.tar.gz`
 
-From the :file:`{FiPySource}` directory, unpack :file:`dist/html-{x.y}.tar.gz`
-into :file:`docs/build` with::
+.. note::
 
-    $ tar -xzf dist/html-{x.y}.tar.gz -C docs/build
+    Artifacts are also created and tested in :file:`dist-Windows_NT`, but
+    they should be the same.
 
 .. _Azure:         https://dev.azure.com/guyer/FiPy/_build?definitionId=2
 
@@ -270,27 +291,12 @@ into :file:`docs/build` with::
 Upload
 ------
 
-Attach
- * :file:`dist/FiPy-{x.y}-none-any.whl`
- * :file:`dist/FiPy-{x.y}.tar.gz`
- * :file:`dist/FiPy-{x.y}.zip`
- * :file:`dist/FiPy-{x.y}.pdf`
-
-to a `GitHub release`_ associated with tag `x.y`.
+Attach :file:`dist/fipy-{x.y}-none-any.whl` to a `GitHub release`_
+associated with tag `x.y`.
 
 Upload the build products to PyPI with twine_::
 
-    $ twine upload dist/FiPy-${FIPY_VERSION}.*
-
-Upload the web site to CTCMS ::
-
-    $ export FIPY_WWWHOST=bunter:/u/WWW/wd15/fipy
-    $ export FIPY_WWWACTIVATE=updatewww
-    $ python setup.py upload_products --html
-
-.. warning:: Some versions of ``rsync`` on Mac OS X have caused problems
-   when they try to upload erroneous ``\rsrc`` directories. Version 2.6.2
-   does not have this problem.
+    $ twine upload dist/fipy-${FIPY_VERSION}*
 
 .. _GitHub release: https://github.com/usnistgov/fipy/releases
 

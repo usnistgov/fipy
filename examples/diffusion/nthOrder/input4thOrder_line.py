@@ -3,7 +3,7 @@
    ...          boundaryConditions = BCs,
    ...          solver = solver)
 
-   Using the Pysparse solvers, the answer is totally inaccurate. This is due to
+   Using the some solvers, the answer is totally inaccurate. This is due to
    the 4th order term having a high matrix condition number. In this particular
    example, multigrid preconditioners such as those provided by Trilinos allow
    a more accurate solution.
@@ -12,9 +12,6 @@
    1
 
 """
-from __future__ import print_function
-from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

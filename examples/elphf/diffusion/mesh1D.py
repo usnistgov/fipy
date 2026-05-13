@@ -77,7 +77,12 @@ We separate the solution domain into two different concentration regimes
 >>> substitutionals[1].setValue(0.6)
 >>> substitutionals[1].setValue(0.3, where=x > L / 2)
 
-We create one diffusion equation for each substitutional component
+We create one diffusion equation for each substitutional component.  The
+initial residual is much larger than the norm of the right-hand-side
+vector, so we use `"initial"` tolerance scaling with a tolerance and
+preconditioner that will drive to an accurate solution.
+
+>>> from fipy import solver_suite
 
 >>> for Cj in substitutionals:
 ...     CkSum = ComponentVariable(mesh = mesh, value = 0.)
@@ -92,7 +97,15 @@ We create one diffusion equation for each substitutional component
 ...     Cj.equation = (TransientTerm()
 ...                    == DiffusionTerm(coeff=Cj.diffusivity)
 ...                    + PowerLawConvectionTerm(coeff=convectionCoeff))
-...     Cj.solver = DefaultAsymmetricSolver(precon=None, iterations=3200)
+...     if solver_suite in ["trilinos"]:
+...         from fipy import MultilevelNSSAPreconditioner
+...         preconditioner = MultilevelNSSAPreconditioner()
+...     else:
+...         preconditioner = "default"
+...     Cj.solver = DefaultAsymmetricSolver(criterion="initial",
+...                                         precon=preconditioner,
+...                                         iterations=3200,
+...                                         tolerance=1e-13)
 
 If we are running interactively, we create a viewer to see the results
 
@@ -103,7 +116,6 @@ If we are running interactively, we create a viewer to see the results
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
->>> from builtins import range
 >>> for i in range(40):
 ...     for Cj in substitutionals:
 ...         Cj.equation.solve(var=Cj,
@@ -126,7 +138,6 @@ True
 >>> print(substitutionals[1].allclose(0.45, rtol = 2e-7, atol = 2e-7))
 True
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

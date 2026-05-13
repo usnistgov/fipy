@@ -30,7 +30,7 @@ class Timer(object):
 
     @staticmethod
     def clock_ns():
-        """Substitute "nanosecond" timer for Python 2.7
+        """Substitute "nanosecond" timer
         """
         return int(time.clock() * 1e9)
 

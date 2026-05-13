@@ -5,10 +5,6 @@ Meshes contain cells, faces, and vertices.
 
 This is built for a non-mixed element mesh.
 """
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import range
-from builtins import zip
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -18,6 +14,8 @@ from fipy.tools import serialComm
 from fipy.meshes.mesh import Mesh
 from fipy.meshes.representations.meshRepresentation import _MeshRepresentation
 from fipy.meshes.topologies.meshTopology import _Mesh2DTopology
+
+from fipy.solvers import INDEX_TYPE
 
 def _orderVertices(vertexCoords, vertices):
     coordinates = numerix.take(vertexCoords, vertices)
@@ -32,8 +30,6 @@ def _orderVertices(vertexCoords, vertices):
     return numerix.take(vertices, sortorder)
 
 __all__ = ["Mesh2D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class Mesh2D(Mesh):
     def __init__(self, vertexCoords, faceVertexIDs, cellFaceIDs, communicator=serialComm, _RepresentationClass=_MeshRepresentation, _TopologyClass=_Mesh2DTopology):
@@ -94,7 +90,8 @@ class Mesh2D(Mesh):
     @property
     def _nonOrthogonality(self):
 
-        exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],), 'l')
+        exteriorFaceArray = numerix.zeros((self.faceCellIDs.shape[1],),
+                                          dtype=INDEX_TYPE)
         numerix.put(exteriorFaceArray, numerix.nonzero(self.exteriorFaces), 1)
         unmaskedFaceCellIDs = MA.filled(self.faceCellIDs, 0)
         # what we put in for the "fill" doesn't matter because only exterior

@@ -1,6 +1,5 @@
 """:ref:`Discretizations <section:discretization>` of partial differential equation expressions
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 class ExplicitVariableError(Exception):

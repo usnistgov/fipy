@@ -44,7 +44,6 @@ The analytical solution test for this problem is given by:
 ...     viewer = Viewer(vars = var)
 ...     viewer.plot()
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

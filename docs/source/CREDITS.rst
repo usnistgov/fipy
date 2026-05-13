@@ -29,7 +29,7 @@ Katie Travis
     while she was a SURF_ student from `Smith College`_.
 
 Max Gibiansky
-    added support for the :term:`Trilinos` solvers while he was a SURF_ student
+    added support for the :ref:`TRILINOS` solvers while he was a SURF_ student
     from `Harvey Mudd College`_
 
 `Andrew Reeve`_
@@ -37,18 +37,18 @@ Max Gibiansky
     sabbatical from the `University of Maine`_.
 
 Olivia Buzek
-    worked on adding :term:`Trilinos` parallel computations while she was a SURF_ student
+    worked on adding :ref:`TRILINOS` parallel computations while she was a SURF_ student
     from the `University of Maryland`_
 
 Daniel Stiles
-    worked on adding :term:`Trilinos` parallel computations while he was
+    worked on adding :ref:`TRILINOS` parallel computations while he was
     a student at `Montgomery Blair High School`_.
 
 James O'Beirne
     added full mesh partitioning using :term:`Gmsh`. James also greatly
     improved the :term:`Gmsh`-:term:`FiPy` pipeline. Other contributions
     include updating :term:`FiPy` to use properties pervasively,
-    deployment of a :term:`Buildbot` server to automate :term:`FiPy`
+    deployment of a `Buildbot <https://buildbot.net/>`_ server to automate :term:`FiPy`
     testing and a full refactor of the ``Mesh`` classes.
 
 .. |MSED| replace:: the `Materials Science and Engineering Division`_

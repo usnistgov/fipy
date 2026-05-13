@@ -1,6 +1,5 @@
 """Test implementation of the mesh
 """
-from __future__ import unicode_literals
 
 __all__ = []
 

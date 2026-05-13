@@ -1,7 +1,6 @@
 """
 3D periodic rectangular Mesh
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -11,8 +10,6 @@ from fipy.meshes.nonUniformGrid3D import NonUniformGrid3D
 __all__ = ["PeriodicGrid3D", "PeriodicGrid3DLeftRight", "PeriodicGrid3DTopBottom",
            "PeriodicGrid3DFrontBack", "PeriodicGrid3DLeftRightTopBottom",
            "PeriodicGrid3DLeftRightFrontBack", "PeriodicGrid3DTopBottomFrontBack"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class _BasePeriodicGrid3D(NonUniformGrid3D):
     def __init__(self, dx=1., dy=1., dz=1., nx=None, ny=None, nz=None, overlap=2, communicator=parallelComm, *args, **kwargs):

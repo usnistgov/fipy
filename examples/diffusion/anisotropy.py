@@ -78,7 +78,6 @@ Make the equation, viewer and solve.
 >>> time = 0
 >>> dt=0.00025
 
->>> from builtins import range
 >>> for i in range(20):
 ...     var.updateOld() # doctest: +GMSH
 ...     res = 1.
@@ -98,7 +97,6 @@ Compare with the analytical solution (within 5% accuracy).
 True
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

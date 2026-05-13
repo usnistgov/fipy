@@ -1,10 +1,7 @@
-from __future__ import unicode_literals
 from fipy.variables.meshVariable import MeshVariable
 from fipy.tools import numerix
 
 __all__ = ["FaceVariable"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class FaceVariable(MeshVariable):
     @property
@@ -59,7 +56,6 @@ class FaceVariable(MeshVariable):
         >>> from fipy.meshes import Grid2D
         >>> from fipy.variables.cellVariable import CellVariable
         >>> mesh = Grid2D(nx=3, ny=2)
-        >>> from builtins import range
         >>> var = CellVariable(mesh=mesh, value=list(range(3*2)))
         >>> print(var.faceGrad.divergence)
         [ 4.  3.  2. -2. -3. -4.]

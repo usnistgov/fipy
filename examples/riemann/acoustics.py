@@ -5,10 +5,7 @@ Test
 True
 
 """
-from __future__ import division
-from __future__ import unicode_literals
 
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy import input

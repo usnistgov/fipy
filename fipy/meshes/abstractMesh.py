@@ -1,12 +1,6 @@
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import object
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractMesh", "MeshAdditionError"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 from fipy.tools import serialComm
 from fipy.tools import numerix
@@ -16,6 +10,7 @@ from fipy.tools.dimensions.physicalField import PhysicalField
 
 from fipy.meshes.representations.abstractRepresentation import _AbstractRepresentation
 from fipy.meshes.topologies.abstractTopology import _AbstractTopology
+from fipy.solvers import INDEX_TYPE
 
 class MeshAdditionError(Exception):
     """:class:`Exception` raised when meshes cannot be concatenated."""
@@ -110,7 +105,7 @@ class AbstractMesh(object):
 
     @property
     def x(self):
-        """
+        r"""
         Equivalent to using :attr:`~fipy.meshes.abstractMesh.AbstractMesh.cellCenters`\ ``[0]``.
 
         >>> from fipy import *
@@ -121,7 +116,7 @@ class AbstractMesh(object):
 
     @property
     def y(self):
-        """
+        r"""
         Equivalent to using :attr:`~fipy.meshes.abstractMesh.AbstractMesh.cellCenters`\ ``[1]``.
 
         >>> from fipy import *
@@ -139,7 +134,7 @@ class AbstractMesh(object):
 
     @property
     def z(self):
-        """
+        r"""
         Equivalent to using :attr:`~fipy.meshes.abstractMesh.AbstractMesh.cellCenters`\ ``[2]``.
 
         >>> from fipy import *
@@ -376,13 +371,15 @@ class AbstractMesh(object):
         if diff > 0:
             other_faceVertexIDs = numerix.append(other_faceVertexIDs,
                                                  -1 * numerix.ones((diff,)
-                                                                   + other_faceVertexIDs.shape[1:], 'l'),
+                                                                   + other_faceVertexIDs.shape[1:],
+                                                                   dtype=INDEX_TYPE),
                                                  axis=0)
             other_faceVertexIDs = MA.masked_values(other_faceVertexIDs, -1)
         elif diff < 0:
             self_faceVertexIDs = numerix.append(self_faceVertexIDs,
                                                 -1 * numerix.ones((-diff,)
-                                                                  + self_faceVertexIDs.shape[1:], 'l'),
+                                                                  + self_faceVertexIDs.shape[1:],
+                                                                  dtype=INDEX_TYPE),
                                                 axis=0)
             self_faceVertexIDs = MA.masked_values(self_faceVertexIDs, -1)
 
@@ -460,13 +457,15 @@ class AbstractMesh(object):
         if diff > 0:
             other_cellFaceIDs = numerix.append(other_cellFaceIDs,
                                                -1 * numerix.ones((diff,)
-                                                                 + other_cellFaceIDs.shape[1:], 'l'),
+                                                                 + other_cellFaceIDs.shape[1:],
+                                                                 dtype=INDEX_TYPE),
                                                axis=0)
             other_cellFaceIDs = MA.masked_values(other_cellFaceIDs, -1)
         elif diff < 0:
             self_cellFaceIDs = numerix.append(self_cellFaceIDs,
                                               -1 * numerix.ones((-diff,)
-                                                                + self_cellFaceIDs.shape[1:], 'l'),
+                                                                + self_cellFaceIDs.shape[1:],
+                                                                dtype=INDEX_TYPE),
                                               axis=0)
             self_cellFaceIDs = MA.masked_values(self_cellFaceIDs, -1)
 
@@ -488,6 +487,7 @@ class AbstractMesh(object):
     def interiorFaceIDs(self):
         if not hasattr(self, '_interiorFaceIDs'):
             self._interiorFaceIDs = numerix.nonzero(self.interiorFaces)[0]
+            self._interiorFaceIDs = self._interiorFaceIDs.astype(INDEX_TYPE)
         return self._interiorFaceIDs
 
     @property
@@ -1186,6 +1186,12 @@ class AbstractMesh(object):
         else:
             neighborsPerCell = self._facesPerCell
         return neighborsPerCell
+
+    @property
+    def _averageFaceSizePerCell(self):
+        avgFaceSize = self._faceAreas[..., self.cellFaceIDs]
+        avgFaceSize = avgFaceSize.sum(axis=0)
+        return avgFaceSize / self._facesPerCell
 
     @property
     def _cellFaceVertices(self):

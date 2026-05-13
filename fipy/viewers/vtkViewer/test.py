@@ -1,6 +1,5 @@
 """Test numeric implementation of the mesh
 """
-from __future__ import unicode_literals
 
 __all__ = []
 
@@ -9,6 +8,7 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(docTestModuleNames=(
+        'vtkViewer',
         'vtkCellViewer',
         'vtkFaceViewer'
         ), base = __name__)

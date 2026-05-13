@@ -57,7 +57,7 @@ Recommended Method
    with the conda_ package manager.  In addition to the scientific
    :term:`Python` stack, conda_ also provides virtual environment
    management.  Keeping separate installations is useful *e.g.* for
-   comparing :term:`Python` 2 and :term:`Python` 3 software stacks, or when
+   comparing different versions of :term:`Python`, or when
    the user does not have sufficient privileges to install software
    system-wide.
 
@@ -120,8 +120,7 @@ You're now ready to move on to :ref:`USAGE`.
    to run and visualize :term:`FiPy` simulations. On Windows_, there
    are fewer packages available via conda_, particularly amongst the
    sparse matrix :ref:`SOLVERS`, but the system still should be
-   functional. Significantly, you will need to download and install
-   :term:`Gmsh` manually when using Python 2.7.
+   functional.
 
 .. attention::
 
@@ -148,7 +147,8 @@ Obtaining FiPy
 :term:`FiPy` is freely available for download via Git_ or as a
 `compressed archive`_. Please see
 :ref:`documentation:GIT` for instructions on obtaining :term:`FiPy`
-with Git_.
+with Git_. Historical versions of :term:`FiPy` can be obtained from
+https://github.com/usnistgov/fipy/releases.
 
 .. warning::
 
@@ -190,12 +190,12 @@ been installed properly, you can install it by typing::
 
 or by unpacking the archive and typing::
 
-    $ python setup.py install
+    $ python -m pip install .
 
 at the command line in the base :term:`FiPy` directory. You can also install
 :term:`FiPy` in "development mode" by typing::
 
-    $ python setup.py develop
+    $ python -m pip install --editable .
 
 which allows the source code to be altered in place and executed without
 issuing further installation commands.
@@ -227,7 +227,7 @@ on many operating systems, which you can check by opening a terminal
 and typing ``python``, *e.g.*::
 
     $ python
-    Python 2.7.15 | ...
+    Python 3.10.10 | ...
     ...
     Type "help", "copyright", "credits" or "license" for more information.
     >>>
@@ -237,12 +237,10 @@ If necessary, you can download_ and install it for your platform
 
 .. note::
 
-   :term:`FiPy` requires at least version 2.7.x of :term:`Python`.
+   :term:`FiPy` `no longer supports Python 2 <sunset-python-2>`_.
 
 .. _download: http://www.python.org/download/
-
-:term:`Python` along with many of :term:`FiPy`'s required and optional
-packages is available with one of the following distributions.
+.. _sunset-python-2: https://www.python.org/doc/sunset-python-2/
 
 NumPy
 =====
@@ -356,7 +354,7 @@ Conda_ and Nix_ are only ones of these we have the resources to support.
    $ python -m pip install scikit-fmm
    $ git clone https://github.com/usnistgov/fipy.git
    $ cd fipy
-   $ python setup.py develop
+   $ python -m pip install --editable .
 
 .. _Conda: https://conda.io
 .. _Stow: http://savannah.gnu.org/projects/stow/

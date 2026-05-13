@@ -1,6 +1,5 @@
 """Boundary condition of order 0
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 """Fixed value (Dirichlet) boundary condition
@@ -15,8 +14,6 @@ from fipy.tools import vector
 from fipy.variables.variable import Variable
 
 __all__ = ["FixedValue"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class FixedValue(BoundaryCondition):
     r"""Adds a Dirichlet contribution to the system of equations.
@@ -40,7 +37,7 @@ class FixedValue(BoundaryCondition):
 
 
     def _buildMatrix(self, SparseMatrix, Ncells, MaxFaces, coeff):
-        """Set boundary equal to value.
+        r"""Set boundary equal to value.
 
         A `tuple` of (`LL`, `bb`) is calculated, to be added to the
         Term's (:math:`\mathsf{L}`, :math:`\mathsf{b}`) matrices.

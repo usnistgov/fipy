@@ -91,7 +91,6 @@ If the problem is run interactively, we can view the result:
 ...     viewer = Viewer(vars=var)
 ...     viewer.plot()
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

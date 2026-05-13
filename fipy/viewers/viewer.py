@@ -1,20 +1,11 @@
-from __future__ import print_function
-from __future__ import unicode_literals
-from builtins import object
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractViewer"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 import sys
 
-from future.utils import with_metaclass
-
 # Pattern for accessing classmethods on construction
 # https://stackoverflow.com/a/13901161/2019542
-# adapted for future
-# https://python-future.org/compatible_idioms.html#metaclasses
 class _MetaViewer(type):
     def __new__(mcl, classname, bases, classdict):
         """Create new viewer with class-appropriate doctests"""
@@ -27,7 +18,7 @@ class _MetaViewer(type):
 
         return cls
 
-class AbstractViewer(with_metaclass(_MetaViewer, object)):
+class AbstractViewer(object, metaclass=_MetaViewer):
     """Base class for FiPy Viewers
 
     .. attention:: This class is abstract. Always create one of its subclasses.
@@ -185,9 +176,9 @@ class AbstractViewer(with_metaclass(_MetaViewer, object)):
     @classmethod
     def _doctest_extra(cls):
         return """
-            >>> viewer.title = "{cls.__name__} changed"
-            >>> viewer.plot()
-            >>> viewer._promptForOpinion()
+            >>> viewer.title = "{cls.__name__} changed" # doctest:+INTERACTIVE
+            >>> viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
         """.format(**locals())
 
     @staticmethod
@@ -246,10 +237,11 @@ class AbstractViewer(with_metaclass(_MetaViewer, object)):
             ...                 xmin=10, xmax=90,
             ...                 datamin=1.1, datamax=4.0,
             ...                 title="{cls.__name__} test")
+            ... # doctest:+INTERACTIVE
             >>> for kval in fp.numerix.arange(0, 0.3, 0.03):
             ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
+            ...     viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
         """.format(**locals()) + cls._doctest_extra()
 
     @classmethod
@@ -264,11 +256,11 @@ class AbstractViewer(with_metaclass(_MetaViewer, object)):
             ...                 ymin=0.1, ymax=0.9,
             ...                 # datamin=1.1, datamax=4.0,
             ...                 title="{cls.__name__} test")
-            >>> from builtins import range
+            ... # doctest:+INTERACTIVE
             >>> for kval in range(10):
             ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
+            ...     viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
         """.format(**locals()) + cls._doctest_extra()
 
     @classmethod
@@ -291,19 +283,19 @@ class AbstractViewer(with_metaclass(_MetaViewer, object)):
             >>> xyVar = fp.CellVariable(mesh=mesh, name="x y", value=x * y)
             >>> k = fp.Variable(name="k", value=1.)
             >>> viewer = {cls.__name__}(vars=fp.numerix.sin(k * xyVar).grad,
-            ...                 title="{cls.__name__} test")
+            ...                 title="{cls.__name__} test")  # doctest:+INTERACTIVE
             >>> for kval in fp.numerix.arange(1, 10):
             ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
+            ...     viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
 
             >>> viewer = {cls.__name__}(vars=fp.numerix.sin(k * xyVar).faceGrad,
             ...                 title="{cls.__name__} test")
-            >>> from builtins import range
+            ... # doctest:+INTERACTIVE
             >>> for kval in range(10):
             ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
+            ...     viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
         """.format(**locals()) + cls._doctest_extra()
 
     @classmethod
@@ -328,9 +320,9 @@ class AbstractViewer(with_metaclass(_MetaViewer, object)):
             ...                     ymin=0.1, ymax=0.9,
             ...                     datamin=1.1, datamax=4.0,
             ...                     title="{cls.__name__} test")
-            >>> from builtins import range
+            ... # doctest:+INTERACTIVE
             >>> for kval in range(10):
             ...     k.setValue(kval)
-            ...     viewer.plot()
-            >>> viewer._promptForOpinion()
+            ...     viewer.plot()  # doctest:+INTERACTIVE
+            >>> viewer._promptForOpinion()  # doctest:+INTERACTIVE
         """.format(**locals()) + cls._doctest_extra()

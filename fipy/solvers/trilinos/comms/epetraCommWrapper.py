@@ -79,7 +79,7 @@ class EpetraCommWrapper(CommWrapper):
         self.__init__()
         
     def Norm2(self, vec):
-        return vec.Norm2()
+        return float(vec.Norm2())
         
     def MaxAll(self, vec):
         return self.epetra_comm.MaxAll(numerix.array(vec))

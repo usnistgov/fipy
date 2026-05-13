@@ -82,7 +82,9 @@ in the solute and a liquid phase rich in the solvent.
 
 We create the phase equation as in :mod:`examples.elphf.phase`
 and create the diffusion equations for the different species as in
-:mod:`examples.elphf.diffusion.mesh1D`
+:mod:`examples.elphf.diffusion.mesh1D`.  The initial residual of the
+diffusion equations is much larger than the norm of the right-hand-side
+vector, so we use `"initial"` tolerance scaling for those equations
 
 >>> def makeEquations(phase, substitutionals, interstitials):
 ...     phase.equation = TransientTerm(coeff = 1/phase.mobility) \
@@ -139,6 +141,10 @@ and create the diffusion equations for the different species as in
 ...         Cj.equation = (TransientTerm()
 ...                        == DiffusionTerm(coeff=Cj.diffusivity)
 ...                        + PowerLawConvectionTerm(coeff=convectionCoeff))
+...
+...     for Cj in substitutionals + interstitials:
+...         Cj.solver = Cj.equation.getDefaultSolver(criterion="initial",
+...                                                  tolerance=1e-7)
 
 >>> makeEquations(phase, substitutionals, interstitials)
 
@@ -174,14 +180,14 @@ This problem does not have an analytical solution, so after
 iterating to equilibrium
 
 >>> dt = 10000
->>> from builtins import range
 >>> for i in range(5):
 ...     for field in [phase] + substitutionals + interstitials:
 ...         field.updateOld()
 ...     phase.equation.solve(var = phase, dt = dt)
 ...     for field in substitutionals + interstitials:
-...         field.equation.solve(var = field,
-...                              dt = dt)
+...         field.equation.solve(var=field,
+...                              dt=dt,
+...                              solver=field.solver)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
@@ -256,14 +262,14 @@ We make new equations
 and again iterate to equilibrium
 
 >>> dt = 10000
->>> from builtins import range
 >>> for i in range(5):
 ...     for field in [phase] + substitutionals + interstitials:
 ...         field.updateOld()
 ...     phase.equation.solve(var = phase, dt = dt)
 ...     for field in substitutionals + interstitials:
-...         field.equation.solve(var = field,
-...                              dt = dt)
+...         field.equation.solve(var=field,
+...                              dt=dt,
+...                              solver=field.solver)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
@@ -348,14 +354,14 @@ We make new equations
 and again iterate to equilibrium
 
 >>> dt = 10000
->>> from builtins import range
 >>> for i in range(5):
 ...     for field in [phase] + substitutionals + interstitials:
 ...         field.updateOld()
 ...     phase.equation.solve(var = phase, dt = dt)
 ...     for field in substitutionals + interstitials:
-...         field.equation.solve(var = field,
-...                              dt = dt)
+...         field.equation.solve(var=field,
+...                              dt=dt,
+...                              solver=field.solver)
 ...     if __name__ == '__main__':
 ...         viewer.plot()
 
@@ -379,7 +385,6 @@ their respective phases
 >>> numerix.allclose(substitutionals[1](((0., L),)), (0.1, 0.2), rtol = 3e-3, atol = 3e-3)
 1
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

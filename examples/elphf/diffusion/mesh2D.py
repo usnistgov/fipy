@@ -109,7 +109,6 @@ If we are running interactively, we create a viewer to see the results
 
 Now, we iterate the problem to equilibrium, plotting as we go
 
-    >>> from builtins import range
     >>> for i in range(steps):
     ...     for Cj in substitutionals:
     ...         Cj.equation.solve(var = Cj,
@@ -137,7 +136,6 @@ concentration step in one corner.
 
 We iterate the problem to equilibrium again
 
-    >>> from builtins import range
     >>> for i in range(steps):
     ...     for Cj in substitutionals:
     ...         Cj.equation.solve(var = Cj,
@@ -155,7 +153,6 @@ and verify that the correct uniform concentrations are achieved
 
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

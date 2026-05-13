@@ -1,6 +1,5 @@
 """Test numeric implementation of the mesh
 """
-from __future__ import unicode_literals
 
 __all__ = []
 
@@ -27,6 +26,7 @@ def _suite():
             'fipy.variables.cellToFaceVariable',
             'fipy.variables.faceGradVariable',
             'fipy.variables.gaussCellGradVariable',
+            'fipy.variables.modCellGradVariable',
             'fipy.variables.faceGradContributionsVariable',
             'fipy.variables.surfactantConvectionVariable',
             'fipy.variables.surfactantVariable',

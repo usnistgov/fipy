@@ -6,9 +6,8 @@ __all__ = ["LinearBicgSolver"]
 
 class LinearBicgSolver(PETScKrylovSolver):
 
-    """
-    The `LinearBicgSolver` is an interface to the biconjugate gradient solver in
-    PETSc, using no preconditioner by default.
+    """Interface to the biconjugate gradient solver (:term:`BiCG`) in
+    :ref:`PETSC`.
     """
       
     solver = 'bicg'

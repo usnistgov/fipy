@@ -1,3 +1,5 @@
 ---
 exclude_paths:
-  - documentation/_themes/**
+  - docs/source/_themes/**
+  - versioneer.py
+  - fipy/_version.py

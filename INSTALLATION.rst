@@ -8,16 +8,12 @@
 .. _.environment: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#environment
 .. |.FiPy| replace:: FiPy
 .. _.FiPy: https://pages.nist.gov/fipy/en/latest/glossary.html#term-FiPy
-.. |.~fipy.viewers.vtkViewer.VTKViewer| replace:: ``VTKViewer()``
-.. _.~fipy.viewers.vtkViewer.VTKViewer: https://github.com/usnistgov/fipy/blob/60b5b7cdb6af41e09bd1aa0317b39279177604dd/fipy/viewers/vtkViewer/__init__.py#L11-L38
 .. |.flagsandenvironmentvariables| replace:: Command-line Flags and Environment Variables
 .. _.flagsandenvironmentvariables: https://pages.nist.gov/fipy/en/latest/USAGE.html#flagsandenvironmentvariables
 .. |.Gmsh| replace:: Gmsh
 .. _.Gmsh: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Gmsh
 .. |.installation| replace:: Installation
 .. _.installation: https://pages.nist.gov/fipy/en/latest/INSTALLATION.html#installation
-.. |.Mayavi| replace:: Mayavi
-.. _.Mayavi: https://pages.nist.gov/fipy/en/latest/glossary.html#term-Mayavi
 .. |.NumPy| replace:: NumPy
 .. _.NumPy: https://pages.nist.gov/fipy/en/latest/glossary.html#term-NumPy
 .. |.optionalpackages| replace:: Optional Packages
@@ -91,7 +87,7 @@ Recommended Method
        with the conda_ package manager.  In addition to the scientific
        |.Python|_ stack, conda_ also provides virtual environment
        management.  Keeping separate installations is useful *e.g.* for
-       comparing |.Python|_ 2 and |.Python|_ 3 software stacks, or when
+       comparing different versions of |.Python|_, or when
        the user does not have sufficient privileges to install software
        system-wide.
 
@@ -186,21 +182,8 @@ of the merits of and relationship between the different methods.
   e.g.::
 
     $ conda create --name <MYFIPYENV> --channel conda-forge \
-        python=3 numpy scipy matplotlib-base future packaging mpich \
+        python=3 numpy scipy matplotlib-base packaging mpich \
         mpi4py petsc4py mayavi "gmsh <4.0|>=4.5.2"
-
-  or::
-
-    $ conda create --name <MYFIPYENV> --channel conda-forge \
-        python=2.7 numpy scipy matplotlib-base future packaging \
-        pysparse mayavi "traitsui<7.0.0" "gmsh<4.0"
-
-  .. attention::
-
-     Bit rot has started to set in for Python 2.7.  One consequence is that
-     |.~fipy.viewers.vtkViewer.VTKViewer|_\s can raise errors
-     (probably other uses of |.Mayavi|_, too). Hence, the constraint
-     of `"traitsui<7.0.0"`.
 
 .. _conda-lock: https://github.com/conda/conda-lock
 
@@ -263,8 +246,7 @@ You're now ready to move on to |.usage|_.
        to run and visualize |.FiPy|_ simulations. On Windows_, there
        are fewer packages available via conda_, particularly amongst the
        sparse matrix |.solvers|_, but the system still should be
-       functional. Significantly, you will need to download and install
-       |.Gmsh|_ manually when using Python 2.7.
+       functional.
 
 
 
@@ -296,7 +278,8 @@ Obtaining FiPy
 |.FiPy|_ is freely available for download via Git_ or as a
 `compressed archive`_. Please see
 |.documentation-colon-git|_ for instructions on obtaining |.FiPy|_
-with Git_.
+with Git_. Historical versions of |.FiPy|_ can be obtained from
+https://github.com/usnistgov/fipy/releases.
 
 
 .. list-table::
@@ -342,12 +325,12 @@ been installed properly, you can install it by typing::
 
 or by unpacking the archive and typing::
 
-    $ python setup.py install
+    $ python -m pip install .
 
 at the command line in the base |.FiPy|_ directory. You can also install
 |.FiPy|_ in "development mode" by typing::
 
-    $ python setup.py develop
+    $ python -m pip install --editable .
 
 which allows the source code to be altered in place and executed without
 issuing further installation commands.
@@ -379,7 +362,7 @@ on many operating systems, which you can check by opening a terminal
 and typing ``python``, *e.g.*::
 
     $ python
-    Python 2.7.15 | ...
+    Python 3.10.10 | ...
     ...
     Type "help", "copyright", "credits" or "license" for more information.
     >>>
@@ -392,13 +375,11 @@ If necessary, you can download_ and install it for your platform
    :header-rows: 1
    
    * - 📝 Note
-   * - |.FiPy|_ requires at least version 2.7.x of |.Python|_.
+   * - |.FiPy|_ `no longer supports Python 2 <sunset-python-2>`_.
 
 
 .. _download: http://www.python.org/download/
-
-|.Python|_ along with many of |.FiPy|_'s required and optional
-packages is available with one of the following distributions.
+.. _sunset-python-2: https://www.python.org/doc/sunset-python-2/
 
 NumPy
 =====
@@ -512,7 +493,7 @@ Conda_ and Nix_ are only ones of these we have the resources to support.
    $ python -m pip install scikit-fmm
    $ git clone https://github.com/usnistgov/fipy.git
    $ cd fipy
-   $ python setup.py develop
+   $ python -m pip install --editable .
 
 .. _Conda: https://conda.io
 .. _Stow: http://savannah.gnu.org/projects/stow/
@@ -647,7 +628,7 @@ in the base |.FiPy|_ directory to install |.FiPy|_ with Python
 3 by default. ``nix develop`` drops the user into a shell with a working
 version of |.FiPy|_. To test your installation use::
 
-    $ nix develop --command bash -c "python setup.py test"
+    $ nix develop --command bash -c "fipy_test"
 
 
 .. list-table::

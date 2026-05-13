@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -10,8 +9,6 @@ from fipy.meshes.representations.gridRepresentation import _Grid3DRepresentation
 from fipy.meshes.topologies.gridTopology import _Grid3DTopology
 
 __all__ = ["NonUniformGrid3D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class NonUniformGrid3D(Mesh):
     """
@@ -69,7 +66,6 @@ class NonUniformGrid3D(Mesh):
          self.numberOfCells,
          self.shape,
          self.physicalShape,
-         self._meshSpacing,
          self.numberOfXYFaces,
          self.numberOfXZFaces,
          self.numberOfYZFaces,

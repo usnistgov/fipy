@@ -1,7 +1,3 @@
-from __future__ import unicode_literals
-from builtins import zip
-from builtins import str
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 __all__ = []
@@ -84,13 +80,11 @@ def _OperatorVariableClass(baseClass=object):
                 return "%s(%s)" % (self.op.__name__, ", ".join([self.__var(i, style, argDict, id, freshen)
                                                                for i in range(len(self.var))]))
 
-            try:
-                representation = self._py3kInstructions(op=self.op, style=style, argDict=argDict, id=id, freshen=freshen)
-            except AttributeError:
-                instructions = [ord(byte) for byte in self.op.__code__.co_code]
-                representation = self._py2kInstructions(instructions, style=style, argDict=argDict, id=id, freshen=freshen)
-
-            return representation
+            return self._py3kInstructions(op=self.op,
+                                          style=style,
+                                          argDict=argDict,
+                                          id=id,
+                                          freshen=freshen)
 
         def __var(self, i, style, argDict, id, freshen):
             v = self.var[i]
@@ -138,60 +132,6 @@ def _OperatorVariableClass(baseClass=object):
             19: "**", 20: "*", 21: "/", 22: "%", 23: "+", 24: "-", 26: "//", 27: "/",
                     62: "<<", 63: ">>", 64: "&", 65: "^", 66: "|", 106: "=="
         }
-
-        def _py2kInstructions(self, bytecodes, style, argDict, id, freshen):
-            def _popIndex():
-                return bytecodes.pop(0) + bytecodes.pop(0) * 256
-
-            allbytecodes = bytecodes[:]
-
-            stack = []
-
-            while len(bytecodes) > 0:
-                bytecode = bytecodes.pop(0)
-                if dis.opname[bytecode] == 'UNARY_CONVERT':
-                    stack.append("`" + stack.pop() + "`")
-                elif dis.opname[bytecode] == 'BINARY_SUBSCR':
-                    stack.append(stack.pop(-2) + "[" + stack.pop() + "]")
-                elif dis.opname[bytecode] == 'RETURN_VALUE':
-                    s = stack.pop()
-                    if style == 'C':
-                        return s.replace('numerix.', '').replace('arc', 'a')
-                    else:
-                        return s
-                elif dis.opname[bytecode] == 'LOAD_CONST':
-                    stack.append(self.op.__code__.co_consts[_popIndex()])
-                elif dis.opname[bytecode] == 'LOAD_ATTR':
-                    stack.append(stack.pop() + "." + self.op.__code__.co_names[_popIndex()])
-                elif dis.opname[bytecode] == 'COMPARE_OP':
-                    stack.append(stack.pop(-2) + " " + dis.cmp_op[_popIndex()] + " " + stack.pop())
-                elif dis.opname[bytecode] == 'LOAD_GLOBAL':
-                    counter = _popIndex()
-                    stack.append(self.op.__code__.co_names[counter])
-                elif dis.opname[bytecode] == 'LOAD_FAST':
-                    stack.append(self.__var(_popIndex(), style=style, argDict=argDict, id=id, freshen=freshen))
-                elif dis.opname[bytecode] == 'CALL_FUNCTION':
-                    args = []
-                    for j in range(bytecodes.pop(1)):
-                        # keyword parameters
-                        args.insert(0, stack.pop(-2) + " = " + stack.pop())
-                    for j in range(bytecodes.pop(0)):
-                        # positional parameters
-                        args.insert(0, stack.pop())
-                    stack.append(stack.pop() + "(" + ", ".join(args) + ")")
-                elif dis.opname[bytecode] == 'LOAD_DEREF':
-                    free = self.op.__code__.co_cellvars + self.op.__code__.co_freevars
-                    stack.append(free[_popIndex()])
-                elif bytecode in self._unop:
-                    stack.append(self._unop[bytecode] + '(' + stack.pop() + ')')
-                elif bytecode in self._binop:
-                    stack.append(stack.pop(-2) + " " + self._binop[bytecode] + " " + stack.pop())
-                else:
-                    raise SyntaxError("Unknown bytecode: %s in %s of %s, got %s" % (
-                       repr(bytecode),
-                       repr([bytecode] + bytecodes),
-                       repr(allbytecodes),
-                       repr(stack)))
 
         def _py3kInstructions(self, op, style, argDict, id, freshen):
             stack = []
@@ -349,35 +289,33 @@ def _testBinOp(self):
         >>> v3 = Variable((9, 10, 11, 12))
         >>> v4 = Variable((13, 14, 15, 16))
 
-        >>> from future.utils import text_to_native_str as ttns
-
-        >>> ttns((v1 * v2)._getRepresentation())
+        >>> (v1 * v2)._getRepresentation()
         '(Variable(value=array([1, 2, 3, 4])) * Variable(value=array([5, 6, 7, 8])))'
 
-        >>> ttns((v1 * v2)._getRepresentation(style='C', id=""))
+        >>> (v1 * v2)._getRepresentation(style='C', id="")
         '(var0[i] * var1[i])'
 
-        >>> ttns((v1 * v2 + v3 * v4)._getRepresentation(style='C', id=""))
+        >>> (v1 * v2 + v3 * v4)._getRepresentation(style='C', id="")
         '((var00[i] * var01[i]) + (var10[i] * var11[i]))'
 
-        >>> ttns((v1 - v2)._getRepresentation(style='C', id=""))
+        >>> (v1 - v2)._getRepresentation(style='C', id="")
         '(var0[i] - var1[i])'
 
-        >>> ttns((v1 / v2)._getRepresentation(style='C', id=""))
+        >>> (v1 / v2)._getRepresentation(style='C', id="")
         '(var0[i] / var1[i])'
 
-        >>> ttns((v1 - 1)._getRepresentation(style='C', id=""))
+        >>> (v1 - 1)._getRepresentation(style='C', id="")
         '(var0[i] - var1)'
 
-        >>> ttns((5 * v2)._getRepresentation(style='C', id=""))
+        >>> (5 * v2)._getRepresentation(style='C', id="")
         '(var0[i] * var1)'
 
-        >>> ttns((v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id=""))
+        >>> (v1 / v2 - v3 * v4 + v1 * v4)._getRepresentation(style='C', id="")
         '(((var000[i] / var001[i]) - (var010[i] * var011[i])) + (var10[i] * var11[i]))'
 
     Test that the representation of indexing works correctly
 
-        >>> ttns(v1[1]._getRepresentation()) # doctest: +ELLIPSIS
+        >>> v1[1]._getRepresentation() # doctest: +ELLIPSIS
         'Variable(value=array([1, 2, 3, 4]))[...]'
 
     Check that unit works for a `binOp`

@@ -1,7 +1,3 @@
-from __future__ import print_function
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import str
 import os
 import sys
 import re
@@ -48,7 +44,7 @@ def main():
     os.write(fd, script)
     os.close(fd)
 
-    cputime_RE = re.compile("(\d+:)?(\d+):(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?")
+    cputime_RE = re.compile(r"(\d+:)?(\d+):(\d+(\.\d*)?|\d*\.\d+)([eE][-+]?\d+)?")
 
     def monitor(p):
         def cputimestring2secs(str):
@@ -88,10 +84,10 @@ def main():
               ''' % (dir, start)
         script = script.replace(dedent(old), dedent(new))
 
-    old = '''\
+    old = r'''\
           #    \cite{WarrenPolycrystal}.
           '''
-    new = '''\
+    new = r'''\
           #    \cite{WarrenPolycrystal}.
 
           dump.write((mesh, phase, dT), "%s/anisotropy-%%d.dmp.gz" %% (steps + %d))

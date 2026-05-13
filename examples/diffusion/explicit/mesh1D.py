@@ -49,7 +49,6 @@ required to execute the necessary time steps:
 
 >>> timeStepDuration = 0.1
 >>> steps = 100
->>> from builtins import range
 >>> for step in range(steps):
 ...     eq.solve(var=var, dt=timeStepDuration)
 
@@ -73,7 +72,6 @@ If the problem is run interactively, we can view the result:
 ...     viewer = Viewer(vars = (var,))
 ...     viewer.plot()
 """
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

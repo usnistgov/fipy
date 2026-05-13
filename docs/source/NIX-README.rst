@@ -18,7 +18,7 @@ in the base :term:`FiPy` directory to install :term:`FiPy` with Python
 3 by default. ``nix develop`` drops the user into a shell with a working
 version of :term:`FiPy`. To test your installation use::
 
-    $ nix develop --command bash -c "python setup.py test"
+    $ nix develop --command bash -c "fipy_test"
 
 .. note::
 

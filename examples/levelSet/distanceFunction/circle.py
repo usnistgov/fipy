@@ -81,7 +81,6 @@ The result can be tested with the following commands.
 >>> print(numerix.allclose(var, trialValues)) #doctest: +LSM
 True
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

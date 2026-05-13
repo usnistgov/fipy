@@ -1,12 +1,7 @@
-from __future__ import unicode_literals
-from builtins import object
 __docformat__ = 'restructuredtext'
 
 __all__ = ["AbstractMatplotlibViewer"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
-from future.builtins import super
 
 from fipy.viewers.viewer import AbstractViewer
 
@@ -269,8 +264,8 @@ class AbstractMatplotlibViewer(AbstractViewer):
     @classmethod
     def _doctest_extra(cls):
         return ("""
-            >>> viewer.cmap = "ocean"
-            >>> viewer.log = True
+            >>> viewer.cmap = "ocean"  # doctest:+INTERACTIVE
+            >>> viewer.log = True  # doctest:+INTERACTIVE
         """ + super()._doctest_extra())
 
 if __name__ == "__main__":

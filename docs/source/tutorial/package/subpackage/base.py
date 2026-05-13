@@ -11,8 +11,6 @@ in which case you refer to it by its full name of :mod:`package.subpackage.base`
 
 in which case you can refer simply to :mod:`~package.subpackage.base`.
 """
-from __future__ import unicode_literals
-from builtins import object
 __docformat__ = 'restructuredtext'
 
 class Base(object):

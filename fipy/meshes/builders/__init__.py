@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from fipy.meshes.builders.grid1DBuilder import _NonuniformGrid1DBuilder
 from fipy.meshes.builders.grid1DBuilder import _UniformGrid1DBuilder
 from fipy.meshes.builders.grid1DBuilder import _Grid1DBuilder

@@ -1,8 +1,6 @@
 """
 1D Mesh
 """
-from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.meshes.uniformGrid1D import UniformGrid1D
@@ -11,8 +9,6 @@ from fipy.tools.numerix import MA
 from fipy.tools import parallelComm
 
 __all__ = ["SphericalUniformGrid1D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class SphericalUniformGrid1D(UniformGrid1D):
     """

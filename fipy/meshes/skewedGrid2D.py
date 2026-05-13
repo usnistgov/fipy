@@ -1,6 +1,3 @@
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import range
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -12,8 +9,6 @@ from fipy.meshes.mesh2D import Mesh2D
 from fipy.meshes import Grid2D
 
 __all__ = ["SkewedGrid2D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class SkewedGrid2D(Mesh2D):
     """
@@ -75,10 +70,6 @@ class SkewedGrid2D(Mesh2D):
         """Return physical dimensions of `Grid2D`.
         """
         return PhysicalField(value = (self.nx * self.dx * self.scale, self.ny * self.dy * self.scale))
-
-    @property
-    def _meshSpacing(self):
-        return numerix.array((self.dx, self.dy))[..., numerix.newaxis]
 
     @property
     def shape(self):

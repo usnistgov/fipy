@@ -1,7 +1,6 @@
 """
 Test implementation of the viewers
 """
-from __future__ import unicode_literals
 
 __all__ = []
 
@@ -10,7 +9,10 @@ import fipy.tests.testProgram
 
 def _suite():
     return _LateImportDocTestSuite(testModuleNames = (
-        'vtkViewer.test',),
+        'vtkViewer.test',
+        'matplotlibViewer.test',
+        'mayaviViewer.test',
+        ),
                                    docTestModuleNames = (
         'tsvViewer',
         ), base = __name__)

@@ -183,13 +183,21 @@ the phase and temperature fields
 
 we iterate the solution in time, plotting as we go if running interactively,
 
+>>> from fipy import solver_suite
+>>> if solver_suite in ["trilinos"]:
+...     from fipy import MultilevelNSSAPreconditioner
+...     preconditioner = MultilevelNSSAPreconditioner()
+... else:
+...     preconditioner = "default"
+>>> from fipy import DefaultAsymmetricSolver
+>>> solver = DefaultAsymmetricSolver(precon=preconditioner)
+
 >>> steps = 10
->>> from builtins import range
 >>> for i in range(steps):
 ...     phase.updateOld()
 ...     temperature.updateOld()
-...     phaseEq.solve(phase, dt=timeStepDuration)
-...     temperatureEq.solve(temperature, dt=timeStepDuration)
+...     phaseEq.solve(phase, dt=timeStepDuration, solver=solver)
+...     temperatureEq.solve(temperature, dt=timeStepDuration, solver=solver)
 ...     if i%10 == 0 and __name__ == '__main__':
 ...         phaseViewer.plot()
 ...         temperatureViewer.plot()
@@ -204,12 +212,10 @@ the data and compares it with the `phase` variable.
    single: allclose
 
 >>> import os
->>> from future.utils import text_to_native_str
->>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + text_to_native_str('.gz'))
+>>> testData = numerix.loadtxt(os.path.splitext(__file__)[0] + '.gz')
 >>> print(phase.allclose(testData))
 1
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input

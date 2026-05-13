@@ -1,8 +1,6 @@
 """
 1D Mesh
 """
-from __future__ import division
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy.tools import numerix
@@ -15,9 +13,9 @@ from fipy.meshes.builders import _Grid1DBuilder
 from fipy.meshes.representations.gridRepresentation import _Grid1DRepresentation
 from fipy.meshes.topologies.gridTopology import _Grid1DTopology
 
+from fipy.solvers import INDEX_TYPE
+
 __all__ = ["UniformGrid1D"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class UniformGrid1D(UniformGrid):
     """
@@ -69,7 +67,6 @@ class UniformGrid1D(UniformGrid):
          self.numberOfCells,
          self.shape,
          self.physicalShape,
-         self._meshSpacing,
          self.occupiedNodes,
          self.origin) = builder.gridData
 
@@ -99,8 +96,8 @@ class UniformGrid1D(UniformGrid):
 
     @property
     def _adjacentCellIDs(self):
-        c1 = numerix.arange(self.numberOfFaces)
-        ids = numerix.array((c1 - 1, c1))
+        c1 = numerix.arange(self.numberOfFaces, dtype=INDEX_TYPE)
+        ids = numerix.array((c1 - 1, c1), dtype=INDEX_TYPE)
         if self.numberOfFaces > 0:
             ids[0, 0] = ids[1, 0]
             ids[1, -1] = ids[0, -1]
@@ -108,8 +105,8 @@ class UniformGrid1D(UniformGrid):
 
     @property
     def _cellToCellIDs(self):
-        c1 = numerix.arange(self.numberOfCells)
-        ids = MA.array((c1 - 1, c1 + 1))
+        c1 = numerix.arange(self.numberOfCells, dtype=INDEX_TYPE)
+        ids = MA.array((c1 - 1, c1 + 1), dtype=INDEX_TYPE)
         if self.numberOfCells > 0:
             ids[0, 0] = MA.masked
             ids[1, -1] = MA.masked
@@ -266,7 +263,8 @@ class UniformGrid1D(UniformGrid):
 
     @property
     def _cellFaceIDs(self):
-        return MA.array(_Grid1DBuilder.createCells(self.nx))
+        return MA.array(_Grid1DBuilder.createCells(self.nx),
+                        dtype=INDEX_TYPE)
 
     @property
     def _maxFacesPerCell(self):
@@ -278,8 +276,8 @@ class UniformGrid1D(UniformGrid):
 
     @property
     def faceCellIDs(self):
-        c1 = numerix.arange(self.numberOfFaces)
-        ids = MA.array((c1 - 1, c1))
+        c1 = numerix.arange(self.numberOfFaces, dtype=INDEX_TYPE)
+        ids = MA.array((c1 - 1, c1), dtype=INDEX_TYPE)
         if self.numberOfFaces > 0:
             ids[0, 0] = ids[1, 0]
             ids[1, 0] = MA.masked
@@ -288,8 +286,8 @@ class UniformGrid1D(UniformGrid):
 
     @property
     def _cellVertexIDs(self):
-        c1 = numerix.arange(self.numberOfCells)
-        return numerix.array((c1 + 1, c1))
+        c1 = numerix.arange(self.numberOfCells, dtype=INDEX_TYPE)
+        return numerix.array((c1 + 1, c1), dtype=INDEX_TYPE)
 
     def _getNearestCellID(self, points):
         """
@@ -316,7 +314,7 @@ class UniformGrid1D(UniformGrid):
         xi, = points
         dx = self.dx
 
-        i = numerix.array(numerix.rint(((xi - x0) / dx)), 'l')
+        i = numerix.array(numerix.rint(((xi - x0) / dx)), dtype=INDEX_TYPE)
         i[i < 0] = 0
         i[i > nx - 1] = nx - 1
 

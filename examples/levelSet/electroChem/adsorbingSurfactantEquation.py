@@ -1,6 +1,3 @@
-from __future__ import division
-from __future__ import unicode_literals
-from builtins import object
 __docformat__ = 'restructuredtext'
 
 import platform
@@ -120,7 +117,6 @@ class AdsorbingSurfactantEquation(object):
     ...                                    otherBulkVar = bulkVar0,
     ...                                    otherRateConstant = k0)
 
-    >>> from builtins import range
     >>> for step in range(totalSteps):
     ...     eqn0.solve(var0, dt = dt)
     ...     eqn1.solve(var1, dt = dt)
@@ -133,7 +129,6 @@ class AdsorbingSurfactantEquation(object):
     ...                  numerix.array((0, 0, answer1, 0, 0)), rtol = 1e-2))
     1
     >>> dt = 0.1
-    >>> from builtins import range
     >>> for step in range(10):
     ...     eqn0.solve(var0, dt = dt)
     ...     eqn1.solve(var1, dt = dt)
@@ -204,7 +199,6 @@ class AdsorbingSurfactantEquation(object):
 
     >>> dt = 0.1
 
-    >>> from builtins import range
     >>> for i in range(50):
     ...     disVar.calcDistanceFunction()
     ...     extVar.value = (numerix.array(accVar.interfaceVar))
@@ -296,7 +290,7 @@ class AdsorbingSurfactantEquation(object):
         var : ~fipy.variables.surfactantVariable.SurfactantVariable
             A `SurfactantVariable` to be solved for.  Provides the initial
             condition, the old value and holds the solution on completion.
-        solver : ~f[py.solvers.solver.Solver
+        solver : ~fipy.solvers.solver.Solver
             The iterative solver to be used to solve the linear system of
             equations.
         boundaryConditions : :obj:`tuple` of ~fipy.boundaryConditions.boundaryCondition.BoundaryCondition
@@ -307,12 +301,8 @@ class AdsorbingSurfactantEquation(object):
         self.dt.setValue(dt)
         if solver is None:
             import fipy.solvers.solver
-            if fipy.solvers.solver_suite == 'pyamg':
-                from fipy.solvers.pyAMG.linearGeneralSolver import LinearGeneralSolver
-                solver = LinearGeneralSolver(tolerance=1e-15, iterations=2000)
-            else:
-                from fipy.solvers import LinearPCGSolver
-                solver = LinearPCGSolver()
+            from fipy.solvers import LinearPCGSolver
+            solver = LinearPCGSolver()
 
         if type(boundaryConditions) not in (type(()), type([])):
             boundaryConditions = (boundaryConditions,)

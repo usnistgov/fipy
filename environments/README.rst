@@ -69,21 +69,8 @@ of the merits of and relationship between the different methods.
   e.g.::
 
     $ conda create --name <MYFIPYENV> --channel conda-forge \
-        python=3 numpy scipy matplotlib-base future packaging mpich \
+        python=3 numpy scipy matplotlib-base packaging mpich \
         mpi4py petsc4py mayavi "gmsh <4.0|>=4.5.2"
-
-  or::
-
-    $ conda create --name <MYFIPYENV> --channel conda-forge \
-        python=2.7 numpy scipy matplotlib-base future packaging \
-        pysparse mayavi "traitsui<7.0.0" "gmsh<4.0"
-
-  .. attention::
-
-     Bit rot has started to set in for Python 2.7.  One consequence is that
-     :class:`~fipy.viewers.vtkViewer.VTKViewer`\s can raise errors
-     (probably other uses of :term:`Mayavi`, too). Hence, the constraint
-     of `"traitsui<7.0.0"`.
 
 .. _conda-lock: https://github.com/conda/conda-lock
 

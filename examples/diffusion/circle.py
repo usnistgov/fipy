@@ -80,7 +80,6 @@ We first step through the transient problem
 
 >>> timeStepDuration = 10 * 0.9 * cellSize**2 / (2 * D)
 >>> steps = 10
->>> from builtins import range
 >>> for step in range(steps):
 ...     eq.solve(var=phi,
 ...              dt=timeStepDuration) # doctest: +GMSH
@@ -169,7 +168,6 @@ Display the results if run as a script.
    :align: center
    :alt: steady-state solution to diffusion on a circular mesh
 """
-from __future__ import unicode_literals
 
 __docformat__ = 'restructuredtext'
 

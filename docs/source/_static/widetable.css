@@ -1,0 +1,38 @@
+/* 
+ * Wide tables are unclickable, apparently because they're under the sidebar.
+ * 
+ * Adapted from:
+ * https://groups.google.com/g/sphinx-users/c/ZV8gGObVrQU
+ * https://blogs.perficient.com/2021/01/18/freezing-row-and-column-in-html-table-using-css/
+ */
+
+/* 
+ * Make wide table horizontally scrollable.
+ * This has significant UI issues.
+ */
+table.widescroll {
+    display: block;
+    overflow: auto;
+}
+
+table.widescroll th.stub {
+    left: 0;
+    position: sticky;
+    z-index: 50;
+}
+
+table.widescroll caption span.caption-text {
+    left: 0;
+    position: sticky;
+}
+
+/* Move wide table above whatever is blocking it. */
+table.wideshow {
+	/* 
+	 * "The `position: static` property prevents z-index from having an effect."
+	 * but where does `position: static` come from?
+	 */
+    position: relative;
+    z-index: 25;
+}
+

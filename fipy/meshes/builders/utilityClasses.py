@@ -1,7 +1,3 @@
-from __future__ import unicode_literals
-from builtins import object
-from builtins import range
-from builtins import zip
 __docformat__ = 'restructuredtext'
 
 __all__ = []

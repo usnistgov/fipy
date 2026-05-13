@@ -1,9 +1,7 @@
 """Solving sparse linear systems
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
-from builtins import str
 
 import logging
 
@@ -75,19 +73,8 @@ GeneralSolver = None
 """Solver class that should solve any matrix.
 """
 
-
 from fipy.tools.comms.dummyComm import DummyComm
 serialComm, parallelComm = DummyComm(), DummyComm()
-
-if solver_suite is None and _desired_solver in ["pysparse", None]:
-    try:
-        if _Nproc > 1:
-            raise SerialSolverError()
-        from fipy.solvers.pysparse import *
-        _mesh_matrices = _import_mesh_matrices(suite="Pysparse")
-        solver_suite = "pysparse"
-    except Exception as inst:
-        _exceptions["pysparse"] = inst
 
 if solver_suite is None and _desired_solver in ["petsc", None]:
     try:
@@ -110,7 +97,7 @@ if solver_suite is None and _desired_solver in ["petsc", None]:
     except Exception as inst:
         _exceptions["petsc"] = inst
 
-if solver_suite is None and _desired_solver in ["trilinos", "no-pysparse", None]:
+if solver_suite is None and _desired_solver in ["trilinos", None]:
     try:
         from fipy.solvers.trilinos import *
         
@@ -123,17 +110,8 @@ if solver_suite is None and _desired_solver in ["trilinos", "no-pysparse", None]
         else:
             parallelComm = SerialEpetraCommWrapper()
 
-        if _desired_solver != "no-pysparse":
-            try:
-                _mesh_matrices = _import_mesh_matrices(suite="Pysparse")
-                solver_suite = "trilinos"
-            except ImportError:
-                pass
-                
-        if solver_suite is None:
-            # no-pysparse requested or pysparseMatrix failed to import
-            _mesh_matrices = _import_mesh_matrices(suite="Trilinos")
-            solver_suite = "no-pysparse"
+        _mesh_matrices = _import_mesh_matrices(suite="Trilinos")
+        solver_suite = "trilinos"
     except Exception as inst:
         _exceptions["trilinos"] = inst
 
@@ -144,22 +122,19 @@ if solver_suite is None and _desired_solver in ["scipy", None]:
         from fipy.solvers.scipy import *
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
         solver_suite = "scipy"
+
+        # if PyAMG is installed, then fetch its preconditioner(s)
+        try:
+            from fipy.solvers.pyAMG.preconditioners import *
+            _log.info("PyAMG preconditioners installed")
+        except ImportError as imp:
+            _log.info("PyAMG preconditioners not available: %s" % imp)
     except Exception as inst:
         _exceptions["scipy"] = inst
 
-if solver_suite is None and _desired_solver in ["pyamg", None]:
-    try:
-        if _Nproc > 1:
-            raise SerialSolverError()
-        from fipy.solvers.pyAMG import *
-        _mesh_matrices = _import_mesh_matrices(suite="Scipy")
-        solver_suite = "pyamg"
-    except Exception as inst:
-        _exceptions["pyamg"] = inst
-
 if solver_suite is None and _desired_solver in ["pyamgx", None]:
     try:
-        if _parallelComm.Nproc > 1:
+        if _Nproc > 1:
             raise  SerialSolverError('pyamgx')
         from fipy.solvers.pyamgx import *
         _mesh_matrices = _import_mesh_matrices(suite="Scipy")
@@ -179,11 +154,13 @@ if solver_suite is None:
 # don't unpack until here in order to keep code above more succinct
 _RowMeshMatrix, _ColMeshMatrix, _MeshMatrix = _mesh_matrices
 
+INDEX_TYPE = _MeshMatrix.INDEX_TYPE
+
 from fipy.tests.doctestPlus import register_skipper
 
-register_skipper(flag='PYSPARSE_SOLVER',
-                 test=lambda: solver_suite == 'pysparse',
-                 why="the Pysparse solvers are not being used.",
+register_skipper(flag='PETSC_SOLVER',
+                 test=lambda: solver_suite == 'petsc',
+                 why="the PETSc solvers are not being used.",
                  skipWarning=True)
 
 register_skipper(flag='NOT_PYAMGX_SOLVER',
@@ -191,8 +168,23 @@ register_skipper(flag='NOT_PYAMGX_SOLVER',
                  why="the PyAMGX solver is being used.",
                  skipWarning=True)
 
+register_skipper(flag='SCIPY_SOLVER',
+                 test=lambda: solver_suite == 'scipy',
+                 why="the SciPy solvers are not being used.",
+                 skipWarning=True)
+
+register_skipper(flag='PYAMGX_SOLVER',
+                 test=lambda: solver_suite == 'pyamgx',
+                 why="the pyamgx solvers are not being used.",
+                 skipWarning=True)
+
+register_skipper(flag='TRILINOS_SOLVER',
+                 test=lambda: solver_suite == 'trilinos',
+                 why="the Trilinos solvers are not being used.",
+                 skipWarning=True)
+                 
 register_skipper(flag='NOT_TRILINOS_SOLVER',
-                 test=lambda: solver_suite not in ['trilinos', 'no-pysparse'],
+                 test=lambda: solver_suite != 'trilinos',
                  why="the Trilinos solvers are being used.",
                  skipWarning=True)
 

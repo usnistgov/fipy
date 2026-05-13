@@ -79,8 +79,8 @@ geometric means, and :term:`FiPy` makes it easy to obtain these, too.
 
 >>> import fipy.solvers.solver
 >>> if fipy.solvers.solver_suite in ['petsc']:
-...     solver = DefaultSolver(precon="none")
-... elif fipy.solvers.solver_suite in ['trilinos', 'no-pysparse']:
+...     solver = DefaultSolver(precon=None)
+... elif fipy.solvers.solver_suite in ['trilinos']:
 ...     solver = LinearLUSolver()
 ... else:
 ...     solver = DefaultSolver()
@@ -92,10 +92,7 @@ evolution of their problem.
 
 >>> dexp = -5
 >>> elapsed = 0.
->>> if __name__ == "__main__":
-...     duration = 1000.
-... else:
-...     duration = 1000.
+>>> duration = 1000.
 
 >>> while elapsed < duration:
 ...     dt = min(100, numerix.exp(dexp))
@@ -116,7 +113,6 @@ True
    :alt: evolution of Cahn-Hilliard phase separation at t = 30, 100 and 1000
 
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input
@@ -126,4 +122,3 @@ if __name__ == '__main__':
     exec(fipy.tests.doctestPlus._getScript())
 
     input('finished')
-

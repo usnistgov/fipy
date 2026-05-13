@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from PyTrilinos import Epetra
@@ -8,13 +7,10 @@ from PyTrilinos import AztecOO
 from PyTrilinos import ML
 from PyTrilinos import IFPACK
 
-from fipy import input
 from fipy.solvers.trilinos.trilinosSolver import TrilinosSolver
 from fipy.tools import numerix
 
 __all__ = ["TrilinosMLTest"]
-from future.utils import text_to_native_str
-__all__ = [text_to_native_str(n) for n in __all__]
 
 class TrilinosMLTest(TrilinosSolver):
 
@@ -23,10 +19,10 @@ class TrilinosMLTest(TrilinosSolver):
     information about what ML preconditioner settings will work best.
     """
 
-    def __init__(self, tolerance=1e-10, iterations=5, MLOptions={}, testUnsupported = False):
+    def __init__(self, tolerance="default", iterations=5, MLOptions={}, testUnsupported=False):
         """
         For detailed information on the possible parameters for ML, see
-        http://trilinos.sandia.gov/packages/ml/documentation.html
+        https://trilinos.github.io/ml.html
 
         Currently, passing options to Aztec through ML is not supported.
 
@@ -75,6 +71,7 @@ class TrilinosMLTest(TrilinosSolver):
         Prec.ComputePreconditioner()
 
         Prec.TestSmoothers()
+        from fipy import input
         input("Results of preconditioner tests shown above. Currently, the first tests in the 'Gauss-Seidel (sym)','Aztec preconditioner', and 'Aztec as solver' sections indicate the expected performance of the MultilevelSGSPreconditioner, MultilevelDDPreconditioner, and MultilevelSolverSmootherPreconditioner classes, respectively.\n\nPress enter to quit.")
         import sys
         sys.exit(0)

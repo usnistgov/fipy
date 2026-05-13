@@ -93,7 +93,6 @@ Now, we iterate the problem to equilibrium, plotting as we go
 
     >>> solver = LinearLUSolver()
 
-    >>> from builtins import range
     >>> for i in range(40):
     ...     for Cj in substitutionals:
     ...         Cj.updateOld()
@@ -119,7 +118,6 @@ we verify that the concentrations have become uniform
    The absolute tolerance `atol` must be in units compatible with the value to
    be checked, but the relative tolerance `rtol` is dimensionless.
 """
-from __future__ import unicode_literals
 __docformat__ = 'restructuredtext'
 
 from fipy import input
